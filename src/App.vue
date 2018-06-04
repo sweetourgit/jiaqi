@@ -1,10 +1,14 @@
 <template>
-  <div id="app">
-    <page-header></page-header>
-    <div class="nav-left"><nav-left></nav-left></div>
-    <div class="router"><router-view></router-view></div>
+  <div id="app" >
+    
+    <el-header class="page-header"><page-header v-if="$route.meta.keepAlive"></page-header></el-header>
+    <el-container class="container">
+       <el-aside width="330px" v-if="$route.meta.keepAlive"><nav-left></nav-left></el-aside>
+       <el-main><router-view></router-view></el-main>
+    </el-container>
   </div>
 </template>
+
 
 <script>
 import pageHeader from './components/header/header'
@@ -23,7 +27,18 @@ export default {
   color: #2c3e50;
   margin: 0;
   padding: 0;
+  height: 100%;
+}
+body{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y:hidden;
+}
+html{
+  height: 100%;
 }
 .router{float:left;margin:50px;font-size:25px;}
-.nav-left{float:left;height:100%;}
+.page-header{height:auto !important;padding:0px !important}
+.container{height: 100%;}
 </style>

@@ -6,31 +6,57 @@ import role from '@/page/account/role/role'
 import perList from '@/page/account/perList/perList'
 import accountInfor from '@/page/perCenter/accountInfor/accountInfor'
 import pwModifi from '@/page/perCenter/pwModifi/pwModifi'
+import positionList from '@/page/account/positionList/positionList'
+import login from '@/page/login/login'
+import addRole from'@/page/account/role/addRole'
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: '/', redirect: '/userList',
-    },{
-      path: '/userList',
-      component: userList
-    },{
-      path: '/organList',
-      component: organList
-    },{
-      path: '/role',
-      component: role
-    },{
-      path: '/perList',
-      component: perList
-    },{
-      path: '/accountInfor',
-      component: accountInfor
-    },{
-      path: '/pwModifi',
-      component: pwModifi
-    }
+        path: '/', redirect: 'login',
+      },{
+        path: '/userList',
+        component: userList,
+        meta: {keepAlive: true}
+      },{
+        path: '/organList',
+        component: organList,
+        meta: {keepAlive: true}
+      },{
+        path: '/role',
+        component: role,
+        meta: {keepAlive: true}
+      },{
+          path: '/addRole',
+          component: addRole,
+          meta: {keepAlive: true}
+      },
+      {
+        path: '/perList',
+        component: perList,
+        meta: {keepAlive: true}
+      },{
+        path: '/accountInfor',
+        component: accountInfor,
+        meta: {keepAlive: true}
+      },{
+        path: '/pwModifi',
+        component: pwModifi,
+        meta: {keepAlive: true}
+      },{
+        path: '/login',
+        component: login,
+        meta: {keepAlive: false}
+      },{
+        path: '/positionList',
+        component: positionList,
+        meta: {keepAlive: true}
+      },{
+        path: '/userList',
+        component: userList,
+        meta:{keepAlive:true}
+      }
   ]
 })
