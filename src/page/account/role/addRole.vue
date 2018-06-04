@@ -11,6 +11,7 @@
       </el-form-item>
     </el-form>
 
+<<<<<<< HEAD
     <table class="all-size">
       <thead>
       <tr>
@@ -111,18 +112,30 @@
       </tr>
       </tbody>
     </table>
+=======
+    <hr>
+    <el-button type="primary" size="small" >全选</el-button>
+    <el-button type="primary" size="small" >重置</el-button>
+
+>>>>>>> 5dcd0b1cffe502994f93dc75e340503766a9bca6
     <el-button type="primary" class="sub_button" @click="handleClose()">取消</el-button>
     <el-button type="primary" class="sub_button" @click="submitForm('ruleForm')">保存</el-button>
   </div>
 </template>
 
 <script>
+<<<<<<< HEAD
 
   const Items = ['用户管理', '组织管理', '权限管理'];
   export default {
     name: "addRole",
     data: function () {
 
+=======
+  export default {
+    name: "addRole",
+    data: function () {
+>>>>>>> 5dcd0b1cffe502994f93dc75e340503766a9bca6
       // 自定义验证方法
       var validateName = (rule, value, callback) => {
 
@@ -159,10 +172,15 @@
             { min: 2, max: 40, message: '字数超限', trigger: 'blur' }
 
           ],
+<<<<<<< HEAD
         },
         //userCheckedAll: false,
         //isIndeterminate: false,       // 半选择状态
         //checkedItems: []
+=======
+
+        }
+>>>>>>> 5dcd0b1cffe502994f93dc75e340503766a9bca6
       }
     },
     created(){
@@ -194,6 +212,7 @@
 
           });
       },
+<<<<<<< HEAD
 
       getDetail: function () {
         //todo 读取接口信息
@@ -209,6 +228,26 @@
 
         this.isIndeterminate = true
       }*/
+=======
+      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 0) {
+          if (rowIndex % 2 === 0) {
+            return {
+              rowspan: 2,
+              colspan: 1
+            };
+          } else {
+            return {
+              rowspan: 0,
+              colspan: 0
+            };
+          }
+        }
+      },
+      getDetail: function () {
+        console.log('读取模板信息')
+      }
+>>>>>>> 5dcd0b1cffe502994f93dc75e340503766a9bca6
     }
   }
 </script>
@@ -225,6 +264,7 @@
     float: left;
     width: 160px !important;
   }
+<<<<<<< HEAD
 
   .permission-roel{
     width: 300px;
@@ -262,4 +302,6 @@
   .table-checkout{
     text-align: left;
   }
+=======
+>>>>>>> 5dcd0b1cffe502994f93dc75e340503766a9bca6
 </style>
