@@ -1,307 +1,250 @@
 <template>
-  <div>
-    <!--{{this.$route.query['id']}}    // 获取到的角色模板ID-->
-    <div class="top_tip">添加角色权限模板</div>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm">       <!--ref参数用于标识form名称-->
-      <el-form-item label="模板名称" prop="temp_name">
-        <el-input v-model="ruleForm.temp_name" placeholder="请输入模板名称" clearable class="temp_input"></el-input>
-      </el-form-item>
-      <el-form-item label="模板描述" prop="desc">
-        <el-input v-model="ruleForm.desc" placeholder="请输入模板描述" clearable class="temp_input"></el-input>
-      </el-form-item>
-    </el-form>
+    <div>
+        <!--{{this.$route.query['id']}}    // 获取到的角色模板ID-->
+        <div class="top_tip">添加角色权限模板</div>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm">       <!--ref参数用于标识form名称-->
+            <el-form-item label="模板名称" prop="temp_name">
+                <el-input v-model="ruleForm.temp_name" placeholder="请输入模板名称" clearable class="temp_input"></el-input>
+            </el-form-item>
+            <el-form-item label="模板描述" prop="desc">
+                <el-input v-model="ruleForm.desc" placeholder="请输入模板描述" clearable class="temp_input"></el-input>
+            </el-form-item>
+        </el-form>
 
-<<<<<<< HEAD
-    <table class="all-size">
-      <thead>
-      <tr>
-        <th colspan="4" class="table-button">
-          <el-button type="primary" size="mini" class="table-bt">全选</el-button>
-          <el-button type="primary" size="mini">重置</el-button>
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr class="table-button">
-        <td class="table-title">一级功能模块</td>
-        <td class="table-title">二级功能模块</td>
-        <td class="table-title">权限类型</td>
-        <td class="table-permiss">具体权限</td>
-      </tr>
+        <table class="all-size">
+            <thead>
+            <tr>
+                <th colspan="4" class="table-button">
+                    <el-button type="primary" size="mini" class="table-bt">全选</el-button>
+                    <el-button type="primary" size="mini">重置</el-button>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="table-button">
+                <td class="table-title">一级功能模块</td>
+                <td class="table-title">二级功能模块</td>
+                <td class="table-title">权限类型</td>
+                <td class="table-permiss">具体权限</td>
+            </tr>
+            <tr class="table-content">
+                <td rowspan="9"><el-checkbox v-model="userCheckedAll" @change="handleCheckAllChange" :indeterminate="isIndeterminate">账号管理</el-checkbox></td>
+                <td rowspan="3"><el-checkbox @change="handleSonChange">用户管理</el-checkbox></td>
+                <td><el-checkbox >只读</el-checkbox></td>
+                <td class="table-checkout"><el-checkbox>用户列表</el-checkbox></td>
+            </tr>
+            <tr class="table-content">
+                <td ><el-checkbox>编辑</el-checkbox></td>
+                <td class="table-checkout"><el-checkbox >编辑用户</el-checkbox>
+                    <el-checkbox >添加用户</el-checkbox>
+                </td>
 
-
-
-      <tr class="table-content">
-        <!--<td rowspan="9"><el-checkbox v-model="userCheckedAll" @change="handleCheckAllChange" :indeterminate="isIndeterminate">账号管理</el-checkbox></td>-->
-          <td rowspan="9"><el-checkbox>账号管理</el-checkbox></td>
-
-         <!-- <td rowspan="3"><el-checkbox @change="handleSonChange">用户管理</el-checkbox></td>-->
-          <td rowspan="3"><el-checkbox >用户管理</el-checkbox></td>
-        <td><el-checkbox >只读</el-checkbox></td>
-        <td class="table-checkout"><el-checkbox>用户列表</el-checkbox></td>
-      </tr>
-
-      <tr class="table-content">
-        <td ><el-checkbox>编辑</el-checkbox></td>
-        <td class="table-checkout"><el-checkbox >编辑用户</el-checkbox>
-          <el-checkbox >添加用户</el-checkbox>
-        </td>
-      </tr>
-
-      <tr class="table-content">
-        <td><el-checkbox >操作</el-checkbox></td>
-        <td class="table-checkout">
-          <el-checkbox >启用</el-checkbox>
-          <el-checkbox >停用</el-checkbox>
-        </td>
-      </tr>
-
-      <tr class="table-content">
-        <td rowspan="3"><el-checkbox >组织管理</el-checkbox></td>
-        <td><el-checkbox>只读</el-checkbox></td>
-        <td></td>
-      </tr>
-
-      <tr class="table-content">
-        <td><el-checkbox >编辑</el-checkbox></td>
-        <td></td>
-      </tr>
-
-      <tr class="table-content">
-        <td><el-checkbox >操作</el-checkbox></td>
-        <td></td>
-      </tr>
-
-      <tr class="table-content">
-        <td rowspan="3"><el-checkbox >权限管理</el-checkbox></td>
-        <td><el-checkbox >只读</el-checkbox></td>
-        <td class="table-checkout"><el-checkbox >角色模板列表</el-checkbox></td>
-      </tr>
-
-      <tr class="table-content">
-        <td><el-checkbox >编辑</el-checkbox></td>
-        <td class="table-checkout">
-          <el-checkbox>添加角色模板</el-checkbox>
-          <el-checkbox >编辑角色模板</el-checkbox>
-          <el-checkbox >停用角色模板</el-checkbox>
-        </td>
-      </tr>
-
-      <tr class="table-content">
-        <td><el-checkbox >操作</el-checkbox></td>
-        <td></td>
-      </tr>
-
-
-
-      <tr class="table-content">
-        <td rowspan="3"><el-checkbox >个人中心</el-checkbox></td>
-        <td rowspan="3"><el-checkbox >账号设置</el-checkbox></td>
-        <td><el-checkbox >只读</el-checkbox></td>
-        <td class="table-checkout"><el-checkbox>账号信息</el-checkbox></td>
-      </tr>
-      <tr class="table-content">
-        <td><el-checkbox>编辑</el-checkbox></td>
-        <td class="table-checkout">
-          <el-checkbox >修改账号信息</el-checkbox>
-          <el-checkbox >修改密码</el-checkbox></td>
-      </tr>
-      <tr class="table-content">
-        <td><el-checkbox >操作</el-checkbox></td>
-        <td></td>
-      </tr>
-      </tbody>
-    </table>
-=======
-    <hr>
-    <el-button type="primary" size="small" >全选</el-button>
-    <el-button type="primary" size="small" >重置</el-button>
-
->>>>>>> 5dcd0b1cffe502994f93dc75e340503766a9bca6
-    <el-button type="primary" class="sub_button" @click="handleClose()">取消</el-button>
-    <el-button type="primary" class="sub_button" @click="submitForm('ruleForm')">保存</el-button>
-  </div>
+            </tr>
+            <tr class="table-content">
+                <td><el-checkbox >操作</el-checkbox></td>
+                <td class="table-checkout">
+                    <el-checkbox >启用</el-checkbox>
+                    <el-checkbox >停用</el-checkbox>
+                </td>
+            </tr>
+            <tr class="table-content">
+                <td rowspan="3"><el-checkbox >组织管理</el-checkbox></td>
+                <td><el-checkbox>只读</el-checkbox></td>
+                <td></td>
+            </tr>
+            <tr class="table-content">
+                <td><el-checkbox >编辑</el-checkbox></td>
+                <td></td>
+            </tr>
+            <tr class="table-content">
+                <td><el-checkbox >操作</el-checkbox></td>
+                <td></td>
+            </tr>
+            <tr class="table-content">
+                <td rowspan="3"><el-checkbox >权限管理</el-checkbox></td>
+                <td><el-checkbox >只读</el-checkbox></td>
+                <td class="table-checkout"><el-checkbox >角色模板列表</el-checkbox></td>
+            </tr>
+            <tr class="table-content">
+                <td><el-checkbox >编辑</el-checkbox></td>
+                <td class="table-checkout">
+                    <el-checkbox>添加角色模板</el-checkbox>
+                    <el-checkbox >编辑角色模板</el-checkbox>
+                    <el-checkbox >停用角色模板</el-checkbox>
+                </td>
+            </tr>
+            <tr class="table-content">
+                <td><el-checkbox >操作</el-checkbox></td>
+                <td></td>
+            </tr>
+            <tr class="table-content">
+                <td rowspan="3"><el-checkbox >个人中心</el-checkbox></td>
+                <td rowspan="3"><el-checkbox >账号设置</el-checkbox></td>
+                <td><el-checkbox >只读</el-checkbox></td>
+                <td class="table-checkout"><el-checkbox>账号信息</el-checkbox></td>
+            </tr>
+            <tr class="table-content">
+                <td><el-checkbox>编辑</el-checkbox></td>
+                <td class="table-checkout">
+                    <el-checkbox >修改账号信息</el-checkbox>
+                    <el-checkbox >修改密码</el-checkbox></td>
+            </tr>
+            <tr class="table-content">
+                <td><el-checkbox >操作</el-checkbox></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+        <el-button type="primary" class="sub_button" @click="handleClose()">取消</el-button>
+        <el-button type="primary" class="sub_button" @click="submitForm('ruleForm')">保存</el-button>
+    </div>
 </template>
 
 <script>
-<<<<<<< HEAD
 
-  const Items = ['用户管理', '组织管理', '权限管理'];
-  export default {
-    name: "addRole",
-    data: function () {
+    const Items = ['用户管理', '组织管理', '权限管理'];
+    export default {
+        name: "addRole",
+        data: function () {
 
-=======
-  export default {
-    name: "addRole",
-    data: function () {
->>>>>>> 5dcd0b1cffe502994f93dc75e340503766a9bca6
-      // 自定义验证方法
-      var validateName = (rule, value, callback) => {
+            // 自定义验证方法
+            var validateName = (rule, value, callback) => {
 
-        // 模拟请求 判断名称是否重复
-        this.$http.get(
-          "/static/data.json",
-        )
-        .then(function (obj) {
-          console.log(obj)
-          if (obj.data.temp_name == value){
-            callback('模板名重复')
-          }
-        })
-        .catch(function (response) {
-          console.log(response);
-        });
-      };
-
-      return {
-        input: '',
-        ruleForm: {
-          temp_name: '',
-          desc: ''
-        },
-        // 表单验证规则
-        rules: {
-          temp_name: [
-            {required: true, message: '不可为空', trigger: 'blur'},
-            { min: 2, max: 6, message: '字数超限', trigger: 'blur' },
-            { validator: validateName, trigger: 'blur' },
-          ],
-          desc: [
-            {required: true, message: '不可为空', trigger: 'blur'},
-            { min: 2, max: 40, message: '字数超限', trigger: 'blur' }
-
-          ],
-<<<<<<< HEAD
-        },
-        //userCheckedAll: false,
-        //isIndeterminate: false,       // 半选择状态
-        //checkedItems: []
-=======
-
-        }
->>>>>>> 5dcd0b1cffe502994f93dc75e340503766a9bca6
-      }
-    },
-    created(){
-      // 实例创建判断是否为编辑 存在id为编辑 不存在为新增
-
-      // 根据id获取该模板的信息
-      this.getDetail()
-    },
-    methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
-      resetForm: function (formName) {
-        this.$refs[formName].resetFields();
-      },
-      handleClose(done) {
-        this.$confirm('取消此模板的配置?')
-          .then(_ => {
-            this.$router.push({path:'/role'})
-          })
-          .catch(_ => {
-
-          });
-      },
-<<<<<<< HEAD
-
-      getDetail: function () {
-        //todo 读取接口信息
-      },
-
-      // 全选checkbox部分逻辑
-     /* handleCheckAllChange(val) {
-        this.checkedItems = val ? Items : [];
-        this.isIndeterminate = false      // 将不确定属性移除
-      },
-
-      handleSonChange(value){
-
-        this.isIndeterminate = true
-      }*/
-=======
-      objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-        if (columnIndex === 0) {
-          if (rowIndex % 2 === 0) {
-            return {
-              rowspan: 2,
-              colspan: 1
+                // 模拟请求 判断名称是否重复
+                this.$http.get(
+                    "/static/data.json",
+                )
+                    .then(function (obj) {
+                        console.log(obj)
+                        if (obj.data.temp_name == value){
+                            callback('模板名重复')
+                        }
+                    })
+                    .catch(function (response) {
+                        console.log(response);
+                    });
             };
-          } else {
+
             return {
-              rowspan: 0,
-              colspan: 0
-            };
-          }
+                input: '',
+                ruleForm: {
+                    temp_name: '',
+                    desc: ''
+                },
+                // 表单验证规则
+                rules: {
+                    temp_name: [
+                        {required: true, message: '不可为空', trigger: 'blur'},
+                        { min: 2, max: 6, message: '字数超限', trigger: 'blur' },
+                        { validator: validateName, trigger: 'blur' },
+                    ],
+                    desc: [
+                        {required: true, message: '不可为空', trigger: 'blur'},
+                        { min: 2, max: 40, message: '字数超限', trigger: 'blur' }
+
+                    ],
+                },
+                userCheckedAll: false,
+                isIndeterminate: false,       // 半选择状态
+                checkedItems: []
+            }
+        },
+        created(){
+            // 实例创建判断是否为编辑 存在id为编辑 不存在为新增
+
+            // 根据id获取该模板的信息
+            this.getDetail()
+        },
+        methods: {
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        alert('submit!');
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm: function (formName) {
+                this.$refs[formName].resetFields();
+            },
+            handleClose(done) {
+                this.$confirm('取消此模板的配置?')
+                    .then(_ => {
+                        this.$router.push({path:'/role'})
+                    })
+                    .catch(_ => {
+
+                    });
+            },
+
+            getDetail: function () {
+                //todo 读取接口信息
+            },
+
+
+            // 全选checkbox部分逻辑
+            handleCheckAllChange(val) {
+                this.checkedItems = val ? Items : [];
+                this.isIndeterminate = false      // 将不确定属性移除
+            },
+
+            handleSonChange(value){
+
+                this.isIndeterminate = true
+            }
         }
-      },
-      getDetail: function () {
-        console.log('读取模板信息')
-      }
->>>>>>> 5dcd0b1cffe502994f93dc75e340503766a9bca6
     }
-  }
 </script>
 
 <style lang="scss" scoped>
-  .top_tip {
-    border-left: 5px solid grey;
-    text-align: left;
-    padding-left: 5px;
-    font-size: 15px;
-    margin-bottom: 15px;
-  }
-  .temp_input {
-    float: left;
-    width: 160px !important;
-  }
-<<<<<<< HEAD
+    .top_tip {
+        border-left: 5px solid grey;
+        text-align: left;
+        padding-left: 5px;
+        font-size: 15px;
+        margin-bottom: 15px;
+    }
+    .temp_input {
+        float: left;
+        width: 160px !important;
+    }
 
-  .permission-roel{
-    width: 300px;
-  }
-  .all-button{
-    z-index: 99;
-  }
-  .all-table{
-    display: block;
-    z-index: 1;
-  }
-  .table-button{
-    background-color:#D7D7D7;
-  }
-  .table-bt{
-    margin-left: -550px;
-  }
-  .table-content{
-    background-color: #F2F2F2;
-  }
-  .table-title{
-    font-size: 15px;
-    width: 100px;
-    height: 40px;
-  }
-  .all-size{
-    font-size: 10px;
-  }
-  .table-permiss{
-    width: 300px
-  }
-  .button-submit{
-    margin-top: 20px;
-  }
-  .table-checkout{
-    text-align: left;
-  }
-=======
->>>>>>> 5dcd0b1cffe502994f93dc75e340503766a9bca6
+    .permission-roel{
+        width: 300px;
+    }
+    .all-button{
+        z-index: 99;
+    }
+    .all-table{
+        display: block;
+        z-index: 1;
+    }
+    .table-button{
+        background-color:#D7D7D7;
+    }
+    .table-bt{
+        margin-left: -550px;
+    }
+    .table-content{
+        background-color: #F2F2F2;
+    }
+    .table-title{
+        font-size: 15px;
+        width: 100px;
+        height: 40px;
+    }
+    .all-size{
+        font-size: 10px;
+    }
+    .table-permiss{
+        width: 300px
+    }
+    .button-submit{
+        margin-top: 20px;
+    }
+    .table-checkout{
+        text-align: left;
+    }
 </style>
