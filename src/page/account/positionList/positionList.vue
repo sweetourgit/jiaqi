@@ -2,7 +2,7 @@
     <section>
         <div class="list">职位列表</div>
         <!-- 工具条 -->
-        <el-row class="add">
+        <el-row>
             <el-button type="primary" class="addButton" @click="addPosition = true">添加职位</el-button>
         </el-row>
 
@@ -239,15 +239,11 @@
     position: relative;
     float: left;
 }
-.add{
-    position: relative;
-    float: right;
-}
 .table{
     position: relative;
     float: left;
-    margin-top: 100px;
-    margin-left: -80px;
+    margin-top: 50px;
+    /* margin-left: -80px; */
 }
 .page{
     position: relative;
@@ -275,14 +271,13 @@
     border: none;
 }
 .Popup{
-    position: absolute;
-    left: 600px;
-    top: 100px;
+    margin:auto;
 }
 .addButton{
-    position: absolute;
+    position: relative;
+    float: left;
+    left: 835px;
     padding: 10px 10px;
-    right: 545px;
 }
 
 </style>
