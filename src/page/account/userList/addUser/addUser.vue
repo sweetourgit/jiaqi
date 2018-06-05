@@ -455,7 +455,7 @@ import Permission from '@/page/account/userList/addUser/permission'
     margin-left: 61px;
   }
   .pane-scroll{
-    overflow: auto;
+    overflow: auto; 
   }
   .button-adjust{
     margin-left: -190px;
