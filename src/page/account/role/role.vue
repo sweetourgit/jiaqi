@@ -57,7 +57,8 @@
       </el-table-column>
       <el-table-column
         prop="status"
-        label="状态">
+        label="状态"
+        header-align="center">
       </el-table-column>
       <el-table-column
         prop="operate"
@@ -73,10 +74,11 @@
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="5"
-      :page-size="30"
+      @prev-click="handlePrev"
+      :current-page="1"
+      :page-size="1"
       layout="prev, pager, next,  jumper, ->, total"
-      :total="100">
+      :total="totalNum">
     </el-pagination>
   </div>
 </template>
@@ -86,49 +88,62 @@
     data() {
       return {
         typeArr: [{
-          value: '选项1',
+          value: 'temp_id',
           label: '模板ID'
         }, {
-          value: '选项2',
+          value: 'temp_name',
           label: '模板名称'
         }],
         statusArr: [{
-          value: '选项1',
+          value: 'disable',
           label: '禁用'
         }, {
-          value: '选项2',
+          value: 'enable',
           label: '正常'
         }],
         typeValue: '',
         statusValue: '',
         input: '',
-        tableData: [{
-          id: '001',
-          template_name: '财务',
-          author: '管理员',
-          template_desc: '财务',
-          nums: '22',
-          status: 1
-        }, {
-          id: '002',
-          template_name: '财务',
-          author: '管理员',
-          template_desc: '财务',
-          nums: '22',
-          status: 0
-        }
-        ]
+        tableData: [],
+        totalNum: 0
       }
     },
+    created(){
+      this.getRoleList()
+    },
     methods: {
+      getRoleList(currPage = '') {
+
+        let _this = this
+        currPage = currPage == '' ? 1 : currPage
+
+        this.$http.post(
+          "http://rap2api.taobao.org/app/mock/16117/role/getRoleList",     //todo 按实际接口URL
+          {currPage: currPage, pageSize: 1}
+        )
+          .then(function (obj) {
+            _this.tableData = obj.data.list     //todo 按实际接口返回数据结构修改
+            _this.totalNum = obj.data.list.length
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+      },
+      // 每页显示数变化事件
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
+      // 当前页变化事件
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
       },
+      // 点击上一页按钮事件
+      handlePrev: function() {
+        console.log('点击了上一页按钮')
+      },
+      // 表单提交事件
       subForm() {
-        this.$message.info(this.typeValue + this.statusValue + this.input)
+        this.getRoleList(2)
       }
     },
   }
