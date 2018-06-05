@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div class="top_tip">权限管理</div>
+    <div class="top_tip">权限列表</div>
 
-    <table class="all-size" width="100%">
+    <table class="all-size" width="">
       <thead>
       <tr class="table-button">
         <td width="180">模块</td>
         <td width="180">菜单</td>
-        <td>权限类型</td>
-        <td width="250">具体权限</td>
+        <td width="80">权限类型</td>
+        <td width="">具体权限</td>
       </tr>
       </thead>
       <tbody>
@@ -66,14 +66,15 @@
           <ul>
             <li class="title_p">启用
               <span class="butts">
-              <i class="el-icon-edit"></i>
-              <i class="el-icon-delete"></i>
-            </span></li>
+                <i class="el-icon-edit" @click="dialogAddRole = true"></i>
+                <i class="el-icon-delete" @click="deleteRole"></i>
+              </span>
+            </li>
             <li class="title_p">停用
               <span class="butts">
-              <i class="el-icon-edit"></i>
-              <i class="el-icon-delete"></i>
-            </span>
+                <i class="el-icon-edit" @click="dialogAddRole = true"></i>
+                <i class="el-icon-delete" @click="deleteRole"></i>
+              </span>
             </li>
           </ul>
         </td>
@@ -199,7 +200,7 @@
       </tbody>
     </table>
     <!--添加权限对话框-->
-    <el-dialog :visible.sync="dialogAddRole" style="text-align: left" width="30%" :center="true">
+    <el-dialog :visible.sync="dialogAddRole" style="text-align: left" ref="ruleForm" width="30%" :center="true" :lockScroll="false" :close-on-click-modal="false">
       <el-form :model="form" :rules="rules">
         <el-form-item label="名称：" :label-width="formLabelWidth" prop="name">
           <el-input v-model="form.name" auto-complete="off"></el-input>
@@ -228,7 +229,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogAddRole = false">保存</el-button>
+        <el-button type="primary" @click="subForm(ruleForm)">保存</el-button>
         <el-button @click="dialogAddRole = false">关闭</el-button>
       </div>
     </el-dialog>
@@ -280,31 +281,38 @@
         // 表单验证规则
         rules: {
           name: [
-            { required: true, validator: validateName,trigger: 'blur' },
-            { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+            {required: true, validator: validateName, trigger: 'blur'},
+            {min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur'}
           ]
         }
       }
     },
     methods: {
       // 删除权限
-      deleteRole(){
+      deleteRole() {
         this.$confirm('是否删除该权限?', '', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          lockScroll: false
         }).then(() => {
           this.$message({
             type: 'success',
             message: '删除成功!'
           });
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
         });
-      }
+      },
+      subForm(formName) {
+          this.$refs[formName].validate((valid) => {
+            if (valid) {
+              alert('submit!');
+            } else {
+              console.log('error submit!!');
+              return false;
+            }
+          });
+        },
     }
   }
 </script>
@@ -386,14 +394,21 @@
 
   li.title_p {
     list-style-position: inside;
+    float: left;
+    height: 35px;
+    width: 150px;
+    text-align: left;
     .butts {
       display: none;
     }
   }
 
+  td {
+    height: 35px;
+  }
+
   li.title_p:hover {
     position: relative;
-    left: 18px;
     .butts {
       display: inline;
     }

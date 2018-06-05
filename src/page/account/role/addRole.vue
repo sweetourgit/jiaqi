@@ -2,12 +2,12 @@
     <div>
         <!--{{this.$route.query['id']}}    // 获取到的角色模板ID-->
         <div class="top_tip">添加角色权限模板</div>
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm">       <!--ref参数用于标识form名称-->
-            <el-form-item label="模板名称" prop="temp_name">
-                <el-input v-model="ruleForm.temp_name" placeholder="请输入模板名称" clearable class="temp_input"></el-input>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"  label-position="left" :status-icon="true" class="form-class">       <!--ref参数用于标识form名称-->
+            <el-form-item label="模板名称" prop="temp_name" inline-message="true">
+                <el-input v-model="ruleForm.temp_name" placeholder="请输入模板名称" clearable ></el-input>
             </el-form-item>
-            <el-form-item label="模板描述" prop="desc">
-                <el-input v-model="ruleForm.desc" placeholder="请输入模板描述" clearable class="temp_input"></el-input>
+            <el-form-item label="模板描述" prop="desc" inline-message="true">
+                <el-input v-model="ruleForm.desc" placeholder="请输入模板描述" clearable></el-input>
             </el-form-item>
         </el-form>
 
@@ -206,11 +206,10 @@
         font-size: 15px;
         margin-bottom: 15px;
     }
-    .temp_input {
-        float: left;
-        width: 160px !important;
-    }
 
+    .form-class {
+      width: 300px
+    }
     .permission-roel{
         width: 300px;
     }
