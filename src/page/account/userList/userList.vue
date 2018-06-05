@@ -57,6 +57,7 @@
       <el-table
        :data="tableData3"
        border
+       fit
        style="width: 100%"
         >
          <el-table-column
@@ -120,8 +121,8 @@
            align="center">
         </el-table-column>
         <el-table-column
-          fixed="right"
           label="操作"
+          align="center"
           width="100">
            <template slot-scope="scope">
              <el-button type="text" size="small" @click="dialogFormVisible = true">查看</el-button>
@@ -142,7 +143,9 @@
     <!--分页end-->
     </div>
     <!--表格end-->
+
     <el-dialog title="用户信息" :visible.sync="dialogFormVisible">
+      <div class="4343">
        <el-form ref="form" :model="form" label-width="110px">
 	     <el-form-item label="状态:" class="form-la">
 	       <el-input v-model="form.otype" disabled class="form-gz"></el-input>
@@ -167,32 +170,43 @@
 	     </el-form-item>
 	     <el-form-item label="性别:" class="form-sex" >
 	     <template>
+          <div class="form-size">
            <el-radio disabled v-model="form.radioSex" label="1" class="form-radios">男</el-radio>
            <el-radio disabled v-model="form.radioSex" label="2">女</el-radio>
+           </div>
          </template>
-         </el-form-item>
+        </el-form-item>
          <el-form-item label="用户类型:" class="form-sex" >
 	     <template>
+          <div class="form-size1">
            <el-radio disabled v-model="form.userType" label="1" class="form-radios">普通用户</el-radio>
            <el-radio disabled v-model="form.userType" label="2">管理员</el-radio>
+          </div> 
          </template>
          </el-form-item>
          <el-form-item label="组织-部门-职务:" class="from-organize">
+          <div class="form-size2">
 	       <el-input v-model="form.organization" disabled class="form-gz"></el-input>
 	       <span  class="form-text">默认职位</span>
+         </div>
 	     </el-form-item>
 	     <el-form-item label="创建时间：" class="from-time" >
+        <div class="form-size3">
 	       <span class="form-createtime">{{form.createtime}}</span>
+         </div>
 	     </el-form-item>
 	     <el-form-item label="修改时间：" class="from-time">
+        <div class="form-size3">
 	       <span class="form-createtime">{{form.updatetime}}</span>
+       </div>
 	     </el-form-item>
        </el-form>
 	  <div slot="footer" class="dialog-footer">
 	    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
 	  </div>
+     </div>
     </el-dialog>
-  
+ 
     </div>
 </template>
 
@@ -298,9 +312,14 @@
     position: absolute;
     left: 375px;
     top: 70px;}
+  .user-table{
+    width: 1242px;
+    margin-left:25px;
+  }
   .search{
     height: 70px;
-    margin-left: -30px;
+    width: 1241px;
+    margin-left:25px;
   }
   .search-first{
   	 float: left;
@@ -336,9 +355,17 @@
   .add-user{
     float: right;
   }
-  .user-table{
-  	
-    margin-left: -30px;
+  .form-size{
+    width: 500px;
+  }
+  .form-size1{
+    width: 562px;
+  }
+  .form-size2{
+    width: 200;
+  }
+  .form-size3{
+    width: 125px;
   }
   .block{
     float: right;
@@ -360,9 +387,6 @@
    .from-organize{
    	width: 80px;
    	padding-left: 290px;
-   }
-   .form-createtime{
-   	padding-right:400px;
    }
   .from-time{
   	padding-left: 290px;

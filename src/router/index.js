@@ -9,6 +9,7 @@ import pwModifi from '@/page/perCenter/pwModifi/pwModifi'
 import positionList from '@/page/account/positionList/positionList'
 import login from '@/page/login/login'
 import addRole from'@/page/account/role/addRole'
+import addUser from '@/page/account/userList/addUser/addUser'
 
 Vue.use(Router);
 
@@ -57,6 +58,10 @@ export default new Router({
         path: '/userList',
         component: userList,
         meta:{keepAlive:true}
-      }
+      },{
+      path: '/userList/addUser',
+      component: addUser,
+      meta:{keepAlive:true}
+    },
   ]
 })
