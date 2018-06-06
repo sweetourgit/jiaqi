@@ -8,9 +8,9 @@
         <el-input class="input" v-model="form.name"></el-input>
       </el-form-item>
       <el-form-item label="性别:" prop="sex">
-        <el-radio-group v-model="form.sex">
-          <el-radio class="sex" label="男"></el-radio>
-          <el-radio class="sex" label="女"></el-radio>
+        <el-radio-group class="sex"v-model="form.sex">
+          <el-radio label="男"></el-radio>
+          <el-radio label="女"></el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="状态:">
@@ -24,7 +24,7 @@
         <img class="modify" src="@/assets/image/u3201.png" alt="" width="24" @click="dialogFormVisible = true">
       </el-form-item>
        <!-- 手机修改弹窗 -->
-      <el-dialog title="手机号修改" :visible.sync="dialogFormVisible" width="30%">
+      <el-dialog title="手机号修改" :visible.sync="dialogFormVisible" width="600px">
         <el-form :model="phone1" status-icon :rules="rules1" ref="phone1">
           <el-form-item label="旧手机号" :label-width="formLabelWidth" prop="usedphone" v-show="show">
             <el-input class="input-popup" v-model="phone1.usedphone" auto-complete="off"></el-input>
@@ -50,7 +50,7 @@
         <img class="modify" src="@/assets/image/u3201.png" alt="" width="24" @click="dialogEmial = true">
       </el-form-item>
       <!-- 邮箱修改弹窗 -->
-      <el-dialog title="邮箱修改" :visible.sync="dialogEmial" width="30%">
+      <el-dialog title="邮箱修改" :visible.sync="dialogEmial" width="600px">
         <el-form :model="emial1" status-icon :rules="rules2" ref="emial1">
           <el-form-item label="旧邮箱" :label-width="formLabelWidth" prop="usedemial" v-show="show1">
             <el-input class="input-popup" v-model="emial1.usedemial" auto-complete="off"></el-input>
@@ -169,10 +169,10 @@ export default {
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate(valid => {
-          if (valid) {
-            this.$message.success('验证成功！')
+          if (valid) {  
+            this.$message.success('验证成功！') 
             if(formName == 'phone1'){
-              this.dialogFormVisible = false
+              this.dialogFormVisible = false   
               this.show = true
               this.$refs['phone1'].resetFields()
             }else if(formName == 'emial1'){
@@ -180,9 +180,9 @@ export default {
               this.show1 = true
               this.$refs['emial1'].resetFields()
             }
-          } else {
-            this.$message.error('验证失败！')
-          }
+          } else {  
+            this.$message.error('验证失败！')  
+          }  
         })
       },
       resetForm(formName) {
@@ -190,7 +190,7 @@ export default {
       },
       verification() {
         if(this.phone1.usedphone === ''){
-          this.$message.error('手机号为空！')
+          this.$message.error('手机号为空！') 
         }else{
           var str = this.phone1.usedphone
           var patt = /^[1][3,4,5,7,8][0-9]{9}$/
@@ -210,13 +210,13 @@ export default {
                }, 1000)
             }
           } else {
-            this.$message.error('请填写正确的手机号！')
+            this.$message.error('请填写正确的手机号！') 
           }
         }
       },
       verification1() {
          if(this.emial1.usedemial === ''){
-          this.$message.error('邮箱为空！')
+          this.$message.error('邮箱为空！') 
         } else {
           var str = this.emial1.usedemial
           var patt = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/
@@ -236,7 +236,7 @@ export default {
                }, 1000)
             }
           } else {
-            this.$message.error('请填写正确的邮箱！')
+            this.$message.error('请填写正确的邮箱！') 
           }
         }
       }
@@ -267,7 +267,7 @@ export default {
   float: right;
   position: relative;
   bottom: 182px;
-  right: 60px;
+  margin-right: 11%;
 }
 .phone-verification-1{
   float: right;
@@ -279,16 +279,12 @@ export default {
 .input-phone{
   float: left;
   width: 210px;
-}
-.sex{
-  position: relative;
-  right:670px;
-}
+}  
 .preservation{
   width: 140px;
   margin-top: 40px;
+  margin-right: 20px;
   float: left;
-  margin-left: 20px;
 }
 .input-popup{
   width: 210px;
@@ -303,6 +299,12 @@ export default {
   float: left;
   padding-right: 20px;
 }
+.sex{
+  /*margin-right: 110px !important; */
+  float: left;
+  margin-top: 11px;
+}
+
 </style>
 
 
