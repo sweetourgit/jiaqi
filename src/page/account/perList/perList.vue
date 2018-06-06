@@ -1,18 +1,19 @@
 <template>
-  <div>
-    <div class="top_tip">权限列表</div>
+  <div class="per-list">
+    <div class="top_tip">权限管理</div>
 
-    <table class="all-size" width="">
+    <el-button>添加模块</el-button>
+    <table>
       <thead>
       <tr class="table-button">
-        <td width="180">模块</td>
-        <td width="180">菜单</td>
-        <td width="80">权限类型</td>
-        <td width="">具体权限</td>
+        <th width="180">模块</th>
+        <th width="180">菜单</th>
+        <th width="80">权限类型</th>
+        <th width="">具体权限</th>
       </tr>
       </thead>
       <tbody>
-      <tr class="table-content">
+      <tr>
         <td rowspan="9" class="title_p">
           账号管理
           <span class="butts">
@@ -41,7 +42,7 @@
           </ul>
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>编辑</td>
         <td class="table-checkout">
           <ul>
@@ -60,7 +61,7 @@
           </ul>
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>操作</td>
         <td class="table-checkout">
           <ul>
@@ -79,7 +80,7 @@
           </ul>
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td rowspan="3" class="title_p">组织管理
           <span class="butts">
             <i class="el-icon-edit" @click="dialogAddRole = true"></i>
@@ -90,15 +91,15 @@
         <td>只读</td>
         <td></td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>编辑</td>
         <td></td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>操作</td>
         <td></td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td rowspan="3" class="title_p">权限管理
           <span class="butts">
             <i class="el-icon-edit" @click="dialogAddRole = true"></i>
@@ -118,7 +119,7 @@
           </ul>
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>编辑</td>
         <td class="table-checkout">
           <ul>
@@ -143,11 +144,11 @@
           </ul>
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>操作</td>
         <td></td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td rowspan="3" class="title_p">个人中心
           <span class="butts">
             <i class="el-icon-edit" @click="dialogAddRole = true"></i>
@@ -174,7 +175,7 @@
           </ul>
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>编辑</td>
         <td class="table-checkout">
           <ul>
@@ -193,15 +194,15 @@
           </ul>
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>操作</td>
         <td></td>
       </tr>
       </tbody>
     </table>
     <!--添加权限对话框-->
-    <el-dialog :visible.sync="dialogAddRole" style="text-align: left" ref="ruleForm" width="30%" :center="true" :lockScroll="false" :close-on-click-modal="false">
-      <el-form :model="form" :rules="rules">
+    <el-dialog :visible.sync="dialogAddRole" style="text-align: left" width="30%" :center="true" :lockScroll="false" :close-on-click-modal="false">
+      <el-form :model="form" ref="myform" :rules="rules">
         <el-form-item label="名称：" :label-width="formLabelWidth" prop="name">
           <el-input v-model="form.name" auto-complete="off"></el-input>
         </el-form-item>
@@ -229,7 +230,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="subForm(ruleForm)">保存</el-button>
+        <el-button type="primary" @click="submitForm('myform')">保存</el-button>
         <el-button @click="dialogAddRole = false">关闭</el-button>
       </div>
     </el-dialog>
@@ -271,11 +272,12 @@
         dialogAddRole: false,
         form: {
           name: '',
-          delivery: false,
-          type: [],
-          resource: '',
+          f_role: 0,
+          type: '查看',
+          id: 0,
           desc: '',
-          radio: ''
+          sort: 0,
+          url: ''
         },
         formLabelWidth: '120px',
         // 表单验证规则
@@ -303,114 +305,92 @@
         }).catch(() => {
         });
       },
-      subForm(formName) {
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              alert('submit!');
-            } else {
-              console.log('error submit!!');
-              return false;
-            }
-          });
-        },
+      // 提交表单事件
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+            // 关闭dialog
+            this.dialogAddRole = false
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      }
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .top_tip {
-    border-left: 5px solid grey;
+  .per-list {
     text-align: left;
-    padding-left: 5px;
-    font-size: 15px;
-    margin-bottom: 15px;
-  }
+    .top_tip {
+      border-left: 5px solid grey;
+      text-align: left;
+      padding-left: 5px;
+      font-size: 15px;
+      margin-bottom: 15px;
+    }
+    table {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      thead {
+        th{
+          height: 35px;
+        }
+        .table-button {
+          background-color: #D7D7D7;
+        }
+      }
+      tbody {
+        tr {
+          background-color: #F2F2F2;
+        }
+        .table-checkout li {
+          margin-right: 50px;
+        }
+        td.title_p {
+          .butts {
+            display: none;
+          }
+        }
 
-  .temp_input {
-    float: left;
-    width: 160px !important;
-  }
+        td.title_p:hover {
+          position: relative;
+          left: 27px;
+          .butts {
+            display: inline;
+          }
+        }
 
-  .permission-roel {
-    width: 300px;
-  }
+        li.title_p {
+          list-style-position: inside;
+          float: left;
+          height: 35px;
+          width: 150px;
+          text-align: left;
+          .butts {
+            display: none;
+          }
+        }
 
-  .all-button {
-    z-index: 99;
-  }
+        td {
+          height: 35px;
+        }
 
-  .all-table {
-    display: block;
-    z-index: 1;
-  }
-
-  .table-button {
-    background-color: #D7D7D7;
-  }
-
-  .table-bt {
-    margin-left: -550px;
-  }
-
-  .table-content {
-    background-color: #F2F2F2;
-  }
-
-  .table-title {
-    font-size: 15px;
-    width: 100px;
-    height: 40px;
-  }
-
-  .all-size {
-    font-size: 14px;
-  }
-
-  .table-permiss {
-    width: 300px
-  }
-
-  .button-submit {
-    margin-top: 20px;
-  }
-
-  .table-checkout li {
-    margin-right: 50px;
-  }
-
-  td.title_p {
-    .butts {
-      display: none;
+        li.title_p:hover {
+          position: relative;
+          .butts {
+            display: inline;
+          }
+        }
+      }
     }
   }
 
-  td.title_p:hover {
-    position: relative;
-    left: 27px;
-    .butts {
-      display: inline;
-    }
-  }
-
-  li.title_p {
-    list-style-position: inside;
-    float: left;
-    height: 35px;
-    width: 150px;
-    text-align: left;
-    .butts {
-      display: none;
-    }
-  }
-
-  td {
-    height: 35px;
-  }
-
-  li.title_p:hover {
-    position: relative;
-    .butts {
-      display: inline;
-    }
-  }
 </style>
