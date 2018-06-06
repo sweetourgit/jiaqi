@@ -132,7 +132,7 @@ export default {
         rules: {
           name: [
             { required: true, message: '请输入姓名', trigger: 'blur'},
-            { pattern: /^[\u4e00-\u9fa5]{2,6}$/, message: '请输入2-6位汉字' }
+            { pattern: /^[\u4e00-\u9fa5]{2,6}$/, message: '请输入2-6位汉字'}
           ],
           // sex: [
           //   { validator: rulessex }
