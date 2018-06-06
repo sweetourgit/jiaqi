@@ -153,7 +153,7 @@ export default {
         },
         rules2: {
           name: [
-            { required: true, message: '请填写验证码', trigger: 'blur'},
+            { required: true, message: '请填写验证码', trigger: 'blur'}
           ],
           newemial: [
             { required: true, message: '请填写邮箱地址', trigger: 'blur'},
