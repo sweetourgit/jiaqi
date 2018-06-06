@@ -251,7 +251,7 @@ export default {
 }
 .modify{
   float: left;
-  cursor:pointer;
+  cursor: pointer;
   position: relative;
   left: 10px;
   top: 10px;
@@ -284,6 +284,7 @@ export default {
   width: 140px;
   margin-top: 40px;
   margin-right: 20px;
+  margin-left: 5%;
   float: left;
 }
 .input-popup{
