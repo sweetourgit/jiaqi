@@ -43,10 +43,10 @@
                         <el-table-column prop="position" label="职位" align="center"></el-table-column>
                         <el-table-column prop="phone" label="手机号" align="center"></el-table-column>
                         <el-table-column prop="sex" label="性别" align="center"></el-table-column>
-                        <el-table-column label="操作" align="center">
+                        <el-table-column label="操作" align="center" width="180px">
                             <template slot-scope="scope">
                                     <el-button type="primary" size="small" @click="position = true">职位</el-button>
-                                    <el-button type="primary" size="small">权限</el-button>
+                                    <el-button class="b" type="primary" size="small">权限</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -97,7 +97,7 @@
             </div>
         </el-dialog>
         <!-- 添加成员弹框 -->
-        <el-dialog :visible.sync="addPersonnel" style="width:1700px;margin:0 auto;">
+        <el-dialog  class="Popup" :visible.sync="addPersonnel" style="width:1700px">
             <div class="booms">
                 <span class="addTitle">添加成员</span>
                 <el-form :model="updata">
@@ -403,7 +403,7 @@
 .big{
     position: relative;
     float: left;
-    width: 1200px;
+    width: 1250px;
     height: 666px;
     border: 1px solid #CCCCCC;
     margin-top: 70px;
@@ -597,9 +597,7 @@
     right: 130px;
 }
 .Popup{
-    position: absolute;
-    left: 600px;
-    top: 100px;
+    margin: auto;
 }
 .addTitle{
     position: relative;
@@ -607,5 +605,8 @@
     bottom: 45px;
     font-size: 21px;
     font-weight: bold;
+}
+.b{
+    margin-left: 5%;
 }
 </style>
