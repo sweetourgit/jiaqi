@@ -251,7 +251,7 @@ export default {
 }
 .modify{
   float: left;
-  cursor:pointer;
+  cursor: pointer;
   position: relative;
   left: 10px;
   top: 10px;
