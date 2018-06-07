@@ -41,30 +41,30 @@
               </el-form-item>
               <div class="form_ori">
               <el-form-item label="组织-部门-职务" prop="region">
-                <el-select v-model="ruleForm.region" placeholder="请选择">
-                  <el-option
-                    v-for="item in options"
-                   :key="item.value"
-                   :label="item.label"
-                   :value="item.value">
-                 </el-option>
-                </el-select>
-              <el-button type="primary" size="mini" @click="addDomain">添加</el-button>
-              <el-button type="info" size="mini">默认职位</el-button>
+                <div class="addOri">
+                    <el-button type="primary" plain @click="dialogFormVisible = true" v-model="orilist" class="but-left">{{orilist}}</el-button>
+                    <div class="button-fun">
+                  <el-button type="primary" size="mini" @click="addDomain" >添加</el-button>
+                  <el-button type="info" size="mini">默认职位</el-button>
+                    </div>
+                </div>
+
             </el-form-item>
             </div>
               <div class="block"
                   v-if="cancel"
-                  v-for="(domain, index) in ruleForm.domains"
+                  v-for="(domain, index) in ruleForm1.domains"
                   :key="domain.key"
                   :prop="'domains.' + index + '.value'"
+                   v-model="ruleForm1"
               >
-                <el-cascader
-                  placeholder="试试搜索：指南"
-                  :options="casc"
-                  separator="-"
-                  filterable  
-                ></el-cascader><el-button @<el-button type="danger"  @click.prevent="removeDomain(domain)" size="mini" class="delete-adjust" >删除</el-button><el-button type="primary" size="mini" class="delete-adjust">设置默认</el-button>
+
+                  <el-button type="primary" plain @click="tanchu(domain) " v-model="ruleForm1" class="but-left">{{domain.value}}</el-button>
+                  <div class="button-fun">
+                 <el-button @<el-button type="danger"  @click.prevent="removeDomain(domain)" size="mini" class="delete-adjust" >删除</el-button>
+                 <el-button type="primary" size="mini" class="delete-adjust">设置默认</el-button>
+                  </div>
+
               </div>
 
 
@@ -72,7 +72,40 @@
                 <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
               </el-form-item>
+                <!--弹出框> <-->
+                  <el-dialog title="用户信息" :visible.sync="dialogFormVisible">
+                    <div class="qqqt">
+                     <el-form ref="form"  label-width="110px">
+                       <el-form-item label="部门:" class="form-la">
+                         <el-cascader
+                            placeholder="试试搜索：指南"
+                            :options="casc"
+                            separator="-"
+                            filterable
+                            v-model="selectedOptions"
+                          ></el-cascader>
+                       </el-form-item>
+                       <el-form-item label="职位:" class="form-la">
+                          <el-select v-model="value8" filterable placeholder="请选择">
+                          <el-option
+                            v-for="item in bumen"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                          </el-option>
+                        </el-select>
+                       </el-form-item>
+                         <input type="hidden" v-model="hidval" value="hidval"/>
+                     </el-form>
+                        <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="addmaster">确 定</el-button>
+                      </div>
+                    </div>
+                </el-dialog>
+                <!--弹出框> <-->
             </el-form>
+
+
 
           </el-tab-pane>
           <el-tab-pane label="权限配置" name="second">
@@ -93,53 +126,72 @@ import Permission from '@/page/account/userList/addUser/permission'
     },
     data () {
         var checkPhone = (rule, value, callback) => {
-          var myreg=/^[1][3,4,5,7,8][0-9]{9}$/; 
+          var myreg=/^[1][3,4,5,7,8][0-9]{9}$/;
           if(!value){
             return callback(new Error('电话号码不能为空'));
-          } 
-          if (!myreg.test(value)) { 
+          }
+          if (!myreg.test(value)) {
           return callback(new Error('请输入正确的电话号码'));
         }
       }
       var checkName = (rule, value, callback) => {
-          var myreg=  /^[\u4e00-\u9fa5]{2,6}/; 
+          var myreg=  /^[\u4e00-\u9fa5]{2,6}/;
           if(!value){
             return callback(new Error('姓名不能为空'));
-          } 
-          if (!myreg.test(value)) { 
+          }
+          if (!myreg.test(value)) {
           return callback(new Error('请输入2-6位汉字'));
         }
       }
       var checkMail = (rule, value, callback) => {
-          var myreg=  /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/; 
+          var myreg=  /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/;
           if(!value){
             return callback(new Error('邮箱不能为空'));
-          } 
-          if (!myreg.test(value)) { 
+          }
+          if (!myreg.test(value)) {
           return callback(new Error('请输入正确的邮箱'));
         }
       }
        var checkTrail = (rule, value, callback) => {
           if(!value){
             return callback(new Error('员工编号不能为空'));
-          } 
+          }
       }
       var checkRegion = (rule, value, callback) => {
           if(!value){
             return callback(new Error('请选择一个组织'));
-          } 
+          }
       }
 
       return {
-        cancel:false,
-        options: [{
-          value: '1',
-          label: '甜程旅行网-财务部-经理'
+          hidval:"-1",
+        selectedOptions: [],
+        orilist: '甜程旅行网-财务部-经理',
+        ruleForm1: {
+          domains: [{
+            value: '请点击添加'
+          }],
+        },
+         bumen: [{
+          value: '经理1',
+          label: '经理1'
         }, {
-          value: '2',
-          label: '甜程旅行网-销售部-销售'
+          value: '经理2',
+          label: '经理2'
+        }, {
+          value: '经理3',
+          label: '经理3'
+        }, {
+          value: '经理4',
+          label: '经理4'
+        }, {
+          value: '经理5',
+          label: '经理5'
         }],
-        value: '',
+        value8: ''
+        ,
+        dialogFormVisible: false,
+        cancel:false,
         activeName: 'first',
         ruleForm: {
           phone: '',
@@ -180,14 +232,14 @@ import Permission from '@/page/account/userList/addUser/permission'
         },
 
         casc: [{
-          value: 'zhinan',
-          label: '指南',
+          value: '甜程旅行网',
+          label: '甜程旅行网',
           children: [{
-            value: 'shejiyuanze',
-            label: '设计原则',
+            value: '销售部',
+            label: '销售部',
             children: [{
-              value: 'yizhi',
-              label: '一致'
+              value: '销售',
+              label: '销售'
             }, {
               value: 'fankui',
               label: '反馈'
@@ -361,11 +413,11 @@ import Permission from '@/page/account/userList/addUser/permission'
             }]
           }]
         }, {
-          value: 'ziyuan',
-          label: '资源',
+          value: '辽宁大运通',
+          label: '辽宁大运通',
           children: [{
-            value: 'axure',
-            label: 'Axure Components'
+            value: '财务部',
+            label: '财务部'
           }, {
             value: 'sketch',
             label: 'Sketch Templates'
@@ -378,6 +430,27 @@ import Permission from '@/page/account/userList/addUser/permission'
 
     },
       methods: {
+        addmaster() {
+
+            var arr =  Object.values(this.selectedOptions)
+            var strb = arr.join("-"); //"aa:bb:cc"
+            var wei =this.value8
+            if(this.hidval== -1){
+                this.orilist = strb + '-' + wei
+            }else{
+                this.ruleForm1.domains[this.hidval].value = strb + '-' + wei
+                this.hidval= -1
+            }
+
+
+          this.dialogFormVisible = false
+
+        },
+        tanchu(item) {
+            var index = this.ruleForm1.domains.indexOf(item)
+            this.hidval = index
+           this.dialogFormVisible = true
+        },
       handleType() {
         this.$confirm('您确定启用/停用该用户么?', '提示', {
           confirmButtonText: '确定',
@@ -408,29 +481,33 @@ import Permission from '@/page/account/userList/addUser/permission'
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
-      }, 
+      },
       removeDomain(item) {
-        var index = this.ruleForm.domains.indexOf(item)
+        var index = this.ruleForm1.domains.indexOf(item)
         if (index !== -1) {
-          this.ruleForm.domains.splice(index, 1)
+          this.ruleForm1.domains.splice(index, 1)
         }
       },
       addDomain() {
         if(this.cancel == false){
            this.cancel = true
         }else{
-          this.ruleForm.domains.push({
-          value: '',
+          this.ruleForm1.domains.push({
+          value: '请点击添加',
           key: Date.now()
         });
-        }      
+        }
       }
     }
-    
+
 }
 </script>
 
 <style scoped>
+  .qqqt{
+    width: 365px;
+    margin:auto;
+  }
   .user-title{
     width: 120px;
     height: 22px;
@@ -450,12 +527,12 @@ import Permission from '@/page/account/userList/addUser/permission'
   .from-radio{
     margin-left: -200px;
   }
-  
+
   .form_type{
     margin-left: 61px;
   }
   .pane-scroll{
-    overflow: auto; 
+    overflow: auto;
   }
   .button-adjust{
     margin-left: -190px;
@@ -466,7 +543,12 @@ import Permission from '@/page/account/userList/addUser/permission'
     width: 521px;
   }
   .block{
-    margin-left: 140px;
+      width: 393px;
+      height: 40px;
+      font-size: 14px;
+      margin-left: 149px;
+      margin-top: 10px;
+
   }
   .delete-adjust{
     position: relative;
@@ -483,5 +565,17 @@ import Permission from '@/page/account/userList/addUser/permission'
     position: relative;
     top: -27px
   }
+  .addOri{
+      font-size: 14px;
+      width: 403px;
+      height: 50px;
+  }
+    .button-fun{
+        float:right;
+    }
+    .but-left{
+        float:left;
+    }
+
 </style>
 

@@ -213,7 +213,8 @@
 <script>
   export default {
    data() {
-      return {	
+      return {
+        qqq: [],
         dialogFormVisible: false,
         form: {
           otype: '正常',
@@ -282,7 +283,6 @@
           organization: '辽宁大运通-销售部-主管 辽宁大运通-销售部-主管',
           createtime: '2018/05/04 10:23',
           updatetime: '2018/05/13 10:43',
-          operation: '王小虎',
         },{
           id: '002',
           name: '李四',
@@ -294,7 +294,6 @@
           organization: '吉林大运通-财务部-会计 辽宁大运通-销售部-销售',
           createtime: '2018/05/04 10:23',
           updatetime: '2018/05/13 10:43',
-          operation: '王小虎',
         }]
       }
     }
