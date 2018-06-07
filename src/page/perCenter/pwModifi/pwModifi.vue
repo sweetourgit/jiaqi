@@ -1,5 +1,6 @@
 <template>
   <div class="row">
+    <div class="top_tip">密码修改</div>
     <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
       <el-form-item label="当前密码" prop="pass">
         <el-input class="input" type="password" v-model="form.pass" placeholder="请输入当前密码" auto-complete="off"></el-input>
@@ -74,6 +75,13 @@ export default {
 .input{
   width: 210px;
   float: left;
+}
+.top_tip {
+  border-left: 5px solid grey;
+  text-align: left;
+  padding-left: 5px;
+  font-size: 15px;
+  margin-bottom: 15px;
 }
 </style>
 
