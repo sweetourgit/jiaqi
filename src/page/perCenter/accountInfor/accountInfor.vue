@@ -1,5 +1,6 @@
 <template>
   <div class="row">
+    <div class="top_tip">账户信息</div>
     <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
       <el-form-item label="ID:" prop="id">
         <el-input class="input" v-model="form.id" :disabled="true"></el-input>
@@ -284,12 +285,12 @@ export default {
   width: 140px;
   margin-top: 40px;
   margin-right: 20px;
-  margin-left: 5%;
+  margin-left: 40px;
   float: left;
 }
 .input-popup{
-  width: 210px;
-  margin-right: 165px
+  width: 220px;
+  margin-right: 185px
 }
 .prompt{
   position: relative;
@@ -305,7 +306,13 @@ export default {
   float: left;
   margin-top: 11px;
 }
-
+.top_tip {
+  border-left: 5px solid grey;
+  text-align: left;
+  padding-left: 5px;
+  font-size: 15px;
+  margin-bottom: 15px;
+}
 </style>
 
 

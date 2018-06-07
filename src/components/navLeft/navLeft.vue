@@ -1,19 +1,27 @@
 <template>
-        <div class="nav">
-          <ul class="nav-tab">
-              <li class="el-icon-setting" v-for="(item,index) in category"  :class="{active:index == num}" @click="tab(index)">   {{item.name}}</li>
-          </ul>
-          <div class="nav-tabCon">
-            <div v-for='(itemCon,index) in category' v-show="index == num">
-               <div v-for="data in itemCon.items">
-                  <div class="title-bg">{{data.title}}</div>
-                  <div v-for="list in data.lists">
-                     <router-link :to="list.router">{{list.value}}</router-link>
-                 </div>
-               </div>
-            </div>
-          </div>
-        </div>
+  <el-row class="tac">
+  <el-col :span="12">
+    <el-menu
+      default-active="2"
+      class="el-menu-vertical-demo"
+      background-color="#545c64"
+      text-color="#fff"
+      active-text-color="#27D8C9"
+      :router='isRouter'
+      >
+      <el-submenu v-for="(item,index) in category" :key="index" :index="String(index)" @mouseover.native="aa(index)" @mouseout.native="bb(index)">
+        <template slot="title">
+          <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"><i class="el-icon-setting"></i></i>
+          <span>{{item.name}}</span>
+        </template>
+        <el-submenu :index="(index+ '-' +index1)" v-for="(data,index1) in item.items" :key="index1">
+          <template slot="title">{{data.title}}</template>
+          <el-menu-item class="a" :index="(list.router)" v-for="(list,index2) in data.lists" :key="index2">{{list.value}}</el-menu-item>
+        </el-submenu>
+      </el-submenu>
+    </el-menu>
+  </el-col>
+</el-row>
 </template>
 
 <script>
@@ -70,27 +78,47 @@
                      }
                     ]}
                 ]
-            }
+            },
         ],
-        num: 0
+        isRouter:true,
+        mouseActive:0,
     }
   },
-  methods: {
-        tab(index) {
-            this.num = index;
-        }
+ 
+  methods: {   
+    aa(a) {
+      this.mouseActive = a;
+    },
+    bb(a) {
+
+    }
   }
 }
-
-
-
 </script>
 <style scoped>
-    .nav{font-size:16px;line-height:50px;height:100%}
-    .nav-tab{float:left;width:150px;background-color:#545c64;color:#fff;margin:0;padding:0;height:100%;cursor:pointer;}
-    .nav-tabCon{float:left;padding-left:0px}
-    .title-bg{background-color:#eee;width:150px}
-    .router-link-active {color:#eb663d;text-decoration:none;}
-    a{color:#000;text-decoration:none;}
+.a{
+  float: left;
+  min-width: 0 !important;
+  max-width: 200px;
+  width: 200px;
+}
+.tac{
+  text-align: left;
+}
+.el-menu-vertical-demo{
+  height: 950px;
+  width: 200px;
+  user-select:none;
+}
+.mouseActive:after{
+  content:'';
+  position:absolute;
+  top:0;
+  left: 0;
+  width:4px;
+  height:100%;
+  background:#27D8C9;
+  display:block;
+}
 </style>
 
