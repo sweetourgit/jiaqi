@@ -240,6 +240,7 @@
     position: absolute;
     width: 47%;
     height: 75%;
+    margin-left: 3%;
 }
 .list{
     float: left;
