@@ -10,7 +10,7 @@
         <el-input class="input" v-model="form.name"></el-input>
       </el-form-item>
       <el-form-item label="性别:" prop="sex">
-        <el-radio-group class="sex"v-model="form.sex">
+        <el-radio-group class="sex" v-model="form.sex">
           <el-radio label="男"></el-radio>
           <el-radio label="女"></el-radio>
         </el-radio-group>
@@ -42,7 +42,7 @@
         <el-button class="phone-verification" type="primary" size="small" @click="verification" v-show="show">获取验证码</el-button>
         <el-button class="phone-verification-1" type="primary" size="small" plain disabled v-show="!show">{{count + 's'}}</el-button>
         <div slot="footer" class="dialog-footer">
-          <el-button class="phone-Determine" @click="dialogFormVisible = false">取 消</el-button>
+          <el-button class="phone-Determine" @click="dialogFormVisible1('phone1')">取 消</el-button>
           <el-button class="phone-Determine" type="primary" @click="submitForm('phone1')">确 定</el-button>
         </div>
       </el-dialog>
@@ -68,7 +68,7 @@
         <el-button class="phone-verification" type="primary" size="small"  @click="verification1" v-show="show1">获取验证码</el-button>
         <el-button class="phone-verification-1" type="primary" size="small" plain disabled v-show="!show1">{{count1 + 's'}}</el-button>
         <div slot="footer" class="dialog-footer">
-          <el-button class="phone-Determine" @click="dialogEmial = false">取 消</el-button>
+          <el-button class="phone-Determine" @click="dialogEmial1('emial1')">取 消</el-button>
           <el-button class="phone-Determine" type="primary" @click="submitForm('emial1')">确 定</el-button>
         </div>
       </el-dialog>
@@ -188,9 +188,6 @@ export default {
           }  
         })
       },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
       verification() {
         if(this.phone1.usedphone === ''){
           this.$message.error('手机号为空！') 
@@ -242,15 +239,21 @@ export default {
             this.$message.error('请填写正确的邮箱！') 
           }
         }
+      },
+      dialogFormVisible1(a) {
+        this.dialogFormVisible = false
+        this.$refs[a].resetFields()
+      },
+      dialogEmial1(a) {
+        this.dialogEmial = false
+        this.$refs[a].resetFields()
       }
     }
   }
 </script>
 
 <style scoped>
-.content{
-  margin: 0 0 0 5%;
-}
+.content{margin: 0 0 0 4%;}
 .input{
   float: left;
   width: 210px;
@@ -310,6 +313,7 @@ export default {
   /*margin-right: 110px !important; */
   float: left;
   margin-top: 11px;
+  margin-left: 1%;
 }
 .top_tip {
   border-left: 5px solid grey;

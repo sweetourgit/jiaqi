@@ -9,8 +9,10 @@
       text-color="#fff"
       active-text-color="#27D8C9"
       :router='isRouter'
+      @open='handleOpen'
+      ref='menu'
       >
-      <el-submenu v-for="(item,index) in category" :key="index" :index="String(index)" @mouseover.native="mouseOpen(index)" @mouseout.native="bb(index)">
+      <el-submenu v-for="(item,index) in category" :key="index" :index="String(index)" @mouseover.native="mouseOpen(index)">
         <template slot="title">
           <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"></i><i class="el-icon-setting"></i>
           <span>{{item.name}}</span>
@@ -84,31 +86,28 @@
         ],
         isRouter:true,
         mouseActive:0,
-        // isSelect:false,
-        // menuNumber:[]
+        menuNumber:[],
     }
   },
  
   methods: {   
-    mouseOpen(a) {
-      this.mouseActive = a;
-
+    mouseOpen(key) {
+      this.mouseActive = key;
     },
-    bb(a) {
-
-    },
-    // handleOpen(a) {
-    //   for(let i=0;i<this.category.length;i++){
-    //     this.menuNumber[i] = i
-    //   }
-    //   let aa = Number(a)
-    //   if(this.menuNumber.indexOf(aa) == -1){
-    //       this.isSelect = false
-    //       // this.isSelect = true
-    //     } else {
-    //       this.isSelect = true
-    //     }
-    // }
+    handleOpen(key){
+      let aa = Number(key)
+      for(let i=0;i<this.category.length;i++){
+        this.menuNumber[i] = i
+      }
+      if(this.menuNumber.indexOf(aa) !== -1){
+        for(let i=0;i<this.menuNumber.length;i++){
+          if(aa !== this.menuNumber[i]){
+            let bb = String(this.menuNumber[i])
+            this.$refs.menu.close(bb)
+          }
+        }
+      }
+    }
   }
 }
 </script>

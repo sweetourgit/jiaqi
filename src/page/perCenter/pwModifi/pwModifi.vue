@@ -69,7 +69,7 @@ export default {
 </script>
 
 <style scoped>
-.content{margin: 0 0 0 10%; }
+.content{margin: 0 0 0 16%;}
 .row{width: 400px;}
 .preservation{width: 140px; margin: 40px auto;}
 .input{width: 210px;float: left;}
