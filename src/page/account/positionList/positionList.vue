@@ -1,6 +1,7 @@
 <template>
+  <div>
+    <div class="list">职位列表</div>
     <div class="big">
-        <div class="list">职位列表</div>
         <!-- 工具条 -->
         <el-row>
             <el-button type="primary" class="addButton" @click="addPosition = true">添加职位</el-button>
@@ -49,6 +50,8 @@
             <el-pagination @current-change="handleCurrentChange" :page-size="this.pagesize" layout="prev, pager, next, jumper" :total="this.tableData.length"></el-pagination>
         </div>
     </div>
+  </div>
+
 </template>
 
 <script>
