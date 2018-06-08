@@ -28,8 +28,8 @@
 
 <style scoped>
      .header{height:50px;background-color:#545c64;color:#fff;line-height:50px;}
-     .left{float: left; margin: 0 0 0 10px;}
+     .left{float: left; margin: 0 0 0 10px; font-weight: 700px; font-size: 18px;}
      .right{float: right; margin: 0 100px 0 0;}
      .icon{float: left; margin: 0 30px 0 0; line-height: 50px;}
-     .el-icon-star-on{float: left; margin: 0 0 0 160px; line-height: 50px;}
+     .el-icon-star-on{float: left; margin: 0 0 0 30px; line-height: 50px;}
 </style>

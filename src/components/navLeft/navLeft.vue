@@ -1,6 +1,7 @@
 <template>
+  <div class="nav">
   <el-row class="tac">
-  <el-col :span="12">
+  <el-col :span="12" class="col">
     <el-menu
       default-active="2"
       class="el-menu-vertical-demo"
@@ -9,19 +10,20 @@
       active-text-color="#27D8C9"
       :router='isRouter'
       >
-      <el-submenu v-for="(item,index) in category" :key="index" :index="String(index)" @mouseover.native="aa(index)" @mouseout.native="bb(index)">
+      <el-submenu v-for="(item,index) in category" :key="index" :index="String(index)" @mouseover.native="mouseOpen(index)" @mouseout.native="bb(index)">
         <template slot="title">
-          <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"><i class="el-icon-setting"></i></i>
+          <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"></i><i class="el-icon-setting"></i>
           <span>{{item.name}}</span>
         </template>
         <el-submenu :index="(index+ '-' +index1)" v-for="(data,index1) in item.items" :key="index1">
           <template slot="title">{{data.title}}</template>
-          <el-menu-item class="a" :index="(list.router)" v-for="(list,index2) in data.lists" :key="index2">{{list.value}}</el-menu-item>
+          <el-menu-item class="suboptions" :index="(list.router)" v-for="(list,index2) in data.lists" :key="index2">{{list.value}}</el-menu-item>
         </el-submenu>
       </el-submenu>
     </el-menu>
   </el-col>
 </el-row>
+</div>
 </template>
 
 <script>
@@ -82,35 +84,47 @@
         ],
         isRouter:true,
         mouseActive:0,
+        // isSelect:false,
+        // menuNumber:[]
     }
   },
  
   methods: {   
-    aa(a) {
+    mouseOpen(a) {
       this.mouseActive = a;
+
     },
     bb(a) {
 
-    }
+    },
+    // handleOpen(a) {
+    //   for(let i=0;i<this.category.length;i++){
+    //     this.menuNumber[i] = i
+    //   }
+    //   let aa = Number(a)
+    //   if(this.menuNumber.indexOf(aa) == -1){
+    //       this.isSelect = false
+    //       // this.isSelect = true
+    //     } else {
+    //       this.isSelect = true
+    //     }
+    // }
   }
 }
 </script>
 <style scoped>
-.a{
+.suboptions{
   float: left;
   min-width: 0 !important;
   max-width: 200px;
   width: 200px;
 }
-.tac{
-  text-align: left;
-}
 .el-menu-vertical-demo{
-  height: 950px;
+  height: 100%;
   width: 200px;
   user-select:none;
 }
-.mouseActive:after{
+.mouseActive{
   content:'';
   position:absolute;
   top:0;
@@ -118,7 +132,10 @@
   width:4px;
   height:100%;
   background:#27D8C9;
-  display:block;
+  display:block; 
 }
+.tac{text-align: left;height:100%;}
+.nav{height:100%;}
+.col{height:100%;}
 </style>
 

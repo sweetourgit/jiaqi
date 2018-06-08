@@ -1,6 +1,7 @@
 <template>
   <div class="row">
     <div class="top_tip">密码修改</div>
+    <div class="content">
     <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
       <el-form-item label="当前密码" prop="pass">
         <el-input class="input" type="password" v-model="form.pass" placeholder="请输入当前密码" auto-complete="off"></el-input>
@@ -13,6 +14,7 @@
       </el-form-item>
       <el-button class="preservation" type="primary" @click="submitForm('form')">保 存</el-button>
     </el-form>
+    </div>
   </div>
 </template>
 
@@ -67,15 +69,10 @@ export default {
 </script>
 
 <style scoped>
+.content{margin: 0 0 0 10%; }
 .row{width: 400px;}
-.preservation{
-  width: 140px;
-  margin: 40px auto;
-}
-.input{
-  width: 210px;
-  float: left;
-}
+.preservation{width: 140px; margin: 40px auto;}
+.input{width: 210px;float: left;}
 .top_tip {
   border-left: 5px solid grey;
   text-align: left;

@@ -1,6 +1,7 @@
 <template>
   <div class="row">
     <div class="top_tip">账户信息</div>
+    <div class="content">
     <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
       <el-form-item label="ID:" prop="id">
         <el-input class="input" v-model="form.id" :disabled="true"></el-input>
@@ -86,6 +87,7 @@
         <el-button class="preservation" type="primary" @click="submitForm('form')">保存</el-button>
       </el-form-item>
     </el-form>
+    </div>
   </div>
 </template>
 
@@ -246,6 +248,9 @@ export default {
 </script>
 
 <style scoped>
+.content{
+  margin: 0 0 0 5%;
+}
 .input{
   float: left;
   width: 210px;
