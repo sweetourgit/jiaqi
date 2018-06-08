@@ -1,15 +1,14 @@
 <template>
-    <section>
+    <div class="big">
         <div class="list">职位列表</div>
         <!-- 工具条 -->
         <el-row>
             <el-button type="primary" class="addButton" @click="addPosition = true">添加职位</el-button>
         </el-row>
-
         <!-- 列表 -->
         <el-table :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" border style="width:900px;" class="table" >
-            <el-table-column prop="id" label="ID" width="200px;" align="center"></el-table-column>
-            <el-table-column prop="positionName" label="职位名称" width="300px;" align="center"></el-table-column>
+            <el-table-column prop="id" label="ID" align="center"></el-table-column>
+            <el-table-column prop="positionName" label="职位名称" align="center"></el-table-column>
             <el-table-column label="操作" fixed="right" align="center">
                 <template slot-scope="scope">
 					<el-button type="primary" size="small" @click="editPosition1(scope.$index, scope.row)">编辑</el-button>
@@ -49,7 +48,7 @@
             <span class="page-count">共{{this.tableData.length}}条数据，每页8条</span>
             <el-pagination @current-change="handleCurrentChange" :page-size="this.pagesize" layout="prev, pager, next, jumper" :total="this.tableData.length"></el-pagination>
         </div>
-    </section>
+    </div>
 </template>
 
 <script>
@@ -146,6 +145,7 @@
     }
     },
     methods: {
+        // 删除
         del(aa, bb) {
             var oo = ((this.currentPage-1)*this.pagesize)+aa
             this.$confirm('是否删除该职位？','提示',{
@@ -183,6 +183,7 @@
                 });
             });
         },
+        // 添加和修改
         addSave(formName) {
             this.$refs[formName].validate(valid =>{
                 if(valid){
@@ -235,49 +236,37 @@
 </script>
 
 <style scoped>
+.big{
+    position: absolute;
+    width: 47%;
+    height: 75%;
+}
 .list{
-    position: relative;
     float: left;
 }
 .table{
-    position: relative;
-    float: left;
-    margin-top: 50px;
-    /* margin-left: -80px; */
+    position: absolute;
+    top: 10%;
 }
 .page{
-    position: relative;
-    float: left;
-    margin-top: 650px;
-    margin-left: -400px;
+    position: absolute;
+    bottom: 8%;
+    left: 55%;
 }
 .page-count{
-    position: relative;
-    float: left;
-    margin-top: 4px;
-    margin-right: 20px;
+    position: absolute;
+    margin-left: -128%;
+    top: 8%;
     font-size: 18px;
-}
-.page-jump{
-    position: relative;
-    float: right;
-    margin-right: -250px;
-    margin-top: -30px;
-    font-size: 18px;
-}
-.page-input{
-    width: 20px;
-    text-align: center;
-    border: none;
 }
 .Popup{
     margin:auto;
 }
 .addButton{
-    position: relative;
-    float: left;
-    left: 835px;
-    padding: 10px 10px;
+    position: absolute;
+    margin-top: 1.5%;
+    left: 90%;
+    padding: 1% 1%;
 }
 
 </style>
