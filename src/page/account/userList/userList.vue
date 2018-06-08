@@ -14,7 +14,7 @@
               :label="item.label"
               :value="item.value">
              </el-option>
-           </el-select>		
+           </el-select>
       	</div>
       	<div class="search-second">
       		<el-select v-model="type" placeholder="名字">
@@ -24,7 +24,7 @@
               :label="item.label"
               :value="item.value">
              </el-option>
-           </el-select>		
+           </el-select>
       	</div>
       	<div class="search-third">
       		<el-select v-model="user" placeholder="状态">
@@ -34,7 +34,7 @@
               :label="item.label"
               :value="item.value">
              </el-option>
-           </el-select>		
+           </el-select>
       	</div>
       	<div class="search-input">
       		<el-input  placeholder="请输入内容"  clearable></el-input>
@@ -50,8 +50,8 @@
       </div>
       </div>
       <!--搜索end-->
-      
-    </div> 
+
+    </div>
        <!--表格-->
     <div class="user-table">
       <el-table
@@ -181,7 +181,7 @@
           <div class="form-size1">
            <el-radio disabled v-model="form.userType" label="1" class="form-radios">普通用户</el-radio>
            <el-radio disabled v-model="form.userType" label="2">管理员</el-radio>
-          </div> 
+          </div>
          </template>
          </el-form-item>
          <el-form-item label="组织-部门-职务:" class="from-organize">
@@ -206,7 +206,7 @@
 	  </div>
      </div>
     </el-dialog>
- 
+
     </div>
 </template>
 
@@ -271,7 +271,7 @@
           label: '停用'
         }],
         user: '',
-      
+
       tableData3: [{
           id: '001',
           name: '张三',
@@ -299,7 +299,7 @@
     }
 }
 
-   
+
 
 </script>
 
@@ -309,8 +309,9 @@
     height: 22px;
     font-size: 18px;
     position: absolute;
-    left: 375px;
-    top: 70px;}
+    left: 204px;
+    top: 63px;
+  }
   .user-table{
     width: 1242px;
     margin-left:25px;
@@ -319,6 +320,7 @@
     height: 70px;
     width: 1241px;
     margin-left:25px;
+    margin-top: 45px;
   }
   .search-first{
   	 float: left;
@@ -328,7 +330,7 @@
     float: left;
     padding-left: 35px;
     width: 160px;
-   } 
+   }
   .search-third{
   	float: left;
     padding-left: 35px;
