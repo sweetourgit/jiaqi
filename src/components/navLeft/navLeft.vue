@@ -73,7 +73,7 @@
                     {
                     title:'账户信息',
                     lists:[{
-                        value: '账户信息',
+                        value: '账户设置',
                         router:'/accountInfor'
                      },
                      {
