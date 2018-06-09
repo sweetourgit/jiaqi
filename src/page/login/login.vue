@@ -477,9 +477,9 @@ position: absolute;
     // margin: 0 auto;
     
     float: right;
-    height:450px;
-    width: 450px;
-    margin: 6% 10% 10% 61%;
+    height:430px;
+    width: 430px;
+    margin: 5% 10% 10% 61%;
     background: #fff;
     // border: 1px solid #eaeaea;
     box-shadow: 0 0 25px #cac6c6;
@@ -489,16 +489,16 @@ position: absolute;
   }
   .login-forget{
 position: absolute;
-    
     -webkit-border-radius: 5px;
     border-radius: 10px;
     -moz-border-radius: 5px;
     background-clip: padding-box;
+    
     // margin: 0 auto;
     float: right;
     height:320px;
-    width: 450px;
-    margin: 6% 10% 10% 61%;
+    width: 430px;
+    margin: 5% 10% 10% 61%;
     background: #fff;
     // border: 1px solid #eaeaea;
     box-shadow: 0 0 25px #cac6c6;
@@ -529,7 +529,7 @@ position: absolute;
     left: 30%;
     top:45%;
     height:3px;
-    width:90px;
+    width:85px;
     background:#008FF4;
   }
   .find-pass{
@@ -548,7 +548,7 @@ position: absolute;
     float: right;
     top:10%;
     right: 10%;
-    margin-bottom:10%;
+    margin-bottom:11%;
       color: #888;
       font-size:20px;
       border-bottom: #888 solid 3px;
@@ -610,12 +610,14 @@ position: absolute;
     }
     // 手机找回页面的下一步按钮
     .next-button-phone{
-       position: relative;
+      //  position: relative;
       //  这个地方写的有问题
       width:200%;
-      right: 5%;
+      // margin-right:60px;
+      margin-top:-1px !important;
+      // right: 5%;
       // margin-bottom:10%;
-      bottom:20px;
+      bottom:20px !important;
     }
     .next-button-email{
        position: relative;
@@ -626,11 +628,12 @@ position: absolute;
       top:50px;
     }
     .remember {
-      position: relative;
+      // position: relative;
       float:left;
       // margin-top:5%;
       // top: 50%;
-      left: 10%;
+      // left: 10%;
+      margin-left:10%;
       color: #008FF4;
     }
     .verify-img{
@@ -778,7 +781,7 @@ position: absolute;
      float: right;
       // width:25%;
       // top:20%;
-      margin-top:12%;
+      margin-top:11%;
       right:10%;
       color: #888;
       font-size:20px;
@@ -789,7 +792,7 @@ position: absolute;
       // float:left;
       // width:25%; 
       left: 30%;
-      top:28%;
+      top:25%;
       color: #008FF4;
       font-size:20px;
   }
