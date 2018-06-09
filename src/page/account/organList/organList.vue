@@ -1,5 +1,6 @@
 <template>
     <div>
+        <div class="small3"></div>
         <div class="title">组织列表</div>
         <div class="big">
             <div class="left">
@@ -586,14 +587,15 @@ methods: {
     position: absolute;
     left: 5%;
     top: 20.5%;
-    font-size: 0.5em;
+    font-size: 15px;
     font-weight: bold;
 }
 .divisionTable{
     position: absolute;
-    top: 28%;
+    top: 27%;
     left: 5%;
     width: 70%;
+    height: 25%;
 }
 .small2{
     position: absolute;
@@ -612,7 +614,7 @@ methods: {
     position: absolute;
     left: 5%;
     top: 57.5%;
-    font-size: 0.5em;
+    font-size: 15px;
     font-weight: bold;
 }
 .addPersonnel{
@@ -762,5 +764,17 @@ methods: {
 .button-footer{
     margin-right: 157px;
     margin-top: -40px;
+}
+.small3{
+  float: left;
+  margin-right: 7px;
+  width: 5px;
+  height: 22px;
+  background: inherit;
+  background-color: rgb(10, 10, 10);
+  border: none;
+  border-radius: 0px;
+  box-shadow: none;
+  line-height:0
 }
 </style>
