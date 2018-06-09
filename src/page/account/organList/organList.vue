@@ -511,7 +511,7 @@ methods: {
     width: 70%;
     height: 70%;
     border: 1px solid #CCCCCC;
-    top: 12%;
+    top: 15%;
     margin-left: 3%;
 }
 .title{
