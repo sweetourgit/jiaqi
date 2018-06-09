@@ -1,9 +1,8 @@
 <template>
   <div id="app" >
-    
     <el-header class="page-header"><page-header v-if="$route.meta.keepAlive"></page-header></el-header>
     <el-container class="container">
-       <el-aside width="200px" v-if="$route.meta.keepAlive"><nav-left></nav-left></el-aside>
+       <el-aside class="navigation" v-if="$route.meta.keepAlive"><nav-left></nav-left></el-aside>
        <el-main><router-view></router-view></el-main>
     </el-container>
   </div>
@@ -42,4 +41,5 @@ html{
 .router{float:left;margin:50px;font-size:25px;}
 .page-header{height:auto !important;padding:0px !important}
 .container{height: 100%;}
+.navigation{width:222px !important;}
 </style>
