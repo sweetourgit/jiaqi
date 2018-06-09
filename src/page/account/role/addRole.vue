@@ -1,6 +1,5 @@
 <template>
   <div style="width: 800px">
-    <!--{{this.$route.query['id']}}    // 获取到的角色模板ID-->
     <div class="top_tip">添加角色权限模板</div>
     <el-form
       :model="ruleForm"
@@ -34,7 +33,8 @@
       <tbody>
       <tr class="table-content">
         <td rowspan="9">
-          <el-checkbox v-model="userCheckedAll" @change="handleCheckAllChange" :indeterminate="isIndeterminate">账号管理
+          <el-checkbox v-model="userCheckedAll" @change="handleCheckAllChange" :indeterminate="indeterminate">
+            账号管理
           </el-checkbox>
         </td>
         <td rowspan="3">
@@ -68,7 +68,7 @@
       </tr>
       <tr class="table-content">
         <td rowspan="3">
-          <el-checkbox>组织管理</el-checkbox>
+          <el-checkbox @change="handleSonChange">组织管理</el-checkbox>
         </td>
         <td>
           <el-checkbox>只读</el-checkbox>
@@ -89,7 +89,7 @@
       </tr>
       <tr class="table-content">
         <td rowspan="3">
-          <el-checkbox>权限管理</el-checkbox>
+          <el-checkbox @change="handleSonChange">权限管理</el-checkbox>
         </td>
         <td>
           <el-checkbox>只读</el-checkbox>
@@ -152,7 +152,6 @@
 
 <script>
 
-  const Items = ['用户管理', '组织管理', '权限管理'];
   export default {
     name: "addRole",
     data: function () {
@@ -195,7 +194,7 @@
           ],
         },
         userCheckedAll: false,
-        isIndeterminate: false,       // 半选择状态
+        indeterminate: false,       // 半选择状态
         checkedItems: []
       }
     },
@@ -237,12 +236,17 @@
       // 全选checkbox部分逻辑
       handleCheckAllChange(val) {
         this.checkedItems = val ? Items : [];
-        this.isIndeterminate = false      // 将不确定属性移除
+        this.indeterminate = false      // 将不确定属性移除
       },
 
       handleSonChange(value) {
 
-        this.isIndeterminate = true
+        if (value) {
+          this.checkedItems.push(1)
+        } else {
+          this.checkedItems.pop()
+        }
+
       }
     }
   }
