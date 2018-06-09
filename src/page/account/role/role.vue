@@ -154,7 +154,7 @@
             "status": 0
           }
         ],
-        totalNum: 0
+        totalNum: 6
       }
     },
     created(){
