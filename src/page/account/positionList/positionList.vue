@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="smail"></div>
     <div class="list">职位列表</div>
     <div class="big">
         <!-- 工具条 -->
@@ -44,12 +45,13 @@
             </div>
         </el-dialog>
 
-        <!-- 分页 -->
+
+    </div>
+    <!-- 分页 -->
         <div class="page">
             <span class="page-count">共{{this.tableData.length}}条数据，每页8条</span>
             <el-pagination @current-change="handleCurrentChange" :page-size="this.pagesize" layout="prev, pager, next, jumper" :total="this.tableData.length"></el-pagination>
         </div>
-    </div>
   </div>
 
 </template>
@@ -254,8 +256,8 @@
 }
 .page{
     position: absolute;
-    bottom: 8%;
-    left: 55%;
+    margin-top: 600px;
+    left: 50%;
 }
 .page-count{
     position: absolute;
@@ -272,7 +274,18 @@
     left: 90%;
     padding: 1% 1%;
 }
-
+.smail{
+  float: left;
+  margin-right: 7px;
+  width: 5px;
+  height: 22px;
+  background: inherit;
+  background-color: rgb(10, 10, 10);
+  border: none;
+  border-radius: 0px;
+  box-shadow: none;
+  line-height:0
+}
 </style>
 
 
