@@ -463,7 +463,7 @@ import Permission from '@/page/account/userList/addUser/permission'
             message: '操作成功!'
              })
             setTimeout(() => {
-                  this.$router.push({path: "/"});
+                  this.$router.push({path: "/userlist"});
                 }, 2000);
              }
         }

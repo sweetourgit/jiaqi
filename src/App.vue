@@ -1,6 +1,6 @@
 <template>
   <div id="app" >
-    
+
     <el-header class="page-header"><page-header v-if="$route.meta.keepAlive"></page-header></el-header>
     <el-container class="container">
        <el-aside width="200px" v-if="$route.meta.keepAlive"><nav-left></nav-left></el-aside>
