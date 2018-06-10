@@ -5,7 +5,7 @@
     <el-menu
       default-active="2"
       class="el-menu-vertical-demo"
-      background-color="#545c64"
+      background-color="#0F2350"
       text-color="#fff"
       active-text-color="#27D8C9"
       :router='isRouter'
@@ -130,7 +130,7 @@
   left: 0;
   width:4px;
   height:100%;
-  background:#27D8C9;
+  background:#3095FA;
   display:block; 
 }
 .tac{text-align: left;height:100%;}

@@ -64,7 +64,7 @@
           </el-input>
            
         </el-form-item>
-        <el-button type="primary" @click="send" v-if="!sendMsgDisabled" class="phone-button" >获取验证码</el-button>
+        <el-button type="primary" @click="send" v-if="!sendMsgDisabled" class="phone-button" ><span style="margin-right:0px">获取验证码</span></el-button>
           <el-button type="primary" plain disabled @click="send" v-if="sendMsgDisabled" class="phone-button">{{time}}S后获取</el-button>
   
 </div>
@@ -610,14 +610,16 @@ position: absolute;
     }
     // 手机找回页面的下一步按钮
     .next-button-phone{
-      //  position: relative;
+       position: absolute;
       //  这个地方写的有问题
       width:200%;
       // margin-right:60px;
       margin-top:-1px !important;
+      // margin: 0 auto;
+      left:5px;
       // right: 5%;
       // margin-bottom:10%;
-      bottom:20px !important;
+      buttom:40px !important;
     }
     .next-button-email{
        position: relative;
@@ -705,7 +707,9 @@ position: absolute;
     float:right;
     left:30%;
     bottom:62px;
-    width:28%;
+    // width:100px;
+    height:40px;
+    text-align:center;
     // text-align: center;
     // height:60%;
     // bottom:30%;
