@@ -104,8 +104,57 @@
         typeValue: '',
         statusValue: '',
         input: '',
-        tableData: [],
-        totalNum: 0
+        tableData: [
+          {
+            "id": "001",
+            "template_name": "财务",
+            "author": "管理员",
+            "template_desc": "财务",
+            "nums": "22",
+            "status": 1
+          },
+          {
+            "id": "002",
+            "template_name": "财务",
+            "author": "管理员",
+            "template_desc": "财务",
+            "nums": "22",
+            "status": 0
+          },
+          {
+            "id": "003",
+            "template_name": "财务",
+            "author": "管理员",
+            "template_desc": "财务",
+            "nums": "22",
+            "status": 0
+          },
+          {
+            "id": "004",
+            "template_name": "财务",
+            "author": "管理员",
+            "template_desc": "财务",
+            "nums": "22",
+            "status": 0
+          },
+          {
+            "id": "005",
+            "template_name": "财务",
+            "author": "管理员",
+            "template_desc": "财务",
+            "nums": "22",
+            "status": 0
+          },
+          {
+            "id": "006",
+            "template_name": "财务",
+            "author": "管理员",
+            "template_desc": "财务",
+            "nums": "22",
+            "status": 0
+          }
+        ],
+        totalNum: 6
       }
     },
     created(){
@@ -122,8 +171,8 @@
           {currPage: currPage, pageSize: 1}
         )
           .then(function (obj) {
-            _this.tableData = obj.data.list     //todo 按实际接口返回数据结构修改
-            _this.totalNum = obj.data.list.length
+            // _this.tableData = obj.data.list     //todo 按实际接口返回数据结构修改
+            // _this.totalNum = obj.data.list.length
           })
           .catch(function (obj) {
             console.log(obj)

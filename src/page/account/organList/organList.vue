@@ -1,5 +1,6 @@
 <template>
     <div>
+        <div class="small3"></div>
         <div class="title">组织列表</div>
         <div class="big">
             <div class="left">
@@ -133,20 +134,20 @@
                 </el-form>
                 <el-button type="primary" class="searchButton" @click="oo">搜索</el-button>
             </div>
-            <el-table :data="members1" border class="members" max-height="250" v-show="jj" style="90%">
+            <el-table :data="members1" border class="members" max-height="250" v-show="jj">
                 <el-table-column type="selection" width="30%" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" align="center" width="120%" fixed="left"></el-table-column>
-                <el-table-column prop="name" label="姓名" align="center" width="120%"></el-table-column>
+                <el-table-column prop="id" label="ID" align="center" width="60%" fixed="left"></el-table-column>
+                <el-table-column prop="name" label="姓名" align="center" width="120%" fixed="left"></el-table-column>
                 <el-table-column prop="phone" label="手机号" align="center" width="200%"></el-table-column>
                 <el-table-column prop="email" label="邮箱" align="center" width="200%"></el-table-column>
                 <el-table-column prop="sex" label="性别" align="center" width="120%"></el-table-column>
                 <el-table-column prop="state" label="状态" align="center" width="120%"></el-table-column>
             </el-table>
 
-            <el-table :data="members" border class="members" height="50%" v-show="!jj" style="90%">
+            <el-table :data="members" border class="members" height="50%" v-show="!jj">
                 <el-table-column type="selection" width="30%" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" align="center"  width="120%" fixed="left"></el-table-column>
-                <el-table-column prop="name" label="姓名" align="center"  width="120%"></el-table-column>
+                <el-table-column prop="id" label="ID" align="center"  width="60%" fixed="left"></el-table-column>
+                <el-table-column prop="name" label="姓名" align="center"  width="120%" fixed="left"></el-table-column>
                 <el-table-column prop="phone" label="手机号" align="center"  width="200%"></el-table-column>
                 <el-table-column prop="email" label="邮箱" align="center"  width="200%"></el-table-column>
                 <el-table-column prop="sex" label="性别" align="center"  width="120%"></el-table-column>
@@ -173,29 +174,6 @@
                 <el-button type="primary" @click="setSave = false">保存</el-button>
             </div>
         </el-dialog>
-        <!-- 成员添加 -->
-        <el-dialog title="添加成员" :visible.sync="personSave" width="400px">
-            <el-form :model="addSaves" class="addUser">
-                <el-form-item label="姓名">
-                    <el-input v-model="addSaves.name" class="peoper"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号">
-                    <el-input v-model="addSaves.phone" class="peoperPhone"></el-input>
-                </el-form-item>
-                <el-form-item label="邮箱">
-                    <el-input v-model="addSaves.email" class="peoper"></el-input>
-                </el-form-item>
-                <span class="sex">性别</span>
-                <div class="radio">
-                    <el-radio v-model="radio" label="1">男</el-radio>
-                    <el-radio v-model="radio" label="2">女</el-radio>
-                </div>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="personSave = false">取 消</el-button>
-                <el-button type="primary" @click="sss = false">确 定</el-button>
-            </div>
-        </el-dialog>
     </div>
 </template>
 
@@ -203,14 +181,6 @@
   export default {
   data () {
     return {
-        // 添加成弹框
-        radio: '1',
-        personSave: false,
-        addSaves: {
-            name: '',
-            phone: '',
-            email: '',
-        },
         data: [{
             label: '辽宁大运通（2000人）',
             children: [{
@@ -437,8 +407,9 @@ methods: {
         this.$refs[a].resetFields();
     },
     appendSave() {
-        if(this.addInput.departmentNames === ''){
-            this.$message.warning('不能为空！')
+        if(this.addInput.departmentNames === '' || this.addInput.departmentCode === '' || this.addInput.radio === '' || this.addInput.sort === '' || this.addInput.phone === '' || this.addInput.fax === ''){
+            this.$message.warning('红☆为必填选项，请认真填写！')
+
         }else{
             this.tableData.push({
             division: this.addInput.departmentNames
@@ -510,7 +481,7 @@ methods: {
     width: 70%;
     height: 70%;
     border: 1px solid #CCCCCC;
-    top: 12%;
+    top: 15%;
     margin-left: 3%;
 }
 .title{
@@ -586,14 +557,15 @@ methods: {
     position: absolute;
     left: 5%;
     top: 20.5%;
-    font-size: 0.5em;
+    font-size: 15px;
     font-weight: bold;
 }
 .divisionTable{
     position: absolute;
-    top: 28%;
+    top: 27%;
     left: 5%;
     width: 70%;
+    height: 25%;
 }
 .small2{
     position: absolute;
@@ -612,7 +584,7 @@ methods: {
     position: absolute;
     left: 5%;
     top: 57.5%;
-    font-size: 0.5em;
+    font-size: 15px;
     font-weight: bold;
 }
 .addPersonnel{
@@ -762,5 +734,17 @@ methods: {
 .button-footer{
     margin-right: 157px;
     margin-top: -40px;
+}
+.small3{
+  float: left;
+  margin-right: 7px;
+  width: 5px;
+  height: 22px;
+  background: inherit;
+  background-color: rgb(10, 10, 10);
+  border: none;
+  border-radius: 0px;
+  box-shadow: none;
+  line-height:0
 }
 </style>
