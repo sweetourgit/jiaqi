@@ -66,7 +66,7 @@
         width="180"
         header-align="center">
         <template slot-scope="scope">
-          <el-button type="primary" size="small">查看</el-button>
+          <router-link to="/addRole?id=1&type=view"><el-button type="primary" size="small">查看</el-button></router-link>
           <router-link to="/addRole?id=1"><el-button type="primary" size="small">编辑</el-button></router-link>
         </template>
       </el-table-column>
