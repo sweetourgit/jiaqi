@@ -64,14 +64,18 @@
           </el-input>
            
         </el-form-item>
-        <el-button type="primary" @click="send" v-if="!sendMsgDisabled" class="phone-button" ><span style="margin-right:0px">获取验证码</span></el-button>
-          <el-button type="primary" plain disabled @click="send" v-if="sendMsgDisabled" class="phone-button">{{time}}S后获取</el-button>
+        <!-- <el-button type="primary" @click="send" v-if="!sendMsgDisabled" class="phone-button" ><span style="margin-right:0px">获取验证码</span></el-button>
+          <el-button type="primary" plain disabled @click="send" v-if="sendMsgDisabled" class="phone-button">{{time}}S后获取</el-button> -->
   
 </div>
 <!-- 手机验证码 -->
   <div>
        <el-form-item prop="phoneVerification" class="phone-verify">
-          <el-input  placeholder="请输入手机验证码" v-model="phoneruleForm.phoneVerification"   ></el-input>
+          <el-input  placeholder="请输入手机验证码" v-model="phoneruleForm.phoneVerification"   >
+        <el-button slot="append" @click="send" v-if="!sendMsgDisabled" class="phone-button" ><span style="margin-right:0px">获取验证码</span></el-button>
+        <el-button slot="append" plain disabled @click="send" v-if="sendMsgDisabled" class="phone-button">{{time}}S后获取</el-button>
+            
+          </el-input>
        </el-form-item>
        <el-form-item class="verify-buttom">
           <el-button type="primary" class="next-button-phone" @click="phoneSubmitForm('phoneruleForm')" >下一步</el-button>
@@ -292,6 +296,8 @@
         this.passwordruleForm.newpassword = '';
         this.passwordruleForm.repassword = '';
         this.emailShow = false;
+        // this.time = 60;
+        // this.time = 0;
         console.log(this.show)
       
         console.log(this.show)
@@ -560,14 +566,14 @@ position: absolute;
     .input-with-select{
       position: relative;
       margin-top:20%;
-      right:12%;
+      right:5%;
       width:85%;
     }
 
     .input-with-email{
      position: relative;
       margin-top:25%;
-      right:12%;
+      right:9%;
     }
 
     .user-input{
@@ -707,12 +713,12 @@ position: absolute;
     
   }
   .phone-button{
-    position: relative;
-    float:right;
-    left:30%;
-    bottom:62px;
-    height:40px;
-    text-align:center;
+    // position: relative;
+    // float:right;
+    // left:30%;
+    // bottom:62px;
+    // height:40px;
+    // text-align:center;
    
   }
  .email{
@@ -745,10 +751,10 @@ position: absolute;
     position: relative;
     float:left;
     width:85%;
-    bottom:45px;
+    top:0px;
     // right:46px;
       // margin-top:20%;
-      right:12%;
+      right:5%;
   }
   .verify-buttom{
     position:relative;
