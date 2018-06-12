@@ -20,14 +20,17 @@ export default new Router({
       },{
         path: '/userList',
         component: userList,
+        name:'用户列表',
         meta: {keepAlive: true}
       },{
         path: '/organList',
         component: organList,
+        name: '组织列表',
         meta: {keepAlive: true}
       },{
         path: '/role',
         component: role,
+        name: '角色模板',
         meta: {keepAlive: true}
       },{
           path: '/addRole',
@@ -37,14 +40,17 @@ export default new Router({
       {
         path: '/perList',
         component: perList,
+        name: '权限列表',
         meta: {keepAlive: true}
       },{
         path: '/accountInfor',
         component: accountInfor,
+        name: '账户设置',
         meta: {keepAlive: true}
       },{
         path: '/pwModifi',
         component: pwModifi,
+        name: '密码修改',
         meta: {keepAlive: true}
       },{
         path: '/login',
@@ -53,6 +59,7 @@ export default new Router({
       },{
         path: '/positionList',
         component: positionList,
+        name: '职位列表',
         meta: {keepAlive: true}
       },{
         path: '/userList',
@@ -61,6 +68,7 @@ export default new Router({
       },{
       path: '/userList/addUser',
       component: addUser,
+      name:'用户添加',
       meta:{keepAlive:true}
     },
   ]

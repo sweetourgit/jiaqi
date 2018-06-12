@@ -1,6 +1,5 @@
 <template>
   <div class="row">
-    <div class="top_tip">密码修改</div>
     <div class="content">
     <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
       <el-form-item label="当前密码" prop="pass">
@@ -70,16 +69,9 @@ export default {
 
 <style scoped>
 .content{margin: 0 0 0 16%;}
-.row{width: 400px;}
+.row{width: 400px; padding-top: 40px;}
 .preservation{width: 140px; margin: 40px auto;}
 .input{width: 210px;float: left;}
-.top_tip {
-  border-left: 5px solid grey;
-  text-align: left;
-  padding-left: 5px;
-  font-size: 15px;
-  margin-bottom: 15px;
-}
 </style>
 
 
