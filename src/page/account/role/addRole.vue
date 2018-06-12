@@ -1,25 +1,25 @@
 <template>
-  <div style="width: 800px">
-    <div class="top_tip">添加角色权限模板</div>
-    <el-form
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-      label-position="left"
-      :status-icon="true"
-      class="form-class">       <!--ref参数用于标识form名称-->
-      <el-form-item label="模板名称" prop="temp_name" inline-message="true">
-        <el-input v-model="ruleForm.temp_name" placeholder="请输入模板名称" clearable :disabled="checkboxStatus"></el-input>
-      </el-form-item>
-      <el-form-item label="模板描述" prop="desc" inline-message="true">
-        <el-input v-model="ruleForm.desc" placeholder="请输入模板描述" clearable :disabled="checkboxStatus"></el-input>
-      </el-form-item>
-    </el-form>
-
+  <div>
+    <div class="form-class">
+      <el-form
+        :model="ruleForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+        :status-icon="true"
+        >       <!--ref参数用于标识form名称-->
+        <el-form-item label="模板名称" prop="temp_name">
+          <el-input v-model="ruleForm.temp_name" placeholder="请输入模板名称" clearable :disabled="checkboxStatus"></el-input>
+        </el-form-item>
+        <el-form-item label="模板描述" prop="desc">
+          <el-input v-model="ruleForm.desc" placeholder="请输入模板描述" clearable :disabled="checkboxStatus"></el-input>
+        </el-form-item>
+        <div class="cl_both"></div>
+      </el-form>
+    </div>
     <div class="for-allcheck">
-      <el-button type="primary" size="mini" @click="handleCheckAllChange">全选</el-button>
-      <el-button type="primary" size="mini" @click="handleResetChange">重置</el-button>
+      <el-button type="primary" @click="handleCheckAllChange" style="color: #3095fa;background: white">全选</el-button>
+      <el-button type="primary" @click="handleResetChange">重置</el-button>
     </div>
     <table class="all-size">
       <thead>
@@ -33,14 +33,14 @@
       <tbody>
       <tr class="table-content">
         <td rowspan="9">
-          <!--<el-checkbox v-model="isChecked" :disabled="checkboxStatus">-->
+          <!--<el-checkbox v-model="roleList[0].accountManager.checked" :disabled="checkboxStatus">-->
             <!--账号管理-->
           <!--</el-checkbox>-->
           <input type="checkbox" value="账号管理" v-model="isChecked" :disabled="checkboxStatus" />账号管理
         </td>
         <td rowspan="3">
           <!--<el-checkbox v-model="isChecked" :disabled="checkboxStatus">用户管理</el-checkbox>-->
-          <input type="checkbox" value="用户管理" v-model="isChecked" :disabled="checkboxStatus" @change="checkSon" />用户管理
+          <input type="checkbox" value="用户管理" v-model="isChecked" :disabled="checkboxStatus" />用户管理
         </td>
         <td>
           <!--<el-checkbox v-model="isChecked">只读</el-checkbox>-->
@@ -138,7 +138,7 @@
       </tr>
       <tr class="table-content">
         <td rowspan="3">
-          <!--<el-checkbox v-model="isChecked">个人中心</el-checkbox>-->
+          <!--<el-checkbox v-model="roleList[1].personCenter.checked">个人中心</el-checkbox>-->
           <input type="checkbox" value="个人中心" v-model="isChecked" :disabled="checkboxStatus" />个人中心
         </td>
         <td rowspan="3">
@@ -173,9 +173,10 @@
         </td>
         <td></td>
       </tr>
+
       </tbody>
     </table>
-    <el-button type="primary" class="sub_button" @click="handleClose()">取消</el-button>
+    <el-button type="primary" class="sub_button" style="background: white;color: #3095fa" @click="handleClose()">取消</el-button>
     <el-button type="primary" class="sub_button" @click="submitForm('ruleForm')">保存</el-button>
   </div>
 </template>
@@ -224,7 +225,7 @@
           ],
         },
 
-        checkedItems: [],
+        roleList: [],
         checkboxStatus: false     // 当前页表单组是否激活状态
       }
     },
@@ -234,6 +235,30 @@
       }
       // 根据id获取该模板的信息
       this.getDetail()
+
+      // 模拟获取权限json数组
+      this.$http.get(
+        "/static/data.json"
+      ).then(
+        obj => {
+          console.log(obj.data.roleList)
+          this.roleList = obj.data.roleList
+        }
+      )
+    },
+    watch: {
+      roleList: {
+        "1": {
+          personCenter: {
+            checked: {
+              handler: function (val, oldVal) {
+                console.log(val)
+              },
+              deep: true
+            }
+          }
+        }
+      }
     },
     methods: {
       submitForm(formName) {
@@ -292,9 +317,6 @@
       // 全不选checkbox部分逻辑
       handleResetChange() {
         this.isChecked = []
-      },
-      checkSon(val) {
-        console.log(val)
       }
     }
   }
@@ -309,16 +331,23 @@
     margin-bottom: 15px;
   }
 
+  .el-form-item {
+    float: left;
+  }
   .form-class {
-    width: 300px
+    text-align: left;
+    padding-top: 20px;
+    padding-left: 95px;
+    border-bottom: 1px solid #f2f2f2;
+    .el-input {
+      width: 158px
+    }
   }
 
   .for-allcheck {
-    background: #D7D7D7;
-    border: 2px solid #fff;
+
     text-align: left;
-    margin-bottom: -5px;
-    padding: 5px;
+    padding: 20px;
   }
 
   .permission-roel {
@@ -334,6 +363,10 @@
     z-index: 1;
   }
 
+  .sub_button {
+    width: 142px;
+    font-size: 12px;
+  }
   .table-button {
     background-color: #D7D7D7;
   }
@@ -351,7 +384,7 @@
   .all-size {
     font-size: 10px;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 83px;
   }
 
   .table-permiss {
@@ -364,5 +397,8 @@
 
   .table-checkout {
     text-align: left;
+  }
+  .cl_both {
+    clear: both;
   }
 </style>

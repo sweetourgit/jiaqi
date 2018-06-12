@@ -1,8 +1,7 @@
 <template>
   <div>
-    <div class="top_tip">角色模板</div>
     <div class="search_dom">
-      <el-select v-model="typeValue" placeholder="搜索类型" class="options1">
+      <el-select v-model="typeValue" placeholder="搜索类型">
         <el-option
           v-for="item in typeArr"
           :key="item.value"
@@ -18,68 +17,78 @@
           :value="item.value">
         </el-option>
       </el-select>
-      <el-input v-model="input" placeholder="请输入关键字"></el-input>
-      <el-button type="primary" @click="subForm()" size="small" class="sub_button">搜索</el-button>
-      <router-link to="/addRole" class="add_role">
-        <el-button type="primary">添加模板</el-button>
-      </router-link>
+      <el-input v-model="input" placeholder="请输入关键字" clearable></el-input>
+      <el-button type="primary" @click="subForm()" size="" class="sub_button" icon="el-icon-search"></el-button>
     </div>
     <div class="cl_both"></div>
-    <el-table
-      :data="tableData"
-      border>
-      <el-table-column
-        prop="id"
-        label="ID"
-        width="180"
-        header-align="center">
-      </el-table-column>
-      <el-table-column
-        prop="template_name"
-        label="模板名称"
-        width="180"
-        header-align="center">
-      </el-table-column>
-      <el-table-column
-        prop="author"
-        label="创建人"
-        header-align="center">
-      </el-table-column>
-      <el-table-column
-        prop="template_desc"
-        label="模板描述"
-        header-align="center">
-      </el-table-column>
-      <el-table-column
-        prop="nums"
-        label="人数"
-        header-align="center">
-      </el-table-column>
-      <el-table-column
-        prop="status"
-        label="状态"
-        header-align="center">
-      </el-table-column>
-      <el-table-column
-        prop="operate"
-        label="操作"
-        width="180"
-        header-align="center">
-        <template slot-scope="scope">
-          <router-link to="/addRole?id=1&type=view"><el-button type="primary" size="small">查看</el-button></router-link>
-          <router-link to="/addRole?id=1"><el-button type="primary" size="small">编辑</el-button></router-link>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
+    <div style="padding: 0 20px">
+    <div style="text-align: left">
+      <router-link to="/addRole">
+        <el-button type="primary" class="add_role">添加模板</el-button>
+      </router-link>
+    </div>
+      <el-table
+        :data="tableData"
+        header-row-style="height:60px"
+        cell-style="padding:0;height:40px"
+        border>
+        <el-table-column
+          prop="id"
+          label="ID"
+          width="180"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="template_name"
+          label="模板名称"
+          width="180"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="author"
+          label="创建人"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="template_desc"
+          label="模板描述"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="nums"
+          label="人数"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="status"
+          label="状态"
+          header-align="center">
+        </el-table-column>
+        <el-table-column
+          prop="operate"
+          label="操作"
+          width="180"
+          header-align="center">
+          <template slot-scope="scope">
+            <router-link to="/addRole?id=1&type=view"><el-button type="primary" size="small" class="bt-edit">编辑</el-button></router-link>
+            <router-link to="/addRole?id=1"><el-button type="danger" size="small" class="bt-stop">停用</el-button></router-link>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       @prev-click="handlePrev"
+      plain="false"
+      prev-text="上一页"
+      next-text="下一页"
+      :page-sizes="[10, 20, 50, 100]"
       :current-page="1"
-      :page-size="1"
-      layout="prev, pager, next,  jumper, ->, total"
-      :total="totalNum">
+      layout="total, prev, pager, next, sizes, jumper, ->"
+      :total="totalNum"
+      style="float: right">
     </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -154,7 +163,7 @@
             "status": 0
           }
         ],
-        totalNum: 6
+        totalNum: 600
       }
     },
     created(){
@@ -199,46 +208,44 @@
 </script>
 
 <style scoped lang="scss">
-  .top_tip {
-    border-left: 5px solid grey;
-    text-align: left;
-    padding-left: 5px;
-    font-size: 15px;
-    margin-bottom: 15px;
-  }
 
   .search_dom {
+    padding-top: 22px;
     height: 40px;
     line-height: 40px;
-
+    padding-left: 176px;
+    border-bottom: 1px solid #F1F1F1;
+    padding-bottom: 22px;
     .sub_button {
       float: left;
-      display: table-cell;
-      height: 40px;
-      vertical-align: middle;
     }
     .el-select {
-      width: 120px;
-      float: left;
-      margin-right: 15px;
-    }
-    .el-input {
       width: 200px;
       float: left;
       margin-right: 15px;
     }
-  }
-
-  .cl_both {
-    clear: both
+    .el-input {
+      width: 350px;
+      float: left;
+      margin-right: 15px;
+    }
+    .bt-edit {
+      font-size: 12px;
+    }
   }
 
   .add_role {
-    float: right;
+    margin-top: 20px;
   }
 
   .el-table {
-    margin: 40px 0;
+    margin: 20px 0 40px 0;
+    td {
+      padding: 0;
+    }
+  }
+  .cl_both {
+    clear: both
   }
 </style>
 

@@ -1,9 +1,7 @@
 <template>
   <div class="per-list">
-    <div class="top_tip">权限管理</div>
-
     <el-button>添加模块</el-button>
-    <table>
+    <table style="width: 100%">
       <thead>
       <tr class="table-button">
         <th width="180">模块</th>
@@ -201,7 +199,8 @@
       </tbody>
     </table>
     <!--添加权限对话框-->
-    <el-dialog :visible.sync="dialogAddRole" style="text-align: left" width="30%" :center="true" :lockScroll="false" :close-on-click-modal="false">
+    <el-dialog :visible.sync="dialogAddRole" style="text-align: left" width="30%" :center="true" :lockScroll="false"
+               :close-on-click-modal="false">
       <el-form :model="form" ref="myform" :rules="rules">
         <el-form-item label="名称：" :label-width="formLabelWidth" prop="name">
           <el-input v-model="form.name" auto-complete="off"></el-input>
@@ -327,6 +326,7 @@
 
 <style lang="scss" scoped>
   .per-list {
+    padding: 20px;
     text-align: left;
     .top_tip {
       border-left: 5px solid grey;
@@ -340,7 +340,7 @@
       margin-top: 20px;
       font-size: 14px;
       thead {
-        th{
+        th {
           height: 35px;
         }
         .table-button {
