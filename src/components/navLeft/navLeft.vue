@@ -19,7 +19,7 @@
         </template>
         <el-submenu :index="(index+ '-' +index1)" v-for="(data,index1) in item.items" :key="index1">
           <template slot="title">{{data.title}}</template>
-          <el-menu-item class="suboptions" :index="(list.router)" v-for="(list,index2) in data.lists" :key="index2">{{list.value}}</el-menu-item>
+          <el-menu-item class="suboptions" :index="(index+ '-' +index1+ '-' +index2)" :route="{path:list.router}" v-for="(list,index2) in data.lists" :key="index2">{{list.value}}</el-menu-item>
         </el-submenu>
       </el-submenu>
     </el-menu>
@@ -89,7 +89,6 @@
         menuNumber:[],
     }
   },
- 
   methods: {   
     mouseOpen(key) {
       this.mouseActive = key;
@@ -107,7 +106,7 @@
           }
         }
       }
-    }
+    },
   }
 }
 </script>
