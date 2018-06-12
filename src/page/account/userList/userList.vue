@@ -1,8 +1,6 @@
 <template>
 	<div>
-      <div>
-        <div class="user-title">用户列表</div>
-      </div>
+
       <div>
       <!--搜索框 -->
       <div class="search">
@@ -61,13 +59,13 @@
          <el-table-column
            prop="id"
            label="ID"
-           width="110"
+           width="60"
            align="center">
         </el-table-column>
         <el-table-column
            prop="name"
            label="姓名"
-           width="86"
+           width="100"
            align="center">
         </el-table-column>
         <el-table-column
@@ -85,46 +83,46 @@
         <el-table-column
            prop="mail"
            label="邮箱"
-           width="150"
+           width="170"
            align="center">
         </el-table-column>
         <el-table-column
            prop="sex"
            label="性别"
-           width="60"
+           width="65"
            align="center">
         </el-table-column>
         <el-table-column
            prop="otype"
            label="状态"
-           width="100"
+           width="86"
            align="center">
         </el-table-column>
         <el-table-column
            prop="organization"
            label="组织-部门-职务"
-           width="185"
+           width="210"
            align="center">
         </el-table-column>
         <el-table-column
            prop="createtime"
            label="创建时间"
-           width="100"
+           width="230"
            align="center">
         </el-table-column>
         <el-table-column
            prop="updatetime"
            label="修改时间"
-           width="100"
+           width="210"
            align="center">
         </el-table-column>
         <el-table-column
           label="操作"
           align="center"
-          width="100">
+          width="250">
            <template slot-scope="scope">
-             <el-button type="text" size="small" @click="dialogFormVisible = true">查看</el-button>
-             <el-button type="text" size="small">编辑</el-button>
+             <el-button  size="small" @click="dialogFormVisible = true">查看</el-button>
+             <el-button type="primary" size="small" @click="dialogFormVisible = true">编辑</el-button>
            </template>
         </el-table-column>
       </el-table>
@@ -132,7 +130,6 @@
     <div class="block">
        <el-pagination
         :page-sizes="[10]"
-        background
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
         :total="490">
@@ -275,10 +272,10 @@
           name: '张三',
           type: '普通用户',
           phone: '188888888888',
-          mail: '36463148@qq.com',
+          mail: '364648@qq.com',
           sex: '男',
           otype: '正常',
-          organization: '辽宁大运通-销售部-主管 辽宁大运通-销售部-主管',
+          organization: '辽宁大运通-销售部-主管  辽宁大运通-销售部-主管',
           createtime: '2018/05/04 10:23',
           updatetime: '2018/05/13 10:43',
         },{
@@ -302,23 +299,16 @@
 </script>
 
 <style scoped>
-  .user-title{
 
-    height: 22px;
-    font-size: 18px;
-    text-align: left;
-    margin-left: 25px;
-    padding-left: 15px;
-    border-left:5px solid #F38F00;
-  }
   .user-table{
-    width: 1242px;
+    width: 1632px;
     margin-left:25px;
+    margin-top: 70px;
   }
   .search{
     height: 70px;
     margin-left:25px;
-    margin-top: 40px;
+    padding-top: 20px;
     padding-left: 157px;
     border-bottom: 1px solid #F3F3F3;
   }
@@ -374,7 +364,7 @@
   }
   .block{
     float: right;
-    margin-top: 10px;
+    margin-top: 50px;
   }
   .form-gz{
   	width: 215px;
