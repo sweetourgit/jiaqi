@@ -1,8 +1,5 @@
 <template>
 	<div>
-     <div>
-        <div class="user-title">用户列表</div>
-      </div>
       <div class="tag">
         <el-tabs v-model="activeName" class="form_tag">
           <el-tab-pane label="基本信息" name="first" class="pane-scroll">
@@ -518,7 +515,8 @@ import Permission from '@/page/account/userList/addUser/permission'
     margin-left: -25px;
   }
   .form_tag{
-    margin-left: 23px;
+    margin-left: 33px;
+    padding-top: 20px;
   }
   .from-input{
     width: 180px;
