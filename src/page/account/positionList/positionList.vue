@@ -1,7 +1,5 @@
 <template>
   <div>
-    <div class="smail"></div>
-    <div class="list">职位列表</div>
     <div class="big">
         <!-- 工具条 -->
         <el-row>
@@ -14,7 +12,7 @@
             <el-table-column label="操作" fixed="right" align="center">
                 <template slot-scope="scope">
 					<el-button type="primary" size="small" @click="editPosition1(scope.$index, scope.row)">编辑</el-button>
-					<el-button type="primary" size="small" @click="del(scope.$index, scope.row)">删除</el-button>
+					<el-button type="danger" size="small" @click="del(scope.$index, scope.row)">删除</el-button>
 				</template>
             </el-table-column>
         </el-table>
@@ -44,14 +42,16 @@
                 <el-button type="primary" @click="addSave('updata')">保存</el-button>
             </div>
         </el-dialog>
-
-
     </div>
     <!-- 分页 -->
-        <div class="page">
-            <span class="page-count">共{{this.tableData.length}}条数据，每页8条</span>
-            <el-pagination @current-change="handleCurrentChange" :page-size="this.pagesize" layout="prev, pager, next, jumper" :total="this.tableData.length"></el-pagination>
-        </div>
+      <!-- <div class="page">
+          <span class="page-count">共{{this.tableData.length}}条数据，每页8条</span>
+          <el-pagination @current-change="handleCurrentChange" :page-size="this.pagesize" layout="prev, pager, next, jumper" :total="this.tableData.length"></el-pagination>
+      </div> -->
+      <div class="page">
+       <el-pagination :page-sizes="[8]" background @current-change="handleCurrentChange" :page-size="this.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="this.tableData.length">
+       </el-pagination>
+      </div>
   </div>
 
 </template>
@@ -257,7 +257,7 @@
 .page{
     position: absolute;
     margin-top: 600px;
-    left: 50%;
+    left: 41%;
 }
 .page-count{
     position: absolute;
