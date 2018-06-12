@@ -40,17 +40,15 @@
       		<el-input  placeholder="请输入内容"  clearable></el-input>
       	</div>
         <div class="button-search">
-      	  <el-button type="primary" size="mini" >搜索</el-button>
+          <el-button  size="medium" type="primary" icon="el-icon-search"></el-button>
         </div>
-        <div class="button-recover">
-      	  <el-button type="primary" size="mini">重置</el-button>
-      	</div>
-        <div class="add-user">
-        <router-link to="/userlist/adduser"><el-button type="primary" >添加用户</el-button></router-link>
-      </div>
+
+
       </div>
       <!--搜索end-->
-
+        <div class="add-user">
+          <router-link to="/userlist/adduser"><el-button type="primary" >添加用户</el-button></router-link>
+        </div>
     </div>
        <!--表格-->
     <div class="user-table">
@@ -305,12 +303,13 @@
 
 <style scoped>
   .user-title{
-  	width: 120px;
+
     height: 22px;
     font-size: 18px;
-    position: absolute;
-    left: 204px;
-    top: 63px;
+    text-align: left;
+    margin-left: 25px;
+    padding-left: 15px;
+    border-left:5px solid #F38F00;
   }
   .user-table{
     width: 1242px;
@@ -318,9 +317,10 @@
   }
   .search{
     height: 70px;
-    width: 1241px;
     margin-left:25px;
-    margin-top: 45px;
+    margin-top: 40px;
+    padding-left: 157px;
+    border-bottom: 1px solid #F3F3F3;
   }
   .search-first{
   	 float: left;
@@ -328,18 +328,18 @@
   }
   .search-second{
     float: left;
-    padding-left: 35px;
-    width: 160px;
+    padding-left: 25px;
+    width: 200px;
    }
   .search-third{
   	float: left;
-    padding-left: 35px;
-    width: 160px;
+    padding-left: 25px;
+    width: 200px;
   }
   .search-input{
   	float: left;
-    padding-left: 35px;
-    width: 300px;
+    padding-left: 25px;
+    width: 348px;
   }
   .button-search{
   	float: left;
@@ -354,7 +354,11 @@
   	height: 50px;
   }
   .add-user{
-    float: right;
+    float: left;
+    margin-top: 10px;
+    margin-left: 25px;
+    width: 100%;
+    text-align: left;
   }
   .form-size{
     width: 500px;
