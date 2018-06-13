@@ -225,7 +225,7 @@
           ],
         },
 
-        roleList: [],
+        roleList: {},
         checkboxStatus: false     // 当前页表单组是否激活状态
       }
     },
@@ -247,18 +247,7 @@
       )
     },
     watch: {
-      roleList: {
-        "1": {
-          personCenter: {
-            checked: {
-              handler: function (val, oldVal) {
-                console.log(val)
-              },
-              deep: true
-            }
-          }
-        }
-      }
+
     },
     methods: {
       submitForm(formName) {
