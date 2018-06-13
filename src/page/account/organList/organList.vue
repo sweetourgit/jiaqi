@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="left">
-          <el-tree :data="data" class="tree"></el-tree>
+          <el-tree :data="data" class="tree" :render-content="renderContent"></el-tree>
           <el-button type="primary" class="addTopOrganization" @click="addTopOrganization = true">+ &nbsp;&nbsp;&nbsp;&nbsp;顶级组织</el-button>
         </div>
         <div class="right">
@@ -13,8 +13,8 @@
               <el-button plain class="editDepartment" @click="editDepartment = true">编辑</el-button>
               <el-button type="primary" class="addSubdivision" @click="addSubdivision = true">+ &nbsp;子部门</el-button>
             </div>
-            <span class="inheritanceRules">默认限制向上继承</span>
-            <el-switch v-model="switchs" active-color="#13ce66" inactive-color="#ff4949" class="switch"></el-switch>
+            <!-- <span class="inheritanceRules">默认限制向上继承</span>
+            <el-switch v-model="switchs" active-color="#13ce66" inactive-color="#ff4949" class="switch"></el-switch> -->
           </div>
           <div class="small1"></div>
           <span class="lowerTitle">下级部门</span>
@@ -113,7 +113,7 @@
             </div>
         </el-dialog>
         <!-- 添加成员弹框 -->
-        <el-dialog  class="Popup" :visible.sync="addPersonnel" style="width:88%">
+        <el-dialog  class="Popup" :visible.sync="addPersonnel" style="width:90%;height:105%;">
             <div class="booms">
                 <span class="addTitle">添加成员</span>
                 <el-form :model="updata">
@@ -123,7 +123,7 @@
                 </el-form>
                 <el-button type="primary" class="searchButton" @click="oo">搜索</el-button>
             </div>
-            <el-table :data="members1" border class="members" max-height="250" v-show="jj">
+            <el-table :data="members1" border class="members" v-show="jj">
                 <el-table-column type="selection" width="30%" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" align="center" width="60%" fixed="left"></el-table-column>
                 <el-table-column prop="name" label="姓名" align="center" width="120%" fixed="left"></el-table-column>
@@ -133,7 +133,7 @@
                 <el-table-column prop="state" label="状态" align="center" width="120%"></el-table-column>
             </el-table>
 
-            <el-table ref="table" :data="members" border class="members" height="50%" v-show="!jj" @selection-change="qq">
+            <el-table ref="table" :data="members" border class="members" v-show="!jj" @selection-change="qq">
                 <el-table-column type="selection" width="30%" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" align="center"  width="60%" fixed="left"></el-table-column>
                 <el-table-column prop="name" label="姓名" align="center"  width="120%" fixed="left"></el-table-column>
@@ -142,6 +142,10 @@
                 <el-table-column prop="sex" label="性别" align="center"  width="120%"></el-table-column>
                 <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
             </el-table>
+            <div class="black">
+              <el-pagination :page-sizes="[8]" background  layout="total, sizes, prev, pager, next, jumper" :total="this.members.length">
+              </el-pagination>
+            </div>
             <div slot="footer" class="btn">
                 <el-button @click="addPersonnel2">取 消</el-button>
                 <el-button type="primary" @click="qqq">添加</el-button>
@@ -204,7 +208,7 @@
         },{
             division: '子部门4'
         }],
-        
+
         // 增加顶级组织
         addTopOrganization: false,
         form: {
@@ -354,8 +358,7 @@
             position: '员工',
             phone: '13022222222',
             sex: '女',
-        }
-        ],
+        }],
 
 
         members1: [
@@ -407,9 +410,9 @@
                             this.$refs.table.toggleRowSelection(this.members.find(d => d.id == num),true)
                         },0)
                     }
-                } 
+                }
             }
-            
+
         }
     },
 methods: {
@@ -520,13 +523,13 @@ methods: {
                     position: "",
                     phone: this.dataNum[k].phone,
                     sex: this.dataNum[k].sex,
-                }) 
+                })
             }
                 this.$message.success("添加成功")
                 this.addPersonnel = false
                 this.dataNum = [];
             }
-        
+
       },
     remove(index, rows) {
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -553,6 +556,14 @@ methods: {
         this.addPersonnel = false
         this.dataNum = [];
       },
+      renderContent(h, { node, data, store }){
+        return (
+          <span>
+            <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/ewqdewq.png"></img>
+            <span>{node.label}</span>
+          </span>
+        )
+      }
     }
 }
 </script>
@@ -707,16 +718,15 @@ methods: {
     margin-bottom: 250px;
 }
 .members{
-    position: relative;
-    bottom: 180px;
+    margin-bottom: -120px;
+    top: -200px;
     left: 1.3%;
     width: 90%;
 }
 .btn{
     position: absolute;
-    top: 85%;
+    top: 92%;
     left: 3.5%;
-
 }
 .setinput{
     position: relative;
@@ -747,7 +757,7 @@ methods: {
 .right{
   position: absolute;
   width: 46.1%;
-  height: 80%;
+  height: 70%;
   margin-top: 1%;
   margin-left: 23.4%;
   border: 2px solid #E6E6E6;
@@ -755,7 +765,7 @@ methods: {
 .left{
   position: absolute;
   width: 21.1%;
-  height: 80%;
+  height: 70%;
   border: 2px solid #E6E6E6;
   margin-top: 1%;
   margin-left: 1%;
@@ -831,6 +841,14 @@ methods: {
   width: 100%;
   height: 12.4%;
   top: 7%;
-
+}
+.black{
+  position: absolute;
+  top: 85%;
+  right: 10%;
+}
+.yy{
+  position: relative;
+  top: -5px
 }
 </style>
