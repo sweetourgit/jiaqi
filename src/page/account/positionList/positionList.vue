@@ -252,11 +252,12 @@
 }
 .table{
     position: absolute;
-    top: 10%;
+    top: 11%;
+    left: 2%;
 }
 .page{
     position: absolute;
-    margin-top: 600px;
+    margin-top: 640px;
     left: 41%;
 }
 .page-count{
@@ -270,21 +271,10 @@
 }
 .addButton{
     position: absolute;
-    margin-top: 1.5%;
-    left: 90%;
-    padding: 1% 1%;
-}
-.smail{
-  float: left;
-  margin-right: 7px;
-  width: 5px;
-  height: 22px;
-  background: inherit;
-  background-color: rgb(10, 10, 10);
-  border: none;
-  border-radius: 0px;
-  box-shadow: none;
-  line-height:0
+    margin-top: 2%;
+    left: -4%;
+    width: 100px;
+    height: 40px;
 }
 </style>
 
