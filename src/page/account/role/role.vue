@@ -240,9 +240,7 @@
 
   .el-table {
     margin: 20px 0 40px 0;
-    td {
-      padding: 0;
-    }
+
   }
   .cl_both {
     clear: both
