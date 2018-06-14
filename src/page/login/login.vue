@@ -2,7 +2,7 @@
 <div class="app">
   <div class="top">
     <span class="top-titleone">嘉麒集团</span>
-    <span class="top-titletwo">通行证</span>
+    <span class="top-titletwo">通行证</span> 
     
   </div>
  
@@ -47,7 +47,7 @@
       <div class="forget-border"></div>
      </div>
      <!-- 立刻登录 -->
-     <el-button type="text" class="swift-login" @click="login">立刻登录</el-button>
+     <el-button type="text" class="form-forget" @click="login">立刻登录</el-button>
      
     
    <div class="input-with-select">
@@ -89,7 +89,7 @@
        <div class="forget-account">找回密码</div>
       <div class="forget-border"></div>
      </div>
-     <el-button type="text" class="swift-login" @click="login">立刻登录</el-button>
+     <el-button type="text" class="form-forget" @click="login">立刻登录</el-button>
      
 <div class="input-with-email" >
    <el-form-item prop="email">
@@ -112,7 +112,7 @@
        <div class="forget-account">找回密码</div>
       <div class="forget-border"></div>
      </div>
-     <el-button type="text" class="swift-login" @click="login" >立刻登录</el-button>
+     <el-button type="text" class="form-forget" @click="login" >立刻登录</el-button>
      
 <div  class="input-with-newpassword" >
  
@@ -553,12 +553,12 @@ position: absolute;
   }
   
   .form-forget{
-     position:relative;
-    height:12%;    
-    float: right;
-    top:10%;
-    right: 10%;
-    margin-bottom:11%;
+   position:relative;
+     float: right;
+      // width:25%;
+      // top:20%;
+      margin-top:11%;
+      right:10%;
       color: #888;
       font-size:20px;
       border-bottom: #888 solid 3px;
@@ -664,8 +664,9 @@ position: absolute;
     .forget{
        position:relative;
       float:right;
+      
       right:37px;
-      top:10px;
+      top:8px;
     }
     .forget-title{
      position: relative;
@@ -783,17 +784,7 @@ position: absolute;
     float: left;
     top: 20%;
   }
-  .swift-login{
-    position:relative;
-     float: right;
-      // width:25%;
-      // top:20%;
-      margin-top:11%;
-      right:10%;
-      color: #888;
-      font-size:20px;
-      border-bottom: #888 solid 3px;
-  }
+  
   .forget-account{
      position:relative;
       // float:left;
