@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="border_size">
 
       <div>
       <!--搜索框 -->
@@ -342,6 +342,9 @@
   	padding-left: 20px;
   	width: 50px;
   	height: 50px;
+  }
+  .border_size{
+    width: 1600px;
   }
   .add-user{
     float: left;
