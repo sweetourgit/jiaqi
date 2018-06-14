@@ -529,16 +529,14 @@ import Permission from '@/page/account/userList/addUser/permission'
   .form_type{
     margin-left: 61px;
   }
-  .pane-scroll{
-    overflow: auto;
-  }
+
   .button-adjust{
     margin-left: -190px;
     margin-top: 50px;
   }
   .ruleForm-abjust{
-    height: 800px;
     width: 521px;
+    padding-bottom: 100px;
   }
   .block{
       width: 393px;
@@ -546,7 +544,6 @@ import Permission from '@/page/account/userList/addUser/permission'
       font-size: 14px;
       margin-left: 149px;
       margin-top: 10px;
-
   }
   .delete-adjust{
     position: relative;
