@@ -172,6 +172,16 @@
 
 <script>
   export default {
+    created: function(){
+          this.$http.post('http://api.dayuntong.com:3009/api/orglist',{
+            IsDeleted: '0',
+          }).then(function(response){
+            console.log(response);
+          }).catch(function(error){
+            console.log(error);
+          });
+        },
+
   data () {
     return {
         data: [{
@@ -189,9 +199,7 @@
                     label: '北欧部（500人）',
                     children: [{
                         label: '瑞典部（250人）',
-                    },{
-                        label: '挪威部（250人）',
-                    }]
+                    },]
                 }]
             },{
                 label: '客服部（1000人）',
@@ -570,7 +578,7 @@ methods: {
 
 <style scoped>
 .addTopOrganization{
-    position: absolute; 
+    position: absolute;
     bottom: 0%;
     left: 0%;
     width: 100%;
@@ -584,11 +592,15 @@ methods: {
     float: left;
     left: 13%;
     margin-top: 12%;
+    max-height: 500px;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 .btn-top{
   position: absolute;
   width: 50%;
   height: 100%;
+  left: 2%;
   margin-top: 4.2%;
 }
 .editDepartment{
@@ -640,7 +652,7 @@ methods: {
     top: 29.2%;
     left: 4%;
     width: 70%;
-    height: 25%;
+    height: 24%;
 }
 .small2{
     position: absolute;
@@ -759,12 +771,12 @@ methods: {
   width: 46.1%;
   height: 70%;
   margin-top: 1%;
-  margin-left: 23.4%;
+  margin-left: 450px;
   border: 2px solid #E6E6E6;
 }
 .left{
   position: absolute;
-  width: 21.1%;
+  width: 400px;
   height: 70%;
   border: 2px solid #E6E6E6;
   margin-top: 1%;
@@ -827,7 +839,7 @@ methods: {
 .right-top{
   position: absolute;
   width: 100%;
-  height: 7.1%;
+  height: 50px;
   background-color: #F6F6F6;
 }
 .rightTitle{
