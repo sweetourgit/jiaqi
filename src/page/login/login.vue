@@ -2,7 +2,7 @@
 <div class="app">
   <div class="top">
     <span class="top-titleone">嘉麒集团</span>
-    <span class="top-titletwo">通行证</span> 
+    <span class="top-titletwo">通行证</span>   
     
   </div>
  
