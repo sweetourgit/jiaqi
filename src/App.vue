@@ -3,7 +3,7 @@
     <el-header class="page-header"><page-header v-if="$route.meta.keepAlive"></page-header></el-header>
     <el-container class="container">
        <el-aside class="navigation" v-if="$route.meta.keepAlive"><nav-left></nav-left></el-aside>
-       <el-main class="content-body"><div class="content-position">{{this.$route.name}}</div><div class="content-body1"><router-view></router-view></div></el-main>
+       <el-main class="content-body"><div class="content-position">{{this.$route.name}}</div><el-main class="content-body1"><router-view></router-view></el-main></el-main>
     </el-container>
   </div>
 </template>
@@ -42,7 +42,7 @@ html{
 .page-header{height:auto !important;padding:0px !important}
 .container{height: 100%;}
 .navigation{width:222px !important;}
-.content-body{margin-left: -22px; background: #F7F7F7; height: 100%;}
-.content-body1{margin-top: 15px; background: #FFF; }
+.content-body{margin-left: -22px; background: #F7F7F7; line-height: 100%;}
+.content-body1{margin-top: 15px; background: #FFF; line-height: 100%; min-height: 80%;}
 .content-position{border-left: 3px solid #F38F00; text-align: left; padding-left: 20px; font-size: 17px;}
 </style>
