@@ -13,7 +13,7 @@
                 <template slot-scope="scope">
 					<el-button type="primary" size="small" @click="editPosition1(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="del(scope.$index, scope.row)">删除</el-button>
-				</template> 
+				</template>
             </el-table-column>
         </el-table>
 
