@@ -557,7 +557,7 @@ position: absolute;
      float: right;
       // width:25%;
       // top:20%;
-      margin-top:11%;
+      margin-top:9%;
       right:10%;
       color: #888;
       font-size:20px;
