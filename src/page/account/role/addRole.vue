@@ -21,22 +21,22 @@
       <el-button type="primary" @click="handleCheckAllChange" style="color: #3095fa;background: white">全选</el-button>
       <el-button type="primary" @click="handleResetChange">重置</el-button>
     </div>
-    <table class="all-size">
+    <table>
       <thead>
-      <tr class="table-button">
-        <td class="table-title">一级功能模块</td>
-        <td class="table-title">二级功能模块</td>
-        <td class="table-title">权限类型</td>
-        <td class="table-permiss">具体权限</td>
+      <tr>
+        <th width="248">一级功能模块</th>
+        <th width="278">二级功能模块</th>
+        <th width="340">权限类型</th>
+        <th>具体权限</th>
       </tr>
       </thead>
       <tbody>
-      <tr class="table-content">
+      <tr>
         <td rowspan="9">
-          <!--<el-checkbox v-model="roleList[0].accountManager.checked" :disabled="checkboxStatus">-->
-            <!--账号管理-->
-          <!--</el-checkbox>-->
-          <input type="checkbox" value="账号管理" v-model="isChecked" :disabled="checkboxStatus" />账号管理
+          <el-checkbox :disabled="checkboxStatus">
+            账号管理
+          </el-checkbox>
+          <!--<input type="checkbox" value="账号管理" v-model="isChecked" :disabled="checkboxStatus" />账号管理-->
         </td>
         <td rowspan="3">
           <!--<el-checkbox v-model="isChecked" :disabled="checkboxStatus">用户管理</el-checkbox>-->
@@ -51,7 +51,7 @@
           <input type="checkbox" value="用户列表" v-model="isChecked" :disabled="checkboxStatus" />用户列表
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>
           <!--<el-checkbox v-model="isChecked">编辑</el-checkbox>-->
           <input type="checkbox" value="编辑" v-model="isChecked" :disabled="checkboxStatus"/>编辑
@@ -64,7 +64,7 @@
         </td>
 
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>
           <!--<el-checkbox v-model="isChecked">操作</el-checkbox>-->
           <input type="checkbox" value="操作" v-model="isChecked" :disabled="checkboxStatus" />操作
@@ -76,7 +76,7 @@
           <input type="checkbox" value="停用" v-model="isChecked" :disabled="checkboxStatus" />停用
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td rowspan="3">
           <!--<el-checkbox v-model="isChecked">组织管理</el-checkbox>-->
           <input type="checkbox" value="组织管理" v-model="isChecked" :disabled="checkboxStatus" />组织管理
@@ -87,21 +87,21 @@
         </td>
         <td></td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>
           <!--<el-checkbox v-model="isChecked">编辑</el-checkbox>-->
           <input type="checkbox" value="编辑" v-model="isChecked" :disabled="checkboxStatus" />编辑
         </td>
         <td></td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>
           <!--<el-checkbox v-model="isChecked">操作</el-checkbox>-->
           <input type="checkbox" value="操作" v-model="isChecked" :disabled="checkboxStatus" />操作
         </td>
         <td></td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td rowspan="3">
           <!--<el-checkbox v-model="isChecked">权限管理</el-checkbox>-->
           <input type="checkbox" value="权限管理" v-model="isChecked" :disabled="checkboxStatus" />权限管理
@@ -115,7 +115,7 @@
           <input type="checkbox" value="角色模板列表" v-model="isChecked" :disabled="checkboxStatus" />角色模板列表
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>
           <!--<el-checkbox v-model="isChecked">编辑</el-checkbox>-->
           <input type="checkbox" value="编辑" v-model="isChecked" :disabled="checkboxStatus" />编辑
@@ -129,14 +129,14 @@
           <input type="checkbox" value="停用角色模板" v-model="isChecked" :disabled="checkboxStatus" />停用角色模板
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>
           <!--<el-checkbox v-model="isChecked">操作</el-checkbox>-->
           <input type="checkbox" value="操作" v-model="isChecked" :disabled="checkboxStatus" />操作
         </td>
         <td></td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td rowspan="3">
           <!--<el-checkbox v-model="roleList[1].personCenter.checked">个人中心</el-checkbox>-->
           <input type="checkbox" value="个人中心" v-model="isChecked" :disabled="checkboxStatus" />个人中心
@@ -154,7 +154,7 @@
           <input type="checkbox" value="账号信息" v-model="isChecked" :disabled="checkboxStatus" />账号信息
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>
           <!--<el-checkbox v-model="isChecked">编辑</el-checkbox>-->
           <input type="checkbox" value="编辑" v-model="isChecked" :disabled="checkboxStatus" />编辑
@@ -166,7 +166,7 @@
           <input type="checkbox" value="修改密码" v-model="isChecked" :disabled="checkboxStatus" />修改密码
         </td>
       </tr>
-      <tr class="table-content">
+      <tr>
         <td>
           <!--<el-checkbox v-model="isChecked">操作</el-checkbox>-->
           <input type="checkbox" value="操作" v-model="isChecked" :disabled="checkboxStatus" />操作
@@ -312,17 +312,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .top_tip {
-    border-left: 5px solid grey;
-    text-align: left;
-    padding-left: 5px;
-    font-size: 15px;
-    margin-bottom: 15px;
-  }
 
-  .el-form-item {
-    float: left;
-  }
   .form-class {
     text-align: left;
     padding-top: 20px;
@@ -331,53 +321,32 @@
     .el-input {
       width: 158px
     }
+    .el-form-item {
+      float: left;
+    }
   }
 
   .for-allcheck {
-
     text-align: left;
     padding: 20px;
   }
-
-  .permission-roel {
-    width: 300px;
+  table,table tr th, table tr td { border:0.5px solid #e6e6e6; }
+  table {
+    width: 100%;
+    margin: 20px 0 83px 0;
+    border-collapse: collapse;
+    font-size: 12px;
+    th {
+      height: 54px;
+      color: #999;
+    }
+    td {
+      height: 26px;
+    }
   }
-
-  .all-button {
-    z-index: 99;
-  }
-
-  .all-table {
-    display: block;
-    z-index: 1;
-  }
-
   .sub_button {
     width: 142px;
     font-size: 12px;
-  }
-  .table-button {
-    background-color: #D7D7D7;
-  }
-
-  .table-content {
-    background-color: #F2F2F2;
-  }
-
-  .table-title {
-    font-size: 15px;
-    width: 100px;
-    height: 40px;
-  }
-
-  .all-size {
-    font-size: 10px;
-    width: 100%;
-    margin-bottom: 83px;
-  }
-
-  .table-permiss {
-    width: 300px
   }
 
   .button-submit {
