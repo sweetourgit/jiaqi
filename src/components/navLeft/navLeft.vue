@@ -7,14 +7,14 @@
       class="el-menu-vertical-demo"
       background-color="#0F2350"
       text-color="#fff"
-      active-text-color="#27D8C9"
+      active-text-color="#3095FA"
       :router='isRouter'
       @open='handleOpen'
       ref='menu'
       >
       <el-submenu v-for="(item,index) in category" :key="index" :index="String(index)" @mouseover.native="mouseOpen(index)">
         <template slot="title">
-          <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"></i><i class="el-icon-setting"></i>
+          <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"></i><img class="aa" :src="('../static/navLeft/'+item.img)" width="18px" alt="">
           <span>{{item.name}}</span>
         </template>
         <el-submenu :index="(index+ '-' +index1)" v-for="(data,index1) in item.items" :key="index1">
@@ -35,6 +35,7 @@
         category: [
             {
                 name: '账户管理',
+                img: '账户管理.png',
                 items: [
                     {
                     title:'用户管理',
@@ -69,6 +70,7 @@
             },
             {
                 name: '个人中心',
+                img: '个人中心.png',
                 items: [
                     {
                     title:'账户信息',

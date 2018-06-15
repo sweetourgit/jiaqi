@@ -31,13 +31,13 @@
 </script>
 
 <style scoped>
-    .header{height:80px;}
+    .header{height:60px;}
     .left{margin: 30px; font-weight: 700px; font-size: 18px;}
     .right{float: right; margin: 0 120px 0 0;}
-    .el-icon-bell{float:left;margin: 30px 50px 0 0;}
-    .aa{float: left; width:30px; height:20px; border-left: solid 1px #CCCCCC;position: relative; top: 30px; right: 20px;}
-    .el-icon-service{float:left; position: relative; top: 30px; right: 20px;}
-    .bb{float: left; width:30px; height:20px; border-left: solid 1px #CCCCCC;margin: 30px 0 0 15px}
-    .icon1{float: right; margin: 30px 0 15px 0;}
-    .log{float: left; width: 200px; height: 80px; background: #0D142B;color:#fff;}
+    .el-icon-bell{float:left;margin: 20px 50px 0 0;}
+    .aa{float: left; width:30px; height:20px; border-left: solid 1px #CCCCCC;position: relative; top: 20px; right: 20px;}
+    .el-icon-service{float:left; position: relative; top: 20px; right: 20px;}
+    .bb{float: left; width:30px; height:20px; border-left: solid 1px #CCCCCC;margin: 20px 0 0 15px}
+    .icon1{float: right; margin: 20px 0 15px 0;}
+    .log{float: left; width: 200px; height: 60px; background: #0D142B;color:#fff;}
 </style>
