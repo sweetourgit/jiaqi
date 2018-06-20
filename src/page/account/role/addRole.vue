@@ -39,8 +39,8 @@
           <!--<input type="checkbox" value="账号管理" v-model="isChecked" :disabled="checkboxStatus" />账号管理-->
         </td>
         <td rowspan="3">
-          <!--<el-checkbox v-model="isChecked" :disabled="checkboxStatus">用户管理</el-checkbox>-->
-          <input type="checkbox" value="用户管理" v-model="isChecked" :disabled="checkboxStatus" />用户管理
+          <el-checkbox :checked="ck1.checked" :disabled="checkboxStatus">用户管理</el-checkbox>
+          <!--<input type="checkbox" value="用户管理" v-model="isChecked" :disabled="checkboxStatus" />用户管理-->
         </td>
         <td>
           <!--<el-checkbox v-model="isChecked">只读</el-checkbox>-->
@@ -224,7 +224,9 @@
 
           ],
         },
-
+        ck1: {
+          checked: false
+        },
         roleList: {},
         checkboxStatus: false     // 当前页表单组是否激活状态
       }
@@ -241,7 +243,7 @@
         "/static/data.json"
       ).then(
         obj => {
-          console.log(obj.data.roleList)
+          // console.log(obj.data.roleList)
           this.roleList = obj.data.roleList
         }
       )
@@ -279,29 +281,31 @@
 
       // 全选checkbox部分逻辑
       handleCheckAllChange() {
-        this.isChecked = [
-          '用户管理',
-          '账号管理',
-          '组织管理',
-          '权限管理',
-          '用户列表',
-          '编辑用户',
-          '添加用户',
-          '停用',
-          '启用',
-          '角色模板列表',
-          '添加角色模板',
-          '编辑角色模板',
-          '停用角色模板',
-          '账号信息',
-          '修改账号信息',
-          '修改密码',
-          '个人中心',
-          '账号设置',
-          '只读',
-          '编辑',
-          '操作',
-        ]
+        // this.isChecked = [
+        //   '用户管理',
+        //   '账号管理',
+        //   '组织管理',
+        //   '权限管理',
+        //   '用户列表',
+        //   '编辑用户',
+        //   '添加用户',
+        //   '停用',
+        //   '启用',
+        //   '角色模板列表',
+        //   '添加角色模板',
+        //   '编辑角色模板',
+        //   '停用角色模板',
+        //   '账号信息',
+        //   '修改账号信息',
+        //   '修改密码',
+        //   '个人中心',
+        //   '账号设置',
+        //   '只读',
+        //   '编辑',
+        //   '操作',
+        // ]
+        console.log(this.ck1.checked)
+      this.ck1.checked = true
       },
       // 全不选checkbox部分逻辑
       handleResetChange() {

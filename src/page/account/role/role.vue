@@ -14,10 +14,11 @@
           v-for="item in statusArr"
           :key="item.value"
           :label="item.label"
-          :value="item.value">
+          :value="item.value"
+          >
         </el-option>
       </el-select>
-      <el-input v-model="input" placeholder="请输入关键字" clearable></el-input>
+      <el-input v-model="keyword" placeholder="请输入关键字" clearable></el-input>
       <el-button type="primary" @click="subForm()" size="" class="sub_button" icon="el-icon-search"></el-button>
     </div>
     <div class="cl_both"></div>
@@ -28,9 +29,9 @@
       </router-link>
     </div>
       <el-table
-        :data="tableData"
-        header-row-style="height:60px"
-        cell-style="padding:0;height:40px"
+        :data="roleData.slice((pageIndex-1)*pageSize,pageIndex*pageSize)"
+        :header-row-style="hrs"
+        :cell-style="cs"
         border>
         <el-table-column
           prop="id"
@@ -39,7 +40,7 @@
           header-align="center">
         </el-table-column>
         <el-table-column
-          prop="template_name"
+          prop="title"
           label="模板名称"
           width="180"
           header-align="center">
@@ -50,17 +51,17 @@
           header-align="center">
         </el-table-column>
         <el-table-column
-          prop="template_desc"
+          prop="mark"
           label="模板描述"
           header-align="center">
         </el-table-column>
         <el-table-column
-          prop="nums"
+          prop="count"
           label="人数"
           header-align="center">
         </el-table-column>
         <el-table-column
-          prop="status"
+          prop="state"
           label="状态"
           header-align="center">
         </el-table-column>
@@ -70,19 +71,21 @@
           width="180"
           header-align="center">
           <template slot-scope="scope">
-            <router-link to="/addRole?id=1&type=view"><el-button type="primary" size="small" class="bt-edit">编辑</el-button></router-link>
-            <router-link to="/addRole?id=1"><el-button type="danger" size="small" class="bt-stop">停用</el-button></router-link>
+            <el-button type="primary" size="small" @click="editRole(scope.row.id)" class="bt-edit">编辑</el-button>
+            <!--<router-link to="/addRole?id=scope.row.id&type=view"><el-button type="primary" size="small" class="bt-edit">编辑</el-button></router-link>-->
+            <el-button type="info" size="small" @click="changeState(scope.row.id,1)" class="bt-stop" v-if="scope.row.state === '禁用'">启用</el-button>
+            <el-button type="danger" size="small" @click="changeState(scope.row.id,2)" class="bt-stop" v-else="scope.row.state === '启用'">停用</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      @prev-click="handlePrev"
       plain="false"
       prev-text="上一页"
       next-text="下一页"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[2,3,4,5]"
+      :page-size="pageSize"
       :current-page="1"
       layout="total, prev, pager, next, sizes, jumper, ->"
       :total="totalNum"
@@ -104,104 +107,110 @@
           label: '模板名称'
         }],
         statusArr: [{
-          value: 'disable',
+          value: '2',
           label: '禁用'
         }, {
-          value: 'enable',
+          value: '1',
           label: '正常'
         }],
         typeValue: '',
         statusValue: '',
-        input: '',
-        tableData: [
-          {
-            "id": "001",
-            "template_name": "财务",
-            "author": "管理员",
-            "template_desc": "财务",
-            "nums": "22",
-            "status": 1
-          },
-          {
-            "id": "002",
-            "template_name": "财务",
-            "author": "管理员",
-            "template_desc": "财务",
-            "nums": "22",
-            "status": 0
-          },
-          {
-            "id": "003",
-            "template_name": "财务",
-            "author": "管理员",
-            "template_desc": "财务",
-            "nums": "22",
-            "status": 0
-          },
-          {
-            "id": "004",
-            "template_name": "财务",
-            "author": "管理员",
-            "template_desc": "财务",
-            "nums": "22",
-            "status": 0
-          },
-          {
-            "id": "005",
-            "template_name": "财务",
-            "author": "管理员",
-            "template_desc": "财务",
-            "nums": "22",
-            "status": 0
-          },
-          {
-            "id": "006",
-            "template_name": "财务",
-            "author": "管理员",
-            "template_desc": "财务",
-            "nums": "22",
-            "status": 0
-          }
-        ],
-        totalNum: 600
+        keyword: '',
+        hrs: {height: '60px'},
+        cs: {padding:'0',height:'40px'},
+        roleData:[],
+        pageSize: 2,    // 设定默认分页每页显示数 todo 具体看需求
+        pageIndex: 1,    // 设定当前页数
+        totalNum: 0
       }
     },
     created(){
+      // 获取权限列表
       this.getRoleList()
     },
     methods: {
-      getRoleList(currPage = '') {
+      getRoleList(PageIndex = this.pageIndex, PageSize = this.pageSize, type = '', status = '', keyword = '') {
 
         let _this = this
-        currPage = currPage == '' ? 1 : currPage
 
         this.$http.post(
-          "http://rap2api.taobao.org/app/mock/16117/role/getRoleList",     //todo 按实际接口URL
-          {currPage: currPage, pageSize: 1}
+          "http://api.dayuntong.com:3009/api/rolelist",
+          {
+            "Object": {
+              "IsDeleted": 0
+            },
+            "PageIndex": PageIndex,
+            "PageSize": PageSize
+          }
         )
-          .then(function (obj) {
-            // _this.tableData = obj.data.list     //todo 按实际接口返回数据结构修改
-            // _this.totalNum = obj.data.list.length
+          .then(obj =>{
+
+            var _data = obj.data.objects
+
+            _data.forEach(function (v,k,arr) {
+              arr[k]['author'] = '管理员'         // TODO 后台无返回，前端定死
+              if(v['state'] == 1) {
+                arr[k]['state'] = '启动'
+              }else if(v['state'] == 2) {
+                arr[k]['state'] = '禁用'
+              }
+            })
+
+            _this.roleData = _data
+            _this.totalNum = _data.length
           })
           .catch(function (obj) {
             console.log(obj)
           })
       },
+      // 编辑权限
+      editRole: function(id) {
+        this.$router.push({
+          path: '/addRole',
+          query: {
+            id: id
+          }
+        })
+      },
+      // 启停用账户
+      changeState: function(obj,flag) {
+
+        // todo 根据状态 修改apiURL。修改提示语
+        if (flag == 1) {
+
+        }else {
+
+        }
+        this.$confirm('停用' +obj+ '账户?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //////////        todo 添加删除接口，在回调中执行以下提示
+          this.$message({
+            type: 'success',
+            message: '成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      },
       // 每页显示数变化事件
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        this.pageSize = val
+        this.getRoleList(this.pageIndex, val)
       },
       // 当前页变化事件
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
-      // 点击上一页按钮事件
-      handlePrev: function() {
-        console.log('点击了上一页按钮')
+        this.pageIndex = val
       },
       // 表单提交事件
       subForm() {
-        this.getRoleList(2)
+        console.log('提交参数为' + this.typeValue + this.statusValue + this.keyword)
+        this.getRoleList(1, this.pageSize, this.typeValue, this.statusValue ,this.keyword)
       }
     },
   }
@@ -242,6 +251,9 @@
     margin: 20px 0 40px 0;
 
   }
+     td {
+       color: #666;
+     }
   .cl_both {
     clear: both
   }
