@@ -3,7 +3,7 @@
       <div class="tag">
         <el-tabs v-model="activeName" class="form_tag">
           <el-tab-pane label="基本信息" name="first" class="pane-scroll">
-             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm ruleForm-abjust">
+             <el-form :model="ruleForm"  :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm ruleForm-abjust">
               <el-button type="success" size="medium" class="begin-button" @click="handleType">启用</el-button>
               <el-button type="danger" size="medium" class="end-button" @click="handleType">停用 </el-button>
               <el-form-item label="手机号" prop="phone">
@@ -15,7 +15,7 @@
               <el-form-item label="邮箱" prop="mail">
                 <el-input v-model="ruleForm.mail" placeholder="请输入邮箱" class="from-input"></el-input>
               </el-form-item>
-              <el-form-item label="员工编号" prop="number">
+              <el-form-item label="员工编号" prop="number" >
                 <el-input v-model="ruleForm.number" placeholder="请输入员工编号" class="from-input"></el-input>
               </el-form-item>
               <el-form-item label="身份证号">
@@ -26,18 +26,18 @@
               </el-form-item>
               <el-form-item label="性别" prop="sex">
                 <el-radio-group v-model="ruleForm.sex">
-                  <el-radio label="男" class="from-radio"></el-radio>
-                  <el-radio label="女"></el-radio>
+                  <el-radio label="1" class="from-radio">男</el-radio>
+                  <el-radio label="2">女</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="用户类型" prop="type">
                 <el-radio-group v-model="ruleForm.type" class="form_type">
-                  <el-radio label="普通用户" class="from-radio"></el-radio>
-                  <el-radio label="管理员"></el-radio>
+                  <el-radio label="1" class="from-radio">普通用户</el-radio>
+                  <el-radio label="2">管理员</el-radio>
                 </el-radio-group>
               </el-form-item>
               <div class="form_ori">
-              <el-form-item label="组织-部门-职务" prop="region">
+              <el-form-item label="组织-部门-职务" >
                 <div class="addOri">
                     <el-button type="primary" plain @click="dialogFormVisible = true" v-model="orilist" class="but-left">{{orilist}}</el-button>
                     <div class="button-fun">
@@ -122,6 +122,8 @@ import Permission from '@/page/account/userList/addUser/permission'
       Permission
     },
     data () {
+
+
         var checkPhone = (rule, value, callback) => {
           var myreg=/^[1][3,4,5,7,8][0-9]{9}$/;
           if(!value){
@@ -130,7 +132,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           if (!myreg.test(value)) {
           return callback(new Error('请输入正确的电话号码'));
         }
-      }
+      };
       var checkName = (rule, value, callback) => {
           var myreg=  /^[\u4e00-\u9fa5]{2,6}/;
           if(!value){
@@ -139,7 +141,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           if (!myreg.test(value)) {
           return callback(new Error('请输入2-6位汉字'));
         }
-      }
+      };
       var checkMail = (rule, value, callback) => {
           var myreg=  /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/;
           if(!value){
@@ -148,19 +150,16 @@ import Permission from '@/page/account/userList/addUser/permission'
           if (!myreg.test(value)) {
           return callback(new Error('请输入正确的邮箱'));
         }
-      }
+      };
        var checkTrail = (rule, value, callback) => {
           if(!value){
             return callback(new Error('员工编号不能为空'));
           }
-      }
-      var checkRegion = (rule, value, callback) => {
-          if(!value){
-            return callback(new Error('请选择一个组织'));
-          }
-      }
+      };
+
 
       return {
+          a:"1",
           hidval:"-1",
         selectedOptions: [],
         orilist: '甜程旅行网-财务部-经理',
@@ -197,25 +196,25 @@ import Permission from '@/page/account/userList/addUser/permission'
           number:'',
           idcard:'',
           trailid:'',
-          sex:'男',
-          type:'普通用户',
-          region:'',
+          sex:'1',
+          type:'1',
           domains: [{
             value: ''
           }],
         },
         rules: {
            phone: [
-            {required: true, validator: checkPhone, trigger: 'blur' }
+            { required: true, message: '请输入电话',trigger: 'blur' },
+
           ],
           name: [
-            { required: true,validator: checkName, trigger: 'blur' }
+            {  required: true, message: '请输入姓名', trigger: 'blur' }
           ],
           mail: [
-            { required: true,validator: checkMail, trigger: 'blur' }
+            {  required: true, message: '请输入邮箱地址', trigger: 'blur' }
           ],
           number: [
-            { required: true,validator: checkTrail, trigger: 'blur' }
+            {  required: true, message: '请输入用户编号', trigger: 'blur' }
           ],
           sex: [
             { required: true, message: '请选择性别', trigger: 'change' }
@@ -223,9 +222,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           type: [
             { required: true, message: '请选择用户类型', trigger: 'change' }
           ],
-          region: [
-            { required: true, validator: checkRegion, trigger: 'change' }
-          ],
+
         },
 
         casc: [{
@@ -466,16 +463,54 @@ import Permission from '@/page/account/userList/addUser/permission'
         }
         })
       },
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
+        submitForm(formName) {
+          var that = this
+          this.$refs[formName].validate((valid) => {
+            if (valid) {
+              var that = this
+              this.$http.post(
+                "http://api.dayuntong.com:3009/api/insertuser",
+                ({
+                  "Object": {
+                    "createTime": "2018-06-20T09:35:52.822Z",
+                    "isDeleted": 0,
+                    "code": "string",
+                    "mobile":this.ruleForm.phone,
+                    "name": this.ruleForm.name,
+                    "email": this.ruleForm.mail,
+                    "userCode": this.ruleForm.number,
+                    "iDcard": this.ruleForm.idcard,
+                    "tourGuide": this.ruleForm.trailid,
+                    "sex": this.ruleForm.sex,
+                    "userType": this.ruleForm.type
+                  }
+                })
+              )
+                .then(function (obj) {
+                    if(obj.status == 200){
+                      that.$message({
+                        message: '操作成功',
+                        type: 'success'
+                      });
+                      setTimeout(() => {
+                        that.$router.push({path: "/userlist"});
+                      }, 1000);
+                    }
+
+                })
+                .catch(function (obj) {
+                  console.log(obj)
+                })
+              // 组织列表
+              // console.log(this.orilist)
+              // console.log(this.ruleForm1)
+
+            } else {
+              console.log('error submit!!');
+              return false;
+            }
+          });
+        },
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
@@ -495,6 +530,9 @@ import Permission from '@/page/account/userList/addUser/permission'
         });
         }
       }
+    },
+    created(){
+      console.log(this.$route.query.id)
     }
 
 }
