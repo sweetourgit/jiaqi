@@ -35,10 +35,10 @@
            </el-select>
       	</div>
       	<div class="search-input">
-      		<el-input  placeholder="请输入内容"  clearable></el-input>
+      		<el-input v-model="input" placeholder="请输入内容"  clearable></el-input>
       	</div>
         <div class="button-search">
-          <el-button  size="medium" type="primary" icon="el-icon-search"></el-button>
+          <el-button  size="medium" type="primary" icon="el-icon-search" @click="searchSubmit"></el-button>
         </div>
 
 
@@ -69,19 +69,19 @@
            align="center">
         </el-table-column>
         <el-table-column
-           prop="type"
+           prop="userType"
            label="用户类型"
            width="100"
            align="center">
         </el-table-column>
         <el-table-column
-           prop="phone"
+           prop="mobile"
            label="手机号"
            width="150"
            align="center">
         </el-table-column>
         <el-table-column
-           prop="mail"
+           prop="email"
            label="邮箱"
            width="170"
            align="center">
@@ -105,7 +105,7 @@
            align="center">
         </el-table-column>
         <el-table-column
-           prop="createtime"
+           prop="createTime"
            label="创建时间"
            width="230"
            align="center">
@@ -121,19 +121,22 @@
           align="center"
           width="250">
            <template slot-scope="scope">
-             <el-button  size="small" @click="dialogFormVisible = true">查看</el-button>
-             <el-button type="primary" size="small" @click="dialogFormVisible = true">编辑</el-button>
+             <el-button  size="small" @click="find(scope.$index, scope.row)">查看</el-button>
+             <el-button type="primary" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
            </template>
         </el-table-column>
       </el-table>
         <!--分页-->
     <div class="block">
-       <el-pagination
-        :page-sizes="[10]"
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[100, 200, 300, 400]"
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="490">
-       </el-pagination>
+        :total="total">
+      </el-pagination>
     </div>
     <!--分页end-->
     </div>
@@ -146,28 +149,28 @@
 	       <el-input v-model="form.otype" disabled class="form-gz"></el-input>
 	     </el-form-item>
 	     <el-form-item label="手机号:" class="form-la">
-	       <el-input v-model="form.phone" disabled class="form-gz"></el-input>
+	       <el-input v-model="form.mobile" disabled class="form-gz"></el-input>
 	     </el-form-item>
 	     <el-form-item label="姓名:" class="form-la">
 	       <el-input v-model="form.name" disabled class="form-gz"></el-input>
 	     </el-form-item>
 	     <el-form-item label="邮箱:" class="form-la">
-	       <el-input v-model="form.mail" disabled class="form-gz"></el-input>
+	       <el-input v-model="form.email" disabled class="form-gz"></el-input>
 	     </el-form-item>
 	     <el-form-item label="员工编号:" class="form-la">
-	       <el-input v-model="form.number" disabled class="form-gz"></el-input>
+	       <el-input v-model="form.userCode" disabled class="form-gz"></el-input>
 	     </el-form-item>
 	     <el-form-item label="身份证号:" class="form-la">
-	       <el-input v-model="form.id" disabled class="form-gz"></el-input>
+	       <el-input v-model="form.iDcard" disabled class="form-gz"></el-input>
 	     </el-form-item>
 	     <el-form-item label="导游证号:" class="form-la">
-	       <el-input v-model="form.trailId" disabled class="form-gz"></el-input>
+	       <el-input v-model="form.tourGuide" disabled class="form-gz"></el-input>
 	     </el-form-item>
 	     <el-form-item label="性别:" class="form-sex" >
 	     <template>
           <div class="form-size">
-           <el-radio disabled v-model="form.radioSex" label="1" class="form-radios">男</el-radio>
-           <el-radio disabled v-model="form.radioSex" label="2">女</el-radio>
+           <el-radio disabled v-model="form.sex" label="1" class="form-radios">男</el-radio>
+           <el-radio disabled v-model="form.sex" label="2">女</el-radio>
            </div>
          </template>
         </el-form-item>
@@ -187,7 +190,7 @@
 	     </el-form-item>
 	     <el-form-item label="创建时间：" class="from-time" >
         <div class="form-size3">
-	       <span class="form-createtime">{{form.createtime}}</span>
+	       <span class="form-createtime">{{form.updatetime}}</span>
          </div>
 	     </el-form-item>
 	     <el-form-item label="修改时间：" class="from-time">
@@ -210,20 +213,11 @@
    data() {
       return {
         qqq: [],
+        total:600,
+        currentPage:4,
+        input:"",
         dialogFormVisible: false,
         form: {
-          otype: '正常',
-          phone: '15662458688',
-          name: '张三',
-          mail: 'slfkjsl@qq.com',
-          number: '323213',
-          id:'2116153183156146',
-          trailId: '23213213213213',
-          radioSex: '1',
-          userType: '1',
-          organization: '甜程旅行网-财务部-经理',
-          createtime: '2018/05/04 10:23',
-          updatetime: '2018/05/14 10:23',
         },
         formLabelWidth: '120px',
 
@@ -267,30 +261,155 @@
         }],
         user: '',
 
-      tableData3: [{
-          id: '001',
-          name: '张三',
-          type: '普通用户',
-          phone: '188888888888',
-          mail: '364648@qq.com',
-          sex: '男',
-          otype: '正常',
-          organization: '辽宁大运通-销售部-主管  辽宁大运通-销售部-主管',
-          createtime: '2018/05/04 10:23',
-          updatetime: '2018/05/13 10:43',
-        },{
-          id: '002',
-          name: '李四',
-          type: '管理员',
-          phone: '177777777777',
-          mail: '3644646148@qq.com',
-          sex: '女',
-          otype: '停用',
-          organization: '吉林大运通-财务部-会计 辽宁大运通-销售部-销售',
-          createtime: '2018/05/04 10:23',
-          updatetime: '2018/05/13 10:43',
-        }]
+      tableData3: [],
+
       }
+    },
+    methods:{
+      handleSizeChange(val) {
+        var that = this
+        this.$http.post(
+          "http://api.dayuntong.com:3009/api/userlist",
+          ({
+            "Object": {
+              "IsDeleted": 0,
+              "value":this.value,
+              "type":this.type,
+              "user":this.user,
+              "input":this.input,
+              "PageSize":val
+
+            }
+          })
+        )
+          .then(function (obj) {
+            // console.log(obj.data.objects)
+            that.tableData3 = obj.data.objects
+            that.tableData3.forEach(function (v,k,arr) {
+              arr[k]['otype'] = '正常'
+              arr[k]['organization'] = '吉林大运通-财务部-会计'
+              arr[k]['updatetime'] = '2018/05/13 10:43'
+
+            })
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+
+      },
+      handleCurrentChange(val) {
+        var that = this
+        this.$http.post(
+          "http://api.dayuntong.com:3009/api/userlist",
+          ({
+            "Object": {
+              "IsDeleted": 0,
+              "value":this.value,
+              "type":this.type,
+              "user":this.user,
+              "input":this.input,
+              "PageIndex":val
+
+            }
+          })
+        )
+          .then(function (obj) {
+            // console.log(obj.data.objects)
+            that.tableData3 = obj.data.objects
+            that.tableData3.forEach(function (v,k,arr) {
+              arr[k]['otype'] = '正常'
+              arr[k]['organization'] = '吉林大运通-财务部-会计'
+              arr[k]['updatetime'] = '2018/05/13 10:43'
+
+            })
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+
+
+      },
+     searchSubmit(){
+    //搜索
+       var that = this
+       this.$http.post(
+         "http://api.dayuntong.com:3009/api/userlist",
+         ({
+           "Object": {
+             "IsDeleted": 0,
+             "value":this.value,
+             "type":this.type,
+             "user":this.user,
+             "input":this.input,
+
+           }
+         })
+       )
+         .then(function (obj) {
+           // console.log(obj.data.objects)
+           that.tableData3 = obj.data.objects
+           that.tableData3.forEach(function (v,k,arr) {
+             arr[k]['otype'] = '正常'
+             arr[k]['organization'] = '吉林大运通-财务部-会计'
+             arr[k]['updatetime'] = '2018/05/13 10:43'
+
+           })
+         })
+         .catch(function (obj) {
+           console.log(obj)
+         })
+
+     },
+      //查看
+      find(index, row){
+        this.dialogFormVisible = true
+        this.form = row
+        if(this.form.sex == 1){
+          this.form.sex = "1"
+        }
+        this.form.userType = "1"
+
+        console.log(row);
+      },
+      edit(index, row){
+
+        this.$router.push({
+          path: '/userlist/adduser',
+          query: {
+            id: row.id
+          }
+        })
+
+        console.log();
+
+      }
+
+    },
+    created(){
+     //用户列表
+     var that = this
+      this.$http.post(
+        "http://api.dayuntong.com:3009/api/userlist",
+       ({
+          "Object": {
+            "IsDeleted": 0
+          }
+        })
+      )
+        .then(function (obj) {
+          // console.log(obj.data.objects)
+          that.tableData3 = obj.data.objects
+          that.tableData3.forEach(function (v,k,arr) {
+              arr[k]['otype'] = '正常'
+              arr[k]['organization'] = '吉林大运通-财务部-会计'
+              arr[k]['updatetime'] = '2018/05/13 10:43'
+
+          })
+        })
+        .catch(function (obj) {
+          console.log(obj)
+        })
+
     }
 }
 
@@ -302,7 +421,7 @@
 
   .user-table{
     width: 1632px;
-    margin-left:25px;
+    margin-left:26px;
     margin-top: 70px;
   }
   .search{
