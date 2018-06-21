@@ -73,10 +73,10 @@
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="editRole(scope.row.id)" class="bt-edit">编辑</el-button>
             <!--<router-link to="/addRole?id=scope.row.id&type=view"><el-button type="primary" size="small" class="bt-edit">编辑</el-button></router-link>-->
-            <el-button type="info" size="small" @click="changeState(scope.row.id,2)" class="bt-stop"
+            <el-button type="info" size="small" @click="changeState(scope.row.id,1)" class="bt-stop"
                        v-if="scope.row.state === '禁用'">启用
             </el-button>
-            <el-button type="danger" size="small" @click="changeState(scope.row.id,1)" class="bt-stop"
+            <el-button type="danger" size="small" @click="changeState(scope.row.id,2)" class="bt-stop"
                        v-else="scope.row.state === '启用'">停用
             </el-button>
           </template>
@@ -183,9 +183,9 @@
         let that = this
         var mess = ""
         if (flag == 1) {
-          mess = '停用'
-        } else if(flag == 2) {
           mess = '启用'
+        } else if(flag == 2) {
+          mess = '停用'
         }
 
         this.$confirm(mess + obj + '角色?', '提示', {
@@ -197,14 +197,21 @@
             this.GLOBAL.serverSrc + "/api/org/rolesave",
             {
               "object": {
-                "createTime": "2018-06-21T07:59:50.008Z",
+                "id": obj,
+                "createTime": "2018-06-21T11:24:35.785Z",
+                "isDeleted": 0,
+                "code": "string",
+                "title": "string",
+                "mark": "string",
+                "count": 0,
                 "state": flag
               },
-              "id": 1
+              "id": obj
             }
           )
             .then(
               obj => {
+                console.log(obj)
                 this.$message({
                   type: 'success',
                   message: mess + '成功'
