@@ -1,19 +1,17 @@
 <template>
     <div>
         <div class="left">
-            <div class="hh">
-          <el-tree ref="oppo" @node-click="treeClick" :data="data" node-key="orgID" :load="loadNode" class="tree" @dblclick.native="treeDblclick()" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
-          </div>
+          <el-tree :data="data" class="tree" :render-content="renderContent"></el-tree>
           <el-button type="primary" class="addTopOrganization" @click="addTopOrganization = true">+ &nbsp;&nbsp;&nbsp;&nbsp;顶级组织</el-button>
         </div>
         <div class="right">
           <div class="right-top">
-            <span class="rightTitle">{{addInput.topDepartment}}</span>
+            <span class="rightTitle">东南亚部</span>
           </div>
           <div class="right-btn">
             <div class="btn-top">
-              <el-button plain class="editDepartment" @click="editDepartment1">编辑</el-button>
-              <el-button type="primary" class="addSubdivision" @click="addSubdivision1">+ &nbsp;子部门</el-button>
+              <el-button plain class="editDepartment" @click="editDepartment = true">编辑</el-button>
+              <el-button type="primary" class="addSubdivision" @click="addSubdivision = true">+ &nbsp;子部门</el-button>
             </div>
             <!-- <span class="inheritanceRules">默认限制向上继承</span>
             <el-switch v-model="switchs" active-color="#13ce66" inactive-color="#ff4949" class="switch"></el-switch> -->
@@ -21,7 +19,7 @@
           <div class="small1"></div>
           <span class="lowerTitle">下级部门</span>
           <el-table :data="tableData" border class="divisionTable" max-height="163">
-            <el-table-column prop="label" label="部门" align="center"></el-table-column>
+            <el-table-column prop="division" label="部门" align="center"></el-table-column>
             <el-table-column label="操作" align="center">
                 <template slot-scope="scope">
                         <el-button type="primary" size="small">进入</el-button>
@@ -32,7 +30,7 @@
           <div class="small2"></div>
           <span class="personnelTitle">部门人员</span>
           <div class="btn-boom">
-            <el-button plain class="addPersonnel" @click="addPersonnel1">添加成员</el-button>
+            <el-button plain class="addPersonnel" @click="addPersonnel = true">添加成员</el-button>
             <el-button type="danger" class="batchDelete" disabled v-if="kk[0] == undefined">批量移除</el-button>
             <el-button type="danger" class="batchDelete" @click="open2" v-if="kk[0] !== undefined">批量移除</el-button>
           </div>
@@ -70,7 +68,7 @@
                 </el-form-item>
                 </el-form>
                 <span class="cascaderTitle">上级部门</span>
-                <el-cascader @active-item-change="department" :props="props" :options="options" class="cascader"></el-cascader>
+                <el-cascader :options="options" change-on-select class="cascader"></el-cascader>
             </div>
             <div slot="footer">
                 <el-button @click="editDepartment = false">取 消</el-button>
@@ -116,7 +114,6 @@
         </el-dialog>
         <!-- 添加成员弹框 -->
         <el-dialog  class="Popup" :visible.sync="addPersonnel" style="width:90%;height:105%;">
-            <div class="kk">
             <div class="booms">
                 <span class="addTitle">添加成员</span>
                 <el-form :model="updata">
@@ -126,7 +123,17 @@
                 </el-form>
                 <el-button type="primary" class="searchButton" @click="oo">搜索</el-button>
             </div>
-            <el-table ref="table" :data="members.slice((currentPage-1)*pagesize,currentPage*pagesize)" border class="members" @selection-change="qq">
+            <el-table :data="members1" border class="members" v-show="jj">
+                <el-table-column type="selection" width="30%" align="center"></el-table-column>
+                <el-table-column prop="id" label="ID" align="center" width="60%" fixed="left"></el-table-column>
+                <el-table-column prop="name" label="姓名" align="center" width="120%" fixed="left"></el-table-column>
+                <el-table-column prop="phone" label="手机号" align="center" width="200%"></el-table-column>
+                <el-table-column prop="email" label="邮箱" align="center" width="200%"></el-table-column>
+                <el-table-column prop="sex" label="性别" align="center" width="120%"></el-table-column>
+                <el-table-column prop="state" label="状态" align="center" width="120%"></el-table-column>
+            </el-table>
+
+            <el-table ref="table" :data="members" border class="members" v-show="!jj" @selection-change="qq">
                 <el-table-column type="selection" width="30%" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" align="center"  width="60%" fixed="left"></el-table-column>
                 <el-table-column prop="name" label="姓名" align="center"  width="120%" fixed="left"></el-table-column>
@@ -136,13 +143,12 @@
                 <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
             </el-table>
             <div class="black">
-              <el-pagination :page-sizes="[8]" background @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="this.members.length">
+              <el-pagination :page-sizes="[8]" background  layout="total, sizes, prev, pager, next, jumper" :total="this.members.length">
               </el-pagination>
             </div>
             <div slot="footer" class="btn">
                 <el-button @click="addPersonnel2">取 消</el-button>
                 <el-button type="primary" @click="qqq">添加</el-button>
-            </div>
             </div>
         </el-dialog>
         <!-- 设置职位弹框 -->
@@ -166,69 +172,92 @@
 
 <script>
   export default {
-created: function (){
-   this.TreeData()
-},
   data () {
     return {
-        // data3: [{
-        //     label: '辽宁大运通（2000人）',
-        //     children: [{
-        //         label: '亚洲部（1000人）',
-        //         children: [{
-        //             label: '东南亚部（500人）',
-        //             children: [{
-        //                 label: '日本部（250人）',
-        //             },{
-        //                 label:'韩国部（250人）',
-        //             }]
-        //         },{
-        //             label: '北欧部（500人）',
-        //             children: [{
-        //                 label: '瑞典部（250人）',
-        //             },]
-        //         }]
-        //     },{
-        //         label: '客服部（1000人）',
-        //     }]
-        // }],
-        data: [],
-        data1: [],
-        data2:[],
+        data: [{
+            label: '辽宁大运通（2000人）',
+            children: [{
+                label: '亚洲部（1000人）',
+                children: [{
+                    label: '东南亚部（500人）',
+                    children: [{
+                        label: '日本部（250人）',
+                    },{
+                        label:'韩国部（250人）',
+                    }]
+                },{
+                    label: '北欧部（500人）',
+                    children: [{
+                        label: '瑞典部（250人）',
+                    },{
+                        label: '挪威部（250人）',
+                    }]
+                }]
+            },{
+                label: '客服部（1000人）',
+            }]
+        }],
         switchs: true,
         // 子部门临时数据
-        tableData: [],
-        // {
-        //     division: '子部门1'
-        
-        // }
+        tableData: [{
+            division: '子部门1'
+        },{
+            division: '子部门2'
+        },{
+            division: '子部门3'
+        },{
+            division: '子部门4'
+        }],
+
         // 增加顶级组织
         addTopOrganization: false,
         form: {
             organizationName: ''
         },
-        organizationName: '',
+
         formLabelWidth: '90px',
         // 编辑部门
         editDepartment: false,
         updata: {
-            departmentName: ''
+            departmentName: '东南亚部'
         },
         updataLabelWidth: '90px',
         // 级联选择器
-        options: [],
+        options: [{
+            value: 'tianchenglvxingwang',
+            label: '甜程旅行网',
+            children: [{
+                value: 'xiaoshoubu',
+                label: '销售部',
+                children: [{
+                    value: 'xiaoshou1bu',
+                    label: '销售1部',
+                }]
+            },{
+                value: 'caozuobu',
+                label: '操作部',
+            },{
+                value: 'caiwubu',
+                label: '财务部',
+            },{
+                value: 'yunying',
+                label: '运营',
+            },{
+                value: 'lianguanzhongxin',
+                label: '连管中心'
+            }]
+        }],
         // 添加子部门
         addSubdivision: false,
         addInput: {
             departmentNames: '',
-            topDepartment: '',
+            topDepartment: '东南亚部',
             radio: '',
             departmentCode: '',
             sort: '',
             phone: '',
             fax: '',
             note: '',
-            ParentID: ''
         },
         rules: {
             departmentNames: [
@@ -257,7 +286,65 @@ created: function (){
             search: '',
         },
         LabelWidth: '87%',
-        members: [],
+
+
+        members: [{
+            id: '001',
+            name: '二狗',
+            phone: '188888888888',
+            email: '453014568@qq.com',
+            sex: '男',
+            state: '启用',
+        },{
+            id: '002',
+            name: '狗蛋',
+            phone: '17777777777',
+            email: '66666@sina.com',
+            sex: '女',
+            state: '停用',
+        },{
+            id: '003',
+            name: '孙福贵',
+            phone: '0000000000',
+            email: 'dadsaddsa.com',
+            sex: '女',
+            state: '停用',
+        },{
+            id: '004',
+            name: '二柱子',
+            phone: '4324235454',
+            email: 'asdasd12312da.com',
+            sex: '女',
+            state: '停用',
+        },{
+            id: '005',
+            name: '翠花',
+            phone: '132312323',
+            email: '发送到发送到a.com',
+            sex: '男',
+            state: '停用',
+        },{
+            id: '006',
+            name: '钢蛋',
+            phone: '321312325454',
+            email: 'a而且为其da.com',
+            sex: '女',
+            state: '停用',
+        },{
+            id: '007',
+            name: '谢大脚',
+            phone: '142343',
+            email: 'as发斯蒂芬a.com',
+            sex: '男',
+            state: '停用',
+        },{
+            id: '008',
+            name: '铁西阿强',
+            phone: '345435',
+            email: 'a98da.com',
+            sex: '女',
+            state: '停用',
+        }],
         //成员列表临时数据
         tableList: [{
             id: '001',
@@ -274,11 +361,9 @@ created: function (){
         }],
 
 
-        members1: [],
-        //每页的数据条数
-        pagesize:8,
-        //默认开始页面
-        currentPage:1,
+        members1: [
+
+        ],
         // 设置成员
         position: false,
         setPosition: {
@@ -302,38 +387,42 @@ created: function (){
             label: '总助',
         }],
         values: '',
+        jj: [],
         kk: [],
         show: true,
-        isexpand: false,
-        treeKey: [],
-        Parents: [],
-        key: -1,
-        props: {
-          value: 'orgID',
-          children: 'cities',
-        }
+        jj: false,
     }
   },
     // 添加上级部门取消清空数据
     beforeUpdate: function (){
         if(this.addTopOrganization == false){
-          this.form.organizationName = ""
+            this.form.organizationName = ""
         }
         if(this.addPersonnel == true){
-          for(let i=0;i<this.tableList.length;i++){
-            let obj = this.tableList[i]
-            let num = obj.id
-            for(let j=0;j<this.members.length;j++){
-              let aj = this.members[j]
-              let n = aj.id
-              if(num == n){
-                setTimeout(() => {
-                    this.$refs.table.toggleRowSelection(this.members.find(d => d.id == num),true)
-                },0)
-              }
+            for(let i=0;i<this.tableList.length;i++){
+                let obj = this.tableList[i]
+                let num = obj.id
+                for(let j=0;j<this.members.length;j++){
+                    let aj = this.members[j]
+                    let n = aj.id
+                    if(num == n){
+                        setTimeout(() => {
+                            this.$refs.table.toggleRowSelection(this.members.find(d => d.id == num),true)
+                        },0)
+                    }
+                }
             }
-          }
+
         }
+    },
+    created: function(){
+        this.$http.post('http://api.dayuntong.com:3009/api/orglist',{
+            IsDeleted: '0',
+        }).then(function(response){
+            console.log(response);
+        }).catch(function(error){
+            console.log(error);
+        });
     },
 methods: {
     open2() {
@@ -345,9 +434,27 @@ methods: {
             if(this.kk[0] == undefined){
                 this.$message.error('请先选中成员')
             } else {
-              for(let i=0;i<this.kk.length;i++){
-                 this.tableList.splice(this.kk,this.kk.length)
-              }
+                for(let i=0;i<this.kk.length;i++){
+                    for(let j=0;j<this.tableList.length;j++){
+                        if(this.tableList[j].id.indexOf(this.kk[i].id) !== -1){
+                            // this.tableList.splice(this.kk[i].id - 1,this.kk.length)
+                            // console.log(this.tableList)
+                            // console.log(this.kk)
+                            console.log(this.tableList.indexOf(this.kk[i].id))
+                            // console.log(this.kk.length)
+                        }
+                    }
+                }
+                // for(let i=0;i<this.dataNum.length;i++){
+                //     for(let j=0;j<this.tableList.length;j++){
+                //         if(this.tableList[j].id.indexOf(this.dataNum[i].id) !== -1){
+                //             this.dataNum.splice(this.dataNum[i],i+1)
+                //         }
+                //     }
+                // }
+                 // for(let i=0;i<this.kk.length;i++){
+                 //    this.tableList.splice(this.kk,this.kk.length)
+                 // }
                 this.kk = []
                 this.$message({
                 type: 'success',
@@ -362,14 +469,16 @@ methods: {
         });
     },
     del(selection, row) {
-        this.kk = []
-        for(let i=0;i<selection.length;i++){
-            if(this.tableList.length == 1 && selection[i].id !== 0){
-                this.kk[i] = selection[i]
-            } else {
-                this.kk[i] = selection[i].id
-            }
-        }
+        console.log(row)
+        this.kk = selection
+        // this.kk = []
+        // for(let i=0;i<selection.length;i++){
+        //     if(this.tableList.length == 1 && selection[i].id !== 0){
+        //         this.kk[i] = selection[i]
+        //     } else {
+        //         this.kk[i] = selection[i].id
+        //     }
+        // }
     },
     addSubdivision1(a) {
         this.addSubdivision = false
@@ -380,45 +489,13 @@ methods: {
             this.$message.warning('红☆为必填选项，请认真填写！')
 
         }else{
-                var _this = this
-                this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptinsert',{
-                    "Id": 11,
-                    "Object": {
-                        "OrgID": 1,
-                        "OrgName": this.addInput.departmentNames,
-                        "IsDeleted": 1,
-                        "Code": "1",
-                        "ParentID": this.addInput.ParentID,
-                        "Physical": 1,
-                        "OrgCode": this.addInput.departmentCode,
-                        "Rank": this.addInput.sort,
-                        "OfficeTel": this.addInput.phone,
-                        "OfficeFax": this.addInput.fax,
-                        "Mark": this.addInput.note,
-                        "CreateUser": "admin",
-                        "CreateTime": "2018-06-15 14:11:22"
-                    }
-                 }
-                 ).then(function(response){
-                    _this.TreeData()
-                    // console.log(response);
-                  }).catch(function(error){
-                    console.log(error);
-                  });
-                this.addSubdivision =  false
-                this.addInput.departmentNames = ""
-                this.$message.success('添加成功')
-            
-            
+            this.tableData.push({
+            division: this.addInput.departmentNames
+            })
+            this.addSubdivision =  false
+            this.addInput.departmentNames = ""
+            this.$message.success('添加成功')
             }
-            // departmentNames: '',
-            // topDepartment: '东南亚部',
-            // radio: '',
-            // departmentCode: '',
-            // sort: '',
-            // phone: '',
-            // fax: '',
-            // note: '',
     },
     addSave() {
         if(this.form.organizationName === ''){
@@ -436,19 +513,35 @@ methods: {
         }
     },
     oo() {
-
+        this.members1 = []
+        this.jj = true
+        for(let i=0;i<this.members.length;i++){
+            if(this.person.search == this.members[i].name){
+                this.members1.push({
+                    id: this.members[i].id,
+                    name: this.members[i].name,
+                    phone: this.members[i].phone,
+                    email: this.members[i].email,
+                    sex: this.members[i].sex,
+                    state: this.members[i].state
+                })
+            }
+        }
+        if(this.person.search == ""){
+            this.jj = false
+        }
     },
     qq(a){
         this.dataNum = a
       },
     qqq(){
-      for(let i=0;i<this.dataNum.length;i++){
-        for(let j=0;j<this.tableList.length;j++){
-          if(this.tableList[j].id.indexOf(this.dataNum[i].id) !== -1){
-            this.dataNum.splice(this.dataNum[i],i+1)
-          }
+        for(let i=0;i<this.dataNum.length;i++){
+            for(let j=0;j<this.tableList.length;j++){
+                if(this.tableList[j].id.indexOf(this.dataNum[i].id) !== -1){
+                    this.dataNum.splice(this.dataNum[i],i+1)
+                }
+            }
         }
-      }
         if(this.dataNum.length < 1){
             this.$message.error("没有数据被添加")
         } else {
@@ -468,31 +561,16 @@ methods: {
 
       },
     remove(index, rows) {
-        let _this = this
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-            // this.tableData.splice(index,1)
-            // console.log(index)
-            console.log(this.tableData)
-            console.log(this.tableData[index].orgID)
-            this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptdelete',{
-              "Object": {
-                "id" : this.tableData[index].orgID
-              }
-            })
-            .then(function(response){
-              _this.$message({
-              type: 'success',
-              message: '删除成功!'
-              });
-            })
-            .catch(function(error){
-              console.log(error);
-            })
-            
+            this.tableData.splice(index,1)
+            this.$message({
+            type: 'success',
+            message: '删除成功!'
+            });
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -501,247 +579,11 @@ methods: {
         });
       },
       addPersonnel1(){
-        // this.addPersonnel = true
-        this.members = []
-        let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/userlist',{
-
-
-        })
-        .then(function(response){
-            for(let i=0;i<response.data.objects.length;i++){
-                _this.members.push({
-                    id: response.data.objects[i].id,
-                    name: response.data.objects[i].name,
-                    phone: response.data.objects[i].mobile,
-                    email: response.data.objects[i].email,
-                    sex: response.data.objects[i].sex,
-                    state: '启用',
-                    key: i,
-                })
-            }
-            _this.addPersonnel = true
-          }).catch(function(error){
-            console.log(error);
-          });
+        this.addPersonnel = true
       },
       addPersonnel2() {
         this.addPersonnel = false
         this.dataNum = [];
-      },
-      treeClick(a,b,c) {
-        this.addInput.ParentID = a.orgID
-        this.addInput.topDepartment = a.label
-        this.updata.departmentName = a.label
-        // this.addInput.ParentID = a.ParentID
-        this.Parents = a
-        this.tableData = []
-        // console.log(this.data1)
-        // console.log(a)
-        // console.log(this.$refs.oppo.store.setDefaultExpandedKeys)
-        // alert(11111)
-        // console.log(this.$refs.oppo.store)
-        // for(var i=0;i<this.$refs.oppo.store._getAllNodes().length;i++){
-        //    this.$refs.oppo.store.nodesMap[i].expanded=true;
-        // }
-        // console.log(a)
-        // console.log(this.data2)
-
-        var _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
-            "Object": {
-                "ParentID" : a.orgID
-            }
-        }).then((response) =>{
-                for(let i=0;i<response.data.objects.length;i++){
-                    _this.tableData.push({
-                            label: response.data.objects[i].orgName,
-                            orgID: response.data.objects[i].orgID,
-                            key: i,
-                            value: response.data.objects[i].orgID
-                        })
-                    // for(let k=0;k<_this.data2.length;k++){
-                    //   if(_this.data2[k].orgID == response.data.objects[i].orgID){
-                    //     let pp = _this.data2.indexOf(_this.data2[k])
-                    //     _this.data2.splice(pp,1)
-                    //   }
-                    // }
-                }
-                // console.log(_this.data2)
-                // _this.data[a.key].children = _this.data[a.key].children.concat(_this.data1)
-            
-            // console.log(_this.data2)
-
-
-          }).catch(function(error){
-            console.log(error);
-          });
-        
-      },
-      loadNode(node, resolve){
-        if(node.level >= 1){
-             this.getUser(node.data.key, node.data.label, node.data.orgID, resolve);
-        }
-
-        // setTimeout(() => {
-        //   const data = [{
-        //     name: 'leaf1',
-        //     leaf: true
-        //   }, {
-        //     name: 'zone1'
-        //   }];
-
-        //   resolve(data);
-        // }, 500);
-      },
-      getUser(key,label,orgID,resolve) {
-        // this.addInput.ParentID = a.orgID
-        // console.log(this.Parents)
-        this.data1 = []
-        let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
-            "Object": {
-                "ParentID" : orgID
-            }
-        }).then((response) =>{
-                for(let i=0;i<response.data.objects.length;i++){
-                    _this.data1.push({
-                            label: response.data.objects[i].orgName,
-                            orgID: response.data.objects[i].orgID,
-                            key: i,
-                            cities: []
-                        })
-                }
-                setTimeout(() => {
-                let data = _this.data1
-                resolve(data)
-            },200)
-                // _this.data[a.key].children = _this.data[a.key].children.concat(_this.data1)
-            
-
-          }).catch(function(error){
-            console.log(error);
-          });
-      },
-      TreeData(){
-        this.data = []
-        let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
-            "Object": {
-                "ParentID" : -1
-            }
-        }).then((response) =>{
-            for(let i=0;i<response.data.objects.length;i++){
-                _this.data.push({
-                    label: response.data.objects[i].orgName,
-                    orgID: response.data.objects[i].orgID,
-                    key: i,
-                    cities: []
-                })
-            }
-            // _this.addInput.topDepartment = _this.data[0].label
-            // _this.addInput.ParentID = _this.data[0].ParentID
-            _this.treeClick(_this.data[0])
-          }).catch(function(error){
-            console.log(error);
-          });
-      },
-      addSubdivision1(){
-        if(this.addInput.ParentID == ''){
-            this.$message.warning('请先选择父级部门！')
-        } else {
-            this.addSubdivision = true
-            // this.addInput.topDepartment = 
-        }
-      },
-      // 双击展开
-      treeDblclick(){
-        // console.log(this.data1)
-        this.treeKey = []
-        this.treeKey.push(this.Parents.orgID)
-         // console.log(this.Parents)
-        let _this = this
-        // this.treeKey.in_array = function (element){
-        //   for(let i=0;i<_this.treeKey.length;i++){
-        //     if(_this.treeKey[i] == element){
-        //       return true;
-        //     }
-        //   } return false;
-        // }
-        // if(this.treeKey.in_array(this.Parents.orgID) == true){
-        //   this.key += 1
-        //   for(let i=0;i<_this.treeKey.length;i++){
-        //     if(_this.treeKey[i] == _this.Parents.orgID){
-        //       let pp = _this.treeKey.indexOf(_this.treeKey[i])
-        //       _this.treeKey.splice(pp,1)
-        //       document.getElementsByClassName('el-tree-node__children')[pp].style.display = 'none';
-        //       document.getElementsByClassName('expanded')[pp].style.webkitTransform = 'rotate(0deg)';
-        //     }
-        //   }
-        // } else {
-        //   _this.treeKey.push(this.Parents.orgID)
-        // }
-      },
-      editDepartment1(){
-        this.editDepartment = true
-        this.options = this.data
-        // for(let i=0;i<this.data.length;i++){
-        //   this.
-        // }
-        // options: [{
-        //     value: 'tianchenglvxingwang',
-        //     label: '甜程旅行网',
-        //     children: [{
-        //         value: 'xiaoshoubu',
-        //         label: '销售部',
-        //         children: [{
-        //             value: 'xiaoshou1bu',
-        //             label: '销售1部',
-        //         }]
-        //     },{
-        //         value: 'caozuobu',
-        //         label: '操作部',
-        //     },{
-        //         value: 'caiwubu',
-        //         label: '财务部',
-        //     },{
-        //         value: 'yunying',
-        //         label: '运营',
-        //     },{
-        //         value: 'lianguanzhongxin',
-        //         label: '连管中心'
-        //     }]
-        // }]
-
-        // this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
-        //     "Object": {
-        //         "ParentID" : -1
-        //     }
-        // }).then((response) => {
-
-        // }).catch((error) => {
-        //   console.log(error)
-        // })
-      },
-      handleCurrentChange(currentPage) {
-            this.currentPage = currentPage;
-        },
-      department(a, b) {
-        // console.log(a)
-        // console.log(this.options)
-        // console.log(this.options[0].orgID.indexOf(11))
-        // let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
-            "Object": {
-                "ParentID" : a[0]
-            }
-        }).then((response) => {
-          // for(let i=0;i<_this.options.length;i++){
-            // console.log(_this.options[0].orgID.indexOf(a[0]))
-          // }
-        }).catch((error) => {
-          console.log(error)
-        })
       },
       renderContent(h, { node, data, store }){
         return (
@@ -757,7 +599,7 @@ methods: {
 
 <style scoped>
 .addTopOrganization{
-    position: absolute;
+    position: absolute; 
     bottom: 0%;
     left: 0%;
     width: 100%;
@@ -769,22 +611,13 @@ methods: {
 }
 .tree{
     float: left;
-    user-select:none;
-}
-.hh{
-    position:absolute;
-    float: left;
     left: 13%;
     margin-top: 12%;
-    width: 300px;
-    height: 500px;
-    overflow: auto;
 }
 .btn-top{
   position: absolute;
   width: 50%;
   height: 100%;
-  left: 2%;
   margin-top: 4.2%;
 }
 .editDepartment{
@@ -828,7 +661,7 @@ methods: {
 .lowerTitle{
     position: absolute;
     left: 6%;
-    top: 24%;
+    top: 23.2%;
     font-size: 20px;
 }
 .divisionTable{
@@ -836,7 +669,7 @@ methods: {
     top: 29.2%;
     left: 4%;
     width: 70%;
-    height: 24%;
+    height: 25%;
 }
 .small2{
     position: absolute;
@@ -854,7 +687,7 @@ methods: {
 .personnelTitle{
     position: absolute;
     left: 6%;
-    top: 55.5%;
+    top: 54.7%;
     font-size: 20px;
 }
 .addPersonnel{
@@ -906,7 +739,7 @@ methods: {
 }
 .searchButton{
     position: absolute;
-    top: 9%;
+    top: 7.4%;
     left: 39%;
     padding: 11px 11px;
 }
@@ -940,9 +773,6 @@ methods: {
 .Popup{
     margin: 0 auto;
 }
-.kk{
-    min-height: 700px;
-}
 .addTitle{
     position: absolute;
     top: 2%;
@@ -958,12 +788,12 @@ methods: {
   width: 46.1%;
   height: 70%;
   margin-top: 1%;
-  margin-left: 450px;
+  margin-left: 23.4%;
   border: 2px solid #E6E6E6;
 }
 .left{
   position: absolute;
-  width: 400px;
+  width: 21.1%;
   height: 70%;
   border: 2px solid #E6E6E6;
   margin-top: 1%;
@@ -1026,7 +856,7 @@ methods: {
 .right-top{
   position: absolute;
   width: 100%;
-  height: 50px;
+  height: 7.1%;
   background-color: #F6F6F6;
 }
 .rightTitle{
