@@ -137,7 +137,7 @@
         let _this = this
 
         this.$http.post(
-          "http://api.dayuntong.com:3009/api/org/rolepage",
+          this.GLOBAL.serverSrc + "/api/org/rolepage",
           {
             "Object": {
               "IsDeleted": 0,
@@ -148,7 +148,7 @@
           }
         )
           .then(obj => {
-
+// console.log(obj)
             var _data = obj.data.objects
 
             _data.forEach(function (v, k, arr) {
@@ -194,7 +194,7 @@
           type: 'warning'
         }).then(() => {
           this.$http.post(
-            "http://api.dayuntong.com:3009/api/org/rolesave",
+            this.GLOBAL.serverSrc + "/api/org/rolesave",
             {
               "object": {
                 "createTime": "2018-06-21T07:59:50.008Z",
