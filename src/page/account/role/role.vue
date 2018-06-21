@@ -15,7 +15,7 @@
           :key="item.value"
           :label="item.label"
           :value="item.value"
-          >
+        >
         </el-option>
       </el-select>
       <el-input v-model="keyword" placeholder="请输入关键字" clearable></el-input>
@@ -23,13 +23,13 @@
     </div>
     <div class="cl_both"></div>
     <div style="padding: 0 20px">
-    <div style="text-align: left">
-      <router-link to="/addRole">
-        <el-button type="primary" class="add_role">添加模板</el-button>
-      </router-link>
-    </div>
+      <div style="text-align: left">
+        <router-link to="/addRole">
+          <el-button type="primary" class="add_role">添加模板</el-button>
+        </router-link>
+      </div>
       <el-table
-        :data="roleData.slice((pageIndex-1)*pageSize,pageIndex*pageSize)"
+        :data="roleData"
         :header-row-style="hrs"
         :cell-style="cs"
         border>
@@ -73,24 +73,27 @@
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="editRole(scope.row.id)" class="bt-edit">编辑</el-button>
             <!--<router-link to="/addRole?id=scope.row.id&type=view"><el-button type="primary" size="small" class="bt-edit">编辑</el-button></router-link>-->
-            <el-button type="info" size="small" @click="changeState(scope.row.id,1)" class="bt-stop" v-if="scope.row.state === '禁用'">启用</el-button>
-            <el-button type="danger" size="small" @click="changeState(scope.row.id,2)" class="bt-stop" v-else="scope.row.state === '启用'">停用</el-button>
+            <el-button type="info" size="small" @click="changeState(scope.row.id,2)" class="bt-stop"
+                       v-if="scope.row.state === '禁用'">启用
+            </el-button>
+            <el-button type="danger" size="small" @click="changeState(scope.row.id,1)" class="bt-stop"
+                       v-else="scope.row.state === '启用'">停用
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      plain="false"
-      prev-text="上一页"
-      next-text="下一页"
-      :page-sizes="[2,3,4,5]"
-      :page-size="pageSize"
-      :current-page="1"
-      layout="total, prev, pager, next, sizes, jumper, ->"
-      :total="totalNum"
-      style="float: right">
-    </el-pagination>
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        plain="false"
+        prev-text="上一页"
+        next-text="下一页"
+        :page-sizes="[2,3,4,5]"
+        :current-page.sync="pageIndex"
+        layout="total, prev, pager, next, sizes, jumper, ->"
+        :total="totalNum"
+        style="float: right">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -117,14 +120,14 @@
         statusValue: '',
         keyword: '',
         hrs: {height: '60px'},
-        cs: {padding:'0',height:'40px'},
-        roleData:[],
+        cs: {padding: '0', height: '40px'},
+        roleData: [],
         pageSize: 2,    // 设定默认分页每页显示数 todo 具体看需求
         pageIndex: 1,    // 设定当前页数
-        totalNum: 0
+        totalNum: 6
       }
     },
-    created(){
+    created() {
       // 获取权限列表
       this.getRoleList()
     },
@@ -134,37 +137,39 @@
         let _this = this
 
         this.$http.post(
-          "http://api.dayuntong.com:3009/api/rolelist",
+          "http://api.dayuntong.com:3009/api/org/rolepage",
           {
             "Object": {
-              "IsDeleted": 0
+              "IsDeleted": 0,
+              "title": keyword
             },
             "PageIndex": PageIndex,
             "PageSize": PageSize
           }
         )
-          .then(obj =>{
+          .then(obj => {
 
             var _data = obj.data.objects
 
-            _data.forEach(function (v,k,arr) {
+            _data.forEach(function (v, k, arr) {
               arr[k]['author'] = '管理员'         // TODO 后台无返回，前端定死
-              if(v['state'] == 1) {
+              if (v['state'] == 1) {
                 arr[k]['state'] = '启动'
-              }else if(v['state'] == 2) {
+              } else if (v['state'] == 2) {
                 arr[k]['state'] = '禁用'
               }
             })
 
             _this.roleData = _data
-            _this.totalNum = _data.length
+            // _this.totalNum = _data.total    // todo 线上使用此行
+            _this.totalNum = 6
           })
           .catch(function (obj) {
             console.log(obj)
           })
       },
       // 编辑权限
-      editRole: function(id) {
+      editRole: function (id) {
         this.$router.push({
           path: '/addRole',
           query: {
@@ -173,24 +178,41 @@
         })
       },
       // 启停用账户
-      changeState: function(obj,flag) {
+      changeState: function (obj, flag) {
 
-        // todo 根据状态 修改apiURL。修改提示语
+        let that = this
+        var mess = ""
         if (flag == 1) {
-
-        }else {
-
+          mess = '停用'
+        } else if(flag == 2) {
+          mess = '启用'
         }
-        this.$confirm('停用' +obj+ '账户?', '提示', {
+
+        this.$confirm(mess + obj + '角色?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          //////////        todo 添加删除接口，在回调中执行以下提示
-          this.$message({
-            type: 'success',
-            message: '成功!'
-          });
+          this.$http.post(
+            "http://api.dayuntong.com:3009/api/org/rolesave",
+            {
+              "object": {
+                "createTime": "2018-06-21T07:59:50.008Z",
+                "state": flag
+              },
+              "id": 1
+            }
+          )
+            .then(
+              obj => {
+                this.$message({
+                  type: 'success',
+                  message: mess + '成功'
+                });
+              }
+            )
+            .catch()
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -201,16 +223,18 @@
       // 每页显示数变化事件
       handleSizeChange(val) {
         this.pageSize = val
-        this.getRoleList(this.pageIndex, val)
+        this.pageIndex = 1
+        this.getRoleList(1, val)
       },
       // 当前页变化事件
       handleCurrentChange(val) {
-        this.pageIndex = val
+        this.getRoleList(val, this.pageSize, this.typeValue, this.statusValue, this.keyword)
       },
       // 表单提交事件
       subForm() {
-        console.log('提交参数为' + this.typeValue + this.statusValue + this.keyword)
-        this.getRoleList(1, this.pageSize, this.typeValue, this.statusValue ,this.keyword)
+        // console.log('提交参数为' + this.typeValue + this.statusValue + this.keyword)
+        this.getRoleList(1, this.pageSize, this.typeValue, this.statusValue, this.keyword)
+        this.pageIndex = 1
       }
     },
   }
@@ -251,9 +275,11 @@
     margin: 20px 0 40px 0;
 
   }
-     td {
-       color: #666;
-     }
+
+  td {
+    color: #666;
+  }
+
   .cl_both {
     clear: both
   }
