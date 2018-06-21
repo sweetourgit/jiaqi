@@ -73,9 +73,9 @@
                 img: '个人中心.png',
                 items: [
                     {
-                    title:'账户信息',
+                    title:'账户设置',
                     lists:[{
-                        value: '账户设置',
+                        value: '账户信息',
                         router:'/accountInfor'
                      },
                      {
