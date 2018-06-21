@@ -4,8 +4,8 @@
         <el-tabs v-model="activeName" class="form_tag">
           <el-tab-pane label="基本信息" name="first" class="pane-scroll">
              <el-form :model="ruleForm"  :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm ruleForm-abjust">
-              <el-button type="success" size="medium" class="begin-button" @click="handleType">启用</el-button>
-              <el-button type="danger" size="medium" class="end-button" @click="handleType">停用 </el-button>
+              <el-button type="success" v-if="enable" size="medium" class="begin-button" @click="handleType">启用</el-button>
+              <el-button type="danger"  v-if="disable" size="medium" class="end-button" @click="handleType">停用 </el-button>
               <el-form-item label="手机号" prop="phone">
                 <el-input v-model="ruleForm.phone"placeholder="请输入手机号" class="from-input"></el-input>
               </el-form-item>
@@ -66,7 +66,7 @@
 
 
               <el-form-item class="button-adjust">
-                <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" v-model="buttontext">{{buttontext}}</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
               </el-form-item>
                 <!--弹出框> <-->
@@ -159,8 +159,11 @@ import Permission from '@/page/account/userList/addUser/permission'
 
 
       return {
-          a:"1",
-          hidval:"-1",
+        buttontext:"创建",
+        uid:0,
+        enable:false,
+        disable :false,
+        hidval:"-1",
         selectedOptions: [],
         orilist: '甜程旅行网-财务部-经理',
         ruleForm1: {
@@ -467,9 +470,49 @@ import Permission from '@/page/account/userList/addUser/permission'
           var that = this
           this.$refs[formName].validate((valid) => {
             if (valid) {
+              if(this.uid > 0 ){
+
+
+                // this.$http.post(
+                //   "http://api.dayuntong.com:3009/api/org/usersave",
+                //   {
+                //     "Object": {
+                //       "id": this.uid,
+                //       "createTime": "2018-06-20T09:35:52.822Z",
+                //       "isDeleted": 0,
+                //       "code": "string",
+                //       "mobile":this.ruleForm.phone,
+                //       "name": this.ruleForm.name,
+                //       "email": this.ruleForm.mail,
+                //       "userCode": this.ruleForm.number,
+                //       "iDcard": this.ruleForm.idcard,
+                //       "tourGuide": this.ruleForm.trailid,
+                //       "sex": this.ruleForm.sex,
+                //       "userType": this.ruleForm.type
+                //     },
+                //     "id": 0
+                //   }
+                // )
+                //   .then(function (obj) {
+                //     if(obj.status == 200){
+                //       that.$message({
+                //         message: '修改成功',
+                //         type: 'success'
+                //       });
+                //       setTimeout(() => {
+                //         that.$router.push({path: "/userlist"});
+                //       }, 1000);
+                //     }
+                //   })
+                //   .catch(function (obj) {
+                //     console.log(obj)
+                //   })
+              }
+
+
               var that = this
               this.$http.post(
-                "http://api.dayuntong.com:3009/api/insertuser",
+                "http://api.dayuntong.com:3009/api/org/userinsert",
                 ({
                   "Object": {
                     "createTime": "2018-06-20T09:35:52.822Z",
@@ -482,7 +525,8 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "iDcard": this.ruleForm.idcard,
                     "tourGuide": this.ruleForm.trailid,
                     "sex": this.ruleForm.sex,
-                    "userType": this.ruleForm.type
+                    "userType": this.ruleForm.type,
+                    "userState":1
                   }
                 })
               )
@@ -532,7 +576,60 @@ import Permission from '@/page/account/userList/addUser/permission'
       }
     },
     created(){
-      console.log(this.$route.query.id)
+      //console.log(this.$route.query.id)
+      if(this.$route.query.id){
+        this.buttontext = "修改"
+        this.uid = this.$route.query.id
+        var that = this
+        this.$http.post(
+          "http://api.dayuntong.com:3009/api/org/userget",
+          {
+            "object": {
+              "id": that.$route.query.id,
+              "createTime": "2018-06-21T09:35:32.191Z",
+              "isDeleted": 0,
+              "code": "string",
+              "mobile": "string",
+              "name": "string",
+              "email": "string",
+              "userCode": "string",
+              "iDcard": "string",
+              "tourGuide": "string",
+              "sex": 1,
+              "userType": 1,
+              "userState": 0
+            },
+            "pageSize": 0,
+            "pageIndex": 0,
+            "isGetAll": true,
+            "id":that.$route.query.id
+          }
+        )
+          .then(function (obj) {
+            console.log(obj.data.firstOrDefault)
+            that.ruleForm.phone = obj.data.firstOrDefault.mobile
+            that.ruleForm.name = obj.data.firstOrDefault.name
+            that.ruleForm.mail = obj.data.firstOrDefault.email
+            that.ruleForm.idcard = obj.data.firstOrDefault.iDcard
+            that.ruleForm.number = obj.data.firstOrDefault.userCode
+            that.ruleForm.trailid = obj.data.firstOrDefault.tourGuide
+            that.ruleForm.sex = String(obj.data.firstOrDefault.sex);
+            that.ruleForm.type = String(obj.data.firstOrDefault.userType);
+            if(obj.data.firstOrDefault.userState == 1){
+                that.disable = true
+            }else if(obj.data.firstOrDefault.userState == 2){
+              that.enable = true
+            }
+          })
+          .catch(function (obj) {
+
+
+          })
+
+      }
+
+
+
     }
 
 }

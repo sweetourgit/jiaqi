@@ -83,7 +83,7 @@
         <el-table-column
            prop="email"
            label="邮箱"
-           width="170"
+           width="160"
            align="center">
         </el-table-column>
         <el-table-column
@@ -119,7 +119,7 @@
         <el-table-column
           label="操作"
           align="center"
-          width="250">
+          width="200">
            <template slot-scope="scope">
              <el-button  size="small" @click="find(scope.$index, scope.row)">查看</el-button>
              <el-button type="primary" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
@@ -131,9 +131,9 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page.sync="currentPage"
+        :page-sizes="[10, 200, 300, 400]"
+        :page-size=pagesize
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
@@ -212,9 +212,10 @@
   export default {
    data() {
       return {
+        pagesize:10,
         qqq: [],
         total:600,
-        currentPage:4,
+        currentPage:1,
         input:"",
         dialogFormVisible: false,
         form: {
@@ -268,19 +269,24 @@
     methods:{
       handleSizeChange(val) {
         var that = this
+        this.pagesize = val
+        this.currentPage = 1
         this.$http.post(
-          "http://api.dayuntong.com:3009/api/userlist",
-          ({
-            "Object": {
-              "IsDeleted": 0,
+          "http://api.dayuntong.com:3009/api/org/userpage",
+          {
+            "object": {
+              "isDeleted": 0,
               "value":this.value,
               "type":this.type,
               "user":this.user,
               "input":this.input,
-              "PageSize":val
 
-            }
-          })
+            },
+            "pageSize":val,
+            "pageIndex": 1,
+            "isGetAll": true,
+            "id": 0
+          }
         )
           .then(function (obj) {
             // console.log(obj.data.objects)
@@ -300,18 +306,21 @@
       handleCurrentChange(val) {
         var that = this
         this.$http.post(
-          "http://api.dayuntong.com:3009/api/userlist",
-          ({
-            "Object": {
-              "IsDeleted": 0,
+          "http://api.dayuntong.com:3009/api/org/userpage",
+          {
+            "object": {
+              "isDeleted": 0,
               "value":this.value,
               "type":this.type,
               "user":this.user,
               "input":this.input,
-              "PageIndex":val
 
-            }
-          })
+            },
+            "pageSize":this.pagesize,
+            "pageIndex": val,
+            "isGetAll": true,
+            "id": 0
+          }
         )
           .then(function (obj) {
             // console.log(obj.data.objects)
@@ -330,20 +339,24 @@
 
       },
      searchSubmit(){
-    //搜索
+       //搜索
        var that = this
        this.$http.post(
-         "http://api.dayuntong.com:3009/api/userlist",
-         ({
-           "Object": {
-             "IsDeleted": 0,
+         "http://api.dayuntong.com:3009/api/org/userpage",
+         {
+           "object": {
+             "isDeleted": 0,
              "value":this.value,
              "type":this.type,
              "user":this.user,
              "input":this.input,
 
-           }
-         })
+           },
+           "pageSize":this.pagesize,
+           "pageIndex": 1,
+           "isGetAll": true,
+           "id": 0
+         }
        )
          .then(function (obj) {
            // console.log(obj.data.objects)
@@ -389,12 +402,17 @@
      //用户列表
      var that = this
       this.$http.post(
-        "http://api.dayuntong.com:3009/api/userlist",
-       ({
-          "Object": {
-            "IsDeleted": 0
-          }
-        })
+        "http://api.dayuntong.com:3009/api/org/userpage",
+       {
+         "object": {
+           "isDeleted": 0,
+
+         },
+         "pageSize":this.pagesize,
+         "pageIndex": 1,
+         "isGetAll": true,
+         "id": 0
+       }
       )
         .then(function (obj) {
           // console.log(obj.data.objects)
@@ -420,7 +438,7 @@
 <style scoped>
 
   .user-table{
-    width: 1632px;
+    width: 1582px;
     margin-left:26px;
     margin-top: 70px;
   }
@@ -463,7 +481,8 @@
   	height: 50px;
   }
   .border_size{
-    width: 1600px;
+    width: 1602px;
+    overflow: auto;
   }
   .add-user{
     float: left;
