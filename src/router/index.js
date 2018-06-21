@@ -46,7 +46,7 @@ export default new Router({
     }, {
       path: '/accountInfor',
       component: accountInfor,
-      name: '账户设置',
+      name: '账户信息',
       meta: {keepAlive: true}
     }, {
       path: '/pwModifi',

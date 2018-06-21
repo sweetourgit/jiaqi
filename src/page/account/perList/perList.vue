@@ -1,13 +1,13 @@
 <template>
   <div class="per-list">
-    <el-button>添加模块</el-button>
+    <el-button @click="test">添加模块</el-button>
     <table style="width: 100%">
       <thead>
-      <tr class="table-button">
-        <th width="180">模块</th>
-        <th width="180">菜单</th>
-        <th width="80">权限类型</th>
-        <th width="">具体权限</th>
+      <tr>
+        <th width="248">模块</th>
+        <th width="278">菜单</th>
+        <th width="340">权限类型</th>
+        <th width="720">具体权限</th>
       </tr>
       </thead>
       <tbody>
@@ -30,52 +30,46 @@
         </td>
         <td>只读</td>
         <td class="table-checkout">
-          <ul>
-            <li class="title_p">用户列表
+          <span class="title_s">01.用户列表
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-          </ul>
+            </span>
         </td>
       </tr>
       <tr>
         <td>编辑</td>
         <td class="table-checkout">
-          <ul>
-            <li class="title_p">编辑用户
+          <span class="title_s">01.编辑用户
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-            <li class="title_p">添加用户
+            <span class="title_s">02.添加用户
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-          </ul>
+            </span>
+            </span>
         </td>
       </tr>
       <tr>
         <td>操作</td>
         <td class="table-checkout">
-          <ul>
-            <li class="title_p">启用
+          <span class="title_s">01.启用
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-            <li class="title_p">停用
+          </span>
+          <span class="title_s">02.停用
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-          </ul>
+          </span>
         </td>
       </tr>
       <tr>
@@ -107,39 +101,35 @@
         </td>
         <td>只读</td>
         <td class="table-checkout">
-          <ul>
-            <li class="title_p">角色模板列表
+          <span class="title_s">01.角色模板列表
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-          </ul>
+          </span>
         </td>
       </tr>
       <tr>
         <td>编辑</td>
         <td class="table-checkout">
-          <ul>
-            <li class="title_p">添加角色模板
+          <span class="title_s">01.添加角色模板
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-            <li class="title_p">编辑角色模板
+          </span>
+          <span class="title_s">02.编辑角色模板
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-            <li class="title_p">停用角色模板
+          </span>
+          <span class="title_s">03.停用角色模板
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-          </ul>
+          </span>
         </td>
       </tr>
       <tr>
@@ -163,33 +153,29 @@
         </td>
         <td>只读</td>
         <td class="table-checkout">
-          <ul>
-            <li class="title_p">账号信息
+          <span class="title_s">01.账号信息
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-          </ul>
+          </span>
         </td>
       </tr>
       <tr>
         <td>编辑</td>
         <td class="table-checkout">
-          <ul>
-            <li class="title_p">修改账号信息
+          <span class="title_s">01.修改账号信息
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-            <li class="title_p">修改密码
+          </span>
+          <span class="title_s">02.修改密码
               <span class="butts">
                 <i class="el-icon-edit" @click="dialogAddRole = true"></i>
                 <i class="el-icon-delete" @click="deleteRole"></i>
               </span>
-            </li>
-          </ul>
+          </span>
         </td>
       </tr>
       <tr>
@@ -289,6 +275,33 @@
       }
     },
     methods: {
+      // 测试添加权限
+      test: function() {
+        this.$http.post(
+          "http://api.dayuntong.com:3009/api/insertrole",
+          this.qs.stringify(
+            {
+              "Id": 103,
+              "Object": {
+                "ID": 15,
+                "CreateTime": "2017-06-01 20:23:00",
+                "IsDeleted": 0,
+                "Code": "",
+                "Title": "财务用户",
+                "Mark": "很多备注",
+                "Count": 172,
+                "State": 2
+              }
+            }
+          )
+        )
+          .then(function (obj) {
+            console.log(obj)
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+      },
       // 删除权限
       deleteRole() {
         this.$confirm('是否删除该权限?', '', {
@@ -303,6 +316,11 @@
           });
         }).catch(() => {
         });
+      },
+
+      // 显示操作按钮
+      shoubuttons: function(){
+        console.log()
       },
       // 提交表单事件
       submitForm(formName) {
@@ -335,22 +353,19 @@
       font-size: 15px;
       margin-bottom: 15px;
     }
+    table,table tr th, table tr td { border:0.5px solid #e6e6e6; }
     table {
       text-align: center;
       margin-top: 20px;
+      border-collapse: collapse;
       font-size: 14px;
       thead {
         th {
-          height: 35px;
-        }
-        .table-button {
-          background-color: #D7D7D7;
+          height: 54px;
+          color: #999;
         }
       }
       tbody {
-        tr {
-          background-color: #F2F2F2;
-        }
         .table-checkout li {
           margin-right: 50px;
         }
@@ -368,9 +383,8 @@
           }
         }
 
-        li.title_p {
-          list-style-position: inside;
-          float: left;
+        span.title_s {
+          text-align: left;
           height: 35px;
           width: 150px;
           text-align: left;
@@ -380,10 +394,15 @@
         }
 
         td {
-          height: 35px;
+          height: 26px;
+          color: #666;
         }
 
-        li.title_p:hover {
+        .table-checkout {
+          text-align: left;
+          padding-left: 25px;
+        }
+        span.title_s:hover {
           position: relative;
           .butts {
             display: inline;
