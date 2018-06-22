@@ -415,7 +415,8 @@
        }
       )
         .then(function (obj) {
-          // console.log(obj.data.objects)
+           console.log(obj.data.total)
+          that.total = obj.data.total
           that.tableData3 = obj.data.objects
           that.tableData3.forEach(function (v,k,arr) {
               arr[k]['otype'] = '正常'
