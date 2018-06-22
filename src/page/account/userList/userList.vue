@@ -438,7 +438,7 @@
 <style scoped>
 
   .user-table{
-    width: 1582px;
+    width: 1572px;
     margin-left:26px;
     margin-top: 70px;
   }
@@ -482,7 +482,6 @@
   }
   .border_size{
     width: 1602px;
-    overflow: auto;
   }
   .add-user{
     float: left;
@@ -506,6 +505,7 @@
   .block{
     float: right;
     margin-top: 50px;
+    margin-bottom: 80px;
   }
   .form-gz{
   	width: 215px;

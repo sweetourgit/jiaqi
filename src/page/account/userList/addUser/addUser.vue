@@ -66,7 +66,8 @@
 
 
               <el-form-item class="button-adjust">
-                <el-button type="primary" @click="submitForm('ruleForm')" v-model="buttontext">{{buttontext}}</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" v-if="buttonsubmit">创建</el-button>
+                <el-button type="primary" @click="changeForm('ruleForm')" v-if="buttonchange">修改</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
               </el-form-item>
                 <!--弹出框> <-->
@@ -76,6 +77,7 @@
                        <el-form-item label="部门:" class="form-la">
                          <el-cascader
                             placeholder="试试搜索：指南"
+                            @active-item-change="handleItemChange"
                             :options="casc"
                             separator="-"
                             filterable
@@ -159,7 +161,8 @@ import Permission from '@/page/account/userList/addUser/permission'
 
 
       return {
-        buttontext:"创建",
+        buttonsubmit:false,
+        buttonchange:false,
         uid:0,
         enable:false,
         disable :false,
@@ -427,6 +430,10 @@ import Permission from '@/page/account/userList/addUser/permission'
 
     },
       methods: {
+        handleItemChange(){
+          console.log(13)
+        },
+
         addmaster() {
 
             var arr =  Object.values(this.selectedOptions)
@@ -470,46 +477,6 @@ import Permission from '@/page/account/userList/addUser/permission'
           var that = this
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              if(this.uid > 0 ){
-
-
-                // this.$http.post(
-                //   "http://api.dayuntong.com:3009/api/org/usersave",
-                //   {
-                //     "Object": {
-                //       "id": this.uid,
-                //       "createTime": "2018-06-20T09:35:52.822Z",
-                //       "isDeleted": 0,
-                //       "code": "string",
-                //       "mobile":this.ruleForm.phone,
-                //       "name": this.ruleForm.name,
-                //       "email": this.ruleForm.mail,
-                //       "userCode": this.ruleForm.number,
-                //       "iDcard": this.ruleForm.idcard,
-                //       "tourGuide": this.ruleForm.trailid,
-                //       "sex": this.ruleForm.sex,
-                //       "userType": this.ruleForm.type
-                //     },
-                //     "id": 0
-                //   }
-                // )
-                //   .then(function (obj) {
-                //     if(obj.status == 200){
-                //       that.$message({
-                //         message: '修改成功',
-                //         type: 'success'
-                //       });
-                //       setTimeout(() => {
-                //         that.$router.push({path: "/userlist"});
-                //       }, 1000);
-                //     }
-                //   })
-                //   .catch(function (obj) {
-                //     console.log(obj)
-                //   })
-              }
-
-
               var that = this
               this.$http.post(
                 "http://api.dayuntong.com:3009/api/org/userinsert",
@@ -555,6 +522,52 @@ import Permission from '@/page/account/userList/addUser/permission'
             }
           });
         },
+        changeForm(formName) {
+          var that = this
+          this.$refs[formName].validate((valid) => {
+            if (valid) {
+              this.$http.post(
+                "http://api.dayuntong.com:3009/api/org/usersave",
+                {
+                  "Object": {
+                    "id": this.uid,
+                    "createTime": "2018-06-20T09:35:52.822Z",
+                    "isDeleted": 0,
+                    "code": "string",
+                    "mobile":this.ruleForm.phone,
+                    "name": this.ruleForm.name,
+                    "email": this.ruleForm.mail,
+                    "userCode": this.ruleForm.number,
+                    "iDcard": this.ruleForm.idcard,
+                    "tourGuide": this.ruleForm.trailid,
+                    "sex": this.ruleForm.sex,
+                    "userType": this.ruleForm.type
+                  },
+                  "id": 0
+                }
+              )
+                .then(function (obj) {
+                    that.$message({
+                      message: '修改成功',
+                      type: 'success'
+                    });
+                    setTimeout(() => {
+                      that.$router.push({path: "/userlist"});
+                    }, 1000);
+                })
+                .catch(function (obj) {
+                  console.log(obj)
+                })
+              //组织列表
+              //console.log(this.orilist)
+             // console.log(this.ruleForm1)
+
+            } else {
+              console.log('error submit!!');
+              return false;
+            }
+          });
+        },
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
@@ -578,7 +591,8 @@ import Permission from '@/page/account/userList/addUser/permission'
     created(){
       //console.log(this.$route.query.id)
       if(this.$route.query.id){
-        this.buttontext = "修改"
+        this.buttonchange = true
+        this.buttonsubmit = false
         this.uid = this.$route.query.id
         var that = this
         this.$http.post(
@@ -626,6 +640,9 @@ import Permission from '@/page/account/userList/addUser/permission'
 
           })
 
+      }else{
+          this.buttonsubmit = true
+          this.buttonchange = false
       }
 
 
