@@ -1,5 +1,8 @@
 <template>
+
 <div class="app">
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> 
+  <meta name="renderer" content="webkit|ie-comp|ie-stand">   -->
   <div class="top">
     <span class="top-titleone">嘉麒集团</span>
     <span class="top-titletwo">通行证</span>   
@@ -9,10 +12,10 @@
   <div class="big">
      <!-- <div class="title">嘉麒集团应用管理中心系统</div> -->
   <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="80px" class="demo-ruleForm login-container" v-show="show">
-     <span class="form-title">嘉麒应用管理中心</span>
-     <div class="login-group">
-       <div class="login-account">登录账号</div>
-      <div class="login-border"></div>
+        <span class="forget-title">嘉麒应用管理中心</span>
+       <div class="forget-group">
+       <div class="forget-account">用户登录</div>
+      <div class="forget-border"></div>
      </div>
       
     
@@ -25,12 +28,15 @@
     <el-form-item prop="password" class="password-input">
       <el-input type="password"  v-model="ruleForm.password" placeholder="密码"></el-input>
     </el-form-item>
-    <el-form-item prop="verification" class="verification-input">
-        <!-- <div><img src="../../../static/login/safety certificate.png" class="verification-img" style="width:35px;"></div> -->
-        <el-input  v-model="ruleForm.verification" placeholder="验证码" ></el-input>
-    </el-form-item>
+    <div class="verify-box">
+      <el-form-item prop="verification" class="verification-input">
+          <!-- <div><img src="../../../static/login/safety certificate.png" class="verification-img" style="width:35px;"></div> -->
+          <el-input  v-model="ruleForm.verification" placeholder="验证码" ></el-input>
+      </el-form-item>
+      <img src="../../../static/login-verify/number.png" alt="" class="verify-img">
+    </div>
         <!-- 验证码 -->
-        <img src="../../../static/login-verify/number.png" alt="" class="verify-img">
+       
     
       <router-link to="/role"> <el-button type="primary" class="button" @click="loginForm('ruleForm')">登录</el-button></router-link>
 
@@ -114,12 +120,12 @@
      </div>
      <el-button type="text" class="form-forget" @click="login" >立刻登录</el-button>
      
-<div  class="input-with-newpassword" >
+<div   >
  
-   <el-form-item prop="newpassword">
+   <el-form-item prop="newpassword" class="input-with-newpassword">
    <el-input type="password" placeholder="请输入新密码" v-model="passwordruleForm.newpassword"  ></el-input>
    </el-form-item>
-   <el-form-item prop="repassword">
+   <el-form-item prop="repassword" class="input-with-repassword">
    <el-input type="password" placeholder="请再次输入密码" v-model="passwordruleForm.repassword"  >
   
     
@@ -298,10 +304,10 @@
         this.emailShow = false;
         // this.time = 60;
         // this.time = 0;
-        console.log(this.show)
+        // console.log(this.show)
       
-        console.log(this.show)
-        console.log(this.phoneShow)
+        // console.log(this.show)
+        // console.log(this.phoneShow)
       },
       //  邮箱验证验证
     submitForm(formName) {
@@ -416,8 +422,8 @@
 
 <style lang="scss" scoped>
   .app{
-    position:absolute;
-    top:0;
+
+  top:0;
   width:100%;
   height:100%;
   overflow-x:hidden;
@@ -471,8 +477,7 @@
   }
    .form-title {
      position: relative;
-    //  float: left;
-     top:5%;
+    //  top:5%;
      margin: 0 auto;
      text-align: center;
      color: #444;
@@ -516,19 +521,19 @@ position: absolute;
     
   }
   .login-group{
-    position:relative;
-    height:12%;    
+    position:absolute;
+    height:20%;    
     float:left;
-    top:10%;
+    // top:10%;
     left: 3%;
-    margin-bottom:10%;
+    // margin-bottom:10%;
   }
   .login-account{
       position:relative;
       // float:left;
       // width:25%; 
       left: 30%;
-      top:24%;
+      top:22%;
       color: #008FF4;
       font-size:20px;
       // border-bottom: #008FF4 solid 3px;
@@ -560,7 +565,7 @@ position: absolute;
       margin-top:9%;
       right:10%;
       color: #888;
-      font-size:20px;
+      font-size:18px;
       border-bottom: #888 solid 3px;
   }
     .input-with-select{
@@ -624,9 +629,10 @@ position: absolute;
       //  这个地方写的有问题
       width:200%;
       // margin-right:60px;
-      margin-top:-1px !important;
+      // margin-top:-1px !important;
       // margin: 0 auto;
-      left:5px;
+      left:0px;
+      bottom: 30px;
       // right: 5%;
       // margin-bottom:10%;
       buttom:40px !important;
@@ -763,11 +769,20 @@ position: absolute;
     width:50%;
   }
   .input-with-newpassword{
-    position: relative;
+    // position: absolute;
+    margin-top:90px;
     width:80%;
-    top:10%;
+   
+  }
+  .input-with-repassword{
+    // position: absolute;
+    margin-top:20px;
+    width:80%;
+   
   }
   .newbuttom{
+    // position: relative;
+    margin-top:-10%;
     width:80%;
   }
   .forget-group{
@@ -790,17 +805,17 @@ position: absolute;
       // float:left;
       // width:25%; 
       left: 30%;
-      top:25%;
+      top:5px;
       color: #008FF4;
-      font-size:20px;
+      font-size:18px;
   }
   .forget-border{
     position: relative;
     // float:left;
     left: 30%;
-    top:50%;
+    top:19px;
     height:3px;
-    width:87px;
+    width:77px;
     background:#008FF4;
   }
   .email-buttom{
