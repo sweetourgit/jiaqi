@@ -10,6 +10,12 @@ import positionList from '@/page/account/positionList/positionList'
 import login from '@/page/login/login'
 import addRole from '@/page/account/role/addRole'
 import addUser from '@/page/account/userList/addUser/addUser'
+import cityList from '@/page/contentInfo/cityList/cityList'
+import customArea from '@/page/contentInfo/customArea/customArea'
+import scenicList from '@/page/contentInfo/scenicList/scenicList'
+import labelList from '@/page/contentInfo/labelList/labelList'
+import materialList from '@/page/contentInfo/materialList/materialList'
+import hotelList from '@/page/contentInfo/hotelList/hotelList'
 
 Vue.use(Router);
 
@@ -70,6 +76,36 @@ export default new Router({
       path: '/userList/addUser',
       component: addUser,
       name: '用户添加',
+      meta: {keepAlive: true}
+    }, {
+      path: '/cityList',
+      component: cityList,
+      name: '城市列表',
+      meta: {keepAlive: true}
+    }, {
+      path: '/customArea',
+      component: customArea,
+      name: '自定义地区',
+      meta: {keepAlive: true}
+    }, {
+      path: '/scenicList',
+      component: scenicList,
+      name: '景点列表',
+      meta: {keepAlive: true}
+    }, {
+      path: '/labelList',
+      component: labelList,
+      name: '标签列表',
+      meta: {keepAlive: true}
+    }, {
+      path: '/materialList',
+      component: materialList,
+      name: '素材列表',
+      meta: {keepAlive: true}
+    }, {
+      path: '/hotelList',
+      component: hotelList,
+      name: '酒店列表',
       meta: {keepAlive: true}
     },
   ]

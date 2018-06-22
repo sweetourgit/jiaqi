@@ -14,8 +14,8 @@
       >
       <el-submenu v-for="(item,index) in category" :key="index" :index="String(index)" @mouseover.native="mouseOpen(index)">
         <template slot="title">
-          <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"></i><img class="aa" :src="('../static/navLeft/'+item.img)" width="18px" alt="">
-          <span>{{item.name}}</span>
+          <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"></i><img :src="('../static/navLeft/'+item.img)" width="15px" alt="">
+          <span class="actionName">{{item.name}}</span>
         </template>
         <el-submenu :index="(index+ '-' +index1)" v-for="(data,index1) in item.items" :key="index1">
           <template slot="title">{{data.title}}</template>
@@ -85,6 +85,39 @@
                     ]}
                 ]
             },
+            {
+                name: '内容信息',
+                img: '内容信息.png',
+                items: [
+                    {
+                    title:'内容信息',
+                    lists:[{
+                        value: '城市列表',
+                        router:'/cityList'
+                     },
+                     {
+                        value: '自定义地区',
+                        router:'/customArea'
+                     },
+                     {
+                        value: '景点列表',
+                        router:'/scenicList'
+                     },
+                     {
+                        value: '标签列表',
+                        router:'/labelList'
+                     },
+                     {
+                        value: '素材列表',
+                        router:'/materialList'
+                     },
+                     {
+                        value: '酒店列表',
+                        router:'/hotelList'
+                     }
+                    ]}
+                ]
+            },
         ],
         isRouter:true,
         mouseActive:0,
@@ -137,5 +170,6 @@
 .tac{text-align: left;height:100%;}
 .nav{height:100%;}
 .col{height:100%;}
+.actionName{margin-left: 7px;}
 </style>
 

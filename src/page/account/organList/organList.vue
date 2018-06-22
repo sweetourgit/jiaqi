@@ -2,7 +2,7 @@
     <div>
         <div class="left">
             <div class="hh">
-          <el-tree ref="oppo" @node-click="treeClick" :data="data" node-key="orgID" :load="loadNode" class="tree" @dblclick.native="treeDblclick()" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
+          <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="orgID" :load="loadNode" class="tree" @dblclick.native="treeDblclick()" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
           </div>
           <el-button type="primary" class="addTopOrganization" @click="addTopOrganization = true">+ &nbsp;&nbsp;&nbsp;&nbsp;顶级组织</el-button>
         </div>
@@ -89,8 +89,14 @@
                 </el-form-item>
                 <el-form-item label="虚拟部门" class="virtual" prop="radio">
                     <el-radio-group class="virtualDepartment" v-model="addInput.radio">
-                    <el-radio label="是" value="0"></el-radio>
-                    <el-radio label="否" value="1"></el-radio>
+                    <el-radio label="是" value="1"></el-radio>
+                    <el-radio label="否" value="2"></el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="末级部门" class="virtual" prop="lastStage">
+                    <el-radio-group class="virtualDepartment" v-model="addInput.lastStage">
+                    <el-radio label="1" value="1">是</el-radio>
+                    <el-radio label="2" value="2">否</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="部门编码" :label-width="Width" prop="departmentCode">
@@ -126,7 +132,7 @@
                 </el-form>
                 <el-button type="primary" class="searchButton" @click="oo">搜索</el-button>
             </div>
-            <el-table ref="table" :data="members.slice((currentPage-1)*pagesize,currentPage*pagesize)" border class="members" @selection-change="qq">
+            <el-table ref="table" :data="members" border class="members" @selection-change="qq">
                 <el-table-column type="selection" width="30%" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" align="center"  width="60%" fixed="left"></el-table-column>
                 <el-table-column prop="name" label="姓名" align="center"  width="120%" fixed="left"></el-table-column>
@@ -136,7 +142,7 @@
                 <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
             </el-table>
             <div class="black">
-              <el-pagination :page-sizes="[8]" background @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="this.members.length">
+              <el-pagination :page-sizes="[pagesize]" background @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
               </el-pagination>
             </div>
             <div slot="footer" class="btn">
@@ -166,9 +172,9 @@
 
 <script>
   export default {
-created: function (){
-   this.TreeData()
-},
+    created: function (){
+      this.TreeData()
+    },
   data () {
     return {
         // data3: [{
@@ -223,6 +229,7 @@ created: function (){
             departmentNames: '',
             topDepartment: '',
             radio: '',
+            lastStage:'2',
             departmentCode: '',
             sort: '',
             phone: '',
@@ -235,6 +242,9 @@ created: function (){
                 {required: true, message: "请输入部门名称", trigger: "blur"}
             ],
             radio: [
+                {required: true, trigger: "blur"}
+            ],
+            lastStage: [
                 {required: true, trigger: "blur"}
             ],
             departmentCode: [
@@ -276,9 +286,10 @@ created: function (){
 
         members1: [],
         //每页的数据条数
-        pagesize:8,
+        pagesize:4,
         //默认开始页面
         currentPage:1,
+        total: '',
         // 设置成员
         position: false,
         setPosition: {
@@ -311,7 +322,12 @@ created: function (){
         props: {
           value: 'orgID',
           children: 'cities',
-        }
+        },
+        props1: {
+          label: 'label',
+          isLeaf: 'leaf'
+        },
+        keyID: []
     }
   },
     // 添加上级部门取消清空数据
@@ -390,6 +406,7 @@ methods: {
                         "Code": "1",
                         "ParentID": this.addInput.ParentID,
                         "Physical": 1,
+                        "isleaf": this.addInput.lastStage,
                         "OrgCode": this.addInput.departmentCode,
                         "Rank": this.addInput.sort,
                         "OfficeTel": this.addInput.phone,
@@ -408,8 +425,6 @@ methods: {
                 this.addSubdivision =  false
                 this.addInput.departmentNames = ""
                 this.$message.success('添加成功')
-            
-            
             }
             // departmentNames: '',
             // topDepartment: '东南亚部',
@@ -465,7 +480,6 @@ methods: {
                 this.addPersonnel = false
                 this.dataNum = [];
             }
-
       },
     remove(index, rows) {
         let _this = this
@@ -474,10 +488,6 @@ methods: {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-            // this.tableData.splice(index,1)
-            // console.log(index)
-            console.log(this.tableData)
-            console.log(this.tableData[index].orgID)
             this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptdelete',{
               "Object": {
                 "id" : this.tableData[index].orgID
@@ -504,11 +514,12 @@ methods: {
         // this.addPersonnel = true
         this.members = []
         let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/userlist',{
-
-
+        this.$http.post(this.GLOBAL.serverSrc+'/api/org/userpage',{
+          "pageSize": _this.pagesize,
+          "pageIndex": _this.currentPage,
         })
         .then(function(response){
+          _this.total = response.data.total
             for(let i=0;i<response.data.objects.length;i++){
                 _this.members.push({
                     id: response.data.objects[i].id,
@@ -521,6 +532,7 @@ methods: {
                 })
             }
             _this.addPersonnel = true
+            // console.log(response)
           }).catch(function(error){
             console.log(error);
           });
@@ -546,7 +558,6 @@ methods: {
         // }
         // console.log(a)
         // console.log(this.data2)
-
         var _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
             "Object": {
@@ -558,7 +569,7 @@ methods: {
                             label: response.data.objects[i].orgName,
                             orgID: response.data.objects[i].orgID,
                             key: i,
-                            value: response.data.objects[i].orgID
+                            value: response.data.objects[i].orgID,
                         })
                     // for(let k=0;k<_this.data2.length;k++){
                     //   if(_this.data2[k].orgID == response.data.objects[i].orgID){
@@ -569,32 +580,39 @@ methods: {
                 }
                 // console.log(_this.data2)
                 // _this.data[a.key].children = _this.data[a.key].children.concat(_this.data1)
-            
             // console.log(_this.data2)
-
-
           }).catch(function(error){
             console.log(error);
           });
-        
       },
+      //树形控件父级数据加载
       loadNode(node, resolve){
+        this.data = []
+        let _this = this
+        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
+            "Object": {
+                "ParentID" : -1
+            }
+        }).then((response) =>{
+            for(let i=0;i<response.data.objects.length;i++){
+              if (node.level === 0) {
+                resolve([{
+                  label: response.data.objects[i].orgName,
+                  key: i,
+                  orgID: response.data.objects[i].orgID,
+                  isLeaf: response.data.objects[i].isLeaf
+                }])
+              }
+            }
+            // _this.treeClick(response.data.objects[0])
+          }).catch(function(error){
+            console.log(error);
+          });
         if(node.level >= 1){
-             this.getUser(node.data.key, node.data.label, node.data.orgID, resolve);
+             this.getUser(node.data.key, node.data.label, node.data.orgID, node.data.isLeaf, resolve);
         }
-
-        // setTimeout(() => {
-        //   const data = [{
-        //     name: 'leaf1',
-        //     leaf: true
-        //   }, {
-        //     name: 'zone1'
-        //   }];
-
-        //   resolve(data);
-        // }, 500);
       },
-      getUser(key,label,orgID,resolve) {
+      getUser(key,label,orgID,isLeaf,resolve) {
         // this.addInput.ParentID = a.orgID
         // console.log(this.Parents)
         this.data1 = []
@@ -605,24 +623,42 @@ methods: {
             }
         }).then((response) =>{
                 for(let i=0;i<response.data.objects.length;i++){
+                  if(response.data.objects[i].isLeaf == 1){
                     _this.data1.push({
                             label: response.data.objects[i].orgName,
                             orgID: response.data.objects[i].orgID,
                             key: i,
-                            cities: []
+                            cities: [],
+                            isLeaf: response.data.objects[i].isLeaf,
+                            leaf: true
                         })
+                  } else if(response.data.objects[i].isLeaf == 2){
+                    _this.data1.push({
+                            label: response.data.objects[i].orgName,
+                            orgID: response.data.objects[i].orgID,
+                            key: i,
+                            cities: [],
+                            isLeaf: response.data.objects[i].isLeaf,
+                            leaf: false
+                        })
+                  }     
                 }
+                // console.log(response.data.objects[0].isLeaf)
+                // console.log(_this.data1)
+                // console.log(response)
                 setTimeout(() => {
                 let data = _this.data1
                 resolve(data)
             },200)
                 // _this.data[a.key].children = _this.data[a.key].children.concat(_this.data1)
-            
-
           }).catch(function(error){
             console.log(error);
           });
       },
+
+
+
+
       TreeData(){
         this.data = []
         let _this = this
@@ -636,7 +672,8 @@ methods: {
                     label: response.data.objects[i].orgName,
                     orgID: response.data.objects[i].orgID,
                     key: i,
-                    cities: []
+                    cities: [],
+                    isLeaf: 'leaf'
                 })
             }
             // _this.addInput.topDepartment = _this.data[0].label
@@ -646,6 +683,10 @@ methods: {
             console.log(error);
           });
       },
+
+
+
+
       addSubdivision1(){
         if(this.addInput.ParentID == ''){
             this.$message.warning('请先选择父级部门！')
@@ -656,9 +697,11 @@ methods: {
       },
       // 双击展开
       treeDblclick(){
-        // console.log(this.data1)
+        console.log(this.Parents)
         this.treeKey = []
-        this.treeKey.push(this.Parents.orgID)
+        if(this.Parents.isLeaf == 2){
+          this.treeKey.push(this.Parents.orgID)
+        }
          // console.log(this.Parents)
         let _this = this
         // this.treeKey.in_array = function (element){
@@ -724,32 +767,54 @@ methods: {
         // })
       },
       handleCurrentChange(currentPage) {
-            this.currentPage = currentPage;
-        },
+        this.currentPage = currentPage;
+        this.addPersonnel1()
+      },
       department(a, b) {
-        // console.log(a)
-        // console.log(this.options)
-        // console.log(this.options[0].orgID.indexOf(11))
-        // let _this = this
+        this.keyID = []
+        let _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
             "Object": {
                 "ParentID" : a[0]
             }
         }).then((response) => {
-          // for(let i=0;i<_this.options.length;i++){
-            // console.log(_this.options[0].orgID.indexOf(a[0]))
-          // }
+          for(let i=0;i<_this.options.length;i++){
+            // _this.keyID.push(_this.options[i].orgID)
+            
+            // if(_this.keyID.indexOf(a[0]) !== -1){
+            //   console.log(_this.keyID.indexOf(a[0]))
+            //   for(let k=0;k<response.data.objects.length;k++){
+            //     _this.options[_this.keyID.indexOf(a[0])].cities = [{
+            //       label: response.data.objects[k].orgName,
+            //       orgID: response.data.objects[k].orgID,
+            //       key: k,
+            //     }]
+            //   }
+            // }
+            
+            
+          }
         }).catch((error) => {
           console.log(error)
         })
       },
       renderContent(h, { node, data, store }){
-        return (
-          <span>
-            <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/ewqdewq.png"></img>
-            <span>{node.label}</span>
-          </span>
-        )
+        if(data.isLeaf == 1){
+          return (
+            <span>
+              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/257785656210656304.png"/>
+              <span>{node.label}</span>
+            </span>
+          )
+        } else if(data.isLeaf == 2){
+          return (
+            <span>
+              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/ewqdewq.png"/>
+              <span>{node.label}</span>
+            </span>
+          )
+        }
+        
       }
     }
 }
