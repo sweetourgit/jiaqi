@@ -239,7 +239,11 @@ import Permission from '@/page/account/userList/addUser/permission'
             label: '销售部',
             children: [{
               value: '销售',
-              label: '销售'
+              label: '销售',
+              children: [{
+                value: '销售1',
+                label: '销售1',
+              }]
             }, {
               value: 'fankui',
               label: '反馈'
