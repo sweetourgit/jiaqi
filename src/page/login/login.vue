@@ -1,5 +1,5 @@
 <template>
-
+ 
 <div class="app">
   <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> 
   <meta name="renderer" content="webkit|ie-comp|ie-stand">   -->
