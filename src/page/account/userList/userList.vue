@@ -93,7 +93,7 @@
            align="center">
         </el-table-column>
         <el-table-column
-           prop="otype"
+           prop="userState"
            label="状态"
            width="86"
            align="center">
@@ -146,7 +146,7 @@
       <div class="4343">
        <el-form ref="form" :model="form" label-width="110px">
 	     <el-form-item label="状态:" class="form-la">
-	       <el-input v-model="form.otype" disabled class="form-gz"></el-input>
+	       <el-input v-model="form.userState" disabled class="form-gz"></el-input>
 	     </el-form-item>
 	     <el-form-item label="手机号:" class="form-la">
 	       <el-input v-model="form.mobile" disabled class="form-gz"></el-input>
@@ -169,16 +169,16 @@
 	     <el-form-item label="性别:" class="form-sex" >
 	     <template>
           <div class="form-size">
-           <el-radio disabled v-model="form.sex" label="1" class="form-radios">男</el-radio>
-           <el-radio disabled v-model="form.sex" label="2">女</el-radio>
+           <el-radio disabled v-model="form.sex" label="男" class="form-radios">男</el-radio>
+           <el-radio disabled v-model="form.sex" label="女">女</el-radio>
            </div>
          </template>
         </el-form-item>
          <el-form-item label="用户类型:" class="form-sex" >
 	     <template>
           <div class="form-size1">
-           <el-radio disabled v-model="form.userType" label="1" class="form-radios">普通用户</el-radio>
-           <el-radio disabled v-model="form.userType" label="2">管理员</el-radio>
+           <el-radio disabled v-model="form.userType" label="普通用户" class="form-radios">普通用户</el-radio>
+           <el-radio disabled v-model="form.userType" label="管理员">管理员</el-radio>
           </div>
          </template>
          </el-form-item>
@@ -292,7 +292,23 @@
             // console.log(obj.data.objects)
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
-              arr[k]['otype'] = '正常'
+              if(arr[k]['userState'] == 0){
+                arr[k]['userState'] = '待审核'
+              }else if (arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '正常'
+              }else{
+                arr[k]['userState'] = '停用'
+              }
+              if(arr[k]['sex'] == 1){
+                arr[k]['sex'] = '男'
+              }else {
+                arr[k]['sex'] = '女'
+              }
+              if(arr[k]['userType'] == 1){
+                arr[k]['userType'] = '普通用户'
+              }else {
+                arr[k]['userType'] = '管理员'
+              }
               arr[k]['organization'] = '吉林大运通-财务部-会计'
               arr[k]['updatetime'] = '2018/05/13 10:43'
 
@@ -326,7 +342,23 @@
             // console.log(obj.data.objects)
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
-              arr[k]['otype'] = '正常'
+              if(arr[k]['userState'] == 0){
+                arr[k]['userState'] = '待审核'
+              }else if (arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '正常'
+              }else{
+                arr[k]['userState'] = '停用'
+              }
+              if(arr[k]['sex'] == 1){
+                arr[k]['sex'] = '男'
+              }else {
+                arr[k]['sex'] = '女'
+              }
+              if(arr[k]['userType'] == 1){
+                arr[k]['userType'] = '普通用户'
+              }else {
+                arr[k]['userType'] = '管理员'
+              }
               arr[k]['organization'] = '吉林大运通-财务部-会计'
               arr[k]['updatetime'] = '2018/05/13 10:43'
 
@@ -362,7 +394,23 @@
            // console.log(obj.data.objects)
            that.tableData3 = obj.data.objects
            that.tableData3.forEach(function (v,k,arr) {
-             arr[k]['otype'] = '正常'
+             if(arr[k]['userState'] == 0){
+               arr[k]['userState'] = '待审核'
+             }else if (arr[k]['userState'] == 1) {
+               arr[k]['userState'] = '正常'
+             }else{
+               arr[k]['userState'] = '停用'
+             }
+             if(arr[k]['sex'] == 1){
+               arr[k]['sex'] = '男'
+             }else {
+               arr[k]['sex'] = '女'
+             }
+             if(arr[k]['userType'] == 1){
+               arr[k]['userType'] = '普通用户'
+             }else {
+               arr[k]['userType'] = '管理员'
+             }
              arr[k]['organization'] = '吉林大运通-财务部-会计'
              arr[k]['updatetime'] = '2018/05/13 10:43'
 
@@ -377,10 +425,11 @@
       find(index, row){
         this.dialogFormVisible = true
         this.form = row
-        if(this.form.sex == 1){
-          this.form.sex = "1"
-        }
-        this.form.userType = "1"
+        console.log(row)
+          // if(this.form.sex == 1){
+          //   this.form.sex = "1"
+          // }
+        // this.form.userType = "1"
 
         console.log(row);
       },
@@ -415,11 +464,27 @@
        }
       )
         .then(function (obj) {
-           console.log(obj.data.total)
+           console.log(obj.data.objects)
           that.total = obj.data.total
           that.tableData3 = obj.data.objects
           that.tableData3.forEach(function (v,k,arr) {
-              arr[k]['otype'] = '正常'
+            if(arr[k]['userState'] == 0){
+              arr[k]['userState'] = '待审核'
+            }else if (arr[k]['userState'] == 1) {
+              arr[k]['userState'] = '正常'
+            }else{
+              arr[k]['userState'] = '停用'
+            }
+              if(arr[k]['sex'] == 1){
+              arr[k]['sex'] = '男'
+            }else {
+              arr[k]['sex'] = '女'
+            }
+            if(arr[k]['userType'] == 1){
+              arr[k]['userType'] = '普通用户'
+            }else {
+              arr[k]['userType'] = '管理员'
+            }
               arr[k]['organization'] = '吉林大运通-财务部-会计'
               arr[k]['updatetime'] = '2018/05/13 10:43'
 

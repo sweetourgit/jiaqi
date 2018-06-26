@@ -4,8 +4,8 @@
         <el-tabs v-model="activeName" class="form_tag">
           <el-tab-pane label="基本信息" name="first" class="pane-scroll">
              <el-form :model="ruleForm"  :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm ruleForm-abjust">
-              <el-button type="success" v-if="enable" size="medium" class="begin-button" @click="handleType">启用</el-button>
-              <el-button type="danger"  v-if="disable" size="medium" class="end-button" @click="handleType">停用 </el-button>
+              <el-button type="success" v-if="enable" size="medium" class="begin-button" @click="enableType">启用</el-button>
+              <el-button type="danger"  v-if="disable" size="medium" class="end-button" @click="disableType">停用 </el-button>
               <el-form-item label="手机号" prop="phone">
                 <el-input v-model="ruleForm.phone"placeholder="请输入手机号" class="from-input"></el-input>
               </el-form-item>
@@ -59,7 +59,7 @@
                   <el-button type="primary" plain @click="tanchu(domain) " v-model="ruleForm1" class="but-left">{{domain.value}}</el-button>
                   <div class="button-fun">
                  <el-button @<el-button type="danger"  @click.prevent="removeDomain(domain)" size="mini" class="delete-adjust" >删除</el-button>
-                 <el-button type="primary" size="mini" class="delete-adjust">设置默认</el-button>
+                 <el-button type="primary" size="mini" class="delete-adjust" @click="changstatus(domain)">设置默认</el-button>
                   </div>
 
               </div>
@@ -434,6 +434,13 @@ import Permission from '@/page/account/userList/addUser/permission'
 
     },
       methods: {
+        changstatus(item){
+          //默认的值
+          var id = this.ruleForm1.domains.indexOf(item)
+          var one = this.orilist
+          this.orilist = this.ruleForm1.domains[id].value
+          this.ruleForm1.domains[id].value = one
+        },
         handleItemChange(){
           console.log(13)
         },
@@ -459,13 +466,52 @@ import Permission from '@/page/account/userList/addUser/permission'
             this.hidval = index
            this.dialogFormVisible = true
         },
-      handleType() {
+        enableType() {
         this.$confirm('您确定启用/停用该用户么?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
           callback: (action, instance) => {
              if (action === 'confirm') {
+
+               this.$http.post(
+                 "http://api.dayuntong.com:3009/api/org/userinsert",
+                 ({
+                   "Object": {
+                     "createTime": "2018-06-20T09:35:52.822Z",
+                     "isDeleted": 0,
+                     "code": "string",
+                     "mobile":this.ruleForm.phone,
+                     "name": this.ruleForm.name,
+                     "email": this.ruleForm.mail,
+                     "userCode": this.ruleForm.number,
+                     "iDcard": this.ruleForm.idcard,
+                     "tourGuide": this.ruleForm.trailid,
+                     "sex": this.ruleForm.sex,
+                     "userType": this.ruleForm.type,
+                     "userState":1
+                   }
+                 })
+               )
+                 .then(function (obj) {
+                     that.$message({
+                       message: '操作成功',
+                       type: 'success'
+                     });
+                     setTimeout(() => {
+                       that.$router.push({path: "/userlist"});
+                     }, 1000);
+
+
+                 })
+                 .catch(function (obj) {
+                   console.log(obj)
+                 })
+
+
+
+
+
               this.$message({
             type: 'success',
             message: '操作成功!'
@@ -477,6 +523,63 @@ import Permission from '@/page/account/userList/addUser/permission'
         }
         })
       },
+        disableType() {
+          this.$confirm('您确定启用/停用该用户么?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            callback: (action, instance) => {
+              if (action === 'confirm') {
+
+                this.$http.post(
+                  "http://api.dayuntong.com:3009/api/org/userinsert",
+                  ({
+                    "Object": {
+                      "createTime": "2018-06-20T09:35:52.822Z",
+                      "isDeleted": 0,
+                      "code": "string",
+                      "mobile":this.ruleForm.phone,
+                      "name": this.ruleForm.name,
+                      "email": this.ruleForm.mail,
+                      "userCode": this.ruleForm.number,
+                      "iDcard": this.ruleForm.idcard,
+                      "tourGuide": this.ruleForm.trailid,
+                      "sex": this.ruleForm.sex,
+                      "userType": this.ruleForm.type,
+                      "userState":2
+                    }
+                  })
+                )
+                  .then(function (obj) {
+                    that.$message({
+                      message: '操作成功',
+                      type: 'success'
+                    });
+                    setTimeout(() => {
+                      that.$router.push({path: "/userlist"});
+                    }, 1000);
+
+
+                  })
+                  .catch(function (obj) {
+                    console.log(obj)
+                  })
+
+
+
+
+
+                this.$message({
+                  type: 'success',
+                  message: '操作成功!'
+                })
+                setTimeout(() => {
+                  this.$router.push({path: "/userlist"});
+                }, 2000);
+              }
+            }
+          })
+        },
         submitForm(formName) {
           var that = this
           this.$refs[formName].validate((valid) => {
@@ -693,6 +796,7 @@ import Permission from '@/page/account/userList/addUser/permission'
   .ruleForm-abjust{
     width: 521px;
     padding-bottom: 100px;
+    margin-top: 33px;
   }
   .block{
       width: 393px;
