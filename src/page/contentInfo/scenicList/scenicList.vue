@@ -33,9 +33,9 @@
     <div class="cl_both"></div>
     <div style="padding: 0 20px">
       <div style="text-align: left">
-        <router-link to="/addScenic">
-          <el-button type="primary" class="add_scenic">添加景点</el-button>
-        </router-link>
+       
+          <el-button @click="showaddbtn" type="primary" class="add_scenic">添加景点</el-button>
+        
       </div>
       <div class="labels">
         <div style="float: left;margin-right: 25px">景点标签：</div>
@@ -98,14 +98,23 @@
         style="float: right">
       </el-pagination>
     </div>
+    <add-scenic
+      @closelable ='showaddbtn'
+      v-show="showadd"
+    />
   </div>
 </template>
 
 <script>
+import AddScenic from './components/Addscenic'
   export default {
     name: "scenicList",
+    components:{
+      AddScenic
+    },
     data() {
       return {
+        showadd: false,
         countryArr: [
           {
             value: '1',
@@ -159,6 +168,9 @@
       }
     },
     methods: {
+      showaddbtn() {
+        this.showadd = !this.showadd
+      },
       handleCurrentChange: function () {
         
       },
