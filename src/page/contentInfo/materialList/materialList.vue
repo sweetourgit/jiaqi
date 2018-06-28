@@ -13,7 +13,7 @@
         <!-- 地址图片的最大框框 -->
       <div class="address-big">
             <div class="address-img">
-                <div class="img" @click="albumSuccess">
+                <div class="img" @click="addAlbumImg = true">
 
                 </div>
                 <!-- 图片介绍 -->
@@ -256,7 +256,7 @@
 <el-dialog title="标签选择" :visible.sync="addLabel" style="width:900px;margin:0 auto">
   <div style="margin:0 auto">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-    <el-tab-pane label="景点" v-for="(item,index) in editableTabs"
+    <el-tab-pane label="景点" v-for="(item) in editableTabs"
         :key="item.name"
         :label="item.title"
         :name="item.name"
@@ -529,7 +529,7 @@
     width:100%;
     height:400px;
     /* border:1px solid red; */
-    background-image:url('../../../../static/materialList/123.jpg');
+    background-image:url('https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3435109962,4004352223&fm=173&app=25&f=JPEG?w=640&h=523&s=4983895506314B9C729CA15E03009073');
     
 }
 .introduce{
@@ -587,7 +587,7 @@
   width:1000px;
   height:500px;
   /* border:1px solid green; */
-  background-image:url('../../../../static/materialList/456.jpg');
+  background-image:url('https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3435109962,4004352223&fm=173&app=25&f=JPEG?w=640&h=523&s=4983895506314B9C729CA15E03009073');
   background-size: 100% 100%;
 }
 .small-img{
@@ -597,7 +597,7 @@
   height:200px;
   /* border:1px solid yellow; */
   margin-right:17px;
-  background-image:url('../../../../static/materialList/456.jpg');
+  background-image:url('https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3435109962,4004352223&fm=173&app=25&f=JPEG?w=640&h=523&s=4983895506314B9C729CA15E03009073');
   background-size: 100% 100%;
 }
 .right-form{
