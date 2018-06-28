@@ -38,11 +38,11 @@ export default {
       rules: {
         pass: [
           { required: true, message: "请输入密码", trigger: "blur"},
-          { pattern: /^[a-zA-Z0-9]{6,10}$/, message: "密码格式错误(6-20位数字与字母)"}
+          { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/, message: "密码格式错误(6-20位数字加字母)"}
         ],
         newpass: [
           { required: true, message: "请输入密码", trigger: "blur"},
-          { pattern: /^[a-zA-Z0-9]{6,10}$/, message: "密码格式错误(6-20位数字与字母)"}
+          { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/, message: "密码格式错误(6-20位数字加字母)"}
         ],
         checkpass: [
           { validator: validatepass }
@@ -50,6 +50,7 @@ export default {
       }
     }
   },
+  //^[a-zA-Z0-9]{6,10}$
   methods: {
     submitForm(formName) {
         this.$refs[formName].validate(valid => {

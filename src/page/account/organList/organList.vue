@@ -2,9 +2,8 @@
     <div>
         <div class="left">
             <div class="hh">
-          <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="orgID" :load="loadNode" class="tree" @dblclick.native="treeDblclick()" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
+          <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick()" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
           </div>
-          <el-button type="primary" class="addTopOrganization" @click="addTopOrganization = true">+ &nbsp;&nbsp;&nbsp;&nbsp;顶级组织</el-button>
         </div>
         <div class="right">
           <div class="right-top">
@@ -50,17 +49,6 @@
             </el-table-column>
           </el-table>
         </div>
-        <!-- 增加顶级组织弹框 -->
-        <el-dialog class="Popup" title="增加顶级组织" :visible.sync="addTopOrganization" style="width:800px;">
-                <el-form :model="form">
-                    <el-form-item :label-width="formLabelWidth">
-                        <el-input v-model="form.organizationName" auto-complete="off" placeholder="请输入名称" class="organizationInput"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer">
-                    <el-button type="primary" @click="addSave">保存</el-button>
-                </div>
-        </el-dialog>
         <!-- 编辑部门弹框 -->
         <el-dialog class="Popup" :visible.sync="editDepartment" style="width:800px;">
             <div class="boom">
@@ -100,7 +88,7 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="部门编码" :label-width="Width" prop="departmentCode">
-                    <el-input v-model="addInput.departmentCode" auto-complete="off" class="add-department"></el-input>
+                    <el-input v-model="addInput.departmentCode" auto-complete="off" class="F"></el-input>
                 </el-form-item>
                 <el-form-item label="排序" :label-width="Width" prop="sort">
                     <el-input v-model="addInput.sort" auto-complete="off" class="add-department"></el-input>
@@ -142,7 +130,7 @@
                 <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
             </el-table>
             <div class="black">
-              <el-pagination :page-sizes="[pagesize]" background @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+              <el-pagination :page-sizes="[1]" background @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
               </el-pagination>
             </div>
             <div slot="footer" class="btn">
@@ -177,44 +165,12 @@
     },
   data () {
     return {
-        // data3: [{
-        //     label: '辽宁大运通（2000人）',
-        //     children: [{
-        //         label: '亚洲部（1000人）',
-        //         children: [{
-        //             label: '东南亚部（500人）',
-        //             children: [{
-        //                 label: '日本部（250人）',
-        //             },{
-        //                 label:'韩国部（250人）',
-        //             }]
-        //         },{
-        //             label: '北欧部（500人）',
-        //             children: [{
-        //                 label: '瑞典部（250人）',
-        //             },]
-        //         }]
-        //     },{
-        //         label: '客服部（1000人）',
-        //     }]
-        // }],
         data: [],
         data1: [],
         data2:[],
         switchs: true,
         // 子部门临时数据
         tableData: [],
-        // {
-        //     division: '子部门1'
-        
-        // }
-        // 增加顶级组织
-        addTopOrganization: false,
-        form: {
-            organizationName: ''
-        },
-        organizationName: '',
-        formLabelWidth: '90px',
         // 编辑部门
         editDepartment: false,
         updata: {
@@ -286,10 +242,10 @@
 
         members1: [],
         //每页的数据条数
-        pagesize:4,
+        pagesize:1,
         //默认开始页面
         currentPage:1,
-        total: '',
+        total: 1,
         // 设置成员
         position: false,
         setPosition: {
@@ -320,7 +276,7 @@
         Parents: [],
         key: -1,
         props: {
-          value: 'orgID',
+          value: 'id',
           children: 'cities',
         },
         props1: {
@@ -330,27 +286,6 @@
         keyID: []
     }
   },
-    // 添加上级部门取消清空数据
-    beforeUpdate: function (){
-        if(this.addTopOrganization == false){
-          this.form.organizationName = ""
-        }
-        if(this.addPersonnel == true){
-          for(let i=0;i<this.tableList.length;i++){
-            let obj = this.tableList[i]
-            let num = obj.id
-            for(let j=0;j<this.members.length;j++){
-              let aj = this.members[j]
-              let n = aj.id
-              if(num == n){
-                setTimeout(() => {
-                    this.$refs.table.toggleRowSelection(this.members.find(d => d.id == num),true)
-                },0)
-              }
-            }
-          }
-        }
-    },
 methods: {
     open2() {
         this.$confirm('此操作将永久删除该人员, 是否继续?', '提示', {
@@ -394,31 +329,30 @@ methods: {
     appendSave() {
         if(this.addInput.departmentNames === '' || this.addInput.departmentCode === '' || this.addInput.radio === '' || this.addInput.sort === '' || this.addInput.phone === '' || this.addInput.fax === ''){
             this.$message.warning('红☆为必填选项，请认真填写！')
-
         }else{
                 var _this = this
                 this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptinsert',{
-                    "Id": 11,
+                    "Id": 0,
                     "Object": {
-                        "OrgID": 1,
-                        "OrgName": this.addInput.departmentNames,
-                        "IsDeleted": 1,
-                        "Code": "1",
-                        "ParentID": this.addInput.ParentID,
-                        "Physical": 1,
-                        "isleaf": this.addInput.lastStage,
-                        "OrgCode": this.addInput.departmentCode,
-                        "Rank": this.addInput.sort,
-                        "OfficeTel": this.addInput.phone,
-                        "OfficeFax": this.addInput.fax,
-                        "Mark": this.addInput.note,
-                        "CreateUser": "admin",
-                        "CreateTime": "2018-06-15 14:11:22"
-                    }
+                        "id": 0,
+                        "orgName": this.addInput.departmentNames,
+                        "isDeleted": 1,
+                        "code": "1",
+                        "parentID": this.addInput.ParentID,
+                        "physical": 1,
+                        "isLeaf": this.addInput.lastStage,
+                        "orgCode": this.addInput.departmentCode,
+                        "rank": this.addInput.sort,
+                        "officeTel": this.addInput.phone,
+                        "officeFax": this.addInput.fax,
+                        "mark": this.addInput.note,
+                    },
+                    "loadLeader": true,
+                    "CreateUser": "admin",
+                    "CreateTime": "2018-06-15 14:11:22"
                  }
                  ).then(function(response){
                     _this.TreeData()
-                    // console.log(response);
                   }).catch(function(error){
                     console.log(error);
                   });
@@ -426,29 +360,6 @@ methods: {
                 this.addInput.departmentNames = ""
                 this.$message.success('添加成功')
             }
-            // departmentNames: '',
-            // topDepartment: '东南亚部',
-            // radio: '',
-            // departmentCode: '',
-            // sort: '',
-            // phone: '',
-            // fax: '',
-            // note: '',
-    },
-    addSave() {
-        if(this.form.organizationName === ''){
-            this.$message.warning('不能为空！')
-        }else{
-            this.data.push({
-            label: this.form.organizationName,
-            children: [{
-
-            }]
-            })
-            this.addTopOrganization = false
-            this.form.organizationName = ""
-            this.$message.success('添加成功')
-        }
     },
     oo() {
 
@@ -489,11 +400,10 @@ methods: {
           type: 'warning'
         }).then(() => {
             this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptdelete',{
-              "Object": {
-                "id" : this.tableData[index].orgID
-              }
+                "id" : this.tableData[index].id
             })
             .then(function(response){
+              _this.tableData.splice(index, 1)
               _this.$message({
               type: 'success',
               message: '删除成功!'
@@ -502,7 +412,7 @@ methods: {
             .catch(function(error){
               console.log(error);
             })
-            
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -511,12 +421,16 @@ methods: {
         });
       },
       addPersonnel1(){
-        // this.addPersonnel = true
         this.members = []
         let _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/api/org/userpage',{
-          "pageSize": _this.pagesize,
-          "pageIndex": _this.currentPage,
+        "object": {
+          "isDeleted": 0,
+        },
+        "pageSize":_this.pagesize,
+        "pageIndex": _this.currentPage,
+        "isGetAll": true,
+        "id": 0
         })
         .then(function(response){
           _this.total = response.data.total
@@ -532,7 +446,6 @@ methods: {
                 })
             }
             _this.addPersonnel = true
-            // console.log(response)
           }).catch(function(error){
             console.log(error);
           });
@@ -542,45 +455,28 @@ methods: {
         this.dataNum = [];
       },
       treeClick(a,b,c) {
-        this.addInput.ParentID = a.orgID
+        this.addInput.ParentID = a.id
         this.addInput.topDepartment = a.label
         this.updata.departmentName = a.label
-        // this.addInput.ParentID = a.ParentID
         this.Parents = a
         this.tableData = []
-        // console.log(this.data1)
-        // console.log(a)
-        // console.log(this.$refs.oppo.store.setDefaultExpandedKeys)
-        // alert(11111)
-        // console.log(this.$refs.oppo.store)
-        // for(var i=0;i<this.$refs.oppo.store._getAllNodes().length;i++){
-        //    this.$refs.oppo.store.nodesMap[i].expanded=true;
-        // }
-        // console.log(a)
-        // console.log(this.data2)
         var _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
             "Object": {
-                "ParentID" : a.orgID
+                "ParentID" : a.id
             }
         }).then((response) =>{
+          console.log(response)
                 for(let i=0;i<response.data.objects.length;i++){
-                    _this.tableData.push({
+                  if(response.data.objects[i].isDeleted !== 1){
+                     _this.tableData.push({
                             label: response.data.objects[i].orgName,
-                            orgID: response.data.objects[i].orgID,
+                            id: response.data.objects[i].id,
                             key: i,
-                            value: response.data.objects[i].orgID,
+                            value: response.data.objects[i].id,
                         })
-                    // for(let k=0;k<_this.data2.length;k++){
-                    //   if(_this.data2[k].orgID == response.data.objects[i].orgID){
-                    //     let pp = _this.data2.indexOf(_this.data2[k])
-                    //     _this.data2.splice(pp,1)
-                    //   }
-                    // }
+                  }
                 }
-                // console.log(_this.data2)
-                // _this.data[a.key].children = _this.data[a.key].children.concat(_this.data1)
-            // console.log(_this.data2)
           }).catch(function(error){
             console.log(error);
           });
@@ -599,66 +495,59 @@ methods: {
                 resolve([{
                   label: response.data.objects[i].orgName,
                   key: i,
-                  orgID: response.data.objects[i].orgID,
+                  id: response.data.objects[i].id,
                   isLeaf: response.data.objects[i].isLeaf
                 }])
               }
             }
-            // _this.treeClick(response.data.objects[0])
           }).catch(function(error){
             console.log(error);
           });
         if(node.level >= 1){
-             this.getUser(node.data.key, node.data.label, node.data.orgID, node.data.isLeaf, resolve);
+             this.getUser(node.data.key, node.data.label, node.data.id, node.data.isLeaf, resolve);
         }
       },
-      getUser(key,label,orgID,isLeaf,resolve) {
-        // this.addInput.ParentID = a.orgID
-        // console.log(this.Parents)
+      getUser(key,label,id,isLeaf,resolve) {
         this.data1 = []
         let _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
             "Object": {
-                "ParentID" : orgID
+                "ParentID" : id
             }
         }).then((response) =>{
+
                 for(let i=0;i<response.data.objects.length;i++){
-                  if(response.data.objects[i].isLeaf == 1){
-                    _this.data1.push({
-                            label: response.data.objects[i].orgName,
-                            orgID: response.data.objects[i].orgID,
-                            key: i,
-                            cities: [],
-                            isLeaf: response.data.objects[i].isLeaf,
-                            leaf: true
-                        })
-                  } else if(response.data.objects[i].isLeaf == 2){
-                    _this.data1.push({
-                            label: response.data.objects[i].orgName,
-                            orgID: response.data.objects[i].orgID,
-                            key: i,
-                            cities: [],
-                            isLeaf: response.data.objects[i].isLeaf,
-                            leaf: false
-                        })
-                  }     
+                  if(response.data.objects[i].isDeleted !== 1){
+                      if(response.data.objects[i].isLeaf == 1){
+                      _this.data1.push({
+                              label: response.data.objects[i].orgName,
+                              id: response.data.objects[i].id,
+                              key: i,
+                              cities: [],
+                              isLeaf: response.data.objects[i].isLeaf,
+                              leaf: true
+                          })
+                    } else if(response.data.objects[i].isLeaf == 2){
+                      _this.data1.push({
+                              label: response.data.objects[i].orgName,
+                              id: response.data.objects[i].id,
+                              key: i,
+                              cities: [],
+                              isLeaf: response.data.objects[i].isLeaf,
+                              leaf: false
+                          })
+                    }
+                  }
+
                 }
-                // console.log(response.data.objects[0].isLeaf)
-                // console.log(_this.data1)
-                // console.log(response)
                 setTimeout(() => {
                 let data = _this.data1
                 resolve(data)
             },200)
-                // _this.data[a.key].children = _this.data[a.key].children.concat(_this.data1)
           }).catch(function(error){
             console.log(error);
           });
       },
-
-
-
-
       TreeData(){
         this.data = []
         let _this = this
@@ -670,101 +559,35 @@ methods: {
             for(let i=0;i<response.data.objects.length;i++){
                 _this.data.push({
                     label: response.data.objects[i].orgName,
-                    orgID: response.data.objects[i].orgID,
+                    id: response.data.objects[i].id,
                     key: i,
                     cities: [],
                     isLeaf: 'leaf'
                 })
             }
-            // _this.addInput.topDepartment = _this.data[0].label
-            // _this.addInput.ParentID = _this.data[0].ParentID
             _this.treeClick(_this.data[0])
           }).catch(function(error){
             console.log(error);
           });
       },
-
-
-
-
       addSubdivision1(){
         if(this.addInput.ParentID == ''){
             this.$message.warning('请先选择父级部门！')
         } else {
             this.addSubdivision = true
-            // this.addInput.topDepartment = 
         }
       },
       // 双击展开
       treeDblclick(){
-        console.log(this.Parents)
         this.treeKey = []
         if(this.Parents.isLeaf == 2){
-          this.treeKey.push(this.Parents.orgID)
+          this.treeKey.push(this.Parents.id)
         }
-         // console.log(this.Parents)
         let _this = this
-        // this.treeKey.in_array = function (element){
-        //   for(let i=0;i<_this.treeKey.length;i++){
-        //     if(_this.treeKey[i] == element){
-        //       return true;
-        //     }
-        //   } return false;
-        // }
-        // if(this.treeKey.in_array(this.Parents.orgID) == true){
-        //   this.key += 1
-        //   for(let i=0;i<_this.treeKey.length;i++){
-        //     if(_this.treeKey[i] == _this.Parents.orgID){
-        //       let pp = _this.treeKey.indexOf(_this.treeKey[i])
-        //       _this.treeKey.splice(pp,1)
-        //       document.getElementsByClassName('el-tree-node__children')[pp].style.display = 'none';
-        //       document.getElementsByClassName('expanded')[pp].style.webkitTransform = 'rotate(0deg)';
-        //     }
-        //   }
-        // } else {
-        //   _this.treeKey.push(this.Parents.orgID)
-        // }
       },
       editDepartment1(){
         this.editDepartment = true
         this.options = this.data
-        // for(let i=0;i<this.data.length;i++){
-        //   this.
-        // }
-        // options: [{
-        //     value: 'tianchenglvxingwang',
-        //     label: '甜程旅行网',
-        //     children: [{
-        //         value: 'xiaoshoubu',
-        //         label: '销售部',
-        //         children: [{
-        //             value: 'xiaoshou1bu',
-        //             label: '销售1部',
-        //         }]
-        //     },{
-        //         value: 'caozuobu',
-        //         label: '操作部',
-        //     },{
-        //         value: 'caiwubu',
-        //         label: '财务部',
-        //     },{
-        //         value: 'yunying',
-        //         label: '运营',
-        //     },{
-        //         value: 'lianguanzhongxin',
-        //         label: '连管中心'
-        //     }]
-        // }]
-
-        // this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
-        //     "Object": {
-        //         "ParentID" : -1
-        //     }
-        // }).then((response) => {
-
-        // }).catch((error) => {
-        //   console.log(error)
-        // })
       },
       handleCurrentChange(currentPage) {
         this.currentPage = currentPage;
@@ -779,20 +602,16 @@ methods: {
             }
         }).then((response) => {
           for(let i=0;i<_this.options.length;i++){
-            // _this.keyID.push(_this.options[i].orgID)
-            
-            // if(_this.keyID.indexOf(a[0]) !== -1){
-            //   console.log(_this.keyID.indexOf(a[0]))
-            //   for(let k=0;k<response.data.objects.length;k++){
-            //     _this.options[_this.keyID.indexOf(a[0])].cities = [{
-            //       label: response.data.objects[k].orgName,
-            //       orgID: response.data.objects[k].orgID,
-            //       key: k,
-            //     }]
-            //   }
-            // }
-            
-            
+            _this.keyID.push(_this.options[i].id)
+            if(_this.keyID.indexOf(a[0]) !== -1){
+              for(let k=0;k<response.data.objects.length;k++){
+                _this.options[_this.keyID.indexOf(a[0])].cities = [{
+                  label: response.data.objects[k].orgName,
+                  id: response.data.objects[k].id,
+                  key: k,
+                }]
+              }
+            }
           }
         }).catch((error) => {
           console.log(error)
@@ -802,7 +621,7 @@ methods: {
         if(data.isLeaf == 1){
           return (
             <span>
-              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/257785656210656304.png"/>
+              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/209379682602977491.png"/>
               <span>{node.label}</span>
             </span>
           )
@@ -814,21 +633,13 @@ methods: {
             </span>
           )
         }
-        
+
       }
     }
 }
 </script>
 
 <style scoped>
-.addTopOrganization{
-    position: absolute;
-    bottom: 0%;
-    left: 0%;
-    width: 100%;
-    height: 6.6%;
-    border-radius: 0;
-}
 .organizationInput{
     right: 17%
 }
