@@ -185,12 +185,21 @@
               <div class="zong_border clearfix">
                 <div class="left_border">
                   <div class="left_img">
+                    <img  style="width: 920px; height: 500px;" src="http://victor-t.cn/7.png" >
                   </div>
                   <div class="delete_img">
                     <el-button type="primary" style=" width: 150px;">移除图片<i class="el-icon-upload el-icon--right"></i></el-button>
                   </div>
                 </div>
                 <div class="right_border">
+                  <div class="photo_info">
+                    <div>相册信息</div>
+                    <div style="font-size: 16px; font-weight: bold;">大帅府</div>
+                    <div class="font_info">类型：</div>
+                    <div class="font_info">目的地：</div>
+                  </div>
+                  <div class="shucai_info">
+                  </div>
                 </div>
               </div>
           </el-dialog>
@@ -661,6 +670,16 @@
     float: left;
     margin-left: 441px;
     margin-top: 50px;
+  }
+  .photo_info{
+    height: 300px;
+    border: #8c939d solid 1px;
+
+  }
+  .shucai_info{
+    height: 400px;
+    border: #8c939d solid 1px;
+    margin-top: 76px;
   }
   .clearfix:after{
     display: block;
