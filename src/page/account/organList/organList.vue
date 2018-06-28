@@ -4,7 +4,6 @@
             <div class="hh">
           <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick()" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
           </div>
-          <el-button type="primary" class="addTopOrganization" @click="addTopOrganization = true">+ &nbsp;&nbsp;&nbsp;&nbsp;顶级组织</el-button>
         </div>
         <div class="right">
           <div class="right-top">
@@ -50,17 +49,6 @@
             </el-table-column>
           </el-table>
         </div>
-        <!-- 增加顶级组织弹框 -->
-        <el-dialog class="Popup" title="增加顶级组织" :visible.sync="addTopOrganization" style="width:800px;">
-                <el-form :model="form">
-                    <el-form-item :label-width="formLabelWidth">
-                        <el-input v-model="form.organizationName" auto-complete="off" placeholder="请输入名称" class="organizationInput"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer">
-                    <el-button type="primary" @click="addSave">保存</el-button>
-                </div>
-        </el-dialog>
         <!-- 编辑部门弹框 -->
         <el-dialog class="Popup" :visible.sync="editDepartment" style="width:800px;">
             <div class="boom">
@@ -100,7 +88,7 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="部门编码" :label-width="Width" prop="departmentCode">
-                    <el-input v-model="addInput.departmentCode" auto-complete="off" class="add-department"></el-input>
+                    <el-input v-model="addInput.departmentCode" auto-complete="off" class="F"></el-input>
                 </el-form-item>
                 <el-form-item label="排序" :label-width="Width" prop="sort">
                     <el-input v-model="addInput.sort" auto-complete="off" class="add-department"></el-input>
@@ -116,7 +104,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="button-footer">
-                <el-button @click="addSubdivision11('addInput')">取 消</el-button>
+                <el-button @click="addSubdivision1('addInput')">取 消</el-button>
                 <el-button type="primary" @click="appendSave('addInput')">保存</el-button>
             </div>
         </el-dialog>
@@ -142,7 +130,7 @@
                 <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
             </el-table>
             <div class="black">
-              <el-pagination :page-sizes="[pagesize]" background @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+              <el-pagination :page-sizes="[1]" background @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
               </el-pagination>
             </div>
             <div slot="footer" class="btn">
@@ -172,6 +160,9 @@
 
 <script>
   export default {
+    created: function (){
+      this.TreeData()
+    },
   data () {
     return {
         data: [],
@@ -180,13 +171,6 @@
         switchs: true,
         // 子部门临时数据
         tableData: [],
-        // 增加顶级组织
-        addTopOrganization: false,
-        form: {
-            organizationName: ''
-        },
-        organizationName: '',
-        formLabelWidth: '90px',
         // 编辑部门
         editDepartment: false,
         updata: {
@@ -258,10 +242,10 @@
 
         members1: [],
         //每页的数据条数
-        pagesize:4,
+        pagesize:1,
         //默认开始页面
         currentPage:1,
-        total: '',
+        total: 1,
         // 设置成员
         position: false,
         setPosition: {
@@ -302,27 +286,6 @@
         keyID: []
     }
   },
-    // 添加上级部门取消清空数据
-    beforeUpdate: function (){
-        if(this.addTopOrganization == false){
-          this.form.organizationName = ""
-        }
-        if(this.addPersonnel == true){
-          for(let i=0;i<this.tableList.length;i++){
-            let obj = this.tableList[i]
-            let num = obj.id
-            for(let j=0;j<this.members.length;j++){
-              let aj = this.members[j]
-              let n = aj.id
-              if(num == n){
-                setTimeout(() => {
-                    this.$refs.table.toggleRowSelection(this.members.find(d => d.id == num),true)
-                },0)
-              }
-            }
-          }
-        }
-    },
 methods: {
     open2() {
         this.$confirm('此操作将永久删除该人员, 是否继续?', '提示', {
@@ -359,19 +322,19 @@ methods: {
             }
         }
     },
-    addSubdivision11(a) {
+    addSubdivision1(a) {
         this.addSubdivision = false
         this.$refs[a].resetFields();
     },
     appendSave() {
         if(this.addInput.departmentNames === '' || this.addInput.departmentCode === '' || this.addInput.radio === '' || this.addInput.sort === '' || this.addInput.phone === '' || this.addInput.fax === ''){
             this.$message.warning('红☆为必填选项，请认真填写！')
-
         }else{
                 var _this = this
                 this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptinsert',{
-                    "object": {
-                        "id": 1,
+                    "Id": 0,
+                    "Object": {
+                        "id": 0,
                         "orgName": this.addInput.departmentNames,
                         "isDeleted": 1,
                         "code": "1",
@@ -382,13 +345,14 @@ methods: {
                         "rank": this.addInput.sort,
                         "officeTel": this.addInput.phone,
                         "officeFax": this.addInput.fax,
-                        "mark": this.addInput.note, 
-                    }
+                        "mark": this.addInput.note,
+                    },
+                    "loadLeader": true,
+                    "CreateUser": "admin",
+                    "CreateTime": "2018-06-15 14:11:22"
                  }
                  ).then(function(response){
-                  console.log(response)
-                    // _this.TreeData()
-                    // console.log(response);
+                    _this.TreeData()
                   }).catch(function(error){
                     console.log(error);
                   });
@@ -396,21 +360,6 @@ methods: {
                 this.addInput.departmentNames = ""
                 this.$message.success('添加成功')
             }
-    },
-    addSave() {
-        if(this.form.organizationName === ''){
-            this.$message.warning('不能为空！')
-        }else{
-            this.data.push({
-            label: this.form.organizationName,
-            children: [{
-
-            }]
-            })
-            this.addTopOrganization = false
-            this.form.organizationName = ""
-            this.$message.success('添加成功')
-        }
     },
     oo() {
 
@@ -463,7 +412,7 @@ methods: {
             .catch(function(error){
               console.log(error);
             })
-            
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -475,13 +424,13 @@ methods: {
         this.members = []
         let _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/api/org/userpage',{
-          "object": {
-           "isDeleted": 0,
-         },
-         "pageSize": _this.pagesize,
-         "pageIndex": _this.currentPage,
-         "isGetAll": true,
-         "id": 0
+        "object": {
+          "isDeleted": 0,
+        },
+        "pageSize":_this.pagesize,
+        "pageIndex": _this.currentPage,
+        "isGetAll": true,
+        "id": 0
         })
         .then(function(response){
           _this.total = response.data.total
@@ -505,7 +454,6 @@ methods: {
         this.addPersonnel = false
         this.dataNum = [];
       },
-      // 点击节点
       treeClick(a,b,c) {
         this.addInput.ParentID = a.id
         this.addInput.topDepartment = a.label
@@ -518,17 +466,16 @@ methods: {
                 "ParentID" : a.id
             }
         }).then((response) =>{
+          console.log(response)
                 for(let i=0;i<response.data.objects.length;i++){
                   if(response.data.objects[i].isDeleted !== 1){
-                    _this.tableData.push({
+                     _this.tableData.push({
                             label: response.data.objects[i].orgName,
                             id: response.data.objects[i].id,
                             key: i,
                             value: response.data.objects[i].id,
                         })
                   }
-
-                    
                 }
           }).catch(function(error){
             console.log(error);
@@ -553,12 +500,6 @@ methods: {
                 }])
               }
             }
-            let arr = ''
-            arr = ({
-              label: response.data.objects[0].orgName,
-              id: response.data.objects[0].id
-            })
-            _this.treeClick(arr)
           }).catch(function(error){
             console.log(error);
           });
@@ -574,9 +515,10 @@ methods: {
                 "ParentID" : id
             }
         }).then((response) =>{
+
                 for(let i=0;i<response.data.objects.length;i++){
                   if(response.data.objects[i].isDeleted !== 1){
-                    if(response.data.objects[i].isLeaf == 1){
+                      if(response.data.objects[i].isLeaf == 1){
                       _this.data1.push({
                               label: response.data.objects[i].orgName,
                               id: response.data.objects[i].id,
@@ -596,13 +538,34 @@ methods: {
                           })
                     }
                   }
-                  
 
                 }
                 setTimeout(() => {
                 let data = _this.data1
                 resolve(data)
             },200)
+          }).catch(function(error){
+            console.log(error);
+          });
+      },
+      TreeData(){
+        this.data = []
+        let _this = this
+        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
+            "Object": {
+                "ParentID" : -1
+            }
+        }).then((response) =>{
+            for(let i=0;i<response.data.objects.length;i++){
+                _this.data.push({
+                    label: response.data.objects[i].orgName,
+                    id: response.data.objects[i].id,
+                    key: i,
+                    cities: [],
+                    isLeaf: 'leaf'
+                })
+            }
+            _this.treeClick(_this.data[0])
           }).catch(function(error){
             console.log(error);
           });
@@ -639,20 +602,16 @@ methods: {
             }
         }).then((response) => {
           for(let i=0;i<_this.options.length;i++){
-            // _this.keyID.push(_this.options[i].id)
-            
-            // if(_this.keyID.indexOf(a[0]) !== -1){
-            //   console.log(_this.keyID.indexOf(a[0]))
-            //   for(let k=0;k<response.data.objects.length;k++){
-            //     _this.options[_this.keyID.indexOf(a[0])].cities = [{
-            //       label: response.data.objects[k].orgName,
-            //       id: response.data.objects[k].id,
-            //       key: k,
-            //     }]
-            //   }
-            // }
-            
-            
+            _this.keyID.push(_this.options[i].id)
+            if(_this.keyID.indexOf(a[0]) !== -1){
+              for(let k=0;k<response.data.objects.length;k++){
+                _this.options[_this.keyID.indexOf(a[0])].cities = [{
+                  label: response.data.objects[k].orgName,
+                  id: response.data.objects[k].id,
+                  key: k,
+                }]
+              }
+            }
           }
         }).catch((error) => {
           console.log(error)
@@ -662,7 +621,7 @@ methods: {
         if(data.isLeaf == 1){
           return (
             <span>
-              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/257785656210656304.png"/>
+              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/209379682602977491.png"/>
               <span>{node.label}</span>
             </span>
           )
@@ -674,21 +633,13 @@ methods: {
             </span>
           )
         }
-        
+
       }
     }
 }
 </script>
 
 <style scoped>
-.addTopOrganization{
-    position: absolute;
-    bottom: 0%;
-    left: 0%;
-    width: 100%;
-    height: 6.6%;
-    border-radius: 0;
-}
 .organizationInput{
     right: 17%
 }

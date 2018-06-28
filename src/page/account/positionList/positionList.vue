@@ -12,7 +12,7 @@
             <el-table-column label="操作" fixed="right" align="center">
                 <template slot-scope="scope">
 					<el-button type="primary" size="small" @click="editPosition1(scope.$index, scope.row)">编辑</el-button>
-					<el-button type="danger" size="small" @click="del(scope.$index, scope.row)">删除</el-button>
+					<el-button type="danger" size="small" @click="remove(scope.$index, scope.row)">删除</el-button>
 				</template>
             </el-table-column>
         </el-table>
@@ -39,7 +39,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="editPosition = false">取 消</el-button>
-                <el-button type="primary" @click="addSave('updata')">保存</el-button>
+                <el-button type="primary" @click="editSave('updata')">保存</el-button>
             </div>
         </el-dialog>
     </div>
@@ -121,97 +121,79 @@
         this.pageList();
     },
     methods: {
-        // 删除
-        del(aa, bb) {
-            var oo = ((this.currentPage-1)*this.pagesize)+aa
-            this.$confirm('是否删除该职位？','提示',{
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'primary'
-            }).then(() => {
-                this.tableData.splice(oo,1)
-                this.hh.splice(oo,1)
-                        console.log(this.hh)
-                this.bb--
-                var ff = this.tableData.length
-                for(let i=0;i<=ff;i++){
-                    if(typeof this.tableData[i] == "object"){
-                        for(let key in this.tableData[i]){
-                            if(this.tableData[i].id < 10){
-                                this.tableData[i].id = '00' + (i + 1)
-                            }else if(this.tableData[i].id >= 10){
-                                this.tableData[i].id = '0' + (i + 1)
-                            }
-                        }
-                    }
+        // 添加职位
+        addSave() {
+            if(this.form.positionName === ''){
+                this.$message.warning('请填写职位名称！')
+            }else{
+                var _this = this
+                this.$http.post(this.GLOBAL.serverSrc+'/api/org/positioninsert',{
+                    "Object": {
+                    "name": this.form.positionName
+                 },
                 }
-                if(this.tableData.length <= this.currentPage*this.pagesize-this.pagesize){
-                    this.currentPage = this.tableData.length/this.pagesize;
-                }
-                this.$message({
-                    type: 'success',
-                    message: '删除成功！'
+                ).then(function(response){
+                console.log(response);
+                }).catch(function(error){
+                console.log(error);
                 });
+                this.addPosition = false
+                this.form.positionName = ""
+                this.$message.success('添加成功')
+            }
+
+        },
+        editSave(updata){
+            let _this = this;
+            this.$http.post(this.GLOBAL.serverSrc+'/api/org/positionsave',{
+                "object": {
+                    "id": this.jj.id,
+                    "name": this.updata.positionName,
+                    "createTime": "2018-06-28T08:01:41.772Z",
+                    "isDeleted": 0,
+                    "code": "string",
+                    "rank": 0,
+                    "createUser": "string"
+                },
+                "id": 0
+            }).then(function(response){
+                _this.pageList();
+                _this.$message.success('修改成功！')
+                _this.jj = ''
+                _this.editPosition = false
+            }).catch(function(error){
+            console.log(error);
+            }); 
+                    
+        },
+       // 删除
+        remove(index, rows) {
+            let _this = this
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).then(() => {
+                this.$http.post(this.GLOBAL.serverSrc+'/api/org/positiondelete',{
+                "id" : this.tableData[index].id
+            })
+            .then(function(response){
+                _this.tableData.splice(index, 1)
+                _this.$message({
+                type: 'success',
+                message: '删除成功!'
+             });
+            })
+            .catch(function(error){
+             console.log(error);
+            })
+
             }).catch(() => {
                 this.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                type: 'info',
+                message: '已取消删除'
                 });
             });
-        },
-        // 添加和修改
-        addSave(formName) {
-            let _this = this
-            this.$refs[formName].validate(valid =>{
-                if(valid){
-                    if(formName == 'form'){
-                        var fff = this.tableData.length + 1
-                        for(let i=0;i<this.tableData.length;i++){
-                            this.hh[i] = this.tableData[i].positionName
-                        }
-                        if(this.hh.indexOf(this.form.positionName) == '-1'){
-                            if(fff < 10){
-                                this.tableData.push({
-                                    id:this.aa + (this.bb++),
-                                    positionName:this.form.positionName
-                                })
-                            }else if(fff >= 10){
-                                this.tableData.push({
-                                    id:this.rr + (this.bb++),
-                                    positionName:this.form.positionName
-                                })
-                            }
-                            this.hh[this.tableData.length-1] = this.form.positionName
-                            this.$message.success('添加成功！')
-                            this.form.positionName = "";
-                            this.addPosition = false
-                        }else{
-                            this.$message.error('该职位已存在')
-                            this.form.positionName = "";
-                        }
-                    }else if(formName == 'updata'){
-                        this.$http.post(this.GLOBAL.serverSrc+'/api/org/positionsave',{
-                            "object": {
-                                "id": this.jj.id,
-                                "name": this.updata.positionName,
-                                "createTime": "2018-06-28T08:01:41.772Z",
-                                "isDeleted": 0,
-                                "code": "string",
-                                "rank": 0,
-                                "createUser": "string"
-                            },
-                            "id": 0
-                        }).then(function(response){
-                            _this.pageList();
-                            _this.$message.success('修改成功！')
-                            _this.jj = ''
-                            _this.editPosition = false
-                        }).catch(function(error){
-                        console.log(error);
-                        }); 
-                    }
-                }
-            })
         },
         editPosition1(aa, bb) {
             this.editPosition = true
