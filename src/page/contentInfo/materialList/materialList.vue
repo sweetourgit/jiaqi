@@ -659,7 +659,7 @@
    width:400px;
    /* height:230px; */
   /* border:1px solid purple; */
-  border-radius: 20px;
+  border-radius: 20px; 
 }
 .upload-img{
   width:50px;
