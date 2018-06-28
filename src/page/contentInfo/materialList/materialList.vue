@@ -13,7 +13,7 @@
         <!-- 地址图片的最大框框 -->
       <div class="address-big">
             <div class="address-img">
-                <div class="img" @click="addAlbumImg = true">
+                <div class="marterialist-img" @click="addAlbumImg = true">
 
                 </div>
                 <!-- 图片介绍 -->
@@ -30,7 +30,7 @@
 
             </div>
              <div class="address-img">
-                <div class="img">
+                <div class="marterialist-img">
 
                 </div>
                 <!-- 图片介绍 -->
@@ -47,7 +47,7 @@
 
             </div>
               <div class="address-img">
-                <div class="img">
+                <div class="marterialist-img">
 
                 </div>
                 <!-- 图片介绍 -->
@@ -64,7 +64,7 @@
 
             </div>
               <div class="address-img">
-                <div class="img">
+                <div class="marterialist-img">
 
                 </div>
                 <!-- 图片介绍 -->
@@ -256,7 +256,7 @@
 <el-dialog title="标签选择" :visible.sync="addLabel" style="width:900px;margin:0 auto">
   <div style="margin:0 auto">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-    <el-tab-pane label="景点" v-for="(item) in editableTabs"
+    <el-tab-pane label="景点" v-for="item in editableTabs"
         :key="item.name"
         :label="item.title"
         :name="item.name"
@@ -525,7 +525,7 @@
     height:490px;
     /* border:1px solid purple; */
 }
-.img{
+.marterialist-img{
     width:100%;
     height:400px;
     /* border:1px solid red; */
