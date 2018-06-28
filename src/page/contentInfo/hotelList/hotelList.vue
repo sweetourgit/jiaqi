@@ -62,61 +62,163 @@
     <!--弹出层bg-->
     <div>
 
-      <el-dialog title="新增和编辑页面" :visible.sync="dialogFormVisible" width="80%">
+      <el-dialog title="新增和编辑页面" :visible.sync="dialogFormVisible" width="80%" class="clearfix form_left" >
         <div class="info_title">
           基础信息
         </div>
-        <el-form :model="form" :inline="true" class="clearfix form_left" >
+        <el-form  :model="ruleForm" :rules="rules" ref="ruleForm" :inline="true" class="clearfix form_left" >
           <div class="left_input">
-          <el-form-item label="活动名称" :size	="mini">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="中文名称" prop="NameChn" >
+            <el-input v-model="ruleForm.NameChn"></el-input>
           </el-form-item>
-          <el-form-item label="活动名称" :size	="mini">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="英文名称" prop="NameEng" >
+            <el-input v-model="ruleForm.NameEng"></el-input>
           </el-form-item>
-          <el-form-item label="活动名称" :size	="mini">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="中文地址" prop="Address">
+            <el-input v-model="ruleForm.Address"></el-input>
           </el-form-item>
-          <el-form-item label="活动名称" :size	="mini">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="英文地址" prop="AddressEng">
+            <el-input v-model="ruleForm.AddressEng"></el-input>
           </el-form-item>
-          <el-form-item label="活动名称" :size	="mini">
-            <el-input v-model="form.name"></el-input>
-          </el-form-item>
+            <el-form-item label="所属地区" prop="area">
+              <el-select v-model="ruleForm.area" placeholder="请选择活动区域" class="select">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+              </el-select>
+            </el-form-item>
         </div>
           <div class="middle_input">
-            <el-form-item label="活动名称" :size	="mini">
-              <el-input v-model="form.name"></el-input>
+            <el-form-item label="星级" prop="Star">
+              <el-select v-model="ruleForm.Star" placeholder="请选择星级" class="select">
+                <el-option label="一星" value="1"></el-option>
+                <el-option label="二星" value="2"></el-option>
+                <el-option label="三星" value="3"></el-option>
+                <el-option label="四星" value="4"></el-option>
+                <el-option label="五星" value="5"></el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="活动名称" :size	="mini">
-              <el-input v-model="form.name"></el-input>
+            <el-form-item label="经度" prop="Longitude">
+              <el-input v-model="ruleForm.Longitude"></el-input>
             </el-form-item>
-            <el-form-item label="活动名称" :size	="mini">
-              <el-input v-model="form.name"></el-input>
+            <el-form-item label="纬度" prop="Latitude">
+              <el-input v-model="ruleForm.Latitude"></el-input>
             </el-form-item>
-            <el-form-item label="活动名称" :size	="mini">
-              <el-input v-model="form.name"></el-input>
-            </el-form-item>
-            <el-form-item label="活动名称" :size	="mini">
-              <el-input v-model="form.name"></el-input>
+            <el-form-item label="评分" prop="CommentScore">
+              <el-input v-model="ruleForm.CommentScore"></el-input>
             </el-form-item>
           </div>
           <div class="right_input">
-
-            <el-form-item label="活动名称" :size	="mini">
+            <el-form-item label="备注" >
               <el-input
                 type="textarea"
-                :rows="2"
+                :rows="13"
                 placeholder="请输入内容"
+                class="textarea_size"
               >
               </el-input>
             </el-form-item>
           </div>
-        </el-form>
+          <div class="introduction">
+            <el-form-item label="简介" >
+              <el-input
+                type="textarea"
+                :rows="17"
+                placeholder="请输入内容"
+                class="introduction_area"
+              >
+              </el-input>
+            </el-form-item>
+          </div>
+          <div class="info_title">
+            设施列表
+          </div>
+          <!--添加设施bg-->
+          <div class="facilities">
+            <div>
+              <el-button type="primary" style="width: 200px;" @click="add_shebei">添加新设施</el-button>
+            </div>
+            <div class="add_facilities"
+                 v-for="(domain, index) in ruleForm1.domains"
+                 :key="domain.key"
+                 :prop="'domains.' + index + '.value'"
+                 v-model="ruleForm1"
 
+            >
+              <div class="qq" @click.prevent="tanchu(domain)">
+              <el-form-item label="中文设施名"   class="facilities_name">
+                <el-input v-model="domain.namechina" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="英文设施名"  >
+                <el-input v-model="domain.nameenglish" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="设施简介">
+                <el-input v-model="domain.info" disabled></el-input>
+              </el-form-item>
+                </div>
+              <div>
+                <el-button type="warning"  @click.prevent="removeDomain(domain)" size="mini">删除</el-button>
+              </div>
+            </div>
+          </div>
+          <div class="info_title">
+            设施列表
+          </div>
+          <div class="add_img">
+            <el-button type="primary" style="width: 200px; " >添加图片</el-button>
+          </div>
+          <div class="image_border">
+
+            <div
+              class="image_kuang"
+              v-for="(domain, index) in image.domains"
+                 :key="domain.key"
+              v-model="image"
+              >
+              <img  class="ima_kuang" v-model="image" :src=domain.url  @click="find_image(domain)" />
+              <div class="image_exit" @click="img_delete(domain)">
+              </div>
+            </div>
+          </div>
+        </el-form>
+        <div>
+          <el-dialog title="查看素材" :visible.sync="find_img" append-to-body width="90%"  class="clearfix form_left" >
+              <div class="zong_border clearfix">
+                <div class="left_border">
+                  <div class="left_img">
+                  </div>
+                  <div class="delete_img">
+                    <el-button type="primary" style=" width: 150px;">移除图片<i class="el-icon-upload el-icon--right"></i></el-button>
+                  </div>
+                </div>
+                <div class="right_border">
+                </div>
+              </div>
+          </el-dialog>
+        </div>
+
+        <div>
+          <el-dialog title="设备列表" :visible.sync="shebeiWindow" append-to-body width="20%">
+            <el-form :model="form">
+              <el-form-item label="中文设备名" :label-width="formLabelWidth">
+                <el-input v-model="form.china" auto-complete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="英文设备名" :label-width="formLabelWidth">
+                <el-input v-model="form.english" auto-complete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="设备简称" :label-width="formLabelWidth">
+                <el-input v-model="form.info" auto-complete="off"></el-input>
+              </el-form-item>
+              <input type="hidden" v-model="hidval" value="hidval"/>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="shebeiChange()">确 定</el-button>
+            </div>
+          </el-dialog>
+        </div>
+        <!--添加设施end-->
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button type="primary"  @click="submitForm('ruleForm')" >确认</el-button>
+          <el-button  @click="dialogFormVisible = false">取消</el-button>
         </div>
       </el-dialog>
     </div>
@@ -127,17 +229,116 @@
 <script>
   export default {
     data() {
+      var checkLongitude = (rule, value, callback) => {
+        if(!value){
+          return callback(new Error('经度不能为空'));
+        }
+        var reg = /^[0-9]+.?[0-9]*$/;
+        if (!reg.test(value)) {
+          return callback(new Error('请输入数字'));
+        }
+        callback()
+      };
+      var checkLatitude = (rule, value, callback) => {
+        if(!value){
+          return callback(new Error('纬度不能为空'));
+        }
+        var reg = /^[0-9]+.?[0-9]*$/;
+        if (!reg.test(value)) {
+          return callback(new Error('请输入数字'));
+        }
+        callback()
+      };
+      var checkCommentScore = (rule, value, callback) => {
+
+        var reg = /^([1-9]\d?|100)$/;
+        if(value){
+          if (!reg.test(value)) {
+            return callback(new Error('请输入1-100的数字'));
+          }
+        }
+        callback()
+      };
+      var checkarea = (rule, value, callback) => {
+        if(!value){
+          return callback(new Error('所属地区不能为空'));
+        }
+        callback()
+      };
+      var checkNameChn = (rule, value, callback) => {
+        if(!value){
+          return callback(new Error('中文名称不能为空'));
+        }
+        callback()
+      };
+      var checkAddress = (rule, value, callback) => {
+        if(!value){
+          return callback(new Error('中文地址不能为空'));
+        }
+        callback()
+      };
       return {
-        dialogFormVisible: false,
+        hidval:-1,
+        shebeiWindow:false,
         form: {
-          name: '',
+          china: '',
+          english: '',
+          info: '',
+
+        },
+        image:{
+          domains: [{
+            url: 'http://victor-t.cn/7.png',
+          },{
+            url: 'http://victor-t.cn/7.png',
+          },{
+            url: 'http://victor-t.cn/7.png',
+          }
+          ]
+        },
+        ruleForm1: {
+          domains: [{
+            value: '',
+            namechina:'12',
+            nameenglish:'12',
+            info:'12'
+          }],
+        },
+        dialogFormVisible: false,
+        ruleForm: {
+          NameChn: '',
+          NameEng:'',
+          Address:'',
+          AddressEng:'',
+          area:'',
+          Star:'',
           region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
+          Longitude:'',
+          Latitude:'',
+          CommentScore:'',
           desc: ''
+        },
+        rules: {
+          NameChn: [
+            {validator: checkNameChn,trigger: 'blur' }
+          ],
+          Address: [
+            {validator: checkAddress,trigger: 'blur' }
+         ],
+          area: [
+            {validator: checkarea,trigger: 'blur' }
+          ],
+          Longitude: [
+              {validator: checkLongitude,trigger: 'blur' }
+            ],
+          Latitude: [
+            {validator: checkLatitude,trigger: 'blur' }
+          ],
+          CommentScore: [
+            {validator: checkCommentScore,trigger: 'blur' }
+          ],
+
+
         },
         formLabelWidth: '120px',
         img:[
@@ -170,12 +371,67 @@
           // children: 'zones',
           // isLeaf: 'leaf'
         },
+        find_img:false
       }
     },
     methods: {
+      //查看素材
+      find_image(item){
+        this.find_img = true
+      },
+      //图片删除
+      img_delete(item){
+        var index = this.image.domains.indexOf(item)
+        this.image.domains.splice(index, 1)
+
+      },
+      shebeiChange(){
+
+        this.ruleForm1.domains[this.hidval].namechina = this.form.china
+        this.ruleForm1.domains[this.hidval].nameenglish =this.form.english
+        this.ruleForm1.domains[this.hidval].info =this.form.info
+        this.shebeiWindow = false
+      },
+      tanchu(item){
+      this.shebeiWindow = true
+        var index = this.ruleForm1.domains.indexOf(item)
+        this.hidval = index
+        this.form.china = this.ruleForm1.domains[this.hidval].namechina
+        this.form.english = this.ruleForm1.domains[this.hidval].nameenglish
+        this.form.info = this.ruleForm1.domains[this.hidval].info
+        //console.log(this.ruleForm1.domains.indexOf(item))
+      },
+      removeDomain(item) {
+        var index = this.ruleForm1.domains.indexOf(item)
+
+        if (index !== -1) {
+          this.ruleForm1.domains.splice(index, 1)
+        }
+      },
+
+        add_shebei() {
+          this.ruleForm1.domains.push({
+            value: '',
+            namechina:'',
+            nameenglish:'',
+            info:'',
+            key: Date.now()
+          });
+        },
       //添加酒店
       addhotel(){
         this.dialogFormVisible =  true
+      },
+      //添加酒店确认按钮
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -287,6 +543,9 @@
     height: 30px;
     font-size: 16px;
     text-align: left;
+    float: left;
+    width: 1500px;
+    margin-top: 6px;
   }
   .left_input{
     width: 300px;
@@ -301,9 +560,107 @@
     margin-left: 200px;
   }
   .right_input{
-    width: 300px;
+    width: 600px;
     height: 300px;
     float: left;
+    margin-left: 50px;
+  }
+  .introduction{
+    width: 1500px;
+    height: 400px;
+    float: left;
+    margin-top: 10px;
+  }
+  .introduction_area{
+    width: 1329px;
+    padding-left: 17px;
+  }
+
+  .textarea_size{
+    width: 500px;
+  }
+  .select{
+    width: 202px;
+  }
+  .add_facilities{
+    width: 400px;
+    height: 250px;
+    background: #F2F2F2;
+    float: left;
+    margin-left: 200px;
+    margin-top: 50px;
+  }
+  .facilities{
+    float: left;
+    width: 1500px;
+  }
+  .facilities_name{
+    margin-top: 15px;
+  }
+  .add_img{
+    width: 1400px;
+    height: 50px;
+    float: left;
+    text-align: left;
+    margin-left: 75px;
+  }
+  .image_border{
+    width: 1400px;
+    float: left;
+    margin-left: 25px;
+  }
+  .image_kuang{
+    width: 300px;
+    height: 200px;
+    background: #6f7180;
+    float: left;
+    margin-left: 50px;
+    margin-top: 20px;
+  }
+  .ima_kuang{
+    width: 300px;
+    height: 200px;
+    background: #6f7180;
+    float: left;
+  }
+  .image_exit{
+    width: 25px;
+    height: 25px;
+    background: #3a8ee6;
+    float: left;
+    margin-left: 278px;
+    margin-top: -205px;
+  }
+  .zong_border{
+    width: 1655px;
+    border: #8c939d solid 1px;
+  }
+  .left_border{
+    width: 1000px;
+    height: 780px;
+    border: #8c939d solid 1px;
+    float: left;
+  }
+  .left_img{
+    width: 920px;
+    height: 500px;
+    background: #5daf34;
+    float: left;
+    margin-top: 80px;
+    margin-left: 40px;
+  }
+  .right_border{
+    width: 600px;
+    height: 780px;
+    border: #8c939d solid 1px;
+    float: right;
+  }
+  .delete_img{
+    width: 89px;
+    height: 40px;
+    float: left;
+    margin-left: 441px;
+    margin-top: 50px;
   }
   .clearfix:after{
     display: block;
