@@ -13,7 +13,7 @@
         <!-- 地址图片的最大框框 -->
       <div class="address-big">
             <div class="address-img">
-                <div class="img">
+                <div class="img" @click="albumSuccess">
 
                 </div>
                 <!-- 图片介绍 -->
@@ -381,6 +381,7 @@
         haha:'',
         materialRules: '',
         albumRules: '',
+        checked:'',
          handleClick(tab, event) {
         console.log(tab, event);
       },
@@ -439,7 +440,7 @@
         this.form.name = '';
         this.form.type = '';
         this.form.destination = '';
-        this.addAlbumImg = true;
+        this.addMaterial = true;
         this.$message({
           message: '添加相册成功,请为它添加照片吧~',
           type: 'success'
