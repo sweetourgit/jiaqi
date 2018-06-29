@@ -7,14 +7,15 @@
             <el-input  class="address-input" v-model="haha"  placeholder="目的地/名称"></el-input>
             <el-button class="top-button" type="primary" icon="el-icon-search"></el-button>
         </div>
-        <div class="address-list">
+      <div style="border:1px solid red">
+        <div class="left-tree">
             <el-tree :data="data3" node-key="id"></el-tree>
         </div>
         <!-- 地址图片的最大框框 -->
       <div class="address-big">
-            <div class="address-img">
+            <div class="address-img" v-for="img in marterialist">
                 <div class="marterialist-img" @click="addAlbumImg = true">
-
+                    <img style="width:100%;" :src="img.img" alt="">
                 </div>
                 <!-- 图片介绍 -->
                 <div class="introduce">
@@ -29,62 +30,27 @@
                 </div>
 
             </div>
-             <div class="address-img">
-                <div class="marterialist-img">
-
-                </div>
-                <!-- 图片介绍 -->
-                <div class="introduce">
-                    <!-- 图片标签 -->
-                    <div class="label">标签</div>
-                    <!-- 图片数量 -->
-                    <div class="number">5张</div>
-                </div>
-                <!-- 景点名称 -->
-                <div class="address-name">
-                    强哥故居2
-                </div>
-
-            </div>
-              <div class="address-img">
-                <div class="marterialist-img">
-
-                </div>
-                <!-- 图片介绍 -->
-                <div class="introduce">
-                    <!-- 图片标签 -->
-                    <div class="label">标签</div>
-                    <!-- 图片数量 -->
-                    <div class="number">5张</div>
-                </div>
-                <!-- 景点名称 -->
-                <div class="address-name">
-                    强哥故居2
-                </div>
-
-            </div>
-              <div class="address-img">
-                <div class="marterialist-img">
-
-                </div>
-                <!-- 图片介绍 -->
-                <div class="introduce">
-                    <!-- 图片标签 -->
-                    <div class="label">标签</div>
-                    <!-- 图片数量 -->
-                    <div class="number">5张</div>
-                </div>
-                <!-- 景点名称 -->
-                <div class="address-name">
-                    强哥故居2
-                </div>
-
-            </div>
-    </div>
+            
+     
+        </div>
+         <div class="page">
+        <!-- <span class="demonstration">完整功能</span> -->
+            <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage4"
+            :page-sizes="[100, 200, 300, 400]"
+            :page-size="100"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="400">
+            </el-pagination>
+        </div>
+      </div>
+        
 
     <!-- 所有的弹窗 -->
     <!-- 1.添加相册的弹窗 -->
-  <el-dialog title="添加相册" :visible.sync="addAlbum" style="width:1000px;margin:0 auto;">
+  <el-dialog title="添加相册" :visible.sync="addAlbum" append-to-body width="20%"  class="clearfix form_left">
   <el-form :model="form" :rules="rules" ref="form">
    <el-form-item label="名称:" prop="name" :label-width="formLabelWidth" style="width:300px" >
       <el-input v-model="form.name" auto-complete="off" placeholder="请输入相册名称"></el-input>
@@ -109,22 +75,19 @@
 </el-dialog>
 
 <!-- 2.添加照片的弹窗 -->
-<el-dialog title="添加照片" :visible.sync="addAlbumImg" class="add-album">
+<el-dialog title="添加照片" :visible.sync="addAlbumImg" append-to-body width="70%"  class="clearfix form_left">
   <el-form :model="form" :rules="rules" ref="form">
   </el-form>
   <div class="add-address-img">
     <div class="left-img">
-      <div class="first-img">
-
+      <!-- 第一张图片 -->
+      <div class="first-img"  v-for="first in addressImg">
+        <img style="width:100%;" :src="first.img" alt="">
       </div>
-      <div class="small-img">
-
-      </div>
-      <div class="small-img">
-
-      </div>
-      <div class="small-img">
-
+      <!-- 其余图片  -->
+      <div class="small-img" v-for="small in smallImg">
+        <span class="small_img_close"><i style="width:20px" class="el-icon-error"></i></span>
+        <img style="width:100%;" :src="small.img" alt="">
       </div>
       
     </div>
@@ -184,7 +147,7 @@
 </el-dialog>
 
 <!-- 3.添加素材弹窗 -->
-<el-dialog title="添加素材" :visible.sync="addMaterial" class="add-album">
+<el-dialog title="添加素材" :visible.sync="addMaterial" append-to-body width="70%"  class="clearfix form_left">
   <el-form :model="form" :rules="rules" ref="form">
   </el-form>
   <div class="add-address-img">
@@ -202,24 +165,10 @@
           </el-upload>
       </div>
       <div style="margin-top:50px">
-        <div class="small-img">
-
+        <div class="material-small-img" v-for="img in marterialImg">
+          <img style="width:100%;" :src="img.img" alt="">
         </div>
-        <div class="small-img">
-
-        </div>
-        <div class="small-img">
-
-        </div>
-        <div class="small-img">
-
-        </div>
-        <div class="small-img">
-
-        </div>
-        <div class="small-img">
-
-        </div>
+        
       </div>  
     </div>
      <div class="right-form">    
@@ -239,7 +188,7 @@
               <div style="margin-top:10px;text-align:left">大小 : 14M</div>
               <div style="margin-top:10px;text-align:left">标签:
                 <!-- 添加标签 -->
-                <el-button size="mini" @click="label">添加</el-button>
+                <el-button size="mini" @click="label">编辑</el-button>
               </div>
             </div>
              <div class="album-button">
@@ -291,24 +240,13 @@
    
 </el-dialog>
            
-    <div class="page">
-        <!-- <span class="demonstration">完整功能</span> -->
-            <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage4"
-            :page-sizes="[100, 200, 300, 400]"
-            :page-size="100"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="400">
-            </el-pagination>
-        </div>
+   
 </div>
  
 </div>
 </template>
 
-<script>
+<script scoped>
   export default {
     data() {
         
@@ -345,6 +283,54 @@
               disabled: true
             }]
           }]
+        }],
+        // 风景图
+        marterialist:[{
+          name:'0',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'1',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'2',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'3',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        }],
+        // 相册里面的第一个图片
+        addressImg:[{
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        }],
+        smallImg:[{
+          name:'0',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'1',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'2',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        }],
+        // 素材里面的其他图片
+        marterialImg:[{
+          name:'0',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'1',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'2',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'3',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'4',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'5',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
         }],
         // 标签循环信息
          editableTabs: [{
@@ -448,12 +434,12 @@
       },
       // 添加素材
       material(){
-        this.addAlbumImg = false;        
+        // this.addAlbumImg = false;     
         this.addMaterial = true;
       },
       // 添加标签
       label(){
-        this.addMaterial = false;
+        // this.addMaterial = false;
         this.addLabel = true;
         // alert(123);
       }
@@ -492,19 +478,20 @@
     /* text-align: center; */
     /* line-height: 35px; */
 }
-.address-list{
+.left-tree{
+    /* position: relative; */
     float:left;
     margin-top:20px;
-    margin-right:20px;
+    /* margin-right:20px; */
     width:305px;
     height:1055px;
     border:1px solid #ccc; 
 }
 .address-big{
-    position: relative;
-    float: left;
-     margin-top:20px;
-     margin-left:56px;
+    /* position: relative; */
+    float: right;
+     margin-top:-1060px;
+     margin-left:350px;
     width:1215px;
     height:1010px;
     /* border:1px solid pink; */
@@ -527,9 +514,9 @@
 }
 .marterialist-img{
     width:100%;
-    height:400px;
+    cursor:pointer;
+    /* height:400px; */
     /* border:1px solid red; */
-    background-image:url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg');
     
 }
 .introduce{
@@ -568,6 +555,7 @@
     margin-left:920px;
 }
 .add-album{
+  margin:0 auto;
   width:3000px;
   margin-left:-500px;
   margin-top:-100px;
@@ -585,10 +573,10 @@
 }
 .first-img{
   width:1000px;
-  height:500px;
+  /* height:500px; */
   /* border:1px solid green; */
-  background-image:url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg');
-  background-size: 100% 100%;
+  /* background-image:url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg');
+  background-size: 100% 100%; */
 }
 .small-img{
   float:left;
@@ -597,8 +585,21 @@
   height:200px;
   /* border:1px solid yellow; */
   margin-right:17px;
-  background-image:url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg');
-  background-size: 100% 100%;
+  /* background-image:url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg');
+  background-size: 100% 100%; */
+}
+.small_img_close{
+  position:absolute;
+  margin-left:265px;
+  /* margin-left:95%; */
+  /* margin-top:10px; */
+}
+.material-small-img{
+  float:left;
+  margin-top:17px;
+  width:280px;
+  height:200px;
+  margin-right:17px;
 }
 .right-form{
   /* position: absolute; */
@@ -690,4 +691,14 @@
   margin-right:5px
 
 }
+  .clearfix:after{
+    display: block;
+    clear: both;
+    content: "";
+    visibility: hidden;
+    height: 0;
+  }
+  .clearfix{
+    zoom:1;
+  }
 </style>
