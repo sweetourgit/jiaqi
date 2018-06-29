@@ -589,8 +589,9 @@ import Permission from '@/page/account/userList/addUser/permission'
                 ({
                   "Object": {
                     "createTime": "2018-06-20T09:35:52.822Z",
+                    "passWord": "12345",
                     "isDeleted": 0,
-                    "code": "string",
+                    "code": 123,
                     "mobile":this.ruleForm.phone,
                     "name": this.ruleForm.name,
                     "email": this.ruleForm.mail,
@@ -600,7 +601,8 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "sex": this.ruleForm.sex,
                     "userType": this.ruleForm.type,
                     "userState":1
-                  }
+                  },
+                  "id": 0
                 })
               )
                 .then(function (obj) {
@@ -640,6 +642,7 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "createTime": "2018-06-20T09:35:52.822Z",
                     "isDeleted": 0,
                     "code": "string",
+                    "passWord": "12345",
                     "mobile":this.ruleForm.phone,
                     "name": this.ruleForm.name,
                     "email": this.ruleForm.mail,
