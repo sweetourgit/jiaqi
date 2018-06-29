@@ -4,9 +4,9 @@
     <el-container class="container">
        <el-aside class="navigation" v-if="$route.meta.keepAlive"><nav-left></nav-left></el-aside>
        <el-main class="content-body"><div class="content-position">{{this.$route.name}}</div><el-main class="content-body1">
-         <fade-animation>
+        
          <router-view></router-view>
-         </fade-animation>
+        
          </el-main></el-main>
     </el-container>
   </div>
@@ -14,15 +14,13 @@
 
 
 <script>
-import FadeAnimation from '@/common/FadeAnimation'
 import pageHeader from './components/header/header'
 import navLeft from './components/navLeft/navLeft'
 export default {
   name: 'App',
   components: {
     pageHeader,
-    navLeft,
-    FadeAnimation
+    navLeft
     },
 }
 </script>
