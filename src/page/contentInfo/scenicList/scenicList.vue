@@ -98,19 +98,23 @@
         style="float: right">
       </el-pagination>
     </div>
-    <add-scenic
-      @closelable ='showaddbtn'
-      v-show="showadd"
-    />
+    <fade-animation>
+      <add-scenic
+        @closelable ='showaddbtn'
+        v-show="showadd"
+      />
+    </fade-animation>
   </div>
 </template>
 
 <script>
+import FadeAnimation from '@/common/FadeAnimation'
 import AddScenic from './components/Addscenic'
   export default {
     name: "scenicList",
     components:{
-      AddScenic
+      AddScenic,
+      FadeAnimation
     },
     data() {
       return {

@@ -121,26 +121,32 @@
         <el-button style="padding:12px 30px" plain>取消</el-button>
         <el-button style="padding:12px 30px" type="primary">确定</el-button>
       </div>
-    <label-selection
-      @close='handleshowlabel'
-      v-show="showlabel"
-    />
-    <open-time
-      @close='showopentime'
-      class="opentime"
-      v-show="showtime"
-    />
+    <fade-animation>
+      <label-selection
+        @close='handleshowlabel'
+        v-show="showlabel"
+      />
+    </fade-animation>
+    <fade-animation>
+      <open-time
+        @close='showopentime'
+        class="opentime"
+        v-show="showtime"
+      />
+    </fade-animation>
     </div>
   </div>
 </template>
 
 <script>
 import OpenTime from './components/Opentime'
+import FadeAnimation from '@/common/FadeAnimation'
 import LabelSelection from './components/Labelselection'
 export default {
   components: {
     LabelSelection,
-    OpenTime
+    OpenTime,
+    FadeAnimation
   },
   data() {
     return {
