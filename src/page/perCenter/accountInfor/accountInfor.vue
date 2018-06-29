@@ -25,7 +25,7 @@
         <img class="modify" src="@/assets/image/u3201.png" alt="" width="24" @click="dialogFormVisible = true">
       </el-form-item>
        <!-- 手机修改弹窗 -->
-      <el-dialog title="手机号修改" :visible.sync="dialogFormVisible" width="600px">
+      <el-dialog title="手机号修改" :visible.sync="dialogFormVisible" custom-class="city_list" width="600px">
         <el-form :model="phone1" status-icon :rules="rules1" ref="phone1">
           <el-form-item label="旧手机号" :label-width="formLabelWidth" prop="usedphone" v-show="show">
             <el-input class="input-popup" v-model="phone1.usedphone" auto-complete="off"></el-input>
@@ -51,7 +51,7 @@
         <img class="modify" src="@/assets/image/u3201.png" alt="" width="24" @click="dialogEmial = true">
       </el-form-item>
       <!-- 邮箱修改弹窗 -->
-      <el-dialog title="邮箱修改" :visible.sync="dialogEmial" width="600px">
+      <el-dialog title="邮箱修改" :visible.sync="dialogEmial" custom-class="city_list" width="600px">
         <el-form :model="emial1" status-icon :rules="rules2" ref="emial1">
           <el-form-item label="旧邮箱" :label-width="formLabelWidth" prop="usedemial" v-show="show1">
             <el-input class="input-popup" v-model="emial1.usedemial" auto-complete="off"></el-input>
