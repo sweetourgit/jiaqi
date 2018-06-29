@@ -10,21 +10,21 @@
           </span>
       </div>
       <div class="name">
-        <span class="name-title">*中文名称</span>
+        <span class="name-title">中文名称</span>
         <span class="name-input">
           <el-input v-model="name" placeholder="请输入内容">
           </el-input>
         </span>
       </div>
        <div class="name">
-        <span class="name-title">*英文名称</span>
+        <span class="name-title">英文名称</span>
         <span class="name-input">
           <el-input v-model="enname" placeholder="请输入内容">
           </el-input>
         </span>
       </div>
       <div class="name">
-        <span class="name-title">*所属区域</span>
+        <span class="name-title">所属区域</span>
         <span class="name-input">
             <el-cascader
               :options="options"
@@ -411,10 +411,12 @@ export default {
     top: calc(50% - 40%)
     overflow-y scroll
     .title 
-      height: 50px
-      background: #e6e6e6
-      line-height: 50px
+      height: 78px
+      background: #fff
+      line-height: 78px
       margin-bottom: 50px
+      color #666
+      border-bottom solid 1px #f2f2f2
       .iconfont
         position absolute
         right 20px
