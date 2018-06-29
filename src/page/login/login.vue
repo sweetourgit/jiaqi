@@ -439,7 +439,7 @@
   .top-titleone{
   position:fixed;
   top:4%;
-  padding-left:5%;
+  padding-left:5% !important;
   line-height: 5%;
   font-size: 22px;
   color:#666;
@@ -447,7 +447,7 @@
  .top-titletwo{
   top:4%;
   position:fixed;
-  padding-left:13%;
+  padding-left:13% !important;
   line-height:5%;
   font-size: 22px;
 
