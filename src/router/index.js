@@ -32,7 +32,9 @@ export default new Router({
       path: '/organList',
       component: organList,
       name: '组织列表',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        title:'组织列表'}
     }, {
       path: '/role',
       component: role,
@@ -108,5 +110,8 @@ export default new Router({
       name: '酒店列表',
       meta: {keepAlive: true}
     },
-  ]
+  ],
+  scrollBehavior (to, from, savedPosition) {
+    return { x: 0, y: 0 }
+  }
 })

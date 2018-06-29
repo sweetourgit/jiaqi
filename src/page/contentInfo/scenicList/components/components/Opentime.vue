@@ -2,9 +2,11 @@
   <div class="opentime">
     <div class="title">添加开放时间
       <span class="iconfont">
-        <a
+        <span
         @click="close"
-        href="#" class="el-icon-error"></a>
+        class="el-icon-close"
+        style="cursor:pointer"
+        ></span>
       </span>
     </div>
     <div class="type">
@@ -14,8 +16,9 @@
         v-model="date"
         type="date"
         placeholder="选择日期">
-      </el-date-picker>   
+      </el-date-picker>
     </div>
+    <div class="state">初始状态</div>
   </div>
 </template>
 
@@ -38,12 +41,12 @@ export default {
 <style lang='stylus' scoped>
 .opentime
   border-radius 5px
-  position fixed
-  height 80%
-  width 60%
+  position absolute
+  height 200%
+  width 100%
   background #fff
-  left calc(50% - 30%)
-  top calc(50% - 40%)
+  left 0
+  top 0
   .title
     height 50px
     background #e6e6e6
@@ -60,7 +63,10 @@ export default {
     line-height 50px
     .type-name
       float left
-      margin-left 5px
+      margin-left 20px
     .date
-      margin-left -800px
+      margin-left -600px
+  .state
+    text-align left 
+      
 </style>

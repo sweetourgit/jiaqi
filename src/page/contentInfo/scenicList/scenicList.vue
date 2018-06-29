@@ -98,19 +98,23 @@
         style="float: right">
       </el-pagination>
     </div>
-    <add-scenic
-      @closelable ='showaddbtn'
-      v-show="showadd"
-    />
+    <fade-animation>
+      <add-scenic
+        @closelable ='showaddbtn'
+        v-show="showadd"
+      />
+    </fade-animation>
   </div>
 </template>
 
 <script>
+import FadeAnimation from '@/common/FadeAnimation'
 import AddScenic from './components/Addscenic'
   export default {
     name: "scenicList",
     components:{
-      AddScenic
+      AddScenic,
+      FadeAnimation
     },
     data() {
       return {
@@ -170,6 +174,15 @@ import AddScenic from './components/Addscenic'
     methods: {
       showaddbtn() {
         this.showadd = !this.showadd
+         const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        setTimeout(() => {
+          loading.close();
+        }, 1000);
       },
       handleCurrentChange: function () {
         

@@ -3,7 +3,11 @@
     <el-header class="page-header"><page-header v-if="$route.meta.keepAlive"></page-header></el-header>
     <el-container class="container">
        <el-aside class="navigation" v-if="$route.meta.keepAlive"><nav-left></nav-left></el-aside>
-       <el-main class="content-body"><div class="content-position">{{this.$route.name}}</div><el-main class="content-body1"><router-view></router-view></el-main></el-main>
+       <el-main class="content-body"><div class="content-position">{{this.$route.name}}</div><el-main class="content-body1">
+        
+         <router-view></router-view>
+        
+         </el-main></el-main>
     </el-container>
   </div>
 </template>
@@ -14,7 +18,10 @@ import pageHeader from './components/header/header'
 import navLeft from './components/navLeft/navLeft'
 export default {
   name: 'App',
-  components:{pageHeader,navLeft},
+  components: {
+    pageHeader,
+    navLeft
+    },
 }
 </script>
 

@@ -78,8 +78,21 @@
       </el-tab-pane>
     </el-tabs>
     <div class="subbtn">
-       <el-button style="width:100px" plain>取消</el-button>
-       <el-button style="width:100px" type="primary" plain>确认</el-button>
+       <el-button
+        @click="handlecloselabel"
+        style="width:100px"
+        plain
+       >
+        取消
+       </el-button>
+       <el-button
+        @click="handlesubmit"
+        style="width:100px"
+        type="primary" 
+        plain
+       >
+        确认
+       </el-button>
     </div>
   </div>
 </template>
@@ -98,6 +111,10 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event);
+    },
+    handlesubmit () {
+      alert('ajax')
+      this.$emit('close')
     }
   }
 }
