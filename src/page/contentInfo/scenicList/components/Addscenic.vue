@@ -118,8 +118,13 @@
       </div>
       <textarea class="textarea" v-model="text"></textarea>
       <div class="center">
-        <el-button style="padding:12px 30px" plain>取消</el-button>
-        <el-button style="padding:12px 30px" type="primary">确定</el-button>
+        <el-button
+          @click="handleclose"
+          style="padding:12px 30px" 
+          plain>取消</el-button>
+        <el-button 
+          style="padding:12px 30px" 
+          type="primary">确定</el-button>
       </div>
     <fade-animation>
       <label-selection
