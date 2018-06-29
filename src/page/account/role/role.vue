@@ -77,7 +77,8 @@
                        v-if="scope.row.state === '禁用'">启用
             </el-button>
             <el-button type="danger" size="small" @click="changeState(scope.row.id,2)" class="bt-stop"
-                       v-else="scope.row.state === '启用'">停用
+                       >停用
+                       <!-- v-else="scope.row.state === '启用'" -->
             </el-button>
           </template>
         </el-table-column>

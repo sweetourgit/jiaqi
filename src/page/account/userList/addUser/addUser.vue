@@ -7,7 +7,7 @@
               <el-button type="success" v-if="enable" size="medium" class="begin-button" @click="enableType">启用</el-button>
               <el-button type="danger"  v-if="disable" size="medium" class="end-button" @click="disableType">停用 </el-button>
               <el-form-item label="手机号" prop="phone">
-                <el-input v-model="ruleForm.phone"placeholder="请输入手机号" class="from-input"></el-input>
+                <el-input v-model="ruleForm.phone" placeholder="请输入手机号" class="from-input"></el-input>
               </el-form-item>
               <el-form-item label="姓名" prop="name">
                 <el-input v-model="ruleForm.name" placeholder="请输入2-6位汉字" class="from-input"></el-input>
@@ -53,12 +53,11 @@
                   v-for="(domain, index) in ruleForm1.domains"
                   :key="domain.key"
                   :prop="'domains.' + index + '.value'"
-                   v-model="ruleForm1"
               >
 
                   <el-button type="primary" plain @click="tanchu(domain) " v-model="ruleForm1" class="but-left">{{domain.value}}</el-button>
                   <div class="button-fun">
-                 <el-button @<el-button type="danger"  @click.prevent="removeDomain(domain)" size="mini" class="delete-adjust" >删除</el-button>
+                 <el-button type="danger"  @click.prevent="removeDomain(domain)" size="mini" class="delete-adjust" >删除</el-button>
                  <el-button type="primary" size="mini" class="delete-adjust" @click="changstatus(domain)">设置默认</el-button>
                   </div>
 
