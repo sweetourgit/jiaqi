@@ -7,7 +7,7 @@
             <el-input  class="address-input" v-model="haha"  placeholder="目的地/名称"></el-input>
             <el-button class="top-button" type="primary" icon="el-icon-search"></el-button>
         </div>
-      <div style="border:1px solid red">
+      <div style="border:1px solid #fff">
         <div class="left-tree">
             <el-tree :data="data3" node-key="id"></el-tree>
         </div>
@@ -466,9 +466,9 @@
     /* border: 1px solid red; */
 }
 .address-input{
-    position:relative;
+    position:relative !important;
     /* float: right; */
-    width:350px;
+    width:350px !important;
     left:32%;
 }
 .top-button{
@@ -569,7 +569,7 @@
   float:left;
   width:1000px;
   height:800px;
-  border:1px solid blue;
+  border:1px solid #fff;
 }
 .first-img{
   width:1000px;
@@ -611,14 +611,14 @@
 .album-message{
   width:380px;
   height:320px;
-  border:1px solid green;
+  border:1px solid #E6E6E6;
   margin-bottom:20px;
 }
 .material-message{
   /* margin-top:20px; */
   width:380px;
   height:350px;
-  border:1px solid green;
+  border:1px solid #E6E6E6;
 }
 .album-title{
   width:150px;
