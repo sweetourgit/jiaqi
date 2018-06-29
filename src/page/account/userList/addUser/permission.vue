@@ -103,7 +103,7 @@
     </table>
     <div class="button-submit">
       <el-button type="primary" @click="handleCancel">取消</el-button>
-      <el-button  type="primary"@click="handleSubmit">成功</el-button>
+      <el-button  type="primary" @click="handleSubmit">成功</el-button>
     </div>
 
   </div>
