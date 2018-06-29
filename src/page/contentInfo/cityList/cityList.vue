@@ -754,7 +754,7 @@
             message: '已取消删除'
           });          
         });
-      }
+      },
     }
   }
 </script>
@@ -762,11 +762,11 @@
 <style scoped>
 .cascade{ float: left;}
 .popper__arrow{ background: red !important;}
-.search{ float: left; margin: 100px 0 0 -100px;}
+.search{ float: left; margin: 85px 0 0 -100px;}
 .keyword{ float: left; position: relative; top: 13px;}
 .inputBox{ float: left; margin: 0 0 0 20px; width: 300px;}
 .searchButton{ float: right; margin: 0 0 0 20px;}
-.table_list{ position: relative; top: 70px;}
+.table_list{ position: relative; top: 96px;}
 .table_button_left{ float: left; margin: 0 0 0 90px;}
 .table_button{ width: 50px; height: 22px; padding: 0;}
 .table_button_right{ float: right; margin: 0 90px 0 0;}
@@ -779,7 +779,7 @@
   top: 156px;
   right: 215px;
 }
-.page{ float: right; margin-top: 100px; margin-bottom: 100px;}
+.page{ float: right; margin-top: 125px; margin-bottom: 100px;}
 .country_input{ width: 300px; margin: 0 95px 0 0;}
 .country_select{ width: 300px; margin: 0 95px 0 0;}
 .dialog-footer{ text-align: center;}
