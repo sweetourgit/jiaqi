@@ -161,10 +161,10 @@
             </div>
           </div>
           <div class="info_title">
-            设施列表
+            图片列表
           </div>
           <div class="add_img">
-            <el-button type="primary" style="width: 200px; " >添加图片</el-button>
+            <el-button type="primary" style="width: 200px; " @click="add_image_style" >添加图片</el-button>
           </div>
           <div class="image_border">
 
@@ -195,10 +195,35 @@
                   <div class="photo_info">
                     <div>相册信息</div>
                     <div style="font-size: 16px; font-weight: bold;">大帅府</div>
-                    <div class="font_info">类型：</div>
-                    <div class="font_info">目的地：</div>
+                    <div class="font_info">类型： 景点</div>
+                    <div class="font_info">目的地： 沈阳</div>
                   </div>
                   <div class="shucai_info">
+                    <div>素材信息</div>
+                    <div style="font-size: 16px; font-weight: bold;">大帅府</div>
+                    <div class="kuang_bor">
+                      <el-form  :inline="true"  >
+                          <el-form-item label="名称：">
+                              <el-input ></el-input>
+                          </el-form-item>
+                        <el-form-item label="尺寸：">
+                          <el-input ></el-input>
+                        </el-form-item>
+                        <el-form-item label="大小：">
+                          <el-input ></el-input>
+                        </el-form-item>
+                          <el-tag
+                            class="tag_info"
+                            v-for="tag in tags"
+                            :key="tag.name"
+                            closable
+                            @close="handleClose(tag)"
+                            :type="tag.type">
+                            {{tag.name}}
+                          >
+                          </el-tag>
+                      </el-form>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -224,6 +249,144 @@
             </div>
           </el-dialog>
         </div>
+
+        <div>
+          <el-dialog
+            width="50%"
+            title="添加图片"
+            :visible.sync="img_change"
+            append-to-body>
+            <div class="big_img clearfix">
+              <div class="select_img">
+                  <el-button class="butn" type="primary" @click="sele_img">选取图片<i class="el-icon-upload el-icon--right"></i></el-button>
+              </div>
+              <div class="upload_img">
+                <div>
+                  <el-button class="butn" type="primary" @click="uplo_img">上传图片<i class="el-icon-upload el-icon--right"></i></el-button>
+                </div>
+              </div>
+            </div>
+          </el-dialog>
+        </div>
+        <!--11-->
+        <div>
+          <el-dialog
+            width="80%"
+            title="选取图片"
+            :visible.sync="se_img"
+            append-to-body>
+            <div class="clearfix">
+              <div class="sea_buton">
+                <el-button type="primary" style="float: left">添加</el-button>
+                <div class="input_wid">
+                  <el-input
+                      placeholder="请输入内容"
+                      clearable
+                    style="width: 182px"
+                  >
+                  </el-input>
+                  <el-button type="primary" >搜索</el-button>
+                </div>
+              </div>
+              <div class="input_img">
+                <el-form >
+                  <el-form-item label="所属地区" :label-width="formLabelWidth">
+                      <el-select v-model="ruleForm.area" placeholder="请选择活动区域" >
+                      <el-option label="区域一" value="shanghai"></el-option>
+                      <el-option label="区域二" value="beijing"></el-option>
+                      </el-select>
+                  </el-form-item>
+                  <el-form-item label="类型" :label-width="formLabelWidth">
+                    <el-select v-model="ruleForm.area" placeholder="请选择活动区域" >
+                      <el-option label="区域一" value="shanghai"></el-option>
+                      <el-option label="区域二" value="beijing"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="相册" :label-width="formLabelWidth">
+                    <el-select v-model="ruleForm.area" placeholder="请选择活动区域" >
+                      <el-option label="区域一" value="shanghai"></el-option>
+                      <el-option label="区域二" value="beijing"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-form>
+              </div>
+              <div class="input_rig_img">
+                <div
+                  class="inp_i"
+                  v-for="(domain, index) in image1.domains"
+                  :key="domain.key"
+                  v-model="image1"
+                >
+                  <img  class="inp_ii" v-model="image1" :src=domain.url />
+                </div>
+              </div>
+            </div>
+          </el-dialog>
+        </div>
+        <!--11-->
+
+        <!--22-->
+        <div>
+          <el-dialog
+            width="80%"
+            title="选取图片"
+            :visible.sync="up_img"
+            append-to-body>
+            <div class="clearfix">
+              <div class="sea_buton">
+                <el-button type="primary" style="float: left">上传并选取</el-button>
+                <el-button  style="float: left">创建相册</el-button>
+                <div class="input_wid">
+                  <el-input
+                    placeholder="请输入内容"
+                    clearable
+                    style="width: 182px"
+                  >
+                  </el-input>
+                  <el-button type="primary" >搜索</el-button>
+                </div>
+              </div>
+              <div class="input_img">
+                <el-form >
+                  <el-form-item label="所属地区" :label-width="formLabelWidth">
+                    <el-select v-model="ruleForm.area" placeholder="请选择活动区域" >
+                      <el-option label="区域一" value="shanghai"></el-option>
+                      <el-option label="区域二" value="beijing"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="类型" :label-width="formLabelWidth">
+                    <el-select v-model="ruleForm.area" placeholder="请选择活动区域" >
+                      <el-option label="区域一" value="shanghai"></el-option>
+                      <el-option label="区域二" value="beijing"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="相册" :label-width="formLabelWidth">
+                    <el-select v-model="ruleForm.area" placeholder="请选择活动区域" >
+                      <el-option label="区域一" value="shanghai"></el-option>
+                      <el-option label="区域二" value="beijing"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-form>
+              </div>
+              <div class="input_rig_img">
+                <div
+                  class="inp_i"
+                  v-for="(domain, index) in image1.domains"
+                  :key="domain.key"
+                  v-model="image1"
+                >
+                  <img  class="inp_ii" v-model="image1" :src=domain.url />
+                </div>
+              </div>
+            </div>
+          </el-dialog>
+        </div>
+        <!--22-->
+
+
+
+
+
         <!--添加设施end-->
         <div slot="footer" class="dialog-footer">
           <el-button type="primary"  @click="submitForm('ruleForm')" >确认</el-button>
@@ -287,6 +450,10 @@
         callback()
       };
       return {
+
+        se_img:false,
+        up_img:false,
+        img_change:false,
         hidval:-1,
         shebeiWindow:false,
         form: {
@@ -294,6 +461,29 @@
           english: '',
           info: '',
 
+        },
+        tags: [
+          { name: '标签一', type: '' },
+          { name: '标签二', type: 'success' },
+          { name: '标签三', type: 'info' },
+          { name: '标签四', type: 'warning' },
+          { name: '标签五', type: 'danger' }
+        ],
+        image1:{
+          domains: [{
+            url: 'http://victor-t.cn/7.png',
+          },{
+            url: 'http://victor-t.cn/7.png',
+          },{
+            url: 'http://victor-t.cn/7.png',
+          },{
+            url: 'http://victor-t.cn/7.png',
+          },{
+            url: 'http://victor-t.cn/7.png',
+          },{
+            url: 'http://victor-t.cn/7.png',
+          }
+          ]
         },
         image:{
           domains: [{
@@ -384,6 +574,19 @@
       }
     },
     methods: {
+      sele_img(){
+        this.se_img = true
+      },
+      uplo_img(){
+        this.up_img = true
+      },
+      add_image_style(){
+       this.img_change = true
+      },
+
+      handleClose(tag){
+        this.tags.splice(this.tags.indexOf(tag), 1)
+      },
       //查看素材
       find_image(item){
         this.find_img = true
@@ -680,6 +883,72 @@
     height: 400px;
     border: #8c939d solid 1px;
     margin-top: 76px;
+  }
+  .font_info{
+    margin-left: 213px;
+    margin-top: 47px;
+    font-size: 15px;
+  }
+  .kuang_bor{
+    width: 300px;
+    margin-left: 150px;
+  }
+
+  .tag_info{
+   margin-left: 20px;
+    margin-top: 10px;
+  }
+  .select_img{
+    width: 400px;
+    height: 300px;
+    background: #8c939d;
+    float: left;
+  }
+  .upload_img{
+    width: 400px;
+    height: 300px;
+    background: #8c939d;
+    float: left;
+    margin-left: 10px;
+  }
+  .big_img{
+    width: 878px;
+    margin-left: 58px;
+  }
+  .butn{
+    margin-left: 150px;
+    margin-top: 125px;
+  }
+  .sea_buton{
+    width: 1480px;
+    height: 50px;
+    float: left;
+  }
+  .input_wid{
+    width: 260px;
+    float: right;
+  }
+  .input_img{
+    width: 430px;
+    float: left;
+    margin-top: 20px;
+  }
+  .input_rig_img{
+    width: 1050px;
+    float: left;
+    margin-top: 20px;
+  }
+  .inp_i{
+    width: 320px;
+    height: 250px;
+    background: #3a8ee6;
+    float: left;
+    margin-left: 20px;
+    margin-top: 10px;
+  }
+  .inp_ii{
+    width: 320px;
+    height: 250px;
   }
   .clearfix:after{
     display: block;
