@@ -50,7 +50,7 @@
 
     <!-- 所有的弹窗 -->
     <!-- 1.添加相册的弹窗 -->
-  <el-dialog title="添加相册" :visible.sync="addAlbum" append-to-body width="20%"  class="clearfix form_left">
+  <el-dialog title="添加相册" :visible.sync="addAlbum"  append-to-body width="20%"  class="clearfix form_left">
   <el-form :model="form" :rules="rules" ref="form">
    <el-form-item label="名称:" prop="name" :label-width="formLabelWidth" style="width:300px" >
       <el-input v-model="form.name" auto-complete="off" placeholder="请输入相册名称"></el-input>
@@ -75,7 +75,7 @@
 </el-dialog>
 
 <!-- 2.添加照片的弹窗 -->
-<el-dialog title="添加照片" :visible.sync="addAlbumImg" append-to-body width="70%"  class="clearfix form_left">
+<el-dialog title="添加照片" :visible.sync="addAlbumImg" style="margin-top:-100px" append-to-body width="80%"  class="clearfix form_left">
   <el-form :model="form" :rules="rules" ref="form">
   </el-form>
   <div class="add-address-img">
@@ -147,7 +147,7 @@
 </el-dialog>
 
 <!-- 3.添加素材弹窗 -->
-<el-dialog title="添加素材" :visible.sync="addMaterial" append-to-body width="70%"  class="clearfix form_left">
+<el-dialog title="添加素材" :visible.sync="addMaterial" style="margin-top:-100px" append-to-body width="80%"  class="clearfix form_left">
   <el-form :model="form" :rules="rules" ref="form">
   </el-form>
   <div class="add-address-img">
@@ -563,7 +563,7 @@
 .add-address-img{
   width:1400px;
   height:800px;
-  border:1px solid red;
+  /* border:1px solid red; */
 }
 .left-img{
   float:left;
