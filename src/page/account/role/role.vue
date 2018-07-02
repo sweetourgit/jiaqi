@@ -76,7 +76,7 @@
             <el-button type="info" size="small" @click="changeState(scope.row.id,1)" class="bt-stop"
                        v-if="scope.row.state === '禁用'">启用
             </el-button>
-            <el-button type="danger" size="small" @click="changeState(scope.row.id,2)" class="bt-stop"
+            <el-button v-else type="danger" size="small" @click="changeState(scope.row.id,2)" class="bt-stop"
                        >停用
                        <!-- v-else="scope.row.state === '启用'" -->
             </el-button>
@@ -138,7 +138,7 @@
         let _this = this
 
         this.$http.post(
-          this.GLOBAL.serverSrc + "/api/org/rolepage",
+          this.GLOBAL.serverSrc + "/client/org/rolepage",
           {
             "Object": {
               "IsDeleted": 0,
@@ -149,7 +149,7 @@
           }
         )
           .then(obj => {
-// console.log(obj)
+        console.log(obj)
             var _data = obj.data.objects
 
             _data.forEach(function (v, k, arr) {
@@ -195,7 +195,7 @@
           type: 'warning'
         }).then(() => {
           this.$http.post(
-            this.GLOBAL.serverSrc + "/api/org/rolesave",
+            this.GLOBAL.serverSrc + "/client/org/rolesave",
             {
               "object": {
                 "id": obj,
@@ -216,7 +216,9 @@
                 this.$message({
                   type: 'success',
                   message: mess + '成功'
+                   
                 });
+                this.$router.go(0)
               }
             )
             .catch()
@@ -227,6 +229,7 @@
             message: '已取消'
           });
         });
+       
       },
       // 每页显示数变化事件
       handleSizeChange(val) {
