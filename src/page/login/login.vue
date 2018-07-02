@@ -4,9 +4,10 @@
   <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> 
   <meta name="renderer" content="webkit|ie-comp|ie-stand">   -->
   <div class="top">
-    <span class="top-titleone">嘉麒集团</span>
-    <span class="top-titletwo">通行证</span>   
-    
+    <div style="float:left">
+      <span class="top-titleone">嘉麒集团</span>
+      <span class="top-titletwo">通行证</span>   
+    </div>
   </div>
  
   <div class="big">
@@ -439,7 +440,7 @@
   .top-titleone{
   position:fixed;
   top:4%;
-  padding-left:5%;
+  padding-left:5% !important;
   line-height: 5%;
   font-size: 22px;
   color:#666;
@@ -447,7 +448,7 @@
  .top-titletwo{
   top:4%;
   position:fixed;
-  padding-left:13%;
+  padding-left:13% !important;
   line-height:5%;
   font-size: 22px;
 
