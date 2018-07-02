@@ -54,7 +54,7 @@
        :data="tableData3"
        border
        fit
-       style="width: 100%"
+       style="width: 110%"
         >
          <el-table-column
            prop="id"
@@ -272,7 +272,8 @@
         this.pagesize = val
         this.currentPage = 1
         this.$http.post(
-          "http://api.dayuntong.com:3009/api/org/userpage",
+          this.GLOBAL.serverSrc + "/client/org/userpage",
+          // "http://api.dayuntong.com:3009/api/org/userpage",
           {
             "object": {
               "isDeleted": 0,
@@ -322,7 +323,8 @@
       handleCurrentChange(val) {
         var that = this
         this.$http.post(
-          "http://api.dayuntong.com:3009/api/org/userpage",
+          this.GLOBAL.serverSrc + "/client/org/userpage",
+          // "http://api.dayuntong.com:3009/api/org/userpage",
           {
             "object": {
               "isDeleted": 0,
@@ -374,7 +376,8 @@
        //搜索
        var that = this
        this.$http.post(
-         "http://api.dayuntong.com:3009/api/org/userpage",
+         this.GLOBAL.serverSrc + "/client/org/userpage",
+         // "http://api.dayuntong.com:3009/api/org/userpage",
          {
            "object": {
              "isDeleted": 0,
@@ -451,7 +454,8 @@
      //用户列表
      var that = this
       this.$http.post(
-        "http://api.dayuntong.com:3009/api/org/userpage",
+        this.GLOBAL.serverSrc + "/client/org/userpage",
+        // "http://api.dayuntong.com:3009/api/org/userpage",
        {
          "object": {
            "isDeleted": 0,
