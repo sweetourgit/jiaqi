@@ -45,7 +45,7 @@
                       <span class="icon">
                         <i class="el-icon-edit" @click="editCity = true"></i>
                         <i class="el-icon-remove" @click="removeCity"></i>
-                      </span>
+                      </span> 
                     </div>
                   </template>
               </el-table-column>
