@@ -39,10 +39,11 @@
       </div>
       <div class="labels">
         <div style="float: left;margin-right: 25px">景点标签：</div>
-        <el-checkbox-group v-model="checkLabelList" style="float: left">
-          <el-checkbox label="热门"></el-checkbox>
-          <el-checkbox label="免签"></el-checkbox>
-          <el-checkbox label="购物"></el-checkbox>
+        <el-checkbox-group style="float: left">
+           <!-- v-model="checkLabelList"  -->
+          <el-checkbox v-model="hot" label="">热门</el-checkbox>
+          <el-checkbox label="">免签</el-checkbox>
+          <el-checkbox label="">购物</el-checkbox>
         </el-checkbox-group>
       </div>
       <div class="cl_both"></div>
@@ -118,6 +119,7 @@ import AddScenic from './components/Addscenic'
     },
     data() {
       return {
+        hot: '',
         showadd: false,
         countryArr: [
           {
@@ -160,7 +162,56 @@ import AddScenic from './components/Addscenic'
           {
             id: '001',
             scenicName: '王小虎',
-            scenicUrl: 'http'
+            scenicUrl: 'http',
+            area: 'china'
+          },
+          {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
           },
         ],
         keyword: "",
@@ -174,15 +225,7 @@ import AddScenic from './components/Addscenic'
     methods: {
       showaddbtn() {
         this.showadd = !this.showadd
-         const loading = this.$loading({
-          lock: true,
-          text: 'Loading',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
-        });
-        setTimeout(() => {
-          loading.close();
-        }, 1000);
+       
       },
       handleCurrentChange: function () {
         

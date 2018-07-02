@@ -13,7 +13,7 @@
         </div>
         <!-- 地址图片的最大框框 -->
       <div class="address-big">
-            <div class="address-img" v-for="img in marterialist">
+            <div class="address-img" v-for="img in marterialist" :key="img.name">
                 <div class="marterialist-img" @click="addAlbumImg = true">
                     <img style="width:100%;" :src="img.img" alt="">
                 </div>
@@ -81,13 +81,13 @@
   <div class="add-address-img">
     <div class="left-img">
       <!-- 第一张图片 -->
-      <div class="first-img"  v-for="first in addressImg">
+      <div class="first-img"  v-for="first in addressImg" :key="first.name">
         <img style="width:100%;" :src="first.img" alt="">
       </div>
       <!-- 其余图片  -->
-      <div style="border:1px solid red;position:absolute;overflow:hidden;width:1200px;">
-        <div class="small-img" v-for="small in smallImg">
-          <span class="small_img_close"><i style="width:20px" class="el-icon-error"></i></span>
+      <div class="small-box">
+        <div class="small-img" style="display: inline-block;width:25%;" v-for="small in smallImg" :key="small.name">
+          <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
           <img style="width:100%;" :src="small.img" alt="">
         </div>
       </div>
@@ -129,15 +129,15 @@
         </div>
          <div class="album-form">
             <el-form :model="materialForm" :rules="materialRules" ref="materialForm" label-width="100px" >
-              <el-form-item label="类型 :" prop="name">
-                <el-input v-model="materialForm.name"></el-input>
+              <el-form-item label="名称 :" prop="name" >
+                <el-input v-model="materialForm.name" placeholder="请输入素材名称"></el-input>
                 </el-form-item>
             </el-form>
             <div style="width:200px;height:100px;margin-left:50px;">
               <div style="margin-top:10px;text-align:left">尺寸 : 1024*720</div>
               <div style="margin-top:10px;text-align:left">大小 : 14M</div>
               <div style="margin-top:10px;text-align:left">标签:
-                <el-button size="mini" round>超小按钮</el-button>
+                <el-button size="mini">按钮</el-button>
               </div>
             </div>
             
@@ -166,7 +166,7 @@
           </el-upload>
       </div>
       <div style="margin-top:50px">
-        <div class="material-small-img" v-for="img in marterialImg">
+        <div class="material-small-img" v-for="img in marterialImg" :key="img.name">
           <img style="width:100%;" :src="img.img" alt="">
         </div>
         
@@ -181,7 +181,7 @@
          <div class="album-form">
             <el-form :model="materialForm" :rules="materialRules" ref="materialForm" label-width="100px" >
               <el-form-item label="名称 :" prop="name">
-                <el-input v-model="materialForm.name"></el-input>
+                <el-input v-model="materialForm.name" placeholder="请输入素材名称"></el-input>
                 </el-form-item>
             </el-form>
             <div style="width:200px;height:100px;margin-left:50px;">
@@ -206,11 +206,7 @@
 <el-dialog title="标签选择" :visible.sync="addLabel" style="width:900px;margin:0 auto">
   <div style="margin:0 auto">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-    <el-tab-pane label="景点" v-for="item in editableTabs"
-        :key="item.name"
-        :label="item.title"
-        :name="item.name"
-    >
+    <el-tab-pane label="景点">
       <div class="add-label">
         <div class="label-name">
           <div style="float:left;line-height:40px">标签:</div>
@@ -218,18 +214,93 @@
            <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
         </div>
         <div class="select-label">
-          <el-checkbox v-model="checked" class="label-check">备选项</el-checkbox>
-          <el-checkbox v-model="checked" class="label-check">备选项</el-checkbox>
-          <el-checkbox v-model="checked" class="label-check">备选项</el-checkbox>
-          <el-checkbox v-model="checked" class="label-check">备选项</el-checkbox>
-                
+          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in play" :key="name.name"></el-checkbox>        
         </div>
          <div class="album-button">
               <el-button  style="width:100px;">取消</el-button>
               <el-button type="primary" style="width:100px;">添加 </el-button>
         </div>
-      </div>
-      
+      </div>  
+    </el-tab-pane>
+     <el-tab-pane label="美食">
+      <div class="add-label">
+        <div class="label-name">
+          <div style="float:left;line-height:40px">标签:</div>
+           <el-input   v-model="haha"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
+           <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
+        </div>
+        <div class="select-label">
+          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in food" :key="name.name"></el-checkbox>        
+        </div>
+         <div class="album-button">
+              <el-button  style="width:100px;">取消</el-button>
+              <el-button type="primary" style="width:100px;">添加 </el-button>
+        </div>
+      </div>  
+    </el-tab-pane>
+     <el-tab-pane label="购物">
+      <div class="add-label">
+        <div class="label-name">
+          <div style="float:left;line-height:40px">标签:</div>
+           <el-input   v-model="haha"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
+           <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
+        </div>
+        <div class="select-label">
+          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in shop" :key="name.name"></el-checkbox>        
+        </div>
+         <div class="album-button">
+              <el-button  style="width:100px;">取消</el-button>
+              <el-button type="primary" style="width:100px;">添加 </el-button>
+        </div>
+      </div>  
+    </el-tab-pane>
+    <el-tab-pane label="住宿">
+      <div class="add-label">
+        <div class="label-name">
+          <div style="float:left;line-height:40px">标签:</div>
+           <el-input   v-model="haha"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
+           <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
+        </div>
+        <div class="select-label">
+          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in dwell" :key="name.name"></el-checkbox>        
+        </div>
+         <div class="album-button">
+              <el-button  style="width:100px;">取消</el-button>
+              <el-button type="primary" style="width:100px;">添加 </el-button>
+        </div>
+      </div>  
+    </el-tab-pane>
+    <el-tab-pane label="娱乐">
+      <div class="add-label">
+        <div class="label-name">
+          <div style="float:left;line-height:40px">标签:</div>
+           <el-input   v-model="haha"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
+           <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
+        </div>
+        <div class="select-label">
+          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in recreation" :key="name.name"></el-checkbox>        
+        </div>
+         <div class="album-button">
+              <el-button  style="width:100px;">取消</el-button>
+              <el-button type="primary" style="width:100px;">添加 </el-button>
+        </div>
+      </div>  
+    </el-tab-pane>
+    <el-tab-pane label="其他">
+      <div class="add-label">
+        <div class="label-name">
+          <div style="float:left;line-height:40px">标签:</div>
+           <el-input   v-model="haha"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
+           <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
+        </div>
+        <div class="select-label">
+          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in other" :key="name.name"></el-checkbox>        
+        </div>
+         <div class="album-button">
+              <el-button  style="width:100px;">取消</el-button>
+              <el-button type="primary" style="width:100px;">添加 </el-button>
+        </div>
+      </div>  
     </el-tab-pane>
     <!-- <el-tab-pane label="美食" ></el-tab-pane>
     <el-tab-pane label="购物" ></el-tab-pane>
@@ -307,6 +378,7 @@
         addressImg:[{
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
         }],
+        // 相册里面的其他图片
         smallImg:[{
           name:'0',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
@@ -317,7 +389,16 @@
           name:'2',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
         },{
-          name:'2',
+          name:'3',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'4',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'5',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'6',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
         }],
         // 素材里面的其他图片
@@ -340,25 +421,149 @@
           name:'5',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
         }],
-        // 标签循环信息
-         editableTabs: [{
-          title: '景点',
-          name: '0',
-        }, {
-          title: '美食',
-          name: '1',
+     
+        // 标签内部-游玩
+        play: [{
+          name:'1',
+          title:'游山',
+          checked:'checked1',
         },{
-          title: '购物',
-          name: '2',
+          name:'2',
+          title:'玩水',
+          checked:'checked2',
         },{
-          title: '住宿',
-          name: '3',
+          name:'3',
+          title:'打豆豆',
+          checked:'checked3',
+          
         },{
-          title: '娱乐',
-          name: '4',
+          name:'4',
+          title:'哈哈哈',
+          checked:'checked4',
+          
         },{
-          title: '其他',
-          name: '5',
+          name:'1',
+          title:'游山',
+          checked:'checked1',
+        },{
+          name:'2',
+          title:'玩水',
+          checked:'checked2',
+        },{
+          name:'3',
+          title:'打豆豆',
+          checked:'checked3',
+          
+        },{
+          name:'4',
+          title:'哈哈哈',
+          checked:'checked4',
+          
+        }],
+        // 标签内部-美食
+        food: [{
+          name:'1',
+          title:'大肘子',
+          checked:'checked1',
+        },{
+          name:'2',
+          title:'锅包肉',
+          checked:'checked2',
+        },{
+          name:'3',
+          title:'溜肉段',
+          checked:'checked3',
+          
+        },{
+          name:'4',
+          title:'法式大餐',
+          checked:'checked4',
+          
+        }],
+        // 标签内部-购物
+        shop: [{
+          name:'1',
+          title:'免税',
+          checked:'checked1',
+        },{
+          name:'2',
+          title:'含税',
+          checked:'checked2',
+        },{
+          name:'3',
+          title:'纪念品',
+          checked:'checked3',
+          
+        },{
+          name:'4',
+          title:'伴手礼',
+          checked:'checked4',
+          
+        }],
+        // 标签内部-住宿
+        dwell: [{
+          name:'1',
+          title:'民宿',
+          checked:'checked1',
+        },{
+          name:'2',
+          title:'旅店',
+          checked:'checked2',
+        },{
+          name:'3',
+          title:'酒店',
+          checked:'checked3',
+          
+        },{
+          name:'4',
+          title:'温泉酒店',
+          checked:'checked4',
+          
+        }],
+         // 标签内部-娱乐
+        recreation: [{
+          name:'1',
+          title:'KTV',
+          checked:'checked1',
+        },{
+          name:'2',
+          title:'酒吧',
+          checked:'checked2',
+        },{
+          name:'3',
+          title:'SPA',
+          checked:'checked3',
+          
+        },{
+          name:'4',
+          title:'密室逃脱',
+          checked:'checked4',
+          
+        },{
+          name:'4',
+          title:'密室逃脱',
+          checked:'checked4',
+          
+        }],
+         // 标签内部-其他
+        other: [{
+          name:'1',
+          title:'轰趴',
+          checked:'checked1',
+        },{
+          name:'2',
+          title:'桌游馆',
+          checked:'checked2',
+        },{
+          name:'3',
+          title:'运动场',
+          checked:'checked3',
+          
+        },{
+          name:'4',
+          title:'健身房',
+          checked:'checked4',
+          
         }],
         defaultProps: {
           children: 'children',
@@ -404,6 +609,12 @@
             { required: true, message: '请输入活动名称', trigger: 'blur' },
             { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
+          type: [
+            { required: true, message: '请选择活动区域',trigger: 'blur' }
+          ],
+          destination: [
+            { required: true, message: '请选择活动区域',trigger: 'blur' }
+          ],
         
         },
          materialrules:{
@@ -414,6 +625,8 @@
         }
       };
     },
+
+
         methods: {
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -450,6 +663,24 @@
         // this.addMaterial = false;
         this.addLabel = true;
         // alert(123);
+      },
+     // 删除相册图片
+     img_close(){
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       }
     },
     
@@ -587,7 +818,7 @@
   background-size: 100% 100%; */
 }
 .small-img{
-  float:left;
+  /* float:left; */
   margin-top:17px;
   width:280px;
   height:200px;
@@ -596,9 +827,22 @@
   /* background-image:url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg');
   background-size: 100% 100%; */
 }
+.small-box{
+  position:absolute;
+  width:1000px;
+  height:200px;
+  /* 段落文本不换行 */
+  white-space:nowrap;
+  /* 如果横向溢出则提供滚动机制 */
+  overflow-x:auto;
+  /* 裁剪内容,提供滚动机制 */
+  overflow:scroll;
+  /* 如果纵向溢出,则不提供滚动机制 */
+  overflow-y:hidden;
+}
 .small_img_close{
   position:absolute;
-  margin-left:265px;
+  margin-left:235px;
   /* margin-left:95%; */
   /* margin-top:10px; */
 }
@@ -632,6 +876,7 @@
   width:150px;
   height:30px;
   margin-top:17px;
+  /* background:red; */
 }
 .blue-box{
   float:left;
@@ -640,10 +885,11 @@
   background:#3095fa;
 }
 .album-text{
-  float:left;
+  /* float:left; */
   font-size:20px;
   margin-top:7px;
   margin-left:15px;
+  line-height:30px;
 }
 .album-name{
   float:left;
@@ -691,13 +937,18 @@
 }
 .select-label{
   /* float:left; */
+  overflow: auto;
   margin:25px 0px 60px 0px;
   /* border:1px solid green; */
+
 }
 .label-check{
-  /* float:left; */
-  margin-right:5px
-
+  float:left;
+  text-align:left;
+  width:25%;
+}
+.el-checkbox+.el-checkbox {
+    margin-left: 0px;
 }
   .clearfix:after{
     display: block;
