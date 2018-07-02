@@ -85,11 +85,12 @@
         <img style="width:100%;" :src="first.img" alt="">
       </div>
       <!-- 其余图片  -->
-      <div class="small-img" v-for="small in smallImg">
-        <span class="small_img_close"><i style="width:20px" class="el-icon-error"></i></span>
-        <img style="width:100%;" :src="small.img" alt="">
+      <div style="border:1px solid red;position:absolute;overflow:hidden;width:1200px;">
+        <div class="small-img" v-for="small in smallImg">
+          <span class="small_img_close"><i style="width:20px" class="el-icon-error"></i></span>
+          <img style="width:100%;" :src="small.img" alt="">
+        </div>
       </div>
-      
     </div>
      <div class="right-form">
        <div class="album-message">
@@ -311,6 +312,9 @@
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
         },{
           name:'1',
+          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+        },{
+          name:'2',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
         },{
           name:'2',
