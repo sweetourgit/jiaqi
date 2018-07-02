@@ -474,7 +474,8 @@ import Permission from '@/page/account/userList/addUser/permission'
              if (action === 'confirm') {
 
                this.$http.post(
-                 "http://api.dayuntong.com:3009/api/org/userinsert",
+                 this.GLOBAL.serverSrc + "/client/org/userinsert",
+                 // "http://api.dayuntong.com:3009/api/org/userinsert",
                  ({
                    "Object": {
                      "createTime": "2018-06-20T09:35:52.822Z",
@@ -531,7 +532,8 @@ import Permission from '@/page/account/userList/addUser/permission'
               if (action === 'confirm') {
 
                 this.$http.post(
-                  "http://api.dayuntong.com:3009/api/org/userinsert",
+                  this.GLOBAL.serverSrc + "/client/org/userinsert",
+                  // "http://api.dayuntong.com:3009/api/org/userinsert",
                   ({
                     "Object": {
                       "createTime": "2018-06-20T09:35:52.822Z",
@@ -585,7 +587,8 @@ import Permission from '@/page/account/userList/addUser/permission'
             if (valid) {
               var that = this
               this.$http.post(
-                "http://api.dayuntong.com:3009/api/org/userinsert",
+                this.GLOBAL.serverSrc + "/client/org/userinsert",
+                // "http://api.dayuntong.com:3009/api/org/userinsert",
                 ({
                   "Object": {
                     "createTime": "2018-06-20T09:35:52.822Z",
@@ -635,7 +638,8 @@ import Permission from '@/page/account/userList/addUser/permission'
           this.$refs[formName].validate((valid) => {
             if (valid) {
               this.$http.post(
-                "http://api.dayuntong.com:3009/api/org/usersave",
+                this.GLOBAL.serverSrc + "/client/org/usersave",
+                // "http://api.dayuntong.com:3009/api/org/usersave",
                 {
                   "Object": {
                     "id": this.uid,
@@ -698,6 +702,7 @@ import Permission from '@/page/account/userList/addUser/permission'
       }
     },
     created(){
+
       //console.log(this.$route.query.id)
       if(this.$route.query.id){
         this.buttonchange = true
@@ -705,7 +710,8 @@ import Permission from '@/page/account/userList/addUser/permission'
         this.uid = this.$route.query.id
         var that = this
         this.$http.post(
-          "http://api.dayuntong.com:3009/api/org/userget",
+          // "http://api.dayuntong.com:3009/api/org/userget",
+          this.GLOBAL.serverSrc + "/client/org/userget",
           {
             "object": {
               "id": that.$route.query.id,

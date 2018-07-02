@@ -369,14 +369,7 @@
                 </el-form>
               </div>
               <div class="input_rig_img">
-                <div
-                  class="inp_i"
-                  v-for="(domain, index) in image1.domains"
-                  :key="domain.key"
-                  v-model="image1"
-                >
-                  <img  class="inp_ii" v-model="image1" :src=domain.url />
-                </div>
+
               </div>
             </div>
           </el-dialog>
