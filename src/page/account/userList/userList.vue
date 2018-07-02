@@ -53,73 +53,72 @@
       <el-table
        :data="tableData3"
        border
-       fit
-       style="width: 110%"
+       style="width: 100%"
         >
          <el-table-column
            prop="id"
            label="ID"
-           width="60"
+           min-width="60"
            align="center">
         </el-table-column>
         <el-table-column
            prop="name"
            label="姓名"
-           width="100"
+           min-width="100"
            align="center">
         </el-table-column>
         <el-table-column
            prop="userType"
            label="用户类型"
-           width="100"
+           min-width="100"
            align="center">
         </el-table-column>
         <el-table-column
            prop="mobile"
            label="手机号"
-           width="150"
+           min-width="150"
            align="center">
         </el-table-column>
         <el-table-column
            prop="email"
            label="邮箱"
-           width="160"
+           min-width="160"
            align="center">
         </el-table-column>
         <el-table-column
            prop="sex"
            label="性别"
-           width="65"
+           min-width="65"
            align="center">
         </el-table-column>
         <el-table-column
            prop="userState"
            label="状态"
-           width="86"
+           min-width="86"
            align="center">
         </el-table-column>
         <el-table-column
            prop="organization"
            label="组织-部门-职务"
-           width="210"
+           min-width="210"
            align="center">
         </el-table-column>
         <el-table-column
            prop="createTime"
            label="创建时间"
-           width="230"
+           min-width="230"
            align="center">
         </el-table-column>
         <el-table-column
            prop="updatetime"
            label="修改时间"
-           width="210"
+           min-width="210"
            align="center">
         </el-table-column>
         <el-table-column
           label="操作"
           align="center"
-          width="200">
+          min-width="200">
            <template slot-scope="scope">
              <el-button  size="small" @click="find(scope.$index, scope.row)">查看</el-button>
              <el-button type="primary" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
@@ -508,7 +507,6 @@
 <style scoped>
 
   .user-table{
-    width: 1572px;
     margin-left:26px;
     margin-top: 70px;
   }
@@ -549,9 +547,6 @@
   	padding-left: 20px;
   	width: 50px;
   	height: 50px;
-  }
-  .border_size{
-    width: 1602px;
   }
   .add-user{
     float: left;

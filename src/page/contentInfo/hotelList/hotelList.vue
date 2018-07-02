@@ -335,7 +335,7 @@
             <div class="clearfix">
               <div class="sea_buton">
                 <el-button type="primary" style="float: left">上传并选取</el-button>
-                <el-button  style="float: left">创建相册</el-button>
+                <el-button  style="float: left" @click="createdImg">创建相册</el-button>
                 <div class="input_wid">
                   <el-input
                     placeholder="请输入内容"
@@ -369,6 +369,16 @@
                 </el-form>
               </div>
               <div class="input_rig_img">
+                <el-upload
+                  class="upload-demo"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :file-list="fileList2"
+                  list-type="picture">
+                  <el-button size="small" type="primary">点击上传</el-button>
+                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                </el-upload>
 
               </div>
             </div>
@@ -376,6 +386,32 @@
         </div>
         <!--22-->
 
+        <!--创建相册bg-->
+        <div>
+          <el-dialog
+            width="20%"
+            title="创建相册"
+            :visible.sync="create_img"
+            append-to-body>
+            <div class="clearfix">
+              <el-form :model="img_name">
+                <el-form-item label="名称" :label-width="formLabelWidth">
+                  <el-input v-model="img_name.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="类型" :label-width="formLabelWidth">
+                  <el-input v-model="img_name.type" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="目的地" :label-width="formLabelWidth">
+                  <el-input v-model="img_name.address" auto-complete="off"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button type="primary" >确 定</el-button>
+              </div>
+            </div>
+          </el-dialog>
+        </div>
+        <!--创建相册end-->
 
 
 
@@ -443,12 +479,25 @@
         callback()
       };
       return {
-
+        create_img:false,
+        fileList2: [
+          {name: 'food.jpeg',
+          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+          },
+          {name: 'food2.jpeg',
+            url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+          }],
         se_img:false,
         up_img:false,
         img_change:false,
         hidval:-1,
         shebeiWindow:false,
+        img_name:{
+          name: '',
+          type: '',
+          address: '',
+        }
+        ,
         form: {
           china: '',
           english: '',
@@ -567,6 +616,16 @@
       }
     },
     methods: {
+      createdImg(){
+         this.create_img = true
+
+      },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
       sele_img(){
         this.se_img = true
       },
@@ -942,6 +1001,9 @@
   .inp_ii{
     width: 320px;
     height: 250px;
+  }
+  .dialog-footer{
+   text-align: center;
   }
   .clearfix:after{
     display: block;
