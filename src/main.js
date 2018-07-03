@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import global from './components/tools/global'
+import store from '@/store'
 
 // element-ui
 import ElementUI from 'element-ui'
@@ -25,6 +26,7 @@ import '!style-loader!css-loader!less-loader!./style/libs/iconfont/iconfont.css'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: { App },
   template: '<App/>'

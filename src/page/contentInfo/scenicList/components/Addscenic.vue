@@ -74,6 +74,7 @@
           添加开放时间
           </el-button>
         </span>
+        <div>{{opentimedesc}}</div>
       </div>
       <div class="name">
         <span class="name-title">适宜季节</span>
@@ -134,6 +135,7 @@
     </fade-animation>
     <fade-animation>
       <open-time
+        @postinner='resinner'
         @close='showopentime'
         class="opentime"
         v-show="showtime"
@@ -148,6 +150,7 @@ import OpenTime from './components/Opentime'
 import FadeAnimation from '@/common/FadeAnimation'
 import LabelSelection from './components/Labelselection'
 export default {
+  name: 'Addscenic',
   components: {
     LabelSelection,
     OpenTime,
@@ -155,6 +158,7 @@ export default {
   },
   data() {
     return {
+        opentimedesc: '',
         showtime: false,
         text:'111',
         fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
@@ -362,6 +366,9 @@ export default {
    }
   },
   methods: {
+    resinner (text) {
+      this.opentimedesc = text
+    },
     handleChange (v) {
       console.log(v)
     },

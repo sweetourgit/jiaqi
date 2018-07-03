@@ -31,149 +31,6 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td rowspan="9">
-            <el-checkbox :disabled="checkboxStatus">
-              账号管理
-            </el-checkbox>
-            <!--<input type="checkbox" value="账号管理" v-model="isChecked" :disabled="checkboxStatus" />账号管理-->
-          </td>
-          <td rowspan="3">
-            <el-checkbox  :disabled="checkboxStatus">用户管理</el-checkbox>
-            <!--<input type="checkbox" value="用户管理" v-model="isChecked" :disabled="checkboxStatus" />用户管理-->
-          </td>
-          <td>
-            <!--<el-checkbox v-model="isChecked">只读</el-checkbox>-->
-            <input type="checkbox" value="只读" :disabled="checkboxStatus"/>只读
-          </td>
-          <td class="table-checkout">
-            <!--<el-checkbox v-model="isChecked" value="用户列表">用户列表</el-checkbox>-->
-            <input
-            type="checkbox" value="用户列表" :disabled="checkboxStatus"/>用户列表
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <!--<el-checkbox v-model="isChecked">编辑</el-checkbox>-->
-            <input type="checkbox" value="编辑" :disabled="checkboxStatus"/>编辑
-          </td>
-          <td class="table-checkout">
-            <!--<el-checkbox v-model="isChecked">编辑用户</el-checkbox>-->
-            <!--<el-checkbox v-model="isChecked">添加用户</el-checkbox>-->
-            <input type="checkbox" value="编辑用户" :disabled="checkboxStatus"/>编辑用户
-            <input type="checkbox" value="添加用户" :disabled="checkboxStatus"/>添加用户
-          </td>
-
-        </tr>
-        <tr>
-          <td>
-            <!--<el-checkbox v-model="isChecked">操作</el-checkbox>-->
-            <input type="checkbox" value="操作" :disabled="checkboxStatus"/>操作
-          </td>
-          <td class="table-checkout">
-            <!--<el-checkbox v-model="isChecked">启用</el-checkbox>-->
-            <!--<el-checkbox v-model="isChecked">停用</el-checkbox>-->
-            <input type="checkbox" value="启用" :disabled="checkboxStatus"/>启用
-            <input type="checkbox" value="停用" :disabled="checkboxStatus"/>停用
-          </td>
-        </tr>
-        <tr>
-          <td rowspan="3">
-            <!--<el-checkbox v-model="isChecked">组织管理</el-checkbox>-->
-            <input type="checkbox" value="组织管理"  :disabled="checkboxStatus"/>组织管理
-          </td>
-          <td>
-            <!--<el-checkbox v-model="isChecked">只读</el-checkbox>-->
-            <input type="checkbox" value="只读" :disabled="checkboxStatus"/>只读
-          </td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            <!--<el-checkbox v-model="isChecked">编辑</el-checkbox>-->
-            <input type="checkbox" value="编辑"  :disabled="checkboxStatus"/>编辑
-          </td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            <!--<el-checkbox v-model="isChecked">操作</el-checkbox>-->
-            <input type="checkbox" value="操作" :disabled="checkboxStatus"/>操作
-          </td>
-          <td></td>
-        </tr>
-        <tr>
-          <td rowspan="3">
-            <!--<el-checkbox v-model="isChecked">权限管理</el-checkbox>-->
-            <input type="checkbox" value="权限管理" :disabled="checkboxStatus"/>权限管理
-          </td>
-          <td>
-            <!--<el-checkbox v-model="isChecked">只读</el-checkbox>-->
-            <input type="checkbox" value="只读" :disabled="checkboxStatus"/>只读
-          </td>
-          <td class="table-checkout">
-            <!--<el-checkbox v-model="isChecked">角色模板列表</el-checkbox>-->
-            <input type="checkbox" value="角色模板列表" :disabled="checkboxStatus"/>角色模板列表
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <!--<el-checkbox v-model="isChecked">编辑</el-checkbox>-->
-            <input type="checkbox" value="编辑" :disabled="checkboxStatus"/>编辑
-          </td>
-          <td class="table-checkout">
-            <!--<el-checkbox v-model="isChecked">添加角色模板</el-checkbox>-->
-            <!--<el-checkbox v-model="isChecked">编辑角色模板</el-checkbox>-->
-            <!--<el-checkbox v-model="isChecked">停用角色模板</el-checkbox>-->
-            <input type="checkbox" value="角色模板列表" :disabled="checkboxStatus"/>添加角色模板
-            <input type="checkbox" value="编辑角色模板" :disabled="checkboxStatus"/>编辑角色模板
-            <input type="checkbox" value="停用角色模板" :disabled="checkboxStatus"/>停用角色模板
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <!--<el-checkbox v-model="isChecked">操作</el-checkbox>-->
-            <input type="checkbox" value="操作"  :disabled="checkboxStatus"/>操作
-          </td>
-          <td></td>
-        </tr>
-        <tr>
-          <td rowspan="3">
-            <!--<el-checkbox v-model="roleList[1].personCenter.checked">个人中心</el-checkbox>-->
-            <input type="checkbox" value="个人中心" :disabled="checkboxStatus"/>个人中心
-          </td>
-          <td rowspan="3">
-            <!--<el-checkbox v-model="isChecked">账号设置</el-checkbox>-->
-            <input type="checkbox" value="账号设置" :disabled="checkboxStatus"/>账号设置
-          </td>
-          <td>
-            <!--<el-checkbox v-model="isChecked">只读</el-checkbox>-->
-            <input type="checkbox" value="只读"  />只读
-          </td>
-          <td class="table-checkout">
-            <!--<el-checkbox v-model="isChecked">账号信息</el-checkbox>-->
-            <input type="checkbox" value="账号信息"  :disabled="checkboxStatus"/>账号信息
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <!--<el-checkbox v-model="isChecked">编辑</el-checkbox>-->
-            <input type="checkbox" value="编辑" :disabled="checkboxStatus"/>编辑
-          </td>
-          <td class="table-checkout">
-            <!--<el-checkbox v-model="isChecked">修改账号信息</el-checkbox>-->
-            <!--<el-checkbox v-model="isChecked">修改密码</el-checkbox>-->
-            <input type="checkbox" value="修改账号信息" :disabled="checkboxStatus"/>修改账号信息
-            <input type="checkbox" value="修改密码" :disabled="checkboxStatus"/>修改密码
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <!--<el-checkbox v-model="isChecked">操作</el-checkbox>-->
-            <input type="checkbox" value="操作" :disabled="checkboxStatus"/>操作
-          </td>
-          <td></td>
-        </tr>
 
         </tbody>
       </table>
@@ -188,8 +45,25 @@
 <script>
 
   export default {
-    mounted(){
-      console.log(this)
+    
+    mounted () {
+     this.$http.post(this.GLOBAL.serverSrc+'/client/org/roleinsert',{
+      "object": {
+        "id": 0,
+        "createTime": "2018-07-03T01:05:28.024Z",
+        "isDeleted": 0,
+        "code": "string",
+        "title": "string",
+        "mark": "string",
+        "count": 0,
+        "state": 0
+      },
+      "id": 1
+
+    })
+      .then (res=>{
+        console.log(res.data)
+      })
     },
     name: "addRole",
     data: function () {

@@ -80,9 +80,9 @@
           width=""
           header-align="center">
           <template slot-scope="scope">
-            <el-button type="info" size="small" @click="changeState(scope.row.id,1)" class="bt-stop">查看</el-button>
+            <el-button size="small" @click="changeState(scope.row.id)" class="bt-stop">查看</el-button>
             <el-button type="primary" size="small" @click="editRole(scope.row.id)" class="bt-edit">编辑</el-button>
-            <el-button type="primary" size="small" @click="editRole(scope.row.id)" class="bt-edit">删除</el-button>
+            <el-button type="danger" size="small" @click="removeRole(scope.row.id)" class="bt-edit">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -223,6 +223,15 @@ import AddScenic from './components/Addscenic'
       }
     },
     methods: {
+      changeState(id) {
+        console.log(id)
+      },
+      editRole (id) {
+        console.log(id)
+      },
+      removeRole (id) {
+        console.log(id)
+      },
       showaddbtn() {
         this.showadd = !this.showadd
        

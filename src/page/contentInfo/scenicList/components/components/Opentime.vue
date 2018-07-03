@@ -319,12 +319,17 @@
     </div>
     <div class="submit">
        <el-button @click="submitCancel" class="button">取消</el-button>
-       <el-button class="button" type="primary">确认</el-button>
+       <el-button @click="submit" class="button" type="primary">确认</el-button>
     </div>
   </div>
 </template>
 
 <script>
+{
+
+
+  
+}
 export default {
   name: 'OpenTime',
  
@@ -348,6 +353,17 @@ export default {
     }
   },
   methods: {
+    submit () {
+      if (this.type=='时期选择') {
+          let weeked = document.querySelectorAll('.weeked'),
+  submitbtn  = document.querySelector('.submitbtn');
+  console.log(weeked.offsetTop)
+      } else {
+        this.$emit('postinner',this.desc)
+        this.desc = ''
+        this.$emit('close')
+      }
+    },
     handleAddMonday () {
       if(this.mondayList.length < 2){
         this.mondayList.push(
