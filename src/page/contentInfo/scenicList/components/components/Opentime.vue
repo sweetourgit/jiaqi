@@ -359,9 +359,13 @@ export default {
   submitbtn  = document.querySelector('.submitbtn');
   console.log(weeked.offsetTop)
       } else {
-        this.$emit('postinner',this.desc)
-        this.desc = ''
-        this.$emit('close')
+        if (this.desc===''){
+           this.$message.error('内容不能为空');
+        }else{
+          
+      this.$emit('postinner',this.desc);this.desc = '';this.$emit('close')
+        }
+        
       }
     },
     handleAddMonday () {

@@ -150,6 +150,11 @@ import OpenTime from './components/Opentime'
 import FadeAnimation from '@/common/FadeAnimation'
 import LabelSelection from './components/Labelselection'
 export default {
+  watch: {
+    name () {
+      console.log('变化')
+    }
+  },
   name: 'Addscenic',
   components: {
     LabelSelection,

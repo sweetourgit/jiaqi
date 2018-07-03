@@ -223,6 +223,9 @@ import AddScenic from './components/Addscenic'
       }
     },
     methods: {
+      subForm () {
+        alert('查找')
+      },
       changeState(id) {
         console.log(id)
       },

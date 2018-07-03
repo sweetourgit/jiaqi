@@ -30,10 +30,125 @@
           <th>具体权限</th>
         </tr>
         </thead>
-        <tbody>
+          <tbody>
+        <tr>
 
+          <td rowspan="9">
+            <el-checkbox  :disabled="checkboxStatus">
+              账号管理
+            </el-checkbox>
+           
+          </td>
+          <td rowspan="3">
+            <el-checkbox @change="changeuser">用户管理</el-checkbox>
+          </td>
+          <td>
+            <el-checkbox >只读</el-checkbox>
+          </td>
+          <td class="table-checkout">
+            <el-checkbox >用户列表</el-checkbox>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <el-checkbox >编辑</el-checkbox>
+          </td>
+          <td class="table-checkout">
+            <el-checkbox >编辑用户</el-checkbox>
+            <el-checkbox >添加用户</el-checkbox>
+          </td>
+
+        </tr>
+        <tr>
+          <td>
+            <el-checkbox >操作</el-checkbox>
+          </td>
+          <td class="table-checkout">
+            <el-checkbox >启用</el-checkbox>
+            <el-checkbox >停用</el-checkbox>
+          </td>
+        </tr>
+        <tr>
+          <td rowspan="3">
+            <el-checkbox >组织管理</el-checkbox>
+          </td>
+          <td>
+            <el-checkbox >只读</el-checkbox>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <el-checkbox >编辑</el-checkbox>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <el-checkbox >操作</el-checkbox>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td rowspan="3">
+            <el-checkbox >权限管理</el-checkbox>
+          </td>
+          <td>
+            <el-checkbox >只读</el-checkbox>
+          </td>
+          <td class="table-checkout">
+            <el-checkbox >角色模板列表</el-checkbox>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <el-checkbox >编辑</el-checkbox>
+          </td>
+          <td class="table-checkout">
+            <el-checkbox >添加角色模板</el-checkbox>
+            <el-checkbox >编辑角色模板</el-checkbox>
+            <el-checkbox >停用角色模板</el-checkbox>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <el-checkbox >操作</el-checkbox>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td rowspan="3">
+            <el-checkbox >个人中心</el-checkbox>
+  
+          </td>
+          <td rowspan="3">
+            <el-checkbox >账号设置</el-checkbox>
+          </td>
+          <td>
+            <el-checkbox >只读</el-checkbox>
+          </td>
+          <td class="table-checkout">
+            <el-checkbox >账号信息</el-checkbox>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <el-checkbox >编辑</el-checkbox>
+           
+          </td>
+          <td class="table-checkout">
+            <el-checkbox >修改账号信息</el-checkbox>
+           <el-checkbox >修改密码</el-checkbox>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <el-checkbox >操作</el-checkbox>
+          </td>
+          <td></td>
+        </tr>
         </tbody>
-      </table>
+        </table>
 
     </el-form>
     <el-button type="primary" class="sub_button" style="background: white;color: #3095fa" @click="handleClose()">取消
@@ -105,7 +220,6 @@
           });
       };
       return {
-        input: '',
         ruleForm: {
           temp_name: '',
           desc: ''
@@ -142,8 +256,15 @@
       }
 
     },
-    watch: {},
+    watch: {
+     
+    },
     methods: {
+       changeuser () {
+        if(checked){
+          alert(1)
+        }
+      },
       submitForm(formName) {
 
         let _this = this
@@ -198,7 +319,7 @@
       getDetail: function (id) {
 
         this.$http.post(
-          this.GLOBAL.serverSrc + "/api/org/roleget",
+          this.GLOBAL.serverSrc + "/client/org/roleget",
           {
             "order": "string",
             "object": {
