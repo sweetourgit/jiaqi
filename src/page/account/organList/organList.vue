@@ -58,7 +58,7 @@
                 </el-form-item>
                 </el-form>
                 <span class="cascaderTitle">上级部门</span>
-                <el-cascader @active-item-change="department" :props="props" :options="options" class="cascader"></el-cascader>
+                <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader>
             </div>
             <div slot="footer">
                 <el-button @click="editDepartment = false">取 消</el-button>
@@ -69,8 +69,8 @@
         <!-- 添加子部门弹框 -->
         <el-dialog class="Popup" :visible.sync="addSubdivision" style="width:900px;">
             <el-form :model="addInput" :rules="rules" status-icon ref="addInput">
-                <el-form-item label="部门名称" :label-width="Width" prop="departmentNames">
-                    <el-input v-model="addInput.departmentNames" auto-complete="off" class="add-input"></el-input>
+                <el-form-item label="部门名称" :label-width="Width" prop="name">
+                    <el-input v-model="addInput.name" auto-complete="off" class="add-input"></el-input>
                 </el-form-item>
                 <el-form-item label="上级部门" :label-width="Width" prop="topDepartment">
                     <el-input v-model="addInput.topDepartment" auto-complete="off" :disabled="true" class="add-input"></el-input>
@@ -160,9 +160,6 @@
 
 <script>
   export default {
-    created: function (){
-      this.TreeData()
-    },
   data () {
     return {
         data: [],
@@ -182,7 +179,7 @@
         // 添加子部门
         addSubdivision: false,
         addInput: {
-            departmentNames: '',
+            name: '',
             topDepartment: '',
             radio: '',
             lastStage:'2',
@@ -194,7 +191,7 @@
             ParentID: ''
         },
         rules: {
-            departmentNames: [
+            name: [
                 {required: true, message: "请输入部门名称", trigger: "blur"}
             ],
             radio: [
@@ -326,32 +323,31 @@ methods: {
         this.addSubdivision = false
         this.$refs[a].resetFields();
     },
+    // 添加部门
     appendSave() {
         if(this.addInput.departmentNames === '' || this.addInput.departmentCode === '' || this.addInput.radio === '' || this.addInput.sort === '' || this.addInput.phone === '' || this.addInput.fax === ''){
             this.$message.warning('红☆为必填选项，请认真填写！')
         }else{
+            console.log(this.addInput)
                 var _this = this
-                this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptinsert',{
-                    "Id": 0,
-                    "Object": {
+                this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptinsert',{
+                    "object": {
                         "id": 0,
-                        "orgName": this.addInput.departmentNames,
-                        "isDeleted": 1,
-                        "code": "1",
+                        "orgName": this.addInput.name,
+                        "isDeleted": 0,
+                        "code": "string",
                         "parentID": this.addInput.ParentID,
-                        "physical": 1,
-                        "isLeaf": this.addInput.lastStage,
-                        "orgCode": this.addInput.departmentCode,
-                        "rank": this.addInput.sort,
+                        "physical": 0,
+                        "orgCode": 0,
+                        "rank": 0,
                         "officeTel": this.addInput.phone,
                         "officeFax": this.addInput.fax,
                         "mark": this.addInput.note,
-                    },
-                    "loadLeader": true,
-                    "CreateUser": "admin",
-                    "CreateTime": "2018-06-15 14:11:22"
+                        "isLeaf": this.addInput.lastStage,
+                    }
                  }
                  ).then(function(response){
+                    console.log(response)
                     _this.TreeData()
                   }).catch(function(error){
                     console.log(error);
@@ -399,7 +395,7 @@ methods: {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-            this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptdelete',{
+            this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptdelete',{
                 "id" : this.tableData[index].id
             })
             .then(function(response){
@@ -423,7 +419,7 @@ methods: {
       addPersonnel1(){
         this.members = []
         let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/userpage',{
+        this.$http.post(this.GLOBAL.serverSrc+'/client/org/userpage',{
         "object": {
           "isDeleted": 0,
         },
@@ -454,19 +450,19 @@ methods: {
         this.addPersonnel = false
         this.dataNum = [];
       },
+      // 单击tree节点
       treeClick(a,b,c) {
+        this.tableData = []
         this.addInput.ParentID = a.id
         this.addInput.topDepartment = a.label
         this.updata.departmentName = a.label
         this.Parents = a
-        this.tableData = []
         var _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
+        this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
             "Object": {
                 "ParentID" : a.id
             }
         }).then((response) =>{
-          console.log(response)
                 for(let i=0;i<response.data.objects.length;i++){
                   if(response.data.objects[i].isDeleted !== 1){
                      _this.tableData.push({
@@ -485,7 +481,7 @@ methods: {
       loadNode(node, resolve){
         this.data = []
         let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
+        this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
             "Object": {
                 "ParentID" : -1
             }
@@ -500,6 +496,14 @@ methods: {
                 }])
               }
             }
+            let num = Array();
+            num.push({
+                id:response.data.objects[0].id,
+                isLeaf:response.data.objects[0].isLeaf,
+                key:0,
+                label:response.data.objects[0].orgName
+            })
+            _this.treeClick(num[0])
           }).catch(function(error){
             console.log(error);
           });
@@ -510,12 +514,11 @@ methods: {
       getUser(key,label,id,isLeaf,resolve) {
         this.data1 = []
         let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
+        this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
             "Object": {
                 "ParentID" : id
             }
         }).then((response) =>{
-
                 for(let i=0;i<response.data.objects.length;i++){
                   if(response.data.objects[i].isDeleted !== 1){
                       if(response.data.objects[i].isLeaf == 1){
@@ -548,28 +551,6 @@ methods: {
             console.log(error);
           });
       },
-      TreeData(){
-        this.data = []
-        let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
-            "Object": {
-                "ParentID" : -1
-            }
-        }).then((response) =>{
-            for(let i=0;i<response.data.objects.length;i++){
-                _this.data.push({
-                    label: response.data.objects[i].orgName,
-                    id: response.data.objects[i].id,
-                    key: i,
-                    cities: [],
-                    isLeaf: 'leaf'
-                })
-            }
-            _this.treeClick(_this.data[0])
-          }).catch(function(error){
-            console.log(error);
-          });
-      },
       addSubdivision1(){
         if(this.addInput.ParentID == ''){
             this.$message.warning('请先选择父级部门！')
@@ -593,10 +574,11 @@ methods: {
         this.currentPage = currentPage;
         this.addPersonnel1()
       },
+      // 编辑部门
       department(a, b) {
         this.keyID = []
         let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
+        this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
             "Object": {
                 "ParentID" : a[0]
             }
@@ -621,7 +603,7 @@ methods: {
         if(data.isLeaf == 1){
           return (
             <span>
-              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/209379682602977491.png"/>
+              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/257785656210656304.png"/>
               <span>{node.label}</span>
             </span>
           )
