@@ -7,9 +7,16 @@
             <el-input  class="address-input" v-model="haha"  placeholder="目的地/名称"></el-input>
             <el-button class="top-button" type="primary" icon="el-icon-search"></el-button>
         </div>
-      <div style="border:1px solid #fff">
+     
         <div class="left-tree">
-            <el-tree :data="data3" node-key="id"></el-tree>
+           
+            <el-tree
+              :props="props1"
+              :load="loadNode1"
+              lazy
+            >
+            </el-tree>
+
         </div>
         <!-- 地址图片的最大框框 -->
       <div class="address-big">
@@ -75,7 +82,7 @@
 </el-dialog>
 
 <!-- 2.添加照片的弹窗 -->
-<el-dialog title="添加照片" :visible.sync="addAlbumImg" style="margin-top:-100px" append-to-body width="80%"  class="clearfix form_left">
+<el-dialog title="添加照片" :visible.sync="addAlbumImg" style="margin-top:-100px"  append-to-body width="1450px"  class="clearfix form_left">
   <el-form :model="form" :rules="rules" ref="form">
   </el-form>
   <div class="add-address-img">
@@ -86,7 +93,11 @@
       </div>
       <!-- 其余图片  -->
       <div class="small-box">
-        <div class="small-img" style="display: inline-block;width:25%;" v-for="small in smallImg" :key="small.name">
+        <div class="small-img"
+         v-for="small in smallImg" 
+         :key="small.name" 
+         :class="{'class-a':isA,'class-b':!isA}"
+         @click="select(small.name)" >
           <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
           <img style="width:100%;" :src="small.img" alt="">
         </div>
@@ -123,10 +134,10 @@
      
        </div>
        <div class="material-message">
-          <div class="album-title">
-          <div class="blue-box"></div>
-          <div class="album-text">素材信息</div>
-        </div>
+         <div class="album-title">
+            <div class="blue-box"></div>
+            <div class="album-text">素材信息</div>
+         </div>
          <div class="album-form">
             <el-form :model="materialForm" :rules="materialRules" ref="materialForm" label-width="100px" >
               <el-form-item label="名称 :" prop="name" >
@@ -139,8 +150,7 @@
               <div style="margin-top:10px;text-align:left">标签:
                 <el-button size="mini">按钮</el-button>
               </div>
-            </div>
-            
+            </div>       
         </div>
        </div>
     </div> 
@@ -148,7 +158,7 @@
 </el-dialog>
 
 <!-- 3.添加素材弹窗 -->
-<el-dialog title="添加素材" :visible.sync="addMaterial" style="margin-top:-100px" append-to-body width="80%"  class="clearfix form_left">
+<el-dialog title="添加素材" :visible.sync="addMaterial" style="margin-top:-100px" append-to-body width="1450px"  class="clearfix form_left">
   <el-form :model="form" :rules="rules" ref="form">
   </el-form>
   <div class="add-address-img">
@@ -168,16 +178,15 @@
       <div style="margin-top:50px">
         <div class="material-small-img" v-for="img in marterialImg" :key="img.name">
           <img style="width:100%;" :src="img.img" alt="">
-        </div>
-        
+        </div>   
       </div>  
     </div>
      <div class="right-form">    
        <div class="material-message">
           <div class="album-title">
-          <div class="blue-box"></div>
-          <div class="album-text">素材信息</div>
-        </div>
+            <div class="blue-box"></div>
+            <div class="album-text">素材信息</div>
+         </div>
          <div class="album-form">
             <el-form :model="materialForm" :rules="materialRules" ref="materialForm" label-width="100px" >
               <el-form-item label="名称 :" prop="name">
@@ -195,8 +204,7 @@
              <div class="album-button">
               <el-button  style="width:100px;">取消</el-button>
               <el-button type="primary" style="width:100px;">添加 </el-button>
-            </div>
-            
+            </div>           
         </div>
        </div>
     </div>
@@ -206,7 +214,7 @@
 <el-dialog title="标签选择" :visible.sync="addLabel" style="width:900px;margin:0 auto">
   <div style="margin:0 auto">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-    <el-tab-pane label="景点">
+    <el-tab-pane v-for="list in Label" :label="list.title" :key="list.key">
       <div class="add-label">
         <div class="label-name">
           <div style="float:left;line-height:40px">标签:</div>
@@ -214,99 +222,14 @@
            <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
         </div>
         <div class="select-label">
-          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in play" :key="name.name"></el-checkbox>        
+          <el-checkbox  class="label-check" :label="item.title" :v-model="item.checked" v-for="item in list.LabelIn" :key="item.key"></el-checkbox>        
         </div>
-         <div class="album-button">
+         <div class="material-button">
               <el-button  style="width:100px;">取消</el-button>
               <el-button type="primary" style="width:100px;">添加 </el-button>
         </div>
       </div>  
     </el-tab-pane>
-     <el-tab-pane label="美食">
-      <div class="add-label">
-        <div class="label-name">
-          <div style="float:left;line-height:40px">标签:</div>
-           <el-input   v-model="haha"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
-           <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
-        </div>
-        <div class="select-label">
-          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in food" :key="name.name"></el-checkbox>        
-        </div>
-         <div class="album-button">
-              <el-button  style="width:100px;">取消</el-button>
-              <el-button type="primary" style="width:100px;">添加 </el-button>
-        </div>
-      </div>  
-    </el-tab-pane>
-     <el-tab-pane label="购物">
-      <div class="add-label">
-        <div class="label-name">
-          <div style="float:left;line-height:40px">标签:</div>
-           <el-input   v-model="haha"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
-           <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
-        </div>
-        <div class="select-label">
-          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in shop" :key="name.name"></el-checkbox>        
-        </div>
-         <div class="album-button">
-              <el-button  style="width:100px;">取消</el-button>
-              <el-button type="primary" style="width:100px;">添加 </el-button>
-        </div>
-      </div>  
-    </el-tab-pane>
-    <el-tab-pane label="住宿">
-      <div class="add-label">
-        <div class="label-name">
-          <div style="float:left;line-height:40px">标签:</div>
-           <el-input   v-model="haha"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
-           <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
-        </div>
-        <div class="select-label">
-          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in dwell" :key="name.name"></el-checkbox>        
-        </div>
-         <div class="album-button">
-              <el-button  style="width:100px;">取消</el-button>
-              <el-button type="primary" style="width:100px;">添加 </el-button>
-        </div>
-      </div>  
-    </el-tab-pane>
-    <el-tab-pane label="娱乐">
-      <div class="add-label">
-        <div class="label-name">
-          <div style="float:left;line-height:40px">标签:</div>
-           <el-input   v-model="haha"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
-           <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
-        </div>
-        <div class="select-label">
-          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in recreation" :key="name.name"></el-checkbox>        
-        </div>
-         <div class="album-button">
-              <el-button  style="width:100px;">取消</el-button>
-              <el-button type="primary" style="width:100px;">添加 </el-button>
-        </div>
-      </div>  
-    </el-tab-pane>
-    <el-tab-pane label="其他">
-      <div class="add-label">
-        <div class="label-name">
-          <div style="float:left;line-height:40px">标签:</div>
-           <el-input   v-model="haha"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
-           <el-button  type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
-        </div>
-        <div class="select-label">
-          <el-checkbox  class="label-check" :label="name.title" :v-model="name.checked" v-for="name in other" :key="name.name"></el-checkbox>        
-        </div>
-         <div class="album-button">
-              <el-button  style="width:100px;">取消</el-button>
-              <el-button type="primary" style="width:100px;">添加 </el-button>
-        </div>
-      </div>  
-    </el-tab-pane>
-    <!-- <el-tab-pane label="美食" ></el-tab-pane>
-    <el-tab-pane label="购物" ></el-tab-pane>
-    <el-tab-pane label="住宿" ></el-tab-pane>
-    <el-tab-pane label="娱乐" ></el-tab-pane>
-    <el-tab-pane label="其他" ></el-tab-pane> -->
   </el-tabs>
   </div>
    
@@ -315,7 +238,7 @@
    
 </div>
  
-</div>
+
 </template>
 
 <script scoped>
@@ -323,11 +246,17 @@
     data() {
         
       return {
-       
+        isA:false,
         currentPage1: 5,
         currentPage2: 5,
         currentPage3: 5,
         currentPage4: 4,
+         // 树形控件的数据
+         props1: {
+          label: 'name',
+          children: 'zones',
+          isLeaf: 'leaf'
+        },
         data3: [{
           id: 1,
           label: '中国',
@@ -421,150 +350,142 @@
           name:'5',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
         }],
-     
-        // 标签内部-游玩
-        play: [{
-          name:'1',
-          title:'游山',
-          checked:'checked1',
-        },{
-          name:'2',
-          title:'玩水',
-          checked:'checked2',
-        },{
-          name:'3',
-          title:'打豆豆',
-          checked:'checked3',
-          
-        },{
-          name:'4',
-          title:'哈哈哈',
-          checked:'checked4',
-          
-        },{
-          name:'1',
-          title:'游山',
-          checked:'checked1',
-        },{
-          name:'2',
-          title:'玩水',
-          checked:'checked2',
-        },{
-          name:'3',
-          title:'打豆豆',
-          checked:'checked3',
-          
-        },{
-          name:'4',
-          title:'哈哈哈',
-          checked:'checked4',
-          
-        }],
-        // 标签内部-美食
-        food: [{
-          name:'1',
-          title:'大肘子',
-          checked:'checked1',
-        },{
-          name:'2',
-          title:'锅包肉',
-          checked:'checked2',
-        },{
-          name:'3',
-          title:'溜肉段',
-          checked:'checked3',
-          
-        },{
-          name:'4',
-          title:'法式大餐',
-          checked:'checked4',
-          
-        }],
-        // 标签内部-购物
-        shop: [{
-          name:'1',
-          title:'免税',
-          checked:'checked1',
-        },{
-          name:'2',
-          title:'含税',
-          checked:'checked2',
-        },{
-          name:'3',
-          title:'纪念品',
-          checked:'checked3',
-          
-        },{
-          name:'4',
-          title:'伴手礼',
-          checked:'checked4',
-          
-        }],
-        // 标签内部-住宿
-        dwell: [{
-          name:'1',
-          title:'民宿',
-          checked:'checked1',
-        },{
-          name:'2',
-          title:'旅店',
-          checked:'checked2',
-        },{
-          name:'3',
-          title:'酒店',
-          checked:'checked3',
-          
-        },{
-          name:'4',
-          title:'温泉酒店',
-          checked:'checked4',
-          
-        }],
-         // 标签内部-娱乐
-        recreation: [{
-          name:'1',
-          title:'KTV',
-          checked:'checked1',
-        },{
-          name:'2',
-          title:'酒吧',
-          checked:'checked2',
-        },{
-          name:'3',
-          title:'SPA',
-          checked:'checked3',
-          
-        },{
-          name:'4',
-          title:'密室逃脱',
-          checked:'checked4',
-          
-        },{
-          name:'4',
-          title:'密室逃脱',
-          checked:'checked4',
-          
-        }],
-         // 标签内部-其他
-        other: [{
-          name:'1',
-          title:'轰趴',
-          checked:'checked1',
-        },{
-          name:'2',
-          title:'桌游馆',
-          checked:'checked2',
-        },{
-          name:'3',
-          title:'运动场',
-          checked:'checked3',
-          
-        },{
-          name:'4',
-          title:'健身房',
-          checked:'checked4',
-          
-        }],
+        // 标签
+        Label:[
+        {
+          key:'0',
+          title:'景色',
+            LabelIn:[
+          {
+            key:'0',
+            title:'游山',
+            checked:'checked0',
+          },{
+            key:'1',
+            title:'玩水',
+            checked:'checked1',
+          },{
+            key:'2',
+            title:'下海',
+            checked:'checked2',
+          },{
+            key:'3',
+            title:'看天',
+            checked:'checked3',
+          },
+        ]},
+        {
+          key:'1',
+          title:'美食',
+             LabelIn:[
+          {
+            key:'0',
+            title:'特色菜',
+            checked:'checked0',
+          },{
+            key:'1',
+            title:'法餐',
+            checked:'checked1',
+          }, {
+            key:'2',
+            title:'当地饮食',
+            checked:'checked2',
+          },{
+            key:'3',
+            title:'东北菜',
+            checked:'checked3',
+          },
+          ]},
+          {
+          key:'2',
+          title:'购物',
+             LabelIn:[
+          {
+            key:'1',
+            title:'免税',
+            checked:'checked0',
+          },{
+            key:'1',
+            title:'含税',
+            checked:'checked1',
+          }, {
+            key:'2',
+            title:'纪念品',
+            checked:'checked2',
+          },{
+            key:'3',
+            title:'伴手礼',
+            checked:'checked3',
+          },
+          ]},
+          {
+          key:'3',
+          title:'住宿',
+             LabelIn:[
+          {
+            key:'0',
+            title:'民宿',
+            checked:'checked0',
+          },{
+            key:'1',
+            title:'旅店',
+            checked:'checked1',
+          }, {
+            key:'2',
+            title:'酒店',
+            checked:'checked2',
+          },{
+            key:'3',
+            title:'温泉酒店',
+            checked:'checked3',
+          },
+          ]},
+          {
+          key:'4',
+          title:'娱乐',
+             LabelIn:[
+          {
+            key:'0',
+            title:'KTV',
+            checked:'checked0',
+          },{
+            key:'1',
+            title:'真人CS',
+            checked:'checked1',
+          }, {
+            key:'2',
+            title:'SPA',
+            checked:'checked2',
+          },{
+            key:'3',
+            title:'密室逃脱',
+            checked:'checked3',
+          },
+          ]},
+           {
+          key:'5',
+          title:'其他',
+             LabelIn:[
+          {
+            key:'0',
+            title:'健身房',
+            checked:'checked0',
+          },{
+            key:'1',
+            title:'轰趴',
+            checked:'checked1',
+          }, {
+            key:'2',
+            title:'桌游馆',
+            checked:'checked2',
+          },{
+            key:'3',
+            title:'运动场',
+            checked:'checked3',
+          },
+          ]}
+        ],
+        
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -681,7 +602,31 @@
             message: '已取消删除'
           });          
         });
-      }
+      },
+      // 城市树形框架数据
+       loadNode1(node, resolve) {
+        if (node.level === 0) {
+          return resolve([{ name: '北京' }]);
+        }
+        if (node.level > 1) return resolve([]);
+
+        setTimeout(() => {
+          const data = [{
+            name: '东直门',
+            
+          }, {
+            name: '西直门'
+          }];
+
+          resolve(data);
+        }, 500);
+      },
+     select(){
+      //  alert(123);
+      alert(this.smallImg.key);
+
+       this.isA = !this.isA;
+     }
     },
     
   };
@@ -689,7 +634,7 @@
 
 <style>
 .big{
-    /* position:absolute; */
+    /* position: relative; */
     width:1600px;
     height:1200px;
     /* max-height:80%; */
@@ -821,12 +766,19 @@
   /* float:left; */
   margin-top:17px;
   width:280px;
-  height:200px;
+  height:140px;
+  /* 使元素变成行内元素，拥有行内元素的特性，即可以与其他行内元素共享一行，不会独占一行 */
+  display:inline-block;
+  width:25%;
   /* border:1px solid yellow; */
   margin-right:17px;
   /* background-image:url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg');
   background-size: 100% 100%; */
 }
+/* 相册小图片点击之后的样式  */
+ .class-a{
+   border:1px solid #0FB99A;
+ }
 .small-box{
   position:absolute;
   width:1000px;
@@ -842,7 +794,7 @@
 }
 .small_img_close{
   position:absolute;
-  margin-left:235px;
+  margin-left:232px;
   /* margin-left:95%; */
   /* margin-top:10px; */
 }
@@ -888,8 +840,9 @@
   /* float:left; */
   font-size:20px;
   margin-top:7px;
-  margin-left:15px;
+  margin-left:15px !important;
   line-height:30px;
+  /* backgroud:blue; */
 }
 .album-name{
   float:left;
@@ -906,7 +859,15 @@
 .album-button{
   width:250px;
   height:50px;
-  margin-left:40px;
+  margin-left:65px;
+  /* margin: 0 auto; */
+  /* border:1px solid red; */
+}
+.material-button{
+  width:250px;
+  height:50px;
+  /* margin-left:40px; */
+  margin: 0 auto;
   /* border:1px solid yellow; */
 }
 /* 上传图片 */
@@ -938,13 +899,16 @@
 .select-label{
   /* float:left; */
   overflow: auto;
-  margin:25px 0px 60px 0px;
+  /* margin-left:20px; */
+  
+  margin:25px 0px 60px 30px;
   /* border:1px solid green; */
 
 }
 .label-check{
   float:left;
   text-align:left;
+  margin-bottom:5px;
   width:25%;
 }
 .el-checkbox+.el-checkbox {
@@ -960,4 +924,5 @@
   .clearfix{
     zoom:1;
   }
+ 
 </style>
