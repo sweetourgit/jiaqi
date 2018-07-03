@@ -96,8 +96,8 @@
         <div class="small-img"
          v-for="small in smallImg" 
          :key="small.name" 
-         :class="{'class-a':isA,'class-b':!isA}"
-         @click="select(small.name)" >
+         :class="{'classa': small.name == classa}"
+         @click="select(small.name,small.img)" >
           <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
           <img style="width:100%;" :src="small.img" alt="">
         </div>
@@ -246,7 +246,10 @@
     data() {
         
       return {
-        isA:false,
+        // 选中
+        classa:'',
+        
+        // 分页
         currentPage1: 5,
         currentPage2: 5,
         currentPage3: 5,
@@ -310,7 +313,7 @@
         // 相册里面的其他图片
         smallImg:[{
           name:'0',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img1.qunarzz.com/piao/fusion/1804/19/2892927915c74902.jpg_890x330_30acc8e8.jpg',
         },{
           name:'1',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
@@ -621,11 +624,13 @@
           resolve(data);
         }, 500);
       },
-     select(){
+     select(a,b){
       //  alert(123);
-      alert(this.smallImg.key);
+      // alert(this.smallImg.key);
 
-       this.isA = !this.isA;
+       this.classa = a;
+      //  alert(b);
+       this.addressImg.img == b;
      }
     },
     
@@ -633,6 +638,9 @@
 </script>
 
 <style>
+.classa{
+  border: solid 1px red;
+}
 .big{
     /* position: relative; */
     width:1600px;
