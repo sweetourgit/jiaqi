@@ -88,8 +88,10 @@
   <div class="add-address-img">
     <div class="left-img">
       <!-- 第一张图片 -->
-      <div class="first-img"  v-for="first in addressImg" :key="first.name">
-        <img style="width:100%;" :src="first.img" alt="">
+      <div class="first-img"  
+    
+         >
+        <img style="width:100%;height:100%;"  :src="this.addressImg"    alt="">
       </div>
       <!-- 其余图片  -->
       <div class="small-box">
@@ -99,7 +101,7 @@
          :class="{'classa': small.name == classa}"
          @click="select(small.name,small.img)" >
           <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
-          <img style="width:100%;" :src="small.img" alt="">
+          <img style="width:100%;height:100%;" :src="small.img" alt="">
         </div>
       </div>
     </div>
@@ -248,7 +250,8 @@
       return {
         // 选中
         classa:'',
-        
+        // 相册第一张图片
+        addressImg: '', 
         // 分页
         currentPage1: 5,
         currentPage2: 5,
@@ -313,25 +316,25 @@
         // 相册里面的其他图片
         smallImg:[{
           name:'0',
-          img:'http://img1.qunarzz.com/piao/fusion/1804/19/2892927915c74902.jpg_890x330_30acc8e8.jpg',
+          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_184051405126879.jpg',
         },{
           name:'1',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_183733373374610.jpg',
         },{
           name:'2',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
         },{
           name:'3',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_184152415244390.jpg',
         },{
           name:'4',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_18380238220394.jpg',
         },{
           name:'5',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img06.tooopen.com/images/20180603/tooopen_sy_241646862134.jpg',
         },{
           name:'6',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_183919391998803.jpg',
         }],
         // 素材里面的其他图片
         marterialImg:[{
@@ -624,13 +627,16 @@
           resolve(data);
         }, 500);
       },
+      // 选择相册其他照片
      select(a,b){
       //  alert(123);
       // alert(this.smallImg.key);
 
        this.classa = a;
       //  alert(b);
-       this.addressImg.img == b;
+      //  this.addressImg.img == b;
+       this.addressImg = b;
+      //  alert(this.addressImg);
      }
     },
     
@@ -639,7 +645,7 @@
 
 <style>
 .classa{
-  border: solid 1px red;
+  border: 5px solid #0FB99A;
 }
 .big{
     /* position: relative; */
@@ -765,23 +771,24 @@
 }
 .first-img{
   width:1000px;
-  /* height:500px; */
+  height:550px;
   /* border:1px solid green; */
   /* background-image:url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg');
   background-size: 100% 100%; */
 }
 .small-img{
   /* float:left; */
-  margin-top:17px;
+  margin-top:13px;
   width:280px;
-  height:140px;
+  height:200px;
   /* 使元素变成行内元素，拥有行内元素的特性，即可以与其他行内元素共享一行，不会独占一行 */
   display:inline-block;
-  width:25%;
+  /* width:25%;
+  height:77%; */
   /* border:1px solid yellow; */
   margin-right:17px;
-  /* background-image:url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg');
-  background-size: 100% 100%; */
+  margin-bottom:30px;
+  
 }
 /* 相册小图片点击之后的样式  */
  .class-a{
@@ -790,7 +797,7 @@
 .small-box{
   position:absolute;
   width:1000px;
-  height:200px;
+  height:250px;
   /* 段落文本不换行 */
   white-space:nowrap;
   /* 如果横向溢出则提供滚动机制 */
@@ -802,7 +809,7 @@
 }
 .small_img_close{
   position:absolute;
-  margin-left:232px;
+  margin-left:26.5%;
   /* margin-left:95%; */
   /* margin-top:10px; */
 }
