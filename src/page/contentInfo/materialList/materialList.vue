@@ -20,8 +20,8 @@
         </div>
         <!-- 地址图片的最大框框 -->
       <div class="address-big">
-            <div class="address-img" v-for="img in marterialist" :key="img.name">
-                <div class="marterialist-img" @click="addAlbumImg = true">
+            <div class="address-img" v-for="img in marterialist" :key="img.name" >
+                <div class="marterialist-img" @click="addAlbumImg1">
                     <img style="width:100%;" :src="img.img" alt="">
                 </div>
                 <!-- 图片介绍 -->
@@ -88,21 +88,22 @@
   <div class="add-address-img">
     <div class="left-img">
       <!-- 第一张图片 -->
-      <div class="first-img"  
-    
-         >
-        <img style="width:100%;height:100%;"  :src="this.addressImg"    alt="">
+      <div class="first-img">
+        <img style="width:100%;height:100%;"   :src="this.addressImg"    alt="">
       </div>
       <!-- 其余图片  -->
       <div class="small-box">
-        <div class="small-img"
-         v-for="small in smallImg" 
-         :key="small.name" 
-         :class="{'classa': small.name == classa}"
-         @click="select(small.name,small.img)" >
-          <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
-          <img style="width:100%;height:100%;" :src="small.img" alt="">
+        <div v-for="img in marterialist" :key="img.name">
+           <div class="small-img"
+            v-for="small in img.smallImg" 
+            :key="small.name" 
+            :class="{'classa': small.name == classa}"
+            @click="select(small.name,small.imgs)" >
+            <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
+            <img style="width:100%;height:100%;" :src="small.imgs" alt="">
         </div>
+      </div>
+       
       </div>
     </div>
      <div class="right-form">
@@ -245,6 +246,7 @@
 
 <script scoped>
   export default {
+   
     data() {
         
       return {
@@ -292,10 +294,33 @@
           }]
         }],
         // 风景图
+        
         marterialist:[{
           name:'0',
           title:'黄金海滩',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          smallImg:[{
+          name:'0',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184051405126879.jpg',
+        },{
+          name:'1',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183733373374610.jpg',
+        },{
+          name:'2',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
+        },{
+          name:'3',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184152415244390.jpg',
+        },{
+          name:'4',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_18380238220394.jpg',
+        },{
+          name:'5',
+          imgs:'http://img06.tooopen.com/images/20180603/tooopen_sy_241646862134.jpg',
+        },{
+          name:'6',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183919391998803.jpg',
+        }],
         },{
           name:'1',
           title:'巴厘岛',
@@ -314,28 +339,7 @@
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
         }],
         // 相册里面的其他图片
-        smallImg:[{
-          name:'0',
-          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_184051405126879.jpg',
-        },{
-          name:'1',
-          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_183733373374610.jpg',
-        },{
-          name:'2',
-          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
-        },{
-          name:'3',
-          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_184152415244390.jpg',
-        },{
-          name:'4',
-          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_18380238220394.jpg',
-        },{
-          name:'5',
-          img:'http://img06.tooopen.com/images/20180603/tooopen_sy_241646862134.jpg',
-        },{
-          name:'6',
-          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_183919391998803.jpg',
-        }],
+        
         // 素材里面的其他图片
         marterialImg:[{
           name:'0',
@@ -637,7 +641,13 @@
       //  this.addressImg.img == b;
        this.addressImg = b;
       //  alert(this.addressImg);
-     }
+     },
+     addAlbumImg1(){
+            // alert(this.marterialist[$i].name);
+            this.addAlbumImg = true;
+            this.select(this.marterialist[0].smallImg[0].name,this.marterialist[0].smallImg[0].imgs);
+            console.log(this.marterialist);
+          },
     },
     
   };
