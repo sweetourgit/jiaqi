@@ -95,12 +95,13 @@
       <div class="small-box">
         <div v-for="img in marterialist" :key="img.name">
            <div class="small-img"
-            v-for="small in img.smallImg" 
+            v-for="small in num" 
             :key="small.name" 
             :class="{'classa': small.name == classa}"
             @click="select(small.name,small.imgs)" >
-            <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
             <img style="width:100%;height:100%;" :src="small.imgs" alt="">
+            <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
+            
         </div>
       </div>
        
@@ -328,6 +329,9 @@
           smallImg:[{
           name:'0',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183733373374610.jpg',
+        },{
+          name:'1',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
         }],
        },{
           name:'2',
@@ -512,6 +516,7 @@
           children: 'children',
           label: 'label'
         },
+        num: '',
         // 添加相册隐藏
         addAlbum : false,
         // 相册添加照片隐藏
@@ -647,7 +652,6 @@
      select(a,b){
       //  alert(123);
       // alert(this.smallImg.key);
-      alert(a);
        this.classa = a;
       //  alert(b);
       //  this.addressImg.img == b;
@@ -662,10 +666,16 @@
             // alert(this.marterialist[i].smallImg[0].imgs);
             
             this.addAlbumImg = true;
+
+            this.num = this.marterialist[i].smallImg;
+
+
             this.select(this.marterialist[i].smallImg[0].name,this.marterialist[i].smallImg[0].imgs);
+
             // alert(this.marterialist[i].smallImg[0].name);
             
             // console.log(this.marterialist);
+            
           },
     },
     
@@ -838,9 +848,11 @@
 }
 .small_img_close{
   position:absolute;
-  margin-left:26.5%;
+  margin-left:-1.5%;
   /* margin-left:95%; */
   /* margin-top:10px; */
+  /* font-size:18px; */
+  /* border:1px solid red; */
 }
 .material-small-img{
   float:left;
