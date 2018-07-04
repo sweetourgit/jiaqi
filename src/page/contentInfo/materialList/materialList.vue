@@ -21,7 +21,7 @@
         <!-- 地址图片的最大框框 -->
       <div class="address-big">
             <div class="address-img" v-for="img in marterialist" :key="img.name" >
-                <div class="marterialist-img" @click="addAlbumImg1">
+                <div class="marterialist-img" @click="addAlbumImg1(img.name)">
                     <img style="width:100%;" :src="img.img" alt="">
                 </div>
                 <!-- 图片介绍 -->
@@ -310,7 +310,7 @@
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
         },{
           name:'3',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184152415244390.jpg',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183432343253991.jpg',
         },{
           name:'4',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_18380238220394.jpg',
@@ -325,15 +325,27 @@
           name:'1',
           title:'巴厘岛',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
-        },{
+          smallImg:[{
+          name:'0',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183733373374610.jpg',
+        }],
+       },{
           name:'2',
           title:'澎湖湾',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          smallImg:[{
+          name:'0',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
+        }],
         },{
           name:'3',
           title:'加勒比海',
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          smallImg:[{
+          name:'0',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_18380238220394.jpg',
         }],
+       }],
         // 相册里面的第一个图片
         addressImg:[{
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
@@ -635,18 +647,25 @@
      select(a,b){
       //  alert(123);
       // alert(this.smallImg.key);
-
+      alert(a);
        this.classa = a;
       //  alert(b);
       //  this.addressImg.img == b;
        this.addressImg = b;
       //  alert(this.addressImg);
      },
-     addAlbumImg1(){
+     addAlbumImg1(i){
             // alert(this.marterialist[$i].name);
+            // alert(i);
+            // alert(this.marterialist[i].title);
+            
+            // alert(this.marterialist[i].smallImg[0].imgs);
+            
             this.addAlbumImg = true;
-            this.select(this.marterialist[0].smallImg[0].name,this.marterialist[0].smallImg[0].imgs);
-            console.log(this.marterialist);
+            this.select(this.marterialist[i].smallImg[0].name,this.marterialist[i].smallImg[0].imgs);
+            // alert(this.marterialist[i].smallImg[0].name);
+            
+            // console.log(this.marterialist);
           },
     },
     
