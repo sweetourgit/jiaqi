@@ -10,7 +10,7 @@
       <template v-else-if="geography == 3">
         <el-button class="add_country" type="primary" @click="addProvince = true">添加省份</el-button>
       </template>
-      <div class="search">
+      <div :class="search">
         <span class="keyword">输入关键字:</span>
         <el-autocomplete class="inputBox" clearable placeholder="请输入关键字" :fetch-suggestions="querySearch" suffix-icon="el-icon-search" v-model="input" :trigger-on-focus="false"></el-autocomplete>
         <el-button class="searchButton" type="primary" icon="el-icon-search"></el-button>
@@ -403,6 +403,7 @@
             {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
           ]
         },
+        search: 'search',
         value: '',
         toolTipClass: 'popper__arrow',
         input: '',// 搜索框
@@ -562,6 +563,10 @@
         let str = num.substring(num.indexOf(",") + 1,num.length);
         let str1 = str.indexOf(",") !== -1 ?str.substring(str.indexOf(",") + 1,str.length) :num.substring(num.indexOf(",") + 1,num.length);
         this.geography = str1
+        console.log(this.geography)
+        if(this.geography !== 'search'){
+          this.search = 'search1'
+        }
       },
       // 搜索方法
       querySearch(queryString, cb) {
@@ -763,6 +768,7 @@
 .cascade{ float: left;}
 .popper__arrow{ background: red !important;}
 .search{ float: left; margin: 85px 0 0 -100px;}
+.search1{ float: left; margin: 85px 0 0 -198px;}
 .keyword{ float: left; position: relative; top: 13px;}
 .inputBox{ float: left; margin: 0 0 0 20px; width: 300px;}
 .searchButton{ float: right; margin: 0 0 0 20px;}
@@ -771,14 +777,7 @@
 .table_button{ width: 50px; height: 22px; padding: 0;}
 .table_button_right{ float: right; margin: 0 90px 0 0;}
 .table_button1{ width: 70px; height: 22px; padding: 0;}
-.add_country{
-  /*float: left;*/
-  /*margin: 150px 0 0 -597px;*/
-  float: left;
-  position: relative;
-  top: 156px;
-  right: 215px;
-}
+.add_country{float: left; position: relative; top: 156px; right: 215px;}
 .page{ float: right; margin-top: 125px; margin-bottom: 100px;}
 .country_input{ width: 300px; margin: 0 95px 0 0;}
 .country_select{ width: 300px; margin: 0 95px 0 0;}
