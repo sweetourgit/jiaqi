@@ -180,13 +180,18 @@
             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
       </div>
-      <div class="material-small-box">
+      <div class="material-small-box" >
+        <div v-for="img in marterialist" :key="img.name"></div>
         <div class="material-small-img"  v-for="small in num" 
             :key="small.name"
-            :class="{'classa': small.name == classa}"
+           
             @click="select(small.name,small.imgs)" >
-          <img style="width:100%;height:100%;" :src="small.imgs" alt="">
+           <span  style="position:absolute;margin-left:285px" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
+            
+            <img  :class="{'classa': small.name == classa}" style="width:100%;height:100%;" :src="small.imgs" alt="">
+          
         </div>   
+        
       </div>  
     </div>
      <div class="right-form">    
@@ -686,7 +691,7 @@
 
 <style>
 .classa{
-  border: 1px solid #0FB99A;
+  border: 3px solid #0FB99A;
 }
 .big{
     /* position: relative; */
@@ -863,7 +868,7 @@
   margin-top:50px;
   width:1000px;
   height:500px;
- border:1px solid red;
+ /* border:1px solid red; */
   overflow-x:auto;
   
  
@@ -871,7 +876,7 @@
 }
 .material-small-img{
   float:left;
-  margin-top:17px;
+  margin-bottom:17px;
   width:300px;
   height:200px;
   margin-right:17px;
