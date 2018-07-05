@@ -21,8 +21,8 @@
         <!-- 地址图片的最大框框 -->
       <div class="address-big">
             <div class="address-img" v-for="img in marterialist" :key="img.name" >
-                <div class="marterialist-img" @click="addAlbumImg1(img.name)">
-                    <img style="width:100%;" :src="img.img" alt="">
+                <div class="marterialist-img" @click="addAlbumImg1(img.name)" >
+                    <img style="width:100%;height:100%" :src="marterialist[img.name].smallImg[0].imgs" alt="">
                 </div>
                 <!-- 图片介绍 -->
                 <div class="introduce">
@@ -58,7 +58,7 @@
     <!-- 所有的弹窗 -->
     <!-- 1.添加相册的弹窗 -->
   <el-dialog title="添加相册" :visible.sync="addAlbum"  append-to-body width="20%"  class="clearfix form_left">
-  <el-form :model="form" :rules="rules" ref="form">
+  <el-form :model="form"  ref="form">
    <el-form-item label="名称:" prop="name" :label-width="formLabelWidth" style="width:300px" >
       <el-input v-model="form.name" auto-complete="off" placeholder="请输入相册名称"></el-input>
     </el-form-item>
@@ -83,7 +83,7 @@
 
 <!-- 2.添加照片的弹窗 -->
 <el-dialog title="添加照片" :visible.sync="addAlbumImg" style="margin-top:-100px"  append-to-body width="1450px"  class="clearfix form_left">
-  <el-form :model="form" :rules="rules" ref="form">
+  <el-form :model="form"  ref="form">
   </el-form>
   <div class="add-address-img">
     <div class="left-img">
@@ -116,7 +116,7 @@
         </div>
         <div class="album-name">大帅府</div>
         <div class="album-form">
-            <el-form :model="albumForm" :rules="albumRules" ref="albumForm" label-width="100px" >
+            <el-form :model="albumForm"  ref="albumForm" label-width="100px" >
               <el-form-item label="类型 :">
                 <el-select  v-model="albumForm.type" placeholder="请选择活动区域">
                   <el-option label="区域一" value="shanghai"></el-option>
@@ -132,6 +132,7 @@
           </el-form>
           <div class="album-button">
             <el-button type="danger">删除相册</el-button>
+            
             <el-button type="primary" @click="material">创建素材</el-button>
           </div>
         </div>
@@ -143,7 +144,7 @@
             <div class="album-text">素材信息</div>
          </div>
          <div class="album-form">
-            <el-form :model="materialForm" :rules="materialRules" ref="materialForm" label-width="100px" >
+            <el-form :model="materialForm"  ref="materialForm" label-width="100px" >
               <el-form-item label="名称 :" prop="name" >
                 <el-input v-model="materialForm.name" placeholder="请输入素材名称"></el-input>
                 </el-form-item>
@@ -162,8 +163,8 @@
 </el-dialog>
 
 <!-- 3.添加素材弹窗 -->
-<el-dialog title="添加素材" :visible.sync="addMaterial" style="margin-top:-100px" append-to-body width="1450px"  class="clearfix form_left">
-  <el-form :model="form" :rules="rules" ref="form">
+<el-dialog title="添加素材" :visible.sync="addMaterial" style="margin-top:-100px;" append-to-body width="1450px"  class="clearfix form_left">
+  <el-form :model="form"  ref="form">
   </el-form>
   <div class="add-address-img">
     <div class="left-img">
@@ -179,9 +180,12 @@
             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
       </div>
-      <div style="margin-top:50px">
-        <div class="material-small-img" v-for="img in marterialImg" :key="img.name">
-          <img style="width:100%;" :src="img.img" alt="">
+      <div class="material-small-box">
+        <div class="material-small-img"  v-for="small in num" 
+            :key="small.name"
+            :class="{'classa': small.name == classa}"
+            @click="select(small.name,small.imgs)" >
+          <img style="width:100%;height:100%;" :src="small.imgs" alt="">
         </div>   
       </div>  
     </div>
@@ -192,7 +196,7 @@
             <div class="album-text">素材信息</div>
          </div>
          <div class="album-form">
-            <el-form :model="materialForm" :rules="materialRules" ref="materialForm" label-width="100px" >
+            <el-form :model="materialForm"  ref="materialForm" label-width="100px" >
               <el-form-item label="名称 :" prop="name">
                 <el-input v-model="materialForm.name" placeholder="请输入素材名称"></el-input>
                 </el-form-item>
@@ -321,6 +325,9 @@
         },{
           name:'6',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183919391998803.jpg',
+        },{
+          name:'7',
+          imgs:'http://img06.tooopen.com/images/20180320/tooopen_sy_236629122223.jpg',
         }],
         },{
           name:'1',
@@ -340,6 +347,9 @@
           smallImg:[{
           name:'0',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
+        },{
+          name:'1',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183241324193657.jpg',
         }],
         },{
           name:'3',
@@ -347,7 +357,10 @@
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
           smallImg:[{
           name:'0',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_18380238220394.jpg',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183651365152058.jpg',
+        },{
+          name:'1',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
         }],
        }],
         // 相册里面的第一个图片
@@ -359,22 +372,22 @@
         // 素材里面的其他图片
         marterialImg:[{
           name:'0',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
         },{
           name:'1',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img07.tooopen.com/images/20180614/tooopen_sy_23054854878452.jpg',
         },{
           name:'2',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img07.tooopen.com/images/20180614/tooopen_sl_23073073033462.jpg',
         },{
           name:'3',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img06.tooopen.com/images/20180605/tooopen_sl_241769979233.jpg',
         },{
           name:'4',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img06.tooopen.com/images/20180603/tooopen_sl_241630538194.jpg',
         },{
           name:'5',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img06.tooopen.com/images/20180603/tooopen_sl_241629626259.jpg',
         }],
         // 标签
         Label:[
@@ -574,8 +587,7 @@
       };
     },
 
-
-        methods: {
+    methods: {
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
@@ -603,8 +615,11 @@
       },
       // 添加素材
       material(){
+        // this.num = this.marterialist[0].smallImg.imgs;
+        // alert(this.num);
         // this.addAlbumImg = false;     
         this.addMaterial = true;
+        
       },
       // 添加标签
       label(){
@@ -658,24 +673,11 @@
        this.addressImg = b;
       //  alert(this.addressImg);
      },
+    //  点击封面进入相册
      addAlbumImg1(i){
-            // alert(this.marterialist[$i].name);
-            // alert(i);
-            // alert(this.marterialist[i].title);
-            
-            // alert(this.marterialist[i].smallImg[0].imgs);
-            
-            this.addAlbumImg = true;
-
-            this.num = this.marterialist[i].smallImg;
-
-
-            this.select(this.marterialist[i].smallImg[0].name,this.marterialist[i].smallImg[0].imgs);
-
-            // alert(this.marterialist[i].smallImg[0].name);
-            
-            // console.log(this.marterialist);
-            
+          this.addAlbumImg = true;
+          this.num = this.marterialist[i].smallImg;
+          this.select(this.marterialist[i].smallImg[0].name,this.marterialist[i].smallImg[0].imgs); 
           },
     },
     
@@ -684,7 +686,7 @@
 
 <style>
 .classa{
-  border: 5px solid #0FB99A;
+  border: 1px solid #0FB99A;
 }
 .big{
     /* position: relative; */
@@ -750,7 +752,8 @@
     /* border:1px solid purple; */
 }
 .marterialist-img{
-    width:100%;
+    width:585px;
+    height:400px;
     cursor:pointer;
     /* height:400px; */
     /* border:1px solid red; */
@@ -854,12 +857,25 @@
   /* font-size:18px; */
   /* border:1px solid red; */
 }
+.material-small-box{
+  /* position:absolute; */
+  
+  margin-top:50px;
+  width:1000px;
+  height:500px;
+ border:1px solid red;
+  overflow-x:auto;
+  
+ 
+  
+}
 .material-small-img{
   float:left;
   margin-top:17px;
-  width:280px;
+  width:300px;
   height:200px;
   margin-right:17px;
+  /* border: solid blue; */
 }
 .right-form{
   /* position: absolute; */
