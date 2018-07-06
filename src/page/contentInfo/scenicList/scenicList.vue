@@ -37,15 +37,7 @@
           <el-button @click="showaddbtn" type="primary" class="add_scenic">添加景点</el-button>
         
       </div>
-      <div class="labels">
-        <div style="float: left;margin-right: 25px">景点标签：</div>
-        <el-checkbox-group style="float: left">
-           <!-- v-model="checkLabelList"  -->
-          <el-checkbox v-model="hot" label="">热门</el-checkbox>
-          <el-checkbox label="">免签</el-checkbox>
-          <el-checkbox label="">购物</el-checkbox>
-        </el-checkbox-group>
-      </div>
+  
       <div class="cl_both"></div>
       <el-table
         :data="checkLabelList"
