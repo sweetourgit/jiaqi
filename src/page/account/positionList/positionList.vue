@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="big">
-        <!-- 工具条 -->
+        <!-- 工具条 --> 
         <el-row>
             <el-button type="primary" class="addButton" @click="addPosition = true">添加职位</el-button>
         </el-row>
