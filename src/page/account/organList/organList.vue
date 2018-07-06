@@ -637,7 +637,7 @@ methods: {
                   }]
                 })
 
-                _this.options1[i].cities.push(1,2)
+                _this.options1[i].cities.push(1,2) 
                 //console.log(response.data.objects[i]);
                 //response.data.objects[i]
 
