@@ -93,6 +93,8 @@
                           </el-option>
                         </el-select>
                        </el-form-item>
+
+
                          <input type="hidden" v-model="hidval" value="hidval"/>
                      </el-form>
                         <div slot="footer" class="dialog-footer">

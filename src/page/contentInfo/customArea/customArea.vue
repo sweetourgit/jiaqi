@@ -54,10 +54,11 @@
           </el-table>
       </div>
       <div class="block">
-        <el-pagination
-          @size-change="handleSizeChange"
+         <!--   @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage4"
+          :current-page="currentPage4" -->
+        <el-pagination
+         
           :page-sizes="[100, 200, 300, 400]"
           :page-size="100"
           layout="total, sizes, prev, pager, next, jumper"
@@ -167,6 +168,9 @@
           <el-form-item label="分组：" :label-width="formLabelWidth" class="boom">
             <span class="zoon">直辖市</span>
           </el-form-item>
+          <el-form-item label="选择城市：" :label-width="formLabelWidth" class="boom" prop="cityName">
+            <el-cascader placeholder="请选择" :options="options" filterable change-on-select class="cascader" v-model="addCitys.cityName"></el-cascader>
+          </el-form-item>
           <el-form-item label="排序：" :label-width="formLabelWidth" class="boom" prop="cityRank">
             <el-input v-model="editCitys.cityRank" auto-complete="off"></el-input>
           </el-form-item>
@@ -243,6 +247,34 @@ export default {
         cityName: '瑞典',
         cityRank: '05'
       }],
+      // 城市级联数据
+      options: [{
+        value: 'zhongguo',
+        label: '中国',
+        children: [{
+          value: 'henansheng',
+          label: '河南省',
+          children: [{
+            value: 'shijiazhuangshi',
+            label: '石家庄市',
+          },{
+            value: 'tangshan',
+            label: '唐山',
+          },{
+            value: 'qinhuangdao',
+            label: '秦皇岛',
+          },{
+            value: 'handan',
+            label: '邯郸',
+          }]
+        },{
+          value: 'jilinsheng',
+          label: '吉林省',
+        }]
+      },{
+        value: 'riben',
+        label: '日本',
+      }],
       // 添加分类
       addClassification: false,
       form: {
@@ -302,6 +334,9 @@ export default {
         ],
         cityRank: [
           { required: true, message: '排序不能为空', trigger: 'blur'},
+        ],
+        cityName: [
+          { required: true, message: '城市必选', trigger: 'blur'},
         ]
       },
     }
@@ -450,6 +485,9 @@ export default {
   position:relative;
   right:100px;
   width: 550px;
+}
+.cascader{
+  margin-right:45px;
 }
 </style>
 
