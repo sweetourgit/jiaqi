@@ -563,7 +563,6 @@
         let str = num.substring(num.indexOf(",") + 1,num.length);
         let str1 = str.indexOf(",") !== -1 ?str.substring(str.indexOf(",") + 1,str.length) :num.substring(num.indexOf(",") + 1,num.length);
         this.geography = str1
-        console.log(this.geography)
         if(this.geography !== 'search'){
           this.search = 'search1'
         }
