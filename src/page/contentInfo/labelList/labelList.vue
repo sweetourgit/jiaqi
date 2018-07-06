@@ -534,7 +534,7 @@
 	.icon_01{position: absolute; top:-5px; right:-60px; width:60px; color: #c2c2c2;}
 
 	.add{width: 450px; height: 250px;margin: auto;position: fixed; top:50%; left:50%; margin-top:-125px; margin-left:-225px; background: #fff; overflow: hidden; border:1px solid #eeeeee; border-radius: 3px;}
-	.label{ background: #f6f6f6; border-bottom: 1px solid #eee;height: 40px; line-height: 40px;}
+	.label{ background: #f6f6f6; border-bottom: 1px solid #eee;height: 40px; line-height: 40px; width: 450px;}
 	.left{ float: left; margin: 0 0 0 10px; }
 	.right{float: right; margin: 0 10px 0 0;font-size: 20pt;cursor:pointer; }
 	.content{ width: 310px; overflow: hidden;margin-left:auto;margin-right:auto;}
