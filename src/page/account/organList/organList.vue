@@ -58,7 +58,7 @@
                 </el-form-item>
                 </el-form>
                 <span class="cascaderTitle">上级部门</span>
-                <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader>
+                <el-cascader @active-item-change="department" :props="props" :options="options" filterable :change-on-select="false" class="cascader"></el-cascader>
             </div>
             <div slot="footer">
                 <el-button @click="editDepartment = false">取 消</el-button>
@@ -176,6 +176,7 @@
         updataLabelWidth: '90px',
         // 级联选择器
         options: [],
+        options1: [],
         // 添加子部门
         addSubdivision: false,
         addInput: {
@@ -272,8 +273,9 @@
         treeKey: [],
         Parents: [],
         key: -1,
+        flag: true, // 调用数组第一个
         props: {
-          value: 'id',
+          value: 'value',
           children: 'cities',
         },
         props1: {
@@ -488,11 +490,31 @@ methods: {
         }).then((response) =>{
             for(let i=0;i<response.data.objects.length;i++){
               if (node.level === 0) {
+                _this.data.push({
+                  label: response.data.objects[i].orgName,
+                  key: i,
+                  id: response.data.objects[i].id,
+                  isLeaf: response.data.objects[i].isLeaf,
+                  cities: [],
+                  value: [{
+                    label: response.data.objects[i].orgName,
+                    key: i,
+                    id: response.data.objects[i].id,
+                    isLeaf: response.data.objects[i].isLeaf,
+                  }]
+                })
                 resolve([{
                   label: response.data.objects[i].orgName,
                   key: i,
                   id: response.data.objects[i].id,
-                  isLeaf: response.data.objects[i].isLeaf
+                  isLeaf: response.data.objects[i].isLeaf,
+                  cities: [],
+                  value: [{
+                    label: response.data.objects[i].orgName,
+                    key: i,
+                    id: response.data.objects[i].id,
+                    isLeaf: response.data.objects[i].isLeaf,
+                  }]
                 }])
               }
             }
@@ -503,7 +525,11 @@ methods: {
                 key:0,
                 label:response.data.objects[0].orgName
             })
-            _this.treeClick(num[0])
+            if(this.flag){
+                _this.treeClick(num[0])
+                this.flag = false;
+            }
+
           }).catch(function(error){
             console.log(error);
           });
@@ -566,6 +592,7 @@ methods: {
         }
         let _this = this
       },
+      // 编辑部门
       editDepartment1(){
         this.editDepartment = true
         this.options = this.data
@@ -575,26 +602,99 @@ methods: {
         this.addPersonnel1()
       },
       // 编辑部门
-      department(a, b) {
-        this.keyID = []
+      department(a) {
+        console.log(a)
+        this.options1 = [];
+        // let num = String(a);
+        // let c = ',';
+        // let str = num.substring(num.indexOf(",") + 1,num.length);
+        // let str1 = str.indexOf(",") !== -1 ?str.substring(str.indexOf(",") + 1,str.length) :num.substring(num.indexOf(",") + 1,num.length);
+        // var regex = new RegExp(c, 'g');
+        // var result = num.match(regex);
+        // var count = !result ? 0 : result.length;
+        // this.keyID = []
         let _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
             "Object": {
-                "ParentID" : a[0]
+                "ParentID" : a[a.length - 1][0].id
             }
         }).then((response) => {
-          for(let i=0;i<_this.options.length;i++){
-            _this.keyID.push(_this.options[i].id)
-            if(_this.keyID.indexOf(a[0]) !== -1){
-              for(let k=0;k<response.data.objects.length;k++){
-                _this.options[_this.keyID.indexOf(a[0])].cities = [{
-                  label: response.data.objects[k].orgName,
-                  id: response.data.objects[k].id,
-                  key: k,
-                }]
-              }
+                console.log(response);
+                //console.log(response.data.objects.length+'循环长度')
+
+            for(let i=0;i<response.data.objects.length;i++){
+
+                _this.options1.push({
+                    label: response.data.objects[i].orgName,
+                    id: response.data.objects[i].id,
+                    key: i,
+                    cities:[],
+                    value: [{
+                        label: response.data.objects[i].orgName,
+                        key: i,
+                        id: response.data.objects[i].id,
+                        isLeaf: response.data.objects[i].isLeaf,
+                  }]
+                })
+
+                _this.options1[i].cities.push(1,2)
+                //console.log(response.data.objects[i]);
+                //response.data.objects[i]
+
             }
-          }
+
+            //console.log(_this.options1[0].cities)    
+           /* for(let i=0;i<response.data.objects.length;i++){
+
+               for(let j=0;j<_this.options1[i].cities.length;j++){
+                        alert(0)
+                        //console.log(response.data.objects[i])
+                       //_this.options1[i].cities[j].push(response.data.objects[i]);
+                        //console.log(_this.options1[i].cities[j])    
+                }
+
+             }*/
+
+
+            // _this.data[0].cities = false
+
+           /* if(_this.options1 == ''){
+
+            }
+            if(a.length == 1){
+                _this.options[a[0][0].key].cities = _this.options1;
+                if(_this.options1 == ''){
+
+                }
+            } else if(a.length == 2){
+                _this.options[a[0][0].key].cities[a[1][0].key].cities = _this.options1;
+            } else if(a.length == 3){
+                _this.options[a[0][0].key].cities[a[1][0].key].cities[a[2][0].key].cities = _this.options1;
+            }*/
+            // if(a.length == 1){
+            //     _this.options[a[0][0].key].cities = _this.options1
+            //     console.log(_this.options)
+
+            // } else if(a.length == 2){
+            //     console.log( _this.options[a[0][0].key].cities[a[1][0].key])
+            //     _this.options[a[0][0].key].cities[a[1][0].key].cities = _this.options1
+            // }
+
+        //   for(let i=0;i<_this.options.length;i++){
+        //     _this.keyID.push(_this.options[i].id)
+        // }
+        //     if(_this.keyID.indexOf(a[0]) !== -1){
+        //               for(let k=0;k<response.data.objects.length;k++){
+        //                 _this.options[_this.keyID.indexOf(a[0])].cities.push({
+        //                     label: response.data.objects[k].orgName,
+        //                     id: response.data.objects[k].id,
+        //                     key: k,
+        //                     cities:[]
+        //                 })
+        //               }
+        //     }
+           
+          
         }).catch((error) => {
           console.log(error)
         })
