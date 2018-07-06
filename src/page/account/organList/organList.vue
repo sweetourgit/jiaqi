@@ -858,7 +858,7 @@ methods: {
 }
 .btn-boom{
   position: absolute;
-  width: 100%;
+  width: 100%; 
   height: 8%;
   top: 62.8%;
 }
