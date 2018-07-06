@@ -29,7 +29,7 @@
                       <span class="icon">
                         <i class="el-icon-edit" @click="editGrouping = true"></i>
                         <i class="el-icon-remove" @click="removeGrouping"></i>
-                        <i class="el-icon-circle-plus"></i>
+                        <i class="el-icon-circle-plus" @click="addCity = true"></i>
                       </span>
                     </div>
                   </template>
@@ -45,7 +45,7 @@
                       <span class="icon">
                         <i class="el-icon-edit" @click="editCity = true"></i>
                         <i class="el-icon-remove" @click="removeCity"></i>
-                      </span> 
+                      </span>
                     </div>
                   </template>
               </el-table-column>
@@ -158,6 +158,24 @@
           <el-button type="primary" @click="editCity = false">确 定</el-button>
         </div>
       </el-dialog>
+      <!-- 添加城市 -->
+      <el-dialog title="添加城市" custom-class="city_list" :visible.sync="addCity" style="width:1000px;" class="Popup">
+        <el-form :model="addCitys" :rules="rules">
+          <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
+            <span class="zoon">国内</span>
+          </el-form-item>
+          <el-form-item label="分组：" :label-width="formLabelWidth" class="boom">
+            <span class="zoon">直辖市</span>
+          </el-form-item>
+          <el-form-item label="排序：" :label-width="formLabelWidth" class="boom" prop="cityRank">
+            <el-input v-model="editCitys.cityRank" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="classification-footer">
+          <el-button @click="addCity = false">取 消</el-button>
+          <el-button type="primary" @click="addCity = false">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -255,6 +273,11 @@ export default {
       editCity: false,
       editCitys: {
         cityRank: '01'
+      },
+      // 添加城市
+      addCity: false,
+      addCitys: {
+        cityRank: ''
       },
       formLabelWidth: '200px',
       //表格内边距
