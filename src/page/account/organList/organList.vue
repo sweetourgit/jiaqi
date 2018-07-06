@@ -866,7 +866,7 @@ methods: {
     position: absolute;
     left: 4%;
     top: 73.5%;
-    width: 88%;
+    width: 88%; 
     height: 25%;
 }
 .cascader{
