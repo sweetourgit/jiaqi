@@ -114,7 +114,7 @@
           <div class="blue-box"></div>
           <div class="album-text">相册信息</div>
         </div>
-        <div class="album-name">大帅府</div>
+        <div class="album-name">{{marterialist[0].title}}</div>
         <div class="album-form">
             <el-form :model="albumForm"  ref="albumForm" label-width="100px" >
               <el-form-item label="类型 :">
@@ -232,7 +232,7 @@
         <div class="label-name">
           <div style="float:left;line-height:40px">标签:</div>
            <el-input   v-model="labelAdd"  placeholder="请输入6个字符之内的标签" style="width:220px;"></el-input>
-           <el-button @click="NewLabel(list.key)" type="primary" icon="el-icon-plus" style="float:right;margin: auto 0;">添加</el-button>
+           <el-button size="mini" @click="NewLabel(list.key)" type="primary" icon="el-icon-plus" style="float:right;margin-top:6px">添加</el-button>
         </div>
         <div class="select-label">
           <el-checkbox  class="label-check" :label="item.title" :v-model="item.checked" v-for="item in list.LabelIn" :key="item.key"></el-checkbox>        
@@ -544,6 +544,7 @@
         // 添加标签
         addLabel : false,
         haha:'',
+        aa:'',
         // 标签
         labelAdd:'',
         materialRules: '',
@@ -685,6 +686,7 @@
           this.addAlbumImg = true;
           this.num = this.marterialist[i].smallImg;
           this.select(this.marterialist[i].smallImg[0].name,this.marterialist[i].smallImg[0].imgs); 
+          this.bb = i;
           },
     // 添加标签
     NewLabel(i){
@@ -1000,8 +1002,8 @@
   float:left;
   text-align:left;
   margin-bottom:5px;
-  /* margin-right:5px; */
-  width:25%;
+  margin-right:25px;
+  /* width:25%; */
 }
 .el-checkbox+.el-checkbox {
     margin-left: 0px;
