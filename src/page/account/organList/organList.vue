@@ -50,21 +50,48 @@
           </el-table>
         </div>
         <!-- 编辑部门弹框 -->
-        <el-dialog class="Popup" :visible.sync="editDepartment" style="width:800px;">
-            <div class="boom">
-                <el-form :model="updata">
-                <el-form-item label="部门名称" :label-width="updataLabelWidth">
-                    <el-input v-model="updata.departmentName" auto-complete="off"></el-input>
-                </el-form-item>
-                </el-form>
-                <span class="cascaderTitle">上级部门</span>
-                <el-cascader @active-item-change="department" :props="props" :options="options" filterable :change-on-select="false" class="cascader"></el-cascader>
-            </div>
-            <div slot="footer">
-                <el-button @click="editDepartment = false">取 消</el-button>
-                <el-button type="primary" @click="editSave = false">保存</el-button>
-                <el-button type="danger" @click="remove = false">删除</el-button>
-            </div>
+        <el-dialog class="updataPopup" :visible.sync="editDepartment">
+          <div class="boom">
+            <el-form :model="updata" :rules="rules">
+              <el-form-item label="部门名称" :label-width="updataLabelWidth">
+                <el-input v-model="updata.departmentName" auto-complete="off"></el-input>
+              </el-form-item>
+              <span class="cascaderTitle">上级部门</span>
+              <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader>
+              <el-form-item label="虚拟部门" class="eidt-virtual" prop="radio">
+                <el-radio-group class="virtualDepartment" v-model="updata.radio">
+                  <el-radio label="是" value="1"></el-radio>
+                  <el-radio label="否" value="2"></el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="末级部门" class="updata-virtual" prop="lastStage">
+                <el-radio-group class="virtualDepartment" v-model="updata.lastStage">
+                 <el-radio label="1" value="1">是</el-radio>
+                 <el-radio label="2" value="2">否</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="部门编码" :label-width="Width" prop="departmentCode">
+                <el-input v-model="updata.departmentCode" auto-complete="off" class="F"></el-input>
+              </el-form-item>
+              <el-form-item label="排序" :label-width="Width" prop="sort">
+                <el-input v-model="updata.sort" auto-complete="off" class="add-department"></el-input>
+              </el-form-item>
+              <el-form-item label="电话" :label-width="Width" prop="phone">
+               <el-input v-model="updata.phone" auto-complete="off" class="add-department"></el-input>
+              </el-form-item>
+              <el-form-item label="传真" :label-width="Width" prop="fax">
+               <el-input v-model="updata.fax" auto-complete="off" class="add-department"></el-input>
+              </el-form-item>
+              <el-form-item label="备注" :label-width="Width" prop="note">
+                <el-input style="resize:none" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" v-model="updata.note" class="add-department"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div slot="footer" class="operation">
+          <el-button class="btn_foot" @click="editDepartment = false">取 消</el-button>
+          <el-button class="btn_foot" type="primary" @click="editSave = false">保存</el-button>
+          <el-button class="btn_foot" type="danger" @click="remove = false">删除</el-button>
+          </div>
         </el-dialog>
         <!-- 添加子部门弹框 -->
         <el-dialog class="Popup" :visible.sync="addSubdivision" style="width:900px;">
@@ -855,7 +882,6 @@ methods: {
     position: relative;
     right: 20px;
     margin-top: -10px;
-    margin-bottom: 200px;
 }
 .searchInput{
     position: absolute;
@@ -1007,5 +1033,25 @@ methods: {
 .yy{
   position: relative;
   top: -5px
+}
+.eidt-virtual{
+margin-top:25px;
+margin-left: 21.5px;
+}
+.updata-virtual{
+position: relative;
+bottom: 5px;
+margin-left: 21.5px;
+}
+.operation{
+overflow: hidden;
+}
+.operation .btn_foot{
+float: left;
+margin-left: 33px
+}
+.updataPopup{
+margin: 0 auto;
+width: 800px;
 }
 </style>
