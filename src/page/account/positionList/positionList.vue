@@ -261,7 +261,7 @@
 }
 .page-count{
     position: absolute;
-    margin-left: -128%;
+    margin-left: -128%; 
     top: 8%;
     font-size: 18px;
 }
