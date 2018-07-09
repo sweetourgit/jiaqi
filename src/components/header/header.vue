@@ -2,7 +2,7 @@
         <div class="header">
           <div class="log">
            <!-- <div class="el-icon-star-on"></div> -->
-            <div class="left">嘉琪管理后台</div>
+            <div class="left">嘉麒管理后台</div>
           </div>
           <div class="right">
            	<div class="icon el-icon-bell"></div>
