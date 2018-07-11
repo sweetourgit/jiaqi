@@ -10,18 +10,18 @@
       </el-form-item>
       <el-form-item label="性别:" prop="sex">
         <el-radio-group class="sex" v-model="form.sex">
-          <el-radio label="男"></el-radio>
-          <el-radio label="女"></el-radio>
+          <el-radio label="1" value="1">男</el-radio>
+          <el-radio label="2" value="2">女</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="状态:">
-        <el-select class="dropdown" v-model="form.state" placeholder="请选择状态" :disabled="true">
+        <el-select class="dropdown" v-model="form.userState" placeholder="请选择状态" :disabled="true">
           <el-option label="启用" value="1"></el-option>
           <el-option label="停用" value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="手机号:" prop="phone">
-        <el-input class="input-phone" v-model="form.phone" :disabled="true"></el-input>
+      <el-form-item label="手机号:" prop="mobile">
+        <el-input class="input-phone" v-model="form.mobile" :disabled="true"></el-input>
         <img class="modify" src="@/assets/image/u3201.png" alt="" width="24" @click="dialogFormVisible = true">
       </el-form-item>
        <!-- 手机修改弹窗 -->
@@ -46,8 +46,8 @@
         </div>
       </el-dialog>
       <!-- 手机修改弹窗END -->
-      <el-form-item label="邮箱:" prop="emial">
-        <el-input class="input-phone" v-model="form.emial" :disabled="true"></el-input>
+      <el-form-item label="邮箱:" prop="email">
+        <el-input class="input-phone" v-model="form.email" :disabled="true"></el-input>
         <img class="modify" src="@/assets/image/u3201.png" alt="" width="24" @click="dialogEmial = true">
       </el-form-item>
       <!-- 邮箱修改弹窗 -->
@@ -92,6 +92,20 @@
 
 <script>
 export default {
+  created (){
+    this.$http.post(this.GLOBAL.serverSrc+'/client/org/userget',{
+      "object":{
+        "id": 94,
+      }
+    })
+    .then((res) => {
+      this.form = res.data.objects[0]
+      this.form.sex = String(this.form.sex)
+    })
+    .catch((err) => {
+      consoel.log(err);
+    })
+  },
   data () {
     // var rulessex = (rule, value, callback) => {
     //   if(this.form.sex !== ""){
@@ -103,13 +117,13 @@ export default {
       return {
         // 账户信息
         form: {
-          id: "007",
-          name: "嘟嘟",
+          id: "",
+          name: "",
           sex: "",
-          state: "1",
-          phone: "13704327780",
-          emial: "alert@sina.cn",
-          department: "1"
+          state: "",
+          phone: "",
+          email: "",
+          department:''
         },
         // 手机弹窗信息
         phone1: {
@@ -172,8 +186,34 @@ export default {
       submitForm(formName) {
         this.$refs[formName].validate(valid => {
           if (valid) {  
-            this.$message.success('验证成功！') 
-            if(formName == 'phone1'){
+            this.$message.success('修改成功！') 
+            if(formName == 'form'){
+              console.log(this.form)
+              this.$http.post(this.GLOBAL.serverSrc + "/client/org/usersave",{
+                 "Object": {
+                    "id": this.form.id,
+                    "createTime": "2018-06-20T09:35:52.822Z",
+                    "isDeleted": 0,
+                    "code": "string",
+                    "passWord": "a12345",
+                    "mobile":this.form.mobile,
+                    "name": this.form.name,
+                    "email": this.form.email,
+                    "userCode": this.form.userCode,
+                    "iDcard": this.form.iDcard,
+                    "tourGuide": this.form.tourGuide,
+                    "sex": this.form.sex,
+                    "userType": this.form.userType
+                  },
+                  "id": 0
+              })
+              .then((res) => {
+                console.log(res)
+              })
+              .catch((err) => {
+                console.log(err)
+              })
+            }else if(formName == 'phone1'){
               this.dialogFormVisible = false   
               this.show = true
               this.$refs['phone1'].resetFields()
