@@ -12,7 +12,7 @@
           <div class="right-btn">
             <div class="btn-top">
               <el-button plain class="editDepartment" @click="editDepartment1">编辑</el-button>
-              <el-button type="primary" class="addSubdivision" @click="addSubdivision1">+ &nbsp;子部门</el-button>
+              <el-button type="primary" class="addSubdivision" @click="addSubdivisionOpen">+ &nbsp;子部门</el-button>
             </div>
             <!-- <span class="inheritanceRules">默认限制向上继承</span>
             <el-switch v-model="switchs" active-color="#13ce66" inactive-color="#ff4949" class="switch"></el-switch> -->
@@ -649,7 +649,7 @@ methods: {
             console.log(error);
           });
       },
-      addSubdivision1(){
+      addSubdivisionOpen(){
         if(this.addInput.ParentID == ''){
             this.$message.warning('请先选择父级部门！')
         } else {
