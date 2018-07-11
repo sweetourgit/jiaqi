@@ -349,7 +349,7 @@ export default {
   padding-right: 20px;
 }
 .sex{
-  /*margin-right: 110px !important; */
+  /*margin-right: 110px !important;*/
   float: left;
   margin-top: 11px;
   margin-left: 1%;

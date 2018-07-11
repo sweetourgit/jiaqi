@@ -84,7 +84,7 @@ export default {
                   this.$refs['form'].resetFields()
                 })
                 .catch((err) => {
-                  console.log(err)
+                  console.log(err);
                 })
               } else {
                 this.$message.error('密码输入不正确')
