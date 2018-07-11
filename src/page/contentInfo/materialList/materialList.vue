@@ -1,12 +1,19 @@
 <template>
 <div>
     <div class="big">
-        <div class="top">
-            <!-- <el-button class="add-button" type="primary"  >添加相册</el-button> -->
-            <el-button type="primary" class="add-button" @click="addAlbum = true">添加相册</el-button>
-            <el-input  class="address-input" v-model="haha"  placeholder="目的地/名称"></el-input>
-            <el-button class="top-button" type="primary" icon="el-icon-search"></el-button>
+          <div class="header">
+        <div class="header_add">
+          <el-button type="primary" @click="addhotel">添加酒店</el-button>
         </div>
+        <div class="header_seach">
+          <div class="search-input">
+            <el-input v-model="search_text" placeholder="请输入目的地名称"  clearable></el-input>
+          </div>
+          <div class="search-button">
+            <el-button  size="medium" type="primary" icon="el-icon-search" ></el-button>
+          </div>
+        </div>
+    </div>
      
         <div class="left-tree">
            
@@ -705,10 +712,29 @@
 .classa{
   border: 3px solid #0FB99A;
 }
+ .header{
+    height: 50px;
+  }
+  .header_add{
+    float: left;
+  }
+  .header_seach{
+    float: right;
+    margin-left: 100px;
+  }
+  .search-input{
+    width: 353px;
+    float: left;
+  }
+  .search-button{
+    float: left;
+    margin-left: 20px
+  }
 .big{
     /* position: relative; */
-    width:1600px;
-    height:1200px;
+   width: 100%;
+    padding-bottom: 40px;
+    overflow: auto;
     /* max-height:80%; */
     /* border:1px solid green; */
 }
@@ -722,13 +748,15 @@
     /* border: 1px solid red; */
 }
 .address-input{
-    position:relative !important;
+    float: left;
+  
+    /* position:relative !important; */
     /* float: right; */
     width:350px !important;
     left:32%;
 }
 .top-button{
-    float:right;
+    float: left;
     /* margin-top:2px; */
     /* height:35px; */
     /* text-align: center; */
@@ -736,20 +764,24 @@
 }
 .left-tree{
     /* position: relative; */
-    float:left;
-    margin-top:20px;
-    /* margin-right:20px; */
-    width:305px;
-    height:1055px;
-    border:1px solid #ccc; 
+   float: left;
+      margin-top: 10px;
+      width: 305px;
+      height: 1000px;
+      border:1px solid #fff;
+      box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;
+      margin-top:1.2%;
+      margin-left: 5px;
 }
 .address-big{
     /* position: relative; */
-    float: right;
-     margin-top:-1060px;
-     margin-left:350px;
-    width:1215px;
-    height:1010px;
+    /* float: right; */
+     /* margin-top:-1060px;
+     margin-left:350px; */
+     margin-top: 15px;
+    float: left;
+    width: 1215px;
+    margin-left:96px;
     /* border:1px solid pink; */
 }
 .address-img{
@@ -761,7 +793,7 @@
     /* margin-bottom:500px; */
     /* margin-top:20px; */
     /* margin-right:20px; */
-    margin-left:20px;
+    margin-left:22px;
     
     margin-bottom:20px;
     width:585px;
@@ -805,11 +837,9 @@
     font-size:20 px;
 }
 .page{
-    width:730px;
-    height:32px;
-    /* border:1px solid rebeccapurple; */
-    margin-top:1050px;
-    margin-left:920px;
+  float: right;
+    margin-right: 68px;
+    margin-top: 10px;
 }
 .add-album{
   margin:0 auto;
