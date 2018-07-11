@@ -98,13 +98,11 @@ export default {
       "object":{
         "id": 94,
       }
-    })
-    .then((res) => {
+    }).then((res) => {
       this.form = res.data.objects[0]
       this.form.sex = String(this.form.sex)
       this.form.userState = String(this.form.userState)
-    })
-    .catch((err) => {
+    }).catch((err) => {
       consoel.log(err);
     })
   },
@@ -208,11 +206,9 @@ export default {
                     "userType": this.form.userType
                   },
                   "id": 0
-              })
-              .then((res) => {
+              }).then((res) => {
                 console.log(res)
-              })
-              .catch((err) => {
+              }).catch((err) => {
                 console.log(err)
               })
             }else if(formName == 'phone1'){
