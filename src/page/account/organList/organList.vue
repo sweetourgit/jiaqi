@@ -50,21 +50,48 @@
           </el-table>
         </div>
         <!-- 编辑部门弹框 -->
-        <el-dialog class="Popup" :visible.sync="editDepartment" style="width:800px;">
-            <div class="boom">
-                <el-form :model="updata">
-                <el-form-item label="部门名称" :label-width="updataLabelWidth">
-                    <el-input v-model="updata.departmentName" auto-complete="off"></el-input>
-                </el-form-item>
-                </el-form>
-                <span class="cascaderTitle">上级部门</span>
-                <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader>
-            </div>
-            <div slot="footer">
-                <el-button @click="editDepartment = false">取 消</el-button>
-                <el-button type="primary" @click="editSave = false">保存</el-button>
-                <el-button type="danger" @click="remove = false">删除</el-button>
-            </div>
+        <el-dialog class="updataPopup" :visible.sync="editDepartment">
+          <div class="boom">
+            <el-form :model="updata" :rules="rules">
+              <el-form-item label="部门名称" :label-width="updataLabelWidth">
+                <el-input v-model="updata.departmentName" auto-complete="off"></el-input>
+              </el-form-item>
+              <span class="cascaderTitle">上级部门</span>
+              <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader>
+              <el-form-item label="虚拟部门" class="eidt-virtual" prop="radio">
+                <el-radio-group class="virtualDepartment" v-model="updata.radio">
+                  <el-radio label="是" value="1"></el-radio>
+                  <el-radio label="否" value="2"></el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="末级部门" class="updata-virtual" prop="lastStage">
+                <el-radio-group class="virtualDepartment" v-model="updata.lastStage">
+                 <el-radio label="1" value="1">是</el-radio>
+                 <el-radio label="2" value="2">否</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="部门编码" :label-width="Width" prop="departmentCode">
+                <el-input v-model="updata.departmentCode" auto-complete="off" class="F"></el-input>
+              </el-form-item>
+              <el-form-item label="排序" :label-width="Width" prop="sort">
+                <el-input v-model="updata.sort" auto-complete="off" class="add-department"></el-input>
+              </el-form-item>
+              <el-form-item label="电话" :label-width="Width" prop="phone">
+               <el-input v-model="updata.phone" auto-complete="off" class="add-department"></el-input>
+              </el-form-item>
+              <el-form-item label="传真" :label-width="Width" prop="fax">
+               <el-input v-model="updata.fax" auto-complete="off" class="add-department"></el-input>
+              </el-form-item>
+              <el-form-item label="备注" :label-width="Width" prop="note">
+                <el-input style="resize:none" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" v-model="updata.note" class="add-department"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div slot="footer" class="operation">
+          <el-button class="btn_foot" @click="editDepartment = false">取 消</el-button>
+          <el-button class="btn_foot" type="primary" @click="editSave = false">保存</el-button>
+          <el-button class="btn_foot" type="danger" @click="remove = false">删除</el-button>
+          </div>
         </el-dialog>
         <!-- 添加子部门弹框 -->
         <el-dialog class="Popup" :visible.sync="addSubdivision" style="width:900px;">
@@ -176,6 +203,7 @@
         updataLabelWidth: '90px',
         // 级联选择器
         options: [],
+        options1: [],
         // 添加子部门
         addSubdivision: false,
         addInput: {
@@ -272,8 +300,9 @@
         treeKey: [],
         Parents: [],
         key: -1,
+        flag: true, // 调用数组第一个
         props: {
-          value: 'id',
+          value: 'value',
           children: 'cities',
         },
         props1: {
@@ -488,11 +517,31 @@ methods: {
         }).then((response) =>{
             for(let i=0;i<response.data.objects.length;i++){
               if (node.level === 0) {
+                _this.data.push({
+                  label: response.data.objects[i].orgName,
+                  key: i,
+                  id: response.data.objects[i].id,
+                  isLeaf: response.data.objects[i].isLeaf,
+                  cities: [],
+                  value: [{
+                    label: response.data.objects[i].orgName,
+                    key: i,
+                    id: response.data.objects[i].id,
+                    isLeaf: response.data.objects[i].isLeaf,
+                  }]
+                })
                 resolve([{
                   label: response.data.objects[i].orgName,
                   key: i,
                   id: response.data.objects[i].id,
-                  isLeaf: response.data.objects[i].isLeaf
+                  isLeaf: response.data.objects[i].isLeaf,
+                  cities: [],
+                  value: [{
+                    label: response.data.objects[i].orgName,
+                    key: i,
+                    id: response.data.objects[i].id,
+                    isLeaf: response.data.objects[i].isLeaf,
+                  }]
                 }])
               }
             }
@@ -503,7 +552,11 @@ methods: {
                 key:0,
                 label:response.data.objects[0].orgName
             })
-            _this.treeClick(num[0])
+            if(this.flag){
+                _this.treeClick(num[0])
+                this.flag = false;
+            }
+
           }).catch(function(error){
             console.log(error);
           });
@@ -566,6 +619,7 @@ methods: {
         }
         let _this = this
       },
+      // 编辑部门
       editDepartment1(){
         this.editDepartment = true
         this.options = this.data
@@ -575,26 +629,99 @@ methods: {
         this.addPersonnel1()
       },
       // 编辑部门
-      department(a, b) {
-        this.keyID = []
+      department(a) {
+        console.log(a)
+        this.options1 = [];
+        // let num = String(a);
+        // let c = ',';
+        // let str = num.substring(num.indexOf(",") + 1,num.length);
+        // let str1 = str.indexOf(",") !== -1 ?str.substring(str.indexOf(",") + 1,str.length) :num.substring(num.indexOf(",") + 1,num.length);
+        // var regex = new RegExp(c, 'g');
+        // var result = num.match(regex);
+        // var count = !result ? 0 : result.length;
+        // this.keyID = []
         let _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
             "Object": {
-                "ParentID" : a[0]
+                "ParentID" : a[a.length - 1][0].id
             }
         }).then((response) => {
-          for(let i=0;i<_this.options.length;i++){
-            _this.keyID.push(_this.options[i].id)
-            if(_this.keyID.indexOf(a[0]) !== -1){
-              for(let k=0;k<response.data.objects.length;k++){
-                _this.options[_this.keyID.indexOf(a[0])].cities = [{
-                  label: response.data.objects[k].orgName,
-                  id: response.data.objects[k].id,
-                  key: k,
-                }]
-              }
+                console.log(response);
+                //console.log(response.data.objects.length+'循环长度')
+
+            for(let i=0;i<response.data.objects.length;i++){
+
+                _this.options1.push({
+                    label: response.data.objects[i].orgName,
+                    id: response.data.objects[i].id,
+                    key: i,
+                    cities:[],
+                    value: [{
+                        label: response.data.objects[i].orgName,
+                        key: i,
+                        id: response.data.objects[i].id,
+                        isLeaf: response.data.objects[i].isLeaf,
+                  }]
+                })
+
+                _this.options1[i].cities.push(1,2) 
+                //console.log(response.data.objects[i]);
+                //response.data.objects[i]
+
             }
-          }
+
+            //console.log(_this.options1[0].cities)    
+           /* for(let i=0;i<response.data.objects.length;i++){
+
+               for(let j=0;j<_this.options1[i].cities.length;j++){
+                        alert(0)
+                        //console.log(response.data.objects[i])
+                       //_this.options1[i].cities[j].push(response.data.objects[i]);
+                        //console.log(_this.options1[i].cities[j])    
+                }
+
+             }*/
+
+
+            // _this.data[0].cities = false
+
+           /* if(_this.options1 == ''){
+
+            }
+            if(a.length == 1){
+                _this.options[a[0][0].key].cities = _this.options1;
+                if(_this.options1 == ''){
+
+                }
+            } else if(a.length == 2){
+                _this.options[a[0][0].key].cities[a[1][0].key].cities = _this.options1;
+            } else if(a.length == 3){
+                _this.options[a[0][0].key].cities[a[1][0].key].cities[a[2][0].key].cities = _this.options1;
+            }*/
+            // if(a.length == 1){
+            //     _this.options[a[0][0].key].cities = _this.options1
+            //     console.log(_this.options)
+
+            // } else if(a.length == 2){
+            //     console.log( _this.options[a[0][0].key].cities[a[1][0].key])
+            //     _this.options[a[0][0].key].cities[a[1][0].key].cities = _this.options1
+            // }
+
+        //   for(let i=0;i<_this.options.length;i++){
+        //     _this.keyID.push(_this.options[i].id)
+        // }
+        //     if(_this.keyID.indexOf(a[0]) !== -1){
+        //               for(let k=0;k<response.data.objects.length;k++){
+        //                 _this.options[_this.keyID.indexOf(a[0])].cities.push({
+        //                     label: response.data.objects[k].orgName,
+        //                     id: response.data.objects[k].id,
+        //                     key: k,
+        //                     cities:[]
+        //                 })
+        //               }
+        //     }
+           
+          
         }).catch((error) => {
           console.log(error)
         })
@@ -731,7 +858,7 @@ methods: {
 }
 .btn-boom{
   position: absolute;
-  width: 100%;
+  width: 100%; 
   height: 8%;
   top: 62.8%;
 }
@@ -739,7 +866,7 @@ methods: {
     position: absolute;
     left: 4%;
     top: 73.5%;
-    width: 88%;
+    width: 88%; 
     height: 25%;
 }
 .cascader{
@@ -755,7 +882,6 @@ methods: {
     position: relative;
     right: 20px;
     margin-top: -10px;
-    margin-bottom: 200px;
 }
 .searchInput{
     position: absolute;
@@ -907,5 +1033,25 @@ methods: {
 .yy{
   position: relative;
   top: -5px
+}
+.eidt-virtual{
+margin-top:25px;
+margin-left: 21.5px;
+}
+.updata-virtual{
+position: relative;
+bottom: 5px;
+margin-left: 21.5px;
+}
+.operation{
+overflow: hidden;
+}
+.operation .btn_foot{
+float: left;
+margin-left: 33px
+}
+.updataPopup{
+margin: 0 auto;
+width: 800px;
 }
 </style>

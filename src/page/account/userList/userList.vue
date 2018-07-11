@@ -454,7 +454,6 @@
      var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/client/org/userpage",
-        // "http://api.dayuntong.com:3009/api/org/userpage",
        {
          "object": {
            "isDeleted": 0,
@@ -496,6 +495,7 @@
         .catch(function (obj) {
           console.log(obj)
         })
+
 
     }
 }

@@ -128,5 +128,6 @@
     mounted () {
       this.drawPic()
     }
+    
   }
 </script>

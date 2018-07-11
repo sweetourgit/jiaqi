@@ -42,16 +42,17 @@
                 <el-button type="primary" @click="editSave('updata')">保存</el-button>
             </div>
         </el-dialog>
+        <div class="page">
+          <el-pagination :page-sizes="[2,4,8]" background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+          </el-pagination>
+        </div>
     </div>
     <!-- 分页 -->
       <!-- <div class="page">
           <span class="page-count">共{{this.tableData.length}}条数据，每页8条</span>
           <el-pagination @current-change="handleCurrentChange" :page-size="this.pagesize" layout="prev, pager, next, jumper" :total="this.tableData.length"></el-pagination>
       </div> -->
-      <div class="page">
-       <el-pagination :page-sizes="[2,4,8]" background @current-change="handleCurrentChange" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-       </el-pagination>
-      </div>
+
   </div>
 
 </template>
@@ -127,7 +128,7 @@
                 this.$message.warning('请填写职位名称！')
             }else{
                 var _this = this
-                this.$http.post(this.GLOBAL.serverSrc+'/api/org/positioninsert',{
+                this.$http.post(this.GLOBAL.serverSrc+'/client/org/positioninsert',{
                     "Object": {
                     "name": this.form.positionName
                  },
@@ -145,7 +146,7 @@
         },
         editSave(updata){
             let _this = this;
-            this.$http.post(this.GLOBAL.serverSrc+'/api/org/positionsave',{
+            this.$http.post(this.GLOBAL.serverSrc+'/client/org/positionsave',{
                 "object": {
                     "id": this.jj.id,
                     "name": this.updata.positionName,
@@ -163,8 +164,8 @@
                 _this.editPosition = false
             }).catch(function(error){
             console.log(error);
-            }); 
-                    
+            });
+
         },
        // 删除
         remove(index, rows) {
@@ -174,7 +175,7 @@
             cancelButtonText: '取消',
             type: 'warning'
             }).then(() => {
-                this.$http.post(this.GLOBAL.serverSrc+'/api/org/positiondelete',{
+                this.$http.post(this.GLOBAL.serverSrc+'/client/org/positiondelete',{
                 "id" : this.tableData[index].id
             })
             .then(function(response){
@@ -210,7 +211,7 @@
         pageList() {
             this.tableData = [];
             let _this = this
-            this.$http.post(this.GLOBAL.serverSrc+'/api/org/positionpage',{
+            this.$http.post(this.GLOBAL.serverSrc+'/client/org/positionpage',{
                 "object": {
                     "isDeleted": 0,
                 },
@@ -218,7 +219,6 @@
                 "pageIndex": _this.currentPage,
                 "id": 0
             }).then(function(response){
-                console.log(response)
                 _this.total = response.data.total
                 for(let i=0;i<response.data.objects.length;i++){
                  if(response.data.objects[i].isDeleted !== 1){
@@ -231,6 +231,10 @@
             }).catch(function(error){
             console.log(error);
             });
+        },
+        handleSizeChange(page){
+            this.pagesize = page;
+            console.log(this.pagesize)
         }
     }
 }
@@ -252,13 +256,12 @@
     left: 2%;
 }
 .page{
-    position: absolute;
     margin-top: 640px;
-    left: 41%;
+    margin-left: 10%;
 }
 .page-count{
     position: absolute;
-    margin-left: -128%;
+    margin-left: -128%; 
     top: 8%;
     font-size: 18px;
 }

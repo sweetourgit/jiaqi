@@ -31,7 +31,7 @@
     <div class="img">
       <div class="img_border" v-for="(item,index) of img" :key=""index>
         <div class="image_size">
-          <img :src="item.imgUrl" style="width: 550px;height: 400px">
+          <img :src="item.imgUrl" class="img_item" >
         </div>
         <div class="hotchi" v-model="item.hotelchina">{{item.hotelchina}}</div>
         <div class="hoteng" v-model="item.hotelenglish">{{item.hotelenglish}}</div>
@@ -113,6 +113,7 @@
                 type="textarea"
                 :rows="13"
                 placeholder="请输入内容"
+                width="50%"
                 class="textarea_size"
               >
               </el-input>
@@ -772,17 +773,18 @@
   .img{
     margin-top: 10px;
     float: left;
-    width: 1157px;
+    width: 66%;
+    /*width: 1157px;*/
   }
   .image_size{
-    height: 400px;
-    background: #8c939d;
+
   }
   .img_border{
     margin-left: 20px;
     margin-bottom: 10px;
-    width: 550px;
-    height: 480px;
+  /*  width: 550px;
+    height: 480px;*/
+    width: 47%;
     float: left;
   }
   .block{
@@ -821,7 +823,7 @@
     width: 300px;
     height: 300px;
     float: left;
-    margin-left: 200px;
+    margin-left: 80px;
   }
   .right_input{
     width: 600px;
@@ -830,18 +832,19 @@
     margin-left: 50px;
   }
   .introduction{
-    width: 1500px;
     height: 400px;
     float: left;
     margin-top: 10px;
+    margin-left: 48px;
   }
   .introduction_area{
-    width: 1329px;
+    width: 700px;
     padding-left: 17px;
   }
 
   .textarea_size{
     width: 500px;
+
   }
   .select{
     width: 202px;
@@ -869,7 +872,7 @@
     margin-left: 75px;
   }
   .image_border{
-    width: 1400px;
+
     float: left;
     margin-left: 25px;
   }
@@ -1012,8 +1015,18 @@
     visibility: hidden;
     height: 0;
   }
+  .img_item{
+    display: block;
+    width: 100%;
+  }
   .clearfix{
     zoom:1;
+  }
+  @media screen and (max-width: 1800px){
+    .right_input{
+      margin-left: 42px;
+      margin-top: 14px;
+    }
   }
 
 

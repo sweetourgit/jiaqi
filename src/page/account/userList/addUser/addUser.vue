@@ -93,6 +93,51 @@
                           </el-option>
                         </el-select>
                        </el-form-item>
+                       <!--plan b begin-->
+                       <el-form-item label="组织:" class="form-la">
+                         <el-select v-model="value" placeholder="请选择" @change="HandChange()">
+                           <el-option
+                             v-for="item in options"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                           </el-option>
+                         </el-select>
+                       </el-form-item>
+
+                       <el-form-item label="部门:" class="form-la">
+                         <el-select v-model="value1" placeholder="请选择"   @change="HandChange1()">
+                           <el-option
+                             v-for="item in options1"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                           </el-option>
+                         </el-select>
+                       </el-form-item>
+
+                       <el-form-item label="部门:" class="form-la" v-if="bumen2">
+                         <el-select v-model="value2" placeholder="请选择"   @change="HandChange2()" >
+                           <el-option
+                             v-for="item in options2"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                           </el-option>
+                         </el-select>
+                       </el-form-item>
+
+                       <el-form-item label="部门:" class="form-la" v-if="bumen1">
+                         <el-select v-model="value3" placeholder="请选择" >
+                           <el-option
+                             v-for="item in options3"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                           </el-option>
+                         </el-select>
+                       </el-form-item>
+                       <!--plan b end-->
 
 
                          <input type="hidden" v-model="hidval" value="hidval"/>
@@ -162,6 +207,19 @@ import Permission from '@/page/account/userList/addUser/permission'
 
 
       return {
+        options: [],
+        value: '',
+        options1: [],
+        value1: '',
+        options2: [],
+        value2: '',
+        options3: [],
+        value3: '',
+        arr: [],
+        arr1: [],
+        arr2: [],
+        bumen2: false,
+        bumen1: false,
         buttonsubmit:false,
         buttonchange:false,
         uid:0,
@@ -435,6 +493,117 @@ import Permission from '@/page/account/userList/addUser/permission'
 
     },
       methods: {
+        HandChange () {
+          this.arr = this.value.split('-')
+          this.options1 = []
+          this.value1 = ''
+          this.value2 = ''
+          this.value3 = ''
+          var that = this
+          // 获取顶级，第一级城市beg
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            {
+              'order': 'string',
+              'object': {
+                'isDeleted': 0,
+                'parentID': this.arr[0]
+              }
+            }
+          )
+            .then(function (obj) {
+              if(obj.data.objects.length ==0){
+                that.bumen2 = false
+                that.bumen1 = false
+              }
+              console.log(obj)
+              var i = ''
+              for (i = 0; i < obj.data.objects.length; i++) {
+                that.options1.push({
+                  label: obj.data.objects[i].orgName,
+                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
+                })
+              }
+            })
+            .catch(function (obj) {
+            })
+        },
+        HandChange1: function () {
+          this.arr1 = this.value1.split('-')
+          this.options2 = []
+          this.value2 = ''
+          this.value3 = ''
+          var that = this
+          // 获取顶级，第一级城市beg
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            {
+              'order': 'string',
+              'object': {
+                'isDeleted': 0,
+                'parentID': this.arr1[0]
+              }
+            }
+          )
+            .then(function (obj) {
+              if(obj.data.objects.length ==0){
+                that.bumen2 = false
+                that.bumen1 = false
+              }
+              if (obj.data.objects.length !== 0) {
+                that.bumen2 = true
+              }
+              // console.log(obj)
+              var i = ''
+              for (i = 0; i < obj.data.objects.length; i++) {
+                that.options2.push({
+                  label: obj.data.objects[i].orgName,
+                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
+                })
+              }
+            })
+            .catch(function (obj) {
+            })
+          // 获取顶级，第一级城市end
+        },
+        HandChange2 () {
+          this.arr2 = this.value2.split('-')
+          this.options3 = []
+          this.value3 = ''
+          console.log(this.arr2[0])
+          var that = this
+          // 获取顶级，第一级城市beg
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            {
+              'order': 'string',
+              'object': {
+                'isDeleted': 0,
+                'parentID': this.arr2[0]
+              }
+            }
+          )
+            .then(function (obj) {
+              if(obj.data.objects.length ==0){
+                that.bumen2 = false
+                that.bumen1 = false
+              }
+              if (obj.data.objects.length !== 0) {
+                that.bumen1 = true
+              }
+              var i = ''
+              for (i = 0; i < obj.data.objects.length; i++) {
+                that.options3.push({
+                  label: obj.data.objects[i].orgName,
+                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
+                })
+              }
+            })
+            .catch(function (obj) {
+            })
+          // 获取顶级，第一级城市end
+        },
+      /*----------*/
         changstatus(item){
           //默认的值
           var id = this.ruleForm1.domains.indexOf(item)
@@ -594,7 +763,7 @@ import Permission from '@/page/account/userList/addUser/permission'
                 ({
                   "Object": {
                     "createTime": "2018-06-20T09:35:52.822Z",
-                    "passWord": "12345",
+                    "passWord": this.ruleForm.phone,
                     "isDeleted": 0,
                     "code": 123,
                     "mobile":this.ruleForm.phone,
@@ -704,6 +873,29 @@ import Permission from '@/page/account/userList/addUser/permission'
       }
     },
     created(){
+      var that = this
+      // 获取顶级，第一级城市beg
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/client/org/deptlist",
+        {
+          'order': 'string',
+          'object': {
+            'isDeleted': 0,
+            'parentID': -1
+          }
+        }
+      )
+        .then(function (obj) {
+          var i = ''
+          for (i = 0; i < obj.data.objects.length; i++) {
+            that.options.push({
+              label: obj.data.objects[i].orgName,
+              value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
+            })
+          }
+        })
+        .catch(function (obj) {
+        })
 
       //console.log(this.$route.query.id)
       if(this.$route.query.id){

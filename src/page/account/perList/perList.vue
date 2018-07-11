@@ -1,6 +1,6 @@
 <template>
   <div class="per-list">
-    <el-button @click="test">添加模块</el-button>
+    <!-- <el-button @click="test">添加模块</el-button> -->
     <table style="width: 100%">
       <thead>
       <tr>
