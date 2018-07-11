@@ -16,6 +16,7 @@
       </el-form-item>
       <el-form-item label="状态:">
         <el-select class="dropdown" v-model="form.userState" placeholder="请选择状态" :disabled="true">
+          <el-option label="待审核" value="0"></el-option>
           <el-option label="启用" value="1"></el-option>
           <el-option label="停用" value="2"></el-option>
         </el-select>
@@ -101,6 +102,7 @@ export default {
     .then((res) => {
       this.form = res.data.objects[0]
       this.form.sex = String(this.form.sex)
+      this.form.userState = String(this.form.userState)
     })
     .catch((err) => {
       consoel.log(err);
