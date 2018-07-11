@@ -58,8 +58,7 @@ export default {
               "object":{
                 "id": 94,
               }
-            })
-            .then((res) => {
+            }).then((res) => {
               if(this.form.passWord === res.data.objects[0].passWord){
                 this.$http.post(this.GLOBAL.serverSrc + "/client/org/usersave",{
                   "Object": {
@@ -78,20 +77,17 @@ export default {
                     "userType": res.data.objects[0].userType
                   },
                   "id": 0
-                })
-                .then((res) => {
+                }).then((res) => {
                   this.$message.success('新密码修改成功！')
                   this.$refs['form'].resetFields()
-                })
-                .catch((err) => {
+                }).catch((err) => {
                   console.log(err);
                 })
               } else {
                 this.$message.error('密码输入不正确')
                 this.$refs['form'].resetFields()
               }
-            })
-            .catch((err) => {
+            }).catch((err) => {
               console.log(err);
             })
             
