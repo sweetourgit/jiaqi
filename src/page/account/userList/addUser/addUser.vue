@@ -763,7 +763,7 @@ import Permission from '@/page/account/userList/addUser/permission'
                 ({
                   "Object": {
                     "createTime": "2018-06-20T09:35:52.822Z",
-                    "passWord": "12345",
+                    "passWord": this.ruleForm.phone,
                     "isDeleted": 0,
                     "code": 123,
                     "mobile":this.ruleForm.phone,
