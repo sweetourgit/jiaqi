@@ -502,7 +502,7 @@ import axios from 'axios'
   left:0px;
   // background:green;
   background-image:url('../../../static/login-img/login.png');
-  background-size: 100% 80%;
+  background-size: 100% 82%;
 
 
 }
