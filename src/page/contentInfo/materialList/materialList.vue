@@ -3,11 +3,11 @@
     <div class="big">
           <div class="header">
         <div class="header_add">
-          <el-button type="primary" @click="addhotel">添加酒店</el-button>
+          <el-button type="primary" @click="addAlbum">添加酒店</el-button>
         </div>
         <div class="header_seach">
           <div class="search-input">
-            <el-input v-model="search_text" placeholder="请输入目的地名称"  clearable></el-input>
+            <el-input v-model="addName" placeholder="请输入目的地名称"  clearable></el-input>
           </div>
           <div class="search-button">
             <el-button  size="medium" type="primary" icon="el-icon-search" ></el-button>
@@ -188,14 +188,14 @@
           </el-upload>
       </div>
       <div class="material-small-box" >
-        <div v-for="img in marterialist" :key="img.name"></div>
-        <div class="material-small-img"  v-for="small in num" 
-            :key="small.name"
+        <div v-for="img in marterialist" :key="img.name" ></div>
+        <div class="material-small-img"  v-for="small in num"  :key="num.name"
+            
            
             @click="select(small.name,small.imgs)" >
            <span  style="position:relative;margin-left:285px;top:20px" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
             
-            <img  :class="{'classa': small.name == classa}" style="width:100%;height:100%;" :src="small.imgs" alt="">
+            <img  :class="{'classa': small.name == classa}" style="width:100%;height:100%;" :src="small.imgs" :key="num.name"  alt="">
           
         </div>   
         
@@ -269,6 +269,7 @@
       return {
         // 选中
         classa:'',
+        addName:'',
         // 相册第一张图片
         addressImg: '', 
         // 分页
@@ -452,7 +453,7 @@
           title:'购物',
              LabelIn:[
           {
-            key:'1',
+            key:'0',
             title:'免税',
             checked:'checked0',
           },{
@@ -558,7 +559,7 @@
         albumRules: '',
         checked:'',
          handleClick(tab, event) {
-        console.log(tab, event);
+        // console.log(tab, event);
       },
         activeName: '',
           form: {
