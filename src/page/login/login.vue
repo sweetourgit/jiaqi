@@ -39,7 +39,9 @@
         <!-- 验证码 -->
        
     
-      <router-link to="/role"> <el-button type="primary" class="button" @click="loginForm('ruleForm')">登录</el-button></router-link>
+      <!-- <router-link to="/role"> </router-link> -->
+
+      <el-button type="primary" class="button" @click="loginForm('ruleForm')">登录</el-button>
 
          <el-checkbox class="remember" >记住密码</el-checkbox>
     </el-form>
@@ -153,6 +155,15 @@
 
 <script>
 
+var store = {
+save(key,value) {
+window.localStorage.setItem(key,JSON.stringify(value))
+},
+fetch(key) {
+return JSON.parse(localStorage.getItem(key)) || []
+}
+}
+import axios from 'axios'
    export default {
     data(){
       // 判断验证码
@@ -367,15 +378,35 @@
 
         //登录
         loginForm(formName) {
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              this.$message.error('登录失败');              
+
+          // this.$refs[formName].validate((valid) => {
+          //   if (valid) {
+          //     this.$message.error('登录失败');              
               
-            } else {
-              this.$message.success('登录成功');
-              return false;
-            }
-          });
+          //   } else {
+          //     this.$message.success('登录成功');
+          //     return false;
+          //   }
+          // });
+
+          axios.post('http://api.dayuntong.com:6003/api/auth/token',{
+              'userName': this.ruleForm.user,
+              'passWord': this.ruleForm.password,
+              
+
+          })
+          .then(res=>{
+              
+            console.log(res)
+            this.token = res.data
+            console.log(this.token)
+            store.save('token',this.token)
+            this.$message.success('登录成功');
+            
+          })
+          .catch(error =>{
+            this.$message.error('登录失败');
+          })
         },
         
       
