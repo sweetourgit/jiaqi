@@ -401,7 +401,7 @@ import axios from 'axios'
             this.token = res.data
             console.log(this.token)
             store.save('token',this.token)
-            this.$message.success('登录成功');
+            // this.$message.success('登录成功');
             
           })
           .catch(error =>{
