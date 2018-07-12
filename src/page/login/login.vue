@@ -29,13 +29,12 @@
     <el-form-item prop="password" class="password-input">
       <el-input type="password"  v-model="ruleForm.password" placeholder="密码"></el-input>
     </el-form-item>
-    <div class="verify-box">
+    <!-- <div class="verify-box">
       <el-form-item prop="verification" class="verification-input">
-          <!-- <div><img src="../../../static/login/safety certificate.png" class="verification-img" style="width:35px;"></div> -->
           <el-input  v-model="ruleForm.verification" placeholder="验证码" ></el-input>
       </el-form-item>
       <img src="../../../static/login-verify/number.png" alt="" class="verify-img">
-    </div>
+    </div> -->
         <!-- 验证码 -->
        
     
@@ -396,12 +395,19 @@ import axios from 'axios'
 
           })
           .then(res=>{
-              
+             
             console.log(res)
             this.token = res.data
             console.log(this.token)
             store.save('token',this.token)
+            // this.$router.push('/role')
             // this.$message.success('登录成功');
+            if(res.data===''){
+              alert('登录失败')
+            }else{
+              this.$router.push('/role')
+              this.$message.success('登录成功');
+            }
             
           })
           .catch(error =>{
