@@ -29,12 +29,12 @@
     <el-form-item prop="password" class="password-input">
       <el-input type="password"  v-model="ruleForm.password" placeholder="密码"></el-input>
     </el-form-item>
-    <!-- <div class="verify-box">
+    <div class="verify-box">
       <el-form-item prop="verification" class="verification-input">
           <el-input  v-model="ruleForm.verification" placeholder="验证码" ></el-input>
       </el-form-item>
       <img src="../../../static/login-verify/number.png" alt="" class="verify-img">
-    </div> -->
+    </div>
         <!-- 验证码 -->
        
     
