@@ -29,16 +29,26 @@ export default {
           callback();
         }
     };
+    var validatepass1 = (rule, value, callback) => {
+      if(this.isPass == false){
+        callback(new Error('密码输入不正确'));
+        this.isPass = true;
+      } else {
+        callback();
+      }
+    };
     return {
       form: {
         passWord: "",
         newpass: "",
         checkpass: ""
       },
+      isPass: true,
       rules: {
         passWord: [
           { required: true, message: "请输入密码", trigger: "blur"},
-          { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/, message: "密码格式错误(6-20位数字加字母)"}
+          { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/, message: "密码格式错误(6-20位数字加字母)"},
+          { validator: validatepass1 }
         ],
         newpass: [
           { required: true, message: "请输入密码", trigger: "blur"},
@@ -84,8 +94,10 @@ export default {
                   console.log(err);
                 })
               } else {
-                this.$message.error('密码输入不正确')
-                this.$refs['form'].resetFields()
+                this.isPass = false;
+                this.submitForm('form')
+                // this.$message.error('密码输入不正确')
+                // this.$refs['form'].resetFields()
               }
             }).catch((err) => {
               console.log(err);

@@ -116,15 +116,7 @@ export default {
     // }
       return {
         // 账户信息
-        form: {
-          id: "",
-          name: "",
-          sex: "",
-          state: "",
-          phone: "",
-          email: "",
-          department:''
-        },
+        form: {},
         // 手机弹窗信息
         phone1: {
           name: "",
@@ -186,9 +178,7 @@ export default {
       submitForm(formName) {
         this.$refs[formName].validate(valid => {
           if (valid) {  
-            this.$message.success('修改成功！') 
             if(formName == 'form'){
-              console.log(this.form)
               this.$http.post(this.GLOBAL.serverSrc + "/client/org/usersave",{
                  "Object": {
                     "id": this.form.id,
@@ -207,15 +197,17 @@ export default {
                   },
                   "id": 0
               }).then((res) => {
-                console.log(res)
+                this.$message.success('修改成功！') 
               }).catch((err) => {
                 console.log(err)
               })
             }else if(formName == 'phone1'){
+              this.$message.success('修改成功！') 
               this.dialogFormVisible = false   
               this.show = true
               this.$refs['phone1'].resetFields()
             }else if(formName == 'emial1'){
+              this.$message.success('修改成功！') 
               this.dialogEmial = false
               this.show1 = true
               this.$refs['emial1'].resetFields()
