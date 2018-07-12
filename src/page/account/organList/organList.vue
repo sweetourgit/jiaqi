@@ -12,7 +12,7 @@
           <div class="right-btn">
             <div class="btn-top">
               <el-button plain class="editDepartment" @click="editDepartment1">编辑</el-button>
-              <el-button type="primary" class="addSubdivision" @click="addSubdivision1">+ &nbsp;子部门</el-button>
+              <el-button type="primary" class="addSubdivision" @click="addSubdivisionOpen">+ &nbsp;子部门</el-button>
             </div>
             <!-- <span class="inheritanceRules">默认限制向上继承</span>
             <el-switch v-model="switchs" active-color="#13ce66" inactive-color="#ff4949" class="switch"></el-switch> -->
@@ -23,7 +23,7 @@
             <el-table-column prop="label" label="部门" align="center"></el-table-column>
             <el-table-column label="操作" align="center">
                 <template slot-scope="scope">
-                        <el-button type="primary" size="small">进入</el-button>
+                        <el-button type="primary" size="small" @click="treeClick(scope.row)">进入</el-button>
                         <el-button type="danger" size="small" @click="remove(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -56,8 +56,57 @@
               <el-form-item label="部门名称" :label-width="updataLabelWidth">
                 <el-input v-model="updata.departmentName" auto-complete="off"></el-input>
               </el-form-item>
-              <span class="cascaderTitle">上级部门</span>
-              <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader>
+              <!-- <span class="cascaderTitle">上级部门</span>
+              <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader> -->
+
+              
+                        <el-form-item label="父级部门:" class="form-la">
+                         <el-select v-model="value" placeholder="请选择" @change="HandChange()" class="form-xi">
+                           <el-option
+                             v-for="item in options"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                           </el-option>
+                         </el-select>
+                       </el-form-item>
+
+                       <el-form-item label="子部门1:" class="form-la">
+                         <el-select v-model="value1" placeholder="请选择"   @change="HandChange1()" class="form-xi">
+                           <el-option
+                             v-for="item in options1"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                           </el-option>
+                         </el-select>
+                       </el-form-item>
+
+                       <el-form-item label="子部门2:" class="form-la" v-if="bumen2">
+                         <el-select v-model="value2" placeholder="请选择"   @change="HandChange2()" class="form-xi">
+                           <el-option
+                             v-for="item in options2"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                           </el-option>
+                         </el-select>
+                       </el-form-item>
+
+                       <el-form-item label="子部门3:" class="form-la" v-if="bumen1">
+                         <el-select v-model="value3" placeholder="请选择" class="form-xi">
+                           <el-option
+                             v-for="item in options3"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                           </el-option>
+                         </el-select>
+                       </el-form-item>
+
+
+
+
               <el-form-item label="虚拟部门" class="eidt-virtual" prop="radio">
                 <el-radio-group class="virtualDepartment" v-model="updata.radio">
                   <el-radio label="是" value="1"></el-radio>
@@ -203,7 +252,18 @@
         updataLabelWidth: '90px',
         // 级联选择器
         options: [],
+        value: '',
         options1: [],
+        value1: '',
+        options2: [],
+        value2: '',
+        options3: [],
+        value3: '',
+        arr: [],
+        arr1: [],
+        arr2: [],
+        bumen2: false,
+        bumen1: false,
         // 添加子部门
         addSubdivision: false,
         addInput: {
@@ -481,6 +541,7 @@ methods: {
       },
       // 单击tree节点
       treeClick(a,b,c) {
+        this.data = []
         this.tableData = []
         this.addInput.ParentID = a.id
         this.addInput.topDepartment = a.label
@@ -489,19 +550,19 @@ methods: {
         var _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
             "Object": {
-                "ParentID" : a.id
+              "ParentID" : a.id
             }
         }).then((response) =>{
-                for(let i=0;i<response.data.objects.length;i++){
-                  if(response.data.objects[i].isDeleted !== 1){
-                     _this.tableData.push({
-                            label: response.data.objects[i].orgName,
-                            id: response.data.objects[i].id,
-                            key: i,
-                            value: response.data.objects[i].id,
-                        })
-                  }
-                }
+            for(let i=0;i<response.data.objects.length;i++){
+              if(response.data.objects[i].isDeleted !== 1){
+               _this.tableData.push({
+                  label: response.data.objects[i].orgName,
+                  id: response.data.objects[i].id,
+                  key: i,
+                  value: response.data.objects[i].id,
+                  })
+              }
+            }
           }).catch(function(error){
             console.log(error);
           });
@@ -511,37 +572,21 @@ methods: {
         this.data = []
         let _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
-            "Object": {
-                "ParentID" : -1
-            }
+          "Object": {
+            "ParentID" : -1
+          }
         }).then((response) =>{
             for(let i=0;i<response.data.objects.length;i++){
               if (node.level === 0) {
-                _this.data.push({
+                _this.options.push({
                   label: response.data.objects[i].orgName,
-                  key: i,
-                  id: response.data.objects[i].id,
-                  isLeaf: response.data.objects[i].isLeaf,
-                  cities: [],
-                  value: [{
-                    label: response.data.objects[i].orgName,
-                    key: i,
-                    id: response.data.objects[i].id,
-                    isLeaf: response.data.objects[i].isLeaf,
-                  }]
+                  value: response.data.objects[i].id + '-' + response.data.objects[i].orgName
                 })
                 resolve([{
                   label: response.data.objects[i].orgName,
                   key: i,
                   id: response.data.objects[i].id,
                   isLeaf: response.data.objects[i].isLeaf,
-                  cities: [],
-                  value: [{
-                    label: response.data.objects[i].orgName,
-                    key: i,
-                    id: response.data.objects[i].id,
-                    isLeaf: response.data.objects[i].isLeaf,
-                  }]
                 }])
               }
             }
@@ -604,7 +649,7 @@ methods: {
             console.log(error);
           });
       },
-      addSubdivision1(){
+      addSubdivisionOpen(){
         if(this.addInput.ParentID == ''){
             this.$message.warning('请先选择父级部门！')
         } else {
@@ -622,7 +667,8 @@ methods: {
       // 编辑部门
       editDepartment1(){
         this.editDepartment = true
-        this.options = this.data
+        console.log(this.data)
+        // this.options = this.data
       },
       handleCurrentChange(currentPage) {
         this.currentPage = currentPage;
@@ -630,16 +676,15 @@ methods: {
       },
       // 编辑部门
       department(a) {
-        console.log(a)
         this.options1 = [];
-        // let num = String(a);
-        // let c = ',';
-        // let str = num.substring(num.indexOf(",") + 1,num.length);
-        // let str1 = str.indexOf(",") !== -1 ?str.substring(str.indexOf(",") + 1,str.length) :num.substring(num.indexOf(",") + 1,num.length);
-        // var regex = new RegExp(c, 'g');
-        // var result = num.match(regex);
-        // var count = !result ? 0 : result.length;
-        // this.keyID = []
+        let num = String(a);
+        let c = ',';
+        let str = num.substring(num.indexOf(",") + 1,num.length);
+        let str1 = str.indexOf(",") !== -1 ?str.substring(str.indexOf(",") + 1,str.length) :num.substring(num.indexOf(",") + 1,num.length);
+        var regex = new RegExp(c, 'g');
+        var result = num.match(regex);
+        var count = !result ? 0 : result.length;
+        this.keyID = []
         let _this = this
         this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
             "Object": {
@@ -664,40 +709,35 @@ methods: {
                   }]
                 })
 
-                _this.options1[i].cities.push(1,2) 
+                // _this.options1[i].cities.push(1,2) 
                 //console.log(response.data.objects[i]);
                 //response.data.objects[i]
 
             }
 
             //console.log(_this.options1[0].cities)    
-           /* for(let i=0;i<response.data.objects.length;i++){
+            for(let i=0;i<response.data.objects.length;i++){
 
                for(let j=0;j<_this.options1[i].cities.length;j++){
-                        alert(0)
+ 
                         //console.log(response.data.objects[i])
-                       //_this.options1[i].cities[j].push(response.data.objects[i]);
+                       _this.options1[i].cities[j].push(response.data.objects[i]);
                         //console.log(_this.options1[i].cities[j])    
                 }
 
-             }*/
+             }
 
 
             // _this.data[0].cities = false
 
-           /* if(_this.options1 == ''){
 
-            }
             if(a.length == 1){
                 _this.options[a[0][0].key].cities = _this.options1;
-                if(_this.options1 == ''){
-
-                }
             } else if(a.length == 2){
                 _this.options[a[0][0].key].cities[a[1][0].key].cities = _this.options1;
             } else if(a.length == 3){
                 _this.options[a[0][0].key].cities[a[1][0].key].cities[a[2][0].key].cities = _this.options1;
-            }*/
+            }
             // if(a.length == 1){
             //     _this.options[a[0][0].key].cities = _this.options1
             //     console.log(_this.options)
@@ -743,7 +783,127 @@ methods: {
           )
         }
 
-      }
+      },
+
+
+
+     HandChange () {
+          this.arr = this.value.split('-')
+          this.options1 = []
+          this.value1 = ''
+          this.value2 = ''
+          this.value3 = ''
+          var that = this
+          // 获取顶级，第一级城市beg
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            {
+              'order': 'string',
+              'object': {
+                'isDeleted': 0,
+                'parentID': this.arr[0]
+              }
+            }
+          )
+            .then(function (obj) {
+              if(obj.data.objects.length ==0){
+                that.bumen2 = false
+                that.bumen1 = false
+              }
+              console.log(obj)
+              var i = ''
+              for (i = 0; i < obj.data.objects.length; i++) {
+                that.options1.push({
+                  label: obj.data.objects[i].orgName,
+                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
+                })
+              }
+            })
+            .catch(function (obj) {
+            })
+        },
+        HandChange1: function () {
+          this.arr1 = this.value1.split('-')
+          this.options2 = []
+          this.value2 = ''
+          this.value3 = ''
+          var that = this
+          // 获取顶级，第一级城市beg
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            {
+              'order': 'string',
+              'object': {
+                'isDeleted': 0,
+                'parentID': this.arr1[0]
+              }
+            }
+          )
+            .then(function (obj) {
+              if(obj.data.objects.length ==0){
+                that.bumen2 = false
+                that.bumen1 = false
+              }
+              if (obj.data.objects.length !== 0) {
+                that.bumen2 = true
+              }
+              // console.log(obj)
+              var i = ''
+              for (i = 0; i < obj.data.objects.length; i++) {
+                that.options2.push({
+                  label: obj.data.objects[i].orgName,
+                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
+                })
+              }
+            })
+            .catch(function (obj) {
+            })
+          // 获取顶级，第一级城市end
+        },
+        HandChange2 () {
+          this.arr2 = this.value2.split('-')
+          this.options3 = []
+          this.value3 = ''
+          console.log(this.arr2[0])
+          var that = this
+          // 获取顶级，第一级城市beg
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            {
+              'order': 'string',
+              'object': {
+                'isDeleted': 0,
+                'parentID': this.arr2[0]
+              }
+            }
+          )
+            .then(function (obj) {
+              if(obj.data.objects.length ==0){
+                that.bumen2 = false
+                that.bumen1 = false
+              }
+              if (obj.data.objects.length !== 0) {
+                that.bumen1 = true
+              }
+              var i = ''
+              for (i = 0; i < obj.data.objects.length; i++) {
+                that.options3.push({
+                  label: obj.data.objects[i].orgName,
+                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
+                })
+              }
+            })
+            .catch(function (obj) {
+            })
+          // 获取顶级，第一级城市end
+        },
+
+
+
+
+
+
+
     }
 }
 </script>
@@ -1053,5 +1213,11 @@ margin-left: 33px
 .updataPopup{
 margin: 0 auto;
 width: 800px;
+}
+.form-la{
+  margin-left: 20px;
+}
+.form-xi{
+  margin-right: 37px;
 }
 </style>

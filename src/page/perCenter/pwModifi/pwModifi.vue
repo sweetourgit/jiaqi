@@ -2,8 +2,8 @@
   <div class="row">
     <div class="content">
     <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="当前密码" prop="pass">
-        <el-input class="input" type="password" v-model="form.pass" placeholder="请输入当前密码" auto-complete="off"></el-input>
+      <el-form-item label="当前密码" prop="passWord">
+        <el-input class="input" type="password" v-model="form.passWord" placeholder="请输入当前密码" auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="新密码" prop="newpass">
         <el-input class="input" type="password" v-model="form.newpass" placeholder="6-20位数字与字母" auto-complete="off"></el-input>
@@ -31,12 +31,12 @@ export default {
     };
     return {
       form: {
-        pass: "",
+        passWord: "",
         newpass: "",
         checkpass: ""
       },
       rules: {
-        pass: [
+        passWord: [
           { required: true, message: "请输入密码", trigger: "blur"},
           { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/, message: "密码格式错误(6-20位数字加字母)"}
         ],
@@ -50,15 +50,47 @@ export default {
       }
     }
   },
-  //^[a-zA-Z0-9]{6,10}$
   methods: {
     submitForm(formName) {
         this.$refs[formName].validate(valid => {
           if (valid) {
-            this.$message.success('验证成功！')
-            this.$refs['form'].resetFields()
-            this.dialogFormVisible = false
-            this.dialogEmial = false
+            this.$http.post(this.GLOBAL.serverSrc+'/client/org/userget',{
+              "object":{
+                "id": 94,
+              }
+            }).then((res) => {
+              if(this.form.passWord === res.data.objects[0].passWord){
+                this.$http.post(this.GLOBAL.serverSrc + "/client/org/usersave",{
+                  "Object": {
+                    "id": res.data.objects[0].id,
+                    "createTime": "2018-06-20T09:35:52.822Z",
+                    "isDeleted": 0,
+                    "code": "string",
+                    "passWord": this.form.checkpass,
+                    "mobile":res.data.objects[0].mobile,
+                    "name": res.data.objects[0].name,
+                    "email": res.data.objects[0].email,
+                    "userCode": res.data.objects[0].userCode,
+                    "iDcard": res.data.objects[0].iDcard,
+                    "tourGuide": res.data.objects[0].tourGuide,
+                    "sex": res.data.objects[0].sex,
+                    "userType": res.data.objects[0].userType
+                  },
+                  "id": 0
+                }).then((res) => {
+                  this.$message.success('新密码修改成功！')
+                  this.$refs['form'].resetFields()
+                }).catch((err) => {
+                  console.log(err);
+                })
+              } else {
+                this.$message.error('密码输入不正确')
+                this.$refs['form'].resetFields()
+              }
+            }).catch((err) => {
+              console.log(err);
+            })
+            
           } else {
             this.$message.error('验证失败！')
           }
