@@ -395,19 +395,27 @@ import axios from 'axios'
 
           })
           .then(res=>{
-             
-            console.log(res)
-            this.token = res.data
-            console.log(this.token)
-            store.save('token',this.token)
+            this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
+              "userCode": this.ruleForm.user,
+              "passWord": this.ruleForm.password,
+            }).then(res => {
+              this.GLOBAL.userId = res.data.id
+              if(res.data===''){
+                alert('登录失败')
+              }else{
+                this.$router.push('/role')
+                this.$message.success('登录成功');
+              }
+            }).catch(err => {
+
+            })
+
+            this.GLOBAL.token = res.data
+
+            store.save('token',this.GLOBAL.token)
             // this.$router.push('/role')
             // this.$message.success('登录成功');
-            if(res.data===''){
-              alert('登录失败')
-            }else{
-              this.$router.push('/role')
-              this.$message.success('登录成功');
-            }
+            
             
           })
           .catch(error =>{
@@ -494,16 +502,15 @@ import axios from 'axios'
 
 .big{
  overflow: hidden;
-  position: absolute;
+  position: fixed;
   width:100%;
-  height:90%;
+  height:90% !important;
   top: 10%;
   right: 20px;
   left:0px;
   // background:green;
   background-image:url('../../../static/login-img/login.png');
-  background-size: 100% 85%;
-
+  background-repeat: no-repeat
 
 }
  
