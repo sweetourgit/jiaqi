@@ -7,7 +7,7 @@ export default {
   saveToken(state,data){
     state.token = data
   },
-  saveUserId(state, data){
-    state.userId = data
+  saveName(state, data){
+    state.name = data
   }
 }
