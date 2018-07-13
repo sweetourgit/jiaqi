@@ -939,6 +939,7 @@ import Permission from '@/page/account/userList/addUser/permission'
             that.ruleForm.trailid = obj.data.firstOrDefault.tourGuide
             that.ruleForm.sex = String(obj.data.firstOrDefault.sex);
             that.ruleForm.type = String(obj.data.firstOrDefault.userType);
+            that.ruleForm.passWord = obj.data.firstOrDefault.passWord
             if(obj.data.firstOrDefault.userState == 1){
                 that.disable = true
             }else if(obj.data.firstOrDefault.userState == 2){
