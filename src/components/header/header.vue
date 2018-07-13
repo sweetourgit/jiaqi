@@ -24,6 +24,7 @@
 	    methods: {
 	            submit:function() {
 	                this.$router.push({ path: '/login' })
+                  this.GLOBAL.token = '';
 	            }
 	        }
     }

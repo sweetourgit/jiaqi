@@ -64,13 +64,13 @@ export default {
     submitForm(formName) {
         this.$refs[formName].validate(valid => {
           if (valid) {
-            this.$http.post(this.GLOBAL.serverSrc+'/client/org/userget',{
+            this.$http.post(this.GLOBAL.serverSrc+'/api/org/userget',{
               "object":{
                 "id": 94,
               }
             }).then((res) => {
               if(this.form.passWord === res.data.objects[0].passWord){
-                this.$http.post(this.GLOBAL.serverSrc + "/client/org/usersave",{
+                this.$http.post(this.GLOBAL.serverSrc + "/api/org/usersave",{
                   "Object": {
                     "id": res.data.objects[0].id,
                     "createTime": "2018-06-20T09:35:52.822Z",

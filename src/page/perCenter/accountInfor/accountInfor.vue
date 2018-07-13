@@ -94,7 +94,7 @@
 <script>
 export default {
   created (){
-    this.$http.post(this.GLOBAL.serverSrc+'/client/org/userget',{
+    this.$http.post(this.GLOBAL.serverSrc+'/api/org/userget',{
       "object":{
         "id": 94,
       }
@@ -179,7 +179,7 @@ export default {
         this.$refs[formName].validate(valid => {
           if (valid) {  
             if(formName == 'form'){
-              this.$http.post(this.GLOBAL.serverSrc + "/client/org/usersave",{
+              this.$http.post(this.GLOBAL.serverSrc + "/api/org/usersave",{
                  "Object": {
                     "id": this.form.id,
                     "createTime": "2018-06-20T09:35:52.822Z",
