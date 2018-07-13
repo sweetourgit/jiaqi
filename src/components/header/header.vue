@@ -26,10 +26,10 @@
       },
 	    methods: {
 	            submit:function() {
-	                this.$router.push({ path: '/login' })
-                  sessionStorage.removeItem('token')
-                  sessionStorage.removeItem('userId')
-                  sessionStorage.removeItem('name')
+                this.$router.push({ path: '/login' })
+                sessionStorage.removeItem('token')
+                sessionStorage.removeItem('userId')
+                sessionStorage.removeItem('name')
 	            },
               listUser() {
                 this.$router.push({ path: '/accountInfor' })
