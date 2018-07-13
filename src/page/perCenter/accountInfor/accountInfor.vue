@@ -199,7 +199,7 @@ export default {
               }).then((res) => {
                 sessionStorage.setItem('name', this.form.name)
                 this.$message.success('修改成功！');
-                location.reload(); 
+                document.getElementById('nameNum').innerHTML = this.form.name
               }).catch((err) => {
                 console.log(err)
               })
