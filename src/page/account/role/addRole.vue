@@ -30,14 +30,15 @@
           <th>具体权限</th>
         </tr>
         </thead>
-          <tbody>
+          <tbody v-for="item of list"
+          :key="item">
         <tr>
 
           <td rowspan="9">
             <el-checkbox  :disabled="checkboxStatus">
               账号管理
             </el-checkbox>
-           
+
           </td>
           <td rowspan="3">
             <el-checkbox @change="changeuser">用户管理</el-checkbox>
@@ -119,7 +120,7 @@
         <tr>
           <td rowspan="3">
             <el-checkbox >个人中心</el-checkbox>
-  
+
           </td>
           <td rowspan="3">
             <el-checkbox >账号设置</el-checkbox>
@@ -134,7 +135,7 @@
         <tr>
           <td>
             <el-checkbox >编辑</el-checkbox>
-           
+
           </td>
           <td class="table-checkout">
             <el-checkbox >修改账号信息</el-checkbox>
@@ -160,7 +161,7 @@
 <script>
 
   export default {
-    
+
     mounted () {
      this.$http.post(this.GLOBAL.serverSrc+'/client/org/roleinsert',{
       "object": {
@@ -220,6 +221,9 @@
           });
       };
       return {
+        list: [1,2,{
+
+        }],
         ruleForm: {
           temp_name: '',
           desc: ''
@@ -257,7 +261,7 @@
 
     },
     watch: {
-     
+
     },
     methods: {
        changeuser () {

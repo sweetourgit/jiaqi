@@ -24,10 +24,13 @@ Vue.config.productionTip = false
 import '!style-loader!css-loader!less-loader!./style/libs/iconfont/iconfont.css'
 
 /* eslint-disable no-new */
-new Vue({
+var vm = new Vue({
   el: '#app',
   store,
   router,
   components: { App },
   template: '<App/>'
 })
+
+
+console.log(vm.$router.beforeEach)
