@@ -47,7 +47,6 @@ export default {
       rules: {
         passWord: [
           { required: true, message: "请输入密码", trigger: "blur"},
-          { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/, message: "密码格式错误(6-20位数字加字母)"},
           { validator: validatepass1 }
         ],
         newpass: [
@@ -66,7 +65,7 @@ export default {
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc+'/api/org/userget',{
               "object":{
-                "id": localStorage.getItem("userId"),
+                "id": sessionStorage.getItem('userId'),
               }
             }).then((res) => {
               if(this.form.passWord === res.data.objects[0].passWord){
