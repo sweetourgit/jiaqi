@@ -128,7 +128,7 @@
                 this.$message.warning('请填写职位名称！')
             }else{
                 var _this = this
-                this.$http.post(this.GLOBAL.serverSrc+'/client/org/positioninsert',{
+                this.$http.post(this.GLOBAL.serverSrc+'/api/org/positioninsert',{
                     "Object": {
                     "name": this.form.positionName
                  },
@@ -146,7 +146,7 @@
         },
         editSave(updata){
             let _this = this;
-            this.$http.post(this.GLOBAL.serverSrc+'/client/org/positionsave',{
+            this.$http.post(this.GLOBAL.serverSrc+'/api/org/positionsave',{
                 "object": {
                     "id": this.jj.id,
                     "name": this.updata.positionName,
@@ -175,7 +175,7 @@
             cancelButtonText: '取消',
             type: 'warning'
             }).then(() => {
-                this.$http.post(this.GLOBAL.serverSrc+'/client/org/positiondelete',{
+                this.$http.post(this.GLOBAL.serverSrc+'/api/org/positiondelete',{
                 "id" : this.tableData[index].id
             })
             .then(function(response){
@@ -211,7 +211,7 @@
         pageList() {
             this.tableData = [];
             let _this = this
-            this.$http.post(this.GLOBAL.serverSrc+'/client/org/positionpage',{
+            this.$http.post(this.GLOBAL.serverSrc+'/api/org/positionpage',{
                 "object": {
                     "isDeleted": 0,
                 },
