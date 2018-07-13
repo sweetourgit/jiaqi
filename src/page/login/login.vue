@@ -156,10 +156,10 @@
 
 var store = {
 save(key,value) {
-window.localStorage.setItem(key,JSON.stringify(value))
+window.sessionStorage.setItem(key,value)
 },
 fetch(key) {
-return JSON.parse(localStorage.getItem(key)) || []
+return JSON.parse(sessionStorages.getItem(key)) || []
 }
 }
 import axios from 'axios'
@@ -405,7 +405,9 @@ import axios from 'axios'
               "userCode": this.ruleForm.user,
               "passWord": this.ruleForm.password,
             }).then(res => {
-              this.GLOBAL.userId = res.data.id
+              console.log(res)
+              store.save('userId',res.data.id)
+              store.save('name',res.data.name)
               if(res.data===''){
                 alert('登录失败')
               }else{
@@ -415,10 +417,7 @@ import axios from 'axios'
             }).catch(err => {
 
             })
-
-            this.GLOBAL.token = res.data
-
-            store.save('token',this.GLOBAL.token)
+            store.save('token',res.data)
             // this.$router.push('/role')
             // this.$message.success('登录成功');
 

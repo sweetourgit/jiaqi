@@ -66,7 +66,7 @@ export default {
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc+'/api/org/userget',{
               "object":{
-                "id": 94,
+                "id": localStorage.getItem("userId"),
               }
             }).then((res) => {
               if(this.form.passWord === res.data.objects[0].passWord){

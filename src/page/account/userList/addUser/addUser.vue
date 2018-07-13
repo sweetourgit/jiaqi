@@ -256,6 +256,7 @@ import Permission from '@/page/account/userList/addUser/permission'
         activeName: 'first',
         ruleForm: {
           phone: '',
+          passWord:'',
           name: '',
           mail: '',
           number:'',
@@ -502,7 +503,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           var that = this
           // 获取顶级，第一级城市beg
           this.$http.post(
-            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            this.GLOBAL.serverSrc + "/api/org/deptlist",
             {
               'order': 'string',
               'object': {
@@ -536,7 +537,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           var that = this
           // 获取顶级，第一级城市beg
           this.$http.post(
-            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            this.GLOBAL.serverSrc + "/api/org/deptlist",
             {
               'order': 'string',
               'object': {
@@ -574,7 +575,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           var that = this
           // 获取顶级，第一级城市beg
           this.$http.post(
-            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            this.GLOBAL.serverSrc + "/api/org/deptlist",
             {
               'order': 'string',
               'object': {
@@ -645,7 +646,7 @@ import Permission from '@/page/account/userList/addUser/permission'
              if (action === 'confirm') {
 
                this.$http.post(
-                 this.GLOBAL.serverSrc + "/client/org/userinsert",
+                 this.GLOBAL.serverSrc + "/api/org/userinsert",
                  // "http://api.dayuntong.com:3009/api/org/userinsert",
                  ({
                    "Object": {
@@ -703,7 +704,7 @@ import Permission from '@/page/account/userList/addUser/permission'
               if (action === 'confirm') {
 
                 this.$http.post(
-                  this.GLOBAL.serverSrc + "/client/org/userinsert",
+                  this.GLOBAL.serverSrc + "/api/org/userinsert",
                   // "http://api.dayuntong.com:3009/api/org/userinsert",
                   ({
                     "Object": {
@@ -758,7 +759,7 @@ import Permission from '@/page/account/userList/addUser/permission'
             if (valid) {
               var that = this
               this.$http.post(
-                this.GLOBAL.serverSrc + "/client/org/userinsert",
+                this.GLOBAL.serverSrc + "/api/org/userinsert",
                 // "http://api.dayuntong.com:3009/api/org/userinsert",
                 ({
                   "Object": {
@@ -809,7 +810,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           this.$refs[formName].validate((valid) => {
             if (valid) {
               this.$http.post(
-                this.GLOBAL.serverSrc + "/client/org/usersave",
+                this.GLOBAL.serverSrc + "/api/org/usersave",
                 // "http://api.dayuntong.com:3009/api/org/usersave",
                 {
                   "Object": {
@@ -817,7 +818,7 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "createTime": "2018-06-20T09:35:52.822Z",
                     "isDeleted": 0,
                     "code": "string",
-                    "passWord": "12345",
+                    "passWord": this.ruleForm.passWord,
                     "mobile":this.ruleForm.phone,
                     "name": this.ruleForm.name,
                     "email": this.ruleForm.mail,
@@ -876,7 +877,7 @@ import Permission from '@/page/account/userList/addUser/permission'
       var that = this
       // 获取顶级，第一级城市beg
       this.$http.post(
-        this.GLOBAL.serverSrc + "/client/org/deptlist",
+        this.GLOBAL.serverSrc + "/api/org/deptlist",
         {
           'order': 'string',
           'object': {
@@ -905,7 +906,7 @@ import Permission from '@/page/account/userList/addUser/permission'
         var that = this
         this.$http.post(
           // "http://api.dayuntong.com:3009/api/org/userget",
-          this.GLOBAL.serverSrc + "/client/org/userget",
+          this.GLOBAL.serverSrc + "/api/org/userget",
           {
             "object": {
               "id": that.$route.query.id,

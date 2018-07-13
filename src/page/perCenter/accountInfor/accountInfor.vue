@@ -96,7 +96,7 @@ export default {
   created (){
     this.$http.post(this.GLOBAL.serverSrc+'/api/org/userget',{
       "object":{
-        "id": 94,
+        "id": sessionStorage.getItem('userId'),
       }
     }).then((res) => {
       this.form = res.data.objects[0]
@@ -197,7 +197,9 @@ export default {
                   },
                   "id": 0
               }).then((res) => {
-                this.$message.success('修改成功！') 
+                sessionStorage.setItem('name', this.form.name)
+                this.$message.success('修改成功！');
+                location.reload(); 
               }).catch((err) => {
                 console.log(err)
               })

@@ -11,7 +11,7 @@
           </div>
           <div class="right-btn">
             <div class="btn-top">
-              <el-button plain class="editDepartment" @click="editDepartment1">编辑</el-button>
+              <el-button plain class="editDepartment" @click="editDepartment1(addInput.ParentID)">编辑</el-button>
               <el-button type="primary" class="addSubdivision" @click="addSubdivisionOpen">+ &nbsp;子部门</el-button>
             </div>
             <!-- <span class="inheritanceRules">默认限制向上继承</span>
@@ -54,7 +54,7 @@
           <div class="boom">
             <el-form :model="updata" :rules="rules">
               <el-form-item label="部门名称" :label-width="updataLabelWidth">
-                <el-input v-model="updata.departmentName" auto-complete="off"></el-input>
+                <el-input v-model="updata.orgName" auto-complete="off"></el-input>
               </el-form-item>
               <!-- <span class="cascaderTitle">上级部门</span>
               <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader> -->
@@ -109,14 +109,14 @@
 
               <el-form-item label="虚拟部门" class="eidt-virtual" prop="radio">
                 <el-radio-group class="virtualDepartment" v-model="updata.radio">
-                  <el-radio label="是" value="1"></el-radio>
-                  <el-radio label="否" value="2"></el-radio>
+                  <el-radio label="1">是</el-radio>
+                  <el-radio label="2">否</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="末级部门" class="updata-virtual" prop="lastStage">
                 <el-radio-group class="virtualDepartment" v-model="updata.lastStage">
-                 <el-radio label="1" value="1">是</el-radio>
-                 <el-radio label="2" value="2">否</el-radio>
+                 <el-radio label="1">是</el-radio>
+                 <el-radio label="2">否</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="部门编码" :label-width="Width" prop="departmentCode">
@@ -138,7 +138,7 @@
           </div>
           <div slot="footer" class="operation">
           <el-button class="btn_foot" @click="editDepartment = false">取 消</el-button>
-          <el-button class="btn_foot" type="primary" @click="editSave = false">保存</el-button>
+          <el-button class="btn_foot" type="primary" @click="updataEditSave">保存</el-button>
           <el-button class="btn_foot" type="danger" @click="remove = false">删除</el-button>
           </div>
         </el-dialog>
@@ -194,7 +194,7 @@
                         <el-input v-model="person.search" auto-complete="off" class="searchInput" placeholder="输入名称检索"></el-input>
                     </el-form-item>
                 </el-form>
-                <el-button type="primary" class="searchButton" @click="oo">搜索</el-button>
+                <el-button type="primary" class="searchButton">搜索</el-button>
             </div>
             <el-table ref="table" :data="members" border class="members" @selection-change="qq">
                 <el-table-column type="selection" width="30%" align="center"></el-table-column>
@@ -247,7 +247,8 @@
         // 编辑部门
         editDepartment: false,
         updata: {
-            departmentName: ''
+          radio: '1',
+          lastStage: ''
         },
         updataLabelWidth: '90px',
         // 级联选择器
@@ -369,7 +370,8 @@
           label: 'label',
           isLeaf: 'leaf'
         },
-        keyID: []
+        keyID: [],
+        deleteNum:[]
     }
   },
 methods: {
@@ -417,9 +419,9 @@ methods: {
         if(this.addInput.departmentNames === '' || this.addInput.departmentCode === '' || this.addInput.radio === '' || this.addInput.sort === '' || this.addInput.phone === '' || this.addInput.fax === ''){
             this.$message.warning('红☆为必填选项，请认真填写！')
         }else{
-            console.log(this.addInput)
+            
                 var _this = this
-                this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptinsert',{
+                this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptinsert',{
                     "object": {
                         "id": 0,
                         "orgName": this.addInput.name,
@@ -428,7 +430,7 @@ methods: {
                         "parentID": this.addInput.ParentID,
                         "physical": 0,
                         "orgCode": 0,
-                        "rank": 0,
+                        "rank": this.addInput.sort,
                         "officeTel": this.addInput.phone,
                         "officeFax": this.addInput.fax,
                         "mark": this.addInput.note,
@@ -445,9 +447,6 @@ methods: {
                 this.addInput.departmentNames = ""
                 this.$message.success('添加成功')
             }
-    },
-    oo() {
-
     },
     qq(a){
         this.dataNum = a
@@ -484,12 +483,24 @@ methods: {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-            this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptdelete',{
-                "id" : this.tableData[index].id
+          this.remove1(this.tableData[index].id, index)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      // 删除当前部门的子级部门
+      remove1(id, index){
+        this.tableData.splice(index, 1)
+        this.deleteNum.push(id)
+        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptdelete',{
+                "id" : id
             })
             .then(function(response){
-              _this.tableData.splice(index, 1)
-              _this.$message({
+              this.tableData.splice(index, 1)
+              this.$message({
               type: 'success',
               message: '删除成功!'
               });
@@ -498,17 +509,29 @@ methods: {
               console.log(error);
             })
 
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
+
+
+
+        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
+            "object":{
+              "parentID" : id
+            }
+          }).then((res) => {
+            // console.log(res.data.objects)
+            if(res.data.objects !== ''){
+              for(var i=0;i<res.data.objects.length;i++){                
+                this.remove1(res.data.objects[i].id)
+              }
+            }
+
+          }).catch((err) => {
+
+          })
       },
       addPersonnel1(){
         this.members = []
         let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/client/org/userpage',{
+        this.$http.post(this.GLOBAL.serverSrc+'/api/org/userpage',{
         "object": {
           "isDeleted": 0,
         },
@@ -545,10 +568,9 @@ methods: {
         this.tableData = []
         this.addInput.ParentID = a.id
         this.addInput.topDepartment = a.label
-        this.updata.departmentName = a.label
         this.Parents = a
         var _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
+        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
             "Object": {
               "ParentID" : a.id
             }
@@ -571,7 +593,7 @@ methods: {
       loadNode(node, resolve){
         this.data = []
         let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
+        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
           "Object": {
             "ParentID" : -1
           }
@@ -612,7 +634,7 @@ methods: {
       getUser(key,label,id,isLeaf,resolve) {
         this.data1 = []
         let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
+        this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
             "Object": {
                 "ParentID" : id
             }
@@ -665,106 +687,28 @@ methods: {
         let _this = this
       },
       // 编辑部门
-      editDepartment1(){
+      editDepartment1(id){
         this.editDepartment = true
-        console.log(this.data)
+         this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptget',{
+            "object": {
+              "id": id
+            }
+         }).then((res) => {
+          this.updata.orgName = res.data.objects[0].orgName
+          this.updata.departmentCode = res.data.objects[0].orgCode
+          this.updata.sort = res.data.objects[0].rank
+          this.updata.phone = res.data.objects[0].officeTel
+          this.updata.fax = res.data.objects[0].officeFax
+          this.updata.note = res.data.objects[0].mark
+          this.updata.lastStage = String(res.data.objects[0].isLeaf);
+         }).catch((err) => {
+
+         })
         // this.options = this.data
       },
       handleCurrentChange(currentPage) {
         this.currentPage = currentPage;
         this.addPersonnel1()
-      },
-      // 编辑部门
-      department(a) {
-        this.options1 = [];
-        let num = String(a);
-        let c = ',';
-        let str = num.substring(num.indexOf(",") + 1,num.length);
-        let str1 = str.indexOf(",") !== -1 ?str.substring(str.indexOf(",") + 1,str.length) :num.substring(num.indexOf(",") + 1,num.length);
-        var regex = new RegExp(c, 'g');
-        var result = num.match(regex);
-        var count = !result ? 0 : result.length;
-        this.keyID = []
-        let _this = this
-        this.$http.post(this.GLOBAL.serverSrc+'/client/org/deptlist',{
-            "Object": {
-                "ParentID" : a[a.length - 1][0].id
-            }
-        }).then((response) => {
-                console.log(response);
-                //console.log(response.data.objects.length+'循环长度')
-
-            for(let i=0;i<response.data.objects.length;i++){
-
-                _this.options1.push({
-                    label: response.data.objects[i].orgName,
-                    id: response.data.objects[i].id,
-                    key: i,
-                    cities:[],
-                    value: [{
-                        label: response.data.objects[i].orgName,
-                        key: i,
-                        id: response.data.objects[i].id,
-                        isLeaf: response.data.objects[i].isLeaf,
-                  }]
-                })
-
-                // _this.options1[i].cities.push(1,2) 
-                //console.log(response.data.objects[i]);
-                //response.data.objects[i]
-
-            }
-
-            //console.log(_this.options1[0].cities)    
-            for(let i=0;i<response.data.objects.length;i++){
-
-               for(let j=0;j<_this.options1[i].cities.length;j++){
- 
-                        //console.log(response.data.objects[i])
-                       _this.options1[i].cities[j].push(response.data.objects[i]);
-                        //console.log(_this.options1[i].cities[j])    
-                }
-
-             }
-
-
-            // _this.data[0].cities = false
-
-
-            if(a.length == 1){
-                _this.options[a[0][0].key].cities = _this.options1;
-            } else if(a.length == 2){
-                _this.options[a[0][0].key].cities[a[1][0].key].cities = _this.options1;
-            } else if(a.length == 3){
-                _this.options[a[0][0].key].cities[a[1][0].key].cities[a[2][0].key].cities = _this.options1;
-            }
-            // if(a.length == 1){
-            //     _this.options[a[0][0].key].cities = _this.options1
-            //     console.log(_this.options)
-
-            // } else if(a.length == 2){
-            //     console.log( _this.options[a[0][0].key].cities[a[1][0].key])
-            //     _this.options[a[0][0].key].cities[a[1][0].key].cities = _this.options1
-            // }
-
-        //   for(let i=0;i<_this.options.length;i++){
-        //     _this.keyID.push(_this.options[i].id)
-        // }
-        //     if(_this.keyID.indexOf(a[0]) !== -1){
-        //               for(let k=0;k<response.data.objects.length;k++){
-        //                 _this.options[_this.keyID.indexOf(a[0])].cities.push({
-        //                     label: response.data.objects[k].orgName,
-        //                     id: response.data.objects[k].id,
-        //                     key: k,
-        //                     cities:[]
-        //                 })
-        //               }
-        //     }
-           
-          
-        }).catch((error) => {
-          console.log(error)
-        })
       },
       renderContent(h, { node, data, store }){
         if(data.isLeaf == 1){
@@ -796,7 +740,7 @@ methods: {
           var that = this
           // 获取顶级，第一级城市beg
           this.$http.post(
-            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            this.GLOBAL.serverSrc + "/api/org/deptlist",
             {
               'order': 'string',
               'object': {
@@ -822,6 +766,11 @@ methods: {
             .catch(function (obj) {
             })
         },
+        // 编辑部门弹窗
+        updataEditSave(){
+
+          // this.editDepartment = false
+        },
         HandChange1: function () {
           this.arr1 = this.value1.split('-')
           this.options2 = []
@@ -830,7 +779,7 @@ methods: {
           var that = this
           // 获取顶级，第一级城市beg
           this.$http.post(
-            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            this.GLOBAL.serverSrc + "/api/org/deptlist",
             {
               'order': 'string',
               'object': {
@@ -868,7 +817,7 @@ methods: {
           var that = this
           // 获取顶级，第一级城市beg
           this.$http.post(
-            this.GLOBAL.serverSrc + "/client/org/deptlist",
+            this.GLOBAL.serverSrc + "/api/org/deptlist",
             {
               'order': 'string',
               'object': {
