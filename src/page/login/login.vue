@@ -399,7 +399,7 @@ import axios from 'axios'
               "userCode": this.ruleForm.user,
               "passWord": this.ruleForm.password,
             }).then(res => {
-              this.GLOBAL.userId = res.data.id
+              store.save('userId',res.data.id)
               if(res.data===''){
                 alert('登录失败')
               }else{
@@ -410,9 +410,7 @@ import axios from 'axios'
 
             })
 
-            this.GLOBAL.token = res.data
-
-            store.save('token',this.GLOBAL.token)
+            store.save('token',res.data)
             // this.$router.push('/role')
             // this.$message.success('登录成功');
             
