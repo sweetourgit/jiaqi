@@ -156,7 +156,7 @@
 
 var store = {
 save(key,value) {
-window.sessionStorage.setItem(key,JSON.stringify(value))
+window.sessionStorage.setItem(key,value)
 },
 fetch(key) {
 return JSON.parse(sessionStorages.getItem(key)) || []
@@ -399,7 +399,9 @@ import axios from 'axios'
               "userCode": this.ruleForm.user,
               "passWord": this.ruleForm.password,
             }).then(res => {
+              console.log(res)
               store.save('userId',res.data.id)
+              store.save('name',res.data.name)
               if(res.data===''){
                 alert('登录失败')
               }else{
