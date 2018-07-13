@@ -7,7 +7,7 @@
           <div class="right">
            	<div class="icon el-icon-bell"></div>
             <div class="aa"></div>
-           		<div class="icon el-icon-service"><span style="margin:0 0 0 10px;">账号名称</span></div>
+           		<div class="icon el-icon-service"><span style="margin:0 0 0 10px; cursor:pointer;" @click="listUser">{{name}}</span></div>
               <div class="bb"></div>
            		<div v-on:click="submit" class="icon1">退出</div>
           </div>
@@ -18,14 +18,22 @@
     export default {
     	data () {
     	    return {
-	        
+            name: ''
 	    }
 	    },
+      created (){
+        this.name = sessionStorage.getItem('name')
+      },
 	    methods: {
 	            submit:function() {
 	                this.$router.push({ path: '/login' })
-                  this.GLOBAL.token = '';
-	            }
+                  sessionStorage.removeItem('token')
+                  sessionStorage.removeItem('userId')
+                  sessionStorage.removeItem('name')
+	            },
+              listUser() {
+                this.$router.push({ path: '/accountInfor' })
+              }
 	        }
     }
 
@@ -39,6 +47,8 @@
     .aa{float: left; width:30px; height:20px; border-left: solid 1px #CCCCCC;position: relative; top: 20px; right: 20px;}
     .el-icon-service{float:left; position: relative; top: 20px; right: 20px;}
     .bb{float: left; width:30px; height:20px; border-left: solid 1px #CCCCCC;margin: 20px 0 0 15px}
-    .icon1{float: right; margin: 20px 0 15px 0;}
+    .icon1{float: right; margin: 20px 0 15px 0; cursor:pointer;}
+    .icon1:hover{color: #409EFF;}
     .log{float: left; width: 200px; height: 60px; background: #0D142B;color:#fff;}
+    span:hover{color: #409EFF;}
 </style>
