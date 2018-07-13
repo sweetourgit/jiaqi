@@ -1,3 +1,6 @@
 export default {
-  num:0
+  isLogin:0,
+  token:"",
+  userId:""
+
 }
