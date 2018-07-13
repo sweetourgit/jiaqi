@@ -198,7 +198,7 @@ export default {
                   "id": 0
               }).then((res) => {
                 sessionStorage.setItem('name', this.form.name)
-                this.$message.success('修改成功！') 
+                this.$message.success('修改成功！');
                 location.reload()
               }).catch((err) => {
                 console.log(err)
