@@ -7,7 +7,7 @@
           <div class="right">
            	<div class="icon el-icon-bell"></div>
             <div class="aa"></div>
-           		<div class="icon el-icon-service"><span style="margin:0 0 0 10px; cursor:pointer;" @click="listUser">{{name}}</span></div>
+           		<div class="icon el-icon-service"><span id="nameNum" @click="listUser">{{name}}</span></div>
               <div class="bb"></div>
            		<div v-on:click="submit" class="icon1">退出</div>
           </div>
@@ -51,4 +51,5 @@
     .icon1:hover{color: #409EFF;}
     .log{float: left; width: 200px; height: 60px; background: #0D142B;color:#fff;}
     span:hover{color: #409EFF;}
+    #nameNum{margin:0 0 0 10px; cursor:pointer;}
 </style>
