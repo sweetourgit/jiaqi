@@ -185,7 +185,7 @@ export default {
                     "createTime": "2018-06-20T09:35:52.822Z",
                     "isDeleted": 0,
                     "code": "string",
-                    "passWord": "a12345",
+                    "passWord": this.form.passWord,
                     "mobile":this.form.mobile,
                     "name": this.form.name,
                     "email": this.form.email,
@@ -197,7 +197,9 @@ export default {
                   },
                   "id": 0
               }).then((res) => {
-                this.$message.success('修改成功！') 
+                sessionStorage.setItem('name', this.form.name)
+                this.$message.success('修改成功！');
+                document.getElementById('nameNum').innerHTML = this.form.name
               }).catch((err) => {
                 console.log(err)
               })

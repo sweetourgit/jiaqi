@@ -1,15 +1,15 @@
 <template>
- 
+
 <div class="app">
-  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> 
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="renderer" content="webkit|ie-comp|ie-stand">   -->
   <div class="top">
     <div style="float:left">
       <span class="top-titleone">嘉麒集团</span>
-      <span class="top-titletwo">通行证</span>   
+      <span class="top-titletwo">通行证</span>
     </div>
   </div>
- 
+
   <div class="big">
      <!-- <div class="title">嘉麒集团应用管理中心系统</div> -->
   <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="80px" class="demo-ruleForm login-container" v-show="show">
@@ -18,11 +18,11 @@
        <div class="forget-account">用户登录</div>
       <div class="forget-border"></div>
      </div>
-      
-    
+
+
      <el-button type="text" class="form-forget" @click="forget">忘记密码</el-button>
-     
-     <el-form-item prop="user" class="user-input"> 
+
+     <el-form-item prop="user" class="user-input">
       <!-- <div><img src="../../../static/login/user.png" class="img" style="width:35px;"></div> -->
       <el-input  v-model="ruleForm.user" placeholder="用户名/邮箱"></el-input>
     </el-form-item>
@@ -36,16 +36,16 @@
       <img src="../../../static/login-verify/number.png" alt="" class="verify-img">
     </div>
         <!-- 验证码 -->
-       
-    
+
+
       <!-- <router-link to="/role"> </router-link> -->
 
-      <el-button type="primary" class="button" @click="loginForm('ruleForm')">登录</el-button>
+      <el-button type="primary" @keydown.enter="loginForm('ruleForm')" class="button" @click="loginForm('ruleForm')">登录</el-button>
 
          <el-checkbox class="remember" >记住密码</el-checkbox>
     </el-form>
 
-    
+
     <!-- 忘记密码之手机验证 -->
     <el-form ref="phoneruleForm" :model="phoneruleForm" :rules="phonerules" label-width="80px" class="demo-ruleForm login-forget"   v-show="phoneShow">
      <span class="forget-title">嘉麒应用管理中心</span>
@@ -56,11 +56,11 @@
      </div>
      <!-- 立刻登录 -->
      <el-button type="text" class="form-forget" @click="login">立刻登录</el-button>
-     
-    
+
+
    <div class="input-with-select">
 
-     
+
        <el-form-item prop="phone">
         <el-input placeholder="请输入手机号码"   v-model="phoneruleForm.phone">
         <!-- 检测值的改变 -->
@@ -68,13 +68,13 @@
               <el-option label="手机号" value="0"></el-option>
               <el-option label="邮箱" value="1"></el-option>
             </el-select>
-            
+
           </el-input>
-           
+
         </el-form-item>
         <!-- <el-button type="primary" @click="send" v-if="!sendMsgDisabled" class="phone-button" ><span style="margin-right:0px">获取验证码</span></el-button>
           <el-button type="primary" plain disabled @click="send" v-if="sendMsgDisabled" class="phone-button">{{time}}S后获取</el-button> -->
-  
+
 </div>
 <!-- 手机验证码 -->
   <div>
@@ -82,7 +82,7 @@
           <el-input  placeholder="请输入手机验证码" v-model="phoneruleForm.phoneVerification"   >
         <el-button slot="append" @click="send" v-if="!sendMsgDisabled" class="phone-button" ><span style="margin-right:0px">获取验证码</span></el-button>
         <el-button slot="append" plain disabled @click="send" v-if="sendMsgDisabled" class="phone-button">{{time}}S后获取</el-button>
-            
+
           </el-input>
        </el-form-item>
        <el-form-item class="verify-buttom">
@@ -98,7 +98,7 @@
       <div class="forget-border"></div>
      </div>
      <el-button type="text" class="form-forget" @click="login">立刻登录</el-button>
-     
+
 <div class="input-with-email" >
    <el-form-item prop="email">
    <el-input placeholder="请输入邮箱号码" v-model="emailruleForm.email"  >
@@ -121,30 +121,30 @@
       <div class="forget-border"></div>
      </div>
      <el-button type="text" class="form-forget" @click="login" >立刻登录</el-button>
-     
+
 <div   >
- 
+
    <el-form-item prop="newpassword" class="input-with-newpassword">
    <el-input type="password" placeholder="请输入新密码" v-model="passwordruleForm.newpassword"  ></el-input>
    </el-form-item>
    <el-form-item prop="repassword" class="input-with-repassword">
    <el-input type="password" placeholder="请再次输入密码" v-model="passwordruleForm.repassword"  >
-  
-    
-    
+
+
+
   </el-input>
   </el-form-item>
- 
-  
+
+
 </div>
-<el-form-item class="newbuttom"> 
+<el-form-item class="newbuttom">
        <el-button type="primary" class="next-button-email" @click="newSubmitForm('passwordruleForm')" >下一步</el-button>
      </el-form-item>
 </el-form>
-  
-  
-  
-  
+
+
+
+
 <div class="foot">
     Copy right @2018 嘉麒集团版权所有 辽ICP备辽B2 - 20150118
   </div>
@@ -201,16 +201,16 @@ import axios from 'axios'
         user: '',
         password: '',
         verification: '',
-       
-    
-        
+
+
+
      },
     //  手机验证
      phoneruleForm: {
         // email: '',
          phone: '',
         phoneVerification: '',
-       
+
      },
     // 邮箱验证
     emailruleForm: {
@@ -219,7 +219,7 @@ import axios from 'axios'
     // //  新密码和重复密码
     passwordruleForm:{
         newpassword:'',
-        repassword:'', 
+        repassword:'',
 },
       // 邮箱和手机
       phonerules:{
@@ -260,12 +260,12 @@ import axios from 'axios'
         verification: [
         // { required: true, message: '请输入验证码', trigger: 'blur' },
         { validator: checkAge, trigger: 'blur' }
-       
+
       ],
-        
-     
-     
-     
+
+
+
+
      },
      //登录首页验证码
         checkCode: "",
@@ -274,7 +274,7 @@ import axios from 'axios'
         //  邮箱找回JS
         emailTableVisible: false,
         emailFormVisible: false,
-       
+
         //  手机号码找回JS
         phoneTableVisible: false,
         phoneFormVisible: false,
@@ -282,15 +282,15 @@ import axios from 'axios'
         // 设置新密码
         newpasswordTableVisible: false,
         newpasswordFormVisible: false,
-        
+
         // 发送验证码倒计时
-         time: 60, 
+         time: 60,
          sendMsgDisabled: false,
         show:true,
    };
     },
-    
-  
+
+
     methods: {
       haha:function(a){
         if(a == '0'){
@@ -316,7 +316,7 @@ import axios from 'axios'
         // this.time = 60;
         // this.time = 0;
         // console.log(this.show)
-      
+
         // console.log(this.show)
         // console.log(this.phoneShow)
       },
@@ -327,7 +327,7 @@ import axios from 'axios'
               // this.$message.success('验证信息已经发送到您的邮箱,请通过验证邮件修改密码!');
               this.$alert('验证信息已经发送到您的邮箱,请通过验证邮件修改密码!', {
               confirmButtonText: '确定',
-              });      
+              });
               this.emailruleForm.email = ''
               this.emailShow = false;
               this.newpasswordShow = true;
@@ -344,15 +344,15 @@ import axios from 'axios'
             phoneSubmitForm(formName) {
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              this.$message.success('验证成功!');      
+              this.$message.success('验证成功!');
               this.phoneruleForm.phone = ''
               this.phoneruleForm.phoneVerification = ''
               this.phoneShow = false;
               this.newpasswordShow = true;
             } else {
               this.$message.error('验证失败');
-              this.phoneruleForm.phone = ''              
-              this.phoneruleForm.phoneVerification = ''    
+              this.phoneruleForm.phone = ''
+              this.phoneruleForm.phoneVerification = ''
               return false;
             }
           });
@@ -367,7 +367,7 @@ import axios from 'axios'
               this.show = true;
               this.phoneShow = false;
               this.passwordruleForm.newpassword = '';
-              this.passwordruleForm.repassword = '';                          
+              this.passwordruleForm.repassword = '';
             } else {
               console.log('验证失败');
               return false;
@@ -380,8 +380,8 @@ import axios from 'axios'
 
           // this.$refs[formName].validate((valid) => {
           //   if (valid) {
-          //     this.$message.error('登录失败');              
-              
+          //     this.$message.error('登录失败');
+
           //   } else {
           //     this.$message.success('登录成功');
           //     return false;
@@ -391,7 +391,7 @@ import axios from 'axios'
           axios.post('http://api.dayuntong.com:6003/api/auth/token',{
               'userName': this.ruleForm.user,
               'passWord': this.ruleForm.password,
-              
+
 
           })
           .then(res=>{
@@ -414,20 +414,20 @@ import axios from 'axios'
             store.save('token',res.data)
             // this.$router.push('/role')
             // this.$message.success('登录成功');
-            
-            
+
+
           })
           .catch(error =>{
             this.$message.error('登录失败');
           })
         },
-        
-      
+
+
 
       //手机验证码倒计时
       send() {
         if(this.phoneruleForm.phone === ''){
-          this.$message.error('手机号为空！') 
+          this.$message.error('手机号为空！')
         } else {
           var str = this.phoneruleForm.phone
           var patt = /^[1][3,4,5,7,8][0-9]{9}$/
@@ -437,7 +437,7 @@ import axios from 'axios'
             // this.$message.success("验证码已经发送到您的手机,请您注意接收,防止泄露.")
             this.$alert('验证码已经发送到您的手机,请您注意接收,防止泄露.', {
           confirmButtonText: '确定',
-         
+
         });
             let interval = window.setInterval(function() {
             if ((me.time--) <= 0) {
@@ -445,24 +445,24 @@ import axios from 'axios'
               me.sendMsgDisabled = false;
               window.clearInterval(interval);
             }
-            }, 1000); 
+            }, 1000);
           } else {
-            this.$message.error('请填写正确的手机号！') 
+            this.$message.error('请填写正确的手机号！')
           }
         }
     },
     // 立刻登录
     login() {
-        this.show = true;     
-        this.emailShow = false; 
+        this.show = true;
+        this.emailShow = false;
         this.newpasswordShow = false;
         this.phoneShow = false;
     }
   }
-    
- 
+
+
     }
-   
+
   </script>
 
 <style lang="scss" scoped>
@@ -512,7 +512,7 @@ import axios from 'axios'
   background-repeat: no-repeat
 
 }
- 
+
   .title{
     text-align: center;
     padding-top:5%;
@@ -535,7 +535,7 @@ position: absolute;
     -moz-border-radius: 5px;
     background-clip: padding-box;
     // margin: 0 auto;
-    
+
     float: right;
     height:430px;
     width: 430px;
@@ -545,7 +545,7 @@ position: absolute;
     box-shadow: 0 0 25px #cac6c6;
     background-color:rgba(255,255,255,.7);
     // display:true;
-    
+
   }
   .login-forget{
 position: absolute;
@@ -553,7 +553,7 @@ position: absolute;
     border-radius: 10px;
     -moz-border-radius: 5px;
     background-clip: padding-box;
-    
+
     // margin: 0 auto;
     float: right;
     height:320px;
@@ -563,11 +563,11 @@ position: absolute;
     // border: 1px solid #eaeaea;
     box-shadow: 0 0 25px #cac6c6;
     background-color:rgba(255,255,255,.7);
-    
+
   }
   .login-group{
     position:absolute;
-    height:20%;    
+    height:20%;
     float:left;
     // top:10%;
     left: 3%;
@@ -576,7 +576,7 @@ position: absolute;
   .login-account{
       position:relative;
       // float:left;
-      // width:25%; 
+      // width:25%;
       left: 30%;
       top:22%;
       color: #008FF4;
@@ -601,7 +601,7 @@ position: absolute;
       font-size:20px;
       // border-bottom: #008FF4 solid 3px;
   }
-  
+
   .form-forget{
    position:relative;
      float: right;
@@ -629,16 +629,16 @@ position: absolute;
     .user-input{
       position:relative;
       margin-top:5%;
-      float:left; 
+      float:left;
       width:100%;
-      right: 10%; 
+      right: 10%;
     }
     .password-input{
       position:relative;
-      float:left; 
+      float:left;
       width:100%;
-      
-      right: 10%; 
+
+      right: 10%;
     }
     .verification-input{
       position:relative;
@@ -657,7 +657,7 @@ position: absolute;
      right:60px;
      height:41px;
      width:100px;
-     
+
   }
     .button{
       position: relative;
@@ -715,7 +715,7 @@ position: absolute;
     .forget{
        position:relative;
       float:right;
-      
+
       right:37px;
       top:8px;
     }
@@ -727,14 +727,14 @@ position: absolute;
      text-align: center;
      color: #444;
      font-size:24px;
-       
+
     }
     .login-button{
 
       text-align:center;
     }
-   
-  
+
+
     .foot{
       position: fixed;
       bottom:0px;
@@ -746,12 +746,12 @@ position: absolute;
       color: #666;
       font-size:18px;
   }
-  
+
   .phone{
     width:65%;margin:0 auto;
   }
   .phone-input{
-    position: relative;    
+    position: relative;
     width:300px;
     right:45px;
     margin-left:30px;
@@ -762,7 +762,7 @@ position: absolute;
     width:300px;
     right:103px;
     margin-left:30px;
-    
+
   }
   .phone-button{
     // position: relative;
@@ -771,7 +771,7 @@ position: absolute;
     // bottom:62px;
     // height:40px;
     // text-align:center;
-   
+
   }
  .email{
    width:50%;
@@ -793,7 +793,7 @@ position: absolute;
   }
   // 手机验证码输入框
   .input-verify{
-    position:relative;    
+    position:relative;
     width:50%;
     margin-top:10%;
     margin-left:4%;
@@ -817,13 +817,13 @@ position: absolute;
     // position: absolute;
     margin-top:90px;
     width:80%;
-   
+
   }
   .input-with-repassword{
     // position: absolute;
     margin-top:20px;
     width:80%;
-   
+
   }
   .newbuttom{
     // position: relative;
@@ -833,7 +833,7 @@ position: absolute;
   .forget-group{
      position:relative;
     height:12%;
-    margin-top:11%;    
+    margin-top:11%;
     float:left;
     // top:15%;
     left: 3%;
@@ -844,11 +844,11 @@ position: absolute;
     float: left;
     top: 20%;
   }
-  
+
   .forget-account{
      position:relative;
       // float:left;
-      // width:25%; 
+      // width:25%;
       left: 30%;
       top:5px;
       color: #008FF4;
