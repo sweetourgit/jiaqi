@@ -96,7 +96,7 @@ export default {
   created (){
     this.$http.post(this.GLOBAL.serverSrc+'/api/org/userget',{
       "object":{
-        "id": 94,
+        "id": sessionStorage.getItem('userId'),
       }
     }).then((res) => {
       this.form = res.data.objects[0]

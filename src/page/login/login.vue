@@ -156,10 +156,10 @@
 
 var store = {
 save(key,value) {
-window.localStorage.setItem(key,JSON.stringify(value))
+window.sessionStorage.setItem(key,value)
 },
 fetch(key) {
-return JSON.parse(localStorage.getItem(key)) || []
+return JSON.parse(sessionStorages.getItem(key)) || []
 }
 }
 import axios from 'axios'
@@ -395,19 +395,26 @@ import axios from 'axios'
 
           })
           .then(res=>{
-             
-            console.log(res)
-            this.token = res.data
-            console.log(this.token)
-            store.save('token',this.token)
+            this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
+              "userCode": this.ruleForm.user,
+              "passWord": this.ruleForm.password,
+            }).then(res => {
+              console.log(res)
+              store.save('userId',res.data.id)
+              store.save('name',res.data.name)
+              if(res.data===''){
+                alert('登录失败')
+              }else{
+                this.$router.push('/role')
+                this.$message.success('登录成功');
+              }
+            }).catch(err => {
+
+            })
+            store.save('token',res.data)
             // this.$router.push('/role')
             // this.$message.success('登录成功');
-            if(res.data===''){
-              alert('登录失败')
-            }else{
-              this.$router.push('/role')
-              this.$message.success('登录成功');
-            }
+            
             
           })
           .catch(error =>{
@@ -494,16 +501,15 @@ import axios from 'axios'
 
 .big{
  overflow: hidden;
-  position: absolute;
+  position: fixed;
   width:100%;
-  height:90%;
+  height:90% !important;
   top: 10%;
   right: 20px;
   left:0px;
   // background:green;
   background-image:url('../../../static/login-img/login.png');
-  background-size: 100% 82%;
-
+  background-repeat: no-repeat
 
 }
  
