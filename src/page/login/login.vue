@@ -156,10 +156,10 @@
 
 var store = {
 save(key,value) {
-window.localStorage.setItem(key,JSON.stringify(value))
+window.sessionStorage.setItem(key,JSON.stringify(value))
 },
 fetch(key) {
-return JSON.parse(localStorage.getItem(key)) || []
+return JSON.parse(sessionStorages.getItem(key)) || []
 }
 }
 import axios from 'axios'
@@ -409,7 +409,6 @@ import axios from 'axios'
             }).catch(err => {
 
             })
-
             store.save('token',res.data)
             // this.$router.push('/role')
             // this.$message.success('登录成功');
