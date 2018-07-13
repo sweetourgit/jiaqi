@@ -40,7 +40,7 @@
 
       <!-- <router-link to="/role"> </router-link> -->
 
-      <el-button type="primary" class="button" @click="vuexclick">登录</el-button>
+      <el-button type="primary" @keydown.enter="loginForm('ruleForm')" class="button" @click="loginForm('ruleForm')">登录</el-button>
 
          <el-checkbox class="remember" >记住密码</el-checkbox>
     </el-form>
@@ -292,12 +292,6 @@ import axios from 'axios'
 
 
     methods: {
-      vuexclick(){
-        this.$store.commit("changeLogin", '1')
-        this.$store.commit('savaToken','dasdsadsa')
-
-    this.$router.push('./role')
-      },
       haha:function(a){
         if(a == '0'){
           this.emailShow = false
