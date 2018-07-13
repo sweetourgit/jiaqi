@@ -271,7 +271,7 @@
         this.pagesize = val
         this.currentPage = 1
         this.$http.post(
-          this.GLOBAL.serverSrc + "/client/org/userpage",
+          this.GLOBAL.serverSrc + "/api/org/userpage",
           // "http://api.dayuntong.com:3009/api/org/userpage",
           {
             "object": {
@@ -322,7 +322,7 @@
       handleCurrentChange(val) {
         var that = this
         this.$http.post(
-          this.GLOBAL.serverSrc + "/client/org/userpage",
+          this.GLOBAL.serverSrc + "/api/org/userpage",
           // "http://api.dayuntong.com:3009/api/org/userpage",
           {
             "object": {
@@ -375,7 +375,7 @@
        //搜索
        var that = this
        this.$http.post(
-         this.GLOBAL.serverSrc + "/client/org/userpage",
+         this.GLOBAL.serverSrc + "/api/org/userpage",
          // "http://api.dayuntong.com:3009/api/org/userpage",
          {
            "object": {
@@ -453,7 +453,7 @@
      //用户列表
      var that = this
       this.$http.post(
-        this.GLOBAL.serverSrc + "/client/org/userpage",
+        this.GLOBAL.serverSrc + "/api/org/userpage",
        {
          "object": {
            "isDeleted": 0,
