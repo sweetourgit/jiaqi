@@ -387,12 +387,9 @@ import axios from 'axios'
           //     return false;
           //   }
           // });
-
           axios.post('http://api.dayuntong.com:6003/api/auth/token',{
               'userName': this.ruleForm.user,
               'passWord': this.ruleForm.password,
-
-
           })
           .then(res=>{
             this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
@@ -403,13 +400,15 @@ import axios from 'axios'
               store.save('userId',res.data.id)
               store.save('name',res.data.name)
               if(res.data===''){
-                alert('登录失败')
+                this.$message.error('用户名或密码错误');
+                
               }else{
                 this.$router.push('/role')
                 this.$message.success('登录成功');
               }
             }).catch(err => {
-
+                this.$message.error('登录失败2');
+              
             })
             store.save('token',res.data)
             // this.$router.push('/role')
