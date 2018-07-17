@@ -416,6 +416,8 @@ methods: {
     },
     // 添加部门
     appendSave() {
+      console.log(this.tableData)
+      console.log(this.addInput)
         if(this.addInput.departmentNames === '' || this.addInput.departmentCode === '' || this.addInput.radio === '' || this.addInput.sort === '' || this.addInput.phone === '' || this.addInput.fax === ''){
             this.$message.warning('红☆为必填选项，请认真填写！')
         }else{
@@ -436,11 +438,16 @@ methods: {
                 "isLeaf": this.addInput.lastStage,
             }
           }).then(function(response){
-            // console.log(response)
             _this.addSubdivision =  false
+            let num = Object();
+            num.id = _this.addInput.ParentID
+            num.isLeaf = _this.addInput.lastStage
+            num.key = 0
+            num.label = _this.addInput.topDepartment
+            _this.treeClick(num)
             _this.addInput.departmentNames = ""
+            _this.$refs['addInput'].resetFields()
             _this.$message.success('添加成功')
-            _this.TreeData()
             }).catch(function(error){
               console.log(error);
             });
@@ -491,14 +498,14 @@ methods: {
       },
       // 删除当前部门的子级部门
       remove1(id, index){
-        this.tableData.splice(index, 1)
+        var _this = this
         this.deleteNum.push(id)
         this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptdelete',{
                 "id" : id
             })
             .then(function(response){
-              this.tableData.splice(index, 1)
-              this.$message({
+              _this.tableData.splice(index, 1)
+              _this.$message({
               type: 'success',
               message: '删除成功!'
               });
@@ -571,7 +578,6 @@ methods: {
               "ParentID" : a.id
             }
         }).then((response) =>{
-          console.log(response)
             for(let i=0;i<response.data.objects.length;i++){
               if(response.data.objects[i].isDeleted !== 1){
                _this.tableData.push({
@@ -1196,6 +1202,6 @@ methods: {
 .el-dialog__wrapper>>>.el-dialog
   width: 400px;
 .popup>>>.el-dialog
-  width 800px
+  width 850px
 
 </style>
