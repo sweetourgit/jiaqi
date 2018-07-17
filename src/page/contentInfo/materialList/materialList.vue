@@ -3,7 +3,7 @@
     <div class="big">
           <div class="header">
         <div class="header_add">
-          <el-button type="primary" @click="addAlbum">添加酒店</el-button>
+          <el-button type="primary" @click="addAlbum = true">添加相册</el-button>
         </div>
         <div class="header_seach">
           <div class="search-input">
@@ -36,7 +36,7 @@
                     <!-- 图片标签 -->
                     <div class="label">标签</div>
                     <!-- 图片数量 -->
-                    <div class="number">5张</div>
+                    <div class="number">{{(img.name)}}张</div>
                 </div>
                 <!-- 景点名称 -->
                 <div class="address-name">
@@ -105,7 +105,7 @@
             v-for="small in num" 
             :key="small.name" 
             :class="{'classa': small.name == classa}"
-            @click="select(small.name,small.imgs)" >
+            @click="select(small.name,small.imgs,small.title)" >
             <img style="width:100%;height:100%;" :src="small.imgs" alt="">
             <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
             
@@ -121,7 +121,7 @@
           <div class="blue-box"></div>
           <div class="album-text">相册信息</div>
         </div>
-        <div class="album-name">{{marterialist[0].title}}</div>
+        <div class="album-name">{{this.title}}</div>
         <div class="album-form">
             <el-form :model="albumForm"  ref="albumForm" label-width="100px" >
               <el-form-item label="类型 :">
@@ -153,7 +153,7 @@
          <div class="album-form">
             <el-form :model="materialForm"  ref="materialForm" label-width="100px" >
               <el-form-item label="名称 :" prop="name" >
-                <el-input v-model="materialForm.name" placeholder="请输入素材名称"></el-input>
+                <el-input  v-model="this.album" placeholder="请输入素材名称"></el-input>
                 </el-form-item>
             </el-form>
             <div style="width:200px;height:100px;margin-left:50px;">
@@ -192,7 +192,7 @@
         <div class="material-small-img"  v-for="small in num"  :key="num.name"
             
            
-            @click="select(small.name,small.imgs)" >
+            @click="select(small.name,small.imgs,small.title)" >
            <span  style="position:relative;margin-left:285px;top:20px" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
             
             <img  :class="{'classa': small.name == classa}" style="width:100%;height:100%;" :src="small.imgs" :key="num.name"  alt="">
@@ -210,7 +210,7 @@
          <div class="album-form">
             <el-form :model="materialForm"  ref="materialForm" label-width="100px" >
               <el-form-item label="名称 :" prop="name">
-                <el-input v-model="materialForm.name" placeholder="请输入素材名称"></el-input>
+                <el-input v-model="this.album" placeholder="请输入素材名称"></el-input>
                 </el-form-item>
             </el-form>
             <div style="width:200px;height:100px;margin-left:50px;">
@@ -245,7 +245,7 @@
           <el-checkbox  class="label-check" :label="item.title" :v-model="item.checked" v-for="item in list.LabelIn" :key="item.key"></el-checkbox>        
         </div>
          <div class="material-button">
-              <el-button  style="width:100px;">取消</el-button>
+              <el-button  style="width:100px;" @click="LabelCancel">取消</el-button>
               <el-button type="primary" style="width:100px;">添加 </el-button>
         </div>
       </div>  
@@ -267,6 +267,7 @@
     data() {
         
       return {
+        
         // 选中
         classa:'',
         addName:'',
@@ -319,27 +320,35 @@
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
           smallImg:[{
           name:'0',
+          title:'思考',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184051405126879.jpg',
         },{
           name:'1',
+          title:'玄冰',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183733373374610.jpg',
         },{
           name:'2',
+          title:'冰洞',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
         },{
           name:'3',
+          title:'山洞',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183432343253991.jpg',
         },{
           name:'4',
+          title:'潜水',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_18380238220394.jpg',
         },{
           name:'5',
+          title:'城堡',
           imgs:'http://img06.tooopen.com/images/20180603/tooopen_sy_241646862134.jpg',
         },{
           name:'6',
+          title:'悬崖',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183919391998803.jpg',
         },{
           name:'7',
+          title:'乌云',
           imgs:'http://img06.tooopen.com/images/20180320/tooopen_sy_236629122223.jpg',
         }],
         },{
@@ -348,9 +357,11 @@
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
           smallImg:[{
           name:'0',
+          title:'玄冰',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183733373374610.jpg',
         },{
           name:'1',
+          title:'冰洞',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
         }],
        },{
@@ -359,9 +370,11 @@
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
           smallImg:[{
           name:'0',
+          title:'冰洞',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
         },{
           name:'1',
+          title:'潜水',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183241324193657.jpg',
         }],
         },{
@@ -370,9 +383,11 @@
           img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
           smallImg:[{
           name:'0',
+          title:'山洞',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183651365152058.jpg',
         },{
           name:'1',
+          title:'洞穴',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
         }],
        }],
@@ -680,14 +695,10 @@
         }, 500);
       },
       // 选择相册其他照片
-     select(a,b){
-      //  alert(123);
-      // alert(this.smallImg.key);
+     select(a,b,c){
        this.classa = a;
-      //  alert(b);
-      //  this.addressImg.img == b;
        this.addressImg = b;
-      //  alert(this.addressImg);
+       this.album = c;
      },
     //  点击封面进入相册
      addAlbumImg1(i){
@@ -695,6 +706,8 @@
           this.num = this.marterialist[i].smallImg;
           this.select(this.marterialist[i].smallImg[0].name,this.marterialist[i].smallImg[0].imgs); 
           this.bb = i;
+          this.title = this.marterialist[i].title;
+          this.album = this.marterialist[i].smallImg[0].title;
           },
     // 添加标签
     NewLabel(i){
@@ -702,7 +715,13 @@
       if(text){
         this.Label[i].LabelIn.push({title:text});
         this.labelAdd = '';
-      }
+       }
+      },
+    // 取消添加标签
+    LabelCancel(a){
+        this.addLabel = false;
+        this.$refs[a].jj.resetFields();
+
       }
     },
     
