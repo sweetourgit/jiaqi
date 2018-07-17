@@ -59,7 +59,7 @@
               <!-- <span class="cascaderTitle">上级部门</span>
               <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader> -->
 
-              
+
                         <el-form-item label="父级部门:" class="form-la">
                          <el-select v-model="value" placeholder="请选择" @change="HandChange()" class="form-xi">
                            <el-option
@@ -138,12 +138,12 @@
           </div>
           <div slot="footer" class="operation">
           <el-button class="btn_foot" @click="editDepartment = false">取 消</el-button>
-          <el-button class="btn_foot" type="primary" @click="updataEditSave">保存</el-button>
+          <el-button class="btn_foot" type="primary" @click="updataEditSave(updata)">保存</el-button>
           <el-button class="btn_foot" type="danger" @click="remove = false">删除</el-button>
           </div>
         </el-dialog>
         <!-- 添加子部门弹框 -->
-        <el-dialog class="Popup" :visible.sync="addSubdivision" style="width:900px;">
+        <el-dialog class="Popup" :visible.sync="addSubdivision">
             <el-form :model="addInput" :rules="rules" status-icon ref="addInput">
                 <el-form-item label="部门名称" :label-width="Width" prop="name">
                     <el-input v-model="addInput.name" auto-complete="off" class="add-input"></el-input>
@@ -185,11 +185,11 @@
             </div>
         </el-dialog>
         <!-- 添加成员弹框 -->
-        <el-dialog  class="Popup" :visible.sync="addPersonnel" style="width:90%;height:105%;">
+        <el-dialog  class="popup" :visible.sync="addPersonnel">
             <div class="kk">
             <div class="booms">
                 <span class="addTitle">添加成员</span>
-                <el-form :model="updata">
+                <el-form class="from-content" :model="updata">
                     <el-form-item :label-width="LabelWidth">
                         <el-input v-model="person.search" auto-complete="off" class="searchInput" placeholder="输入名称检索"></el-input>
                     </el-form-item>
@@ -216,7 +216,7 @@
             </div>
         </el-dialog>
         <!-- 设置职位弹框 -->
-        <el-dialog class="Popup" title="设置职位" :visible.sync="position" style="width:800px;">
+        <el-dialog class="Popup" title="设置职位" :visible.sync="position">
             <el-form :model="setPosition">
                 <el-form-item label="姓名" :label-width="setLabelWidth" class="setinput">
                     <el-input v-model="setPosition.name" auto-complete="off" :disabled="true"></el-input>
@@ -419,33 +419,31 @@ methods: {
         if(this.addInput.departmentNames === '' || this.addInput.departmentCode === '' || this.addInput.radio === '' || this.addInput.sort === '' || this.addInput.phone === '' || this.addInput.fax === ''){
             this.$message.warning('红☆为必填选项，请认真填写！')
         }else{
-            
-                var _this = this
-                this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptinsert',{
-                    "object": {
-                        "id": 0,
-                        "orgName": this.addInput.name,
-                        "isDeleted": 0,
-                        "code": "string",
-                        "parentID": this.addInput.ParentID,
-                        "physical": 0,
-                        "orgCode": 0,
-                        "rank": this.addInput.sort,
-                        "officeTel": this.addInput.phone,
-                        "officeFax": this.addInput.fax,
-                        "mark": this.addInput.note,
-                        "isLeaf": this.addInput.lastStage,
-                    }
-                 }
-                 ).then(function(response){
-                    console.log(response)
-                    _this.TreeData()
-                  }).catch(function(error){
-                    console.log(error);
-                  });
-                this.addSubdivision =  false
-                this.addInput.departmentNames = ""
-                this.$message.success('添加成功')
+          var _this = this
+          this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptinsert',{
+            "object": {
+                "id": 0,
+                "orgName": this.addInput.name,
+                "isDeleted": 0,
+                "code": "string",
+                "parentID": this.addInput.ParentID,
+                "physical": 0,
+                "orgCode": 0,
+                "rank": this.addInput.sort,
+                "officeTel": this.addInput.phone,
+                "officeFax": this.addInput.fax,
+                "mark": this.addInput.note,
+                "isLeaf": this.addInput.lastStage,
+            }
+          }).then(function(response){
+            // console.log(response)
+            _this.addSubdivision =  false
+            _this.addInput.departmentNames = ""
+            _this.$message.success('添加成功')
+            _this.TreeData()
+            }).catch(function(error){
+              console.log(error);
+            });
             }
     },
     qq(a){
@@ -510,8 +508,6 @@ methods: {
             })
 
 
-
-
         this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptlist',{
             "object":{
               "parentID" : id
@@ -519,7 +515,7 @@ methods: {
           }).then((res) => {
             // console.log(res.data.objects)
             if(res.data.objects !== ''){
-              for(var i=0;i<res.data.objects.length;i++){                
+              for(var i=0;i<res.data.objects.length;i++){
                 this.remove1(res.data.objects[i].id)
               }
             }
@@ -575,6 +571,7 @@ methods: {
               "ParentID" : a.id
             }
         }).then((response) =>{
+          console.log(response)
             for(let i=0;i<response.data.objects.length;i++){
               if(response.data.objects[i].isDeleted !== 1){
                _this.tableData.push({
@@ -694,6 +691,7 @@ methods: {
               "id": id
             }
          }).then((res) => {
+          this.updata = res.data.objects[0]
           this.updata.orgName = res.data.objects[0].orgName
           this.updata.departmentCode = res.data.objects[0].orgCode
           this.updata.sort = res.data.objects[0].rank
@@ -767,8 +765,35 @@ methods: {
             })
         },
         // 编辑部门弹窗
-        updataEditSave(){
-
+        updataEditSave(updata){
+          console.log(updata)
+          let _this = this;
+            this.$http.post(this.GLOBAL.serverSrc+'/api/org/deptsave',{
+              "object": {
+                        "id": this.updata.id,
+                        "orgName": this.updata.orgName,
+                        "isDeleted": 0,
+                        "code": "string",
+                        "parentID": this.updata.parentID,
+                        "physical": 0,
+                        "orgCode": 0,
+                        "rank": this.updata.rank,
+                        "officeTel": this.updata.officeTel,
+                        "officeFax": this.updata.officeFax,
+                        "mark": this.updata.mark,
+                        "isLeaf": this.updata.isLeaf,
+                        "loadLeader": true,
+                        "createUser": "string",
+                        "createTime": "2018-07-16T01:23:50.963Z"
+                    },
+                    "id": 0
+            }).then(function(response){
+              console.log(response)
+                _this.$message.success('修改成功！')
+                _this.editDepartment = false
+            }).catch(function(error){
+            console.log(error);
+            });
           // this.editDepartment = false
         },
         HandChange1: function () {
@@ -857,7 +882,7 @@ methods: {
 }
 </script>
 
-<style scoped>
+<style scoped lang='stylus'>
 .organizationInput{
     right: 17%
 }
@@ -967,7 +992,7 @@ methods: {
 }
 .btn-boom{
   position: absolute;
-  width: 100%; 
+  width: 100%;
   height: 8%;
   top: 62.8%;
 }
@@ -975,7 +1000,7 @@ methods: {
     position: absolute;
     left: 4%;
     top: 73.5%;
-    width: 88%; 
+    width: 88%;
     height: 25%;
 }
 .cascader{
@@ -1144,24 +1169,23 @@ methods: {
   top: -5px
 }
 .eidt-virtual{
-margin-top:25px;
-margin-left: 21.5px;
+ margin-top:25px;
+  margin-left: 21.5px;
 }
 .updata-virtual{
-position: relative;
-bottom: 5px;
-margin-left: 21.5px;
+  position: relative;
+  bottom: 5px;
+  margin-left: 21.5px;
 }
 .operation{
-overflow: hidden;
+  overflow: hidden;
 }
 .operation .btn_foot{
-float: left;
-margin-left: 33px
+  float: left;
+  margin-left: 33px
 }
 .updataPopup{
-margin: 0 auto;
-width: 800px;
+  margin: 0 auto;
 }
 .form-la{
   margin-left: 20px;
@@ -1169,4 +1193,9 @@ width: 800px;
 .form-xi{
   margin-right: 37px;
 }
+.el-dialog__wrapper>>>.el-dialog
+  width: 400px;
+.popup>>>.el-dialog
+  width 800px
+
 </style>
