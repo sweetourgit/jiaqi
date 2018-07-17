@@ -16,22 +16,20 @@
 				</template>
             </el-table-column>
         </el-table>
-
         <!-- 添加职位弹框界面 -->
-        <el-dialog class="Popup" title="添加职位" :visible.sync="addPosition" style="width:800px;">
+        <el-dialog class="Popup" title="添加职位" :visible.sync="addPosition">
             <el-form :model="form" :rules="rules" ref="form">
                 <el-form-item label="职位名称：" :label-width="formLabelWidth" prop="positionName">
                     <el-input v-model="form.positionName" auto-complete="off" placeholder="请输入职位"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="addPosition = false">取 消</el-button>
+                <el-button @click="ceils('form')">取 消</el-button>
                 <el-button type="primary" @click="addSave('form')">保存</el-button>
             </div>
         </el-dialog>
-
         <!-- 编辑职位弹框界面 -->
-        <el-dialog class="Popup" title="编辑职位" :visible.sync="editPosition" style="width:800px;">
+        <el-dialog class="Popup" title="编辑职位" :visible.sync="editPosition">
             <el-form :model="updata" :rules="rules1" ref="updata">
                 <el-form-item label="职位名称：" :label-width="updataLabelWidth" prop="positionName">
                     <el-input v-model="updata.positionName" auto-complete="off"></el-input>
@@ -124,6 +122,7 @@
     methods: {
         // 添加职位
         addSave() {
+            var _this = this;
             if(this.form.positionName === ''){
                 this.$message.warning('请填写职位名称！')
             }else{
@@ -134,13 +133,14 @@
                  },
                 }
                 ).then(function(response){
-                console.log(response);
+                // console.log(response);
+                  _this.addPosition = false
+                  _this.form.positionName = ""
+                  _this.$message.success('添加成功')
                 }).catch(function(error){
                 console.log(error);
                 });
-                this.addPosition = false
-                this.form.positionName = ""
-                this.$message.success('添加成功')
+
             }
 
         },
@@ -235,46 +235,41 @@
         handleSizeChange(page){
             this.pagesize = page;
             console.log(this.pagesize)
+        },
+        ceils(a){
+          this.addPosition = false;
+          this.$refs[a].resetFields();
         }
     }
 }
 </script>
 
-<style scoped>
+<style scoped lang='stylus'>
 .big{
-    position: absolute;
-    width: 47%;
-    height: 75%;
-    margin-left: 3%;
+   width:1600px;
+   height:750px!important;
 }
 .list{
     float: left;
 }
 .table{
-    position: absolute;
-    top: 11%;
-    left: 2%;
+    margin-left:40px;
+    margin-top: 40px;
 }
 .page{
-    margin-top: 640px;
-    margin-left: 10%;
-}
-.page-count{
-    position: absolute;
-    margin-left: -128%; 
-    top: 8%;
-    font-size: 18px;
+    margin-top: 500px;
+    float: left;
+    margin-left: 200px;
 }
 .Popup{
     margin:auto;
 }
 .addButton{
-    position: absolute;
-    margin-top: 2%;
-    left: -4%;
-    width: 100px;
-    height: 40px;
+    float: left;
+    margin-left:40px;
 }
+.el-dialog__wrapper>>>.el-dialog
+  width: 400px;
 </style>
 
 

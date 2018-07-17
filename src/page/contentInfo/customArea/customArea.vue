@@ -58,7 +58,7 @@
           @current-change="handleCurrentChange"
           :current-page="currentPage4" -->
         <el-pagination
-         
+
           :page-sizes="[100, 200, 300, 400]"
           :page-size="100"
           layout="total, sizes, prev, pager, next, jumper"
@@ -67,7 +67,7 @@
       </div>
 
       <!-- 添加分类弹框 -->
-      <el-dialog title="添加分类" custom-class="city_list" :visible.sync="addClassification" style="width:1000px;" class="Popup">
+      <el-dialog title="添加分类" custom-class="city_list" :visible.sync="addClassification" class="Popup">
         <el-form :model="form" :rules="rules">
           <el-form-item label="分类名称：" prop="classificationName" :label-width="formLabelWidth" class="boom">
             <el-input v-model="form.classificationName" auto-complete="off"></el-input>
@@ -82,7 +82,7 @@
         </div>
       </el-dialog>
       <!-- 编辑分类弹框 -->
-      <el-dialog title="编辑分类" custom-class="city_list" :visible.sync="editClassification" style="width:1000px;" class="Popup">
+      <el-dialog title="编辑分类" custom-class="city_list" :visible.sync="editClassification" class="Popup">
         <el-form :model="editForm" :rules="rules">
           <el-form-item label="分类名称：" prop="classificationName" :label-width="formLabelWidth" class="boom">
             <el-input v-model="editForm.classificationName" auto-complete="off"></el-input>
@@ -97,7 +97,7 @@
         </div>
       </el-dialog>
       <!-- 添加分组弹框 -->
-      <el-dialog title="添加分组" custom-class="city_list" :visible.sync="addGrouping" style="width:1000px;" class="Popup">
+      <el-dialog title="添加分组" custom-class="city_list" :visible.sync="addGrouping" class="Popup">
         <el-form :model="addGroup" :rules="rules">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
             <span class="zoon">国内</span>
@@ -118,7 +118,7 @@
         </div>
       </el-dialog>
       <!-- 分组编辑弹框 -->
-      <el-dialog title="编辑分组" custom-class="city_list" :visible.sync="editGrouping" style="width:1000px;" class="Popup">
+      <el-dialog title="编辑分组" custom-class="city_list" :visible.sync="editGrouping" class="Popup">
         <el-form :model="editGroup" :rules="rules">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
             <span class="zoon">国内</span>
@@ -139,7 +139,7 @@
         </div>
       </el-dialog>
       <!-- 城市编辑 -->
-      <el-dialog title="编辑城市" custom-class="city_list" :visible.sync="editCity" style="width:1000px;" class="Popup">
+      <el-dialog title="编辑城市" custom-class="city_list" :visible.sync="editCity" class="Popup">
         <el-form :model="editCitys" :rules="rules">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
             <span class="zoon">国内</span>
@@ -160,7 +160,7 @@
         </div>
       </el-dialog>
       <!-- 添加城市 -->
-      <el-dialog title="添加城市" custom-class="city_list" :visible.sync="addCity" style="width:1000px;" class="Popup">
+      <el-dialog title="添加城市" custom-class="city_list" :visible.sync="addCity" class="Popup">
         <el-form :model="addCitys" :rules="rules">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
             <span class="zoon">国内</span>
@@ -444,7 +444,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang='stylus'>
 .big{
   width: 100%;
   height: 75%;
@@ -489,6 +489,8 @@ export default {
 .cascader{
   margin-right:45px;
 }
+.el-dialog__wrapper>>>.el-dialog
+  width: 500px;
 </style>
 
 

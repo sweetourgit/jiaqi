@@ -110,19 +110,19 @@
             </el-select>
           </el-form-item>
           <el-form-item label="国家名称:" :label-width="formLabelWidth" prop="countryName">
-            <el-input class="country_input" v-model="countryPopup.countryName"></el-input>
+            <el-input class="country_input" v-model="countryPopup.countryName" clearable></el-input>
           </el-form-item>
           <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
-            <el-input class="country_input" v-model="countryPopup.englishName"></el-input>
+            <el-input class="country_input" v-model="countryPopup.englishName" clearable></el-input>
           </el-form-item>
           <el-form-item label="中文全拼:" :label-width="formLabelWidth" prop="pinyin">
-            <el-input class="country_input" v-model="countryPopup.pinyin"></el-input>
+            <el-input class="country_input" v-model="countryPopup.pinyin" clearable></el-input>
           </el-form-item>
           <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
-            <el-input class="country_input" v-model="countryPopup.initials"></el-input>
+            <el-input class="country_input" v-model="countryPopup.initials" clearable></el-input>
           </el-form-item>
           <el-form-item label="代码:" :label-width="formLabelWidth" prop="code">
-            <el-input class="country_input" v-model="countryPopup.code"></el-input>
+            <el-input class="country_input" v-model="countryPopup.code" clearable></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -144,19 +144,19 @@
             </el-select>
           </el-form-item>
           <el-form-item label="国家名称:" :label-width="formLabelWidth" prop="countryName">
-            <el-input class="country_input" v-model="editCountryPopup.countryName"></el-input>
+            <el-input class="country_input" v-model="editCountryPopup.countryName" clearable></el-input>
           </el-form-item>
           <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
-            <el-input class="country_input" v-model="editCountryPopup.englishName"></el-input>
+            <el-input class="country_input" v-model="editCountryPopup.englishName" clearable></el-input>
           </el-form-item>
           <el-form-item label="中文全拼:" :label-width="formLabelWidth" prop="pinyin">
-            <el-input class="country_input" v-model="editCountryPopup.pinyin"></el-input>
+            <el-input class="country_input" v-model="editCountryPopup.pinyin" clearable></el-input>
           </el-form-item>
           <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
-            <el-input class="country_input" v-model="editCountryPopup.initials"></el-input>
+            <el-input class="country_input" v-model="editCountryPopup.initials" clearable></el-input>
           </el-form-item>
           <el-form-item label="代码:" :label-width="formLabelWidth" prop="code">
-            <el-input class="country_input" v-model="editCountryPopup.code"></el-input>
+            <el-input class="country_input" v-model="editCountryPopup.code" clearable></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -172,16 +172,16 @@
             <span class="country_span">{{provincePopup.countryName}}</span>
           </el-form-item>
           <el-form-item label="省份名称:" :label-width="formLabelWidth" prop="provinceName">
-            <el-input class="country_input" v-model="provincePopup.provinceName"></el-input>
+            <el-input class="country_input" v-model="provincePopup.provinceName" clearable></el-input>
           </el-form-item>
           <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
-            <el-input class="country_input" v-model="provincePopup.englishName"></el-input>
+            <el-input class="country_input" v-model="provincePopup.englishName" clearable></el-input>
           </el-form-item>
           <el-form-item label="中文全拼:" :label-width="formLabelWidth" prop="pinyin">
-            <el-input class="country_input" v-model="provincePopup.pinyin"></el-input>
+            <el-input class="country_input" v-model="provincePopup.pinyin" clearable></el-input>
           </el-form-item>
           <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
-            <el-input class="country_input" v-model="provincePopup.initials"></el-input>
+            <el-input class="country_input" v-model="provincePopup.initials" clearable></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -200,16 +200,16 @@
             <span class="country_span">{{editProvincePopup.countryName}}</span>
           </el-form-item>
           <el-form-item label="省份名称:" :label-width="formLabelWidth" prop="provinceName">
-            <el-input class="country_input" v-model="editProvincePopup.provinceName"></el-input>
+            <el-input class="country_input" v-model="editProvincePopup.provinceName" clearable></el-input>
           </el-form-item>
           <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
-            <el-input class="country_input" v-model="editProvincePopup.englishName"></el-input>
+            <el-input class="country_input" v-model="editProvincePopup.englishName" clearable></el-input>
           </el-form-item>
           <el-form-item label="中文全拼:" :label-width="formLabelWidth" prop="pinyin">
-            <el-input class="country_input" v-model="editProvincePopup.pinyin"></el-input>
+            <el-input class="country_input" v-model="editProvincePopup.pinyin" clearable></el-input>
           </el-form-item>
           <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
-            <el-input class="country_input" v-model="editProvincePopup.initials"></el-input>
+            <el-input class="country_input" v-model="editProvincePopup.initials" clearable></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -228,25 +228,25 @@
             <span class="country_span">{{cityPopup.provinceName}}</span>
           </el-form-item>
           <el-form-item label="城市名称:" :label-width="formLabelWidth" prop="cityName">
-            <el-input class="country_input" v-model="cityPopup.cityName"></el-input>
+            <el-input class="country_input" v-model="cityPopup.cityName" clearable></el-input>
           </el-form-item>
           <el-form-item label="备用名:" :label-width="formLabelWidth" prop="reserveName">
-            <el-input class="country_input" v-model="cityPopup.reserveName"></el-input>
+            <el-input class="country_input" v-model="cityPopup.reserveName" clearable></el-input>
           </el-form-item>
           <el-form-item label="Url:" :label-width="formLabelWidth" prop="url">
-            <el-input class="country_input" v-model="cityPopup.url"></el-input>
+            <el-input class="country_input" v-model="cityPopup.url" clearable></el-input>
           </el-form-item>
           <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
-            <el-input class="country_input" v-model="cityPopup.englishName"></el-input>
+            <el-input class="country_input" v-model="cityPopup.englishName" clearable></el-input>
           </el-form-item>
           <el-form-item label="中文全拼:" :label-width="formLabelWidth" prop="pinyin">
-            <el-input class="country_input" v-model="cityPopup.pinyin"></el-input>
+            <el-input class="country_input" v-model="cityPopup.pinyin" clearable></el-input>
           </el-form-item>
           <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
-            <el-input class="country_input" v-model="cityPopup.initials"></el-input>
+            <el-input class="country_input" v-model="cityPopup.initials" clearable></el-input>
           </el-form-item>
           <el-form-item label="代码:" :label-width="formLabelWidth" prop="code">
-            <el-input class="country_input" v-model="cityPopup.code"></el-input>
+            <el-input class="country_input" v-model="cityPopup.code" clearable></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -268,25 +268,25 @@
             <span class="country_span">{{editCityPopup.provinceName}}</span>
           </el-form-item>
           <el-form-item label="城市名称:" :label-width="formLabelWidth" prop="cityName">
-            <el-input class="country_input" v-model="editCityPopup.cityName"></el-input>
+            <el-input class="country_input" v-model="editCityPopup.cityName" clearable></el-input>
           </el-form-item>
           <el-form-item label="备用名:" :label-width="formLabelWidth" prop="reserveName">
-            <el-input class="country_input" v-model="editCityPopup.reserveName"></el-input>
+            <el-input class="country_input" v-model="editCityPopup.reserveName" clearable></el-input>
           </el-form-item>
           <el-form-item label="Url:" :label-width="formLabelWidth" prop="url">
-            <el-input class="country_input" v-model="editCityPopup.url"></el-input>
+            <el-input class="country_input" v-model="editCityPopup.url" clearable></el-input>
           </el-form-item>
           <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
-            <el-input class="country_input" v-model="editCityPopup.englishName"></el-input>
+            <el-input class="country_input" v-model="editCityPopup.englishName" clearable></el-input>
           </el-form-item>
           <el-form-item label="中文全拼:" :label-width="formLabelWidth" prop="pinyin">
-            <el-input class="country_input" v-model="editCityPopup.pinyin"></el-input>
+            <el-input class="country_input" v-model="editCityPopup.pinyin" clearable></el-input>
           </el-form-item>
           <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
-            <el-input class="country_input" v-model="editCityPopup.initials"></el-input>
+            <el-input class="country_input" v-model="editCityPopup.initials" clearable></el-input>
           </el-form-item>
           <el-form-item label="代码:" :label-width="formLabelWidth" prop="code">
-            <el-input class="country_input" v-model="editCityPopup.code"></el-input>
+            <el-input class="country_input" v-model="editCityPopup.code" clearable></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
