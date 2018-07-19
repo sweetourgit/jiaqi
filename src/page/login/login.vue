@@ -175,7 +175,12 @@ import axios from 'axios'
       // 判断验证码
       var checkAge = (rule, value, callback) => {
         if (!value) {
+            document.getElementById("er").style ='border-color: #f56c6c;'
+                this.pop=false;
           return callback(new Error('验证码不能为空'));
+              
+                
+          
         }
      
       };
@@ -434,10 +439,11 @@ import axios from 'axios'
                 // this.$message.error('验证码错误');
                 document.getElementById("er").style ='border-color: #f56c6c;'
                 setTimeout(() => {
+    
                 this.pop=true;
 
                 },90)
-                
+              
                 
               }
             }).catch(err => {
@@ -933,5 +939,6 @@ position: absolute;
     position: absolute;
     top: 100%;
     left: 0;
+    
   }
 </style>
