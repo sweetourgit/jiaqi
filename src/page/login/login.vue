@@ -174,12 +174,19 @@ import axios from 'axios'
         if (!value) {
           return callback(new Error('验证码不能为空'));
         }
-        var value = value.toUpperCase()
-        if(value !== this.checkCode){
-           callback(new Error('验证码不正确'));
-        }else{
-          callback();
-        }
+        this.$http.post(this.GLOBAL.serverSrc+'/api/check',this.qs.stringify({
+              "key": localStorage.getItem('code'),
+              "code": this.ruleForm.verification
+            })).then(res => {
+              if(res.data){
+                callback();
+              } else {
+                callback(new Error('验证码不正确'));
+              }
+            }).catch(err => {
+                callback(new Error('验证码不正确'));
+                this.aaa('show')
+            })
       };
       // 判断修改密码
        var validatepass = (rule, value, callback) => {
@@ -263,7 +270,7 @@ import axios from 'axios'
           ],
         verification: [
         // { required: true, message: '请输入验证码', trigger: 'blur' },
-        { validator: checkAge, trigger: 'blur' }
+        { validator: checkAge, }
 
       ],
 
@@ -295,7 +302,8 @@ import axios from 'axios'
           yz: false,
           yz1: '',
           logClick: true,
-          logClick1: false
+          logClick1: false,
+          op: ''
    };
     },
 
@@ -386,7 +394,6 @@ import axios from 'axios'
 
         //登录
         loginForm(formName) {
-
           // this.$refs[formName].validate((valid) => {
           //   if (valid) {
           //     this.$message.error('登录失败');
@@ -401,14 +408,7 @@ import axios from 'axios'
               'passWord': this.ruleForm.password,
           })
           .then(res=>{
-
-
-            this.$http.post(this.GLOBAL.serverSrc+'/api/check',this.qs.stringify({
-              "key": localStorage.getItem('code'),
-              "code": this.ruleForm.verification
-            })).then(res => {
-              if(res.data){
-                this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
+            this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
                   "userCode": this.ruleForm.user,
                   "passWord": this.ruleForm.password,
                 }).then(res => {
@@ -418,6 +418,7 @@ import axios from 'axios'
                     this.$message.error('用户名或密码错误');
                     
                   }else{
+                    // this.$refs['ruleForm'].resetFields()
                     this.$router.push('/role')
                     this.$message.success('登录成功');
                     localStorage.removeItem("code",res.data)
@@ -426,33 +427,9 @@ import axios from 'axios'
                     this.$message.error('登录失败2');
                   
                 })
-              } else {
-                this.$message.error('验证码错误');
-              }
-
-              
-
-
-            }).catch(err => {
-
-            })
-
-
-
-
-            
-
-
-
-
-
-
-
             store.save('token',res.data)
             // this.$router.push('/role')
             // this.$message.success('登录成功');
-
-
           })
           .catch(error =>{
             this.$message.error('登录失败');
@@ -496,6 +473,7 @@ import axios from 'axios'
         this.phoneShow = false;
     },
     aaa(show){
+      
       if(this.logClick || show == 'show'){
         this.$http.post(this.GLOBAL.serverSrc+'/api/general',{
 
