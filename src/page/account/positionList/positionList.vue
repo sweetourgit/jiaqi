@@ -257,7 +257,7 @@
     margin-top: 40px;
 }
 .page{
-    margin-top: 500px;
+    margin-top: 30px;
     float: left;
     margin-left: 200px;
 }
