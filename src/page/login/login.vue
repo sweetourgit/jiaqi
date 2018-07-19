@@ -433,7 +433,10 @@ import axios from 'axios'
               } else {
                 // this.$message.error('验证码错误');
                 document.getElementById("er").style ='border-color: #f56c6c;'
+                setTimeout(() => {
                 this.pop=true;
+
+                },90)
                 
                 
               }
