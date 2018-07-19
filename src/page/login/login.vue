@@ -33,8 +33,11 @@
 
     <div class="verify-box">
       <el-form-item prop="verification" class="verification-input">
-          <el-input  v-model="ruleForm.verification" placeholder="验证码" @focus="aaa()"></el-input>
+          <el-input id="er"  v-model="ruleForm.verification" placeholder="验证码" @focus="aaa()"></el-input>
+          <div  class="pop" v-show="pop">验证码输入错误</div>
       </el-form-item>
+      
+      
       <template v-if="yz">
         <img :src="yz1" alt="" class="verify-img" @click="aaa('show')">
       </template>
@@ -174,19 +177,7 @@ import axios from 'axios'
         if (!value) {
           return callback(new Error('验证码不能为空'));
         }
-        this.$http.post(this.GLOBAL.serverSrc+'/api/check',this.qs.stringify({
-              "key": localStorage.getItem('code'),
-              "code": this.ruleForm.verification
-            })).then(res => {
-              if(res.data){
-                callback();
-              } else {
-                callback(new Error('验证码不正确'));
-              }
-            }).catch(err => {
-                callback(new Error('验证码不正确'));
-                this.aaa('show')
-            })
+     
       };
       // 判断修改密码
        var validatepass = (rule, value, callback) => {
@@ -204,6 +195,7 @@ import axios from 'axios'
       verifyShow: true,
       emailShow:false,
       newpasswordShow:false,
+      pop:false,
       // input5: '',
       // input:'',
       select: '0',
@@ -270,7 +262,7 @@ import axios from 'axios'
           ],
         verification: [
         // { required: true, message: '请输入验证码', trigger: 'blur' },
-        { validator: checkAge, }
+        { validator: checkAge, trigger: 'blur' }
 
       ],
 
@@ -302,8 +294,7 @@ import axios from 'axios'
           yz: false,
           yz1: '',
           logClick: true,
-          logClick1: false,
-          op: ''
+          logClick1: false
    };
     },
 
@@ -394,6 +385,7 @@ import axios from 'axios'
 
         //登录
         loginForm(formName) {
+
           // this.$refs[formName].validate((valid) => {
           //   if (valid) {
           //     this.$message.error('登录失败');
@@ -408,7 +400,16 @@ import axios from 'axios'
               'passWord': this.ruleForm.password,
           })
           .then(res=>{
-            this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
+
+
+            this.$http.post(this.GLOBAL.serverSrc+'/api/check',this.qs.stringify({
+              "key": localStorage.getItem('code'),
+              "code": this.ruleForm.verification
+              
+            })).then(res => {
+              if(res.data){
+                // console.log(res.data)
+                this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
                   "userCode": this.ruleForm.user,
                   "passWord": this.ruleForm.password,
                 }).then(res => {
@@ -418,18 +419,33 @@ import axios from 'axios'
                     this.$message.error('用户名或密码错误');
                     
                   }else{
-                    // this.$refs['ruleForm'].resetFields()
+                  document.getElementById("er").style ='border-color: green;'
+                    
                     this.$router.push('/role')
                     this.$message.success('登录成功');
                     localStorage.removeItem("code",res.data)
+                    
                   }
                 }).catch(err => {
-                    this.$message.error('登录失败2');
+                    this.$message.error('登录失败');
                   
                 })
+              } else {
+                // this.$message.error('验证码错误');
+                document.getElementById("er").style ='border-color: #f56c6c;'
+                this.pop=true;
+                
+                
+              }
+            }).catch(err => {
+
+            })
+            
             store.save('token',res.data)
             // this.$router.push('/role')
             // this.$message.success('登录成功');
+
+
           })
           .catch(error =>{
             this.$message.error('登录失败');
@@ -473,7 +489,6 @@ import axios from 'axios'
         this.phoneShow = false;
     },
     aaa(show){
-      
       if(this.logClick || show == 'show'){
         this.$http.post(this.GLOBAL.serverSrc+'/api/general',{
 
@@ -548,7 +563,8 @@ import axios from 'axios'
   left:0px;
   // background:green;
   background-image:url('../../../static/login-img/login.png');
-  background-repeat: no-repeat
+  // background-repeat: no-repeat
+  background-size:100% 80%;
 
 }
 
@@ -905,5 +921,14 @@ position: absolute;
   .email-buttom{
     position:relative;
     right:10%;
+  }
+  .pop{
+    color: #f56c6c;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 4px;
+    position: absolute;
+    top: 100%;
+    left: 0;
   }
 </style>
