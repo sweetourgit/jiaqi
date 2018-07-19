@@ -29,11 +29,15 @@
     <el-form-item prop="password" class="password-input">
       <el-input type="password"  v-model="ruleForm.password" placeholder="密码"></el-input>
     </el-form-item>
+
+
     <div class="verify-box">
       <el-form-item prop="verification" class="verification-input">
-          <el-input  v-model="ruleForm.verification" placeholder="验证码" ></el-input>
+          <el-input  v-model="ruleForm.verification" placeholder="验证码" @focus="aaa()"></el-input>
       </el-form-item>
-      <img src="../../../static/login-verify/number.png" alt="" class="verify-img">
+      <template v-if="yz">
+        <img :src="yz1" alt="" class="verify-img" @click="aaa('show')">
+      </template>
     </div>
         <!-- 验证码 -->
 
@@ -287,6 +291,11 @@ import axios from 'axios'
          time: 60,
          sendMsgDisabled: false,
         show:true,
+
+          yz: false,
+          yz1: '',
+          logClick: true,
+          logClick1: false
    };
     },
 
@@ -392,24 +401,53 @@ import axios from 'axios'
               'passWord': this.ruleForm.password,
           })
           .then(res=>{
-            this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
-              "userCode": this.ruleForm.user,
-              "passWord": this.ruleForm.password,
-            }).then(res => {
-              console.log(res)
-              store.save('userId',res.data.id)
-              store.save('name',res.data.name)
-              if(res.data===''){
-                this.$message.error('用户名或密码错误');
-                
-              }else{
-                this.$router.push('/role')
-                this.$message.success('登录成功');
+
+
+            this.$http.post(this.GLOBAL.serverSrc+'/api/check',this.qs.stringify({
+              "key": localStorage.getItem('code'),
+              "code": this.ruleForm.verification
+            })).then(res => {
+              if(res.data){
+                this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
+                  "userCode": this.ruleForm.user,
+                  "passWord": this.ruleForm.password,
+                }).then(res => {
+                  store.save('userId',res.data.id)
+                  store.save('name',res.data.name)
+                  if(res.data===''){
+                    this.$message.error('用户名或密码错误');
+                    
+                  }else{
+                    this.$router.push('/role')
+                    this.$message.success('登录成功');
+                    localStorage.removeItem("code",res.data)
+                  }
+                }).catch(err => {
+                    this.$message.error('登录失败2');
+                  
+                })
+              } else {
+                this.$message.error('验证码错误');
               }
-            }).catch(err => {
-                this.$message.error('登录失败2');
+
               
+
+
+            }).catch(err => {
+
             })
+
+
+
+
+            
+
+
+
+
+
+
+
             store.save('token',res.data)
             // this.$router.push('/role')
             // this.$message.success('登录成功');
@@ -456,7 +494,31 @@ import axios from 'axios'
         this.emailShow = false;
         this.newpasswordShow = false;
         this.phoneShow = false;
-    }
+    },
+    aaa(show){
+      if(this.logClick || show == 'show'){
+        this.$http.post(this.GLOBAL.serverSrc+'/api/general',{
+
+        }).then(res => {
+          localStorage.setItem("code",res.data)
+          this.bbb()
+        }).catch(err => {
+
+        })
+      }
+      
+    },
+    bbb(){
+      this.$http.post(this.GLOBAL.serverSrc+'/api/code',this.qs.stringify({
+          "key": localStorage.getItem('code'),
+        })).then(res => {
+          this.yz = true;
+          this.yz1 = 'data:image/png;base64,' + res.data
+          this.logClick = false
+        }).catch(err => {
+
+        })
+    },
   }
 
 
