@@ -171,6 +171,8 @@ import axios from 'axios'
     data(){
       // 判断验证码
       var checkAge = (rule, value, callback) => {
+        console.log(localStorage.getItem('code'))
+        console.log(this.ruleForm.verification)
         if (!value) {
           return callback(new Error('验证码不能为空'));
         }
@@ -408,6 +410,8 @@ import axios from 'axios'
               'passWord': this.ruleForm.password,
           })
           .then(res=>{
+
+
             this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
                   "userCode": this.ruleForm.user,
                   "passWord": this.ruleForm.password,
@@ -416,7 +420,7 @@ import axios from 'axios'
                   store.save('name',res.data.name)
                   if(res.data===''){
                     this.$message.error('用户名或密码错误');
-                    
+
                   }else{
                     // this.$refs['ruleForm'].resetFields()
                     this.$router.push('/role')
@@ -425,7 +429,7 @@ import axios from 'axios'
                   }
                 }).catch(err => {
                     this.$message.error('登录失败2');
-                  
+
                 })
             store.save('token',res.data)
             // this.$router.push('/role')
@@ -473,7 +477,7 @@ import axios from 'axios'
         this.phoneShow = false;
     },
     aaa(show){
-      
+
       if(this.logClick || show == 'show'){
         this.$http.post(this.GLOBAL.serverSrc+'/api/general',{
 
@@ -484,7 +488,7 @@ import axios from 'axios'
 
         })
       }
-      
+
     },
     bbb(){
       this.$http.post(this.GLOBAL.serverSrc+'/api/code',this.qs.stringify({
