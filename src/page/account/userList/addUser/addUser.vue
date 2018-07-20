@@ -586,7 +586,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           )
             .then(function (obj) {
               if(obj.data.objects.length ==0){
-                that.bumen2 = false
+                that.bumen2 = true
                 that.bumen1 = false
               }
               if (obj.data.objects.length !== 0) {
