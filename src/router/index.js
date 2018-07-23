@@ -27,88 +27,120 @@ export default new Router({
       path: '/userList',
       component: userList,
       name: '用户列表',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/organList',
       component: organList,
       name: '组织列表',
       meta: {
         keepAlive: true,
-        title:'组织列表'}
+        title:'组织列表',
+        auth:true}
     }, {
       path: '/role',
       component: role,
       name: '角色权限模板',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/addRole',
       component: addRole,
       name: "添加角色权限模板",
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     },
     {
       path: '/perList',
       component: perList,
       name: '权限管理',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/accountInfor',
       component: accountInfor,
       name: '账户信息',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/pwModifi',
       component: pwModifi,
       name: '密码修改',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/login',
       component: login,
-      meta: {keepAlive: false}
+      meta: {
+        keepAlive: false}
     }, {
       path: '/positionList',
       component: positionList,
       name: '职位列表',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/userList',
       component: userList,
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/userList/addUser',
       component: addUser,
       name: '用户添加',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/cityList',
       component: cityList,
       name: '城市列表',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/customArea',
       component: customArea,
       name: '自定义地区',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/scenicList',
       component: scenicList,
       name: '景点列表',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/labelList',
       component: labelList,
       name: '标签列表',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/materialList',
       component: materialList,
       name: '素材列表',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     }, {
       path: '/hotelList',
       component: hotelList,
       name: '酒店列表',
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        auth:true}
     },
   ],
 })
