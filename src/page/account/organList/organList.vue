@@ -697,14 +697,14 @@ methods: {
               "id": id
             }
          }).then((res) => {
-          this.updata = res.data.objects[0]
-          this.updata.orgName = res.data.objects[0].orgName
-          this.updata.departmentCode = res.data.objects[0].orgCode
-          this.updata.sort = res.data.objects[0].rank
-          this.updata.phone = res.data.objects[0].officeTel
-          this.updata.fax = res.data.objects[0].officeFax
-          this.updata.note = res.data.objects[0].mark
-          this.updata.lastStage = String(res.data.objects[0].isLeaf);
+          //  console.log(res)
+          this.updata.orgName = res.data.object.orgName
+          this.updata.departmentCode = res.data.object.orgCode
+          this.updata.sort = res.data.object.rank
+          this.updata.phone = res.data.object.officeTel
+          this.updata.fax = res.data.object.officeFax
+          this.updata.note = res.data.object.mark
+          this.updata.lastStage = String(res.data.object.isLeaf);
          }).catch((err) => {
 
          })
