@@ -141,6 +141,9 @@ export default new Router({
       meta: {
         keepAlive: true,
         auth:true}
-    },
+    }, {
+      path: '*',
+      redirect:'/userList'
+    }
   ],
 })
