@@ -3,13 +3,13 @@
     <div class="content">
     <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
       <el-form-item label="当前密码" prop="passWord">
-        <el-input class="input" type="password" v-model="form.passWord" placeholder="请输入当前密码" auto-complete="off"></el-input>
+        <el-input class="input" type="password" v-model="form.passWord" placeholder="请输入当前密码"></el-input>
       </el-form-item>
       <el-form-item label="新密码" prop="newpass">
-        <el-input class="input" type="password" v-model="form.newpass" placeholder="6-20位数字与字母" auto-complete="off"></el-input>
+        <el-input class="input" type="password" v-model="form.newpass" placeholder="6-20位数字与字母"></el-input>
       </el-form-item>
       <el-form-item label="再次确认" prop="checkpass">
-        <el-input class="input" type="password" v-model="form.checkpass" placeholder="请再次确认" auto-complete="off"></el-input>
+        <el-input class="input" type="password" v-model="form.checkpass" placeholder="请再次确认"></el-input>
       </el-form-item>
       <el-button class="preservation" type="primary" @click="submitForm('form')">保 存</el-button>
     </el-form>
