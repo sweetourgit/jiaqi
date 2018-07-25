@@ -302,7 +302,7 @@ export default {
 }
 .phone-Determine{
   margin: 20px;
-  width: 110px;
+  width: 100px;
 }
 .phone-verification{
   float: right;

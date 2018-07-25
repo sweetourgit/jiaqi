@@ -781,7 +781,7 @@
 .country_input{ width: 300px; margin: 0 95px 0 0;}
 .country_select{ width: 300px; margin: 0 95px 0 0;}
 .dialog-footer{ text-align: center;}
-.Determine{ margin: 20px; width: 110px;}
+.Determine{ margin: 20px; width: 100px;}
 .country_span{ float: left; margin: 0 0 0 30px;}
 .edit_city_popup{ margin: -90px 0 0 0;}
 </style>
