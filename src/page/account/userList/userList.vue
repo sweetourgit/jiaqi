@@ -53,72 +53,64 @@
       <el-table
        :data="tableData3"
        border
+       :header-row-style="tableHead"
        style="width: 100%"
         >
          <el-table-column
            prop="id"
            label="ID"
-           min-width="60"
            align="center">
         </el-table-column>
         <el-table-column
            prop="name"
            label="姓名"
-           min-width="100"
            align="center">
         </el-table-column>
         <el-table-column
            prop="userType"
            label="用户类型"
-           min-width="100"
            align="center">
         </el-table-column>
         <el-table-column
            prop="mobile"
            label="手机号"
-           min-width="120"
            align="center">
         </el-table-column>
         <el-table-column
            prop="email"
            label="邮箱"
-           min-width="160"
            align="center">
         </el-table-column>
         <el-table-column
            prop="sex"
            label="性别"
-           min-width="65"
            align="center">
         </el-table-column>
         <el-table-column
            prop="userState"
            label="状态"
-           min-width="86"
            align="center">
         </el-table-column>
         <el-table-column
            prop="organization"
            label="组织-部门-职务"
-           min-width="210"
-           align="center">
+           align="center"
+           min-width="150">
         </el-table-column>
         <el-table-column
            prop="createTime"
            label="创建时间"
-           min-width="230"
            align="center">
         </el-table-column>
         <el-table-column
            prop="updatetime"
            label="修改时间"
-           min-width="210"
            align="center">
         </el-table-column>
         <el-table-column
           label="操作"
           align="center"
-          min-width="200">
+          min-width="150">
            <template slot-scope="scope">
              <el-button  size="small" @click="find(scope.$index, scope.row)">查看</el-button>
              <el-button type="primary" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
@@ -141,7 +133,7 @@
     </div>
     <!--表格end-->
 
-    <el-dialog title="用户信息" :visible.sync="dialogFormVisible">
+    <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible">
       <div class="4343">
        <el-form ref="form" :model="form" label-width="110px">
 	     <el-form-item label="状态:" class="form-la">
@@ -211,6 +203,7 @@
   export default {
    data() {
       return {
+        tableHead: {height: '60px', color: '#555555'}, // 表格头部高度
         pagesize:10,
         qqq: [],
         total:600,

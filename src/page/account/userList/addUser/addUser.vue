@@ -70,7 +70,7 @@
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
               </el-form-item>
                 <!--弹出框> <-->
-                  <el-dialog title="用户信息" :visible.sync="dialogFormVisible">
+                  <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible">
                     <div class="qqqt">
                      <el-form ref="form"  label-width="110px">
                        <el-form-item label="部门:" class="form-la">
