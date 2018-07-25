@@ -68,22 +68,22 @@ export default {
                 "id": sessionStorage.getItem('userId'),
               }
             }).then((res) => {
-              if(this.form.passWord === res.data.objects[0].passWord){
+              if(this.form.passWord === res.data.object.passWord){
                 this.$http.post(this.GLOBAL.serverSrc + "/api/org/usersave",{
                   "Object": {
-                    "id": res.data.objects[0].id,
+                    "id": res.data.object.id,
                     "createTime": "2018-06-20T09:35:52.822Z",
                     "isDeleted": 0,
                     "code": "string",
                     "passWord": this.form.checkpass,
-                    "mobile":res.data.objects[0].mobile,
-                    "name": res.data.objects[0].name,
-                    "email": res.data.objects[0].email,
-                    "userCode": res.data.objects[0].userCode,
-                    "iDcard": res.data.objects[0].iDcard,
-                    "tourGuide": res.data.objects[0].tourGuide,
-                    "sex": res.data.objects[0].sex,
-                    "userType": res.data.objects[0].userType
+                    "mobile":res.data.object.mobile,
+                    "name": res.data.object.name,
+                    "email": res.data.object.email,
+                    "userCode": res.data.object.userCode,
+                    "iDcard": res.data.object.iDcard,
+                    "tourGuide": res.data.object.tourGuide,
+                    "sex": res.data.object.sex,
+                    "userType": res.data.object.userType
                   },
                   "id": 0
                 }).then((res) => {

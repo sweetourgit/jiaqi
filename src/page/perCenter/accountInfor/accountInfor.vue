@@ -99,11 +99,12 @@ export default {
         "id": sessionStorage.getItem('userId'),
       }
     }).then((res) => {
-      this.form = res.data.objects[0]
+      this.form = res.data.object
+      console.log(res)
       this.form.sex = String(this.form.sex)
       this.form.userState = String(this.form.userState)
     }).catch((err) => {
-      consoel.log(err);
+      console.log(err);
     })
   },
   data () {
