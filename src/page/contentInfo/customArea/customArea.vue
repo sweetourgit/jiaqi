@@ -159,7 +159,7 @@
           <el-button class="oppp" type="primary" @click="editCity = false">确 定</el-button>
         </div>
       </el-dialog>
-      <!-- 添加城市 -->
+      <!-- 添加城市 --> 
       <el-dialog title="添加城市" custom-class="city_list" :visible.sync="addCity" class="Popup">
         <el-form :model="addCitys" :rules="rules">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
