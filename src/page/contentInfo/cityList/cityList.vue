@@ -163,7 +163,7 @@
           <el-button class="Determine" @click="editState = false">取 消</el-button>
           <el-button class="Determine" type="primary" @click="countryForm('editCountryPopup')">确 定</el-button>
         </div>
-      </el-dialog>  
+      </el-dialog>
       <!-- 编辑国家END -->
       <!-- 添加省份弹框 -->
       <el-dialog class="add_country_popup" custom-class="city_list" title="添加省份" :visible.sync="addProvince" width="600px">
@@ -216,7 +216,7 @@
           <el-button class="Determine" @click="editProvince = false">取 消</el-button>
           <el-button class="Determine" type="primary" @click="provinceForm('editProvincePopup')">确 定</el-button>
         </div>
-      </el-dialog>  
+      </el-dialog>
       <!-- 编辑省份END -->
       <!-- 添加城市弹框 -->
       <el-dialog class="add_country_popup edit_city_popup" custom-class="city_list" title="添加城市" :visible.sync="addCity" width="600px" style="height: 980px">
@@ -579,12 +579,12 @@
         }
       },
       // 表格头部背景颜色
-      getRowClass({ row, column, rowIndex, columnIndex }) {  
-          if (rowIndex == 0) {  
-            return 'background:#F7F7F7'  
-          } else {  
-            return ''  
-          }  
+      getRowClass({ row, column, rowIndex, columnIndex }) {
+          if (rowIndex == 0) {
+            return 'background:#F7F7F7'
+          } else {
+            return ''
+          }
       },
       // ========国家开始 =================================================
       // 添加 编辑 国家保存成功
@@ -593,10 +593,10 @@
           if(valid) {
             this.$message.success('验证成功！');
             if(formName == 'countryPopup'){
-              this.addState = false; 
+              this.addState = false;
               this.$refs['countryPopup'].resetFields()
             } else if(formName == 'editCountryPopup'){
-              this.editState = false; 
+              this.editState = false;
               this.$refs['editCountryPopup'].resetFields()
             }
           } else {
@@ -642,7 +642,7 @@
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
       },
       // ========省份开始 =================================================
@@ -652,7 +652,7 @@
           if(valid) {
             this.$message.success('验证成功！');
             if(formName == 'provincePopup'){
-              this.addProvince = false; 
+              this.addProvince = false;
               this.$refs['provincePopup'].resetFields();
             } else if(formName == 'editProvincePopup') {
               this.editProvince = false;
@@ -699,7 +699,7 @@
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
       },
       // ========城市开始 =================================================
@@ -709,10 +709,10 @@
           if(valid) {
             this.$message.success('验证成功！');
             if(formName == 'cityPopup'){
-              this.addCity = false; 
+              this.addCity = false;
               this.$refs['cityPopup'].resetFields();
             } else if(formName == 'editCityPopup'){
-              this.editCity = false; 
+              this.editCity = false;
               this.$refs['editCityPopup'].resetFields();
             }
           } else {
@@ -756,7 +756,7 @@
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
       },
     }

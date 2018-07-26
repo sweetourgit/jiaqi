@@ -930,19 +930,19 @@ import Permission from '@/page/account/userList/addUser/permission'
           }
         )
           .then(function (obj) {
-            console.log(obj.data.firstOrDefault)
-            that.ruleForm.phone = obj.data.firstOrDefault.mobile
-            that.ruleForm.name = obj.data.firstOrDefault.name
-            that.ruleForm.mail = obj.data.firstOrDefault.email
-            that.ruleForm.idcard = obj.data.firstOrDefault.iDcard
-            that.ruleForm.number = obj.data.firstOrDefault.userCode
-            that.ruleForm.trailid = obj.data.firstOrDefault.tourGuide
-            that.ruleForm.sex = String(obj.data.firstOrDefault.sex);
-            that.ruleForm.type = String(obj.data.firstOrDefault.userType);
-            that.ruleForm.passWord = obj.data.firstOrDefault.passWord
-            if(obj.data.firstOrDefault.userState == 1){
+            console.log(obj.data.object);
+            that.ruleForm.phone = obj.data.object.mobile
+            that.ruleForm.name = obj.data.object.name
+            that.ruleForm.mail = obj.data.object.email
+            that.ruleForm.idcard = obj.data.object.iDcard
+            that.ruleForm.number = obj.data.object.userCode
+            that.ruleForm.trailid = obj.data.object.tourGuide
+            that.ruleForm.sex = String(obj.data.object.sex);
+            that.ruleForm.type = String(obj.data.object.userType);
+            that.ruleForm.passWord = obj.data.object.passWord
+            if(obj.data.object.userState == 1){
                 that.disable = true
-            }else if(obj.data.firstOrDefault.userState == 2){
+            }else if(obj.data.object.userState == 2){
               that.enable = true
             }
           })

@@ -1,42 +1,42 @@
 <template>
-	<div class="border_size">
+  <div class="border_size">
 
-      <div>
+    <div>
       <!--搜索框 -->
       <div class="search">
-      	<div class="search-first">
-      	  <el-select v-model="value" placeholder="全部组织">
+        <div class="search-first">
+          <el-select v-model="value" placeholder="全部组织">
             <el-option
               v-for="item in searchListOne"
               :key="item.value"
               :label="item.label"
               :value="item.value">
-             </el-option>
-           </el-select>
-      	</div>
-      	<div class="search-second">
-      		<el-select v-model="type" placeholder="名字">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="search-second">
+          <el-select v-model="type" placeholder="名字">
             <el-option
               v-for="item in searchListTwo"
               :key="item.value"
               :label="item.label"
               :value="item.value">
-             </el-option>
-           </el-select>
-      	</div>
-      	<div class="search-third">
-      		<el-select v-model="user" placeholder="状态">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="search-third">
+          <el-select v-model="user" placeholder="状态">
             <el-option
               v-for="item in searchListThird"
               :key="item.value"
               :label="item.label"
               :value="item.value">
-             </el-option>
-           </el-select>
-      	</div>
-      	<div class="search-input">
-      		<el-input v-model="input" placeholder="请输入内容"  clearable></el-input>
-      	</div>
+            </el-option>
+          </el-select>
+        </div>
+        <div class="search-input">
+          <el-input v-model="input" placeholder="请输入内容"  clearable></el-input>
+        </div>
         <div class="button-search">
           <el-button  size="medium" type="primary" icon="el-icon-search" @click="searchSubmit"></el-button>
         </div>
@@ -44,166 +44,170 @@
 
       </div>
       <!--搜索end-->
-        <div class="add-user">
-          <router-link to="/userlist/adduser"><el-button type="primary" >添加用户</el-button></router-link>
-        </div>
+      <div class="add-user">
+        <router-link to="/userlist/adduser"><el-button type="primary" >添加用户</el-button></router-link>
+      </div>
     </div>
-       <!--表格-->
+    <!--表格-->
     <div class="user-table">
       <el-table
-       :data="tableData3"
-       border
-       :header-row-style="tableHead"
-       style="width: 100%"
-        >
-         <el-table-column
-           prop="id"
-           label="ID"
-           align="center">
+        :data="tableData3"
+        border
+        :header-row-style="tableHead"
+        :cell-style="tableHeight"
+        :header-cell-style="getRowClass"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="id"
+          label="ID"
+          align="center">
         </el-table-column>
         <el-table-column
-           prop="name"
-           label="姓名"
-           align="center">
+          prop="name"
+          label="姓名"
+          align="center">
         </el-table-column>
         <el-table-column
-           prop="userType"
-           label="用户类型"
-           align="center">
+          prop="userType"
+          label="用户类型"
+          align="center">
         </el-table-column>
         <el-table-column
-           prop="mobile"
-           label="手机号"
-           align="center">
+          prop="mobile"
+          label="手机号"
+          align="center">
         </el-table-column>
         <el-table-column
-           prop="email"
-           label="邮箱"
-           align="center">
+          prop="email"
+          label="邮箱"
+          align="center">
         </el-table-column>
         <el-table-column
-           prop="sex"
-           label="性别"
-           align="center">
+          prop="sex"
+          label="性别"
+          align="center">
         </el-table-column>
         <el-table-column
-           prop="userState"
-           label="状态"
-           align="center">
+          prop="userState"
+          label="状态"
+          align="center">
         </el-table-column>
         <el-table-column
-           prop="organization"
-           label="组织-部门-职务"
-           align="center"
-           min-width="150">
+          prop="organization"
+          label="组织-部门-职务"
+          align="center"
+          min-width="150">
         </el-table-column>
         <el-table-column
-           prop="createTime"
-           label="创建时间"
-           align="center">
+          prop="createTime"
+          label="创建时间"
+          align="center">
         </el-table-column>
         <el-table-column
-           prop="updatetime"
-           label="修改时间"
-           align="center">
+          prop="updatetime"
+          label="修改时间"
+          align="center">
         </el-table-column>
         <el-table-column
           label="操作"
           align="center"
-          min-width="150">
-           <template slot-scope="scope">
-             <el-button  size="small" @click="find(scope.$index, scope.row)">查看</el-button>
-             <el-button type="primary" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
-           </template>
+          min-width="150"
+      >
+          <template slot-scope="scope">
+            <el-button  size="small" @click="find(scope.$index, scope.row)">查看</el-button>
+            <el-button type="primary" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
+          </template>
         </el-table-column>
       </el-table>
-        <!--分页-->
-    <div class="block">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
-        :page-sizes="[10, 200, 300, 400]"
-        :page-size=pagesize
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
-    </div>
-    <!--分页end-->
+      <!--分页-->
+      <div class="block">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage"
+          :page-sizes="[10, 200, 300, 400]"
+          :page-size=pagesize
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+      </div>
+      <!--分页end-->
     </div>
     <!--表格end-->
 
     <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible">
       <div class="4343">
-       <el-form ref="form" :model="form" label-width="110px">
-	     <el-form-item label="状态:" class="form-la">
-	       <el-input v-model="form.userState" disabled class="form-gz"></el-input>
-	     </el-form-item>
-	     <el-form-item label="手机号:" class="form-la">
-	       <el-input v-model="form.mobile" disabled class="form-gz"></el-input>
-	     </el-form-item>
-	     <el-form-item label="姓名:" class="form-la">
-	       <el-input v-model="form.name" disabled class="form-gz"></el-input>
-	     </el-form-item>
-	     <el-form-item label="邮箱:" class="form-la">
-	       <el-input v-model="form.email" disabled class="form-gz"></el-input>
-	     </el-form-item>
-	     <el-form-item label="员工编号:" class="form-la">
-	       <el-input v-model="form.userCode" disabled class="form-gz"></el-input>
-	     </el-form-item>
-	     <el-form-item label="身份证号:" class="form-la">
-	       <el-input v-model="form.iDcard" disabled class="form-gz"></el-input>
-	     </el-form-item>
-	     <el-form-item label="导游证号:" class="form-la">
-	       <el-input v-model="form.tourGuide" disabled class="form-gz"></el-input>
-	     </el-form-item>
-	     <el-form-item label="性别:" class="form-sex" >
-	     <template>
-          <div class="form-size">
-           <el-radio disabled v-model="form.sex" label="男" class="form-radios">男</el-radio>
-           <el-radio disabled v-model="form.sex" label="女">女</el-radio>
-           </div>
-         </template>
-        </el-form-item>
-         <el-form-item label="用户类型:" class="form-sex" >
-	     <template>
-          <div class="form-size1">
-           <el-radio disabled v-model="form.userType" label="普通用户" class="form-radios">普通用户</el-radio>
-           <el-radio disabled v-model="form.userType" label="管理员">管理员</el-radio>
-          </div>
-         </template>
-         </el-form-item>
-         <el-form-item label="组织-部门-职务:" class="from-organize">
-          <div class="form-size2">
-	       <el-input v-model="form.organization" disabled class="form-gz"></el-input>
-	       <span  class="form-text">默认职位</span>
-         </div>
-	     </el-form-item>
-	     <el-form-item label="创建时间：" class="from-time" >
-        <div class="form-size3">
-	       <span class="form-createtime">{{form.updatetime}}</span>
-         </div>
-	     </el-form-item>
-	     <el-form-item label="修改时间：" class="from-time">
-        <div class="form-size3">
-	       <span class="form-createtime">{{form.updatetime}}</span>
-       </div>
-	     </el-form-item>
-       </el-form>
-	  <div slot="footer" class="dialog-footer">
-	    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-	  </div>
-     </div>
+        <el-form ref="form" :model="form" label-width="110px">
+          <el-form-item label="状态:" class="form-la">
+            <el-input v-model="form.userState" disabled class="form-gz"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号:" class="form-la">
+            <el-input v-model="form.mobile" disabled class="form-gz"></el-input>
+          </el-form-item>
+          <el-form-item label="姓名:" class="form-la">
+            <el-input v-model="form.name" disabled class="form-gz"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱:" class="form-la">
+            <el-input v-model="form.email" disabled class="form-gz"></el-input>
+          </el-form-item>
+          <el-form-item label="员工编号:" class="form-la">
+            <el-input v-model="form.userCode" disabled class="form-gz"></el-input>
+          </el-form-item>
+          <el-form-item label="身份证号:" class="form-la">
+            <el-input v-model="form.iDcard" disabled class="form-gz"></el-input>
+          </el-form-item>
+          <el-form-item label="导游证号:" class="form-la">
+            <el-input v-model="form.tourGuide" disabled class="form-gz"></el-input>
+          </el-form-item>
+          <el-form-item label="性别:" class="form-sex" >
+            <template>
+              <div class="form-size">
+                <el-radio disabled v-model="form.sex" label="男" class="form-radios">男</el-radio>
+                <el-radio disabled v-model="form.sex" label="女">女</el-radio>
+              </div>
+            </template>
+          </el-form-item>
+          <el-form-item label="用户类型:" class="form-sex" >
+            <template>
+              <div class="form-size1">
+                <el-radio disabled v-model="form.userType" label="普通用户" class="form-radios">普通用户</el-radio>
+                <el-radio disabled v-model="form.userType" label="管理员">管理员</el-radio>
+              </div>
+            </template>
+          </el-form-item>
+          <el-form-item label="组织-部门-职务:" class="from-organize">
+            <div class="form-size2">
+              <el-input v-model="form.organization" disabled class="form-gz"></el-input>
+              <span  class="form-text">默认职位</span>
+            </div>
+          </el-form-item>
+          <el-form-item label="创建时间：" class="from-time" >
+            <div class="form-size3">
+              <span class="form-createtime">{{form.updatetime}}</span>
+            </div>
+          </el-form-item>
+          <el-form-item label="修改时间：" class="from-time">
+            <div class="form-size3">
+              <span class="form-createtime">{{form.updatetime}}</span>
+            </div>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        </div>
+      </div>
     </el-dialog>
 
-    </div>
+  </div>
 </template>
 
 <script>
   export default {
-   data() {
+    data() {
       return {
         tableHead: {height: '60px', color: '#555555'}, // 表格头部高度
+        tableHeight: {padding: '0', height: '34px'},
         pagesize:10,
         qqq: [],
         total:600,
@@ -245,7 +249,7 @@
           label: '手机号'
         }],
         type: '',
-       searchListThird: [{
+        searchListThird: [{
           value: '1',
           label: '启用'
         }, {
@@ -254,11 +258,18 @@
         }],
         user: '',
 
-      tableData3: [],
+        tableData3: [],
 
       }
     },
     methods:{
+      getRowClass({ row, column, rowIndex, columnIndex }) {
+        if (rowIndex == 0) {
+          return 'background:#F7F7F7'
+        } else {
+          return ''
+        }
+      },
       handleSizeChange(val) {
         var that = this
         this.pagesize = val
@@ -364,66 +375,66 @@
 
 
       },
-     searchSubmit(){
-       //搜索
-       var that = this
-       this.$http.post(
-         this.GLOBAL.serverSrc + "/api/org/userpage",
-         // "http://api.dayuntong.com:3009/api/org/userpage",
-         {
-           "object": {
-             "isDeleted": 0,
-             "value":this.value,
-             "type":this.type,
-             "user":this.user,
-             "input":this.input,
+      searchSubmit(){
+        //搜索
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/api/org/userpage",
+          // "http://api.dayuntong.com:3009/api/org/userpage",
+          {
+            "object": {
+              "isDeleted": 0,
+              "value":this.value,
+              "type":this.type,
+              "user":this.user,
+              "input":this.input,
 
-           },
-           "pageSize":this.pagesize,
-           "pageIndex": 1,
-           "isGetAll": true,
-           "id": 0
-         }
-       )
-         .then(function (obj) {
-           // console.log(obj.data.objects)
-           that.tableData3 = obj.data.objects
-           that.tableData3.forEach(function (v,k,arr) {
-             if(arr[k]['userState'] == 0){
-               arr[k]['userState'] = '待审核'
-             }else if (arr[k]['userState'] == 1) {
-               arr[k]['userState'] = '正常'
-             }else{
-               arr[k]['userState'] = '停用'
-             }
-             if(arr[k]['sex'] == 1){
-               arr[k]['sex'] = '男'
-             }else {
-               arr[k]['sex'] = '女'
-             }
-             if(arr[k]['userType'] == 1){
-               arr[k]['userType'] = '普通用户'
-             }else {
-               arr[k]['userType'] = '管理员'
-             }
-             arr[k]['organization'] = '吉林大运通-财务部-会计'
-             arr[k]['updatetime'] = '2018/05/13 10:43'
+            },
+            "pageSize":this.pagesize,
+            "pageIndex": 1,
+            "isGetAll": true,
+            "id": 0
+          }
+        )
+          .then(function (obj) {
+            // console.log(obj.data.objects)
+            that.tableData3 = obj.data.objects
+            that.tableData3.forEach(function (v,k,arr) {
+              if(arr[k]['userState'] == 0){
+                arr[k]['userState'] = '待审核'
+              }else if (arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '正常'
+              }else{
+                arr[k]['userState'] = '停用'
+              }
+              if(arr[k]['sex'] == 1){
+                arr[k]['sex'] = '男'
+              }else {
+                arr[k]['sex'] = '女'
+              }
+              if(arr[k]['userType'] == 1){
+                arr[k]['userType'] = '普通用户'
+              }else {
+                arr[k]['userType'] = '管理员'
+              }
+              arr[k]['organization'] = '吉林大运通-财务部-会计'
+              arr[k]['updatetime'] = '2018/05/13 10:43'
 
-           })
-         })
-         .catch(function (obj) {
-           console.log(obj)
-         })
+            })
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
 
-     },
+      },
       //查看
       find(index, row){
         this.dialogFormVisible = true
         this.form = row
         console.log(row)
-          // if(this.form.sex == 1){
-          //   this.form.sex = "1"
-          // }
+        // if(this.form.sex == 1){
+        //   this.form.sex = "1"
+        // }
         // this.form.userType = "1"
 
         console.log(row);
@@ -443,23 +454,23 @@
 
     },
     created(){
-     //用户列表
-     var that = this
+      //用户列表
+      var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/api/org/userpage",
-       {
-         "object": {
-           "isDeleted": 0,
+        {
+          "object": {
+            "isDeleted": 0,
 
-         },
-         "pageSize":this.pagesize,
-         "pageIndex": 1,
-         "isGetAll": true,
-         "id": 0
-       }
+          },
+          "pageSize":this.pagesize,
+          "pageIndex": 1,
+          "isGetAll": true,
+          "id": 0
+        }
       )
         .then(function (obj) {
-           console.log(obj.data.objects)
+          console.log(obj.data.objects)
           that.total = obj.data.total
           that.tableData3 = obj.data.objects
           that.tableData3.forEach(function (v,k,arr) {
@@ -470,7 +481,7 @@
             }else{
               arr[k]['userState'] = '停用'
             }
-              if(arr[k]['sex'] == 1){
+            if(arr[k]['sex'] == 1){
               arr[k]['sex'] = '男'
             }else {
               arr[k]['sex'] = '女'
@@ -480,8 +491,8 @@
             }else {
               arr[k]['userType'] = '管理员'
             }
-              arr[k]['organization'] = '吉林大运通-财务部-会计'
-              arr[k]['updatetime'] = '2018/05/13 10:43'
+            arr[k]['organization'] = '吉林大运通-财务部-会计'
+            arr[k]['updatetime'] = '2018/05/13 10:43'
 
           })
         })
@@ -491,7 +502,7 @@
 
 
     }
-}
+  }
 
 
 
@@ -511,35 +522,35 @@
     border-bottom: 1px solid #F3F3F3;
   }
   .search-first{
-  	 float: left;
-  	 width: 160px;
+    float: left;
+    width: 160px;
   }
   .search-second{
     float: left;
     padding-left: 25px;
     width: 200px;
-   }
+  }
   .search-third{
-  	float: left;
+    float: left;
     padding-left: 25px;
     width: 200px;
   }
   .search-input{
-  	float: left;
+    float: left;
     padding-left: 25px;
     width: 348px;
   }
   .button-search{
-  	float: left;
-  	padding-left: 20px;
-  	width: 50px;
-  	height: 50px;
+    float: left;
+    padding-left: 20px;
+    width: 50px;
+    height: 50px;
   }
   .button-recover{
-  	float: left;
-  	padding-left: 20px;
-  	width: 50px;
-  	height: 50px;
+    float: left;
+    padding-left: 20px;
+    width: 50px;
+    height: 50px;
   }
   .add-user{
     float: left;
@@ -566,27 +577,27 @@
     margin-bottom: 80px;
   }
   .form-gz{
-  	width: 215px;
+    width: 215px;
   }
   .form-la{
-  	padding-left: 299px;
+    padding-left: 299px;
     width: 90px;
   }
   .form-radios{
-  	margin-left: -350px;
+    margin-left: -350px;
   }
-   .form-sex{
-   	margin-left: 290px;
-   }
-   .from-organize{
-   	width: 80px;
-   	padding-left: 290px;
-   }
+  .form-sex{
+    margin-left: 290px;
+  }
+  .from-organize{
+    width: 80px;
+    padding-left: 290px;
+  }
   .from-time{
-  	padding-left: 290px;
+    padding-left: 290px;
   }
   .form-text{
-  	width: 60px;
+    width: 60px;
     position: absolute;
     padding-right: 4px;
     left: 242px;
