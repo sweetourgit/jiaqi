@@ -83,7 +83,7 @@
                            </el-option>
                          </el-select>
                        </el-form-item>
-
+ 
                        <el-form-item label="子部门2" class="form-lala" v-if="bumen2">
                          <el-select v-model="value2" placeholder="请选择"   @change="HandChange2()" class="form-xi">
                            <el-option
