@@ -36,7 +36,7 @@
                     <!-- 图片标签 -->
                     <div class="label">标签</div>
                     <!-- 图片数量 -->
-                    <div class="number">{{(img.name)}}张</div>
+                    <div class="number">{{img.smallImg.length}}张</div>
                 </div>
                 <!-- 景点名称 -->
                 <div class="address-name">
@@ -64,7 +64,7 @@
 
     <!-- 所有的弹窗 -->
     <!-- 1.添加相册的弹窗 -->
-  <el-dialog title="添加相册" :visible.sync="addAlbum"  append-to-body width="20%"  class="clearfix form_left">
+  <el-dialog title="添加相册" :visible.sync="addAlbum" custom-class="city_list" append-to-body width="20%"  class="clearfix form_left">
   <el-form :model="form"  ref="form">
    <el-form-item label="名称:" prop="name" :label-width="formLabelWidth" style="width:300px" >
       <el-input v-model="form.name" auto-complete="off" placeholder="请输入相册名称"></el-input>
@@ -89,7 +89,7 @@
 </el-dialog>
 
 <!-- 2.添加照片的弹窗 -->
-<el-dialog title="添加照片" :visible.sync="addAlbumImg" style="margin-top:-100px"  append-to-body width="1450px"  class="clearfix form_left">
+<el-dialog title="添加照片" :visible.sync="addAlbumImg" custom-class="city_list" style="margin-top:-100px"  append-to-body width="1450px"  class="clearfix form_left">
   <el-form :model="form"  ref="form">
   </el-form>
   <div class="add-address-img">
@@ -107,11 +107,9 @@
             :class="{'classa': small.name == classa}"
             @click="select(small.name,small.imgs,small.title)" >
             <img style="width:100%;height:100%;" :src="small.imgs" alt="">
-            <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
-            
+            <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>   
         </div>
-      </div>
-       
+      </div>   
       </div>
     </div>
      <div class="right-form">
@@ -170,7 +168,7 @@
 </el-dialog>
 
 <!-- 3.添加素材弹窗 -->
-<el-dialog title="添加素材" :visible.sync="addMaterial" style="margin-top:-100px;" append-to-body width="1450px"  class="clearfix form_left">
+<el-dialog title="添加素材" :visible.sync="addMaterial" style="margin-top:-100px;" custom-class="city_list" append-to-body width="1450px"  class="clearfix form_left">
   <el-form :model="form"  ref="form">
   </el-form>
   <div class="add-address-img">
@@ -190,15 +188,10 @@
       <div class="material-small-box" >
         <div v-for="img in marterialist" :key="img.name" ></div>
         <div class="material-small-img"  v-for="small in num"  :key="num.name"
-            
-           
             @click="select(small.name,small.imgs,small.title)" >
-           <span  style="position:relative;margin-left:285px;top:20px" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>
-            
-            <img  :class="{'classa': small.name == classa}" style="width:100%;height:100%;" :src="small.imgs" :key="num.name"  alt="">
-          
-        </div>   
-        
+           <span  style="position:relative;margin-left:285px;top:20px" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>  
+            <img  :class="{'classa': small.name == classa}" style="width:100%;height:100%;" :src="small.imgs" :key="num.name"  alt="">    
+        </div>      
       </div>  
     </div>
      <div class="right-form">    
@@ -231,7 +224,7 @@
   </div>
 </el-dialog>
 <!-- 4.添加标签的弹窗 -->
-<el-dialog title="标签选择" :visible.sync="addLabel" style="width:950px;margin:0 auto">
+<el-dialog title="标签选择" :visible.sync="addLabel" custom-class="city_list" style="width:950px;margin:0 auto">
   <div style="margin:0 auto">
     <el-tabs v-model="activeName" @tab-click="handleClick">
     <el-tab-pane v-for="list in Label" :label="list.title" :key="list.key" >
@@ -363,6 +356,10 @@
           name:'1',
           title:'冰洞',
           imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
+        },{
+          name:'2',
+          title:'田野',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_11520952981795.jpg',
         }],
        },{
           name:'2',
@@ -794,15 +791,15 @@
       margin-left: 5px;
 }
 .address-big{
-    /* position: relative; */
+    /* position: absolute; */
     /* float: right; */
      /* margin-top:-1060px;
      margin-left:350px; */
-     margin-top: 15px;
+    margin-top: 15px;
     float: left;
     width: 1215px;
     margin-left:96px;
-    /* border:1px solid pink; */
+    /* border:1px solid pink;  */
 }
 .address-img{
     position: relative;
@@ -897,6 +894,7 @@
   /* border:1px solid yellow; */
   margin-right:17px;
   margin-bottom:30px;
+  cursor:pointer
   
 }
 /* 相册小图片点击之后的样式  */
@@ -1042,18 +1040,14 @@
   overflow: auto;
   margin-right:20px;
   overflow-x:auto;
-  
-  
   margin:25px 0px 60px 0px;
   /* border:1px solid green; */
-
 }
 .label-check{
   float:left;
   text-align:left;
-  margin-bottom:5px;
-  margin-right:25px;
-  /* width:25%; */
+  margin-bottom:5px !important;
+  margin-right:25px !important;
 }
 .el-checkbox+.el-checkbox {
     margin-left: 0px;
