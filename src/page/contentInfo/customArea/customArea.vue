@@ -77,8 +77,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button @click="addClassification = false">取 消</el-button>
-          <el-button type="primary" @click="addClassification = false">确 定</el-button>
+          <el-button class="oppp" @click="addClassification = false">取 消</el-button>
+          <el-button class="oppp" type="primary" @click="addClassification = false">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 编辑分类弹框 -->
@@ -92,8 +92,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button @click="editClassification = false">取 消</el-button>
-          <el-button type="primary" @click="editClassification = false">确 定</el-button>
+          <el-button class="oppp" @click="editClassification = false">取 消</el-button>
+          <el-button class="oppp" type="primary" @click="editClassification = false">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 添加分组弹框 -->
@@ -113,8 +113,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button @click="addGrouping = false">取 消</el-button>
-          <el-button type="primary" @click="addGrouping = false">确 定</el-button>
+          <el-button class="oppp" @click="addGrouping = false">取 消</el-button>
+          <el-button class="oppp" type="primary" @click="addGrouping = false">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 分组编辑弹框 -->
@@ -134,8 +134,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button @click="editGrouping = false">取 消</el-button>
-          <el-button type="primary" @click="editGrouping = false">确 定</el-button>
+          <el-button class="oppp" @click="editGrouping = false">取 消</el-button>
+          <el-button class="oppp" type="primary" @click="editGrouping = false">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 城市编辑 -->
@@ -155,8 +155,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button @click="editCity = false">取 消</el-button>
-          <el-button type="primary" @click="editCity = false">确 定</el-button>
+          <el-button class="oppp" @click="editCity = false">取 消</el-button>
+          <el-button class="oppp" type="primary" @click="editCity = false">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 添加城市 -->
@@ -176,8 +176,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button @click="addCity = false">取 消</el-button>
-          <el-button type="primary" @click="addCity = false">确 定</el-button>
+          <el-button class="oppp" @click="addCity = false">取 消</el-button>
+          <el-button class="oppp" type="primary" @click="addCity = false">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -188,200 +188,229 @@
 export default {
   data() {
     return {
-      classificationTable: [{
-        classificationName: '国内',
-        classificationRank: '01',
-        groupingName: '直辖市',
-        groupingRank: '01',
-        groupingUrl: 'http://www.dytyou.com/gonglue/jianjie/city11893-beijing.html',
-        cityName: '北京',
-        cityRank: '01',
-      },{
-        cityName: '天津',
-        cityRank: '02'
-      },{
-        cityName: '上海',
-        cityRank: '03'
-      },{
-        groupingName: '四川、重庆',
-        groupingRank: '02',
-        groupingUrl: 'http://www.dytyou.com/gonglue/jianjie/city11893-beijing.html',
-        cityName: '成都',
-        cityRank: '01'
-      },{
-        cityName: '九寨沟',
-        cityRank: '02'
-      },{
-        cityName: '都江堰',
-        cityRank: '03'
-      },{
-        cityName: '稻城亚丁',
-        cityRank: '04'
-      },{
-        groupingName: '港澳台',
-        groupingRank: '03',
-        groupingUrl: 'http://www.dytyou.com/gonglue/jianjie/city11893-beijing.html',
-        cityName: '香港',
-        cityRank: '01'
-      },{
-        cityName: '澳门',
-        cityRank: '02'
-      },{
-        classificationName: '欧洲',
-        classificationRank: '02',
-        groupingName: '北欧',
-        groupingRank: '01',
-        groupingUrl: 'http://www.dytyou.com/gonglue/jianjie/city11893-beijing.html',
-        cityName: '冰岛',
-        cityRank: '01'
-      },{
-        cityName: '芬兰',
-        cityRank: '02'
-      },{
-        cityName: '挪威',
-        cityRank: '03'
-      },{
-        cityName: '丹麦',
-        cityRank: '04'
-      },{
-        cityName: '瑞典',
-        cityRank: '05'
-      }],
+      classificationTable: [
+        {
+          classificationName: "国内",
+          classificationRank: "01",
+          groupingName: "直辖市",
+          groupingRank: "01",
+          groupingUrl:
+            "http://www.dytyou.com/gonglue/jianjie/city11893-beijing.html",
+          cityName: "北京",
+          cityRank: "01"
+        },
+        {
+          cityName: "天津",
+          cityRank: "02"
+        },
+        {
+          cityName: "上海",
+          cityRank: "03"
+        },
+        {
+          groupingName: "四川、重庆",
+          groupingRank: "02",
+          groupingUrl:
+            "http://www.dytyou.com/gonglue/jianjie/city11893-beijing.html",
+          cityName: "成都",
+          cityRank: "01"
+        },
+        {
+          cityName: "九寨沟",
+          cityRank: "02"
+        },
+        {
+          cityName: "都江堰",
+          cityRank: "03"
+        },
+        {
+          cityName: "稻城亚丁",
+          cityRank: "04"
+        },
+        {
+          groupingName: "港澳台",
+          groupingRank: "03",
+          groupingUrl:
+            "http://www.dytyou.com/gonglue/jianjie/city11893-beijing.html",
+          cityName: "香港",
+          cityRank: "01"
+        },
+        {
+          cityName: "澳门",
+          cityRank: "02"
+        },
+        {
+          classificationName: "欧洲",
+          classificationRank: "02",
+          groupingName: "北欧",
+          groupingRank: "01",
+          groupingUrl:
+            "http://www.dytyou.com/gonglue/jianjie/city11893-beijing.html",
+          cityName: "冰岛",
+          cityRank: "01"
+        },
+        {
+          cityName: "芬兰",
+          cityRank: "02"
+        },
+        {
+          cityName: "挪威",
+          cityRank: "03"
+        },
+        {
+          cityName: "丹麦",
+          cityRank: "04"
+        },
+        {
+          cityName: "瑞典",
+          cityRank: "05"
+        }
+      ],
       // 城市级联数据
-      options: [{
-        value: 'zhongguo',
-        label: '中国',
-        children: [{
-          value: 'henansheng',
-          label: '河南省',
-          children: [{
-            value: 'shijiazhuangshi',
-            label: '石家庄市',
-          },{
-            value: 'tangshan',
-            label: '唐山',
-          },{
-            value: 'qinhuangdao',
-            label: '秦皇岛',
-          },{
-            value: 'handan',
-            label: '邯郸',
-          }]
-        },{
-          value: 'jilinsheng',
-          label: '吉林省',
-        }]
-      },{
-        value: 'riben',
-        label: '日本',
-      }],
+      options: [
+        {
+          value: "zhongguo",
+          label: "中国",
+          children: [
+            {
+              value: "henansheng",
+              label: "河南省",
+              children: [
+                {
+                  value: "shijiazhuangshi",
+                  label: "石家庄市"
+                },
+                {
+                  value: "tangshan",
+                  label: "唐山"
+                },
+                {
+                  value: "qinhuangdao",
+                  label: "秦皇岛"
+                },
+                {
+                  value: "handan",
+                  label: "邯郸"
+                }
+              ]
+            },
+            {
+              value: "jilinsheng",
+              label: "吉林省"
+            }
+          ]
+        },
+        {
+          value: "riben",
+          label: "日本"
+        }
+      ],
       // 添加分类
       addClassification: false,
       form: {
-        classificationName: '',
-        classificationRank: ''
+        classificationName: "",
+        classificationRank: ""
       },
       // 编辑分类
       editClassification: false,
       editForm: {
-        classificationName: '国内',
-        classificationRank: '01'
+        classificationName: "国内",
+        classificationRank: "01"
       },
       // 添加分组
       addGrouping: false,
       addGroup: {
-        groupingName: '',
-        groupingRank: '',
-        groupingUrl: ''
+        groupingName: "",
+        groupingRank: "",
+        groupingUrl: ""
       },
       // 编辑分组
       editGrouping: false,
       editGroup: {
-        groupingName: '直辖市',
-        groupingRank: '01',
-        groupingUrl: 'http://www.dytyou.com/gonglue/jianjie/city11893-beijing.html'
+        groupingName: "直辖市",
+        groupingRank: "01",
+        groupingUrl:
+          "http://www.dytyou.com/gonglue/jianjie/city11893-beijing.html"
       },
       // 编辑城市
       editCity: false,
       editCitys: {
-        cityRank: '01'
+        cityRank: "01"
       },
       // 添加城市
       addCity: false,
       addCitys: {
-        cityRank: ''
+        cityRank: ""
       },
-      formLabelWidth: '200px',
+      formLabelWidth: "200px",
       //表格内边距
-      bottom_table:{
-        height: '36px',
-        padding: '0'
+      bottom_table: {
+        height: "36px",
+        padding: "0"
       },
       rules: {
         classificationName: [
-          { required: true, message: '请输入分类名称', trigger: 'blur'},
-          { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
+          { required: true, message: "请输入分类名称", trigger: "blur" },
+          { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: "请输入2-10位汉字" }
         ],
         classificationRank: [
-          { required: true, message: '排序不能为空', trigger: 'blur'},
+          { required: true, message: "排序不能为空", trigger: "blur" }
         ],
         groupingName: [
-          { required: true, message: '请输入分组名称', trigger: 'blur'},
-          { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
+          { required: true, message: "请输入分组名称", trigger: "blur" },
+          { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: "请输入2-10位汉字" }
         ],
         groupingRank: [
-          { required: true, message: '排序不能为空', trigger: 'blur'},
+          { required: true, message: "排序不能为空", trigger: "blur" }
         ],
         cityRank: [
-          { required: true, message: '排序不能为空', trigger: 'blur'},
+          { required: true, message: "排序不能为空", trigger: "blur" }
         ],
-        cityName: [
-          { required: true, message: '城市必选', trigger: 'blur'},
-        ]
-      },
-    }
+        cityName: [{ required: true, message: "城市必选", trigger: "blur" }]
+      }
+    };
   },
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      if(columnIndex === 0 || columnIndex === 1){
-        if(rowIndex === 0){
-           return {
+      if (columnIndex === 0 || columnIndex === 1) {
+        if (rowIndex === 0) {
+          return {
             rowspan: 9,
             colspan: 1
           };
-        }else if(rowIndex === 9){
+        } else if (rowIndex === 9) {
           return {
             rowspan: 5,
             colspan: 1
           };
-        }else{
+        } else {
           return {
             rowspan: 0,
             colspan: 0
           };
         }
-      }else if (columnIndex === 4 || columnIndex === 3 || columnIndex === 2) {
+      } else if (columnIndex === 4 || columnIndex === 3 || columnIndex === 2) {
         if (rowIndex === 0) {
           return {
             rowspan: 3,
             colspan: 1
           };
-        } else if(rowIndex === 3) {
+        } else if (rowIndex === 3) {
           return {
             rowspan: 4,
             colspan: 1
           };
-        } else if(rowIndex === 7){
+        } else if (rowIndex === 7) {
           return {
             rowspan: 2,
             colspan: 1
           };
-        }else if(rowIndex === 9){
-           return {
+        } else if (rowIndex === 9) {
+          return {
             rowspan: 5,
             colspan: 1
           };
-        }else{
+        } else {
           return {
             rowspan: 0,
             colspan: 0
@@ -390,107 +419,135 @@ export default {
       }
     },
     removeClassification() {
-      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
     },
     removeGrouping() {
-        this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
     },
     removeCity() {
-      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
     }
   }
-}
+};
 </script>
 
 <style scoped lang='stylus'>
-.big{
+.big {
   width: 100%;
   height: 75%;
 }
-.top{
+
+.top {
   width: 100%;
   height: 50px;
 }
-.bottom{
+
+.bottom {
   width: 100%;
   height: 84%;
 }
-.add-classification{
+
+.add-classification {
   float: left;
 }
-.icon{
-   display:none;
+
+.icon {
+  display: none;
 }
-.father:hover .icon{
-    display:inline-block ;
+
+.father:hover .icon {
+  display: inline-block;
 }
-.block{
+
+.block {
   margin-top: 20px;
   float: right;
 }
-.Popup{
+
+.Popup {
   margin: 0 auto;
 }
-.boom{
-  position:relative;
-  right:100px;
-}
-.zoon{
+
+.boom {
   position: relative;
-  right:110px;
+  right: 100px;
 }
-.url{
-  position:relative;
-  right:100px;
+
+.zoon {
+  position: relative;
+  right: 110px;
+}
+
+.url {
+  position: relative;
+  right: 100px;
   width: 550px;
 }
-.cascader{
-  margin-right:45px;
+
+.cascader {
+  margin-right: 45px;
 }
-.el-dialog__wrapper>>>.el-dialog
+
+.el-dialog__wrapper>>>.el-dialog {
   width: 500px;
+}
+
+.classification-footer{
+  text-align :center;
+}
+
+.oppp{
+  margin: 20px;
+  width:100px;
+}
 </style>
 
 
