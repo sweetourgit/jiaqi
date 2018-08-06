@@ -34,7 +34,7 @@
     <div style="padding: 0 20px">
       <div style="text-align: left">
        
-          <el-button @click="showaddbtn" type="primary" class="add_scenic">添加景点</el-button>
+          <el-button @click="dialogFormVisible = true" type="primary" class="add_scenic">添加景点</el-button>
         
       </div>
   
@@ -43,7 +43,8 @@
         :data="checkLabelList"
         :header-row-style="hrs"
         :cell-style="cs"
-        border>
+        border
+        :headerRowStyle="tableHead" :cellStyle="tableHeight" :header-cell-style="getRowClass">
         <el-table-column
           prop="id"
           label="景点ID"
@@ -91,12 +92,10 @@
         style="float: right">
       </el-pagination>
     </div>
-    <fade-animation>
-      <add-scenic
-        @closelable ='showaddbtn'
-        v-show="showadd"
-      />
-    </fade-animation>
+    <el-dialog title="添加景点" :visible.sync="dialogFormVisible" custom-class="city_list">
+      
+      <AddScenic @close='handleclose'></AddScenic>
+    </el-dialog>
   </div>
 </template>
 
@@ -111,6 +110,9 @@ import AddScenic from './components/Addscenic'
     },
     data() {
       return {
+        tableHead:{height: '60px', color: '#555555'},
+        tableHeight:{padding: '0', height: '34px'},
+        dialogFormVisible:false,
         hot: '',
         showadd: false,
         countryArr: [
@@ -211,10 +213,18 @@ import AddScenic from './components/Addscenic'
         cs: {padding: '0', height: '40px'},
         pageSize: 2,    // 设定默认分页每页显示数 todo 具体看需求
         pageIndex: 1,    // 设定当前页数
-        totalNum: 6
+        totalNum: 6,
+        
       }
     },
     methods: {
+      getRowClass({ row, column, rowIndex, columnIndex }) {
+          if (rowIndex == 0) {
+            return 'background:#F7F7F7'
+          } else {
+            return ''
+          }
+      },
       subForm () {
         alert('查找')
       },
@@ -236,12 +246,16 @@ import AddScenic from './components/Addscenic'
       },
       handleSizeChange: function () {
         
+      },
+      handleclose(){
+        this.dialogFormVisible=false
       }
     }
   }
 </script>
 
 <style scoped lang="scss">
+
   .search_dom {
     padding-top: 22px;
     height: 40px;
