@@ -50,7 +50,7 @@ html{
 .page-header{height:auto !important;padding:0px !important}
 .container{height: 100%;}
 .navigation{width:222px !important;}
-.content-body{margin-left: -22px; background: #F7F7F7; line-height: 100%;}
+.content-body{margin-left: -22px; background: #F7F7F7; line-height: 100%; }
 .content-body1{margin-top: 15px; background: #FFF; line-height: 100%; min-height: 94%;}
 .content-position{border-left: 3px solid #F38F00; text-align: left; padding-left: 20px; font-size: 17px;height: 23px;line-height: 23px;}
 .el-cascader-menus.el-popper.popper__arrow .el-cascader-menu :nth-child(1){background: #F6F6F6; color:#409EFF !important;} /* 城市列表下拉框 */
