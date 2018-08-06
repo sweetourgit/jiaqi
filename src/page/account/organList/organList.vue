@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="left">
-            <div class="hh">
-          <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick()" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
+          <div class="hh">
+            <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick()" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
           </div>
         </div>
         <div class="right">
@@ -10,10 +10,8 @@
             <span class="rightTitle">{{addInput.topDepartment}}</span>
           </div>
           <div class="right-btn">
-            <div class="btn-top">
               <el-button plain class="editDepartment" @click="editDepartment1(addInput.ParentID)">编辑</el-button>
               <el-button type="primary" class="addSubdivision" @click="addSubdivisionOpen">+ &nbsp;子部门</el-button>
-            </div>
             <!-- <span class="inheritanceRules">默认限制向上继承</span>
             <el-switch v-model="switchs" active-color="#13ce66" inactive-color="#ff4949" class="switch"></el-switch> -->
           </div>
@@ -35,8 +33,7 @@
             <el-button type="danger" class="batchDelete" disabled v-if="kk[0] == undefined">批量移除</el-button>
             <el-button type="danger" class="batchDelete" @click="open2" v-if="kk[0] !== undefined">批量移除</el-button>
           </div>
-          <el-table :data="tableList" border class="tableList" @select="del" @select-all="del" max-height="163" :header-cell-style="getRowClass"
->
+          <el-table :data="tableList" border class="tableList" @select="del" @select-all="del" max-height="163" :header-cell-style="getRowClass">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
             <el-table-column prop="name" label="姓名" align="center"></el-table-column>
             <el-table-column prop="position" label="职位" align="center"></el-table-column>
@@ -50,6 +47,7 @@
             </el-table-column>
           </el-table>
         </div>
+
         <!-- 编辑部门弹框 -->
         <el-dialog class="updataPopup" title="编辑部门" :visible.sync="editDepartment" custom-class="city_list"
 >
@@ -83,7 +81,7 @@
                            </el-option>
                          </el-select>
                        </el-form-item>
- 
+
                        <el-form-item label="子部门2" class="form-lala" v-if="bumen2">
                          <el-select v-model="value2" placeholder="请选择"   @change="HandChange2()" class="form-xi">
                            <el-option
@@ -201,16 +199,16 @@
                 <el-button type="primary" class="searchButton">搜索</el-button>
             </div>
             <el-table ref="table" :data="members" border class="members" @selection-change="qq" :header-cell-style="getRowClass">
-                <el-table-column type="selection" width="30%" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" align="center"  width="60%" fixed="left"></el-table-column>
-                <el-table-column prop="name" label="姓名" align="center"  width="120%" fixed="left"></el-table-column>
+                <el-table-column type="selection" width="35%" align="center"></el-table-column>
+                <el-table-column prop="id" label="ID" align="center"  width="55%"></el-table-column>
+                <el-table-column prop="name" label="姓名" align="center"  width="115%"></el-table-column>
                 <el-table-column prop="phone" label="手机号" align="center"  width="200%"></el-table-column>
-                <el-table-column prop="email" label="邮箱" align="center"  width="200%"></el-table-column>
-                <el-table-column prop="sex" label="性别" align="center"  width="120%"></el-table-column>
-                <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
+                <el-table-column prop="email" label="邮箱" align="center"  width="195%"></el-table-column>
+                <el-table-column prop="sex" label="性别" align="center"  width="115%"></el-table-column>
+                <el-table-column prop="state" label="状态" align="center"  width="115%"></el-table-column>
             </el-table>
             <div class="black">
-              <el-pagination :page-sizes="[1]" background @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+              <el-pagination :page-sizes="[6,8,10]" background @size-change="pagesizes" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
               </el-pagination>
             </div>
             <div slot="footer" class="btn">
@@ -220,8 +218,7 @@
             </div>
         </el-dialog>
         <!-- 设置职位弹框 -->
-        <el-dialog class="Popup" title="设置职位" :visible.sync="position" custom-class="city_list"
->
+        <el-dialog class="Popup" title="设置职位" :visible.sync="position" custom-class="city_list">
             <el-form :model="setPosition">
                 <el-form-item label="姓名" :label-width="setLabelWidth" class="setinput">
                     <el-input v-model="setPosition.name" auto-complete="off" :disabled="true"></el-input>
@@ -319,12 +316,19 @@ export default {
           position: "员工",
           phone: "13022222222",
           sex: "女"
+        },
+        {
+          id: "003",
+          name: "铁蛋",
+          position: "员工",
+          phone: "13033333333",
+          sex: "男"
         }
       ],
 
       members1: [],
       //每页的数据条数
-      pagesize: 1,
+      pagesize: 8,
       //默认开始页面
       currentPage: 1,
       total: 1,
@@ -887,6 +891,11 @@ export default {
         .catch(function(obj) {});
       // 获取顶级，第一级城市end
     },
+    pagesizes(page) {
+
+      this.pagesize = page;
+
+    },
     HandChange2() {
       this.arr2 = this.value2.split("-");
       this.options3 = [];
@@ -936,37 +945,28 @@ export default {
 }
 
 .hh {
-  position: absolute;
   float: left;
-  left: 13%;
+  margin-left: 30px;
   margin-top: 12%;
   width: 300px;
   height: 500px;
   overflow: auto;
 }
 
-.btn-top {
-  position: absolute;
-  width: 50%;
-  height: 100%;
-  left: 2%;
-  margin-top: 4.2%;
-}
-
 .editDepartment {
   float: left;
   width: 100px;
   height: 40px;
-  margin-left: 4%;
-  top: 63%;
+  margin-left: 30px;
+  margin-top:30px;
 }
 
 .addSubdivision {
   float: left;
   width: 100px;
   height: 40px;
-  margin-left: 6.5%;
-  top: 63%;
+  margin-left: 30px;
+  margin-top:30px;
 }
 
 .inheritanceRules {
@@ -983,9 +983,9 @@ export default {
 }
 
 .small1 {
-  position: absolute;
-  left: 4%;
-  top: 23.5%;
+  float:left;
+  margin-left:30px;
+  margin-top:25px;
   width: 4px;
   height: 22px;
   background: inherit;
@@ -997,24 +997,23 @@ export default {
 }
 
 .lowerTitle {
-  position: absolute;
-  left: 6%;
-  top: 24%;
+  float:left;
+  margin-left:10px;
+  margin-top:27px;
   font-size: 20px;
 }
 
 .divisionTable {
-  position: absolute;
-  top: 29.2%;
-  left: 4%;
-  width: 70%;
-  height: 24%;
+  width:70%;
+  margin-top:60px;
+  margin-left:30px;
+  margin-right:250px;
 }
 
 .small2 {
-  position: absolute;
-  left: 4%;
-  top: 55%;
+  float:left;
+  margin-left:30px;
+  margin-top:20px;
   width: 4px;
   height: 22px;
   background: inherit;
@@ -1026,9 +1025,9 @@ export default {
 }
 
 .personnelTitle {
-  position: absolute;
-  left: 6%;
-  top: 55.5%;
+  float:left;
+  margin-left:15px;
+  margin-top:22px;
   font-size: 20px;
 }
 
@@ -1036,31 +1035,26 @@ export default {
   float: left;
   width: 100px;
   height: 40px;
-  margin-left: 4%;
-  top: 63%;
+  margin-left: 30px;
 }
 
 .batchDelete {
   float: left;
   width: 100px;
   height: 40px;
-  margin-left: 3%;
-  top: 63%;
+  margin-left: 30px;
 }
 
 .btn-boom {
-  position: absolute;
-  width: 100%;
-  height: 8%;
-  top: 62.8%;
+  height: 50px;
+  margin-top:60px;
 }
 
 .tableList {
-  position: absolute;
-  left: 4%;
-  top: 73.5%;
-  width: 88%;
-  height: 25%;
+  width: 80%;
+  margin-left:30px;
+  margin-right:90px;
+  margin-top:20px;
 }
 
 .cascader {
@@ -1101,7 +1095,7 @@ export default {
   margin-bottom: -120px;
   top: -200px;
   left: 1.3%;
-  width: 90%;
+  width: 87.91%;
 }
 
 .btn {
@@ -1116,7 +1110,8 @@ export default {
 
 .setSelect {
   margin-bottom: 200px;
-  left: 10px;
+  margin-right: 90px;
+  margin-left:10px;
   width: 270px;
 }
 
@@ -1141,18 +1136,16 @@ export default {
 }
 
 .right {
-  position: absolute;
-  width: 46.1%;
-  height: 70%;
-  margin-top: 1%;
+  width: 50%;
+  height:700px;
+  margin-top: -704px;
   margin-left: 450px;
   border: 2px solid #E6E6E6;
 }
 
 .left {
-  position: absolute;
   width: 400px;
-  height: 70%;
+  height:700px;
   border: 2px solid #E6E6E6;
   margin-top: 1%;
   margin-left: 1%;
@@ -1218,30 +1211,25 @@ export default {
 }
 
 .right-top {
-  position: absolute;
+  position:relative;
   width: 100%;
   height: 50px;
   background-color: #F6F6F6;
 }
 
 .rightTitle {
-  position: absolute;
-  left: 4.3%;
-  top: 30%;
+  float:left;
+  margin-left:30px;
+  margin-top:15px;
   font-size: 20px;
 }
 
 .right-btn {
-  position: absolute;
-  width: 100%;
-  height: 12.4%;
-  top: 7%;
+  height: 80px;
 }
 
 .black {
-  position: absolute;
-  top: 80%;
-  right: 10%;
+  margin-bottom:-350px;
 }
 
 .yy {
@@ -1291,7 +1279,7 @@ export default {
 }
 
 .popup>>>.el-dialog {
-  width: 850px;
+  width: 985px;
 }
 
 .dialog-footer{
