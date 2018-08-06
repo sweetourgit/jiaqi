@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="content">
+    <div class="content_pass">
     <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-ruleForm">
       <el-form-item label="当前密码" prop="passWord">
         <el-input class="input" type="password" v-model="form.passWord" placeholder="请输入当前密码"></el-input>
@@ -112,7 +112,7 @@ export default {
 </script>
 
 <style scoped>
-.content{margin: 0 0 0 16%;}
+.content_pass{margin: 0 0 0 16%;}
 .row{width: 400px; padding-top: 40px;}
 .preservation{width: 140px; margin: 40px auto;}
 .input{width: 210px;float: left;}

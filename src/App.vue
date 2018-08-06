@@ -53,12 +53,14 @@ html{
 .content-body{margin-left: -22px; background: #F7F7F7; line-height: 100%;}
 .content-body1{margin-top: 15px; background: #FFF; line-height: 100%; min-height: 94%;}
 .content-position{border-left: 3px solid #F38F00; text-align: left; padding-left: 20px; font-size: 17px;height: 23px;line-height: 23px;}
-.el-cascader-menus.el-popper.popper__arrow .el-cascader-menu :nth-child(1){background: #F6F6F6; color:#409EFF !important;}
-.el-cascader-menus.el-popper.popper__arrow .el-cascader-menu__item.is-active{color:#1ABC9C;}
-.el-message-box.delete_country p{margin: 0 0 0 50px;}
+.el-cascader-menus.el-popper.popper__arrow .el-cascader-menu :nth-child(1){background: #F6F6F6; color:#409EFF !important;} /* 城市列表下拉框 */
+.el-cascader-menus.el-popper.popper__arrow .el-cascader-menu__item.is-active{color:#1ABC9C;} /* 城市列表下拉框选中 */
+.el-message-box.delete_country p{margin: 0 0 0 50px;}  /* 城市列表删除 */
 .el-message-box.delete_country .delete_country_determine{margin: 20px 100px 20px 0; width: 80px;}
 .el-message-box.delete_country .delete_country_determine1{margin: 20px 20px 20px 0; width: 80px;}
-.city_list .el-dialog__header{background: #F6F6F6; height: 25px;}
+.city_list .el-dialog__header{background: #F6F6F6; height: 25px;} /* 弹框样式 */
 .city_list .el-dialog__title{float: left;}
-.el-menu-vertical-demo .el-menu-item.is-active{background: #0C1C40 !important;}
+.el-menu-vertical-demo .el-menu-item.is-active{background: #0C1C40 !important;} /* 导航选中 */
+.content_pass .el-form-item__error{ position: absolute; left: 220px; top: 12px;} /* 修改密码error */
+.content_pass .el-form-item__content{ width:340px;}
 </style>
