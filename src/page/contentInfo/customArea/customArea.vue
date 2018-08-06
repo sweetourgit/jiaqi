@@ -7,7 +7,7 @@
       <div class="bottom">
           <el-table :data="classificationTable" style="width: 100%" :cell-style="bottom_table" :span-method="objectSpanMethod">
             <el-table-column prop="classification" label="分类" align="center">
-              <el-table-column label="名称" prop="classificationName" align="center" width="250" >
+              <el-table-column label="名称" prop="classificationName" align="center">
                   <template slot-scope="scope">
                     <div class="father">
                       <span class="name">{{ scope.row.classificationName }}</span>
@@ -19,10 +19,10 @@
                     </div>
                   </template>
               </el-table-column>
-              <el-table-column label="排序" prop="classificationRank" align="center" width="90"></el-table-column>
+              <el-table-column label="排序" prop="classificationRank" align="center"></el-table-column>
             </el-table-column>
             <el-table-column prop="grouping" label="分组" align="center">
-              <el-table-column label="名称" prop="groupingName" align="center" width="250">
+              <el-table-column label="名称" prop="groupingName" align="center">
                 <template slot-scope="scope">
                     <div class="father">
                       <span class="name">{{ scope.row.groupingName }}</span>
@@ -34,11 +34,11 @@
                     </div>
                   </template>
               </el-table-column>
-              <el-table-column label="排序" prop="groupingRank" align="center" width="90"></el-table-column>
+              <el-table-column label="排序" prop="groupingRank" align="center"></el-table-column>
               <el-table-column label="分组url" prop="groupingUrl" align="center" width="618"></el-table-column>
             </el-table-column>
             <el-table-column prop="city" label="城市" align="center">
-              <el-table-column label="名称" prop="cityName" align="center" width="250">
+              <el-table-column label="名称" prop="cityName" align="center">
                 <template slot-scope="scope">
                     <div class="father">
                       <span class="name">{{ scope.row.cityName }}</span>
@@ -49,22 +49,23 @@
                     </div>
                   </template>
               </el-table-column>
-              <el-table-column label="排序" prop="cityRank" align="center" width="90"></el-table-column>
+              <el-table-column label="排序" prop="cityRank" align="center"></el-table-column>
             </el-table-column>
           </el-table>
-      </div>
-      <div class="block">
-         <!--   @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage4" -->
-        <el-pagination
+          <div class="block">
+              <!--   @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage4" -->
+            <el-pagination
 
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="400">
-        </el-pagination>
+              :page-sizes="[100, 200, 300, 400]"
+              :page-size="100"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="400">
+            </el-pagination>
+          </div>
       </div>
+
 
       <!-- 添加分类弹框 -->
       <el-dialog title="添加分类" custom-class="city_list" :visible.sync="addClassification" class="Popup">
@@ -159,7 +160,7 @@
           <el-button class="oppp" type="primary" @click="editCity = false">确 定</el-button>
         </div>
       </el-dialog>
-      <!-- 添加城市 --> 
+      <!-- 添加城市 -->
       <el-dialog title="添加城市" custom-class="city_list" :visible.sync="addCity" class="Popup">
         <el-form :model="addCitys" :rules="rules">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
@@ -492,7 +493,6 @@ export default {
 
 .bottom {
   width: 100%;
-  height: 84%;
 }
 
 .add-classification {
@@ -510,6 +510,7 @@ export default {
 .block {
   margin-top: 20px;
   float: right;
+  margin-bottom:80px;
 }
 
 .Popup {
