@@ -101,7 +101,7 @@
       <!-- 第一张图片 -->
       <div class="first-img">
         <img style="width:100%;height:100%;"   :src="this.addressImg"    alt="">
-            <!-- <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>    -->
+            <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>   
         
       </div>
       <!-- 其余图片  -->
@@ -194,7 +194,7 @@
         <div v-for="img in marterialist" :key="img.name" ></div>
         <div class="material-small-img"  v-for="small in num"  :key="num.name"
             @click="select(small.name,small.imgs,small.title)" >
-           <span  style="position:relative;margin-left:285px;top:20px" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>  
+           <!-- <span  style="position:relative;margin-left:285px;top:20px" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>   -->
             <img  :class="{'classa': small.name == classa}" style="width:100%;height:100%;" :src="small.imgs" :key="num.name"  alt="">    
         </div>      
       </div>  
@@ -260,8 +260,12 @@
 </template>
 
 <script scoped>
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
   export default {
-   
+   components: {
+    swiper,
+    swiperSlide
+  },
     data() {
         
       return {
@@ -926,7 +930,10 @@
 }
 .small_img_close{
   position:absolute;
-  margin-left:-1.5%;
+  margin-left:67.5%;
+  top:9.5%;
+  font-size:20px;
+  /* margin-bottom:-10px; */
   /* margin-left:95%; */
   /* margin-top:10px; */
   /* font-size:18px; */
