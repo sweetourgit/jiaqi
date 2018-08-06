@@ -4,10 +4,10 @@
     <table style="width: 100%">
       <thead>
       <tr>
-        <th width="248">模块</th>
-        <th width="278">菜单</th>
-        <th width="340">权限类型</th>
-        <th width="720">具体权限</th>
+        <th style="background: rgb(247, 247, 247);" width="248">模块</th>
+        <th style="background: rgb(247, 247, 247);" width="278">菜单</th>
+        <th style="background: rgb(247, 247, 247);" width="340">权限类型</th>
+        <th style="background: rgb(247, 247, 247);" width="720">具体权限</th>
       </tr>
       </thead>
       <tbody>

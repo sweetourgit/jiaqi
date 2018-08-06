@@ -1,178 +1,126 @@
 <template>
-  <div class="addscenice">
-    <div class="content">
-      <div class="title">
-        添加景点
-        <span 
-          @click="handleclose"
-          class="iconfont">
-            <a style="cursor:pointer" class="el-icon-close"></a>
-          </span>
+  <div>
+   <el-form ref="form" :model="form" label-width="80px">
+    <el-form-item class="form-item" label-width='80px'  label="中文名称">
+      <el-input class="form-input" v-model="form.chineseName"></el-input>
+    </el-form-item>
+     <el-form-item class="form-item" label-width='80px'  label="英文名称">
+      <el-input class="form-input" v-model="form.englishName"></el-input>
+    </el-form-item>
+     <el-form-item class="form-item" label-width='80px'  label="英文名称">
+      <el-cascader
+        class="form-input"
+        expand-trigger="hover"
+        :options="options"
+        v-model="form.selectedOptions"
+        @change="handleChange">
+      </el-cascader>
+    </el-form-item>
+    <el-form-item class="form-item" label-width='80px'  label="景点标签">
+      <el-button @click="showEdit = true" class="form-btn" type="primary" size="mini">编辑</el-button>
+    </el-form-item>
+    <el-form-item class="form-item" label-width='80px'  label="地理位置">
+      <div style="float:left">
+        <div>
+          lat(纬度)：<el-input v-model="form.lat" style="width:200px"/>
+        </div>
+        <div style="margin-top:5px">
+          Int(经度)：<el-input v-model="form.int" style="width:200px"/>
+        </div>
       </div>
-      <div class="name">
-        <span class="name-title">中文名称</span>
-        <span class="name-input">
-          <el-input v-model="name" placeholder="请输入内容">
-          </el-input>
-        </span>
-      </div>
-       <div class="name">
-        <span class="name-title">英文名称</span>
-        <span class="name-input">
-          <el-input v-model="enname" placeholder="请输入内容">
-          </el-input>
-        </span>
-      </div>
-      <div class="name">
-        <span class="name-title">所属区域</span>
-        <span class="name-input">
-            <el-cascader
-              :options="options"
-              v-model="city"
-              @change="handleChange">
-            </el-cascader>
-        </span>
-      </div>
-      <div class="name">
-        <span class="name-title">景点标签</span>
-        <span class="name-input">
-            <a
-             class="edit"
-             @click="handleshowlabel"
-            >编辑
-            </a>
-        </span>
-      </div>
-      <div class="name">
-        <span class="name-title">地理位置</span>
-        <span class="position">
-          lat(纬度):
-          <el-input style="width:200px;margin-left:6px" v-model="lat" placeholder="请输入内容"></el-input>
-        </span>
-      </div>
-      <div class="name">
-        <span class="name-title"></span>
-        <span style="margin-left:96px" class="position">
-          lng(经度):
-          <el-input style="width:200px" v-model="lng" placeholder="请输入内容"></el-input>
-        </span>
-      </div>
-      <div class="name">
-        <span class="name-title">参考用时</span>
-        <el-checkbox> ＜1小时</el-checkbox>
-        <el-checkbox>1~3小时</el-checkbox>
-        <el-checkbox>3~5小时</el-checkbox>
-        <el-checkbox>>5小时</el-checkbox>
-      </div>
-      <div class="name">
-        <span class="name-title">开放时间</span>
-        <span class="name-input">
-          <el-button
-            @click="showopentime"
-            type="primary"
-          >
-          添加开放时间
-          </el-button>
-        </span>
-        <div>{{opentimedesc}}</div>
-      </div>
-      <div class="name">
-        <span class="name-title">适宜季节</span>
-        <span class="name-input">
-          <el-checkbox>春</el-checkbox>
-          <el-checkbox>夏</el-checkbox>
-          <el-checkbox>秋</el-checkbox>
-          <el-checkbox>冬</el-checkbox>
-        </span>
-      </div>
-      <div class="name">
-        <span class="name-title">适宜人群</span>
-        <span class="name-input">
-          <el-checkbox>老人</el-checkbox>
-          <el-checkbox>儿童</el-checkbox>
-          <el-checkbox>成人</el-checkbox>
-        </span>
-      </div>
-      <div class="name">
-        <span class="name-title">景点图片</span>
-      
-      </div>
+    </el-form-item>
+    <el-form-item class="form-item" label-width='80px'  label="参考用时">
+      <el-checkbox-group style="float:left" v-model="form.timer">
+        <el-checkbox label="<1小时"></el-checkbox>
+        <el-checkbox label="1~3小时"></el-checkbox>
+        <el-checkbox label="3~5小时"></el-checkbox>
+        <el-checkbox label=">5小时" ></el-checkbox>
+      </el-checkbox-group>
+    </el-form-item>
+    <el-form-item class="form-item" label-width='80px'  label="开放时间">
+      <el-button @click="showtime=true" style='float:left' type="primary">添加开放时间</el-button>
+    </el-form-item>
+    <el-form-item class="form-item" label-width='80px'  label="适宜季节">
+      <el-checkbox-group style="float:left" v-model="form.season">
+        <el-checkbox label="春"></el-checkbox>
+        <el-checkbox label="夏"></el-checkbox>
+        <el-checkbox label="秋"></el-checkbox>
+        <el-checkbox label="冬" ></el-checkbox>
+      </el-checkbox-group>
+    </el-form-item>
+     <el-form-item class="form-item" label-width='80px'  label="适宜人群">
+      <el-checkbox-group style="float:left" v-model="form.person">
+        <el-checkbox label="老人"></el-checkbox>
+        <el-checkbox label="儿童"></el-checkbox>
+        <el-checkbox label="成人"></el-checkbox>
+      </el-checkbox-group>
+    </el-form-item>
+    <el-form-item class="form-item" label-width='80px'  label="景点图片">
       <el-upload
-          class="upload"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :file-list="fileList2"
-          list-type="picture">
-          <el-button
-            size="small"
-            type="primary"
-            style="margin-left:-400px;padding: 12px 20px;"
-          >
-          选择上传文件
-          </el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        class="upload-demo"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :file-list="fileList2"
+        list-type="picture">
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
       </el-upload>
-      <div class="name">
-        <span class="name-title">景点简介</span>
-        
-      </div>
-      <textarea class="textarea" v-model="text"></textarea>
-      <div class="center">
+    </el-form-item>
+     <el-form-item class="form-item" label-width='80px'  label="景点简介">
+      <el-input class="text-area" resize="none" type="textarea" v-model="form.desc"></el-input>
+    </el-form-item>
+    <div class="center">
         <el-button
           @click="handleclose"
           style="padding:12px 30px" 
-          plain>取消</el-button>
+          plain>取消
+        </el-button>
         <el-button 
+          @click="handleclose"
           style="padding:12px 30px" 
-          type="primary">确定</el-button>
+          type="primary">
+          确认
+        </el-button>
       </div>
-    <fade-animation>
-      <label-selection
-        @close='handleshowlabel'
-        v-show="showlabel"
-      />
-    </fade-animation>
-    <fade-animation>
-      <open-time
-        @postinner='resinner'
-        @close='showopentime'
-        class="opentime"
-        v-show="showtime"
-      />
-    </fade-animation>
-    </div>
+   </el-form>
+
+  <!-- 编辑 -->
+
+<el-dialog width='30%' top='20vh' append-to-body title="标签选择" :visible.sync="showEdit" custom-class="city_list">
+  <LabelSelection></LabelSelection>
+</el-dialog>
+<!-- 开放时间 -->
+<el-dialog width='40%' top='20vh' append-to-body title="添加开放时间" :visible.sync="showtime" custom-class="city_list">
+  <OpenTime></OpenTime>
+</el-dialog>
   </div>
 </template>
 
 <script>
-import OpenTime from './components/Opentime'
-import FadeAnimation from '@/common/FadeAnimation'
 import LabelSelection from './components/Labelselection'
+import OpenTime from './components/Opentime'
 export default {
-  watch: {
-    name () {
-      console.log('变化')
-    }
-  },
-  name: 'Addscenic',
-  components: {
+  components:{
     LabelSelection,
-    OpenTime,
-    FadeAnimation
+    OpenTime
   },
   data() {
-    return {
-        opentimedesc: '',
-        showtime: false,
-        text:'111',
-        fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
-        lng: '',
-        lat: '',
-        showlabel:false,
-        name: "",
-        enname: "",
-        city: [],
+    return{
+      showtime: false,
+      showEdit: false,
+      fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+      form: {
+        chineseName: '',
+        englishName:'',
+        selectedOptions:[],
+        lat:'',
+        int:'',
+        timer:[],
+        season:[],
+        person:[],
+        desc:''
+      },
         options: [{
           value: 'zhinan',
           label: '指南',
@@ -367,104 +315,39 @@ export default {
             value: 'jiaohu',
             label: '组件交互文档'
           }]
-        }],
-   }
+        }]
+    }
   },
-  methods: {
-    resinner (text) {
-      this.opentimedesc = text
+  methods:{
+    handleChange(e){
+      console.log(e)
     },
-    handleChange (v) {
-      console.log(v)
+    handleclose(){
+      this.$emit('close')
     },
-    handleshowlabel () {
-      this.showlabel = !this.showlabel
-    },
-    handleclose () {
-      this.$emit('closelable')
-    },
-    handleRemove(file, fileList) {
+     handleRemove(file, fileList) {
         console.log(file, fileList);
       },
-    handlePreview(file) {
+      handlePreview(file) {
         console.log(file);
-    },
-    showopentime () {
-      this.showtime = !this.showtime
-    }
+      }
+    
   }
-};
+}
 </script>
 
 <style lang='stylus' scoped>
-.opentime
-  position fixed
-  top 0
-  left 0
-  bottom 0
-  right 0
-  background rgba(0,0,0,.4)
-  z-index 21
-.addscenice 
-  position: fixed
-  left: 0
-  top: 0
-  bottom: 0
-  right: 0
-  background: rgba(0, 0, 0, 0.6)
-  z-index: 6
-
-  .content 
-    position: absolute
-    width: 1014px
-    height: 80%
-    background: #fff
-    left: calc(50% - 500px)
-    top: calc(50% - 40%)
-    overflow-y scroll
-    .title 
-      height: 78px
-      background: #fff
-      line-height: 78px
-      margin-bottom: 50px
-      color #666
-      border-bottom solid 1px #f2f2f2
-      .iconfont
-        position absolute
-        right 20px
-    .name
-      width: 500px
-      margin: 0 auto
-      height: 50px
-      line-height: 50px
-      color: rgb(153, 153, 153)
-      overflow: hidden
-      .position
-        float left
-      .name-title 
-        float: left
-        margin-right: 30px
-      .name-input 
-        float: left
-        .edit
-          color #3095fa
-          cursor pointer
-    .upload
-      width 500px
-      margin 0 auto
-      margin-left 350px
-      
-    .textarea
-      resize none
-      display block
-      width 500px
-      height 120px
-      margin-left 350px
-      border-radius 5px
-      padding 5px
-      color #606266
-      font-size 14px
-      text-indent 28px
-    .center
-      margin 50px 
+.form-item
+  overflow hidden
+  .form-input
+    float left
+    width 250px!important
+  .form-btn
+    float left
+    margin-top 5px
+  .upload-demo
+    width 60%
+  .text-area
+    float left
+    width 60%
 </style>

@@ -29,6 +29,7 @@
         </router-link>
       </div>
       <el-table
+        :headerRowStyle="tableHead" :cellStyle="tableHeight" :header-cell-style="getRowClass"
         :data="roleData"
         :header-row-style="hrs"
         :cell-style="cs"
@@ -103,6 +104,8 @@
 export default {
   data() {
     return {
+              tableHead:{height: '60px', color: '#555555'},
+        tableHeight:{padding: '0', height: '34px'},
       typeArr: [
         {
           value: "temp_id",
@@ -139,6 +142,13 @@ export default {
     this.getRoleList();
   },
   methods: {
+      getRowClass({ row, column, rowIndex, columnIndex }) {
+          if (rowIndex == 0) {
+            return 'background:#F7F7F7'
+          } else {
+            return ''
+          }
+      },
     getRoleList(
       PageIndex = this.pageIndex,
       PageSize = this.pageSize,
