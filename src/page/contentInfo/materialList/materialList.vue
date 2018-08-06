@@ -17,12 +17,16 @@
      
         <div class="left-tree">
            
-            <el-tree
-              :props="props1"
-              :load="loadNode1"
-              lazy
-            >
-            </el-tree>
+      
+           <div style="margin-left:80px;margin-top:50px;"> 
+              <el-tree
+                :props="props1"
+                :load="loadNode1"
+                lazy
+              >
+              </el-tree>
+           </div>
+            
 
         </div>
         <!-- 地址图片的最大框框 -->
@@ -97,6 +101,8 @@
       <!-- 第一张图片 -->
       <div class="first-img">
         <img style="width:100%;height:100%;"   :src="this.addressImg"    alt="">
+            <!-- <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>    -->
+        
       </div>
       <!-- 其余图片  -->
       <div class="small-box">
@@ -107,7 +113,6 @@
             :class="{'classa': small.name == classa}"
             @click="select(small.name,small.imgs,small.title)" >
             <img style="width:100%;height:100%;" :src="small.imgs" alt="">
-            <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>   
         </div>
       </div>   
       </div>
@@ -696,6 +701,8 @@
        this.classa = a;
        this.addressImg = b;
        this.album = c;
+       
+       
      },
     //  点击封面进入相册
      addAlbumImg1(i){
@@ -781,9 +788,9 @@
 }
 .left-tree{
     /* position: relative; */
-   float: left;
+      float: left;
       margin-top: 10px;
-      width: 305px;
+      width: 400px;
       height: 1000px;
       border:1px solid #fff;
       box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;
@@ -798,7 +805,7 @@
     margin-top: 15px;
     float: left;
     width: 1215px;
-    margin-left:96px;
+    /* margin-left:96px; */
     /* border:1px solid pink;  */
 }
 .address-img{
@@ -836,9 +843,10 @@
     float:left;
     width:100px;
     height:40px;
-    background:turquoise;
+    background:#333;
     text-align: center;
     line-height: 40px;
+    color:#E6E6E6;
 }
 .number{
     /* float:right; */
@@ -846,7 +854,9 @@
     height:40px;
     /* text-align: center; */
     line-height: 40px;
-    background:yellowgreen;
+    background:#666;
+    color:#E6E6E6;
+    
 }
 .address-name{
     float:left;
@@ -965,6 +975,7 @@
   width:150px;
   height:30px;
   margin-top:17px;
+  margin-left:20px;
   /* background:red; */
 }
 .blue-box{
@@ -984,7 +995,7 @@
 .album-name{
   float:left;
   margin-top:10px;
-  font-size:22px;
+  font-size:20px;
 }
 .album-form{
   width:300px;
