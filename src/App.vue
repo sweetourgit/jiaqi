@@ -63,5 +63,5 @@ html{
 .el-menu-vertical-demo .el-menu-item.is-active{background: #0C1C40 !important;} /* 导航选中 */
 .content_pass .el-form-item__error{ position: absolute; left: 220px; top: 12px;} /* 修改密码error */
 .content_pass .el-form-item__content{ width:340px;}
-body .el-table th.gutter{ display: table-cell!important;} /* 表格头部固定 */
+body .el-table th.gutter{ display: table-cell!important; } /* 表格头部固定 */
 </style>
