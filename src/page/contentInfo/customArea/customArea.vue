@@ -4,7 +4,7 @@
       <div class="top">
         <el-button type="primary" class="add-classification" @click="addClassification = true">添加分类</el-button>
       </div>
-      <div class="bottom">
+      <div class="bottom_customArea_list">
           <el-table :data="classificationTable" style="width: 100%" :cell-style="bottom_table" :span-method="objectSpanMethod">
             <el-table-column prop="classification" label="分类" align="center">
               <el-table-column label="名称" prop="classificationName" align="center">
@@ -491,7 +491,7 @@ export default {
   height: 50px;
 }
 
-.bottom {
+.bottom_customArea_list {
   width: 100%;
 }
 

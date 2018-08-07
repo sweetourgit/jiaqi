@@ -64,4 +64,6 @@ html{
 .content_pass .el-form-item__error{ position: absolute; left: 220px; top: 12px;} /* 修改密码error */
 .content_pass .el-form-item__content{ width:340px; }
 body .el-table th.gutter{ display: table-cell!important; } /* 表格头部固定 */
+.bottom_customArea_list .el-table__body tr:hover>td{ background-color:initial !important;} /* 自定义地区表格取消鼠标滑动 */
+.bottom_customArea_list .el-table__body tr.current-row>td{ background-color: initial !important;} /* 自定义地区表格取消鼠标滑动 */
 </style>
