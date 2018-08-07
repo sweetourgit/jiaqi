@@ -197,7 +197,7 @@ let id = 1000;
   .left{ float: left; margin: 10px 0 0 20px; }
   .right{float: right; margin: 0 10px 0 0;font-size: 16pt;cursor:pointer; }
   .content{ width: 310px; overflow: hidden;margin-left:auto;margin-right:auto;}
-  .according{margin: 50px 0 0 0;margin-left:auto;margin-right:auto;}
+  .according{margin: 50px 0 0 0;margin-left:auto;margin-right:auto;} 
   .text{float: left; line-height: 40px;}
   .input{float: left; width: 180px; margin: 0 0 0 15px;}
   .judge{padding: 30px 0 0 0; clear: both;}
