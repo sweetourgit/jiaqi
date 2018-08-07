@@ -61,7 +61,8 @@
         <el-table-column
           prop="id"
           label="ID"
-          align="center">
+          align="center"
+          width="100">
         </el-table-column>
         <el-table-column
           prop="name"
@@ -97,6 +98,7 @@
           prop="organization"
           label="组织-部门-职务"
           align="center"
+          width="200"
          >
         </el-table-column>
         <el-table-column
@@ -136,10 +138,10 @@
     </div>
     <!--表格end-->
 
-    <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="600px">
+    <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="490px">
       <div class="bord">
         <el-form ref="form" :model="form" label-width="110px" style="width: 500px;
-    margin-left: -179px;">
+    margin-left: -270px;">
           <el-form-item label="状态:" class="form-la">
             <el-input v-model="form.userState" disabled class="form-gz"></el-input>
           </el-form-item>
