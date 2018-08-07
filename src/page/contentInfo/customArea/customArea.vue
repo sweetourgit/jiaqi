@@ -510,7 +510,7 @@ export default {
 .block {
   margin-top: 20px;
   float: right;
-  margin-bottom:80px;
+  margin-bottom:50px;
 }
 
 .Popup {
