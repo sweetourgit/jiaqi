@@ -1059,8 +1059,8 @@
 .label-name{
   width:370px;
   height:40px;
-  /* border: 1px solid yellow; */
-  margin:33px 35px;
+  //  border: 1px solid yellow; 
+  margin:33px 0px;
   /* margin-top:33px; */
 }
 .select-label{
