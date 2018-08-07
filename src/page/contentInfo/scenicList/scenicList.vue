@@ -92,7 +92,7 @@
         style="float: right">
       </el-pagination>
     </div>
-    <el-dialog title="添加景点" :visible.sync="dialogFormVisible" custom-class="city_list">
+    <el-dialog width='45%' title="添加景点" :visible.sync="dialogFormVisible" custom-class="city_list">
       
       <AddScenic @close='handleclose'></AddScenic>
     </el-dialog>
