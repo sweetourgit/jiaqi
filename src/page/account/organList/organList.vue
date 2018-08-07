@@ -208,7 +208,7 @@
                 <el-table-column prop="state" label="状态" align="center"  width="115%"></el-table-column>
             </el-table>
             <div class="black">
-              <el-pagination :page-sizes="[6,8,10]" background @size-change="pagesizes" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+              <el-pagination :page-sizes="[6,8,10]" background @size-change="pagesizes" :page-size="pagesize" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
               </el-pagination>
             </div>
             <div slot="footer" class="btn">
@@ -424,8 +424,6 @@ export default {
     },
     // 添加部门
     appendSave() {
-      console.log(this.tableData);
-      console.log(this.addInput);
       if (
         this.addInput.departmentNames === "" ||
         this.addInput.departmentCode === "" ||
@@ -810,7 +808,6 @@ export default {
             that.bumen2 = false;
             that.bumen1 = false;
           }
-          console.log(obj);
           var i = "";
           for (i = 0; i < obj.data.objects.length; i++) {
             that.options1.push({
@@ -823,7 +820,6 @@ export default {
     },
     // 编辑部门弹窗
     updataEditSave(updata) {
-      console.log(updata);
       let _this = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/api/org/deptsave", {
@@ -847,7 +843,6 @@ export default {
           id: 0
         })
         .then(function(response) {
-          console.log(response);
           _this.$message.success("修改成功！");
           _this.editDepartment = false;
         })
@@ -892,15 +887,13 @@ export default {
       // 获取顶级，第一级城市end
     },
     pagesizes(page) {
-
       this.pagesize = page;
-
+      this.addPersonnel1();
     },
     HandChange2() {
       this.arr2 = this.value2.split("-");
       this.options3 = [];
       this.value3 = "";
-      console.log(this.arr2[0]);
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
