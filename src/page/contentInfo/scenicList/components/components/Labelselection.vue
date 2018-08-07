@@ -59,13 +59,11 @@
      
       <el-button
         style="margin-left:150px"
-        plain
        >
         取消
        </el-button>
        <el-button
         type="primary" 
-        plain
        >
         确认
        </el-button>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-left:80px">
    <el-form ref="form" :model="form" label-width="80px">
     <el-form-item class="form-item" label-width='80px'  label="中文名称">
       <el-input class="form-input" v-model="form.chineseName"></el-input>
@@ -70,11 +70,11 @@
      <el-form-item class="form-item" label-width='80px'  label="景点简介">
       <el-input class="text-area" resize="none" type="textarea" v-model="form.desc"></el-input>
     </el-form-item>
-    <div class="center">
+    <div style="margin-left:-80px">
         <el-button
           @click="handleclose"
           style="padding:12px 30px" 
-          plain>取消
+          >取消
         </el-button>
         <el-button 
           @click="handleclose"
