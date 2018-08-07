@@ -17,11 +17,10 @@
             </el-table-column>
         </el-table>
         <!-- 添加职位弹框界面 -->
-        <el-dialog class="Popup" title="添加职位" :visible.sync="addPosition" custom-class="city_list"
->
-            <el-form :model="form" :rules="rules" ref="form">
+        <el-dialog class="Popup" title="添加职位" :visible.sync="addPosition" custom-class="city_list" width="545px">
+            <el-form style="padding-left:79px" :model="form" :rules="rules" ref="form">
                 <el-form-item label="职位名称：" :label-width="formLabelWidth" prop="positionName">
-                    <el-input v-model="form.positionName" auto-complete="off" placeholder="请输入职位"></el-input>
+                    <el-input v-model="form.positionName" auto-complete="off" placeholder="请输入职位" class="addPosition-input"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -30,11 +29,10 @@
             </div>
         </el-dialog>
         <!-- 编辑职位弹框界面 -->
-        <el-dialog class="Popup" title="编辑职位" :visible.sync="editPosition" custom-class="city_list"
->
-            <el-form :model="updata" :rules="rules1" ref="updata">
+        <el-dialog class="Popup" title="编辑职位" :visible.sync="editPosition" custom-class="city_list" width="545px">
+            <el-form style="padding-left:79px" :model="updata" :rules="rules1" ref="updata">
                 <el-form-item label="职位名称：" :label-width="updataLabelWidth" prop="positionName">
-                    <el-input v-model="updata.positionName" auto-complete="off"></el-input>
+                    <el-input v-model="updata.positionName" auto-complete="off" class="addPosition-input"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -203,7 +201,7 @@ export default {
       this.jj = bb;
       this.updata.positionName = bb.positionName;
       // let oo = ((this.currentPage-1)*this.pagesize)+aa
-      // this.updata.positionName = this.tableData[oo].positionName 
+      // this.updata.positionName = this.tableData[oo].positionName
       // this.jj = aa
     },
     handleCurrentChange(currentPage) {
@@ -295,6 +293,10 @@ export default {
 .oppp{
   margin: 20px;
   width:100px;
+}
+.addPosition-input{
+  width:250px;
+  margin-right:100px;
 }
 </style>
 
