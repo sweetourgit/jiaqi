@@ -73,8 +73,8 @@
           width=""
           header-align="center">
           <template slot-scope="scope">
-            <el-button size="small" @click="changeState(scope.row.id)" class="bt-stop">查看</el-button>
-            <el-button type="primary" size="small" @click="editRole(scope.row.id)" class="bt-edit">编辑</el-button>
+            <el-button size="small" @click="dialogFormVisible = true" class="bt-stop">查看</el-button>
+            <el-button type="primary" size="small" @click="dialogFormVisible = true" class="bt-edit">编辑</el-button>
             <el-button type="danger" size="small" @click="removeRole(scope.row.id)" class="bt-edit">删除</el-button>
           </template>
         </el-table-column>
@@ -236,6 +236,21 @@ import AddScenic from './components/Addscenic'
       },
       removeRole (id) {
         console.log(id)
+         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       },
       showaddbtn() {
         this.showadd = !this.showadd
