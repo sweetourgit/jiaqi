@@ -97,7 +97,7 @@
           prop="organization"
           label="组织-部门-职务"
           align="center"
-          min-width="150">
+         >
         </el-table-column>
         <el-table-column
           prop="createTime"
@@ -112,7 +112,7 @@
         <el-table-column
           label="操作"
           align="center"
-          min-width="150"
+          min-width="140"
       >
           <template slot-scope="scope">
             <el-button  size="small" @click="find(scope.$index, scope.row)">查看</el-button>
@@ -136,9 +136,10 @@
     </div>
     <!--表格end-->
 
-    <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible">
-      <div class="4343">
-        <el-form ref="form" :model="form" label-width="110px">
+    <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="600px">
+      <div class="bord">
+        <el-form ref="form" :model="form" label-width="110px" style="width: 500px;
+    margin-left: -179px;">
           <el-form-item label="状态:" class="form-la">
             <el-input v-model="form.userState" disabled class="form-gz"></el-input>
           </el-form-item>
@@ -603,5 +604,6 @@
     left: 242px;
     top: 2px;
   }
+
 </style>
 
