@@ -68,19 +68,19 @@
 
     <!-- 所有的弹窗 -->
     <!-- 1.添加相册的弹窗 -->
-  <el-dialog title="添加相册" :visible.sync="addAlbum" custom-class="city_list" append-to-body width="20%"  class="clearfix form_left">
+  <el-dialog title="添加相册" :visible.sync="addAlbum" custom-class="city_list" append-to-body width="27%"  class="clearfix form_left">
   <el-form :model="form"  ref="form">
-   <el-form-item label="名称:" prop="name" :label-width="formLabelWidth" style="width:300px" >
+   <el-form-item label="名称:" prop="name" :label-width="formLabelWidth" style="width:350px;margin-left:35px" >
       <el-input v-model="form.name" auto-complete="off" placeholder="请输入相册名称"></el-input>
     </el-form-item>
-    <el-form-item label="类型:" prop="type" :label-width="formLabelWidth" style="margin-right:200px;width:300px">
-      <el-select v-model="form.type" placeholder="请选择相册类型">
+    <el-form-item label="类型:" prop="type" :label-width="formLabelWidth" style="margin-left:35px;width:350px">
+      <el-select v-model="form.type" placeholder="请选择相册类型" style="width:250px">
         <el-option label="区域一" value="shanghai"></el-option>
         <el-option label="区域二" value="beijing"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="目的地:" prop="destination" :label-width="formLabelWidth" style="margin-right:200px;width:300px">
-      <el-select v-model="form.destination" placeholder="请选择目的地">
+    <el-form-item label="目的地:" prop="destination" :label-width="formLabelWidth" style="margin-left:35px;width:350px">
+      <el-select v-model="form.destination" placeholder="请选择目的地" style="width:250px">
         <el-option label="区域一" value="shanghai"></el-option>
         <el-option label="区域二" value="beijing"></el-option>
       </el-select>
@@ -107,11 +107,11 @@
       <!-- 其余图片  -->
       <div class="small-box">
         <div v-for="img in marterialist" :key="img.name">
-           <div class="small-img"
+           <div id="Simg" class="small-img"
             v-for="small in num" 
             :key="small.name" 
             :class="{'classa': small.name == classa}"
-            @click="select(small.name,small.imgs,small.title)" >
+            @click="select(small.name,small.imgs,small.title,small.name)" >
             <img style="width:100%;height:100%;" :src="small.imgs" alt="">
         </div>
       </div>   
@@ -163,7 +163,7 @@
               <div style="margin-top:10px;text-align:left">尺寸 : 1024*720</div>
               <div style="margin-top:10px;text-align:left">大小 : 14M</div>
               <div style="margin-top:10px;text-align:left">标签:
-                <el-button size="mini">按钮</el-button>
+                <el-button size="mini">添加</el-button>
               </div>
             </div>       
         </div>
@@ -576,6 +576,8 @@
         materialRules: '',
         albumRules: '',
         checked:'',
+        title:'',
+        album:'',
          handleClick(tab, event) {
         // console.log(tab, event);
       },
@@ -698,11 +700,19 @@
         }, 500);
       },
       // 选择相册其他照片
-     select(a,b,c){
+     select(a,b,c,d){
        this.classa = a;
        this.addressImg = b;
        this.album = c;
-       
+      //  this.img.smallImg.length = d;
+      //  alert(1)
+      // if(d>=3){
+      //   alert(123);
+      //   this.Simg.style.marginLeft = 40;
+      //   this.Simg.style.background = "red";
+        
+      // }
+      //  alert(d);
        
      },
     //  点击封面进入相册
@@ -750,14 +760,16 @@
   .search-input{
     width: 353px;
     float: left;
+    margin-right:100px;
   }
   .search-button{
     float: left;
-    margin-left: 20px
+    margin-left: -60px;
+    /* margin-right:100px; */
+    
   }
 .big{
-    /* position: relative; */
-   width: 100%;
+    width: 100%;
     padding-bottom: 40px;
     overflow: auto;
     /* max-height:80%; */
@@ -804,8 +816,10 @@
      /* margin-top:-1060px;
      margin-left:350px; */
     margin-top: 15px;
+    /* margin-left:10px; */
     float: left;
-    width: 1215px;
+    width: 1020px;
+
     /* margin-left:96px; */
     /* border:1px solid pink;  */
 }
@@ -821,13 +835,13 @@
     margin-left:22px;
     
     margin-bottom:20px;
-    width:585px;
-    height:490px;
+    /* width:585px; */
+    height:450px;
     /* border:1px solid purple; */
 }
 .marterialist-img{
-    width:585px;
-    height:400px;
+    width:485px;
+    height:350px;
     cursor:pointer;
     /* height:400px; */
     /* border:1px solid red; */
@@ -1061,6 +1075,7 @@
 .label-check{
   float:left;
   text-align:left;
+  /* width: 20%; */
   margin-bottom:5px !important;
   margin-right:25px !important;
 }
