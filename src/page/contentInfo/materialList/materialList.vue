@@ -93,7 +93,7 @@
 </el-dialog>
 
 <!-- 2.添加照片的弹窗 -->
-<el-dialog title="添加照片" :visible.sync="addAlbumImg" custom-class="city_list" style="margin-top:-100px"  append-to-body width="1450px"  class="clearfix form_left">
+<el-dialog title="添加照片" :visible.sync="addAlbumImg" custom-class="city_list" style="margin-top:-100px"  append-to-body width="1600px"  class="clearfix form_left">
   <el-form :model="form"  ref="form">
   </el-form>
   <div class="add-address-img">
@@ -173,7 +173,7 @@
 </el-dialog>
 
 <!-- 3.添加素材弹窗 -->
-<el-dialog title="添加素材" :visible.sync="addMaterial" style="margin-top:-100px;" custom-class="city_list" append-to-body width="1450px"  class="clearfix form_left">
+<el-dialog title="添加素材" :visible.sync="addMaterial" style="margin-top:-100px;" custom-class="city_list" append-to-body width="1600px"  class="clearfix form_left">
   <el-form :model="form"  ref="form">
   </el-form>
   <div class="add-address-img">
@@ -230,7 +230,7 @@
 </el-dialog>
 <!-- 4.添加标签的弹窗 -->
 <el-dialog title="标签选择" :visible.sync="addLabel" custom-class="city_list" style="width:950px;margin:0 auto">
-  <div style="margin:0 auto">
+  <div style="margin:0 auto;">
     <el-tabs v-model="activeName" @tab-click="handleClick">
     <el-tab-pane v-for="list in Label" :label="list.title" :key="list.key" >
       <div class="add-label">
@@ -743,7 +743,7 @@
   };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .classa{
   border: 3px solid #0FB99A;
 }
@@ -892,6 +892,7 @@
 .add-address-img{
   width:1400px;
   height:800px;
+  margin-left:70px;
   /* border:1px solid red; */
 }
 .left-img{
@@ -941,7 +942,7 @@
 }
 .small_img_close{
   position:absolute;
-  margin-left:67.5%;
+  margin-left:61%;
   top:9.5%;
   font-size:20px;
   /* margin-bottom:-10px; */
@@ -1076,8 +1077,8 @@
   float:left;
   text-align:left;
   /* width: 20%; */
-  margin-bottom:5px !important;
-  margin-right:25px !important;
+  padding-bottom:5px !important;
+  padding-right:25px !important;
 }
 .el-checkbox+.el-checkbox {
     margin-left: 0px;
