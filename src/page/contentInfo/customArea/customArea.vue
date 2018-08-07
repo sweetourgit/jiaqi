@@ -68,8 +68,8 @@
 
 
       <!-- 添加分类弹框 -->
-      <el-dialog title="添加分类" custom-class="city_list" :visible.sync="addClassification" class="Popup">
-        <el-form :model="form" :rules="rules">
+      <el-dialog title="添加分类" custom-class="city_list" :visible.sync="addClassification" class="Popup" width>
+        <el-form style="padding-left:79px" :model="form" :rules="rules">
           <el-form-item label="分类名称：" prop="classificationName" :label-width="formLabelWidth" class="boom">
             <el-input v-model="form.classificationName" auto-complete="off"></el-input>
           </el-form-item>
@@ -84,7 +84,7 @@
       </el-dialog>
       <!-- 编辑分类弹框 -->
       <el-dialog title="编辑分类" custom-class="city_list" :visible.sync="editClassification" class="Popup">
-        <el-form :model="editForm" :rules="rules">
+        <el-form style="padding-left:79px" :model="editForm" :rules="rules">
           <el-form-item label="分类名称：" prop="classificationName" :label-width="formLabelWidth" class="boom">
             <el-input v-model="editForm.classificationName" auto-complete="off"></el-input>
           </el-form-item>
@@ -98,8 +98,8 @@
         </div>
       </el-dialog>
       <!-- 添加分组弹框 -->
-      <el-dialog title="添加分组" custom-class="city_list" :visible.sync="addGrouping" class="Popup">
-        <el-form :model="addGroup" :rules="rules">
+      <el-dialog title="添加分组" custom-class="city_list" :visible.sync="addGrouping" class="Popup" width="580px">
+        <el-form style="padding-left:79px" :model="addGroup" :rules="rules">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
             <span class="zoon">国内</span>
           </el-form-item>
@@ -119,8 +119,8 @@
         </div>
       </el-dialog>
       <!-- 分组编辑弹框 -->
-      <el-dialog title="编辑分组" custom-class="city_list" :visible.sync="editGrouping" class="Popup">
-        <el-form :model="editGroup" :rules="rules">
+      <el-dialog title="编辑分组" custom-class="city_list" :visible.sync="editGrouping" class="Popup" width="580px">
+        <el-form style="padding-left:79px" :model="editGroup" :rules="rules">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
             <span class="zoon">国内</span>
           </el-form-item>
@@ -141,15 +141,15 @@
       </el-dialog>
       <!-- 城市编辑 -->
       <el-dialog title="编辑城市" custom-class="city_list" :visible.sync="editCity" class="Popup">
-        <el-form :model="editCitys" :rules="rules">
+        <el-form style="padding-left:79px" :model="editCitys" :rules="rules">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
-            <span class="zoon">国内</span>
+            <span class="zoonA">国内</span>
           </el-form-item>
           <el-form-item label="分组：" :label-width="formLabelWidth" class="boom">
-            <span class="zoon">直辖市</span>
+            <span class="zoonB">直辖市</span>
           </el-form-item>
           <el-form-item label="城市名称：" :label-width="formLabelWidth" class="boom">
-            <span class="zoon">北京</span>
+            <span class="zoonA">北京</span>
           </el-form-item>
           <el-form-item label="排序：" :label-width="formLabelWidth" class="boom" prop="cityRank">
             <el-input v-model="editCitys.cityRank" auto-complete="off"></el-input>
@@ -162,12 +162,12 @@
       </el-dialog>
       <!-- 添加城市 -->
       <el-dialog title="添加城市" custom-class="city_list" :visible.sync="addCity" class="Popup">
-        <el-form :model="addCitys" :rules="rules">
+        <el-form style="padding-left:79px" :model="addCitys" :rules="rules">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
-            <span class="zoon">国内</span>
+            <span class="zoonA">国内</span>
           </el-form-item>
           <el-form-item label="分组：" :label-width="formLabelWidth" class="boom">
-            <span class="zoon">直辖市</span>
+            <span class="zoonB">直辖市</span>
           </el-form-item>
           <el-form-item label="选择城市：" :label-width="formLabelWidth" class="boom" prop="cityName">
             <el-cascader placeholder="请选择" :options="options" filterable change-on-select class="cascader" v-model="addCitys.cityName"></el-cascader>
@@ -524,7 +524,7 @@ export default {
 
 .zoon {
   position: relative;
-  right: 110px;
+  right: 115px;
 }
 
 .url {
@@ -548,6 +548,16 @@ export default {
 .oppp{
   margin: 20px;
   width:100px;
+}
+
+.zoonA{
+  position: relative;
+  right: 77px;
+}
+
+.zoonB{
+  position: relative;
+  right: 70px;
 }
 </style>
 
