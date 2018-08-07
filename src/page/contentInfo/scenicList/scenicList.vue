@@ -89,7 +89,7 @@
         :current-page.sync="pageIndex"
         layout="total, prev, pager, next, sizes, jumper, ->"
         :total="totalNum"
-        style="float: right">
+        style="margin-bottom:50px;float:right">
       </el-pagination>
     </div>
     <el-dialog width='45%' title="添加景点" :visible.sync="dialogFormVisible" custom-class="city_list">
@@ -160,6 +160,78 @@ import AddScenic from './components/Addscenic'
             area: 'china'
           },
           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
+            id: '002',
+            scenicName: '小黄飞',
+            scenicUrl: 'https://www.baidu.com',
+            area: 'Enliend'
+          },
+           {
             id: '002',
             scenicName: '小黄飞',
             scenicUrl: 'https://www.baidu.com',
