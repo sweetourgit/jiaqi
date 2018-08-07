@@ -724,7 +724,7 @@ export default {
       if (this.addInput.ParentID == "") {
         this.$message.warning("请先选择父级部门！");
       } else {
-        this.addSubdivision = true;
+        this.addSubdivision = true; 
       }
     },
     // 双击展开
