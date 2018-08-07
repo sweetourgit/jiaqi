@@ -33,7 +33,7 @@
             <el-button type="danger" class="batchDelete" disabled v-if="kk[0] == undefined">批量移除</el-button>
             <el-button type="danger" class="batchDelete" @click="open2" v-if="kk[0] !== undefined">批量移除</el-button>
           </div>
-          <el-table :data="tableList" border class="tableList" @select="del" @select-all="del" max-height="163" :header-cell-style="getRowClass">
+          <el-table :data="tableList" border class="tableList" @select="del" @select-all="del" max-height="180" :header-cell-style="getRowClass">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
             <el-table-column prop="name" label="姓名" align="center"></el-table-column>
             <el-table-column prop="position" label="职位" align="center"></el-table-column>
@@ -49,12 +49,11 @@
         </div>
 
         <!-- 编辑部门弹框 -->
-        <el-dialog class="updataPopup" title="编辑部门" :visible.sync="editDepartment" custom-class="city_list"
->
+        <el-dialog class="updataPopup" title="编辑部门" :visible.sync="editDepartment" custom-class="city_list" width="550px">
           <div class="boom">
-            <el-form :model="updata" :rules="rules">
+            <el-form style="padding-left:90px" :model="updata" :rules="rules">
               <el-form-item label="部门名称" :label-width="updataLabelWidth" prop="orgName">
-                <el-input v-model="updata.orgName" auto-complete="off"></el-input>
+                <el-input v-model="updata.orgName" auto-complete="off" class="updataLabelWidth-input"></el-input>
               </el-form-item>
               <!-- <span class="cascaderTitle">上级部门</span>
               <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader> -->
@@ -120,7 +119,7 @@
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="部门编码" :label-width="Width" prop="departmentCode">
-                <el-input v-model="updata.departmentCode" auto-complete="off" class="F"></el-input>
+                <el-input v-model="updata.departmentCode" auto-complete="off" class="updataLabelWidth-input"></el-input>
               </el-form-item>
               <el-form-item label="排序" :label-width="Width" prop="sort">
                 <el-input v-model="updata.sort" auto-complete="off" class="add-department"></el-input>
@@ -143,9 +142,8 @@
           </div>
         </el-dialog>
         <!-- 添加子部门弹框 -->
-        <el-dialog class="Popup" :visible.sync="addSubdivision" title="添加子部门" custom-class="city_list"
->
-            <el-form :model="addInput" :rules="rules" status-icon ref="addInput">
+        <el-dialog class="Popup" :visible.sync="addSubdivision" title="添加子部门" custom-class="city_list" width="570px">
+            <el-form style="padding-left:95px" :model="addInput" :rules="rules" status-icon ref="addInput">
                 <el-form-item label="部门名称" :label-width="Width" prop="name" class="add_title">
                     <el-input v-model="addInput.name" auto-complete="off" class="add-input"></el-input>
                 </el-form-item>
@@ -165,7 +163,7 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="部门编码" :label-width="Width" prop="departmentCode" class="add_title">
-                    <el-input v-model="addInput.departmentCode" auto-complete="off" ></el-input>
+                    <el-input v-model="addInput.departmentCode" auto-complete="off" class="updataLabelWidth-input"></el-input>
                 </el-form-item>
                 <el-form-item label="排序" :label-width="Width" prop="sort" class="add_title">
                     <el-input v-model="addInput.sort" auto-complete="off" class="add-department"></el-input>
@@ -186,8 +184,7 @@
             </div>
         </el-dialog>
         <!-- 添加成员弹框 -->
-        <el-dialog  class="popup" :visible.sync="addPersonnel" custom-class="city_list"
->
+        <el-dialog  class="popup" :visible.sync="addPersonnel" custom-class="city_list">
             <div class="kk">
             <div class="booms">
                 <span class="addTitle">添加成员</span>
@@ -200,12 +197,12 @@
             </div>
             <el-table ref="table" :data="members" border class="members" @selection-change="qq" :header-cell-style="getRowClass">
                 <el-table-column type="selection" width="35%" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" align="center"  width="55%"></el-table-column>
-                <el-table-column prop="name" label="姓名" align="center"  width="115%"></el-table-column>
-                <el-table-column prop="phone" label="手机号" align="center"  width="200%"></el-table-column>
-                <el-table-column prop="email" label="邮箱" align="center"  width="195%"></el-table-column>
-                <el-table-column prop="sex" label="性别" align="center"  width="115%"></el-table-column>
-                <el-table-column prop="state" label="状态" align="center"  width="115%"></el-table-column>
+                <el-table-column prop="id" label="ID" align="center"  width="60%"></el-table-column>
+                <el-table-column prop="name" label="姓名" align="center"  width="120%"></el-table-column>
+                <el-table-column prop="phone" label="手机号" align="center"  width="205%"></el-table-column>
+                <el-table-column prop="email" label="邮箱" align="center"  width="200%"></el-table-column>
+                <el-table-column prop="sex" label="性别" align="center"  width="200%"></el-table-column>
+                <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
             </el-table>
             <div class="black">
               <el-pagination :page-sizes="[6,8,10]" background @size-change="pagesizes" :page-size="pagesize" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
@@ -218,16 +215,17 @@
             </div>
         </el-dialog>
         <!-- 设置职位弹框 -->
-        <el-dialog class="Popup" title="设置职位" :visible.sync="position" custom-class="city_list">
-            <el-form :model="setPosition">
+        <el-dialog class="Popup" title="设置职位" :visible.sync="position" custom-class="city_list" width="550px">
+            <el-form style="padding-left:60px" :model="setPosition">
                 <el-form-item label="姓名" :label-width="setLabelWidth" class="setinput">
-                    <el-input v-model="setPosition.name" auto-complete="off" :disabled="true"></el-input>
+                    <el-input v-model="setPosition.name" auto-complete="off" :disabled="true" class="positionInput"></el-input>
                 </el-form-item>
+                <span>职位</span>
+                <el-select v-model="values" placeholder="请选择" class="setSelect">
+                  <el-option v-for="item in option" :key="item.values" :label="item.label" :value="item.values"></el-option>
+                </el-select>
             </el-form>
-            <span>职位</span>
-            <el-select v-model="values" placeholder="请选择" class="setSelect">
-                <el-option v-for="item in option" :key="item.values" :label="item.label" :value="item.values"></el-option>
-            </el-select>
+
             <div slot="footer" class="dialog-footer">
                 <el-button class="oppp" @click="position = false">取 消</el-button>
                 <el-button class="oppp" type="primary" @click="setSave = false">保存</el-button>
@@ -317,13 +315,7 @@ export default {
           phone: "13022222222",
           sex: "女"
         },
-        {
-          id: "003",
-          name: "铁蛋",
-          position: "员工",
-          phone: "13033333333",
-          sex: "男"
-        }
+
       ],
 
       members1: [],
@@ -724,7 +716,7 @@ export default {
       if (this.addInput.ParentID == "") {
         this.$message.warning("请先选择父级部门！");
       } else {
-        this.addSubdivision = true; 
+        this.addSubdivision = true;
       }
     },
     // 双击展开
@@ -1069,15 +1061,14 @@ export default {
 
 .searchInput {
   position: absolute;
-  right: 510%;
-  width: 250%;
+  right: 492%;
+  width: 200%;
 }
 
 .searchButton {
-  position: absolute;
-  top: 10.4%;
-  left: 39%;
-  padding: 11px 11px;
+  float:left;
+  margin-left:450px;
+  margin-top:-22px;
 }
 
 .booms {
@@ -1087,8 +1078,8 @@ export default {
 .members {
   margin-bottom: -120px;
   top: -200px;
-  left: 1.3%;
-  width: 87.91%;
+  left: 10%;
+  width: 941px;
 }
 
 .btn {
@@ -1103,9 +1094,9 @@ export default {
 
 .setSelect {
   margin-bottom: 200px;
-  margin-right: 90px;
+  margin-right: 97px;
   margin-left:10px;
-  width: 270px;
+  width: 250px;
 }
 
 .Popup {
@@ -1121,7 +1112,6 @@ export default {
   top: 2%;
   left: 3%;
   font-size: 1.5em;
-  font-weight: bold;
 }
 
 .b {
@@ -1264,7 +1254,7 @@ export default {
 }
 
 .form-xi {
-  margin-right: 151px;
+  margin-right: 108px;
 }
 
 .el-dialog__wrapper>>>.el-dialog {
@@ -1272,7 +1262,7 @@ export default {
 }
 
 .popup>>>.el-dialog {
-  width: 985px;
+  width: 1240px;
 }
 
 .dialog-footer{
@@ -1290,5 +1280,15 @@ export default {
 
 .add_radio{
   margin-left:4px;
+}
+
+.positionInput{
+  width:280px;
+  margin-right:200px;
+}
+
+.updataLabelWidth-input{
+  width:250px;
+  margin-right:200px;
 }
 </style>
