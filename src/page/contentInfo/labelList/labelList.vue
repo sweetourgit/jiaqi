@@ -1,4 +1,4 @@
-<template>
+<template style=" position: relative;">
 <div class="labelList">
 	<!--添加标签按钮-->
     <div class="add_button"><el-button @click="addbutton" type="primary">添加标签</el-button></div>
@@ -9,40 +9,46 @@
   		<el-tree class="filter-tree" :data="data4":props="defaultProps" default-expand-all :filter-node-method="filterNode" :render-content="renderContent"ref="tree2" 
   :expand-on-click-node="false"></el-tree>
   	</div>
-  
+   
   
   <!--添加标签弹窗-->
-    <div class="add" v-show="addshow">
-      <div class="label">
-        <div class="left">添加标签</div>
-        <div @click="shut" class="right">×</div>
-      </div>
-      <div class="content">
-        <div class="according">
-          <div class="text">标签类别名称:</div>
-          <el-input class="input" v-model="isinput" placeholder=""></el-input>
+    <div class="popup" v-show="addshow">
+      <div class="mask"></div>
+      <div class="add">
+        <div class="label">
+          <div class="left">添加标签</div>
+          <div @click="shut" class="right">×</div>
         </div>
-        <div class="judge">
-          <el-button @click="shut">取消</el-button>
-          <el-button type="primary">确定</el-button>
+        <div class="content">
+          <div class="according">
+            <div class="text">标签类别名称:</div>
+            <el-input class="input" v-model="isinput" placeholder=""></el-input>
+          </div>
+          <div class="judge">
+            <el-button @click="shut">取消</el-button>
+            <el-button type="primary">确定</el-button>
+          </div>
         </div>
       </div>
     </div>
     <!--添加标签弹窗结束-->
     <!--编辑标签弹窗-->
-    <div class="add" v-show="editorshow">
-      <div class="label">
-        <div class="left">编辑标签</div>
-        <div @click="close" class="right">×</div>
-      </div>
-      <div class="content">
-        <div class="according">
-          <div class="text">标签类别名称:</div>
-          <el-input class="input" v-model="input" placeholder=""></el-input>
+     <div class="popup" v-show="editorshow">
+      <div class="mask"></div>
+      <div class="add">
+        <div class="label">
+          <div class="left">编辑标签</div>
+          <div @click="close" class="right">×</div>
         </div>
-        <div class="judge">
-          <el-button @click="close">取消</el-button>
-          <el-button type="primary">确定</el-button>
+        <div class="content">
+          <div class="according">
+            <div class="text">标签类别名称:</div>
+            <el-input class="input" v-model="input" placeholder=""></el-input>
+          </div>
+          <div class="judge">
+            <el-button @click="close">取消</el-button>
+            <el-button type="primary">确定</el-button>
+          </div>
         </div>
       </div>
     </div>
@@ -101,6 +107,8 @@ let id = 1000;
           }]
         }];
         return {
+          isinput: [],
+          input: [],
           filterText: '',
           data4: JSON.parse(JSON.stringify(data)),
           defaultProps: {
@@ -182,7 +190,7 @@ let id = 1000;
 
 
 <style scoped>
-	.labelList{ font-family: '微软雅黑'; font-size: 11pt; position: relative; margin: 0 0 100px 0;}
+	.labelList{ font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 100px 0;}
 
 	.add_button{ float: left;}
 
@@ -193,14 +201,18 @@ let id = 1000;
 	.search{width: 200px; padding: 30px 0 0 0; clear: both;}
 
   .add{width: 450px; height: 250px;margin: auto;position: fixed; top:50%; left:50%; margin-top:-125px; margin-left:-225px; background: #fff; overflow: hidden; border:1px solid #eeeeee; border-radius: 3px;}
-  .label{ background: #f6f6f6; border-bottom: 1px solid #eee;height: 57px; line-height: 40px; width: 450px;font-size:18px;}
+  .label{ background: #f6f6f6; border-bottom: 1px solid #eee;height: 57px; line-height: 40px; width: 450px;}
   .left{ float: left; margin: 10px 0 0 20px; }
-  .right{float: right; margin: 0 10px 0 0;font-size: 16pt;cursor:pointer; }
+  .right{float: right; margin: 0 20px 0 0;font-size: 16pt;cursor:pointer; line-height: 57px; }
   .content{ width: 310px; overflow: hidden;margin-left:auto;margin-right:auto;}
   .according{margin: 50px 0 0 0;margin-left:auto;margin-right:auto;} 
   .text{float: left; line-height: 40px;}
   .input{float: left; width: 180px; margin: 0 0 0 15px;}
   .judge{padding: 30px 0 0 0; clear: both;}
+
+  .popup{}
+  .mask{background-color: #000; width: 100%; height: 100%; position: absolute; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5;}
+  
    
 
 	
