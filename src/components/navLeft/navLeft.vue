@@ -118,6 +118,31 @@
                     ]}
                 ]
             },
+            {
+              name: '产品管理',
+              img: '产品管理.png',
+              items: [
+                {
+                  title: '跟团游',
+                  lists: [{
+                    value: '基本信息',
+                    router:'/essentialInfo'
+                  },
+                  {
+                    value: '行程信息',
+                    router:'/travelInfo'
+                  },
+                  {
+                    value: '费用说明',
+                    router:'/costDescription'
+                  },
+                  {
+                    value: '其他信息',
+                    router:'/otherInfor'
+                  }]
+                }
+              ]
+            }
         ],
         isRouter:true,
         mouseActive:0,

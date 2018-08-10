@@ -16,6 +16,11 @@ import scenicList from '@/page/contentInfo/scenicList/scenicList'
 import labelList from '@/page/contentInfo/labelList/labelList'
 import materialList from '@/page/contentInfo/materialList/materialList'
 import hotelList from '@/page/contentInfo/hotelList/hotelList'
+import essentialInfo from '@/page/productManagement/essentialInfo/essentialInfo'
+import travelInfo from '@/page/productManagement/travelInfo/travelInfo'
+import costDescription from '@/page/productManagement/costDescription/costDescription'
+import otherInfor from '@/page/productManagement/otherInfor/otherInfor'
+
 
 Vue.use(Router);
 
@@ -138,6 +143,34 @@ export default new Router({
       path: '/hotelList',
       component: hotelList,
       name: '酒店列表',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    }, {
+      path: '/essentialInfo',
+      component: essentialInfo,
+      name: '基本信息',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    }, {
+      path: '/travelInfo',
+      component: travelInfo,
+      name: '行程信息',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    }, {
+      path: '/costDescription',
+      component: costDescription,
+      name: '费用说明',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    }, {
+      path: '/otherInfor',
+      component: otherInfor,
+      name: '其他信息',
       meta: {
         keepAlive: true,
         auth:true}
