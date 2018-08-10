@@ -17,10 +17,15 @@
           <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"></i><img :src="('../static/navLeft/'+item.img)" width="15px" alt="">
           <span class="actionName">{{item.name}}</span>
         </template>
-        <el-submenu :index="(index+ '-' +index1)" v-for="(data,index1) in item.items" :key="index1">
-          <template slot="title">{{data.title}}</template>
-          <el-menu-item class="suboptions" :index="(index+ '-' +index1+ '-' +index2)" :route="{path:list.router}" v-for="(list,index2) in data.lists" :key="index2">{{list.value}}</el-menu-item>
-        </el-submenu>
+        <template v-for="(data,index1) in item.items" v-if="data.title">
+          <el-submenu :index="(index+ '-' +index1)" :key="index1">
+            <template slot="title">{{data.title}}</template>
+            <el-menu-item class="suboptions" :index="(index+ '-' +index1+ '-' +index2)" :route="{path:list.router}" v-for="(list,index2) in data.lists" :key="index2">{{list.value}}</el-menu-item>
+          </el-submenu>
+        </template>
+        <template v-else-if="data.title == ''">
+            <el-menu-item class="suboptions" :index="(index+ '-' +index1)" :route="{path:data.router}"  :key="index1">{{data.value}}</el-menu-item>
+        </template>
       </el-submenu>
     </el-menu>
   </el-col>
@@ -123,11 +128,9 @@
               img: '产品管理.png',
               items: [
                 {
-                  title: '跟团游',
-                  lists: [{
-                    value: '产品列表',
-                    router:'/productList'
-                  }]
+                  title: '',
+                  value: '产品列表',
+                  router:'/productList'
                 }
               ]
             }
