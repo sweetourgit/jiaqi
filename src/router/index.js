@@ -17,6 +17,7 @@ import labelList from '@/page/contentInfo/labelList/labelList'
 import materialList from '@/page/contentInfo/materialList/materialList'
 import hotelList from '@/page/contentInfo/hotelList/hotelList'
 import productList from '@/page/productManagement/productList/productList'
+import baseInfo from '@/page/productManagement/listInfo/listInfo'
 
 
 Vue.use(Router);
@@ -151,6 +152,13 @@ export default new Router({
         keepAlive: true,
         auth:true}
     }, {
+      path: '/listInfo',
+      component: baseInfo,
+      name: '添加跟团游',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },{
       path: '*',
       redirect:'/userList'
     }
