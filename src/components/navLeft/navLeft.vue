@@ -125,20 +125,8 @@
                 {
                   title: '跟团游',
                   lists: [{
-                    value: '基本信息',
-                    router:'/essentialInfo'
-                  },
-                  {
-                    value: '行程信息',
-                    router:'/travelInfo'
-                  },
-                  {
-                    value: '费用说明',
-                    router:'/costDescription'
-                  },
-                  {
-                    value: '其他信息',
-                    router:'/otherInfor'
+                    value: '产品列表',
+                    router:'/productList'
                   }]
                 }
               ]
