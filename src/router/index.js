@@ -18,6 +18,7 @@ import materialList from '@/page/contentInfo/materialList/materialList'
 import hotelList from '@/page/contentInfo/hotelList/hotelList'
 import productList from '@/page/productManagement/productList/productList'
 import baseInfo from '@/page/productManagement/listInfo/listInfo'
+import travelTemplate from '@/page/productManagement/travelTemplate/travelTemplate'
 
 
 Vue.use(Router);
@@ -155,6 +156,13 @@ export default new Router({
       path: '/listInfo',
       component: baseInfo,
       name: '添加跟团游',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    }, {
+      path: '/travelTemplate',
+      component: travelTemplate,
+      name: '出行模板',
       meta: {
         keepAlive: true,
         auth:true}

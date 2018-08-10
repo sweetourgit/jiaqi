@@ -131,6 +131,11 @@
                   title: '',
                   value: '产品列表',
                   router:'/productList'
+                },
+                {
+                  title: '',
+                  value: '出行模板',
+                  router:'/travelTemplate'
                 }
               ]
             }
