@@ -98,7 +98,7 @@
             </div>
             <div style="margin-top: 10px">
             <el-button type="primary" size="mini">退改</el-button>
-            <el-button type="primary" size="mini">团期/库存</el-button>
+            <el-button type="primary" size="mini" @click = "groupStage">团期/库存</el-button>
             <el-button type="danger" size="mini">删除</el-button>
             </div>
           </template>
@@ -117,7 +117,52 @@
         </el-pagination>
       </div>
     </div>
+    <el-dialog  :visible.sync="merchandise"  append-to-body width="80%">
+     <el-radio-group v-model="isCollapse" style="width:100%">
+      <el-radio-button  class="group" :label="true">库存</el-radio-button>
+      <el-radio-button :label="false">价格</el-radio-button>
+    </el-radio-group>
+    <!-- 库存 -->
+    <div v-if="isCollapse==true">
 
+      <div class="button-list" >
+        <el-button plain v-for="(data, index) in buttonList" :key=data.id  style="margin-right:20px;" @click="begin(data, index)">{{data.button}}</el-button>
+      </div>
+      <el-table
+        :data="addtable"
+        border
+        style="width: 1340px;margin:0 auto;"
+        :header-cell-style="getRowClass"
+       >
+        <el-table-column
+          prop="property"
+          label="属性"
+          width="230"
+          align="center"
+          >
+        </el-table-column>
+        <el-table-column
+          prop="price"
+          label="值"
+          align="center"
+         >
+        </el-table-column>
+        <el-table-column label="操作"
+          width="300"
+          align="center">
+        <template slot-scope="scope">
+
+            <el-button size="mini" type="primary">添加值</el-button>
+
+
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- 价格 -->
+    <div v-else>456</div>
+
+    </el-dialog>
   </div>
 
 </template>
@@ -129,6 +174,61 @@
         currentPage2: 5,
         currentPage3: 5,
         currentPage4: 4,
+        merchandise: false,
+        isCollapse: true,
+        bool: true,
+        oo : true,
+      // 按钮列表
+      buttonList: [
+        {
+          id: "0",
+          button: "出发地",
+          pp : false
+        },
+        {
+          id: "1",
+          button: "行程路线",
+          pp : false
+        },
+        {
+          id: "2",
+          button: "天数",
+          pp : false
+        },
+        {
+          id: "3",
+          button: "晚数",
+          pp : false          
+        },
+        {
+          id: "4",
+          button: "房型",
+          pp : false          
+        },
+        {
+          id: "5",
+          button: "住宿条件",
+          pp : false          
+        },
+        {
+          id: "6",
+          button: "航空公司",
+          pp : false          
+        },
+        {
+          id: "7",
+          button: "酒店名称",
+          pp : false          
+        },
+        {
+          id: "8",
+          button: "套餐类型",
+          pp : false          
+        }
+      ],
+      addtable: [
+  
+      ],
         options: [{
           value: '选项1',
           label: '黄金糕'
@@ -167,11 +267,50 @@
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
+      },
+          groupStage() {
+      this.merchandise = true;
+    },
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return "background:#F7F7F7";
+      } else {
+        return "";
       }
     },
+    begin(e, key) {
+
+      // 这里面的数组的addtable
+      
+      // console.log(this.addtable);
+      // console.log(this.addtable.length);
+
+
+      if(e.pp == false){
+        this.addtable.push({
+            id:e.id,
+            property:e.button
+          })
+        this.buttonList[key].pp = true
+        this.buttonList[key].key = this.addtable.length - 1
+      } else if(e.pp){
+        this.addtable.splice(e.key, 1)
+        console.log(this.addtable)
+        console.log(e.key)
+        // for(let i=0;i<this.addtable.length;i++){
+        //   this.buttonList[i].
+        // }
+        this.buttonList[key].pp = false
+      }
+
+  
+      
+    }
+  }
+    
   }
 </script>
-<style scoped>
+<style lang="stylus" scoped>
  .select_button{
    width: 1200px;
    margin-left: -70px;
@@ -235,4 +374,18 @@
    margin-top: 50px;
    margin-bottom: 80px;
  }
+ .group {
+  margin-left: calc(50% - 120px);
+}
+
+.el-radio-button>>>.el-radio-button__inner {
+  width: 120px;
+}
+
+.button-list {
+  width: 75%;
+  height: 45px;
+  // background:red;
+  margin: 37px auto;
+}
 </style>
