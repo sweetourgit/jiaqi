@@ -126,7 +126,7 @@
     <div v-if="isCollapse==true">
 
       <div class="button-list" >
-        <el-button plain v-for="(data, index) in buttonList" :key=data.id  style="margin-right:20px;" @click="begin(data, index)">{{data.button}}</el-button>
+        <el-button id="kk" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>
       </div>
       <el-table
         :data="addtable"
@@ -152,7 +152,7 @@
           align="center">
         <template slot-scope="scope">
 
-            <el-button size="mini" type="primary">添加值</el-button>
+            <el-button @click="addInput(scope.row,scope.$index)" size="mini" type="primary">添加值</el-button>
 
 
           </template>
@@ -176,8 +176,7 @@
         currentPage4: 4,
         merchandise: false,
         isCollapse: true,
-        bool: true,
-        oo : true,
+        kk : [],
       // 按钮列表
       buttonList: [
         {
@@ -279,32 +278,29 @@
       }
     },
     begin(e, key) {
-
-      // 这里面的数组的addtable
-      
-      // console.log(this.addtable);
-      // console.log(this.addtable.length);
-
-
       if(e.pp == false){
+   
         this.addtable.push({
-            id:e.id,
-            property:e.button
-          })
-        this.buttonList[key].pp = true
-        this.buttonList[key].key = this.addtable.length - 1
-      } else if(e.pp){
-        this.addtable.splice(e.key, 1)
-        console.log(this.addtable)
-        console.log(e.key)
-        // for(let i=0;i<this.addtable.length;i++){
-        //   this.buttonList[i].
-        // }
-        this.buttonList[key].pp = false
-      }
+          id:e.id,
+          property:e.button
+        })
+          this.buttonList[key].pp = true;
+          this.buttonList[key].key = this.addtable.length - 1; 
+        } else if(e.pp){
+          this.addtable.splice(e.key, 1);
+          for(let i=0;i<this.addtable.length;i++){
+          this.buttonList[this.addtable[i].id].key = i;
+          // document.getElementById("kk").style = 'color : red;border-color : red;'  
+        }
+          this.buttonList[key].pp = false;
+      } 
+    },
+    addInput(b, key){
+      // console.log(b.id);
+      // console.log(this.addtable[this.addtable.length - 1]);
+      this.kk.push(123)
+      this.addtable[key].price = this.kk.join()
 
-  
-      
     }
   }
     
@@ -381,7 +377,9 @@
 .el-radio-button>>>.el-radio-button__inner {
   width: 120px;
 }
-
+.property{
+  margin-right:20px;
+}
 .button-list {
   width: 75%;
   height: 45px;
