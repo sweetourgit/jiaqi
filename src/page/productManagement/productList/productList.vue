@@ -150,7 +150,9 @@
         <el-table-column label="操作"
           width="300"
           align="center">
-        <template slot-scope="scope">
+        <template slot-scope="scope"
+          prop="ll"
+        >
 
             <el-button @click="addInput(scope.row,scope.$index)" size="mini" type="primary">添加值</el-button>
             
@@ -287,6 +289,13 @@
       })
         this.buttonList[key].pp = true;
         this.buttonList[key].key = this.addtable.length - 1; 
+        if(this.addtable.length == 1){
+           this.addtable.push({
+             "ll":1,
+            })
+        }
+        
+        console.log(this.addtable.length);
       } else if(e.pp){
         this.addtable.splice(e.key, 1);
         for(let i=0;i<this.addtable.length;i++){
@@ -294,17 +303,19 @@
         // document.getElementById("kk").style = 'color : red;border-color : red;' 
       }
         this.buttonList[key].pp = false;
+        
       } 
+      
     },
   addInput(b, key){
 
     console.log(b.id);
-    // console.log(this.addtable[b.id]);
+    console.log(this.addtable[key]);
     // console.log(this.addtable[this.addtable.length - 1]);
     // this.addtable[this.addtable.length - 1].price.push(1);
 
-    this.addtable[this.addtable.length - 1].price.push(<el-input style="width:80px;" v-model="input" ></el-input>);
-    this.addtable[this.addtable.length - 1].price.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>);
+    this.addtable[key].price.push(<el-input style="width:80px;" v-model="input" ></el-input>);
+    this.addtable[key].price.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>);
     // console.log(this.addtable);
 // console.log(this.addtable[this.addtable.length - 1]);
 
