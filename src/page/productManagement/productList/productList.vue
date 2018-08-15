@@ -153,6 +153,7 @@
         <template slot-scope="scope">
 
             <el-button @click="addInput(scope.row,scope.$index)" size="mini" type="primary">添加值</el-button>
+            
 
 
           </template>
@@ -176,7 +177,6 @@
         currentPage4: 4,
         merchandise: false,
         isCollapse: true,
-        kk : [],
       // 按钮列表
       buttonList: [
         {
@@ -277,31 +277,45 @@
         return "";
       }
     },
-    begin(e, key) {
-      if(e.pp == false){
-   
+  begin(e, key) {
+    // console.log(e.id);
+    if(e.pp == false){
         this.addtable.push({
-          id:e.id,
-          property:e.button
-        })
-          this.buttonList[key].pp = true;
-          this.buttonList[key].key = this.addtable.length - 1; 
-        } else if(e.pp){
-          this.addtable.splice(e.key, 1);
-          for(let i=0;i<this.addtable.length;i++){
-          this.buttonList[this.addtable[i].id].key = i;
-          // document.getElementById("kk").style = 'color : red;border-color : red;'  
-        }
-          this.buttonList[key].pp = false;
+        "id":e.id,
+        "property":e.button,
+        "price":[],
+      })
+        this.buttonList[key].pp = true;
+        this.buttonList[key].key = this.addtable.length - 1; 
+      } else if(e.pp){
+        this.addtable.splice(e.key, 1);
+        for(let i=0;i<this.addtable.length;i++){
+        this.buttonList[this.addtable[i].id].key = i;
+        // document.getElementById("kk").style = 'color : red;border-color : red;' 
+      }
+        this.buttonList[key].pp = false;
       } 
     },
-    addInput(b, key){
-      // console.log(b.id);
-      // console.log(this.addtable[this.addtable.length - 1]);
-      this.kk.push(123)
-      this.addtable[key].price = this.kk.join()
+  addInput(b, key){
 
-    }
+    console.log(b.id);
+    // console.log(this.addtable[b.id]);
+    // console.log(this.addtable[this.addtable.length - 1]);
+    // this.addtable[this.addtable.length - 1].price.push(1);
+
+    this.addtable[this.addtable.length - 1].price.push(<el-input style="width:80px;" v-model="input" ></el-input>);
+    this.addtable[this.addtable.length - 1].price.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>);
+    // console.log(this.addtable);
+// console.log(this.addtable[this.addtable.length - 1]);
+
+    // this.kk.push(<el-input style="width:80px;margin-right:20px;" v-model="input" ></el-input>)
+    // this.kk.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>)
+    
+    // console.log(this.addtable[b.id]);
+    // console.log(this.kk);    
+    // this.addtable[key].price = this.addtable[b.id].price;
+
+}
   }
     
   }
