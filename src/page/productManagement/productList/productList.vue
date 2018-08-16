@@ -164,14 +164,21 @@
       </el-table>
     </div>
     <!-- 价格 -->
-    <div v-else>456</div>
+    <div v-else>
+      <DateList/>
+    </div>
 
     </el-dialog>
   </div>
 
 </template>
+
 <script>
+import DateList from './component/DateList'
   export default {
+    components:{
+      DateList
+    },
     data() {
       return {
         currentPage1: 5,
