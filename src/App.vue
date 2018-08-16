@@ -66,4 +66,5 @@ html{
 body .el-table th.gutter{ display: table-cell!important; } /* 表格头部固定 */
 .bottom_customArea_list .el-table__body tr:hover>td{ background-color:initial !important;} /* 自定义地区表格取消鼠标滑动 */
 .bottom_customArea_list .el-table__body tr.current-row>td{ background-color: initial !important;} /* 自定义地区表格取消鼠标滑动 */
+.travelTemplate .detailed .selection .el-checkbox+.el-checkbox{ float: left;} /* 出行模板多选按钮 */
 </style>

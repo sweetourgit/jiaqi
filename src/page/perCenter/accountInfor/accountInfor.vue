@@ -100,7 +100,6 @@ export default {
       }
     }).then((res) => {
       this.form = res.data.object
-      console.log(res)
       this.form.sex = String(this.form.sex)
       this.form.userState = String(this.form.userState)
     }).catch((err) => {
