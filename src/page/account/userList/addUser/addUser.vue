@@ -180,6 +180,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           if (!myreg.test(value)) {
           return callback(new Error('请输入正确的电话号码'));
         }
+          callback();
       };
       var checkName = (rule, value, callback) => {
           var myreg=  /^[\u4e00-\u9fa5]{2,6}/;
@@ -189,6 +190,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           if (!myreg.test(value)) {
           return callback(new Error('请输入2-6位汉字'));
         }
+        callback();
       };
       var checkMail = (rule, value, callback) => {
           var myreg=  /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/;
@@ -198,11 +200,13 @@ import Permission from '@/page/account/userList/addUser/permission'
           if (!myreg.test(value)) {
           return callback(new Error('请输入正确的邮箱'));
         }
+        callback();
       };
        var checkTrail = (rule, value, callback) => {
           if(!value){
             return callback(new Error('员工编号不能为空'));
           }
+          callback();
       };
 
 
@@ -270,17 +274,17 @@ import Permission from '@/page/account/userList/addUser/permission'
         },
         rules: {
            phone: [
-            { required: true, message: '请输入电话',trigger: 'blur' },
+            { required: true,validator: checkPhone,trigger: 'blur' }
 
           ],
           name: [
-            {  required: true, message: '请输入姓名', trigger: 'blur' }
+            {  required: true, validator:checkName, trigger: 'blur' }
           ],
           mail: [
-            {  required: true, message: '请输入邮箱地址', trigger: 'blur' }
+            {  required: true, validator:checkMail, trigger: 'blur' }
           ],
           number: [
-            {  required: true, message: '请输入用户编号', trigger: 'blur' }
+            {  required: true, validator:checkTrail, trigger: 'blur' }
           ],
           sex: [
             { required: true, message: '请选择性别', trigger: 'change' }

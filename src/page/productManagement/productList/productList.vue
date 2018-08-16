@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="select_button">
-      <el-button plain>跟团游</el-button>
-      <el-button plain>自由行</el-button>
-      <el-button plain>签证</el-button>
+      <el-button  plain>跟团游</el-button>
+      <el-button autofocus plain>自由行</el-button>
+      <el-button autofocus plain>签证</el-button>
       <el-button plain>机票</el-button>
       <el-button plain>酒店</el-button>
       <el-button plain>门票</el-button>
@@ -11,7 +11,34 @@
       <el-button plain>电话卡</el-button>
       <el-button plain>交通</el-button>
       <el-button plain>保险</el-button>
-      <router-link to="listInfo"><el-button type="primary" style="margin-left: 10px">添加产品</el-button></router-link>
+      <!--<router-link to="listInfo">
+      </router-link>-->
+      <el-button type="primary"  @click="dialogVisible = true" style="margin-left: 10px">添加产品</el-button>
+
+    </div>
+    <div>
+      <el-dialog
+        style="text-align: left"
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="30%"
+      >
+       <div style="text-align: center">
+         <span>产品类型：</span>
+         <el-select v-model="about" placeholder="请选择">
+         <el-option
+           v-for="item in options1"
+           :key="item.value1"
+           :label="item.label"
+           :value="item.value1">
+         </el-option>
+       </el-select>
+       </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="routerHandle()">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
     <div style="height: 155px;">
       <div class="select_two">
@@ -174,6 +201,15 @@
   export default {
     data() {
       return {
+        options1: [{
+          value1: '1',
+          label: '跟团游'
+        }, {
+          value1: '2',
+          label: '自由行'
+        }],
+        about:'',
+        dialogVisible: false,
         currentPage1: 5,
         currentPage2: 5,
         currentPage3: 5,
@@ -261,6 +297,13 @@
       }
     },
     methods: {
+      routerHandle(){
+        console.log(this.about);
+        if(this.about == 1){
+          this.$router.push({path: "listInfo"});
+        }
+        this.dialogVisible = false
+      },
       handleClick(row) {
         console.log(row);
       },
