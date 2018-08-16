@@ -3,7 +3,10 @@ import App from './App'
 import router from './router'
 import global from './components/tools/global'
 import store from '@/store'
-
+import '../static/UE/ueditor.config.js'
+import '../static/UE/ueditor.all.min.js'
+import '../static/UE/lang/zh-cn/zh-cn.js'
+import '../static/UE/ueditor.parse.min.js'
 // element-ui
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -38,8 +41,8 @@ vm.$router.beforeEach((to,from,next) => {
         }else{
             // 未登录则跳转到登陆界面，query:{ Rurl: to.fullPath}表示把当前路由信息传递过去方便登录后跳转回来；
 　　 　　　　next({path:'/login',query:{ Rurl: to.fullPath} })
- 　　　　　} 
-　　　　}else{ 
-　　　　　　next() 
-　　} 
+ 　　　　　}
+　　　　}else{
+　　　　　　next()
+　　}
 })

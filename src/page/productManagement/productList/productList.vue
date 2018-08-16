@@ -98,7 +98,8 @@
             </div>
             <div style="margin-top: 10px">
             <el-button type="primary" size="mini">退改</el-button>
-            <el-button type="primary" size="mini">团期/库存</el-button>
+            <el-button type="primary" size="mini">团期</el-button>
+            <el-button type="primary" size="mini">库存</el-button>
             <el-button type="danger" size="mini">删除</el-button>
             </div>
           </template>
