@@ -98,12 +98,8 @@
             </div>
             <div style="margin-top: 10px">
             <el-button type="primary" size="mini">退改</el-button>
-<<<<<<< HEAD
             <el-button type="primary" size="mini">团期</el-button>
             <el-button type="primary" size="mini">库存</el-button>
-=======
-            <el-button type="primary" size="mini" @click = "groupStage">团期/库存</el-button>
->>>>>>> 649d856932293d9bc66145f5df027ac6913a46fd
             <el-button type="danger" size="mini">删除</el-button>
             </div>
           </template>
@@ -160,7 +156,7 @@
         >
 
             <el-button @click="addInput(scope.row,scope.$index)" size="mini" type="primary">添加值</el-button>
-            
+
 
 
           </template>
@@ -204,36 +200,36 @@
         {
           id: "3",
           button: "晚数",
-          pp : false          
+          pp : false
         },
         {
           id: "4",
           button: "房型",
-          pp : false          
+          pp : false
         },
         {
           id: "5",
           button: "住宿条件",
-          pp : false          
+          pp : false
         },
         {
           id: "6",
           button: "航空公司",
-          pp : false          
+          pp : false
         },
         {
           id: "7",
           button: "酒店名称",
-          pp : false          
+          pp : false
         },
         {
           id: "8",
           button: "套餐类型",
-          pp : false          
+          pp : false
         }
       ],
       addtable: [
-  
+
       ],
         options: [{
           value: '选项1',
@@ -293,24 +289,24 @@
         "price":[],
       })
         this.buttonList[key].pp = true;
-        this.buttonList[key].key = this.addtable.length - 1; 
+        this.buttonList[key].key = this.addtable.length - 1;
         if(this.addtable.length == 1){
            this.addtable.push({
              "ll":1,
             })
         }
-        
+
         console.log(this.addtable.length);
       } else if(e.pp){
         this.addtable.splice(e.key, 1);
         for(let i=0;i<this.addtable.length;i++){
         this.buttonList[this.addtable[i].id].key = i;
-        // document.getElementById("kk").style = 'color : red;border-color : red;' 
+        // document.getElementById("kk").style = 'color : red;border-color : red;'
       }
         this.buttonList[key].pp = false;
-        
-      } 
-      
+
+      }
+
     },
   addInput(b, key){
 
@@ -326,14 +322,14 @@
 
     // this.kk.push(<el-input style="width:80px;margin-right:20px;" v-model="input" ></el-input>)
     // this.kk.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>)
-    
+
     // console.log(this.addtable[b.id]);
-    // console.log(this.kk);    
+    // console.log(this.kk);
     // this.addtable[key].price = this.addtable[b.id].price;
 
 }
   }
-    
+
   }
 </script>
 <style lang="stylus" scoped>
