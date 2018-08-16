@@ -273,11 +273,11 @@ export default {
       },
       dialogFormVisible1(a) {
         this.dialogFormVisible = false
-        this.$refs[a].resetFields()
+        // this.$refs[a].resetFields()
       },
       dialogEmial1(a) {
         this.dialogEmial = false
-        this.$refs[a].resetFields()
+        // this.$refs[a].resetFields()
       }
     }
   }

@@ -126,7 +126,7 @@
             <div style="margin-top: 10px">
             <el-button type="primary" size="mini">退改</el-button>
             <el-button type="primary" size="mini">团期</el-button>
-            <el-button type="primary" size="mini">库存</el-button>
+            <el-button type="primary" size="mini" @click = "groupStage">库存</el-button>
             <el-button type="danger" size="mini">删除</el-button>
             </div>
           </template>
@@ -191,14 +191,21 @@
       </el-table>
     </div>
     <!-- 价格 -->
-    <div v-else>456</div>
+    <div v-else>
+      <DateList/>
+    </div>
 
     </el-dialog>
   </div>
 
 </template>
+
 <script>
+import DateList from './component/DateList'
   export default {
+    components:{
+      DateList
+    },
     data() {
       return {
         options1: [{
@@ -323,54 +330,54 @@
         return "";
       }
     },
+  // 点击属性按钮方法
   begin(e, key) {
     // console.log(e.id);
     if(e.pp == false){
+      this.addtable.push({
+      "id":e.id,
+      "property":e.button,
+      "price":[],
+      
+    })
+      this.buttonList[key].pp = true;
+      if(this.addtable.length == 1){
         this.addtable.push({
-        "id":e.id,
-        "property":e.button,
-        "price":[],
+        "ll":123,
       })
-        this.buttonList[key].pp = true;
-        this.buttonList[key].key = this.addtable.length - 1;
-        if(this.addtable.length == 1){
-           this.addtable.push({
-             "ll":1,
-            })
-        }
-
-        console.log(this.addtable.length);
-      } else if(e.pp){
-        this.addtable.splice(e.key, 1);
-        for(let i=0;i<this.addtable.length;i++){
-        this.buttonList[this.addtable[i].id].key = i;
-        // document.getElementById("kk").style = 'color : red;border-color : red;'
-      }
-        this.buttonList[key].pp = false;
-
-      }
-
+    this.buttonList[key].key = this.addtable.length - 1; 
+    } else {
+      var str = this.addtable.splice(this.addtable.length - 2, 1);
+      this.addtable.push(str[0]);
+      this.buttonList[key].key = this.addtable.length - 2; 
+    }
+    } else if(e.pp){
+      this.addtable.splice(e.key, 1);
+      for(let i=0;i<this.addtable.length - 1;i++){
+      this.buttonList[this.addtable[i].id].key = i;
+    }
+    if(this.addtable.length == 1){
+      this.addtable.splice(0, 1);
+    }
+      this.buttonList[key].pp = false;
+    } 
     },
+  // 点击添加按钮方法
   addInput(b, key){
 
     console.log(b.id);
     console.log(this.addtable[key]);
-    // console.log(this.addtable[this.addtable.length - 1]);
-    // this.addtable[this.addtable.length - 1].price.push(1);
-
-    this.addtable[key].price.push(<el-input style="width:80px;" v-model="input" ></el-input>);
+  // 输入的属性值 
+    this.addtable[key].price.push(<el-input id="rr" style="width:80px;" v-model="input"  type="text"
+      onkeypress="if(event.keyCode==13) {
+       alert(inputDom.document.getElementById('rr'));
+        
+    }"></el-input>);
     this.addtable[key].price.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>);
-    // console.log(this.addtable);
-// console.log(this.addtable[this.addtable.length - 1]);
 
-    // this.kk.push(<el-input style="width:80px;margin-right:20px;" v-model="input" ></el-input>)
-    // this.kk.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>)
 
-    // console.log(this.addtable[b.id]);
-    // console.log(this.kk);
-    // this.addtable[key].price = this.addtable[b.id].price;
+    },
 
-}
   }
 
   }
