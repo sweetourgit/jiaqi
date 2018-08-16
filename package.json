@@ -16,7 +16,7 @@
     "antd": "^3.6.4",
     "array-includes": "^3.0.3",
     "axios": "^0.18.0",
-    "element-ui": "^2.3.8",
+    "element-ui": "^2.4.6",
     "less": "^2.7.2",
     "less-loader": "^4.0.4",
     "postcss-loader": "^2.1.5",
