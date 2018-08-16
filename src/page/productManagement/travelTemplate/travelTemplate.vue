@@ -332,16 +332,16 @@
             callback(new Error('请添加正确时间格式'));
           }
         }
-        
+
         if(this.typeFourTable.length == 0){
-            if(this.typeFourData.requirement == '必填'){
-              callback(new Error('必填项请填写时间'));
-            } else {
-              callback();
-            }
+          if(this.typeFourData.requirement == '必填'){
+            callback(new Error('必填项请填写时间'));
           } else {
             callback();
           }
+        } else {
+          callback();
+        }
       }
       return {
         input: '', // 搜索框末班名称
@@ -536,9 +536,6 @@
         typeFourRules: {
           timeFormat: [
             { validator: rulessexs }
-          ],
-          timeData: [
-            { pattern: /^(20|21|22|23|[0-1]\d):[0-5]\d:[0-5]\d$/, message: '请输入正确的时间' }
           ]
         }
       }
@@ -620,11 +617,13 @@
       addTime(form) {
         this.$refs[form].validate(valid => {
           if(valid){
-            this.typeFourTable.push({
-            'time': this.typeFourData.time
-          })
-          this.typeFourData.time = ''
-          this.$refs[form].resetFields()
+            if(this.typeFourData.time != ''){
+              this.typeFourTable.push({
+                'time': this.typeFourData.time
+              })
+              }
+              this.typeFourData.time = ''
+              this.$refs[form].resetFields()
           }
         })
       },
