@@ -99,6 +99,11 @@
 <script>
 export default {
   name: "HelloWorld",
+  computed:{
+    isShow(){
+      return false
+    }
+  },
   data() {
     return {
       showCard:false,
@@ -357,10 +362,9 @@ export default {
       if (day.day.getMonth() == this.currentMonth) {
         return
       } else {
-        if (day.day.getTime() + 24000000 < now) {
-        this.$notify({
-          title: '警告',
-          message: '请选择今日以后的时间',
+        if (day.day.getTime() < now) {
+        this.$message({
+          message: '请选择今天以后的时期',
           type: 'warning'
         });
         } else {

@@ -159,7 +159,7 @@ export default {
       let _this = this;
 
       this.$http
-        .post(this.GLOBAL.serverSrc + "/client/org/rolepage", {
+        .post(this.GLOBAL.serverSrc + "/api/org/rolepage", {
           Object: {
             IsDeleted: 0,
             title: keyword
@@ -214,7 +214,7 @@ export default {
       })
         .then(() => {
           this.$http
-            .post(this.GLOBAL.serverSrc + "/client/org/rolesave", {
+            .post(this.GLOBAL.serverSrc + "/api/org/rolesave", {
               object: {
                 id: obj,
                 createTime: "2018-06-21T11:24:35.785Z",
