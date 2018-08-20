@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="select_button">
-      <el-button  plain>跟团游</el-button>
-      <el-button autofocus plain>自由行</el-button>
-      <el-button autofocus plain>签证</el-button>
+      <el-button plain>跟团游</el-button>
+      <el-button plain>自由行</el-button>
+      <el-button plain>签证</el-button>
       <el-button plain>机票</el-button>
       <el-button plain>酒店</el-button>
       <el-button plain>门票</el-button>
@@ -11,34 +11,7 @@
       <el-button plain>电话卡</el-button>
       <el-button plain>交通</el-button>
       <el-button plain>保险</el-button>
-      <!--<router-link to="listInfo">
-      </router-link>-->
-      <el-button type="primary"  @click="dialogVisible = true" style="margin-left: 10px">添加产品</el-button>
-
-    </div>
-    <div>
-      <el-dialog
-        style="text-align: left"
-        title="提示"
-        :visible.sync="dialogVisible"
-        width="30%"
-      >
-       <div style="text-align: center">
-         <span>产品类型：</span>
-         <el-select v-model="about" placeholder="请选择">
-         <el-option
-           v-for="item in options1"
-           :key="item.value1"
-           :label="item.label"
-           :value="item.value1">
-         </el-option>
-       </el-select>
-       </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="routerHandle()">确 定</el-button>
-        </span>
-      </el-dialog>
+      <router-link to="listInfo"><el-button type="primary" style="margin-left: 10px">添加产品</el-button></router-link>
     </div>
     <div style="height: 155px;">
       <div class="select_two">
@@ -119,15 +92,15 @@
         width="300">
           <template slot-scope="scope">
             <div>
-            <el-button type="primary" size="mini" @click="handleClick(scope.row)">编辑</el-button>
-            <el-button type="primary" size="mini">复制</el-button>
-            <el-button type="primary" size="mini">导出行程</el-button>
+              <el-button type="primary" size="mini" @click="handleClick(scope.row)">编辑</el-button>
+              <el-button type="primary" size="mini">复制</el-button>
+              <el-button type="primary" size="mini">导出行程</el-button>
             </div>
             <div style="margin-top: 10px">
-            <el-button type="primary" size="mini">退改</el-button>
-            <el-button type="primary" size="mini">团期</el-button>
-            <el-button type="primary" size="mini" @click = "groupStage">库存</el-button>
-            <el-button type="danger" size="mini">删除</el-button>
+              <el-button type="primary" size="mini">退改</el-button>
+              <el-button type="primary" size="mini">团期</el-button>
+              <el-button type="primary" size="mini" @click = "groupStage">库存</el-button>
+              <el-button type="danger" size="mini">删除</el-button>
             </div>
           </template>
         </el-table-column>
@@ -174,19 +147,28 @@
           label="值"
           align="center"
          >
+         <template slot-scope="scope">
+           <div v-for="kk in price" :key="kk.id" v-show="aa" style="float:left">
+             <!-- 输入属性的input -->
+             <el-input  id="rr" style="width:80px;" v-model="price.str" @keyup.enter.native="searchEnterFun"  type="text" ></el-input>
+
+            <el-button  style="margin-right:10px;" size="mini" type="danger">删除</el-button>
+
+            
+           </div>
+            <el-button plain v-show="bb" v-for="kk in price" :key="kk.id" style="float:left;margin-right:10px;" size="mini" type="primary">{{price.str}}</el-button>
+            
+         </template>
         </el-table-column>
         <el-table-column label="操作"
           width="300"
           align="center">
-        <template slot-scope="scope"
-          prop="ll"
-        >
 
-            <el-button @click="addInput(scope.row,scope.$index)" size="mini" type="primary">添加值</el-button>
+        <template slot-scope="scope" prop="ll">
+            <el-button v-show="pp" @click="addInput(scope.row,scope.$index)" size="mini" type="primary">{{addtable[0].ll}}</el-button>
+            <el-button v-show="qq" @click="addInput(scope.row,scope.$index)" size="mini" type="primary">{{addtable[addtable.length - 1].ll}}</el-button>
+        </template>
 
-
-
-          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -208,21 +190,20 @@ import DateList from './component/DateList'
     },
     data() {
       return {
-        options1: [{
-          value1: '1',
-          label: '跟团游'
-        }, {
-          value1: '2',
-          label: '自由行'
-        }],
-        about:'',
-        dialogVisible: false,
         currentPage1: 5,
         currentPage2: 5,
         currentPage3: 5,
         currentPage4: 4,
         merchandise: false,
         isCollapse: true,
+        // 添加值按钮
+        pp:true,
+        // 确认属性值按钮
+        qq:false,
+      // 输入框隐藏
+        aa:true,
+      //输入框变为按钮
+        bb:false,
       // 按钮列表
       buttonList: [
         {
@@ -300,17 +281,12 @@ import DateList from './component/DateList'
           status:'1',
           opers:'飞猪 携程',
           price:'7900'
-        }]
+        }],
+      // 属性输入框
+        price:[],
       }
     },
     methods: {
-      routerHandle(){
-        console.log(this.about);
-        if(this.about == 1){
-          this.$router.push({path: "listInfo"});
-        }
-        this.dialogVisible = false
-      },
       handleClick(row) {
         console.log(row);
       },
@@ -337,14 +313,17 @@ import DateList from './component/DateList'
       this.addtable.push({
       "id":e.id,
       "property":e.button,
-      "price":[],
+      "ll":"添加值",
       
     })
       this.buttonList[key].pp = true;
       if(this.addtable.length == 1){
         this.addtable.push({
-        "ll":123,
+        "ll":'确认属性值',
       })
+      // this.pp = false;
+      this.qq = true;
+      console.log(this.addtable[this.addtable.length - 1].ll);
     this.buttonList[key].key = this.addtable.length - 1; 
     } else {
       var str = this.addtable.splice(this.addtable.length - 2, 1);
@@ -364,19 +343,39 @@ import DateList from './component/DateList'
     },
   // 点击添加按钮方法
   addInput(b, key){
-
-    console.log(b.id);
-    console.log(this.addtable[key]);
+    this.aa = true;
+    // console.log(b.id);
+    // console.log(this.addtable[key]);
+    // console.log(key);
   // 输入的属性值 
-    this.addtable[key].price.push(<el-input id="rr" style="width:80px;" v-model="input"  type="text"
-      onkeypress="if(event.keyCode==13) {
-       alert(inputDom.document.getElementById('rr'));
+    // this.addtable[key].price.push(<el-input id="rr" style="width:80px;" v-model="input"  type="text" ></el-input>);
+    // this.addtable[key].price.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>);
+    this.price.push({
+      qq:'',
+      str:[
         
-    }"></el-input>);
-    this.addtable[key].price.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>);
-
+      ],
+    });
+    //  console.log(this.price.length);   
 
     },
+    searchEnterFun:function(e){
+        this.price[this.price.length - 1].str.push({
+          oo:this.price.str,
+        })
+              // this.price.push({
+              //   qq:'',
+              //   str:this.price.str,
+              // })
+              // this.price.splice(this.price.length-1,0,this.price.str);
+              console.log(this.price.length);              
+              console.log(this.price.str);
+              console.log(this.price);
+              this.aa = false;
+
+              this.bb = true;
+            }
+    
 
   }
 
