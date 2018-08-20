@@ -35,6 +35,8 @@
     }
 </script>
 
-<style scoped>
-
+<style scoped lang='stylus'>
+  .el-tabs>>>.el-tabs__content{
+    overflow visible!important
+  }
 </style>
