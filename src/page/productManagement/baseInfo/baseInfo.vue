@@ -71,10 +71,24 @@
                 size="small"
                 @keyup.enter.native="handleInputConfirm2"
                 @blur="handleInputConfirm2">
+                <input style="background:red;width:100px;height:200px" type="image" src="//static.huaweicloud.com/static/v2_resources/images/dev-index/slide3.jpg?sttl=20185293" alt="">
               </el-input>
               <el-button v-else class="button-new-tag" size="small" @click="showInput2">请输入运营标签</el-button>
             </div>
           </el-form-item>
+
+          <el-form-item label="头图" prop="operationLabel">
+          <el-input v-model="input24" disabled="true" style="width:200px;float:left;margin-left:10px;"></el-input>
+            <el-upload
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :file-list="fileList2"
+            list-type="picture"
+            :limit='1'>
+            <el-button type="primary">上传</el-button>
+            </el-upload>
+          </el-form-item>
+
           <el-form-item label="出游人群" prop="Excursion">
             <el-select v-model="ruleForm.Excursion" placeholder="请选择" class="Excursion-select">
               <el-option :label="theme" :value="indexs" v-for="(theme,indexs) of theme" :key="indexs"/>
@@ -434,5 +448,22 @@ export default {
 }
 .num-three>>>.el-form-item__error{
   left:27px;
+}
+.upload-demo{
+float:left;
+}
+.upload-demo>>>.el-upload-list{
+position:absolute;
+top: -5px;
+left: 30px;
+}
+.upload-demo>>>.el-upload-list__item{
+width: 70px;
+height: 30px;
+padding: 0;
+background-size: 38%;
+background-repeat: no-repeat;
+background-position: 9px;
+background-image url('../../../assets/image/pic.png')
 }
 </style>
