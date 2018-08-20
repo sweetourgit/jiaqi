@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="基本信息" name="first"><BaseInfo></BaseInfo></el-tab-pane>
