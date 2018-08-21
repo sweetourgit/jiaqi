@@ -1,4 +1,4 @@
-<template>
+<template style="position: relative;">
     <div>
       <!--外边框-->
       <div class="outline">
@@ -517,7 +517,7 @@
               <div class="schedule_tab">
                 <el-tabs :tab-position="tabPosition">
                   <el-tab-pane label="DAY1">
-                    <div class="schedule" style="width:100%;">
+                    <div class="schedule">
                       <div class="date">DAY1</div>
                         <div class="aviation">
                           <!--第一个-->
@@ -581,7 +581,7 @@
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="DAY2">
-                    <div class="schedule" style="width:100%;">
+                    <div class="schedule">
                       <div class="date">DAY1</div>
                         <div class="aviation">
                           <!--第一个-->
@@ -645,7 +645,7 @@
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="DAY3">
-                    <div class="schedule" style="width:100%;">
+                    <div class="schedule">
                       <div class="date">DAY1</div>
                         <div class="aviation">
                           <!--第一个-->
@@ -709,25 +709,45 @@
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="DAY4">
-                    56565633658685
+                    46456464565
                   </el-tab-pane>
                 </el-tabs>
               </div>
             </div>
           </div>
           <!--活动详情结束-->
-
-
-
-
-
-
-
         </el-tab-pane>
       </el-tabs>
         <!--套餐结束-->
       </div> 
+
+
+      <!--弹窗-->
+       <div class="popup" v-show="comboshow">
+        <div class="mask"></div>
+        <div class="add">
+          <div class="label">
+            <div class="left">信息</div>
+            <div class="right" @click="close">×</div>
+          </div>
+          <div class="content">
+            <div class="text">是否删除该套餐</div>
+            <div class="judge">
+              <el-button @click="close">取消</el-button>
+              <el-button @click="confirm" type="primary">确定</el-button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--弹窗结束-->
+      
+
+
+
+
+
     </div>
+
 </template>
 
 <script>
@@ -908,6 +928,7 @@
         },
         rules:{
           highlightWords:[
+            { required: true, message: '不能为空', trigger: 'blur' },
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
           ],
         },
@@ -924,7 +945,8 @@
         num: 0, 
         num1:0,
         param:'1',
-         tabPosition: 'right'
+        tabPosition: 'right',
+        comboshow:false
       }
     },
     watch:{   //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
@@ -939,6 +961,9 @@
         }
     },
     methods: {
+      close(){
+        this.comboshow=false;
+      },
       tab(index) {
             this.num = index;
         },
@@ -955,23 +980,12 @@
           });
           this.editableTabsValue = newTabName;
         }
-        if (action === 'remove') {
-          let tabs = this.editableTabs;
-          let activeName = this.editableTabsValue;
-          if (activeName === targetName) {
-            tabs.forEach((tab, index) => {
-              if (tab.name === targetName) {
-                let nextTab = tabs[index + 1] || tabs[index - 1];
-                if (nextTab) {
-                  activeName = nextTab.name;
-                }
-              }
-            });
-          }
-          
-          this.editableTabsValue = activeName;
-          this.editableTabs = tabs.filter(tab => tab.name !== targetName);
-        }
+        this.comboshow=true;
+      },
+      confirm:function(remove){
+        console.log(this.editableTabs)
+        this.editableTabs.splice(1,1)
+        this.comboshow=false;
       },
       querySearch(queryString, cb) {
         var restaurants = this.restaurants;
@@ -1021,7 +1035,7 @@
   .traffic_title{font-size: 14pt; font-weight: bold; line-height: 60px;}
   .traffic_border{ border:1px solid #f2f2f2; width: 80%; overflow: hidden; margin: 0 0 20px 0;}
   .traffic_button{float: left; margin: 10px 0 20px 30px; line-height: 40px;}
-  .plane{width: 98%; overflow: hidden;background-color: #f7f7f7; margin-left:1%; margin-bottom:20px; margin-top:20px;}
+  .plane{width: 98%; overflow: hidden;background-color: #fafafa; margin-left:1%; margin-bottom:20px; margin-top:20px;    }
   .plane_type{ width: 80px; margin: 20px 0 0 20px;}
   .plane_text{ margin: 0 0 0 15px; }
   .aviation{padding: 20px 0 0 0; clear: both; width: 100%; overflow: hidden;}
@@ -1053,14 +1067,27 @@
   .active{color:#ff5a3a}
 
   .schedule_border{border:1px solid #f2f2f2; width: 85%; overflow: hidden; margin: 0 0 20px 0;}
-  .schedule{width: 100%; overflow: hidden;background-color: #f7f7f7; margin-left:0; margin-bottom:20px; margin-top:0px;}
+  .schedule{ overflow: hidden;background-color: #f9f9f9; margin-left:0; margin-bottom:20px; margin-top:0px;}
   .schedule_tab{margin: 20px 0 0 15px;}
   .schedule_first{ margin: 0 0 0 0; float: left; }
 
-  .city{margin: 0 0 0 0; width: 100%; overflow: hidden;}
-  .city_input{float: left; width: 100px;}
+  .city{margin: 0 0 0 0; overflow: hidden;}
+  .city_input{float: left;}
   .minutes{float: left; line-height: 40px; margin: 0 0 0 15px;}
   .textarea1{float: left; width: 80%;}
   .dashed{border-bottom: 1px dashed #e5e5e5; overflow:hidden; height: 1px; width: 90%; margin-right: auto; margin-left: auto; margin-bottom:20px;}
+
+
+  .add{width: 450px; height: 250px;margin: auto;position: fixed; top:50%; left:50%; margin-top:-125px; margin-left:-225px; background: #fff; overflow: hidden; border:1px solid #eeeeee; border-radius: 3px; z-index: 1000;}
+  .label{ background: #f6f6f6; border-bottom: 1px solid #eee;height: 57px; line-height: 40px; width: 450px;}
+  .left{ float: left; margin: 10px 0 0 20px; }
+  .right{float: right; margin: 0 20px 0 0;font-size: 16pt;cursor:pointer; line-height: 57px; }
+  .content{ width: 310px; overflow: hidden;margin-left:auto;margin-right:auto;}
+  .text{float: left; line-height: 40px;margin: 50px 0 0 0;}
+  .input{float: left; width: 180px; margin: 0 0 0 15px;}
+  .judge{padding: 30px 0 0 0; clear: both;}
+
+  .popup{}
+  .mask{background-color: #000; width: 100%; height: 100%; position: absolute; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5; z-index: 100;}
       
 </style>
