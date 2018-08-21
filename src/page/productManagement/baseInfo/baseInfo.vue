@@ -77,15 +77,49 @@
             </div>
           </el-form-item>
 
-          <el-form-item label="头图" prop="operationLabel">
-          <el-input v-model="input24" disabled="true" style="width:200px;float:left;margin-left:10px;"></el-input>
+          <el-form-item label="头图" prop="avatarImages">
+            <el-input v-model="ruleForm.avatarImages" disabled style="width:200px;float:left;margin-left:10px;position:relative">
+            </el-input>
             <el-upload
-            class="upload-demo"
+            :on-preview="handleImgClick"
+            class="upload-demo uploadimage"
             action="https://jsonplaceholder.typicode.com/posts/"
-            :file-list="fileList2"
             list-type="picture"
-            :limit='1'>
-            <el-button type="primary">上传</el-button>
+            :limit='1' accept=".jpg,.png,.gif"
+            :on-remove="handleRemove">
+            <el-button type="info">
+              <div v-show="isShowImg" style="height:215px;width:330px;position:absolute;z-index:99;top:50px;left:30px;border:10px solid #D7D7D7;background:#fdfdfd;">
+                <img style="display:block;width:100%;height:100%;" :src="this.imgUrl" alt="">
+              </div>
+              上传</el-button>
+            </el-upload>
+          </el-form-item>
+
+          <el-form-item label="视频" prop="video">
+            <el-input v-model="ruleForm.video" disabled style="width:200px;float:left;margin-left:10px;position:relative">
+            </el-input>
+            <el-upload
+              class="upload-demo uploadimage"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              list-type="picture"
+              :limit='1'
+              :on-remove="handleRemoves"
+              :on-progress="uploadVideoProcess">
+              <el-button type="info">上传</el-button>
+            </el-upload>
+          </el-form-item>
+
+          <el-form-item label="轮播图" prop="slideshow">
+            <el-input v-model="ruleForm.slideshow" disabled style="width:540px;float:left;margin-left:10px;position:relative" placeholder="3-6个轮播图">
+            </el-input>
+            <el-upload
+            class="upload-demo uploadimage"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            list-type="picture"
+            :limit='6' accept=".jpg,.png,.gif"
+            :on-remove="handleRemove1"
+            :multiple="true">
+            <el-button type="info">上传</el-button>
             </el-upload>
           </el-form-item>
 
@@ -122,6 +156,8 @@ export default {
   name: "baseInfo",
   data(){
     return{
+      isShowImg:false,
+      imgUrl:'',
       tableData: [{
           id: '001',
           country: '英国',
@@ -170,7 +206,8 @@ export default {
         highlightWords1: '',
         highlightWords2: '',
         highlightWords3: '',
-        highlightWords4: ''
+        highlightWords4: '',
+        avatarImages: '',
         },
       //运营标签
       dynamicTags2: [],
@@ -225,6 +262,38 @@ export default {
     };
   },
   methods: {
+      beforeUploadVideo(file) {
+        const isLt20M = file.size / 1024 / 1024  < 20;
+        if (['video/mp4', 'video/ogg', 'video/flv','video/avi','video/wmv','video/rmvb'].indexOf(file.type) == -1) {
+            this.$message.error('请上传正确的视频格式');
+            return false;
+        }
+        if (!isLt20M) {
+            this.$message.error('上传视频大小不能超过20MB哦!');
+            return false;
+        }
+      },
+      uploadVideoProcess(event, file, fileList){
+        this.videoFlag = true;
+        this.videoUploadPercent = file.percentage.toFixed(0);
+      },
+
+      //图片预览
+      handleImgClick(file){
+        this.isShowImg = !this.isShowImg
+        this.imgUrl = file.url
+      },
+      handleRemove(file, fileList) {
+         this.isShowImg = false;
+      },
+      //视频删除
+      handleRemoves(file, fileList) {
+        console.log(file);
+      },
+      //轮播图删除
+      handleRemove1(file, fileList) {
+        console.log(file);
+      },
       //目的地标签
       handleClose1(tag1) {
         this.dynamicTags1.splice(this.dynamicTags1.indexOf(tag1), 1);
@@ -452,18 +521,20 @@ export default {
 .upload-demo{
 float:left;
 }
+
 .upload-demo>>>.el-upload-list{
 position:absolute;
 top: -5px;
 left: 30px;
 }
 .upload-demo>>>.el-upload-list__item{
-width: 70px;
+float left;
+width: 90px;
 height: 30px;
 padding: 0;
-background-size: 38%;
+background-size: 44%;
 background-repeat: no-repeat;
-background-position: 9px;
+background-position: 2px;
 background-image url('../../../assets/image/pic.png')
 }
 </style>
