@@ -158,8 +158,8 @@
                 </el-form-item>
                 <el-form-item label="末级部门" prop="lastStage" class="add_radio">
                     <el-radio-group class="virtualDepartment" v-model="addInput.lastStage">
-                    <el-radio label="1" value="1">是</el-radio>
-                    <el-radio label="2" value="2">否</el-radio>
+                      <el-radio label="1" value="1">是</el-radio>
+                      <el-radio label="2" value="2">否</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="部门编码" :label-width="Width" prop="departmentCode" class="add_title">
@@ -205,7 +205,7 @@
                 <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
             </el-table>
             <div class="black">
-              <el-pagination :page-sizes="[6,8,10]" background @size-change="pagesizes" :page-size="pagesize" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+              <el-pagination :page-sizes="[2,4,6,8,10]" background @size-change="pagesizes" :page-size="pagesize" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
               </el-pagination>
             </div>
             <div slot="footer" class="btn">
@@ -320,7 +320,7 @@ export default {
 
       members1: [],
       //每页的数据条数
-      pagesize: 8,
+      pagesize: 10,
       //默认开始页面
       currentPage: 1,
       total: 1,
@@ -491,7 +491,7 @@ export default {
     },
     remove(index, rows) {
       let _this = this;
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("是否删除该部门?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

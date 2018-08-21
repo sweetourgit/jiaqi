@@ -130,7 +130,6 @@ export default {
             }
           })
           .then(function(response) {
-            // console.log(response);
             _this.addPosition = false;
             _this.form.positionName = "";
             _this.$message.success("添加成功");
@@ -168,7 +167,7 @@ export default {
     // 删除
     remove(index, rows) {
       let _this = this;
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("是否删除该职位？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
