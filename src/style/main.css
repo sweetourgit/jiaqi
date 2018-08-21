@@ -1,0 +1,7 @@
+.uploadimage .el-icon-document:before {
+  content: "";
+}
+.uploadimage .el-progress__text{
+  top: -28px;
+  left:10px;
+}
