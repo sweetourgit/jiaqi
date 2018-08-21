@@ -127,7 +127,7 @@
     <div v-if="isCollapse==true">
 
       <div class="button-list" >
-        <el-button id="kk" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>
+        <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>
       </div>
       <el-table
         :data="addtable"
@@ -148,15 +148,18 @@
           align="center"
          >
          <template slot-scope="scope">
-           <div v-for="kk in price" :key="kk.id" v-show="aa" style="float:left">
-             <!-- 输入属性的input -->
-             <el-input  id="rr" style="width:80px;" v-model="price.str" @keyup.enter.native="searchEnterFun"  type="text" ></el-input>
+          
+              <div v-for="(data,index) in addtable[scope.$index].price"  :key="data.id" v-show="aa" style="float:left">
+                <!-- 输入属性的input -->
+                <el-input  id="rr" style="width:80px;"  v-model="addtable[scope.$index].price.value"  type="text" ></el-input>
+                <!-- v-model="addtable[scope.$index].price.str" -->
+                <!-- @keyup.enter.native="searchEnterFun" -->
 
-            <el-button  style="margin-right:10px;" size="mini" type="danger">删除</el-button>
+                <el-button  style="margin-right:10px;" size="mini" type="danger">删除</el-button>
 
-            
-           </div>
-            <el-button plain v-show="bb" v-for="kk in price" :key="kk.id" style="float:left;margin-right:10px;" size="mini" type="primary">{{price.str}}</el-button>
+                
+              </div>
+                <el-button plain v-show="bb" v-for="kk in price" :key="kk.id" style="float:left;margin-right:10px;" size="mini" type="primary">{{price.str}}</el-button>
             
          </template>
         </el-table-column>
@@ -165,8 +168,12 @@
           align="center">
 
         <template slot-scope="scope" prop="ll">
-            <el-button v-show="pp" @click="addInput(scope.row,scope.$index)" size="mini" type="primary">{{addtable[0].ll}}</el-button>
-            <el-button v-show="qq" @click="addInput(scope.row,scope.$index)" size="mini" type="primary">{{addtable[addtable.length - 1].ll}}</el-button>
+          <template v-if="scope.row.ll == '确认属性值'">
+            <el-button v-show="qq" @click="gain" size="mini" type="primary">{{addtable[addtable.length - 1].ll}}</el-button>            
+          </template>
+          <template v-else>
+            <el-button v-show="pp" @click="addInput(scope.row,scope.$index)" size="mini" type="primary">添加值</el-button>            
+          </template>
         </template>
 
         </el-table-column>
@@ -196,6 +203,14 @@ import DateList from './component/DateList'
         currentPage4: 4,
         merchandise: false,
         isCollapse: true,
+        aaa:0,
+
+        //输入属性值的数组
+        www:{
+          eee:[{
+            rrr:''
+          }],
+        },
         // 添加值按钮
         pp:true,
         // 确认属性值按钮
@@ -206,55 +221,71 @@ import DateList from './component/DateList'
         bb:false,
       // 按钮列表
       buttonList: [
+        // pp 是开关
+
         {
           id: "0",
           button: "出发地",
-          pp : false
+          pp : false,
+          //每个按钮的验证v-model
+          verifier:" Origin",
         },
         {
           id: "1",
           button: "行程路线",
-          pp : false
+          pp : false,
+          verifier: "Route",  
         },
         {
           id: "2",
           button: "天数",
-          pp : false
+          pp : false,
+          verifier: "Day", 
         },
         {
           id: "3",
           button: "晚数",
-          pp : false
+          pp : false,
+          verifier: "NightNum",      
         },
         {
           id: "4",
           button: "房型",
-          pp : false
+          pp : false,
+          verifier: "House",         
         },
         {
           id: "5",
           button: "住宿条件",
-          pp : false
+          pp : false,
+          verifier: "Accommodation",
         },
         {
           id: "6",
           button: "航空公司",
-          pp : false
+          pp : false,
+          verifier: "Airline",        
         },
         {
           id: "7",
           button: "酒店名称",
-          pp : false
+          pp : false,
+          verifier: "HotelName",
         },
         {
           id: "8",
           button: "套餐类型",
-          pp : false
+          pp : false,
+          verifier: "SetMeal",
         }
       ],
-      addtable: [
+        // 列表数组
+        addtable: [
 
-      ],
+        ],
+        // sku数组
+        sku:[],
+
         options: [{
           value: '选项1',
           label: '黄金糕'
@@ -310,12 +341,18 @@ import DateList from './component/DateList'
   begin(e, key) {
     // console.log(e.id);
     if(e.pp == false){
+      document.getElementById('kk'+key).style.border = 'solid 1px #409EFF'
+      document.getElementById('kk'+key).style.color = '#409EFF'
       this.addtable.push({
-      "id":e.id,
-      "property":e.button,
-      "ll":"添加值",
+      id:e.id,
+      property:e.button,
+      // "ll":"添加值",
+      verifier:e.verifier,
+      price:[],
       
     })
+    console.log(this.addtable);
+    console.log(key);
       this.buttonList[key].pp = true;
       if(this.addtable.length == 1){
         this.addtable.push({
@@ -331,6 +368,8 @@ import DateList from './component/DateList'
       this.buttonList[key].key = this.addtable.length - 2; 
     }
     } else if(e.pp){
+      document.getElementById('kk'+key).style.border = 'solid 1px #dcdfe6'
+      document.getElementById('kk'+key).style.color = '#606266'
       this.addtable.splice(e.key, 1);
       for(let i=0;i<this.addtable.length - 1;i++){
       this.buttonList[this.addtable[i].id].key = i;
@@ -343,24 +382,28 @@ import DateList from './component/DateList'
     },
   // 点击添加按钮方法
   addInput(b, key){
+    // b 按钮数组中的数据
+    // key 添加之后的列表的值 
     this.aa = true;
-    // console.log(b.id);
-    // console.log(this.addtable[key]);
-    // console.log(key);
-  // 输入的属性值 
-    // this.addtable[key].price.push(<el-input id="rr" style="width:80px;" v-model="input"  type="text" ></el-input>);
-    // this.addtable[key].price.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>);
-    this.price.push({
-      qq:'',
-      str:[
-        
-      ],
+    this.aaa += 1;
+    var bbb = 0
+    bbb+=1
+    console.log(this.aaa);
+    this.addtable[key].price.push({
+    
+      value:b.verifier,
+
     });
-    //  console.log(this.price.length);   
+    // console.log(b);
+    console.log(this.addtable[key].price[0].value);
+    // console.log(this.addtable[key].price.length);
+  // this.key = tt;
+    //  console.log(this.addtable);   
 
     },
+
     searchEnterFun:function(e){
-        this.price[this.price.length - 1].str.push({
+        this.addtable[e].price[this.price.length - 1].str.push({
           oo:this.price.str,
         })
               // this.price.push({
@@ -374,7 +417,19 @@ import DateList from './component/DateList'
               this.aa = false;
 
               this.bb = true;
-            }
+            },
+
+  // 确认属性值
+  gain(){
+    // this.sku.push({
+    //  key: Date.now(),
+     
+    // })
+    // console.log(this.sku);
+
+    // console.log(addtable[scope.$index].price.value);
+    // console.log(this.model);
+  } 
     
 
   }
