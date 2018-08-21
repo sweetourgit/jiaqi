@@ -103,7 +103,7 @@
               action="https://jsonplaceholder.typicode.com/posts/"
               list-type="picture"
               :limit='1'
-              :on-remove="handleRemoves"
+              :on-remove="handleRemoves1"
               :on-progress="uploadVideoProcess">
               <el-button type="info">上传</el-button>
             </el-upload>
@@ -113,13 +113,18 @@
             <el-input v-model="ruleForm.slideshow" disabled style="width:540px;float:left;margin-left:10px;position:relative" placeholder="3-6个轮播图">
             </el-input>
             <el-upload
+            :on-preview="slideshowClick"
             class="upload-demo uploadimage"
             action="https://jsonplaceholder.typicode.com/posts/"
             list-type="picture"
             :limit='6' accept=".jpg,.png,.gif"
-            :on-remove="handleRemove1"
+            :on-remove="handleRemove2"
             :multiple="true">
-            <el-button type="info">上传</el-button>
+            <el-button type="info">
+              <div v-show="isSlideshow" style="height:215px;width:330px;position:absolute;z-index:99;top:50px;left:30px;border:10px solid #D7D7D7;background:#fdfdfd;">
+                <img style="display:block;width:100%;height:100%;" :src="this.slideshowUrl" alt="">
+              </div>
+              上传</el-button>
             </el-upload>
           </el-form-item>
 
@@ -158,6 +163,8 @@ export default {
     return{
       isShowImg:false,
       imgUrl:'',
+      isSlideshow:false,
+      slideshowUrl:'',
       tableData: [{
           id: '001',
           country: '英国',
@@ -285,6 +292,14 @@ export default {
       },
       handleRemove(file, fileList) {
          this.isShowImg = false;
+      },
+      //轮播图预览
+      slideshowClick(file){
+        this.isSlideshow = true;
+        this.slideshowUrl = file.url
+      },
+      handleRemove2(file, fileList){
+        this.isSlideshow = false;
       },
       //视频删除
       handleRemoves(file, fileList) {
