@@ -143,7 +143,7 @@
           type: 'warning',
           callback: (action, instance) => {
              if (action === 'confirm') {
-                  this.$router.push({path: "/"});
+               this.$router.push({path: "/userlist/adduser?id="+this.$route.query.id});
              }
         }
         })
@@ -154,7 +154,7 @@
           type: 'success'
         });
           setTimeout(() => {
-            this.$router.push({path: "/"});
+            this.$router.push({path: "/userlist/adduser?id="+this.$route.query.id});
           },1000);
 
       }

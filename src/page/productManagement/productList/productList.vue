@@ -1,16 +1,11 @@
 <template>
   <div>
     <div class="select_button">
-      <el-button  plain>跟团游</el-button>
-      <el-button autofocus plain>自由行</el-button>
-      <el-button autofocus plain>签证</el-button>
-      <el-button plain>机票</el-button>
-      <el-button plain>酒店</el-button>
-      <el-button plain>门票</el-button>
-      <el-button plain>WiFi</el-button>
-      <el-button plain>电话卡</el-button>
-      <el-button plain>交通</el-button>
-      <el-button plain>保险</el-button>
+      <el-button v-for="(item, index) in domains"
+                 :key="item.key"
+                 @click="clickHand(index)"
+                 plain
+      >{{item.value}}</el-button>
       <!--<router-link to="listInfo">
       </router-link>-->
       <el-button type="primary"  @click="dialogVisible = true" style="margin-left: 10px">添加产品</el-button>
@@ -49,7 +44,7 @@
       </div>
       <div class="select_two">
         <div class="address">出发地 <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
-        <div class="name">商品名称 <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
+        <div class="name">目的地 <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
         <div class="options11">状态
           <el-select  style="margin-left: 33px;width: 200px;" v-model="value" placeholder="请选择">
           <el-option
@@ -63,7 +58,7 @@
         </div>
       </div>
       <div class="select_two_button">
-        <el-button type="primary" size="medium">搜索</el-button>
+        <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
         <el-button type="primary" size="medium">重置</el-button>
       </div>
 
@@ -135,6 +130,7 @@
 
       <div class="block">
         <el-pagination
+          background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage4"
@@ -208,6 +204,39 @@ import DateList from './component/DateList'
     },
     data() {
       return {
+        buttonlist:[],
+        domains: [{
+          value: '跟团游',
+          status:"false"
+        },{
+          value: '自由行',
+          status:"false"
+        },{
+          value: '签证',
+          status:"false"
+        },{
+          value: '机票',
+          status:"false"
+        },{
+          value: '酒店',
+          status:"false"
+        },{
+          value: '门票',
+          status:"false"
+        },{
+          value: 'WiFi',
+          status:"false"
+        },{
+          value: '电话卡',
+          status:"false"
+        },{
+          value: '交通',
+          status:"false"
+        },{
+          value: '保险',
+          status:"false"
+        }],
+        thisClass:'',
         options1: [{
           value1: '1',
           label: '跟团游'
@@ -304,6 +333,22 @@ import DateList from './component/DateList'
       }
     },
     methods: {
+      searchHand(){
+        alert(13);
+      },
+      clickHand(index){
+        if( this.domains[index].status == "true"){
+          this.domains[index].status = "false"
+        }else{
+          this.buttonlist.push(this.domains[index].value);
+          this.domains[index].status = "true"
+        }
+            console.log(this.domains[index].value);
+
+
+
+        console.log( this.buttonlist);
+      },
       routerHandle(){
         console.log(this.about);
         if(this.about == 1){
@@ -338,18 +383,18 @@ import DateList from './component/DateList'
       "id":e.id,
       "property":e.button,
       "price":[],
-      
+
     })
       this.buttonList[key].pp = true;
       if(this.addtable.length == 1){
         this.addtable.push({
         "ll":123,
       })
-    this.buttonList[key].key = this.addtable.length - 1; 
+    this.buttonList[key].key = this.addtable.length - 1;
     } else {
       var str = this.addtable.splice(this.addtable.length - 2, 1);
       this.addtable.push(str[0]);
-      this.buttonList[key].key = this.addtable.length - 2; 
+      this.buttonList[key].key = this.addtable.length - 2;
     }
     } else if(e.pp){
       this.addtable.splice(e.key, 1);
@@ -360,18 +405,18 @@ import DateList from './component/DateList'
       this.addtable.splice(0, 1);
     }
       this.buttonList[key].pp = false;
-    } 
+    }
     },
   // 点击添加按钮方法
   addInput(b, key){
 
     console.log(b.id);
     console.log(this.addtable[key]);
-  // 输入的属性值 
+  // 输入的属性值
     this.addtable[key].price.push(<el-input id="rr" style="width:80px;" v-model="input"  type="text"
       onkeypress="if(event.keyCode==13) {
        alert(inputDom.document.getElementById('rr'));
-        
+
     }"></el-input>);
     this.addtable[key].price.push(<el-button style="margin-right:10px;" size="mini" type="danger">删除</el-button>);
 
