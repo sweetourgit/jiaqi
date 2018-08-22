@@ -49,7 +49,7 @@
 
         <el-button type="primary" @keydown.enter="loginForm('ruleForm')" class="button" @click="loginForm('ruleForm')">登录</el-button>
 
-        <el-checkbox class="remember" >记住密码</el-checkbox>
+        <!-- <el-checkbox class="remember" >记住密码</el-checkbox> -->
       </el-form>
 
 
@@ -363,7 +363,7 @@
             this.phoneShow = false;
             this.newpasswordShow = true;
           } else {
-            this.$message.error('验证失败');
+            // this.$message.error('验证失败');
             this.phoneruleForm.phone = ''
             this.phoneruleForm.phoneVerification = ''
             return false;
@@ -393,10 +393,12 @@
 
         // this.$refs[formName].validate((valid) => {
         //   if (valid) {
-        //     this.$message.error('登录失败');
+        //     this.$message.success('登录成功');
+          
 
         //   } else {
-        //     this.$message.success('登录成功');
+        //     this.$message.error('登录失败');
+          
         //     return false;
         //   }
         // });
@@ -410,7 +412,6 @@
             this.$http.post(this.GLOBAL.serverSrc+'/api/check',this.qs.stringify({
               "key": localStorage.getItem('code'),
               "code": this.ruleForm.verification
-
             })).then(res => {
               if(res.data){
                 // console.log(res.data)
@@ -420,40 +421,28 @@
                 }).then(res => {
                   store.save('userId',res.data.id)
                   store.save('name',res.data.name)
-                  if(res.data===''){
+                  if(res.data== false ){
                     this.$message.error('用户名或密码错误');
-
                   }else{
                     document.getElementById("er").style ='border-color: green;'
 
                     this.$router.push('/userList')
                     this.$message.success('登录成功');
                     localStorage.removeItem("code",res.data)
-
                   }
                 }).catch(err => {
                   this.$message.error('登录失败');
-
                 })
               } else {
                 // this.$message.error('验证码错误');
                 document.getElementById("er").style ='border-color: #f56c6c;'
                 setTimeout(() => {
-
                   this.pop=true;
-
                 },90)
-
-
               }
             }).catch(err => {
-
             })
-
             store.save('token',res.data)
-            // this.$router.push('/role')
-            // this.$message.success('登录成功');
-
 
           })
           .catch(error =>{
