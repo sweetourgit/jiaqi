@@ -420,7 +420,7 @@ export default {
       }
     },
     removeClassification() {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+      this.$confirm("是否删除该分类？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -439,7 +439,7 @@ export default {
         });
     },
     removeGrouping() {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+      this.$confirm("是否删除该分组?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -458,7 +458,7 @@ export default {
         });
     },
     removeCity() {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+      this.$confirm("是否删除该城市?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

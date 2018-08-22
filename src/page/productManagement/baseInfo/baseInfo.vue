@@ -7,7 +7,7 @@
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" style="padding-left:50px">
           <el-form-item label="产品名称" prop="productName">
             <el-input maxlength=30 v-model="ruleForm.productName" class="productName-input" placeholder="含.~+/_可用，（）仅能用在句尾，30个汉字以内"></el-input>
-            <span>{{ruleForm.productName.length}}/30字</span>
+            <span class="length-span">{{ruleForm.productName.length}}/30字</span>
           </el-form-item>
           <el-form-item label="出游类型" prop="travelType">
             <el-radio-group v-model="ruleForm.travelType" class="travelType-radio">
@@ -41,15 +41,15 @@
             <el-input maxlength=8 v-model="ruleForm.highlightWords1" class="highlightWords-input1" placeholder="8个字以内"></el-input>
             <span class="span1">{{ruleForm.highlightWords1.length}}/8字</span>
           </el-form-item>
-          <el-form-item prop="highlightWords2">
+          <el-form-item prop="highlightWords2" style="width:378px;">
             <el-input maxlength=8 v-model="ruleForm.highlightWords2" class="highlightWords-input2" placeholder="8个字以内"></el-input><br>
             <span class="span">{{ruleForm.highlightWords2.length}}/8字</span>
           </el-form-item>
-          <el-form-item prop="highlightWords3">
+          <el-form-item prop="highlightWords3" style="width:378px;">
             <el-input maxlength=8 v-model="ruleForm.highlightWords3" class="highlightWords-input2" placeholder="8个字以内"></el-input><br>
             <span class="span">{{ruleForm.highlightWords3.length}}/8字</span>
           </el-form-item>
-          <el-form-item prop="highlightWords4">
+          <el-form-item prop="highlightWords4" style="width:378px;">
             <el-input maxlength=8 v-model="ruleForm.highlightWords4" class="highlightWords-input2" placeholder="8个字以内"></el-input><br>
             <span class="span">{{ruleForm.highlightWords4.length}}/8字</span>
           </el-form-item>
@@ -66,15 +66,69 @@
               <el-input
                 class="input-new-tag"
                 v-if="inputVisible2"
-                v-model="inputValue2"
+                v-model="inputVal"
                 ref="saveTagInput"
                 size="small"
                 @keyup.enter.native="handleInputConfirm2"
                 @blur="handleInputConfirm2">
+                <input style="background:red;width:100px;height:200px" type="image" src="//static.huaweicloud.com/static/v2_resources/images/dev-index/slide3.jpg?sttl=20185293" alt="">
               </el-input>
               <el-button v-else class="button-new-tag" size="small" @click="showInput2">请输入运营标签</el-button>
             </div>
           </el-form-item>
+
+          <el-form-item label="头图" prop="avatarImages">
+            <el-input v-model="ruleForm.avatarImages" disabled style="width:200px;float:left;margin-left:10px;position:relative">
+            </el-input>
+            <el-upload
+            :on-preview="handleImgClick"
+            class="upload-demo uploadimage"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            list-type="picture"
+            :limit='1' accept=".jpg,.png,.gif"
+            :on-remove="handleRemove">
+            <el-button type="info">
+              <div v-show="isShowImg" style="height:215px;width:330px;position:absolute;z-index:9999;top:50px;left:30px;border:10px solid #D7D7D7;background:#fdfdfd;">
+                <img style="display:block;width:100%;height:100%;" :src="this.imgUrl" alt="">
+              </div>
+              上传</el-button>
+            </el-upload>
+          </el-form-item>
+
+          <el-form-item label="视频" prop="video">
+            <el-input v-model="ruleForm.video" disabled style="width:200px;float:left;margin-left:10px;position:relative">
+            </el-input>
+            <el-upload
+              class="upload-demo uploadimage"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              list-type="picture"
+              :limit='1'
+              :on-remove="handleRemoves1"
+              :before-upload="beforeUploadVideo"
+              :on-progress="uploadVideoProcess">
+              <el-button type="info">上传</el-button>
+            </el-upload>
+          </el-form-item>
+
+          <el-form-item label="轮播图" prop="slideshow">
+            <el-input v-model="ruleForm.slideshow" disabled style="width:540px;float:left;margin-left:10px;position:relative" placeholder="3-6个轮播图">
+            </el-input>
+            <el-upload
+            :on-preview="slideshowClick"
+            class="upload-demo uploadimage"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            list-type="picture"
+            :limit='6' accept=".jpg,.png,.gif"
+            :on-remove="handleRemove2"
+            :multiple="true">
+            <el-button type="info">
+              <div v-show="isSlideshow" style="height:215px;width:330px;position:absolute;z-index:99;top:50px;left:30px;border:10px solid #D7D7D7;background:#fdfdfd;">
+                <img style="display:block;width:100%;height:100%;" :src="this.slideshowUrl" alt="">
+              </div>
+              上传</el-button>
+            </el-upload>
+          </el-form-item>
+
           <el-form-item label="出游人群" prop="Excursion">
             <el-select v-model="ruleForm.Excursion" placeholder="请选择" class="Excursion-select">
               <el-option :label="theme" :value="indexs" v-for="(theme,indexs) of theme" :key="indexs"/>
@@ -108,6 +162,10 @@ export default {
   name: "baseInfo",
   data(){
     return{
+      isShowImg:false,
+      imgUrl:'',
+      isSlideshow:false,
+      slideshowUrl:'',
       tableData: [{
           id: '001',
           country: '英国',
@@ -156,12 +214,14 @@ export default {
         highlightWords1: '',
         highlightWords2: '',
         highlightWords3: '',
-        highlightWords4: ''
+        highlightWords4: '',
+        avatarImages: '',
+        operationLabel: '',
         },
       //运营标签
       dynamicTags2: [],
         inputVisible2: false,
-        inputValue2: '',
+        inputVal: '',
       rules:{
         productName: [
           { required: true, message: '不能为空', trigger: 'blur' },
@@ -207,31 +267,58 @@ export default {
           { required: true, message: '不能为空', trigger: 'blur' },
           { pattern: /^[+]{0,1}(\d+)$/,message: '请输入正整数'}
         ],
+        operationLabel:[
+           { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/, message: '不能有标点符号'}
+        ],
       }
     };
   },
   methods: {
-      //目的地标签
-      handleClose1(tag1) {
-        this.dynamicTags1.splice(this.dynamicTags1.indexOf(tag1), 1);
-      },
-
-      showInput1() {
-        this.inputVisible1 = true;
-        this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
-        });
-      },
-
-      handleInputConfirm1() {
-        let inputValue1 = this.inputValue1;
-        if (inputValue1) {
-          this.dynamicTags1.push(inputValue1);
+      beforeUploadVideo(file) {
+        const isLt20M = file.size / 1024 / 1024  < 20;
+        if (['video/mp4', 'video/ogg', 'video/flv','video/avi','video/wmv','video/rmvb'].indexOf(file.type) == -1) {
+            this.$message.error('请上传正确的视频格式');
+            return false;
         }
-        this.inputVisible1 = false;
-        this.inputValue1 = '';
+        if (!isLt20M) {
+            this.$message.error('上传视频大小不能超过20MB哦!');
+            return false;
+        }
+      },
+      uploadVideoProcess(event, file, fileList){
+        this.videoFlag = true;
+        this.videoUploadPercent = file.percentage.toFixed(0);
       },
 
+      //图片预览
+      handleImgClick(file){
+        this.isShowImg = !this.isShowImg
+        this.imgUrl = file.url
+      },
+      handleRemove(file, fileList) {
+         this.isShowImg = false;
+      },
+      //轮播图预览
+      slideshowClick(file){
+        this.isSlideshow = true;
+        if(this.slideshowUrl == file.url){
+        this.isSlideshow = false;
+        this.slideshowUrl = ''
+        } else {
+        this.slideshowUrl = file.url
+        }
+      },
+      handleRemove2(file, fileList){
+        this.isSlideshow = false;
+      },
+      //视频删除
+      handleRemoves(file, fileList) {
+        console.log(file);
+      },
+      //轮播图删除
+      handleRemoves1(file, fileList) {
+        console.log(file);
+      },
       //运营标签
       handleClose2(tag2) {
         this.dynamicTags2.splice(this.dynamicTags2.indexOf(tag2), 1);
@@ -245,12 +332,12 @@ export default {
       },
 
       handleInputConfirm2() {
-        let inputValue2 = this.inputValue2;
-        if (inputValue2) {
-          this.dynamicTags2.push(inputValue2);
+        let inputVal = this.inputVal;
+        if (inputVal) {
+          this.dynamicTags2.push(inputVal);
         }
         this.inputVisible2 = false;
-        this.inputValue2 = '';
+        this.inputVal= '';
       },
        // 搜索方法(出发地)
       querySearch(queryString, cb) {
@@ -294,7 +381,7 @@ export default {
   position: absolute;
 }
 .productName-input {
-  width: 94%;
+  width: 460px;
   float: left;
   margin-left: 10px;
 }
@@ -309,7 +396,7 @@ export default {
   margin-left: 10px;
 }
 .destination-input {
-  width: 94%;
+  width: 1400px;
   height: 38px;
   float: left;
   margin-left: 10px;
@@ -336,8 +423,8 @@ export default {
   float: left;
   margin-top: 3px;
   margin-left: 5px;
-  background-color: #c2c2c2;
-  color: #333333;
+  background-color: #3593EE;
+  color: #fff;
 }
 .travelDays-input {
   width: 150px;
@@ -354,12 +441,12 @@ export default {
   margin-top: 13px;
 }
 .highlightWords-input1 {
-  width: 94%;
+  width: 200px;
   float: left;
   margin-left: 10px;
 }
 .highlightWords-input2 {
-  width: 94%;
+  width: 200px;
   float: left;
   margin-left: 30px;
 }
@@ -389,7 +476,7 @@ export default {
   width:120px !important;
 }
 .inputBox{
-  width:94%;
+  width:324px;
   float left;
   margin-left:10px;
 }
@@ -398,8 +485,8 @@ export default {
   color red;
 }
 .span1{
-  float:right;
-  margin-right:5px;
+  float:left;
+  margin-left:10px;
 }
 .travelNight-input{
   float:left;
@@ -434,5 +521,27 @@ export default {
 }
 .num-three>>>.el-form-item__error{
   left:27px;
+}
+.upload-demo{
+float:left;
+}
+.upload-demo>>>.el-upload-list{
+position:absolute;
+top: -5px;
+left: 30px;
+}
+.upload-demo>>>.el-upload-list__item{
+float left;
+width: 90px;
+height: 30px;
+padding: 0;
+background-size: 44%;
+background-repeat: no-repeat;
+background-position: 2px;
+background-image url('../../../assets/image/pic.png')
+}
+.length-span{
+  float:left;
+  margin-left:10px;
 }
 </style>

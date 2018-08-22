@@ -1,18 +1,18 @@
-<template>
+<template style="position: relative;">
     <div>
-    	<!--外边框-->
-    	<div class="outline">
-    		<!--套餐-->
-			<el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
-			  <el-tab-pane :key="item.name" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name">
-			    <!--套餐名-->
-  				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+      <!--外边框-->
+      <div class="outline">
+        <!--套餐-->
+      <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
+        <el-tab-pane :key="item.name" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name">
+          <!--套餐名-->
+          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
             <el-form-item label="套餐名" prop="highlightWords">
               <el-input maxlength=10 v-model="ruleForm.highlightWords" class="highlightWords-input1" placeholder="10个字以内"></el-input>
               <span class="span1">{{ruleForm.highlightWords.length}}/10字</span>
             </el-form-item>
           </el-form>
-			    <!--套餐名结束-->
+          <!--套餐名结束-->
           <!--交通信息-->
           <div class="traffic">
             <div class="traffic_title">交通信息</div>
@@ -400,7 +400,7 @@
           </div>
           <!--酒店信息结束-->
 
-          <!--日程信息-->
+          <!--活动详情-->
           <div class="traffic">
             <div class="traffic_title">日程信息</div>
             <div class="traffic_border">
@@ -421,31 +421,333 @@
                   <!--第一个-->
                   <div class="aviation_first">
                     <div class="aviation_text">住宿</div>
-                    <div class="radio_input">
-                      <el-radio v-model="radio" label="1">酒店</el-radio>
-                      <el-radio v-model="radio" label="2">其他</el-radio>
+                    <div class="type_radio" style="margin:10px 0 0 0;">
+                      <ul>
+                          <li 
+                          v-for="(item,index) in tabs" 
+                          :class="{active:index == num}"
+                           @click="tab(index)"><input type="radio" name="radios">{{item}}</li>
+                      </ul>
+                      <!--<div class="tabCon">
+                          <div 
+                          v-for='(itemCon,index) in tabContents' 
+                          v-show=" index == num">{{itemCon}}</div>
+                      </div>-->
+                      <div class="tabCon">
+                          <div 
+                          v-for='(itemCon,index) in tabContents' 
+                          v-show=" index == num">
+                            <div>
+                              <el-button>{{itemCon}}</el-button>
+                              <el-button>{{itemCon}}</el-button>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                </div>
+                <!--第二行结束-->
+                <!--第三行-->
+                <div class="aviation">
+                  <!--第一个-->
+                  <div class="food_text">餐饮</div>
+                </div>
+                <!--第三行结束-->
+                <!--第四行-->
+                <div class="aviation">
+                  <!--第一个-->
+                  <div class="aviation_first">
+                    <div class="food_radio">
+                      <div class="repast">早餐</div>
+                      <el-radio v-model="radio1" label="1">自理</el-radio>
+                      <el-radio v-model="radio1" label="2">详细说明</el-radio>
                     </div>
                   </div>
                 </div>
-                <!--第二行结束-->
-                
-                
+                <!--第四行结束-->
+                <!--第四行-->
+                <div class="aviation">
+                  <!--第一个-->
+                  <div class="aviation_first">
+                    <div class="food_radio">
+                      <div class="repast">午餐</div>
+                      <el-radio v-model="radio2" label="1">自理</el-radio>
+                      <el-radio v-model="radio2" label="2">详细说明</el-radio>
+                    </div>
+                  </div>
+                </div>
+                <!--第四行结束-->
+                <!--第四行-->
+                <div class="aviation">
+                  <!--第一个-->
+                  <div class="aviation_first">
+                    <div class="food_radio">
+                      <div class="repast">晚餐</div>
+                      <el-radio v-model="radio3" label="1">自理</el-radio>
+                      <el-radio v-model="radio3" label="2">详细说明</el-radio>
+                    </div>
+                  </div>
+                </div>
+                <!--第四行结束-->
+                <!--第五行-->
+                 <div class="aviation">
+                  <!--第一个-->
+                  <div class="aviation_first">
+                    <div class="food_radio"><el-input class="state" v-model="input27" placeholder="餐饮说明"></el-input></div>
+                  </div>
+                </div>
+                <!--第五行结束-->
+                <!--第六行-->
+                <div class="aviation">
+                  <div class="aviation_text">详情</div>
+                  <div class="textarea"><el-input class="text_input" type="textarea":rows="10" placeholder="请输入内容"v-model="textarea2"></el-input></div>
+                </div>
+                <!--第六行结束-->
               </div>
             </div>
           </div>
           <!--日程信息结束-->
 
+          <!--日程信息-->
+          <div class="traffic">
+            <div class="traffic_title">活动详情</div>
+            <div class="schedule_border">
+              <!--酒店-->
+              
+              <div class="schedule_tab">
+                <el-tabs :tab-position="tabPosition">
+                  <el-tab-pane label="DAY1">
+                    <div class="schedule">
+                      <div class="date">DAY1</div>
+                        <div class="aviation">
+                          <!--第一个-->
+                          <div class="schedule_first">
+                            <div class="type_radio">
+                              <ul style="margin:0 0 0 50px;">
+                                  <li 
+                                  v-for="(item,index) in tabs1" 
+                                  :class="{active:index == num1}"
+                                   @click="tab1(index)"><input type="radio" name="radios">{{item}}</li>
+                              </ul>
+                              <!--<div class="tabCon">
+                                  <div 
+                                  v-for='(itemCon,index) in tabContents' 
+                                  v-show=" index == num">{{itemCon}}</div>
+                              </div>-->
+                              <div class="tabCon">
+                                  <div 
+                                  v-for='(itemCon,index) in tabContents1' 
+                                  v-show=" index == num1">
+                                    <div class="city">
+                                      <div class="aviation">
+                                        <div class="aviation_text">{{itemCon}}</div>
+                                        <div class="aviation_input"><el-input v-model="input28" placeholder="请输入内容"></el-input></div>
+                                        <div class="aviation_text">活动时间</div>
+                                        <div class="city_input"><el-input v-model="input29" placeholder=""></el-input></div>
+                                        <div class="minutes">分钟</div>
+                                      </div>
+                                      <div class="aviation">
+                                        <div class="aviation_text">{{itemCon}}</div>
+                                        <div class="aviation_input"><el-input v-model="input30" placeholder="请输入内容"></el-input></div>
+                                      </div>
+                                      <div class="aviation">
+                                        <div class="aviation_text">详细说明</div>
+                                        <div class="textarea1"><el-input class="text_input" type="textarea":rows="2" placeholder="请输入内容"v-model="textarea4"></el-input></div>
+                                      </div>
+                                      <div class="dashed">&nbsp;</div>
+                                      <div class="aviation_first">
+                                        <div class="aviation_text">图片</div>
+                                        <div class="aviation_input" style="position: relative;">
+                                          <el-input v-model="input24" placeholder="请输入内容"></el-input>
+                                          <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/":on-preview="handlePreview":on-remove="handleRemove"
+                                            :file-list="fileList2"
+                                            list-type="picture">
+                                            <el-button type="primary">上传</el-button>
+                                          </el-upload>
+                                        </div>
+                                      </div>
+
+                                      <div class="aviation">
+                                        <div class="aviation_text">简介</div>
+                                        <div class="textarea1"><el-input class="text_input" type="textarea":rows="10" placeholder="请输入内容"v-model="textarea5"></el-input></div>
+                                      </div>
+                                      <div class="stop"><el-button class="stop_button" plain>删除详情</el-button></div>
+                                    </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </el-tab-pane>
+                  <el-tab-pane label="DAY2">
+                    <div class="schedule">
+                      <div class="date">DAY1</div>
+                        <div class="aviation">
+                          <!--第一个-->
+                          <div class="schedule_first">
+                            <div class="type_radio">
+                              <ul style="margin:0 0 0 50px;">
+                                  <li 
+                                  v-for="(item,index) in tabs1" 
+                                  :class="{active:index == num1}"
+                                   @click="tab1(index)"><input type="radio" name="radios">{{item}}</li>
+                              </ul>
+                              <!--<div class="tabCon">
+                                  <div 
+                                  v-for='(itemCon,index) in tabContents' 
+                                  v-show=" index == num">{{itemCon}}</div>
+                              </div>-->
+                              <div class="tabCon">
+                                  <div 
+                                  v-for='(itemCon,index) in tabContents1' 
+                                  v-show=" index == num1">
+                                    <div class="city">
+                                      <div class="aviation">
+                                        <div class="aviation_text">{{itemCon}}</div>
+                                        <div class="aviation_input"><el-input v-model="input28" placeholder="请输入内容"></el-input></div>
+                                        <div class="aviation_text">活动时间</div>
+                                        <div class="city_input"><el-input v-model="input29" placeholder=""></el-input></div>
+                                        <div class="minutes">分钟</div>
+                                      </div>
+                                      <div class="aviation">
+                                        <div class="aviation_text">{{itemCon}}</div>
+                                        <div class="aviation_input"><el-input v-model="input30" placeholder="请输入内容"></el-input></div>
+                                      </div>
+                                      <div class="aviation">
+                                        <div class="aviation_text">详细说明</div>
+                                        <div class="textarea1"><el-input class="text_input" type="textarea":rows="2" placeholder="请输入内容"v-model="textarea4"></el-input></div>
+                                      </div>
+                                      <div class="dashed">&nbsp;</div>
+                                      <div class="aviation_first">
+                                        <div class="aviation_text">图片</div>
+                                        <div class="aviation_input" style="position: relative;">
+                                          <el-input v-model="input24" placeholder="请输入内容"></el-input>
+                                          <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/":on-preview="handlePreview":on-remove="handleRemove"
+                                            :file-list="fileList2"
+                                            list-type="picture">
+                                            <el-button type="primary">上传</el-button>
+                                          </el-upload>
+                                        </div>
+                                      </div>
+
+                                      <div class="aviation">
+                                        <div class="aviation_text">简介</div>
+                                        <div class="textarea1"><el-input class="text_input" type="textarea":rows="10" placeholder="请输入内容"v-model="textarea5"></el-input></div>
+                                      </div>
+                                      <div class="stop"><el-button class="stop_button" plain>删除详情</el-button></div>
+                                    </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </el-tab-pane>
+                  <el-tab-pane label="DAY3">
+                    <div class="schedule">
+                      <div class="date">DAY1</div>
+                        <div class="aviation">
+                          <!--第一个-->
+                          <div class="schedule_first">
+                            <div class="type_radio">
+                              <ul style="margin:0 0 0 50px;">
+                                  <li 
+                                  v-for="(item,index) in tabs1" 
+                                  :class="{active:index == num1}"
+                                   @click="tab1(index)"><input type="radio" name="radios">{{item}}</li>
+                              </ul>
+                              <!--<div class="tabCon">
+                                  <div 
+                                  v-for='(itemCon,index) in tabContents' 
+                                  v-show=" index == num">{{itemCon}}</div>
+                              </div>-->
+                              <div class="tabCon">
+                                  <div 
+                                  v-for='(itemCon,index) in tabContents1' 
+                                  v-show=" index == num1">
+                                    <div class="city">
+                                      <div class="aviation">
+                                        <div class="aviation_text">{{itemCon}}</div>
+                                        <div class="aviation_input"><el-input v-model="input28" placeholder="请输入内容"></el-input></div>
+                                        <div class="aviation_text">活动时间</div>
+                                        <div class="city_input"><el-input v-model="input29" placeholder=""></el-input></div>
+                                        <div class="minutes">分钟</div>
+                                      </div>
+                                      <div class="aviation">
+                                        <div class="aviation_text">{{itemCon}}</div>
+                                        <div class="aviation_input"><el-input v-model="input30" placeholder="请输入内容"></el-input></div>
+                                      </div>
+                                      <div class="aviation">
+                                        <div class="aviation_text">详细说明</div>
+                                        <div class="textarea1"><el-input class="text_input" type="textarea":rows="2" placeholder="请输入内容"v-model="textarea4"></el-input></div>
+                                      </div>
+                                      <div class="dashed">&nbsp;</div>
+                                      <div class="aviation_first">
+                                        <div class="aviation_text">图片</div>
+                                        <div class="aviation_input" style="position: relative;">
+                                          <el-input v-model="input24" placeholder="请输入内容"></el-input>
+                                          <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/":on-preview="handlePreview":on-remove="handleRemove"
+                                            :file-list="fileList2"
+                                            list-type="picture">
+                                            <el-button type="primary">上传</el-button>
+                                          </el-upload>
+                                        </div>
+                                      </div>
+
+                                      <div class="aviation">
+                                        <div class="aviation_text">简介</div>
+                                        <div class="textarea1"><el-input class="text_input" type="textarea":rows="10" placeholder="请输入内容"v-model="textarea5"></el-input></div>
+                                      </div>
+                                      <div class="stop"><el-button class="stop_button" plain>删除详情</el-button></div>
+                                    </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </el-tab-pane>
+                  <el-tab-pane label="DAY4">
+                    46456464565
+                  </el-tab-pane>
+                </el-tabs>
+              </div>
+            </div>
+          </div>
+          <!--活动详情结束-->
+        </el-tab-pane>
+      </el-tabs>
+        <!--套餐结束-->
+      </div> 
+
+
+      <!--弹窗-->
+       <div class="popup" v-show="comboshow">
+        <div class="mask"></div>
+        <div class="add">
+          <div class="label">
+            <div class="left">信息</div>
+            <div class="right" @click="close">×</div>
+          </div>
+          <div class="content">
+            <div class="text">是否删除该套餐</div>
+            <div class="judge">
+              <el-button @click="close">取消</el-button>
+              <el-button @click="confirm" type="primary">确定</el-button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--弹窗结束-->
+      
 
 
 
 
 
-
-			  </el-tab-pane>
-			</el-tabs>
-    		<!--套餐结束-->
-    	</div> 
     </div>
+
 </template>
 
 <script>
@@ -577,8 +879,13 @@
         input24:'',
         input25:'',
         input26:'',
+        input27:'',
+        input28:'',
+        input29:'',
+        input30:'',
         value1:'',
         value2:'',
+        value3:'',
         value4:'',
         value6:'',
         value7:'',
@@ -601,6 +908,9 @@
         restaurants: [],
         state2: '',
         textarea3:'',
+        textarea2:'',
+        textarea4:'',
+        textarea5:'',
         ruleForm:{
           productName: '',
           travelType: "1",
@@ -618,11 +928,25 @@
         },
         rules:{
           highlightWords:[
+            { required: true, message: '不能为空', trigger: 'blur' },
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
           ],
         },
         fileList2:[],
-        radio: '1'
+        radio: '1',
+        radio1:'1',
+        radio2:'1',
+        radio3:'1',
+        radio4:'1',
+        tabs: ["酒店", "其他"],
+        tabContents: ["酒店一", "酒店二"],
+        tabs1:["景点","购物","自费项目"],
+        tabContents1: ["城市", "名称","名称"],
+        num: 0, 
+        num1:0,
+        param:'1',
+        tabPosition: 'right',
+        comboshow:false
       }
     },
     watch:{   //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
@@ -637,6 +961,15 @@
         }
     },
     methods: {
+      close(){
+        this.comboshow=false;
+      },
+      tab(index) {
+            this.num = index;
+        },
+      tab1(index){
+        this.num1 = index;
+      },
       handleTabsEdit(targetName, action) {
         if (action === 'add') {
           let newTabName = ++this.tabIndex + '';
@@ -647,23 +980,12 @@
           });
           this.editableTabsValue = newTabName;
         }
-        if (action === 'remove') {
-          let tabs = this.editableTabs;
-          let activeName = this.editableTabsValue;
-          if (activeName === targetName) {
-            tabs.forEach((tab, index) => {
-              if (tab.name === targetName) {
-                let nextTab = tabs[index + 1] || tabs[index - 1];
-                if (nextTab) {
-                  activeName = nextTab.name;
-                }
-              }
-            });
-          }
-          
-          this.editableTabsValue = activeName;
-          this.editableTabs = tabs.filter(tab => tab.name !== targetName);
-        }
+        this.comboshow=true;
+      },
+      confirm:function(remove){
+        console.log(this.editableTabs)
+        this.editableTabs.splice(1,1)
+        this.comboshow=false;
       },
       querySearch(queryString, cb) {
         var restaurants = this.restaurants;
@@ -703,36 +1025,69 @@
 </script>
 
 <style scoped>
-	.outline{border:1px solid #f2f2f2; overflow: hidden; margin: 0 0 100px 0;}
-
+  .outline{border:1px solid #f2f2f2; overflow: hidden; margin: 0 0 100px 0;}
   .highlightWords-input1{width: 200px;float: left;}
   .span1{float: left; margin: 0 0 0 10px;}
-
-	.package{text-align: left; line-height: 40px; margin: 20px 0 0 30px;}
-	.package_text{float: left; margin: 0 15px 0 0;}
-	.package_input{float: left; width: 200px; margin: 0 15px 0 0;}
-
+  .package{text-align: left; line-height: 40px; margin: 20px 0 0 30px;}
+  .package_text{float: left; margin: 0 15px 0 0;}
+  .package_input{float: left; width: 200px; margin: 0 15px 0 0;}
   .traffic{margin: 20px 0 0 30px; text-align: left;}
   .traffic_title{font-size: 14pt; font-weight: bold; line-height: 60px;}
   .traffic_border{ border:1px solid #f2f2f2; width: 80%; overflow: hidden; margin: 0 0 20px 0;}
   .traffic_button{float: left; margin: 10px 0 20px 30px; line-height: 40px;}
-  .plane{width: 98%; overflow: hidden;background-color: #f7f7f7; margin-left:1%; margin-bottom:20px; margin-top:20px;    }
+  .plane{width: 98%; overflow: hidden;background-color: #fafafa; margin-left:1%; margin-bottom:20px; margin-top:20px;    }
   .plane_type{ width: 80px; margin: 20px 0 0 20px;}
   .plane_text{ margin: 0 0 0 15px; }
-  .aviation{padding: 20px 0 0 0; clear: both; width: 100%;}
+  .aviation{padding: 20px 0 0 0; clear: both; width: 100%; overflow: hidden;}
   .aviation_first{margin: 0 20px 0 0; float: left;}
   .aviation_text{width: 85px; text-align: right; margin: 0 15px 0 0; float: left; line-height: 40px;}
   .aviation_input{ width: 200px; float: left; }
   .day{ width: 85px; float: left; margin:0 0 0 25px;  }
   .stop{clear: both; padding: 20px 0 20px 20px;}
   .stop_button{border:1px solid #ff4b3a;}
-
   .hotel_button{ line-height: 40px; margin: 10px 0 20px 15px; }
   .inline-input{float: left;width: 200px !important;}
   .upload-demo{position: absolute; top: 0; left:200px; height: 40px;}
+
   .textarea{float: left;  width:60%;}
 
   .date{margin: 10px 0 0 30px; line-height: 40px;}
   .radio_input{float: left; margin: 10px 0 0 0;}
 
+  .food_text{width: 85px; text-align: right; margin: 0 15px 0 0; line-height: 40px;}
+  .food_radio{ margin: 0 0 0 100px; }
+  .repast{float: left; width: 60px;}
+  .state{margin: 0 0 0 60px;}
+  .text_input{padding: 0 0 20px 0; overflow: hidden; width: 100%;}
+  
+  .type_radio{float: left;}
+  ul{padding: 0px;margin: 10px 0 0 0; margin: 0 0 0 0;}
+  ul li{float:left;list-style-type: none; margin: 0 10px 0 0; text-align: left;}
+  .tabCon{clear:both; padding: 20px 0 0 0;}
+  .active{color:#ff5a3a}
+
+  .schedule_border{border:1px solid #f2f2f2; width: 85%; overflow: hidden; margin: 0 0 20px 0;}
+  .schedule{ overflow: hidden;background-color: #f9f9f9; margin-left:0; margin-bottom:20px; margin-top:0px;}
+  .schedule_tab{margin: 20px 0 0 15px;}
+  .schedule_first{ margin: 0 0 0 0; float: left; }
+
+  .city{margin: 0 0 0 0; overflow: hidden;}
+  .city_input{float: left;}
+  .minutes{float: left; line-height: 40px; margin: 0 0 0 15px;}
+  .textarea1{float: left; width: 80%;}
+  .dashed{border-bottom: 1px dashed #e5e5e5; overflow:hidden; height: 1px; width: 90%; margin-right: auto; margin-left: auto; margin-bottom:20px;}
+
+
+  .add{width: 450px; height: 250px;margin: auto;position: fixed; top:50%; left:50%; margin-top:-125px; margin-left:-225px; background: #fff; overflow: hidden; border:1px solid #eeeeee; border-radius: 3px; z-index: 1000;}
+  .label{ background: #f6f6f6; border-bottom: 1px solid #eee;height: 57px; line-height: 40px; width: 450px;}
+  .left{ float: left; margin: 10px 0 0 20px; }
+  .right{float: right; margin: 0 20px 0 0;font-size: 16pt;cursor:pointer; line-height: 57px; }
+  .content{ width: 310px; overflow: hidden;margin-left:auto;margin-right:auto;}
+  .text{float: left; line-height: 40px;margin: 50px 0 0 0;}
+  .input{float: left; width: 180px; margin: 0 0 0 15px;}
+  .judge{padding: 30px 0 0 0; clear: both;}
+
+  .popup{}
+  .mask{background-color: #000; width: 100%; height: 100%; position: absolute; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5; z-index: 100;}
+      
 </style>

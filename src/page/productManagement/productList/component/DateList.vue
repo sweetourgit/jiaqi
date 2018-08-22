@@ -33,20 +33,26 @@
     <!-- 日期 -->
     <ul class="days">
         <!-- v-for循环 每一次循环用<li>标签创建一天 -->
-        <li  :class="{'checked': n.includes(dayobject)}" @click="handleitemclick(dayobject)" :key="index" v-for="(dayobject,index) in days" style="height: 130px">
+        <li  :class="{'checked': n.includes(dayobject)}" @click="handleitemclick(dayobject)" :key="index" v-for="(dayobject,index) in days" >
             <!--本月-->
             <!--如果不是本月  改变类名加灰色-->
 
             <span v-if="dayobject.day.getMonth()+1 != currentMonth" class="other-month">{{ dayobject.day.getDate() }}</span>
 
             <!--如果是本月  还需要判断是不是这一天-->
-            <span v-else>
+            <div v-else>
           <!--今天  同年同月同日-->
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
-            </span>
+             <div class='person' v-show="dayobject.data.person.price">
+                  <p class='old'>成人</p>
+                  <p>结算价：{{dayobject.data.person.price}}</p>
+                  <p>售出/余位：0/{{dayobject.data.person.number}}</p>
+                  <p>上下限:{{dayobject.data.person.top}}/{{dayobject.data.person.down}}</p>
+                </div>
+             
+            </div>
             <!--显示剩余多少数量-->
-            <p></p>
             <!---->
         </li>
     </ul>
@@ -60,26 +66,26 @@
   <div>
     <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="结算价">
-        <el-input v-model.number="form.price"></el-input>
+        <el-input :maxlength='6' type='tel' v-model="form.price"></el-input>
       </el-form-item>
       <el-form-item label="剩余量">
-        <el-input v-model="form.number"></el-input>
+        <el-input :maxlength='6' v-model="form.number"></el-input>
       </el-form-item>
        <el-form-item label="购买下限">
-        <el-input v-model="form.down"></el-input>
+        <el-input :maxlength='6' v-model="form.down"></el-input>
       </el-form-item>
        <el-form-item label="购买上限">
-        <el-input v-model="form.top"></el-input>
+        <el-input :maxlength='6' v-model="form.top"></el-input>
       </el-form-item>
     </el-form>
   </div>
 </el-card>
-  <el-card class="box-card2" v-show="n.length">
+  <!-- <el-card class="box-card2" v-show="n.length">
   <div style="text-align: left;" slot="header" class="clearfix">
     单价房
     
     <el-button style="float:right" type="danger" size="mini">删除</el-button>
-    <el-button style="float:right;margin-right:5px" type="primary" size="mini">保存</el-button>
+    <el-button @click="handleChildrenSave" style="float:right;margin-right:5px" type="primary" size="mini">保存</el-button>
   </div>
   <div>
     <el-form ref="form" :model="form2" label-width="80px">
@@ -92,30 +98,32 @@
       
     </el-form>
   </div>
-</el-card>
+</el-card> -->
 </div>
 </template>
 
 <script>
 export default {
-  name: "HelloWorld",
-  computed:{
-    isShow(){
-      return false
-    }
+  name:'DateList',
+  created() {},
+  mounted() {
+    console.log("渲染");
   },
+  updated() {},
+  name: "HelloWorld",
   data() {
     return {
-      showCard:false,
-      form:{
-        price:'',
-        number:'',
-        top:'',
-        down:''
+      today: new Date(),
+      showCard: false,
+      form: {
+        price: "",
+        number: "",
+        top: "",
+        down: ""
       },
-      form2:{
-        price:'',
-        number:'',
+      form2: {
+        price: "",
+        number: ""
       },
       monday: false,
       tue: false,
@@ -157,6 +165,7 @@ export default {
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
         console.log(del);
+        alert(1);
       }
       let ischecked = this.days
         .filter(item => item.day.getDay() === 1)
@@ -277,10 +286,25 @@ export default {
     this.initData(null);
   },
   methods: {
-    handlesaveclick(){
-      if(this.n.includes(this.days)){
-        
-      }
+    handleChildrenSave() {
+      this.n.forEach(item => {
+      item.data.person = {
+          price: this.form2.price,
+          number: this.form2.number,
+        };
+      });
+       this.clearchecked();
+    },
+    handlesaveclick() {
+      this.n.forEach(item => {
+        item.data.person = {
+          price: this.form.price,
+          number: this.form.number,
+          top: this.form.top,
+          down: this.form.down
+        };
+      });
+      this.clearchecked();
     },
     handleTwoClick() {
       const now = new Date().getTime();
@@ -342,6 +366,27 @@ export default {
       this.sat = false;
     },
     handleitemclick(day) {
+      console.log(day);
+      if (day.day.getMonth() + 1 === this.currentMonth) {
+        if (day.day.getTime() < this.today.getTime() - 24 * 60 * 60 * 1000) {
+          this.$message({
+          message: '请选择今日以后的时期',
+          type: 'warning'
+        });
+        } else {
+          if (this.n.includes(day)) {
+            this.n = this.n.filter(v => v != day);
+          } else {
+            this.n.push(day);
+          }
+        }
+      } else {
+          this.$message({
+          message: '选择本月吧',
+          type: 'warning'
+        });
+      }
+
       // 当前index是否已经在n中存在了
       // 判断当前的index是否在n中存在，如果存在则删除，不存在则添加
 
@@ -356,27 +401,25 @@ export default {
       //     this.n.push(index);
       //   }
       // }
-      console.log(day);
-      const now = new Date().getTime();
-      const mon = new Date().getMonth();
-      if (day.day.getMonth() == this.currentMonth) {
-        return
-      } else {
-        if (day.day.getTime() < now) {
-        this.$message({
-          message: '请选择今天以后的时期',
-          type: 'warning'
-        });
-        } else {
-          if (this.n.includes(day)) {
-            // 删除
-            this.n = this.n.filter(v => v != day);
-          } else {
-            // 添加
-            this.n.push(day);
-          }
-        }
-      }
+      // console.log(day);
+      // const now = new Date().getTime();
+      // const mon = new Date().getMonth();
+      // if (day.day.getMonth() == this.currentMonth) {
+      //   alert("请选择本月");
+      // } else {
+      //   if (day.day.getTime() + 24000000 < now) {
+      //     alert("不能选择比今天早的");
+      //   } else {
+      //     if (this.n.includes(day)) {
+      //       // 删除
+      //       this.n = this.n.filter(v => v != day);
+      //     } else {
+      //       // 添加
+      //       this.n.push(day);
+      //     }
+      //   }
+      // }
+      // if(this.n.includes)
     },
     handledaysclcikc(days, index) {
       console.log(days, index);
@@ -447,18 +490,28 @@ export default {
           dayobject.index = index++;
         } else if (index != 0 && index < 3) dayobject.index = index++;
         this.days.push(dayobject);
+        this.days.map(item => (item.data = { person: {}, children: {} }));
       }
     },
     pickPre: function(year, month) {
       // setDate(0); 上月最后一天
       // setDate(-1); 上月倒数第二天
       // setDate(dx) 参数dx为 上月最后一天的前后dx天
-
+      if (
+        this.today.getMonth() + 1 < this.currentMonth ||
+        this.today.getFullYear() < this.currentYear
+      ) {
         var d = new Date(this.formatDate(year, month, 1));
         d.setDate(0);
         this.initData(this.formatDate(d.getFullYear(), d.getMonth() + 1, 1));
         this.n = [];
-
+      } else {
+        // alert("不能选择以前的");
+        this.$message({
+          message: '不能选择以前的',
+          type: 'warning'
+        });
+      }
     },
     pickNext: function(year, month) {
       var d = new Date(this.formatDate(year, month, 1));
@@ -484,6 +537,30 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.person {
+  margin-top: 10px;
+  /* background: #f6f6f6;  */
+}
+.person p {
+  color: #2c3e50;
+  font-size: 12px;
+  line-height: 20px;
+}
+.person .old {
+  border-bottom: 1px solid #e6e6e6;
+  color: #3096fb;
+  height: 24px;
+}
+.days li {
+  height: 200px;
+  text-align: left !important;
+  padding: 5px;
+  color: #666666;
+  cursor: pointer;
+}
+p {
+  margin: 0;
+}
 .checked {
   border: 1px solid red !important;
   box-sizing: border-box;
@@ -525,7 +602,7 @@ body {
   position: absolute;
   right: -340px;
   width: 339px;
-  bottom: 0;
+  top: 400px;
 }
 .month {
   width: 100%;
@@ -547,11 +624,11 @@ body {
   justify-content: space-around;
   width: 135px;
   border: solid 1px #e6e6e6;
-  margin-left:5px;
+  margin-left: 5px;
   margin-right: 5px;
 }
-.all-month span{
-  border: solid 1px #e6e6e6
+.all-month span {
+  border: solid 1px #e6e6e6;
 }
 .weekdays li .checkbox {
   margin-right: 10px;
