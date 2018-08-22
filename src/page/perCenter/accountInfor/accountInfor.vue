@@ -177,7 +177,7 @@ export default {
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate(valid => {
-          if (valid) {  
+          if (valid) {
             if(formName == 'form'){
               this.$http.post(this.GLOBAL.serverSrc + "/api/org/usersave",{
                  "Object": {
@@ -204,24 +204,24 @@ export default {
                 console.log(err)
               })
             }else if(formName == 'phone1'){
-              this.$message.success('修改成功！') 
-              this.dialogFormVisible = false   
+              this.$message.success('修改成功！')
+              this.dialogFormVisible = false
               this.show = true
               this.$refs['phone1'].resetFields()
             }else if(formName == 'emial1'){
-              this.$message.success('修改成功！') 
+              this.$message.success('修改成功！')
               this.dialogEmial = false
               this.show1 = true
               this.$refs['emial1'].resetFields()
             }
-          } else {  
-            this.$message.error('验证失败！')  
-          }  
+          } else {
+            this.$message.error('验证失败！')
+          }
         })
       },
       verification() {
         if(this.phone1.usedphone === ''){
-          this.$message.error('手机号为空！') 
+          this.$message.error('手机号为空！')
         }else{
           var str = this.phone1.usedphone
           var patt = /^[1][3,4,5,7,8][0-9]{9}$/
@@ -241,13 +241,13 @@ export default {
                }, 1000)
             }
           } else {
-            this.$message.error('请填写正确的手机号！') 
+            this.$message.error('请填写正确的手机号！')
           }
         }
       },
       verification1() {
          if(this.emial1.usedemial === ''){
-          this.$message.error('邮箱为空！') 
+          this.$message.error('邮箱为空！')
         } else {
           var str = this.emial1.usedemial
           var patt = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/
@@ -267,7 +267,7 @@ export default {
                }, 1000)
             }
           } else {
-            this.$message.error('请填写正确的邮箱！') 
+            this.$message.error('请填写正确的邮箱！')
           }
         }
       },
@@ -320,7 +320,7 @@ export default {
 .input-phone{
   float: left;
   width: 210px;
-}  
+}
 .preservation{
   width: 140px;
   margin-top: 40px;
