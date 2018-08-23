@@ -3,11 +3,11 @@
   <el-row class="tac">
   <el-col :span="12" class="col">
     <el-menu
-      default-active="2"
+      :default-active="this.$route.name"
       class="el-menu-vertical-demo"
       background-color="#0F2350"
-      text-color="#fff"
-      active-text-color="#3095FA"
+      text-color="#B9B9BB"
+      active-text-color="#fff"
       :router='isRouter'
       @open='handleOpen'
       ref='menu'
@@ -17,14 +17,8 @@
           <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"></i><img :src="('../static/navLeft/'+item.img)" width="15px" alt="">
           <span class="actionName">{{item.name}}</span>
         </template>
-        <template v-for="(data,index1) in item.items" v-if="data.title">
-          <el-submenu :index="(index+ '-' +index1)" :key="index1">
-            <template slot="title">{{data.title}}</template>
-            <el-menu-item class="suboptions" :index="(index+ '-' +index1+ '-' +index2)" :route="{path:list.router}" v-for="(list,index2) in data.lists" :key="index2">{{list.value}}</el-menu-item>
-          </el-submenu>
-        </template>
-        <template v-else-if="data.title == ''">
-            <el-menu-item class="suboptions" :index="(index+ '-' +index1)" :route="{path:data.router}"  :key="index1">{{data.value}}</el-menu-item>
+        <template v-for="(data,index1) in item.items">
+          <el-menu-item class="suboptions" :index="data.value" :route="{path:data.router}"  :key="index1">{{data.value}}</el-menu-item>
         </template>
       </el-submenu>
     </el-menu>
@@ -39,101 +33,84 @@
     return {
         category: [
             {
-                name: '账户管理',
-                img: '账户管理.png',
-                items: [
-                    {
-                    title:'用户管理',
-                    lists:[{
-                        value: '用户列表',
-                        router:'/userList'
-                    }
-                    ]},
+              name: '账户管理',
+              img: '账户管理.png',
+              items: [
                 {
-                title:'组织管理',
-                lists:[{
-                        value: '组织列表',
-                        router:'/organList'
-                    },
-                    {
-                        value: '职位列表',
-                        router:'/positionList'
-                    }
-                    ]},
+                  value: '用户列表',
+                  router:'/userList'
+                },
                 {
-                title:'权限管理',
-                lists:[{
-                        value: '角色模板',
-                        router:'/role'
-                    },
-                    {
-                        value: '权限列表',
-                        router:'/perList'
-                    }]
-                    }
-                ]
+                  value: '组织列表',
+                  router:'/organList'
+                },
+                {
+                  value: '职位列表',
+                  router:'/positionList'
+                },
+                {
+                  value: '角色模板',
+                  router:'/role'
+                },
+                {
+                  value: '权限列表',
+                  router:'/perList'
+                }
+              ]
             },
             {
-                name: '个人中心',
-                img: '个人中心.png',
-                items: [
-                    {
-                    title:'账户设置',
-                    lists:[{
-                        value: '账户信息',
-                        router:'/accountInfor'
-                     },
-                     {
-                        value: '密码修改',
-                        router:'/pwModifi'
-                     }
-                    ]}
-                ]
+              name: '个人中心',
+              img: '个人中心.png',
+              items: [
+                {
+                  value: '账户信息',
+                  router:'/accountInfor'
+                },
+                {
+                  value: '密码修改',
+                  router:'/pwModifi'
+                }
+              ]
             },
             {
-                name: '内容管理',
-                img: '内容信息.png',
-                items: [
-                    {
-                    title:'内容信息',
-                    lists:[{
-                        value: '城市列表',
-                        router:'/cityList'
-                     },
-                     {
-                        value: '自定义地区',
-                        router:'/customArea'
-                     },
-                     {
-                        value: '景点列表',
-                        router:'/scenicList'
-                     },
-                     {
-                        value: '标签列表',
-                        router:'/labelList'
-                     },
-                     {
-                        value: '素材列表',
-                        router:'/materialList'
-                     },
-                     {
-                        value: '酒店列表',
-                        router:'/hotelList'
-                     }
-                    ]}
-                ]
+              name: '内容管理',
+              img: '内容信息.png',
+              items: [
+                {
+                  value: '城市列表',
+                  router:'/cityList'
+                },
+                {
+                  value: '自定义地区',
+                  router:'/customArea'
+                },
+                {
+                  value: '景点列表',
+                  router:'/scenicList'
+                },
+                {
+                  value: '标签列表',
+                  router:'/labelList'
+                },
+                {
+                  value: '素材列表',
+                  router:'/materialList'
+                },
+                {
+                  value: '酒店列表',
+                  router:'/hotelList'
+                } 
+              ]
             },
             {
               name: '产品管理',
               img: '产品管理.png',
               items: [
                 {
-                  title: '',
                   value: '产品列表',
                   router:'/productList'
                 },
                 {
-                  title: '',
                   value: '出行模板',
                   router:'/travelTemplate'
                 }
@@ -143,6 +120,7 @@
         isRouter:true,
         mouseActive:0,
         menuNumber:[],
+        index: ''
     }
   },
   methods: {   
@@ -172,6 +150,7 @@
   min-width: 0 !important;
   max-width: 200px;
   width: 200px;
+  background: #183984 !important
 }
 .el-menu-vertical-demo{
   height: 100%;
@@ -192,5 +171,14 @@
 .nav{height:100%;}
 .col{height:100%;}
 .actionName{margin-left: 7px;}
+.twoLevel>>>.el-submenu__title{
+  background: #183984 !important;
+}
+.suboptions:hover{
+  color: #fff !important;
+}
+.el-submenu>>>.el-submenu__title:hover{
+  color: #fff !important;
+}
 </style>
 

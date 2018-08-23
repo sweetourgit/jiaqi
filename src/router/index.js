@@ -45,7 +45,7 @@ export default new Router({
     }, {
       path: '/role',
       component: role,
-      name: '角色权限模板',
+      name: '角色模板',
       meta: {
         keepAlive: true,
         auth:true}
@@ -60,7 +60,7 @@ export default new Router({
     {
       path: '/perList',
       component: perList,
-      name: '权限管理',
+      name: '权限列表',
       meta: {
         keepAlive: true,
         auth:true}

@@ -102,8 +102,6 @@ export default {
               console.log(err);
             })
             
-          } else {
-            this.$message.error('验证失败！')
           }
         })
       },

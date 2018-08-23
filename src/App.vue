@@ -29,7 +29,7 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: '微软雅黑', Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
   margin: 0;
@@ -60,7 +60,7 @@ html{
 .el-message-box.delete_country .delete_country_determine1{margin: 20px 20px 20px 0; width: 80px;}
 .city_list .el-dialog__header{background: #F6F6F6; height: 25px;} /* 弹框样式 */
 .city_list .el-dialog__title{ float: left; }
-.el-menu-vertical-demo .el-menu-item.is-active{background: #0C1C40 !important;} /* 导航选中 */
+.el-menu-vertical-demo .el-menu-item.is-active{background: #3095FA !important;} /* 导航选中 */
 .content_pass .el-form-item__error{ position: absolute; left: 220px; top: 12px;} /* 修改密码error */
 .content_pass .el-form-item__content{ width:340px; }
 body .el-table th.gutter{ display: table-cell!important; } /* 表格头部固定 */

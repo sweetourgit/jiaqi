@@ -28,7 +28,7 @@
     </div>
     <!--left tree end-->
     <!--right img begin-->
-    <div class="img">
+    <div class="img" @click="addhotel">
       <div class="img_border" v-for="(item,index) of img" :key=""index>
         <div class="image_size">
           <img :src="item.imgUrl" class="img_item" >
@@ -50,6 +50,7 @@
     <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
+        background
         @current-change="handleCurrentChange"
         :current-page="currentPage4"
         :page-sizes="[100, 200, 300, 400]"

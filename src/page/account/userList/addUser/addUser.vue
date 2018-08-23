@@ -67,7 +67,7 @@
               <el-form-item class="button-adjust">
                 <el-button type="primary" @click="submitForm('ruleForm')" v-if="buttonsubmit">创建</el-button>
                 <el-button type="primary" @click="changeForm('ruleForm')" v-if="buttonchange">修改</el-button>
-                <el-button @click="resetForm('ruleForm')">重置</el-button>
+                <el-button @click="resetForm('ruleForm')">取消</el-button>
               </el-form-item>
                 <!--弹出框> <-->
                   <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="500px">
@@ -183,7 +183,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           callback();
       };
       var checkName = (rule, value, callback) => {
-          var myreg=  /^[\u4e00-\u9fa5]{2,6}/;
+          var myreg=  /^[\u4e00-\u9fa5]{2,6}$/;
           if(!value){
             return callback(new Error('姓名不能为空'));
           }
@@ -858,7 +858,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           });
         },
       resetForm(formName) {
-        this.$refs[formName].resetFields();
+        this.$router.push({path: "/userlist"});
       },
       removeDomain(item) {
         var index = this.ruleForm1.domains.indexOf(item)

@@ -1,13 +1,13 @@
 <template>
     <div class="warp">
       <div class="btn">
-        <el-button plain>取消</el-button>
-        <el-button type="primary">保存</el-button>
+        <el-button plain class="btn-button">取消</el-button>
+        <el-button class="btn-button" style="background:#3095fa;color:#fff">保存</el-button>
       </div>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" style="padding-left:50px">
           <el-form-item label="产品名称" prop="productName">
             <el-input maxlength=30 v-model="ruleForm.productName" class="productName-input" placeholder="含.~+/_可用，（）仅能用在句尾，30个汉字以内"></el-input>
-            <span>{{ruleForm.productName.length}}/30字</span>
+            <span class="length-span">{{ruleForm.productName.length}}/30字</span>
           </el-form-item>
           <el-form-item label="出游类型" prop="travelType">
             <el-radio-group v-model="ruleForm.travelType" class="travelType-radio">
@@ -19,7 +19,7 @@
               <el-autocomplete class="inputBox" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="ruleForm.placeDeparture" :trigger-on-focus="false">
               </el-autocomplete>
           </el-form-item>
-          <el-form-item label="出发地" prop="destination">
+          <el-form-item label="目的地" prop="destination">
               <el-autocomplete class="inputBox" clearable placeholder="输入目的地名称" :fetch-suggestions="querySearch1" v-model="ruleForm.destination" :trigger-on-focus="false"></el-autocomplete>
           </el-form-item>
           <div style="overflow:hidden">
@@ -41,15 +41,15 @@
             <el-input maxlength=8 v-model="ruleForm.highlightWords1" class="highlightWords-input1" placeholder="8个字以内"></el-input>
             <span class="span1">{{ruleForm.highlightWords1.length}}/8字</span>
           </el-form-item>
-          <el-form-item prop="highlightWords2">
+          <el-form-item prop="highlightWords2" style="width:378px;">
             <el-input maxlength=8 v-model="ruleForm.highlightWords2" class="highlightWords-input2" placeholder="8个字以内"></el-input><br>
             <span class="span">{{ruleForm.highlightWords2.length}}/8字</span>
           </el-form-item>
-          <el-form-item prop="highlightWords3">
+          <el-form-item prop="highlightWords3" style="width:378px;">
             <el-input maxlength=8 v-model="ruleForm.highlightWords3" class="highlightWords-input2" placeholder="8个字以内"></el-input><br>
             <span class="span">{{ruleForm.highlightWords3.length}}/8字</span>
           </el-form-item>
-          <el-form-item prop="highlightWords4">
+          <el-form-item prop="highlightWords4" style="width:378px;">
             <el-input maxlength=8 v-model="ruleForm.highlightWords4" class="highlightWords-input2" placeholder="8个字以内"></el-input><br>
             <span class="span">{{ruleForm.highlightWords4.length}}/8字</span>
           </el-form-item>
@@ -66,7 +66,7 @@
               <el-input
                 class="input-new-tag"
                 v-if="inputVisible2"
-                v-model="inputValue2"
+                v-model="inputVal"
                 ref="saveTagInput"
                 size="small"
                 @keyup.enter.native="handleInputConfirm2"
@@ -88,7 +88,7 @@
             :limit='1' accept=".jpg,.png,.gif"
             :on-remove="handleRemove">
             <el-button type="info">
-              <div v-show="isShowImg" style="height:215px;width:330px;position:absolute;z-index:99;top:50px;left:30px;border:10px solid #D7D7D7;background:#fdfdfd;">
+              <div v-show="isShowImg" style="height:215px;width:330px;position:absolute;z-index:9999;top:50px;left:30px;border:10px solid #D7D7D7;background:#fdfdfd;">
                 <img style="display:block;width:100%;height:100%;" :src="this.imgUrl" alt="">
               </div>
               上传</el-button>
@@ -103,7 +103,8 @@
               action="https://jsonplaceholder.typicode.com/posts/"
               list-type="picture"
               :limit='1'
-              :on-remove="handleRemoves"
+              :on-remove="handleRemoves1"
+              :before-upload="beforeUploadVideo"
               :on-progress="uploadVideoProcess">
               <el-button type="info">上传</el-button>
             </el-upload>
@@ -113,13 +114,18 @@
             <el-input v-model="ruleForm.slideshow" disabled style="width:540px;float:left;margin-left:10px;position:relative" placeholder="3-6个轮播图">
             </el-input>
             <el-upload
+            :on-preview="slideshowClick"
             class="upload-demo uploadimage"
             action="https://jsonplaceholder.typicode.com/posts/"
             list-type="picture"
             :limit='6' accept=".jpg,.png,.gif"
-            :on-remove="handleRemove1"
+            :on-remove="handleRemove2"
             :multiple="true">
-            <el-button type="info">上传</el-button>
+            <el-button type="info">
+              <div v-show="isSlideshow" style="height:215px;width:330px;position:absolute;z-index:99;top:50px;left:30px;border:10px solid #D7D7D7;background:#fdfdfd;">
+                <img style="display:block;width:100%;height:100%;" :src="this.slideshowUrl" alt="">
+              </div>
+              上传</el-button>
             </el-upload>
           </el-form-item>
 
@@ -158,6 +164,8 @@ export default {
     return{
       isShowImg:false,
       imgUrl:'',
+      isSlideshow:false,
+      slideshowUrl:'',
       tableData: [{
           id: '001',
           country: '英国',
@@ -208,11 +216,12 @@ export default {
         highlightWords3: '',
         highlightWords4: '',
         avatarImages: '',
+        operationLabel: '',
         },
       //运营标签
       dynamicTags2: [],
         inputVisible2: false,
-        inputValue2: '',
+        inputVal: '',
       rules:{
         productName: [
           { required: true, message: '不能为空', trigger: 'blur' },
@@ -258,6 +267,9 @@ export default {
           { required: true, message: '不能为空', trigger: 'blur' },
           { pattern: /^[+]{0,1}(\d+)$/,message: '请输入正整数'}
         ],
+        operationLabel:[
+           { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/, message: '不能有标点符号'}
+        ],
       }
     };
   },
@@ -286,35 +298,27 @@ export default {
       handleRemove(file, fileList) {
          this.isShowImg = false;
       },
+      //轮播图预览
+      slideshowClick(file){
+        this.isSlideshow = true;
+        if(this.slideshowUrl == file.url){
+        this.isSlideshow = false;
+        this.slideshowUrl = ''
+        } else {
+        this.slideshowUrl = file.url
+        }
+      },
+      handleRemove2(file, fileList){
+        this.isSlideshow = false;
+      },
       //视频删除
       handleRemoves(file, fileList) {
         console.log(file);
       },
       //轮播图删除
-      handleRemove1(file, fileList) {
+      handleRemoves1(file, fileList) {
         console.log(file);
       },
-      //目的地标签
-      handleClose1(tag1) {
-        this.dynamicTags1.splice(this.dynamicTags1.indexOf(tag1), 1);
-      },
-
-      showInput1() {
-        this.inputVisible1 = true;
-        this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
-        });
-      },
-
-      handleInputConfirm1() {
-        let inputValue1 = this.inputValue1;
-        if (inputValue1) {
-          this.dynamicTags1.push(inputValue1);
-        }
-        this.inputVisible1 = false;
-        this.inputValue1 = '';
-      },
-
       //运营标签
       handleClose2(tag2) {
         this.dynamicTags2.splice(this.dynamicTags2.indexOf(tag2), 1);
@@ -328,12 +332,12 @@ export default {
       },
 
       handleInputConfirm2() {
-        let inputValue2 = this.inputValue2;
-        if (inputValue2) {
-          this.dynamicTags2.push(inputValue2);
+        let inputVal = this.inputVal;
+        if (inputVal) {
+          this.dynamicTags2.push(inputVal);
         }
         this.inputVisible2 = false;
-        this.inputValue2 = '';
+        this.inputVal= '';
       },
        // 搜索方法(出发地)
       querySearch(queryString, cb) {
@@ -377,7 +381,7 @@ export default {
   position: absolute;
 }
 .productName-input {
-  width: 94%;
+  width: 548px;
   float: left;
   margin-left: 10px;
 }
@@ -392,10 +396,10 @@ export default {
   margin-left: 10px;
 }
 .destination-input {
-  width: 94%;
-  height: 38px;
+  width: 548px;
   float: left;
   margin-left: 10px;
+  padding-bottom:2.5px
   border: 1px solid #dcdfe6;
   border-radius: 4px;
 }
@@ -409,18 +413,21 @@ export default {
   padding-bottom: 0;
 }
 .input-new-tag {
+  width:116px;
   float: left;
-  margin-top: -1px;
-  width: 90px;
   margin-left: 5px;
-  vertical-align: bottom;
+  margin-top: 3px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .el-tag {
   float: left;
   margin-top: 3px;
   margin-left: 5px;
-  background-color: #c2c2c2;
-  color: #333333;
+  background-color: #3593EE;
+  color: #fff;
 }
 .travelDays-input {
   width: 150px;
@@ -437,12 +444,12 @@ export default {
   margin-top: 13px;
 }
 .highlightWords-input1 {
-  width: 94%;
+  width: 200px;
   float: left;
   margin-left: 10px;
 }
 .highlightWords-input2 {
-  width: 94%;
+  width: 200px;
   float: left;
   margin-left: 30px;
 }
@@ -472,7 +479,7 @@ export default {
   width:120px !important;
 }
 .inputBox{
-  width:94%;
+  width:548px;
   float left;
   margin-left:10px;
 }
@@ -481,8 +488,8 @@ export default {
   color red;
 }
 .span1{
-  float:right;
-  margin-right:5px;
+  float:left;
+  margin-left:10px;
 }
 .travelNight-input{
   float:left;
@@ -521,7 +528,6 @@ export default {
 .upload-demo{
 float:left;
 }
-
 .upload-demo>>>.el-upload-list{
 position:absolute;
 top: -5px;
@@ -536,5 +542,16 @@ background-size: 44%;
 background-repeat: no-repeat;
 background-position: 2px;
 background-image url('../../../assets/image/pic.png')
+}
+.length-span{
+  float:left;
+  margin-left:10px;
+}
+.btn-button{
+  width:64px;
+  height:40px;
+}
+.productName-input>>>.el-input__inner{
+  height:30px;
 }
 </style>

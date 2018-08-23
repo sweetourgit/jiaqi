@@ -57,7 +57,7 @@
               @current-change="handleCurrentChange"
               :current-page="currentPage4" -->
             <el-pagination
-
+              background
               :page-sizes="[100, 200, 300, 400]"
               :page-size="100"
               layout="total, sizes, prev, pager, next, jumper"
@@ -69,7 +69,7 @@
 
       <!-- 添加分类弹框 -->
       <el-dialog title="添加分类" custom-class="city_list" :visible.sync="addClassification" class="Popup" width>
-        <el-form style="padding-left:79px" :model="form" :rules="rules">
+        <el-form style="padding-left:79px" :model="form" :rules="rules" ref="form">
           <el-form-item label="分类名称：" prop="classificationName" :label-width="formLabelWidth" class="boom">
             <el-input v-model="form.classificationName" auto-complete="off"></el-input>
           </el-form-item>
@@ -79,12 +79,12 @@
         </el-form>
         <div slot="footer" class="classification-footer">
           <el-button class="oppp" @click="addClassification = false">取 消</el-button>
-          <el-button class="oppp" type="primary" @click="addClassification = false">确 定</el-button>
+          <el-button class="oppp" type="primary" @click="addsave('form')">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 编辑分类弹框 -->
       <el-dialog title="编辑分类" custom-class="city_list" :visible.sync="editClassification" class="Popup">
-        <el-form style="padding-left:79px" :model="editForm" :rules="rules">
+        <el-form style="padding-left:79px" :model="editForm" :rules="rules" ref="editForm">
           <el-form-item label="分类名称：" prop="classificationName" :label-width="formLabelWidth" class="boom">
             <el-input v-model="editForm.classificationName" auto-complete="off"></el-input>
           </el-form-item>
@@ -94,12 +94,12 @@
         </el-form>
         <div slot="footer" class="classification-footer">
           <el-button class="oppp" @click="editClassification = false">取 消</el-button>
-          <el-button class="oppp" type="primary" @click="editClassification = false">确 定</el-button>
+          <el-button class="oppp" type="primary" @click="editsave('editForm')">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 添加分组弹框 -->
       <el-dialog title="添加分组" custom-class="city_list" :visible.sync="addGrouping" class="Popup" width="580px">
-        <el-form style="padding-left:79px" :model="addGroup" :rules="rules">
+        <el-form style="padding-left:79px" :model="addGroup" :rules="rules" ref="addGroup">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
             <span class="zoon">国内</span>
           </el-form-item>
@@ -115,12 +115,12 @@
         </el-form>
         <div slot="footer" class="classification-footer">
           <el-button class="oppp" @click="addGrouping = false">取 消</el-button>
-          <el-button class="oppp" type="primary" @click="addGrouping = false">确 定</el-button>
+          <el-button class="oppp" type="primary" @click="addGroupingSave('addGroup')">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 分组编辑弹框 -->
       <el-dialog title="编辑分组" custom-class="city_list" :visible.sync="editGrouping" class="Popup" width="580px">
-        <el-form style="padding-left:79px" :model="editGroup" :rules="rules">
+        <el-form style="padding-left:79px" :model="editGroup" :rules="rules" ref="editGroup">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
             <span class="zoon">国内</span>
           </el-form-item>
@@ -136,12 +136,12 @@
         </el-form>
         <div slot="footer" class="classification-footer">
           <el-button class="oppp" @click="editGrouping = false">取 消</el-button>
-          <el-button class="oppp" type="primary" @click="editGrouping = false">确 定</el-button>
+          <el-button class="oppp" type="primary" @click="editGroupingSave('editGroup')">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 城市编辑 -->
       <el-dialog title="编辑城市" custom-class="city_list" :visible.sync="editCity" class="Popup">
-        <el-form style="padding-left:79px" :model="editCitys" :rules="rules">
+        <el-form style="padding-left:79px" :model="editCitys" :rules="rules" ref="editCitys">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
             <span class="zoonA">国内</span>
           </el-form-item>
@@ -157,12 +157,12 @@
         </el-form>
         <div slot="footer" class="classification-footer">
           <el-button class="oppp" @click="editCity = false">取 消</el-button>
-          <el-button class="oppp" type="primary" @click="editCity = false">确 定</el-button>
+          <el-button class="oppp" type="primary" @click="editCitySave('editCitys')">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 添加城市 -->
       <el-dialog title="添加城市" custom-class="city_list" :visible.sync="addCity" class="Popup">
-        <el-form style="padding-left:79px" :model="addCitys" :rules="rules">
+        <el-form style="padding-left:79px" :model="addCitys" :rules="rules" ref="addCitys">
           <el-form-item label="分类：" :label-width="formLabelWidth" class="boom">
             <span class="zoonA">国内</span>
           </el-form-item>
@@ -173,12 +173,12 @@
             <el-cascader placeholder="请选择" :options="options" filterable change-on-select class="cascader" v-model="addCitys.cityName"></el-cascader>
           </el-form-item>
           <el-form-item label="排序：" :label-width="formLabelWidth" class="boom" prop="cityRank">
-            <el-input v-model="editCitys.cityRank" auto-complete="off"></el-input>
+            <el-input v-model="addCitys.cityRank" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
           <el-button class="oppp" @click="addCity = false">取 消</el-button>
-          <el-button class="oppp" type="primary" @click="addCity = false">确 定</el-button>
+          <el-button class="oppp" type="primary" @click="addCitySave('addCitys')">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -372,6 +372,72 @@ export default {
     };
   },
   methods: {
+    //添加分类
+    addsave(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.$message.success("添加成功");
+          this.addClassification= false;
+        } else {
+          return false;
+        }
+      });
+    },
+    //编辑分类
+    editsave(editForm){
+      this.$refs[editForm].validate((valid) => {
+        if (valid) {
+          this.$message.success("修改成功");
+          this.editClassification= false;
+        } else {
+          return false;
+        }
+      });
+    },
+    //添加分组
+    addGroupingSave(addGroup){
+      this.$refs[addGroup].validate((valid) => {
+        if (valid) {
+          this.$message.success("添加成功");
+          this.addGrouping= false;
+        } else {
+          return false;
+        }
+      });
+    },
+    //编辑分组
+    editGroupingSave(editGroup){
+      this.$refs[editGroup].validate((valid) => {
+        if (valid) {
+          this.$message.success("修改成功");
+          this.editGrouping= false;
+        } else {
+          return false;
+        }
+      });
+    },
+    //添加城市
+    addCitySave(addCitys){
+       this.$refs[addCitys].validate((valid) => {
+        if (valid) {
+          this.$message.success("添加成功");
+          this.addCity= false;
+        } else {
+          return false;
+        }
+      });
+    },
+    //编辑城市
+    editCitySave(editCitys){
+      this.$refs[editCitys].validate((valid) => {
+        if (valid) {
+          this.$message.success("修改成功");
+          this.editCity= false;
+        } else {
+          return false;
+        }
+      });
+    },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 0 || columnIndex === 1) {
         if (rowIndex === 0) {
@@ -420,7 +486,7 @@ export default {
       }
     },
     removeClassification() {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+      this.$confirm("是否删除该分类？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -439,7 +505,7 @@ export default {
         });
     },
     removeGrouping() {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+      this.$confirm("是否删除该分组?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -458,7 +524,7 @@ export default {
         });
     },
     removeCity() {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+      this.$confirm("是否删除该城市?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -475,7 +541,7 @@ export default {
             message: "已取消删除"
           });
         });
-    }
+    },
   }
 };
 </script>

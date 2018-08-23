@@ -33,7 +33,7 @@
             <el-button type="danger" class="batchDelete" disabled v-if="kk[0] == undefined">批量移除</el-button>
             <el-button type="danger" class="batchDelete" @click="open2" v-if="kk[0] !== undefined">批量移除</el-button>
           </div>
-          <el-table :data="tableList" border class="tableList" @select="del" @select-all="del" max-height="180" :header-cell-style="getRowClass">
+          <el-table :data="tableList" border class="tableList" @select="del" @select-all="del" max-height="219" :header-cell-style="getRowClass">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
             <el-table-column prop="name" label="姓名" align="center"></el-table-column>
             <el-table-column prop="position" label="职位" align="center"></el-table-column>
@@ -158,8 +158,8 @@
                 </el-form-item>
                 <el-form-item label="末级部门" prop="lastStage" class="add_radio">
                     <el-radio-group class="virtualDepartment" v-model="addInput.lastStage">
-                    <el-radio label="1" value="1">是</el-radio>
-                    <el-radio label="2" value="2">否</el-radio>
+                      <el-radio label="1" value="1">是</el-radio>
+                      <el-radio label="2" value="2">否</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="部门编码" :label-width="Width" prop="departmentCode" class="add_title">
@@ -205,7 +205,7 @@
                 <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
             </el-table>
             <div class="black">
-              <el-pagination :page-sizes="[6,8,10]" background @size-change="pagesizes" :page-size="pagesize" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+              <el-pagination :page-sizes="[2,4,6,8,10]" background @size-change="pagesizes" :page-size="pagesize" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
               </el-pagination>
             </div>
             <div slot="footer" class="btn">
@@ -315,12 +315,25 @@ export default {
           phone: "13022222222",
           sex: "女"
         },
-
+        {
+          id: "003",
+          name: "蛋糕",
+          position: "董事长",
+          phone: "13033333333",
+          sex: "男"
+        },
+        {
+          id: "004",
+          name: "糕点",
+          position: "总监",
+          phone: "13044444444",
+          sex: "男"
+        },
       ],
 
       members1: [],
       //每页的数据条数
-      pagesize: 8,
+      pagesize: 10,
       //默认开始页面
       currentPage: 1,
       total: 1,
@@ -491,7 +504,7 @@ export default {
     },
     remove(index, rows) {
       let _this = this;
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("是否删除该部门?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -532,7 +545,6 @@ export default {
           }
         })
         .then(res => {
-          // console.log(res.data.objects)
           if (res.data.objects !== "") {
             for (var i = 0; i < res.data.objects.length; i++) {
               this.remove1(res.data.objects[i].id);
@@ -722,7 +734,7 @@ export default {
     // 双击展开
     treeDblclick() {
       this.treeKey = [];
-      if (this.Parents.isLeaf == 2) {
+      if (this.Parents.isLeaf == 2 || this.Parents.isLeaf == 0) {
         this.treeKey.push(this.Parents.id);
       }
       let _this = this;
@@ -737,7 +749,6 @@ export default {
           }
         })
         .then(res => {
-          //  console.log(res)
           this.updata.orgName = res.data.object.orgName;
           this.updata.departmentCode = res.data.object.orgCode;
           this.updata.sort = res.data.object.rank;
@@ -765,7 +776,7 @@ export default {
             <span>{node.label}</span>
           </span>
         );
-      } else if (data.isLeaf == 2) {
+      } else if (data.isLeaf == 2 || data.isLeaf == 0) {
         return (
           <span>
             <img
@@ -841,7 +852,6 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
-      // this.editDepartment = false
     },
     HandChange1: function() {
       this.arr1 = this.value1.split("-");
@@ -866,7 +876,6 @@ export default {
           if (obj.data.objects.length !== 0) {
             that.bumen2 = true;
           }
-          // console.log(obj)
           var i = "";
           for (i = 0; i < obj.data.objects.length; i++) {
             that.options2.push({
@@ -1037,6 +1046,7 @@ export default {
 
 .tableList {
   width: 80%;
+  height:300px;
   margin-left:30px;
   margin-right:90px;
   margin-top:20px;
@@ -1119,16 +1129,16 @@ export default {
 }
 
 .right {
-  width: 50%;
-  height:700px;
-  margin-top: -704px;
+  width: 65%;
+  height:750px;
+  margin-top: -754px;
   margin-left: 450px;
   border: 2px solid #E6E6E6;
 }
 
 .left {
   width: 400px;
-  height:700px;
+  height:750px;
   border: 2px solid #E6E6E6;
   margin-top: 1%;
   margin-left: 1%;

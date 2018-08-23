@@ -117,43 +117,48 @@ export default {
   },
   methods: {
     // 添加职位
-    addSave() {
-      var _this = this;
-      if (this.form.positionName === "") {
-        this.$message.warning("请填写职位名称！");
-      } else {
-        var _this = this;
-        this.$http
-          .post(this.GLOBAL.serverSrc + "/api/org/positioninsert", {
-            Object: {
-              name: this.form.positionName
+    addSave(form) {
+       this.$refs[form].validate((valid) => {
+         if(valid){
+          var _this = this;
+          if (this.form.positionName === "") {
+            this.$message.warning("请填写职位名称！");
+          } else {
+            var _this = this;
+            this.$http
+              .post(this.GLOBAL.serverSrc + "/api/org/positioninsert", {
+                Object: {
+                  name: this.form.positionName
+                }
+              })
+              .then(function(response) {
+                _this.addPosition = false;
+                _this.form.positionName = "";
+                _this.$message.success("添加成功");
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
             }
-          })
-          .then(function(response) {
-            // console.log(response);
-            _this.addPosition = false;
-            _this.form.positionName = "";
-            _this.$message.success("添加成功");
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
-      }
+         }
+       })
     },
     editSave(updata) {
-      let _this = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/positionsave", {
-          object: {
-            id: this.jj.id,
-            name: this.updata.positionName,
-            createTime: "2018-06-28T08:01:41.772Z",
-            isDeleted: 0,
-            code: "string",
-            rank: 0,
-            createUser: "string"
-          },
-          id: 0
+      this.$refs[updata].validate((valid) => {
+        if(valid){
+          let _this = this;
+          this.$http
+            .post(this.GLOBAL.serverSrc + "/api/org/positionsave", {
+              object: {
+                id: this.jj.id,
+                name: this.updata.positionName,
+                createTime: "2018-06-28T08:01:41.772Z",
+                isDeleted: 0,
+                code: "string",
+                rank: 0,
+                createUser: "string"
+              },
+              id: 0
         })
         .then(function(response) {
           _this.pageList();
@@ -164,11 +169,13 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+        }
+      })
     },
     // 删除
     remove(index, rows) {
       let _this = this;
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("是否删除该职位？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -200,9 +207,6 @@ export default {
       this.editPosition = true;
       this.jj = bb;
       this.updata.positionName = bb.positionName;
-      // let oo = ((this.currentPage-1)*this.pagesize)+aa
-      // this.updata.positionName = this.tableData[oo].positionName
-      // this.jj = aa
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
@@ -221,6 +225,7 @@ export default {
           id: 0
         })
         .then(function(response) {
+          console.log(response)
           _this.total = response.data.total;
           for (let i = 0; i < response.data.objects.length; i++) {
             if (response.data.objects[i].isDeleted !== 1) {

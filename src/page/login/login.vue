@@ -32,9 +32,10 @@
 
 
         <div class="verify-box">
-          <el-form-item prop="verification" class="verification-input">
+          <el-form-item class="verification-input">
             <el-input id="er"  v-model="ruleForm.verification" placeholder="验证码" @focus="aaa()"></el-input>
             <div  class="pop" v-show="pop">验证码输入错误</div>
+            <div  class="pop" v-show="pop1">验证码为空</div>
           </el-form-item>
 
 
@@ -201,6 +202,7 @@
         emailShow:false,
         newpasswordShow:false,
         pop:false,
+        pop1: false,
         // input5: '',
         // input:'',
         select: '0',
@@ -265,11 +267,10 @@
           password: [
             { required: true, message: '请输入密码', trigger: 'blur' },
           ],
-          verification: [
-            // { required: true, message: '请输入验证码', trigger: 'blur' },
-            { validator: checkAge, trigger: 'blur' }
+          // verification: [
+          //   { validator: checkAge, trigger: 'blur' }
 
-          ],
+          // ],
 
 
 
@@ -299,7 +300,7 @@
         yz: false,
         yz1: '',
         logClick: true,
-        logClick1: false
+        logClick1: false,
       };
     },
 
@@ -390,19 +391,10 @@
 
       //登录
       loginForm(formName) {
-
-        // this.$refs[formName].validate((valid) => {
-        //   if (valid) {
-        //     this.$message.success('登录成功');
-          
-
-        //   } else {
-        //     this.$message.error('登录失败');
-          
-        //     return false;
-        //   }
-        // });
-        axios.post('http://api.dayuntong.com:6003/api/auth/token',{
+        this.$refs['ruleForm'].validate(valid => {
+          if(valid){
+            this.pop1=false
+           axios.post('http://api.dayuntong.com:6003/api/auth/token',{
           'userName': this.ruleForm.user,
           'passWord': this.ruleForm.password,
         })
@@ -423,6 +415,7 @@
                   store.save('name',res.data.name)
                   if(res.data== false ){
                     this.$message.error('用户名或密码错误');
+                    this.aaa('show');
                   }else{
                     document.getElementById("er").style ='border-color: green;'
 
@@ -439,6 +432,8 @@
                 setTimeout(() => {
                   this.pop=true;
                 },90)
+
+              this.aaa('show');
               }
             }).catch(err => {
             })
@@ -448,6 +443,30 @@
           .catch(error =>{
             this.$message.error('登录失败');
           })
+          } else {
+            if(this.ruleForm.verification == ''){
+                document.getElementById("er").style ='border-color: #f56c6c;'
+                setTimeout(() => {
+
+                  this.pop1=true;
+
+                },90)
+                this.aaa()
+            }
+            
+
+          }
+        })
+        // this.$refs[formName].validate((valid) => {
+        //   if (valid) {
+        //     this.$message.error('登录失败');
+
+        //   } else {
+        //     this.$message.success('登录成功');
+        //     return false;
+        //   }
+        // });
+        
       },
 
 
