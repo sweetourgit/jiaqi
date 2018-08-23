@@ -28,7 +28,7 @@
        <!-- 手机修改弹窗 -->
       <el-dialog title="手机号修改" :visible.sync="dialogFormVisible" custom-class="city_list" width="600px">
         <el-form :model="phone1" status-icon :rules="rules1" ref="phone1">
-          <el-form-item label="旧手机号" :label-width="formLabelWidth" prop="usedphone" v-show="show">
+          <el-form-item label="旧手机号" :label-width="formLabelWidth" prop="usedphone" v-show="show" ref="usedphone">
             <el-input class="input-popup" v-model="phone1.usedphone" auto-complete="off"></el-input>
           </el-form-item>
           <span class="prompt" v-show="!show">已向{{'&nbsp;' + phone1.usedphone + '&nbsp;'}}发送验证码</span>
@@ -39,7 +39,7 @@
             <el-input class="input-popup" v-model="phone1.newphone" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
-        <el-button class="phone-verification" type="primary" size="small" @click="verification" v-show="show">获取验证码</el-button>
+        <el-button class="phone-verification" type="primary" size="small" @click="verification('usedphone')" v-show="show">获取验证码</el-button>
         <el-button class="phone-verification-1" type="primary" size="small" plain disabled v-show="!show">{{count + 's'}}</el-button>
         <div slot="footer" class="dialog-footer">
           <el-button class="phone-Determine" @click="dialogFormVisible1('phone1')">取 消</el-button>
@@ -54,7 +54,7 @@
       <!-- 邮箱修改弹窗 -->
       <el-dialog title="邮箱修改" :visible.sync="dialogEmial" custom-class="city_list" width="600px">
         <el-form :model="emial1" status-icon :rules="rules2" ref="emial1">
-          <el-form-item label="旧邮箱" :label-width="formLabelWidth" prop="usedemial" v-show="show1">
+          <el-form-item label="旧邮箱" :label-width="formLabelWidth" prop="usedemial" v-show="show1" ref="usedemial">
             <el-input class="input-popup" v-model="emial1.usedemial" auto-complete="off"></el-input>
           </el-form-item>
           <span class="prompt" v-show="!show1">已向{{'&nbsp;' + emial1.usedemial + '&nbsp;'}}发送验证码</span>
@@ -65,7 +65,7 @@
             <el-input class="input-popup" v-model="emial1.newemial" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
-        <el-button class="phone-verification" type="primary" size="small"  @click="verification1" v-show="show1">获取验证码</el-button>
+        <el-button class="phone-verification" type="primary" size="small"  @click="verification1('usedemial')" v-show="show1">获取验证码</el-button>
         <el-button class="phone-verification-1" type="primary" size="small" plain disabled v-show="!show1">{{count1 + 's'}}</el-button>
         <div slot="footer" class="dialog-footer">
           <el-button class="phone-Determine" @click="dialogEmial1('emial1')">取 消</el-button>
@@ -155,7 +155,7 @@ export default {
             { pattern: /^[1][3,4,5,7,8][0-9]{9}$/, message: '请填写正确电话号码'}
           ],
           usedphone: [
-            { required: true, message: '请填写手机号', trigger: 'blur'},
+            { required: true, message: '请填写手机号'},
             { pattern: /^[1][3,4,5,7,8][0-9]{9}$/, message: '请填写正确电话号码'}
           ],
         },
@@ -168,7 +168,7 @@ export default {
             { pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/, message: '请填写正确邮箱地址'}
           ],
           usedemial: [
-            { required: true, message: '请填写邮箱地址', trigger: 'blur'},
+            { required: true, message: '请填写邮箱地址'},
             { pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/, message: '请填写正确邮箱地址'}
           ],
         }
@@ -177,7 +177,7 @@ export default {
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate(valid => {
-          if (valid) {
+          if (valid) {  
             if(formName == 'form'){
               this.$http.post(this.GLOBAL.serverSrc + "/api/org/usersave",{
                  "Object": {
@@ -204,51 +204,42 @@ export default {
                 console.log(err)
               })
             }else if(formName == 'phone1'){
-              this.$message.success('修改成功！')
-              this.dialogFormVisible = false
+              this.$message.success('修改成功！') 
+              this.dialogFormVisible = false   
               this.show = true
               this.$refs['phone1'].resetFields()
             }else if(formName == 'emial1'){
-              this.$message.success('修改成功！')
+              this.$message.success('修改成功！') 
               this.dialogEmial = false
               this.show1 = true
               this.$refs['emial1'].resetFields()
             }
-          } else {
-            this.$message.error('验证失败！')
           }
         })
       },
-      verification() {
-        if(this.phone1.usedphone === ''){
-          this.$message.error('手机号为空！')
-        }else{
-          var str = this.phone1.usedphone
-          var patt = /^[1][3,4,5,7,8][0-9]{9}$/
-          if(str.match(patt)){
-            const TIME_COUNT = 60;
-            if (!this.timer) {
-              this.count = TIME_COUNT;
-              this.show = false;
-              this.timer = setInterval(() => {
-               if (this.count > 0 && this.count <= TIME_COUNT) {
-                 this.count--;
-                } else {
-                 this.show = true;
-                 clearInterval(this.timer);
-                 this.timer = null;
-                }
-               }, 1000)
-            }
-          } else {
-            this.$message.error('请填写正确的手机号！')
+      verification(form) {
+       this.$refs['usedphone'].validate()
+        var str = this.phone1.usedphone
+        var patt = /^[1][3,4,5,7,8][0-9]{9}$/
+        if(str.match(patt)){
+          const TIME_COUNT = 60;
+          if (!this.timer) {
+            this.count = TIME_COUNT;
+            this.show = false;
+            this.timer = setInterval(() => {
+            if (this.count > 0 && this.count <= TIME_COUNT) {
+              this.count--;
+              } else {
+              this.show = true;
+              clearInterval(this.timer);
+              this.timer = null;
+              }
+            }, 1000)
           }
-        }
+        } 
       },
-      verification1() {
-         if(this.emial1.usedemial === ''){
-          this.$message.error('邮箱为空！')
-        } else {
+      verification1(form) {
+        this.$refs[form].validate()
           var str = this.emial1.usedemial
           var patt = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/
           if(str.match(patt)){
@@ -257,26 +248,29 @@ export default {
               this.count1 = TIME_COUNT;
               this.show1 = false;
               this.timer1 = setInterval(() => {
-               if (this.count1 > 0 && this.count1 <= TIME_COUNT) {
-                 this.count1--;
+              if (this.count1 > 0 && this.count1 <= TIME_COUNT) {
+                this.count1--;
                 } else {
-                 this.show1 = true;
-                 clearInterval(this.timer1);
-                 this.timer1 = null;
+                this.show1 = true;
+                clearInterval(this.timer1);
+                this.timer1 = null;
                 }
-               }, 1000)
+              }, 1000)
             }
-          } else {
-            this.$message.error('请填写正确的邮箱！')
-          }
-        }
+          }   
       },
       dialogFormVisible1(a) {
         this.dialogFormVisible = false
+        this.show = true;
+        clearInterval(this.timer);
+        this.timer = null;
         // this.$refs[a].resetFields()
       },
       dialogEmial1(a) {
         this.dialogEmial = false
+        this.show1 = true;
+        clearInterval(this.timer1);
+        this.timer1 = null;
         // this.$refs[a].resetFields()
       }
     }
@@ -320,7 +314,7 @@ export default {
 .input-phone{
   float: left;
   width: 210px;
-}
+}  
 .preservation{
   width: 140px;
   margin-top: 40px;

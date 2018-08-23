@@ -20,10 +20,10 @@
       </div>
     </div>
     <div class="products">
-      <el-button class="products_button" type="primary" @click="addProducts = true">添加产品</el-button>
-      <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 100%;">
-          <el-table-column prop="id" label="ID" width="229" align="center"></el-table-column>
-          <el-table-column prop="templateName" label="模板名称" align="center"></el-table-column>
+      <el-button class="products_button" type="primary" @click="addProducts = true">添加模板</el-button>
+      <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 1000px;">
+          <el-table-column prop="id" label="ID" align="center" width="130"></el-table-column>
+          <el-table-column prop="templateName" label="模板名称" align="center" width="350"></el-table-column>
           <el-table-column prop="templateType" label="模板类型" align="center"></el-table-column>
           <el-table-column fixed="right" align="center" label="操作">
             <template slot-scope="scope">
@@ -187,7 +187,7 @@
                 </el-checkbox-group>
               </el-form-item>
             </div>
-            <el-table class="table_list" :data="tableProducts" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 100%;">
+            <el-table class="table_lists" :data="tableProducts" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 100%;">
                 <el-table-column prop="name" label="字段名称" width="229" align="center"></el-table-column>
                 <el-table-column prop="selection" label="选填/必填" align="center"></el-table-column>
                 <el-table-column prop="selectionValue" label="选项值" align="center"></el-table-column>
@@ -683,12 +683,17 @@
 }
 .table_list{
   position: relative;
-  top: 19px;
+  top: 79px;
+  left: -100px;
+}
+.table_lists{
+  position: relative;
 }
 .page{
-  float: right;
+  float: left;
   margin-top: 125px;
   margin-bottom: 100px;
+  margin-left: 280px;
 }
 .newTemplate{
   float: left;

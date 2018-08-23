@@ -8,7 +8,7 @@
         <el-button class="add_country" type="primary" @click="addProvince = true">添加省份</el-button>
       </template>
       <template v-else-if="geography == 3">
-        <el-button class="add_country" type="primary" @click="addProvince = true">添加省份</el-button>
+        <el-button class="add_country" type="primary" @click="addCity = true">添加城市</el-button>
       </template>
       <div :class="search">
         <span class="keyword">输入关键字:</span>
@@ -306,30 +306,30 @@
           value: '1',
           label: '全部国家'
         },{
-          value: 'zhinan',
+          value: '中国',
           label: '中国',
           children: [{
           label: '全部省份',
           value: '2',
         },{
-            value: 'heik',
+            value: '黑龙江',
             label: '黑龙江',
             children: [{
             label: '全部城市',
             value: '3',
           },{
-              value: 'haerbin',
+              value: '哈尔滨',
               label: '哈尔滨',
             }]
           }]
         },{
-          value: 'zqwewq',
+          value: '日本',
           label: '日本',
           children: [{
           label: '全部城市',
           value: '3',
         },{
-            value: 'dongjing',
+            value: '东京',
             label: '东京',
           }]
         }],
@@ -562,6 +562,10 @@
         let num = String(value);
         let str = num.substring(num.indexOf(",") + 1,num.length);
         let str1 = str.indexOf(",") !== -1 ?str.substring(str.indexOf(",") + 1,str.length) :num.substring(num.indexOf(",") + 1,num.length);
+        let state = num.substring(num.indexOf(","), 0); // 获取国家数据
+        this.cityPopup.countryName = state;
+        let city = str.indexOf(",") !== -1 ?str.substring(str.indexOf(","), 0) :''; // 获取省份数据
+        this.cityPopup.provinceName = city;
         this.geography = str1
         if(this.geography !== 'search'){
           this.search = 'search1'
