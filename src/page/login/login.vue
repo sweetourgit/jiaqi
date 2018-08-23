@@ -392,9 +392,10 @@
       //登录
       loginForm(formName) {
         this.$refs['ruleForm'].validate(valid => {
-          console.log(valid)
           if(valid){
             this.pop1=false
+            console.log(this.ruleForm.user)
+            console.log(this.ruleForm.password)
            axios.post('http://api.dayuntong.com:6003/api/auth/token',{
           'userName': this.ruleForm.user,
           'passWord': this.ruleForm.password,
@@ -417,7 +418,7 @@
                   store.save('name',res.data.name)
                   if(res.data===''){
                     this.$message.error('用户名或密码错误');
-
+                    this.aaa('show');
                   }else{
                     document.getElementById("er").style ='border-color: green;'
 
@@ -439,7 +440,7 @@
 
                 },90)
 
-
+              this.aaa('show');
               }
             }).catch(err => {
 
@@ -455,13 +456,16 @@
             this.$message.error('登录失败');
           })
           } else {
-            document.getElementById("er").style ='border-color: #f56c6c;'
+            if(this.ruleForm.verification == ''){
+                document.getElementById("er").style ='border-color: #f56c6c;'
                 setTimeout(() => {
 
                   this.pop1=true;
 
                 },90)
                 this.aaa()
+            }
+            
 
           }
         })

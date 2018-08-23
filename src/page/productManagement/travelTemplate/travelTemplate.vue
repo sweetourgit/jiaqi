@@ -714,7 +714,7 @@
 }
 .Products_input{
   float: left;
-  width: 88%;
+  width: 300px;
 }
 .Products_select{
   float: left;
