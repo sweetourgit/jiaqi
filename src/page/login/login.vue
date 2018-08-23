@@ -394,8 +394,6 @@
         this.$refs['ruleForm'].validate(valid => {
           if(valid){
             this.pop1=false
-            console.log(this.ruleForm.user)
-            console.log(this.ruleForm.password)
            axios.post('http://api.dayuntong.com:6003/api/auth/token',{
           'userName': this.ruleForm.user,
           'passWord': this.ruleForm.password,
