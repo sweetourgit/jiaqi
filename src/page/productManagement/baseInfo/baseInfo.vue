@@ -24,10 +24,10 @@
           </el-form-item>
           <div style="overflow:hidden">
             <el-form-item style="width:300px; float:left" label='行程天数' prop="travelDays">
-              <el-input style="width:150px;left:8px" v-model="ruleForm.travelDays" placeholder="请输入天数"></el-input><span class="travelDays-span">天</span>
+              <el-input style="width:105px;right:30px" v-model="ruleForm.travelDays" placeholder="请输入天数"></el-input><span class="travelDays-span">天</span>
             </el-form-item>
             <el-form-item class="number-day" style="width:300px; float:left;margin-left:-120px" prop="travelNight">
-              <el-input style="width:150px;left:18px" v-model="ruleForm.travelNight" placeholder="请输入晚数"></el-input>
+              <el-input style="width:105px;right:86px" v-model="ruleForm.travelNight" placeholder="请输入晚数"></el-input>
               <span class="travelNight">晚</span>
             </el-form-item>
           </div>
@@ -41,16 +41,16 @@
             <el-input maxlength=8 v-model="ruleForm.highlightWords1" class="highlightWords-input1" placeholder="8个字以内"></el-input>
             <span class="span1">{{ruleForm.highlightWords1.length}}/8字</span>
           </el-form-item>
-          <el-form-item prop="highlightWords2" style="width:378px;">
-            <el-input maxlength=8 v-model="ruleForm.highlightWords2" class="highlightWords-input2" placeholder="8个字以内"></el-input><br>
+          <el-form-item prop="highlightWords2" style="float:left;margin-left:295px;margin-top:-62px;">
+            <el-input maxlength=8 v-model="ruleForm.highlightWords2" class="highlightWords-input2" placeholder="8个字以内"></el-input>
             <span class="span">{{ruleForm.highlightWords2.length}}/8字</span>
           </el-form-item>
-          <el-form-item prop="highlightWords3" style="width:378px;">
-            <el-input maxlength=8 v-model="ruleForm.highlightWords3" class="highlightWords-input2" placeholder="8个字以内"></el-input><br>
+          <el-form-item prop="highlightWords3">
+            <el-input maxlength=8 v-model="ruleForm.highlightWords3" class="highlightWords-input2" placeholder="8个字以内"></el-input>
             <span class="span">{{ruleForm.highlightWords3.length}}/8字</span>
           </el-form-item>
-          <el-form-item prop="highlightWords4" style="width:378px;">
-            <el-input maxlength=8 v-model="ruleForm.highlightWords4" class="highlightWords-input2" placeholder="8个字以内"></el-input><br>
+          <el-form-item prop="highlightWords4" style="float:left;margin-left:295px;margin-top:-62px;">
+            <el-input maxlength=8 v-model="ruleForm.highlightWords4" class="highlightWords-input2" placeholder="8个字以内"></el-input>
             <span class="span">{{ruleForm.highlightWords4.length}}/8字</span>
           </el-form-item>
           <el-form-item label="运营标签" prop="operationLabel">
@@ -71,14 +71,13 @@
                 size="small"
                 @keyup.enter.native="handleInputConfirm2"
                 @blur="handleInputConfirm2">
-                <input style="background:red;width:100px;height:200px" type="image" src="//static.huaweicloud.com/static/v2_resources/images/dev-index/slide3.jpg?sttl=20185293" alt="">
               </el-input>
               <el-button v-else class="button-new-tag" size="small" @click="showInput2">请输入运营标签</el-button>
             </div>
           </el-form-item>
 
           <el-form-item label="头图" prop="avatarImages">
-            <el-input v-model="ruleForm.avatarImages" disabled style="width:200px;float:left;margin-left:10px;position:relative">
+            <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative">
             </el-input>
             <el-upload
             :on-preview="handleImgClick"
@@ -87,7 +86,7 @@
             list-type="picture"
             :limit='1' accept=".jpg,.png,.gif"
             :on-remove="handleRemove">
-            <el-button type="info">
+            <el-button type="info" class="upload-btn">
               <div v-show="isShowImg" style="height:215px;width:330px;position:absolute;z-index:9999;top:50px;left:30px;border:10px solid #D7D7D7;background:#fdfdfd;">
                 <img style="display:block;width:100%;height:100%;" :src="this.imgUrl" alt="">
               </div>
@@ -96,7 +95,7 @@
           </el-form-item>
 
           <el-form-item label="视频" prop="video">
-            <el-input v-model="ruleForm.video" disabled style="width:200px;float:left;margin-left:10px;position:relative">
+            <el-input v-model="ruleForm.video" disabled style="width:110px;float:left;margin-left:10px;position:relative">
             </el-input>
             <el-upload
               class="upload-demo uploadimage"
@@ -145,11 +144,11 @@
           </el-form-item>
           <div class="num-two" style="overflow:hidden">
             <el-form-item style="width:300px; float:left" label='最晚收客时间' prop="timeHour" class="num-three">
-              <el-input style="width:80px;left:8px;float:left;" v-model="ruleForm.timeHour"></el-input>
+              <el-input style="width:50px;left:8px;float:left;" v-model="ruleForm.timeHour"></el-input>
               <span class="timeHour-span">时</span>
             </el-form-item>
             <el-form-item class="number-day" style="width:300px; float:left;margin-left:-120px" prop="timeMinute">
-              <el-input style="width:80px;float:left;margin-left:-36px;" v-model="ruleForm.timeMinute"></el-input>
+              <el-input style="width:50px;float:left;margin-left:-65px;" v-model="ruleForm.timeMinute"></el-input>
               <span class="timeMinute-span">分</span>
             </el-form-item>
           </div>
@@ -369,6 +368,22 @@ export default {
 </script>
 
 <style scoped lang='stylus'>
+.el-tag>>>.el-icon-close::before {
+    display: block;
+    font-size: 20px;
+    color:#6C6C6C;
+    float:right;
+    margin-right:-1px;
+}
+.el-input>>>input::placeholder{
+  color #c2c2c2!important;
+}
+.inputBox>>>input::placeholder{
+  color #c2c2c2!important;
+}
+.Excursion-select>>>input::placeholder{
+  color #c2c2c2!important;
+}
 .warp {
   position: relative;
   padding-bottom:100px;
@@ -381,7 +396,7 @@ export default {
   position: absolute;
 }
 .productName-input {
-  width: 548px;
+  width: 550px;
   float: left;
   margin-left: 10px;
 }
@@ -407,7 +422,7 @@ export default {
   float: left;
   margin-left: 5px;
   margin-top: 3px;
-  height: 32px;
+  height: 27px;
   line-height: 30px;
   padding-top: 0;
   padding-bottom: 0;
@@ -416,18 +431,18 @@ export default {
   width:116px;
   float: left;
   margin-left: 5px;
-  margin-top: 3px;
-  height: 32px;
+  height: 27px;
   line-height: 30px;
-  padding-top: 0;
-  padding-bottom: 0;
+  padding-top: 1px;
+  padding-bottom: 2px;
 }
 .el-tag {
+  height:27px;
   float: left;
   margin-top: 3px;
   margin-left: 5px;
-  background-color: #3593EE;
-  color: #fff;
+  background-color: #d7d7d7;
+  color: #666666;
 }
 .travelDays-input {
   width: 150px;
@@ -437,6 +452,7 @@ export default {
 .day {
   float: left;
   margin-left: 10px;
+  color:#333;
 }
 .orderConfirmationType-radio {
   float: left;
@@ -444,21 +460,21 @@ export default {
   margin-top: 13px;
 }
 .highlightWords-input1 {
-  width: 200px;
+  width: 210px;
   float: left;
   margin-left: 10px;
 }
 .highlightWords-input2 {
-  width: 200px;
+  width: 210px;
   float: left;
   margin-left: 30px;
 }
 .span {
-  float: right;
-  margin-top:-40px;
-  margin-right:5px;
+  float: left;
+  margin-left:10px;
 }
 .Excursion-select {
+  width:166px;
   float: left;
   margin-left: 10px;
 }
@@ -468,7 +484,7 @@ export default {
   margin-left: 10px;
 }
 .advanceRegistrationDays-input {
-  width: 15%;
+  width: 105px;
   float: left;
   margin-left: 10px;
 }
@@ -479,7 +495,7 @@ export default {
   width:120px !important;
 }
 .inputBox{
-  width:548px;
+  width:550px;
   float left;
   margin-left:10px;
 }
@@ -506,18 +522,22 @@ export default {
   left 24px
 }
 .travelDays-span{
-  margin-left:15px;
+  margin-left:-19px;
+  color:#333;
 }
 .travelNight{
-  margin-left:22px;
+  margin-left:-80px;
+  color:#333;
 }
 .timeHour-span{
   float left;
   margin-left:20px;
+  color:#333;
 }
 .timeMinute-span{
   float left;
-  margin-left:10px;
+  margin-left:-5px;
+  color:#333;
 }
 .num-two>>>.el-form-item__error{
   left:-36px;
@@ -534,6 +554,7 @@ top: -5px;
 left: 30px;
 }
 .upload-demo>>>.el-upload-list__item{
+background-color:#d7d7d7;
 float left;
 width: 90px;
 height: 30px;
@@ -551,7 +572,22 @@ background-image url('../../../assets/image/pic.png')
   width:64px;
   height:40px;
 }
-.productName-input>>>.el-input__inner{
+.el-input>>>.el-input__inner{
   height:30px;
+}
+.el-autocomplete>>>.el-input__inner{
+  height:30px!important;
+}
+.el-select>>>.el-input__inner{
+  height:30px!important;
+}
+.el-form-item>>>.el-form-item__label{
+  color:#666666;
+}
+.upload-demo>>>.el-button{
+  line-height: 0.3!important;
+  border-radius: 0px;
+  background-color:#d7d7d7;
+  color:#666;
 }
 </style>
