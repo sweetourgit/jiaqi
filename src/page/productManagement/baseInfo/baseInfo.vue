@@ -1,8 +1,8 @@
 <template>
     <div class="warp">
       <div class="btn">
-        <el-button plain>取消</el-button>
-        <el-button type="primary">保存</el-button>
+        <el-button plain class="btn-button">取消</el-button>
+        <el-button class="btn-button" style="background:#3095fa;color:#fff">保存</el-button>
       </div>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" style="padding-left:50px">
           <el-form-item label="产品名称" prop="productName">
@@ -19,7 +19,7 @@
               <el-autocomplete class="inputBox" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="ruleForm.placeDeparture" :trigger-on-focus="false">
               </el-autocomplete>
           </el-form-item>
-          <el-form-item label="出发地" prop="destination">
+          <el-form-item label="目的地" prop="destination">
               <el-autocomplete class="inputBox" clearable placeholder="输入目的地名称" :fetch-suggestions="querySearch1" v-model="ruleForm.destination" :trigger-on-focus="false"></el-autocomplete>
           </el-form-item>
           <div style="overflow:hidden">
@@ -381,7 +381,7 @@ export default {
   position: absolute;
 }
 .productName-input {
-  width: 460px;
+  width: 548px;
   float: left;
   margin-left: 10px;
 }
@@ -396,10 +396,10 @@ export default {
   margin-left: 10px;
 }
 .destination-input {
-  width: 1400px;
-  height: 38px;
+  width: 548px;
   float: left;
   margin-left: 10px;
+  padding-bottom:2.5px
   border: 1px solid #dcdfe6;
   border-radius: 4px;
 }
@@ -413,11 +413,14 @@ export default {
   padding-bottom: 0;
 }
 .input-new-tag {
+  width:116px;
   float: left;
-  margin-top: -1px;
-  width: 90px;
   margin-left: 5px;
-  vertical-align: bottom;
+  margin-top: 3px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .el-tag {
   float: left;
@@ -476,7 +479,7 @@ export default {
   width:120px !important;
 }
 .inputBox{
-  width:324px;
+  width:548px;
   float left;
   margin-left:10px;
 }
@@ -543,5 +546,12 @@ background-image url('../../../assets/image/pic.png')
 .length-span{
   float:left;
   margin-left:10px;
+}
+.btn-button{
+  width:64px;
+  height:40px;
+}
+.productName-input>>>.el-input__inner{
+  height:30px;
 }
 </style>
