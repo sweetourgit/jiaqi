@@ -1,4 +1,11 @@
-<template> 
+<style>
+  .el-tabs__item{
+    width: 144px ;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+</style>
+<template>
   <div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="基本信息" name="first"><BaseInfo></BaseInfo></el-tab-pane>
@@ -39,4 +46,5 @@
   .el-tabs>>>.el-tabs__content{
     overflow visible!important
   }
+
 </style>
