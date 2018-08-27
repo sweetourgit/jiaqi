@@ -519,7 +519,7 @@ export default {
   margin-top:-60px;
 }
 .number-day>>>.el-form-item__error{
-  left 24px
+  left -8px
 }
 .travelDays-span{
   margin-left:-19px;
@@ -540,7 +540,7 @@ export default {
   color:#333;
 }
 .num-two>>>.el-form-item__error{
-  left:-36px;
+  left:-66px;
 }
 .num-three>>>.el-form-item__error{
   left:27px;
