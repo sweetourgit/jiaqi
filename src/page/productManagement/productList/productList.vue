@@ -163,6 +163,7 @@
           label="属性"
           width="230"
           align="center"
+          
           >
         </el-table-column>
         <el-table-column
@@ -194,7 +195,7 @@
 
         <template slot-scope="scope" prop="ll">
           <template v-if="scope.row.ll == '确认属性值'">
-            <el-button v-show="qq" @click="gain" size="mini" type="primary">{{addtable[addtable.length - 1].ll}}</el-button>            
+            <el-button v-show="qq" @click="gain" size="mini" type="primary">{{addtable[addtable.length - 1].allprice[addtable[addtable.length-1].allprice.length-1].ll}}</el-button>            
           </template>
           <template v-else>
             <el-button v-show="pp" @click="addInput(scope.row,scope.$index)" size="mini" type="primary">添加值</el-button>            
@@ -414,8 +415,13 @@ import DateList from './component/DateList'
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
       },
-          groupStage() {
+      // 库存按钮出现
+      groupStage() {
       this.merchandise = true;
+      this.addtable.push({
+        allprice:[],
+      });
+      // console.log(this.addtable);
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -424,49 +430,102 @@ import DateList from './component/DateList'
         return "";
       }
     },
-  // 点击属性按钮方法
-  begin(e, key) {
-    // console.log(e.id);
-    if(e.pp == false){
-      document.getElementById('kk'+key).style.border = 'solid 1px #409EFF'
-      document.getElementById('kk'+key).style.color = '#409EFF'
-      this.addtable.push({
-      id:e.id,
-      property:e.button,
-      // "ll":"添加值",
-      verifier:e.verifier,
-      price:[],
-      
-    })
-    console.log(this.addtable);
-    console.log(key);
-      this.buttonList[key].pp = true;
-      if(this.addtable.length == 1){
-        this.addtable.push({
-        "ll":'确认属性值',
+
+    begin(e,key){
+   
+      // 如果按钮是未按下的情况下
+      if(e.pp == false){
+        document.getElementById('kk'+key).style.border = 'solid 1px #409EFF'
+        document.getElementById('kk'+key).style.color= '#409EFF'
+        // 点击向数组中添加数值
+        this.addtable[this.addtable.length-1].allprice.push({
+          id:e.id,
+          property:e.button,
+          value:[],
       })
-      // this.pp = false;
-      this.qq = true;
-      console.log(this.addtable[this.addtable.length - 1].ll);
-    this.buttonList[key].key = this.addtable.length - 1; 
-    } else {
-      var str = this.addtable.splice(this.addtable.length - 2, 1);
-      this.addtable.push(str[0]);
-      this.buttonList[key].key = this.addtable.length - 2; 
-    }
-    } else if(e.pp){
-      document.getElementById('kk'+key).style.border = 'solid 1px #dcdfe6'
-      document.getElementById('kk'+key).style.color = '#606266'
-      this.addtable.splice(e.key, 1);
-      for(let i=0;i<this.addtable.length - 1;i++){
-      this.buttonList[this.addtable[i].id].key = i;
-    }
-    if(this.addtable.length == 1){
-      this.addtable.splice(0, 1);
-    }
-      this.buttonList[key].pp = false;
-    } 
+        // 按下按钮给一个true表示按下
+        this.buttonList[key].pp=true;
+        // 判断表格中的数据条数,如果数据只有一条那么生成一条确认属性值
+        if(this.addtable[this.addtable.length-1].allprice.length ==1){
+          this.addtable[this.addtable.length-1].allprice.push({
+            ll:"确认属性值",
+          })
+          this.qq = true;
+          this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2;
+        }else{
+          // 如果数据条数大于一条,则吧str,也就是确认属性值这条代码拿出来在重新放到数据尾部
+          var str = this.addtable[this.addtable.length-1].allprice.splice( this.addtable[this.addtable.length-1].allprice.length -2,1);
+          this.addtable[this.addtable.length -1].allprice.push(str[0]);
+          this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2; 
+          console.log(e);         
+        }
+        
+      }else if(e.pp){
+        // 当按钮按下了
+        document.getElementById('kk'+key).style.border = 'solid 1px #dcdfe6'
+        document.getElementById('kk'+key).style.color = '#606266'
+        console.log("e.id:"+ e.id);
+        console.log("e.key:" + e.key);
+        console.log(this.addtable[this.addtable.length-1].allprice);
+        // console.log(this.addtable[this.addtable.length-1].allprice[e.key].id);
+        // 这个地方删除有些问题!
+        this.addtable[this.addtable.length -1].allprice.splice(e.key,1);
+        // console.log(this.addtable[this.addtable.length-1].allprice);
+        for(let i=0;i<this.addtable[this.addtable.length-1].allprice.length -1;i++){
+          // console.log(i);
+          this.buttonList[this.addtable[this.addtable.length-1].allprice[i].id].key = i;
+        }
+        if(this.addtable[this.addtable.length-1].allprice.length ==1){
+          this.addtable[this.addtable.length-1].allprice.splice(0,1);
+        }
+        this.buttonList[key].pp = false;
+      }
+    console.log(this.addtable);
+      
     },
+  // 点击属性按钮方法
+  // begin(e, key) {
+  //   // console.log(e.id);
+  //   if(e.pp == false){
+  //     document.getElementById('kk'+key).style.border = 'solid 1px #409EFF'
+  //     document.getElementById('kk'+key).style.color = '#409EFF'
+  //     this.addtable.push({
+  //     id:e.id,
+  //     property:e.button,
+  //     // "ll":"添加值",
+  //     verifier:e.verifier,
+  //     price:[],
+      
+  //   })
+  //   console.log(this.addtable);
+  //   console.log(key);
+      // this.buttonList[key].pp = true;
+  //     if(this.addtable.length == 1){
+  //       this.addtable.push({
+  //       "ll":'确认属性值',
+  //     })
+  //     // this.pp = false;
+  //     this.qq = true;
+  //     console.log(this.addtable[this.addtable.length - 1].ll);
+  //   this.buttonList[key].key = this.addtable.length - 1; 
+  //   } else {
+  //     var str = this.addtable.splice(this.addtable.length - 2, 1);
+  //     this.addtable.push(str[0]);
+  //     this.buttonList[key].key = this.addtable.length - 2; 
+  //   }
+  //   } else if(e.pp){
+  //     document.getElementById('kk'+key).style.border = 'solid 1px #dcdfe6'
+  //     document.getElementById('kk'+key).style.color = '#606266'
+  //     this.addtable.splice(e.key, 1);
+  //     for(let i=0;i<this.addtable.length - 1;i++){
+  //     this.buttonList[this.addtable[i].id].key = i;
+  //   }
+  //   if(this.addtable.length == 1){
+  //     this.addtable.splice(0, 1);
+  //   }
+  //     this.buttonList[key].pp = false;
+  //   } 
+  //   },
   // 点击添加按钮方法
   addInput(b, key){
     // b 按钮数组中的数据
@@ -516,24 +575,24 @@ import DateList from './component/DateList'
 
     this.bb = true;
    console.log(this.addtable);
-  for(var q=0;q<this.addtable.length-1;q++){
-      this.sku.push({
-      verifier:this.addtable[q].verifier,
-      value:[],
-    });
-    // console.log(this.addtable[q].price);
-    for(var w=0;w<this.addtable[q].price.length;w++){
-      console.log(this.addtable[q].price[w].value);
-      console.log(this.sku.length);
-      for(var r=0;r<this.sku.length;r++){
-        this.sku[r].value.push({
-          price:this.addtable[q].price[w].value,
-        })
-      console.log(this.addtable[q].price[w].value);
+  // for(var q=0;q<this.addtable.length-1;q++){
+  //     this.sku.push({
+  //     verifier:this.addtable[q].verifier,
+  //     value:[],
+  //   });
+  //   console.log(this.addtable[q].price);
+  //   for(var w=0;w<this.addtable[q].price.length;w++){
+  //     console.log(this.addtable[q].price[w].value);
+  //     console.log(this.sku.length);
+  //     for(var r=0;r<this.sku.length;r++){
+  //       this.sku[r].value.push({
+  //         price:this.addtable[q].price[w].value,
+  //       })
+  //     console.log(this.addtable[q].price[w].value);
         
-      }
-    }
-  }
+  //     }
+  //   }
+  // }
     console.log(this.sku);
     // console.log(this.addtable)
     // console.log(this.addtable.length-1);
@@ -545,26 +604,11 @@ import DateList from './component/DateList'
     // })
     // console.log(this.sku);
 
-    // console.log(addtable[scope.$index].price.value);
+    // console.log(addtable[scope.$index].price.value);  
     // console.log(this.model);
   },
     
-//   checkPrice(index){
-//       document.getElementById('vv'+ scope.$index).style.background = 'red'
-    
-//     console.log(a);
-//     if(this.mm){
-//       document.getElementById('vv'+index).style.color = '#409EFF'
-//       document.getElementById('vv'+index).style.border = 'solid 1px #b3d8ff'
-//       document.getElementById('vv'+index).style.background = '#ecf5ff'
-//     }else{
-//       // document.getElementById('vv'+index).style.border = 'solid 1px #dcdfe6'
-//       document.getElementById('vv'+index).style.color = '#fff'
-//       document.getElementById('vv'+index).style.border = 'solid 1px #409EFF'
-//       document.getElementById('vv'+index).style.background = '#409EFF' 
-//     }
 
-// }
 
   }
 
