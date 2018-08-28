@@ -88,7 +88,7 @@
           <el-table-column :key="Math.random()" prop="pinyin" label="中文全拼" align="center"></el-table-column>
           <el-table-column :key="Math.random()" prop="initials" label="首字母" align="center"></el-table-column>
           <el-table-column :key="Math.random()" prop="code" label="代码" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="url" label="Url" width="380" align="center"></el-table-column>
+          <el-table-column :key="Math.random()" prop="url" label="Url" width="340" align="center"></el-table-column>
           <el-table-column :key="Math.random()" label="操作" fixed="right" align="center" width="260">
           <template slot-scope="scope">
             <el-button class="table_button" type="primary" @click="CityEdit(scope.$index, scope.row)">编辑</el-button>

@@ -52,7 +52,7 @@ html{
 .navigation{width:222px !important;}
 .content-body{margin-left: -22px; background: #F7F7F7; line-height: 100%; }
 .content-body1{margin-top: 15px; background: #FFF; line-height: 100%; min-height: 94%;}
-.content-position{border-left: 3px solid #F38F00; text-align: left; padding-left: 20px; font-size: 17px;height: 23px;line-height: 23px;}
+.content-position{border-left: 3px solid #F38F00; text-align: left; padding-left: 20px; font-size: 16px;height: 23px;line-height: 23px;}
 .el-cascader-menus.el-popper.popper__arrow .el-cascader-menu :nth-child(1){background: #F6F6F6; color:#409EFF !important;} /* 城市列表下拉框 */
 .el-cascader-menus.el-popper.popper__arrow .el-cascader-menu__item.is-active{color:#1ABC9C;} /* 城市列表下拉框选中 */
 .el-message-box.delete_country p{margin: 0 0 0 50px;}  /* 城市列表删除 */
