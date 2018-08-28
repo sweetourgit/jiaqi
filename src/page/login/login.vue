@@ -394,20 +394,20 @@
         this.$refs['ruleForm'].validate(valid => {
           if(valid){
             this.pop1=false
-           axios.post('http://api.dayuntong.com:6003/api/auth/token',{
+           axios.post('http://192.168.1.168:6014/oauth/api/token',{
           'userName': this.ruleForm.user,
           'passWord': this.ruleForm.password,
         })
           .then(res=>{
 
-
-            this.$http.post(this.GLOBAL.serverSrc+'/api/check',this.qs.stringify({
+            console.log(res)
+            this.$http.post(this.GLOBAL.serverSrc+'/org/login/api/check',this.qs.stringify({
               "key": localStorage.getItem('code'),
               "code": this.ruleForm.verification
             })).then(res => {
               if(res.data){
                 // console.log(res.data)
-                this.$http.post(this.GLOBAL.serverSrc+'/api/login',{
+                this.$http.post(this.GLOBAL.serverSrc+'/org/api/login',{
                   "userCode": this.ruleForm.user,
                   "passWord": this.ruleForm.password,
                 }).then(res => {
@@ -507,7 +507,7 @@
       },
       aaa(show){
         if(this.logClick || show == 'show'){
-          this.$http.post(this.GLOBAL.serverSrc+'/api/general',{
+          this.$http.post(this.GLOBAL.serverSrc+'/org/login/api/getguid',{
 
           }).then(res => {
             localStorage.setItem("code",res.data)
@@ -519,7 +519,7 @@
 
       },
       bbb(){
-        this.$http.post(this.GLOBAL.serverSrc+'/api/code',this.qs.stringify({
+        this.$http.post(this.GLOBAL.serverSrc+'/org/login/api/getcode',this.qs.stringify({
           "key": localStorage.getItem('code'),
         })).then(res => {
           this.yz = true;
