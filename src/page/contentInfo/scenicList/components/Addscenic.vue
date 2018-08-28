@@ -40,6 +40,9 @@
     <el-form-item class="form-item" label-width='80px'  label="开放时间">
       <el-button @click="showtime=true" style='float:left' type="primary">添加开放时间</el-button>
     </el-form-item>
+    <ul class="weeklist">
+      <li class="weekitem" :key="item" v-for="item of weeklist">{{item}}</li>
+    </ul>
     <el-form-item class="form-item" label-width='80px'  label="适宜季节">
       <el-checkbox-group style="float:left" v-model="form.season">
         <el-checkbox label="春"></el-checkbox>
@@ -107,6 +110,15 @@ export default {
   },
   data() {
     return{
+      weeklist:{
+        0:'9:00-12:00 和 15:00-18:00',
+        1:'9:00-12:00 和 15:00-18:00',
+        2:'9:00-12:00 和 15:00-18:00',
+        3:'9:00-12:00 和 15:00-18:00',
+        4:'9:00-12:00 和 15:00-18:00',
+        5:'9:00-12:00 和 15:00-18:00',
+        6:'9:00-12:00 和 15:00-18:00',
+      },
       showtime: false,
       showEdit: false,
       fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
@@ -350,4 +362,10 @@ export default {
   .text-area
     float left
     width 60%
+.weeklist
+  padding-left 70px
+  text-align left
+  .weekitem
+    list-style none
+    margin 10px
 </style>

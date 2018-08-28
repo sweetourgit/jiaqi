@@ -28,7 +28,7 @@
               <!--飞机-->
               <div class="plane">
                 <el-select class="plane_type" v-model="value5" placeholder="飞机">
-                  <el-option v-for="item in options" :key="item.value" :label="item.label":value="item.value"></el-option>
+                  <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
                 <span class="plane_text">第</span>
                 <el-select class="plane_type" v-model="value11" collapse-tags style="margin-left: 20px;" placeholder="1">
@@ -101,7 +101,7 @@
                     <div class="aviation_input"><el-date-picker style="width:200px;" v-model="value2" type="datetime" placeholder="选择出发时间"></el-date-picker></div>
                   </div>
                   <el-select class="day" v-model="value3" placeholder="当日">
-                    <el-option v-for="item in options2" :key="item.value" :label="item.label":value="item.value"></el-option>
+                    <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value"></el-option>
                   </el-select>
                 </div>
                 <!--第三行结束-->
@@ -800,7 +800,7 @@
 
                                       <div class="aviation" style="padding-top:20px;">
                                         <div class="aviation_text">简介</div>
-                                        <div class="textarea1"><el-input class="text_input" type="textarea":rows="10" placeholder="请输入内容"v-model="textarea5"></el-input></div>
+                                        <div class="textarea1"><el-input class="text_input" type="textarea" :rows="10" placeholder="请输入内容" v-model="textarea5"></el-input></div>
                                       </div>
                                       <div class="stop"><el-button class="stop_button" plain>删除详情</el-button></div>
                                     </div>
@@ -830,7 +830,7 @@
                                   v-show=" index == num">{{itemCon}}</div>
                               </div>-->
                               <div class="tabCon">
-                                  <div 
+                                  <div
                                   v-for='(itemCon,index) in tabContents1' 
                                   v-show=" index == num1">
                                     <div class="city">

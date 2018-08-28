@@ -5,7 +5,6 @@
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
-      :status-icon="true"
     >       <!--ref参数用于标识form名称-->
       <div class="form-class">
 
@@ -221,9 +220,7 @@
           });
       };
       return {
-        list: [1,2,{
-
-        }],
+        list: [1],
         ruleForm: {
           temp_name: '',
           desc: ''

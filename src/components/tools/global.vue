@@ -1,5 +1,5 @@
 <script>
-  const serverSrc="http://api.dayuntong.com:3009";
+  const serverSrc="http://192.168.1.168:6012";
   const token="";
   const userId="";
   const hasEnter=false;

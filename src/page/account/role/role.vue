@@ -35,6 +35,7 @@
         :cell-style="cs"
         border>
         <el-table-column
+
           prop="id"
           label="ID"
           width="180"
@@ -69,10 +70,10 @@
         <el-table-column
           prop="operate"
           label="操作"
-          width="180"
+          width="400"
           header-align="center">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="editRole(scope.row.id)" class="bt-edit">编辑</el-button>
+            <el-button style="margin:10px;"  type="primary" size="small" @click="editRole(scope.row.id)" class="bt-edit">编辑</el-button>
             <!--<router-link to="/addRole?id=scope.row.id&type=view"><el-button type="primary" size="small" class="bt-edit">编辑</el-button></router-link>-->
             <el-button type="info" size="small" @click="changeState(scope.row.id,1)" class="bt-stop"
                        v-if="scope.row.state === '禁用'">启用
