@@ -279,7 +279,7 @@
         this.pagesize = val
         this.currentPage = 1
         this.$http.post(
-          this.GLOBAL.serverSrc + "/api/org/userpage",
+          this.GLOBAL.serverSrc + "/org/api/userpage",
           // "http://api.dayuntong.com:3009/api/org/userpage",
           {
             "object": {
@@ -294,6 +294,11 @@
             "pageIndex": 1,
             "isGetAll": true,
             "id": 0
+          },
+          {
+            headers:{
+              'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
           }
         )
           .then(function (obj) {
@@ -330,7 +335,7 @@
       handleCurrentChange(val) {
         var that = this
         this.$http.post(
-          this.GLOBAL.serverSrc + "/api/org/userpage",
+          this.GLOBAL.serverSrc + "/org/api/userpage",
           // "http://api.dayuntong.com:3009/api/org/userpage",
           {
             "object": {
@@ -345,6 +350,10 @@
             "pageIndex": val,
             "isGetAll": true,
             "id": 0
+          },{
+            headers:{
+              'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
           }
         )
           .then(function (obj) {
@@ -383,7 +392,7 @@
         //搜索
         var that = this
         this.$http.post(
-          this.GLOBAL.serverSrc + "/api/org/userpage",
+          this.GLOBAL.serverSrc + "/org/api/userpage",
           // "http://api.dayuntong.com:3009/api/org/userpage",
           {
             "object": {
@@ -398,6 +407,10 @@
             "pageIndex": 1,
             "isGetAll": true,
             "id": 0
+          },{
+            headers:{
+              'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
           }
         )
           .then(function (obj) {
@@ -461,7 +474,7 @@
       //用户列表
       var that = this
       this.$http.post(
-        this.GLOBAL.serverSrc + "/api/org/userpage",
+        this.GLOBAL.serverSrc + "/org/api/userpage",
         {
           "object": {
             "isDeleted": 0,
@@ -471,6 +484,11 @@
           "pageIndex": 1,
           "isGetAll": true,
           "id": 0
+        },
+        {
+         headers:{
+           'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+         }
         }
       )
         .then(function (obj) {
