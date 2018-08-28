@@ -401,7 +401,7 @@
         })
           .then(res=>{
 
-            console.log(res)
+            // console.log(res)
             // this.$http.post(this.GLOBAL.serverSrc+'/org/login/api/check',this.qs.stringify({
             //   "key": localStorage.getItem('code'),
             //   "code": this.ruleForm.verification
