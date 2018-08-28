@@ -441,7 +441,7 @@ export default {
       } else {
         var _this = this;
         this.$http
-          .post(this.GLOBAL.serverSrc + "/api/org/deptinsert", {
+          .post(this.GLOBAL.serverSrc + "/org/api/deptinsert", {
             object: {
               id: 0,
               orgName: this.addInput.name,
@@ -455,6 +455,10 @@ export default {
               officeFax: this.addInput.fax,
               mark: this.addInput.note,
               isLeaf: this.addInput.lastStage
+            }
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
             }
           })
           .then(function(response) {
@@ -524,8 +528,12 @@ export default {
       var _this = this;
       this.deleteNum.push(id);
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptdelete", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptdelete", {
           id: id
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
         })
         .then(function(response) {
           _this.tableData.splice(index, 1);
@@ -539,9 +547,13 @@ export default {
         });
 
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
           object: {
             parentID: id
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(res => {
@@ -565,7 +577,7 @@ export default {
       this.members = [];
       let _this = this;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/userpage", {
+        .post(this.GLOBAL.serverSrc + "/org/api/userpage", {
           object: {
             isDeleted: 0
           },
@@ -573,6 +585,10 @@ export default {
           pageIndex: _this.currentPage,
           isGetAll: true,
           id: 0
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
         })
         .then(function(response) {
           _this.total = response.data.total;
@@ -606,9 +622,13 @@ export default {
       this.Parents = a;
       var _this = this;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
-          Object: {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+          object: {
             ParentID: a.id
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(response => {
@@ -632,9 +652,13 @@ export default {
       this.data = [];
       let _this = this;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
-          Object: {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+          object: {
             ParentID: -1
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(response => {
@@ -686,9 +710,13 @@ export default {
       this.data1 = [];
       let _this = this;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
-          Object: {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+          object: {
             ParentID: id
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(response => {
@@ -743,9 +771,13 @@ export default {
     editDepartment1(id) {
       this.editDepartment = true;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptget", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptget", {
           object: {
             id: id
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(res => {
@@ -758,7 +790,6 @@ export default {
           this.updata.lastStage = String(res.data.object.isLeaf);
         })
         .catch(err => {});
-      // this.options = this.data
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
@@ -799,11 +830,15 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr[0]
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(function(obj) {
@@ -825,7 +860,7 @@ export default {
     updataEditSave(updata) {
       let _this = this;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptsave", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptsave", {
           object: {
             id: this.updata.id,
             orgName: this.updata.orgName,
@@ -844,6 +879,10 @@ export default {
             createTime: "2018-07-16T01:23:50.963Z"
           },
           id: 0
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
         })
         .then(function(response) {
           _this.$message.success("修改成功！");
@@ -861,11 +900,15 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr1[0]
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(function(obj) {
@@ -898,11 +941,15 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr2[0]
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(function(obj) {
