@@ -7,7 +7,7 @@
           <div class="right">
            	<div class="icon el-icon-bell"></div>
             <div class="vertical-line"></div>
-           		<div class="icon el-icon-service"><span id="nameNum" @click="listUser">{{name}}</span></div>
+           		<div class="icon el-icon-service"><span id="nameNum" @click="listUser">暂无接口</span></div>
               <div class="vertical-line1"></div>
            		<div v-on:click="submit" class="icon1">退出</div>
           </div>

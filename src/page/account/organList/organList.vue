@@ -621,8 +621,7 @@ export default {
       this.addInput.topDepartment = a.label;
       this.Parents = a;
       var _this = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
           object: {
             ParentID: a.id
           }
@@ -651,12 +650,11 @@ export default {
     loadNode(node, resolve) {
       this.data = [];
       let _this = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",this.qs.stringify({
           object: {
             ParentID: -1
           }
-        },{
+        }),{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }

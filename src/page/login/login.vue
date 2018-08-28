@@ -395,11 +395,82 @@
         this.$refs['ruleForm'].validate(valid => {
           if(valid){
             this.pop1=false
-           axios.post('http://192.168.1.168:6014/user/api/login',{
-          'userName': this.ruleForm.user,
-          'passWord': this.ruleForm.password,
-        })
-          .then(res=>{
+            this.$http.post(this.GLOBAL.serverSrc+'/code/api/check ',this.qs.stringify({
+              "key": localStorage.getItem('code'),
+              "code": this.ruleForm.verification
+            })).then(res => {
+              if(res.data){
+                axios.post('http://192.168.1.168:6014/user/api/login',{
+                  'userName': this.ruleForm.user,
+                  'passWord': this.ruleForm.password,
+                }).then(res => {
+                  if(res.data == ''){
+                    this.$message.error('账号或密码错误');
+                  } else {
+                    store.save('token',res.data)
+                    this.$router.push('/userList')
+                    this.$message.success('登录成功');
+                    localStorage.removeItem("code",res.data)
+                  }
+                }).catch(err => {
+
+                })
+              } else {
+                document.getElementById("er").style ='border-color: #f56c6c;'
+                setTimeout(() => {
+                  this.pop=true;
+                },90)
+                this.aaa('show');
+              }
+            }).catch(err => {
+                document.getElementById("er").style ='border-color: #f56c6c;'
+                setTimeout(() => {
+                  this.pop=true;
+                },90)
+                this.aaa('show');
+            })
+
+
+
+
+
+          //   axios.post('http://192.168.1.168:6014/user/api/login',{
+          //     'userName': this.ruleForm.user,
+          //     'passWord': this.ruleForm.password,
+          // })
+          // .then(res=>{
+          //   if(res.data == ''){
+          //     this.$message.error('账号或密码错误');
+          //     if(this.ruleForm.verification == ''){
+          //       document.getElementById("er").style ='border-color: #f56c6c;'
+          //       setTimeout(() => {
+          //         this.pop1=true;
+          //       },90)
+          //    }
+          //   } else {
+          //     this.$http.post(this.GLOBAL.serverSrc+'/code/api/check ',this.qs.stringify({
+          //       "key": localStorage.getItem('code'),
+          //       "code": this.ruleForm.verification
+          //     })).then(res => {
+          //       if(res.data){
+          //         store.save('token',res.data)
+          //         this.$router.push('/userList')
+          //         this.$message.success('登录成功');
+          //         localStorage.removeItem("code",res.data)
+          //       } else {
+          //         this.$message.error('验证码错误');
+          //         document.getElementById("er").style ='border-color: #f56c6c;'
+          //         setTimeout(() => {
+          //           this.pop=true;
+          //         },90)
+          //         this.aaa('show');
+          //       }
+          //     }).catch(err => {
+          //       console.log(err)
+          //     })
+          //   }
+            
+
 
             // console.log(res)
             // this.$http.post(this.GLOBAL.serverSrc+'/org/login/api/check',this.qs.stringify({
@@ -438,16 +509,17 @@
             //   }
             // }).catch(err => {
             // })
-            store.save('token',res.data)
-            
-                    this.$router.push('/userList')
-                    this.$message.success('登录成功');
-                    localStorage.removeItem("code",res.data)
 
-          })
-          .catch(error =>{
-            this.$message.error('登录失败');
-          })
+
+
+
+
+            
+
+          // })
+          // .catch(error =>{
+          //   this.$message.error('登录失败');
+          // })
           } else {
             if(this.ruleForm.verification == ''){
                 document.getElementById("er").style ='border-color: #f56c6c;'
@@ -462,6 +534,14 @@
 
           }
         })
+
+
+
+
+
+
+
+        
         // this.$refs[formName].validate((valid) => {
         //   if (valid) {
         //     this.$message.error('登录失败');
@@ -510,30 +590,30 @@
         this.newpasswordShow = false;
         this.phoneShow = false;
       },
-      // aaa(show){
-      //   if(this.logClick || show == 'show'){
-      //     this.$http.post(this.GLOBAL.serverSrc+'/org/login/api/getguid',{
+      aaa(show){
+        if(this.logClick || show == 'show'){
+          this.$http.post(this.GLOBAL.serverSrc+'/code/api/getguid',{
 
-      //     }).then(res => {
-      //       localStorage.setItem("code",res.data)
-      //       this.bbb()
-      //     }).catch(err => {
+          }).then(res => {
+            localStorage.setItem("code",res.data)
+            this.bbb()
+          }).catch(err => {
 
-      //     })
-      //   }
+          })
+        }
 
-      // },
-      // bbb(){
-      //   this.$http.post(this.GLOBAL.serverSrc+'/org/login/api/getcode',this.qs.stringify({
-      //     "key": localStorage.getItem('code'),
-      //   })).then(res => {
-      //     this.yz = true;
-      //     this.yz1 = 'data:image/png;base64,' + res.data
-      //     this.logClick = false
-      //   }).catch(err => {
+      },
+      bbb(){
+        this.$http.post(this.GLOBAL.serverSrc+'/code/api/getcode',this.qs.stringify({
+          "key": localStorage.getItem('code'),
+        })).then(res => {
+          this.yz = true;
+          this.yz1 = 'data:image/png;base64,' + res.data
+          this.logClick = false
+        }).catch(err => {
 
-      //   })
-      // },
+        })
+      },
     }
 
 
