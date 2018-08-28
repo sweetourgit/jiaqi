@@ -547,11 +547,11 @@ export default {
         });
 
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", this.qs.stringify({
           object: {
             parentID: id
           }
-        },{
+        }),{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -621,11 +621,11 @@ export default {
       this.addInput.topDepartment = a.label;
       this.Parents = a;
       var _this = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist", this.qs.stringify({
           object: {
             ParentID: a.id
           }
-        },{
+        }),{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -708,11 +708,11 @@ export default {
       this.data1 = [];
       let _this = this;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",this.qs.stringify( {
           object: {
             ParentID: id
           }
-        },{
+        }),{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -828,13 +828,13 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",this.qs.stringify( {
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr[0]
           }
-        },{
+        }),{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -898,13 +898,13 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",this.qs.stringify( {
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr1[0]
           }
-        },{
+        }),{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -939,13 +939,13 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", this.qs.stringify( {
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr2[0]
           }
-        },{
+        }),{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
