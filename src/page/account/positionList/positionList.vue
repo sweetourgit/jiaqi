@@ -126,12 +126,17 @@ export default {
           } else {
             var _this = this;
             this.$http
-              .post(this.GLOBAL.serverSrc + "/api/org/positioninsert", {
-                Object: {
+              .post(this.GLOBAL.serverSrc + "/org/api/positioninsert", {
+                object: {
                   name: this.form.positionName
+                }
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
                 }
               })
               .then(function(response) {
+                console.log(response)
                 _this.addPosition = false;
                 _this.form.positionName = "";
                 _this.$message.success("添加成功");
@@ -148,7 +153,7 @@ export default {
         if(valid){
           let _this = this;
           this.$http
-            .post(this.GLOBAL.serverSrc + "/api/org/positionsave", {
+            .post(this.GLOBAL.serverSrc + "/org/api/positionsave", {
               object: {
                 id: this.jj.id,
                 name: this.updata.positionName,
@@ -159,8 +164,13 @@ export default {
                 createUser: "string"
               },
               id: 0
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
         })
         .then(function(response) {
+          console.log(response)
           _this.pageList();
           _this.$message.success("修改成功！");
           _this.jj = "";
@@ -182,8 +192,12 @@ export default {
       })
         .then(() => {
           this.$http
-            .post(this.GLOBAL.serverSrc + "/api/org/positiondelete", {
+            .post(this.GLOBAL.serverSrc + "/org/api/positiondelete", {
               id: this.tableData[index].id
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+              }
             })
             .then(function(response) {
               _this.tableData.splice(index, 1);
@@ -216,16 +230,19 @@ export default {
       this.tableData = [];
       let _this = this;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/positionpage", {
+        .post(this.GLOBAL.serverSrc + "/org/api/positionpage", {
           object: {
             isDeleted: 0
           },
           pageSize: _this.pagesize,
           pageIndex: _this.currentPage,
           id: 0
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
         })
         .then(function(response) {
-          console.log(response)
           _this.total = response.data.total;
           for (let i = 0; i < response.data.objects.length; i++) {
             if (response.data.objects[i].isDeleted !== 1) {
