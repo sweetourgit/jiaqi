@@ -595,7 +595,7 @@
       countryForm(formName) {
         this.$refs[formName].validate(valid => {
           if(valid) {
-            this.$message.success('验证成功！');
+            this.$message.success('保存成功！');
             if(formName == 'countryPopup'){
               this.addState = false;
               this.$refs['countryPopup'].resetFields()
@@ -603,8 +603,6 @@
               this.editState = false;
               this.$refs['editCountryPopup'].resetFields()
             }
-          } else {
-            this.$message.error('验证失败！') ;
           }
         })
       },
@@ -654,7 +652,7 @@
       provinceForm(formName){
         this.$refs[formName].validate(valid => {
           if(valid) {
-            this.$message.success('验证成功！');
+            this.$message.success('保存成功！');
             if(formName == 'provincePopup'){
               this.addProvince = false;
               this.$refs['provincePopup'].resetFields();
@@ -662,8 +660,6 @@
               this.editProvince = false;
               this.$refs['editProvincePopup'].resetFields();
             }
-          } else {
-            this.$message.error('验证失败！') ;
           }
         })
       },
@@ -719,8 +715,6 @@
               this.editCity = false;
               this.$refs['editCityPopup'].resetFields();
             }
-          } else {
-            this.$message.error('验证失败！') ;
           }
         })
       },
