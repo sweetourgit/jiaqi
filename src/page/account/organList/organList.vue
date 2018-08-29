@@ -70,7 +70,7 @@
                          </el-select>
                        </el-form-item>
 
-                       <el-form-item label="子部门1" class="form-lala">
+                       <!-- <el-form-item label="子部门1" class="form-lala">
                          <el-select v-model="value1" placeholder="请选择"   @change="HandChange1()" class="form-xi">
                            <el-option
                              v-for="item in options1"
@@ -101,7 +101,7 @@
                              :value="item.value">
                            </el-option>
                          </el-select>
-                       </el-form-item>
+                       </el-form-item> -->
 
 
 
@@ -303,28 +303,28 @@ export default {
       tableList: [
         {
           id: "001",
-          name: "二狗",
+          name: "李易峰",
           position: "经理",
           phone: "13011111111",
           sex: "男"
         },
         {
           id: "002",
-          name: "狗蛋",
+          name: "林心如",
           position: "员工",
           phone: "13022222222",
           sex: "女"
         },
         {
           id: "003",
-          name: "蛋糕",
+          name: "谢霆锋",
           position: "董事长",
           phone: "13033333333",
           sex: "男"
         },
         {
           id: "004",
-          name: "糕点",
+          name: "腾格尔",
           position: "总监",
           phone: "13044444444",
           sex: "男"
