@@ -540,11 +540,11 @@ export default {
         });
 
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", this.qs.stringify({
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           object: {
             parentID: id
           }
-        }),{
+        },{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -614,11 +614,11 @@ export default {
       this.addInput.topDepartment = a.label;
       this.Parents = a;
       var _this = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist", this.qs.stringify({
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           object: {
             ParentID: a.id
           }
-        }),{
+        },{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -643,17 +643,16 @@ export default {
     loadNode(node, resolve) {
       this.data = [];
       let _this = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",this.qs.stringify({
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           object: {
             ParentID: -1
           }
-        }),{
+        },{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(response => {
-          console.log(response)
           for (let i = 0; i < response.data.objects.length; i++) {
             if (node.level === 0) {
               _this.options.push({
@@ -702,11 +701,11 @@ export default {
       this.data1 = [];
       let _this = this;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",this.qs.stringify( {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           object: {
             ParentID: id
           }
-        }),{
+        },{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -822,13 +821,13 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",this.qs.stringify( {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr[0]
           }
-        }),{
+        },{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -892,13 +891,13 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",this.qs.stringify( {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr1[0]
           }
-        }),{
+        },{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -933,13 +932,13 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", this.qs.stringify( {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr2[0]
           }
-        }),{
+        },{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
