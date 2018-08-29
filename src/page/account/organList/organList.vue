@@ -281,7 +281,7 @@ export default {
       },
       rules: {
         name: [{ required: true, message: "请输入部门名称", trigger: "blur" }],
-        radio: [{ required: true, trigger: "blur" }],
+        radio: [{ required: true, message: "请选择虚拟部门", trigger: "blur" }],
         lastStage: [{ required: true, trigger: "blur" }],
         departmentCode: [
           { required: true, message: "请输入部门编码", trigger: "blur" }
@@ -428,35 +428,27 @@ export default {
       this.$refs[a].resetFields();
     },
     // 添加部门
-    appendSave() {
-      if (
-        this.addInput.departmentNames === "" ||
-        this.addInput.departmentCode === "" ||
-        this.addInput.radio === "" ||
-        this.addInput.sort === "" ||
-        this.addInput.phone === "" ||
-        this.addInput.fax === ""
-      ) {
-        this.$message.warning("红☆为必填选项，请认真填写！");
-      } else {
-        var _this = this;
+    appendSave(addInput) {
+       this.$refs[addInput].validate((valid) => {
+         if(valid){
+           var _this = this;
         this.$http
-          .post(this.GLOBAL.serverSrc + "/org/api/deptinsert", {
+          .post(this.GLOBAL.serverSrc + "/org/api/deptinsert", this.qs.stringify({
             object: {
-              id: 0,
-              orgName: this.addInput.name,
-              isDeleted: 0,
-              code: "string",
-              parentID: this.addInput.ParentID,
-              physical: 0,
-              orgCode: 0,
-              rank: this.addInput.sort,
-              officeTel: this.addInput.phone,
-              officeFax: this.addInput.fax,
-              mark: this.addInput.note,
-              isLeaf: this.addInput.lastStage
+              Id: 0,
+              OrgName: this.addInput.name,
+              IsDeleted: 0,
+              Code: "string",
+              ParentID: this.addInput.ParentID,
+              Physical: 0,
+              OrgCode: 0,
+              Rank: this.addInput.sort,
+              OfficeTel: this.addInput.phone,
+              OfficeFax: this.addInput.fax,
+              Mark: this.addInput.note,
+              IsLeaf: this.addInput.lastStage
             }
-          },{
+          }),{
             headers: {
               'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
             }
@@ -476,7 +468,8 @@ export default {
           .catch(function(error) {
             console.log(error);
           });
-      }
+         }
+       })
     },
     qq(a) {
       this.dataNum = a;
@@ -528,9 +521,9 @@ export default {
       var _this = this;
       this.deleteNum.push(id);
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptdelete", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptdelete", this.qs.stringify({
           id: id
-        },{
+        }),{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -660,6 +653,7 @@ export default {
           }
         })
         .then(response => {
+          console.log(response)
           for (let i = 0; i < response.data.objects.length; i++) {
             if (node.level === 0) {
               _this.options.push({
@@ -1345,5 +1339,8 @@ export default {
 .updataLabelWidth-input{
   width:250px;
   margin-right:200px;
+}
+.add_radio>>>.el-form-item__error{
+  left:78px;
 }
 </style>
