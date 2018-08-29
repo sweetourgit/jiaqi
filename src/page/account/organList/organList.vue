@@ -55,11 +55,17 @@
               <el-form-item label="部门名称" :label-width="updataLabelWidth" prop="orgName">
                 <el-input v-model="updata.orgName" auto-complete="off" class="updataLabelWidth-input"></el-input>
               </el-form-item>
+
+              <el-form-item label="父级部门" :label-width="Width" prop="value" class="updataLabelWidth-input">
+                  <el-input v-model="updata.value" auto-complete="off" :disabled="true" class="add-input"></el-input>
+              </el-form-item>
+
+
               <!-- <span class="cascaderTitle">上级部门</span>
               <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader> -->
 
 
-                        <el-form-item label="父级部门" class="form-la">
+                        <!-- <el-form-item label="父级部门" class="form-la">
                          <el-select v-model="value" placeholder="请选择" @change="HandChange()" class="form-xi">
                            <el-option
                              v-for="item in options"
@@ -68,7 +74,7 @@
                              :value="item.value">
                            </el-option>
                          </el-select>
-                       </el-form-item>
+                       </el-form-item> -->
 
                        <!-- <el-form-item label="子部门1" class="form-lala">
                          <el-select v-model="value1" placeholder="请选择"   @change="HandChange1()" class="form-xi">
@@ -431,9 +437,8 @@ export default {
     appendSave(addInput) {
        this.$refs[addInput].validate((valid) => {
          if(valid){
-           var _this = this;
-        this.$http
-          .post(this.GLOBAL.serverSrc + "/org/api/deptinsert", this.qs.stringify({
+        var _this = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptinsert", {
             object: {
               Id: 0,
               OrgName: this.addInput.name,
@@ -441,29 +446,34 @@ export default {
               Code: "string",
               ParentID: this.addInput.ParentID,
               Physical: 0,
-              OrgCode: 0,
+              OrgCode: this.addInput.departmentCode,
               Rank: this.addInput.sort,
               OfficeTel: this.addInput.phone,
               OfficeFax: this.addInput.fax,
               Mark: this.addInput.note,
               IsLeaf: this.addInput.lastStage
             }
-          }),{
+          },{
             headers: {
               'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
             }
           })
           .then(function(response) {
-            _this.addSubdivision = false;
-            let num = Object();
-            num.id = _this.addInput.ParentID;
-            num.isLeaf = _this.addInput.lastStage;
-            num.key = 0;
-            num.label = _this.addInput.topDepartment;
-            _this.treeClick(num);
-            _this.addInput.departmentNames = "";
-            _this.$refs["addInput"].resetFields();
-            _this.$message.success("添加成功");
+            console.log(response)
+            if(response.data.isSuccess == false){
+              _this.$message.error("添加失败,部门名称或部门编码已存在");
+            } else {
+               _this.addSubdivision = false;
+              let num = Object();
+              num.id = _this.addInput.ParentID;
+              num.isLeaf = _this.addInput.lastStage;
+              num.key = 0;
+              num.label = _this.addInput.topDepartment;
+              _this.treeClick(num);
+              _this.addInput.departmentNames = "";
+              _this.$refs["addInput"].resetFields();
+              _this.$message.success("添加成功");
+            }
           })
           .catch(function(error) {
             console.log(error);
@@ -761,8 +771,7 @@ export default {
     // 编辑部门
     editDepartment1(id) {
       this.editDepartment = true;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptget", {
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptget", {
           object: {
             id: id
           }

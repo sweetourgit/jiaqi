@@ -105,8 +105,13 @@
         <el-form :model="countryPopup" status-icon :rules="countryRules" ref="countryPopup">
           <el-form-item label="选择大洲:" prop="select" :label-width="formLabelWidth">
             <el-select class="country_select" v-model="countryPopup.select" placeholder="请选择">
-              <el-option label="北美洲" value="shanghai"></el-option>
-              <el-option label="亚洲" value="beijing"></el-option>
+              <el-option label="亚洲" value="1">亚洲</el-option>
+              <el-option label="欧洲" value="2">欧洲</el-option>
+              <el-option label="大洋洲 澳洲" value="3">大洋洲 澳洲</el-option>
+              <el-option label="北美洲" value="4">北美洲</el-option>
+              <el-option label="南美洲" value="5">南美洲</el-option>
+              <el-option label="非洲" value="6">非洲</el-option>
+              <el-option label="南极洲" value="7">南极洲</el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="国家名称:" :label-width="formLabelWidth" prop="countryName">
