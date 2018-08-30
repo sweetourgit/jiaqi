@@ -194,7 +194,7 @@
             <div class="kk">
             <div class="booms">
                 <span class="addTitle">添加成员</span>
-                <el-form class="from-content" :model="updata">
+                <el-form class="from-content" :model="updata1">
                     <el-form-item :label-width="LabelWidth">
                         <el-input v-model="person.search" auto-complete="off" class="searchInput" placeholder="输入名称检索"></el-input>
                     </el-form-item>
@@ -254,8 +254,10 @@ export default {
       editDepartment: false,
       updata: {
         radio: "1",
-        lastStage: ""
+        lastStage: "2",
+        value: ''
       },
+      updata1: {},
       updataLabelWidth: "90px",
       // 级联选择器
       options: [],
@@ -459,7 +461,6 @@ export default {
             }
           })
           .then(function(response) {
-            console.log(response)
             if(response.data.isSuccess == false){
               _this.$message.error("添加失败,部门名称或部门编码已存在");
             } else {
@@ -531,9 +532,9 @@ export default {
       var _this = this;
       this.deleteNum.push(id);
       this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptdelete", this.qs.stringify({
+        .post(this.GLOBAL.serverSrc + "/org/api/deptdelete", {
           id: id
-        }),{
+        },{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
@@ -710,8 +711,7 @@ export default {
     getUser(key, label, id, isLeaf, resolve) {
       this.data1 = [];
       let _this = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           object: {
             ParentID: id
           }
@@ -766,21 +766,22 @@ export default {
       if (this.Parents.isLeaf == 2 || this.Parents.isLeaf == 0) {
         this.treeKey.push(this.Parents.id);
       }
-      let _this = this;
     },
     // 编辑部门
     editDepartment1(id) {
-      this.editDepartment = true;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptget", {
-          object: {
-            id: id
-          }
+      this.updata = {
+        radio: "1",
+        lastStage: "2"
+      }
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptget",{
+          id: id
         },{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(res => {
+          this.updata.id = id;
           this.updata.orgName = res.data.object.orgName;
           this.updata.departmentCode = res.data.object.orgCode;
           this.updata.sort = res.data.object.rank;
@@ -788,6 +789,18 @@ export default {
           this.updata.fax = res.data.object.officeFax;
           this.updata.note = res.data.object.mark;
           this.updata.lastStage = String(res.data.object.isLeaf);
+          this.updata.parentID = res.data.object.parentID;
+          this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptget",{
+            id:res.data.object.parentID
+          },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
+        }).then(res => {
+         this.updata.value = res.data.object.orgName
+         this.editDepartment = true;
+        }).catch(err => {})
+          
         })
         .catch(err => {});
     },
@@ -859,32 +872,27 @@ export default {
     // 编辑部门弹窗
     updataEditSave(updata) {
       let _this = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptsave", {
+      console.log(this.updata)
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptsave", {
           object: {
             id: this.updata.id,
             orgName: this.updata.orgName,
-            isDeleted: 0,
-            code: "string",
             parentID: this.updata.parentID,
-            physical: 0,
-            orgCode: 0,
-            rank: this.updata.rank,
-            officeTel: this.updata.officeTel,
-            officeFax: this.updata.officeFax,
-            mark: this.updata.mark,
-            isLeaf: this.updata.isLeaf,
-            loadLeader: true,
-            createUser: "string",
-            createTime: "2018-07-16T01:23:50.963Z"
-          },
-          id: 0
+            orgCode: this.updata.departmentCode,
+            rank: this.updata.sort,
+            officeTel: this.updata.phone,
+            officeFax: this.updata.fax,
+            mark: this.updata.note,
+            isLeaf: this.updata.lastStage,
+            physical: this.updata.radio,
+          }
         },{
           headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(function(response) {
+          console.log(response)
           _this.$message.success("修改成功！");
           _this.editDepartment = false;
         })

@@ -7,7 +7,7 @@ import '../static/UE/ueditor.config.js'
 import '../static/UE/ueditor.all.min.js'
 import '../static/UE/lang/zh-cn/zh-cn.js'
 import '../static/UE/ueditor.parse.min.js'
-import jquery from  'jquery'
+
 // element-ui
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -18,7 +18,6 @@ import axios from 'axios'
 import qs from 'qs'
 Vue.prototype.$http = axios
 Vue.prototype.qs = qs
-Vue.prototype.$https = jquery
 import '@/style/main.css'
 //global variable
 Vue.prototype.GLOBAL = global
