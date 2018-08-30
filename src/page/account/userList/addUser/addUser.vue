@@ -507,12 +507,16 @@ import Permission from '@/page/account/userList/addUser/permission'
           var that = this
           // 获取顶级，第一级城市beg
           this.$http.post(
-            this.GLOBAL.serverSrc + "/api/org/deptlist",
+            this.GLOBAL.serverSrc + "/org/api/deptlist",
             {
               'order': 'string',
               'object': {
                 'isDeleted': 0,
                 'parentID': this.arr[0]
+              }
+            },{
+              headers:{
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
               }
             }
           )
@@ -541,12 +545,16 @@ import Permission from '@/page/account/userList/addUser/permission'
           var that = this
           // 获取顶级，第一级城市beg
           this.$http.post(
-            this.GLOBAL.serverSrc + "/api/org/deptlist",
+            this.GLOBAL.serverSrc + "/org/api/deptlist",
             {
               'order': 'string',
               'object': {
                 'isDeleted': 0,
                 'parentID': this.arr1[0]
+              }
+            },{
+              headers:{
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
               }
             }
           )
@@ -579,12 +587,16 @@ import Permission from '@/page/account/userList/addUser/permission'
           var that = this
           // 获取顶级，第一级城市beg
           this.$http.post(
-            this.GLOBAL.serverSrc + "/api/org/deptlist",
+            this.GLOBAL.serverSrc + "/org/api/deptlist",
             {
               'order': 'string',
               'object': {
                 'isDeleted': 0,
                 'parentID': this.arr2[0]
+              }
+            },{
+              headers:{
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
               }
             }
           )
@@ -650,9 +662,9 @@ import Permission from '@/page/account/userList/addUser/permission'
              if (action === 'confirm') {
 
                this.$http.post(
-                 this.GLOBAL.serverSrc + "/api/org/userinsert",
+                 this.GLOBAL.serverSrc + "/org/api/userinsert",
                  // "http://api.dayuntong.com:3009/api/org/userinsert",
-                 ({
+                 {
                    "Object": {
                      "createTime": "2018-06-20T09:35:52.822Z",
                      "isDeleted": 0,
@@ -667,7 +679,11 @@ import Permission from '@/page/account/userList/addUser/permission'
                      "userType": this.ruleForm.type,
                      "userState":1
                    }
-                 })
+                 },{
+                   headers:{
+                     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                   }
+                 }
                )
                  .then(function (obj) {
                      that.$message({
@@ -708,9 +724,9 @@ import Permission from '@/page/account/userList/addUser/permission'
               if (action === 'confirm') {
 
                 this.$http.post(
-                  this.GLOBAL.serverSrc + "/api/org/userinsert",
+                  this.GLOBAL.serverSrc + "/org/api/userinsert",
                   // "http://api.dayuntong.com:3009/api/org/userinsert",
-                  ({
+                  {
                     "Object": {
                       "createTime": "2018-06-20T09:35:52.822Z",
                       "isDeleted": 0,
@@ -725,7 +741,11 @@ import Permission from '@/page/account/userList/addUser/permission'
                       "userType": this.ruleForm.type,
                       "userState":2
                     }
-                  })
+                  },{
+                    headers:{
+                      'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                    }
+                  }
                 )
                   .then(function (obj) {
                     that.$message({
@@ -763,9 +783,9 @@ import Permission from '@/page/account/userList/addUser/permission'
             if (valid) {
               var that = this
               this.$http.post(
-                this.GLOBAL.serverSrc + "/api/org/userinsert",
+                this.GLOBAL.serverSrc + "/org/api/userinsert",
                 // "http://api.dayuntong.com:3009/api/org/userinsert",
-                ({
+                {
                   "Object": {
                     "createTime": "2018-06-20T09:35:52.822Z",
                     "passWord": this.ruleForm.phone,
@@ -782,7 +802,11 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "userState":1
                   },
                   "id": 0
-                })
+                },{
+                  headers:{
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                  }
+                }
               )
                 .then(function (obj) {
                     if(obj.status == 200){
@@ -814,8 +838,8 @@ import Permission from '@/page/account/userList/addUser/permission'
           this.$refs[formName].validate((valid) => {
             if (valid) {
               this.$http.post(
-                this.GLOBAL.serverSrc + "/api/org/usersave",
-                // "http://api.dayuntong.com:3009/api/org/usersave",
+                this.GLOBAL.serverSrc + "/org/api/usersave",
+                // "http://api.dayuntong.com:3009/org/api/usersave",
                 {
                   "Object": {
                     "id": this.uid,
@@ -833,6 +857,10 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "userType": this.ruleForm.type
                   },
                   "id": 0
+                },{
+                  headers:{
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                  }
                 }
               )
                 .then(function (obj) {
@@ -881,12 +909,16 @@ import Permission from '@/page/account/userList/addUser/permission'
       var that = this
       // 获取顶级，第一级城市beg
       this.$http.post(
-        this.GLOBAL.serverSrc + "/api/org/deptlist",
+        this.GLOBAL.serverSrc + "/org/api/deptlist",
         {
           'order': 'string',
           'object': {
             'isDeleted': 0,
             'parentID': -1
+          }
+        },{
+          headers:{
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
           }
         }
       )
@@ -902,35 +934,23 @@ import Permission from '@/page/account/userList/addUser/permission'
         .catch(function (obj) {
         })
 
-      //console.log(this.$route.query.id)
+      console.log(this.$route.query.id)
       if(this.$route.query.id){
         this.buttonchange = true
         this.buttonsubmit = false
         this.uid = this.$route.query.id
         var that = this
         this.$http.post(
-          // "http://api.dayuntong.com:3009/api/org/userget",
-          this.GLOBAL.serverSrc + "/api/org/userget",
+         /* "http://192.168.1.168:6001/org/api/userget",*/
+          this.GLOBAL.serverSrc + "/org/api/userget",
           {
             "object": {
-              "id": that.$route.query.id,
-              "createTime": "2018-06-21T09:35:32.191Z",
-              "isDeleted": 0,
-              "code": "string",
-              "mobile": "string",
-              "name": "string",
-              "email": "string",
-              "userCode": "string",
-              "iDcard": "string",
-              "tourGuide": "string",
-              "sex": 1,
-              "userType": 1,
-              "userState": 0
+              id: that.$route.query.id,
             },
-            "pageSize": 0,
-            "pageIndex": 0,
-            "isGetAll": true,
-            "id":that.$route.query.id
+          },{
+            headers:{
+              'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
           }
         )
           .then(function (obj) {
