@@ -152,8 +152,11 @@
       <div class="button-list" >
         <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>
       </div>
+      <!-- 其实这个表格遍历数据的时候是有问题的,因为目前没有数据,每次遍历的都是addtable里面的数据,每次点击库存都会添加一条,这个地方应该是点击库存的时候传一个id按照这个id遍历数据 -->
       <el-table
-        :data="addtable"
+        v-for="data in addtable"
+        :key=data.id
+        :data="data.allprice"
         border
         style="width: 1340px;margin:0 auto;"
         :header-cell-style="getRowClass"
@@ -171,39 +174,99 @@
           label="值"
           align="center"
          >
-         <template slot-scope="scope">
-           
-              <div v-for="(data,index) in addtable[scope.$index].price"  :key="data.id" v-show="aa" style="float:left">
-                <!-- 输入属性的input -->
-
-                  <el-input  id="rr" style="width:180px;" v-model="addtable[scope.$index].price[index].value"  type="text" ></el-input>
-                  <!--  v-model="addtable[scope.$index].price[index].value" -->
-                  <!-- v-model="addtable[scope.$index].price.str" -->
-                  <!-- @keyup.enter.native="searchEnterFun" -->
-
+         
+        <template slot-scope="scope" prop="ll">
+              <template v-if="scope.row.ll == ''">
+                <el-button @click="skuadd()" type="primary" v-show="addsku" size="mini" style="float:left">生成sku</el-button>
+              </template>         
+           <template  slot-scope="scope" v-else>           
+              <div v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  :key="data.id" v-show="aa" style="float:left">
+                  <el-input  id="rr" style="width:100px;" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price"  type="text" ></el-input>
+                 <!-- v-model="addtable[scope.$index].price[index].value" -->
+                 <!-- v-model="addtable[addtable.length-1].allpricep[scope.$index].value" -->
                   <el-button  style="margin-right:10px;" size="mini" type="danger">删除</el-button>
-
-                
               </div>
-                <el-button id="vv"  plain v-show="bb" v-for="(data,index) in addtable[scope.$index].price"  :key="data.id" style="float:left;margin-right:10px;" size="mini" type="primary">{{addtable[scope.$index].price[index].value}}</el-button>
+                <el-button :id="'vv' + index" plain v-show="bb" v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  
+                :key="data.id" style="float:left;margin-right:10px;"  type="primary"
+                @click="choice(data, index,addtable[addtable.length-1].allprice[scope.$index])"
+                >
+                  {{addtable[addtable.length-1].allprice[scope.$index].value[index].price}}
+                </el-button>
             
-         </template>
+            </template>
+        </template>
+         
+         <!-- 生成sku的按钮 -->
+        
         </el-table-column>
         <el-table-column label="操作"
           width="300"
           align="center">
 
         <template slot-scope="scope" prop="ll">
-          <template v-if="scope.row.ll == '确认属性值'">
-            <el-button v-show="qq" @click="gain" size="mini" type="primary">{{addtable[addtable.length - 1].allprice[addtable[addtable.length-1].allprice.length-1].ll}}</el-button>            
+          <template v-if="scope.row.ll == ''">
+            <el-button v-show="qq" @click="gain" size="mini" type="primary">确认属性值</el-button>
+             <!--重新设置属性  -->
+            <el-button v-show="again" type="danger" @click="back" size="mini">重新设置属性</el-button>           
           </template>
           <template v-else>
-            <el-button v-show="pp" @click="addInput(scope.row,scope.$index)" size="mini" type="primary">添加值</el-button>            
+            <el-button v-show="pp" @click="addInput(scope.row,scope.$index)" size="mini" type="primary" >添加值</el-button>
+            <el-button v-show="close"  size="mini" type="primary"  disabled>添加值</el-button>            
+                        
           </template>
         </template>
 
         </el-table-column>
       </el-table>
+
+      <!-- sku -->
+
+      <el-table
+       v-show="skuList"
+      
+        :data="ccc"
+        
+        border
+         style="width: 1340px;margin:30px auto;"
+        :header-cell-style="getRowClass">
+      <el-table-column
+        prop="id"
+        label="ID"
+        width="180"
+        align="center"
+        >
+      </el-table-column>
+      <el-table-column
+        prop="ddd"
+        label="名称"
+        width="180"
+        align="center"
+        >
+
+          
+      </el-table-column>
+
+      <el-table-column
+        prop="name"
+        align="center"
+        label="清位时间">
+      </el-table-column>
+        <el-table-column
+        prop="name"
+        align="center"
+        label="出行模板">
+      </el-table-column>
+        <el-table-column
+        prop="name"
+        align="center"
+        label="操作">
+        <template slot-scope="scope">
+            <el-button size="mini" type="primary">主要按钮</el-button>
+            <el-button size="mini" type="primary">主要按钮</el-button>
+            <el-button size="mini" type="danger">危险按钮</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
     </div>
     <!-- 价格 -->
     <div v-else>
@@ -273,9 +336,7 @@ import DateList from './component/DateList'
         isCollapse: true,
         aaa:0,
         // 属性按钮选中效果
-        mm:true,
-        
-      
+        mm:true, 
         // 添加值按钮
         pp:true,
         // 确认属性值按钮
@@ -284,6 +345,20 @@ import DateList from './component/DateList'
         aa:true,
       //输入框变为按钮
         bb:false,
+      // 重新设计属性
+        again:false,
+      // 关闭添加属性按钮
+        close:false,
+      // 属性按钮选择
+        select:false,
+      // 生成sku按钮
+        addsku:false,
+      // sku列表
+        skuList:false,
+      // 显示sku的数组
+        ccc:[],
+      // sku的id
+        skuid : 0,
       // 按钮列表
       buttonList: [
         // pp 是开关
@@ -415,12 +490,16 @@ import DateList from './component/DateList'
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
       },
+
       // 库存按钮出现
       groupStage() {
       this.merchandise = true;
       this.addtable.push({
         allprice:[],
       });
+      this.sku.push({
+      price:[],
+    });
       // console.log(this.addtable);
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -441,6 +520,7 @@ import DateList from './component/DateList'
         this.addtable[this.addtable.length-1].allprice.push({
           id:e.id,
           property:e.button,
+          verifier:e.verifier,
           value:[],
       })
         // 按下按钮给一个true表示按下
@@ -448,7 +528,7 @@ import DateList from './component/DateList'
         // 判断表格中的数据条数,如果数据只有一条那么生成一条确认属性值
         if(this.addtable[this.addtable.length-1].allprice.length ==1){
           this.addtable[this.addtable.length-1].allprice.push({
-            ll:"确认属性值",
+            ll:"",
           })
           this.qq = true;
           this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2;
@@ -480,77 +560,47 @@ import DateList from './component/DateList'
         }
         this.buttonList[key].pp = false;
       }
-    console.log(this.addtable);
+    // console.log(this.addtable);
       
     },
-  // 点击属性按钮方法
-  // begin(e, key) {
-  //   // console.log(e.id);
-  //   if(e.pp == false){
-  //     document.getElementById('kk'+key).style.border = 'solid 1px #409EFF'
-  //     document.getElementById('kk'+key).style.color = '#409EFF'
-  //     this.addtable.push({
-  //     id:e.id,
-  //     property:e.button,
-  //     // "ll":"添加值",
-  //     verifier:e.verifier,
-  //     price:[],
-      
-  //   })
-  //   console.log(this.addtable);
-  //   console.log(key);
-      // this.buttonList[key].pp = true;
-  //     if(this.addtable.length == 1){
-  //       this.addtable.push({
-  //       "ll":'确认属性值',
-  //     })
-  //     // this.pp = false;
-  //     this.qq = true;
-  //     console.log(this.addtable[this.addtable.length - 1].ll);
-  //   this.buttonList[key].key = this.addtable.length - 1; 
-  //   } else {
-  //     var str = this.addtable.splice(this.addtable.length - 2, 1);
-  //     this.addtable.push(str[0]);
-  //     this.buttonList[key].key = this.addtable.length - 2; 
-  //   }
-  //   } else if(e.pp){
-  //     document.getElementById('kk'+key).style.border = 'solid 1px #dcdfe6'
-  //     document.getElementById('kk'+key).style.color = '#606266'
-  //     this.addtable.splice(e.key, 1);
-  //     for(let i=0;i<this.addtable.length - 1;i++){
-  //     this.buttonList[this.addtable[i].id].key = i;
-  //   }
-  //   if(this.addtable.length == 1){
-  //     this.addtable.splice(0, 1);
-  //   }
-  //     this.buttonList[key].pp = false;
-  //   } 
-  //   },
+    //添加属性值功能
+    addInput(b,key){
+      this.aa = true;
+      console.log(b);
+      // 向指定的属性数组中添加属性值
+      this.addtable[this.addtable.length-1].allprice[key].value.push({
+        price:'',
+      })
+      // console.log(this.addtable[this.addtable.length-1].allprice[key].value);
+
+      // console.log(this.addtable[this.addtable.length-1].allprice[key].value.price); 
+
+      // console.log(this.addtable);
+    },
+  
+
+
   // 点击添加按钮方法
-  addInput(b, key){
-    // b 按钮数组中的数据
-    // key 添加之后的列表的值 
-    this.aa = true;
-    this.aaa += 1;
-    // var bbb = 0
-    // bbb+=1
-    // console.log(this.aaa);
-    this.addtable[key].price.push({
-      key: this.aaa-1,
-      // value:b.verifier + this.aaa,
-      // key:key,
-      value:'',
-
-    });
+  // addInput(b, key){
    
-    // console.log(this.sku);
-    // console.log(b);
-    // console.log(this.addtable[key].price[this.addtable[key].price.length - 1].value);
-    // console.log(this.addtable[key].price.length);
-  // this.key = tt;
-     console.log(this.addtable);   
+  //   this.aa = true;
+  //   this.aaa += 1;
+   
+  //   this.addtable[key].price.push({
+  //     key: this.aaa-1,
+    
+  //     value:'',
 
-    },
+  //   });
+   
+  //   console.log(this.sku);
+  //   console.log(b);
+  //   console.log(this.addtable[key].price[this.addtable[key].price.length - 1].value);
+  //   console.log(this.addtable[key].price.length);
+  // this.key = tt;
+  //    console.log(this.addtable);   
+
+  //   },
 
     searchEnterFun:function(e){
         this.addtable[e].price[this.price.length - 1].str.push({
@@ -571,10 +621,18 @@ import DateList from './component/DateList'
 
   // 确认属性值
   gain(){
-     this.aa = false;
-
+    // 属性输入框和删除按钮
+    this.aa = false;
+    // 属性确定之后的按钮
     this.bb = true;
-   console.log(this.addtable);
+    this.qq = false;
+    this.again = true;
+    this.pp = false;
+    this.close = true;
+    this.addsku = true;
+
+  //  console.log(this.addtable);
+   
   // for(var q=0;q<this.addtable.length-1;q++){
   //     this.sku.push({
   //     verifier:this.addtable[q].verifier,
@@ -593,7 +651,6 @@ import DateList from './component/DateList'
   //     }
   //   }
   // }
-    console.log(this.sku);
     // console.log(this.addtable)
     // console.log(this.addtable.length-1);
     
@@ -607,7 +664,78 @@ import DateList from './component/DateList'
     // console.log(addtable[scope.$index].price.value);  
     // console.log(this.model);
   },
+  
+  // 重新设计属性值
+  back(){
+    this.aa = true;    
+    this.bb = false;
+    this.qq = true;
+    this.again = false;
+    this.pp = true;
+    this.close = false;
+    this.addsku = false;
+  },
+
+  // 属性值按钮按下
+  choice(e,key,kk){
+    // 每次点击按钮之后把数据存到sku数组中
+    this.sku[this.sku.length-1].price.push({
+      ID:Date.now(),
+      zhi:kk.value[key].price,
+      name:kk.property,
+    })
+    console.log(this.sku);
+
+    // if(this.select == false){
+    //   document.getElementById('vv'+key).style.border = 'solid 1px #409EFF';
+    //   document.getElementById('vv'+key).style.color= '#fff';
+    //   document.getElementById('vv'+key).style.background= '#409EFF';
+  
+    // }else{
+    //   document.getElementById('vv'+key).style.border = 'solid 1px #b3d8ff';
+    //   document.getElementById('vv'+key).style.color= '#409EFF';
+    //   document.getElementById('vv'+key).style.background= '#409EFF';
     
+    // }
+  },
+  // 生成sku
+  skuadd(){
+    console.log(this.sku);  
+    this.skuList = true;
+    // var bbb = [
+
+    // ];
+    //  var bbb = [].concat(this.sku[this.sku.length-1]);
+    //  console.log(bbb);
+     
+    // 获取点击按钮后的数据
+    var bbb = [];
+    for(var i = 0;i<this.sku[this.sku.length-1].price.length;i++){
+      bbb[i] = this.sku[this.sku.length-1].price[i]
+    }
+     this.sku[this.sku.length-1].price.splice(0,this.sku[this.sku.length-1].price.length);
+
+    // console.log(this.sku[this.sku.length-1].price);
+    console.log(this.sku);
+    console.log(bbb);
+    var ooo = []
+    
+  for(var k = 0;k<bbb.length;k++){
+    ooo.push(
+         bbb[k].name + ':' + bbb[k].zhi      
+    )
+    
+     
+  }
+var ppp = ooo.toString()
+    // sku的id编号
+    this.skuid++;
+    this.ccc.push({
+      id:this.skuid,
+      ddd:ppp,
+    })
+console.log(this.ccc)
+  }
 
 
   }
