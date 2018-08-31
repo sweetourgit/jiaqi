@@ -164,7 +164,7 @@
 
   var store = {
     save(key,value) {
-      window.sessionStorage.setItem(key,value)
+      window.localStorage.setItem(key,value)
     },
     fetch(key) {
       return JSON.parse(sessionStorages.getItem(key)) || []
@@ -408,9 +408,21 @@
                     this.$message.error('账号或密码错误');
                   } else {
                     store.save('token',res.data)
-                    this.$router.push('/userList')
-                    this.$message.success('登录成功');
-                    localStorage.removeItem("code",res.data)
+                    this.$http.post(this.GLOBAL.serverSrc+'/org/api/userinfo',{
+
+                    },{
+                      headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                      }
+                    }).then(res => {
+                      store.save('id',res.data.id)
+                      store.save('name',res.data.name)
+                      this.$router.push('/userList')
+                      this.$message.success('登录成功');
+                      localStorage.removeItem("code",res.data)
+                    }).catch(err => {
+
+                    })
                   }
                 }).catch(err => {
 

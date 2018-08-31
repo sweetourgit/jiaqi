@@ -187,11 +187,11 @@
                 </el-checkbox-group>
               </el-form-item>
             </div>
-            <el-table class="table_lists" :data="tableProducts" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 100%;">
-                <el-table-column prop="name" label="字段名称" width="229" align="center"></el-table-column>
-                <el-table-column prop="selection" label="选填/必填" align="center"></el-table-column>
+            <el-table class="table_lists" :data="tableProducts" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 70%;">
+                <el-table-column prop="name" label="字段名称" width="250" align="center"></el-table-column>
+                <el-table-column prop="selection" label="选填/必填" width="150" align="center"></el-table-column>
                 <el-table-column prop="selectionValue" label="选项值" align="center"></el-table-column>
-                <el-table-column fixed="right" align="center" label="操作">
+                <el-table-column fixed="right" align="center" width="150" label="操作">
                   <template slot-scope="scope">
                     <template v-if="scope.row.name !== '中文姓名'
                     && scope.row.name !== '姓(拼音)'
@@ -688,6 +688,7 @@
 }
 .table_lists{
   position: relative;
+  left: 190px;
 }
 .page{
   float: left;
