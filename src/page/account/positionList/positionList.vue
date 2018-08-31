@@ -40,17 +40,15 @@
                 <el-button class="oppp" type="primary" @click="editSave('updata')">保存</el-button>
             </div>
         </el-dialog>
-        <div class="page">
+        <!-- <div class="page">
           <el-pagination :page-sizes="[2,4,8]" background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+          </el-pagination>
+        </div> -->
+        <div class="page">
+          <el-pagination :page-sizes="[2,4,6,8,10]" background @size-change="handleSizeChange" :page-size="pagesize" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </div>
     </div>
-    <!-- 分页 -->
-      <!-- <div class="page">
-          <span class="page-count">共{{this.tableData.length}}条数据，每页8条</span>
-          <el-pagination @current-change="handleCurrentChange" :page-size="this.pagesize" layout="prev, pager, next, jumper" :total="this.tableData.length"></el-pagination>
-      </div> -->
-
   </div>
 
 </template>
@@ -85,11 +83,11 @@ export default {
       aa: "00",
       rr: "0",
       bb: 9,
-      total: 0,
       //每页的数据条数
-      pagesize: 2,
+      pagesize: 10,
       //默认开始页面
       currentPage: 1,
+      total: 1,
       jj: "",
       hh: [],
       // 添加职位
@@ -259,7 +257,7 @@ export default {
     },
     handleSizeChange(page) {
       this.pagesize = page;
-      console.log(this.pagesize);
+      this.pageList();
     },
     ceils(a) {
       this.addPosition = false;
