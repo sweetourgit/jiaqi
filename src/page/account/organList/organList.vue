@@ -694,6 +694,7 @@ export default {
             _this.treeClick(num[0]);
             this.flag = false;
           }
+          this.treeKey.push(this.Parents.id);
         })
         .catch(function(error) {
           console.log(error);
@@ -797,10 +798,14 @@ export default {
             'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         }).then(res => {
-         this.updata.value = res.data.object.orgName
+          if(this.updata.parentID == -1){
+            this.updata.value = '无'
+          }else{
+             this.updata.value = res.data.object.orgName
+          }
          this.editDepartment = true;
         }).catch(err => {})
-          
+
         })
         .catch(err => {});
     },
@@ -872,7 +877,6 @@ export default {
     // 编辑部门弹窗
     updataEditSave(updata) {
       let _this = this;
-      console.log(this.updata)
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptsave", {
           object: {
             id: this.updata.id,
@@ -892,7 +896,6 @@ export default {
           }
         })
         .then(function(response) {
-          console.log(response)
           _this.$message.success("修改成功！");
           _this.editDepartment = false;
         })
