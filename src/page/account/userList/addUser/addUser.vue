@@ -211,6 +211,7 @@ import Permission from '@/page/account/userList/addUser/permission'
 
 
       return {
+        userState:'',
         options: [],
         value: '',
         options1: [],
@@ -516,7 +517,7 @@ import Permission from '@/page/account/userList/addUser/permission'
               }
             },{
               headers:{
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
               }
             }
           )
@@ -554,7 +555,7 @@ import Permission from '@/page/account/userList/addUser/permission'
               }
             },{
               headers:{
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
               }
             }
           )
@@ -596,7 +597,7 @@ import Permission from '@/page/account/userList/addUser/permission'
               }
             },{
               headers:{
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
               }
             }
           )
@@ -666,22 +667,25 @@ import Permission from '@/page/account/userList/addUser/permission'
                  // "http://api.dayuntong.com:3009/api/org/userinsert",
                  {
                    "Object": {
-                     "createTime": "2018-06-20T09:35:52.822Z",
+                     "id": 0,
+                     "createTime": "2018-08-30T08:52:16.558Z",
                      "isDeleted": 0,
                      "code": "string",
-                     "mobile":this.ruleForm.phone,
-                     "name": this.ruleForm.name,
-                     "email": this.ruleForm.mail,
-                     "userCode": this.ruleForm.number,
-                     "iDcard": this.ruleForm.idcard,
-                     "tourGuide": this.ruleForm.trailid,
-                     "sex": this.ruleForm.sex,
-                     "userType": this.ruleForm.type,
-                     "userState":1
+                     "mobile": "string",
+                     "name": "string",
+                     "email": "string",
+                     "userCode": "string",
+                     "passWord": "string",
+                     "iDcard": "string",
+                     "tourGuide": "string",
+                     "sex": 0,
+                     "userType": 0,
+                     "userState": 2
+
                    }
                  },{
                    headers:{
-                     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                     'Authorization': 'Bearer ' + localStorage.getItem('token')
                    }
                  }
                )
@@ -727,23 +731,25 @@ import Permission from '@/page/account/userList/addUser/permission'
                   this.GLOBAL.serverSrc + "/org/api/userinsert",
                   // "http://api.dayuntong.com:3009/api/org/userinsert",
                   {
-                    "Object": {
-                      "createTime": "2018-06-20T09:35:52.822Z",
+                    "object": {
+                      "id": this.$route.query.id,
+                      "createTime": "2018-08-30T08:52:16.558Z",
                       "isDeleted": 0,
                       "code": "string",
-                      "mobile":this.ruleForm.phone,
-                      "name": this.ruleForm.name,
-                      "email": this.ruleForm.mail,
-                      "userCode": this.ruleForm.number,
-                      "iDcard": this.ruleForm.idcard,
-                      "tourGuide": this.ruleForm.trailid,
-                      "sex": this.ruleForm.sex,
-                      "userType": this.ruleForm.type,
-                      "userState":2
+                      "mobile": "string",
+                      "name": "string",
+                      "email": "string",
+                      "userCode": "string",
+                      "passWord": "string",
+                      "iDcard": "string",
+                      "tourGuide": "string",
+                      "sex": 0,
+                      "userType": 0,
+                      "userState": 3
                     }
                   },{
                     headers:{
-                      'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                      'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
                   }
                 )
@@ -799,12 +805,12 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "tourGuide": this.ruleForm.trailid,
                     "sex": this.ruleForm.sex,
                     "userType": this.ruleForm.type,
-                    "userState":1
+                    "userState":2
                   },
                   "id": 0
                 },{
                   headers:{
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
                   }
                 }
               )
@@ -845,7 +851,7 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "id": this.uid,
                     "createTime": "2018-06-20T09:35:52.822Z",
                     "isDeleted": 0,
-                    "code": "string",
+                    "code": "123",
                     "passWord": this.ruleForm.passWord,
                     "mobile":this.ruleForm.phone,
                     "name": this.ruleForm.name,
@@ -854,12 +860,12 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "iDcard": this.ruleForm.idcard,
                     "tourGuide": this.ruleForm.trailid,
                     "sex": this.ruleForm.sex,
-                    "userType": this.ruleForm.type
+                    "userType": this.ruleForm.type,
+                    "userState":this.userState
                   },
-                  "id": 0
                 },{
                   headers:{
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
                   }
                 }
               )
@@ -918,7 +924,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           }
         },{
           headers:{
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
         }
       )
@@ -944,17 +950,17 @@ import Permission from '@/page/account/userList/addUser/permission'
          /* "http://192.168.1.168:6001/org/api/userget",*/
           this.GLOBAL.serverSrc + "/org/api/userget",
           {
-            "object": {
+
               id: that.$route.query.id,
-            },
+
           },{
             headers:{
-              'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
             }
           }
         )
           .then(function (obj) {
-            console.log(obj.data.object);
+
             that.ruleForm.phone = obj.data.object.mobile
             that.ruleForm.name = obj.data.object.name
             that.ruleForm.mail = obj.data.object.email
@@ -964,9 +970,11 @@ import Permission from '@/page/account/userList/addUser/permission'
             that.ruleForm.sex = String(obj.data.object.sex);
             that.ruleForm.type = String(obj.data.object.userType);
             that.ruleForm.passWord = obj.data.object.passWord
-            if(obj.data.object.userState == 1){
+            that.userState = obj.data.object.userState
+            console.log(that.userState);
+            if(obj.data.object.userState == 2){
                 that.disable = true
-            }else if(obj.data.object.userState == 2){
+            }else if(obj.data.object.userState == 3){
               that.enable = true
             }
           })

@@ -297,7 +297,7 @@
           },
           {
             headers:{
-              'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
             }
           }
         )
@@ -306,12 +306,15 @@
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
               if(arr[k]['userState'] == 0){
-                arr[k]['userState'] = '待审核'
+                arr[k]['userState'] = '未选择'
               }else if (arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '等待审核'
+              }else if(arr[k]['userState'] == 2){
                 arr[k]['userState'] = '正常'
               }else{
                 arr[k]['userState'] = '停用'
               }
+
               if(arr[k]['sex'] == 1){
                 arr[k]['sex'] = '男'
               }else {
@@ -352,7 +355,7 @@
             "id": 0
           },{
             headers:{
-              'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
             }
           }
         )
@@ -361,8 +364,10 @@
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
               if(arr[k]['userState'] == 0){
-                arr[k]['userState'] = '待审核'
+                arr[k]['userState'] = '未选择'
               }else if (arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '等待审核'
+              }else if(arr[k]['userState'] == 2){
                 arr[k]['userState'] = '正常'
               }else{
                 arr[k]['userState'] = '停用'
@@ -409,7 +414,7 @@
             "id": 0
           },{
             headers:{
-              'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
             }
           }
         )
@@ -418,8 +423,10 @@
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
               if(arr[k]['userState'] == 0){
-                arr[k]['userState'] = '待审核'
+                arr[k]['userState'] = '未选择'
               }else if (arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '等待审核'
+              }else if(arr[k]['userState'] == 2){
                 arr[k]['userState'] = '正常'
               }else{
                 arr[k]['userState'] = '停用'
@@ -487,7 +494,7 @@
         },
         {
          headers:{
-           'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+           'Authorization': 'Bearer ' + localStorage.getItem('token')
          }
         }
       )
@@ -497,8 +504,10 @@
           that.tableData3 = obj.data.objects
           that.tableData3.forEach(function (v,k,arr) {
             if(arr[k]['userState'] == 0){
-              arr[k]['userState'] = '待审核'
+              arr[k]['userState'] = '未选择'
             }else if (arr[k]['userState'] == 1) {
+              arr[k]['userState'] = '等待审核'
+            }else if(arr[k]['userState'] == 2){
               arr[k]['userState'] = '正常'
             }else{
               arr[k]['userState'] = '停用'
