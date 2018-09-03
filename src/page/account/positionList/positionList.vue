@@ -130,7 +130,7 @@ export default {
                 }
               },{
                 headers: {
-                  'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               })
               .then(function(response) {
@@ -164,7 +164,7 @@ export default {
               id: 0
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(function(response) {
@@ -194,7 +194,7 @@ export default {
               id: this.tableData[index].id
             },{
               headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
               }
             })
             .then(function(response) {
@@ -237,7 +237,7 @@ export default {
           id: 0
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(function(response) {
