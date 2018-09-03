@@ -457,7 +457,7 @@ export default {
             }
           },{
             headers: {
-              'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
             }
           })
           .then(function(response) {
@@ -536,7 +536,7 @@ export default {
           id: id
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(function(response) {
@@ -557,7 +557,7 @@ export default {
           }
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(res => {
@@ -591,7 +591,7 @@ export default {
           id: 0
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(function(response) {
@@ -631,7 +631,7 @@ export default {
           }
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(response => {
@@ -660,7 +660,7 @@ export default {
           }
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(response => {
@@ -718,7 +718,7 @@ export default {
           }
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(response => {
@@ -778,7 +778,7 @@ export default {
           id: id
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(res => {
@@ -795,7 +795,7 @@ export default {
             id:res.data.object.parentID
           },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         }).then(res => {
           if(this.updata.parentID == -1){
@@ -856,14 +856,14 @@ export default {
           }
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(function(obj) {
-          if (obj.data.objects.length == 0) {
-            that.bumen2 = false;
-            that.bumen1 = false;
-          }
+        if (obj.data.objects.length == 0) {
+          that.bumen2 = false;
+          that.bumen1 = false;
+        }
           var i = "";
           for (i = 0; i < obj.data.objects.length; i++) {
             that.options1.push({
@@ -892,7 +892,7 @@ export default {
           }
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(function(response) {
@@ -919,7 +919,7 @@ export default {
           }
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(function(obj) {
@@ -960,7 +960,7 @@ export default {
           }
         },{
           headers: {
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         })
         .then(function(obj) {
