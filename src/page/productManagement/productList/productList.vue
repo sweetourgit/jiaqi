@@ -1,5 +1,12 @@
 <template>
   <div>
+    <div style="
+     text-align: left;
+    margin-left: 50px;
+    margin-bottom: 20px;">
+    <el-button type="primary"  @click="dialogVisible = true" >添加产品</el-button>
+    </div>
+    <div style="background: #f7f7f7">
     <div class="select_button">
       <el-button v-for="(item, index) in domains"
                  :key="item.key"
@@ -8,7 +15,7 @@
       >{{item.value}}</el-button>
       <!--<router-link to="listInfo">
       </router-link>-->
-      <el-button type="primary"  @click="dialogVisible = true" style="margin-left: 10px">添加产品</el-button>
+
 
     </div>
     <div>
@@ -35,7 +42,7 @@
         </span>
       </el-dialog>
     </div>
-    <div style="height: 155px;">
+    <div style="height: 155px; margin-left: 20px">
       <div class="select_two">
       <div class="id">ID <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
       <div class="product">商品名称 <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
@@ -63,7 +70,19 @@
       </div>
 
     </div>
-    <div class="table_trip">
+    </div>
+
+    <div style="border: 1px solid #e9eaea; margin-top: 30px">
+    <div class="button_select">
+      <el-button plain>编辑</el-button>
+      <el-button plain>复制</el-button>
+      <el-button plain>导出行程</el-button>
+      <el-button plain>退改</el-button>
+      <el-button plain>团期/库存</el-button>
+      <el-button type="danger" plain>删除</el-button>
+    </div>
+
+    <div class="table_trip" style="margin-left: 50px">
       <el-table
         :data="tableData"
         border
@@ -71,60 +90,58 @@
         <el-table-column
           prop="pid"
           label="产品编号"
+          align="center"
          >
         </el-table-column>
         <el-table-column
           prop="type"
           label="类型"
+          align="center"
          >
         </el-table-column>
         <el-table-column
           prop="name"
           label="产品名称"
-          width="180">
+          width="180"
+          align="center">
+          <template slot-scope="scope">
+              <el-button type="text" >{{tableData[scope.$index].name}}</el-button>
+          </template>
         </el-table-column>
         <el-table-column
           prop="mu_address"
           label="目的地"
+          align="center"
          >
         </el-table-column>
         <el-table-column
           prop="options"
           label="操作人"
+          align="center"
          >
         </el-table-column>
         <el-table-column
           label="状态"
+          align="center"
           >
           <template slot-scope="scope">
           <el-button type="success"  size="mini">已上架</el-button>
           </template>
         </el-table-column>
         <el-table-column
+          cell-style
           prop="opers"
           label="推送平台"
+          align="center"
         width="200">
+          <template slot-scope="scope">
+          <div style="color: #f5a142" >{{tableData[scope.$index].opers}}</div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="price"
-          label="价格">
-        </el-table-column>
-        <el-table-column
-          label="操作"
-        width="300">
-          <template slot-scope="scope">
-            <div>
-              <el-button type="primary" size="mini" @click="handleClick(scope.row)">编辑</el-button>
-              <el-button type="primary" size="mini">复制</el-button>
-              <el-button type="primary" size="mini">导出行程</el-button>
-            </div>
-            <div style="margin-top: 10px">
-              <el-button type="primary" size="mini">退改</el-button>
-              <el-button type="primary" size="mini">团期</el-button>
-              <el-button type="primary" size="mini" @click = "groupStage">库存</el-button>
-              <el-button type="danger" size="mini">删除</el-button>
-            </div>
-          </template>
+          label="价格"
+          align="center">
         </el-table-column>
       </el-table>
 
@@ -140,6 +157,7 @@
           :total="400">
         </el-pagination>
       </div>
+    </div>
     </div>
     <el-dialog  :visible.sync="merchandise"  append-to-body width="80%">
      <el-radio-group v-model="isCollapse" style="width:100%">
@@ -166,7 +184,7 @@
           label="属性"
           width="230"
           align="center"
-          
+
           >
         </el-table-column>
         <el-table-column
@@ -174,30 +192,30 @@
           label="值"
           align="center"
          >
-         
+
         <template slot-scope="scope" prop="ll">
               <template v-if="scope.row.ll == ''">
                 <el-button @click="skuadd()" type="primary" v-show="addsku" size="mini" style="float:left">生成sku</el-button>
-              </template>         
-           <template  slot-scope="scope" v-else>           
+              </template>
+           <template  slot-scope="scope" v-else>
               <div v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  :key="data.id" v-show="aa" style="float:left">
                   <el-input  id="rr" style="width:100px;" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price"  type="text" ></el-input>
                  <!-- v-model="addtable[scope.$index].price[index].value" -->
                  <!-- v-model="addtable[addtable.length-1].allpricep[scope.$index].value" -->
                   <el-button  style="margin-right:10px;" size="mini" type="danger">删除</el-button>
               </div>
-                <el-button :id="'vv' + index" plain v-show="bb" v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  
+                <el-button :id="'vv' + index" plain v-show="bb" v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"
                 :key="data.id" style="float:left;margin-right:10px;"  type="primary"
                 @click="choice(data, index,addtable[addtable.length-1].allprice[scope.$index])"
                 >
                   {{addtable[addtable.length-1].allprice[scope.$index].value[index].price}}
                 </el-button>
-            
+
             </template>
         </template>
-         
+
          <!-- 生成sku的按钮 -->
-        
+
         </el-table-column>
         <el-table-column label="操作"
           width="300"
@@ -207,12 +225,12 @@
           <template v-if="scope.row.ll == ''">
             <el-button v-show="qq" @click="gain" size="mini" type="primary">确认属性值</el-button>
              <!--重新设置属性  -->
-            <el-button v-show="again" type="danger" @click="back" size="mini">重新设置属性</el-button>           
+            <el-button v-show="again" type="danger" @click="back" size="mini">重新设置属性</el-button>
           </template>
           <template v-else>
             <el-button v-show="pp" @click="addInput(scope.row,scope.$index)" size="mini" type="primary" >添加值</el-button>
-            <el-button v-show="close"  size="mini" type="primary"  disabled>添加值</el-button>            
-                        
+            <el-button v-show="close"  size="mini" type="primary"  disabled>添加值</el-button>
+
           </template>
         </template>
 
@@ -223,9 +241,9 @@
 
       <el-table
        v-show="skuList"
-      
+
         :data="ccc"
-        
+
         border
          style="width: 1340px;margin:30px auto;"
         :header-cell-style="getRowClass">
@@ -243,7 +261,7 @@
         align="center"
         >
 
-          
+
       </el-table-column>
 
       <el-table-column
@@ -336,7 +354,7 @@ import DateList from './component/DateList'
         isCollapse: true,
         aaa:0,
         // 属性按钮选中效果
-        mm:true, 
+        mm:true,
         // 添加值按钮
         pp:true,
         // 确认属性值按钮
@@ -374,25 +392,25 @@ import DateList from './component/DateList'
           id: "1",
           button: "行程路线",
           pp : false,
-          verifier: "Route",  
+          verifier: "Route",
         },
         {
           id: "2",
           button: "天数",
           pp : false,
-          verifier: "Day", 
+          verifier: "Day",
         },
         {
           id: "3",
           button: "晚数",
           pp : false,
-          verifier: "NightNum",      
+          verifier: "NightNum",
         },
         {
           id: "4",
           button: "房型",
           pp : false,
-          verifier: "House",         
+          verifier: "House",
         },
         {
           id: "5",
@@ -404,7 +422,7 @@ import DateList from './component/DateList'
           id: "6",
           button: "航空公司",
           pp : false,
-          verifier: "Airline",        
+          verifier: "Airline",
         },
         {
           id: "7",
@@ -458,6 +476,11 @@ import DateList from './component/DateList'
       }
     },
     methods: {
+      /*qqq(q,w){
+        console.log(q)
+        console.log(w)
+      },*/
+
       searchHand(){
         alert(13);
       },
@@ -511,7 +534,7 @@ import DateList from './component/DateList'
     },
 
     begin(e,key){
-   
+
       // 如果按钮是未按下的情况下
       if(e.pp == false){
         document.getElementById('kk'+key).style.border = 'solid 1px #409EFF'
@@ -536,10 +559,10 @@ import DateList from './component/DateList'
           // 如果数据条数大于一条,则吧str,也就是确认属性值这条代码拿出来在重新放到数据尾部
           var str = this.addtable[this.addtable.length-1].allprice.splice( this.addtable[this.addtable.length-1].allprice.length -2,1);
           this.addtable[this.addtable.length -1].allprice.push(str[0]);
-          this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2; 
-          console.log(e);         
+          this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2;
+          console.log(e);
         }
-        
+
       }else if(e.pp){
         // 当按钮按下了
         document.getElementById('kk'+key).style.border = 'solid 1px #dcdfe6'
@@ -561,7 +584,7 @@ import DateList from './component/DateList'
         this.buttonList[key].pp = false;
       }
     // console.log(this.addtable);
-      
+
     },
     //添加属性值功能
     addInput(b,key){
@@ -573,32 +596,32 @@ import DateList from './component/DateList'
       })
       // console.log(this.addtable[this.addtable.length-1].allprice[key].value);
 
-      // console.log(this.addtable[this.addtable.length-1].allprice[key].value.price); 
+      // console.log(this.addtable[this.addtable.length-1].allprice[key].value.price);
 
       // console.log(this.addtable);
     },
-  
+
 
 
   // 点击添加按钮方法
   // addInput(b, key){
-   
+
   //   this.aa = true;
   //   this.aaa += 1;
-   
+
   //   this.addtable[key].price.push({
   //     key: this.aaa-1,
-    
+
   //     value:'',
 
   //   });
-   
+
   //   console.log(this.sku);
   //   console.log(b);
   //   console.log(this.addtable[key].price[this.addtable[key].price.length - 1].value);
   //   console.log(this.addtable[key].price.length);
   // this.key = tt;
-  //    console.log(this.addtable);   
+  //    console.log(this.addtable);
 
   //   },
 
@@ -611,7 +634,7 @@ import DateList from './component/DateList'
               //   str:this.price.str,
               // })
               // this.price.splice(this.price.length-1,0,this.price.str);
-              console.log(this.price.length);              
+              console.log(this.price.length);
               console.log(this.price.str);
               console.log(this.price);
               this.aa = false;
@@ -632,7 +655,7 @@ import DateList from './component/DateList'
     this.addsku = true;
 
   //  console.log(this.addtable);
-   
+
   // for(var q=0;q<this.addtable.length-1;q++){
   //     this.sku.push({
   //     verifier:this.addtable[q].verifier,
@@ -647,27 +670,27 @@ import DateList from './component/DateList'
   //         price:this.addtable[q].price[w].value,
   //       })
   //     console.log(this.addtable[q].price[w].value);
-        
+
   //     }
   //   }
   // }
     // console.log(this.addtable)
     // console.log(this.addtable.length-1);
-    
+
     // console.log(this.addtable.price.value);
     // this.sku.push({
     //  key: Date.now(),
-     
+
     // })
     // console.log(this.sku);
 
-    // console.log(addtable[scope.$index].price.value);  
+    // console.log(addtable[scope.$index].price.value);
     // console.log(this.model);
   },
-  
+
   // 重新设计属性值
   back(){
-    this.aa = true;    
+    this.aa = true;
     this.bb = false;
     this.qq = true;
     this.again = false;
@@ -690,24 +713,24 @@ import DateList from './component/DateList'
     //   document.getElementById('vv'+key).style.border = 'solid 1px #409EFF';
     //   document.getElementById('vv'+key).style.color= '#fff';
     //   document.getElementById('vv'+key).style.background= '#409EFF';
-  
+
     // }else{
     //   document.getElementById('vv'+key).style.border = 'solid 1px #b3d8ff';
     //   document.getElementById('vv'+key).style.color= '#409EFF';
     //   document.getElementById('vv'+key).style.background= '#409EFF';
-    
+
     // }
   },
   // 生成sku
   skuadd(){
-    console.log(this.sku);  
+    console.log(this.sku);
     this.skuList = true;
     // var bbb = [
 
     // ];
     //  var bbb = [].concat(this.sku[this.sku.length-1]);
     //  console.log(bbb);
-     
+
     // 获取点击按钮后的数据
     var bbb = [];
     for(var i = 0;i<this.sku[this.sku.length-1].price.length;i++){
@@ -719,13 +742,13 @@ import DateList from './component/DateList'
     console.log(this.sku);
     console.log(bbb);
     var ooo = []
-    
+
   for(var k = 0;k<bbb.length;k++){
     ooo.push(
-         bbb[k].name + ':' + bbb[k].zhi      
+         bbb[k].name + ':' + bbb[k].zhi
     )
-    
-     
+
+
   }
 var ppp = ooo.toString()
     // sku的id编号
@@ -743,9 +766,20 @@ console.log(this.ccc)
   }
 </script>
 <style lang="stylus" scoped>
+  .button_select{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: left;
+    margin-left: 50px;
+
+
+  }
  .select_button{
-   width: 1200px;
-   margin-left: -70px;
+   padding-top: 20px;
+   padding-bottom: 20px;
+   border-bottom: 1px solid #e9eaea;
+   text-align: left;
+   padding-left: 50px;
  }
   .id{
     width: 250px;
@@ -802,7 +836,7 @@ console.log(this.ccc)
   .table_trip{
   }
  .block{
-   float: right;
+  text-align right ;
    margin-top: 50px;
    margin-bottom: 80px;
  }
