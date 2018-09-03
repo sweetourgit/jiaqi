@@ -28,6 +28,7 @@
           submit:function() {
             this.$router.push({ path: '/login' })
             localStorage.clear()
+            sessionStorage.clear()
           },
           listUser() {
             this.$router.push({ path: '/accountInfor' })

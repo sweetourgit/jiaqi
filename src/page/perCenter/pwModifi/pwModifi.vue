@@ -63,18 +63,20 @@ export default {
     submitForm(formName) {
         this.$refs[formName].validate(valid => {
           if (valid) {
-            this.$http.post(this.GLOBAL.serverSrc+'/api/org/userget',{
-              "object":{
-                "id": sessionStorage.getItem('userId'),
+            this.$http.post(this.GLOBAL.serverSrc+'/org/api/userget',{
+                "id": sessionStorage.getItem('id'),
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
               }
             }).then((res) => {
               if(this.form.passWord === res.data.object.passWord){
-                this.$http.post(this.GLOBAL.serverSrc + "/api/org/usersave",{
-                  "Object": {
+                this.$http.post(this.GLOBAL.serverSrc + "/org/api/usersave",{
+                  "object": {
                     "id": res.data.object.id,
-                    "createTime": "2018-06-20T09:35:52.822Z",
-                    "isDeleted": 0,
-                    "code": "string",
+                    "createTime": res.data.object.createTime,
+                    "isDeleted": res.data.object.isDeleted,
+                    "code": res.data.object.code,
                     "passWord": this.form.checkpass,
                     "mobile":res.data.object.mobile,
                     "name": res.data.object.name,
@@ -85,7 +87,10 @@ export default {
                     "sex": res.data.object.sex,
                     "userType": res.data.object.userType
                   },
-                  "id": 0
+                },{
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                  }
                 }).then((res) => {
                   this.$message.success('新密码修改成功！')
                   this.$refs['form'].resetFields()

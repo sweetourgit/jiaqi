@@ -19,7 +19,7 @@
           <el-option label="未选择" value="0"></el-option>
           <el-option label="待审核" value="1"></el-option>
           <el-option label="启用" value="2"></el-option>
-          <el-option label="停用" value="3"></el-option>
+          <el-option label="停用" value="3"></el-option>  
         </el-select>
       </el-form-item>
       <el-form-item label="手机号:" prop="mobile">
@@ -96,7 +96,7 @@
 export default {
   created (){
       this.$http.post(this.GLOBAL.serverSrc+'/org/api/userget',{
-          id: localStorage.getItem('id')
+          id: sessionStorage.getItem('id')
       },{
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),

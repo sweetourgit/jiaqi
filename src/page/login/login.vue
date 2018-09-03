@@ -415,7 +415,7 @@
                         'Authorization': 'Bearer ' + localStorage.getItem('token'),
                       }
                     }).then(res => {
-                      store.save('id',res.data.id)
+                      sessionStorage.setItem('id',res.data.id)
                       store.save('name',res.data.name)
                       this.$router.push('/userList')
                       this.$message.success('登录成功');
