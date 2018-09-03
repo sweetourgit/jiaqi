@@ -628,4 +628,7 @@ background-image url('../../../assets/image/pic.png')
   background-color:#d7d7d7;
   color:#666;
 }
+.el-form-item>>>.el-form-item__error{
+  top: 85%!important;
+}
 </style>
