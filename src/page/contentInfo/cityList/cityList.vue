@@ -88,7 +88,7 @@
           <el-table-column :key="Math.random()" prop="pinyin" label="中文全拼" align="center"></el-table-column>
           <el-table-column :key="Math.random()" prop="initials" label="首字母" align="center"></el-table-column>
           <el-table-column :key="Math.random()" prop="code" label="代码" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="url" label="Url" width="380" align="center"></el-table-column>
+          <el-table-column :key="Math.random()" prop="url" label="Url" width="340" align="center"></el-table-column>
           <el-table-column :key="Math.random()" label="操作" fixed="right" align="center" width="260">
           <template slot-scope="scope">
             <el-button class="table_button" type="primary" @click="CityEdit(scope.$index, scope.row)">编辑</el-button>
@@ -105,8 +105,13 @@
         <el-form :model="countryPopup" status-icon :rules="countryRules" ref="countryPopup">
           <el-form-item label="选择大洲:" prop="select" :label-width="formLabelWidth">
             <el-select class="country_select" v-model="countryPopup.select" placeholder="请选择">
-              <el-option label="北美洲" value="shanghai"></el-option>
-              <el-option label="亚洲" value="beijing"></el-option>
+              <el-option label="亚洲" value="1">亚洲</el-option>
+              <el-option label="欧洲" value="2">欧洲</el-option>
+              <el-option label="大洋洲 澳洲" value="3">大洋洲 澳洲</el-option>
+              <el-option label="北美洲" value="4">北美洲</el-option>
+              <el-option label="南美洲" value="5">南美洲</el-option>
+              <el-option label="非洲" value="6">非洲</el-option>
+              <el-option label="南极洲" value="7">南极洲</el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="国家名称:" :label-width="formLabelWidth" prop="countryName">
@@ -595,7 +600,7 @@
       countryForm(formName) {
         this.$refs[formName].validate(valid => {
           if(valid) {
-            this.$message.success('验证成功！');
+            this.$message.success('保存成功！');
             if(formName == 'countryPopup'){
               this.addState = false;
               this.$refs['countryPopup'].resetFields()
@@ -603,8 +608,6 @@
               this.editState = false;
               this.$refs['editCountryPopup'].resetFields()
             }
-          } else {
-            this.$message.error('验证失败！') ;
           }
         })
       },
@@ -654,7 +657,7 @@
       provinceForm(formName){
         this.$refs[formName].validate(valid => {
           if(valid) {
-            this.$message.success('验证成功！');
+            this.$message.success('保存成功！');
             if(formName == 'provincePopup'){
               this.addProvince = false;
               this.$refs['provincePopup'].resetFields();
@@ -662,8 +665,6 @@
               this.editProvince = false;
               this.$refs['editProvincePopup'].resetFields();
             }
-          } else {
-            this.$message.error('验证失败！') ;
           }
         })
       },
@@ -719,8 +720,6 @@
               this.editCity = false;
               this.$refs['editCityPopup'].resetFields();
             }
-          } else {
-            this.$message.error('验证失败！') ;
           }
         })
       },

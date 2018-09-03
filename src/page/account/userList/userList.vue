@@ -279,7 +279,7 @@
         this.pagesize = val
         this.currentPage = 1
         this.$http.post(
-          this.GLOBAL.serverSrc + "/api/org/userpage",
+          this.GLOBAL.serverSrc + "/org/api/userpage",
           // "http://api.dayuntong.com:3009/api/org/userpage",
           {
             "object": {
@@ -294,6 +294,11 @@
             "pageIndex": 1,
             "isGetAll": true,
             "id": 0
+          },
+          {
+            headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
           }
         )
           .then(function (obj) {
@@ -301,12 +306,15 @@
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
               if(arr[k]['userState'] == 0){
-                arr[k]['userState'] = '待审核'
+                arr[k]['userState'] = '未选择'
               }else if (arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '等待审核'
+              }else if(arr[k]['userState'] == 2){
                 arr[k]['userState'] = '正常'
               }else{
                 arr[k]['userState'] = '停用'
               }
+
               if(arr[k]['sex'] == 1){
                 arr[k]['sex'] = '男'
               }else {
@@ -330,7 +338,7 @@
       handleCurrentChange(val) {
         var that = this
         this.$http.post(
-          this.GLOBAL.serverSrc + "/api/org/userpage",
+          this.GLOBAL.serverSrc + "/org/api/userpage",
           // "http://api.dayuntong.com:3009/api/org/userpage",
           {
             "object": {
@@ -345,6 +353,10 @@
             "pageIndex": val,
             "isGetAll": true,
             "id": 0
+          },{
+            headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
           }
         )
           .then(function (obj) {
@@ -352,8 +364,10 @@
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
               if(arr[k]['userState'] == 0){
-                arr[k]['userState'] = '待审核'
+                arr[k]['userState'] = '未选择'
               }else if (arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '等待审核'
+              }else if(arr[k]['userState'] == 2){
                 arr[k]['userState'] = '正常'
               }else{
                 arr[k]['userState'] = '停用'
@@ -383,7 +397,7 @@
         //搜索
         var that = this
         this.$http.post(
-          this.GLOBAL.serverSrc + "/api/org/userpage",
+          this.GLOBAL.serverSrc + "/org/api/userpage",
           // "http://api.dayuntong.com:3009/api/org/userpage",
           {
             "object": {
@@ -398,6 +412,10 @@
             "pageIndex": 1,
             "isGetAll": true,
             "id": 0
+          },{
+            headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
           }
         )
           .then(function (obj) {
@@ -405,8 +423,10 @@
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
               if(arr[k]['userState'] == 0){
-                arr[k]['userState'] = '待审核'
+                arr[k]['userState'] = '未选择'
               }else if (arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '等待审核'
+              }else if(arr[k]['userState'] == 2){
                 arr[k]['userState'] = '正常'
               }else{
                 arr[k]['userState'] = '停用'
@@ -461,7 +481,7 @@
       //用户列表
       var that = this
       this.$http.post(
-        this.GLOBAL.serverSrc + "/api/org/userpage",
+        this.GLOBAL.serverSrc + "/org/api/userpage",
         {
           "object": {
             "isDeleted": 0,
@@ -471,6 +491,11 @@
           "pageIndex": 1,
           "isGetAll": true,
           "id": 0
+        },
+        {
+         headers:{
+           'Authorization': 'Bearer ' + localStorage.getItem('token')
+         }
         }
       )
         .then(function (obj) {
@@ -479,8 +504,10 @@
           that.tableData3 = obj.data.objects
           that.tableData3.forEach(function (v,k,arr) {
             if(arr[k]['userState'] == 0){
-              arr[k]['userState'] = '待审核'
+              arr[k]['userState'] = '未选择'
             }else if (arr[k]['userState'] == 1) {
+              arr[k]['userState'] = '等待审核'
+            }else if(arr[k]['userState'] == 2){
               arr[k]['userState'] = '正常'
             }else{
               arr[k]['userState'] = '停用'

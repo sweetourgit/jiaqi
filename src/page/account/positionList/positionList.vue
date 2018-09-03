@@ -40,17 +40,15 @@
                 <el-button class="oppp" type="primary" @click="editSave('updata')">保存</el-button>
             </div>
         </el-dialog>
-        <div class="page">
+        <!-- <div class="page">
           <el-pagination :page-sizes="[2,4,8]" background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+          </el-pagination>
+        </div> -->
+        <div class="page">
+          <el-pagination :page-sizes="[2,4,6,8,10]" background @size-change="handleSizeChange" :page-size="pagesize" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </div>
     </div>
-    <!-- 分页 -->
-      <!-- <div class="page">
-          <span class="page-count">共{{this.tableData.length}}条数据，每页8条</span>
-          <el-pagination @current-change="handleCurrentChange" :page-size="this.pagesize" layout="prev, pager, next, jumper" :total="this.tableData.length"></el-pagination>
-      </div> -->
-
   </div>
 
 </template>
@@ -85,11 +83,11 @@ export default {
       aa: "00",
       rr: "0",
       bb: 9,
-      total: 0,
       //每页的数据条数
-      pagesize: 2,
+      pagesize: 10,
       //默认开始页面
       currentPage: 1,
+      total: 1,
       jj: "",
       hh: [],
       // 添加职位
@@ -126,12 +124,17 @@ export default {
           } else {
             var _this = this;
             this.$http
-              .post(this.GLOBAL.serverSrc + "/api/org/positioninsert", {
-                Object: {
+              .post(this.GLOBAL.serverSrc + "/org/api/positioninsert", {
+                object: {
                   name: this.form.positionName
+                }
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
                 }
               })
               .then(function(response) {
+                console.log(response)
                 _this.addPosition = false;
                 _this.form.positionName = "";
                 _this.$message.success("添加成功");
@@ -148,7 +151,7 @@ export default {
         if(valid){
           let _this = this;
           this.$http
-            .post(this.GLOBAL.serverSrc + "/api/org/positionsave", {
+            .post(this.GLOBAL.serverSrc + "/org/api/positionsave", {
               object: {
                 id: this.jj.id,
                 name: this.updata.positionName,
@@ -159,8 +162,13 @@ export default {
                 createUser: "string"
               },
               id: 0
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
         })
         .then(function(response) {
+          console.log(response)
           _this.pageList();
           _this.$message.success("修改成功！");
           _this.jj = "";
@@ -182,8 +190,12 @@ export default {
       })
         .then(() => {
           this.$http
-            .post(this.GLOBAL.serverSrc + "/api/org/positiondelete", {
+            .post(this.GLOBAL.serverSrc + "/org/api/positiondelete", {
               id: this.tableData[index].id
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+              }
             })
             .then(function(response) {
               _this.tableData.splice(index, 1);
@@ -216,16 +228,19 @@ export default {
       this.tableData = [];
       let _this = this;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/positionpage", {
+        .post(this.GLOBAL.serverSrc + "/org/api/positionpage", {
           object: {
             isDeleted: 0
           },
           pageSize: _this.pagesize,
           pageIndex: _this.currentPage,
           id: 0
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
         })
         .then(function(response) {
-          console.log(response)
           _this.total = response.data.total;
           for (let i = 0; i < response.data.objects.length; i++) {
             if (response.data.objects[i].isDeleted !== 1) {
@@ -242,7 +257,7 @@ export default {
     },
     handleSizeChange(page) {
       this.pagesize = page;
-      console.log(this.pagesize);
+      this.pageList();
     },
     ceils(a) {
       this.addPosition = false;

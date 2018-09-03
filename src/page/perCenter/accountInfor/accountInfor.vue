@@ -16,9 +16,10 @@
       </el-form-item>
       <el-form-item label="状态:">
         <el-select class="dropdown" v-model="form.userState" placeholder="请选择状态" :disabled="true">
-          <el-option label="待审核" value="0"></el-option>
-          <el-option label="启用" value="1"></el-option>
-          <el-option label="停用" value="2"></el-option>
+          <el-option label="未选择" value="0"></el-option>
+          <el-option label="待审核" value="1"></el-option>
+          <el-option label="启用" value="2"></el-option>
+          <el-option label="停用" value="3"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="手机号:" prop="mobile">
@@ -94,17 +95,19 @@
 <script>
 export default {
   created (){
-    this.$http.post(this.GLOBAL.serverSrc+'/api/org/userget',{
-      "object":{
-        "id": sessionStorage.getItem('userId'),
-      }
-    }).then((res) => {
-      this.form = res.data.object
-      this.form.sex = String(this.form.sex)
-      this.form.userState = String(this.form.userState)
-    }).catch((err) => {
-      console.log(err);
-    })
+      this.$http.post(this.GLOBAL.serverSrc+'/org/api/userget',{
+          id: localStorage.getItem('id')
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(res => {
+        this.form = res.data.object
+        this.form.sex = String(this.form.sex)
+        this.form.userState = String(this.form.userState)
+      }).catch(err => {
+
+      })
   },
   data () {
     // var rulessex = (rule, value, callback) => {
@@ -179,12 +182,12 @@ export default {
         this.$refs[formName].validate(valid => {
           if (valid) {  
             if(formName == 'form'){
-              this.$http.post(this.GLOBAL.serverSrc + "/api/org/usersave",{
+              this.$http.post(this.GLOBAL.serverSrc + "/org/api/usersave",{
                  "Object": {
                     "id": this.form.id,
-                    "createTime": "2018-06-20T09:35:52.822Z",
-                    "isDeleted": 0,
-                    "code": "string",
+                    "createTime": this.form.createTime,
+                    "isDeleted": this.form.isDeleted,
+                    "code": this.form.code,
                     "passWord": this.form.passWord,
                     "mobile":this.form.mobile,
                     "name": this.form.name,
@@ -195,9 +198,12 @@ export default {
                     "sex": this.form.sex,
                     "userType": this.form.userType
                   },
-                  "id": 0
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
               }).then((res) => {
-                sessionStorage.setItem('name', this.form.name)
+                localStorage.setItem('name', this.form.name)
                 this.$message.success('修改成功！');
                 document.getElementById('nameNum').innerHTML = this.form.name
               }).catch((err) => {

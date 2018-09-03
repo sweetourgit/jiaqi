@@ -1,12 +1,12 @@
 <template>
     <div class="warp">
       <div class="btn">
-        <el-button plain class="btn-button">取消</el-button>
-        <el-button class="btn-button" style="background:#3095fa;color:#fff">保存</el-button>
+        <el-button plain class="btn-button" @click="cancel()">取消</el-button>
+        <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">保存</el-button>
       </div>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" style="padding-left:50px">
           <el-form-item label="产品名称" prop="productName">
-            <el-input maxlength=30 v-model="ruleForm.productName" class="productName-input" placeholder="含.~+/_可用，（）仅能用在句尾，30个汉字以内"></el-input>
+            <el-input maxlength=30 v-model="ruleForm.productName" class="productName-input" placeholder="请输入正确产品名称"></el-input>
             <span class="length-span">{{ruleForm.productName.length}}/30字</span>
           </el-form-item>
           <el-form-item label="出游类型" prop="travelType">
@@ -53,7 +53,7 @@
             <el-input maxlength=8 v-model="ruleForm.highlightWords4" class="highlightWords-input2" placeholder="8个字以内"></el-input>
             <span class="span">{{ruleForm.highlightWords4.length}}/8字</span>
           </el-form-item>
-          <el-form-item label="运营标签" prop="operationLabel">
+          <el-form-item label="运营标签" prop="operationLabel" ref="operationLabel">
             <div class="destination-input">
               <el-tag
                 :key="tag2"
@@ -66,11 +66,12 @@
               <el-input
                 class="input-new-tag"
                 v-if="inputVisible2"
-                v-model="inputVal"
+                v-model="ruleForm.operationLabel"
                 ref="saveTagInput"
                 size="small"
                 @keyup.enter.native="handleInputConfirm2"
                 @blur="handleInputConfirm2">
+                <input style="background:red;width:100px;height:200px" type="image" src="//static.huaweicloud.com/static/v2_resources/images/dev-index/slide3.jpg?sttl=20185293" alt="">
               </el-input>
               <el-button v-else class="button-new-tag" size="small" @click="showInput2">请输入运营标签</el-button>
             </div>
@@ -110,7 +111,7 @@
           </el-form-item>
 
           <el-form-item label="轮播图" prop="slideshow">
-            <el-input v-model="ruleForm.slideshow" disabled style="width:540px;float:left;margin-left:10px;position:relative" placeholder="3-6个轮播图">
+            <el-input v-model="ruleForm.slideshow" disabled style="width:540px;float:left;margin-left:10px;position:relative" placeholder="3-6张图片">
             </el-input>
             <el-upload
             :on-preview="slideshowClick"
@@ -199,11 +200,11 @@ export default {
         inputValue1: '',
       ruleForm:{
         productName: '',
-        travelType: "1",
+        travelType: "",
         placeDeparture: '',
         travelDays: '',
         travelNight: '',
-        orderConfirmationType: "1",
+        orderConfirmationType: "",
         operationLabel: '',
         Excursion: '',
         theme: '',
@@ -215,7 +216,7 @@ export default {
         highlightWords3: '',
         highlightWords4: '',
         avatarImages: '',
-        operationLabel: '',
+        slideshow: '',
         },
       //运营标签
       dynamicTags2: [],
@@ -225,7 +226,7 @@ export default {
         productName: [
           { required: true, message: '不能为空', trigger: 'blur' },
           { min: 0, max: 30, message: '字数超过30汉字限制', trigger: 'blur' },
-          { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9_.~+/]{1,30}$/, message: '含.~+/_可用，（）仅能用在句尾'}
+          { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/]{1,28}([\u4e00-\u9fa5a-zA-Z0-9【】，+/（）]{0,2})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾'}
         ],
         placeDeparture:[
           { required: true, message: '不能为空', trigger: 'blur' }
@@ -269,6 +270,18 @@ export default {
         operationLabel:[
            { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/, message: '不能有标点符号'}
         ],
+        travelType:[
+          { required: true, message: '不能为空', trigger: 'blur' },
+        ],
+        orderConfirmationType:[
+          { required: true, message: '不能为空', trigger: 'blur' },
+        ],
+        // avatarImages:[
+        //   { required: true, message: '不能为空', trigger: 'blur' },
+        // ],
+        // slideshow:[
+        //   { required: true, message: '不能为空', trigger: 'blur' },
+        // ],
       }
     };
   },
@@ -283,6 +296,11 @@ export default {
             this.$message.error('上传视频大小不能超过20MB哦!');
             return false;
         }
+        // const seconds = file.duration % 60;
+        //  if (!seconds) {
+        //     this.$message.error('上传视频时长不能超过20秒哦!');
+        //     return false;
+        // }
       },
       uploadVideoProcess(event, file, fileList){
         this.videoFlag = true;
@@ -312,11 +330,11 @@ export default {
       },
       //视频删除
       handleRemoves(file, fileList) {
-        console.log(file);
+        // console.log(file);
       },
       //轮播图删除
       handleRemoves1(file, fileList) {
-        console.log(file);
+        // console.log(file);
       },
       //运营标签
       handleClose2(tag2) {
@@ -330,13 +348,19 @@ export default {
         });
       },
 
-      handleInputConfirm2() {
-        let inputVal = this.inputVal;
-        if (inputVal) {
-          this.dynamicTags2.push(inputVal);
+     handleInputConfirm2() {
+        this.$refs['operationLabel'].validate()
+        var str = this.ruleForm.operationLabel;
+        var pat =  /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/
+        if(str.match(pat)){
+          let inputVal = this.ruleForm.operationLabel;
+            if (inputVal) {
+              this.dynamicTags2.push(inputVal);
+            }
+            this.inputVisible2 = false;
+            this.ruleForm.operationLabel= '';
         }
-        this.inputVisible2 = false;
-        this.inputVal= '';
+
       },
        // 搜索方法(出发地)
       querySearch(queryString, cb) {
@@ -349,7 +373,6 @@ export default {
           return (restaurant.country.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         }
       },
-
        // 搜索方法(出发地)
       querySearch1(queryString1, cb1) {
         var results1 = queryString1 ? this.tableData1.filter(this.createFilter(queryString1)) : [];
@@ -360,6 +383,21 @@ export default {
         return (restaurant1) => {
           return (restaurant1.country.toLowerCase().indexOf(queryString1.toLowerCase()) === 0);
         }
+      },
+      //保存
+      addsave(ruleForm) {
+        this.$refs[ruleForm].validate((valid) => {
+          if (valid) {
+            this.$message.success("保存成功");
+            location.reload();
+          } else {
+            return false;
+          }
+        });
+      },
+      //取消
+      cancel(){
+        this.$router.push({path: "productList"});
       },
     }
 };

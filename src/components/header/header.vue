@@ -22,14 +22,12 @@
 	    }
 	    },
       created (){
-        this.name = sessionStorage.getItem('name')
+        this.name = localStorage.getItem('name')
       },
 	    methods: {
           submit:function() {
             this.$router.push({ path: '/login' })
-            sessionStorage.removeItem('token')
-            sessionStorage.removeItem('userId')
-            sessionStorage.removeItem('name')
+            localStorage.clear()
           },
           listUser() {
             this.$router.push({ path: '/accountInfor' })

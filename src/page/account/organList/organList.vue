@@ -55,11 +55,17 @@
               <el-form-item label="部门名称" :label-width="updataLabelWidth" prop="orgName">
                 <el-input v-model="updata.orgName" auto-complete="off" class="updataLabelWidth-input"></el-input>
               </el-form-item>
+
+              <el-form-item label="父级部门" :label-width="Width" prop="value" class="updataLabelWidth-input">
+                  <el-input v-model="updata.value" auto-complete="off" :disabled="true" class="add-input"></el-input>
+              </el-form-item>
+
+
               <!-- <span class="cascaderTitle">上级部门</span>
               <el-cascader @active-item-change="department" :props="props" :options="options" filterable change-on-select class="cascader"></el-cascader> -->
 
 
-                        <el-form-item label="父级部门" class="form-la">
+                        <!-- <el-form-item label="父级部门" class="form-la">
                          <el-select v-model="value" placeholder="请选择" @change="HandChange()" class="form-xi">
                            <el-option
                              v-for="item in options"
@@ -68,9 +74,9 @@
                              :value="item.value">
                            </el-option>
                          </el-select>
-                       </el-form-item>
+                       </el-form-item> -->
 
-                       <el-form-item label="子部门1" class="form-lala">
+                       <!-- <el-form-item label="子部门1" class="form-lala">
                          <el-select v-model="value1" placeholder="请选择"   @change="HandChange1()" class="form-xi">
                            <el-option
                              v-for="item in options1"
@@ -101,7 +107,7 @@
                              :value="item.value">
                            </el-option>
                          </el-select>
-                       </el-form-item>
+                       </el-form-item> -->
 
 
 
@@ -188,7 +194,7 @@
             <div class="kk">
             <div class="booms">
                 <span class="addTitle">添加成员</span>
-                <el-form class="from-content" :model="updata">
+                <el-form class="from-content" :model="updata1">
                     <el-form-item :label-width="LabelWidth">
                         <el-input v-model="person.search" auto-complete="off" class="searchInput" placeholder="输入名称检索"></el-input>
                     </el-form-item>
@@ -248,8 +254,10 @@ export default {
       editDepartment: false,
       updata: {
         radio: "1",
-        lastStage: ""
+        lastStage: "2",
+        value: ''
       },
+      updata1: {},
       updataLabelWidth: "90px",
       // 级联选择器
       options: [],
@@ -281,7 +289,7 @@ export default {
       },
       rules: {
         name: [{ required: true, message: "请输入部门名称", trigger: "blur" }],
-        radio: [{ required: true, trigger: "blur" }],
+        radio: [{ required: true, message: "请选择虚拟部门", trigger: "blur" }],
         lastStage: [{ required: true, trigger: "blur" }],
         departmentCode: [
           { required: true, message: "请输入部门编码", trigger: "blur" }
@@ -303,28 +311,28 @@ export default {
       tableList: [
         {
           id: "001",
-          name: "二狗",
+          name: "李易峰",
           position: "经理",
           phone: "13011111111",
           sex: "男"
         },
         {
           id: "002",
-          name: "狗蛋",
+          name: "林心如",
           position: "员工",
           phone: "13022222222",
           sex: "女"
         },
         {
           id: "003",
-          name: "蛋糕",
+          name: "谢霆锋",
           position: "董事长",
           phone: "13033333333",
           sex: "男"
         },
         {
           id: "004",
-          name: "糕点",
+          name: "腾格尔",
           position: "总监",
           phone: "13044444444",
           sex: "男"
@@ -428,51 +436,51 @@ export default {
       this.$refs[a].resetFields();
     },
     // 添加部门
-    appendSave() {
-      if (
-        this.addInput.departmentNames === "" ||
-        this.addInput.departmentCode === "" ||
-        this.addInput.radio === "" ||
-        this.addInput.sort === "" ||
-        this.addInput.phone === "" ||
-        this.addInput.fax === ""
-      ) {
-        this.$message.warning("红☆为必填选项，请认真填写！");
-      } else {
+    appendSave(addInput) {
+       this.$refs[addInput].validate((valid) => {
+         if(valid){
         var _this = this;
-        this.$http
-          .post(this.GLOBAL.serverSrc + "/api/org/deptinsert", {
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptinsert", {
             object: {
-              id: 0,
-              orgName: this.addInput.name,
-              isDeleted: 0,
-              code: "string",
-              parentID: this.addInput.ParentID,
-              physical: 0,
-              orgCode: 0,
-              rank: this.addInput.sort,
-              officeTel: this.addInput.phone,
-              officeFax: this.addInput.fax,
-              mark: this.addInput.note,
-              isLeaf: this.addInput.lastStage
+              Id: 0,
+              OrgName: this.addInput.name,
+              IsDeleted: 0,
+              Code: "string",
+              ParentID: this.addInput.ParentID,
+              Physical: 0,
+              OrgCode: this.addInput.departmentCode,
+              Rank: this.addInput.sort,
+              OfficeTel: this.addInput.phone,
+              OfficeFax: this.addInput.fax,
+              Mark: this.addInput.note,
+              IsLeaf: this.addInput.lastStage
+            }
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
             }
           })
           .then(function(response) {
-            _this.addSubdivision = false;
-            let num = Object();
-            num.id = _this.addInput.ParentID;
-            num.isLeaf = _this.addInput.lastStage;
-            num.key = 0;
-            num.label = _this.addInput.topDepartment;
-            _this.treeClick(num);
-            _this.addInput.departmentNames = "";
-            _this.$refs["addInput"].resetFields();
-            _this.$message.success("添加成功");
+            if(response.data.isSuccess == false){
+              _this.$message.error("添加失败,部门名称或部门编码已存在");
+            } else {
+               _this.addSubdivision = false;
+              let num = Object();
+              num.id = _this.addInput.ParentID;
+              num.isLeaf = _this.addInput.lastStage;
+              num.key = 0;
+              num.label = _this.addInput.topDepartment;
+              _this.treeClick(num);
+              _this.addInput.departmentNames = "";
+              _this.$refs["addInput"].resetFields();
+              _this.$message.success("添加成功");
+            }
           })
           .catch(function(error) {
             console.log(error);
           });
-      }
+         }
+       })
     },
     qq(a) {
       this.dataNum = a;
@@ -524,8 +532,12 @@ export default {
       var _this = this;
       this.deleteNum.push(id);
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptdelete", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptdelete", {
           id: id
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
         })
         .then(function(response) {
           _this.tableData.splice(index, 1);
@@ -539,9 +551,13 @@ export default {
         });
 
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           object: {
             parentID: id
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(res => {
@@ -565,7 +581,7 @@ export default {
       this.members = [];
       let _this = this;
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/userpage", {
+        .post(this.GLOBAL.serverSrc + "/org/api/userpage", {
           object: {
             isDeleted: 0
           },
@@ -573,6 +589,10 @@ export default {
           pageIndex: _this.currentPage,
           isGetAll: true,
           id: 0
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
         })
         .then(function(response) {
           _this.total = response.data.total;
@@ -605,10 +625,13 @@ export default {
       this.addInput.topDepartment = a.label;
       this.Parents = a;
       var _this = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
-          Object: {
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
+          object: {
             ParentID: a.id
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(response => {
@@ -631,10 +654,13 @@ export default {
     loadNode(node, resolve) {
       this.data = [];
       let _this = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
-          Object: {
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
+          object: {
             ParentID: -1
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(response => {
@@ -668,6 +694,7 @@ export default {
             _this.treeClick(num[0]);
             this.flag = false;
           }
+          this.treeKey.push(this.Parents.id);
         })
         .catch(function(error) {
           console.log(error);
@@ -685,10 +712,13 @@ export default {
     getUser(key, label, id, isLeaf, resolve) {
       this.data1 = [];
       let _this = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
-          Object: {
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
+          object: {
             ParentID: id
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(response => {
@@ -737,18 +767,22 @@ export default {
       if (this.Parents.isLeaf == 2 || this.Parents.isLeaf == 0) {
         this.treeKey.push(this.Parents.id);
       }
-      let _this = this;
     },
     // 编辑部门
     editDepartment1(id) {
-      this.editDepartment = true;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptget", {
-          object: {
-            id: id
+      this.updata = {
+        radio: "1",
+        lastStage: "2"
+      }
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptget",{
+          id: id
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(res => {
+          this.updata.id = id;
           this.updata.orgName = res.data.object.orgName;
           this.updata.departmentCode = res.data.object.orgCode;
           this.updata.sort = res.data.object.rank;
@@ -756,9 +790,24 @@ export default {
           this.updata.fax = res.data.object.officeFax;
           this.updata.note = res.data.object.mark;
           this.updata.lastStage = String(res.data.object.isLeaf);
+          this.updata.parentID = res.data.object.parentID;
+          this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptget",{
+            id:res.data.object.parentID
+          },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
+        }).then(res => {
+          if(this.updata.parentID == -1){
+            this.updata.value = '无'
+          }else{
+             this.updata.value = res.data.object.orgName
+          }
+         this.editDepartment = true;
+        }).catch(err => {})
+
         })
         .catch(err => {});
-      // this.options = this.data
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
@@ -799,11 +848,15 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr[0]
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(function(obj) {
@@ -824,26 +877,23 @@ export default {
     // 编辑部门弹窗
     updataEditSave(updata) {
       let _this = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptsave", {
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptsave", {
           object: {
             id: this.updata.id,
             orgName: this.updata.orgName,
-            isDeleted: 0,
-            code: "string",
             parentID: this.updata.parentID,
-            physical: 0,
-            orgCode: 0,
-            rank: this.updata.rank,
-            officeTel: this.updata.officeTel,
-            officeFax: this.updata.officeFax,
-            mark: this.updata.mark,
-            isLeaf: this.updata.isLeaf,
-            loadLeader: true,
-            createUser: "string",
-            createTime: "2018-07-16T01:23:50.963Z"
-          },
-          id: 0
+            orgCode: this.updata.departmentCode,
+            rank: this.updata.sort,
+            officeTel: this.updata.phone,
+            officeFax: this.updata.fax,
+            mark: this.updata.note,
+            isLeaf: this.updata.lastStage,
+            physical: this.updata.radio,
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+          }
         })
         .then(function(response) {
           _this.$message.success("修改成功！");
@@ -861,11 +911,15 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr1[0]
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(function(obj) {
@@ -898,11 +952,15 @@ export default {
       var that = this;
       // 获取顶级，第一级城市beg
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/deptlist", {
+        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           order: "string",
           object: {
             isDeleted: 0,
             parentID: this.arr2[0]
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
           }
         })
         .then(function(obj) {
@@ -1300,5 +1358,8 @@ export default {
 .updataLabelWidth-input{
   width:250px;
   margin-right:200px;
+}
+.add_radio>>>.el-form-item__error{
+  left:78px;
 }
 </style>
