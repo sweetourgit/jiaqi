@@ -6,7 +6,7 @@
     margin-bottom: 20px;">
     <el-button type="primary"  @click="dialogVisible = true" >添加产品</el-button>
     </div>
-    <div style="background: #f7f7f7">
+    <div style="background: #f7f7f7; margin-left: 50px" >
     <div class="select_button">
       <el-button v-for="(item, index) in domains"
                  :key="item.key"
@@ -72,7 +72,7 @@
     </div>
     </div>
 
-    <div style="border: 1px solid #e9eaea; margin-top: 30px">
+    <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px">
     <div class="button_select">
       <el-button plain>编辑</el-button>
       <el-button plain>复制</el-button>
