@@ -151,7 +151,7 @@ export default {
     // var rulessex = (rule, value, callback) => {
     //   if(this.form.sex !== ""){
     //     callback();
-    //   } else {
+    //   } else { 
     //     callback(new Error('请选择性别'));
     //   }
     // }
