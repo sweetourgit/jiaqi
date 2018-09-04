@@ -24,16 +24,16 @@
 
         <el-form-item prop="user" class="user-input">
           <!-- <div><img src="../../../static/login/user.png" class="img" style="width:35px;"></div> -->
-          <el-input  v-model="ruleForm.user" placeholder="手机号/邮箱"></el-input>
+          <el-input  v-model="ruleForm.user" placeholder="手机号/邮箱" @keyup.enter.native="loginForm('ruleForm')"></el-input>
         </el-form-item>
         <el-form-item prop="password" class="password-input">
-          <el-input type="password"  v-model="ruleForm.password" placeholder="密码"></el-input>
+          <el-input type="password"  v-model="ruleForm.password" placeholder="密码" @keyup.enter.native="loginForm('ruleForm')"></el-input>
         </el-form-item>
 
 
         <div class="verify-box">
           <el-form-item class="verification-input">
-            <el-input id="er"  v-model="ruleForm.verification" placeholder="验证码" @focus="aaa()"></el-input>
+            <el-input id="er"  v-model="ruleForm.verification" placeholder="验证码" @focus="aaa()" @keyup.enter.native="loginForm('ruleForm')"></el-input>
             <div  class="pop" v-show="pop">验证码输入错误</div>
             <div  class="pop" v-show="pop1">验证码为空</div>
           </el-form-item>
