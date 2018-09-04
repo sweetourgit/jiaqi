@@ -5,7 +5,6 @@ import organList from '@/page/account/organList/organList'
 import role from '@/page/account/role/role'
 import perList from '@/page/account/perList/perList'
 import accountInfor from '@/page/perCenter/accountInfor/accountInfor'
-import pwModifi from '@/page/perCenter/pwModifi/pwModifi'
 import positionList from '@/page/account/positionList/positionList'
 import login from '@/page/login/login'
 import addRole from '@/page/account/role/addRole'
@@ -67,14 +66,7 @@ export default new Router({
     }, {
       path: '/accountInfor',
       component: accountInfor,
-      name: '账户信息',
-      meta: {
-        keepAlive: true,
-        auth:true}
-    }, {
-      path: '/pwModifi',
-      component: pwModifi,
-      name: '密码修改',
+      name: '个人中心',
       meta: {
         keepAlive: true,
         auth:true}

@@ -153,6 +153,9 @@
               <span class="timeMinute-span">分</span>
             </el-form-item>
           </div>
+          <el-form-item label="产品概括" prop="productSummary">
+            <el-input type="textarea" :autosize="{ minRows: 8, maxRows: 8}" v-model="ruleForm.productSummary" class="productSummary-input"></el-input>
+          </el-form-item>
         </el-form>
     </div>
 </template>
@@ -434,7 +437,7 @@ export default {
   position: absolute;
 }
 .productName-input {
-  width: 550px;
+  width: 548px;
   float: left;
   margin-left: 10px;
 }
@@ -509,7 +512,7 @@ export default {
 }
 .span {
   float: left;
-  margin-left:10px;
+  margin-left:16px;
 }
 .Excursion-select {
   width:166px;
@@ -533,7 +536,7 @@ export default {
   width:120px !important;
 }
 .inputBox{
-  width:550px;
+  width:548px;
   float left;
   margin-left:10px;
 }
@@ -543,7 +546,7 @@ export default {
 }
 .span1{
   float:left;
-  margin-left:10px;
+  margin-left:16px;
 }
 .travelNight-input{
   float:left;
@@ -604,7 +607,7 @@ background-image url('../../../assets/image/pic.png')
 }
 .length-span{
   float:left;
-  margin-left:10px;
+  margin-left:20px;
 }
 .btn-button{
   width:64px;
@@ -616,9 +619,6 @@ background-image url('../../../assets/image/pic.png')
 .el-autocomplete>>>.el-input__inner{
   height:30px!important;
 }
-.el-select>>>.el-input__inner{
-  height:30px!important;
-}
 .el-form-item>>>.el-form-item__label{
   color:#666666;
 }
@@ -627,5 +627,13 @@ background-image url('../../../assets/image/pic.png')
   border-radius: 0px;
   background-color:#d7d7d7;
   color:#666;
+}
+.el-form-item>>>.el-form-item__error{
+  top: 85%!important;
+}
+.productSummary-input{
+  width:544px;
+  float:left;
+  margin-left:8px;
 }
 </style>

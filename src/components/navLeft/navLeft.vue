@@ -59,20 +59,6 @@
               ]
             },
             {
-              name: '个人中心',
-              img: '个人中心.png',
-              items: [
-                {
-                  value: '账户信息',
-                  router:'/accountInfor'
-                },
-                {
-                  value: '密码修改',
-                  router:'/pwModifi'
-                }
-              ]
-            },
-            {
               name: '内容管理',
               img: '内容信息.png',
               items: [
