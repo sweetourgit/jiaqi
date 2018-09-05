@@ -6,7 +6,7 @@
       </div>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" style="padding-left:50px">
           <el-form-item label="产品名称" prop="productName">
-            <el-input maxlength=30 v-model="ruleForm.productName" class="productName-input" placeholder="请输入正确产品名称"></el-input>
+            <el-input v-model="ruleForm.productName" class="productName-input" placeholder="请输入正确产品名称"></el-input>
             <span class="length-span">{{ruleForm.productName.length}}/30字</span>
           </el-form-item>
           <el-form-item label="出游类型" prop="travelType">
@@ -229,7 +229,7 @@ export default {
         productName: [
           { required: true, message: '不能为空', trigger: 'blur' },
           { min: 0, max: 30, message: '字数超过30汉字限制', trigger: 'blur' },
-          { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/]{1,28}([\u4e00-\u9fa5a-zA-Z0-9【】，+/（）]{0,2})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾'}
+          { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/]{1,28}([\u4e00-\u9fa5a-zA-Z0-9【】，+/（）]{0,2})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾,30个字以内。'}
         ],
         placeDeparture:[
           { required: true, message: '不能为空', trigger: 'blur' }
@@ -432,7 +432,7 @@ export default {
 .btn {
   width: 160px;
   height: 44px;
-  right: 0;
+  right: 740px;
   top: -64px;
   position: absolute;
 }
