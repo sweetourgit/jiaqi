@@ -17,23 +17,23 @@
           </div>
           <div class="small1"></div>
           <span class="lowerTitle">下级部门</span>
-          <el-table :data="tableData" border class="divisionTable" max-height="163"  :header-cell-style="getRowClass">
+          <el-table :data="tableData" border class="divisionTable" max-height="220"  :header-cell-style="getRowClass">
             <el-table-column prop="label" label="部门" align="center"></el-table-column>
             <el-table-column label="操作" align="center">
-                <template slot-scope="scope">
-                        <el-button type="primary" size="small" @click="treeClick(scope.row)">进入</el-button>
-                        <el-button type="danger" size="small" @click="remove(scope.$index, scope.row)">删除</el-button>
-                </template>
+              <template slot-scope="scope">
+                <el-button type="primary" size="small" @click="treeClick(scope.row)">进入</el-button>
+                <el-button type="danger" size="small" @click="remove(scope.$index, scope.row)">删除</el-button>
+              </template>
             </el-table-column>
           </el-table>
           <div class="small2"></div>
           <span class="personnelTitle">部门人员</span>
           <div class="btn-boom">
             <el-button plain class="addPersonnel" @click="addPersonnel1">添加成员</el-button>
-            <el-button type="danger" class="batchDelete" disabled v-if="kk[0] == undefined">批量移除</el-button>
-            <el-button type="danger" class="batchDelete" @click="open2" v-if="kk[0] !== undefined">批量移除</el-button>
+            <el-button type="danger" class="batchDelete" :disabled="this.sels.length === 0" @click="removeBatch(sels)">批量移除</el-button>
+            <!-- <el-button type="danger" class="batchDelete" @click="open2" v-if="kk[0] !== undefined">批量移除</el-button> -->
           </div>
-          <el-table :data="tableList" border class="tableList" @select="del" @select-all="del" max-height="219" :header-cell-style="getRowClass">
+          <el-table :data="tableList" border class="tableList" @selection-change="selsChange" max-height="220" :header-cell-style="getRowClass">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
             <el-table-column prop="name" label="姓名" align="center"></el-table-column>
             <el-table-column prop="position" label="职位" align="center"></el-table-column>
@@ -244,6 +244,7 @@
 export default {
   data() {
     return {
+      sels: [],
       data: [],
       data1: [],
       data2: [],
@@ -308,36 +309,7 @@ export default {
       LabelWidth: "87%",
       members: [],
       //成员列表临时数据
-      tableList: [
-        {
-          id: "001",
-          name: "李易峰",
-          position: "经理",
-          phone: "13011111111",
-          sex: "男"
-        },
-        {
-          id: "002",
-          name: "林心如",
-          position: "员工",
-          phone: "13022222222",
-          sex: "女"
-        },
-        {
-          id: "003",
-          name: "谢霆锋",
-          position: "董事长",
-          phone: "13033333333",
-          sex: "男"
-        },
-        {
-          id: "004",
-          name: "腾格尔",
-          position: "总监",
-          phone: "13044444444",
-          sex: "男"
-        },
-      ],
+      tableList: [],
 
       members1: [],
       //每页的数据条数
@@ -394,25 +366,35 @@ export default {
     };
   },
   methods: {
-    open2() {
-      this.$confirm("此操作将永久删除该人员, 是否继续?", "提示", {
+    selsChange(sels){
+      this.sels = sels;
+    },
+    removeBatch(sels){
+      this.$confirm("是否删除该职位？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          if (this.kk[0] == undefined) {
-            this.$message.error("请先选中成员");
-          } else {
-            for (let i = 0; i < this.kk.length; i++) {
-              this.tableList.splice(this.kk, this.kk.length);
-            }
-            this.kk = [];
-            this.$message({
-              type: "success",
-              message: "删除成功!"
+          this.$http
+            .post(this.GLOBAL.serverSrc + "/org/api/userdelete", {
+              id: this.tableList[sels].id
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              }
+            })
+            .then(function(response) {
+              console.log(response)
+
+              _this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+            })
+            .catch(function(error) {
+              console.log(error);
             });
-          }
         })
         .catch(() => {
           this.$message({
@@ -421,16 +403,43 @@ export default {
           });
         });
     },
-    del(selection, row) {
-      this.kk = [];
-      for (let i = 0; i < selection.length; i++) {
-        if (this.tableList.length == 1 && selection[i].id !== 0) {
-          this.kk[i] = selection[i];
-        } else {
-          this.kk[i] = selection[i].id;
-        }
-      }
-    },
+    // open2() {
+    //   this.$confirm("此操作将永久删除该人员, 是否继续?", "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     type: "warning"
+    //   })
+    //     .then(() => {
+    //       if (this.kk[0] == undefined) {
+    //         this.$message.error("请先选中成员");
+    //       } else {
+    //         for (let i = 0; i < this.kk.length; i++) {
+    //           this.tableList.splice(this.kk, this.kk.length);
+    //         }
+    //         this.kk = [];
+    //         this.$message({
+    //           type: "success",
+    //           message: "删除成功!"
+    //         });
+    //       }
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: "info",
+    //         message: "已取消删除"
+    //       });
+    //     });
+    // },
+    // del(selection, row) {
+    //   this.kk = [];
+    //   for (let i = 0; i < selection.length; i++) {
+    //     if (this.tableList.length == 1 && selection[i].id !== 0) {
+    //       this.kk[i] = selection[i];
+    //     } else {
+    //       this.kk[i] = selection[i].id;
+    //     }
+    //   }
+    // },
     addSubdivision1(a) {
       this.addSubdivision = false;
       this.$refs[a].resetFields();
@@ -621,10 +630,12 @@ export default {
     treeClick(a, b, c) {
       this.data = [];
       this.tableData = [];
+      this.tableList = [];
       this.addInput.ParentID = a.id;
       this.addInput.topDepartment = a.label;
       this.Parents = a;
       var _this = this;
+      //下级部门
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
           object: {
             ParentID: a.id
@@ -649,6 +660,25 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+        //部门人员
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlistwithorg", {
+          id:a.id
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(res => {
+          for(let i = 0;i<res.data.objects.length;i++){
+            _this.tableList.push({
+              id:res.data.objects[i].id,
+              name:res.data.objects[i].name,
+              phone:res.data.objects[i].mobile,
+              sex:res.data.objects[i].sex
+            })
+          }
+        }).catch(function(error){
+          console.log(error)
+        })
     },
     //树形控件父级数据加载
     loadNode(node, resolve) {
@@ -755,8 +785,8 @@ export default {
         });
     },
     addSubdivisionOpen() {
-      if (this.addInput.ParentID == "") {
-        this.$message.warning("请先选择父级部门！");
+      if (this.Parents.isLeaf == 1) {
+        this.$message.warning("此部门是末级部门，不能添加");
       } else {
         this.addSubdivision = true;
       }
@@ -839,41 +869,41 @@ export default {
       }
     },
 
-    HandChange() {
-      this.arr = this.value.split("-");
-      this.options1 = [];
-      this.value1 = "";
-      this.value2 = "";
-      this.value3 = "";
-      var that = this;
-      // 获取顶级，第一级城市beg
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
-          order: "string",
-          object: {
-            isDeleted: 0,
-            parentID: this.arr[0]
-          }
-        },{
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          }
-        })
-        .then(function(obj) {
-        if (obj.data.objects.length == 0) {
-          that.bumen2 = false;
-          that.bumen1 = false;
-        }
-          var i = "";
-          for (i = 0; i < obj.data.objects.length; i++) {
-            that.options1.push({
-              label: obj.data.objects[i].orgName,
-              value: obj.data.objects[i].id + "-" + obj.data.objects[i].orgName
-            });
-          }
-        })
-        .catch(function(obj) {});
-    },
+    // HandChange() {
+    //   this.arr = this.value.split("-");
+    //   this.options1 = [];
+    //   this.value1 = "";
+    //   this.value2 = "";
+    //   this.value3 = "";
+    //   var that = this;
+    //   // 获取顶级，第一级城市beg
+    //   this.$http
+    //     .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
+    //       order: "string",
+    //       object: {
+    //         isDeleted: 0,
+    //         parentID: this.arr[0]
+    //       }
+    //     },{
+    //       headers: {
+    //         'Authorization': 'Bearer ' + localStorage.getItem('token'),
+    //       }
+    //     })
+    //     .then(function(obj) {
+    //     if (obj.data.objects.length == 0) {
+    //       that.bumen2 = false;
+    //       that.bumen1 = false;
+    //     }
+    //       var i = "";
+    //       for (i = 0; i < obj.data.objects.length; i++) {
+    //         that.options1.push({
+    //           label: obj.data.objects[i].orgName,
+    //           value: obj.data.objects[i].id + "-" + obj.data.objects[i].orgName
+    //         });
+    //       }
+    //     })
+    //     .catch(function(obj) {});
+    // },
     // 编辑部门弹窗
     updataEditSave(updata) {
       let _this = this;
@@ -903,85 +933,85 @@ export default {
           console.log(error);
         });
     },
-    HandChange1: function() {
-      this.arr1 = this.value1.split("-");
-      this.options2 = [];
-      this.value2 = "";
-      this.value3 = "";
-      var that = this;
-      // 获取顶级，第一级城市beg
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
-          order: "string",
-          object: {
-            isDeleted: 0,
-            parentID: this.arr1[0]
-          }
-        },{
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          }
-        })
-        .then(function(obj) {
-          if (obj.data.objects.length == 0) {
-            that.bumen2 = false;
-            that.bumen1 = false;
-          }
-          if (obj.data.objects.length !== 0) {
-            that.bumen2 = true;
-          }
-          var i = "";
-          for (i = 0; i < obj.data.objects.length; i++) {
-            that.options2.push({
-              label: obj.data.objects[i].orgName,
-              value: obj.data.objects[i].id + "-" + obj.data.objects[i].orgName
-            });
-          }
-        })
-        .catch(function(obj) {});
-      // 获取顶级，第一级城市end
-    },
+    // HandChange1: function() {
+    //   this.arr1 = this.value1.split("-");
+    //   this.options2 = [];
+    //   this.value2 = "";
+    //   this.value3 = "";
+    //   var that = this;
+    //   // 获取顶级，第一级城市beg
+    //   this.$http
+    //     .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
+    //       order: "string",
+    //       object: {
+    //         isDeleted: 0,
+    //         parentID: this.arr1[0]
+    //       }
+    //     },{
+    //       headers: {
+    //         'Authorization': 'Bearer ' + localStorage.getItem('token'),
+    //       }
+    //     })
+    //     .then(function(obj) {
+    //       if (obj.data.objects.length == 0) {
+    //         that.bumen2 = false;
+    //         that.bumen1 = false;
+    //       }
+    //       if (obj.data.objects.length !== 0) {
+    //         that.bumen2 = true;
+    //       }
+    //       var i = "";
+    //       for (i = 0; i < obj.data.objects.length; i++) {
+    //         that.options2.push({
+    //           label: obj.data.objects[i].orgName,
+    //           value: obj.data.objects[i].id + "-" + obj.data.objects[i].orgName
+    //         });
+    //       }
+    //     })
+    //     .catch(function(obj) {});
+    //   // 获取顶级，第一级城市end
+    // },
     pagesizes(page) {
       this.pagesize = page;
       this.addPersonnel1();
     },
-    HandChange2() {
-      this.arr2 = this.value2.split("-");
-      this.options3 = [];
-      this.value3 = "";
-      var that = this;
-      // 获取顶级，第一级城市beg
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
-          order: "string",
-          object: {
-            isDeleted: 0,
-            parentID: this.arr2[0]
-          }
-        },{
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          }
-        })
-        .then(function(obj) {
-          if (obj.data.objects.length == 0) {
-            that.bumen2 = true;
-            that.bumen1 = false;
-          }
-          if (obj.data.objects.length !== 0) {
-            that.bumen1 = true;
-          }
-          var i = "";
-          for (i = 0; i < obj.data.objects.length; i++) {
-            that.options3.push({
-              label: obj.data.objects[i].orgName,
-              value: obj.data.objects[i].id + "-" + obj.data.objects[i].orgName
-            });
-          }
-        })
-        .catch(function(obj) {});
-      // 获取顶级，第一级城市end
-    }
+    // HandChange2() {
+    //   this.arr2 = this.value2.split("-");
+    //   this.options3 = [];
+    //   this.value3 = "";
+    //   var that = this;
+    //   // 获取顶级，第一级城市beg
+    //   this.$http
+    //     .post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
+    //       order: "string",
+    //       object: {
+    //         isDeleted: 0,
+    //         parentID: this.arr2[0]
+    //       }
+    //     },{
+    //       headers: {
+    //         'Authorization': 'Bearer ' + localStorage.getItem('token'),
+    //       }
+    //     })
+    //     .then(function(obj) {
+    //       if (obj.data.objects.length == 0) {
+    //         that.bumen2 = true;
+    //         that.bumen1 = false;
+    //       }
+    //       if (obj.data.objects.length !== 0) {
+    //         that.bumen1 = true;
+    //       }
+    //       var i = "";
+    //       for (i = 0; i < obj.data.objects.length; i++) {
+    //         that.options3.push({
+    //           label: obj.data.objects[i].orgName,
+    //           value: obj.data.objects[i].id + "-" + obj.data.objects[i].orgName
+    //         });
+    //       }
+    //     })
+    //     .catch(function(obj) {});
+    //   // 获取顶级，第一级城市end
+    // }
   }
 };
 </script>
@@ -999,9 +1029,9 @@ export default {
 .hh {
   float: left;
   margin-left: 30px;
-  margin-top: 12%;
+  margin-top: 20px;
   width: 300px;
-  height: 500px;
+  height: 94%;
   overflow: auto;
 }
 
@@ -1099,12 +1129,11 @@ export default {
 
 .btn-boom {
   height: 50px;
-  margin-top:60px;
+  margin-top:65px;
 }
 
 .tableList {
   width: 80%;
-  height:300px;
   margin-left:30px;
   margin-right:90px;
   margin-top:20px;
@@ -1187,19 +1216,18 @@ export default {
 }
 
 .right {
-  width: 65%;
-  height:750px;
-  margin-top: -754px;
+  position:absolute;
+  height:82%;
+  width:56%;
   margin-left: 450px;
   border: 2px solid #E6E6E6;
 }
 
 .left {
+  position:absolute;
   width: 400px;
-  height:750px;
+  height:82%;
   border: 2px solid #E6E6E6;
-  margin-top: 1%;
-  margin-left: 1%;
 }
 
 .right-son {
