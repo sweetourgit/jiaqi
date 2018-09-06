@@ -31,7 +31,7 @@
       <div class="btn-boom">
         <el-button plain class="addPersonnel" @click="addPersonnel1">添加成员</el-button>
       </div>
-      <el-table :data="tableList" border class="tableList" @selection-change="selsChange" max-height="220" :header-cell-style="getRowClass">
+      <el-table :data="tableList" border class="tableList" max-height="220" :header-cell-style="getRowClass">
         <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
         <el-table-column prop="name" label="姓名" align="center" width="100%"></el-table-column>
         <el-table-column prop="position" label="职位" align="center" width="100%"></el-table-column>
