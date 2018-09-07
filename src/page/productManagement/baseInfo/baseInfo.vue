@@ -355,7 +355,7 @@ export default {
 .Excursion-select>>>input::placeholder{color #c2c2c2!important;
 }
 .warp { position: relative; padding-bottom:100px; }
-.btn { width: 160px; height: 44px; right: 740px; top: -64px; position: absolute; }
+.btn { width: 160px; height: 44px; left: 720px; top: -64px; position: absolute; }
 .productName-input { width: 548px; float: left; margin-left: 10px; }
 .travelType-radio { float: left; margin-left: 10px; margin-top: 13px; }
 .placeDeparture-input { width: 94%; float: left; margin-left: 10px; }
