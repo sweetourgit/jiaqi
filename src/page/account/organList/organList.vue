@@ -155,7 +155,7 @@
           <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
         </el-table>
         <div class="black">
-          <el-pagination :page-sizes="[2,4,6,8,10]" background @size-change="pagesizes" :page-size="pagesize" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+          <el-pagination :page-sizes="[2,4,6,8,10]" background @size-change="pagesizes" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </div>
         <div slot="footer" class="btn">
@@ -187,6 +187,8 @@
 export default {
   data() {
     return {
+      // 获取组织的ID
+      org:'',
       data: [],
       data1: [],
       data2: [],
@@ -248,6 +250,7 @@ export default {
       },
       LabelWidth: "87%",
       members: [],
+      oppo: [],
       //成员列表临时数据
       tableList: [],
       members1: [],
@@ -379,6 +382,7 @@ export default {
         }
         this.$message.success("添加成功");
         this.addPersonnel = false;
+        this.currentPage = 1;
         this.dataNum = [];
       }
     },
@@ -460,13 +464,13 @@ export default {
         for (let i = 0; i < response.data.objects.length; i++) {
           if(response.data.objects[i].sex == 1){
             response.data.objects[i].sex = '男'
-            console.log(response.data.objects[i].sex)
           }else{
             response.data.objects[i].sex = '女'
           }
           if(response.data.objects[i].userState == 0){
             response.data.objects[i].userState = '未选择'
           }else if(response.data.objects[i].userState == 1){
+
             response.data.objects[i].userState = '等待审核'
           }else if(response.data.objects[i].userState == 2){
             response.data.objects[i].userState = '正常'
@@ -482,6 +486,15 @@ export default {
             state: response.data.objects[i].userState,
             key: i
           });
+          if(_this.org ==  response.data.objects[i].orgID){
+            var oppo = []
+            _this.oppo.push( _this.members[i])
+          }
+        }
+        if(_this.oppo){
+          _this.oppo.forEach(row => {
+            _this.$refs.table.toggleRowSelection(row, true)
+          })
         }
         _this.addPersonnel = true;
       })
@@ -491,11 +504,14 @@ export default {
     },
     addPersonnel2() {
       this.addPersonnel = false;
+      this.currentPage = 1;
       this.dataNum = [];
     },
     // 单击tree节点
     treeClick(a, b, c) {
+      // console.log(a)
       this.data = [];
+      this.org = a.id;
       this.tableData = [];
       this.tableList = [];
       this.addInput.ParentID = a.id;
@@ -752,6 +768,7 @@ export default {
       });
     },
     pagesizes(page) {
+      this.currentPage = 1;
       this.pagesize = page;
       this.addPersonnel1();
     },
@@ -780,7 +797,7 @@ export default {
 .cascaderTitle { position: relative; left: 6px; }
 .boom { position: relative; right: 20px; margin-top: -10px; }
 .searchInput { position: absolute; right: 492%; width: 200%; }
-.searchButton { float:left; margin-left:450px; margin-top:-22px; }
+.searchButton { float:left; margin-left:400px; margin-top:-22px; }
 .booms { margin-bottom: 250px; }
 .members { margin-bottom: -120px; top: -200px; left: 10%; width: 826px; }
 .btn { margin-top:380px; text-align :center; }
