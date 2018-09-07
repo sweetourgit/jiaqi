@@ -568,6 +568,7 @@ export default {
     },
     //树形控件父级数据加载
     loadNode(node, resolve) {
+      // console.log(node)
       this.data = [];
       let _this = this;
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
@@ -579,13 +580,12 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(response => {
+        // console.log(response)
         for (let i = 0; i < response.data.objects.length; i++) {
           if (node.level === 0) {
             _this.options.push({
               label: response.data.objects[i].orgName,
-              value:
-                response.data.objects[i].id + "-" +
-                response.data.objects[i].orgName
+              value: response.data.objects[i].id + "-" + response.data.objects[i].orgName
             });
             resolve([
               {
