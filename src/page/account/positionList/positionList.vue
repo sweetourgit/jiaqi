@@ -1,56 +1,51 @@
 <template>
   <div>
     <div class="big">
-        <!-- 工具条 -->
-        <el-row>
-            <el-button type="primary" class="addButton" @click="addPosition = true">添加职位</el-button>
-        </el-row>
-        <!-- 列表 -->
-        <el-table :data="tableData" border style="width:900px;" class="table" :header-cell-style="getRowClass">
-            <el-table-column prop="id" label="ID" align="center"></el-table-column>
-            <el-table-column prop="positionName" label="职位名称" align="center"></el-table-column>
-            <el-table-column label="操作" fixed="right" align="center">
-                <template slot-scope="scope">
-					<el-button type="primary" size="small" @click="editPosition1(scope.$index, scope.row)">编辑</el-button>
-					<el-button type="danger" size="small" @click="remove(scope.$index, scope.row)">删除</el-button>
-				</template>
-            </el-table-column>
-        </el-table>
-        <!-- 添加职位弹框界面 -->
-        <el-dialog class="Popup" title="添加职位" :visible.sync="addPosition" custom-class="city_list" width="545px">
-            <el-form style="padding-left:79px" :model="form" :rules="rules" ref="form">
-                <el-form-item label="职位名称：" :label-width="formLabelWidth" prop="positionName">
-                    <el-input v-model="form.positionName" auto-complete="off" placeholder="请输入职位" class="addPosition-input"></el-input>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button class="oppp" @click="ceils('form')">取 消</el-button>
-                <el-button class="oppp" type="primary" @click="addSave('form')">保存</el-button>
-            </div>
-        </el-dialog>
-        <!-- 编辑职位弹框界面 -->
-        <el-dialog class="Popup" title="编辑职位" :visible.sync="editPosition" custom-class="city_list" width="545px">
-            <el-form style="padding-left:79px" :model="updata" :rules="rules1" ref="updata">
-                <el-form-item label="职位名称：" :label-width="updataLabelWidth" prop="positionName">
-                    <el-input v-model="updata.positionName" auto-complete="off" class="addPosition-input"></el-input>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button class="oppp" @click="editPosition = false">取 消</el-button>
-                <el-button class="oppp" type="primary" @click="editSave('updata')">保存</el-button>
-            </div>
-        </el-dialog>
-        <!-- <div class="page">
-          <el-pagination :page-sizes="[2,4,8]" background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-          </el-pagination>
-        </div> -->
-        <div class="page">
-          <el-pagination :page-sizes="[2,4,6,8,10]" background @size-change="handleSizeChange" :page-size="pagesize" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
-          </el-pagination>
+      <!-- 工具条 -->
+      <el-row>
+        <el-button type="primary" class="addButton" @click="addPosition = true">添加职位</el-button>
+      </el-row>
+      <!-- 列表 -->
+      <el-table :data="tableData" border style="width:900px;" class="table" :header-cell-style="getRowClass">
+        <el-table-column prop="id" label="ID" align="center"></el-table-column>
+        <el-table-column prop="positionName" label="职位名称" align="center"></el-table-column>
+        <el-table-column label="操作" fixed="right" align="center">
+          <template slot-scope="scope">
+            <el-button type="primary" size="small" @click="editPosition1(scope.$index, scope.row)">编辑</el-button>
+            <el-button type="danger" size="small" @click="remove(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 添加职位弹框界面 -->
+      <el-dialog class="Popup" title="添加职位" :visible.sync="addPosition" custom-class="city_list" width="545px">
+        <el-form style="padding-left:79px" :model="form" :rules="rules" ref="form">
+          <el-form-item label="职位名称：" :label-width="formLabelWidth" prop="positionName">
+            <el-input v-model="form.positionName" auto-complete="off" placeholder="请输入职位" class="addPosition-input"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button class="oppp" @click="ceils('form')">取 消</el-button>
+          <el-button class="oppp" type="primary" @click="addSave('form')">保存</el-button>
         </div>
+      </el-dialog>
+      <!-- 编辑职位弹框界面 -->
+      <el-dialog class="Popup" title="编辑职位" :visible.sync="editPosition" custom-class="city_list" width="545px">
+        <el-form style="padding-left:79px" :model="updata" :rules="rules1" ref="updata">
+          <el-form-item label="职位名称：" :label-width="updataLabelWidth" prop="positionName">
+            <el-input v-model="updata.positionName" auto-complete="off" class="addPosition-input"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button class="oppp" @click="editPosition = false">取 消</el-button>
+          <el-button class="oppp" type="primary" @click="editSave('updata')">保存</el-button>
+        </div>
+      </el-dialog>
+      <div class="page">
+        <el-pagination :page-sizes="[2,4,6,8,10]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        </el-pagination>
+      </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -116,67 +111,59 @@ export default {
   methods: {
     // 添加职位
     addSave(form) {
-       this.$refs[form].validate((valid) => {
-         if(valid){
+      this.$refs[form].validate((valid) => {
+        if(valid){
           var _this = this;
           if (this.form.positionName === "") {
             this.$message.warning("请填写职位名称！");
           } else {
             var _this = this;
-            this.$http
-              .post(this.GLOBAL.serverSrc + "/org/api/positioninsert", {
-                object: {
-                  name: this.form.positionName
-                }
-              },{
-                headers: {
-                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                }
-              })
-              .then(function(response) {
-                console.log(response)
-                _this.addPosition = false;
-                _this.form.positionName = "";
-                _this.$message.success("添加成功");
-              })
-              .catch(function(error) {
-                console.log(error);
-              });
-            }
-         }
-       })
+            this.$http.post(this.GLOBAL.serverSrc + "/org/api/positioninsert", {
+              object: {
+                name: this.form.positionName
+              }
+            },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }}).then(function(response) {
+              console.log(response)
+              _this.addPosition = false;
+              _this.form.positionName = "";
+              _this.$message.success("添加成功");
+            }).catch(function(error) {
+              console.log(error);
+            });
+          }
+        }
+      })
     },
     editSave(updata) {
       this.$refs[updata].validate((valid) => {
         if(valid){
           let _this = this;
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/org/api/positionsave", {
-              object: {
-                id: this.jj.id,
-                name: this.updata.positionName,
-                createTime: "2018-06-28T08:01:41.772Z",
-                isDeleted: 0,
-                code: "string",
-                rank: 0,
-                createUser: "string"
-              },
-              id: 0
-        },{
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          }
-        })
-        .then(function(response) {
-          console.log(response)
-          _this.pageList();
-          _this.$message.success("修改成功！");
-          _this.jj = "";
-          _this.editPosition = false;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+          this.$http.post(this.GLOBAL.serverSrc + "/org/api/positionsave", {
+            object: {
+              id: this.jj.id,
+              name: this.updata.positionName,
+              createTime: "2018-06-28T08:01:41.772Z",
+              isDeleted: 0,
+              code: "string",
+              rank: 0,
+              createUser: "string"
+            },
+            id: 0
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(function(response) {
+            _this.pageList();
+            _this.$message.success("修改成功！");
+            _this.jj = "";
+            _this.editPosition = false;
+          }).catch(function(error) {
+            console.log(error);
+          });
         }
       })
     },
@@ -187,33 +174,28 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/org/api/positiondelete", {
-              id: this.tableData[index].id
-            },{
-              headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token'),
-              }
-            })
-            .then(function(response) {
-              _this.tableData.splice(index, 1);
-              _this.$message({
-                type: "success",
-                message: "删除成功!"
-              });
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
+      }).then(() => {
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/positiondelete", {
+          id: this.tableData[index].id
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(function(response) {
+          _this.tableData.splice(index, 1);
+          _this.$message({
+            type: "success",
+            message: "删除成功!"
           });
+        }).catch(function(error) {
+          console.log(error);
         });
+      }).catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消删除"
+        });
+      });
     },
     editPosition1(aa, bb) {
       this.editPosition = true;
@@ -227,35 +209,33 @@ export default {
     pageList() {
       this.tableData = [];
       let _this = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/positionpage", {
-          object: {
-            isDeleted: 0
-          },
-          pageSize: _this.pagesize,
-          pageIndex: _this.currentPage,
-          id: 0
-        },{
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/positionpage", {
+        object: {
+          isDeleted: 0
+        },
+        pageSize: _this.pagesize,
+        pageIndex: _this.currentPage,
+        id: 0
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+        _this.total = response.data.total;
+        for (let i = 0; i < response.data.objects.length; i++) {
+          if (response.data.objects[i].isDeleted !== 1) {
+            _this.tableData.push({
+              id: response.data.objects[i].id,
+              positionName: response.data.objects[i].name
+            });
           }
-        })
-        .then(function(response) {
-          _this.total = response.data.total;
-          for (let i = 0; i < response.data.objects.length; i++) {
-            if (response.data.objects[i].isDeleted !== 1) {
-              _this.tableData.push({
-                id: response.data.objects[i].id,
-                positionName: response.data.objects[i].name
-              });
-            }
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     },
     handleSizeChange(page) {
+      this.currentPage = 1;
       this.pagesize = page;
       this.pageList();
     },
@@ -264,60 +244,25 @@ export default {
       this.$refs[a].resetFields();
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
-          if (rowIndex == 0) {
-            return 'background:#F7F7F7'
-          } else {
-            return ''
-          }
-      },
+      if (rowIndex == 0) {
+        return 'background:#F7F7F7'
+      } else {
+        return ''
+      }
+    },
   }
 };
 </script>
 
 <style scoped lang='stylus'>
-.big {
-  width: 1600px;
-  height: 750px !important;
-}
-
-.list {
-  float: left;
-}
-
-.table {
-  margin-left: 40px;
-  margin-top: 40px;
-}
-
-.page {
-  margin-top: 30px;
-  float: left;
-  margin-left: 200px;
-}
-
-.Popup {
-  margin: auto;
-}
-
-.addButton {
-  float: left;
-  margin-left: 40px;
-}
-
-.el-dialog__wrapper>>>.el-dialog {
-  width: 400px;
-}
-.dialog-footer{
-  text-align :center;
-}
-.oppp{
-  margin: 20px;
-  width:100px;
-}
-.addPosition-input{
-  width:250px;
-  margin-right:100px;
-}
+.big { width: 1600px; height: 750px !important; }
+.list { float: left; }
+.table { margin-left: 40px; margin-top: 40px; }
+.page { margin-top: 30px; float: left; margin-left: 200px; }
+.Popup { margin: auto; }
+.addButton { float: left; margin-left: 40px; }
+.el-dialog__wrapper>>>.el-dialog { width: 400px; }
+.dialog-footer{ text-align :center; }
+.oppp{ margin: 20px; width:100px; }
+.addPosition-input{ width:250px; margin-right:100px; }
 </style>
-
-
