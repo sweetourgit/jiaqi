@@ -5,68 +5,66 @@
         <el-button type="primary" class="add-classification" @click="addClassification = true">添加分类</el-button>
       </div>
       <div class="bottom_customArea_list">
-          <el-table :data="classificationTable" style="width: 100%" :cell-style="bottom_table" :span-method="objectSpanMethod">
-            <el-table-column prop="classification" label="分类" align="center">
-              <el-table-column label="名称" prop="classificationName" align="center">
-                  <template slot-scope="scope">
-                    <div class="father">
-                      <span class="name">{{ scope.row.classificationName }}</span>
-                      <span class="icon">
-                        <i class="el-icon-edit" @click="editClassification = true"></i>
-                        <i class="el-icon-remove" @click="removeClassification"></i>
-                        <i class="el-icon-circle-plus" @click="addGrouping = true"></i>
-                      </span>
-                    </div>
-                  </template>
-              </el-table-column>
-              <el-table-column label="排序" prop="classificationRank" align="center"></el-table-column>
+        <el-table :data="classificationTable" style="width: 100%" :cell-style="bottom_table" :span-method="objectSpanMethod">
+          <el-table-column prop="classification" label="分类" align="center">
+            <el-table-column label="名称" prop="classificationName" align="center">
+              <template slot-scope="scope">
+                <div class="father">
+                  <span class="name">{{ scope.row.classificationName }}</span>
+                  <span class="icon">
+                    <i class="el-icon-edit" @click="editClassification = true"></i>
+                    <i class="el-icon-remove" @click="removeClassification"></i>
+                    <i class="el-icon-circle-plus" @click="addGrouping = true"></i>
+                  </span>
+                </div>
+              </template>
             </el-table-column>
-            <el-table-column prop="grouping" label="分组" align="center">
-              <el-table-column label="名称" prop="groupingName" align="center">
-                <template slot-scope="scope">
-                    <div class="father">
-                      <span class="name">{{ scope.row.groupingName }}</span>
-                      <span class="icon">
-                        <i class="el-icon-edit" @click="editGrouping = true"></i>
-                        <i class="el-icon-remove" @click="removeGrouping"></i>
-                        <i class="el-icon-circle-plus" @click="addCity = true"></i>
-                      </span>
-                    </div>
-                  </template>
-              </el-table-column>
-              <el-table-column label="排序" prop="groupingRank" align="center"></el-table-column>
-              <el-table-column label="分组url" prop="groupingUrl" align="center" width="618"></el-table-column>
+            <el-table-column label="排序" prop="classificationRank" align="center"></el-table-column>
+          </el-table-column>
+          <el-table-column prop="grouping" label="分组" align="center">
+            <el-table-column label="名称" prop="groupingName" align="center">
+              <template slot-scope="scope">
+                <div class="father">
+                  <span class="name">{{ scope.row.groupingName }}</span>
+                  <span class="icon">
+                    <i class="el-icon-edit" @click="editGrouping = true"></i>
+                    <i class="el-icon-remove" @click="removeGrouping"></i>
+                    <i class="el-icon-circle-plus" @click="addCity = true"></i>
+                  </span>
+                </div>
+              </template>
             </el-table-column>
-            <el-table-column prop="city" label="城市" align="center">
-              <el-table-column label="名称" prop="cityName" align="center">
-                <template slot-scope="scope">
-                    <div class="father">
-                      <span class="name">{{ scope.row.cityName }}</span>
-                      <span class="icon">
-                        <i class="el-icon-edit" @click="editCity = true"></i>
-                        <i class="el-icon-remove" @click="removeCity"></i>
-                      </span>
-                    </div>
-                  </template>
-              </el-table-column>
-              <el-table-column label="排序" prop="cityRank" align="center"></el-table-column>
+            <el-table-column label="排序" prop="groupingRank" align="center"></el-table-column>
+            <el-table-column label="分组url" prop="groupingUrl" align="center" width="618"></el-table-column>
+          </el-table-column>
+          <el-table-column prop="city" label="城市" align="center">
+            <el-table-column label="名称" prop="cityName" align="center">
+              <template slot-scope="scope">
+                <div class="father">
+                  <span class="name">{{ scope.row.cityName }}</span>
+                  <span class="icon">
+                    <i class="el-icon-edit" @click="editCity = true"></i>
+                    <i class="el-icon-remove" @click="removeCity"></i>
+                  </span>
+                </div>
+              </template>
             </el-table-column>
-          </el-table>
-          <div class="block">
-              <!--   @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="currentPage4" -->
-            <el-pagination
-              background
-              :page-sizes="[100, 200, 300, 400]"
-              :page-size="100"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="400">
-            </el-pagination>
-          </div>
+            <el-table-column label="排序" prop="cityRank" align="center"></el-table-column>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+            <!--   @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage4" -->
+          <el-pagination
+            background
+            :page-sizes="[100, 200, 300, 400]"
+            :page-size="100"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="400">
+          </el-pagination>
+        </div>
       </div>
-
-
       <!-- 添加分类弹框 -->
       <el-dialog title="添加分类" custom-class="city_list" :visible.sync="addClassification" class="Popup" width>
         <el-form style="padding-left:79px" :model="form" :rules="rules" ref="form">
@@ -354,20 +352,14 @@ export default {
           { required: true, message: "请输入分类名称", trigger: "blur" },
           { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: "请输入2-10位汉字" }
         ],
-        classificationRank: [
-          { required: true, message: "排序不能为空", trigger: "blur" }
-        ],
+        classificationRank: [ { required: true, message: "排序不能为空", trigger: "blur" } ],
         groupingName: [
           { required: true, message: "请输入分组名称", trigger: "blur" },
           { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: "请输入2-10位汉字" }
         ],
-        groupingRank: [
-          { required: true, message: "排序不能为空", trigger: "blur" }
-        ],
-        cityRank: [
-          { required: true, message: "排序不能为空", trigger: "blur" }
-        ],
-        cityName: [{ required: true, message: "城市必选", trigger: "blur" }]
+        groupingRank: [ { required: true, message: "排序不能为空", trigger: "blur" } ],
+        cityRank: [ { required: true, message: "排序不能为空", trigger: "blur" } ],
+        cityName: [ { required: true, message: "城市必选", trigger: "blur" } ]
       }
     };
   },
@@ -490,141 +482,72 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
+      }).then(() => {
+        this.$message({
+          type: "success",
+          message: "删除成功!"
         });
+      }).catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消删除"
+        });
+      });
     },
     removeGrouping() {
       this.$confirm("是否删除该分组?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
+      }).then(() => {
+        this.$message({
+          type: "success",
+          message: "删除成功!"
         });
+      }).catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消删除"
+        });
+      });
     },
     removeCity() {
       this.$confirm("是否删除该城市?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
+      }).then(() => {
+        this.$message({
+          type: "success",
+          message: "删除成功!"
         });
+      }).catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消删除"
+        });
+      });
     },
   }
 };
 </script>
 
 <style scoped lang='stylus'>
-.big {
-  width: 100%;
-  height: 75%;
-}
-
-.top {
-  width: 100%;
-  height: 50px;
-}
-
-.bottom_customArea_list {
-  width: 100%;
-}
-
-.add-classification {
-  float: left;
-}
-
-.icon {
-  display: none;
-}
-
-.father:hover .icon {
-  display: inline-block;
-}
-
-.block {
-  margin-top: 20px;
-  float: right;
-  margin-bottom:50px;
-}
-
-.Popup {
-  margin: 0 auto;
-}
-
-.boom {
-  position: relative;
-  right: 100px;
-}
-
-.zoon {
-  position: relative;
-  right: 115px;
-}
-
-.url {
-  position: relative;
-  right: 100px;
-  width: 550px;
-}
-
-.cascader {
-  margin-right: 45px;
-}
-
-.el-dialog__wrapper>>>.el-dialog {
-  width: 500px;
-}
-
-.classification-footer{
-  text-align :center;
-}
-
-.oppp{
-  margin: 20px;
-  width:100px;
-}
-
-.zoonA{
-  position: relative;
-  right: 77px;
-}
-
-.zoonB{
-  position: relative;
-  right: 70px;
-}
+.big { width: 100%; height: 75%; }
+.top { width: 100%; height: 50px; }
+.bottom_customArea_list { width: 100%; }
+.add-classification { float: left; }
+.icon { display: none; }
+.father:hover .icon { display: inline-block; }
+.block { margin-top: 20px; float: right; margin-bottom:50px; }
+.Popup { margin: 0 auto; }
+.boom { position: relative; right: 100px; }
+.zoon { position: relative; right: 115px; }
+.url { position: relative; right: 100px; width: 550px; }
+.cascader { margin-right: 45px; }
+.el-dialog__wrapper>>>.el-dialog { width: 500px; }
+.classification-footer{ text-align :center; }
+.oppp{ margin: 20px; width:100px; }
+.zoonA{ position: relative; right: 77px; }
+.zoonB{ position: relative; right: 70px; }
 </style>
-
-
