@@ -2,7 +2,7 @@
   <div>
     <div class="left">
       <div class="hh">
-        <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick()" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
+        <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
       </div>
     </div>
     <div class="right">
@@ -304,7 +304,8 @@ export default {
         isLeaf: "leaf"
       },
       keyID: [],
-      deleteNum: []
+      deleteNum: [],
+      dbSave: ''
     };
   },
   methods: {
@@ -515,6 +516,7 @@ export default {
       this.tableList = [];
       this.addInput.ParentID = a.id;
       this.addInput.topDepartment = a.label;
+      this.dbSave = a;
       // this.Parents = a;
       var _this = this;
       //下级部门
@@ -675,10 +677,10 @@ export default {
       }
     },
     // 双击展开
-    treeDblclick() {
+    treeDblclick(a) {
       this.treeKey = [];
-      if (this.Parents.isLeaf == 2 || this.Parents.isLeaf == 0) {
-        this.treeKey.push(this.Parents.id);
+      if (this.dbSave.isLeaf == 2 || this.dbSave.isLeaf == 0) {
+        this.treeKey.push(this.dbSave.id);
       }
     },
     // 编辑部门
