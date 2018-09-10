@@ -141,7 +141,7 @@
                 </el-form-item>
           </el-form>
           <div class="album-button">
-            <el-button type="danger">删除相册</el-button>
+            <el-button type="danger" @click="del()">删除相册</el-button>
             
             <el-button type="primary" @click="material">创建素材</el-button>
           </div>
@@ -220,8 +220,8 @@
               </div>
             </div>
              <div class="album-button">
-              <el-button  style="width:100px;">取消</el-button>
-              <el-button type="primary" style="width:100px;">添加 </el-button>
+              <el-button  style="width:100px;" @click="albumCancal()">取消</el-button>
+              <el-button type="primary" style="width:100px;" @click="albumAdd()">添加 </el-button>
             </div>           
         </div>
        </div>
@@ -737,7 +737,45 @@
         this.addLabel = false;
         this.$refs[a].jj.resetFields();
 
-      }
+      },
+
+    // 删除相册
+    del(){
+       this.$confirm('此操作将永久删除该相册, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+            this.addAlbumImg = false;
+          
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+        
+      },
+    // 取消素材选择
+    albumCancal(){
+      this.classa = '';
+    },
+    // 添加素材到相册
+    albumAdd(){
+       this.$message({
+          message: '添加成功',
+          type: 'success'
+        });
+       this.addMaterial = false;
+       this.classa = '';
+       
+
+    }
+    
     },
     
   };
