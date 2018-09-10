@@ -39,7 +39,7 @@
         <el-table-column prop="sex" label="性别" align="center" width="70%"></el-table-column>
         <el-table-column label="操作" align="center" width="270%">
           <template slot-scope="scope">
-            <el-button class="b" plain size="small">进入</el-button>
+            <el-button class="enter" plain size="small">进入</el-button>
             <el-button type="primary" size="small" @click="position = true">编辑</el-button>
             <el-button type="danger" size="small" @click="del(scope.$index, scope.row)">删除</el-button>
           </template>
@@ -509,14 +509,13 @@ export default {
     },
     // 单击tree节点
     treeClick(a, b, c) {
-      // console.log(a)
       this.data = [];
       this.org = a.id;
       this.tableData = [];
       this.tableList = [];
       this.addInput.ParentID = a.id;
       this.addInput.topDepartment = a.label;
-      this.Parents = a;
+      // this.Parents = a;
       var _this = this;
       //下级部门
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
@@ -597,6 +596,7 @@ export default {
             ]);
           }
         }
+        // this.treeDblclick()
         let num = Array();
         num.push({
           id: response.data.objects[0].id,
@@ -608,7 +608,8 @@ export default {
           _this.treeClick(num[0]);
           this.flag = false;
         }
-        this.treeKey.push(this.Parents.id);
+      // console.log(this.Parents)
+        this.treeKey.push(204);
       }).catch(function(error) {
         console.log(error);
       });
@@ -806,7 +807,7 @@ export default {
 .Popup { margin: 0 auto; }
 .kk { min-height: 700px; }
 .addTitle { position: absolute; top: 2%; left: 3%; font-size: 1.5em; }
-.b { margin-left: 5%; }
+.enter { margin-left: 5%; }
 .right { position:absolute; height:82%; width:45%; margin-left: 450px; border: 2px solid #E6E6E6; }
 .left { position:absolute; width: 400px; height:82%; border: 2px solid #E6E6E6; }
 .right-son { position: relative; left: 260px; bottom: 100%; width: 75.7%; height: 100%; }
