@@ -10,7 +10,7 @@
             <el-input v-model="addName" placeholder="请输入目的地名称"  clearable></el-input>
           </div>
           <div class="search-button">
-            <el-button  size="medium" type="primary" icon="el-icon-search" ></el-button>
+            <el-button   type="primary" icon="el-icon-search" ></el-button>
           </div>
         </div>
     </div>
@@ -383,7 +383,33 @@
         },{
           name:'3',
           title:'加勒比海',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_184051405126879.jpg',
+          smallImg:[{
+          name:'0',
+          title:'山洞',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184051405126879.jpg',
+        },{
+          name:'1',
+          title:'洞穴',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
+        }],
+       },{
+          name:'4',
+          title:'加勒比海',
+          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
+          smallImg:[{
+          name:'0',
+          title:'山洞',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183651365152058.jpg',
+        },{
+          name:'1',
+          title:'洞穴',
+          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
+        }],
+       },{
+          name:'5',
+          title:'加勒比海',
+          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
           smallImg:[{
           name:'0',
           title:'山洞',
@@ -802,7 +828,7 @@
   }
   .search-button{
     float: left;
-    margin-left: -60px;
+    margin-left: -78px;
     /* margin-right:100px; */
     
   }
@@ -842,7 +868,7 @@
       float: left;
       margin-top: 10px;
       width: 400px;
-      height: 1000px;
+      height: 695px;
       border:1px solid #fff;
       box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;
       margin-top:1.2%;
@@ -856,10 +882,10 @@
     margin-top: 15px;
     /* margin-left:10px; */
     float: left;
-    width: 1020px;
+    width: 1200px;
 
     /* margin-left:96px; */
-    /* border:1px solid pink;  */
+    // border:1px solid pink; 
 }
 .address-img{
     position: relative;
@@ -870,45 +896,45 @@
     /* margin-bottom:500px; */
     /* margin-top:20px; */
     /* margin-right:20px; */
-    margin-left:22px;
+    margin-left:28px;
     
-    margin-bottom:20px;
+    margin-bottom:42px;
     /* width:585px; */
-    height:450px;
-    /* border:1px solid purple; */
+    // height:450px;
+    // border:1px solid purple; 
 }
 .marterialist-img{
-    width:485px;
-    height:350px;
+    width:368px;
+    height:252px;
     cursor:pointer;
     /* height:400px; */
-    /* border:1px solid red; */
+    // border:1px solid red; 
     
 }
 .introduce{
     /* position:absolute; */
-    width:200px;
-    height:40px;
+    width:120px;
+    height:30px;
     margin-top:16px;
-    /* border:1px solid green; */
+    //  border:1px solid green; 
 }
 .label{
     float:left;
-    width:100px;
-    height:40px;
-    background:#333;
+    width:60px;
+    height:30px;
+    background:#2f96fa;
     text-align: center;
-    line-height: 40px;
-    color:#E6E6E6;
+    line-height: 30px;
+    color:#fff;
 }
 .number{
-    /* float:right; */
-    /* width:100px; */
-    height:40px;
+     float:right;
+     width:60px; 
+    height:30px;
     /* text-align: center; */
-    line-height: 40px;
-    background:#666;
-    color:#E6E6E6;
+    line-height: 30px;
+    background:#eee;
+    color:#000;
     
 }
 .address-name{
