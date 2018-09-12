@@ -98,7 +98,7 @@ export default new Router({
     }, {
       path: '/cityList',
       component: cityList,
-      name: '城市列表',
+      name: '区域列表',
       meta: {
         keepAlive: true,
         auth:true}

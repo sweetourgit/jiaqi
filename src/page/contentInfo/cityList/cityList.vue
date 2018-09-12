@@ -1,12 +1,12 @@
 <template>
   <div class="cityList">
+      <div class="cascade">
+       <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
+      </div>
       <div class="search">
         <span class="keyword">输入关键字:</span>
         <el-autocomplete class="inputBox" clearable placeholder="请输入关键字" :fetch-suggestions="querySearch" suffix-icon="el-icon-search" v-model="input" :trigger-on-focus="false"></el-autocomplete>
         <el-button class="searchButton" type="primary" icon="el-icon-search"></el-button>
-      </div>
-      <div class="cascade">
-       <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
       </div>
       <!-- 区域列表 -->
       <template v-if="geography == 1">
@@ -574,7 +574,7 @@
 </script>
 
 <style scoped>
-.cascade{ 
+.cascade{
   float: left;
   margin-top:70px;
   user-select: none;
@@ -589,16 +589,15 @@
   margin-top: 20px;
 }
 .popper__arrow{ background: red !important;}
-.search{ float: left;width:100%;}
-/* .search1{ float: left; margin: 85px 0 0 -198px;} */
+.search{ position:absolute;margin-left:500px;margin-top:70px;}
 .keyword{ float: left; position: relative; top: 13px;}
 .inputBox{ float: left; margin: 0 0 0 20px; width: 300px;}
 .searchButton{ float: left;margin-left:10px}
-.table_list{float:left; position: relative; top: 96px;left: 200px}
+.table_list{float:left; position: relative; top: 120px;left: 200px}
 .table_button{ width: 50px; height: 22px; padding: 0;}
 .table_button_right{ float: right; margin: 0 20px 0 0;}
 .table_button1{ width: 70px; height: 22px; padding: 0;}
-.add_country{float: left; position: relative; left: 300px;top: 50px;width:100px}
+.add_country{float: left; position: relative; left: 300px;top: 70px;width:100px}
 .page{ float: left; margin: 140px 0 0 900px;}
 .country_input{ width: 300px; margin: 0 95px 0 0;}
 .country_select{ width: 300px; margin: 0 95px 0 0;}

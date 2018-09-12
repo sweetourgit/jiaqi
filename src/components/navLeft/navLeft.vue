@@ -63,7 +63,7 @@
               img: '内容信息.png',
               items: [
                 {
-                  value: '城市列表',
+                  value: '区域列表',
                   router:'/cityList'
                 },
                 {
