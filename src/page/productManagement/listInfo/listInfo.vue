@@ -1,7 +1,7 @@
 
 <template>
   <div class="vivo">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-model="activeName" @tab-click="handleClick" class="oppo" >
       <el-tab-pane label="基本信息" name="first"><BaseInfo></BaseInfo></el-tab-pane>
       <el-tab-pane label="行程信息" name="second"><TripInfo></TripInfo></el-tab-pane>
       <el-tab-pane label="费用说明" name="third"><CostDescription></CostDescription></el-tab-pane>
@@ -40,7 +40,7 @@
   .el-tabs>>>.el-tabs__content{
     overflow visible!important
   }
- .vivo>>>.el-tabs__item{
+  .vivo>>>.el-tabs__item{
     width: 144px ;
     margin-bottom: 10px;
     font-size: 16px;

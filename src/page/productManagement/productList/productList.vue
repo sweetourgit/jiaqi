@@ -72,7 +72,7 @@
     </div>
     </div>
 
-    <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px">
+    <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px" >
     <div class="button_select">
       <el-button plain>编辑</el-button>
       <el-button plain>复制</el-button>
@@ -86,7 +86,9 @@
       <el-table
         :data="tableData"
         border
-        style="width: 100%">
+        style="width: 100%"
+        :highlight-current-row="true"
+      >
         <el-table-column
           prop="pid"
           label="产品编号"
@@ -169,12 +171,12 @@
 
       <div class="button-list" >
         <template v-if="this.forbidden == true">
-          <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>         
+          <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>
         </template>
         <template v-else>
-          <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)" disabled>{{data.button}}</el-button>          
+          <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)" disabled>{{data.button}}</el-button>
         </template>
-        
+
       </div>
       <!-- 其实这个表格遍历数据的时候是有问题的,因为目前没有数据,每次遍历的都是addtable里面的数据,每次点击库存都会添加一条,这个地方应该是点击库存的时候传一个id按照这个id遍历数据 -->
       <el-table
@@ -190,7 +192,7 @@
           label="属性"
           width="230"
           align="center"
-          
+
           >
         </el-table-column>
         <el-table-column
@@ -198,30 +200,30 @@
           label="值"
           align="center"
          >
-         
+
         <template slot-scope="scope" prop="ll">
               <template v-if="scope.row.ll == ''">
                 <el-button @click="skuadd()" type="primary" v-show="addsku" size="mini" style="float:left">生成sku</el-button>
-              </template>         
-           <template  slot-scope="scope" v-else>           
+              </template>
+           <template  slot-scope="scope" v-else>
               <div v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  :key="data.id" v-show="aa" style="float:left">
                   <el-input style="width:100px;" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price"  type="text" clearable></el-input>
                  <!-- v-model="addtable[scope.$index].price[index].value" -->
                  <!-- v-model="addtable[addtable.length-1].allpricep[scope.$index].value" -->
                   <el-button  style="margin-right:10px;" size="mini" type="danger" @click="shanchu(index,scope.$index)">删除</el-button>
               </div>
-                <el-button :id="'vv' + index" plain v-show="bb" v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  
+                <el-button :id="'vv' + index" plain v-show="bb" v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"
                 :key="data.id" style="float:left;margin-right:10px;"  type="primary"
                 @click="choice(data, index,addtable[addtable.length-1].allprice[scope.$index])"
                 >
                   {{addtable[addtable.length-1].allprice[scope.$index].value[index].price}}
                 </el-button>
-            
+
             </template>
         </template>
-         
+
          <!-- 生成sku的按钮 -->
-        
+
         </el-table-column>
         <el-table-column label="操作"
           width="300"
@@ -231,12 +233,12 @@
           <template v-if="scope.row.ll == ''">
             <el-button v-show="qq" @click="gain" size="mini" type="primary">确认属性值</el-button>
              <!--重新设置属性  -->
-            <el-button v-show="again" type="danger" @click="back" size="mini">重新设置属性</el-button>           
+            <el-button v-show="again" type="danger" @click="back" size="mini">重新设置属性</el-button>
           </template>
           <template v-else>
             <el-button v-show="pp" @click="addInput(scope.row,scope.$index)" size="mini" type="primary" >添加值</el-button>
-            <el-button v-show="close"  size="mini" type="primary"  disabled>添加值</el-button>            
-                        
+            <el-button v-show="close"  size="mini" type="primary"  disabled>添加值</el-button>
+
           </template>
         </template>
 
@@ -247,9 +249,9 @@
 
       <el-table
        v-show="skuList"
-      
+
         :data="ccc"
-        
+
         border
          style="width: 1340px;margin:30px auto;"
         :header-cell-style="getRowClass">
@@ -267,7 +269,7 @@
         align="center"
         >
 
-          
+
       </el-table-column>
 
       <el-table-column
@@ -370,11 +372,11 @@ import DateList from './component/DateList'
         merchandise: false,
         isCollapse: true,
         aaa:0,
-       
+
         // 属性按钮禁用
         forbidden:true,
         // 属性按钮选中效果
-        mm:true, 
+        mm:true,
         // 添加值按钮
         pp:true,
         // 确认属性值按钮
@@ -412,25 +414,25 @@ import DateList from './component/DateList'
           id: "1",
           button: "行程路线",
           pp : false,
-          verifier: "Route",  
+          verifier: "Route",
         },
         {
           id: "2",
           button: "天数",
           pp : false,
-          verifier: "Day", 
+          verifier: "Day",
         },
         {
           id: "3",
           button: "晚数",
           pp : false,
-          verifier: "NightNum",      
+          verifier: "NightNum",
         },
         {
           id: "4",
           button: "房型",
           pp : false,
-          verifier: "House",         
+          verifier: "House",
         },
         {
           id: "5",
@@ -442,7 +444,7 @@ import DateList from './component/DateList'
           id: "6",
           button: "航空公司",
           pp : false,
-          verifier: "Airline",        
+          verifier: "Airline",
         },
         {
           id: "7",
@@ -498,6 +500,15 @@ import DateList from './component/DateList'
         }],
         value: '',
         tableData: [{
+          pid:'1',
+          type:'跟团游',
+          name:'xxx 跟团游',
+          mu_address:'xxx',
+          options:'xxx',
+          status:'1',
+          opers:'飞猪 携程',
+          price:'7900'
+        },{
           pid:'1',
           type:'跟团游',
           name:'xxx 跟团游',
@@ -571,7 +582,7 @@ import DateList from './component/DateList'
 
    // 点击属性按钮的时候
     begin(e,key){
-   
+
       // 如果按钮是未按下的情况下
       if(e.pp == false){
         document.getElementById('kk'+key).style.border = 'solid 1px #409EFF'
@@ -597,10 +608,10 @@ import DateList from './component/DateList'
           // 如果数据条数大于一条,则吧str,也就是确认属性值这条代码拿出来在重新放到数据尾部
           var str = this.addtable[this.addtable.length-1].allprice.splice( this.addtable[this.addtable.length-1].allprice.length -2,1);
           this.addtable[this.addtable.length -1].allprice.push(str[0]);
-          this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2; 
-          console.log(e);         
+          this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2;
+          console.log(e);
         }
-        
+
       }else if(e.pp){
         // 当按钮按下了
         document.getElementById('kk'+key).style.border = 'solid 1px #dcdfe6'
@@ -617,7 +628,7 @@ import DateList from './component/DateList'
           this.addtable[this.addtable.length-1].allprice.splice(0,1);
         }
         this.buttonList[key].pp = false;
-      }      
+      }
     },
     //添加属性值功能
     addInput(b,key){
@@ -628,7 +639,7 @@ import DateList from './component/DateList'
         price:'',
       })
     },
-  
+
 
   // 确认属性值
   gain(){
@@ -647,10 +658,10 @@ import DateList from './component/DateList'
     console.log(this.addtable);
     console.log(this.sku);
   },
-  
+
   // 重新设计属性值
   back(){
-    this.aa = true;    
+    this.aa = true;
     this.bb = false;
     this.qq = true;
     this.again = false;
@@ -675,18 +686,18 @@ import DateList from './component/DateList'
     //   document.getElementById('vv'+key).style.border = 'solid 1px #409EFF';
     //   document.getElementById('vv'+key).style.color= '#fff';
     //   document.getElementById('vv'+key).style.background= '#409EFF';
-  
+
     // }else{
     //   document.getElementById('vv'+key).style.border = 'solid 1px #b3d8ff';
     //   document.getElementById('vv'+key).style.color= '#409EFF';
     //   document.getElementById('vv'+key).style.background= '#409EFF';
-    
+
     // }
   },
   // 生成sku
   skuadd(){
-    console.log(this.sku);  
-    
+    console.log(this.sku);
+
 
      console.log( this.sku[this.sku.length-1].price.length);
      if(this.sku[this.sku.length-1].price.length==0){
@@ -708,10 +719,10 @@ import DateList from './component/DateList'
     var ooo = [];
   for(var k = 0;k<bbb.length;k++){
     ooo.push(
-         bbb[k].name + ':' + bbb[k].zhi     
+         bbb[k].name + ':' + bbb[k].zhi
     )
-    
-     
+
+
   }
     var ppp = ooo.toString()
     // sku的id编号
@@ -722,7 +733,7 @@ import DateList from './component/DateList'
     })
     console.log(this.ccc)
      }
-    
+
   },
 
   // 删除属性值

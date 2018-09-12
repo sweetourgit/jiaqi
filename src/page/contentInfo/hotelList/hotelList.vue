@@ -590,6 +590,17 @@
             hotelchina:'平八茶楼酒店',
             hotelenglish:'Heihachi Tea House Inn',
             value5: 3.7,
+          }, {
+            imgUrl:'http://victor-t.cn/7.png',
+            hotelchina:'平八茶楼酒店',
+            hotelenglish:'Heihachi Tea House Inn',
+            value5: 3.7,
+          },
+          {
+            imgUrl:'http://victor-t.cn/7.png',
+            hotelchina:'平八茶楼酒店',
+            hotelenglish:'Heihachi Tea House Inn',
+            value5: 3.7,
           },{
             imgUrl:'http://victor-t.cn/7.png',
             hotelchina:'平八茶楼酒店',
@@ -785,7 +796,7 @@
     margin-bottom: 10px;
   /*  width: 550px;
     height: 480px;*/
-    width: 47%;
+    width: 31%;
     float: left;
   }
   .block{
