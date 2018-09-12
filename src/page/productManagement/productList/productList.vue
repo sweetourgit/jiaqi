@@ -74,6 +74,7 @@
 
     <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px" >
     <div class="button_select">
+
       <el-button plain>编辑</el-button>
       <el-button plain>复制</el-button>
       <el-button plain>导出行程</el-button>
@@ -307,6 +308,7 @@
     <!-- 价格 -->
     <div v-else>
       <DateList/>
+      <stock></stock>
     </div>
 
     </el-dialog>
@@ -316,9 +318,11 @@
 
 <script>
 import DateList from './component/DateList'
+import Stock from './component/Stock'
   export default {
     components:{
-      DateList
+      DateList,
+      Stock
     },
     data() {
       return {
