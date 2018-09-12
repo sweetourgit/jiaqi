@@ -1,6 +1,5 @@
 <template>
   <div class="cityList">
-      <!-- <el-cascader class="cascade" :popper-class="toolTipClass" :options="options" @change="handleChange"></el-cascader> -->
       <div class="search">
         <span class="keyword">输入关键字:</span>
         <el-autocomplete class="inputBox" clearable placeholder="请输入关键字" :fetch-suggestions="querySearch" suffix-icon="el-icon-search" v-model="input" :trigger-on-focus="false"></el-autocomplete>
@@ -9,126 +8,58 @@
       <div class="cascade">
        <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
       </div>
-      <!-- <template v-if="geography == 1">
-        <el-button class="add_country" type="primary" @click="addState = true">添加国家</el-button>
-      </template>
-      <template v-else-if="geography == 2">
-        <el-button class="add_country" type="primary" @click="addProvince = true">添加省份</el-button>
-      </template>
-      <template v-else-if="geography == 3">
-        <el-button class="add_country" type="primary" @click="addCity = true">添加城市</el-button>
-      </template> -->
-      <!-- 国家列表 -->
+      <!-- 区域列表 -->
       <template v-if="geography == 1">
+      <el-button class="add_country" type="primary" @click="addState = true">添加</el-button>
         <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 65%;">
-          <el-table-column :key="Math.random()" prop="id" label="ID" width="60%" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" label="名称" width="120%" align="center">
+          <el-table-column :key="Math.random()" prop="id" label="ID" align="center" width="60%"></el-table-column>
+          <el-table-column :key="Math.random()" label="名称" align="center">
             <template slot-scope="scope">
-              <el-tooltip placement="right" effect="light">
-                <div slot="content">点击查看<br/>下级分类</div>
-                <el-button type="text">{{ scope.row.country }}</el-button>
-              </el-tooltip>
+              <template v-if="scope.row.isLeaf == 0">
+                <el-tooltip placement="right" effect="light">
+                  <div slot="content">点击查看<br/>下级分类</div>
+                  <el-button @click="subordinate(scope.row)" type="text">{{ scope.row.country }}</el-button>
+                </el-tooltip>
+              </template>
+              <template v-else-if="scope.row.isLeaf == 1">
+                <span type="text">{{ scope.row.country }}</span>                
+              </template>
             </template>
           </el-table-column>
-          <el-table-column :key="Math.random()" prop="continent" label="所属大洲" width="120%" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="englishName" label="英文名" width="140%" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="pinyin" label="中文全拼" width="150%" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="initials" label="首字母" width="70" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="code" label="代码" width="120%" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" label="操作" align="center" width="280">
+          <el-table-column :key="Math.random()" prop="continent" label="所属大洲" align="center"></el-table-column>
+          <el-table-column :key="Math.random()" prop="englishName" label="英文名" align="center"></el-table-column>
+          <el-table-column :key="Math.random()" prop="pinyin" label="中文全拼" align="center"></el-table-column>
+          <el-table-column :key="Math.random()" prop="initials" label="首字母" align="center" width="70%"></el-table-column>
+          <el-table-column :key="Math.random()" prop="code" label="代码" align="center"></el-table-column>
+          <el-table-column :key="Math.random()" label="操作" align="center" width="240%">
           <template slot-scope="scope">
             <div class="table_button_left">
               <el-button class="table_button" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
               <el-button class="table_button" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-              <el-button class="table_button1" type="success" @click="addProvince = true">添加</el-button>
+              <el-button class="table_button1" type="success" @click="addStates(scope.$index, scope.row)">添加</el-button>
             </div>
-            <!-- <div class="table_button_right">
-              <el-button class="table_button1" type="success" @click="addProvince = true">添加</el-button>
-              <el-button class="table_button1" type="success" @click="addCity1(scope.$index, scope.row)">添加城市</el-button>
-            </div> -->
           </template>
           </el-table-column>
         </el-table>
         <el-pagination class="page" background @size-change="pagesizes" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[2, 4, 8, 10]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
         </el-pagination>
       </template>
-      <!-- 国家列表END -->
-      <!-- 省份列表 -->
-      <template v-else-if="geography == 2">
-        <el-table class="table_list" :data="tableDataProvince" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 75%;">
-          <el-table-column :key="Math.random()" prop="id" label="ID" width="66" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" label="省份" width="119" align="center">
-            <template slot-scope="scope">
-              <el-tooltip placement="right" effect="light">
-                <div slot="content">点击查看<br/>下级分类</div>
-                <el-button type="text">{{ scope.row.province }}</el-button>
-              </el-tooltip>
-            </template>
-          </el-table-column>
-          <el-table-column :key="Math.random()" prop="country" label="国家" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="englishName" label="英文名" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="pinyin" label="中文全拼" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="initials" label="首字母" width="100" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" label="操作" fixed="right" align="center" width="300">
-          <template slot-scope="scope">
-            <template v-if="scope.row.province == '北京市'
-            || scope.row.province == '天津市'
-            || scope.row.province == '上海市'
-            || scope.row.province == '重庆'">
-              <el-button class="table_button" type="primary" @click="ProvinceEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button class="table_button" type="danger" @click="ProvinceDelete(scope.$index, scope.row)">删除</el-button>
-            </template>
-            <template v-else>
-              <el-button class="table_button" type="primary" @click="ProvinceEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button class="table_button" type="danger" @click="ProvinceDelete(scope.$index, scope.row)">删除</el-button>
-              <el-button class="table_button1" type="success" @click="addCity1(scope.$index, scope.row)">添加城市</el-button>
-            </template>
-          </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination class="page" background @size-change="pagesizes" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[2, 4, 8, 10]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-        </el-pagination>
-      </template>
-      <!-- 省份列表END -->
-      <!-- 城市列表 -->
-      <template v-else-if="geography == 3">
-        <el-table class="table_list" :data="tableDataCity" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 75%;">
-          <el-table-column :key="Math.random()" prop="id" label="ID" width="66" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="city" label="城市" width="119" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="province" label="省份" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="country" label="国家" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="englishName" label="英文名" width="119" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="pinyin" label="中文全拼" width="119" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="initials" label="首字母" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="code" label="代码" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="url" label="Url" width="240" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" label="操作" fixed="right" align="center" width="200">
-          <template slot-scope="scope">
-            <el-button class="table_button" type="primary" @click="CityEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button class="table_button" type="danger" @click="CityDelete(scope.$index, scope.row)">删除</el-button>
-          </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination class="page" background @size-change="pagesizes" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[2, 4, 8, 10]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-        </el-pagination>
-      </template>
-      <!-- 城市列表END -->
-      <!-- 添加国家弹框 -->
+      <!-- 区域列表END -->
+
+      <!-- 添加区域弹框 -->
       <el-dialog class="add_country_popup" custom-class="city_list" title="添加国家" :visible.sync="addState" width="600px">
         <el-form :model="countryPopup" status-icon :rules="countryRules" ref="countryPopup">
-          <el-form-item label="选择大洲:" prop="select" :label-width="formLabelWidth">
-            <el-select class="country_select" v-model="countryPopup.select" placeholder="请选择">
-              <el-option label="亚洲" value="1">亚洲</el-option>
-              <el-option label="欧洲" value="2">欧洲</el-option>
-              <el-option label="大洋洲 澳洲" value="3">大洋洲 澳洲</el-option>
-              <el-option label="北美洲" value="4">北美洲</el-option>
-              <el-option label="南美洲" value="5">南美洲</el-option>
-              <el-option label="非洲" value="6">非洲</el-option>
-              <el-option label="南极洲" value="7">南极洲</el-option>
-            </el-select>
+          <el-form-item label="所属地区:" :label-width="formLabelWidth">
+            <span class="country_span">{{countryPopup.select}}</span>
           </el-form-item>
-          <el-form-item label="国家名称:" :label-width="formLabelWidth" prop="countryName">
+          <el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">
             <el-input class="country_input" v-model="countryPopup.countryName" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="末级区域:" :label-width="formLabelWidth">
+            <el-radio-group class="virtualDepartment" v-model="countryPopup.isLeaf">
+              <el-radio label="1">是</el-radio>
+              <el-radio label="0">否</el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
             <el-input class="country_input" v-model="countryPopup.englishName" clearable></el-input>
@@ -139,6 +70,9 @@
           <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
             <el-input class="country_input" v-model="countryPopup.initials" clearable></el-input>
           </el-form-item>
+          <el-form-item label="首拼:" :label-width="formLabelWidth">
+            <el-input class="country_input" v-model="countryPopup.initial" clearable></el-input>
+          </el-form-item>
           <el-form-item label="代码:" :label-width="formLabelWidth" prop="code">
             <el-input class="country_input" v-model="countryPopup.code" clearable></el-input>
           </el-form-item>
@@ -148,21 +82,25 @@
           <el-button class="Determine" type="primary" @click="countryForm('countryPopup')">确 定</el-button>
         </div>
       </el-dialog>
-      <!-- 添加国家END -->
-      <!-- 编辑国家弹框 -->
+      <!-- 添加区域END -->
+
+      <!-- 编辑区域弹框 -->
       <el-dialog class="edit_country_popup" custom-class="city_list" title="国家编辑" :visible.sync="editState" width="600px">
         <el-form :model="editCountryPopup" status-icon :rules="editCountryRules" ref="editCountryPopup">
           <el-form-item label="ID:" :label-width="formLabelWidth" prop="id">
             <span class="country_span">{{editCountryPopup.id}}</span>
           </el-form-item>
-          <el-form-item label="选择大洲:" prop="select" :label-width="formLabelWidth">
-            <el-select class="country_select" v-model="editCountryPopup.select" placeholder="请选择">
-              <el-option label="北美洲" value="shanghai"></el-option>
-              <el-option label="亚洲" value="beijing"></el-option>
-            </el-select>
+          <el-form-item label="所属地区:" :label-width="formLabelWidth">
+            <span class="country_span">{{editCountryPopup.select}}</span>
           </el-form-item>
-          <el-form-item label="国家名称:" :label-width="formLabelWidth" prop="countryName">
+          <el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">
             <el-input class="country_input" v-model="editCountryPopup.countryName" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="末级区域:" :label-width="formLabelWidth">
+            <el-radio-group class="virtualDepartment" v-model="editCountryPopup.isLeaf">
+              <el-radio label="1">是</el-radio>
+              <el-radio label="0">否</el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
             <el-input class="country_input" v-model="editCountryPopup.englishName" clearable></el-input>
@@ -173,6 +111,9 @@
           <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
             <el-input class="country_input" v-model="editCountryPopup.initials" clearable></el-input>
           </el-form-item>
+          <el-form-item label="首拼:" :label-width="formLabelWidth">
+            <el-input class="country_input" v-model="editCountryPopup.initial" clearable></el-input>
+          </el-form-item>
           <el-form-item label="代码:" :label-width="formLabelWidth" prop="code">
             <el-input class="country_input" v-model="editCountryPopup.code" clearable></el-input>
           </el-form-item>
@@ -182,137 +123,7 @@
           <el-button class="Determine" type="primary" @click="countryForm('editCountryPopup')">确 定</el-button>
         </div>
       </el-dialog>
-      <!-- 编辑国家END -->
-      <!-- 添加省份弹框 -->
-      <el-dialog class="add_country_popup" custom-class="city_list" title="添加省份" :visible.sync="addProvince" width="600px">
-        <el-form :model="provincePopup" status-icon :rules="provinceRules" ref="provincePopup">
-          <el-form-item label="所属国家:" :label-width="formLabelWidth" prop="countryName">
-            <span class="country_span">{{provincePopup.countryName}}</span>
-          </el-form-item>
-          <el-form-item label="省份名称:" :label-width="formLabelWidth" prop="provinceName">
-            <el-input class="country_input" v-model="provincePopup.provinceName" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
-            <el-input class="country_input" v-model="provincePopup.englishName" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="中文全拼:" :label-width="formLabelWidth" prop="pinyin">
-            <el-input class="country_input" v-model="provincePopup.pinyin" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
-            <el-input class="country_input" v-model="provincePopup.initials" clearable></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button class="Determine" @click="addProvince = false">取 消</el-button>
-          <el-button class="Determine" type="primary" @click="provinceForm('provincePopup')">确 定</el-button>
-        </div>
-      </el-dialog>
-      <!-- 添加省份END -->
-      <!-- 编辑省份弹框 -->
-      <el-dialog class="edit_country_popup" custom-class="city_list" title="省份编辑" :visible.sync="editProvince" width="600px">
-        <el-form :model="editProvincePopup" status-icon :rules="editProvinceRules" ref="editProvincePopup">
-          <el-form-item label="ID:" :label-width="formLabelWidth" prop="id">
-            <span class="country_span">{{editProvincePopup.id}}</span>
-          </el-form-item>
-          <el-form-item label="所属国家:" :label-width="formLabelWidth" prop="countryName">
-            <span class="country_span">{{editProvincePopup.countryName}}</span>
-          </el-form-item>
-          <el-form-item label="省份名称:" :label-width="formLabelWidth" prop="provinceName">
-            <el-input class="country_input" v-model="editProvincePopup.provinceName" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
-            <el-input class="country_input" v-model="editProvincePopup.englishName" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="中文全拼:" :label-width="formLabelWidth" prop="pinyin">
-            <el-input class="country_input" v-model="editProvincePopup.pinyin" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
-            <el-input class="country_input" v-model="editProvincePopup.initials" clearable></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button class="Determine" @click="editProvince = false">取 消</el-button>
-          <el-button class="Determine" type="primary" @click="provinceForm('editProvincePopup')">确 定</el-button>
-        </div>
-      </el-dialog>
-      <!-- 编辑省份END -->
-      <!-- 添加城市弹框 -->
-      <el-dialog class="add_country_popup edit_city_popup" custom-class="city_list" title="添加城市" :visible.sync="addCity" width="600px" style="height: 980px">
-        <el-form :model="cityPopup" status-icon :rules="cityRules" ref="cityPopup">
-          <el-form-item label="所属国家:" :label-width="formLabelWidth" prop="countryName">
-            <span class="country_span">{{cityPopup.countryName}}</span>
-          </el-form-item>
-          <el-form-item label="所属省份:" :label-width="formLabelWidth" prop="provinceName">
-            <span class="country_span">{{cityPopup.provinceName}}</span>
-          </el-form-item>
-          <el-form-item label="城市名称:" :label-width="formLabelWidth" prop="cityName">
-            <el-input class="country_input" v-model="cityPopup.cityName" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="reserveName">
-            <el-input class="country_input" v-model="cityPopup.reserveName" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="Url:" :label-width="formLabelWidth" prop="url">
-            <el-input class="country_input" v-model="cityPopup.url" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
-            <el-input class="country_input" v-model="cityPopup.englishName" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="中文全拼:" :label-width="formLabelWidth" prop="pinyin">
-            <el-input class="country_input" v-model="cityPopup.pinyin" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
-            <el-input class="country_input" v-model="cityPopup.initials" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="代码:" :label-width="formLabelWidth" prop="code">
-            <el-input class="country_input" v-model="cityPopup.code" clearable></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button class="Determine" @click="addCity = false">取 消</el-button>
-          <el-button class="Determine" type="primary" @click="cityForm('cityPopup')">确 定</el-button>
-        </div>
-      </el-dialog>
-      <!-- 添加城市END -->
-      <!-- 编辑城市弹框 -->
-      <el-dialog class="add_country_popup edit_city_popup" custom-class="city_list" title="编辑城市" :visible.sync="editCity" width="600px" style="height:1050px">
-        <el-form :model="editCityPopup" status-icon :rules="editCityRules" ref="editCityPopup">
-          <el-form-item label="ID:" :label-width="formLabelWidth" prop="id">
-            <span class="country_span">{{editCityPopup.id}}</span>
-          </el-form-item>
-          <el-form-item label="所属国家:" :label-width="formLabelWidth" prop="countryName">
-            <span class="country_span">{{editCityPopup.countryName}}</span>
-          </el-form-item>
-          <el-form-item label="所属省份:" :label-width="formLabelWidth" prop="provinceName">
-            <span class="country_span">{{editCityPopup.provinceName}}</span>
-          </el-form-item>
-          <el-form-item label="城市名称:" :label-width="formLabelWidth" prop="cityName">
-            <el-input class="country_input" v-model="editCityPopup.cityName" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="reserveName">
-            <el-input class="country_input" v-model="editCityPopup.reserveName" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="Url:" :label-width="formLabelWidth" prop="url">
-            <el-input class="country_input" v-model="editCityPopup.url" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
-            <el-input class="country_input" v-model="editCityPopup.englishName" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="中文全拼:" :label-width="formLabelWidth" prop="pinyin">
-            <el-input class="country_input" v-model="editCityPopup.pinyin" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="首字母:" :label-width="formLabelWidth" prop="initials">
-            <el-input class="country_input" v-model="editCityPopup.initials" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="代码:" :label-width="formLabelWidth" prop="code">
-            <el-input class="country_input" v-model="editCityPopup.code" clearable></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button class="Determine" @click="editCity = false">取 消</el-button>
-          <el-button class="Determine" type="primary" @click="cityForm('editCityPopup')">确 定</el-button>
-        </div>
-      </el-dialog>
-      <!-- 编辑城市END -->
+      <!-- 编辑区域END -->
   </div>
 </template>
 
@@ -326,83 +137,41 @@
           label: 'name',
           isLeaf: 'leaf'
         },
-        data: '',
-        total: 1,
-        // options: [{
-        //   value: '1',
-        //   label: '全部国家'
-        // },{
-        //   value: '中国',
-        //   label: '中国',
-        //   children: [{
-        //   label: '全部省份',
-        //   value: '2',
-        // },{
-        //     value: '黑龙江',
-        //     label: '黑龙江',
-        //     children: [{
-        //     label: '全部城市',
-        //     value: '3',
-        //   },{
-        //       value: '哈尔滨',
-        //       label: '哈尔滨',
-        //     }]
-        //   }]
-        // },{
-        //   value: '日本',
-        //   label: '日本',
-        //   children: [{
-        //   label: '全部城市',
-        //   value: '3',
-        // },{
-        //     value: '东京',
-        //     label: '东京',
-        //   }]
-        // }],
-        // tableData: [{
-        //   id: '001',
-        //   country: '中国',
-        //   continent: '亚洲',
-        //   englishName: 'China',
-        //   pinyin: 'zhongguo',
-        //   initials: 'ZG',
-        //   code: 'CHN',
-        //   value: '中国'
-        // },{
-        //   id: '002',
-        //   country: '美国',
-        //   continent: '亚洲',
-        //   englishName: 'China',
-        //   pinyin: 'zhongguo',
-        //   initials: 'ZG',
-        //   code: 'CHN',
-        //   value: '美国'
-        // }],
+        data: '', // 存单击数据
+        total: 1, // 分页总条数
+        theContinent: '', // 所属地区id
+        node: '', // 获取tree子级数据
+        resolve: '', // 获取tree子级方法
+        level: '', // 层级数据
+        // 数据表格
         tableData: [],
-        // 添加国家数据
+        // 添加区域数据
         countryPopup: {
           countryName: '',
           englishName: '',
           pinyin: '',
           initials: '',
+          initial: '',
           code: '',
-          select: ''
+          select: '',
+          parentID: '',
+          isLeaf: '0',
         },
-        // 编辑国家数据
+        // 编辑区域数据
         editCountryPopup: {
           id: '',
           countryName: '',
           englishName: '',
           pinyin: '',
           initials: '',
+          initial: '',
           code: '',
-          select: ''
+          select: '',
+          isLeaf: '',
+          parentID: ''
         },
-        // 添加国家正则判断
+        // 添加区域正则判断
         countryRules: {
-          select: [
-            { required: true, message: '请选择大洲', trigger: 'blur'},
-          ],
           countryName: [
             { required: true, message: '请填写国家名称', trigger: 'blur'},
             { pattern: /^[\u4e00-\u9fa5]{2,6}$/, message: '请输入2-6位汉字'}
@@ -414,11 +183,8 @@
             {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
           ]
         },
-        // 编辑国家正则判断
+        // 编辑区域正则判断
         editCountryRules: {
-          select: [
-            { required: true, message: '请选择大洲', trigger: 'blur'},
-          ],
           countryName: [
             { required: true, message: '请填写国家名称', trigger: 'blur'},
             { pattern: /^[\u4e00-\u9fa5]{2,6}$/, message: '请输入2-6位汉字'}
@@ -430,11 +196,7 @@
             {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
           ]
         },
-        // search: 'search',
-        value: '',
-        // toolTipClass: 'popper__arrow',
         input: '',// 搜索框
-        countryList: '',// 国家
         tableHead: {height: '60px', color: '#555555'}, // 表格头部高度
         tableHeight: {padding: '0', height: '34px'}, // 各表格高度
         pagesize:10, // 每页的数据条数
@@ -442,152 +204,14 @@
         geography: '', // 判断国家 省份 城市
         addState: false, // 添加国家弹框
         formLabelWidth: '160px', // 弹窗item宽度
-        addState: false, // 添加国家弹窗
         editState: false, // 编辑国家弹框
-        // 省份数据 ==========================================
-        addProvince: false, // 添加省份弹窗
-        editProvince: false, // 编辑省份弹窗
-        // 省份表格数据
-        tableDataProvince: [],
-        // tableDataProvince: [{
-        //   id: '001',
-        //   province: '辽宁',
-        //   country: '中国',
-        //   englishName: 'Liaoning',
-        //   pinyin: 'liaoning',
-        //   initials: 'LN',
-        // },{
-        //   id: '002',
-        //   province: '上海',
-        //   country: '中国',
-        //   englishName: 'Liaoning',
-        //   pinyin: 'liaoning',
-        //   initials: 'LN',
-        // }],
-        // 添加省份数据
-        provincePopup: {
-          countryName: '中国',
-          provinceName: '',
-          englishName: '',
-          pinyin: '',
-          initials: '',
-        },
-        // 编辑省份数据
-        editProvincePopup: {
-          id: '',
-          countryName: '中国',
-          provinceName: '',
-          englishName: '',
-          pinyin: '',
-          initials: '',
-        },
-        // 添加省份正则判断
-        provinceRules: {
-          provinceName: [
-            { required: true, message: '请填写省份名称', trigger: 'blur'},
-            { pattern: /^[\u4e00-\u9fa5]{2,6}$/, message: '请输入2-6位汉字'}
-          ],
-          pinyin: [
-            {pattern: /^[a-z]+$/, message: '请输入小写字母,不能有空格'}
-          ],
-          initials: [
-            {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
-          ]
-        },
-        // 编辑省份正则判断
-        editProvinceRules: {
-          provinceName: [
-            { required: true, message: '请填写省份名称', trigger: 'blur'},
-            { pattern: /^[\u4e00-\u9fa5]{2,6}$/, message: '请输入2-6位汉字'}
-          ],
-          pinyin: [
-            {pattern: /^[a-z]+$/, message: '请输入小写字母,不能有空格'}
-          ],
-          initials: [
-            {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
-          ]
-        },
-        // 城市数据 ==========================================
-        addCity: false, // 添加城市弹窗
-        editCity: false, // 编辑城市弹窗
-        // 城市表格数据
-        tableDataCity: [],
-        // tableDataCity: [{
-        //   id: '001',
-        //   city: '沈阳',
-        //   province: '辽宁',
-        //   country: '中国',
-        //   englishName: 'ShenYang',
-        //   pinyin: 'shenyang',
-        //   initials: 'SY',
-        //   code: '',
-        //   url: 'www.baidu.com'
-        // },{
-        //   id: '002',
-        //   city: '上海',
-        //   province: '-',
-        //   country: '中国',
-        //   englishName: 'ShangHai',
-        //   pinyin: 'shanghai',
-        //   initials: 'SH',
-        //   code: '',
-        //   url: 'www.baidu.com'
-        // }],
-        // 添加城市数据
-        cityPopup: {
-          countryName: '',
-          provinceName: '',
-          cityName: '',
-          reserveName: '',
-          url: '',
-          englishName: '',
-          pinyin: '',
-          initials: '',
-          code: ''
-        },
-        // 编辑城市数据
-        editCityPopup: {
-          id: '',
-          countryName: '',
-          provinceName: '',
-          cityName: '',
-          reserveName: '',
-          url: '',
-          englishName: '',
-          pinyin: '',
-          initials: '',
-          code: ''
-        },
-        // 添加城市正则判断
-        cityRules: {
-          cityName: [
-            { required: true, message: '请填写城市名称', trigger: 'blur'},
-            { pattern: /^[\u4e00-\u9fa5]{2,6}$/, message: '请输入2-6位汉字'}
-          ],
-          pinyin: [
-            {pattern: /^[a-z]+$/, message: '请输入小写字母,不能有空格'}
-          ],
-          initials: [
-            {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
-          ]
-        },
-        // 编辑城市正则判断
-        editCityRules: {
-          cityName: [
-            { required: true, message: '请填写城市名称', trigger: 'blur'},
-            { pattern: /^[\u4e00-\u9fa5]{2,6}$/, message: '请输入2-6位汉字'}
-          ],
-          pinyin: [
-            {pattern: /^[a-z]+$/, message: '请输入小写字母,不能有空格'}
-          ],
-          initials: [
-            {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
-          ]
-        }
       }
     },
     methods: {
       loadNode1(node, resolve) {
+        this.node = node.data
+        this.resolve = resolve
+        this.level = node.level
         /*添加第一级*/
         if (node.level === 0) {
           this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",{
@@ -639,26 +263,28 @@
           }
         ).then(res => {
           this.lists = []
-          for(let i=0;i<res.data.objects.length;i++){
-            if(res.data.objects[i].isDeleted == 0){
-              if(res.data.objects[i].isLeaf == 0){
-                this.lists.push({
-                  name:res.data.objects[i].areaName,
-                  key: i,
-                  id: res.data.objects[i].id,
-                  isLeaf: res.data.objects[i].isLeaf,
-                  leaf: false,
-                  Hierarchy: level
-                })
-              } else {
-                this.lists.push({
-                  name:res.data.objects[i].areaName,
-                  key: i,
-                  id: res.data.objects[i].id,
-                  isLeaf: res.data.objects[i].isLeaf,
-                  leaf: true,
-                  Hierarchy: level
-                })
+          if(res.data.isSuccess == true){
+            for(let i=0;i<res.data.objects.length;i++){
+              if(res.data.objects[i].isDeleted == 0){
+                if(res.data.objects[i].isLeaf == 0){
+                  this.lists.push({
+                    name:res.data.objects[i].areaName,
+                    key: i,
+                    id: res.data.objects[i].id,
+                    isLeaf: res.data.objects[i].isLeaf,
+                    leaf: false,
+                    Hierarchy: level
+                  })
+                } else {
+                  this.lists.push({
+                    name:res.data.objects[i].areaName,
+                    key: i,
+                    id: res.data.objects[i].id,
+                    isLeaf: res.data.objects[i].isLeaf,
+                    leaf: true,
+                    Hierarchy: level
+                  })
+                }
               }
             }
           }
@@ -670,12 +296,15 @@
         });
       },
       // 单击tree节点
-      treeClick(data,b,c){
-              this.tableData = []
-              this.tableDataProvince = []
-              this.tableDataCity = []
-
+      treeClick(data){
+        this.tableData = []
         this.data = data
+        this.countryPopup.select = data.name
+        this.countryPopup.parentID = this.editCountryPopup.parentID = data.id
+        if(data.Hierarchy == 0){
+          // 所属地区
+          this.theContinent = data.id
+        }
         if(data.isLeaf == 1){
           this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforget',{
             id: data.id
@@ -684,19 +313,21 @@
               'Authorization': 'Bearer ' + localStorage.getItem('token')
             }
           }).then(res => {
-            this.tableDataCity = []
-            this.tableDataCity.push({
+            this.tableData.push({
               id: res.data.object.id,
-              city: res.data.object.areaName,
-              province: '-',
-              country: res.data.object.parentID,
+              country: res.data.object.areaName,
+              continent: res.data.object.earth,
               englishName: res.data.object.englishName,
               pinyin: res.data.object.chineseFull,
               initials: res.data.object.firstChar,
               code: res.data.object.areaCode,
-              value: res.data.object.areaName
+              value: res.data.object.areaName,
+              isLeaf: res.data.object.isLeaf,
+              initial: res.data.object.initial
             })
-            this.geography = 3
+            this.geography = 1
+            this.currentPage = 1
+            this.total = 1
           }).catch(err => {
             console.log(err)
           })
@@ -713,73 +344,26 @@
               }
           }).then(res => {
             this.total = res.data.total
-            // 国家列表
-            if(data.Hierarchy == 0){
-              this.tableData = []
-              this.geography = 1
-              for(let i=0;i<res.data.objects.length;i++){
-                this.tableData.push({
-                  id: res.data.objects[i].id,
-                  country: res.data.objects[i].areaName,
-                  continent: res.data.objects[i].earth,
-                  englishName: res.data.objects[i].englishName,
-                  pinyin: res.data.objects[i].chineseFull,
-                  initials: res.data.objects[i].firstChar,
-                  code: res.data.objects[i].areaCode,
-                  value: res.data.objects[i].areaName
-                })
-              }
-            // 城市列表
-            } else if(data.Hierarchy == 1 && data.name !== '中华民国' || data.Hierarchy == 2){
-              this.tableDataCity = []
-              this.geography = 3
-              for(let i=0;i<res.data.objects.length;i++){
-                this.tableDataCity.push({
-                  id: res.data.objects[i].id,
-                  city: res.data.objects[i].areaName,
-                  province: '-',
-                  country: res.data.objects[i].parentID,
-                  englishName: res.data.objects[i].englishName,
-                  pinyin: res.data.objects[i].chineseFull,
-                  initials: res.data.objects[i].firstChar,
-                  code: res.data.objects[i].areaCode,
-                  value: res.data.objects[i].areaName
-                })
-              }
-            // 省份列表
-            } else if(data.Hierarchy == 1 && data.name == '中华民国'){
-              this.tableDataProvince = []
-              this.geography = 2
-              for(let i=0;i<res.data.objects.length;i++){
-                this.tableDataProvince.push({
-                  id: res.data.objects[i].id,
-                  province: res.data.objects[i].areaName,
-                  country: res.data.objects[i].parentID,
-                  englishName: res.data.objects[i].englishName,
-                  pinyin: res.data.objects[i].chineseFull,
-                  initials: res.data.objects[i].firstChar,
-                })
-              }
+            this.geography = 1
+            for(let i=0;i<res.data.objects.length;i++){
+              this.tableData.push({
+                id: res.data.objects[i].id,
+                country: res.data.objects[i].areaName,
+                continent: res.data.objects[i].earth,
+                englishName: res.data.objects[i].englishName,
+                pinyin: res.data.objects[i].chineseFull,
+                initials: res.data.objects[i].firstChar,
+                code: res.data.objects[i].areaCode,
+                value: res.data.objects[i].areaName,
+                isLeaf: res.data.objects[i].isLeaf,
+                initial: res.data.objects[i].initial
+              })
             }
           }).catch(err => {
             console.log(err)
           })
         }
-        
       },
-      // handleChange(value) {
-      //   let num = String(value);
-      //   let str = num.substring(num.indexOf(",") + 1,num.length);
-      //   let str1 = str.indexOf(",") !== -1 ?str.substring(str.indexOf(",") + 1,str.length) :num.substring(num.indexOf(",") + 1,num.length);
-      //   let state = num.substring(num.indexOf(","), 0); // 获取国家数据
-      //   this.cityPopup.countryName = state;
-      //   let city = str.indexOf(",") !== -1 ?str.substring(str.indexOf(","), 0) :''; // 获取省份数据
-      //   this.cityPopup.provinceName = city;
-      //   this.geography = str1
-      //   if(this.geography !== 'search'){
-      //     this.search = 'search1'
-      //   }
-      // },
       // 搜索方法
       querySearch(queryString, cb) {
         var results = queryString ? this.tableData.filter(this.createFilter(queryString)) : [];
@@ -799,27 +383,88 @@
             return ''
           }
       },
-      // ========国家开始 =================================================
-      // 添加 编辑 国家保存成功
+      // 添加 编辑 地区保存成功
       countryForm(formName) {
         this.$refs[formName].validate(valid => {
           if(valid) {
-            this.$message.success('保存成功！');
             if(formName == 'countryPopup'){
-              this.addState = false;
-              this.$refs['countryPopup'].resetFields()
+              this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforinsert', {
+                object: {
+                  areaName: this.countryPopup.countryName,
+                  englishName: this.countryPopup.englishName,
+                  chineseFull: this.countryPopup.pinyin,
+                  firstChar: this.countryPopup.initials,
+                  areaCode: this.countryPopup.code,
+                  parentID: this.countryPopup.parentID,
+                  isLeaf: Number(this.countryPopup.isLeaf),
+                  initial: this.countryPopup.initial,
+                  createTime: "2018-09-11T07:32:14.737Z",
+                  earth: this.theContinent
+                }
+              },{
+                headers:{
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                  }
+                }).then(res => {
+                  this.treeClick(this.data)
+                  this.addState = false;
+                  this.$message.success('添加成功！');
+                  this.getSon(
+                    this.node.key,
+                    this.node.label,
+                    this.node.id,
+                    this.node.isLeaf,
+                    this.resolve,
+                    this.level
+                  );
+                  this.$refs['countryPopup'].resetFields()
+                  this.countryPopup.initial = ''
+                }).catch(err => {
+                  console.log(err)
+                })
             } else if(formName == 'editCountryPopup'){
-              // console.log(this.editCountryPopup)
               this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforsave', {
                 object: {
-
+                  id: this.editCountryPopup.id,
+                  areaName: this.editCountryPopup.countryName,
+                  englishName: this.editCountryPopup.englishName,
+                  chineseFull: this.editCountryPopup.pinyin,
+                  firstChar: this.editCountryPopup.initials,
+                  areaCode: this.editCountryPopup.code,
+                  isLeaf: Number(this.editCountryPopup.isLeaf),
+                  initial: this.editCountryPopup.initial,
+                  parentID: this.editCountryPopup.parentID,
+                  earth: this.theContinent,
                 }
-              })
-              this.editState = false;
-              this.$refs['editCountryPopup'].resetFields()
+              },{
+                headers:{
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                  }
+                }).then(res => {
+                  this.treeClick(this.data)
+                  this.editState = false;
+                  this.$message.success('修改成功！');
+                  this.getSon(
+                    this.node.key,
+                    this.node.label,
+                    this.node.id,
+                    this.node.isLeaf,
+                    this.resolve,
+                    this.level
+                  );
+                  // this.$refs['editCountryPopup'].resetFields()
+                }).catch(err => {
+                  console.log(err)
+                })
             }
           }
         })
+      },
+      // 添加国家弹窗
+      addStates(key, data){
+        this.countryPopup.select = data.country
+        this.countryPopup.parentID = this.editCountryPopup.parentID = data.id
+        this.addState = true
       },
       // 编辑国家
       handleEdit(key, data){
@@ -829,8 +474,10 @@
         this.editCountryPopup.countryName = data.country;
         this.editCountryPopup.englishName = data.englishName;
         this.editCountryPopup.initials = data.initials;
+        this.editCountryPopup.initial = data.initial;
         this.editCountryPopup.pinyin = data.pinyin;
-        this.editCountryPopup.select = data.continent;
+        this.editCountryPopup.select = this.theContinent;
+        this.editCountryPopup.isLeaf = String(data.isLeaf);
       },
       // 删除国家
       handleDelete(key, data){
@@ -841,122 +488,62 @@
           confirmButtonClass: 'delete_country_determine',
           cancelButtonClass: 'delete_country_determine1'
         }).then(() => {
-          this.deletemethods(key, data, 1)
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
-      },
-      //删除所有数据的方法
-      deletemethods(key, data, num){
-        if(num !== 3){
-          this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforlist',{
-            object: {
-              parentID: data.id
-            }
-          },{
-            headers:{
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
+          if(data.isLeaf == 0){
+            this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforlist',{
+              object: {
+                parentID: data.id
               }
-          }).then(res => {
-            if(res.data.isSuccess == false){
-              this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainfordelete',{
-                id: data.id
-              },{
-                headers:{
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                  }
-              }).then(res => {
-                if(num == 1){
-                this.tableData.splice(key, 1)
-                } else if(num == 2) {
-                  this.tableDataProvince.splice(key, 1)
+            },{
+              headers:{
+                  'Authorization': 'Bearer ' + localStorage.getItem('token')
                 }
-                this.$refs.refTree.remove(data)
-                this.$message({
-                  type: 'success',
-                  message: '删除成功!'
-                });
-              }).catch(err => {
-                console.log(err)
-              })
-            } else {
-              if(num == 1){
-                this.$alert('<p>该国家下存在城市或省份 , 不能删除 ;</p><p>请清空城市或省份在删除 !</p>', '信息', {
-                  confirmButtonText: '确定',
-                  customClass: 'delete_country',
-                  dangerouslyUseHTMLString: true,
-                  confirmButtonClass: 'delete_country_determine',
+            }).then(res => {
+              if(res.data.isSuccess == false){
+                this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainfordelete',{
+                  id: data.id
+                },{
+                  headers:{
+                      'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    }
+                }).then(res => {
+                  this.tableData.splice(key, 1)
+                  this.$refs.refTree.remove(data)
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                  });
+                }).catch(err => {
+                  console.log(err)
                 })
-              } else if(num == 2){
-                this.$alert('<p>该省份下存在城市 , 不能删除 ;</p><p>请清空城市在删除 !</p>', '信息', {
+              } else {
+                this.$alert('<p>该地区下存在城市或省份 , 不能删除 ;</p><p>请清空城市或省份在删除 !</p>', '信息', {
                   confirmButtonText: '确定',
                   customClass: 'delete_country',
                   dangerouslyUseHTMLString: true,
                   confirmButtonClass: 'delete_country_determine',
                 })
               }
-            }
-          }).catch(err => {
-            console.log(err)
-          })
-        } else {
-          this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainfordelete',{
-            id: data.id
-          },{
-            headers:{
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-              }
-          }).then(res => {
-            this.tableDataCity.splice(key, 1)
-            this.$refs.refTree.remove(data)
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
-          }).catch(err => {
-
-          })
-        }
-        
-      },
-      // ========省份开始 =================================================
-      // 添加省份保存成功
-      provinceForm(formName){
-        this.$refs[formName].validate(valid => {
-          if(valid) {
-            this.$message.success('保存成功！');
-            if(formName == 'provincePopup'){
-              this.addProvince = false;
-              this.$refs['provincePopup'].resetFields();
-            } else if(formName == 'editProvincePopup') {
-              this.editProvince = false;
-              this.$refs['editProvincePopup'].resetFields();
-            }
+            }).catch(err => {
+              console.log(err)
+            })
+          } else {
+            this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainfordelete',{
+              id: data.id
+            },{
+              headers:{
+                  'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            }).then(res => {
+              this.tableData.splice(key, 1)
+              this.$refs.refTree.remove(data)
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+            }).catch(err => {
+              console.log(err)
+            })
           }
-        })
-      },
-      // 编辑省份
-      ProvinceEdit(key, data){
-        this.editProvince = true;
-        this.editProvincePopup.id = data.id;
-        this.editProvincePopup.provinceName = data.province;
-        this.editProvincePopup.englishName = data.englishName;
-        this.editProvincePopup.pinyin = data.pinyin;
-        this.editProvincePopup.initials = data.initials;
-      },
-      //删除省份
-      ProvinceDelete(key, data){
-        this.$confirm('是否删除该省份', '信息', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          customClass: 'delete_country',
-          confirmButtonClass: 'delete_country_determine',
-          cancelButtonClass: 'delete_country_determine1'
-        }).then(() => {
-          this.deletemethods(key, data, 2)
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -964,57 +551,12 @@
           });
         });
       },
-      // ========城市开始 =================================================
-      // 城市保存
-      cityForm(formName){
-        this.$refs[formName].validate(valid => {
-          if(valid) {
-            this.$message.success('验证成功！');
-            if(formName == 'cityPopup'){
-              this.addCity = false;
-              this.$refs['cityPopup'].resetFields();
-            } else if(formName == 'editCityPopup'){
-              this.editCity = false;
-              this.$refs['editCityPopup'].resetFields();
-            }
-          }
-        })
-      },
-      // 添加城市
-      addCity1(key, data){
-        this.addCity = true;
-        this.cityPopup.countryName = data.country;
-        this.cityPopup.provinceName = data.province;
-      },
-      // 编辑城市
-      CityEdit(key, data){
-        this.editCity = true;
-        this.editCityPopup.id = data.id;
-        this.editCityPopup.countryName = data.country;
-        this.editCityPopup.provinceName = data.province;
-        this.editCityPopup.cityName = data.city;
-        this.editCityPopup.url = data.url;
-        this.editCityPopup.englishName = data.englishName;
-        this.editCityPopup.pinyin = data.pinyin;
-        this.editCityPopup.initials = data.initials;
-        this.editCityPopup.code = data.code;
-      },
-      // 删除城市
-      CityDelete(key, data){
-        this.$confirm('是否删除该城市', '信息', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          customClass: 'delete_country',
-          confirmButtonClass: 'delete_country_determine',
-          cancelButtonClass: 'delete_country_determine1'
-        }).then(() => {
-          this.deletemethods(key, data, 3)
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
+      // 点击按钮查看下级
+      subordinate(data){
+        let table = {}
+        table.name = data.country
+        table.id = data.id
+        this.treeClick(table)
       },
       // 分页显示条数的改变
       pagesizes(page) {
@@ -1052,11 +594,11 @@
 .keyword{ float: left; position: relative; top: 13px;}
 .inputBox{ float: left; margin: 0 0 0 20px; width: 300px;}
 .searchButton{ float: left;margin-left:10px}
-.table_list{float:left; position: relative; top: 96px;left: 300px}
+.table_list{float:left; position: relative; top: 96px;left: 200px}
 .table_button{ width: 50px; height: 22px; padding: 0;}
 .table_button_right{ float: right; margin: 0 20px 0 0;}
 .table_button1{ width: 70px; height: 22px; padding: 0;}
-.add_country{float: left; position: relative;}
+.add_country{float: left; position: relative; left: 300px;top: 50px;width:100px}
 .page{ float: left; margin: 140px 0 0 900px;}
 .country_input{ width: 300px; margin: 0 95px 0 0;}
 .country_select{ width: 300px; margin: 0 95px 0 0;}
@@ -1065,4 +607,5 @@
 .country_span{ float: left; margin: 0 0 0 30px;}
 .edit_city_popup{ margin: -90px 0 0 0;}
 .cityList>>>.el-tree-node__label{ font-size: 16px;}
+.virtualDepartment { position: relative; float: left; left: 20px; margin-top: 13px; }
 </style>
