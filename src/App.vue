@@ -5,9 +5,9 @@
        <el-aside class="navigation" v-if="$route.meta.keepAlive"><nav-left></nav-left></el-aside>
        <el-main class="content-body">
         <div class="content-position">{{this.$route.name}}</div>
-          <el-main class="content-body1">
+          <div class="el-mainl content-body1">
             <router-view></router-view>
-          </el-main>
+          </div>
          </el-main>
     </el-container>
   </div>
@@ -45,6 +45,17 @@ body{
 }
 html{
   height: 100%;
+}
+.el-mainl {
+    display: block;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 20px;
 }
 .router{float:left;margin:50px;font-size:25px;}
 .page-header{height:auto !important;padding:0px !important}
