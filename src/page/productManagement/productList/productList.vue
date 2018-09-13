@@ -94,6 +94,7 @@
           prop="pid"
           label="产品编号"
           align="center"
+          width="100"
          >
         </el-table-column>
         <el-table-column
@@ -153,11 +154,11 @@
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage4"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page.sync="currentPage4"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size=pagesize
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400">
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -326,6 +327,8 @@ import Stock from './component/Stock'
     },
     data() {
       return {
+        total:100,
+        pagesize:10,
         buttonlist:[],
         domains: [{
           value: '跟团游',
@@ -368,10 +371,7 @@ import Stock from './component/Stock'
         }],
         about:'',
         dialogVisible: false,
-        currentPage1: 5,
-        currentPage2: 5,
-        currentPage3: 5,
-        currentPage4: 4,
+        currentPage4: 1,
 
         merchandise: false,
         isCollapse: true,
@@ -749,6 +749,83 @@ import Stock from './component/Stock'
   }
 
 
+  },
+  created(){
+    var that = this
+    this.$http.post(
+      this.GLOBAL.serverSrc + "/team/api/teampage",
+      {
+        "pageIndex": 1,
+        "pageSize": 5,
+        "total": 0,
+        "object": {
+          "id": 0,
+          "createTime": "2018-09-12T05:42:51.602Z",
+          "code": "string",
+          "launchsituation": {
+            "id": 0,
+            "code": "string",
+            "teamID": 0
+          },
+          "loadLaunchsituation": true,
+          "title": "string",
+          "tourType": 0,
+          "day": 0,
+          "night": 0,
+          "pods": [
+            {
+              "id": 0,
+              "podID": 0,
+              "podName": "string",
+              "teamID": 0
+            }
+          ],
+          "destinations": [
+            {
+              "id": 0,
+              "destinationID": 0,
+              "destinationName": "string",
+              "teamID": 0
+            }
+          ],
+          "isDeleted": 0,
+          "confirmType": 0,
+          "strengths": {
+            "id": 0,
+            "strength": "string",
+            "teamID": 0
+          },
+          "label": {
+            "id": 0,
+            "label": "string",
+            "teamID": 0
+          },
+          "pictureID": 0,
+          "vedioID": 0,
+          "pepeatpic": {
+            "id": 0,
+            "pictureID": 0,
+            "picturePath": 0
+          },
+          "advanceDay": 0,
+          "advanceHour": 0,
+          "advanceMinute": 0,
+          "createUser": "string",
+          "proStat": 0
+        }
+      },
+      {
+        headers:{
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+    )
+      .then(function (obj) {
+        console.log(obj)
+      })
+      .catch(function (obj) {
+        console.log(obj)
+      })
   }
 
   }

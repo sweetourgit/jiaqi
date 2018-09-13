@@ -1015,10 +1015,10 @@ import Permission from '@/page/account/userList/addUser/permission'
   }
   .from-input{
     width: 180px;
-    margin-left: -180px;
+    margin-left: -790px;
   }
   .from-radio{
-    margin-left: -200px;
+    margin-left: -830px;
   }
 
   .form_type{
@@ -1030,12 +1030,12 @@ import Permission from '@/page/account/userList/addUser/permission'
     margin-top: 50px;
   }
   .ruleForm-abjust{
-    width: 521px;
     padding-bottom: 100px;
     margin-top: 33px;
+    float: left;
   }
   .block{
-      width: 393px;
+      width: 1000px;
       height: 40px;
       font-size: 14px;
       margin-left: 149px;
@@ -1058,11 +1058,12 @@ import Permission from '@/page/account/userList/addUser/permission'
   }
   .addOri{
       font-size: 14px;
-      width: 403px;
+      width: 1000px;
       height: 50px;
   }
     .button-fun{
-        float:right;
+        float:left;
+      margin-left: 10px;
     }
     .but-left{
         float:left;
