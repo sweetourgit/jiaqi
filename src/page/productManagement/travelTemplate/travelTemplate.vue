@@ -600,12 +600,14 @@
       // 类型三性别
       typeThreeClick(form, key) {
         if(form == 'typeThreeTable'){
+          this.sexTable = []
           for(let i=0;i<this.typeThreeTable.length;i++){
             this.sexTable.push(this.typeThreeTable[i].sex)
           }
           this.tableProducts[key].selection = this.typeThreeData.requirement
           this.tableProducts[key].selectionValue = this.sexTable.join('，')
         } else if(form == 'typeThreeTables'){
+          this.sizeTable = []
           for(let i=0;i<this.typeThreeTables.length;i++){
             this.sizeTable.push(this.typeThreeTables[i].size)
           }
