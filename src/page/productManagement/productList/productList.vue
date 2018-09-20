@@ -150,7 +150,7 @@
       </el-table>
 
       <div class="block">
-        <el-pagination
+        <!-- <el-pagination
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -159,7 +159,7 @@
           :page-size=pagesize
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
-        </el-pagination>
+        </el-pagination> -->
       </div>
     </div>
     </div>
@@ -214,19 +214,51 @@
               </template>         
            <template  slot-scope="scope" v-else>           
               <div v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  :key="data.id" v-show="aa" style="float:left">
+                <template v-if="addtable[addtable.length-1].allprice[scope.$index].id == 2">
+                  <el-select style="width:130px;margin-rigth:10px" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in Day"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </template>
+                 <template v-else-if="addtable[addtable.length-1].allprice[scope.$index].id == 3">
+                  <el-select style="width:130px;margin-rigth:10px" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in NightNum"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </template>
+                <template v-else-if="addtable[addtable.length-1].allprice[scope.$index].id == 5">
+                   <el-select style="width:130px;margin-rigth:10px" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in Accommodation"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </template>
+                <template v-else>
                   <el-input style="width:100px;" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price"  type="text" clearable></el-input>
+                </template>
+                  <el-button  style="margin-right:10px;" size="mini" type="danger" @click="shanchu(index,scope.$index)">删除</el-button>                  
+                
                  <!-- v-model="addtable[scope.$index].price[index].value" -->
                  <!-- v-model="addtable[addtable.length-1].allpricep[scope.$index].value" -->
-                  <el-button  style="margin-right:10px;" size="mini" type="danger" @click="shanchu(index,scope.$index)">删除</el-button>
               </div>
               <!-- 点击属性按钮的时候,点击选中,再次点击取消选中,在选中的状态下,将其他没选中的按钮禁用 -->
-                <el-button :id="'vv' + index" :disabled="data.forbidden" plain v-show="bb" v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  
+                <el-button :id="'vv'+scope.$index+index" :disabled="data.forbidden" plain v-show="bb" v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  
                 :key="data.id" style="float:left;margin-right:10px;"  type="primary"
                 @click="choice(data,index,addtable[addtable.length-1].allprice[scope.$index],scope.$index)"
                 >
                   {{addtable[addtable.length-1].allprice[scope.$index].value[index].price}}
                 </el-button>
-            
             </template>
         </template>
          
@@ -480,6 +512,7 @@ import Stock from './component/Stock'
         wc:'',
         listId:'',
         io:0,
+        lm:'',
       // 属性按钮禁用
         forbidden:true,
       // 属性按钮选中效果
@@ -545,6 +578,8 @@ import Stock from './component/Stock'
       Online:true,
       // 下线
       Offline:false,
+      // 判断属性输入属性值不为空
+      shuxingz:[],
       // 按钮列表
       buttonList: [
       // pp 是开关
@@ -587,7 +622,7 @@ import Stock from './component/Stock'
         },
         {
           id: "5",
-          button: "住宿条件",
+          button: "住宿等级",
           pp : false,
           forbidden:false,
           verifier: "Accommodation",
@@ -614,6 +649,124 @@ import Stock from './component/Stock'
           verifier: "SetMeal",
         }
       ],
+        // 天数选择
+        Day: [{
+          value: '2天',
+          label: '2天'
+        }, {
+          value: '3天',
+          label: '3天'
+        }, {
+          value: '4天',
+          label: '4天'
+        }, {
+          value: '5天',
+          label: '5天'
+        }, {
+          value: '6天',
+          label: '6天'
+        },{
+          value: '7天',
+          label: '7天'
+        }, {
+          value: '8天',
+          label: '8天'
+        }, {
+          value: '9天',
+          label: '9天'
+        }, {
+          value: '10天',
+          label: '10天'
+        }, {
+          value: '11天',
+          label: '11天'
+        },{
+          value: '12天',
+          label: '12天'
+        },{
+          value: '13天',
+          label: '13天'
+        }, {
+          value: '14天',
+          label: '14天'
+        }, {
+          value: '15天',
+          label: '15天'
+        }, {
+          value: '16天',
+          label: '16天'
+        }], 
+        // 晚数列表
+        NightNum: [{
+          value: '1晚',
+          label: '1晚'
+        },{
+          value: '2晚',
+          label: '2晚'
+        }, {
+          value: '3晚',
+          label: '3晚'
+        }, {
+          value: '4晚',
+          label: '4晚'
+        }, {
+          value: '5晚',
+          label: '5晚'
+        }, {
+          value: '6晚',
+          label: '6晚'
+        },{
+          value: '7晚',
+          label: '7晚'
+        }, {
+          value: '8晚',
+          label: '8晚'
+        }, {
+          value: '9晚',
+          label: '9晚'
+        }, {
+          value: '10晚',
+          label: '10晚'
+        }, {
+          value: '11晚',
+          label: '11晚'
+        },{
+          value: '12晚',
+          label: '12晚'
+        },{
+          value: '13晚',
+          label: '13晚'
+        }, {
+          value: '14晚',
+          label: '14晚'
+        }, {
+          value: '15晚',
+          label: '15晚'
+        }],
+        // 住宿等级
+        Accommodation :[{
+          value: '豪华型',
+          label: '豪华型'
+        },{
+          value: '高档型',
+          label: '高档型'
+        }, {
+          value: '舒适型',
+          label: '舒适型'
+        }, {
+          value: '经济型',
+          label: '经济型'
+        }, {
+          value: '快捷连锁',
+          label: '快捷连锁'
+        }, {
+          value: '民俗',
+          label: '民俗'
+        },{
+          value: '农家乐',
+          label: '农家乐'
+        }
+        ],
         // 列表数组
         addtable: [],
         // sku数组
@@ -663,6 +816,7 @@ import Stock from './component/Stock'
         }],
       // 属性输入框
         price:[],
+        abc: false
       }
     },
     methods: {
@@ -730,7 +884,7 @@ import Stock from './component/Stock'
           for(var po = 0; po < this.buttonList.length;po++){
             this.buttonList[po].forbidden = true;    
                 
-          document.getElementById('kk'+po).style.border = 'solid 1px #ebeef5'
+          document.getElementById('kk'+po).style.border = 'dashed 1px #c2c2c2'
           document.getElementById('kk'+po).style.color = '#c0c4cc'
           document.getElementById('kk'+po).style.background = '#fff'  
           }
@@ -780,7 +934,7 @@ import Stock from './component/Stock'
         if(this.addtable[this.addtable.length-1].allprice.length < 4){
            for(var po = 0; po <this.buttonList.length;po++){
             this.buttonList[po].forbidden = false;
-            document.getElementById('kk'+po).style.border = 'solid 1px #dcdfe6'
+            document.getElementById('kk'+po).style.border = 'solid 1px #c2c2c2'
             document.getElementById('kk'+po).style.color = '#606266'
           }   
           this.arr.splice(e.key,1);
@@ -806,15 +960,29 @@ import Stock from './component/Stock'
     },
   // 确认属性值
   gain(){
-    console.log( this.addtable[this.addtable.length-1].allprice);  
-    for(var kl = 0;kl<this.addtable[this.addtable.length-1].allprice.length-1;kl++){ 
+    // console.log( this.addtable[this.addtable.length-1].allprice.length-1);  
+    // console.log(this.addtable[this.addtable.length-1].allprice)
+    // for(var k = 0;k<this.addtable[this.addtable.length-1].allprice.length-1;k++){
+    //   var obj = this.addtable[this.addtable.length-1].allprice[k].value.every(
+    //    function(x) {
+    //      return x.value !== ''
+    //    }
+    //  )
+    // }
+     
+    for(var kl = 0;kl<this.addtable[this.addtable.length-1].allprice.length-1;kl++){
+        // console.log(this.addtable[this.addtable.length-1].allprice[kl].value);
       if(this.addtable[this.addtable.length-1].allprice[kl].value.length == 0){
+        this.abc = true
+      }
+    }
+    if(this.abc){
         this.$message({
           showClose: true,
-          message: '请添加全部属性',
+          message: '请为每个属性至少添加一个属性值',
           type: 'error'
-        });     
-      }else{ 
+        }); 
+      } else {
         // 属性输入框和删除按钮
         this.aa = false;
         // 属性确定之后的按钮
@@ -828,16 +996,19 @@ import Stock from './component/Stock'
         this.xianshi = true;
         for(var ok = 0;ok<this.buttonList.length;ok++){
           this.buttonList[ok].forbidden = true;
-          document.getElementById('kk'+ok).style.border = 'solid 1px #ebeef5'
+          document.getElementById('kk'+ok).style.border = 'dashed 1px #c2c2c2'
           document.getElementById('kk'+ok).style.color = '#c0c4cc'
           document.getElementById('kk'+ok).style.background = '#fff' 
         } 
         for(var lo = 0;lo<this.arr.length;lo++){     
           document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
           document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
-        }   
+        } 
       }
-    }
+
+this.abc = false
+
+
   }, 
   // 重新设计属性值
   back(){
@@ -863,7 +1034,7 @@ import Stock from './component/Stock'
       // 全部禁用,并且禁用样式
       for(var ok = 0;ok<this.buttonList.length;ok++){
           this.buttonList[ok].forbidden = true;
-          document.getElementById('kk'+ok).style.border = 'solid 1px #ebeef5'
+          document.getElementById('kk'+ok).style.border = 'solid 1px #c2c2c2'
           document.getElementById('kk'+ok).style.color = '#c0c4cc'
           document.getElementById('kk'+ok).style.background = '#fff' 
       } 
@@ -877,16 +1048,34 @@ import Stock from './component/Stock'
   },
   // 属性值按钮按下
   choice(e,key,kk,lp){
-    // 当这个按钮还处于未被按下的情况下,按下    
+    // 当这个按钮还处于未被按下的情况下,按下   
+    console.log(lp); 
     if(kk.value[key].pp == false){
     // 先禁用所有的属性值按钮
       for(var ui = 0;ui<kk.value.length;ui++){
         kk.value[ui].forbidden = true;
+      // document.getElementById('vv'+key).style.border = 'solid 1px red'     
       }
+      // for(var ok = 0;ok<this.addtable[this.addtable.length-1].allprice.length-1;ok++){
+      //   console.log(this.addtable[this.addtable.length-1].allprice[ok]);        
+      //   console.log(this.addtable[this.addtable.length-1].allprice[ok].value[key]);
+      // }
+
+      //  console.log(this.addtable[this.addtable.length-1].allprice[lp].value[key]);
+       this.lm = this.addtable[this.addtable.length-1].allprice[lp].value[key].di;
+      //  console.log(this.lm);
+      //  console.log(key);
+         document.getElementById('vv'+lp+key).style.border = 'solid 1px #409eff'     
+         document.getElementById('vv'+lp+key).style.color = '#fff'     
+         document.getElementById('vv'+lp+key).style.background = '#409eff'     
     // 再解禁选中的按钮
         kk.value[key].forbidden = false;
+        // console.log(kk.value);
+        // console.log(kk.value[key]);
+        // console.log(key);
     // 让选中的按钮处于按下的状态
         kk.value[key].pp = true;
+    // 给这个按钮选中样式
     // 将这个按钮的相关的值添加到sku这个数组中
       this.sku[this.sku.length-1].price.push({
         ID:kk.id,
@@ -899,26 +1088,34 @@ import Stock from './component/Stock'
         }
         kk.value[key].pp = false;
         this.sku[this.sku.length-1].price.splice(this.sku[this.sku.length-1].price.length-1,1);
+         document.getElementById('vv'+lp+key).style.border = 'solid 1px #b3d8ff'     
+         document.getElementById('vv'+lp+key).style.color = '#409EFF'     
+         document.getElementById('vv'+lp+key).style.background = '#ecf5ff' 
     }
   },
   // 生成sku
   skuadd(){
-     console.log(this.addtable[this.addtable.length-1].allprice.length);
-     if(this.sku[this.sku.length-1].price.length==0){
-      this.$message({
+    //  console.log(this.addtable[this.addtable.length-1].allprice.length);
+    //  console.log(this.sku);
+    
+       if(this.sku[this.sku.length-1].price.length<3){
+          this.$message({
           showClose: true,
-          message: '请选择要添加的属性',
+          message: '请为每一个属性选择要添加的属性值',
           type: 'error'
         });
-     }else{
+       }else{
        // 获取点击按钮后的数据
         for(var op = 0;op<this.addtable[this.addtable.length-1].allprice.length-1;op++){
           for(var ll = 0;ll<this.addtable[this.addtable.length-1].allprice[op].value.length;ll++){
             this.addtable[this.addtable.length-1].allprice[op].value[ll].forbidden = false;
-            this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false;      
+            this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false; 
+            document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'     
+            document.getElementById('vv'+op+ll).style.color = '#409EFF'     
+            document.getElementById('vv'+op+ll).style.background = '#ecf5ff'      
           }
         }
-        console.log(this.addtable[this.addtable.length-1].allprice);
+        // console.log(this.addtable[this.addtable.length-1].allprice);
         this.skuList = true;
           var bbb = [];
           for(var i = 0;i<this.sku[this.sku.length-1].price.length;i++){
