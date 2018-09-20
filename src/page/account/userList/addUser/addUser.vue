@@ -73,7 +73,7 @@
                   <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="500px">
                     <div class="qqqt">
                      <el-form ref="form"  label-width="110px">
-                       <el-form-item label="部门:" class="form-la">
+                       <!--<el-form-item label="部门:" class="form-la">
                          <el-cascader
                             placeholder="试试搜索：指南"
                             @active-item-change="handleItemChange"
@@ -82,17 +82,8 @@
                             filterable
                             v-model="selectedOptions"
                           ></el-cascader>
-                       </el-form-item>
-                       <el-form-item label="职位:" class="form-la">
-                          <el-select v-model="value8" filterable placeholder="请选择">
-                          <el-option
-                            v-for="item in bumen"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                          </el-option>
-                        </el-select>
-                       </el-form-item>
+                       </el-form-item>-->
+
                        <!--plan b begin-->
                        <el-form-item label="组织:" class="form-la">
                          <el-select v-model="value" placeholder="请选择" @change="HandChange()">
@@ -138,7 +129,16 @@
                          </el-select>
                        </el-form-item>
                        <!--plan b end-->
-
+                       <el-form-item label="职位:" class="form-la">
+                         <el-select v-model="value8" filterable placeholder="请选择">
+                           <el-option
+                             v-for="item in bumen"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                           </el-option>
+                         </el-select>
+                       </el-form-item>
 
                          <input type="hidden" v-model="hidval" value="hidval"/>
                      </el-form>
@@ -296,7 +296,7 @@ import Permission from '@/page/account/userList/addUser/permission'
 
         },
 
-        casc: [{
+       /* casc: [{
           value: '甜程旅行网',
           label: '甜程旅行网',
           children: [{
@@ -494,7 +494,7 @@ import Permission from '@/page/account/userList/addUser/permission'
             value: 'jiaohu',
             label: '组件交互文档'
           }]
-        }]
+        }]*/
       }
 
     },
@@ -634,7 +634,7 @@ import Permission from '@/page/account/userList/addUser/permission'
         },
 
         addmaster() {
-
+              console.log(this.value)
             var arr =  Object.values(this.selectedOptions)
             var strb = arr.join("-"); //"aa:bb:cc"
             var wei =this.value8
@@ -1026,7 +1026,7 @@ import Permission from '@/page/account/userList/addUser/permission'
   }
 
   .button-adjust{
-    margin-left: -190px;
+    margin-left: -780px;
     margin-top: 50px;
   }
   .ruleForm-abjust{

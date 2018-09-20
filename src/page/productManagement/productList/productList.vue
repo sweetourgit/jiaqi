@@ -6,7 +6,7 @@
     margin-bottom: 20px;">
     <el-button type="primary"  @click="dialogVisible = true" >添加产品</el-button>
     </div>
-    <div style="background: #f7f7f7; margin-left: 50px" >
+    <div style="background: #f7f7f7; margin-left: 50px;width: 80%" >
     <div class="select_button">
       <el-button v-for="(item, index) in domains"
                  :key="item.key"
@@ -72,7 +72,7 @@
     </div>
     </div>
 
-    <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px" >
+    <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px; width: 80%" >
     <div class="button_select">
 
       <el-button plain>编辑</el-button>
@@ -83,7 +83,7 @@
       <el-button type="danger" plain>删除</el-button>
     </div>
 
-    <div class="table_trip" style="margin-left: 50px">
+    <div class="table_trip" style="margin-left: 50px; width: 75%;">
       <el-table
         :data="tableData"
         border
@@ -94,20 +94,21 @@
           prop="pid"
           label="产品编号"
           align="center"
-          width="100"
+          width="80%"
          >
         </el-table-column>
         <el-table-column
           prop="type"
           label="类型"
+          width="150%"
           align="center"
          >
         </el-table-column>
         <el-table-column
           prop="name"
           label="产品名称"
-          width="180"
-          align="center">
+          align="center"
+          >
           <template slot-scope="scope">
               <el-button type="text" >{{tableData[scope.$index].name}}</el-button>
           </template>
@@ -116,17 +117,20 @@
           prop="mu_address"
           label="目的地"
           align="center"
+          width="160%"
          >
         </el-table-column>
         <el-table-column
           prop="options"
           label="操作人"
           align="center"
+          width="160%"
          >
         </el-table-column>
         <el-table-column
           label="状态"
           align="center"
+          width="110%"
           >
           <template slot-scope="scope">
           <el-button type="success"  size="mini">已上架</el-button>
@@ -137,7 +141,7 @@
           prop="opers"
           label="推送平台"
           align="center"
-        width="200">
+          width="110%">
           <template slot-scope="scope">
           <div style="color: #f5a142" >{{tableData[scope.$index].opers}}</div>
           </template>
@@ -145,7 +149,9 @@
         <el-table-column
           prop="price"
           label="价格"
-          align="center">
+          align="center"
+          width="80%"
+        >
         </el-table-column>
       </el-table>
 
