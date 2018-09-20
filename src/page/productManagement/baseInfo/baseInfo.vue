@@ -59,7 +59,6 @@
             {{tag2}}
           </el-tag>
           <el-input class="input-new-tag" v-if="inputVisible2" v-model="ruleForm.operationLabel" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm2" @blur="handleInputConfirm2">
-            <input style="background:red;width:100px;height:200px" type="image" src="//static.huaweicloud.com/static/v2_resources/images/dev-index/slide3.jpg?sttl=20185293" alt="">
           </el-input>
           <el-button v-else class="button-new-tag" size="small" @click="showInput2">请输入运营标签</el-button>
         </div>
@@ -95,14 +94,14 @@
           </el-button>
         </el-upload>
       </el-form-item>
-      <el-form-item label="出游人群" prop="Excursion">
-        <el-select v-model="ruleForm.Excursion" placeholder="请选择" class="Excursion-select">
-          <el-option :label="theme" :value="indexs" v-for="(theme,indexs) of theme" :key="indexs"/>
+      <el-form-item label="出游人群" prop="excursion">
+        <el-select v-model="ruleForm.excursion" placeholder="请选择" class="Excursion-select">
+          <el-option :label="theme" :value="index" v-for="(theme,index) of options" :key="theme.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="主题" prop="theme">
         <el-select v-model="ruleForm.theme" placeholder="请选择" class="Excursion-select">
-        <el-option :label="item" :value="index" v-for="(item,index) of list" :key="index"/>
+        <el-option :label="item" :value="index" v-for="(item,index) of list" :key="index"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="提前报名天数" prop="advanceRegistrationDays">
@@ -161,8 +160,8 @@ export default {
           country: '巴勒斯坦',
           value: '巴勒斯坦'
         }],
-      list:["乐园/公园","人文/赏景","健康旅游","古镇游","度假村","户外","海岛游","温泉","游学","滑雪","禅修","自驾","都市游","酒店控","其他"],
-      theme:["亲子","情侣","朋友/同事","父母"],
+      list:[],
+      options:[],
       //目的地
       dynamicTags1: [],
         inputVisible1: false,
@@ -176,7 +175,7 @@ export default {
         orderConfirmationType: "",
         operationLabel: '',
         Excursion: '',
-        theme: '',
+        options: '',
         advanceRegistrationDays: '',
         timeHour: '',
         timeMinute: '',
@@ -186,6 +185,7 @@ export default {
         highlightWords4: '',
         avatarImages: '',
         slideshow: '',
+        list: '',
         },
       //运营标签
       dynamicTags2: [],
@@ -195,7 +195,7 @@ export default {
         productName: [
           { required: true, message: '不能为空', trigger: 'blur' },
           { min: 0, max: 30, message: '字数超过30汉字限制', trigger: 'blur' },
-          { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/]{1,28}([\u4e00-\u9fa5a-zA-Z0-9【】，+/（）]{0,2})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾,30个字以内。'}
+          { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾,30个字以内。'}
         ],
         placeDeparture:[ { required: true, message: '不能为空', trigger: 'blur' } ],
         destination:[ { required: true, message: '不能为空', trigger: 'blur' } ],
@@ -231,6 +231,10 @@ export default {
         orderConfirmationType:[ { required: true, message: '不能为空', trigger: 'blur' }, ],
       }
     };
+  },
+  created() {
+    this.themeList();
+    this.itemList();
   },
   methods: {
     beforeUploadVideo(file) {
@@ -316,12 +320,12 @@ export default {
         return (restaurant.country.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       }
     },
-    // 搜索方法(出发地)
+    // 搜索方法(目的地)
     querySearch1(queryString1, cb1) {
       var results1 = queryString1 ? this.tableData1.filter(this.createFilter(queryString1)) : [];
       cb1(results1);
     },
-    // 搜索方法（出发地）
+    // 目的地
     createFilter1(queryString1){
       return (restaurant1) => {
         return (restaurant1.country.toLowerCase().indexOf(queryString1.toLowerCase()) === 0);
@@ -330,13 +334,89 @@ export default {
     //保存
     addsave(ruleForm) {
       this.$refs[ruleForm].validate((valid) => {
-        if (valid) {
-          this.$message.success("保存成功");
-          location.reload();
-        } else {
-          return false;
+        if(valid){
+          var _this = this;
+          this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
+            object: {
+              createTime:"2018-09-11T08:44:03.95",
+              code:"",
+              launchsituation:"",
+              loadLaunchsituation:false,
+              title:this.ruleForm.productName,
+              tourType:this.ruleForm.travelType,
+              pods:[],
+              destinations:[],
+              isDeleted:0,
+              day:this.ruleForm.travelDays,
+              night:this.ruleForm.travelNight,
+              confirmType:this.ruleForm.orderConfirmationType,
+              strengths:"",
+              label:"",
+              pictureID:0,
+              vedioID:0,
+              pepeatpic:"",
+              advanceDay:this.ruleForm.advanceRegistrationDays,
+              advanceHour:this.ruleForm.timeHour,
+              advanceMinute:this.ruleForm.timeMinute,
+              proStat:1
+            }
+          },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+          }).then(function(response) {
+            _this.$message.success("添加成功");
+            _this.$router.push({path: "productList"});
+          }).catch(function(error) {
+            console.log(error);
+          });
         }
-      });
+      })
+
+
+    },
+    //出游人群
+    themeList(){
+      this.options = [];
+      this.$http.post(this.GLOBAL.serverSrc + "/universal/crowd/api/crowdlist", {
+        object: {
+          isDeleted: 0
+        }
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(res =>{
+        for(let i = 0; i < res.data.objects.length; i++){
+          this.options.push(
+            res.data.objects[i].name
+          );
+        }
+      }).catch(function(err){
+        console.log(err);
+      })
+    },
+    //主题
+    itemList(){
+      this.list = [];
+      var _this = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/universal/theme/api/themelist", {
+        object: {
+          isDeleted: 0
+        }
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+        for(let i = 0; i < response.data.objects.length; i++){
+          _this.list.push(
+            response.data.objects[i].name
+          );
+        }
+      }).catch(function(error){
+        console.log(error);
+      })
     },
     //取消
     cancel(){
@@ -380,7 +460,7 @@ export default {
 .span1{ float:left; margin-left:16px; }
 .travelNight-input{ float:left; margin-left:215px; margin-top:-62px; width: 150px; }
 .night{ float left; margin-left:375px; margin-top:-60px; }
-.number-day>>>.el-form-item__error{ left -8px }
+.number-day>>>.el-form-item__error{ left:-8px; }
 .travelDays-span{ margin-left:-19px; color:#333; }
 .travelNight{ margin-left:-80px; color:#333; }
 .timeHour-span{ float left; margin-left:20px; color:#333; }
@@ -396,6 +476,5 @@ export default {
 .el-autocomplete>>>.el-input__inner{ height:30px!important; }
 .el-form-item>>>.el-form-item__label{ color:#666666; }
 .upload-demo>>>.el-button{ line-height: 0.3!important; border-radius: 0px; background-color:#d7d7d7; color:#666; }
-.el-form-item>>>.el-form-item__error{ top: 85%!important; }
 .productSummary-input{ width:544px; float:left; margin-left:8px; }
 </style>
