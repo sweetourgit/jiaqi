@@ -214,7 +214,7 @@ export default {
           isDeleted: 0
         },
         pageSize: _this.pagesize,
-        pageIndex: _this.currentPage,
+        pageIndex: _this.currentPage, 
         id: 0
       },{
         headers: {
