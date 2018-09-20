@@ -156,7 +156,7 @@
       </el-table>
 
       <div class="block">
-        <el-pagination
+        <!-- <el-pagination
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -165,7 +165,7 @@
           :page-size=pagesize
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
-        </el-pagination>
+        </el-pagination> -->
       </div>
     </div>
     </div>
@@ -175,16 +175,21 @@
       <el-radio-button :label="false">价格</el-radio-button>
     </el-radio-group>
     <!-- 库存 -->
-    <div v-if="isCollapse==true">
+ <div v-if="isCollapse==true">
 
       <div class="button-list" >
-        <template v-if="this.forbidden == true">
-          <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>
+        <!-- <template v-if="this.forbidden == true">
+          <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>         
         </template>
         <template v-else>
-          <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)" disabled>{{data.button}}</el-button>
-        </template>
+          <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)" disabled>{{data.button}}</el-button>          
+        </template> -->
 
+          <el-button :id="'kk' + index" :disabled="buttonList[index].forbidden"  class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>         
+        
+        <span class="astrict">属相最多选择三种</span>
+        <!-- 这里的选择属性的数量是根据产品的类型判断的,不同的产品类型它的可选择的数据数量是不同的 -->
+        <!-- 可以给产品一个数值类型的字段,然后把这个值拿到,传到判断的位置,根据那个值来进行判断 -->
       </div>
       <!-- 其实这个表格遍历数据的时候是有问题的,因为目前没有数据,每次遍历的都是addtable里面的数据,每次点击库存都会添加一条,这个地方应该是点击库存的时候传一个id按照这个id遍历数据 -->
       <el-table
@@ -200,7 +205,7 @@
           label="属性"
           width="230"
           align="center"
-
+          
           >
         </el-table-column>
         <el-table-column
@@ -208,30 +213,63 @@
           label="值"
           align="center"
          >
-
+         
         <template slot-scope="scope" prop="ll">
               <template v-if="scope.row.ll == ''">
                 <el-button @click="skuadd()" type="primary" v-show="addsku" size="mini" style="float:left">生成sku</el-button>
-              </template>
-           <template  slot-scope="scope" v-else>
+              </template>         
+           <template  slot-scope="scope" v-else>           
               <div v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  :key="data.id" v-show="aa" style="float:left">
+                <template v-if="addtable[addtable.length-1].allprice[scope.$index].id == 2">
+                  <el-select style="width:130px;margin-rigth:10px" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in Day"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </template>
+                 <template v-else-if="addtable[addtable.length-1].allprice[scope.$index].id == 3">
+                  <el-select style="width:130px;margin-rigth:10px" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in NightNum"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </template>
+                <template v-else-if="addtable[addtable.length-1].allprice[scope.$index].id == 5">
+                   <el-select style="width:130px;margin-rigth:10px" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in Accommodation"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </template>
+                <template v-else>
                   <el-input style="width:100px;" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price"  type="text" clearable></el-input>
+                </template>
+                  <el-button  style="margin-right:10px;" size="mini" type="danger" @click="shanchu(index,scope.$index)">删除</el-button>                  
+                
                  <!-- v-model="addtable[scope.$index].price[index].value" -->
                  <!-- v-model="addtable[addtable.length-1].allpricep[scope.$index].value" -->
-                  <el-button  style="margin-right:10px;" size="mini" type="danger" @click="shanchu(index,scope.$index)">删除</el-button>
               </div>
-                <el-button :id="'vv' + index" plain v-show="bb" v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"
+              <!-- 点击属性按钮的时候,点击选中,再次点击取消选中,在选中的状态下,将其他没选中的按钮禁用 -->
+                <el-button :id="'vv'+scope.$index+index" :disabled="data.forbidden" plain v-show="bb" v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  
                 :key="data.id" style="float:left;margin-right:10px;"  type="primary"
-                @click="choice(data, index,addtable[addtable.length-1].allprice[scope.$index])"
+                @click="choice(data,index,addtable[addtable.length-1].allprice[scope.$index],scope.$index)"
                 >
                   {{addtable[addtable.length-1].allprice[scope.$index].value[index].price}}
                 </el-button>
-
             </template>
         </template>
-
+         
          <!-- 生成sku的按钮 -->
-
+        
         </el-table-column>
         <el-table-column label="操作"
           width="300"
@@ -239,14 +277,14 @@
 
         <template slot-scope="scope" prop="ll">
           <template v-if="scope.row.ll == ''">
-            <el-button v-show="qq" @click="gain" size="mini" type="primary">确认属性值</el-button>
+            <el-button v-show="qq" @click="gain()" size="mini" type="primary">确认属性值</el-button>
              <!--重新设置属性  -->
-            <el-button v-show="again" type="danger" @click="back" size="mini">重新设置属性</el-button>
+            <el-button v-show="again" type="danger" @click="back" size="mini">重新设置属性</el-button>           
           </template>
           <template v-else>
             <el-button v-show="pp" @click="addInput(scope.row,scope.$index)" size="mini" type="primary" >添加值</el-button>
-            <el-button v-show="close"  size="mini" type="primary"  disabled>添加值</el-button>
-
+            <el-button v-show="close"  size="mini" type="primary"  disabled>添加值</el-button>            
+                        
           </template>
         </template>
 
@@ -257,9 +295,9 @@
 
       <el-table
        v-show="skuList"
-
+      
         :data="ccc"
-
+        
         border
          style="width: 1340px;margin:30px auto;"
         :header-cell-style="getRowClass">
@@ -276,14 +314,22 @@
         width="180"
         align="center"
         >
-
-
+      
+          
       </el-table-column>
 
       <el-table-column
         prop="name"
         align="center"
         label="清位时间">
+         <template slot-scope="scope">
+           <span style="margin-right:5px">前</span>
+          <el-input style="width:40px"></el-input><span style="margin-left:10px">天</span>
+          <el-input style="width:40px"></el-input><span style="margin-left:10px">时</span>
+          <el-input style="width:40px"></el-input><span style="margin-left:10px">分</span>
+            
+            
+        </template>
       </el-table-column>
         <el-table-column
         prop="name"
@@ -305,12 +351,97 @@
         align="center"
         label="操作">
         <template slot-scope="scope">
-            <el-button size="mini" type="primary">主要按钮</el-button>
-            <el-button size="mini" type="primary">主要按钮</el-button>
-            <el-button size="mini" type="danger">危险按钮</el-button>
+            <el-button size="mini" type="primary" v-show="Online" @click="online()">上线</el-button>
+            <el-button size="mini" type="primary" v-show="Offline" @click="offline()">下线</el-button>
+            <el-button size="mini" type="primary">价格</el-button>
+            <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 增值服务 -->
+    <div v-show="accretion">
+      <!-- style="width: 1340px;margin:30px auto;" -->
+        <div style="width:90%;margin-left:60px;margin-top:60px;">
+          <span style="font-size:25px;color:#333">增值服务</span><br/>
+          <span style="color:#dcdcdc">附加增值服务说明：不可单独购买，只能跟主产品库存一起购买的需要额外付费的项目或资源，包含但不限于夜间服务费、接送区域外附加费、儿童座椅、酒店升级、行李额服务、代办签证费、小费、司导服务费、加急费等等</span><br/>
+          <el-button type="primary" size="medium"  @click="appreciation()">添加增值</el-button>
+        </div>
+          <!-- 添加增值的弹窗 -->
+          <el-dialog title="增值信息" :visible.sync="accretionBall" append-to-body width="30%" custom-class="city_list">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+                <el-form-item label="名称 :" prop="name" style="margin-left:35px" >
+                   <el-input v-model="ruleForm.name" auto-complete="off" style="width:60%;" ></el-input>
+                </el-form-item>
+                <el-form-item label="价格类型 :" prop="priceSelect" style="margin-left:35px" >
+                    <el-radio-group v-model="ruleForm.priceSelect">
+                      <el-radio label="非日历价格"></el-radio>
+                      <el-radio label="日历价格"></el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="说明 :" prop="explain" style="margin-left:35px" >
+                   <el-input v-model="ruleForm.explain" auto-complete="off" style="width:60%;" ></el-input>
+                </el-form-item>
+                <el-form-item style="margin-left:70%;">
+                  <el-button size="mediun">删除</el-button>
+                  <el-button size="mediun" type="primary" @click="save('ruleForm')">保存</el-button>
+                </el-form-item>
+            </el-form>
+          </el-dialog>
+
+        <!-- 增值服务列表 -->
+          <el-table 
+            v-show="accretionTable"
+            :data="Addprice"
+            border
+            style="width: 1340px;margin:20px auto;"
+            :header-cell-style="getRowClass">
+          <el-table-column
+            prop="id"
+            label="ID"
+            width="180"
+            align="center"
+            >
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="名称"
+            width="180"
+            align="center"
+            >
+          <template>
+            
+          </template>
+              
+          </el-table-column>
+
+          <el-table-column
+            prop="explain"
+            align="center"
+            label="说明">
+          
+          </el-table-column>
+        <el-table-column
+          prop="priceSelect"
+          align="center"
+          label="价格"
+        >
+      
+          </el-table-column>
+            <el-table-column
+            prop="name"
+            align="center"
+            label="操作">
+            <template slot-scope="scope">
+                <el-button size="mini" type="primary">上线</el-button>                
+                <el-button size="mini" type="primary">价格</el-button>
+                <el-button size="mini" type="primary">修改</el-button>
+                <el-button size="mini" type="danger" @click="delPrice(scope.$index)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+    </div>
+      
     </div>
     <!-- 价格 -->
     <div v-else>
@@ -331,10 +462,8 @@ import Stock from './component/Stock'
       DateList,
       Stock
     },
-    data() {
+     data() {
       return {
-        total:100,
-        pagesize:10,
         buttonlist:[],
         domains: [{
           value: '跟团游',
@@ -377,19 +506,26 @@ import Stock from './component/Stock'
         }],
         about:'',
         dialogVisible: false,
-        currentPage4: 1,
+        currentPage1: 5,
+        currentPage2: 5,
+        currentPage3: 5,
+        currentPage4: 4,
 
         merchandise: false,
         isCollapse: true,
         aaa:0,
-
-        // 属性按钮禁用
+        di:0,
+        wc:'',
+        listId:'',
+        io:0,
+        lm:'',
+      // 属性按钮禁用
         forbidden:true,
-        // 属性按钮选中效果
-        mm:true,
-        // 添加值按钮
+      // 属性按钮选中效果
+        mm:true, 
+      // 添加值按钮
         pp:true,
-        // 确认属性值按钮
+      // 确认属性值按钮
         qq:false,
       // 输入框隐藏
         aa:true,
@@ -409,73 +545,238 @@ import Stock from './component/Stock'
         ccc:[],
       // sku的id
         skuid : 0,
+      // 属相按钮的禁用
+        xianshi:false,
+      // 禁用时,未被禁用的按钮的key值数组
+        arr:[],
+      // 添加增值(整个大块)
+        accretion:false,
+      // 添加增值(弹框)
+        accretionBall:false,
+      // 增值服务(表格)
+        accretionTable:false,
+      // 增值表单
+      ruleForm:{
+        name:'',
+        priceSelect:'',
+        explain:'',
+      },
+      // 增值服务数组
+      Addprice:[],
+      // 增值服务的id
+      AddpriceId:0,
+      // 增值服务的验证
+      rules:{
+        name:[
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { max: 20, message: '不超过20个汉字', trigger: 'blur' }
+        ],
+        priceSelect: [
+            { required: true, message: '请选择活动资源', trigger: 'change' }
+          ],
+         explain: [
+          { required: true, message: '请填写活动形式', trigger: 'blur' },
+          { max: 50, message: '不超过50个汉字', trigger: 'blur' }
+            
+          ]
+      },
+      // 上线
+      Online:true,
+      // 下线
+      Offline:false,
+      // 判断属性输入属性值不为空
+      shuxingz:[],
       // 按钮列表
       buttonList: [
-        // pp 是开关
-
+      // pp 是开关
+      // forbidden 禁用按钮
         {
           id: "0",
           button: "出发地",
           pp : false,
-          //每个按钮的验证v-model
+      //每个按钮的验证v-model
+          forbidden:false,
           verifier:" Origin",
         },
         {
           id: "1",
           button: "行程路线",
           pp : false,
-          verifier: "Route",
+          forbidden:false,
+          verifier: "Route",  
         },
         {
           id: "2",
           button: "天数",
           pp : false,
-          verifier: "Day",
+          forbidden:false,
+          verifier: "Day", 
         },
         {
           id: "3",
           button: "晚数",
           pp : false,
-          verifier: "NightNum",
+          forbidden:false,
+          verifier: "NightNum",      
         },
         {
           id: "4",
           button: "房型",
           pp : false,
-          verifier: "House",
+          forbidden:false,
+          verifier: "House",         
         },
         {
           id: "5",
-          button: "住宿条件",
+          button: "住宿等级",
           pp : false,
+          forbidden:false,
           verifier: "Accommodation",
         },
         {
           id: "6",
           button: "航空公司",
           pp : false,
-          verifier: "Airline",
+          forbidden:false,
+          verifier: "Airline",        
         },
         {
           id: "7",
           button: "酒店名称",
           pp : false,
+          forbidden:false,
           verifier: "HotelName",
         },
         {
           id: "8",
           button: "套餐类型",
           pp : false,
+          forbidden:false,
           verifier: "SetMeal",
         }
       ],
-        // 列表数组
-        addtable: [
-
+        // 天数选择
+        Day: [{
+          value: '2天',
+          label: '2天'
+        }, {
+          value: '3天',
+          label: '3天'
+        }, {
+          value: '4天',
+          label: '4天'
+        }, {
+          value: '5天',
+          label: '5天'
+        }, {
+          value: '6天',
+          label: '6天'
+        },{
+          value: '7天',
+          label: '7天'
+        }, {
+          value: '8天',
+          label: '8天'
+        }, {
+          value: '9天',
+          label: '9天'
+        }, {
+          value: '10天',
+          label: '10天'
+        }, {
+          value: '11天',
+          label: '11天'
+        },{
+          value: '12天',
+          label: '12天'
+        },{
+          value: '13天',
+          label: '13天'
+        }, {
+          value: '14天',
+          label: '14天'
+        }, {
+          value: '15天',
+          label: '15天'
+        }, {
+          value: '16天',
+          label: '16天'
+        }], 
+        // 晚数列表
+        NightNum: [{
+          value: '1晚',
+          label: '1晚'
+        },{
+          value: '2晚',
+          label: '2晚'
+        }, {
+          value: '3晚',
+          label: '3晚'
+        }, {
+          value: '4晚',
+          label: '4晚'
+        }, {
+          value: '5晚',
+          label: '5晚'
+        }, {
+          value: '6晚',
+          label: '6晚'
+        },{
+          value: '7晚',
+          label: '7晚'
+        }, {
+          value: '8晚',
+          label: '8晚'
+        }, {
+          value: '9晚',
+          label: '9晚'
+        }, {
+          value: '10晚',
+          label: '10晚'
+        }, {
+          value: '11晚',
+          label: '11晚'
+        },{
+          value: '12晚',
+          label: '12晚'
+        },{
+          value: '13晚',
+          label: '13晚'
+        }, {
+          value: '14晚',
+          label: '14晚'
+        }, {
+          value: '15晚',
+          label: '15晚'
+        }],
+        // 住宿等级
+        Accommodation :[{
+          value: '豪华型',
+          label: '豪华型'
+        },{
+          value: '高档型',
+          label: '高档型'
+        }, {
+          value: '舒适型',
+          label: '舒适型'
+        }, {
+          value: '经济型',
+          label: '经济型'
+        }, {
+          value: '快捷连锁',
+          label: '快捷连锁'
+        }, {
+          value: '民俗',
+          label: '民俗'
+        },{
+          value: '农家乐',
+          label: '农家乐'
+        }
         ],
+        // 列表数组
+        addtable: [],
         // sku数组
         sku:[],
-
         options: [{
           value: '选项1',
           label: '黄金糕'
@@ -518,25 +819,13 @@ import Stock from './component/Stock'
           status:'1',
           opers:'飞猪 携程',
           price:'7900'
-        },{
-          pid:'1',
-          type:'跟团游',
-          name:'xxx 跟团游',
-          mu_address:'xxx',
-          options:'xxx',
-          status:'1',
-          opers:'飞猪 携程',
-          price:'7900'
         }],
       // 属性输入框
         price:[],
+        abc: false
       }
     },
     methods: {
-      /*qqq(q,w){
-        console.log(q)
-        console.log(w)
-      },*/
 
       searchHand(){
         alert(13);
@@ -545,13 +834,10 @@ import Stock from './component/Stock'
         if( this.domains[index].status == "true"){
           this.domains[index].status = "false"
         }else{
-          this.buttonlist.push(this.domains[index].value);
-          this.domains[index].status = "true"
+        this.buttonlist.push(this.domains[index].value);
+        this.domains[index].status = "true"
         }
-            console.log(this.domains[index].value);
-
-
-
+        console.log(this.domains[index].value);
         console.log( this.buttonlist);
       },
       routerHandle(){
@@ -570,7 +856,6 @@ import Stock from './component/Stock'
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
       },
-
       // 库存按钮出现
       groupStage() {
       this.merchandise = true;
@@ -580,7 +865,6 @@ import Stock from './component/Stock'
       this.sku.push({
       price:[],
     });
-      // console.log(this.addtable);
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -589,15 +873,34 @@ import Stock from './component/Stock'
         return "";
       }
     },
-
    // 点击属性按钮的时候
     begin(e,key){
-
-      // 如果按钮是未按下的情况下
+      // 按下按钮
       if(e.pp == false){
+        // 给点击之后的样式
+          this.arr.push({
+            id:key,
+          })
+        // console.log(this.arr);  
         document.getElementById('kk'+key).style.border = 'solid 1px #409EFF'
         document.getElementById('kk'+key).style.color= '#409EFF'
-        this.forbidden == true
+        // 当不符合属性条件时先将全部的按钮都禁用
+        if(this.addtable[this.addtable.length-1].allprice.length >= 3){
+          // console.log("超过了")
+          for(var po = 0; po < this.buttonList.length;po++){
+            this.buttonList[po].forbidden = true;    
+                
+          document.getElementById('kk'+po).style.border = 'dashed 1px #c2c2c2'
+          document.getElementById('kk'+po).style.color = '#c0c4cc'
+          document.getElementById('kk'+po).style.background = '#fff'  
+          }
+        // 然后再将点击了的按钮存在一个数组里面,再将这个数组里面的按钮取消禁用.
+          for(var lo = 0;lo<this.arr.length;lo++){
+            this.buttonList[this.arr[lo].id].forbidden=false;   
+            document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
+            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
+          }
+        }
         // 点击向数组中添加数值
         this.addtable[this.addtable.length-1].allprice.push({
           id:e.id,
@@ -606,7 +909,7 @@ import Stock from './component/Stock'
           value:[],
       })
         // 按下按钮给一个true表示按下
-        this.buttonList[key].pp=true;
+        this.buttonList[key].pp=true; 
         // 判断表格中的数据条数,如果数据只有一条那么生成一条确认属性值
         if(this.addtable[this.addtable.length-1].allprice.length ==1){
           this.addtable[this.addtable.length-1].allprice.push({
@@ -618,17 +921,12 @@ import Stock from './component/Stock'
           // 如果数据条数大于一条,则吧str,也就是确认属性值这条代码拿出来在重新放到数据尾部
           var str = this.addtable[this.addtable.length-1].allprice.splice( this.addtable[this.addtable.length-1].allprice.length -2,1);
           this.addtable[this.addtable.length -1].allprice.push(str[0]);
-          this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2;
-          console.log(e);
-        }
-
+          this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2; 
+          // console.log(e);         
+        }    
       }else if(e.pp){
-        // 当按钮按下了
-        document.getElementById('kk'+key).style.border = 'solid 1px #dcdfe6'
-        document.getElementById('kk'+key).style.color = '#606266'
-        console.log("e.id:"+ e.id);
-        console.log("e.key:" + e.key);
-        console.log(this.addtable[this.addtable.length-1].allprice);
+        // 当按钮抬起了 
+          console.log(this.addtable);
         // 这个地方删除有些问题!
         this.addtable[this.addtable.length -1].allprice.splice(e.key,1);
         for(let i=0;i<this.addtable[this.addtable.length-1].allprice.length -1;i++){
@@ -638,203 +936,272 @@ import Stock from './component/Stock'
           this.addtable[this.addtable.length-1].allprice.splice(0,1);
         }
         this.buttonList[key].pp = false;
-      }
+        // 当抬起按钮的时候,如果符合属性数量的要求,那么将所有的禁用关闭
+        if(this.addtable[this.addtable.length-1].allprice.length < 4){
+           for(var po = 0; po <this.buttonList.length;po++){
+            this.buttonList[po].forbidden = false;
+            document.getElementById('kk'+po).style.border = 'solid 1px #c2c2c2'
+            document.getElementById('kk'+po).style.color = '#606266'
+          }   
+          this.arr.splice(e.key,1);
+        }
+        // 在其他按钮禁用的情况下也显示已经选中的按钮
+        for(var lo = 0;lo<this.arr.length;lo++){     
+            document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
+            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
+        }     
+      }    
     },
     //添加属性值功能
     addInput(b,key){
       this.aa = true;
-      // console.log(b);
+      this.di++;
       // 向指定的属性数组中添加属性值
       this.addtable[this.addtable.length-1].allprice[key].value.push({
+        di:key,
         price:'',
+        pp : false,
+        forbidden:false,
       })
     },
-
-
   // 确认属性值
   gain(){
-    // 属性输入框和删除按钮
-    this.aa = false;
-    // 属性确定之后的按钮
-    this.bb = true;
-    this.qq = false;
-    this.again = true;
-    this.pp = false;
-    this.close = true;
-    this.addsku = true;
-    // 属性按钮被禁用
-    this.forbidden = false;
+    // console.log( this.addtable[this.addtable.length-1].allprice.length-1);  
+    // console.log(this.addtable[this.addtable.length-1].allprice)
+    // for(var k = 0;k<this.addtable[this.addtable.length-1].allprice.length-1;k++){
+    //   var obj = this.addtable[this.addtable.length-1].allprice[k].value.every(
+    //    function(x) {
+    //      return x.value !== ''
+    //    }
+    //  )
+    // }
+     
+    for(var kl = 0;kl<this.addtable[this.addtable.length-1].allprice.length-1;kl++){
+        // console.log(this.addtable[this.addtable.length-1].allprice[kl].value);
+      if(this.addtable[this.addtable.length-1].allprice[kl].value.length == 0){
+        this.abc = true
+      }
+    }
+    if(this.abc){
+        this.$message({
+          showClose: true,
+          message: '请为每个属性至少添加一个属性值',
+          type: 'error'
+        }); 
+      } else {
+        // 属性输入框和删除按钮
+        this.aa = false;
+        // 属性确定之后的按钮
+        this.bb = true;
+        this.qq = false;
+        this.again = true;
+        this.pp = false;
+        this.close = true;
+        this.addsku = true;
+        // 属性按钮被禁用
+        this.xianshi = true;
+        for(var ok = 0;ok<this.buttonList.length;ok++){
+          this.buttonList[ok].forbidden = true;
+          document.getElementById('kk'+ok).style.border = 'dashed 1px #c2c2c2'
+          document.getElementById('kk'+ok).style.color = '#c0c4cc'
+          document.getElementById('kk'+ok).style.background = '#fff' 
+        } 
+        for(var lo = 0;lo<this.arr.length;lo++){     
+          document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
+          document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
+        } 
+      }
 
-    console.log(this.addtable);
-    console.log(this.sku);
-  },
+this.abc = false
 
+
+  }, 
   // 重新设计属性值
   back(){
-    this.aa = true;
+    this.aa = true;    
     this.bb = false;
     this.qq = true;
     this.again = false;
     this.pp = true;
     this.close = false;
     this.addsku = false;
-    // 属性恢复使用
-    this.forbidden = true;
+    // 属性恢复使用 
+    if(this.addtable[this.addtable.length-1].allprice.length < 4){
+      for(var ok = 0;ok<this.buttonList.length;ok++){
+        this.buttonList[ok].forbidden = false;
+        document.getElementById('kk'+ok).style.border = 'solid 1px #dcdfe6'
+        document.getElementById('kk'+ok).style.color = '#606266'
+      } 
+      for(var lo = 0;lo<this.arr.length;lo++){     
+        document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
+        document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
+      }  
+    }else if(this.addtable[this.addtable.length-1].allprice.length == 4){
+      // 全部禁用,并且禁用样式
+      for(var ok = 0;ok<this.buttonList.length;ok++){
+          this.buttonList[ok].forbidden = true;
+          document.getElementById('kk'+ok).style.border = 'solid 1px #c2c2c2'
+          document.getElementById('kk'+ok).style.color = '#c0c4cc'
+          document.getElementById('kk'+ok).style.background = '#fff' 
+      } 
+    // 选中的不禁用,并且选中样式
+      for(var lo = 0;lo<this.arr.length;lo++){  
+          this.buttonList[this.arr[lo].id].forbidden =false;        
+          document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
+          document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
+      }
+    }  
   },
-
   // 属性值按钮按下
-  choice(e,key,kk){
-    // 每次点击按钮之后把数据存到sku数组中
-    this.sku[this.sku.length-1].price.push({
-      ID:Date.now(),
-      zhi:kk.value[key].price,
-      name:kk.property,
-    })
-    console.log(this.sku);
+  choice(e,key,kk,lp){
+    // 当这个按钮还处于未被按下的情况下,按下   
+    console.log(lp); 
+    if(kk.value[key].pp == false){
+    // 先禁用所有的属性值按钮
+      for(var ui = 0;ui<kk.value.length;ui++){
+        kk.value[ui].forbidden = true;
+      // document.getElementById('vv'+key).style.border = 'solid 1px red'     
+      }
+      // for(var ok = 0;ok<this.addtable[this.addtable.length-1].allprice.length-1;ok++){
+      //   console.log(this.addtable[this.addtable.length-1].allprice[ok]);        
+      //   console.log(this.addtable[this.addtable.length-1].allprice[ok].value[key]);
+      // }
 
-    // if(this.select == false){
-    //   document.getElementById('vv'+key).style.border = 'solid 1px #409EFF';
-    //   document.getElementById('vv'+key).style.color= '#fff';
-    //   document.getElementById('vv'+key).style.background= '#409EFF';
-
-    // }else{
-    //   document.getElementById('vv'+key).style.border = 'solid 1px #b3d8ff';
-    //   document.getElementById('vv'+key).style.color= '#409EFF';
-    //   document.getElementById('vv'+key).style.background= '#409EFF';
-
-    // }
+      //  console.log(this.addtable[this.addtable.length-1].allprice[lp].value[key]);
+       this.lm = this.addtable[this.addtable.length-1].allprice[lp].value[key].di;
+         document.getElementById('vv'+lp+key).style.border = 'solid 1px #409eff'     
+         document.getElementById('vv'+lp+key).style.color = '#fff'     
+         document.getElementById('vv'+lp+key).style.background = '#409eff'     
+    // 再解禁选中的按钮
+        kk.value[key].forbidden = false;
+  
+    // 让选中的按钮处于按下的状态
+        kk.value[key].pp = true;
+    // 给这个按钮选中样式
+    // 将这个按钮的相关的值添加到sku这个数组中
+      this.sku[this.sku.length-1].price.push({
+        ID:kk.id,
+        zhi:kk.value[key].price,
+        name:kk.property,
+      })
+    }else if(kk.value[key].pp == true){
+        for(var ui = 0;ui<kk.value.length;ui++){
+          kk.value[ui].forbidden = false;
+        }
+        kk.value[key].pp = false;
+        this.sku[this.sku.length-1].price.splice(this.sku[this.sku.length-1].price.length-1,1);
+         document.getElementById('vv'+lp+key).style.border = 'solid 1px #b3d8ff'     
+         document.getElementById('vv'+lp+key).style.color = '#409EFF'     
+         document.getElementById('vv'+lp+key).style.background = '#ecf5ff' 
+    }
   },
   // 生成sku
   skuadd(){
-    console.log(this.sku);
-
-
-     console.log( this.sku[this.sku.length-1].price.length);
-     if(this.sku[this.sku.length-1].price.length==0){
-      this.$message({
+    console.log(this.addtable[this.addtable.length-1].allprice)
+       if(this.sku[this.sku.length-1].price.length<this.addtable[this.addtable.length-1].allprice.length-1){
+          this.$message({
           showClose: true,
-          message: '请选择要添加的属性',
+          message: '请为每一个属性选择要添加的属性值',
           type: 'error'
         });
-     }else{
+       }else{
        // 获取点击按钮后的数据
-       this.skuList = true;
-    var bbb = [];
-    for(var i = 0;i<this.sku[this.sku.length-1].price.length;i++){
-      bbb[i] = this.sku[this.sku.length-1].price[i]
-    }
-     this.sku[this.sku.length-1].price.splice(0,this.sku[this.sku.length-1].price.length);
-    console.log(this.sku);
-    console.log(bbb);
-    var ooo = [];
-  for(var k = 0;k<bbb.length;k++){
-    ooo.push(
-         bbb[k].name + ':' + bbb[k].zhi
-    )
-
-
-  }
-    var ppp = ooo.toString()
-    // sku的id编号
-    this.skuid++;
-    this.ccc.push({
-      id:this.skuid,
-      ddd:ppp,
-    })
-    console.log(this.ccc)
-     }
-
+        for(var op = 0;op<this.addtable[this.addtable.length-1].allprice.length-1;op++){
+          for(var ll = 0;ll<this.addtable[this.addtable.length-1].allprice[op].value.length;ll++){
+            this.addtable[this.addtable.length-1].allprice[op].value[ll].forbidden = false;
+            this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false; 
+            document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'     
+            document.getElementById('vv'+op+ll).style.color = '#409EFF'     
+            document.getElementById('vv'+op+ll).style.background = '#ecf5ff'      
+          }
+        }
+        this.skuList = true;
+          var bbb = [];
+          for(var i = 0;i<this.sku[this.sku.length-1].price.length;i++){
+            bbb[i] = this.sku[this.sku.length-1].price[i]
+          }
+        this.sku[this.sku.length-1].price.splice(0,this.sku[this.sku.length-1].price.length);
+          var ooo = [];
+          for(var k = 0;k<bbb.length;k++){
+            ooo.push(
+                bbb[k].name + ':' + bbb[k].zhi
+                // 这个地方遍历出来的数据没有换行,这个问题有些难,先放一放
+            )    
+          }
+        var ppp = ooo.toString()
+        // sku的id编号
+        this.skuid ++;
+        this.ccc.push({
+          id:this.skuid,
+          ddd:ppp,
+        })
+        if(this.ccc.length > 0){
+            this.accretion = true;
+        }
+     }  
   },
 
   // 删除属性值
-  shanchu(index,key){
-    console.log(this.addtable[this.addtable.length-1].allprice[key].value[index]);
-    // splice(this.addtable[this.addtable.length-1].allprice[index].value[index],0);
-    this.addtable[this.addtable.length-1].allprice[key].value.splice(index,1);
-
-  }
-
-
-  },
-  created(){
-    var that = this
-    this.$http.post(
-      this.GLOBAL.serverSrc + "/team/api/teampage",
-      {
-        "pageIndex": 1,
-        "pageSize": 5,
-        "total": 0,
-        "object": {
-          "id": 0,
-          "createTime": "2018-09-12T05:42:51.602Z",
-          "code": "string",
-          "launchsituation": {
-            "id": 0,
-            "code": "string",
-            "teamID": 0
-          },
-          "loadLaunchsituation": true,
-          "title": "string",
-          "tourType": 0,
-          "day": 0,
-          "night": 0,
-          "pods": [
-            {
-              "id": 0,
-              "podID": 0,
-              "podName": "string",
-              "teamID": 0
-            }
-          ],
-          "destinations": [
-            {
-              "id": 0,
-              "destinationID": 0,
-              "destinationName": "string",
-              "teamID": 0
-            }
-          ],
-          "isDeleted": 0,
-          "confirmType": 0,
-          "strengths": {
-            "id": 0,
-            "strength": "string",
-            "teamID": 0
-          },
-          "label": {
-            "id": 0,
-            "label": "string",
-            "teamID": 0
-          },
-          "pictureID": 0,
-          "vedioID": 0,
-          "pepeatpic": {
-            "id": 0,
-            "pictureID": 0,
-            "picturePath": 0
-          },
-          "advanceDay": 0,
-          "advanceHour": 0,
-          "advanceMinute": 0,
-          "createUser": "string",
-          "proStat": 0
-        }
+    shanchu(index,key){
+      this.addtable[this.addtable.length-1].allprice[key].value.splice(index,1);
       },
-      {
-        headers:{
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        }
-      }
-    )
-      .then(function (obj) {
-        console.log(obj)
-      })
-      .catch(function (obj) {
-        console.log(obj)
-      })
-  }
 
-  }
+  // 添加增值
+    appreciation(){
+      this.accretionBall = true;
+    },
+  // 保存增值
+    save(formName){
+      this.$refs[formName].validate((valid) =>{
+        if (valid){
+            this.$message({
+            message: '添加成功',
+            type: 'success'
+          });
+            console.log(this.ruleForm);
+          this.accretionBall = false;
+          this.AddpriceId++;
+          this.Addprice.push({
+            id:this.AddpriceId,
+            name:this.ruleForm.name,
+            priceSelect:this.ruleForm.priceSelect,
+            explain:this.ruleForm.explain,
+          })
+          this.accretionTable = true;
+          console.log(this.Addprice);
+          // 清空输入框的数据
+          this.ruleForm.name = '';
+          this.ruleForm.priceSelect = '';
+          this.ruleForm.explain = '';
+          // this.$refs[formName].resetFields();
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });   
+    },
+  // 删除sku
+    delSku(a){  
+      this.ccc.splice(a,1);
+    },
+    // 删除增值服务
+    delPrice(b){
+      this.Addprice.splice(b,1);
+    },
+    // 上线
+    online(){
+      console.log(1);
+      this.Online = false;
+      this.Offline = true;
+    },
+    // 下线
+    offline(){
+      console.log(2);
+      this.Offline = false;
+      this.Online = true;
+      }
+      }
+    }
 </script>
 <style lang="stylus" scoped>
   .button_select{
@@ -919,12 +1286,20 @@ import Stock from './component/Stock'
   width: 120px;
 }
 .property{
-  margin-right:20px;
+  margin-right:10px;
 }
 .button-list {
-  width: 75%;
+  width: 80%;
   height: 45px;
-  // background:red;
   margin: 37px auto;
 }
+// 限制字体
+.astrict{
+  color:#ff4b3d;
+  margin-left:30px;
+}
+// .textColor{
+//   disabled:true;
+//   // border:1px solid red;
+// }
 </style>
