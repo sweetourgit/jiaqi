@@ -1063,16 +1063,12 @@ this.abc = false
 
       //  console.log(this.addtable[this.addtable.length-1].allprice[lp].value[key]);
        this.lm = this.addtable[this.addtable.length-1].allprice[lp].value[key].di;
-      //  console.log(this.lm);
-      //  console.log(key);
          document.getElementById('vv'+lp+key).style.border = 'solid 1px #409eff'     
          document.getElementById('vv'+lp+key).style.color = '#fff'     
          document.getElementById('vv'+lp+key).style.background = '#409eff'     
     // 再解禁选中的按钮
         kk.value[key].forbidden = false;
-        // console.log(kk.value);
-        // console.log(kk.value[key]);
-        // console.log(key);
+  
     // 让选中的按钮处于按下的状态
         kk.value[key].pp = true;
     // 给这个按钮选中样式
@@ -1095,10 +1091,8 @@ this.abc = false
   },
   // 生成sku
   skuadd(){
-    //  console.log(this.addtable[this.addtable.length-1].allprice.length);
-    //  console.log(this.sku);
-    
-       if(this.sku[this.sku.length-1].price.length<3){
+    console.log(this.addtable[this.addtable.length-1].allprice)
+       if(this.sku[this.sku.length-1].price.length<this.addtable[this.addtable.length-1].allprice.length-1){
           this.$message({
           showClose: true,
           message: '请为每一个属性选择要添加的属性值',
@@ -1115,7 +1109,6 @@ this.abc = false
             document.getElementById('vv'+op+ll).style.background = '#ecf5ff'      
           }
         }
-        // console.log(this.addtable[this.addtable.length-1].allprice);
         this.skuList = true;
           var bbb = [];
           for(var i = 0;i<this.sku[this.sku.length-1].price.length;i++){
