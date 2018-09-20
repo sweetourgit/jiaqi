@@ -6,9 +6,9 @@
         <el-button type="primary" class="addButton" @click="addPosition = true">添加职位</el-button>
       </el-row>
       <!-- 列表 -->
-      <el-table :data="tableData" border style="width:900px;" class="table" :header-cell-style="getRowClass">
-        <el-table-column prop="id" label="ID" align="center"></el-table-column>
-        <el-table-column prop="positionName" label="职位名称" align="center"></el-table-column>
+      <el-table :data="tableData" border style="width:600px;" class="table" :header-cell-style="getRowClass">
+        <el-table-column prop="id" label="ID" align="center" width="70%"></el-table-column>
+        <el-table-column prop="positionName" label="职位名称" align="center" width="150%"></el-table-column>
         <el-table-column label="操作" fixed="right" align="center">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="editPosition1(scope.$index, scope.row)">编辑</el-button>
@@ -114,26 +114,26 @@ export default {
       this.$refs[form].validate((valid) => {
         if(valid){
           var _this = this;
-          if (this.form.positionName === "") {
-            this.$message.warning("请填写职位名称！");
-          } else {
-            var _this = this;
-            this.$http.post(this.GLOBAL.serverSrc + "/org/api/positioninsert", {
-              object: {
-                name: this.form.positionName
-              }
-            },{
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            }}).then(function(response) {
-              console.log(response)
+          this.$http.post(this.GLOBAL.serverSrc + "/org/api/positioninsert", {
+            object: {
+              name: this.form.positionName
+            }
+          },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }}).then(function(response) {
+            if(response.data.isSuccess == false){
+              _this.$message.error("添加失败,该职位已存在");
+            } else {
               _this.addPosition = false;
               _this.form.positionName = "";
               _this.$message.success("添加成功");
-            }).catch(function(error) {
-              console.log(error);
-            });
-          }
+              // _this.currentPage = Math.ceil((_this.total+1)/(_this.pagesize));
+              _this.pageList();
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
         }
       })
     },
@@ -258,7 +258,7 @@ export default {
 .big { width: 1600px; height: 750px !important; }
 .list { float: left; }
 .table { margin-left: 40px; margin-top: 40px; }
-.page { margin-top: 30px; float: left; margin-left: 200px; }
+.page { margin-top: 30px; float: left; margin-left: 35px; }
 .Popup { margin: auto; }
 .addButton { float: left; margin-left: 40px; }
 .el-dialog__wrapper>>>.el-dialog { width: 400px; }
