@@ -2,7 +2,7 @@
   <div>
     <div class="left">
       <div class="hh">
-        <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey"></el-tree>
+        <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey" highlight-current></el-tree>
       </div>
     </div>
     <div class="right">
@@ -34,13 +34,13 @@
       <el-table :data="tableList" border class="tableList" max-height="220" :header-cell-style="getRowClass">
         <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
         <el-table-column prop="name" label="姓名" align="center" width="100%"></el-table-column>
-        <el-table-column prop="position" label="职位" align="center" width="100%"></el-table-column>
+        <el-table-column prop="position" label="职位" align="center" width="130%"></el-table-column>
         <el-table-column prop="phone" label="手机号" align="center" ></el-table-column>
-        <el-table-column prop="sex" label="性别" align="center" width="70%"></el-table-column>
-        <el-table-column label="操作" align="center" width="270%">
+        <el-table-column prop="sex" label="性别" align="center" width="80%"></el-table-column>
+        <el-table-column label="操作" align="center" width="320%">
           <template slot-scope="scope">
-            <el-button class="enter" plain size="small">进入</el-button>
-            <el-button type="primary" size="small" @click="position = true">编辑</el-button>
+            <el-button class="enter" plain size="small">权限</el-button>
+            <el-button type="primary" size="small" @click="editPosition(scope.$index, scope.row)">职位</el-button>
             <el-button type="danger" size="small" @click="del(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -172,7 +172,7 @@
         </el-form-item>
         <span>职位</span>
         <el-select v-model="values" placeholder="请选择" class="setSelect">
-          <el-option v-for="item in option" :key="item.values" :label="item.label" :value="item.values"></el-option>
+          <el-option :key="item.value" :label="item" :value="index" v-for="(item,index) of option"></el-option>
         </el-select>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -192,6 +192,9 @@ export default {
       data: [],
       data1: [],
       data2: [],
+      node: "",
+      removes: "",
+      option: "",
       switchs: true,
       // 子部门临时数据
       tableData: [],
@@ -261,32 +264,9 @@ export default {
       total: 1,
       // 设置成员
       position: false,
-      setPosition: {
-        name: "王民"
-      },
+      setPosition: {},
       setLabelWidth: "90px",
-      option: [
-        {
-          values: "yuangong",
-          label: "员工"
-        },
-        {
-          values: "zhuguan",
-          label: "主管"
-        },
-        {
-          values: "jingli",
-          label: "经理"
-        },
-        {
-          values: "zongjian",
-          label: "总监"
-        },
-        {
-          values: "zongzhu",
-          label: "总助"
-        }
-      ],
+      option: [],
       values: "",
       kk: [],
       show: true,
@@ -308,7 +288,15 @@ export default {
       dbSave: ''
     };
   },
+  created(){
+    this.optionList();
+  },
   methods: {
+    //职位
+    editPosition(index, row){
+      this.position = true;
+      this.setPosition = row;
+    },
     addSubdivision1(a) {
       this.addSubdivision = false;
       this.$refs[a].resetFields();
@@ -334,27 +322,34 @@ export default {
               IsLeaf: this.addInput.lastStage
             }
           },{
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+          }).then(function(response) {
+            if(response.data.isSuccess == false){
+              _this.$message.error("添加失败,部门名称或部门编码已存在");
+            } else {
+              _this.addSubdivision = false;
+              let num = Object();
+              num.id = _this.addInput.ParentID;
+              num.isLeaf = _this.addInput.lastStage;
+              num.key = 0;
+              num.label = _this.addInput.topDepartment;
+              _this.treeClick(num);
+              _this.addInput.departmentNames = "";
+              _this.$refs["addInput"].resetFields();
+              _this.$message.success("添加成功");
+              _this.getUser(
+                _this.node.key,
+                _this.node.label,
+                _this.node.id,
+                _this.node.isLeaf,
+                _this.removes
+              );
             }
-            }).then(function(response) {
-              if(response.data.isSuccess == false){
-                _this.$message.error("添加失败,部门名称或部门编码已存在");
-              } else {
-                _this.addSubdivision = false;
-                let num = Object();
-                num.id = _this.addInput.ParentID;
-                num.isLeaf = _this.addInput.lastStage;
-                num.key = 0;
-                num.label = _this.addInput.topDepartment;
-                _this.treeClick(num);
-                _this.addInput.departmentNames = "";
-                _this.$refs["addInput"].resetFields();
-                _this.$message.success("添加成功");
-              }
-            }).catch(function(error) {
-              console.log(error);
-            });
+          }).catch(function(error) {
+            console.log(error);
+          });
         }
       })
     },
@@ -387,6 +382,7 @@ export default {
         this.dataNum = [];
       }
     },
+    //子部门删除
     remove(index, rows) {
       let _this = this;
       this.$confirm("是否删除该部门?", "提示", {
@@ -395,6 +391,7 @@ export default {
         type: "warning"
       }).then(() => {
         this.remove1(this.tableData[index].id, index);
+        this.$refs.oppo.remove(rows);
       }).catch(() => {
         this.$message({
           type: "info",
@@ -517,7 +514,6 @@ export default {
       this.addInput.ParentID = a.id;
       this.addInput.topDepartment = a.label;
       this.dbSave = a;
-      // this.Parents = a;
       var _this = this;
       //下级部门
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
@@ -569,7 +565,8 @@ export default {
     },
     //树形控件父级数据加载
     loadNode(node, resolve) {
-      // console.log(node)
+      this.node = node.data
+      this.removes = resolve
       this.data = [];
       let _this = this;
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
@@ -581,7 +578,6 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(response => {
-        // console.log(response)
         for (let i = 0; i < response.data.objects.length; i++) {
           if (node.level === 0) {
             _this.options.push({
@@ -598,7 +594,6 @@ export default {
             ]);
           }
         }
-        // this.treeDblclick()
         let num = Array();
         num.push({
           id: response.data.objects[0].id,
@@ -610,7 +605,6 @@ export default {
           _this.treeClick(num[0]);
           this.flag = false;
         }
-      // console.log(this.Parents)
         this.treeKey.push(204);
       }).catch(function(error) {
         console.log(error);
@@ -682,6 +676,7 @@ export default {
       if (this.dbSave.isLeaf == 2 || this.dbSave.isLeaf == 0) {
         this.treeKey.push(this.dbSave.id);
       }
+      this.dbSave = ''
     },
     // 编辑部门
     editDepartment1(id) {
@@ -765,6 +760,14 @@ export default {
         }
       }).then(function(response) {
         _this.$message.success("修改成功！");
+        _this.getUser(
+          _this.node.key,
+          _this.node.label,
+          _this.node.id,
+          _this.node.isLeaf,
+          _this.removes
+        );
+        _this.addInput.topDepartment = updata.orgName;
         _this.editDepartment = false;
       }).catch(function(error) {
         console.log(error);
@@ -775,6 +778,28 @@ export default {
       this.pagesize = page;
       this.addPersonnel1();
     },
+    //职位列表
+    optionList(){
+      this.option = [];
+      var _this = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/positionlist", {
+        object:{
+          isDeleted: 0
+        }
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(res){
+        for(let i =0;i<res.data.objects.length; i++){
+          _this.option.push(
+            res.data.objects[i].name
+          );
+        }
+      }).catch(function(err){
+        console.log(err)
+      })
+    }
   }
 };
 </script>
@@ -810,7 +835,7 @@ export default {
 .kk { min-height: 700px; }
 .addTitle { position: absolute; top: 2%; left: 3%; font-size: 1.5em; }
 .enter { margin-left: 5%; }
-.right { position:absolute; height:82%; width:45%; margin-left: 450px; border: 2px solid #E6E6E6; }
+.right { position:absolute; height:82%; width:50%; margin-left: 450px; border: 2px solid #E6E6E6; }
 .left { position:absolute; width: 400px; height:82%; border: 2px solid #E6E6E6; }
 .right-son { position: relative; left: 260px; bottom: 100%; width: 75.7%; height: 100%; }
 .left-son { position: relative; width: 260px; height: 100%; border: 1px solid #CCCCCC; }
@@ -842,4 +867,5 @@ export default {
 .positionInput{ width:280px; margin-right:200px; }
 .updataLabelWidth-input{ width:250px; margin-right:200px; }
 .add_radio>>>.el-form-item__error{ left:78px; }
+.hh>>>.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{ background-color: #F6F7D7!important; }
 </style>
