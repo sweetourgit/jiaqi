@@ -15,7 +15,7 @@
           <el-table-column :key="Math.random()" prop="id" label="ID" align="center" width="60%"></el-table-column>
           <el-table-column :key="Math.random()" label="名称" align="center">
             <template slot-scope="scope">
-              <template v-if="scope.row.isLeaf == 0">
+              <template v-if="scope.row.isLeaf == 2">
                 <el-tooltip placement="right" effect="light">
                   <div slot="content">点击查看<br/>下级分类</div>
                   <el-button @click="subordinate(scope.row)" type="text">{{ scope.row.country }}</el-button>
@@ -58,7 +58,7 @@
           <el-form-item label="末级区域:" :label-width="formLabelWidth">
             <el-radio-group class="virtualDepartment" v-model="countryPopup.isLeaf">
               <el-radio label="1">是</el-radio>
-              <el-radio label="0">否</el-radio>
+              <el-radio label="2">否</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
@@ -99,7 +99,7 @@
           <el-form-item label="末级区域:" :label-width="formLabelWidth">
             <el-radio-group class="virtualDepartment" v-model="editCountryPopup.isLeaf">
               <el-radio label="1">是</el-radio>
-              <el-radio label="0">否</el-radio>
+              <el-radio label="2">否</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="英文名:" :label-width="formLabelWidth" prop="englishName">
@@ -266,7 +266,7 @@
           if(res.data.isSuccess == true){
             for(let i=0;i<res.data.objects.length;i++){
               if(res.data.objects[i].isDeleted == 0){
-                if(res.data.objects[i].isLeaf == 0){
+                if(res.data.objects[i].isLeaf == 2){
                   this.lists.push({
                     name:res.data.objects[i].areaName,
                     key: i,
@@ -316,7 +316,7 @@
             this.tableData.push({
               id: res.data.object.id,
               country: res.data.object.areaName,
-              continent: res.data.object.earth,
+              continent: this.theContinent,
               englishName: res.data.object.englishName,
               pinyin: res.data.object.chineseFull,
               initials: res.data.object.firstChar,
@@ -349,7 +349,7 @@
               this.tableData.push({
                 id: res.data.objects[i].id,
                 country: res.data.objects[i].areaName,
-                continent: res.data.objects[i].earth,
+                continent: this.theContinent,
                 englishName: res.data.objects[i].englishName,
                 pinyin: res.data.objects[i].chineseFull,
                 initials: res.data.objects[i].firstChar,
