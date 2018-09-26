@@ -420,7 +420,7 @@
                   this.$refs['countryPopup'].resetFields()
                   this.countryPopup.initial = ''
                 }).catch(err => {
-                  console.log(err)
+                  console.log(err);
                 })
             } else if(formName == 'editCountryPopup'){
               this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforsave', {
