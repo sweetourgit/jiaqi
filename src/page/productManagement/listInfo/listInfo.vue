@@ -27,28 +27,31 @@
             </el-radio-group>
           </el-form-item>
           <!--出发地-->
-          <!-- <el-form-item label="出发地" prop="placeDeparture" label-width="120px">
-            <el-autocomplete class="startOff" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="ruleForm.placeDeparture" :trigger-on-focus="false">
-            </el-autocomplete>
-          </el-form-item> -->
-
-          <el-form-item label="出发地" prop="placeDeparture" ref="placeDeparture" style="clear:both;" label-width="120px">
+          <el-form-item label="出发地" ref="placeDeparture" style="clear:both;" label-width="120px">
             <div class="destination-input">
               <el-tag :key="tag3" v-for="tag3 in dynamicTags3" closable :disable-transitions="false" @close="handleClose3(tag3)">
                 {{tag3}}
               </el-tag>
-              <el-autocomplete class="input-new-tags" v-if="inputVisible3" v-model="ruleForm.placeDeparture" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm3" @blur="handleInputConfirm3" :fetch-suggestions="querySearch" :trigger-on-focus="false">
-              </el-autocomplete>
+              <!-- <el-autocomplete class="input-new-tags" v-if="inputVisible3" v-model="ruleForm.placeDeparture" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm3" @blur="handleInputConfirm3" :fetch-suggestions="querySearch1" :trigger-on-focus="false" @select = "aa">
+              </el-autocomplete> -->
+
+              <el-autocomplete
+      class="input-new-tags"
+      v-model="ruleForm.placeDeparture" v-if="inputVisible3" ref="saveTagInput"
+      :fetch-suggestions="querySearch" size="small" @keyup.enter.native="handleInputConfirm3"
+      placeholder="请输入内容" :trigger-on-focus="false" 
+      @select="aa"
+    ></el-autocomplete>
               <el-button v-else class="input-new-tag" size="small" @click="showInput3">请输入出发地</el-button>
             </div>
           </el-form-item>
-
+          <!-- 目的地 -->
           <el-form-item label="目的地" prop="destinations" ref="destinations" style="clear:both;" label-width="120px">
             <div class="destination-input">
               <el-tag :key="tag4" v-for="tag4 in dynamicTags4" closable :disable-transitions="false" @close="handleClose4(tag4)">
                 {{tag4}}
               </el-tag>
-              <el-autocomplete class="input-new-tags" v-if="inputVisible4" v-model="ruleForm.destinations" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm4" @blur="handleInputConfirm4" :fetch-suggestions="querySearch" :trigger-on-focus="false">
+              <el-autocomplete class="input-new-tags" v-if="inputVisible4" v-model="ruleForm.destinations" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm4" @blur="handleInputConfirm4" :fetch-suggestions="querySearch2" :trigger-on-focus="false">
               </el-autocomplete>
               <el-button v-else class="input-new-tag" size="small" @click="showInput4">请输入出发地</el-button>
             </div>
@@ -4123,7 +4126,7 @@
 
           this.$nextTick(() => {
 
-             console.log(this.$refs.travelDays.value);
+            //  console.log(this.$refs.travelDays.value);
              this.mydate = this.$refs.travelDays.value;
             // console.log(this.mydate);
 
@@ -4901,7 +4904,15 @@
         }
 
       },
-
+      aa(item){
+        console.log(item)
+        // let inputVal3 = this.ruleForm.placeDeparture;
+        // if (inputVal3) {
+          this.dynamicTags3.push(item.value);
+          this.ruleForm.placeDeparture = "";
+        // }
+        // console.log(this.tag3)
+      },
       querySearch(queryString, cb) {
 
         var restaurants = this.restaurants;
