@@ -11,7 +11,7 @@
       <!-- 区域列表 -->
       <template v-if="geography == 1">
       <el-button class="add_country" type="primary" @click="addState = true">添加</el-button>
-        <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 65%;">
+        <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 70%;">
           <el-table-column :key="Math.random()" prop="id" label="ID" align="center" width="60%"></el-table-column>
           <el-table-column :key="Math.random()" label="名称" align="center">
             <template slot-scope="scope">
@@ -26,11 +26,12 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column :key="Math.random()" prop="continent" label="所属大洲" align="center"></el-table-column>
+          <el-table-column :key="Math.random()" prop="continent" label="所属大洲" align="center" width="80%"></el-table-column>
           <el-table-column :key="Math.random()" prop="englishName" label="英文名" align="center"></el-table-column>
           <el-table-column :key="Math.random()" prop="pinyin" label="中文全拼" align="center"></el-table-column>
           <el-table-column :key="Math.random()" prop="initials" label="首字母" align="center" width="70%"></el-table-column>
-          <el-table-column :key="Math.random()" prop="code" label="代码" align="center"></el-table-column>
+          <el-table-column :key="Math.random()" prop="initial" label="首拼" align="center"></el-table-column>
+          <el-table-column :key="Math.random()" prop="code" label="代码" align="center" width="80%"></el-table-column>
           <el-table-column :key="Math.random()" label="操作" align="center" width="240%">
           <template slot-scope="scope">
             <div class="table_button_left">
@@ -41,7 +42,7 @@
           </template>
           </el-table-column>
         </el-table>
-        <el-pagination class="page" background @size-change="pagesizes" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[2, 4, 8, 10]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        <el-pagination class="page" background @size-change="pagesizes" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[2, 4, 8, 10, 20]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
         </el-pagination>
       </template>
       <!-- 区域列表END -->
@@ -155,7 +156,7 @@
           code: '',
           select: '',
           parentID: '',
-          isLeaf: '0',
+          isLeaf: '2',
         },
         // 编辑区域数据
         editCountryPopup: {
@@ -205,6 +206,7 @@
         addState: false, // 添加国家弹框
         formLabelWidth: '160px', // 弹窗item宽度
         editState: false, // 编辑国家弹框
+        clickId: ''
       }
     },
     methods: {
@@ -316,14 +318,14 @@
             this.tableData.push({
               id: res.data.object.id,
               country: res.data.object.areaName,
-              continent: this.theContinent,
+              continent: res.data.object.earth,
               englishName: res.data.object.englishName,
               pinyin: res.data.object.chineseFull,
               initials: res.data.object.firstChar,
               code: res.data.object.areaCode,
               value: res.data.object.areaName,
               isLeaf: res.data.object.isLeaf,
-              initial: res.data.object.initial
+              initial: res.data.object.initial,
             })
             this.geography = 1
             this.currentPage = 1
@@ -332,6 +334,10 @@
             console.log(err)
           })
         } else {
+          if(this.clickId !== data.id){
+              this.currentPage = 1
+            }
+          this.clickId = data.id
           this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforpage',{
             "object": {
                 "parentID": data.id,
@@ -343,21 +349,28 @@
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
               }
           }).then(res => {
-            this.total = res.data.total
-            this.geography = 1
-            for(let i=0;i<res.data.objects.length;i++){
-              this.tableData.push({
-                id: res.data.objects[i].id,
-                country: res.data.objects[i].areaName,
-                continent: this.theContinent,
-                englishName: res.data.objects[i].englishName,
-                pinyin: res.data.objects[i].chineseFull,
-                initials: res.data.objects[i].firstChar,
-                code: res.data.objects[i].areaCode,
-                value: res.data.objects[i].areaName,
-                isLeaf: res.data.objects[i].isLeaf,
-                initial: res.data.objects[i].initial
-              })
+            if(res.data.isSuccess == false){
+              if(this.currentPage !== 1){
+                this.currentPage = 1
+                this.treeClick(data)
+              }
+            } else {
+              this.total = res.data.total
+              this.geography = 1
+              for(let i=0;i<res.data.objects.length;i++){
+                this.tableData.push({
+                  id: res.data.objects[i].id,
+                  country: res.data.objects[i].areaName,
+                  continent: res.data.objects[i].earth,
+                  englishName: res.data.objects[i].englishName,
+                  pinyin: res.data.objects[i].chineseFull,
+                  initials: res.data.objects[i].firstChar,
+                  code: res.data.objects[i].areaCode,
+                  value: res.data.objects[i].areaName,
+                  isLeaf: res.data.objects[i].isLeaf,
+                  initial: res.data.objects[i].initial
+                })
+              }
             }
           }).catch(err => {
             console.log(err)
@@ -399,7 +412,7 @@
                   isLeaf: Number(this.countryPopup.isLeaf),
                   initial: this.countryPopup.initial,
                   createTime: "2018-09-11T07:32:14.737Z",
-                  earth: this.theContinent
+                  earth: '-1'
                 }
               },{
                 headers:{
@@ -434,7 +447,7 @@
                   isLeaf: Number(this.editCountryPopup.isLeaf),
                   initial: this.editCountryPopup.initial,
                   parentID: this.editCountryPopup.parentID,
-                  earth: this.theContinent,
+                  earth: '-1',
                 }
               },{
                 headers:{
@@ -576,7 +589,7 @@
 <style scoped>
 .cascade{
   float: left;
-  margin-top:70px;
+  margin-top:72px;
   user-select: none;
   border: solid 2px #e6e6e6;
   position: absolute;
@@ -589,16 +602,15 @@
   margin-top: 20px;
 }
 .popper__arrow{ background: red !important;}
-.search{ position:absolute;margin-left:500px;margin-top:70px;}
-.keyword{ float: left; position: relative; top: 13px;}
-.inputBox{ float: left; margin: 0 0 0 20px; width: 300px;}
-.searchButton{ float: left;margin-left:10px}
-.table_list{float:left; position: relative; top: 120px;left: 200px}
+.inputBox{ width: 300px;left:16px;}
+.searchButton{ margin-left:22px; }
+.search{float: left; margin-top:72px;margin-left:405px;}
+.table_list{ top: 10px;margin-bottom: 150px;left:261px;}
 .table_button{ width: 50px; height: 22px; padding: 0;}
 .table_button_right{ float: right; margin: 0 20px 0 0;}
 .table_button1{ width: 70px; height: 22px; padding: 0;}
-.add_country{float: left; position: relative; left: 300px;top: 70px;width:100px}
-.page{ float: left; margin: 140px 0 0 900px;}
+.add_country{width:100px;float: left;margin-left:-615px;margin-top:72px;}
+.page{ margin-left:40%;margin-bottom: 50px;margin-top:-120px}
 .country_input{ width: 300px; margin: 0 95px 0 0;}
 .country_select{ width: 300px; margin: 0 95px 0 0;}
 .dialog-footer{ text-align: center;}
