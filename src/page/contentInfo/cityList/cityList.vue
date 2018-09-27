@@ -134,6 +134,7 @@
       return {
         list:[],
         lists: [], //子级
+        vague: [], // 模糊搜索数组
         props1: {
           label: 'name',
           isLeaf: 'leaf'
@@ -379,13 +380,31 @@
       },
       // 搜索方法
       querySearch(queryString, cb) {
-        var results = queryString ? this.tableData.filter(this.createFilter(queryString)) : [];
-        cb(results);
+        this.vague = []
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+          "object": {
+            areaName: queryString
+          }
+        },{
+          headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }).then(res => {
+            for(let i=0;i<res.data.objects.length;i++){
+              this.vague.push({
+                "value" : res.data.objects[i]
+              })
+            }
+            var results = queryString ? this.vague.filter(this.createFilter(queryString)) : [];
+            cb(results)
+          }).catch(err => {
+            console.log(err);
+          })
       },
       // 搜索方法
       createFilter(queryString){
         return (restaurant) => {
-          return (restaurant.country.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          return (restaurant.value);
         }
       },
       // 表格头部背景颜色
