@@ -49,7 +49,7 @@
       </div>
     </div>
     <!--表格-->
-    <div class="user-table" style="width: 80%">
+    <div class="user-table" style="width: 1245px">
       <el-table
         :data="tableData3"
         border
@@ -85,7 +85,8 @@
         <el-table-column
           prop="email"
           label="邮箱"
-          align="center">
+          align="center"
+         >
         </el-table-column>
         <el-table-column
           prop="sex"
@@ -109,12 +110,14 @@
         <el-table-column
           prop="createTime"
           label="创建时间"
-          align="center">
+          align="center"
+          width="150%">
         </el-table-column>
         <el-table-column
           prop="updatetime"
           label="修改时间"
-          align="center">
+          align="center"
+          width="150%">
         </el-table-column>
         <el-table-column
           label="操作"
