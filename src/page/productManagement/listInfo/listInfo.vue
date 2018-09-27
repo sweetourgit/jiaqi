@@ -32,16 +32,10 @@
               <el-tag :key="tag3" v-for="tag3 in dynamicTags3" closable :disable-transitions="false" @close="handleClose3(tag3)">
                 {{tag3}}
               </el-tag>
-              <!-- <el-autocomplete class="input-new-tags" v-if="inputVisible3" v-model="ruleForm.placeDeparture" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm3" @blur="handleInputConfirm3" :fetch-suggestions="querySearch1" :trigger-on-focus="false" @select = "aa">
+              <!-- <el-autocomplete class="input-new-tags" v-if="inputVisible3" v-model="ruleForm.placeDeparture" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm3" @blur="handleInputConfirm3" :fetch-suggestions="querySearch1" :trigger-on-focus="false" @select = "departure">
               </el-autocomplete> -->
 
-              <el-autocomplete
-      class="input-new-tags"
-      v-model="ruleForm.placeDeparture" v-if="inputVisible3" ref="saveTagInput"
-      :fetch-suggestions="querySearch" size="small" @keyup.enter.native="handleInputConfirm3"
-      placeholder="请输入内容" :trigger-on-focus="false" 
-      @select="aa"
-    ></el-autocomplete>
+              <el-autocomplete class="input-new-tags" v-model="ruleForm.placeDeparture" v-if="inputVisible3" ref="saveTagInput" :fetch-suggestions="querySearch1" size="small" @keyup.enter.native="handleInputConfirm3" placeholder="请输入出发地" :trigger-on-focus="false" @select="departure" @blur="handleInputConfirm3"></el-autocomplete>
               <el-button v-else class="input-new-tag" size="small" @click="showInput3">请输入出发地</el-button>
             </div>
           </el-form-item>
@@ -51,9 +45,9 @@
               <el-tag :key="tag4" v-for="tag4 in dynamicTags4" closable :disable-transitions="false" @close="handleClose4(tag4)">
                 {{tag4}}
               </el-tag>
-              <el-autocomplete class="input-new-tags" v-if="inputVisible4" v-model="ruleForm.destinations" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm4" @blur="handleInputConfirm4" :fetch-suggestions="querySearch2" :trigger-on-focus="false">
+              <el-autocomplete class="input-new-tags" v-if="inputVisible4" v-model="ruleForm.destinations" ref="saveTagInput" size="small" placeholder="请输入目的地"@keyup.enter.native="handleInputConfirm4" :fetch-suggestions="querySearch2" :trigger-on-focus="false" @select="dest">
               </el-autocomplete>
-              <el-button v-else class="input-new-tag" size="small" @click="showInput4">请输入出发地</el-button>
+              <el-button v-else class="input-new-tag" size="small" @click="showInput4">请输入目的地</el-button>
             </div>
           </el-form-item>
           <div style="overflow:hidden">
@@ -4904,14 +4898,18 @@
         }
 
       },
-      aa(item){
-        console.log(item)
-        // let inputVal3 = this.ruleForm.placeDeparture;
-        // if (inputVal3) {
-          this.dynamicTags3.push(item.value);
-          this.ruleForm.placeDeparture = "";
-        // }
-        // console.log(this.tag3)
+      //出发地
+      departure(item){
+        
+        this.dynamicTags3.push(item.value);
+        this.inputVisible3 = false;
+        this.ruleForm.placeDeparture = "";
+      },
+      //目的地
+      dest(item){
+        this.dynamicTags4.push(item.value);
+        this.inputVisible4 = false;
+        this.ruleForm.destinations = "";
       },
       querySearch(queryString, cb) {
 
@@ -5054,7 +5052,7 @@
       }
     },
     // 出发地
-    querySearch(queryString1, cb) {
+    querySearch1(queryString1, cb) {
       this.vague = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
         "object": {
@@ -5082,7 +5080,7 @@
         }
       },
     //目的地
-    querySearch(queryString2, cb) {
+    querySearch2(queryString2, cb) {
       this.tableData1 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
         "object": {
@@ -5211,18 +5209,17 @@
       });
     },
     handleInputConfirm3() {
-      this.$refs['placeDeparture'].validate()
-      var str = this.ruleForm.placeDeparture;
-      var pat =  /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/
-      if(str.match(pat)){
+      // this.$refs['placeDeparture'].validate()
+      // var str = this.ruleForm.placeDeparture;
+      // var pat =  /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/
+      // if(str.match(pat)){
         let inputVal3 = this.ruleForm.placeDeparture;
-        if (inputVal3) {
+        // if (inputVal3) {
           this.dynamicTags3.push(inputVal3);
-        }
+        // }
         this.inputVisible3 = false;
         this.ruleForm.placeDeparture= '';
-      }
-    },
+      },
 
     // 目的地
     handleClose4(tag4) {
