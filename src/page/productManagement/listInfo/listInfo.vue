@@ -5193,7 +5193,7 @@
     },
     departure(item){
       this.dynamicTags3.push(item.value);
-      this.ruleForm.placeDeparture = " ";
+      this.ruleForm.placeDeparture = " "; 
       this.inputVisible3 = false;
     },
     handleInputConfirm3() {
