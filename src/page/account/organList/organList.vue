@@ -814,13 +814,13 @@ export default {
 .switch { position: absolute; margin-left: 40%; top: 43%; }
 .small1 { float:left; margin-left:30px; margin-top:25px; width: 4px; height: 22px; background: inherit; background-color: #3095FA; border: none; border-radius: 0px; box-shadow: none; line-height: 0; }
 .lowerTitle { float:left; margin-left:10px; margin-top:27px; font-size: 20px; }
-.divisionTable { width:85%; margin-top:60px; margin-left:30px; margin-right:250px; }
+.divisionTable { width:92%; margin-top:60px; margin-left:30px; margin-right:250px; }
 .small2 { float:left; margin-left:30px; margin-top:20px; width: 4px; height: 22px; background: inherit; background-color: #3095FA; border: none; border-radius: 0px; box-shadow: none; line-height: 0; }
 .personnelTitle { float:left; margin-left:15px; margin-top:22px; font-size: 20px; }
 .addPersonnel { float: left; width: 100px; height: 40px; margin-left: 30px; }
 .batchDelete { float: left; width: 100px; height: 40px; margin-left: 30px; }
 .btn-boom { height: 50px; margin-top:65px; }
-.tableList { width: 85%; margin-left:30px; margin-right:90px; margin-top:20px; }
+.tableList { width: 92%; margin-left:30px; margin-right:90px; margin-top:20px; }
 .cascader { position: relative; left: 15px; width: 269px; }
 .cascaderTitle { position: relative; left: 6px; }
 .boom { position: relative; right: 20px; margin-top: -10px; }
@@ -835,7 +835,7 @@ export default {
 .kk { min-height: 700px; }
 .addTitle { position: absolute; top: 2%; left: 3%; font-size: 1.5em; }
 .enter { margin-left: 5%; }
-.right { position:absolute; height:82%; width:50%; margin-left: 450px; border: 2px solid #E6E6E6; }
+.right { position:absolute; height:82%; width:45%; margin-left: 415px; border: 2px solid #E6E6E6; }
 .left { position:absolute; width: 400px; height:82%; border: 2px solid #E6E6E6; }
 .right-son { position: relative; left: 260px; bottom: 100%; width: 75.7%; height: 100%; }
 .left-son { position: relative; width: 260px; height: 100%; border: 1px solid #CCCCCC; }
