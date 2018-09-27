@@ -49,7 +49,7 @@
       </div>
     </div>
     <!--表格-->
-    <div class="user-table">
+    <div class="user-table" style="width: 80%">
       <el-table
         :data="tableData3"
         border
@@ -62,22 +62,25 @@
           prop="id"
           label="ID"
           align="center"
-          width="100">
+          width="50%">
         </el-table-column>
         <el-table-column
           prop="name"
           label="姓名"
-          align="center">
+          align="center"
+          width="70%">
         </el-table-column>
         <el-table-column
           prop="userType"
           label="用户类型"
-          align="center">
+          align="center"
+          width="80%">
         </el-table-column>
         <el-table-column
           prop="mobile"
           label="手机号"
-          align="center">
+          align="center"
+          width="120%">
         </el-table-column>
         <el-table-column
           prop="email"
@@ -87,18 +90,20 @@
         <el-table-column
           prop="sex"
           label="性别"
-          align="center">
+          align="center"
+          width="40%">
         </el-table-column>
         <el-table-column
           prop="userState"
           label="状态"
-          align="center">
+          align="center"
+          width="80%">
         </el-table-column>
         <el-table-column
           prop="organization"
           label="组织-部门-职务"
           align="center"
-          width="200"
+          width="180%"
          >
         </el-table-column>
         <el-table-column
@@ -114,7 +119,7 @@
         <el-table-column
           label="操作"
           align="center"
-          min-width="140"
+          width="150%"
       >
           <template slot-scope="scope">
             <el-button  size="small" @click="find(scope.$index, scope.row)">查看</el-button>
@@ -603,7 +608,7 @@
     width: 125px;
   }
   .block{
-    float: right;
+    text-align: right;
     margin-top: 50px;
     margin-bottom: 80px;
   }

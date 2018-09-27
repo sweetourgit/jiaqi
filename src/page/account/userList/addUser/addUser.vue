@@ -119,9 +119,20 @@
                        </el-form-item>
 
                        <el-form-item label="部门:" class="form-la" v-if="bumen1">
-                         <el-select v-model="value3" placeholder="请选择" >
+                         <el-select v-model="value3" placeholder="请选择" @change="HandChange3()">
                            <el-option
                              v-for="item in options3"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                           </el-option>
+                         </el-select>
+                       </el-form-item>
+
+                       <el-form-item label="部门:" class="form-la" v-if="bumen3">
+                         <el-select v-model="value4" placeholder="请选择" >
+                           <el-option
+                             v-for="item in options4"
                              :key="item.value"
                              :label="item.label"
                              :value="item.value">
@@ -220,11 +231,15 @@ import Permission from '@/page/account/userList/addUser/permission'
         value2: '',
         options3: [],
         value3: '',
+        options4: [],
+        value4: '',
         arr: [],
         arr1: [],
         arr2: [],
+        arr3: [],
         bumen2: false,
         bumen1: false,
+        bumen3:false,
         buttonsubmit:false,
         buttonchange:false,
         uid:0,
@@ -238,22 +253,7 @@ import Permission from '@/page/account/userList/addUser/permission'
             value: '请点击添加'
           }],
         },
-         bumen: [{
-          value: '经理1',
-          label: '经理1'
-        }, {
-          value: '经理2',
-          label: '经理2'
-        }, {
-          value: '经理3',
-          label: '经理3'
-        }, {
-          value: '经理4',
-          label: '经理4'
-        }, {
-          value: '经理5',
-          label: '经理5'
-        }],
+         bumen: [],
         value8: ''
         ,
         dialogFormVisible: false,
@@ -582,6 +582,7 @@ import Permission from '@/page/account/userList/addUser/permission'
         },
         HandChange2 () {
           this.arr2 = this.value2.split('-')
+          console.log(this.value2)
           this.options3 = []
           this.value3 = ''
           console.log(this.arr2[0])
@@ -621,6 +622,43 @@ import Permission from '@/page/account/userList/addUser/permission'
             })
           // 获取顶级，第一级城市end
         },
+        HandChange3 () {
+          this.arr3 = this.value3.split('-')
+          this.options4 = []
+          this.value4 = ''
+          console.log(this.arr3[0])
+          var that = this
+          // 获取顶级，第一级城市beg
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/org/api/deptlist",
+            {
+              'order': 'string',
+              'object': {
+                'isDeleted': 0,
+                'parentID': this.arr3[0]
+              }
+            },{
+              headers:{
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+              }
+            }
+          ).then(function (obj) {
+            if(obj.data.objects.length ==0){
+              that.bumen3 = false
+            }else{
+              that.bumen3 = true
+              var i = ''
+              for (i = 0; i < obj.data.objects.length; i++) {
+                that.options4.push({
+                  label: obj.data.objects[i].orgName,
+                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
+                })
+              }
+            }
+          })
+            .catch(function (obj) {
+            })
+        },
       /*----------*/
         changstatus(item){
           //默认的值
@@ -634,7 +672,10 @@ import Permission from '@/page/account/userList/addUser/permission'
         },
 
         addmaster() {
-              console.log(this.value)
+          console.log(this.value.split("-")[1])
+          console.log(this.value1.split("-")[1])
+          console.log(this.value2.split("-")[1])
+          console.log(this.value3.split("-")[1])
             var arr =  Object.values(this.selectedOptions)
             var strb = arr.join("-"); //"aa:bb:cc"
             var wei =this.value8
@@ -913,6 +954,32 @@ import Permission from '@/page/account/userList/addUser/permission'
     },
     created(){
       var that = this
+      //获取职位
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/positionpage", {
+        object: {
+          isDeleted: 0
+        },
+        pageSize: 100,
+        pageIndex: 1,
+        id: 0
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+        for (let i = 0; i < response.data.objects.length; i++) {
+          if (response.data.objects[i].isDeleted !== 1) {
+            that.bumen.push({
+              value: response.data.objects[i].id,
+              label: response.data.objects[i].name
+            });
+          }
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+
+
       // 获取顶级，第一级城市beg
       this.$http.post(
         this.GLOBAL.serverSrc + "/org/api/deptlist",
