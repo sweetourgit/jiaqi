@@ -629,7 +629,7 @@
 .table_button_right{ float: right; margin: 0 20px 0 0;}
 .table_button1{ width: 70px; height: 22px; padding: 0;}
 .add_country{width:100px;float: left;margin-left:-615px;margin-top:72px;}
-.page{ margin-left:40%;margin-bottom: 50px;margin-top:-120px}
+.page{ margin-left:37%;margin-bottom: 50px;margin-top:-120px}
 .country_input{ width: 300px; margin: 0 95px 0 0;}
 .country_select{ width: 300px; margin: 0 95px 0 0;}
 .dialog-footer{ text-align: center;}

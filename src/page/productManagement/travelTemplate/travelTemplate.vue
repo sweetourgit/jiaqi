@@ -21,9 +21,9 @@
     </div>
     <div class="products">
       <el-button class="products_button" type="primary" @click="addProducts = true">添加模板</el-button>
-      <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width:45%;">
+      <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width:750px">
           <el-table-column prop="id" label="ID" align="center" width="70%"></el-table-column>
-          <el-table-column prop="templateName" label="模板名称" width="234%" align="center"></el-table-column>
+          <el-table-column prop="templateName" label="模板名称"  align="center"></el-table-column>
           <el-table-column prop="templateType" label="模板类型" align="center" width="210%"></el-table-column>
           <el-table-column align="center" label="操作" width="220%">
             <template slot-scope="scope">
@@ -187,9 +187,9 @@
                 </el-checkbox-group>
               </el-form-item>
             </div>
-            <el-table class="table_lists" :data="tableProducts" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 70%;">
+            <el-table class="table_lists" :data="tableProducts" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 1000px;">
                 <el-table-column prop="name" label="字段名称" width="260%" align="center"></el-table-column>
-                <el-table-column prop="selection" label="选填/必填" width="160%" align="center"></el-table-column>
+                <el-table-column prop="selection" label="选填/必填" align="center"></el-table-column>
                 <el-table-column prop="selectionValue" label="选项值" align="center" width="390%"></el-table-column>
                 <el-table-column align="center" width="160%" label="操作">
                   <template slot-scope="scope">
