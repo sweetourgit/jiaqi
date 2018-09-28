@@ -49,7 +49,7 @@
       </div>
     </div>
     <!--表格-->
-    <div class="user-table" style="width: 1051px">
+    <div class="user-table" style="width: 1111px">
       <el-table
         :data="tableData3"
         border
@@ -86,7 +86,7 @@
           prop="email"
           label="邮箱"
           align="center"
-          width="120%"
+          width="180%"
          >
         </el-table-column>
         <el-table-column
@@ -183,7 +183,7 @@
               </div>
             </template>
           </el-form-item>
-          <el-form-item label="组织-部门:" class="from-organize" :label-width="150">
+          <el-form-item label="组织-部门:" class="from-organize">
             <div class="form-size2">
               <el-input v-model="form.organization" disabled class="form-gz"></el-input>
               <span  class="form-text">默认职位</span>
@@ -191,12 +191,7 @@
           </el-form-item>
           <el-form-item label="创建时间：" class="from-time" >
             <div class="form-size3">
-              <span class="form-createtime">{{form.updatetime}}</span>
-            </div>
-          </el-form-item>
-          <el-form-item label="修改时间：" class="from-time">
-            <div class="form-size3">
-              <span class="form-createtime">{{form.updatetime}}</span>
+              <span class="form-createtime">{{form.createTimeFormat}}</span>
             </div>
           </el-form-item>
         </el-form>
