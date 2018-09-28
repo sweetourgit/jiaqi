@@ -49,7 +49,7 @@
       </div>
     </div>
     <!--表格-->
-    <div class="user-table" style="width: 1041px">
+    <div class="user-table" style="width: 1051px">
       <el-table
         :data="tableData3"
         border
@@ -93,7 +93,7 @@
           prop="sex"
           label="性别"
           align="center"
-          width="40%">
+          width="50%">
         </el-table-column>
         <el-table-column
           prop="userState"
