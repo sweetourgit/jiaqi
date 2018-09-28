@@ -49,7 +49,7 @@
       </div>
     </div>
     <!--表格-->
-    <div class="user-table" style="width: 1245px">
+    <div class="user-table" style="width: 1041px">
       <el-table
         :data="tableData3"
         border
@@ -86,6 +86,7 @@
           prop="email"
           label="邮箱"
           align="center"
+          width="120%"
          >
         </el-table-column>
         <el-table-column
@@ -108,14 +109,8 @@
          >
         </el-table-column>
         <el-table-column
-          prop="createTime"
+          prop="createTimeFormat"
           label="创建时间"
-          align="center"
-          width="150%">
-        </el-table-column>
-        <el-table-column
-          prop="updatetime"
-          label="修改时间"
           align="center"
           width="150%">
         </el-table-column>
@@ -188,7 +183,7 @@
               </div>
             </template>
           </el-form-item>
-          <el-form-item label="组织-部门-职务:" class="from-organize">
+          <el-form-item label="组织-部门:" class="from-organize" :label-width="150">
             <div class="form-size2">
               <el-input v-model="form.organization" disabled class="form-gz"></el-input>
               <span  class="form-text">默认职位</span>
@@ -531,7 +526,7 @@
               arr[k]['userType'] = '管理员'
             }
             arr[k]['organization'] = '吉林大运通-财务部-会计'
-            arr[k]['updatetime'] = '2018/05/13 10:43'
+
 
           })
         })
