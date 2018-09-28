@@ -6,7 +6,7 @@
 
       <el-button plain class="btn-button">取消</el-button>
 
-      <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="myAddSave('ruleForm')">保存</el-button>
+      <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">保存</el-button>
 
     </div>
 
@@ -27,25 +27,29 @@
             </el-radio-group>
           </el-form-item>
           <!--出发地-->
-          <el-form-item label="出发地" ref="placeDeparture" prop="placeDeparture" style="clear:both;" label-width="120px">
+          <el-form-item label="出发地" ref="placeDeparture" style="clear:both;" label-width="120px">
+            <span class="redStar">*</span>
             <div class="destination-input">
               <el-tag :key="tag3" v-for="tag3 in dynamicTags3" closable :disable-transitions="false" @close="handleClose3(tag3)">
                 {{tag3}}
               </el-tag>
-              <el-autocomplete class="input-new-tags" v-model="ruleForm.placeDeparture" v-if="inputVisible3" ref="saveTagInput" :fetch-suggestions="querySearch1" size="small" @keyup.enter.native="handleInputConfirm3" placeholder="请输入出发地" :trigger-on-focus="false" @select="departure" @blur="handleInputConfirm3"></el-autocomplete>
+              <el-autocomplete id="ddd" class="input-new-tags" v-model="ruleForm.placeDeparture" v-if="inputVisible3" ref="saveTagInput" :fetch-suggestions="querySearch3" size="small" @keyup.enter.native="handleInputConfirm3" placeholder="请输入出发地" :trigger-on-focus="false" @select="departure" @blur="handleInputConfirm3"></el-autocomplete>
               <el-button v-else class="input-new-tag" size="small" @click="showInput3">请输入出发地</el-button>
             </div>
+            <span id="isNull" v-show="noNull">不能为空</span>
           </el-form-item>
           <!-- 目的地 -->
-          <el-form-item label="目的地" prop="destinations" ref="destinations" style="clear:both;" label-width="120px">
+          <el-form-item label="目的地" ref="destinations" style="clear:both;" label-width="120px">
+            <span class="redStar">*</span>
             <div class="destination-input">
               <el-tag :key="tag4" v-for="tag4 in dynamicTags4" closable :disable-transitions="false" @close="handleClose4(tag4)">
                 {{tag4}}
               </el-tag>
-              <el-autocomplete class="input-new-tags" v-if="inputVisible4" v-model="ruleForm.destinations" ref="saveTagInput" size="small" placeholder="请输入目的地" @keyup.enter.native="handleInputConfirm4" :fetch-suggestions="querySearch2" :trigger-on-focus="false" @select="dest" @blur="handleInputConfirm4">
+              <el-autocomplete id="input-error" class="input-new-tags" v-if="inputVisible4" v-model="ruleForm.destinations" ref="saveTagInput" size="small" placeholder="请输入目的地" @keyup.enter.native="handleInputConfirm4" :fetch-suggestions="querySearch2" :trigger-on-focus="false" @select="dest" @blur="handleInputConfirm4">
               </el-autocomplete>
               <el-button v-else class="input-new-tag" size="small" @click="showInput4">请输入目的地</el-button>
             </div>
+            <span id="zero" v-show="errorNull">不能为空</span>
           </el-form-item>
           <div style="overflow:hidden">
             <el-form-item style="width:300px; float:left;" label='行程天数' prop="travelDays" label-width="120px">
@@ -95,25 +99,14 @@
           </el-form-item>
 
           <el-form-item label="运营标签" prop="operationLabel" ref="operationLabel" style="clear:both;" label-width="120px">
-
             <div class="destination-input">
-
               <el-tag :key="tag2" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
-
                 {{tag2}}
-
               </el-tag>
-
-              <el-input class="operating" v-if="inputVisible2" v-model="ruleForm.operationLabel" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm2" @blur="handleInputConfirm2">
-
-                <input class="operating_input" type="image" src="//static.huaweicloud.com/static/v2_resources/images/dev-index/slide3.jpg?sttl=20185293" alt="">
-
+              <el-input class="lable_input" v-if="inputVisible2" placeholder="请输入运营标签" v-model="ruleForm.operationLabel" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm2" @blur="handleInputConfirm2">
               </el-input>
-
-              <el-button v-else class="operating_label" size="small" @click="showInput2">请输入运营标签</el-button>
-
+              <el-button v-else class="operation_Label" size="small" @click="showInput2">请输入运营标签</el-button>
             </div>
-
           </el-form-item>
 
           <el-form-item label="头图" prop="avatarImages" label-width="120px">
@@ -212,9 +205,9 @@
 
             </el-form-item>
 
-            <el-form-item style="float:left; margin-left:-85px;" prop="timeMinute">
+            <el-form-item style="float:left; margin-left:-85px;" prop="timeMinute" class="err_span">
 
-              <el-input style="width:50px;float:left;" v-model="ruleForm.timeMinute"></el-input>
+              <el-input style="width:50px;float:left;" v-model="ruleForm.timeMinute" class="err_span"></el-input>
 
               <span style="float:left;color: #333; margin-left:10px;">分</span>
 
@@ -3779,17 +3772,6 @@
             trigger: 'blur'
 
           }],
-
-          theme: [{
-
-            required: true,
-
-            message: '不能为空',
-
-            trigger: 'change'
-
-          }],
-
         },
 
         //上传图片
@@ -4084,10 +4066,12 @@
       dynamicTags3: [],
         inputVisible3: false,
         inputVal3: '',
+        noNull: false,
         //目的地
       dynamicTags4: [],
         inputVisible4: false,
         inputVal4: '',
+        errorNull: '',
       }
 
     },
@@ -4142,7 +4126,51 @@
       this.itemList();
     },
     methods: {
-
+      //保存
+      addsave(ruleForm) {
+        this.$refs[ruleForm].validate((valid) => {
+          if(valid){
+            var _this = this;
+            this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
+              object: {
+                createTime:"2018-09-11T08:44:03.95",
+                code:"",
+                launchsituation:"",
+                loadLaunchsituation:false,
+                title:this.ruleForm.productName,
+                tourType:this.ruleForm.travelType,
+                pods:[],
+                destinations:[],
+                isDeleted:0,
+                day:this.ruleForm.travelDays,
+                night:this.ruleForm.travelNight,
+                confirmType:this.ruleForm.orderConfirmationType,
+                strengths:"",
+                label:"",
+                pictureID:0,
+                vedioID:0,
+                pepeatpic:"",
+                advanceDay:this.ruleForm.advanceRegistrationDays,
+                advanceHour:this.ruleForm.timeHour,
+                advanceMinute:this.ruleForm.timeMinute,
+                proStat:1
+              }
+            },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+            }).then(function(response) {
+              _this.$message.success("添加成功");
+              _this.$router.push({path: "productList"});
+            }).catch(function(error) {
+              console.log(error);
+            });
+          }else{
+            this.errorNull = true;
+            this.noNull = true;
+          }
+        })
+      },
       handleClick(tab, event) {
 
         // console.log(tab, event);
@@ -4733,23 +4761,28 @@
         this.myTravel[index].particulars.splice(k, 1)
 
       },
-      //保存
-      myAddSave(ruleForm) {
-         // console.log(this.$refs[ruleForm].origin)
-        this.$refs[ruleForm].validate((valid) => {
-          if (valid) {
-           // this.$message.success("保存成功");
-          //  location.reload();
+      // 保存
+      // myAddSave(ruleForm) {
+      //    // console.log(this.$refs[ruleForm].origin)
+      //   this.$refs[ruleForm].validate((valid) => {
+      //     if (valid) {
+
+      //      // this.$message.success("保存成功");
+      //     //  location.reload();
 
 
-          } else {
-            return false;
-          }
+      //     } else {
+      //       this.errorNull = true;
+      //       this.noNull = true;
+      //       return false;
+      //     }
 
-      });
+      // });
 
-       //  console.log(this.myTravel);
-      },
+      //  //  console.log(this.myTravel);
+      // },
+
+
 
       diaoyong(v,k,index){
            this.myTravel[index].particulars[k].shuxing = v;
@@ -5033,9 +5066,12 @@
         this.inputVisible2 = false;
         this.ruleForm.operationLabel= '';
       }
+      if(this.ruleForm.operationLabel == ''){
+        this.inputVisible2 = false;
+      }
     },
     // 出发地
-    querySearch1(queryString1, cb) {
+    querySearch3(queryString1, cb) {
       this.vague = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
         "object": {
@@ -5048,7 +5084,7 @@
         }).then(res => {
           for(let i=0;i<res.data.objects.length;i++){
             this.vague.push({
-              "value" : res.data.objects[i]
+              "value" : res.data.objects[i].areaName,
             })
           }
           var results = queryString1 ? this.vague.filter(this.createFilter(queryString1)) : [];
@@ -5074,9 +5110,10 @@
             'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
         }).then(res => {
+          console.log(res)
           for(let i=0;i<res.data.objects.length;i++){
             this.tableData1.push({
-              "value" : res.data.objects[i]
+              "value" : res.data.objects[i].areaName
             })
           }
           var results = queryString2 ? this.tableData1.filter(this.createFilter(queryString2)) : [];
@@ -5090,50 +5127,6 @@
           return (restaurant.value);
         }
       },
-    //保存
-    addsave(ruleForm) {
-      this.$refs[ruleForm].validate((valid) => {
-        if(valid){
-          var _this = this;
-          this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
-            object: {
-              createTime:"2018-09-11T08:44:03.95",
-              code:"",
-              launchsituation:"",
-              loadLaunchsituation:false,
-              title:this.ruleForm.productName,
-              tourType:this.ruleForm.travelType,
-              pods:[],
-              destinations:[],
-              isDeleted:0,
-              day:this.ruleForm.travelDays,
-              night:this.ruleForm.travelNight,
-              confirmType:this.ruleForm.orderConfirmationType,
-              strengths:"",
-              label:"",
-              pictureID:0,
-              vedioID:0,
-              pepeatpic:"",
-              advanceDay:this.ruleForm.advanceRegistrationDays,
-              advanceHour:this.ruleForm.timeHour,
-              advanceMinute:this.ruleForm.timeMinute,
-              proStat:1
-            }
-          },{
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          }
-          }).then(function(response) {
-            _this.$message.success("添加成功");
-            _this.$router.push({path: "productList"});
-          }).catch(function(error) {
-            console.log(error);
-          });
-        }
-      })
-
-
-    },
     //出游人群
     themeList(){
       this.excurList = [];
@@ -5193,14 +5186,13 @@
     },
     departure(item){
       this.dynamicTags3.push(item.value);
-      this.ruleForm.placeDeparture = " "; 
+      this.ruleForm.placeDeparture = "";
       this.inputVisible3 = false;
     },
+    //aa
     handleInputConfirm3() {
       this.$refs['placeDeparture'].validate()
-      var str = this.ruleForm.placeDeparture;
-      var pat = /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/
-      if(str.match(pat)){
+      if(this.ruleForm.placeDeparture !== ''){
         setTimeout(res =>{
         // for(let i=0;i<this.dynamicTags3.length;i++){
         // if(this.dynamicTags3[i].indexOf(this.ruleForm.placeDeparture) !== -1){
@@ -5212,8 +5204,16 @@
           this.dynamicTags3.push(inputVal3);
         }
           this.inputVisible3 = false;
-          this.ruleForm.placeDeparture= ' ';
+          this.ruleForm.placeDeparture= '';
+          this.noNull = false
         },200)
+        } else {
+          if(this.dynamicTags3.length == 0){
+            this.noNull = true
+            document.getElementById('ddd').style.border="solid 1px red";
+        } else {
+          this.inputVisible3 = false;
+        }
       }
     },
 
@@ -5229,30 +5229,34 @@
     },
     dest(item){
       this.dynamicTags4.push(item.value);
-      this.ruleForm.destinations = " ";
+      this.ruleForm.destinations = "";
       this.inputVisible4 = false;
     },
     handleInputConfirm4() {
       this.$refs['destinations'].validate()
-      var str = this.ruleForm.destinations;
-      var bat = /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/
-      if(str.match(bat)){
+
+      if(this.ruleForm.destinations !== ''){
         setTimeout(res =>{
         let inputVal4 = this.ruleForm.destinations;
         if (inputVal4) {
           this.dynamicTags4.push(inputVal4);
         }
           this.inputVisible4 = false;
-          this.ruleForm.destinations= ' ';
+          this.ruleForm.destinations= '';
+          this.errorNull = false;
         },200)
+      }else{
+        if(this.dynamicTags4.length == 0){
+          this.errorNull = true;
+          document.getElementById('input-error').style.border="solid 1px red";
+        }else{
+          this.inputVisible4 = false;
+        }
       }
     },
 
 
     }
-
-
-
   }
 </script>
 
@@ -6125,9 +6129,7 @@
 .lightspot{ width: 210px; float: left; margin-left: 30px; }
 .lightspot-span{float: left; margin-left:16px; }
 .destination-input{width: 548px; float: left; margin-left: 10px; padding-bottom:-0.5px; border: 1px solid #dcdfe6; border-radius: 4px;}
-.operating{ width:116px; float: left; margin-left: 5px; height: 27px; line-height: 30px; padding-top: 1px; padding-bottom: 2px;}
 .operating_input{background:red;width:100px;height:200px}
-.operating_label{ float: left; margin-left: 5px; margin-top: 3px; height: 32px; line-height: 30px; padding-top: 0; padding-bottom: 0; }
 .firstFigure{width:200px;float:left;margin-left:10px;position:relative}
 .upload-demo{float:left;}
 .upload_div{height:215px;width:330px;position:absolute;z-index:9999;top:50px;left:30px;border:10px solid #D7D7D7;background:#fdfdfd;}
@@ -6142,13 +6144,15 @@
 .Summary{ width:544px; float:left; margin-left:8px; }
 .bright-number{float: left; margin: 0 0 0 10px;}
 .el-form-item>>>.el-form-item__error{left: 10px;}
-.vivo>>>.el-tabs__item {
-width: 144px ;
-margin-bottom: 10px;
-font-size: 16px;
-}
+.vivo>>>.el-tabs__item { width: 144px ; margin-bottom: 10px; font-size: 16px; }
 .el-tag { height:36px; float: left; margin-top: 1px; margin-left: 5px; background-color: #d7d7d7; color: #666666; }
 .input-new-tag { width:100px; float: left; margin-left: 5px; height: 36px; line-height: 30px; padding-top: 2px;margin-top:1px; margin-bottom:1px;}
 .el-autocomplete>>>.el-input--small .el-input__inner{ height: 35px!important; }
 .input-new-tags{ width:200px; float: left; margin-left: 5px; height: 30px; line-height: 30px; padding-top: 1px;margin-top:1px; margin-bottom:4px; padding-bottom: 2px}
+.operation_Label{ width:120px; float: left; margin-left: 5px; height: 36px; line-height: 30px; padding-top: 2px;margin-top:1px; margin-bottom:1px; }
+#isNull,#zero{ position: relative; float: left; top:30px; left:-550px ; color: #f56c6c; font-size: 12px;}
+.redStar{ color: #f56c6c; float: left; margin-left:-64px;}
+.number-day>>>.el-form-item__error{ left:0px; }
+.err_span>>>.el-form-item__error{ left:0px; }
+.lable_input{ width:200px; float: left; margin-left: 5px; height: 28px; line-height: 30px; padding-top: 1px;margin-top:1px; margin-bottom:4px; padding-bottom: 2px }
 </style>
