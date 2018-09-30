@@ -2,7 +2,7 @@
   <div class="vivo" style="position:relative">
    <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
     <div class="btn" style="width:200px;position:absolute;z-index:99;top:0px;left:68%;">
-      <el-button plain class="btn-button">取消</el-button>
+      <el-button plain class="btn-button" @click="cancel()">取消</el-button>
       <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">保存</el-button>
     </div>
       <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -1832,7 +1832,7 @@
                   code:"",
                   launchsituation:"",
                   loadLaunchsituation:false,
-                  title:this.ruleForm.productName,
+                  title:this.ruleForm.productNamel,
                   tourType:this.ruleForm.travelType,
                   pods:[],
                   destinations:[],
@@ -1864,6 +1864,10 @@
             }
           }
         })
+      },
+      // 取消
+      cancel(){
+        this.$router.push({path: "productList"});
       },
       handleClick(tab, event) {
          if(event.target.getAttribute('id')=='tab-second'){
@@ -2432,10 +2436,6 @@
         console.log(error);
       })
     },
-    //取消
-    cancel(){
-      this.$router.push({path: "productList"});
-    },
     // 出发地
     handleClose3(tag3) {
       this.dynamicTags3.splice(this.dynamicTags3.indexOf(tag3), 1);
@@ -2633,7 +2633,7 @@
   .minute_input{width:50px;float:left;margin-left:-95px;}
   .minute_span{ float:left; margin-left:-30px; color:#333; }
   .Summary{ width:544px; float:left; margin-left:8px; }
-  .bright-number{float: left; margin: 0 0 0 10px;}
+  .bright-number{float: left; margin: 0 0 0 17px;}
   .el-form-item>>>.el-form-item__error{left: 10px;}
   .vivo>>>.el-tabs__item { width: 144px ; margin-bottom: 10px; font-size: 16px; }
   .el-tag { height:36px; float: left; margin-top: 1px; margin-left: 5px; background-color: #d7d7d7; color: #666666; }
