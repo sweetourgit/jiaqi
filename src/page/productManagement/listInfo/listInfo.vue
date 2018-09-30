@@ -1613,7 +1613,7 @@
           attractionsDate: [{ required: true, message: '不能为空', trigger: 'blur' }],
           attractionsName: [{ required: true, message: '不能为空', trigger: 'blur' }],
           attractionsExplain: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          slideshow:[{ required: true, message: '不能为空', trigger: 'blur' }],
+          // slideshow:[{ required: true, message: '不能为空', trigger: 'blur' }],
           attractionsPicture: [{ required: true, message: '不能为空', trigger: 'blur' }],
           attractionsAbstract: [{ required: true, message: '不能为空', trigger: 'blur' }],
           shoppingName: [{ required: true, message: '不能为空', trigger: 'blur' }],
@@ -1800,9 +1800,7 @@
       ruleForm: {
         handler: function() {
           this.$nextTick(() => {
-            //  console.log(this.$refs.travelDays.value);
              this.mydate = this.$refs.travelDays.value;
-            // console.log(this.mydate);
           })
         },
         deep: true
@@ -1810,7 +1808,6 @@
     },
     mounted() {
       this.restaurants = this.loadAll();
-      //console.log(this.plane);
     },
     created() {
       this.themeList();
@@ -1858,6 +1855,7 @@
                 'Authorization': 'Bearer ' + localStorage.getItem('token'),
               }
               }).then(function(response) {
+                console.log(response)
                 _this.$message.success("添加成功");
                 _this.$router.push({path: "productList"});
               }).catch(function(error) {
@@ -1868,8 +1866,6 @@
         })
       },
       handleClick(tab, event) {
-        // console.log(tab, event);
-         console.log(event.target.getAttribute('id'))
          if(event.target.getAttribute('id')=='tab-second'){
           this.myTravel =[];
           this.myTravelDay=[];
@@ -1940,20 +1936,16 @@
         })
         this.myTravelDay.push(i)
       }
-      console.log(this.myTravel)
-      console.log(this.myTravelDay)
          }
       },
      // childByValue: function(childValue) {
         // childValue就是子组件传过来的值
       //  this.travelDays = childValue;
-     //   console.log(this.travelDays)
    //   },
       //临时添加酒店切换
       hotelNumber(index) {
         this.hotell = true;
         this.otherl = false;
-        console.log(index)
       },
       otherNumber() {
         this.hotell = false;
@@ -2030,7 +2022,6 @@
       },
       //添加、删除酒店
       addHotel() {
-        console.log('addHotel')
         this.hotel.push({
           hotelAuto: '',
           hotelChinese: '',
@@ -2049,7 +2040,6 @@
       },
       shutHotel(index) {
         this.hotel.splice(index, 1)
-        console.log(index)
         this.hotelshow = false;
       },
       //酒店关闭取消按钮
@@ -2063,9 +2053,6 @@
       //信息详情切换
       tabDetails(p, k, index) {
         // this.num7 = index;
-        console.log(p);
-        console.log(k);
-        console.log(index);
       },
         handleClose2(tag2) {
         this.dynamicTags2.splice(this.dynamicTags2.indexOf(tag2), 1);
@@ -2160,7 +2147,6 @@
       },
       // 保存
       // myAddSave(ruleForm) {
-      //    // console.log(this.$refs[ruleForm].origin)
       //   this.$refs[ruleForm].validate((valid) => {
       //     if (valid) {
       //      // this.$message.success("保存成功");
@@ -2171,7 +2157,6 @@
       //       return false;
       //     }
       // });
-      //  //  console.log(this.myTravel);
       // },
       diaoyong(v,k,index){
            this.myTravel[index].particulars[k].shuxing = v;
@@ -2388,7 +2373,6 @@
             'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
         }).then(res => {
-          console.log(res)
           for(let i=0;i<res.data.objects.length;i++){
             this.tableData1.push({
               "value" : res.data.objects[i].areaName
@@ -2661,8 +2645,9 @@
   .redStar{ color: #f56c6c; float: left; margin-left:-64px;}
   .number-day>>>.el-form-item__error{ left:0px; }
   .err_span>>>.el-form-item__error{ left:0px; }
-  .lable_input{ width:200px; float: left; margin-left: 5px; height: 28px; line-height: 30px; padding-top: 1px;margin-top:1px; margin-bottom:4px; padding-bottom: 2px }
+  .lable_input{ width:200px; float: left; margin-left: 5px; height: 34px; line-height: 30px; padding-top: 1px;margin-top:1px; margin-bottom:0px; padding-bottom: 2px }
   .upload-btn{ position: absolute;left:-80px;top:0px; }
   .upload-demo>>>.el-upload-list__item{ top: -45px;
       left: -183px; background-color:#d7d7d7; float: left; width: 90px; height: 30px; padding: 0; background-size: 44%; background-repeat: no-repeat; background-position: 2px; background-image: url('../../../assets/image/pic.png') }
+  .destination-input>>>.el-input--small .el-input__inner{ height: 35px!important; }
 </style>
