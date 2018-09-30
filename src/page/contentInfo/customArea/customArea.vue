@@ -76,7 +76,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button class="oppp" @click="addClassification = false">取 消</el-button>
+          <el-button class="oppp" @click="addClassification_ceil('form')">取 消</el-button>
           <el-button class="oppp" type="primary" @click="addsave('form')">确 定</el-button>
         </div>
       </el-dialog>
@@ -91,7 +91,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button class="oppp" @click="editClassification = false">取 消</el-button>
+          <el-button class="oppp" @click="editClassification_ceil('editForm')">取 消</el-button>
           <el-button class="oppp" type="primary" @click="editsave('editForm')">确 定</el-button>
         </div>
       </el-dialog>
@@ -112,7 +112,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button class="oppp" @click="addGrouping = false">取 消</el-button>
+          <el-button class="oppp" @click="addGrouping_ceil('addGroup')">取 消</el-button>
           <el-button class="oppp" type="primary" @click="addGroupingSave('addGroup')">确 定</el-button>
         </div>
       </el-dialog>
@@ -133,7 +133,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button class="oppp" @click="editGrouping = false">取 消</el-button>
+          <el-button class="oppp" @click="editGrouping_ceil('editGroup')">取 消</el-button>
           <el-button class="oppp" type="primary" @click="editGroupingSave('editGroup')">确 定</el-button>
         </div>
       </el-dialog>
@@ -154,7 +154,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button class="oppp" @click="editCity = false">取 消</el-button>
+          <el-button class="oppp" @click="editCity_ceil('editCitys')">取 消</el-button>
           <el-button class="oppp" type="primary" @click="editCitySave('editCitys')">确 定</el-button>
         </div>
       </el-dialog>
@@ -175,7 +175,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="classification-footer">
-          <el-button class="oppp" @click="addCity = false">取 消</el-button>
+          <el-button class="oppp" @click="addCity_ceil('addCitys')">取 消</el-button>
           <el-button class="oppp" type="primary" @click="addCitySave('addCitys')">确 定</el-button>
         </div>
       </el-dialog>
@@ -528,6 +528,36 @@ export default {
         });
       });
     },
+    // 添加分类取消
+    addClassification_ceil(a){
+      this.addClassification = false;
+      this.$refs[a].resetFields();
+    },
+    // 编辑分类取消
+    editClassification_ceil(a){
+      this.editClassification = false;
+      this.$refs[a].resetFields();
+    },
+    // 添加分组取消
+    addGrouping_ceil(a){
+      this.addGrouping = false;
+      this.$refs[a].resetFields();
+    },
+    // 编辑分组取消
+    editGrouping_ceil(a){
+      this.editGrouping = false;
+      this.$refs[a].resetFields();
+    },
+    // 添加城市取消
+    addCity_ceil(a){
+      this.addCity = false;
+      this.$refs[a].resetFields();
+    },
+    // 编辑城市取消
+    editCity_ceil(a){
+      this.editCity = false;
+      this.$refs[a].resetFields();
+    }
   }
 };
 </script>
