@@ -187,7 +187,7 @@
 
           <el-button :id="'kk' + index" :disabled="buttonList[index].forbidden"  class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>         
         
-        <span class="astrict">属相最多选择三种</span>
+        <span class="astrict">属性最多选择三种</span>
         <!-- 这里的选择属性的数量是根据产品的类型判断的,不同的产品类型它的可选择的数据数量是不同的 -->
         <!-- 可以给产品一个数值类型的字段,然后把这个值拿到,传到判断的位置,根据那个值来进行判断 -->
       </div>
@@ -351,8 +351,12 @@
         align="center"
         label="操作">
         <template slot-scope="scope">
-            <el-button size="mini" type="primary" v-show="Online" @click="online()">上线</el-button>
-            <el-button size="mini" type="primary" v-show="Offline" @click="offline()">下线</el-button>
+            <template v-if="ccc[scope.$index].type == false">
+              <el-button size="mini" type="primary"  @click="online(scope.$index)">上线</el-button>              
+            </template>
+            <template v-else>
+            <el-button size="mini" type="primary"  @click="offline(scope.$index)">下线</el-button>              
+            </template>
             <el-button size="mini" type="primary">价格</el-button>
             <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button>
         </template>
@@ -369,7 +373,7 @@
         </div>
           <!-- 添加增值的弹窗 -->
           <el-dialog title="增值信息" :visible.sync="accretionBall" append-to-body width="30%" custom-class="city_list">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm"  >
                 <el-form-item label="名称 :" prop="name" style="margin-left:35px" >
                    <el-input v-model="ruleForm.name" auto-complete="off" style="width:60%;" ></el-input>
                 </el-form-item>
@@ -403,23 +407,18 @@
             align="center"
             >
           </el-table-column>
-          <el-table-column
+          <el-table-column 
             prop="name"
             label="名称"
             width="180"
             align="center"
-            >
-          <template>
-            
-          </template>
-              
+            >              
           </el-table-column>
 
           <el-table-column
             prop="explain"
             align="center"
             label="说明">
-          
           </el-table-column>
         <el-table-column
           prop="priceSelect"
@@ -956,6 +955,11 @@ import Stock from './component/Stock'
     addInput(b,key){
       this.aa = true;
       this.di++;
+      // console.log(b);
+      // console.log(b.value);
+      // console.log(key);
+      // console.log(this.di);
+  
       // 向指定的属性数组中添加属性值
       this.addtable[this.addtable.length-1].allprice[key].value.push({
         di:key,
@@ -963,19 +967,22 @@ import Stock from './component/Stock'
         pp : false,
         forbidden:false,
       })
+      for(var ol =0;ol<b.value.length;ol++){
+        b.value[ol].forbidden = false;
+        console.log(key);
+        console.log(ol);
+        console.log("--------------")
+        // document.getElementById('vv'+key+ol).style.border = 'solid 1px #b3d8ff'     
+        // document.getElementById('vv'+key+ol).style.color = '#409EFF'     
+        // document.getElementById('vv'+key+ol).style.background = '#ecf5ff'
+        // console.log(23);
+        
+      };
+        console.log(this.sku);
+
     },
   // 确认属性值
-  gain(){
-    // console.log( this.addtable[this.addtable.length-1].allprice.length-1);  
-    // console.log(this.addtable[this.addtable.length-1].allprice)
-    // for(var k = 0;k<this.addtable[this.addtable.length-1].allprice.length-1;k++){
-    //   var obj = this.addtable[this.addtable.length-1].allprice[k].value.every(
-    //    function(x) {
-    //      return x.value !== ''
-    //    }
-    //  )
-    // }
-     
+  gain(){ 
     for(var kl = 0;kl<this.addtable[this.addtable.length-1].allprice.length-1;kl++){
         // console.log(this.addtable[this.addtable.length-1].allprice[kl].value);
       if(this.addtable[this.addtable.length-1].allprice[kl].value.length == 0){
@@ -1000,31 +1007,42 @@ import Stock from './component/Stock'
         this.addsku = true;
         // 属性按钮被禁用
         this.xianshi = true;
-        for(var ok = 0;ok<this.buttonList.length;ok++){
-          this.buttonList[ok].forbidden = true;
-          document.getElementById('kk'+ok).style.border = 'dashed 1px #c2c2c2'
-          document.getElementById('kk'+ok).style.color = '#c0c4cc'
-          document.getElementById('kk'+ok).style.background = '#fff' 
-        } 
+        // for(var ok = 0;ok<this.buttonList.length;ok++){
+        //   this.buttonList[ok].forbidden = true;
+        //   document.getElementById('kk'+ok).style.border = 'dashed 1px #c2c2c2'
+        //   document.getElementById('kk'+ok).style.color = '#c0c4cc'
+        //   document.getElementById('kk'+ok).style.background = '#fff' 
+        // } 
         for(var lo = 0;lo<this.arr.length;lo++){     
           document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
           document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
         } 
       }
 
-this.abc = false
-
-
-  }, 
+        this.abc = false
+     }, 
   // 重新设计属性值
-  back(){
-    this.aa = true;    
-    this.bb = false;
-    this.qq = true;
-    this.again = false;
-    this.pp = true;
-    this.close = false;
-    this.addsku = false;
+    back(){
+      this.aa = true;    
+      this.bb = false;
+      this.qq = true;
+      this.again = false;
+      this.pp = true;
+      this.close = false;
+      this.addsku = false;
+      console.log(this.sku);
+      this.sku[this.sku.length-1].price.splice(0,this.sku[this.sku.length-1].price.length);
+      for(var op = 0;op<this.addtable[this.addtable.length-1].allprice.length-1;op++){
+          for(var ll = 0;ll<this.addtable[this.addtable.length-1].allprice[op].value.length;ll++){
+            this.addtable[this.addtable.length-1].allprice[op].value[ll].forbidden = false;
+            this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false; 
+            document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'     
+            document.getElementById('vv'+op+ll).style.color = '#409EFF'     
+            document.getElementById('vv'+op+ll).style.background = '#ecf5ff'      
+          }
+        }
+      console.log(this.sku);
+      
     // 属性恢复使用 
     if(this.addtable[this.addtable.length-1].allprice.length < 4){
       for(var ok = 0;ok<this.buttonList.length;ok++){
@@ -1054,46 +1072,42 @@ this.abc = false
   },
   // 属性值按钮按下
   choice(e,key,kk,lp){
-    // 当这个按钮还处于未被按下的情况下,按下   
-    console.log(lp); 
+      // 当这个按钮还处于未被按下的情况下,按下   
     if(kk.value[key].pp == false){
-    // 先禁用所有的属性值按钮
+     // 先禁用所有的属性值按钮
       for(var ui = 0;ui<kk.value.length;ui++){
         kk.value[ui].forbidden = true;
-      // document.getElementById('vv'+key).style.border = 'solid 1px red'     
       }
-      // for(var ok = 0;ok<this.addtable[this.addtable.length-1].allprice.length-1;ok++){
-      //   console.log(this.addtable[this.addtable.length-1].allprice[ok]);        
-      //   console.log(this.addtable[this.addtable.length-1].allprice[ok].value[key]);
-      // }
-
-      //  console.log(this.addtable[this.addtable.length-1].allprice[lp].value[key]);
        this.lm = this.addtable[this.addtable.length-1].allprice[lp].value[key].di;
          document.getElementById('vv'+lp+key).style.border = 'solid 1px #409eff'     
          document.getElementById('vv'+lp+key).style.color = '#fff'     
          document.getElementById('vv'+lp+key).style.background = '#409eff'     
-    // 再解禁选中的按钮
+      // 再解禁选中的按钮
         kk.value[key].forbidden = false;
-  
-    // 让选中的按钮处于按下的状态
+      // 让选中的按钮处于按下的状态
         kk.value[key].pp = true;
-    // 给这个按钮选中样式
-    // 将这个按钮的相关的值添加到sku这个数组中
+      // 给这个按钮选中样式
+      // 将这个按钮的相关的值添加到sku这个数组中
       this.sku[this.sku.length-1].price.push({
         ID:kk.id,
         zhi:kk.value[key].price,
         name:kk.property,
       })
+      console.log(this.sku[this.sku.length-1].price)
+      console.log(lp);
     }else if(kk.value[key].pp == true){
         for(var ui = 0;ui<kk.value.length;ui++){
           kk.value[ui].forbidden = false;
         }
         kk.value[key].pp = false;
-        this.sku[this.sku.length-1].price.splice(this.sku[this.sku.length-1].price.length-1,1);
+        console.log(this.sku[this.sku.length-1].price);
+        console.log(key)
+        this.sku[this.sku.length-1].price.splice(lp,1);
          document.getElementById('vv'+lp+key).style.border = 'solid 1px #b3d8ff'     
          document.getElementById('vv'+lp+key).style.color = '#409EFF'     
          document.getElementById('vv'+lp+key).style.background = '#ecf5ff' 
     }
+
   },
   // 生成sku
   skuadd(){
@@ -1134,7 +1148,9 @@ this.abc = false
         this.ccc.push({
           id:this.skuid,
           ddd:ppp,
+          type:false,
         })
+        console.log(this.ccc);
         if(this.ccc.length > 0){
             this.accretion = true;
         }
@@ -1145,7 +1161,6 @@ this.abc = false
     shanchu(index,key){
       this.addtable[this.addtable.length-1].allprice[key].value.splice(index,1);
       },
-
   // 添加增值
     appreciation(){
       this.accretionBall = true;
@@ -1189,19 +1204,23 @@ this.abc = false
       this.Addprice.splice(b,1);
     },
     // 上线
-    online(){
-      console.log(1);
+    online(index){
+      console.log(index);
+      console.log(this.ccc[index]);
       this.Online = false;
       this.Offline = true;
+      this.ccc[index].type = true;
     },
     // 下线
-    offline(){
+    offline(index){
       console.log(2);
+      console.log(this.ccc[index]);      
       this.Offline = false;
       this.Online = true;
-      }
+      this.ccc[index].type = false;
       }
     }
+  }
 </script>
 <style lang="stylus" scoped>
   .button_select{
@@ -1209,8 +1228,6 @@ this.abc = false
     margin-bottom: 20px;
     text-align: left;
     margin-left: 50px;
-
-
   }
  .select_button{
    padding-top: 20px;
@@ -1298,8 +1315,4 @@ this.abc = false
   color:#ff4b3d;
   margin-left:30px;
 }
-// .textColor{
-//   disabled:true;
-//   // border:1px solid red;
-// }
 </style>
