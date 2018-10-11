@@ -1566,7 +1566,7 @@
         rules: {
           productNamel: [{ required: true, message: '不能为空', trigger: 'blur' },
                          { min: 0, max: 30, message: '字数超过30汉字限制', trigger: 'blur' },
-                         { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/]{1,28}([\u4e00-\u9fa5a-zA-Z0-9【】，+/（）]{0,2})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' }],
+                         { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' }],
           travelType: [{ required: true, message: '不能为空', trigger: 'blur' }],
           orderConfirmationType: [{ required: true, message: '不能为空', trigger: 'blur' }],
           advanceRegistrationDays: [{ required: true, message: '不能为空', trigger: 'blur' },
@@ -1807,6 +1807,7 @@
       }
     },
     mounted() {
+      this.guid();
       this.restaurants = this.loadAll();
     },
     created() {
@@ -1848,14 +1849,14 @@
                   advanceDay:this.ruleForm.advanceRegistrationDays,
                   advanceHour:this.ruleForm.timeHour,
                   advanceMinute:this.ruleForm.timeMinute,
-                  proStat:1
+                  proStat:1,
+                  guid:localStorage.getItem("guid")
                 }
               },{
               headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token'),
               }
               }).then(function(response) {
-                console.log(response)
                 _this.$message.success("添加成功");
                 _this.$router.push({path: "productList"});
               }).catch(function(error) {
@@ -2434,6 +2435,22 @@
         }
       }).catch(function(error){
         console.log(error);
+      })
+    },
+    // 生成guid
+    guid(){
+      var _this = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/universal/utinity/api/getguid", {
+        "object":true
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(res){
+        // console.log(res)
+        localStorage.setItem("guid",res.data.object)
+      }).catch(function(err){
+        console.log(err);
       })
     },
     // 出发地
