@@ -176,7 +176,7 @@
         countryRules: {
           countryName: [
             { required: true, message: '请填写国家名称', trigger: 'blur'},
-            { pattern: /^[\u4e00-\u9fa5]{2,6}$/, message: '请输入2-6位汉字'}
+            { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
             {pattern: /^[a-z]+$/, message: '请输入小写字母,不能有空格'}
@@ -189,7 +189,7 @@
         editCountryRules: {
           countryName: [
             { required: true, message: '请填写国家名称', trigger: 'blur'},
-            { pattern: /^[\u4e00-\u9fa5]{2,6}$/, message: '请输入2-6位汉字'}
+            { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
             {pattern: /^[a-z]+$/, message: '请输入小写字母,不能有空格'}
