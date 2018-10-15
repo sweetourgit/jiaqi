@@ -177,119 +177,7 @@
     <!-- 库存 -->
  <div v-if="isCollapse==true">
 
-      <div class="button-list" >
-        <!-- <template v-if="this.forbidden == true">
-          <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>         
-        </template>
-        <template v-else>
-          <el-button :id="'kk' + index" class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)" disabled>{{data.button}}</el-button>          
-        </template> -->
-
-          <el-button :id="'kk' + index" :disabled="buttonList[index].forbidden"  class="property" plain v-for="(data, index) in buttonList" :key=data.id   @click="begin(data, index)">{{data.button}}</el-button>         
-        
-        <span class="astrict">属性最多选择三种</span>
-        <!-- 这里的选择属性的数量是根据产品的类型判断的,不同的产品类型它的可选择的数据数量是不同的 -->
-        <!-- 可以给产品一个数值类型的字段,然后把这个值拿到,传到判断的位置,根据那个值来进行判断 -->
-      </div>
-      <!-- 其实这个表格遍历数据的时候是有问题的,因为目前没有数据,每次遍历的都是addtable里面的数据,每次点击库存都会添加一条,这个地方应该是点击库存的时候传一个id按照这个id遍历数据 -->
-      <el-table
-        v-for="data in addtable"
-        :key=data.id
-        :data="data.allprice"
-        border
-        style="width: 1340px;margin:0 auto;"
-        :header-cell-style="getRowClass"
-       >
-        <el-table-column
-          prop="property"
-          label="属性"
-          width="230"
-          align="center"
-          
-          >
-        </el-table-column>
-        <el-table-column
-          prop="price"
-          label="值"
-          align="center"
-         >
-         
-        <template slot-scope="scope" prop="ll">
-              <template v-if="scope.row.ll == ''">
-                <el-button @click="skuadd()" type="primary" v-show="addsku" size="mini" style="float:left">生成sku</el-button>
-              </template>         
-           <template  slot-scope="scope" v-else>           
-              <div v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  :key="data.id" v-show="aa" style="float:left">
-                <template v-if="addtable[addtable.length-1].allprice[scope.$index].id == 2">
-                  <el-select style="width:130px;margin-rigth:10px" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price" clearable placeholder="请选择">
-                    <el-option
-                      v-for="item in Day"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </template>
-                 <template v-else-if="addtable[addtable.length-1].allprice[scope.$index].id == 3">
-                  <el-select style="width:130px;margin-rigth:10px" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price" clearable placeholder="请选择">
-                    <el-option
-                      v-for="item in NightNum"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </template>
-                <template v-else-if="addtable[addtable.length-1].allprice[scope.$index].id == 5">
-                   <el-select style="width:130px;margin-rigth:10px" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price" clearable placeholder="请选择">
-                    <el-option
-                      v-for="item in Accommodation"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </template>
-                <template v-else>
-                  <el-input style="width:100px;" v-model="addtable[addtable.length-1].allprice[scope.$index].value[index].price"  type="text" clearable></el-input>
-                </template>
-                  <el-button  style="margin-right:10px;" size="mini" type="danger" @click="shanchu(index,scope.$index)">删除</el-button>                  
-                
-                 <!-- v-model="addtable[scope.$index].price[index].value" -->
-                 <!-- v-model="addtable[addtable.length-1].allpricep[scope.$index].value" -->
-              </div>
-              <!-- 点击属性按钮的时候,点击选中,再次点击取消选中,在选中的状态下,将其他没选中的按钮禁用 -->
-                <el-button :id="'vv'+scope.$index+index" :disabled="data.forbidden" plain v-show="bb" v-for="(data,index) in addtable[addtable.length-1].allprice[scope.$index].value"  
-                :key="data.id" style="float:left;margin-right:10px;"  type="primary"
-                @click="choice(data,index,addtable[addtable.length-1].allprice[scope.$index],scope.$index)"
-                >
-                  {{addtable[addtable.length-1].allprice[scope.$index].value[index].price}}
-                </el-button>
-            </template>
-        </template>
-         
-         <!-- 生成sku的按钮 -->
-        
-        </el-table-column>
-        <el-table-column label="操作"
-          width="300"
-          align="center">
-
-        <template slot-scope="scope" prop="ll">
-          <template v-if="scope.row.ll == ''">
-            <el-button v-show="qq" @click="gain()" size="mini" type="primary">确认属性值</el-button>
-             <!--重新设置属性  -->
-            <el-button v-show="again" type="danger" @click="back" size="mini">重新设置属性</el-button>           
-          </template>
-          <template v-else>
-            <el-button v-show="pp" @click="addInput(scope.row,scope.$index)" size="mini" type="primary" >添加值</el-button>
-            <el-button v-show="close"  size="mini" type="primary"  disabled>添加值</el-button>            
-                        
-          </template>
-        </template>
-
-        </el-table-column>
-      </el-table>
+   
 
       <!-- sku -->
 
@@ -539,9 +427,18 @@ import Stock from './component/Stock'
       // 生成sku按钮
         addsku:false,
       // sku列表
-        skuList:false,
+        skuList:true,
       // 显示sku的数组
-        ccc:[],
+        ccc:[{
+          id:"1",
+          ddd:"沈阳",
+        },{
+          id:"2",
+          ddd:"大连",
+        },{
+          id:"3",
+          ddd:"哈尔滨",
+        }],
       // sku的id
         skuid : 0,
       // 属相按钮的禁用
@@ -549,11 +446,11 @@ import Stock from './component/Stock'
       // 禁用时,未被禁用的按钮的key值数组
         arr:[],
       // 添加增值(整个大块)
-        accretion:false,
+        accretion:true,
       // 添加增值(弹框)
         accretionBall:false,
       // 增值服务(表格)
-        accretionTable:false,
+        accretionTable:true,
       // 增值表单
       ruleForm:{
         name:'',
@@ -561,7 +458,9 @@ import Stock from './component/Stock'
         explain:'',
       },
       // 增值服务数组
-      Addprice:[],
+      Addprice:[
+
+      ],
       // 增值服务的id
       AddpriceId:0,
       // 增值服务的验证
