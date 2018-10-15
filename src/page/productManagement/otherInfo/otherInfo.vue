@@ -5,13 +5,14 @@
     </div>
     <div class="cost_button">
       <el-button type="primary" @click="getUEContent()">添加说明</el-button>
+      <el-button type="primary" @click="getSaveContent()">获取值</el-button>
     </div>
-    <div class="cost_bg">
+    <div class="cost_bg" v-for="(domain, index) in copy.domains">
       <div class="cost_title">
         <span>名称：</span><el-input  placeholder="请输入内容" style="width: 750px;"></el-input>
       </div>
       <div class="cost_content" style="background: #FFFFFF">
-        <vue-editor v-model="content"></vue-editor>
+        <vue-editor v-model="copy.domains[index].content"></vue-editor>
       </div>
     </div>
 
@@ -20,14 +21,15 @@
         费用说明
       </div>
       <div class="cost_button">
-        <el-button type="primary" @click="getUEContent()">添加说明</el-button>
+        <el-button type="primary" @click="getUEContent1()">添加说明</el-button>
+        <el-button type="primary" @click="getSaveContent1()">获取值</el-button>
       </div>
-      <div class="cost_bg">
+      <div class="cost_bg" v-for="(domain, index) in copy1.domains">
         <div class="cost_title">
           <span>名称：</span><el-input  placeholder="请输入内容" style="width: 750px;"></el-input>
         </div>
         <div class="cost_content" style="background: #FFFFFF">
-          <vue-editor v-model="content1"></vue-editor>
+          <vue-editor v-model="copy1.domains[index].content"></vue-editor>
         </div>
       </div>
     </div>
@@ -45,10 +47,46 @@
     },
     data() {
       return {
+        copy :{
+          domains: [{
+            content: '<h1>Some initial content</h1>'
+          }]
+        },
+        copy1 :{
+          domains: [{
+            content: '<h1>hello Beautiful</h1>'
+          }]
+        },
         content: '<h1>Some initial content</h1>',
         content1: '<h1>Some initial content111</h1>'
       }
     },
+    methods:{
+      getUEContent(){
+        this.copy.domains.push({
+          value: '请点击添加',
+          key: Date.now()
+        });
+        console.log(this.copy)
+      },
+      getSaveContent(){
+        for (var i=0;i<this.copy.domains.length;i++){
+          alert(this.copy.domains[i].content)
+        }
+      },
+      getUEContent1(){
+        this.copy1.domains.push({
+          value: '请点击添加',
+          key: Date.now()
+        });
+        console.log(this.copy1)
+      },
+      getSaveContent1(){
+        for (var i=0;i<this.copy1.domains.length;i++){
+          alert(this.copy1.domains[i].content)
+        }
+      }
+    }
 
   };
 </script>
