@@ -5,7 +5,7 @@
     </div>
     <div class="cost_button">
       <el-button type="primary" @click="getUEContent()">添加说明</el-button>
-      <el-button type="primary" @click="getSaveContent()">获取值</el-button>
+     <!-- <el-button type="primary" @click="getSaveContent()">获取值</el-button>-->
     </div>
 
     <div class="cost_bg"  v-for="(domain, index) in copy.domains"
