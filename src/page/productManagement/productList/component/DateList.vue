@@ -159,13 +159,16 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
+            item.name = '一'
             this.n.push(item);
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        console.log(del);
-        alert(1);
+        let name = this.n.filter(item =>  item.name !== '一')
+        this.n = name
+        // console.log(del);
+        // alert(1);
       }
       let ischecked = this.days
         .filter(item => item.day.getDay() === 1)
@@ -182,12 +185,14 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
+            item.name = '二'
             this.n.push(item);
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        console.log(del);
+        let name = this.n.filter(item =>  item.name !== '二')
+        this.n = name
       }
     },
     wed() {
@@ -200,12 +205,14 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
+            item.name = '三'
             this.n.push(item);
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        console.log(del);
+        let name = this.n.filter(item =>  item.name !== '三')
+        this.n = name
       }
     },
     tur() {
@@ -218,12 +225,14 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
+            item.name = '四'
             this.n.push(item);
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        console.log(del);
+        let name = this.n.filter(item =>  item.name !== '四')
+        this.n = name
       }
     },
     fri() {
@@ -236,12 +245,14 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
+            item.name = '五'
             this.n.push(item);
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        console.log(del);
+        let name = this.n.filter(item =>  item.name !== '五')
+        this.n = name
       }
     },
     sat() {
@@ -254,12 +265,14 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
+            item.name = '六'
             this.n.push(item);
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        console.log(del);
+        let name = this.n.filter(item =>  item.name !== '六')
+        this.n = name
       }
     },
     sun() {
@@ -272,12 +285,14 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
+            item.name = '日'
             this.n.push(item);
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        console.log(del);
+        let name = this.n.filter(item =>  item.name !== '日')
+        this.n = name
       }
     }
   },
