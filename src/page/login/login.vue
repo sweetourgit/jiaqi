@@ -24,7 +24,7 @@
 
         <el-form-item prop="user" class="user-input">
           <!-- <div><img src="../../../static/login/user.png" class="img" style="width:35px;"></div> -->
-          <el-input  v-model="ruleForm.user" placeholder="手机号/邮箱" @keyup.enter.native="loginForm('ruleForm')"></el-input>
+          <el-input  v-model="ruleForm.user"  placeholder="手机号/邮箱" @keyup.enter.native="loginForm('ruleForm')"></el-input>
         </el-form-item>
         <el-form-item prop="password" class="password-input">
           <el-input type="password"  v-model="ruleForm.password" placeholder="密码" @keyup.enter.native="loginForm('ruleForm')"></el-input>
@@ -130,20 +130,14 @@
         </div>
         <el-button type="text" class="form-forget" @click="login" >立刻登录</el-button>
 
-        <div   >
-
+        <div>
           <el-form-item prop="newpassword" class="input-with-newpassword">
             <el-input type="password" placeholder="请输入新密码" v-model="passwordruleForm.newpassword"  ></el-input>
           </el-form-item>
           <el-form-item prop="repassword" class="input-with-repassword">
             <el-input type="password" placeholder="请再次输入密码" v-model="passwordruleForm.repassword"  >
-
-
-
             </el-input>
           </el-form-item>
-
-
         </div>
         <el-form-item class="newbuttom">
           <el-button type="primary" class="next-button-email" @click="newSubmitForm('passwordruleForm')" >下一步</el-button>
@@ -395,6 +389,7 @@
         this.$refs['ruleForm'].validate(valid => {
           if(valid){
             this.pop1=false
+           
             this.$http.post(this.GLOBAL.serverSrc+'/code/api/check ',this.qs.stringify({
               "key": localStorage.getItem('code'),
               "code": this.ruleForm.verification
@@ -406,14 +401,30 @@
                 }).then(res => {
                   if(res.data == ''){
                     this.$message.error('账号或密码错误');
+                    console.log("出错了")
+                    this.ruleForm.password = "";
+                    this.ruleForm.verification = "";
+                     
+                      this.$http.post(this.GLOBAL.serverSrc+'/code/api/getguid',{
+
+                      }).then(res => {
+                        localStorage.setItem("code",res.data)
+                        this.bbb()
+                      }).catch(err => {
+
+                      })
+                    
+                          console.log(localStorage.getItem('token'));
+                    
                   } else {
                     store.save('token',res.data)
+                    // console.log(token);
                     this.$http.post(this.GLOBAL.serverSrc+'/org/api/userinfo',{
-
                     },{
                       headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token'),
                       }
+                      
                     }).then(res => {
                       sessionStorage.setItem('id',res.data.id)
                       store.save('name',res.data.name)
