@@ -30,7 +30,7 @@
           <el-input type="password"  v-model="ruleForm.password" placeholder="密码" @keyup.enter.native="loginForm('ruleForm')"></el-input>
         </el-form-item>
 
-
+<!-- 
         <div class="verify-box">
           <el-form-item class="verification-input">
             <el-input id="er"  v-model="ruleForm.verification" placeholder="验证码" @focus="aaa()" @keyup.enter.native="loginForm('ruleForm')"></el-input>
@@ -42,7 +42,7 @@
           <template v-if="yz">
             <img :src="yz1" alt="" class="verify-img" @click="aaa('show')">
           </template>
-        </div>
+        </div> -->
         <!-- 验证码 -->
 
 
@@ -204,7 +204,7 @@
         ruleForm: {
           user: '',
           password: '',
-          verification: '',
+          // verification: '',
 
 
 
@@ -390,11 +390,15 @@
           if(valid){
             this.pop1=false
            
-            this.$http.post(this.GLOBAL.serverSrc+'/code/api/check ',this.qs.stringify({
-              "key": localStorage.getItem('code'),
-              "code": this.ruleForm.verification
-            })).then(res => {
-              if(res.data){
+            // 把这些注释解开验证码就可以重新用
+
+            // this.$http.post(this.GLOBAL.serverSrc+'/code/api/check ',this.qs.stringify({
+            //   "key": localStorage.getItem('code'),
+            //   // "code": this.ruleForm.verification
+            // })).then(res => {
+
+              // if(res.data){
+
                 axios.post('http://192.168.1.168:6014/user/api/login',{
                   'userName': this.ruleForm.user,
                   'passWord': this.ruleForm.password,
@@ -405,14 +409,14 @@
                     this.ruleForm.password = "";
                     this.ruleForm.verification = "";
                      
-                      this.$http.post(this.GLOBAL.serverSrc+'/code/api/getguid',{
+                      // this.$http.post(this.GLOBAL.serverSrc+'/code/api/getguid',{
 
-                      }).then(res => {
-                        localStorage.setItem("code",res.data)
-                        this.bbb()
-                      }).catch(err => {
+                      // }).then(res => {
+                      //   localStorage.setItem("code",res.data)
+                      //   this.bbb()
+                      // }).catch(err => {
 
-                      })
+                      // })
                     
                           console.log(localStorage.getItem('token'));
                     
@@ -438,111 +442,25 @@
                 }).catch(err => {
 
                 })
-              } else {
-                document.getElementById("er").style ='border-color: #f56c6c;'
-                setTimeout(() => {
-                  this.pop=true;
-                },90)
-                this.aaa('show');
-              }
-            }).catch(err => {
-                document.getElementById("er").style ='border-color: #f56c6c;'
-                setTimeout(() => {
-                  this.pop=true;
-                },90)
-                this.aaa('show');
-            })
 
+              //这两段代码千万别删除 
 
+              // } else {
+              //   document.getElementById("er").style ='border-color: #f56c6c;'
+              //   setTimeout(() => {
+              //     this.pop=true;
+              //   },90)
+              //   this.aaa('show');
+              // }
 
-
-
-          //   axios.post('http://192.168.1.168:6014/user/api/login',{
-          //     'userName': this.ruleForm.user,
-          //     'passWord': this.ruleForm.password,
-          // })
-          // .then(res=>{
-          //   if(res.data == ''){
-          //     this.$message.error('账号或密码错误');
-          //     if(this.ruleForm.verification == ''){
-          //       document.getElementById("er").style ='border-color: #f56c6c;'
-          //       setTimeout(() => {
-          //         this.pop1=true;
-          //       },90)
-          //    }
-          //   } else {
-          //     this.$http.post(this.GLOBAL.serverSrc+'/code/api/check ',this.qs.stringify({
-          //       "key": localStorage.getItem('code'),
-          //       "code": this.ruleForm.verification
-          //     })).then(res => {
-          //       if(res.data){
-          //         store.save('token',res.data)
-          //         this.$router.push('/userList')
-          //         this.$message.success('登录成功');
-          //         localStorage.removeItem("code",res.data)
-          //       } else {
-          //         this.$message.error('验证码错误');
-          //         document.getElementById("er").style ='border-color: #f56c6c;'
-          //         setTimeout(() => {
-          //           this.pop=true;
-          //         },90)
-          //         this.aaa('show');
-          //       }
-          //     }).catch(err => {
-          //       console.log(err)
-          //     })
-          //   }
-            
-
-
-            // console.log(res)
-            // this.$http.post(this.GLOBAL.serverSrc+'/org/login/api/check',this.qs.stringify({
-            //   "key": localStorage.getItem('code'),
-            //   "code": this.ruleForm.verification
-            // })).then(res => {
-            //   if(res.data){
-            //     // console.log(res.data)
-            //     this.$http.post(this.GLOBAL.serverSrc+'/org/api/login',{
-            //       "userCode": this.ruleForm.user,
-            //       "passWord": this.ruleForm.password,
-            //     }).then(res => {
-            //       store.save('userId',res.data.id)
-            //       store.save('name',res.data.name)
-            //       if(res.data== false ){
-            //         this.$message.error('用户名或密码错误');
-            //         this.aaa('show');
-            //       }else{
-            //         document.getElementById("er").style ='border-color: green;'
-
-            //         this.$router.push('/userList')
-            //         this.$message.success('登录成功');
-            //         localStorage.removeItem("code",res.data)
-            //       }
-            //     }).catch(err => {
-            //       this.$message.error('登录失败');
-            //     })
-            //   } else {
-            //     // this.$message.error('验证码错误');
+            // }).catch(err => {
             //     document.getElementById("er").style ='border-color: #f56c6c;'
             //     setTimeout(() => {
             //       this.pop=true;
             //     },90)
-
-            //   this.aaa('show');
-            //   }
-            // }).catch(err => {
+            //     this.aaa('show');
             // })
 
-
-
-
-
-            
-
-          // })
-          // .catch(error =>{
-          //   this.$message.error('登录失败');
-          // })
           } else {
             if(this.ruleForm.verification == ''){
                 document.getElementById("er").style ='border-color: #f56c6c;'
@@ -551,29 +469,12 @@
                   this.pop1=true;
 
                 },90)
-                // this.aaa()
+ 
             }
             
 
           }
         })
-
-
-
-
-
-
-
-        
-        // this.$refs[formName].validate((valid) => {
-        //   if (valid) {
-        //     this.$message.error('登录失败');
-
-        //   } else {
-        //     this.$message.success('登录成功');
-        //     return false;
-        //   }
-        // });
         
       },
 
