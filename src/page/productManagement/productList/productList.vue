@@ -207,7 +207,7 @@
       </el-table-column>
 
       <el-table-column
-        prop="name"
+      
         align="center"
         label="清位时间">
          <template slot-scope="scope">
@@ -220,11 +220,11 @@
         </template>
       </el-table-column>
         <el-table-column
-        prop="name"
+       
         align="center"
         label="出行模板">
         <template slot-scope="scope">
-          <el-select v-model="value" placeholder="请选择">
+          <el-select v-model="ccc[scope.$index].value" placeholder="请选择">
             <el-option
               v-for="item in type"
               :key="item.value"
@@ -320,7 +320,12 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-                <el-button size="mini" type="primary">上线</el-button>                
+              <template v-if="Addprice[scope.$index].type == false">
+                <el-button size="mini" type="primary" @click="addOnline(scope.$index)">上线</el-button>                                
+              </template>
+              <template v-else>
+                <el-button size="mini" type="primary" @click="addOffline(scope.$index)">下线</el-button>                                                
+              </template>
                 <el-button size="mini" type="primary">价格</el-button>
                 <el-button size="mini" type="primary">修改</el-button>
                 <el-button size="mini" type="danger" @click="delPrice(scope.$index)">删除</el-button>
@@ -432,12 +437,18 @@ import Stock from './component/Stock'
         ccc:[{
           id:"1",
           ddd:"沈阳",
+          type:false,
+          // value:"1",
         },{
           id:"2",
           ddd:"大连",
+          type:false,
+          // value:"2",         
         },{
           id:"3",
           ddd:"哈尔滨",
+          type:false,
+          // value:"3",          
         }],
       // sku的id
         skuid : 0,
@@ -1080,6 +1091,7 @@ import Stock from './component/Stock'
             name:this.ruleForm.name,
             priceSelect:this.ruleForm.priceSelect,
             explain:this.ruleForm.explain,
+            type:false,
           })
           this.accretionTable = true;
           console.log(this.Addprice);
@@ -1102,22 +1114,26 @@ import Stock from './component/Stock'
     delPrice(b){
       this.Addprice.splice(b,1);
     },
-    // 上线
+    // sku上线
     online(index){
       console.log(index);
       console.log(this.ccc[index]);
-      this.Online = false;
-      this.Offline = true;
       this.ccc[index].type = true;
     },
-    // 下线
+    // sku下线
     offline(index){
       console.log(2);
       console.log(this.ccc[index]);      
-      this.Offline = false;
-      this.Online = true;
       this.ccc[index].type = false;
-      }
+    },
+    // 增值服务上线
+    addOnline(index){
+      this.Addprice[index].type = true;
+    },
+    // 增值服务下线
+    addOffline(index){
+      this.Addprice[index].type = false;
+    }
     }
   }
 </script>
