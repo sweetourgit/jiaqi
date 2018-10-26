@@ -88,7 +88,7 @@
       <div slot="footer" class="operation">
         <el-button class="btn_foot" @click="editDepartment = false">取 消</el-button>
         <el-button class="btn_foot" type="primary" @click="updataEditSave(updata)">保存</el-button>
-        <el-button class="btn_foot" type="danger" @click="remove = false">删除</el-button>
+        <el-button class="btn_foot" type="danger" @click="deleted = false">删除</el-button>
       </div>
     </el-dialog>
     <!-- 添加子部门弹框 -->
@@ -239,7 +239,8 @@ export default {
         name: [{ required: true, message: "请输入部门名称", trigger: "blur" }],
         radio: [{ required: true, message: "请选择虚拟部门", trigger: "blur" }],
         lastStage: [{ required: true, trigger: "blur" }],
-        departmentCode: [{ required: true, message: "请输入部门编码", trigger: "blur" }],
+        departmentCode: [{ required: true, message: "请输入部门编码", trigger: "blur" },
+                        { pattern: /^[0-9]{0,30}$/, message: '请输入数字' }],
         sort: [{ required: true, message: "请输入排序方式", trigger: "blur" }],
         phone: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
         fax: [{ required: true, message: "请输入传真号", trigger: "blur" }],
@@ -418,6 +419,7 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
+      //子部门列表
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
         object: {
           parentID: id
