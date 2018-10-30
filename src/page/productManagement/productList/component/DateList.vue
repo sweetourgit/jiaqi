@@ -51,7 +51,7 @@
 
             <!--如果是本月  还需要判断是不是这一天-->
             <div v-else>
-          <!--今天  同年同月同日-->
+          <!--今天  同年同月同日-->     
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
                 <div class='person' v-show="dayobject.data.person.price">
@@ -81,8 +81,8 @@
           </el-form-item>
           <el-form-item label="库存类型:" prop="resource">
               <el-radio-group v-model="Rform.resource" @change="xuanze">
-                <el-radio label="共享" value="0"></el-radio>
-                <el-radio label="非公享" value="1"></el-radio>
+                <el-radio :disabled="forbidden" label="共享" value="0" ></el-radio>
+                <el-radio  label="非公享" value="1" ></el-radio>
               </el-radio-group>
           </el-form-item>
           <!-- 共享库存 -->
@@ -108,7 +108,7 @@
         <div  slot="header" class="clearfix">
           {{item.name}}
         <div style="float:right;margin-top: -3px;">
-          <el-button style="" type="primary" size="mini" @click="">保存</el-button>
+          <el-button type="primary" size="mini" @click="">保存</el-button>
           
           <el-button @click="delect(index)"  type="danger" size="mini">删除</el-button>
           <template v-if="arr[index].quota == false">
@@ -222,6 +222,8 @@ export default {
       repertorySelect:"",
       // 右侧的选择表格
       rightTable:false,
+      // 多日期共享禁用
+      forbidden:false,
       days: [],
       arr:[],
       leftobj: [
@@ -238,6 +240,7 @@ export default {
       typeNum:'',
       // 卡片隐藏
       aaa:false,
+      radio:'',
       // sku选择
       ccc:[{
           id:"1",
@@ -308,15 +311,29 @@ export default {
         mon.forEach(item => {
           if (this.n.includes(item)) {
             return;
+            
           } else {
             item.name = '一'
             this.n.push(item);
+            if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
         let name = this.n.filter(item =>  item.name !== '一')
-        this.n = name
+        this.n = name;
+        console.log("清除");
+        if(this.n.length ==0){
+              this.rightTable = false;
+      }
         // console.log(del);
         // alert(1);
       }
@@ -337,12 +354,24 @@ export default {
           } else {
             item.name = '二'
             this.n.push(item);
+            if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
         let name = this.n.filter(item =>  item.name !== '二')
-        this.n = name
+        this.n = name;
+        if(this.n.length ==0){
+              this.rightTable = false;
+      }
       }
     },
     wed() {
@@ -357,12 +386,24 @@ export default {
           } else {
             item.name = '三'
             this.n.push(item);
+            if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
         let name = this.n.filter(item =>  item.name !== '三')
-        this.n = name
+        this.n = name;
+          if(this.n.length ==0){
+              this.rightTable = false;
+      }
       }
     },
     tur() {
@@ -377,12 +418,24 @@ export default {
           } else {
             item.name = '四'
             this.n.push(item);
+            if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
         let name = this.n.filter(item =>  item.name !== '四')
-        this.n = name
+        this.n = name;
+          if(this.n.length ==0){
+              this.rightTable = false;
+      }
       }
     },
     fri() {
@@ -397,12 +450,24 @@ export default {
           } else {
             item.name = '五'
             this.n.push(item);
+            if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
         let name = this.n.filter(item =>  item.name !== '五')
-        this.n = name
+        this.n = name;
+          if(this.n.length ==0){
+              this.rightTable = false;
+      }
       }
     },
     sat() {
@@ -417,12 +482,24 @@ export default {
           } else {
             item.name = '六'
             this.n.push(item);
+            if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
         let name = this.n.filter(item =>  item.name !== '六')
-        this.n = name
+        this.n = name;
+          if(this.n.length ==0){
+              this.rightTable = false;
+      }
       }
     },
     sun() {
@@ -437,12 +514,24 @@ export default {
           } else {
             item.name = '日'
             this.n.push(item);
+            if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
         let name = this.n.filter(item =>  item.name !== '日')
-        this.n = name
+        this.n = name;
+          if(this.n.length ==0){
+              this.rightTable = false;
+          }
       }
     }
   },
@@ -488,6 +577,15 @@ export default {
           return;
         } else {
           this.n.push(item);
+          if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
         }
       });
     },
@@ -505,6 +603,16 @@ export default {
           return;
         } else {
           this.n.push(item);
+          console.log("添加成功")
+          if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
         }
       });
     },
@@ -519,6 +627,15 @@ export default {
           return;
         } else {
           this.n.push(item);
+          if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
         }
       });
     },
@@ -531,7 +648,11 @@ export default {
       this.sun = false;
       this.wed = false;
       this.sat = false;
+      if(this.n.length ==0){
+        this.rightTable = false;
+      }
     },
+    // 点击日期的时候
     handleitemclick(day) {
       console.log(day);
       
@@ -545,13 +666,31 @@ export default {
           if (this.n.includes(day)) {
             this.n = this.n.filter(v => v != day);
             console.log("删除日期");
-            this.rightTable = false;
+            if(this.n.length ==0){
+              this.rightTable = false;
+            }
+            // 当选中的日期为一天的时候可以选择"共享"
+            if(this.n.length <2){
+              this.forbidden = false;
+              this.Rform.resource = "";
+              this.repertorySelect = "";
+            }
+            console.log(this.n.length)
           } else {
             console.log("添加日期");
             this.n.push(day);
             console.log(this.n);
-            console.log(this.n[this.n.length-1])
-            this.rightTable = true;
+            // console.log(this.n[this.n.length-1])
+            console.log(this.n.length);
+            if(this.n.length !=0){
+              this.rightTable = true;
+            }
+            // 当选中的日期大于一天的时候默认为"非公享"
+            if(this.n.length >1){
+              this.forbidden = true;
+              this.Rform.resource = "非公享";
+              this.repertorySelect = "sum";
+            }
           }
         }
       } else {
@@ -606,7 +745,8 @@ export default {
     initData: function(cur) {
       var leftcount = 0; //存放剩余数量
       var date;
-      var index = 0; //控制显示预定的天数 ，比如下面设置只能预定三天的
+      var index = 0;
+      //控制显示预定的天数 ，比如下面设置只能预定三天的
       //this.initleftcount(); 每次初始化更新数量
       //有两种方案  一种是每次翻页 ajax获取数据初始化   http请求过多会导致资源浪费
       // 一种是每次请求 ajax获取数据初始化    数据更新过慢会导致缺少实时性
@@ -707,24 +847,24 @@ export default {
     },
     // 选择库存类型
     xuanze(a){
-      if(a == "共享"){
-        console.log("哈哈哈");
-        // this.share = true;
-        // this.amount = false;
-        this.repertorySelect = "share";
-      }else if(a == "非公享"){
-        console.log("呜呜呜");
-        this.repertorySelect = "sum";
-
-        // this.amount = true;
-        // this.share = false;
+      console.log(a);
+      if(a != ''){
+          if(a == "共享"){          
+          console.log("哈哈哈");
+          this.repertorySelect = "share";
+        }else if(a == "非公享"){
+          console.log("呜呜呜");
+          this.repertorySelect = "sum";
+        }
+      }else{
+        alert("hhh?")
       }
+      
+   
     },
     // 添加报名类型
     AddType(type){
       this.aaa = true;
-      console.log(this.n);
-      
       this.arr.push({
         id:this.typeSelect[type].value,
         name:this.typeSelect[type].label,
@@ -733,8 +873,7 @@ export default {
         // 同业价
         traderPrice:'',
         quota:false,
-        quotaPrice:'',
-        
+        quotaPrice:'',        
       })
       console.log(this.arr);
       for(var ok=0;ok<this.n.length;ok++){
