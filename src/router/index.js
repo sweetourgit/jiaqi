@@ -15,6 +15,7 @@ import scenicList from '@/page/contentInfo/scenicList/scenicList'
 import labelList from '@/page/contentInfo/labelList/labelList'
 import materialList from '@/page/contentInfo/materialList/materialList'
 import hotelList from '@/page/contentInfo/hotelList/hotelList'
+import supplierInfo from '@/page/contentInfo/supplierInfo/supplierInfo'
 import productList from '@/page/productManagement/productList/productList'
 import baseInfo from '@/page/productManagement/listInfo/listInfo'
 import travelTemplate from '@/page/productManagement/travelTemplate/travelTemplate'
@@ -134,6 +135,13 @@ export default new Router({
       path: '/hotelList',
       component: hotelList,
       name: '酒店列表',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    }, {
+      path: '/supplierInfo',
+      component: supplierInfo,
+      name: '供应商信息',
       meta: {
         keepAlive: true,
         auth:true}

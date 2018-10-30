@@ -85,7 +85,11 @@
                 {
                   value: '酒店列表',
                   router:'/hotelList'
-                } 
+                },
+                {
+                  value: '供应商信息',
+                  router:'/supplierInfo'
+                }
               ]
             },
             {
