@@ -33,7 +33,7 @@
       <div class="address-big">
             <div class="address-img" v-for="img in marterialist" :key="img.name" >
                 <div class="marterialist-img" @click="addAlbumImg1(img.name)" >
-                    <img style="width:100%;height:100%" :src="marterialist[img.name].smallImg[0].imgs" alt="">
+                    <img style="width:100%;height:100%" :src="img.smallImg[0].imgs" alt="">
                 </div>
                 <!-- 图片介绍 -->
                 <div class="introduce">
@@ -94,14 +94,13 @@
 
 <!-- 2.添加照片的弹窗 -->
 <el-dialog title="添加照片" :visible.sync="addAlbumImg" custom-class="city_list" style="margin-top:-100px"  append-to-body width="1600px"  class="clearfix form_left">
-  <el-form :model="form"  ref="form">
-  </el-form>
+  
   <div class="add-address-img">
     <div class="left-img">
       <!-- 第一张图片 -->
       <div class="first-img">
         <img style="width:100%;height:100%;"   :src="this.addressImg"    alt="">
-            <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>   
+            <!-- <span class="small_img_close" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>    -->
         
       </div>
       <!-- 其余图片  -->
@@ -177,7 +176,7 @@
   <el-form :model="form"  ref="form">
   </el-form>
   <div class="add-address-img">
-    <div class="left-img">
+    
       <el-button type="primary" style="margin-right:900px">添加素材</el-button>
       <div class="upload">
           <el-upload
@@ -190,17 +189,20 @@
             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
       </div>
-      <div class="material-small-box" >
-        <div v-for="img in marterialist" :key="img.name" ></div>
-        <div class="material-small-img"  v-for="small in num"  :key="num.name"
+      
+        <div class="material-small-box" >
+        <!-- <div v-for="img in marterialist" :key="img.name" ></div> -->
+        <div class="material-small-img"  v-for="(small,index) in num"  :key="small.name"
             @click="select(small.name,small.imgs,small.title)" >
-           <!-- <span  style="position:relative;margin-left:285px;top:20px" @click="img_close"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>   -->
+           <span  style="position:relative;margin-left:285px;top:20px" @click="img_close(index)"><i style="width:20px;cursor:pointer" class="el-icon-error"></i></span>  
             <img  :class="{'classa': small.name == classa}" style="width:100%;height:100%;" :src="small.imgs" :key="num.name"  alt="">    
         </div>      
       </div>  
-    </div>
+    
+      
+    
      <div class="right-form">    
-       <div class="material-message">
+       <div class="material-message1">
           <div class="album-title">
             <div class="blue-box"></div>
             <div class="album-text">素材信息</div>
@@ -211,12 +213,20 @@
                 <el-input v-model="this.album" placeholder="请输入素材名称"></el-input>
                 </el-form-item>
             </el-form>
-            <div style="width:200px;height:100px;margin-left:50px;">
-              <div style="margin-top:10px;text-align:left">尺寸 : 1024*720</div>
-              <div style="margin-top:10px;text-align:left">大小 : 14M</div>
-              <div style="margin-top:10px;text-align:left">标签:
+            <div style="width:300px;margin-left:50px;">
+              <div style="margin-top:10px;">尺寸 : 1024*720</div>
+              <div style="margin-top:10px;">大小 : 14M</div>
+              <div style="margin-top:10px;;">标签:
                 <!-- 添加标签 -->
-                <el-button size="mini" @click="label">编辑</el-button>
+                <template v-if='this.selectLabel.type.length == 0'>
+                  <el-button size="mini" @click="label" >编辑</el-button>
+                </template>
+                <template v-else>
+                    <el-button size="mini" @click="label" style="margin-top:5px" v-for="(item,index) in selectLabel.type" :key="index" >{{item}}</el-button>
+
+                </template>
+                
+                <!-- v-for="item in selectLabel.type" -->
               </div>
             </div>
              <div class="album-button">
@@ -226,6 +236,7 @@
         </div>
        </div>
     </div>
+    
   </div>
 </el-dialog>
 <!-- 4.添加标签的弹窗 -->
@@ -240,11 +251,13 @@
            <el-button size="mini" @click="NewLabel(list.key)" type="primary" icon="el-icon-plus" style="float:right;margin-top:6px">添加</el-button>
         </div>
         <div class="select-label">
+            <el-checkbox-group v-model="selectLabel.type">
           <el-checkbox  class="label-check" :label="item.title" :v-model="item.checked" v-for="item in list.LabelIn" :key="item.key"></el-checkbox>        
+            </el-checkbox-group>
         </div>
          <div class="material-button">
               <el-button  style="width:100px;" @click="LabelCancel">取消</el-button>
-              <el-button type="primary" style="width:100px;">添加 </el-button>
+              <el-button type="primary" style="width:100px;" @click="Addlabel">确定</el-button>
         </div>
       </div>  
     </el-tab-pane>
@@ -316,7 +329,6 @@
         marterialist:[{
           name:'0',
           title:'黄金海滩',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
           smallImg:[{
           name:'0',
           title:'思考',
@@ -353,7 +365,6 @@
         },{
           name:'1',
           title:'巴厘岛',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
           smallImg:[{
           name:'0',
           title:'玄冰',
@@ -370,7 +381,6 @@
        },{
           name:'2',
           title:'澎湖湾',
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
           smallImg:[{
           name:'0',
           title:'冰洞',
@@ -422,7 +432,7 @@
        }],
         // 相册里面的第一个图片
         addressImg:[{
-          img:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg',
+
         }],
         // 相册里面的其他图片
         
@@ -626,6 +636,11 @@
           materialForm: {
             name:'',
           },
+        // 被选中的标签
+        checkLabel:[], 
+        selectLabel:{
+          type:[],
+        },
         formLabelWidth: '100px',
         rules:{
               name: [
@@ -681,6 +696,7 @@
         // alert(this.num);
         // this.addAlbumImg = false;     
         this.addMaterial = true;
+        console.log(this.selectLabel.type)
         
       },
       // 添加标签
@@ -688,9 +704,15 @@
         // this.addMaterial = false;
         this.addLabel = true;
         // alert(123);
+        console.log(this.selectLabel);
       },
      // 删除相册图片
-     img_close(){
+     img_close(aa){
+       console.log(aa);
+      //  console.log(this.num[aa]);
+      
+          
+       
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -700,12 +722,17 @@
             type: 'success',
             message: '删除成功!'
           });
+          this.num.splice(aa,1);   
+          this.addressImg = this.num[0].imgs; 
+          this.album = '';
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
           });          
         });
+                
+        
       },
       // 城市树形框架数据
        loadNode1(node, resolve) {
@@ -728,6 +755,10 @@
       // 选择相册其他照片
      select(a,b,c,d){
        this.classa = a;
+
+       console.log(b);
+      
+       console.log(this.addAlbumImg)
        this.addressImg = b;
        this.album = c;
       //  this.img.smallImg.length = d;
@@ -743,39 +774,58 @@
      },
     //  点击封面进入相册
      addAlbumImg1(i){
+       console.log(this.marterialist[i]);
           this.addAlbumImg = true;
           this.num = this.marterialist[i].smallImg;
-          this.select(this.marterialist[i].smallImg[0].name,this.marterialist[i].smallImg[0].imgs); 
+          console.log(this.num[0].imgs);
+         this.addressImg = this.num[0].imgs;
+
+          // this.select(this.marterialist[i].smallImg[0].name,this.marterialist[i].smallImg[0].imgs); 
           this.bb = i;
+       console.log(this.bb);
+
           this.title = this.marterialist[i].title;
           this.album = this.marterialist[i].smallImg[0].title;
           },
     // 添加标签
     NewLabel(i){
+      console.log(i);
       var text = this.labelAdd.trim();
       if(text){
         this.Label[i].LabelIn.push({title:text});
+        // this.selectLabel.type.push({text});
+        console.log(this.checkLabel);
         this.labelAdd = '';
        }
+
       },
     // 取消添加标签
     LabelCancel(a){
         this.addLabel = false;
-        this.$refs[a].jj.resetFields();
+        // this.$refs[a].jj.resetFields();
 
       },
 
     // 删除相册
     del(){
+
+      console.log(this.marterialist[this.bb])
+      console.log(this.bb);
+      console.log(this.marterialist);
        this.$confirm('此操作将永久删除该相册, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           this.$message({
+            
             type: 'success',
             message: '删除成功!'
           });
+        this.marterialist.splice(this.bb,1);
+        
+        console.log(this.marterialist);
+
             this.addAlbumImg = false;
           
         }).catch(() => {
@@ -786,9 +836,17 @@
         });
         
       },
+    // 添加所有标签
+    Addlabel(){
+      console.log("添加成功");
+      console.log(this.selectLabel.type);
+     
+      this.addLabel = false;
+    },
     // 取消素材选择
     albumCancal(){
       this.classa = '';
+      this.album = '';
     },
     // 添加素材到相册
     albumAdd(){
@@ -864,28 +922,21 @@
     /* line-height: 35px; */
 }
 .left-tree{
-    /* position: relative; */
-      float: left;
+     float: left;
       margin-top: 10px;
       width: 400px;
       height: 695px;
       border:1px solid #fff;
       box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;
-      margin-top:1.2%;
       margin-left: 5px;
 }
 .address-big{
-    /* position: absolute; */
-    /* float: right; */
-     /* margin-top:-1060px;
-     margin-left:350px; */
-    margin-top: 15px;
-    /* margin-left:10px; */
+  margin-top: 10px;
     float: left;
-    width: 1200px;
+    width: 74%;
 
     /* margin-left:96px; */
-    // border:1px solid pink; 
+    /* // border:1px solid pink;  */
 }
 .address-img{
     position: relative;
@@ -900,15 +951,15 @@
     
     margin-bottom:42px;
     /* width:585px; */
-    // height:450px;
-    // border:1px solid purple; 
+    /* // height:450px;
+    // border:1px solid purple;  */
 }
 .marterialist-img{
     width:368px;
     height:252px;
     cursor:pointer;
-    /* height:400px; */
-    // border:1px solid red; 
+    /* height:400px;
+    // border:1px solid red;  */
     
 }
 .introduce{
@@ -916,7 +967,7 @@
     width:120px;
     height:30px;
     margin-top:16px;
-    //  border:1px solid green; 
+    /* //  border:1px solid green;  */
 }
 .label{
     float:left;
@@ -1016,12 +1067,12 @@
   /* border:1px solid red; */
 }
 .material-small-box{
-  /* position:absolute; */
-  
-  margin-top:50px;
+    float: left;
+   margin-top:50px;
   width:1000px;
   height:500px;
- /* border:1px solid red; */
+  
+  /* // border:1px solid red;  */
   overflow-x:auto;
   
  
@@ -1033,14 +1084,15 @@
   width:300px;
   height:200px;
   margin-right:17px;
-  /* border: solid blue; */
+  /* //  border: solid blue;  */
 }
 .right-form{
-  /* position: absolute; */
+  /* //  position: absolute;  */
   float:right;
   width:380px;
-  height:800px;
-  /* border:1px solid purple; */
+  /* height:800px; */
+  /* margin-top:-200px; */
+   /* border:1px solid purple;   */
 }
 .album-message{
   width:380px;
@@ -1052,6 +1104,13 @@
   /* margin-top:20px; */
   width:380px;
   height:350px;
+  border:1px solid #E6E6E6;
+}
+.material-message1{
+  /* margin-top:20px; */
+  width:380px;
+ 
+  margin-top:-250px;
   border:1px solid #E6E6E6;
 }
 .album-title{
@@ -1082,7 +1141,7 @@
 }
 .album-form{
   width:300px;
-  height:200px;
+  /* height:200px; */
   /* border:1px solid red; */
   margin-top:60px;
   margin-left:20px;
@@ -1091,6 +1150,7 @@
   width:250px;
   height:50px;
   margin-left:65px;
+  margin-top:10px;
   /* margin: 0 auto; */
   /* border:1px solid red; */
 }
@@ -1123,7 +1183,7 @@
 .label-name{
   width:370px;
   height:40px;
-  //  border: 1px solid yellow; 
+  /* //  border: 1px solid yellow;  */
   margin:33px 0px;
   /* margin-top:33px; */
 }
