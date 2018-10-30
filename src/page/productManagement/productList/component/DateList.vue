@@ -4,7 +4,7 @@
       <div style="font-size:20px">Sku</div>
         <el-button class="selectSku" plain v-for="item in ccc" :key="item.id">{{item.ddd}}</el-button>
       <div style="font-size:20px;margin-top:20px">附加增值服务</div>
-      <el-button class="selectSku" plain v-for="item in Addprice" >{{item.name}}</el-button>
+      <el-button class="selectSku" plain v-for="item in Addprice" :key="item.id">{{item.name}}</el-button>
 
       
     </div>
