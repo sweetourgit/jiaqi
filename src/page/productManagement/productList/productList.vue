@@ -245,7 +245,7 @@
             <template v-else>
             <el-button size="mini" type="primary"  @click="offline(scope.$index)">下线</el-button>              
             </template>
-            <el-button size="mini" type="primary">价格</el-button>
+            <el-button size="mini" type="primary" @click="hahahah('aa')">价格</el-button>
             <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
@@ -327,7 +327,9 @@
                 <el-button size="mini" type="primary" @click="addOffline(scope.$index)">下线</el-button>                                                
               </template>
                 <el-button size="mini" type="primary">价格</el-button>
-                <el-button size="mini" type="primary">修改</el-button>
+                <template v-if="Addprice[scope.$index].type == false">
+                  <el-button size="mini" type="primary">修改</el-button>
+                </template>
                 <el-button size="mini" type="danger" @click="delPrice(scope.$index)">删除</el-button>
             </template>
           </el-table-column>
@@ -340,10 +342,8 @@
       <DateList/>
       <stock></stock>
     </div>
-
     </el-dialog>
   </div>
-
 </template>
 
 <script>
@@ -352,7 +352,8 @@ import Stock from './component/Stock'
   export default {
     components:{
       DateList,
-      Stock
+      Stock,
+      
     },
      data() {
       return {
@@ -436,17 +437,17 @@ import Stock from './component/Stock'
       // 显示sku的数组
         ccc:[{
           id:"1",
-          ddd:"沈阳",
+          ddd:"普吉岛情侣",
           type:false,
           // value:"1",
         },{
           id:"2",
-          ddd:"大连",
+          ddd:"普吉岛亲子",
           type:false,
           // value:"2",         
         },{
           id:"3",
-          ddd:"哈尔滨",
+          ddd:"哈尔滨3天自由行",
           type:false,
           // value:"3",          
         }],
@@ -469,9 +470,19 @@ import Stock from './component/Stock'
         explain:'',
       },
       // 增值服务数组
-      Addprice:[
-
-      ],
+      Addprice:[{
+           id:1,
+            name:"保险",
+            priceSelect:"非日历价格",
+            explain:"保护安全",
+            type:false,
+      },{
+           id:2,
+            name:"小费",
+            priceSelect:"日历价格",
+            explain:"给小费鼓励一下吧",
+            type:false,
+      }],
       // 增值服务的id
       AddpriceId:0,
       // 增值服务的验证
@@ -1087,7 +1098,7 @@ import Stock from './component/Stock'
           this.accretionBall = false;
           this.AddpriceId++;
           this.Addprice.push({
-            id:this.AddpriceId,
+            id:this.Addprice.length+1,
             name:this.ruleForm.name,
             priceSelect:this.ruleForm.priceSelect,
             explain:this.ruleForm.explain,
