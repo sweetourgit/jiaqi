@@ -340,7 +340,6 @@
     <!-- 价格 -->
     <div v-else>
       <DateList/>
-      <stock></stock>
     </div>
     </el-dialog>
   </div>
@@ -348,11 +347,11 @@
 
 <script>
 import DateList from './component/DateList'
-import Stock from './component/Stock'
+
   export default {
     components:{
       DateList,
-      Stock,
+      
       
     },
      data() {
