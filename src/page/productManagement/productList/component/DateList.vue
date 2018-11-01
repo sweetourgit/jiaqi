@@ -2,9 +2,9 @@
   <div>
     <div class="leftSku" >
       <div style="font-size:20px">Sku</div>
-        <el-button class="selectSku" plain v-for="item in ccc" :key="item.id">{{item.ddd}}</el-button>
+        <el-button class="selectSku" plain v-for="(data,index) in ccc" :key="index">{{data.ddd}}</el-button>
       <div style="font-size:20px;margin-top:20px">附加增值服务</div>
-      <el-button class="selectSku" plain v-for="item in Addprice" :key="item.id">{{item.name}}</el-button>
+      <el-button class="selectSku" plain v-for="(item,index) in Addprice" :key="item.id">{{item.name}}</el-button>
 
       
     </div>
@@ -43,7 +43,7 @@
     <!-- 日期 -->
     <ul class="days">
         <!-- v-for循环 每一次循环用<li>标签创建一天 -->
-        <li  :class="{'checked': n.includes(dayobject)}" @click="handleitemclick(dayobject)" :key="index" v-for="(dayobject,index) in days" >
+        <li style="border:1px green solid"  :class="{'checked': n.includes(dayobject)}" @click="handleitemclick(dayobject)" :key="index" v-for="(dayobject,index) in days" >
             <!--本月-->
             <!--如果不是本月  改变类名加灰色-->
 
@@ -54,13 +54,15 @@
           <!--今天  同年同月同日-->     
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
-                <div class='person' v-show="dayobject.data.person.price">
+                
+                <!--  -->
+                <div class='person' v-show="dayobject.data.person.price">  
                   <p class='old'>成人</p>
-                  <p>结算价：{{dayobject.data.person.price}}</p>
-                  <p>售出/余位：0/{{dayobject.data.person.number}}</p>
+                  <p>销售价：{{dayobject.data.person.price}}</p>
+                  <p>同业价：{{dayobject.data.person.price}}</p>
+                  <!-- <p>已售/库存：0/{{dayobject.data.person.number}}</p> -->
                   <p>上下限:{{dayobject.data.person.top}}/{{dayobject.data.person.down}}</p>
-                </div>
-             
+                </div>  
             </div>
             <!--显示剩余多少数量-->
             <!---->
@@ -108,7 +110,7 @@
         <div  slot="header" class="clearfix">
           {{item.name}}
         <div style="float:right;margin-top: -3px;">
-          <el-button type="primary" size="mini" @click="">保存</el-button>
+          <el-button type="primary" size="mini" @click="addQuota(index)">保存</el-button>
           
           <el-button @click="delect(index)"  type="danger" size="mini">删除</el-button>
           <template v-if="arr[index].quota == false">
@@ -212,6 +214,8 @@ export default {
       n: [],
       // 配额
       quota:false,
+      // 共享或非公享第一次选择
+      share:false,
       // 日期信息
       // DayMessage:[], 
       currentDay: 1,
@@ -242,18 +246,16 @@ export default {
       aaa:false,
       radio:'',
       // sku选择
-      ccc:[{
-          id:"1",
+      ccc:[{         
           ddd:"普吉岛情侣",
           type:false,
           // value:"1",
-        },{
-          id:"2",
+        },{     
           ddd:"普吉岛亲子",
           type:false,
           // value:"2",         
         },{
-          id:"3",
+
           ddd:"哈尔滨3天自由行",
           type:false,
           // value:"3",          
@@ -261,13 +263,13 @@ export default {
 
       // 附加增值服务
       Addprice:[{
-           id:1,
+ 
             name:"保险",
             priceSelect:"非日历价格",
             explain:"保护安全",
             type:false,
       },{
-           id:2,
+ 
             name:"小费",
             priceSelect:"日历价格",
             explain:"给小费鼓励一下吧",
@@ -551,17 +553,24 @@ export default {
       });
        this.clearchecked();
     },
-    addQuota() {
+    // 保存之后
+    addQuota(index) {
+      console.log(this.arr);
+      // salePrice traderPrice quotaPrice
       this.n.forEach(item => {
         item.data.person = {
-          price: this.form.price,
-          number: this.form.number,
-          top: this.form.top,
-          down: this.form.down
+          // 销售价
+          salePrice: this.arr[index].salePrice,
+          // 同业价
+          traderPrice: this.arr[index].traderPrice,
+          // 配额
+          quotaPrice: this.arr[index].quotaPrice
         };
       });
+      console.log(this.n);
       this.clearchecked();
     },
+    // 点击日期
     handleTwoClick() {
       const now = new Date().getTime();
       const today = new Date().getDate();
@@ -847,17 +856,61 @@ export default {
     },
     // 选择库存类型
     xuanze(a){
-      console.log(a);
-      if(a != ''){
-          if(a == "共享"){          
+      // 第一次点击的时候
+      if(this.share == false){
+        if(a == "共享" ){          
           console.log("哈哈哈");
           this.repertorySelect = "share";
-        }else if(a == "非公享"){
+          
+        }else if(a == "非公享" ){
           console.log("呜呜呜");
           this.repertorySelect = "sum";
+          
         }
+        this.share = true;
       }else{
-        alert("hhh?")
+      // 再次点击的时候的判断
+        if(a == "共享" ){          
+          console.log("哈哈哈");
+          
+          this.$confirm('当前类型数据将重置，是否更改?', '更改库存类型', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '更改成功!'
+          });
+          this.repertorySelect = "share";
+          this.Rform.shareRepertory = '';
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消更改'
+          });          
+        });
+        }else if(a == "非公享" ){
+          console.log("呜呜呜");       
+          this.$confirm('当前类型数据将重置，是否更改?', '更改库存类型', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+         
+          this.$message({
+            type: 'success',
+            message: '更改成功!'
+          });
+          this.repertorySelect = "sum";
+          this.Rform.sumRepertory = '';
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消更改'
+          });   
+        });
+        }
       }
       
    
@@ -914,19 +967,23 @@ export default {
 .person {
   margin-top: 10px;
   /* background: #f6f6f6;  */
+  border:1px solid red;
 }
 .person p {
   color: #2c3e50;
   font-size: 12px;
   line-height: 20px;
 }
-.person .old {
-  border-bottom: 1px solid #e6e6e6;
-  color: #3096fb;
+.person .old { 
+  border-bottom: 1px solid #3096fb;
+  color: #e6e6e6;
   height: 24px;
+  background:#3096fb;
+
 }
 .days li {
-  height: 200px;
+  min-height: 150px;
+  min-weight: 120px;
   text-align: left !important;
   padding: 5px;
   color: #666666;
@@ -1080,9 +1137,11 @@ body {
   background: #e1e1e1;
 }
 .leftSku{
+  position: absolute;
+
   width:300px;
   height:500px;
-  float:left;
+  /* float:left; */
   margin-top:40px;
   margin-left:40px;
   /* border:1px solid red; */
