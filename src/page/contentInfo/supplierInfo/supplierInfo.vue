@@ -75,7 +75,7 @@
       </el-form>
       <span slot="footer">
         <el-button @click="add_contactCancel('addContact')">取 消</el-button>
-        <el-button type="primary" @click="centerDialogVisible = false">保 存</el-button>
+        <el-button type="primary" @click="centerDialogVisible('addContact')">保 存</el-button>
       </span>
     </el-dialog>
     <!-- 银行账列表弹框 -->
@@ -109,7 +109,7 @@
       </el-form>
       <span slot="footer">
         <el-button @click="addBankAccountCancel('addBankAccount')">取 消</el-button>
-        <el-button type="primary" @click="centerDialogVisible = false">保 存</el-button>
+        <el-button type="primary" @click="centerDialogVisible('addBankAccount')">保 存</el-button>
       </span>
     </el-dialog>
     <!-- 供应商信息添加弹框 -->
@@ -180,9 +180,7 @@
         <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture" accept=".jpg,.png,.gif,.txt,.doc,.hlp,.wps,.html,.pdf">
           <el-button plain>添加</el-button>
         </el-upload>
-
       </div>
-
     </el-dialog>
   </div>
 </template>
@@ -255,10 +253,10 @@ export default {
                 { pattern: /^1(3|4|5|7|8)\d{9}$/,message:'请输入11位正确的手机号码' }],
         area: [{ required: true, message: '不能为空', trigger: 'blur' }],
         productDirection: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        state: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        type: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        dueTime: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        clearingForm: [{ required: true, message: '不能为空', trigger: 'blur' }]
+        state: [{ required: true, message: '不能为空', trigger: 'change' }],
+        type: [{ required: true, message: '不能为空', trigger: 'change' }],
+        dueTime: [{ required: true, message: '不能为空', trigger: 'change' }],
+        clearingForm: [{ required: true, message: '不能为空', trigger: 'change' }]
       },
       // 表格数据
       tableData: [{
@@ -370,13 +368,35 @@ export default {
     centerDialogVisible(addSupplierInfo){
       this.$refs[addSupplierInfo].validate((valid) => {
         if (valid) {
-          this.$message.success("添加成功");
+          this.$message.success("保存成功");
           this.add_supplierInfo= false;
         } else {
           return false;
         }
       });
     },
+    // 银行账号信息添加
+    centerDialogVisible(addBankAccount){
+      this.$refs[addBankAccount].validate((valid) => {
+        if (valid) {
+          this.$message.success("保存成功");
+          this.add_bankAccount= false;
+        } else {
+          return false;
+        }
+      });
+    },
+    // 联系人信息添加
+    centerDialogVisible(addContact){
+       this.$refs[addContact].validate((valid) => {
+        if (valid) {
+          this.$message.success("保存成功");
+          this.add_contact= false;
+        } else {
+          return false;
+        }
+      });
+    }
   }
 }
 </script>
