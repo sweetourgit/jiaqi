@@ -170,7 +170,7 @@
       </div>
     </el-dialog>
     <!-- 附件弹框 -->
-    <el-dialog title="银行账号信息" :visible.sync="attachment" width="660px" custom-class="city_list" :show-close='false'>
+    <el-dialog title="附件" :visible.sync="attachment" width="660px" custom-class="city_list" :show-close='false'>
       <el-button plain class="close" @click="attachment_close">关闭</el-button>
       <div style="text-align:left;margin-left:20px;">
         <div class="attachment_btn">
