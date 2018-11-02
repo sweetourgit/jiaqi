@@ -56,12 +56,13 @@
                 <span v-else>{{ dayobject.day.getDate() }}</span>
                 
                 <!--  -->
-                <div class='person' v-show="dayobject.data.person.price">  
-                  <p class='old'>成人</p>
-                  <p>销售价：{{dayobject.data.person.price}}</p>
-                  <p>同业价：{{dayobject.data.person.price}}</p>
+                <div class='person' v-for="(data,index) in dayobject.data.person" :key="index">  
+                    <!-- v-show="dayobject.data.person.price" -->
+                  <p class='old'>{{dayobject.data.person[index].name}}</p>
+                  <p>销售价：{{dayobject.data.person[index].salePrice}}</p>
+                  <p>同业价：{{dayobject.data.person[index].traderPrice}}</p>
                   <!-- <p>已售/库存：0/{{dayobject.data.person.number}}</p> -->
-                  <p>上下限:{{dayobject.data.person.top}}/{{dayobject.data.person.down}}</p>
+                  <!-- <p>上下限:{{dayobject.data.person.top}}/{{dayobject.data.person.down}}</p> -->
                 </div>  
             </div>
             <!--显示剩余多少数量-->
@@ -107,23 +108,21 @@
         <el-card class="box-card"  v-for="(item,index) in arr" :key="item.key">
           <!-- v-for="card in n[0].AddType"  -->
           <!-- v-if='n[0]!=Addtype'  -->
+          
         <div  slot="header" class="clearfix">
           {{item.name}}
-        <div style="float:right;margin-top: -3px;">
-          <el-button type="primary" size="mini" @click="addQuota(index)">保存</el-button>
-          
-          <el-button @click="delect(index)"  type="danger" size="mini">删除</el-button>
-          <template v-if="arr[index].quota == false">
-            <el-button @click="AddQuota(index)"  type="primary" size="mini">添加配额</el-button>
-          </template>
-          <template v-else>
-            <el-button @click="DelectQuota(index)"  type="primary" size="mini">删除配额</el-button>            
-          </template>
-          
-        </div>
-         
-        </div>
-   
+          <div style="float:right;margin-top: -3px;">
+            <el-button type="primary" size="mini" @click="addQuota(index,item.name)">保存</el-button>
+            
+            <el-button @click="delect(index)"  type="danger" size="mini">删除</el-button>
+            <template v-if="arr[index].quota == false">
+              <el-button @click="AddQuota(index)"  type="primary" size="mini">添加配额</el-button>
+            </template>
+            <template v-else>
+              <el-button @click="DelectQuota(index)"  type="primary" size="mini">删除配额</el-button>            
+            </template>          
+          </div>     
+        </div> 
         <div>
           <el-form ref="form"  label-width="80px">
             <el-form-item label="销售价">
@@ -135,12 +134,7 @@
             <el-form-item label="配额" v-if="arr[index].quota == true">
               <el-input :maxlength='6' v-model="item.quotaPrice"></el-input>
             </el-form-item>
-              <!-- <el-form-item label="购买下限">
-              <el-input :maxlength='6' v-model="form.down"></el-input>
-            </el-form-item>
-              <el-form-item label="购买上限">
-              <el-input :maxlength='6' v-model="form.top"></el-input>
-            </el-form-item> -->
+             
           </el-form>
         </div>
       </el-card>
@@ -230,6 +224,8 @@ export default {
       forbidden:false,
       days: [],
       arr:[],
+      // 添加库存
+      Addrepertory:[],
       leftobj: [
         //存放剩余数量
         { count: 1 },
@@ -551,24 +547,30 @@ export default {
           number: this.form2.number,
         };
       });
-       this.clearchecked();
+      //  this.clearchecked();
     },
     // 保存之后
-    addQuota(index) {
+    addQuota(index,name) {
+      console.log(name);
       console.log(this.arr);
       // salePrice traderPrice quotaPrice
       this.n.forEach(item => {
-        item.data.person = {
+        // 添加库存
+        this.Addrepertory.push({
+          name:name,
           // 销售价
           salePrice: this.arr[index].salePrice,
           // 同业价
           traderPrice: this.arr[index].traderPrice,
           // 配额
           quotaPrice: this.arr[index].quotaPrice
-        };
+        })
+        console.log(this.Addrepertory);
+        // item.data.person = this.Addrepertory;
       });
       console.log(this.n);
-      this.clearchecked();
+      // this.clearchecked();
+      this.arr.splice(index,1);
     },
     // 点击日期
     handleTwoClick() {
@@ -663,8 +665,8 @@ export default {
     },
     // 点击日期的时候
     handleitemclick(day) {
-      console.log(day);
-      
+      console.log(day.data.person);
+
       if (day.day.getMonth() + 1 === this.currentMonth) {
         if (day.day.getTime() < this.today.getTime() - 24 * 60 * 60 * 1000) {
           this.$message({
@@ -688,9 +690,9 @@ export default {
           } else {
             console.log("添加日期");
             this.n.push(day);
-            console.log(this.n);
+            // console.log(this.n);
             // console.log(this.n[this.n.length-1])
-            console.log(this.n.length);
+            // console.log(this.n.length);
             if(this.n.length !=0){
               this.rightTable = true;
             }
@@ -929,10 +931,10 @@ export default {
         quotaPrice:'',        
       })
       console.log(this.arr);
-      for(var ok=0;ok<this.n.length;ok++){
-        this.n[ok]["AddType"] = this.arr;
+      // for(var ok=0;ok<this.n.length;ok++){
+      //   this.n[ok]["AddType"] = this.arr;
         
-      }
+      // }
       // this.n["AddType"]=[];
     //  this.n[0]["AddType"] = {[this.typeSelect[type].value]:this.typeSelect[type].label,[this.typeSelect[type].value]:this.typeSelect[type].label,[this.typeSelect[type].value]:this.typeSelect[type].label}
 
@@ -965,6 +967,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .person {
+  width:100px;
   margin-top: 10px;
   /* background: #f6f6f6;  */
   border:1px solid red;
