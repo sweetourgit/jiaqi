@@ -169,7 +169,7 @@
       </div>
     </div>
     </div>
-    <el-dialog  :visible.sync="merchandise"  append-to-body width="80%">
+    <el-dialog class="merchandise" :visible.sync="merchandise"  append-to-body width="80%">
      <el-radio-group v-model="isCollapse" style="width:100%">
       <el-radio-button  class="group" :label="true">库存</el-radio-button>
       <el-radio-button :label="false">价格</el-radio-button>
@@ -213,8 +213,8 @@
          <template slot-scope="scope">
            <span style="margin-right:5px">前</span>
           <el-input style="width:40px"></el-input><span style="margin-left:10px">天</span>
-          <el-input style="width:40px"></el-input><span style="margin-left:10px">时</span>
-          <el-input style="width:40px"></el-input><span style="margin-left:10px">分</span>
+          <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">时</span> -->
+          <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">分</span> -->
             
             
         </template>
@@ -246,21 +246,20 @@
             <el-button size="mini" type="primary"  @click="offline(scope.$index)">下线</el-button>              
             </template>
             <el-button size="mini" type="primary" @click="hahahah('aa')">价格</el-button>
-            <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button>
+            <!-- <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 增值服务 -->
-    <div v-show="accretion">
-      <!-- style="width: 1340px;margin:30px auto;" -->
+    <!-- <div v-show="accretion">
         <div style="width:90%;margin-left:60px;margin-top:60px;">
           <span style="font-size:25px;color:#333">增值服务</span><br/>
           <span style="color:#dcdcdc">附加增值服务说明：不可单独购买，只能跟主产品库存一起购买的需要额外付费的项目或资源，包含但不限于夜间服务费、接送区域外附加费、儿童座椅、酒店升级、行李额服务、代办签证费、小费、司导服务费、加急费等等</span><br/>
           <el-button type="primary" size="medium"  @click="appreciation()">添加增值</el-button>
-        </div>
+        </div> -->
           <!-- 添加增值的弹窗 -->
-          <el-dialog title="增值信息" :visible.sync="accretionBall" append-to-body width="30%" custom-class="city_list">
+          <!-- <el-dialog title="增值信息" :visible.sync="accretionBall" append-to-body width="30%" custom-class="city_list">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm"  >
                 <el-form-item label="名称 :" prop="name" style="margin-left:35px" >
                    <el-input v-model="ruleForm.name" auto-complete="off" style="width:60%;" ></el-input>
@@ -279,10 +278,10 @@
                   <el-button size="mediun" type="primary" @click="save('ruleForm')">保存</el-button>
                 </el-form-item>
             </el-form>
-          </el-dialog>
+          </el-dialog> -->
 
         <!-- 增值服务列表 -->
-          <el-table 
+          <!-- <el-table 
             v-show="accretionTable"
             :data="Addprice"
             border
@@ -334,7 +333,7 @@
             </template>
           </el-table-column>
         </el-table>
-    </div>
+    </div> -->
       
     </div>
     <!-- 价格 -->
@@ -1239,5 +1238,8 @@ import DateList from './component/DateList'
 .astrict{
   color:#ff4b3d;
   margin-left:30px;
+}
+.merchandise>>>.el-dialog{
+  overflow:hidden !important;
 }
 </style>
