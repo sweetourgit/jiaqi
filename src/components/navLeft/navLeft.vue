@@ -103,7 +103,15 @@
                 {
                   value: '出行模板',
                   router:'/travelTemplate'
-                }
+                },
+                {
+                  value: '团期计划',
+                  router:'/regimentPlan'
+                },
+                {
+                  value: '共享库存',
+                  router:'/sharedInventory'
+                },
               ]
             }
         ],

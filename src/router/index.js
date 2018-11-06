@@ -19,6 +19,8 @@ import supplierInfo from '@/page/contentInfo/supplierInfo/supplierInfo'
 import productList from '@/page/productManagement/productList/productList'
 import baseInfo from '@/page/productManagement/listInfo/listInfo'
 import travelTemplate from '@/page/productManagement/travelTemplate/travelTemplate'
+import regimentPlan from '@/page/productManagement/regimentPlan/regimentPlan'
+import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 
 
 Vue.use(Router);
@@ -163,6 +165,20 @@ export default new Router({
       path: '/travelTemplate',
       component: travelTemplate,
       name: '出行模板',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    }, {
+      path: '/regimentPlan',
+      component: regimentPlan,
+      name: '团期计划',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    }, {
+      path: '/sharedInventory',
+      component: sharedInventory,
+      name: '共享库存',
       meta: {
         keepAlive: true,
         auth:true}
