@@ -23,7 +23,37 @@ import '@/style/main.css'
 Vue.prototype.GLOBAL = global
 Vue.config.productionTip = false
 
-import '!style-loader!css-loader!less-loader!./style/libs/iconfont/iconfont.css'
+// import '!style-loader!css-loader!less-loader!./style/libs/iconfont/iconfont.css'
+//http request 请求拦截器
+axios.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('token')
+    if(token) {  // 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token
+      config.headers['Authorization'] = 'Bearer ' + token;
+    }
+    return config;
+  },
+  err => {
+    return Promise.reject(err);
+ });
+ // http response 拦截器,接口请求失败，重新登录
+axios.interceptors.response.use(
+  response => {
+      return response;
+  },
+  error => {
+      switch (error.response.status) {
+             case 401:
+              // 返回 401 清除token信息并跳转到登录页面
+              localStorage.removeItem('token');
+              router.replace({
+                 path: 'login',
+                 query: {redirect: router.currentRoute.fullPath}
+         })
+      }
+      return Promise.reject(error.response)   // 返回接口返回的错误信息
+  });
+
 
 /* eslint-disable no-new */
 var vm = new Vue({
