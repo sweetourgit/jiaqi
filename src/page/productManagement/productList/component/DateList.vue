@@ -5,8 +5,6 @@
         <el-button class="selectSku" plain v-for="(data,index) in ccc" :key="index">{{data.ddd}}</el-button>
       <div style="font-size:20px;margin-top:20px">附加增值服务</div>
       <el-button class="selectSku" plain v-for="(item,index) in Addprice" :key="item.id">{{item.name}}</el-button>
-
-      
     </div>
     <div id="calendar" >
     
@@ -69,23 +67,46 @@
             <!---->
         </li>
     </ul>
-    <!-- 右侧的表单 -->
+    
+
+  <!-- <el-card class="box-card2" v-show="n.length">
+  <div style="text-align: left;" slot="header" class="clearfix">
+    单价房
+    
+    <el-button style="float:right" type="danger" size="mini">删除</el-button>
+    <el-button @click="handleChildrenSave" style="float:right;margin-right:5px" type="primary" size="mini">保存</el-button>
+  </div>
+  <div>
+    <el-form ref="form" :model="form2" label-width="80px">
+      <el-form-item label="结算价">
+        <el-input v-model.number="form2.price"></el-input>
+      </el-form-item>
+      <el-form-item label="剩余量">
+        <el-input v-model="form2.number"></el-input>
+      </el-form-item>
+      
+    </el-form>
+  </div>
+</el-card> -->
+</div>
+
+<!-- 右侧的表单 -->
     <div class="rightForm" v-show="rightTable">
       <!-- 表单 -->
       <el-form :model="Rform">
           <el-form-item label="报名类型:">
-              <el-select v-model="Rform.region" placeholder="请选择" style="width:150px" @change="AddType">
+              <el-select v-model="Rform.region" placeholder="请选择" style="width:150px">
                 <el-option v-for="item in typeSelect" 
                 :label="item.label"
                 :value="item.value"
                 :key="item.value"></el-option>
               </el-select>
-            <el-button size="mini" type="primary" >添加</el-button>
+            <el-button size="mini" type="primary" @click="AddType">添加</el-button>
           </el-form-item>
           <el-form-item label="库存类型:" prop="resource">
               <el-radio-group v-model="Rform.resource" @change="xuanze">
-                <el-radio :disabled="forbidden" label="共享" value="0" ></el-radio>
-                <el-radio  label="非公享" value="1" ></el-radio>
+                <el-radio :disabled="forbidden" label="0">共享</el-radio>
+                <el-radio  label="1">非共享</el-radio>
               </el-radio-group>
           </el-form-item>
           <!-- 共享库存 -->
@@ -141,27 +162,6 @@
       </template>
         
     </div>
-
-  <!-- <el-card class="box-card2" v-show="n.length">
-  <div style="text-align: left;" slot="header" class="clearfix">
-    单价房
-    
-    <el-button style="float:right" type="danger" size="mini">删除</el-button>
-    <el-button @click="handleChildrenSave" style="float:right;margin-right:5px" type="primary" size="mini">保存</el-button>
-  </div>
-  <div>
-    <el-form ref="form" :model="form2" label-width="80px">
-      <el-form-item label="结算价">
-        <el-input v-model.number="form2.price"></el-input>
-      </el-form-item>
-      <el-form-item label="剩余量">
-        <el-input v-model="form2.number"></el-input>
-      </el-form-item>
-      
-    </el-form>
-  </div>
-</el-card> -->
-</div>
   </div>
   
 </template>
@@ -223,7 +223,34 @@ export default {
       // 多日期共享禁用
       forbidden:false,
       days: [],
-      arr:[],
+      arr:[{
+        id:0,
+        name:'成人',
+        // 销售价
+        salePrice:'',
+        // 同业价
+        traderPrice:'',
+        quota:false,
+        quotaPrice:'',        
+      },{
+        id:1,
+        name:'儿童',
+        // 销售价
+        salePrice:'',
+        // 同业价
+        traderPrice:'',
+        quota:false,
+        quotaPrice:'',        
+      },{
+        id:5,
+        name:'单房差',
+        // 销售价
+        salePrice:'',
+        // 同业价
+        traderPrice:'',
+        quota:false,
+        quotaPrice:'',        
+      }],
       // 添加库存
       Addrepertory:[],
       leftobj: [
@@ -311,7 +338,7 @@ export default {
             return;
             
           } else {
-            item.name = '一'
+            item.name = 1
             this.n.push(item);
             if(this.n.length !=0){
               this.rightTable = true;
@@ -319,21 +346,24 @@ export default {
             // 当选中的日期大于一天的时候默认为"非公享"
             if(this.n.length >1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        let name = this.n.filter(item =>  item.name !== '一')
+        let name = this.n.filter(item =>  item.name !== 1)
         this.n = name;
-        console.log("清除");
         if(this.n.length ==0){
-              this.rightTable = false;
-      }
-        // console.log(del);
-        // alert(1);
+          this.rightTable = false;
+        }
+        // 当选中的日期为一天的时候可以选择"共享"
+        if(this.n.length < 2){
+          this.forbidden = false;
+          this.Rform.resource = "";
+          this.repertorySelect = "";
+        }
       }
       let ischecked = this.days
         .filter(item => item.day.getDay() === 1)
@@ -350,7 +380,7 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
-            item.name = '二'
+            item.name = 2
             this.n.push(item);
             if(this.n.length !=0){
               this.rightTable = true;
@@ -358,18 +388,24 @@ export default {
             // 当选中的日期大于一天的时候默认为"非公享"
             if(this.n.length >1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        let name = this.n.filter(item =>  item.name !== '二')
+        let name = this.n.filter(item =>  item.name !== 2)
         this.n = name;
         if(this.n.length ==0){
-              this.rightTable = false;
-      }
+          this.rightTable = false;
+        }
+        // 当选中的日期为一天的时候可以选择"共享"
+        if(this.n.length < 2){
+          this.forbidden = false;
+          this.Rform.resource = "";
+          this.repertorySelect = "";
+        }
       }
     },
     wed() {
@@ -382,7 +418,7 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
-            item.name = '三'
+            item.name = 3
             this.n.push(item);
             if(this.n.length !=0){
               this.rightTable = true;
@@ -390,18 +426,24 @@ export default {
             // 当选中的日期大于一天的时候默认为"非公享"
             if(this.n.length >1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        let name = this.n.filter(item =>  item.name !== '三')
+        let name = this.n.filter(item =>  item.name !== 3)
         this.n = name;
-          if(this.n.length ==0){
-              this.rightTable = false;
-      }
+        if(this.n.length ==0){
+          this.rightTable = false;
+        }
+        // 当选中的日期为一天的时候可以选择"共享"
+        if(this.n.length < 2){
+          this.forbidden = false;
+          this.Rform.resource = "";
+          this.repertorySelect = "";
+        }
       }
     },
     tur() {
@@ -414,7 +456,7 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
-            item.name = '四'
+            item.name = 4
             this.n.push(item);
             if(this.n.length !=0){
               this.rightTable = true;
@@ -422,18 +464,24 @@ export default {
             // 当选中的日期大于一天的时候默认为"非公享"
             if(this.n.length >1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        let name = this.n.filter(item =>  item.name !== '四')
+        let name = this.n.filter(item =>  item.name !== 4)
         this.n = name;
-          if(this.n.length ==0){
-              this.rightTable = false;
-      }
+        if(this.n.length ==0){
+          this.rightTable = false;
+        }
+        // 当选中的日期为一天的时候可以选择"共享"
+        if(this.n.length < 2){
+          this.forbidden = false;
+          this.Rform.resource = "";
+          this.repertorySelect = "";
+        }
       }
     },
     fri() {
@@ -446,7 +494,7 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
-            item.name = '五'
+            item.name = 5
             this.n.push(item);
             if(this.n.length !=0){
               this.rightTable = true;
@@ -454,18 +502,24 @@ export default {
             // 当选中的日期大于一天的时候默认为"非公享"
             if(this.n.length >1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        let name = this.n.filter(item =>  item.name !== '五')
+        let name = this.n.filter(item =>  item.name !== 5)
         this.n = name;
-          if(this.n.length ==0){
-              this.rightTable = false;
-      }
+        if(this.n.length ==0){
+          this.rightTable = false;
+        }
+        // 当选中的日期为一天的时候可以选择"共享"
+        if(this.n.length < 2){
+          this.forbidden = false;
+          this.Rform.resource = "";
+          this.repertorySelect = "";
+        }
       }
     },
     sat() {
@@ -478,7 +532,7 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
-            item.name = '六'
+            item.name = 6
             this.n.push(item);
             if(this.n.length !=0){
               this.rightTable = true;
@@ -486,18 +540,24 @@ export default {
             // 当选中的日期大于一天的时候默认为"非公享"
             if(this.n.length >1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        let name = this.n.filter(item =>  item.name !== '六')
+        let name = this.n.filter(item =>  item.name !== 6)
         this.n = name;
-          if(this.n.length ==0){
-              this.rightTable = false;
-      }
+        if(this.n.length ==0){
+          this.rightTable = false;
+        }
+        // 当选中的日期为一天的时候可以选择"共享"
+        if(this.n.length < 2){
+          this.forbidden = false;
+          this.Rform.resource = "";
+          this.repertorySelect = "";
+        }
       }
     },
     sun() {
@@ -510,7 +570,7 @@ export default {
           if (this.n.includes(item)) {
             return;
           } else {
-            item.name = '日'
+            item.name = 7
             this.n.push(item);
             if(this.n.length !=0){
               this.rightTable = true;
@@ -518,18 +578,24 @@ export default {
             // 当选中的日期大于一天的时候默认为"非公享"
             if(this.n.length >1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
           }
         });
       } else {
         let del = this.n.filter(item => item.day.getDay() == 1);
-        let name = this.n.filter(item =>  item.name !== '日')
+        let name = this.n.filter(item =>  item.name !== 7)
         this.n = name;
-          if(this.n.length ==0){
-              this.rightTable = false;
-          }
+        if(this.n.length ==0){
+          this.rightTable = false;
+        }
+        // 当选中的日期为一天的时候可以选择"共享"
+        if(this.n.length < 2){
+          this.forbidden = false;
+          this.Rform.resource = "";
+          this.repertorySelect = "";
+        }
       }
     }
   },
@@ -551,8 +617,7 @@ export default {
     },
     // 保存之后
     addQuota(index,name) {
-      console.log(name);
-      console.log(this.arr);
+      // console.log(this.arr);
       // salePrice traderPrice quotaPrice
       this.n.forEach(item => {
         // 添加库存
@@ -565,10 +630,10 @@ export default {
           // 配额
           quotaPrice: this.arr[index].quotaPrice
         })
-        console.log(this.Addrepertory);
-        // item.data.person = this.Addrepertory;
+        // console.log(this.Addrepertory);
+        item.data.person = this.Addrepertory;
       });
-      console.log(this.n);
+      // console.log(this.n);
       // this.clearchecked();
       this.arr.splice(index,1);
     },
@@ -594,7 +659,7 @@ export default {
             // 当选中的日期大于一天的时候默认为"非公享"
             if(this.n.length >1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
         }
@@ -621,7 +686,7 @@ export default {
             // 当选中的日期大于一天的时候默认为"非公享"
             if(this.n.length >1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
         }
@@ -644,7 +709,7 @@ export default {
             // 当选中的日期大于一天的时候默认为"非公享"
             if(this.n.length >1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
         }
@@ -666,7 +731,6 @@ export default {
     // 点击日期的时候
     handleitemclick(day) {
       console.log(day.data.person);
-
       if (day.day.getMonth() + 1 === this.currentMonth) {
         if (day.day.getTime() < this.today.getTime() - 24 * 60 * 60 * 1000) {
           this.$message({
@@ -676,30 +740,26 @@ export default {
         } else {
           if (this.n.includes(day)) {
             this.n = this.n.filter(v => v != day);
-            console.log("删除日期");
-            if(this.n.length ==0){
+            if(this.n.length == 0){
+              this.share = false;
               this.rightTable = false;
             }
             // 当选中的日期为一天的时候可以选择"共享"
-            if(this.n.length <2){
+            if(this.n.length < 2){
               this.forbidden = false;
               this.Rform.resource = "";
               this.repertorySelect = "";
             }
-            console.log(this.n.length)
           } else {
-            console.log("添加日期");
+            day.name = day.day.getDay()
             this.n.push(day);
-            // console.log(this.n);
-            // console.log(this.n[this.n.length-1])
-            // console.log(this.n.length);
             if(this.n.length !=0){
               this.rightTable = true;
             }
             // 当选中的日期大于一天的时候默认为"非公享"
-            if(this.n.length >1){
+            if(this.n.length > 1){
               this.forbidden = true;
-              this.Rform.resource = "非公享";
+              this.Rform.resource = "1";
               this.repertorySelect = "sum";
             }
           }
@@ -860,59 +920,41 @@ export default {
     xuanze(a){
       // 第一次点击的时候
       if(this.share == false){
-        if(a == "共享" ){          
-          console.log("哈哈哈");
+        if(a == "0" ){          
           this.repertorySelect = "share";
-          
-        }else if(a == "非公享" ){
-          console.log("呜呜呜");
+        }else if(a == "1" ){
           this.repertorySelect = "sum";
-          
         }
         this.share = true;
       }else{
-      // 再次点击的时候的判断
-        if(a == "共享" ){          
-          console.log("哈哈哈");
-          
-          this.$confirm('当前类型数据将重置，是否更改?', '更改库存类型', {
+        this.$confirm('当前类型数据将重置，是否更改?', '更改库存类型', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          if(a == '0'){
+            this.repertorySelect = "share";
+            this.Rform.shareRepertory = '';
+          } else {
+            this.repertorySelect = "sum";
+            this.Rform.sumRepertory = '';
+          }
           this.$message({
             type: 'success',
             message: '更改成功!'
           });
-          this.repertorySelect = "share";
-          this.Rform.shareRepertory = '';
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消更改'
-          });          
-        });
-        }else if(a == "非公享" ){
-          console.log("呜呜呜");       
-          this.$confirm('当前类型数据将重置，是否更改?', '更改库存类型', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-         
-          this.$message({
-            type: 'success',
-            message: '更改成功!'
-          });
-          this.repertorySelect = "sum";
-          this.Rform.sumRepertory = '';
-        }).catch(() => {
+          // console.log(this.Rform.resource)
+          if(this.Rform.resource == "0"){
+            this.Rform.resource = '1'
+          } else {
+            this.Rform.resource = '0'
+          }
           this.$message({
             type: 'info',
             message: '已取消更改'
           });   
-        });
-        }
+        })
       }
       
    
@@ -921,8 +963,8 @@ export default {
     AddType(type){
       this.aaa = true;
       this.arr.push({
-        id:this.typeSelect[type].value,
-        name:this.typeSelect[type].label,
+        id:this.typeSelect[this.Rform.region].value,
+        name:this.typeSelect[this.Rform.region].label,
         // 销售价
         salePrice:'',
         // 同业价
@@ -930,7 +972,7 @@ export default {
         quota:false,
         quotaPrice:'',        
       })
-      console.log(this.arr);
+      // console.log(this.arr);
       // for(var ok=0;ok<this.n.length;ok++){
       //   this.n[ok]["AddType"] = this.arr;
         
@@ -943,7 +985,7 @@ export default {
 
     // }
 
-      console.log(this.n);
+      // console.log(this.n);
     
     },
     // 删除卡片
@@ -1019,11 +1061,12 @@ body {
   background: #e8f0f3;
 }
 #calendar {
-  margin: 37px auto 20px auto;
+  float: left;
+  margin: 37px auto 20px 340px;
   width: 764px;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.1),
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  position: relative;
+  /* position: relative; */
   padding: 10px;
 }
 .box-card {
@@ -1031,6 +1074,7 @@ body {
   /* right: -340px; */
   width: 339px;
   /* top: 170px; */
+  margin-top: 10px;
 }
 .box-card2 {
   position: absolute;
@@ -1155,12 +1199,13 @@ body {
   width:200px;
 }
 .rightForm{
-  border:1px solid red;
-  position: absolute;
-  right: -340px;
+  float: right;
+  margin-top: 35px;
+  /* position: relative; */
+  right: -360px;
   width: 339px;
   /* height:500px; */
-  top: 0;
+  /* top: 0; */
 }
 .clearfix{
   width:310px;
