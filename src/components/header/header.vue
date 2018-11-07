@@ -42,7 +42,7 @@
 
 <style scoped>
 .header{height:60px;}
-.left{margin: 20px; font-weight: 700px; font-size: 18px;}
+.left{margin: 20px; font-weight: 700px; font-size: 18px;text-align: center;}
 .right{float: right; margin: 0 120px 0 0;}
 .el-icon-bell{float:left;margin: 20px 50px 0 0;}
 .vertical-line{float: left; width:30px; height:20px; border-left: solid 1px #CCCCCC;position: relative; top: 20px; right: 20px;}

@@ -30,7 +30,6 @@ export default {
 <style>
 #app {
   font-family: '微软雅黑', Helvetica, Arial, sans-serif;
-  text-align: center;
   color: #2c3e50;
   margin: 0;
   padding: 0;
