@@ -20,6 +20,8 @@ import productList from '@/page/productManagement/productList/productList'
 import baseInfo from '@/page/productManagement/listInfo/listInfo'
 import travelTemplate from '@/page/productManagement/travelTemplate/travelTemplate'
 import regimentPlan from '@/page/productManagement/regimentPlan/regimentPlan'
+import planList from '@/page/productManagement/regimentPlan/children/planList'
+import placeOrder from '@/page/productManagement/regimentPlan/children/placeOrder'
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 
 
@@ -172,9 +174,24 @@ export default new Router({
       path: '/regimentPlan',
       component: regimentPlan,
       name: '团期计划',
-      meta: {
-        keepAlive: true,
-        auth:true}
+      children: [
+        {
+          path: 'planList',
+          name: '团期计划',
+          component: planList,        
+          meta: {
+            keepAlive: true,
+            auth:true},
+          },
+        {
+          path: 'placeOrder',
+          name: '团期计划',
+          component: placeOrder,        
+          meta: {
+            keepAlive: true,
+            auth:true},
+        }
+      ]
     }, {
       path: '/sharedInventory',
       component: sharedInventory,

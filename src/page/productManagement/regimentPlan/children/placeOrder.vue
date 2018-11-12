@@ -1,6 +1,6 @@
 <template>
   <div>
-      <router-view></router-view>
+      000
   </div>
 </template>
 
@@ -8,14 +8,15 @@
 export default {
   data() {
     return {
-    
+
     }
   },
   mounted(){
 
   },
   methods: {
-      }
+
+  }
 }
 </script>
 
