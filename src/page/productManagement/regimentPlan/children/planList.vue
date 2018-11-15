@@ -20,12 +20,12 @@
      <!--更改状态弹窗-->
      <el-dialog title="收货地址" :visible.sync="dialogFormVisible" class="city_list">
       <el-form :model="form">
-          <el-radio v-model="form.radio" label="1">备选项</el-radio>
-          <el-radio v-model="form.radio" label="2">备选项</el-radio>
+          <el-radio v-model="form.radio" label="1"><span class="fs">正常</span></el-radio>
+          <el-radio v-model="form.radio" label="2"><span class="fs">停售</span></el-radio>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false" class="confirm">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -45,6 +45,16 @@
        <el-table-column  prop="operation" label="操作" min-width="80"></el-table-column>
        <el-table-column  prop="name" label="产品名称" fixed="right" min-width="250"></el-table-column>
      </el-table>
+     <el-pagination class="pagination"
+        @size-change="handleSizeChange"
+        background
+        @current-change="handleCurrentChange"
+        :current-page="currentPage4"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="400">
+      </el-pagination>
      </div>
      </div>
   </div>
@@ -139,16 +149,20 @@ export default {
        .el-input{width:auto}
        .group-no{margin-left:10px}
        .start-time{margin-left:25px}
-       .date-line{width:30px;border-bottom:1px solid #e6e6e6;display:inline-block;margin:0 3px 3px 0;}
+       .date-line{width:30px;border-bottom:1px solid #e6e6e6;display:inline-block;margin:0 3px 3px 0}
        .search-title{font-size: 14px;margin-left: 10px}
        .line{width:80%;min-width:800px;border-bottom:1px solid #e6e6e6;margin:25px 0 0 -20px;}
-       .table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 8px;}
-       .el-table tr{background: #f6f6f6 !important;}
-       .button{margin:25px 0 0 8px;}
+       .table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 8px}
+       .el-table tr{background: #f6f6f6 !important}
+       .button{margin:25px 0 0 8px}
        .button .el-button{border:1px solid #3095fa;color:#3095fa;width:80px;padding: 0;line-height: 35px}
-       .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6;}
-       .el-table--enable-row-hover .el-table__body tr:hover>td{background-color: #f5f7fa !important;}
+       .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}
+       .el-table--enable-row-hover .el-table__body tr:hover>td{background-color: #f5f7fa !important}
        .search{margin-left: 15px}
-       .el-dialog__wrapper>>>.el-dialog {width: 500px;}
-       .city_list{text-align: center;}
+       .el-dialog__wrapper>>>.el-dialog {width: 500px;height: 250px}
+       .city_list{text-align: center}
+       .confirm{margin:0 140px 0 20px;}
+       .el-form{line-height:50px}
+       .fs{font-size: 16px}
+       .pagination{text-align:center;margin:70px 0 50px 0;}
 </style>
