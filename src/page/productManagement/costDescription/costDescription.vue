@@ -7,6 +7,61 @@
       <el-button type="primary" @click="getUEContent()">添加说明</el-button>
      <!-- <el-button type="primary" @click="getSaveContent()">获取值</el-button>-->
     </div>
+    <!--费用包含-->
+    <div class="cost_bg">
+      <div class="cost_title">
+        <span>费用包含</span>
+      </div>
+      <div class="cost_content" style="background: #FFFFFF">
+        <vue-editor v-model="content"></vue-editor>
+      </div>
+    </div>
+    <!--费用不包含-->
+    <div class="cost_bg">
+      <div class="cost_title">
+        <span>费用不包含</span>
+      </div>
+      <div class="cost_content" style="background: #FFFFFF">
+        <vue-editor v-model="content"></vue-editor>
+      </div>
+    </div>
+    <!--温馨提示-->
+    <div class="cost_bg">
+      <div class="cost_title">
+        <span>温馨提示</span>
+      </div>
+      <div class="cost_content" style="background: #FFFFFF">
+        <vue-editor v-model="content"></vue-editor>
+      </div>
+    </div>
+    <!--儿童政策-->
+    <div class="cost_bg">
+      <div class="cost_title">
+        <span>儿童政策</span>
+      </div>
+      <div class="cost_content" style="background: #FFFFFF">
+        <vue-editor v-model="content"></vue-editor>
+      </div>
+    </div>
+    <!--购物场所-->
+    <div class="cost_bg">
+      <div class="cost_title">
+        <span>购物场所</span>
+      </div>
+      <div class="cost_content" style="background: #FFFFFF">
+        <vue-editor v-model="content"></vue-editor>
+      </div>
+    </div>
+    <!--自费项目-->
+    <div class="cost_bg">
+      <div class="cost_title">
+        <span>自费项目</span>
+      </div>
+      <div class="cost_content" style="background: #FFFFFF">
+        <vue-editor v-model="content"></vue-editor>
+      </div>
+    </div>
+
 
     <div class="cost_bg"  v-for="(domain, index) in copy.domains"
          :key="domain.key">

@@ -23,6 +23,7 @@ import regimentPlan from '@/page/productManagement/regimentPlan/regimentPlan'
 import planList from '@/page/productManagement/regimentPlan/children/planList'
 import placeOrder from '@/page/productManagement/regimentPlan/children/placeOrder'
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
+import changePro from '@/page/productManagement/changePro/changePro'
 
 
 Vue.use(Router);
@@ -156,7 +157,7 @@ export default new Router({
       meta: {
         keepAlive: true,
         auth:true}
-    }, {
+    },{
       path: '/listInfo',
       component: baseInfo,
       name: '添加跟团游',
@@ -178,7 +179,7 @@ export default new Router({
         {
           path: 'planList',
           name: '团期计划',
-          component: planList,        
+          component: planList,
           meta: {
             keepAlive: true,
             auth:true},
@@ -186,7 +187,7 @@ export default new Router({
         {
           path: 'placeOrder',
           name: '团期计划',
-          component: placeOrder,        
+          component: placeOrder,
           meta: {
             keepAlive: true,
             auth:true},
@@ -196,6 +197,12 @@ export default new Router({
       path: '/sharedInventory',
       component: sharedInventory,
       name: '共享库存',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },{
+      path: '/changePro',
+      component: changePro,
       meta: {
         keepAlive: true,
         auth:true}
