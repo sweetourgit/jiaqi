@@ -7,87 +7,83 @@
       <el-button class="selectSku" plain v-for="(item,index) in Addprice" :key="item.id">{{item.name}}</el-button>
     </div>
     <div id="calendar" >
-
     <!-- 年份 月份 -->
     <div class="month">
         <ul class="date">
             <!--点击会触发pickpre函数，重新刷新当前日期 @click(vue v-on:click缩写) -->
-            <li class="arrow" @click="pickPre(currentYear,currentMonth)">❮</li>
+            <li class="arrow" @click="pickPre(currentYear,currentMonth)"><</li>
             <li class="year-month" >
               <!-- @click="pickYear(currentYear,currentMonth)" -->
                {{currentYear}}-{{currentMonth}}月
             </li>
-            <li class="arrow" @click="pickNext(currentYear,currentMonth)">❯</li>
+            <li class="arrow" @click="pickNext(currentYear,currentMonth)">></li>
         </ul>
         <div class="all-month">
-          <span @click="handleallclick" style="float:left;padding:14px 20px;margin-left:10px;cursor: pointer;">全月</span>
-          <span @click="handleTwoClick" style="float:left;padding:14px 20px;margin-left:10px;cursor: pointer;">周六、日</span>
-          <span @click="handleWeekClick" style="float:left;padding:14px 20px;margin-left:10px;cursor: pointer;">周一 ~ 周五</span>
-          <span @click="clearchecked" style="float:left;padding:14px 20px;margin-left:10px;cursor: pointer;">全部清除</span>
-          <i style="float:left;padding:14px 10px;margin-left:10px;font-size:15px;font-style: normal;">已选{{n.length}}天</i>
+          <span @click="handleallclick" style="float:left;padding:10px 20px;margin-left:18px;cursor: pointer;">全月</span>
+          <span @click="handleTwoClick" style="float:left;padding:10px 20px;margin-left:8px;cursor: pointer;">周六、日</span>
+          <span @click="handleWeekClick" style="float:left;padding:10px 20px;margin-left:8px;cursor: pointer;">周一 ~ 周五</span>
+          <span @click="clearchecked" style="float:left;padding:10px 20px;margin-left:8px;cursor: pointer;">全部清除</span>
+          <i style="float:left;padding:10px 10px;margin-left:25px;font-size:15px;font-style: normal;">已选{{n.length}}天</i>
         </div>
     </div>
     <!-- 星期 -->
 
     <ul class="weekdays">
+        <li style="color:red"><el-checkbox v-model="sun" class="checkbox"></el-checkbox>日</li>
         <li><el-checkbox v-model="monday" class="checkbox"></el-checkbox>一</li>
         <li><el-checkbox v-model="tue" class="checkbox"></el-checkbox>二</li>
         <li><el-checkbox v-model="wed" class="checkbox"></el-checkbox>三</li>
         <li><el-checkbox v-model="tur" class="checkbox"></el-checkbox>四</li>
         <li><el-checkbox v-model="fri" class="checkbox"></el-checkbox>五</li>
         <li style="color:red"><el-checkbox v-model="sat" class="checkbox"></el-checkbox>六</li>
-        <li style="color:red"><el-checkbox v-model="sun" class="checkbox"></el-checkbox>日</li>
     </ul>
     <!-- 日期 -->
     <ul class="days">
         <!-- v-for循环 每一次循环用<li>标签创建一天 -->
-        <li style="border:1px green solid"  :class="{'checked': n.includes(dayobject)}" @click="handleitemclick(dayobject)" :key="index" v-for="(dayobject,index) in days" >
+      <template v-for="(dayobject,index) in days">
+        <template v-if="dayobject.day.getMonth()+1 != currentMonth || dayobject.day.getTime() < today.getTime() - 24 * 60 * 60 * 1000">
+          <li style="background: #F6F6F6;border: solid 1px #E7E7E7;border-left:none;border-top:none;"  :class="{'checked': n.includes(dayobject)}" @click="handleitemclick(dayobject)" :key="index" >
             <!--本月-->
             <!--如果不是本月  改变类名加灰色-->
-
             <span v-if="dayobject.day.getMonth()+1 != currentMonth" class="other-month">{{ dayobject.day.getDate() }}</span>
-
             <!--如果是本月  还需要判断是不是这一天-->
             <div v-else>
-          <!--今天  同年同月同日-->
+          <!--今天  同年同月同日-->     
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
 
-                <!--  -->
-                <div class='person' v-for="(data,index) in dayobject.data.person" :key="index">
-                    <!-- v-show="dayobject.data.person.price" -->
-                  <p class='old'>{{dayobject.data.person[index].name}}</p>
-                  <p>销售价：{{dayobject.data.person[index].salePrice}}</p>
-                  <p>同业价：{{dayobject.data.person[index].traderPrice}}</p>   
-                  <!-- <p>已售/库存：0/{{dayobject.data.person.number}}</p> -->
-                  <!-- <p>上下限:{{dayobject.data.person.top}}/{{dayobject.data.person.down}}</p> -->
-                </div>
             </div>
             <!--显示剩余多少数量-->
             <!---->
         </li>
+        </template>
+        <template v-else>
+          <li style="border: solid 1px #E7E7E7;border-left:none;border-top:none;"  :class="{'checked': n.includes(dayobject)}" @click="handleitemclick(dayobject)" :key="index" >
+            <!--本月-->
+            <!--如果不是本月  改变类名加灰色-->
+            <span v-if="dayobject.day.getMonth()+1 != currentMonth" class="other-month">{{ dayobject.day.getDate() }}</span>
+            <!--如果是本月  还需要判断是不是这一天-->
+            <div v-else>
+          <!--今天  同年同月同日-->     
+                <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
+                <span v-else>{{ dayobject.day.getDate() }}</span>
+                
+                <!--  -->
+                <div class='person' v-for="(data,index) in dayobject.data.person" :key="index">  
+                    <!-- v-show="dayobject.data.person.price" -->
+                  <p class='old'>{{dayobject.data.person[index].name}}</p>
+                  <p>销售价：{{dayobject.data.person[index].salePrice}}</p>
+                  <p>同业价：{{dayobject.data.person[index].traderPrice}}</p>
+                  <!-- <p>已售/库存：0/{{dayobject.data.person.number}}</p> -->
+                  <!-- <p>上下限:{{dayobject.data.person.top}}/{{dayobject.data.person.down}}</p> -->
+                </div>  
+            </div>
+            <!--显示剩余多少数量-->
+            <!---->
+        </li>
+        </template>
+      </template>
     </ul>
-
-
-  <!-- <el-card class="box-card2" v-show="n.length">
-  <div style="text-align: left;" slot="header" class="clearfix">
-    单价房
-
-    <el-button style="float:right" type="danger" size="mini">删除</el-button>
-    <el-button @click="handleChildrenSave" style="float:right;margin-right:5px" type="primary" size="mini">保存</el-button>
-  </div>
-  <div>
-    <el-form ref="form" :model="form2" label-width="80px">
-      <el-form-item label="结算价">
-        <el-input v-model.number="form2.price"></el-input>
-      </el-form-item>
-      <el-form-item label="剩余量">
-        <el-input v-model="form2.number"></el-input>
-      </el-form-item>
-
-    </el-form>
-  </div>
-</el-card> -->
 </div>
 
 <!-- 右侧的表单 -->
@@ -96,7 +92,7 @@
       <el-form :model="Rform">
           <el-form-item label="报名类型:">
               <el-select v-model="Rform.region" placeholder="请选择" style="width:150px">
-                <el-option v-for="item in typeSelect"
+                <el-option v-for="item in typeSelect" 
                 :label="item.label"
                 :value="item.value"
                 :key="item.value"></el-option>
@@ -112,7 +108,7 @@
           <!-- 共享库存 -->
           <el-form-item label="共享库存:" v-if='repertorySelect == "share"'  style="margin-top:-15px;">
               <el-select v-model="Rform.shareRepertory" placeholder="请选择" style="width:150px">
-                <el-option v-for="item in typeSelect"
+                <el-option v-for="item in typeSelect" 
                 :label="item.label"
                 :value="item.value"
                 :key="item.value"></el-option>
@@ -129,21 +125,19 @@
         <el-card class="box-card"  v-for="(item,index) in arr" :key="item.key">
           <!-- v-for="card in n[0].AddType"  -->
           <!-- v-if='n[0]!=Addtype'  -->
-
         <div  slot="header" class="clearfix">
           {{item.name}}
           <div style="float:right;margin-top: -3px;">
             <el-button type="primary" size="mini" @click="addQuota(index,item.name)">保存</el-button>
-
             <el-button @click="delect(index)"  type="danger" size="mini">删除</el-button>
             <template v-if="arr[index].quota == false">
               <el-button @click="AddQuota(index)"  type="primary" size="mini">添加配额</el-button>
             </template>
             <template v-else>
-              <el-button @click="DelectQuota(index)"  type="primary" size="mini">删除配额</el-button>
-            </template>
-          </div>
-        </div>
+              <el-button @click="DelectQuota(index)"  type="primary" size="mini">删除配额</el-button>            
+            </template>          
+          </div>     
+        </div> 
         <div>
           <el-form ref="form"  label-width="80px">
             <el-form-item label="销售价">
@@ -155,15 +149,13 @@
             <el-form-item label="配额" v-if="arr[index].quota == true">
               <el-input :maxlength='6' v-model="item.quotaPrice"></el-input>
             </el-form-item>
-
           </el-form>
         </div>
       </el-card>
       </template>
-
     </div>
   </div>
-
+  
 </template>
 
 <script>
@@ -211,7 +203,7 @@ export default {
       // 共享或非公享第一次选择
       share:false,
       // 日期信息
-      // DayMessage:[],
+      // DayMessage:[], 
       currentDay: 1,
       currentMonth: 1,
       currentYear: 1970,
@@ -231,7 +223,7 @@ export default {
         // 同业价
         traderPrice:'',
         quota:false,
-        quotaPrice:'',
+        quotaPrice:'',        
       },{
         id:1,
         name:'儿童',
@@ -240,7 +232,7 @@ export default {
         // 同业价
         traderPrice:'',
         quota:false,
-        quotaPrice:'',
+        quotaPrice:'',        
       },{
         id:5,
         name:'单房差',
@@ -249,7 +241,7 @@ export default {
         // 同业价
         traderPrice:'',
         quota:false,
-        quotaPrice:'',
+        quotaPrice:'',        
       }],
       // 添加库存
       Addrepertory:[],
@@ -265,38 +257,34 @@ export default {
       // addType:[],
       // 选择报名类型时候传的数值
       typeNum:'',
-      // 卡片隐藏
-      aaa:false,
       radio:'',
       // sku选择
-      ccc:[{
+      ccc:[{         
           ddd:"普吉岛情侣",
           type:false,
           // value:"1",
-        },{
+        },{     
           ddd:"普吉岛亲子",
           type:false,
-          // value:"2",
+          // value:"2",         
         },{
 
           ddd:"哈尔滨3天自由行",
           type:false,
-          // value:"3",
+          // value:"3",          
         }],
 
       // 附加增值服务
       Addprice:[{
-
-            name:"保险",
-            priceSelect:"非日历价格",
-            explain:"保护安全",
-            type:false,
+        name:"保险",
+        priceSelect:"非日历价格",
+        explain:"保护安全",
+        type:false,
       },{
-
-            name:"小费",
-            priceSelect:"日历价格",
-            explain:"给小费鼓励一下吧",
-            type:false,
+        name:"小费",
+        priceSelect:"日历价格",
+        explain:"给小费鼓励一下吧",
+        type:false,
       }],
       // 类型选择
       typeSelect: [{
@@ -336,7 +324,7 @@ export default {
         mon.forEach(item => {
           if (this.n.includes(item)) {
             return;
-
+            
           } else {
             item.name = 1
             this.n.push(item);
@@ -617,10 +605,8 @@ export default {
     },
     // 保存之后
     addQuota(index,name) {
-      // console.log(this.arr);
       // salePrice traderPrice quotaPrice
-      this.n.forEach(item => {
-        // 添加库存
+      // 添加库存
         this.Addrepertory.push({
           name:name,
           // 销售价
@@ -630,10 +616,10 @@ export default {
           // 配额
           quotaPrice: this.arr[index].quotaPrice
         })
+      this.n.forEach(item => {
         // console.log(this.Addrepertory);
         item.data.person = this.Addrepertory;
       });
-      // console.log(this.n);
       // this.clearchecked();
       this.arr.splice(index,1);
     },
@@ -654,14 +640,14 @@ export default {
         } else {
           this.n.push(item);
           if(this.n.length !=0){
-              this.rightTable = true;
-            }
-            // 当选中的日期大于一天的时候默认为"非公享"
-            if(this.n.length >1){
-              this.forbidden = true;
-              this.Rform.resource = "1";
-              this.repertorySelect = "sum";
-            }
+            this.rightTable = true;
+          }
+          // 当选中的日期大于一天的时候默认为"非公享"
+          if(this.n.length >1){
+            this.forbidden = true;
+            this.Rform.resource = "1";
+            this.repertorySelect = "sum";
+          }
         }
       });
     },
@@ -704,14 +690,14 @@ export default {
         } else {
           this.n.push(item);
           if(this.n.length !=0){
-              this.rightTable = true;
-            }
-            // 当选中的日期大于一天的时候默认为"非公享"
-            if(this.n.length >1){
-              this.forbidden = true;
-              this.Rform.resource = "1";
-              this.repertorySelect = "sum";
-            }
+            this.rightTable = true;
+          }
+          // 当选中的日期大于一天的时候默认为"非公享"
+          if(this.n.length >1){
+            this.forbidden = true;
+            this.Rform.resource = "1";
+            this.repertorySelect = "sum";
+          }
         }
       });
     },
@@ -730,7 +716,6 @@ export default {
     },
     // 点击日期的时候
     handleitemclick(day) {
-      console.log(day.data.person);
       if (day.day.getMonth() + 1 === this.currentMonth) {
         if (day.day.getTime() < this.today.getTime() - 24 * 60 * 60 * 1000) {
           this.$message({
@@ -845,7 +830,7 @@ export default {
       this.days.length = 0;
       // 今天是周日，放在第一行第7个位置，前面6个
       //初始化本周
-      for (var i = this.currentWeek - 1; i >= 0; i--) {
+      for (var i = this.currentWeek; i >= 0; i--) {
         var d = new Date(str);
         d.setDate(d.getDate() - i);
         var dayobject = {};
@@ -861,7 +846,7 @@ export default {
         this.days.push(dayobject); //将日期放入data 中的days数组 供页面渲染使用
       }
       //其他周
-      for (var i = 1; i <= 35 - this.currentWeek; i++) {
+      for (var i = 1; i <= 41 - this.currentWeek; i++) {
         var d = new Date(str);
         d.setDate(d.getDate() + i);
         var dayobject = {};
@@ -920,7 +905,7 @@ export default {
     xuanze(a){
       // 第一次点击的时候
       if(this.share == false){
-        if(a == "0" ){
+        if(a == "0" ){          
           this.repertorySelect = "share";
         }else if(a == "1" ){
           this.repertorySelect = "sum";
@@ -944,7 +929,6 @@ export default {
             message: '更改成功!'
           });
         }).catch(() => {
-          // console.log(this.Rform.resource)
           if(this.Rform.resource == "0"){
             this.Rform.resource = '1'
           } else {
@@ -953,40 +937,35 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消更改'
-          });
+          });   
         })
       }
-
-
     },
     // 添加报名类型
     AddType(type){
-      this.aaa = true;
-      this.arr.push({
-        id:this.typeSelect[this.Rform.region].value,
-        name:this.typeSelect[this.Rform.region].label,
-        // 销售价
-        salePrice:'',
-        // 同业价
-        traderPrice:'',
-        quota:false,
-        quotaPrice:'',
+      let mon = true;
+      this.arr.forEach(item => {
+        if(item.id == this.Rform.region){
+          mon = false;
+        }
       })
-      // console.log(this.arr);
-      // for(var ok=0;ok<this.n.length;ok++){
-      //   this.n[ok]["AddType"] = this.arr;
-
-      // }
-      // this.n["AddType"]=[];
-    //  this.n[0]["AddType"] = {[this.typeSelect[type].value]:this.typeSelect[type].label,[this.typeSelect[type].value]:this.typeSelect[type].label,[this.typeSelect[type].value]:this.typeSelect[type].label}
-
-    // var AddType = [];
-    // for(var ok=0;ok<this.n.length;ok++){
-
-    // }
-
-      // console.log(this.n);
-
+      if(mon){
+        this.arr.push({
+          id:this.typeSelect[this.Rform.region].value,
+          name:this.typeSelect[this.Rform.region].label,
+          // 销售价
+          salePrice:'',
+          // 同业价
+          traderPrice:'',
+          quota:false,
+          quotaPrice:'',        
+        })
+      } else {
+        this.$message({
+          message: '已存在该报名类型',
+          type: 'warning'
+        });
+      }
     },
     // 删除卡片
     delect(index){
@@ -1019,16 +998,14 @@ export default {
   font-size: 12px;
   line-height: 20px;
 }
-.person .old {
+.person .old { 
   border-bottom: 1px solid #3096fb;
   color: #e6e6e6;
   height: 24px;
   background:#3096fb;
-
 }
 .days li {
-  min-height: 150px;
-  min-weight: 120px;
+  min-height: 135px;
   text-align: left !important;
   padding: 5px;
   color: #666666;
@@ -1045,7 +1022,9 @@ p {
   flex: 1;
 }
 .all-month span:hover {
-  background: rgba(150, 2, 12, 0.1);
+  /* background: rgba(150, 2, 12, 0.1); */
+  border: solid 1px #409EFF;
+  color: #409EFF;
 }
 * {
   box-sizing: border-box;
@@ -1064,10 +1043,9 @@ body {
   float: left;
   margin: 37px auto 20px 340px;
   width: 764px;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.1),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  /* position: relative; */
-  padding: 10px;
+  /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.1), */
+    /* 0 1px 5px 0 rgba(0, 0, 0, 0.12); */
+  /* padding: 10px; */
 }
 .box-card {
   /* position: absolute; */
@@ -1088,6 +1066,7 @@ body {
   overflow: hidden;
   display: flex;
   margin-bottom: 20px;
+  user-select:none;
 }
 .month ul {
   margin: 0;
@@ -1108,11 +1087,10 @@ body {
 .all-month span {
   border: solid 1px #e6e6e6;
 }
-.weekdays li .checkbox {
-  margin-right: 10px;
-}
 .year-month:hover {
-  background: rgba(150, 2, 12, 0.1);
+  /* background: rgba(150, 2, 12, 0.1); */
+  border: solid 1px #409EFF;
+  color: #409EFF;
 }
 .choose-year {
   padding-left: 20px;
@@ -1123,33 +1101,42 @@ body {
   font-size: 1.5rem;
 }
 .arrow {
-  padding: 10px;
+  height: 40px;
+  padding: 5px 10px;
   border: solid 1px #e6e6e6;
   cursor: pointer;
+  font-size: 20px; 
+  /* margin-top: 10px; */
 }
 .arrow:hover {
-  background: rgba(100, 2, 12, 0.1);
+  /* background: rgba(100, 2, 12, 0.1); */
+  border: solid 1px #409EFF;
+  color: #409EFF;
 }
 .month ul li {
-  font-size: 20px;
   text-transform: uppercase;
   letter-spacing: 3px;
 }
-.weekdays {
+.weekdays{
+  border-right: solid 1px #E7E7E7;
   margin: 0;
-  padding: 10px 0;
-  background-color: #00b8ec;
+  /* padding: 10px 0; */
+  padding: 0;
+  height: 40px;
   display: flex;
   flex-wrap: wrap;
-  color: #ffffff;
   justify-content: space-around;
+  user-select:none;  
+}
+.weekdays li .checkbox{
+  margin-right: 10px;
+  margin-top: 7px;
 }
 .weekdays li {
-  display: inline-block;
-  width: 13.6%;
-  text-align: center;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 10px;
+  border: solid 1px #E7E7E7;
+  border-right: none;
+  flex: 1;
+  text-align: center;  
 }
 .days {
   padding: 0;
@@ -1158,16 +1145,18 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  user-select:none;
+  border-left: solid 1px #E7E7E7;
 }
 .days li {
   list-style-type: none;
   display: inline-block;
-  width: 14.2%;
+  width: 14.28%;
   text-align: center;
   padding-bottom: 15px;
   padding-top: 15px;
   font-size: 1rem;
-  color: #000;
+  color: #858585;
 }
 .days li .active {
   padding: 6px 10px;
@@ -1185,31 +1174,28 @@ body {
 }
 .leftSku{
   position: absolute;
-
   width:300px;
   height:500px;
   /* float:left; */
   margin-top:40px;
   margin-left:40px;
-  /* border:1px solid red; */
 }
 .selectSku{
   margin-top:10px;
   margin-left:40px;
-  width:200px;
+  width:220px;
+  height: 64px;
 }
 .rightForm{
   float: right;
   margin-top: 35px;
-  /* position: relative; */
   right: -360px;
   width: 339px;
-  /* height:500px; */
-  /* top: 0; */
 }
 .clearfix{
   width:310px;
   text-align: left;
-  /* border:1px solid blue;  */
+  font-size: 17px;
+  font-weight:bold;
 }
 </style>
