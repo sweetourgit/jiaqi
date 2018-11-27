@@ -1082,18 +1082,16 @@ import Permission from '@/page/account/userList/addUser/permission'
   }
   .from-input{
     width: 180px;
-    margin-left: -790px;
   }
   .from-radio{
-    margin-left: -830px;
+
   }
 
   .form_type{
-    margin-left: 61px;
+
   }
 
   .button-adjust{
-    margin-left: -780px;
     margin-top: 50px;
   }
   .ruleForm-abjust{

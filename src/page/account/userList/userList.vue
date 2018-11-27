@@ -195,7 +195,7 @@
             </div>
           </el-form-item>
         </el-form>
-        <div slot="footer" class="dialog-footer">
+        <div slot="footer" class="dialog-footer" style="text-align: center">
           <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
         </div>
       </div>
@@ -613,7 +613,6 @@
     width: 90px;
   }
   .form-radios{
-    margin-left: -350px;
   }
   .form-sex{
     margin-left: 290px;

@@ -89,9 +89,10 @@
         border
         style="width: 100%"
         :highlight-current-row="true"
+        @row-click="clickBanle"
       >
         <el-table-column
-          prop="pid"
+          prop="id"
           label="产品编号"
           align="center"
           width="80%"
@@ -177,15 +178,15 @@
     <!-- 库存 -->
  <div v-if="isCollapse==true">
 
-   
+
 
       <!-- sku -->
 
       <el-table
        v-show="skuList"
-      
+
         :data="ccc"
-        
+
         border
          style="width: 1340px;margin:30px auto;"
         :header-cell-style="getRowClass">
@@ -202,12 +203,12 @@
         width="180"
         align="center"
         >
-      
-          
+
+
       </el-table-column>
 
       <el-table-column
-      
+
         align="center"
         label="清位时间">
          <template slot-scope="scope">
@@ -215,12 +216,12 @@
           <el-input style="width:40px"></el-input><span style="margin-left:10px">天</span>
           <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">时</span> -->
           <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">分</span> -->
-            
-            
+
+
         </template>
       </el-table-column>
         <el-table-column
-       
+
         align="center"
         label="出行模板">
         <template slot-scope="scope">
@@ -240,10 +241,10 @@
         label="操作">
         <template slot-scope="scope">
             <template v-if="ccc[scope.$index].type == false">
-              <el-button size="mini" type="primary"  @click="online(scope.$index)">上线</el-button>              
+              <el-button size="mini" type="primary"  @click="online(scope.$index)">上线</el-button>
             </template>
             <template v-else>
-            <el-button size="mini" type="primary"  @click="offline(scope.$index)">下线</el-button>              
+            <el-button size="mini" type="primary"  @click="offline(scope.$index)">下线</el-button>
             </template>
             <el-button size="mini" type="primary" @click="hahahah('aa')">价格</el-button>
             <!-- <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button> -->
@@ -281,7 +282,7 @@
           </el-dialog> -->
 
         <!-- 增值服务列表 -->
-          <!-- <el-table 
+          <!-- <el-table
             v-show="accretionTable"
             :data="Addprice"
             border
@@ -294,12 +295,12 @@
             align="center"
             >
           </el-table-column>
-          <el-table-column 
+          <el-table-column
             prop="name"
             label="名称"
             width="180"
             align="center"
-            >              
+            >
           </el-table-column>
 
           <el-table-column
@@ -312,7 +313,7 @@
           align="center"
           label="价格"
         >
-      
+
           </el-table-column>
             <el-table-column
             prop="name"
@@ -320,10 +321,10 @@
             label="操作">
             <template slot-scope="scope">
               <template v-if="Addprice[scope.$index].type == false">
-                <el-button size="mini" type="primary" @click="addOnline(scope.$index)">上线</el-button>                                
+                <el-button size="mini" type="primary" @click="addOnline(scope.$index)">上线</el-button>
               </template>
               <template v-else>
-                <el-button size="mini" type="primary" @click="addOffline(scope.$index)">下线</el-button>                                                
+                <el-button size="mini" type="primary" @click="addOffline(scope.$index)">下线</el-button>
               </template>
                 <el-button size="mini" type="primary">价格</el-button>
                 <template v-if="Addprice[scope.$index].type == false">
@@ -334,7 +335,7 @@
           </el-table-column>
         </el-table>
     </div> -->
-      
+
     </div>
     <!-- 价格 -->
     <div v-else>
@@ -350,8 +351,8 @@ import DateList from './component/DateList'
   export default {
     components:{
       DateList,
-      
-      
+
+
     },
      data() {
       return {
@@ -413,7 +414,7 @@ import DateList from './component/DateList'
       // 属性按钮禁用
         forbidden:true,
       // 属性按钮选中效果
-        mm:true, 
+        mm:true,
       // 添加值按钮
         pp:true,
       // 确认属性值按钮
@@ -442,12 +443,12 @@ import DateList from './component/DateList'
           id:"2",
           ddd:"普吉岛亲子",
           type:false,
-          // value:"2",         
+          // value:"2",
         },{
           id:"3",
           ddd:"哈尔滨3天自由行",
           type:false,
-          // value:"3",          
+          // value:"3",
         }],
       // sku的id
         skuid : 0,
@@ -495,7 +496,7 @@ import DateList from './component/DateList'
          explain: [
           { required: true, message: '请填写活动形式', trigger: 'blur' },
           { max: 50, message: '不超过50个汉字', trigger: 'blur' }
-            
+
           ]
       },
       // 上线
@@ -521,28 +522,28 @@ import DateList from './component/DateList'
           button: "行程路线",
           pp : false,
           forbidden:false,
-          verifier: "Route",  
+          verifier: "Route",
         },
         {
           id: "2",
           button: "天数",
           pp : false,
           forbidden:false,
-          verifier: "Day", 
+          verifier: "Day",
         },
         {
           id: "3",
           button: "晚数",
           pp : false,
           forbidden:false,
-          verifier: "NightNum",      
+          verifier: "NightNum",
         },
         {
           id: "4",
           button: "房型",
           pp : false,
           forbidden:false,
-          verifier: "House",         
+          verifier: "House",
         },
         {
           id: "5",
@@ -556,7 +557,7 @@ import DateList from './component/DateList'
           button: "航空公司",
           pp : false,
           forbidden:false,
-          verifier: "Airline",        
+          verifier: "Airline",
         },
         {
           id: "7",
@@ -619,7 +620,7 @@ import DateList from './component/DateList'
         }, {
           value: '16天',
           label: '16天'
-        }], 
+        }],
         // 晚数列表
         NightNum: [{
           value: '1晚',
@@ -729,7 +730,7 @@ import DateList from './component/DateList'
         }],
         value: '',
         tableData: [{
-          pid:'1',
+          id:'1',
           type:'跟团游',
           name:'xxx 跟团游',
           mu_address:'xxx',
@@ -799,24 +800,24 @@ import DateList from './component/DateList'
           this.arr.push({
             id:key,
           })
-        // console.log(this.arr);  
+        // console.log(this.arr);
         document.getElementById('kk'+key).style.border = 'solid 1px #409EFF'
         document.getElementById('kk'+key).style.color= '#409EFF'
         // 当不符合属性条件时先将全部的按钮都禁用
         if(this.addtable[this.addtable.length-1].allprice.length >= 3){
           // console.log("超过了")
           for(var po = 0; po < this.buttonList.length;po++){
-            this.buttonList[po].forbidden = true;    
-                
+            this.buttonList[po].forbidden = true;
+
           document.getElementById('kk'+po).style.border = 'dashed 1px #c2c2c2'
           document.getElementById('kk'+po).style.color = '#c0c4cc'
-          document.getElementById('kk'+po).style.background = '#fff'  
+          document.getElementById('kk'+po).style.background = '#fff'
           }
         // 然后再将点击了的按钮存在一个数组里面,再将这个数组里面的按钮取消禁用.
           for(var lo = 0;lo<this.arr.length;lo++){
-            this.buttonList[this.arr[lo].id].forbidden=false;   
+            this.buttonList[this.arr[lo].id].forbidden=false;
             document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
+            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
           }
         }
         // 点击向数组中添加数值
@@ -827,7 +828,7 @@ import DateList from './component/DateList'
           value:[],
       })
         // 按下按钮给一个true表示按下
-        this.buttonList[key].pp=true; 
+        this.buttonList[key].pp=true;
         // 判断表格中的数据条数,如果数据只有一条那么生成一条确认属性值
         if(this.addtable[this.addtable.length-1].allprice.length ==1){
           this.addtable[this.addtable.length-1].allprice.push({
@@ -839,11 +840,11 @@ import DateList from './component/DateList'
           // 如果数据条数大于一条,则吧str,也就是确认属性值这条代码拿出来在重新放到数据尾部
           var str = this.addtable[this.addtable.length-1].allprice.splice( this.addtable[this.addtable.length-1].allprice.length -2,1);
           this.addtable[this.addtable.length -1].allprice.push(str[0]);
-          this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2; 
-          // console.log(e);         
-        }    
+          this.buttonList[key].key = this.addtable[this.addtable.length -1].allprice.length -2;
+          // console.log(e);
+        }
       }else if(e.pp){
-        // 当按钮抬起了 
+        // 当按钮抬起了
           console.log(this.addtable);
         // 这个地方删除有些问题!
         this.addtable[this.addtable.length -1].allprice.splice(e.key,1);
@@ -860,15 +861,15 @@ import DateList from './component/DateList'
             this.buttonList[po].forbidden = false;
             document.getElementById('kk'+po).style.border = 'solid 1px #c2c2c2'
             document.getElementById('kk'+po).style.color = '#606266'
-          }   
+          }
           this.arr.splice(e.key,1);
         }
         // 在其他按钮禁用的情况下也显示已经选中的按钮
-        for(var lo = 0;lo<this.arr.length;lo++){     
+        for(var lo = 0;lo<this.arr.length;lo++){
             document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
-        }     
-      }    
+            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
+        }
+      }
     },
     //添加属性值功能
     addInput(b,key){
@@ -878,7 +879,7 @@ import DateList from './component/DateList'
       // console.log(b.value);
       // console.log(key);
       // console.log(this.di);
-  
+
       // 向指定的属性数组中添加属性值
       this.addtable[this.addtable.length-1].allprice[key].value.push({
         di:key,
@@ -891,17 +892,17 @@ import DateList from './component/DateList'
         console.log(key);
         console.log(ol);
         console.log("--------------")
-        // document.getElementById('vv'+key+ol).style.border = 'solid 1px #b3d8ff'     
-        // document.getElementById('vv'+key+ol).style.color = '#409EFF'     
+        // document.getElementById('vv'+key+ol).style.border = 'solid 1px #b3d8ff'
+        // document.getElementById('vv'+key+ol).style.color = '#409EFF'
         // document.getElementById('vv'+key+ol).style.background = '#ecf5ff'
         // console.log(23);
-        
+
       };
         console.log(this.sku);
 
     },
   // 确认属性值
-  gain(){ 
+  gain(){
     for(var kl = 0;kl<this.addtable[this.addtable.length-1].allprice.length-1;kl++){
         // console.log(this.addtable[this.addtable.length-1].allprice[kl].value);
       if(this.addtable[this.addtable.length-1].allprice[kl].value.length == 0){
@@ -913,7 +914,7 @@ import DateList from './component/DateList'
           showClose: true,
           message: '请为每个属性至少添加一个属性值',
           type: 'error'
-        }); 
+        });
       } else {
         // 属性输入框和删除按钮
         this.aa = false;
@@ -930,19 +931,19 @@ import DateList from './component/DateList'
         //   this.buttonList[ok].forbidden = true;
         //   document.getElementById('kk'+ok).style.border = 'dashed 1px #c2c2c2'
         //   document.getElementById('kk'+ok).style.color = '#c0c4cc'
-        //   document.getElementById('kk'+ok).style.background = '#fff' 
-        // } 
-        for(var lo = 0;lo<this.arr.length;lo++){     
+        //   document.getElementById('kk'+ok).style.background = '#fff'
+        // }
+        for(var lo = 0;lo<this.arr.length;lo++){
           document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-          document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
-        } 
+          document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
+        }
       }
 
         this.abc = false
-     }, 
+     },
   // 重新设计属性值
     back(){
-      this.aa = true;    
+      this.aa = true;
       this.bb = false;
       this.qq = true;
       this.again = false;
@@ -954,53 +955,53 @@ import DateList from './component/DateList'
       for(var op = 0;op<this.addtable[this.addtable.length-1].allprice.length-1;op++){
           for(var ll = 0;ll<this.addtable[this.addtable.length-1].allprice[op].value.length;ll++){
             this.addtable[this.addtable.length-1].allprice[op].value[ll].forbidden = false;
-            this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false; 
-            document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'     
-            document.getElementById('vv'+op+ll).style.color = '#409EFF'     
-            document.getElementById('vv'+op+ll).style.background = '#ecf5ff'      
+            this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false;
+            document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'
+            document.getElementById('vv'+op+ll).style.color = '#409EFF'
+            document.getElementById('vv'+op+ll).style.background = '#ecf5ff'
           }
         }
       console.log(this.sku);
-      
-    // 属性恢复使用 
+
+    // 属性恢复使用
     if(this.addtable[this.addtable.length-1].allprice.length < 4){
       for(var ok = 0;ok<this.buttonList.length;ok++){
         this.buttonList[ok].forbidden = false;
         document.getElementById('kk'+ok).style.border = 'solid 1px #dcdfe6'
         document.getElementById('kk'+ok).style.color = '#606266'
-      } 
-      for(var lo = 0;lo<this.arr.length;lo++){     
+      }
+      for(var lo = 0;lo<this.arr.length;lo++){
         document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-        document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
-      }  
+        document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
+      }
     }else if(this.addtable[this.addtable.length-1].allprice.length == 4){
       // 全部禁用,并且禁用样式
       for(var ok = 0;ok<this.buttonList.length;ok++){
           this.buttonList[ok].forbidden = true;
           document.getElementById('kk'+ok).style.border = 'solid 1px #c2c2c2'
           document.getElementById('kk'+ok).style.color = '#c0c4cc'
-          document.getElementById('kk'+ok).style.background = '#fff' 
-      } 
-    // 选中的不禁用,并且选中样式
-      for(var lo = 0;lo<this.arr.length;lo++){  
-          this.buttonList[this.arr[lo].id].forbidden =false;        
-          document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-          document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'   
+          document.getElementById('kk'+ok).style.background = '#fff'
       }
-    }  
+    // 选中的不禁用,并且选中样式
+      for(var lo = 0;lo<this.arr.length;lo++){
+          this.buttonList[this.arr[lo].id].forbidden =false;
+          document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
+          document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
+      }
+    }
   },
   // 属性值按钮按下
   choice(e,key,kk,lp){
-      // 当这个按钮还处于未被按下的情况下,按下   
+      // 当这个按钮还处于未被按下的情况下,按下
     if(kk.value[key].pp == false){
      // 先禁用所有的属性值按钮
       for(var ui = 0;ui<kk.value.length;ui++){
         kk.value[ui].forbidden = true;
       }
        this.lm = this.addtable[this.addtable.length-1].allprice[lp].value[key].di;
-         document.getElementById('vv'+lp+key).style.border = 'solid 1px #409eff'     
-         document.getElementById('vv'+lp+key).style.color = '#fff'     
-         document.getElementById('vv'+lp+key).style.background = '#409eff'     
+         document.getElementById('vv'+lp+key).style.border = 'solid 1px #409eff'
+         document.getElementById('vv'+lp+key).style.color = '#fff'
+         document.getElementById('vv'+lp+key).style.background = '#409eff'
       // 再解禁选中的按钮
         kk.value[key].forbidden = false;
       // 让选中的按钮处于按下的状态
@@ -1022,9 +1023,9 @@ import DateList from './component/DateList'
         console.log(this.sku[this.sku.length-1].price);
         console.log(key)
         this.sku[this.sku.length-1].price.splice(lp,1);
-         document.getElementById('vv'+lp+key).style.border = 'solid 1px #b3d8ff'     
-         document.getElementById('vv'+lp+key).style.color = '#409EFF'     
-         document.getElementById('vv'+lp+key).style.background = '#ecf5ff' 
+         document.getElementById('vv'+lp+key).style.border = 'solid 1px #b3d8ff'
+         document.getElementById('vv'+lp+key).style.color = '#409EFF'
+         document.getElementById('vv'+lp+key).style.background = '#ecf5ff'
     }
 
   },
@@ -1042,10 +1043,10 @@ import DateList from './component/DateList'
         for(var op = 0;op<this.addtable[this.addtable.length-1].allprice.length-1;op++){
           for(var ll = 0;ll<this.addtable[this.addtable.length-1].allprice[op].value.length;ll++){
             this.addtable[this.addtable.length-1].allprice[op].value[ll].forbidden = false;
-            this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false; 
-            document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'     
-            document.getElementById('vv'+op+ll).style.color = '#409EFF'     
-            document.getElementById('vv'+op+ll).style.background = '#ecf5ff'      
+            this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false;
+            document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'
+            document.getElementById('vv'+op+ll).style.color = '#409EFF'
+            document.getElementById('vv'+op+ll).style.background = '#ecf5ff'
           }
         }
         this.skuList = true;
@@ -1059,7 +1060,7 @@ import DateList from './component/DateList'
             ooo.push(
                 bbb[k].name + ':' + bbb[k].zhi
                 // 这个地方遍历出来的数据没有换行,这个问题有些难,先放一放
-            )    
+            )
           }
         var ppp = ooo.toString()
         // sku的id编号
@@ -1073,7 +1074,7 @@ import DateList from './component/DateList'
         if(this.ccc.length > 0){
             this.accretion = true;
         }
-     }  
+     }
   },
 
   // 删除属性值
@@ -1113,10 +1114,10 @@ import DateList from './component/DateList'
           console.log('error submit!!');
           return false;
         }
-      });   
+      });
     },
   // 删除sku
-    delSku(a){  
+    delSku(a){
       this.ccc.splice(a,1);
     },
     // 删除增值服务
@@ -1132,7 +1133,7 @@ import DateList from './component/DateList'
     // sku下线
     offline(index){
       console.log(2);
-      console.log(this.ccc[index]);      
+      console.log(this.ccc[index]);
       this.ccc[index].type = false;
     },
     // 增值服务上线
@@ -1142,7 +1143,50 @@ import DateList from './component/DateList'
     // 增值服务下线
     addOffline(index){
       this.Addprice[index].type = false;
-    }
+    },
+      //获取id
+      clickBanle(row, event, column){
+        console.log(row);
+       /* console.log(event);
+        console.log(column);*/
+      }
+
+    },
+    created(){
+      //产品列表
+      var that = this
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/team/api/teampage",
+        {
+          "pageIndex": 1,
+          "pageSize": 10,
+          "total": 0,
+          "object": {
+            "loadPackage": true
+          }
+        },
+        {
+          headers:{
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+        .then(function (obj) {
+            console.log(obj.data.objects)
+          that.tableData =obj.data.objects
+          that.tableData.forEach(function (v, k, arr) {
+              arr[k]['type'] = "跟团游"
+              arr[k]['name'] = "xxx 跟团游"
+              arr[k]['mu_address'] = "xxx"
+              arr[k]['options'] = "xxx"
+              arr[k]['status'] = "1"
+              arr[k]['opers'] = "飞猪 携程"
+            arr[k]['price'] = "7900"
+          })
+        })
+        .catch(function (obj) {
+          console.log(obj)
+        })
     }
   }
 </script>
