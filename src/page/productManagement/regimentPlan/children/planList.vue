@@ -18,7 +18,7 @@
        <el-button :disabled="forbidden1" @click="placeOrder">下单</el-button>
      </el-row>
      <!--更改状态弹窗-->
-     <el-dialog title="收货地址" :visible.sync="dialogFormVisible" class="city_list">
+     <el-dialog title="更改状态" :visible.sync="dialogFormVisible" class="city_list">
       <el-form :model="form">
           <el-radio v-model="form.radio" label="1"><span class="fs">正常</span></el-radio>
           <el-radio v-model="form.radio" label="2"><span class="fs">停售</span></el-radio>
@@ -49,7 +49,7 @@
         @size-change="handleSizeChange"
         background
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
+        :current-page="4"
         :page-sizes="[10, 30, 50, 100]"
         :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
@@ -99,7 +99,6 @@ export default {
         }],
         multipleSelection: [],
         forbidden1:true,
-        dialogTableVisible: false,
         dialogFormVisible: false,
         form: {
           radio: '',
@@ -139,6 +138,12 @@ export default {
       },
       placeOrder(){
         this.$router.push({path: "/regimentPlan/placeOrder"});
+      },
+      handleSizeChange(){
+
+      },
+      handleCurrentChange(){
+
       }
   }
 }

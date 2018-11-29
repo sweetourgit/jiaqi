@@ -88,10 +88,21 @@
               <div class="ml13">电话<el-input v-model="ruleForm.contact2" class="numw"></el-input></div>
             </el-form-item>
             <el-form-item label="出行人信息">            
-               <div class="tour-til">成人</div><div class="tourist"><input v-for="item in adult" v-model="item.name" disabled="disabled"/></div>
+               <div class="tour-til">成人</div>
+               <div class="tourist"><input v-for="(item,index) in adult" v-model="item.name" @click="fillTour(index)"/></div>
             </el-form-item>
-
           </el-form>
+
+          <!--填写游客信息-->
+          <el-dialog title="更改状态" :visible.sync="dialogFormVisible" class="city_list">
+            <el-form :model="form">
+       
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button type="primary" @click="dialogFormVisible = false" class="confirm">确 定</el-button>
+            </div>
+          </el-dialog>
       </div>
   </div>
 </template>
@@ -101,6 +112,10 @@ export default {
   data() {
     return {
       adult:[],
+      dialogFormVisible: false,
+      form:{
+          
+      },
       ruleForm: {
           resource: '',                    
           sale:'',
@@ -127,13 +142,16 @@ export default {
             { required: true, message: '请选择价格', trigger: 'change' }
           ],
           num1: [
-            { required: true, message: '请输入数量', trigger: 'blur' }
+            { required: true, message: '请输入数量', trigger: 'blur' },
+            { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}
           ],
           num2: [
-            { required: true, message: '请输入数量', trigger: 'blur' }
+            { required: true, message: '请输入数量', trigger: 'blur' },
+            { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}
           ],
           num3: [
-            { required: true, message: '请输入数量', trigger: 'blur' }
+            { required: true, message: '请输入数量', trigger: 'blur' },
+            { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}
           ],
           type: [
             { required: true, message: '请选择下单方式', trigger: 'change' }
@@ -157,6 +175,10 @@ export default {
         for(var i=0;i<this.ruleForm.num1;i++){
            this.adult.push({name:"点击填写"});
         }
+     },
+     fillTour(index){
+        alert(index);
+        this.dialogFormVisible = true
      },
      submitForm(formName) {
         this.$refs[formName].validate((valid) => {
