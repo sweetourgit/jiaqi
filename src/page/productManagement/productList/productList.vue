@@ -6,6 +6,7 @@
     margin-bottom: 20px;">
     <el-button type="primary"  @click="dialogVisible = true" >添加产品</el-button>
     </div>
+
     <div style="background: #f7f7f7; margin-left: 50px;width: 80%" >
     <div class="select_button">
       <el-button v-for="(item, index) in domains"
@@ -75,7 +76,7 @@
     <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px; width: 80%" >
     <div class="button_select">
 
-      <el-button plain>编辑</el-button>
+      <router-link to="/changepro"><el-button plain>编辑</el-button></router-link>
       <el-button plain>复制</el-button>
       <el-button plain>导出行程</el-button>
       <el-button plain>退改</el-button>
@@ -170,13 +171,18 @@
       </div>
     </div>
     </div>
-    <el-dialog class="merchandise" :visible.sync="merchandise"  append-to-body width="80%">
-     <el-radio-group v-model="isCollapse" style="width:100%">
-      <el-radio-button  class="group" :label="true">库存</el-radio-button>
-      <el-radio-button :label="false">价格</el-radio-button>
-    </el-radio-group>
+
+    <el-dialog class="merchandise" :visible.sync="merchandise"   :show-close="false" append-to-body width="80%">
+     <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
+          <el-radio-group v-model="isCollapse" >
+            <el-radio-button  class="group" :label="true">库存</el-radio-button>
+            <el-radio-button :label="false">价格</el-radio-button>
+          </el-radio-group>
+     </div>
+
     <!-- 库存 -->
  <div v-if="isCollapse==true">
+   <div class="ButtonCls"><el-button   @click="BandCancel">取消</el-button><el-button  type="primary"  @click="BandSave">保存</el-button></div>
 
 
 
@@ -184,9 +190,7 @@
 
       <el-table
        v-show="skuList"
-
-        :data="ccc"
-
+      :data="ccc"
         border
          style="width: 1340px;margin:30px auto;"
         :header-cell-style="getRowClass">
@@ -208,12 +212,12 @@
       </el-table-column>
 
       <el-table-column
-
         align="center"
         label="清位时间">
          <template slot-scope="scope">
            <span style="margin-right:5px">前</span>
-          <el-input style="width:40px"></el-input><span style="margin-left:10px">天</span>
+            <el-input :maxlength="3"  v-model="ccc[scope.$index].uptoDay" style="width:60px"></el-input>
+           <span style="margin-left:10px">天</span>
           <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">时</span> -->
           <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">分</span> -->
 
@@ -221,7 +225,6 @@
         </template>
       </el-table-column>
         <el-table-column
-
         align="center"
         label="出行模板">
         <template slot-scope="scope">
@@ -246,7 +249,7 @@
             <template v-else>
             <el-button size="mini" type="primary"  @click="offline(scope.$index)">下线</el-button>
             </template>
-            <el-button size="mini" type="primary" @click="hahahah('aa')">价格</el-button>
+            <el-button size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
             <!-- <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button> -->
         </template>
       </el-table-column>
@@ -357,6 +360,7 @@ import DateList from './component/DateList'
      data() {
       return {
         buttonlist:[],
+        pid:'',
         domains: [{
           value: '跟团游',
           status:"false"
@@ -434,22 +438,7 @@ import DateList from './component/DateList'
       // sku列表
         skuList:true,
       // 显示sku的数组
-        ccc:[{
-          id:"1",
-          ddd:"普吉岛情侣",
-          type:false,
-          // value:"1",
-        },{
-          id:"2",
-          ddd:"普吉岛亲子",
-          type:false,
-          // value:"2",
-        },{
-          id:"3",
-          ddd:"哈尔滨3天自由行",
-          type:false,
-          // value:"3",
-        }],
+        ccc:[],
       // sku的id
         skuid : 0,
       // 属相按钮的禁用
@@ -712,22 +701,7 @@ import DateList from './component/DateList'
           value: '选项5',
           label: '北京烤鸭'
         }],
-       type: [{
-          value: '1',
-          label: '国内出行'
-        }, {
-          value: '2',
-          label: '境外出行'
-        }, {
-          value: '3',
-          label: '周边游'
-        }, {
-          value: '4',
-          label: '城市玩乐'
-        }, {
-          value: '5',
-          label: '参团游'
-        }],
+       type: [],
         value: '',
         tableData: [{
           id:'1',
@@ -745,6 +719,123 @@ import DateList from './component/DateList'
       }
     },
     methods: {
+      bandlePrice(item){
+        this.isCollapse = false;
+
+      },
+
+      BandSave(){
+
+        console.log(this.ccc[0]);
+        for(let i = 0; i<this.ccc.length;i++){
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/team/api/teampackagesave",
+            {
+              "object": {
+                "id": that.ccc[i].id,
+                "name": that.ccc[i].ddd,
+                "podID": 0,
+                "destinationID": 0,
+                "pod": "string",
+                "destination": "string",
+                "teamID": that.ccc[i].id,
+                "isDeleted": 0,
+                "createTime": "2018-12-04T06:46:08.554Z",
+                "code": "string",
+                "traffic": [
+                  {
+                    "id": 0,
+                    "packageID": 0,
+                    "goOrBack": 1,
+                    "trafficMode": 1,
+                    "day": 0,
+                    "pod": "string",
+                    "company": "string",
+                    "theNumber": "string",
+                    "podCity": "string",
+                    "podPlace": "string",
+                    "podTime": "string",
+                    "arriveCity": "string",
+                    "arrivePlace": "string",
+                    "arriveTime": "string",
+                    "ext_Stopover": "string"
+                  }
+                ],
+                "schedules": [
+                  {
+                    "id": 0,
+                    "packageID": 0,
+                    "day": 0,
+                    "subject": "string",
+                    "ext_Meals": "string",
+                    "info": "string",
+                    "ext_Hotel": "string",
+                    "activitys": [
+                      {
+                        "id": 0,
+                        "scheduleID": 0,
+                        "activityType": 0,
+                        "time": 0,
+                        "name": "string",
+                        "details": "string",
+                        "typeExt": "string",
+                        "pictureID": 0,
+                        "memo": "string",
+                        "createTime": "2018-12-04T06:46:08.555Z",
+                        "code": "string"
+                      }
+                    ],
+                    "createTime": "2018-12-04T06:46:08.555Z",
+                    "code": "string"
+                  }
+                ],
+                "briefMark": "string",
+                "plan": {
+                  "id": 0,
+                  "isDeleted": 0,
+                  "createTime": "2018-12-04T06:46:08.555Z",
+                  "code": "string",
+                  "inventoryID": 0,
+                  "planEnroll": [
+                    {
+                      "id": 0,
+                      "planID": 0,
+                      "enrollID": 0,
+                      "enrollName": "string",
+                      "isDeleted": 0,
+                      "price_01": 0,
+                      "price_02": 0,
+                      "quota": 0
+                    }
+                  ],
+                  "loadPlan_Enroll": true,
+                  "createUser": "string",
+                  "packageID": 0
+                },
+                "loadPlan": true,
+                "uptoDay": that.ccc[i].uptoDay,
+                "templateID": that.ccc[i].value
+              }
+            },
+            {
+              headers:{
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+              }
+            }
+          )
+            .then(function (obj) {
+              console.log(obj)
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+        }
+        this.merchandise = false;
+      },
+      BandCancel(){
+        this.merchandise = false;
+      },
 
       searchHand(){
         alert(13);
@@ -777,6 +868,40 @@ import DateList from './component/DateList'
       },
       // 库存按钮出现
       groupStage() {
+        this.ccc = []
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/team/api/teampackagelist",
+          {
+            "object": {
+              "teamID": this.pid,
+            }
+          },
+          {
+            headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+          .then(function (obj) {
+/*
+            console.log(obj.data.objects)
+*/
+
+            for (let i = 0; i < obj.data.objects.length; i++){
+             /* console.log(obj.data.objects[0].id)*/
+              that.ccc.push({
+                  id:obj.data.objects[i].id,
+                  ddd:obj.data.objects[i].name,
+                uptoDay:obj.data.objects[i].uptoDay,
+                value:obj.data.objects[i].templateID,
+                  type:false,
+                })
+              }
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
       this.merchandise = true;
       this.addtable.push({
         allprice:[],
@@ -1146,7 +1271,8 @@ import DateList from './component/DateList'
     },
       //获取id
       clickBanle(row, event, column){
-        console.log(row);
+          this.pid = row['id'];
+        console.log(this.pid);
        /* console.log(event);
         console.log(column);*/
       }
@@ -1172,7 +1298,7 @@ import DateList from './component/DateList'
         }
       )
         .then(function (obj) {
-            console.log(obj.data.objects)
+            //console.log(obj.data.objects)
           that.tableData =obj.data.objects
           that.tableData.forEach(function (v, k, arr) {
               arr[k]['type'] = "跟团游"
@@ -1187,10 +1313,40 @@ import DateList from './component/DateList'
         .catch(function (obj) {
           console.log(obj)
         })
+
+      //出行模板data
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/universal/template/api/templatelist",
+        {
+          "object": {
+          }
+        },
+        {
+          headers:{
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+        .then(function (obj) {
+          console.log(obj.data.objects)
+          for (let i=0; i<obj.data.objects.length; i++){
+            that.type.push({
+              value:obj.data.objects[i].id,
+              label:obj.data.objects[i].name
+            })
+          }
+        })
+        .catch(function (obj) {
+          console.log(obj)
+        })
     }
   }
 </script>
 <style lang="stylus" scoped>
+  .ButtonCls{
+    float: right;
+    margin-top: -35px;
+  }
   .button_select{
     margin-top: 20px;
     margin-bottom: 20px;
