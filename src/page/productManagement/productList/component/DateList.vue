@@ -48,7 +48,7 @@
             <span v-if="dayobject.day.getMonth()+1 != currentMonth" class="other-month">{{ dayobject.day.getDate() }}</span>
             <!--如果是本月  还需要判断是不是这一天-->
             <div v-else>
-          <!--今天  同年同月同日-->     
+          <!--今天  同年同月同日-->
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
 
@@ -64,19 +64,19 @@
             <span v-if="dayobject.day.getMonth()+1 != currentMonth" class="other-month">{{ dayobject.day.getDate() }}</span>
             <!--如果是本月  还需要判断是不是这一天-->
             <div v-else>
-          <!--今天  同年同月同日-->     
+          <!--今天  同年同月同日-->
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
-                
+
                 <!--  -->
-                <div class='person' v-for="(data,index) in dayobject.data.person" :key="index">  
+                <div class='person' v-for="(data,index) in dayobject.data.person" :key="index">
                     <!-- v-show="dayobject.data.person.price" -->
                   <p class='old'>{{dayobject.data.person[index].name}}</p>
                   <p>销售价：{{dayobject.data.person[index].salePrice}}</p>
                   <p>同业价：{{dayobject.data.person[index].traderPrice}}</p>
                   <!-- <p>已售/库存：0/{{dayobject.data.person.number}}</p> -->
                   <!-- <p>上下限:{{dayobject.data.person.top}}/{{dayobject.data.person.down}}</p> -->
-                </div>  
+                </div>
             </div>
             <!--显示剩余多少数量-->
             <!---->
@@ -92,7 +92,7 @@
       <el-form :model="Rform">
           <el-form-item label="报名类型:">
               <el-select v-model="Rform.region" placeholder="请选择" style="width:150px">
-                <el-option v-for="item in typeSelect" 
+                <el-option v-for="item in typeSelect"
                 :label="item.label"
                 :value="item.value"
                 :key="item.value"></el-option>
@@ -108,7 +108,7 @@
           <!-- 共享库存 -->
           <el-form-item label="共享库存:" v-if='repertorySelect == "share"'  style="margin-top:-15px;">
               <el-select v-model="Rform.shareRepertory" placeholder="请选择" style="width:150px">
-                <el-option v-for="item in typeSelect" 
+                <el-option v-for="item in typeSelect"
                 :label="item.label"
                 :value="item.value"
                 :key="item.value"></el-option>
@@ -134,10 +134,10 @@
               <el-button @click="AddQuota(index)"  type="primary" size="mini">添加配额</el-button>
             </template>
             <template v-else>
-              <el-button @click="DelectQuota(index)"  type="primary" size="mini">删除配额</el-button>            
-            </template>          
-          </div>     
-        </div> 
+              <el-button @click="DelectQuota(index)"  type="primary" size="mini">删除配额</el-button>
+            </template>
+          </div>
+        </div>
         <div>
           <el-form ref="form"  label-width="80px">
             <el-form-item label="销售价">
@@ -155,7 +155,7 @@
       </template>
     </div>
   </div>
-  
+
 </template>
 
 <script>
@@ -203,7 +203,7 @@ export default {
       // 共享或非公享第一次选择
       share:false,
       // 日期信息
-      // DayMessage:[], 
+      // DayMessage:[],
       currentDay: 1,
       currentMonth: 1,
       currentYear: 1970,
@@ -223,7 +223,7 @@ export default {
         // 同业价
         traderPrice:'',
         quota:false,
-        quotaPrice:'',        
+        quotaPrice:'',
       },{
         id:1,
         name:'儿童',
@@ -232,7 +232,7 @@ export default {
         // 同业价
         traderPrice:'',
         quota:false,
-        quotaPrice:'',        
+        quotaPrice:'',
       },{
         id:5,
         name:'单房差',
@@ -241,7 +241,7 @@ export default {
         // 同业价
         traderPrice:'',
         quota:false,
-        quotaPrice:'',        
+        quotaPrice:'',
       }],
       // 添加库存
       Addrepertory:[],
@@ -259,19 +259,19 @@ export default {
       typeNum:'',
       radio:'',
       // sku选择
-      ccc:[{         
+      ccc:[{
           ddd:"普吉岛情侣",
           type:false,
           // value:"1",
-        },{     
+        },{
           ddd:"普吉岛亲子",
           type:false,
-          // value:"2",         
+          // value:"2",
         },{
 
           ddd:"哈尔滨3天自由行",
           type:false,
-          // value:"3",          
+          // value:"3",
         }],
 
       // 附加增值服务
@@ -324,7 +324,7 @@ export default {
         mon.forEach(item => {
           if (this.n.includes(item)) {
             return;
-            
+
           } else {
             item.name = 1
             this.n.push(item);
@@ -905,7 +905,7 @@ export default {
     xuanze(a){
       // 第一次点击的时候
       if(this.share == false){
-        if(a == "0" ){          
+        if(a == "0" ){
           this.repertorySelect = "share";
         }else if(a == "1" ){
           this.repertorySelect = "sum";
@@ -937,7 +937,7 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消更改'
-          });   
+          });
         })
       }
     },
@@ -958,7 +958,7 @@ export default {
           // 同业价
           traderPrice:'',
           quota:false,
-          quotaPrice:'',        
+          quotaPrice:'',
         })
       } else {
         this.$message({
@@ -998,7 +998,7 @@ export default {
   font-size: 12px;
   line-height: 20px;
 }
-.person .old { 
+.person .old {
   border-bottom: 1px solid #3096fb;
   color: #e6e6e6;
   height: 24px;
@@ -1105,7 +1105,7 @@ body {
   padding: 5px 10px;
   border: solid 1px #e6e6e6;
   cursor: pointer;
-  font-size: 20px; 
+  font-size: 20px;
   /* margin-top: 10px; */
 }
 .arrow:hover {
@@ -1126,7 +1126,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  user-select:none;  
+  user-select:none;
 }
 .weekdays li .checkbox{
   margin-right: 10px;
@@ -1136,7 +1136,7 @@ body {
   border: solid 1px #E7E7E7;
   border-right: none;
   flex: 1;
-  text-align: center;  
+  text-align: center;
 }
 .days {
   padding: 0;

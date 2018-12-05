@@ -342,7 +342,7 @@
     </div>
     <!-- 价格 -->
     <div v-else>
-      <DateList/>
+      <DateList :msg-father="ccc"/>
     </div>
     </el-dialog>
   </div>
@@ -897,6 +897,7 @@ import DateList from './component/DateList'
                   type:false,
                 })
               }
+              console.log(that.ccc)
           })
           .catch(function (obj) {
             console.log(obj)
@@ -1271,7 +1272,7 @@ import DateList from './component/DateList'
       //获取id
       clickBanle(row, event, column){
           this.pid = row['id'];
-      
+
       }
 
     },
