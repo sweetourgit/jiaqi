@@ -726,7 +726,7 @@ import DateList from './component/DateList'
 
       BandSave(){
 
-        console.log(this.ccc[0]);
+
         for(let i = 0; i<this.ccc.length;i++){
           var that = this
           this.$http.post(
@@ -825,10 +825,10 @@ import DateList from './component/DateList'
             }
           )
             .then(function (obj) {
-              console.log(obj)
+
             })
             .catch(function (obj) {
-              console.log(obj)
+
             })
         }
         this.merchandise = false;
@@ -847,8 +847,7 @@ import DateList from './component/DateList'
         this.buttonlist.push(this.domains[index].value);
         this.domains[index].status = "true"
         }
-        console.log(this.domains[index].value);
-        console.log( this.buttonlist);
+
       },
       routerHandle(){
         console.log(this.about);
@@ -1272,9 +1271,7 @@ import DateList from './component/DateList'
       //获取id
       clickBanle(row, event, column){
           this.pid = row['id'];
-        console.log(this.pid);
-       /* console.log(event);
-        console.log(column);*/
+      
       }
 
     },
@@ -1328,7 +1325,6 @@ import DateList from './component/DateList'
         }
       )
         .then(function (obj) {
-          console.log(obj.data.objects)
           for (let i=0; i<obj.data.objects.length; i++){
             that.type.push({
               value:obj.data.objects[i].id,
