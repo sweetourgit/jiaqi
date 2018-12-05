@@ -342,7 +342,7 @@
     </div>
     <!-- 价格 -->
     <div v-else>
-      <DateList :msg-father="ccc"/>
+      <DateList :msg-father="ccc" :piapia="piaid"/>
     </div>
     </el-dialog>
   </div>
@@ -703,6 +703,7 @@ import DateList from './component/DateList'
         }],
        type: [],
         value: '',
+        piaid:'',
         tableData: [{
           id:'1',
           type:'跟团游',
@@ -720,7 +721,11 @@ import DateList from './component/DateList'
     },
     methods: {
       bandlePrice(item){
+
+        this.piaid = this.ccc[item].id
         this.isCollapse = false;
+        console.log(this.piaid)
+
 
       },
 
@@ -897,7 +902,6 @@ import DateList from './component/DateList'
                   type:false,
                 })
               }
-              console.log(that.ccc)
           })
           .catch(function (obj) {
             console.log(obj)
