@@ -12,31 +12,31 @@
                 <table>
                    <tr>
                      <td width="80">产品：</td>
-                     <td>1</td>
+                     <td>绝美斯米兰 蓝调普吉6晚8日游（往返转机）</td>
                    </tr>
                    <tr>
                      <td>团期计划：</td>
-                     <td>1</td>
+                     <td>TC-GTY-1001-01-180806-01</td>
                    </tr>
                    <tr>
                      <td>套餐名称：</td>
-                     <td>1</td>
+                     <td>绝美斯米兰</td>
                    </tr>
                    <tr>
                      <td>出发地：</td>
-                     <td>1</td>
+                     <td>沈阳</td>
                    </tr>
                    <tr>
                      <td>目的地：</td>
-                     <td>1</td>
+                     <td>普吉岛</td>
                    </tr>
                    <tr>
                      <td>出发日期：</td>
-                     <td>1</td>
+                     <td>2018-06-06</td>
                    </tr>
                    <tr>
                      <td>余位：</td>
-                     <td>1</td>
+                     <td>20</td>
                    </tr>
                    <tr>
                      <td>参考结算：</td>
@@ -45,25 +45,49 @@
                 </table>
            </div>
            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="订单来源" prop="resource">
-              <el-radio-group v-model="ruleForm.resource">
-                <el-radio label="同业社" class="radiomar"></el-radio>
-                <el-radio label="门店" class="radiomar"></el-radio>
-                <el-radio label="线下直客" class="radiomar"></el-radio>
-              </el-radio-group>
+            <el-form-item label="订单来源" prop="orderRadio">
+                <el-radio label="1" class="radiomar" v-model="ruleForm.orderRadio">同业社</el-radio>
+                <el-radio label="2" class="radiomar" v-model="ruleForm.orderRadio">门店</el-radio>
+                <el-radio label="3" class="radiomar" v-model="ruleForm.orderRadio">线下直客</el-radio>
             </el-form-item>
-            <el-form-item label="销售" prop="sale" class="fl">
-              <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="同业社" prop="sale" class="fl">
-              <el-select v-model="ruleForm.travel" placeholder="请选择" class="optionw">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
+            <div v-if="ruleForm.orderRadio==1">
+                <el-form-item label="销售" prop="sale" class="fl">
+                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
+                    <el-option label="区域一" value="shanghai"></el-option>
+                    <el-option label="区域二" value="beijing"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="同业社" prop="sale" class="fl">
+                  <el-select v-model="ruleForm.travel" placeholder="请选择" class="optionw">
+                    <el-option label="区域一" value="shanghai"></el-option>
+                    <el-option label="区域二" value="beijing"></el-option>
+                  </el-select>
+                </el-form-item>
+            </div>
+            <div v-if="ruleForm.orderRadio==2">
+                <el-form-item label="销售" prop="sale" class="fl">
+                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
+                    <el-option label="区域一" value="shanghai"></el-option>
+                    <el-option label="区域二" value="beijing"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="门店" prop="sale" class="fl">
+                  <el-select v-model="ruleForm.travel" placeholder="请选择" class="optionw">
+                    <el-option label="区域一" value="shanghai"></el-option>
+                    <el-option label="区域二" value="beijing"></el-option>
+                  </el-select>
+                </el-form-item>
+            </div>
+            <div v-if="ruleForm.orderRadio==3">
+                <el-form-item label="销售" prop="sale" class="fl">
+                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
+                    <el-option label="区域一" value="shanghai"></el-option>
+                    <el-option label="区域二" value="beijing"></el-option>
+                  </el-select>
+                </el-form-item>
+            </div>
+
+
             <el-form-item label="选择价格" prop="price" class="cb price">
               <el-radio-group v-model="ruleForm.price"><br/>
                 <el-radio label="同业价" class="radiomar">同业价： 成人 （￥3800）  儿童（￥3000） 老人（￥3000） 单房差（￥200）</el-radio><br/>
@@ -154,8 +178,9 @@ export default {
       typeNum1:false,
       typeNum2:false,
       typeNum3:false,
-      ruleForm: {
-          resource: '',                    
+      ruleForm: {     
+          orderRadio:"1",            
+          resource:'',
           sale:'',
           travel:'',
           price:'',
@@ -169,10 +194,13 @@ export default {
           num3: '',
           type: '',    
           contact1:'',
-          contact2:'',
+          contact2:''
         },
         remark:'',
         rules: {
+          orderRadio: [
+            { required: true, message: '请选择订单来源', trigger: 'change' }
+          ],
           resource: [
             { required: true, message: '请选择订单来源', trigger: 'change' }
           ],
@@ -198,7 +226,7 @@ export default {
             { pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}
           ],
           totalPrice: [
-            { required: true}
+            { required: true, message: '价格不能为空'}
           ],
           num1: [
             { required: true, message: '请输入数量', trigger: 'blur' },
