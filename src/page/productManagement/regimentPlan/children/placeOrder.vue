@@ -38,12 +38,17 @@
                      <td>余位：</td>
                      <td>1</td>
                    </tr>
+                   <tr>
+                     <td>参考结算：</td>
+                     <td>3000.00</td>
+                   </tr>
                 </table>
            </div>
            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="订单来源" prop="resource">
               <el-radio-group v-model="ruleForm.resource">
                 <el-radio label="同业社" class="radiomar"></el-radio>
+                <el-radio label="门店" class="radiomar"></el-radio>
                 <el-radio label="线下直客" class="radiomar"></el-radio>
               </el-radio-group>
             </el-form-item>
@@ -59,24 +64,36 @@
                 <el-option label="区域二" value="beijing"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="选择价格" prop="price" class="cb">
+            <el-form-item label="选择价格" prop="price" class="cb price">
               <el-radio-group v-model="ruleForm.price"><br/>
                 <el-radio label="同业价" class="radiomar">同业价： 成人 （￥3800）  儿童（￥3000） 老人（￥3000） 单房差（￥200）</el-radio><br/>
                 <el-radio label="销售价" class="radiomar">销售价： 成人 （￥4800）  儿童（￥4000） 老人（￥4000） 单房差（￥300）</el-radio>
+                <el-radio label="自定义" class="radiomar">自定义： 
+                     成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
+                     儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
+                     老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
+                     单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
+                </el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="报名人数" prop="num1">            
-              <div class="ml13">成人<el-input v-model="ruleForm.num1" class="numw" @input="adultNum"></el-input>余（17） ￥11400</div>
+              <div class="ml13">成人<el-input v-model="ruleForm.num1" class="numw" @input="peoNum('adult')"></el-input>余（17） ￥11400</div>
             </el-form-item>
             <el-form-item label="" prop="num2">            
-              <div class="ml13">儿童<el-input v-model="ruleForm.num2" class="numw"></el-input>余（17） ￥1140</div>
+              <div class="ml13">儿童<el-input v-model="ruleForm.num2" class="numw" @input="peoNum('child')"></el-input>余（17） ￥1140</div>
             </el-form-item>
             <el-form-item label="" prop="num3">            
-              <div class="ml13">老人<el-input v-model="ruleForm.num3" class="numw"></el-input>余（17） ￥1140</div>
+              <div class="ml13">老人<el-input v-model="ruleForm.num3" class="numw" @input="peoNum('elder')"></el-input>余（17） ￥1140</div>
+            </el-form-item>
+            <el-form-item label="" prop="">            
+              <div class="ml13">单房差 ￥340</div>
+            </el-form-item>
+            <el-form-item label="总计" prop="totalPrice">            
+              <div class="ml13">{{ruleForm.totalPrice}}</div>
             </el-form-item>
             <el-form-item label="下单方式" prop="type">
               <el-radio-group v-model="ruleForm.type"><br/>
-                <el-radio label="确认占位" class="radiomar">确认占位 （同业社额度： 总欠款 270,164 元 ；额度 999,999 元 ；剩余额度 729,835 元）</el-radio><br/>
+                <el-radio label="确认占位" class="radiomar">确认占位 （同业社额度： 总欠款 270,164 元）</el-radio><br/>
                 <el-radio label="预定占位" class="radiomar">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
                 <el-radio label="预定不占" class="radiomar">预定不占 （订单保留24小时，到期提醒）</el-radio>
               </el-radio-group>
@@ -88,10 +105,26 @@
               <div class="ml13">电话<el-input v-model="ruleForm.contact2" class="numw"></el-input></div>
             </el-form-item>
             <el-form-item label="出行人信息">            
-               <div class="tour-til">成人</div>
-               <div class="tourist"><input v-for="(item,index) in adult" v-model="item.name" @click="fillTour(index)"/></div>
+               <div class="oh" v-show="typeNum1">
+                 <div class="tour-til">成人</div>
+                 <div class="tourist"><input v-for="(item,index) in adult" v-model="item.name" @click="fillTour(index)"/></div>
+               </div>
+               <div class="oh" v-show="typeNum2">
+                 <div class="tour-til">儿童</div>
+                 <div class="tourist"><input v-for="(item,index) in child" v-model="item.name" @click="fillTour(index)"/></div>
+               </div>
+               <div class="oh" v-show="typeNum3">
+                 <div class="tour-til">老人</div>
+                 <div class="tourist"><input v-for="(item,index) in elder" v-model="item.name" @click="fillTour(index)"/></div>
+               </div>
+            </el-form-item>
+            <el-form-item label="备注" prop="">            
+              <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="remark"></el-input>
             </el-form-item>
           </el-form>
+          
+
+
 
           <!--填写游客信息-->
           <el-dialog title="更改状态" :visible.sync="dialogFormVisible" class="city_list">
@@ -112,15 +145,25 @@ export default {
   data() {
     return {
       adult:[],
+      child:[],
+      elder:[],
       dialogFormVisible: false,
       form:{
           
       },
+      typeNum1:false,
+      typeNum2:false,
+      typeNum3:false,
       ruleForm: {
           resource: '',                    
           sale:'',
-          travel: '',
+          travel:'',
           price:'',
+          price1:'',
+          price2:'',
+          price3:'',
+          price4:'',
+          totalPrice:'',
           num1: '',
           num2: '',
           num3: '',
@@ -128,6 +171,7 @@ export default {
           contact1:'',
           contact2:'',
         },
+        remark:'',
         rules: {
           resource: [
             { required: true, message: '请选择订单来源', trigger: 'change' }
@@ -140,6 +184,21 @@ export default {
           ],
           price: [
             { required: true, message: '请选择价格', trigger: 'change' }
+          ],
+          price1: [
+            { pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}
+          ],
+          price2: [
+            { pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}
+          ],
+          price3: [
+            { pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}
+          ],
+          price4: [
+            { pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}
+          ],
+          totalPrice: [
+            { required: true}
           ],
           num1: [
             { required: true, message: '请输入数量', trigger: 'blur' },
@@ -170,11 +229,42 @@ export default {
 
   },
   methods: {
-     adultNum(){
-        this.adult=[];
-        for(var i=0;i<this.ruleForm.num1;i++){
-           this.adult.push({name:"点击填写"});
+     peoNum(num){
+        let arr;
+        let arrLength;
+        if(num=='adult'){
+          this.adult=[];
+          arr=this.adult;
+          arrLength=this.ruleForm.num1;
+          if(arrLength!=0){
+            this.typeNum1=true;
+          }else{
+            this.typeNum1=false;
+          }
         }
+        if(num=='child'){
+          this.child=[];
+          arr=this.child;
+          arrLength=this.ruleForm.num2;
+          if(arrLength!=0){
+            this.typeNum2=true;
+          }else{
+            this.typeNum2=false;
+          }
+        }
+        if(num=='elder'){
+          this.elder=[];
+          arr=this.elder;
+          arrLength=this.ruleForm.num3;
+          if(arrLength!=0){
+            this.typeNum3=true;
+          }else{
+            this.typeNum3=false;
+          }
+        }
+        for(var i=0;i<arrLength;i++){
+           arr.push({name:"点击填写"});
+        }        
      },
      fillTour(index){
         alert(index);
@@ -204,10 +294,14 @@ export default {
     .fl{float: left}
     .cb{clear: both}
     .optionw{width: 280px}
-    .numw{width: 124px;text-align: center;margin:0 15px;}
+    .price .pricew{width: 90px;text-align: center;margin:-5px 15px;}
+    .numw{width: 90px;text-align: center;margin:0 15px;}
     .radiomar{margin:12px 13px}
     .ml13{margin-left: 13px}
     .tourist{margin-left: 13px;float: left;width:85%}
     .tourist input{width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:5px 10px 10px 10px}
     .tour-til{float: left;margin-left: 13px;margin-right: -8px}
+    .oh{overflow: hidden;}
+    .disib{display: inline-block;}
+    .remark{width: 70%;margin-left: 12px}
 </style>

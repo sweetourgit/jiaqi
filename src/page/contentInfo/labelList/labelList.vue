@@ -22,8 +22,8 @@
             </div>
           </div>
           <!--表格-->
-          <el-table :data="tableData3" border style="width: 100%">
-            <el-table-column type="selection" width="100"></el-table-column>
+          <el-table :data="tableData3" ref="multipleTable" border :row-style="rowClass" @row-click="clickRow">
+            <el-table-column prop="box" type="selection" label=""></el-table-column>
             <el-table-column prop="id" label="ID" width="100"></el-table-column>
             <el-table-column prop="name" label="地标名称"></el-table-column>
             <el-table-column prop="product" label="绑定相关产品" width="120">
@@ -32,12 +32,13 @@
              </template>
             </el-table-column>
           </el-table>
+
         </div>
       </div>
     </el-tab-pane>
     <!--绑定相关产品弹窗-->
       <div class="popup" v-show="messageShow">
-        <div class="mask"></div>
+        <div class="mask"@click="titleClose()"></div>
         <div class="message">
           <div class="messageTitle">
             <div class="titleText">绑定产品信息</div>
@@ -53,24 +54,24 @@
       </div>
       <!--标签删除弹窗-->
       <div class="popup" v-show="comboshow">
-        <div class="mask"></div>
+        <div class="mask" @click="close()"></div>
         <div class="add">
           <div class="label">
             <div class="left">删除标签</div>
-            <div class="right" @click="close">×</div>
+            <div class="right" @click="close()">×</div>
           </div>
           <div class="content">
             <div class="text">是否删除该标签</div>
             <div class="judge">
-              <el-button @click="close">取消</el-button>
-              <el-button @click="confirm" type="primary">确定</el-button>
+              <el-button @click="close()">取消</el-button>
+              <el-button @click="confirm(ensure)" type="primary">确定</el-button>
             </div>
           </div>
         </div>
       </div>
       <!--添加集合弹窗-->
       <div class="popup" v-show="addLabel">
-        <div class="mask"></div>
+        <div class="mask" @click="addclose"></div>
         <div class="add">
           <div class="label">
             <div class="left">添加集合</div>
@@ -95,7 +96,7 @@
       </div>
       <!--编辑集合弹窗-->
       <div class="popup" v-show="addGather">
-        <div class="mask"></div>
+        <div class="mask" @click="closeGather"></div>
         <div class="add">
           <div class="label">
             <div class="left">编辑集合</div>
@@ -120,7 +121,7 @@
       </div>
       <!--添加标签弹窗-->
       <div class="popup" v-show="addTag">
-        <div class="mask"></div>
+        <div class="mask" @click="closeTag"></div>
         <div class="add">
           <div class="label">
             <div class="left">添加标签</div>
@@ -145,7 +146,7 @@
       </div>
       <!--编辑标签弹窗-->
       <div class="popup" v-show="editShow">
-        <div class="mask"></div>
+        <div class="mask" @click="closeEdit"></div>
         <div class="add">
           <div class="label">
             <div class="left">编辑标签</div>
@@ -170,7 +171,7 @@
       </div>
       <!--转移集合-->
       <div class="popup" v-show="shiftGather">
-        <div class="mask"></div>
+        <div class="mask" @click="closeGathers"></div>
         <div class="add">
           <div class="label">
             <div class="left">转移集合</div>
@@ -192,7 +193,7 @@
       </div>
       <!--删除标签弹窗-->
       <div class="popup" v-show="cancelShow">
-        <div class="mask"></div>
+        <div class="mask" @click="closeCancel"></div>
         <div class="add">
           <div class="label">
             <div class="left">删除标签</div>
@@ -223,7 +224,7 @@
     data() {  
        return {
         //标题切换
-        editableTabsValue: '1',
+        editableTabsValue: '2',
         editableTabs: [{
           title: '景点标签',
           name: '1',
@@ -234,22 +235,31 @@
           content: 'Tab 2 content'
         }],
         tabIndex: 2,
+        ensure:'',
+        aindex:0,
         //搜索标签输入框  
         searchLabel:'',
         //表格
         tableData3: [{
+          box:'1',
           id: '1',
           name: '名筑',
           product: '5'
         }, {
+          box:'2',
           id: '2',
           name: '地标',
           product: '4'
         }, {
+          box:'3',
           id: '3',
           name: '必去景点',
           product: '5'
         }],
+        multipleSelection: [],
+        
+
+
         messageShow:false,
         //弹窗表格
         tableData:[{
@@ -312,19 +322,16 @@
         
     },
     methods: {
-     
-
       //主题标题添加删除
        handleTabsEdit(targetName, action) {
         if (action === 'add') {
           if(this.addLabel==false){
             this.addLabel=true;
-            this.aindex=targetName;
             return false;
           }else{
           let newTabName = ++this.tabIndex + '';
           this.editableTabs.push({
-            title: '标签名称',
+            title: this.ruleForm.highlightWords,
             name: newTabName,
             content: 'New Tab content'
           });
@@ -332,25 +339,27 @@
           }
         }
         if (action === 'remove') {
-          if(this.comboshow==false){
+          
+          if(this.comboshow==false){            
             this.comboshow=true;
-            this.aindex=targetName;
+            this.aindex = targetName;
             return false;
-          }else{
-          let tabs = this.editableTabs;
-          let activeName = this.editableTabsValue;
-          if (activeName === targetName) {
-            tabs.forEach((tab, index) => {
-              if (tab.name === targetName) {
-                let nextTab = tabs[index + 1] || tabs[index - 1];
-                if (nextTab) {
-                  activeName = nextTab.name;
+          }
+          else{
+            let tabs = this.editableTabs;
+            let activeName = this.editableTabsValue;
+            if (activeName === targetName) {
+              tabs.forEach((tab, index) => {
+                if (tab.name === targetName) {
+                  let nextTab = tabs[index + 1] || tabs[index - 1];
+                  if (nextTab) {
+                    activeName = nextTab.name;
+                  }
                 }
-              }
-            });
-          this.editableTabsValue = activeName;
-          this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+              });
             }
+            this.editableTabsValue = activeName;
+            this.editableTabs = tabs.filter(tab => tab.name !== targetName);
           }
         }
       },
@@ -358,11 +367,11 @@
       reset(){
         this.searchLabel='';
       },
-      //表格
+      //点击出现表格弹窗
       product(){
         this.messageShow=true;
       },
-      //弹窗
+      //绑定相关产品弹窗
       titleClose(){
         this.messageShow=false;
       },
@@ -370,7 +379,10 @@
       close() {
         this.comboshow = false;
       },
-      confirm() {
+      //删除标签（大）
+      confirm(ensure){
+       // this.comboshow = true;
+       // this.editableTabs.splice(ensure, 1);
         this.handleTabsEdit(this.aindex, "remove");
         this.comboshow = false;
       },
@@ -421,7 +433,19 @@
       },
       closeCancel(){
         this.cancelShow=false;
-      }
+      },
+      //表格勾选
+      clickRow(row){    //选中行复选框勾选
+        //this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+        this.$refs.multipleTable.toggleRowSelection(row)
+      },
+      rowClass({row, rowIndex}){  //选中行样式改变
+       for(var i=0;i<this.multipleSelection.length;i++){
+          if(this.multipleSelection[i].id==row.id){
+             return { "background-color": "#ecf5ff" }
+          }
+        }
+      },
     }
 }
 
@@ -443,7 +467,8 @@
 
 
 <style scoped>
-	.labelList{ font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 100px 0; max-width: 900px; overflow: hidden;}
+	/*.labelList{ font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 100px 0; max-width: 900px; overflow: hidden;}*/
+  .labelList{ font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 100px 0;overflow: hidden; max-width: 900px; min-width: 630px;}
   
   /*标题切换*/
   .labelTabs{text-align: left;}

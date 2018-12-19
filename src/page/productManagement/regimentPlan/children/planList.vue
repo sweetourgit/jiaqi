@@ -13,12 +13,12 @@
      <div class="main">
      <el-row class="button">
        <el-button :disabled="forbidden1" @click="dialogFormVisible = true">更改状态</el-button>
-       <el-button :disabled="forbidden1">成本</el-button>
+       <el-button :disabled="forbidden1" @click="dialogCost = true">成本</el-button>
        <el-button :disabled="forbidden1">订单</el-button>
        <el-button :disabled="forbidden1" @click="placeOrder">下单</el-button>
      </el-row>
      <!--更改状态弹窗-->
-     <el-dialog title="更改状态" :visible.sync="dialogFormVisible" class="city_list">
+     <el-dialog title="更改状态" :visible.sync="dialogFormVisible" class="city_list" width="500px">
       <el-form :model="form">
           <el-radio v-model="form.radio" label="1"><span class="fs">正常</span></el-radio>
           <el-radio v-model="form.radio" label="2"><span class="fs">停售</span></el-radio>
@@ -28,6 +28,18 @@
         <el-button type="primary" @click="dialogFormVisible = false" class="confirm">确 定</el-button>
       </div>
     </el-dialog>
+    <!--成本弹窗-->
+    <el-dialog title="成本" :visible.sync="dialogCost" class="city_list" width="800px">
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogCost = false">取 消</el-button>
+        <el-button type="primary" @click="dialogCost = false" class="confirm">确 定</el-button>
+      </div>
+    </el-dialog>
+
+
+
+
+
 
 
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
@@ -97,9 +109,10 @@ export default {
           operation:'阳阳',
           name: '泰国曼谷+芭提雅+沙美岛+清迈小镇7日游'
         }],
-        multipleSelection: [],
-        forbidden1:true,
-        dialogFormVisible: false,
+        multipleSelection: [],   //选中的list
+        forbidden1:true,         //按钮是否禁用
+        dialogFormVisible: false, //更改状态弹窗
+        dialogCost: false, //成本弹窗
         form: {
           radio: '',
         },
@@ -164,7 +177,6 @@ export default {
        .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}
        .el-table--enable-row-hover .el-table__body tr:hover>td{background-color: #f5f7fa !important}
        .search{margin-left: 15px}
-       .el-dialog__wrapper>>>.el-dialog {width: 500px;height: 250px}
        .city_list{text-align: center}
        .confirm{margin:0 140px 0 20px;}
        .el-form{line-height:50px}
