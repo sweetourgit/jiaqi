@@ -24,6 +24,7 @@ import planList from '@/page/productManagement/regimentPlan/children/planList'
 import placeOrder from '@/page/productManagement/regimentPlan/children/placeOrder'
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 import changePro from '@/page/productManagement/changePro/changePro'
+import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 
 
 Vue.use(Router);
@@ -147,6 +148,13 @@ export default new Router({
       path: '/supplierInfo',
       component: supplierInfo,
       name: '供应商信息',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    }, {
+      path: '/merchantInfo',
+      component: merchantInfo,
+      name: '商户信息',
       meta: {
         keepAlive: true,
         auth:true}

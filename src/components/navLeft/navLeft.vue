@@ -89,6 +89,10 @@
                 {
                   value: '供应商信息',
                   router:'/supplierInfo'
+                },
+                {
+                  value: '商户信息',
+                  router:'/merchantInfo'
                 }
               ]
             },
@@ -121,7 +125,7 @@
         index: ''
     }
   },
-  methods: {   
+  methods: {
     mouseOpen(key) {
       this.mouseActive = key;
     },
@@ -163,7 +167,7 @@
   width:4px;
   height:100%;
   background:#3095FA;
-  display:block; 
+  display:block;
 }
 .tac{text-align: left;height:100%;}
 .nav{height:100%;}
