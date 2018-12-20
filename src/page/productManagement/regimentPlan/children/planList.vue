@@ -23,13 +23,28 @@
           <el-radio v-model="form.radio" label="1"><span class="fs">正常</span></el-radio>
           <el-radio v-model="form.radio" label="2"><span class="fs">停售</span></el-radio>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogFormVisible = false" class="confirm">确 定</el-button>
       </div>
     </el-dialog>
     <!--成本弹窗-->
     <el-dialog title="成本" :visible.sync="dialogCost" class="city_list" width="800px">
+       <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
+       <el-table-column  prop="id" label="" fixed type="selection"></el-table-column>
+       <el-table-column  prop="serno" label="序号" min-width="60"></el-table-column>
+       <el-table-column  prop="state" label="状态" min-width="90"></el-table-column>
+       <el-table-column  prop="date" label="日期" min-width="110"></el-table-column>
+       <el-table-column  prop="groupSer" label="团期计划" min-width="240"></el-table-column>
+       <el-table-column  prop="price" label="成人价" min-width="75"></el-table-column>
+       <el-table-column  prop="plan" label="计划位" min-width="75"></el-table-column>
+       <el-table-column  prop="surplus" label="余位" min-width="75"></el-table-column>
+       <el-table-column  prop="conPt" label="确认占位" min-width="85"></el-table-column>
+       <el-table-column  prop="resPt" label="预定占位" min-width="85"></el-table-column>
+       <el-table-column  prop="resNpt" label="预定不占" min-width="85"></el-table-column>
+       <el-table-column  prop="operation" label="操作" min-width="80"></el-table-column>
+       <el-table-column  prop="name" label="产品名称" fixed="right" min-width="250"></el-table-column>
+      </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogCost = false">取 消</el-button>
         <el-button type="primary" @click="dialogCost = false" class="confirm">确 定</el-button>
@@ -81,21 +96,6 @@ export default {
        endTime: '',
        groupList: [{
           id:1,
-          serno: 1,
-          date: '2016-05-03',
-          state: '正常',
-          groupSer:'TC-GTY-1001-01-180806-01',
-          price:'200',
-          plan:'20',
-          surplus:'20',
-          conPt:'20',
-          resPt:'20',
-          resNpt:'20',
-          operation:'阳阳',
-          name: '泰国曼谷+芭提雅+沙美岛+清迈小镇7日游'
-        },
-        {
-          id:2,
           serno: 1,
           date: '2016-05-03',
           state: '正常',
@@ -182,4 +182,5 @@ export default {
        .el-form{line-height:50px}
        .fs{font-size: 16px}
        .pagination{text-align:center;margin:70px 0 50px 0;}
+       .dialog-footer{text-align: left;margin:20px 0 20px 108px;padding-top: 20px}
 </style>

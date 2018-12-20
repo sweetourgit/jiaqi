@@ -131,15 +131,15 @@
             <el-form-item label="出行人信息">            
                <div class="oh" v-show="typeNum1">
                  <div class="tour-til">成人</div>
-                 <div class="tourist"><input v-for="(item,index) in adult" v-model="item.name" @click="fillTour(index)"/></div>
+                 <div class="tourist"><input v-for="(item,index) in adult" v-model="item.name" @click="fillTour('1',index)"/></div>
                </div>
                <div class="oh" v-show="typeNum2">
                  <div class="tour-til">儿童</div>
-                 <div class="tourist"><input v-for="(item,index) in child" v-model="item.name" @click="fillTour(index)"/></div>
+                 <div class="tourist"><input v-for="(item,index) in child" v-model="item.name" @click="fillTour('2',index)"/></div>
                </div>
                <div class="oh" v-show="typeNum3">
                  <div class="tour-til">老人</div>
-                 <div class="tourist"><input v-for="(item,index) in elder" v-model="item.name" @click="fillTour(index)"/></div>
+                 <div class="tourist"><input v-for="(item,index) in elder" v-model="item.name" @click="fillTour('3',index)"/></div>
                </div>
             </el-form-item>
             <el-form-item label="备注" prop="">            
@@ -151,13 +151,30 @@
 
 
           <!--填写游客信息-->
-          <el-dialog title="更改状态" :visible.sync="dialogFormVisible" class="city_list">
-            <el-form :model="form">
-       
+          <el-dialog :title="'出行人信息（'+winTitle+'）'" :visible.sync="dialogFormVisible" class="city_list"  width="700px">
+            <el-form :model="conForm" :rules="rules" ref="conForm">
+              <el-form-item label="姓名" prop="name" label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.name" class="w200 fl"></el-input>
+              </el-form-item>
+              <el-form-item label="电话" prop="phone" label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.phone" class="w200"></el-input>
+              </el-form-item>
+              <el-form-item label="姓(拼音)" prop="firstName" label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.firstName" class="w200"></el-input>
+              </el-form-item>
+              <el-form-item label="名(拼音)" prop="lastName"  label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.lastName" class="w200"></el-input>
+              </el-form-item>
+              <el-form-item label="护照" prop="passport"  label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.passport" class="w200"></el-input>
+              </el-form-item>
+
             </el-form>
-            <div slot="footer" class="dialog-footer">
+            <div slot="footer" class="dialog-footer1 cb">
+              
+
               <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="dialogFormVisible = false" class="confirm">确 定</el-button>
+              <el-button type="primary" @click="subInfo('conForm')" class="confirm">确 定</el-button>
             </div>
           </el-dialog>
       </div>
@@ -178,6 +195,7 @@ export default {
       typeNum1:false,
       typeNum2:false,
       typeNum3:false,
+      winTitle:'',
       ruleForm: {     
           orderRadio:"1",            
           resource:'',
@@ -196,60 +214,48 @@ export default {
           contact1:'',
           contact2:''
         },
+        conForm: {   
+          name:'',
+          phone:'',
+          firstName:'',
+          lastName:'',
+          passport:''
+        },
         remark:'',
         rules: {
-          orderRadio: [
-            { required: true, message: '请选择订单来源', trigger: 'change' }
-          ],
-          resource: [
-            { required: true, message: '请选择订单来源', trigger: 'change' }
-          ],
-          sale: [
-            { required: true, message: '请选择销售', trigger: 'change' }
-          ],
-          travel: [
-            { required: true, message: '请选择同业社', trigger: 'change' }
-          ],
-          price: [
-            { required: true, message: '请选择价格', trigger: 'change' }
-          ],
-          price1: [
-            { pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}
-          ],
-          price2: [
-            { pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}
-          ],
-          price3: [
-            { pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}
-          ],
-          price4: [
-            { pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}
-          ],
-          totalPrice: [
-            { required: true, message: '价格不能为空'}
-          ],
+          orderRadio: [{ required: true, message: '请选择订单来源', trigger: 'change' }],
+          resource: [{ required: true, message: '请选择订单来源', trigger: 'change' }],
+          sale: [{ required: true, message: '请选择销售', trigger: 'change' }],
+          travel: [{ required: true, message: '请选择同业社', trigger: 'change' }],
+          price: [{ required: true, message: '请选择价格', trigger: 'change' }],
+          price1: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
+          price2: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
+          price3: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
+          price4: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
+          totalPrice: [{ required: true, message: '价格不能为空'}],
           num1: [
             { required: true, message: '请输入数量', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}
-          ],
+            { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}],
           num2: [
             { required: true, message: '请输入数量', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}
-          ],
+            { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}],
           num3: [
             { required: true, message: '请输入数量', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}
-          ],
-          type: [
-            { required: true, message: '请选择下单方式', trigger: 'change' }
-          ],
-          contact1: [
-            { required: true, message: '请输入联系人信息', trigger: 'blur' }
-          ],
-          contact2: [
-            { required: true, message: '请输入联系人信息', trigger: 'blur' }
-          ]
-
+            { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}],
+          type: [{ required: true, message: '请选择下单方式', trigger: 'change' }],
+          contact1: [{ required: true, message: '请输入联系人信息', trigger: 'blur' }],
+          contact2: [{ required: true, message: '请输入联系人信息', trigger: 'blur' }],
+          name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+          phone: [
+            { required: true, message: '请输入手机号', trigger: 'blur' },
+            { pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, message: '手机号格式不正确'}],
+          firstName: [
+            { required: true, message: '请输入姓（拼音）', trigger: 'blur' },
+            { pattern: /(a[io]?|ou?|e[inr]?|ang?|ng|[bmp](a[io]?|[aei]ng?|ei|ie?|ia[no]|o|u)|pou|me|m[io]u|[fw](a|[ae]ng?|ei|o|u)|fou|wai|[dt](a[io]?|an|e|[aeio]ng|ie?|ia[no]|ou|u[ino]?|uan)|dei|diu|[nl](a[io]?|ei?|[eio]ng|i[eu]?|i?ang?|iao|in|ou|u[eo]?|ve?|uan)|nen|lia|lun|[ghk](a[io]?|[ae]ng?|e|ong|ou|u[aino]?|uai|uang?)|[gh]ei|[jqx](i(ao?|ang?|e|ng?|ong|u)?|u[en]?|uan)|([csz]h?|r)([ae]ng?|ao|e|i|ou|u[ino]?|uan)|[csz](ai?|ong)|[csz]h(ai?|uai|uang)|zei|[sz]hua|([cz]h|r)ong|y(ao?|[ai]ng?|e|i|ong|ou|u[en]?|uan))/, message: '姓（拼音）格式不正确'}],
+          lastName: [
+            { required: true, message: '请输入名（拼音）', trigger: 'blur' },
+            { pattern: /(a[io]?|ou?|e[inr]?|ang?|ng|[bmp](a[io]?|[aei]ng?|ei|ie?|ia[no]|o|u)|pou|me|m[io]u|[fw](a|[ae]ng?|ei|o|u)|fou|wai|[dt](a[io]?|an|e|[aeio]ng|ie?|ia[no]|ou|u[ino]?|uan)|dei|diu|[nl](a[io]?|ei?|[eio]ng|i[eu]?|i?ang?|iao|in|ou|u[eo]?|ve?|uan)|nen|lia|lun|[ghk](a[io]?|[ae]ng?|e|ong|ou|u[aino]?|uai|uang?)|[gh]ei|[jqx](i(ao?|ang?|e|ng?|ong|u)?|u[en]?|uan)|([csz]h?|r)([ae]ng?|ao|e|i|ou|u[ino]?|uan)|[csz](ai?|ong)|[csz]h(ai?|uai|uang)|zei|[sz]hua|([cz]h|r)ong|y(ao?|[ai]ng?|e|i|ong|ou|u[en]?|uan))/, message: '名（拼音）格式不正确'}],
+          passport: [{ required: true, message: '请输入护照', trigger: 'blur' }],
         }
     }
   },
@@ -294,9 +300,17 @@ export default {
            arr.push({name:"点击填写"});
         }        
      },
-     fillTour(index){
-        alert(index);
-        this.dialogFormVisible = true
+     fillTour(type,index){
+        if(type==1){
+          this.winTitle="成人";
+        }
+        if(type==2){
+          this.winTitle="儿童";
+        }
+        if(type==3){
+          this.winTitle="老人";
+        }
+        this.dialogFormVisible = true;
      },
      submitForm(formName) {
         this.$refs[formName].validate((valid) => {
@@ -307,6 +321,15 @@ export default {
             return false;
           }
         });
+      },
+      subInfo(formName){
+         this.$refs[formName].validate((valid) => {
+          if (valid) {
+         
+             this.dialogFormVisible = false;
+            }
+          });
+         
       }
     }
 }
@@ -316,7 +339,8 @@ export default {
     .main{border:1px solid #e6e6e6;overflow:hidden;width: 70%;min-width:900px;padding-bottom: 50px;margin-bottom: 120px}
     .order-title{overflow: hidden}
     .order-title h2{font-size: 17px;font-weight: normal;float: left;margin:25px 30px}
-    .dialog-footer{float: right;margin:20px 30px}
+    .dialog-footer{float: right;margin:20px 50px;}
+    .dialog-footer1{text-align: left;margin:20px 0 20px 108px;padding-top: 20px}
     .pro-info{font-size: 14px;background-color: #e6e6e6;margin:0 30px 30px 30px;line-height: 25px;padding:10px 20px}
     .demo-ruleForm{margin-left: 10px;}
     .fl{float: left}
@@ -327,9 +351,10 @@ export default {
     .radiomar{margin:12px 13px}
     .ml13{margin-left: 13px}
     .tourist{margin-left: 13px;float: left;width:85%}
-    .tourist input{width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:5px 10px 10px 10px}
+    .tourist input{width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:1px 10px 10px 10px}
     .tour-til{float: left;margin-left: 13px;margin-right: -8px}
     .oh{overflow: hidden;}
     .disib{display: inline-block;}
     .remark{width: 70%;margin-left: 12px}
+    .w200{width: 200px}
 </style>
