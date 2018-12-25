@@ -1,14 +1,5 @@
 <template>
   <div>
-      <div class="demo-input-suffix">
-         <span class="search-title">团号计划</span>
-         <el-input placeholder="输入团号" v-model="groupNo" class="group-no"></el-input>
-         <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
-         <div class="date-line"></div>
-         <el-date-picker v-model="endTime" type="date" placeholder="终止日期"></el-date-picker>
-         <el-button type="primary" icon="el-icon-search" class="search"></el-button>
-     </div>
-     <div class="line"></div>
      <div class="main">
      <el-row class="button">
        <el-button :disabled="forbidden1" @click="dialogFormVisible = true">更改状态</el-button>

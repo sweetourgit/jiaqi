@@ -123,8 +123,8 @@
               img: 'order.png',
               items: [
                 {
-                  value: '订单列表',
-                  router:'/productList'
+                  value: '订单管理',
+                  router:'/searchOrder/orderList'
                 }
               ]
             }
