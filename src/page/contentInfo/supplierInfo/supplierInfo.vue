@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="supplierInfo">
     <!-- 搜索 -->
       <el-form>
         <el-form-item class="top">
@@ -34,7 +34,7 @@
       <el-table-column prop="memo" label="备注" min-width="80" align="center"></el-table-column>
     </el-table>
     <!--分页-->
-    <el-pagination class="paging" :page-sizes="[10,30,50,100]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+    <el-pagination class="paging" :page-sizes="[10,20,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
     
     <!-- 联系人信息列表弹框 -->
@@ -133,8 +133,8 @@
           </el-form-item>
           <el-form-item label="状态" prop="userState" class="addContact_span">
             <el-radio-group v-model="addSupplierInfo.userState" class="addSupplierInfo_state">
-              <el-radio label="1" value="1">停用</el-radio>
-              <el-radio label="2" value="2">正常</el-radio>
+              <el-radio label="0" value="0">停用</el-radio>
+              <el-radio label="1" value="1">正常</el-radio>
             </el-radio-group>
           </el-form-item>
         </div>
@@ -375,17 +375,6 @@ export default {
     clickRow(row){    //选中行复选框勾选
       this.$refs.multipleTable.toggleRowSelection(row)
     },
-    //分页
-    handleSizeChange(page) {
-      this.currentPage = 1;
-      this.pagesize = page;
-      this.pageList();
-    },
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage;
-      this.pageList();
-    },
-
     // 添加供应商信息
     centerDialogVisible(addSupplierInfo){
       this.$refs[addSupplierInfo].validate((valid) => {
@@ -415,22 +404,45 @@ export default {
               }
             })
           .then(function(response) {
-            if(response.data.isSuccess == true){
-              this.$message.error("添加失败,该供应商已存在");
+            that.total = response.data.total
+            that.tableData = response.data.objects
+            that.tableData.forEach(function (v,k,arr) {
+              if(arr[k]['userState'] == 0){
+                arr[k]['userState'] = '停用'
+              }else if(arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '正常'
+              }
+              if(arr[k]['supplierType'] == 0){
+                arr[k]['supplierType'] = '签证，机票'
+              }else if(arr[k]['supplierType'] == 1) {
+                arr[k]['supplierType'] = '地接'
+              }else if(arr[k]['supplierType'] == 2) {
+                arr[k]['supplierType'] = '订车'
+              }
+              if(arr[k]['isMonthly'] == 0){
+                arr[k]['isMonthly'] = '现金'
+              }else if(arr[k]['isMonthly'] == 1) {
+                arr[k]['isMonthly'] = '微信'
+              }else if(arr[k]['isMonthly'] == 2) {
+                arr[k]['isMonthly'] = '支付宝'
+              }
+            })
+            if(response.data.isSuccess == false){
+              _this.$message.error("添加失败,该供应商已存在");
             } else {
-              this.addSupplierInfo.name = "";
-              this.addSupplierInfo.userState = "";
-              this.addSupplierInfo.supplierType = "";
-              this.addSupplierInfo.address = "";
-              this.addSupplierInfo.destinationID = "";
-              this.addSupplierInfo.productDirection = "";
-              this.addSupplierInfo.isMonthly = "";
-              this.addSupplierInfo.leader = "";
-              this.addSupplierInfo.phone = "";
-              this.addSupplierInfo.expireTime = "";
-              this.addSupplierInfo.memo = "";
-              this.$message.success("添加成功");
-              this.add_supplierInfo = true;
+              _this.addSupplierInfo.name = "";
+              _this.addSupplierInfo.userState = "";
+              _this.addSupplierInfo.supplierType = "";
+              _this.addSupplierInfo.address = "";
+              _this.addSupplierInfo.destinationID = "";
+              _this.addSupplierInfo.productDirection = "";
+              _this.addSupplierInfo.isMonthly = "";
+              _this.addSupplierInfo.leader = "";
+              _this.addSupplierInfo.phone = "";
+              _this.addSupplierInfo.expireTime = "";
+              _this.addSupplierInfo.memo = "";
+              _this.$message.success("添加成功");
+              _this.add_supplierInfo = false;
             }
           })
         } else {
@@ -438,31 +450,44 @@ export default {
         }
       });
     },
-    
-    created() {
+    //分页
+    handleSizeChange(page) {
+      this.currentPage = 1;
+      this.pagesize = page;
+      this.pageList();
+    },
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
       this.pageList();
     },
     pageList() {
       this.tableData = [];
       let _this = this;
       this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage", {
-        object: {
-          isDeleted: 0
-        },
-        pageSize: _this.pagesize,
-        pageIndex: _this.currentPage, 
-        id: 0
-      },{
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        }
+        "object": {
+            "isDeleted": 0,
+          },
+          "pageSize":this.pagesize,
+          "pageIndex": this.currentPage,
+          "isGetAll": true,
+          "id": 0
       }).then(function(response) {
         _this.total = response.data.total;
         for (let i = 0; i < response.data.objects.length; i++) {
           if (response.data.objects[i].isDeleted !== 1) {
             _this.tableData.push({
               id: response.data.objects[i].id,
-              positionName: response.data.objects[i].name
+              name: response.data.objects[i].name,
+              userState: response.data.objects[i].userState,
+              supplierType: response.data.objects[i].supplierType,
+              address: response.data.objects[i].address,
+              destinationID: response.data.objects[i].destinationID,
+              productDirection: response.data.objects[i].productDirection,
+              isMonthly: response.data.objects[i].isMonthly,
+              leader: response.data.objects[i].leader,
+              phone: response.data.objects[i].phone,
+              expireTime: response.data.objects[i].expireTime,
+              memo: response.data.objects[i].memo,  
             });
           }
         }
@@ -470,31 +495,52 @@ export default {
         console.log(error);
       });
     },
+    
      
   },
+  //供应商列表
   mounted(){
-      //供应商列表
       var that = this
       this.$http.post(
-        this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage",
-        {
-          "object": {
-            "isDeleted": 0,
-          },
-          "pageSize":this.pagesize,
-          "pageIndex": 1,
-          "isGetAll": true,
-          "id": 0
+      this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage",
+      {
+        "object": {
+          "isDeleted": 0,
         },
-      )
-        .then(function (obj) {
-          console.log(obj.data.objects)
-          that.total = obj.data.total
-          that.tableData = obj.data.objects
-        })  
-        .catch(function (obj) {
-          console.log(obj)
+        "pageSize":this.pagesize,
+        "pageIndex": this.currentPage,
+        "isGetAll": true,
+        "id": 0
+      },)
+      .then(function (obj) {
+        that.total = obj.data.total
+        that.tableData = obj.data.objects
+        that.tableData.forEach(function (v,k,arr) {
+          if(arr[k]['userState'] == 0){
+            arr[k]['userState'] = '停用'
+          }else if(arr[k]['userState'] == 1) {
+            arr[k]['userState'] = '正常'
+          }
+          if(arr[k]['supplierType'] == 0){
+            arr[k]['supplierType'] = '签证，机票'
+          }else if(arr[k]['supplierType'] == 1) {
+            arr[k]['supplierType'] = '地接'
+          }else if(arr[k]['supplierType'] == 2) {
+            arr[k]['supplierType'] = '订车'
+          }
+          if(arr[k]['isMonthly'] == 0){
+            arr[k]['isMonthly'] = '现金'
+          }else if(arr[k]['isMonthly'] == 1) {
+            arr[k]['isMonthly'] = '微信'
+          }else if(arr[k]['isMonthly'] == 2) {
+            arr[k]['isMonthly'] = '支付宝'
+          }
         })
+        console.log(obj.data.objects)
+      })  
+      .catch(function (obj) {
+        console.log(obj)
+      })
 
 
     }
@@ -502,6 +548,7 @@ export default {
 </script>
 
 <style scoped lang='stylus'>
+  .supplierInfo{ font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 80px 0;overflow: hidden; }
   .top{ float:left; }
   .supplier_search{ width:200px; margin-left:16px; }
   .body{ float:left; }
