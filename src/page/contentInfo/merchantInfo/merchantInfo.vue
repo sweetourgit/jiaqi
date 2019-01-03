@@ -21,6 +21,7 @@
         :data="tableData"
         border
         style="width: 100%"
+        highlight-current-row = true;
       >
         <el-table-column
           prop="id"
@@ -198,7 +199,8 @@
     export default {
         name: "merchantInfo",
         data() {
-          return { ruleForm: {
+          return {
+            ruleForm: {
               name: '',
               type: '',
               state:'',
@@ -338,7 +340,8 @@
           //this.$refs[formName].resetFields();
           this.dialogFormVisible = false;
         }
-      }
+      },
+     
     }
 </script>
 

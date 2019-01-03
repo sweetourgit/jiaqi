@@ -1,45 +1,41 @@
 <template>
-  <div>
+  <div class="supplierInfo">
     <!-- 搜索 -->
-    <div>
-      <el-form>
-        <el-form-item>
-          <div class="top">
-            <span>名称</span>
-            <el-input placeholder="输入供应商信息" v-model="supplier.search" class="supplier_search"></el-input>
-          </div>
-        </el-form-item>
-      </el-form>
-    </div>
+    <el-form>
+      <el-form-item class="top">
+        <span>名称</span>
+        <el-input placeholder="输入供应商信息" v-model="supplier.search" clearable class="supplier_search"></el-input>
+      </el-form-item>
+    </el-form>
     <!-- 导航按钮 -->
-    <div style="text-align:left">
-      <!-- <div class="body"> -->
-        <el-button plain @click="add_supplierInfo = true">添加</el-button>
-        <el-button plain>编辑</el-button>
-        <el-button plain @click="contact = true">联系人</el-button>
-        <el-button plain @click="bankAccount = true">银行账号</el-button>
-        <el-button plain @click="attachment = true">附件</el-button>
-        <el-button plain>关联销售</el-button>
-        <el-button plain style="border:1px solid red;color:#FE1312">删除</el-button>
-      <!-- </div> -->
+    <div class="button" style="text-align:left; clear:both;">
+      <el-button plain @click="add_supplierInfo = true">添加</el-button>
+      <el-button plain :disabled="forbidden1" @click="edit_supplierInfo = true">编辑</el-button>
+      <el-button plain :disabled="forbidden1" @click="contact = true">联系人</el-button>
+      <el-button plain :disabled="forbidden1" @click="bankAccount = true">银行账号</el-button>
+      <el-button plain :disabled="forbidden1" @click="attachment = true">附件</el-button>
+      <!--<el-button plain>关联销售</el-button>-->
+      <el-button plain :disabled="forbidden" class="delete_button">删除</el-button>
     </div>
     <!-- 表格 -->
-    <div style="margin-top:22px;">
-      <el-table :data="tableData" border :header-cell-style="getRowClass" style="width:1497px">
-        <el-table-column prop="id" label="ID" width="110" align="center"></el-table-column>
-        <el-table-column prop="state" label="状态" width="106" align="center"></el-table-column>
-        <el-table-column prop="dueDate" label="到期日期" width="138" align="center"></el-table-column>
-        <el-table-column prop="name" label="名称" width="152" align="center"></el-table-column>
-        <el-table-column prop="type" label="类型" width="178" align="center"></el-table-column>
-        <el-table-column prop="productDirection" label="产品方向" width="126" align="center"></el-table-column>
-        <el-table-column prop="borrowing" label="借款方式" width="116" align="center"></el-table-column>
-        <el-table-column prop="address" label="地址" width="214" align="center"></el-table-column>
-        <el-table-column prop="area" label="区域" width="66" align="center"></el-table-column>
-        <el-table-column prop="legalPerson" label="法人" width="92" align="center"></el-table-column>
-        <el-table-column prop="phone" label="手机号" width="124" align="center"></el-table-column>
-        <el-table-column prop="note" label="备注" width="74" align="center"></el-table-column>
-      </el-table>
-    </div>
+    <el-table :data="tableData" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @row-click="clickRow"@selection-change="changeFun">
+      <el-table-column prop="number" fixed label="" type="selection" width="50" align="center"></el-table-column>
+      <el-table-column prop="id" label="ID" min-width="60" align="center"></el-table-column>
+      <el-table-column prop="userState" label="状态" min-width="80" align="center"></el-table-column>
+      <el-table-column prop="expireTime" label="到期日期" min-width="150" align="center"></el-table-column>
+      <el-table-column prop="name" label="名称" min-width="150" align="center"></el-table-column>
+      <el-table-column prop="supplierType" label="类型" min-width="150" align="center"></el-table-column>
+      <el-table-column prop="productDirection" label="产品方向" min-width="130" align="center"></el-table-column>
+      <el-table-column prop="isMonthly" label="借款方式" min-width="110" align="center"></el-table-column>
+      <el-table-column prop="address" label="地址" min-width="220" align="center"></el-table-column>
+      <el-table-column prop="destinationID" label="区域" min-width="100" align="center"></el-table-column>
+      <el-table-column prop="leader" label="法人" min-width="80" align="center"></el-table-column>
+      <el-table-column prop="phone" label="手机号" min-width="120" align="center"></el-table-column>
+      <el-table-column prop="memo" label="备注" min-width="80" align="center"></el-table-column>
+    </el-table>
+    <!--分页-->
+    <el-pagination class="paging" :page-sizes="[10,20,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+    </el-pagination>
     <!-- 联系人信息列表弹框 -->
     <el-dialog title="联系人信息" :visible.sync="contact" width="640px" custom-class="city_list" :show-close='false'>
       <el-button plain class="close" @click="contact_close">关闭</el-button>
@@ -122,45 +118,45 @@
           <el-form-item label="地址" :label-width="Width" prop="address" class="addContact_span">
             <el-input v-model="addSupplierInfo.address" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入地址"></el-input>
           </el-form-item>
-          <el-form-item label="负责人" :label-width="Width" prop="head" class="addContact_span">
-            <el-input v-model="addSupplierInfo.head" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入负责人"></el-input>
+          <el-form-item label="负责人" :label-width="Width" prop="leader" class="addContact_span">
+            <el-input v-model="addSupplierInfo.leader" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入负责人"></el-input>
           </el-form-item>
           <el-form-item label="手机号" :label-width="Width" prop="phone" class="addContact_span">
             <el-input v-model="addSupplierInfo.phone" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入手机号"></el-input>
           </el-form-item>
-          <el-form-item label="区域" :label-width="Width" prop="area" class="addContact_span">
-            <el-input v-model="addSupplierInfo.area" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入区域"></el-input>
+          <el-form-item label="区域" :label-width="Width" prop="destinationID" class="addContact_span">
+            <el-input v-model="addSupplierInfo.destinationID" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入区域"></el-input>
           </el-form-item>
           <el-form-item label="产品方向" :label-width="Width" prop="productDirection" class="addContact_span">
             <el-input v-model="addSupplierInfo.productDirection" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入产品方向"></el-input>
           </el-form-item>
-          <el-form-item label="状态" prop="state" class="addContact_span">
-            <el-radio-group v-model="addSupplierInfo.state" class="addSupplierInfo_state">
-              <el-radio label="1" value="1">停用</el-radio>
-              <el-radio label="2" value="2">正常</el-radio>
+          <el-form-item label="状态" prop="userState" class="addContact_span">
+            <el-radio-group v-model="addSupplierInfo.userState" class="addSupplierInfo_state">
+              <el-radio label="0" value="0">停用</el-radio>
+              <el-radio label="1" value="1">正常</el-radio>
             </el-radio-group>
           </el-form-item>
         </div>
         <div class="supplierInfo_right">
-          <el-form-item label="类型" prop="type">
-            <el-select v-model="addSupplierInfo.type" placeholder="请选择类型" class="addSupplierInfo_name">
-              <el-option label="签证，机票" value="qianzheng"></el-option>
-              <el-option label="地接" value="dijie"></el-option>
-              <el-option label="订车" value="dingche"></el-option>
+          <el-form-item label="类型" prop="supplierType">
+            <el-select v-model="addSupplierInfo.supplierType" placeholder="请选择类型" class="addSupplierInfo_name">
+              <el-option label="签证，机票" value="0"></el-option>
+              <el-option label="地接" value="1"></el-option>
+              <el-option label="订车" value="2"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="到期时间" prop="dueTime">
-              <el-date-picker v-model="addSupplierInfo.dueTime" type="datetime" placeholder="选择到期时间" class="addSupplierInfo_name"></el-date-picker>
+          <el-form-item label="到期时间" prop="expireTime">
+            <el-date-picker v-model="addSupplierInfo.expireTime" type="datetime" placeholder="选择到期时间" class="addSupplierInfo_name"></el-date-picker>
           </el-form-item>
-          <el-form-item label="结算方式" prop="clearingForm">
-            <el-select v-model="addSupplierInfo.clearingForm" placeholder="请选择结算方式" class="addSupplierInfo_name">
-              <el-option label="现金" value="xianjian"></el-option>
-              <el-option label="微信" value="weixin"></el-option>
-              <el-option label="支付宝" value="zhifubao"></el-option>
+          <el-form-item label="结算方式" prop="isMonthly">
+            <el-select v-model="addSupplierInfo.isMonthly" placeholder="请选择结算方式" class="addSupplierInfo_name">
+              <el-option label="现金" value="0"></el-option>
+              <el-option label="微信" value="1"></el-option>
+              <el-option label="支付宝" value="2"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="备注" prop="note">
-            <el-input type="textarea" v-model="addSupplierInfo.note" auto-complete="off" class="addSupplierInfo_textarea" :autosize="{ minRows: 10, maxRows: 15}"></el-input>
+          <el-form-item label="备注" prop="memo">
+            <el-input type="textarea" v-model="addSupplierInfo.memo" auto-complete="off" class="addSupplierInfo_textarea" :autosize="{ minRows: 10, maxRows: 15}"></el-input>
           </el-form-item>
         </div>
       </el-form>
@@ -169,239 +165,533 @@
         <el-button type="primary" @click="centerDialogVisible('addSupplierInfo')">保 存</el-button>
       </div>
     </el-dialog>
+    <!-- 供应商信息编辑弹框 -->
+    <el-dialog title="供应商信息" :visible.sync="edit_supplierInfo" width="900px" custom-class="city_list" :show-close='false'>
+      <el-form :model="editSupplierInfo" :label-position="labelPosition" label-width="80px" :rules="rules" ref="editSupplierInfo">
+        <div class="supplierInfo_left">
+          <el-form-item label="名称" :label-width="Width" prop="name" class="addContact_span">
+            <el-input v-model="editSupplierInfo.name" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入名称"></el-input>
+          </el-form-item>
+          <el-form-item label="地址" :label-width="Width" prop="address" class="addContact_span">
+            <el-input v-model="editSupplierInfo.address" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入地址"></el-input>
+          </el-form-item>
+          <el-form-item label="负责人" :label-width="Width" prop="leader" class="addContact_span">
+            <el-input v-model="editSupplierInfo.leader" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入负责人"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号" :label-width="Width" prop="phone" class="addContact_span">
+            <el-input v-model="editSupplierInfo.phone" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入手机号"></el-input>
+          </el-form-item>
+          <el-form-item label="区域" :label-width="Width" prop="destinationID" class="addContact_span">
+            <el-input v-model="editSupplierInfo.destinationID" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入区域"></el-input>
+          </el-form-item>
+          <el-form-item label="产品方向" :label-width="Width" prop="productDirection" class="addContact_span">
+            <el-input v-model="editSupplierInfo.productDirection" auto-complete="off" class="addSupplierInfo_name" placeholder="请输入产品方向"></el-input>
+          </el-form-item>
+          <el-form-item label="状态" prop="userState" class="addContact_span">
+            <el-radio-group v-model="editSupplierInfo.userState" class="addSupplierInfo_state">
+              <el-radio label="0" value="0">停用</el-radio>
+              <el-radio label="1" value="1">正常</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </div>
+        <div class="supplierInfo_right">
+          <el-form-item label="类型" prop="supplierType">
+            <el-select v-model="editSupplierInfo.supplierType" placeholder="请选择类型" class="addSupplierInfo_name">
+              <el-option label="签证，机票" value="0"></el-option>
+              <el-option label="地接" value="1"></el-option>
+              <el-option label="订车" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="到期时间" prop="expireTime">
+            <el-date-picker v-model="editSupplierInfo.expireTime" type="datetime" placeholder="选择到期时间" class="addSupplierInfo_name"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="结算方式" prop="isMonthly">
+            <el-select v-model="editSupplierInfo.isMonthly" placeholder="请选择结算方式" class="addSupplierInfo_name">
+              <el-option label="现金" value="0"></el-option>
+              <el-option label="微信" value="1"></el-option>
+              <el-option label="支付宝" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="备注" prop="memo">
+            <el-input type="textarea" v-model="editSupplierInfo.memo" auto-complete="off" class="addSupplierInfo_textarea" :autosize="{ minRows: 10, maxRows: 15}"></el-input>
+          </el-form-item>
+        </div>
+      </el-form>
+      <div slot="footer" class="addSupplierInfo_btn">
+        <el-button @click="editSupplierInfoCancel('editSupplierInfo')">取 消</el-button>
+        <el-button type="primary" @click="editDialogVisible('editSupplierInfo')">保 存</el-button>
+      </div>
+    </el-dialog>
     <!-- 附件弹框 -->
     <el-dialog title="附件" :visible.sync="attachment" width="660px" custom-class="city_list" :show-close='false'>
       <el-button plain class="close" @click="attachment_close">关闭</el-button>
-      <div style="text-align:left;margin-left:20px;">
-        <div class="attachment_btn">
+      <div style="text-align:left;margin-left:20px; overflow:hidden;">
+        <el-upload class="upload-demo" action="http://192.168.1.168:6012/universal/supplier/api/upload" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList":headers="aaa" multiple list-type="picture" accept=".jpg,.png,.gif,.txt,.doc,.hlp,.wps,.html,.pdf">
+          <el-button plain>添加</el-button>
           <el-button plain>下载</el-button>
           <el-button plain style="border:1px solid red;color:#FE1312">删除</el-button>
-        </div>
-        <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture" accept=".jpg,.png,.gif,.txt,.doc,.hlp,.wps,.html,.pdf">
-          <el-button plain>添加</el-button>
         </el-upload>
       </div>
+      <!--<div style="width:200px;height:150px; background-color:#000; margin:20px 0 0 20px; "><img style="width:  100%; height:100%;" alt=""></div>-->
     </el-dialog>
   </div>
 </template>
 
 <script>
-export default {
-  data(){
-    return{
-      // 添加联系人
-      Width: '',
-      add_contact: false,
-      addContact:{
-        contactName: '',
-        contactPhone: '',
-        weChat: '',
-        qq: '',
-      },
-      // 联系人信息列表
-      contact: false,
-      // 银行账号信息列表
-      bankAccount: false,
-      // 添加银行账号
-      add_bankAccount: false,
-      addBankAccount: {
-        cardNumber: '',
-        bank: '',
-        note: ''
-      },
-      // 搜索
-      supplier: {
-        search: ""
-      },
-      // 供应商信息添加
-      add_supplierInfo: false,
-      addSupplierInfo: {
-        name: '',
-        address: '',
-        head: '',
-        phone: '',
-        area: '',
-        productDirection: '',
-        state: '1',
-        type: '',
-        dueTime: '',
-        clearingForm: '',
-        note: ''
-      },
-      // 附件
-      attachment: false,
-      labelPosition: 'right',
-      //上传文件
-      fileList: [],
-      // 验证规则
-      rules: {
-        contactName: [{ required: true, message: '不能为空', trigger: 'blur' },
-                      { pattern: /^[\u4e00-\u9fa5a-zA-Z]{0,4}$/,message:'请输入4个字以内的中文或英文名称'}],
-        contactPhone: [{ required: true, message: '不能为空', trigger: 'blur' },
-                       { pattern: /^1(3|4|5|7|8)\d{9}$/,message:'请输入11位正确的手机号码' }],
-        cardNumber: [{ required: true, message: '不能为空', trigger: 'blur' },
-                     { pattern: /^[0-9]{0,20}$/,message:'请输入20个数字以内的正确卡号' }],
-        bank: [{ required: true, message: '不能为空', trigger: 'blur' },
-               { pattern: /^[\u4e00-\u9fa5]{0,10}$/,message:'请输入10个汉字以内银行名称' }],
-        name: [{ required: true, message: '不能为空', trigger: 'blur' },
-               { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{0,40}$/,message:'请输入40字以内的正确名称,含汉字、字母和数字' }],
-        address: [{ required: true, message: '不能为空', trigger: 'blur' },
-                  { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9_]{0,80}$/,message:'请输入80字以内正确地址，含汉字、字母、数字下划线' }],
-        head: [{ required: true, message: '不能为空', trigger: 'blur' },
-               { pattern: /^[\u4e00-\u9fa5a-zA-Z]{0,4}$/,message:'请输入4个字以内的中文或英文' }],
-        phone: [{ required: true, message: '不能为空', trigger: 'blur' },
-                { pattern: /^1(3|4|5|7|8)\d{9}$/,message:'请输入11位正确的手机号码' }],
-        area: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        productDirection: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        state: [{ required: true, message: '不能为空', trigger: 'change' }],
-        type: [{ required: true, message: '不能为空', trigger: 'change' }],
-        dueTime: [{ required: true, message: '不能为空', trigger: 'change' }],
-        clearingForm: [{ required: true, message: '不能为空', trigger: 'change' }]
-      },
-      // 表格数据
-      tableData: [{
-        id: '1',
-        state: '停用',
-        dueDate: '2018-08-06',
-        name: '国旅',
-        type: '签证，机票',
-        productDirection: 'xxx',
-        borrowing: '月结',
-        address: '北京市东城区东直门南大街5号中青旅大厦一层',
-        area: 'xx',
-        legalPerson: '阳阳',
-        phone: '13888888888',
-        note: 'xx'
-      },{
-        id: '2',
-        state: '正常',
-        dueDate: '2018-08-06',
-        name: '青旅',
-        type: '地接',
-        productDirection: 'xxx',
-        borrowing: '非月结',
-        address: '北京市海淀区远大路一号金源燕莎MALL,E15口1018k',
-        area: 'xx',
-        legalPerson: '阳阳',
-        phone: '13888888888',
-        note: 'xx'
-      },{
-        id: '3',
-        state: '正常',
-        dueDate: '2018-08-06',
-        name: 'x旅',
-        type: '订车',
-        productDirection: 'xxx',
-        borrowing: '月结',
-        address: '北京市海淀区北大中关园501楼首层底商中段（中关村—桥往北500米路东）',
-        area: 'xx',
-        legalPerson: '阳阳',
-        phone: '13888888888',
-        note: 'xx'
-      }],
-      // 银行账号信息表格数据
-      bankData: [{
-        cardNumber: '1345 1234 1234 1234',
-        bank: '建行',
-        note: '对公账号'
-      },{
-        cardNumber: '1345 1234 1234 1234',
-        bank: '建行',
-        note: '对公账号'
-      }],
-      // 联系人信息列表数据
-      contactData: [{
-        name: '阳阳',
-        phone: '13888888888',
-        weChat: '13888888888',
-        qq: '13888888888'
-      },{
-        name: '阳阳',
-        phone: '13888888888',
-        weChat: '13888888888',
-        qq: '13888888888'
-      }]
-    }
-  },
-  methods:{
-    getRowClass({ row, column, rowIndex, columnIndex }) {
-      if (rowIndex == 0) {
-        return 'background:#F7F7F7'
-      } else {
-        return ''
+  export default {
+    data(){
+      return{
+        // 添加联系人
+        Width: '',
+        add_contact: false,
+        addContact:{
+          contactName: '',
+          contactPhone: '',
+          weChat: '',
+          qq: '',
+        },
+        // 联系人信息列表
+        contact: false,
+        // 银行账号信息列表
+        bankAccount: false,
+        // 添加银行账号
+        add_bankAccount: false,
+        addBankAccount: {
+          cardNumber: '',
+          bank: '',
+          note: ''
+        },
+        // 搜索
+        supplier: {
+          search: ""
+        },
+        // 供应商信息添加
+        add_supplierInfo: false,
+        addSupplierInfo: {
+          name: "",
+          address: "",
+          leader: "",
+          phone: "",
+          destinationID: "",
+          productDirection: "",
+          userState: "",
+          supplierType: "",
+          expireTime: "",
+          isMonthly: "",
+          memo: ""
+        },
+        //供应商信息编辑
+        edit_supplierInfo: false,
+        editSupplierInfo:{
+          name: "",
+          address: "",
+          leader: "",
+          phone: "",
+          destinationID: "",
+          productDirection: "",
+          userState: "",
+          supplierType: "",
+          expireTime: "",
+          isMonthly: "",
+          memo: ""
+        },
+        // 附件
+        attachment: false,
+        labelPosition: 'right',
+        aaa: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        //上传文件
+        fileList: [],
+        // 验证规则
+        rules: {
+          contactName: [{ required: true, message: '不能为空', trigger: 'blur' },
+            { pattern: /^[\u4e00-\u9fa5a-zA-Z]{0,4}$/,message:'请输入4个字以内的中文或英文名称'}],
+          contactPhone: [{ required: true, message: '不能为空', trigger: 'blur' },
+            { pattern: /^1(3|4|5|7|8)\d{9}$/,message:'请输入11位正确的手机号码' }],
+          cardNumber: [{ required: true, message: '不能为空', trigger: 'blur' },
+            { pattern: /^[0-9]{0,20}$/,message:'请输入20个数字以内的正确卡号' }],
+          bank: [{ required: true, message: '不能为空', trigger: 'blur' },
+            { pattern: /^[\u4e00-\u9fa5]{0,10}$/,message:'请输入10个汉字以内银行名称' }],
+          name: [{ required: true, message: '不能为空', trigger: 'blur' },
+            { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{0,40}$/,message:'请输入40字以内的正确名称,含汉字、字母和数字' }],
+          address: [{ required: true, message: '不能为空', trigger: 'blur' },
+            { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9_]{0,80}$/,message:'请输入80字以内正确地址，含汉字、字母、数字下划线' }],
+          leader: [{ required: true, message: '不能为空', trigger: 'blur' },
+            { pattern: /^[\u4e00-\u9fa5a-zA-Z]{0,4}$/,message:'请输入4个字以内的中文或英文' }],
+          phone: [{ required: true, message: '不能为空', trigger: 'blur' },
+            { pattern: /^1(3|4|5|7|8)\d{9}$/,message:'请输入11位正确的手机号码' }],
+          destinationID: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          productDirection: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          userState: [{ required: true, message: '不能为空', trigger: 'change' }],
+          supplierType: [{ required: true, message: '不能为空', trigger: 'change' }],
+          expireTime: [{ required: true, message: '不能为空', trigger: 'change' }],
+          isMonthly: [{ required: true, message: '不能为空', trigger: 'change' }]
+        },
+        // 表格数据
+        tableData: [],
+        multipleSelection: [],
+        forbidden1:true,
+        forbidden:true,
+        // 银行账号信息表格数据
+        bankData: [{
+          cardNumber: '1345 1234 1234 1234',
+          bank: '建行',
+          note: '对公账号'
+        },{
+          cardNumber: '1345 1234 1234 1234',
+          bank: '建行',
+          note: '对公账号'
+        }],
+        // 联系人信息列表数据
+        contactData: [{
+          name: '阳阳',
+          phone: '13888888888',
+          weChat: '13888888888',
+          qq: '13888888888'
+        },{
+          name: '阳阳',
+          phone: '13888888888',
+          weChat: '13888888888',
+          qq: '13888888888'
+        }],
+        //分页
+        currentPage: 1,
+        total:1,
+        pagesize:10,
       }
     },
-    // 联系人弹框取消
-    add_contactCancel(a){
-      this.add_contact = false;
-      this.$refs[a].resetFields();
-    },
-    // 联系人信息表格关闭
-    contact_close(){
-      this.contact = false;
-    },
-    // 银行账号信息表格关闭
-    bankAccount_close(){
-      this.bankAccount = false;
-    },
-    // 添加银行账号弹框取消
-    addBankAccountCancel(a){
-      this.add_bankAccount = false;
-      this.$refs[a].resetFields();
-    },
-    // 供应商信息添加弹框取消
-    addSupplierInfoCancel(a){
-      this.add_supplierInfo = false;
-      this.$refs[a].resetFields();
-    },
-    // 附件弹框关闭
-    attachment_close(){
-      this.attachment = false;
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    // 供应商信息添加
-    centerDialogVisible(addSupplierInfo){
-      this.$refs[addSupplierInfo].validate((valid) => {
-        if (valid) {
-          this.$message.success("保存成功");
-          this.add_supplierInfo= false;
+    methods:{
+      getRowClass({ row, column, rowIndex, columnIndex }) {
+        if (rowIndex == 0) {
+          return 'background:#F7F7F7'
         } else {
-          return false;
+          return ''
         }
-      });
+      },
+      // 联系人弹框取消
+      add_contactCancel(a){
+        this.add_contact = false;
+        this.$refs[a].resetFields();
+      },
+      // 联系人信息表格关闭
+      contact_close(){
+        this.contact = false;
+      },
+      // 银行账号信息表格关闭
+      bankAccount_close(){
+        this.bankAccount = false;
+      },
+      // 添加银行账号弹框取消
+      addBankAccountCancel(a){
+        this.add_bankAccount = false;
+        this.$refs[a].resetFields();
+      },
+
+      // 附件弹框关闭
+      attachment_close(){
+        this.attachment = false;
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      // 银行账号信息添加
+      centerDialogVisible(addBankAccount){
+        this.$refs[addBankAccount].validate((valid) => {
+          if (valid) {
+            this.$message.success("保存成功");
+            this.add_bankAccount= false;
+          } else {
+            return false;
+          }
+        });
+      },
+      // 联系人信息添加
+      centerDialogVisible(addContact){
+        this.$refs[addContact].validate((valid) => {
+          if (valid) {
+            this.$message.success("保存成功");
+            this.add_contact= false;
+          } else {
+            return false;
+          }
+        });
+      },
+      //表格勾选
+      rowClass({row, rowIndex}){  //选中行样式改变
+        for(var i=0;i<this.multipleSelection.length;i++){
+          if(this.multipleSelection[i].id==row.id){
+            return { "background-color": "#ecf5ff" }
+          }
+        }
+      },
+      changeFun(val) {  //保存选中项的数据
+        this.multipleSelection=val;
+        if(this.multipleSelection.length==1){
+          this.forbidden1=false;
+        }else{
+          this.forbidden1=true;
+        };
+        if(this.multipleSelection.length>=1){
+          this.forbidden=false;
+        }else{
+          this.forbidden=true;
+        }
+      },
+      clickRow(row){    //选中行复选框勾选
+        this.$refs.multipleTable.toggleRowSelection(row)
+      },
+      // 供应商信息弹框添加和取消
+      centerDialogVisible(addSupplierInfo){
+        this.$refs[addSupplierInfo].validate((valid) => {
+          if (valid) {
+            var _this = this;
+            this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierinsert",
+              {
+                object: {
+                  name: this.addSupplierInfo.name,
+                  userState:this.addSupplierInfo.userState,
+                  supplierType:this.addSupplierInfo.supplierType,
+                  address:this.addSupplierInfo.address,
+                  destinationID:this.addSupplierInfo.destinationID,
+                  productDirection:this.addSupplierInfo.productDirection,
+                  isMonthly:this.addSupplierInfo.isMonthly,
+                  leader:this.addSupplierInfo.leader,
+                  phone:this.addSupplierInfo.phone,
+                  expireTime:this.addSupplierInfo.expireTime,
+                  memo:this.addSupplierInfo.memo,
+                  id: 0,
+                  createTime: "2018-12-25T02:23:15.735Z",
+                  code: "string",
+                  isDeleted: 0,
+                  billName: "string",
+                  taxNumber: "string",
+                  createUser: "string"
+                }
+              })
+              .then(function(response) {
+                that.total = response.data.total
+                that.tableData = response.data.objects
+                this.updata.id = id;
+                this.updata.orgName = res.data.object.orgName;
+                this.updata.departmentCode = res.data.object.orgCode;
+                this.updata.sort = res.data.object.rank;
+                this.updata.phone = res.data.object.officeTel;
+                this.updata.fax = res.data.object.officeFax;
+                this.updata.note = res.data.object.mark;
+                this.updata.lastStage = String(res.data.object.isLeaf);
+                this.updata.parentID = res.data.object.parentID;
+                that.tableData.forEach(function (v,k,arr) {
+                  if(arr[k]['userState'] == 0){
+                    arr[k]['userState'] = '停用'
+                  }else if(arr[k]['userState'] == 1) {
+                    arr[k]['userState'] = '正常'
+                  }
+                  if(arr[k]['supplierType'] == 0){
+                    arr[k]['supplierType'] = '签证，机票'
+                  }else if(arr[k]['supplierType'] == 1) {
+                    arr[k]['supplierType'] = '地接'
+                  }else if(arr[k]['supplierType'] == 2) {
+                    arr[k]['supplierType'] = '订车'
+                  }
+                  if(arr[k]['isMonthly'] == 0){
+                    arr[k]['isMonthly'] = '现金'
+                  }else if(arr[k]['isMonthly'] == 1) {
+                    arr[k]['isMonthly'] = '微信'
+                  }else if(arr[k]['isMonthly'] == 2) {
+                    arr[k]['isMonthly'] = '支付宝'
+                  }
+                })
+                if(response.data.isSuccess == false){
+                  _this.$message.error("添加失败,该供应商已存在");
+                } else {
+                  _this.addSupplierInfo.name = "";
+                  _this.addSupplierInfo.userState = "";
+                  _this.addSupplierInfo.supplierType = "";
+                  _this.addSupplierInfo.address = "";
+                  _this.addSupplierInfo.destinationID = "";
+                  _this.addSupplierInfo.productDirection = "";
+                  _this.addSupplierInfo.isMonthly = "";
+                  _this.addSupplierInfo.leader = "";
+                  _this.addSupplierInfo.phone = "";
+                  _this.addSupplierInfo.expireTime = "";
+                  _this.addSupplierInfo.memo = "";
+                  _this.$message.success("添加成功");
+
+                }
+              })
+          } else {
+            return false;
+          }
+          this.add_supplierInfo = false;
+        });
+      },
+      addSupplierInfoCancel(a){
+        this.add_supplierInfo = false;
+        this.$refs[a].resetFields();
+      },
+      //供应商信息弹框编辑和取消
+      editDialogVisible(editSupplierInfo){
+        this.$refs[editSupplierInfo].validate((valid) => {
+          if(valid){
+            let _this = this;
+            this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/suppliersave", {
+              object: {
+                name: this.editSupplierInfo.name,
+                userState:this.editSupplierInfo.userState,
+                supplierType:this.editSupplierInfo.supplierType,
+                address:this.editSupplierInfo.address,
+                destinationID:this.editSupplierInfo.destinationID,
+                productDirection:this.editSupplierInfo.productDirection,
+                isMonthly:this.editSupplierInfo.isMonthly,
+                leader:this.editSupplierInfo.leader,
+                phone:this.editSupplierInfo.phone,
+                expireTime:this.editSupplierInfo.expireTime,
+                memo:this.editSupplierInfo.memo,
+                id: 0,
+                createTime: "2018-12-25T02:23:15.735Z",
+                code: "string",
+                isDeleted: 0,
+                billName: "string",
+                taxNumber: "string",
+                createUser: "string"
+              }
+            })
+              .then(function(response) {
+                that.total = obj.data.total
+                that.tableData = obj.data.objects
+                that.tableData.forEach(function (v,k,arr) {
+                  if(arr[k]['userState'] == 0){
+                    arr[k]['userState'] = '停用'
+                  }else if(arr[k]['userState'] == 1) {
+                    arr[k]['userState'] = '正常'
+                  }
+                  if(arr[k]['supplierType'] == 0){
+                    arr[k]['supplierType'] = '签证，机票'
+                  }else if(arr[k]['supplierType'] == 1) {
+                    arr[k]['supplierType'] = '地接'
+                  }else if(arr[k]['supplierType'] == 2) {
+                    arr[k]['supplierType'] = '订车'
+                  }
+                  if(arr[k]['isMonthly'] == 0){
+                    arr[k]['isMonthly'] = '现金'
+                  }else if(arr[k]['isMonthly'] == 1) {
+                    arr[k]['isMonthly'] = '微信'
+                  }else if(arr[k]['isMonthly'] == 2) {
+                    arr[k]['isMonthly'] = '支付宝'
+                  }
+                })
+                console.log(obj.data.objects)
+                _this.$message.success("修改成功！");
+                _this.edit_supplierInfo = false;
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+          }
+        })
+      },
+      //获取一条供应商信息
+      edit_supplierInfo1(id){
+        this.edit_supplierInfo = true;
+        this.$refs[editSupplierInfo].validate((valid) => {
+          if(valid){
+            let _this = this;
+            this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
+              id:id
+            })
+              .then(function (obj){
+                _this.editSupplierInfo.id = id;
+                _this.editSupplierInfo.name = obj.data.object.name;
+                _this.editSupplierInfo.userState = obj.data.object.userState;
+                _this.editSupplierInfo.supplierType = obj.data.object.supplierType;
+                _this.editSupplierInfo.address = obj.data.object.address;
+                _this.editSupplierInfo.destinationID = obj.data.object.destinationID;
+                _this.editSupplierInfo.productDirection = obj.data.object.productDirection;
+                _this.editSupplierInfo.isMonthly = obj.data.object.isMonthly;
+                _this.editSupplierInfo.leader = obj.data.object.leader;
+                _this.editSupplierInfo.phone = obj.data.object.phone;
+                _this.editSupplierInfo.expireTime = obj.data.object.expireTime;
+                _this.editSupplierInfo.memo = obj.data.object.memo;
+              })
+              .catch(function (obj) {
+                console.log(obj)
+              })
+          }
+        })
+      },
+      editSupplierInfoCancel(a){
+        this.edit_supplierInfo = false;
+        this.$refs[a].resetFields();
+      },
+      //分页
+      handleSizeChange(page) {
+        this.currentPage = 1;
+        this.pagesize = page;
+        this.pageList();
+      },
+      handleCurrentChange(currentPage) {
+        this.currentPage = currentPage;
+        this.pageList();
+      },
+      pageList() {
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage",
+          {
+            "object": {
+              "isDeleted": 0,
+            },
+            "pageSize":this.pagesize,
+            "pageIndex": this.currentPage,
+            "isGetAll": true,
+            "id": 0
+          },)
+          .then(function (obj) {
+            that.total = obj.data.total
+            that.tableData = obj.data.objects
+            that.tableData.forEach(function (v,k,arr) {
+              if(arr[k]['userState'] == 0){
+                arr[k]['userState'] = '停用'
+              }else if(arr[k]['userState'] == 1) {
+                arr[k]['userState'] = '正常'
+              }
+              if(arr[k]['supplierType'] == 0){
+                arr[k]['supplierType'] = '签证，机票'
+              }else if(arr[k]['supplierType'] == 1) {
+                arr[k]['supplierType'] = '地接'
+              }else if(arr[k]['supplierType'] == 2) {
+                arr[k]['supplierType'] = '订车'
+              }
+              if(arr[k]['isMonthly'] == 0){
+                arr[k]['isMonthly'] = '现金'
+              }else if(arr[k]['isMonthly'] == 1) {
+                arr[k]['isMonthly'] = '微信'
+              }else if(arr[k]['isMonthly'] == 2) {
+                arr[k]['isMonthly'] = '支付宝'
+              }
+            })
+            console.log(obj.data.objects)
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+      },
+
+
     },
-    // 银行账号信息添加
-    centerDialogVisible(addBankAccount){
-      this.$refs[addBankAccount].validate((valid) => {
-        if (valid) {
-          this.$message.success("保存成功");
-          this.add_bankAccount= false;
-        } else {
-          return false;
-        }
-      });
-    },
-    // 联系人信息添加
-    centerDialogVisible(addContact){
-       this.$refs[addContact].validate((valid) => {
-        if (valid) {
-          this.$message.success("保存成功");
-          this.add_contact= false;
-        } else {
-          return false;
-        }
-      });
+    //供应商列表
+    mounted(){
+      this.pageList();
     }
   }
-}
 </script>
 
 <style scoped lang='stylus'>
+  .supplierInfo{ font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 80px 0;overflow: hidden; }
   .top{ float:left; }
   .supplier_search{ width:200px; margin-left:16px; }
   .body{ float:left; }
@@ -417,11 +707,24 @@ export default {
   .supplierInfo_left{ width:410px; }
   .supplierInfo_right{ width:295px; float:right; margin-top:-436px; margin-right:60px; }
   .addSupplierInfo_textarea{ width:200px; margin-right:14px; }
-  .addSupplierInfo_btn{ position:absolute; margin-left:709px; margin-top:-551px; }
+  .addSupplierInfo_btn{ position:absolute; margin-left:709px; margin-top:-557px; }
   .attachment_btn{ position:absolute; margin-left:82px; }
+  .upload-demo{float:left;}
   .upload-demo>>>.el-upload-list--picture .el-upload-list__item{ width:141px; display: inline-block; margin: 10px 4px 0 0px; }
   .upload-demo>>>.el-upload-list--picture .el-upload-list__item-thumbnail{ width:110px; height:80px; }
   .bankAccount_form>>>.el-form-item__error{ left: 49px; }
   .contact_form>>>.el-form-item__error{ left: 49px; }
   .bankAccount_span{ margin-left:24px; }
+
+  .table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:22px 0 0 0;}
+  .el-table tr{background: #f6f6f6 !important}
+  .button .el-button{width:80px;padding: 0;line-height: 35px}
+  .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}
+  .el-table--enable-row-hover .el-table__body tr:hover>td{background-color: #f5f7fa !important}
+  .el-button.is-disabled:hover{color: #606266; border:1px solid #dcdfe6;}
+  .delete_button{color:#fe1212; border:1px solid #fe1212;}
+  .delete_button:hover{color:#fe1212; border:1px solid #fe1212;}
+
+  /*分页*/
+  .paging{float: right; margin:20px 0 0 0;}
 </style>
