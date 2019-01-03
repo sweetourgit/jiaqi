@@ -34,7 +34,7 @@
         category: [
             {
               name: '账户管理',
-              img: '账户管理.png',
+              img: 'account.png',
               items: [
                 {
                   value: '用户列表',
@@ -60,7 +60,7 @@
             },
             {
               name: '内容管理',
-              img: '内容信息.png',
+              img: 'content.png',
               items: [
                 {
                   value: '区域列表',
@@ -98,7 +98,7 @@
             },
             {
               name: '产品管理',
-              img: '产品管理.png',
+              img: 'product.png',
               items: [
                 {
                   value: '产品列表',
@@ -116,6 +116,16 @@
                   value: '共享库存',
                   router:'/sharedInventory'
                 },
+              ]
+            },
+            {
+              name: '订单管理',
+              img: 'order.png',
+              items: [
+                {
+                  value: '订单管理',
+                  router:'/searchOrder/orderList'
+                }
               ]
             }
         ],

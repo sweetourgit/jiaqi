@@ -186,14 +186,18 @@
                   </el-form-item>
                   <!--出发地-->
                   <div class="setout"><span>*</span>出发地</div>
+                  <el-form-item prop="pod" style="float:left">
                   <el-select class="depart" v-model="ruleForm.origin" placeholder="出发地" prop="origin">
                     <el-option v-for="item in dynamicTags3" :key="item.pod" :label="item.pod" :value="item"></el-option>
                   </el-select>
+                  </el-form-item>
                   <!--目的地-->
                   <div class="setout"><span>*</span>目的地</div>
+                  <el-form-item prop="bourn" style="float:left">
                   <el-select class="depart" v-model="ruleForm.bourn" placeholder="目的地">
                     <el-option v-for="item in dynamicTags4" :key="item.destination" :label="item.destination" :value="item"></el-option>
                   </el-select>
+                  </el-form-item>
                   <!--套餐名结束-->
                   <!--交通信息-->
                   <div class="traffic">

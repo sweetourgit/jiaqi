@@ -25,7 +25,9 @@ import placeOrder from '@/page/productManagement/regimentPlan/children/placeOrde
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 import changePro from '@/page/productManagement/changePro/changePro'
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
-
+import searchOrder from '@/page/orderManagement/orderList/searchOrder'
+import orderList from '@/page/orderManagement/orderList/children/orderList'
+import orderDetail from '@/page/orderManagement/orderList/children/orderDetail'
 
 Vue.use(Router);
 
@@ -201,7 +203,29 @@ export default new Router({
             auth:true},
         }
       ]
-    }, {
+    },{
+      path: '/searchOrder',
+      component: searchOrder,
+      name: '订单管理',
+      children: [
+        {
+          path: 'orderList',
+          name: '订单管理',
+          component: orderList,
+          meta: {
+            keepAlive: true,
+            auth:true},
+          },
+        {
+          path: 'orderDetail',
+          name: '订单管理',
+          component: orderDetail,
+          meta: {
+            keepAlive: true,
+            auth:true},
+        }
+      ]
+    },{
       path: '/sharedInventory',
       component: sharedInventory,
       name: '共享库存',
