@@ -1,7 +1,7 @@
 <template>
   <div>
      <div class="main">
-     <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun">
+     <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border @selection-change="changeFun">
        <el-table-column  prop="serno" label="序号" min-width="60"></el-table-column>
        <el-table-column  prop="id" label="ID" min-width="60"></el-table-column>
        <el-table-column  prop="state" label="状态" min-width="90"></el-table-column>
@@ -83,6 +83,9 @@ export default {
       },
       clickRow(row){    //选中行复选框勾选
         this.$router.push({path: "/searchOrder/orderDetail?id="+row.id});
+      },
+      changeFun(){
+        
       },
       handleSizeChange(){
 

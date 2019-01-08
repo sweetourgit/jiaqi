@@ -54,7 +54,7 @@
        <el-table-column  prop="id" label="" fixed type="selection"></el-table-column>
        <el-table-column  prop="serno" label="序号" min-width="60"></el-table-column>
        <el-table-column  prop="state" label="状态" min-width="90"></el-table-column>
-       <el-table-column  prop="date" label="日期" min-width="110"></el-table-column>
+       <el-table-column  prop="date" label="出行日期" min-width="110"></el-table-column>
        <el-table-column  prop="groupSer" label="团期计划" min-width="240"></el-table-column>
        <el-table-column  prop="price" label="成人价" min-width="75"></el-table-column>
        <el-table-column  prop="plan" label="计划位" min-width="75"></el-table-column>
@@ -143,13 +143,13 @@ export default {
           name: '泰国曼谷+芭提雅+沙美岛+清迈小镇7日游'
         }],
         multipleSelection: [],   //选中的list
-        forbidden1:true,         //按钮是否禁用
         dialogFormVisible: false, //更改状态弹窗
         dialogCost: false, //成本弹窗
         form: {
           radio: '',
         },
-        formLabelWidth: '120px'
+        formLabelWidth: '120px',
+        forbidden1:true,         //按钮是否禁用
     }
   },
   mounted(){
@@ -172,7 +172,7 @@ export default {
         }
       },
       clickRow(row){    //选中行复选框勾选
-        //this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+        this.$refs.multipleTable.clearSelection(); //清空用户的选择  
         this.$refs.multipleTable.toggleRowSelection(row)
       },
       rowClass({row, rowIndex}){  //选中行样式改变
