@@ -512,14 +512,22 @@
           )
             .then(function (obj) {
                 that.ruleForm.name = obj.data.object.name
-              that.ruleForm.localCompType = obj.data.object.localCompType
-              if(obj.data.object.state == 0){
-                that.ruleForm.state ="正常"
-              }else{
-                that.ruleForm.state ="停用"
-              }
-
-                obj.data.object.name
+                that.ruleForm.localCompType = String(obj.data.object.localCompType)
+                if(obj.data.object.state == 0){
+                  that.ruleForm.state ="正常"
+                }else{
+                  that.ruleForm.state ="停用"
+                }
+                let year = '';
+                let month = '';
+                let day = '';
+                let pin = '';
+                year = String(obj.data.object.expTime).substring(0,4);
+                month = String(obj.data.object.expTime).substring(4,6);
+                day = String(obj.data.object.expTime).substring(6,8);
+                pin = year+'-'+month+'-'+day
+              that.ruleForm.expTime = String(pin);
+              console.log(pin)
                 that.ruleForm.name = obj.data.object.name
                 that.ruleForm.name = obj.data.object.name
               //console.log(String(obj.data.object.expTime.substring(1)))
@@ -556,6 +564,7 @@
           }).then(() => {
             this.rowDelete();
             this.list();
+            this.tid = 0
             this.$message({
               type: 'success',
               message: '删除成功!'
