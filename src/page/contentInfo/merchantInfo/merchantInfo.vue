@@ -11,8 +11,10 @@
     <!--功能button-->
     <div class="button_style">
       <el-button type="primary" @click="add_info">添加</el-button>
-      <el-button type="primary"  >编辑</el-button>
-      <el-button type="danger" plain>删除</el-button>
+      <el-button type="primary" v-if="tid <= 0" disabled>编辑</el-button>
+      <el-button type="primary" v-else @click="edit_info" >编辑</el-button>
+      <el-button type="danger"  v-if="tid <= 0" disabled @click="open7" plain>删除</el-button>
+      <el-button type="danger" v-else @click="open7" plain>删除</el-button>
     </div>
     <!--end-->
     <!--商户信息-->
@@ -21,7 +23,8 @@
         :data="tableData"
         border
         style="width: 100%"
-        highlight-current-row = true;
+        :highlight-current-row="true"
+        @row-click="handleClick"
       >
         <el-table-column
           prop="id"
@@ -45,7 +48,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="type"
+          prop="localCompType"
           label="商户类型"
           align="center">
         </el-table-column>
@@ -56,7 +59,7 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="people"
+          prop="linker"
           label="联系人"
           align="center">
         </el-table-column>
@@ -78,7 +81,7 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="settlement"
+          prop="settlementType"
           label="结算方式"
           width="150"
           align="center">
@@ -90,13 +93,13 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="amount"
+          prop="arrears"
           label="剩余额度"
           width="150"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="total"
+          prop="balance"
           label="总欠款"
           width="150"
           align="center">
@@ -104,10 +107,25 @@
       </el-table>
     </div>
     <!--end-->
+    <!--分页-->
+    <div class="block">
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page.sync="currentPage4"
+      :page-sizes="[5, 10, 50, 100]"
+      :page-size="10"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total=total>
+    </el-pagination>
+    </div>
+    <!--end-->
     <!--弹窗-->
     <el-dialog title="商户信息" :visible.sync="dialogFormVisible" :show-close="false">
       <div class="ButtonCls">
-        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+        <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">立即创建</el-button>
+        <el-button type="primary" v-else @click="editorForm('ruleForm')">修改</el-button>
+
         <el-button @click="resetForm('ruleForm')">取消</el-button>
       </div>
       <div>
@@ -115,11 +133,11 @@
           <el-form-item label="名称" prop="name">
             <el-input  v-model="ruleForm.name" style="width: 250px;"></el-input>
           </el-form-item>
-          <el-form-item label="类型" prop="type" >
-            <el-select v-model="ruleForm.type" placeholder="请选择类型" style="width: 250px;">
-              <el-option label="门店" value="1"></el-option>
-              <el-option label="同业" value="2"></el-option>
-              <el-option label="翻盘门店" value="3"></el-option>
+          <el-form-item label="类型" prop="localCompType" >
+            <el-select v-model="ruleForm.localCompType" placeholder="请选择类型" style="width: 250px;">
+              <el-option label="门店" value="0"></el-option>
+              <el-option label="同业" value="1"></el-option>
+              <el-option label="翻盘门店" value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="状态" prop="state">
@@ -129,17 +147,17 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="活动时间" required>
-              <el-form-item prop="date1">
-                <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 250px;""></el-date-picker>
+              <el-form-item prop="expTime">
+                <el-date-picker type="date" placeholder="选择日期" value-format="yyyyMMdd" format="yyyy-MM-dd" v-model="ruleForm.expTime" style="width: 250px;""></el-date-picker>
               </el-form-item>
           </el-form-item>
-          <el-form-item label="结算方式" prop="settlement">
-            <el-radio-group v-model="ruleForm.settlement">
+          <el-form-item label="结算方式" prop="settlementType">
+            <el-radio-group v-model="ruleForm.settlementType">
               <el-radio label="月结"></el-radio>
               <el-radio label="非月结"></el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="额度" prop="quota">
+          <el-form-item  v-if="ruleForm.settlementType == '月结'" label="额度" prop="quota" >
             <el-input  v-model="ruleForm.quota" style="width: 250px;"></el-input>
           </el-form-item>
             <el-form-item label="部们-管理" prop="department">
@@ -151,42 +169,42 @@
             </el-form-item>
             <el-form-item  prop="people" >
             <el-select v-model="ruleForm.people" placeholder="请选择人员" style="width: 250px;">
-              <el-option label="门店" value="1"></el-option>
-              <el-option label="同业" value="2"></el-option>
-              <el-option label="翻盘门店" value="3"></el-option>
+              <el-option label="门店" value="0"></el-option>
+              <el-option label="同业" value="1"></el-option>
+              <el-option label="翻盘门店" value="2"></el-option>
             </el-select>
             </el-form-item>
-          <el-form-item label="经营范围" prop="range">
-            <el-checkbox-group v-model="ruleForm.range">
-              <el-checkbox label="出境" name="range"></el-checkbox>
-              <el-checkbox label="入境" name="range"></el-checkbox>
-              <el-checkbox label="国内" name="range"></el-checkbox>
-              <el-checkbox label="赴台游" name="range"></el-checkbox>
-              <el-checkbox label="住宿" name="range"></el-checkbox>
-              <el-checkbox label="票务" name="range"></el-checkbox>
-              <el-checkbox label="邮轮" name="range"></el-checkbox>
-              <el-checkbox label="汽车租赁" name="range"></el-checkbox>
-              <el-checkbox label="保险" name="range"></el-checkbox>
-              <el-checkbox label="其他" name="range"></el-checkbox>
+          <el-form-item label="经营范围" prop="scopeExt">
+            <el-checkbox-group v-model="ruleForm.scopeExt">
+              <el-checkbox label="出境" name="scopeExt"></el-checkbox>
+              <el-checkbox label="入境" name="scopeExt"></el-checkbox>
+              <el-checkbox label="国内" name="scopeExt"></el-checkbox>
+              <el-checkbox label="赴台游" name="scopeExt"></el-checkbox>
+              <el-checkbox label="住宿" name="scopeExt"></el-checkbox>
+              <el-checkbox label="票务" name="scopeExt"></el-checkbox>
+              <el-checkbox label="邮轮" name="scopeExt"></el-checkbox>
+              <el-checkbox label="汽车租赁" name="scopeExt"></el-checkbox>
+              <el-checkbox label="保险" name="scopeExt"></el-checkbox>
+              <el-checkbox label="其他" name="scopeExt"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="地址">
             <el-input  v-model="ruleForm.address" style="width: 250px;"></el-input>
           </el-form-item>
-          <el-form-item label="联系人姓名" prop="lx_name">
-            <el-input  v-model="ruleForm.lx_name" style="width: 250px;"></el-input>
+          <el-form-item label="联系人姓名" prop="linker">
+            <el-input  v-model="ruleForm.linker" style="width: 250px;"></el-input>
           </el-form-item>
-          <el-form-item label="联系人电话" prop="lx_phone">
-            <el-input  v-model="ruleForm.lx_phone" style="width: 250px;"></el-input>
+          <el-form-item label="联系人电话" prop="phone">
+            <el-input  v-model="ruleForm.phone" style="width: 250px;"></el-input>
           </el-form-item>
-          <el-form-item label="对公户名" prop="account">
-            <el-input  v-model="ruleForm.account" style="width: 250px;"></el-input>
+          <el-form-item label="对公户名" prop="publicName">
+            <el-input  v-model="ruleForm.publicName" style="width: 250px;"></el-input>
           </el-form-item>
-          <el-form-item label="开户行" prop="bank">
-            <el-input  v-model="ruleForm.bank" style="width: 250px;"></el-input>
+          <el-form-item label="开户行" prop="bankName">
+            <el-input  v-model="ruleForm.bankName" style="width: 250px;"></el-input>
           </el-form-item>
-          <el-form-item label="对公账号" prop="dx_name">
-            <el-input  v-model="ruleForm.dx_name" style="width: 250px;"></el-input>
+          <el-form-item label="对公账号" prop="bankcardNo">
+            <el-input  v-model="ruleForm.bankcardNo" style="width: 250px;"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -196,42 +214,48 @@
 </template>
 
 <script>
+    import state from "../../../store/state";
+
     export default {
         name: "merchantInfo",
         data() {
           return {
+            tid:0,
+            pagesize:10,
+            total:1,
+            currentPage4: 4,
             ruleForm: {
               name: '',
-              type: '',
+              localCompType: '',
               state:'',
-              date1: '',
-              settlement:'',
+              expTime: '',
+              settlementType:'',
               quota:'',
               department:'',
               people:'',
-              range: [],
+              scopeExt: [],
               address:'',
-              lx_name:'',
-              lx_phone:'',
-              account:'',
-              bank:'',
-              dx_name:''
+              linker:'',
+              phone:'',
+              publicName:'',
+              bankName:'',
+              bankcardNo:''
             },
             rules: {
               name: [
                 { required: true, message: '请输入名称', trigger: 'blur' },
                 { max: 40, message: '不要超过40个字符', trigger: 'blur' }
               ],
-              type: [
+              localCompType: [
                 { required: true, message: '请选择类型', trigger: 'change' }
               ],
               state: [
                 { required: true, message: '请选择状态', trigger: 'change' }
               ],
-              date1: [
-                { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+              expTime: [
+                { type: 'string', required: true, message: '请选择日期', trigger: 'change' }
               ],
-              settlement: [
+              settlementType: [
                 { required: true, message: '请选择结算方式', trigger: 'change' }
               ],
               quota: [
@@ -244,104 +268,313 @@
               people: [
                 { required: true, message: '请选择类型', trigger: 'change' }
               ],
-              range: [
+              scopeExt: [
                 { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
               ],
-              resource: [
-                { required: true, message: '请选择活动资源', trigger: 'change' }
-              ],
-              desc: [
-                { required: true, message: '请填写活动形式', trigger: 'blur' }
-              ],
-              lx_name: [
+              linker: [
                 { required: true, message: '请输入联系人姓名', trigger: 'blur' },
                 { max: 4, message: '不要超过4个字符', trigger: 'blur' }
               ],
-              lx_phone: [
+              phone: [
                 { required: true, message: '请输入联系人电话', trigger: 'blur' },
                 { min: 11,max: 11, message: '请输入11位数字', trigger: 'blur' },
                 { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: '请输入数字' }
               ],
-              account: [
+              publicName: [
                 { required: true, message: '请输入对公户名', trigger: 'blur' },
                 { max: 40, message: '不要超过40个字符', trigger: 'blur' }
               ],
-              bank: [
+              bankName: [
                 { required: true, message: '请输入开户行', trigger: 'blur' },
                 { max: 80, message: '不要超过80个字符', trigger: 'blur' }
               ],
-              dx_name: [
+              bankcardNo: [
                 { required: true, message: '请输入对公账户', trigger: 'blur' },
                 { max: 30, message: '不要超过30个字符', trigger: 'blur' }
               ],
             },
             dialogFormVisible:false,
             input: '',
-            tableData: [{
-              id: '1',
-              state: '停用',
-              type: '门店',
-              name: '国旅',
-              people: '阳阳',
-              phone: '13888888888',
-              department: 'xxx',
-              manager: '阳阳',
-              settlement: '月结',
-              quota: '30000.00',
-              amount: '30000.00',
-              total: '0',
-            }, {
-              id: '2',
-              state: '正常',
-              type: '同业',
-              name: '青旅',
-              people: '阳阳',
-              phone: '13888888888',
-              department: 'xxx',
-              manager: '阳阳',
-              settlement: '非月结',
-              quota: '0',
-              amount: '0',
-              total: '10000.00',
-            },{
-              id: '3',
-              state: '正常',
-              type: '翻盘门店',
-              name: 'xx旅',
-              people: '阳阳',
-              phone: '13888888888',
-              department: 'xxx',
-              manager: '阳阳',
-              settlement: '月结',
-              quota: '30000.00',
-              amount: '20000.00',
-              total: '10000.00',
-            }]
+            tableData: []
           }
         },
       methods:{
+        handleSizeChange(val) {
+          this.pagesize = val
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/universal/localcomp/api/page",
+            {
+              "pageIndex": 1,
+              "pageSize": val,
+              "total": 0,
+              "object": {
+              }
+            },
+          )
+            .then(function (obj) {
+              that.total= obj.data.total;
+              that.tableData = obj.data.objects;
+              that.tableData.forEach(function (v,k,arr) {
+                arr[k]['department'] = 'XXX';
+                arr[k]['manager'] = '阳阳';
+                if(arr[k]['state'] == 0){
+                  arr[k]['state'] = '正常'
+                }else{
+                  arr[k]['state'] = '停用'
+                }
+                if(arr[k]['localCompType'] == 0){
+                  arr[k]['localCompType']='门店';
+                }else if (arr[k]['localCompType'] == 1) {
+                  arr[k]['localCompType']='同业';
+                }else {
+                  arr[k]['localCompType']='翻盘门店';
+                }
+                if(arr[k]['settlementType'] == 0 ){
+                  arr[k]['settlementType'] = '非月结'
+                }else{
+                  arr[k]['settlementType'] = '月结'
+                }
+              })
+              console.log(obj.data.total)
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+        },
+        handleCurrentChange(val) {
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/universal/localcomp/api/page",
+            {
+              "pageIndex": val,
+              "pageSize": this.pagesize,
+              "total": 0,
+              "object": {
+              }
+            },
+          )
+            .then(function (obj) {
+              that.total= obj.data.total;
+              that.tableData = obj.data.objects;
+              that.tableData.forEach(function (v,k,arr) {
+                arr[k]['department'] = 'XXX';
+                arr[k]['manager'] = '阳阳';
+                if(arr[k]['state'] == 0){
+                  arr[k]['state'] = '正常'
+                }else{
+                  arr[k]['state'] = '停用'
+                }
+                if(arr[k]['localCompType'] == 0){
+                  arr[k]['localCompType']='门店';
+                }else if (arr[k]['localCompType'] == 1) {
+                  arr[k]['localCompType']='同业';
+                }else {
+                  arr[k]['localCompType']='翻盘门店';
+                }
+                if(arr[k]['settlementType'] == 0 ){
+                  arr[k]['settlementType'] = '非月结'
+                }else{
+                  arr[k]['settlementType'] = '月结'
+                }
+              })
+              console.log(obj.data.total)
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+          console.log(`当前页: ${val}`);
+        },
         add_info(){
           this.dialogFormVisible = true;
           },
+        edit_info(){
+          this.getOneMess()
+          this.dialogFormVisible = true;
+
+        },
+        //提交
         submitForm(formName) {
-          /*this.ruleForm.quota = parseInt(this.ruleForm.quota);*/
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              alert('submit!');
+              this.addMerchan()
               this.dialogFormVisible = false;
             } else {
+
               console.log('error submit!!');
               console.log(this.ruleForm);
               return false;
             }
           });
+
         },
         resetForm(formName) {
           //this.$refs[formName].resetFields();
           this.dialogFormVisible = false;
+        },
+        editorForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.dialogFormVisible = false;
+        } else {
+          console.log('error submit!!');
+          console.log(this.ruleForm);
+          return false;
+        }
+      });
+
+    },
+       //列表
+        list(){
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/universal/localcomp/api/page",
+            {
+              "pageIndex": 1,
+              "pageSize": 10,
+              "total": 0,
+              "object": {
+              }
+            },
+          )
+            .then(function (obj) {
+              that.total= obj.data.total;
+              that.tableData = obj.data.objects;
+              that.tableData.forEach(function (v,k,arr) {
+                arr[k]['department'] = 'XXX';
+                arr[k]['manager'] = '阳阳';
+                if(arr[k]['state'] == 0){
+                  arr[k]['state'] = '正常'
+                }else{
+                  arr[k]['state'] = '停用'
+                }
+                if(arr[k]['localCompType'] == 0){
+                  arr[k]['localCompType']='门店';
+                }else if (arr[k]['localCompType'] == 1) {
+                  arr[k]['localCompType']='同业';
+                }else {
+                  arr[k]['localCompType']='翻盘门店';
+                }
+                if(arr[k]['settlementType'] == 0 ){
+                  arr[k]['settlementType'] = '非月结'
+                }else{
+                  arr[k]['settlementType'] = '月结'
+                }
+              })
+              console.log(obj.data.total)
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+        },
+        //添加
+        addMerchan(){
+          if(this.ruleForm.state == '停用'){
+            this.ruleForm.state = 1;
+          }else{
+            this.ruleForm.state = 0;
+          }
+          if(this.ruleForm.settlementType == "非月结"){
+            this.ruleForm.settlementType = 0
+          }else{
+            this.ruleForm.settlementType = 1
+          }
+          this.ruleForm.scopeExt = this.ruleForm.scopeExt.join(',')
+          /*let name = [];
+          this.ruleForm.scopeExt.forEach(item => {
+            name.push(item);
+          })
+          this.ruleForm.scopeExt['name'] = [];
+          this.ruleForm.scopeExt.name = name;*/
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/universal/localcomp/api/insert",
+            {
+
+              "object": this.ruleForm
+            },
+          )
+            .then(function (obj) {
+
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+        },
+        //获取一条信心
+        getOneMess(){
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/universal/localcomp/api/get",
+            {
+              "id": this.tid
+            },
+          )
+            .then(function (obj) {
+                that.ruleForm.name = obj.data.object.name
+              that.ruleForm.localCompType = obj.data.object.localCompType
+              if(obj.data.object.state == 0){
+                that.ruleForm.state ="正常"
+              }else{
+                that.ruleForm.state ="停用"
+              }
+
+                obj.data.object.name
+                that.ruleForm.name = obj.data.object.name
+                that.ruleForm.name = obj.data.object.name
+              //console.log(String(obj.data.object.expTime.substring(1)))
+              console.log(obj.data.object)
+              console.log(that.ruleForm)
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+        },
+        //删除
+        rowDelete(){
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/universal/localcomp/api/delete",
+              {
+                "id": this.tid
+              }
+          )
+            .then(function (obj) {
+
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+        },
+        //删除弹框
+        open7() {
+          this.$confirm('此操作将永久删除该条记录, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            center: true
+          }).then(() => {
+            this.rowDelete();
+            this.list();
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        },
+        handleClick(row, event, column){
+           this.tid = row.id
         }
       },
-     
+      created(){
+        this.list();
+      }
+
     }
 </script>
 
@@ -364,5 +597,10 @@
   }
   .el-checkbox+.el-checkbox{
     margin-left: 10px;
+  }
+  .block{
+    float: right;
+    margin-top: 50px;
+    margin-bottom: 50px;
   }
 </style>
