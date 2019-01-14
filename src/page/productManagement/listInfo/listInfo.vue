@@ -18,7 +18,7 @@
             <el-form-item label="出游类型" prop="travelType" label-width="120px">
               <el-radio-group v-model="ruleForm.travelType" class="travelType">
                 <el-radio label="1" value="1">境外</el-radio>
-                <el-radio label="2" value="2">国内</el-radio>               
+                <el-radio label="2" value="2">国内</el-radio>
               </el-radio-group>
             </el-form-item>
             <!--出发地-->
@@ -120,13 +120,13 @@
             <el-form-item label="轮播图" prop="slideshow" label-width="120px">
               <el-input v-model="ruleForm.slideshow" disabled class="banner" placeholder="3-6张图片">
               </el-input>
-              <!-- <el-upload :on-preview="slideshowClick" style="float:left;" action="http://192.168.1.168:6015/ceshi/up" list-type="picture" :limit='6' accept=".jpg,.png,.gif" :on-remove="handleRemove2" :multiple="true">
+               <el-upload :on-preview="slideshowClick" style="float:left;" method="post" action="http://192.168.1.168:6012/universal/supplier/api/upload" list-type="picture" :limit='6' accept=".jpg,.png,.gif" :on-remove="handleRemove2" :multiple="true">
                 <el-button type="info">
                   <div v-show="isSlideshow" class="upload_div">
                     <img class="upload_img" :src="this.slideshowUrl" alt="">
                   </div>
                   上传</el-button>
-              </el-upload> -->
+              </el-upload>
               <input id="fileItem" type="file" multiple style="float:left; margin-left:10px;">
             </el-form-item>
             <!-- 出游人群 -->
@@ -237,11 +237,11 @@
                           <div v-if="item.trafficMode == '1'">
                             <!--第一行-->
                             <div class="aviation" style="margin-top:20px; position:relative;">
-                              <!--第一个-->                        
+                              <!--第一个-->
                                   <el-form-item :prop="'plane.'+index+'.company'" :rules="rules.company" label="航空公司" label-width="100px" style="float:left;">
                                     <el-autocomplete class="inputBox" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
                                     </el-autocomplete>
-                                  </el-form-item>                           
+                                  </el-form-item>
                               <!--第二个-->
                               <div style="float:left;">
                                 <el-form-item label-width="100px" label="航班号" :prop="'plane.'+index+'.theNumber'" :rules="rules.theNumber" style="width:280px">
@@ -341,7 +341,7 @@
                                   <el-autocomplete class="inputBox" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="item.theNumber" :trigger-on-focus="false">
                                   </el-autocomplete>
                                 </el-form-item>
-                            </div>     
+                            </div>
                             <!--第一行结束-->
                             <!--第二行-->
                             <div class="aviation">
@@ -1277,7 +1277,7 @@
     </div>
         </el-tab-pane>
         <el-tab-pane label="其他信息" name="fourth">
-          
+
          <div class="cost">预订须知</div>
          <div class="border">
           <div class="cost_button">
@@ -1755,7 +1755,7 @@
         inputVal4: '',
         errorNull: ''
       }
-      
+
     },
    watch: { //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
       items: {
@@ -1855,7 +1855,7 @@
                   night:this.ruleForm.travelNight,//基本信息行程晚数
                   pods:this.dynamicTags3,//基本信息出发地
                   destinations:this.dynamicTags4,//基本信息目的地
-                  isDeleted:0,                  
+                  isDeleted:0,
                   confirmType:this.ruleForm.orderConfirmationType,//基本信息订单确认类型
                   strengths:strengths,//基本信息亮点词
                   label:dynamicTagsc,//基本信息运营标签
@@ -1877,7 +1877,7 @@
                       pod: this.ruleForm.origin.pod,
                       destination: this.ruleForm.bourn.destination,
                       isDeleted: 0,
-                      createTime:new Date(),                      
+                      createTime:new Date(),
                       traffic: traff,//交通方式,
                       schedules: sche,//行程信息
                       briefMark: this.content,//简要说明
@@ -2673,7 +2673,7 @@
     text-align: left;
   }
   .cost_button{
-    margin: 10px 0 0 0; 
+    margin: 10px 0 0 0;
     text-align: left;
   }
   .cost_title{
@@ -2691,11 +2691,11 @@
   .cost_bg{
     background: #e6e6e6;
     width: 1050px;
-    margin: 0 0 50px 0; 
+    margin: 0 0 50px 0;
 
   }
   .content_explain{
-    margin: 0 0 20px 0; 
+    margin: 0 0 20px 0;
     background-color: #fff;
   }
 
