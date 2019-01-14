@@ -71,6 +71,35 @@
                <el-button>转团</el-button>
             </el-row>
        </div>
+       <!--流程管理弹窗-->
+       <el-dialog title="流程管理" :visible.sync="dialogFormVisible" class="city_list" width="800px">
+              <div class="process-sta">订单状态：<span>预定不占</span></div>
+              <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                  <el-form-item label="订单联系人" prop="contact1">            
+                    <div class="ml13">姓名<el-input v-model="ruleForm.contactName" class="numw"></el-input></div>
+                  </el-form-item>
+                  <el-form-item label="" prop="contact2">            
+                    <div class="ml13">电话<el-input v-model="ruleForm.contactPhone" class="numw"></el-input></div>
+                  </el-form-item>
+                  <el-form-item label="出行人信息">            
+                     <div class="oh" v-show="typeNum1">
+                       <div class="tour-til">成人</div>
+                       <div class="tourist"><input v-for="(item,index) in adult" v-model="item.name" @click="fillTour('1',index)"/></div>
+                     </div>
+                     <div class="oh" v-show="typeNum2">
+                       <div class="tour-til">儿童</div>
+                       <div class="tourist"><input v-for="(item,index) in child" v-model="item.name" @click="fillTour('2',index)"/></div>
+                     </div>
+                     <div class="oh" v-show="typeNum3">
+                       <div class="tour-til">老人</div>
+                       <div class="tourist"><input v-for="(item,index) in elder" v-model="item.name" @click="fillTour('3',index)"/></div>
+                     </div>
+                  </el-form-item>
+              </el-form>
+       </el-dialog>
+
+
+
   </div>
 </template>
 
@@ -78,7 +107,17 @@
 export default {
   data() {
     return {
-      
+      dialogFormVisible:true,
+      adult:[],
+      child:[],
+      elder:[],
+      typeNum1:false,
+      typeNum2:false,
+      typeNum3:false,
+      ruleForm: {  
+        contactName:'',
+        contactPhone:''
+      }
     }
   },
   mounted(){
@@ -98,4 +137,7 @@ export default {
     .but-row .el-button{border: 1px solid #2f95f9}
     .confirm-time{float: right;margin: 50px 55px 0 0;font-weight: bold;font-size:15px}
     .confirm-time span{color:#ff4c3d;margin-left: 20px}
+    .process-sta{background-color: #d1cfd0;height: 40px;padding: 25px 0 0 15px}
+    .demo-ruleForm{margin-top: 20px;}
+    .numw{width: 90px;text-align: center;margin:0 15px;}
 </style>
