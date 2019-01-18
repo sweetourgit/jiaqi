@@ -65,39 +65,67 @@
             <div class="confirm-time">待确认剩余<span>1天22:33:33</span></div>
             <el-row class="but-row">
                <el-button>联系客人</el-button>
-               <el-button>流程管理</el-button>
+               <el-button @click="processManage">流程管理</el-button>
                <el-button>备注信息</el-button>
                <el-button>未申请退款</el-button>
                <el-button>转团</el-button>
             </el-row>
        </div>
        <!--流程管理弹窗-->
-       <el-dialog title="流程管理" :visible.sync="dialogFormVisible" class="city_list" width="800px">
+       <el-dialog title="流程管理" :visible.sync="dialogFormProcess" class="city_list" width="800px">
               <div class="process-sta">订单状态：<span>预定不占</span></div>
               <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                  <el-form-item label="订单联系人" prop="contact1">            
+                  <el-form-item label="订单联系人">            
                     <div class="ml13">姓名<el-input v-model="ruleForm.contactName" class="numw"></el-input></div>
                   </el-form-item>
-                  <el-form-item label="" prop="contact2">            
+                  <el-form-item label="">            
                     <div class="ml13">电话<el-input v-model="ruleForm.contactPhone" class="numw"></el-input></div>
                   </el-form-item>
                   <el-form-item label="出行人信息">            
-                     <div class="oh" v-show="typeNum1">
+                     <div class="oh">
                        <div class="tour-til">成人</div>
                        <div class="tourist"><input v-for="(item,index) in adult" v-model="item.name" @click="fillTour('1',index)"/></div>
                      </div>
-                     <div class="oh" v-show="typeNum2">
+                     <div class="oh">
                        <div class="tour-til">儿童</div>
                        <div class="tourist"><input v-for="(item,index) in child" v-model="item.name" @click="fillTour('2',index)"/></div>
                      </div>
-                     <div class="oh" v-show="typeNum3">
+                     <div class="oh">
                        <div class="tour-til">老人</div>
                        <div class="tourist"><input v-for="(item,index) in elder" v-model="item.name" @click="fillTour('3',index)"/></div>
                      </div>
+                     <div class="change-num" @click="changeNum">变更数量</div>
+                     <div class="change-num">查看合同</div>
+                  </el-form-item>
+                  <el-form-item label="下单方式" prop="type">
+                    <div class="surplus">成人：余3</br>儿童：余2</div>
+                    <el-radio-group v-model="ruleForm.type"><br/>
+                      <el-radio label="确认占位" class="radiomar">确认占位 （同业社额度： 总欠款 <span class="color-blue">270,164</span> 元）</el-radio><br/>
+                      <el-radio label="预定占位" class="radiomar">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
+                      <el-radio label="确认订单" class="radiomar">确认订单</el-radio><br/>
+                      <el-radio label="提交用户信息" class="radiomar">提交用户信息</el-radio><br/>
+                      <el-radio label="发送电子合同给客人" class="radiomar">发送电子合同给客人</el-radio><br/>
+                      <el-radio label="作废订单" class="radiomar">作废订单</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="评价信息" prop="">            
+                     <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="remark"></el-input>
                   </el-form-item>
               </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="subInfo('conForm')" class="confirm">保存修改</el-button>
+              </div>
+              <div slot="footer" class="dialog-footer1">
+                <el-button @click="dialogFormVisible = false"><span>关 闭</span></el-button>
+              </div>
        </el-dialog>
-
+       <!--变更数量弹窗-->
+       <el-dialog title="变更数量" :visible.sync="dialogFormNum" class="city_list" width="800px">
+              <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        
+              </el-form>
+       </el-dialog>
 
 
   </div>
@@ -107,24 +135,30 @@
 export default {
   data() {
     return {
-      dialogFormVisible:true,
-      adult:[],
-      child:[],
-      elder:[],
-      typeNum1:false,
-      typeNum2:false,
-      typeNum3:false,
+      dialogFormProcess:false,  //流程管理弹窗
+      adult:[{name:"点击填写"},{name:"点击填写"}],
+      child:[{name:"点击填写"}],
+      elder:[{name:"点击填写"}],
       ruleForm: {  
         contactName:'',
         contactPhone:''
-      }
+      },
+      dialogFormNum:false,  //变更数量弹窗
+
+
+
     }
   },
   mounted(){
 
   },
   methods: {
-
+      processManage(){
+        this.dialogFormProcess=true;
+      },
+      changeNum(){
+        this.dialogFormNum=true;
+      }
     }
 }
 </script>
@@ -137,7 +171,22 @@ export default {
     .but-row .el-button{border: 1px solid #2f95f9}
     .confirm-time{float: right;margin: 50px 55px 0 0;font-weight: bold;font-size:15px}
     .confirm-time span{color:#ff4c3d;margin-left: 20px}
-    .process-sta{background-color: #d1cfd0;height: 40px;padding: 25px 0 0 15px}
-    .demo-ruleForm{margin-top: 20px;}
-    .numw{width: 90px;text-align: center;margin:0 15px;}
+    .process-sta{background-color: #d1cfd0;height: 40px;padding: 25px 0 0 20px}
+    .process-sta span{margin-left: 20px;color: #3096fa}
+    .demo-ruleForm{margin-top: 20px}
+    .numw{width: 125px;text-align: center;margin:0 15px}
+    .tourist{float: left;width: 600px}
+    .tourist input{width: 110px;background-color: #f6f6f6;color:#606266;text-align: center;border:0;height: 30px;margin:1px 10px 10px 4px}
+    .tour-til{float: left;margin:0 13px}
+    .oh{overflow: hidden}
+    .change-num{width: 110px;background-color: #f6f6f6;text-align: center;height: 30px;line-height: 30px;margin: 10px 0 0 13px}
+    .radiomar{margin:12px 13px}
+    .ml13{margin-left: 13px}
+    .dialog-footer{text-align: left;margin:-40px 0 20px 265px;display: none}
+    .dialog-footer1{text-align: left;margin:-40px 0 20px 340px;}
+    .dialog-footer1 span{margin: 0 15px}
+    .confirm{margin-left: 20px}
+    .surplus{margin:8px 13px;line-height: 25px}
+    .color-blue{color: #3096fa}
+    .remark{width: 98%;margin:7px 0 0 13px}
 </style>

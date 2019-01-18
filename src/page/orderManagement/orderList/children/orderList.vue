@@ -71,7 +71,7 @@ export default {
     }
   },
   mounted(){
-
+  this.test()
   },
   methods: {
       getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -92,9 +92,22 @@ export default {
       },
       handleCurrentChange(){
 
+      },
+      test(){
+        this.$http.post("http://192.168.1.168:6019/api/BPM/GetInstanceActityInfo",
+              {
+                "InstanceID": "52860967-14d6-40c2-a388-a8d2e081cbeb",
+  "WorkItemID": "6f672fd8-4c48-4f69-bc0f-86bf3cc78924",
+  "userCode": "15940441050"
+              })
+              .then(function(response) {
+
+                })
+              }
+
       }
   }
-}
+
 </script>
 
 <style scoped>
