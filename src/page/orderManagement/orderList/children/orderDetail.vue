@@ -143,7 +143,7 @@ export default {
         contactName:'',
         contactPhone:''
       },
-      dialogFormNum:false,  //变更数量弹窗
+      dialogFormNum:false  //变更数量弹窗
 
 
 
