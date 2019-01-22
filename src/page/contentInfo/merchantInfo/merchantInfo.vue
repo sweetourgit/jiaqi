@@ -148,7 +148,7 @@
           </el-form-item>
           <el-form-item label="活动时间" required>
               <el-form-item prop="expTime">
-                <el-date-picker type="date" placeholder="选择日期" value-format="yyyyMMdd" format="yyyy-MM-dd" v-model="ruleForm.expTime" style="width: 250px;""></el-date-picker>
+                <el-date-picker type="date" placeholder="选择日期" value-format="yyyyMMdd" format="yyyy-MM-dd" v-model="ruleForm.expTime" style="width: 250px;"></el-date-picker>
               </el-form-item>
           </el-form-item>
           <el-form-item label="结算方式" prop="settlementType">
@@ -386,6 +386,7 @@
           console.log(`当前页: ${val}`);
         },
         add_info(){
+          this.clear();
           this.dialogFormVisible = true;
           },
         edit_info(){
@@ -398,6 +399,7 @@
           this.$refs[formName].validate((valid) => {
             if (valid) {
               this.addMerchan()
+              this.list()
               this.dialogFormVisible = false;
             } else {
 
@@ -410,11 +412,30 @@
         },
         resetForm(formName) {
           //this.$refs[formName].resetFields();
+          this.ruleForm = {
+            name: '',
+            localCompType: '',
+            state:'',
+            expTime: '',
+            settlementType:'',
+            quota:'',
+            department:'',
+            people:'',
+            scopeExt: [],
+            address:'',
+            linker:'',
+            phone:'',
+            publicName:'',
+            bankName:'',
+            bankcardNo:''
+          }
+          this.$refs['ruleForm'].resetFields()
           this.dialogFormVisible = false;
         },
         editorForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.editMerchan()
           this.dialogFormVisible = false;
         } else {
           console.log('error submit!!');
@@ -479,6 +500,9 @@
           }else{
             this.ruleForm.settlementType = 1
           }
+          if(this.ruleForm.settlementType == 0){
+            this.ruleForm.quota = 0
+          }
           this.ruleForm.scopeExt = this.ruleForm.scopeExt.join(',')
           /*let name = [];
           this.ruleForm.scopeExt.forEach(item => {
@@ -490,7 +514,6 @@
           this.$http.post(
             this.GLOBAL.serverSrc + "/universal/localcomp/api/insert",
             {
-
               "object": this.ruleForm
             },
           )
@@ -500,6 +523,71 @@
             .catch(function (obj) {
               console.log(obj)
             })
+        },
+        //修改
+        editMerchan(){
+          if(this.ruleForm.state == '停用'){
+            this.ruleForm.state = 1;
+          }else{
+            this.ruleForm.state = 0;
+          }
+          if(this.ruleForm.settlementType == "非月结"){
+            this.ruleForm.settlementType = 0
+          }else{
+            this.ruleForm.settlementType = 1
+          }
+          if(this.ruleForm.settlementType == 0){
+            this.ruleForm.quota = 0
+          }
+          this.ruleForm.scopeExt = this.ruleForm.scopeExt.join(',')
+          if(this.ruleForm.expTime.indexOf("-") > 0){
+            let year = "";
+            let month = "";
+            let day = "";
+            let pin = ""
+            year = this.ruleForm.expTime.substring(0,4);
+            month = this.ruleForm.expTime.substring(5,7);
+            day = this.ruleForm.expTime.substring(8,10);
+            pin = year+month+day
+            this.ruleForm.expTime = pin
+          }
+          this.ruleForm.id = this.tid
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/universal/localcomp/api/save",
+            {
+              "object": this.ruleForm
+            },
+          )
+            .then(function (obj) {
+
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+          console.log(this.ruleForm);
+          this.list()
+         // this.qqq()
+        },
+        clear(){
+          this.ruleForm = {
+                      name: '',
+                      localCompType: '',
+                      state:'',
+                      expTime: '',
+                      settlementType:'',
+                      quota:'',
+                      department:'',
+                      people:'',
+                      scopeExt: [],
+                      address:'',
+                      linker:'',
+                      phone:'',
+                      publicName:'',
+                      bankName:'',
+                      bankcardNo:''
+                    }
+          this.$refs['ruleForm'].resetFields()
         },
         //获取一条信心
         getOneMess(){
@@ -527,12 +615,22 @@
                 day = String(obj.data.object.expTime).substring(6,8);
                 pin = year+'-'+month+'-'+day
               that.ruleForm.expTime = String(pin);
-              console.log(pin)
-                that.ruleForm.name = obj.data.object.name
-                that.ruleForm.name = obj.data.object.name
-              //console.log(String(obj.data.object.expTime.substring(1)))
-              console.log(obj.data.object)
-              console.log(that.ruleForm)
+              if(obj.data.object.settlementType == 0){
+                that.ruleForm.settlementType ="非月结"
+              }else{
+                that.ruleForm.settlementType ="月结"
+              }
+                that.ruleForm.quota = obj.data.object.quota
+              //todo    部门和人员 预留
+              that.ruleForm.department = '1'
+              that.ruleForm.people = '2'
+              that.ruleForm.scopeExt = obj.data.object.scopeExt.split(',')
+              that.ruleForm.address = obj.data.object.address
+              that.ruleForm.linker = obj.data.object.linker
+              that.ruleForm.phone = obj.data.object.phone
+              that.ruleForm.publicName = obj.data.object.publicName
+              that.ruleForm.bankName = obj.data.object.bankName
+              that.ruleForm.bankcardNo = obj.data.object.bankcardNo
             })
             .catch(function (obj) {
               console.log(obj)
