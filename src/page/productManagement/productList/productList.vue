@@ -75,13 +75,12 @@
 
     <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px; width: 80%" >
     <div class="button_select">
-
-      <router-link to="/changepro"><el-button plain>编辑</el-button></router-link>
-      <el-button plain>复制</el-button>
-      <el-button plain>导出行程</el-button>
-      <el-button plain>退改</el-button>
-      <el-button plain @click = "groupStage">团期/库存</el-button>
-      <el-button type="danger" plain>删除</el-button>
+      <router-link to="/changepro"><el-button plain :disabled="reable">编辑</el-button></router-link>
+      <el-button plain :disabled="reable">复制</el-button>
+      <el-button plain :disabled="reable">导出行程</el-button>
+      <el-button plain :disabled="reable">退改</el-button>
+      <el-button plain @click = "groupStage" :disabled="reable">团期/库存</el-button>
+      <el-button type="danger" plain :disabled="reable">删除</el-button>
     </div>
 
     <div class="table_trip" style="margin-left: 50px; width: 75%;">
@@ -342,7 +341,7 @@
     </div>
     <!-- 价格 -->
     <div v-else>
-      <DateList :msg-father="ccc" :piapia="piaid"/>
+      <DateList v-on:merchandises="headCall"  :msg-father="ccc" :piapia="piaid"/>
     </div>
     </el-dialog>
   </div>
@@ -359,6 +358,8 @@ import DateList from './component/DateList'
     },
      data() {
       return {
+        reable:true,
+        fid:0,
         buttonlist:[],
         pid:'',
         domains: [{
@@ -1158,6 +1159,9 @@ import DateList from './component/DateList'
     }
 
   },
+      headCall(data) {
+        this.merchandise = data;
+      },
   // 生成sku
   skuadd(){
     console.log(this.addtable[this.addtable.length-1].allprice)
@@ -1276,6 +1280,7 @@ import DateList from './component/DateList'
       //获取id
       clickBanle(row, event, column){
           this.pid = row['id'];
+        this.reable = false;
 
       }
 
@@ -1340,7 +1345,8 @@ import DateList from './component/DateList'
         .catch(function (obj) {
           console.log(obj)
         })
-    }
+    },
+
   }
 </script>
 <style lang="stylus" scoped>
@@ -1421,7 +1427,7 @@ import DateList from './component/DateList'
    margin-bottom: 80px;
  }
  .group {
-  margin-left: calc(50% - 120px);
+/*  margin-left: calc(50% - 120px);*/
 }
 
 .el-radio-button>>>.el-radio-button__inner {
