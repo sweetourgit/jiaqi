@@ -194,6 +194,7 @@ export default {
       },
       changeNum(){
         this.dialogFormNum=true;
+
         
       }
     }
