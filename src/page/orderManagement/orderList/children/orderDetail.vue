@@ -103,12 +103,12 @@
                       <el-radio label="确认占位" class="radiomar">确认占位 （同业社额度： 总欠款 <span class="color-blue">270,164</span> 元）</el-radio><br/>
                       <el-radio label="预定占位" class="radiomar">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
                       <el-radio label="确认订单" class="radiomar">确认订单</el-radio><br/>
-                      <el-radio label="提交用户信息" class="radiomar">提交用户信息</el-radio><br/>
-                      <el-radio label="发送电子合同给客人" class="radiomar">发送电子合同给客人</el-radio><br/>
-                      <el-radio label="作废订单" class="radiomar">作废订单</el-radio>
+                      <el-radio style="display:none" label="提交用户信息" class="radiomar">提交用户信息</el-radio><br/>
+                      <el-radio style="display:none" label="发送电子合同给客人" class="radiomar">发送电子合同给客人</el-radio><br/>
+                      <el-radio style="display:none" label="作废订单" class="radiomar">作废订单</el-radio>
                     </el-radio-group>
                   </el-form-item>
-                  <el-form-item label="评价信息" prop="">            
+                  <el-form-item style="display:none" label="评价信息" prop="">            
                      <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="remark"></el-input>
                   </el-form-item>
               </el-form>
@@ -122,9 +122,42 @@
        </el-dialog>
        <!--变更数量弹窗-->
        <el-dialog title="变更数量" :visible.sync="dialogFormNum" class="city_list" width="800px">
-              <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        
-              </el-form>
+          <el-form :model="numForm" ref="numForm" :rules="rules" label-width="100px" class="demo-ruleForm numForm">
+           <el-form-item label="" prop="">            
+              <div class="ml13">结算参考 <span class="color-red">￥340</span></div>
+           </el-form-item>
+           <el-form-item label="选择价格" prop="price" class="cb price">
+              <el-radio-group v-model="ruleForm.price"><br/>
+                <el-radio label="同业价" class="radiomar">同业价： 成人 （￥3800）  儿童（￥3000） 老人（￥3000） 单房差（￥200）</el-radio><br/>
+                <el-radio label="销售价" class="radiomar">销售价： 成人 （￥4800）  儿童（￥4000） 老人（￥4000） 单房差（￥300）</el-radio>
+                <el-radio label="自定义" class="radiomar">自定义： 
+                  成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
+                  儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
+                  老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
+                  单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
+                </el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="报名人数" prop="num1">            
+              <div class="ml13">成人<el-input v-model="ruleForm.num1" class="numw" @input="peoNum('adult')"></el-input><span class="color-red">余（17） ￥11400</span></div>
+            </el-form-item>
+            <el-form-item label="" prop="num2">            
+              <div class="ml13">儿童<el-input v-model="ruleForm.num2" class="numw" @input="peoNum('child')"></el-input><span class="color-red">余（17） ￥1140</span></div>
+            </el-form-item>
+            <el-form-item label="" prop="num3">            
+              <div class="ml13">老人<el-input v-model="ruleForm.num3" class="numw" @input="peoNum('elder')"></el-input><span class="color-red">余（17） ￥1140</span></div>
+            </el-form-item>
+            <el-form-item label="" prop="">            
+              <div class="ml13">单房差 <span class="color-red">￥340</span></div>
+            </el-form-item>
+            <el-form-item label="总计" prop="totalPrice">            
+              <div class="ml13"><span class="color-red">￥{{numForm.totalPrice}}</span></div>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="numdialog-footer">
+               <el-button @click="dialogFormNum = false">取 消</el-button>
+               <el-button type="primary" @click="subInfo('conForm')" class="confirm">保 存</el-button>
+          </div>
        </el-dialog>
 
 
@@ -143,10 +176,13 @@ export default {
         contactName:'',
         contactPhone:''
       },
-      dialogFormNum:false  //变更数量弹窗
-
-
-
+      dialogFormNum:false,  //变更数量弹窗
+      numForm:{
+        totalPrice:13000
+      }, 
+      rules:{
+             
+      }
     }
   },
   mounted(){
@@ -158,6 +194,7 @@ export default {
       },
       changeNum(){
         this.dialogFormNum=true;
+        
       }
     }
 }
@@ -174,19 +211,26 @@ export default {
     .process-sta{background-color: #d1cfd0;height: 40px;padding: 25px 0 0 20px}
     .process-sta span{margin-left: 20px;color: #3096fa}
     .demo-ruleForm{margin-top: 20px}
+    .demo-ruleForm .el-form-item{margin-bottom: 13px}
     .numw{width: 125px;text-align: center;margin:0 15px}
     .tourist{float: left;width: 600px}
     .tourist input{width: 110px;background-color: #f6f6f6;color:#606266;text-align: center;border:0;height: 30px;margin:1px 10px 10px 4px}
     .tour-til{float: left;margin:0 13px}
     .oh{overflow: hidden}
-    .change-num{width: 110px;background-color: #f6f6f6;text-align: center;height: 30px;line-height: 30px;margin: 10px 0 0 13px}
+    .change-num{width: 110px;background-color: #f6f6f6;text-align: center;height: 30px;line-height: 30px;margin: 10px 0 0 13px;cursor: pointer}
     .radiomar{margin:12px 13px}
     .ml13{margin-left: 13px}
     .dialog-footer{text-align: left;margin:-40px 0 20px 265px;display: none}
     .dialog-footer1{text-align: left;margin:-40px 0 20px 340px;}
     .dialog-footer1 span{margin: 0 15px}
+    .numdialog-footer{text-align: left;margin:-40px 0 20px 265px}
     .confirm{margin-left: 20px}
     .surplus{margin:8px 13px;line-height: 25px}
     .color-blue{color: #3096fa}
+    .color-red{color: #ff4b3e}
     .remark{width: 98%;margin:7px 0 0 13px}
+    .disib{display: inline-block;}
+    .pricew{width: 85px;text-align: center;margin:-5px 8px}
+    .numForm{margin-top: -10px}
+    .numForm .el-form-item{margin-bottom: 5px}
 </style>
