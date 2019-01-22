@@ -804,7 +804,7 @@
     position: relative;
     //  float: left;
     top:20px;
-    margin: 0 auto;
+    margin: 0 40px;
     text-align: center;
     color: #444;
     font-size:24px;

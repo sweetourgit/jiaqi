@@ -1,7 +1,7 @@
 <template>
   <div>
      <div class="main">
-     <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun">
+     <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border @selection-change="changeFun">
        <el-table-column  prop="serno" label="序号" min-width="60"></el-table-column>
        <el-table-column  prop="id" label="ID" min-width="60"></el-table-column>
        <el-table-column  prop="state" label="状态" min-width="90"></el-table-column>
@@ -71,7 +71,7 @@ export default {
     }
   },
   mounted(){
-
+  this.test()
   },
   methods: {
       getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -84,14 +84,30 @@ export default {
       clickRow(row){    //选中行复选框勾选
         this.$router.push({path: "/searchOrder/orderDetail?id="+row.id});
       },
+      changeFun(){
+        
+      },
       handleSizeChange(){
 
       },
       handleCurrentChange(){
 
+      },
+      test(){
+        this.$http.post("http://192.168.1.168:6019/api/BPM/GetInstanceActityInfo",
+              {
+                "InstanceID": "52860967-14d6-40c2-a388-a8d2e081cbeb",
+  "WorkItemID": "6f672fd8-4c48-4f69-bc0f-86bf3cc78924",
+  "userCode": "15940441050"
+              })
+              .then(function(response) {
+
+                })
+              }
+
       }
   }
-}
+
 </script>
 
 <style scoped>

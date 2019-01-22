@@ -347,7 +347,7 @@ export default {
     .cb{clear: both}
     .optionw{width: 280px}
     .price .pricew{width: 90px;text-align: center;margin:-5px 15px;}
-    .numw{width: 90px;text-align: center;margin:0 15px;}
+    .numw{width: 125px;text-align: center;margin:0 15px;}
     .radiomar{margin:12px 13px}
     .ml13{margin-left: 13px}
     .tourist{margin-left: 13px;float: left;width:85%}
