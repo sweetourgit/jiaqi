@@ -87,7 +87,7 @@ export default {
        .demo-input-suffix{width: 1150px;}
        .input{margin:10px 5px;width: 145px;}
        .search-title{font-size: 14px;margin-left:5px;display: inline-block;width: 75px;text-align: center;}
-       .start-time{margin-left:10px;width: 135px}
+       .start-time{margin-left:10px;width: 135px !important}
        .date-line{width:15px;border-bottom:1px solid #e6e6e6;display:inline-block;margin:0 -10px 3px 0}
        .sec-type{margin-left:10px}
        .status-title{float:left;font-size: 14px;margin:22px 0 0 15px;width:75px;}
