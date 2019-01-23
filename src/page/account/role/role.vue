@@ -35,7 +35,6 @@
         :cell-style="cs"
         border>
         <el-table-column
-
           prop="id"
           label="ID"
           width="180"
@@ -85,18 +84,18 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
+      <!--分页-->
+      <el-pagination class="pagination"
         @size-change="handleSizeChange"
+        background
         @current-change="handleCurrentChange"
-        plain="false"
-        prev-text="上一页"
-        next-text="下一页"
-        :page-sizes="[2,3,4,5]"
-        :current-page.sync="pageIndex"
-        layout="total, prev, pager, next, sizes, jumper, ->"
-        :total="totalNum"
-        style="float: right">
+        :current-page="1"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
       </el-pagination>
+      <!--分页end-->
     </div>
   </div>
 </template>
@@ -105,8 +104,8 @@
 export default {
   data() {
     return {
-              tableHead:{height: '60px', color: '#555555'},
-        tableHeight:{padding: '0', height: '34px'},
+      tableHead:{height: '60px', color: '#555555'},
+      tableHeight:{padding: '0', height: '34px'},
       typeArr: [
         {
           value: "temp_id",
@@ -133,34 +132,27 @@ export default {
       hrs: { height: "60px" },
       cs: { padding: "0", height: "40px" },
       roleData: [],
-      pageSize: 2, // 设定默认分页每页显示数 todo 具体看需求
+      pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数
-      totalNum: 6
+      total: 0
     };
   },
   created() {
-    // 获取权限列表
+    // 获取角色模板列表
     this.getRoleList();
   },
   methods: {
-      getRowClass({ row, column, rowIndex, columnIndex }) {
+    getRowClass({ row, column, rowIndex, columnIndex }) {
           if (rowIndex == 0) {
             return 'background:#F7F7F7'
           } else {
             return ''
           }
       },
-    getRoleList(
-      PageIndex = this.pageIndex,
-      PageSize = this.pageSize,
-      type = "",
-      status = "",
-      keyword = ""
-    ) {
+    getRoleList(PageIndex = this.pageIndex,PageSize = this.pageSize,type = "",status = this.statusValue,keyword = ""){
       let _this = this;
-
       this.$http
-        .post(this.GLOBAL.serverSrc + "/api/org/rolepage", {
+        .post(this.GLOBAL.serverSrc + "/org/api/rolepage", {
           Object: {
             IsDeleted: 0,
             title: keyword
@@ -169,21 +161,17 @@ export default {
           PageSize: PageSize
         })
         .then(obj => {
-          console.log(obj);
           var _data = obj.data.objects;
-
           _data.forEach(function(v, k, arr) {
             arr[k]["author"] = "管理员"; // TODO 后台无返回，前端定死
             if (v["state"] == 1) {
-              arr[k]["state"] = "启动";
+              arr[k]["state"] = "正常";
             } else if (v["state"] == 2) {
-              arr[k]["state"] = "禁用";
+              arr[k]["state"] = "停用";
             }
           });
-
           _this.roleData = _data;
-          // _this.totalNum = _data.total    // todo 线上使用此行
-          _this.totalNum = 6;
+          _this.total = obj.data.total  
         })
         .catch(function(obj) {
           console.log(obj);
@@ -328,6 +316,10 @@ td {
 
 .cl_both {
   clear: both;
+}
+.pagination{
+  text-align:center;
+  margin:30px 0 50px 0
 }
 </style>
 
