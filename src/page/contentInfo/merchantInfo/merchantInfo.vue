@@ -386,7 +386,8 @@
           console.log(`当前页: ${val}`);
         },
         add_info(){
-          this.clear();
+          this.tid = 0
+           this.clear();
           this.dialogFormVisible = true;
           },
         edit_info(){
@@ -399,7 +400,6 @@
           this.$refs[formName].validate((valid) => {
             if (valid) {
               this.addMerchan()
-              this.list()
               this.dialogFormVisible = false;
             } else {
 
@@ -436,6 +436,7 @@
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.editMerchan()
+          this.tid = 0
           this.dialogFormVisible = false;
         } else {
           console.log('error submit!!');
@@ -452,13 +453,13 @@
             this.GLOBAL.serverSrc + "/universal/localcomp/api/page",
             {
               "pageIndex": 1,
-              "pageSize": 10,
-              "total": 0,
+              "pageSize": this.pagesize,
               "object": {
               }
             },
           )
             .then(function (obj) {
+              console.log(obj);
               that.total= obj.data.total;
               that.tableData = obj.data.objects;
               that.tableData.forEach(function (v,k,arr) {
@@ -518,6 +519,7 @@
             },
           )
             .then(function (obj) {
+              that.list()
 
             })
             .catch(function (obj) {
@@ -560,14 +562,13 @@
             },
           )
             .then(function (obj) {
-
+              that.list()
             })
             .catch(function (obj) {
               console.log(obj)
             })
           console.log(this.ruleForm);
-          this.list()
-         // this.qqq()
+
         },
         clear(){
           this.ruleForm = {
@@ -587,7 +588,9 @@
                       bankName:'',
                       bankcardNo:''
                     }
-          this.$refs['ruleForm'].resetFields()
+                    if (this.$refs['ruleForm'] !== undefined) {
+                      this.$refs['ruleForm'].resetFields()
+                    }
         },
         //获取一条信心
         getOneMess(){

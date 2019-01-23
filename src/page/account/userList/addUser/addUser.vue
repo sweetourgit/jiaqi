@@ -704,24 +704,21 @@ import Permission from '@/page/account/userList/addUser/permission'
              if (action === 'confirm') {
 
                this.$http.post(
-                 this.GLOBAL.serverSrc + "/org/api/userinsert",
+                 this.GLOBAL.serverSrc + "/org/api/usersave",
                  // "http://api.dayuntong.com:3009/api/org/userinsert",
                  {
                    "Object": {
-                     "id": 0,
-                     "createTime": "2018-08-30T08:52:16.558Z",
-                     "isDeleted": 0,
-                     "code": "string",
-                     "mobile": "string",
-                     "name": "string",
-                     "email": "string",
-                     "userCode": "string",
-                     "passWord": "string",
-                     "iDcard": "string",
-                     "tourGuide": "string",
-                     "sex": 0,
-                     "userType": 0,
-                     "userState": 2
+                     "id": this.$route.query.id,
+                     "mobile": this.ruleForm.phone,
+                     "name": this.ruleForm.name,
+                     "email": this.ruleForm.mail,
+                     "userCode": this.ruleForm.number,
+                     "passWord": this.ruleForm.passWord,
+                     "iDcard": this.ruleForm.idcard,
+                     "tourGuide": this.ruleForm.trailid,
+                     "sex": this.ruleForm.sex,
+                     "userType":this.ruleForm.type,
+                     "userState": "2"
 
                    }
                  },{
@@ -731,12 +728,12 @@ import Permission from '@/page/account/userList/addUser/permission'
                  }
                )
                  .then(function (obj) {
-                     that.$message({
+                     this.$message({
                        message: '操作成功',
                        type: 'success'
                      });
                      setTimeout(() => {
-                       that.$router.push({path: "/userlist"});
+                       this.$router.push({path: "/userlist"});
                      }, 1000);
 
 
@@ -769,24 +766,22 @@ import Permission from '@/page/account/userList/addUser/permission'
               if (action === 'confirm') {
 
                 this.$http.post(
-                  this.GLOBAL.serverSrc + "/org/api/userinsert",
+                  this.GLOBAL.serverSrc + "/org/api/usersave",
                   // "http://api.dayuntong.com:3009/api/org/userinsert",
                   {
-                    "object": {
+                    "Object": {
                       "id": this.$route.query.id,
-                      "createTime": "2018-08-30T08:52:16.558Z",
-                      "isDeleted": 0,
-                      "code": "string",
-                      "mobile": "string",
-                      "name": "string",
-                      "email": "string",
-                      "userCode": "string",
-                      "passWord": "string",
-                      "iDcard": "string",
-                      "tourGuide": "string",
-                      "sex": 0,
-                      "userType": 0,
-                      "userState": 3
+                      "mobile": this.ruleForm.phone,
+                      "name": this.ruleForm.name,
+                      "email": this.ruleForm.mail,
+                      "userCode": this.ruleForm.number,
+                      "passWord": this.ruleForm.passWord,
+                      "iDcard": this.ruleForm.idcard,
+                      "tourGuide": this.ruleForm.trailid,
+                      "sex": this.ruleForm.sex,
+                      "userType":this.ruleForm.type,
+                      "userState": "3"
+
                     }
                   },{
                     headers:{
@@ -800,7 +795,7 @@ import Permission from '@/page/account/userList/addUser/permission'
                       type: 'success'
                     });
                     setTimeout(() => {
-                      that.$router.push({path: "/userlist"});
+                      this.$router.push({path: "/userlist"});
                     }, 1000);
 
 
@@ -1042,7 +1037,7 @@ import Permission from '@/page/account/userList/addUser/permission'
             if(obj.data.object.userState == 2){
                 that.disable = true
             }else if(obj.data.object.userState == 3){
-              that.enable = true
+                that.enable = true
             }
           })
           .catch(function (obj) {
@@ -1111,13 +1106,12 @@ import Permission from '@/page/account/userList/addUser/permission'
     left: 10px;
   }
   .begin-button{
-    margin-left: -50px;
-    margin-top: 38px;
+    margin-left: 150px;
     position: relative;
     top: -27px;
   }
   .end-button{
-    margin-left: 21px;
+    margin-left: 150px;
     position: relative;
     top: -27px
   }
