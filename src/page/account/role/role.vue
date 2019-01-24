@@ -73,14 +73,9 @@
           header-align="center">
           <template slot-scope="scope">
             <el-button style="margin:10px;"  type="primary" size="small" @click="editRole(scope.row.id)" class="bt-edit">编辑</el-button>
-            <!--<router-link to="/addRole?id=scope.row.id&type=view"><el-button type="primary" size="small" class="bt-edit">编辑</el-button></router-link>-->
-            <el-button type="info" size="small" @click="changeState(scope.row.id,1)" class="bt-stop"
-                       v-if="scope.row.state === '禁用'">启用
-            </el-button>
-            <el-button v-else type="danger" size="small" @click="changeState(scope.row.id,2)" class="bt-stop"
-                       >停用
-                       <!-- v-else="scope.row.state === '启用'" -->
-            </el-button>
+            <el-button v-if="scope.row.state == '停用'" type="success" size="small" @click="changeState(scope.row.id,1,scope.row.title)" class="bt-stop">启用</el-button>
+            <el-button v-if="scope.row.state == '正常'" type="danger" size="small" @click="changeState(scope.row.id,2,scope.row.title)" class="bt-stop">停用</el-button>
+            <el-button v-if="scope.row.state == '等待审核'" type="warning" size="small" @click="changeState(scope.row.id,0,scope.row.title)" class="bt-stop">审核</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -119,7 +114,7 @@ export default {
       statusArr: [
         {
           value: "2",
-          label: "禁用"
+          label: "停用"
         },
         {
           value: "1",
@@ -150,12 +145,14 @@ export default {
           }
       },
     getRoleList(PageIndex = this.pageIndex,PageSize = this.pageSize,type = "",status = this.statusValue,keyword = ""){
+      console.log(this.statusValue);
       let _this = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/org/api/rolepage", {
           Object: {
             IsDeleted: 0,
-            title: keyword
+            title: keyword,
+            state:this.statusValue==""?0:this.statusValue
           },
           PageIndex: PageIndex,
           PageSize: PageSize
@@ -164,9 +161,11 @@ export default {
           var _data = obj.data.objects;
           _data.forEach(function(v, k, arr) {
             arr[k]["author"] = "管理员"; // TODO 后台无返回，前端定死
-            if (v["state"] == 1) {
+            if (v["state"] == 0) {
+              arr[k]["state"] = "等待审核";
+            } else if (v["state"] == 1) {
               arr[k]["state"] = "正常";
-            } else if (v["state"] == 2) {
+            } else if(v["state"] == 2) {
               arr[k]["state"] = "停用";
             }
           });
@@ -187,13 +186,15 @@ export default {
       });
     },
     // 启停用账户
-    changeState: function(obj, flag) {
+    changeState: function(obj, flag,title) {
       let that = this;
       var mess = "";
       if (flag == 1) {
         mess = "启用";
       } else if (flag == 2) {
         mess = "停用";
+      } else if (flag == 0) {
+        mess = "审核通过";
       }
 
       this.$confirm(mess + obj + "角色?", "提示", {
@@ -203,39 +204,22 @@ export default {
       })
         .then(() => {
           this.$http
-            .post(this.GLOBAL.serverSrc + "/api/org/rolesave", {
+            .post(this.GLOBAL.serverSrc + "/org/api/rolesave", {
               object: {
                 id: obj,
-                createTime: "2018-06-21T11:24:35.785Z",
                 isDeleted: 0,
-                code: "string",
-                title: "string",
-                mark: "string",
-                count: 0,
-                state: flag
-              },
-              id: obj
+                title:title
+              }
             })
             .then(obj => {
-              console.log(obj);
+              if(obj.data.isSuccess==true){
               this.$message({
                 type: "success",
                 message: mess + "成功"
               });
-              this.$router.go(0);
-              // 修改数据
-              vm.msg = "Hello";
-              // DOM 还没有更新
-              Vue.nextTick(function() {
-                // DOM 更新了
-              });
-
-              // 作为一个 Promise 使用 (2.1.0 起新增，详见接下来的提示)
-              Vue.nextTick().then(function() {
-                // DOM 更新了
-              });
+              this.getRoleList();
+              }
             })
-            .catch();
         })
         .catch(() => {
           this.$message({

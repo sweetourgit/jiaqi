@@ -40,7 +40,7 @@
 
           </td>
           <td rowspan="3">
-            <el-checkbox @change="changeuser">用户管理</el-checkbox>
+            <el-checkbox>用户管理</el-checkbox>
           </td>
           <td>
             <el-checkbox >只读</el-checkbox>
@@ -160,226 +160,108 @@
 <script>
 
   export default {
-
-    mounted () {
-     this.$http.post(this.GLOBAL.serverSrc+'/client/org/roleinsert',{
-      "object": {
-        "id": 0,
-        "createTime": "2018-07-03T01:05:28.024Z",
-        "isDeleted": 0,
-        "code": "string",
-        "title": "string",
-        "mark": "string",
-        "count": 0,
-        "state": 0
-      },
-      "id": 1
-
-    })
-      .then (res=>{
-        console.log(res.data)
-      })
-    },
-    name: "addRole",
-    data: function () {
-
-      // 自定义验证方法
-      var validateTempName = (rule, value, callback) => {
-
-        // 模拟请求 判断名称是否重复
-        this.$http.post(
-          this.GLOBAL.serverSrc + "/api/org/roleget",
-          {
-            "order": "",
-            "object": {
-              "id": 1,
-              "createTime": "2018-06-21T09:30:53.245Z",
-              "isDeleted": 0,
-              "code": "string",
-              "title": value,
-              "mark": "string",
-              "count": 0,
-              "state": 0
-            },
-            "pageSize": 0,
-            "pageIndex": 0,
-            "isGetAll": true,
-            "id": 1
-          }
-        )
-          .then(function (obj) {
-
-            if (obj.data.firstOrDefault.title == value) {
-              callback('模板名重复')
-            }else {
-              callback()
-            }
-          })
-          .catch(function (response) {
-            console.log(response);
-          });
-      };
+    data(){
       return {
-        list: [1],
         ruleForm: {
           temp_name: '',
-          desc: ''
+          desc: '',
+          count:0,
+          state:0
         },
-        isChecked: [],
         // 表单验证规则
         rules: {
           temp_name: [
             {required: true, message: '不可为空', trigger: 'blur'},
-            {min: 2, max: 6, message: '字数超限', trigger: 'blur'},
-            {validator: validateTempName, trigger: 'blur'},
+            {min: 2, max: 6, message: '字数超限', trigger: 'blur'}
           ],
           desc: [
             {required: true, message: '不可为空', trigger: 'blur'},
             {min: 2, max: 40, message: '字数超限', trigger: 'blur'}
           ],
         },
-        ck1: {
-          checked: false
-        },
-        apiUrl: this.GLOBAL.serverSrc + "/api/org/roleinsert",            // 根据参数选择新增或者编辑api
-        roleList: {},
+        apiUrl:this.GLOBAL.serverSrc + "/org/api/roleinsert",
+        list: [1],
         checkboxStatus: false     // 当前页表单组是否激活状态
       }
     },
     created() {
-      if (this.$route.query.type == 'view') {
-        this.checkboxStatus = true
-      }
       // 如果有参数id，根据id获取该模板的信息
       if (this.$route.query.id) {
-        this.getDetail(this.$route.query.id)
-        this.apiUrl = this.GLOBAL.serverSrc + "/api/org/rolesave"
+        this.apiUrl = this.GLOBAL.serverSrc + "/org/api/rolesave";
+        this.getDetail(this.$route.query.id);
       }
-
-    },
-    watch: {
 
     },
     methods: {
-       changeuser () {
-        if(checked){
-          alert(1)
-        }
-      },
       submitForm(formName) {
-
         let _this = this
         this.$refs[formName].validate((valid) => {
-
           if (valid) {
+            let mes="";
+            if(this.$route.query.id){
+               mes="修改";
+            }else{
+               mes="添加";
+            }
             this.$http.post(
               this.apiUrl,
               {
                 "object": {
                   "id": this.$route.query.id,
-                  "createTime": "2018-06-21T09:59:05.016Z",
                   "isDeleted": 0,
-                  "code": "string",
                   "title": this.ruleForm.temp_name,
                   "mark": this.ruleForm.desc,
-                  "count": 0,
-                  "state": 1
-                },
-                "id": this.$route.query.id
+                  "count": this.ruleForm.count,
+                  "state": this.ruleForm.state
+                }
               }
             )
-              .then(
-                res => {
-
-                  // if (ok) {        // todo 根据返回的正确状态跳转
-                    _this.$router.push({path: '/role'})
-                  // }
+              .then(res => {
+                  if(res.data.isSuccess==true){
+                      this.$message({
+                        type: "success",
+                        message: mes + "成功"
+                      });
+                      _this.$router.push({path: '/role'})
+                  }   
                 }
               )
-              .catch()
-          } else {
-
-            return false;
           }
-        });
-      },
-      // 重置表单
-      resetForm: function (formName) {
-        this.$refs[formName].resetFields();
+        })
       },
       handleClose(done) {
         this.$confirm('取消此模板的配置?')
-          .then(_ => {
+          .then(res => {
             this.$router.push({path: '/role'})
           })
-          .catch(_ => {
+          .catch(res => {
 
           });
       },
-
       getDetail: function (id) {
-
         this.$http.post(
-          this.GLOBAL.serverSrc + "/client/org/roleget",
+          this.GLOBAL.serverSrc + "/org/api/roleget",
           {
-            "order": "string",
-            "object": {
-              "id": id,
-              "createTime": "2018-06-21T09:30:53.245Z",
-              "isDeleted": 0,
-              "code": "string",
-              "title": "string",
-              "mark": "string",
-              "count": 0,
-              "state": 0
-            },
-            "pageSize": 0,
-            "pageIndex": 0,
-            "isGetAll": true,
-            "id": id
+            "id": this.$route.query.id
           }
         )
-          .then(
-            res => {
-              console.log(res)
-              this.ruleForm.temp_name = res.data.firstOrDefault.title
-              this.ruleForm.desc = res.data.firstOrDefault.mark
-            }
-          )
-          .catch()
+        .then(res => {
+              let data=res.data.object;
+              this.ruleForm.temp_name = data.title;
+              this.ruleForm.desc = data.mark;
+              this.ruleForm.count = data.count;
+              this.ruleForm.state = data.state;
+        })
       },
 
       // 全选checkbox部分逻辑
       handleCheckAllChange() {
-        // this.isChecked = [
-        //   '用户管理',
-        //   '账号管理',
-        //   '组织管理',
-        //   '权限管理',
-        //   '用户列表',
-        //   '编辑用户',
-        //   '添加用户',
-        //   '停用',
-        //   '启用',
-        //   '角色模板列表',
-        //   '添加角色模板',
-        //   '编辑角色模板',
-        //   '停用角色模板',
-        //   '账号信息',
-        //   '修改账号信息',
-        //   '修改密码',
-        //   '个人中心',
-        //   '账号设置',
-        //   '只读',
-        //   '编辑',
-        //   '操作',
-        // ]
-        console.log(this.ck1.checked)
-        this.ck1.checked = true
+
       },
       // 全不选checkbox部分逻辑
-      handleResetChange() {
-        this.isChecked = []
+      handleResetChange(){
+        //重置表单
+        this.$refs["ruleForm"].resetFields();
       }
     }
   }
