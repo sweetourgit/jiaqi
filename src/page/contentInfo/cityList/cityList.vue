@@ -43,7 +43,7 @@
           </el-table-column>
         </el-table>
         <div class="pages">
-          <el-pagination class="page" background @size-change="pagesizes" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[2, 4, 8, 10, 20]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+          <el-pagination class="page" background @size-change="pagesizes" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[2, 4, 8, 10]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </div>
 
@@ -243,7 +243,7 @@
               console.log(obj)
             })
         }
-        if (node.level >=  1){
+        if (node.level >= 1) {
           this.getSon(
             node.data.key,
             node.data.label,
@@ -269,10 +269,10 @@
           }
         ).then(res => {
           this.lists = []
-          if(res.data.isSuccess == true){
-            for(let i=0;i<res.data.objects.length;i++){
-              if(res.data.objects[i].isDeleted == 0){
-                if(res.data.objects[i].isLeaf == 2){
+          if (res.data.isSuccess == true) {
+            for (let i = 0; i < res.data.objects.length; i++) {
+              if (res.data.objects[i].isDeleted == 0) {
+                if (res.data.objects[i].isLeaf == 2) {
                   this.lists.push({
                     name:res.data.objects[i].areaName,
                     key: i,
@@ -307,11 +307,11 @@
         this.data = data
         this.countryPopup.select = data.name
         this.countryPopup.parentID = this.editCountryPopup.parentID = data.id
-        if(data.Hierarchy == 0){
+        if (data.Hierarchy == 0) {
           // 所属地区
           this.theContinent = data.id
         }
-        if(data.isLeaf == 1){
+        if (data.isLeaf == 1) {
           this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforget',{
             id: data.id
           },{
@@ -338,7 +338,7 @@
             console.log(err)
           })
         } else {
-          if(this.clickId !== data.id){
+          if (this.clickId != data.id) {
               this.currentPage = 1
             }
           this.clickId = data.id
@@ -353,15 +353,15 @@
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
               }
           }).then(res => {
-            if(res.data.isSuccess == false){
-              if(this.currentPage !== 1){
+            if (res.data.isSuccess == false) {
+              if (this.currentPage != 1) {
                 this.currentPage = 1
                 this.treeClick(data)
               }
             } else {
               this.total = res.data.total
               this.geography = 1
-              for(let i=0;i<res.data.objects.length;i++){
+              for (let i = 0; i < res.data.objects.length; i++) {
                 this.tableData.push({
                   id: res.data.objects[i].id,
                   country: res.data.objects[i].areaName,
@@ -393,7 +393,7 @@
               'Authorization': 'Bearer ' + localStorage.getItem('token')
             }
           }).then(res => {
-            for(let i=0;i<res.data.objects.length;i++){
+            for (let i = 0; i < res.data.objects.length; i++) {
               this.vague.push({
                 "value" : res.data.objects[i]
               })
@@ -421,8 +421,8 @@
       // 添加 编辑 地区保存成功
       countryForm(formName) {
         this.$refs[formName].validate(valid => {
-          if(valid) {
-            if(formName == 'countryPopup'){
+          if (valid) {
+            if (formName == 'countryPopup') {
               this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforinsert', {
                 object: {
                   areaName: this.countryPopup.countryName,
@@ -457,7 +457,7 @@
                 }).catch(err => {
                   console.log(err)
                 })
-            } else if(formName == 'editCountryPopup'){
+            } else if (formName == 'editCountryPopup') {
               this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforsave', {
                 object: {
                   id: this.editCountryPopup.id,
@@ -523,7 +523,7 @@
           confirmButtonClass: 'delete_country_determine',
           cancelButtonClass: 'delete_country_determine1'
         }).then(() => {
-          if(data.isLeaf == 0){
+          if (data.isLeaf == 0) {
             this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforlist',{
               object: {
                 parentID: data.id
@@ -533,7 +533,7 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token')
                 }
             }).then(res => {
-              if(res.data.isSuccess == false){
+              if (res.data.isSuccess == false) {
                 this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainfordelete',{
                   id: data.id
                 },{
