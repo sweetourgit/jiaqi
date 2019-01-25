@@ -399,7 +399,7 @@
 
               // if(res.data){
 
-                axios.post('http://192.168.1.168:6014/user/api/login',{
+                this.$http.post(this.GLOBAL.serverSrc+'/user/api/login',{
                   'userName': this.ruleForm.user,
                   'passWord': this.ruleForm.password,
                 }).then(res => {

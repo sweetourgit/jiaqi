@@ -1,5 +1,5 @@
 <script>
-  const serverSrc="http://192.168.1.168:6012";
+  const serverSrc="http://192.168.1.186:3017";
   const token="";
   const userId="";
   const hasEnter=false;
