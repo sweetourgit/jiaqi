@@ -9,10 +9,10 @@
       <div class="form-class">
 
         <el-form-item label="模板名称" prop="temp_name">
-          <el-input v-model="ruleForm.temp_name" placeholder="请输入模板名称" clearable :disabled="checkboxStatus"></el-input>
+          <el-input v-model="ruleForm.temp_name" placeholder="请输入模板名称" :disabled="checkboxStatus"></el-input>
         </el-form-item>
         <el-form-item label="模板描述" prop="desc">
-          <el-input v-model="ruleForm.desc" placeholder="请输入模板描述" clearable :disabled="checkboxStatus"></el-input>
+          <el-input v-model="ruleForm.desc" placeholder="请输入模板描述" :disabled="checkboxStatus"></el-input>
         </el-form-item>
         <div class="cl_both"></div>
       </div>

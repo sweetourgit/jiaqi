@@ -1,24 +1,7 @@
 <template>
   <div>
     <div class="search_dom">
-      <el-select v-model="typeValue" placeholder="搜索类型">
-        <el-option
-          v-for="item in typeArr"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      <el-select v-model="statusValue" placeholder="状态">
-        <el-option
-          v-for="item in statusArr"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
-      <el-input v-model="keyword" placeholder="请输入关键字" clearable></el-input>
+      <el-input v-model="keyword" placeholder="请输入关键字"></el-input>
       <el-button type="primary" @click="subForm()" size="" class="sub_button" icon="el-icon-search"></el-button>
     </div>
     <div class="cl_both"></div>
@@ -62,20 +45,13 @@
           header-align="center">
         </el-table-column>
         <el-table-column
-          prop="state"
-          label="状态"
-          header-align="center">
-        </el-table-column>
-        <el-table-column
           prop="operate"
           label="操作"
           width="400"
           header-align="center">
           <template slot-scope="scope">
             <el-button style="margin:10px;"  type="primary" size="small" @click="editRole(scope.row.id)" class="bt-edit">编辑</el-button>
-            <el-button v-if="scope.row.state == '停用'" type="success" size="small" @click="changeState(scope.row.id,1,scope.row.title)" class="bt-stop">启用</el-button>
-            <el-button v-if="scope.row.state == '正常'" type="danger" size="small" @click="changeState(scope.row.id,2,scope.row.title)" class="bt-stop">停用</el-button>
-            <el-button v-if="scope.row.state == '等待审核'" type="warning" size="small" @click="changeState(scope.row.id,0,scope.row.title)" class="bt-stop">审核</el-button>
+            <el-button type="danger" size="small" @click="deleteRole(scope.row.id)" class="bt-stop">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -121,8 +97,6 @@ export default {
           label: "正常"
         }
       ],
-      typeValue: "",
-      statusValue: "",
       keyword: "",
       hrs: { height: "60px" },
       cs: { padding: "0", height: "40px" },
@@ -144,15 +118,13 @@ export default {
             return ''
           }
       },
-    getRoleList(PageIndex = this.pageIndex,PageSize = this.pageSize,type = "",status = this.statusValue,keyword = ""){
-      console.log(this.statusValue);
+    getRoleList(PageIndex = this.pageIndex,PageSize = this.pageSize,keyword = ""){
       let _this = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/org/api/rolepage", {
           Object: {
             IsDeleted: 0,
             title: keyword,
-            state:this.statusValue==""?0:this.statusValue
           },
           PageIndex: PageIndex,
           PageSize: PageSize
@@ -161,13 +133,6 @@ export default {
           var _data = obj.data.objects;
           _data.forEach(function(v, k, arr) {
             arr[k]["author"] = "管理员"; // TODO 后台无返回，前端定死
-            if (v["state"] == 0) {
-              arr[k]["state"] = "等待审核";
-            } else if (v["state"] == 1) {
-              arr[k]["state"] = "正常";
-            } else if(v["state"] == 2) {
-              arr[k]["state"] = "停用";
-            }
           });
           _this.roleData = _data;
           _this.total = obj.data.total  
@@ -186,36 +151,23 @@ export default {
       });
     },
     // 启停用账户
-    changeState: function(obj, flag,title) {
-      let that = this;
-      var mess = "";
-      if (flag == 1) {
-        mess = "启用";
-      } else if (flag == 2) {
-        mess = "停用";
-      } else if (flag == 0) {
-        mess = "审核通过";
-      }
+    deleteRole: function(id) {
 
-      this.$confirm(mess + obj + "角色?", "提示", {
+      this.$confirm("删除" + id + "角色?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
           this.$http
-            .post(this.GLOBAL.serverSrc + "/org/api/rolesave", {
-              object: {
-                id: obj,
-                isDeleted: 0,
-                title:title
-              }
+            .post(this.GLOBAL.serverSrc + "/org/api/roledelete", {
+                id: id
             })
             .then(obj => {
               if(obj.data.isSuccess==true){
               this.$message({
                 type: "success",
-                message: mess + "成功"
+                message: "删除成功"
               });
               this.getRoleList();
               }
@@ -232,15 +184,13 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.getRoleList(1, val);
+      this.getRoleList(1,val,this.keyword);
     },
     // 当前页变化事件
     handleCurrentChange(val) {
       this.getRoleList(
         val,
         this.pageSize,
-        this.typeValue,
-        this.statusValue,
         this.keyword
       );
     },
@@ -250,8 +200,6 @@ export default {
       this.getRoleList(
         1,
         this.pageSize,
-        this.typeValue,
-        this.statusValue,
         this.keyword
       );
       this.pageIndex = 1;
@@ -265,7 +213,7 @@ export default {
   padding-top: 22px;
   height: 40px;
   line-height: 40px;
-  padding-left: 176px;
+  padding-left: 22px;
   border-bottom: 1px solid #f1f1f1;
   padding-bottom: 22px;
   .sub_button {
