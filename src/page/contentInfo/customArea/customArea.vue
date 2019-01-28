@@ -580,4 +580,6 @@ export default {
 .oppp{ margin: 20px; width:100px; }
 .zoonA{ position: relative; right: 77px; }
 .zoonB{ position: relative; right: 70px; }
+.big>>>.el-table__body tr:hover>td{ background-color:initial !important; }
+.big>>>.el-table__body tr.current-row>td{ background-color: initial !important; }
 </style>
