@@ -1833,4 +1833,5 @@
 .typeFour_list{
   margin-left: -100px;
 }
+.travelTemplate>>>.selection .el-checkbox+.el-checkbox{ float: left;}
 </style>
