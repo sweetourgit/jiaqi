@@ -474,13 +474,18 @@ export default {
   margin-top: 11px;
   margin-left: 3%;
 }
-.row_pass>>>.el-form-item__error{
+/* .row_pass>>>.el-form-item__error{
   position: absolute;
   left: 176px;
   top: 12px;
-}
+} */
 .row_pass>>>.el-form-item__content{
   width:340px;
+}
+.row_pass .content_pass>>>.el-form-item__error{
+  position: relative;
+  left: 10px;
+  top: 12px;
 }
 .line{
   float: left;
