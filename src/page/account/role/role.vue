@@ -16,7 +16,8 @@
         :data="roleData"
         :header-row-style="hrs"
         :cell-style="cs"
-        border>
+        border
+        class="table">
         <el-table-column
           prop="id"
           label="ID"
@@ -209,6 +210,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.table{
+  text-align: center;
+  max-width:1200px
+}
 .search_dom {
   padding-top: 22px;
   height: 40px;

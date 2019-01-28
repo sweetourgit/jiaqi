@@ -172,11 +172,13 @@
         rules: {
           temp_name: [
             {required: true, message: '不可为空', trigger: 'blur'},
-            {min: 2, max: 6, message: '字数超限', trigger: 'blur'}
+            {min: 2, max: 6, message: '请输入2-6个汉字', trigger: 'blur'},
+            {pattern: /[\u4e00-\u9fa5]/, message: '必须为汉字'}
           ],
           desc: [
             {required: true, message: '不可为空', trigger: 'blur'},
-            {min: 2, max: 40, message: '字数超限', trigger: 'blur'}
+            {min: 2, max: 40, message: '请输入2-40个汉字', trigger: 'blur'},
+            {pattern: /[\u4e00-\u9fa5]/, message: '必须为汉字'}
           ],
         },
         apiUrl:this.GLOBAL.serverSrc + "/org/api/roleinsert",
