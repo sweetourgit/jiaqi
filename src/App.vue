@@ -66,18 +66,11 @@ html{
 .content-body{margin-left: -22px; background: #F7F7F7; line-height: 100%; }
 .content-body1{margin: 18px 0 0 3px; background: #FFF; line-height: 100%; min-height: 94%;width:99.6%;}
 .content-position{border-left: 3px solid #F38F00; text-align: left; padding-left: 20px; font-size: 16px;height: 23px;line-height: 23px;margin: -3px 0 0 3px;}
-.el-cascader-menus.el-popper.popper__arrow .el-cascader-menu :nth-child(1){background: #F6F6F6; color:#409EFF !important;} /* 城市列表下拉框 */
-.el-cascader-menus.el-popper.popper__arrow .el-cascader-menu__item.is-active{color:#1ABC9C;} /* 城市列表下拉框选中 */
 .el-message-box.delete_country p{margin: 0 0 0 50px;}  /* 城市列表删除 */
 .el-message-box.delete_country .delete_country_determine{margin: 20px 100px 20px 0; width: 80px;}
 .el-message-box.delete_country .delete_country_determine1{margin: 20px 20px 20px 0; width: 80px;}
 .city_list .el-dialog__header{background: #F6F6F6; height: 29px;padding-top: 16px} /* 弹框样式 */
 .city_list .el-dialog__title{ float: left; }
 .el-menu-vertical-demo .el-menu-item.is-active{background: #3095FA !important;} /* 导航选中 */
-.content_pass .el-form-item__error{ position: absolute; left: 220px; top: 12px;} /* 修改密码error */
-.content_pass .el-form-item__content{ width:340px; }
 body .el-table th.gutter{ display: table-cell!important; } /* 表格头部固定 */
-.bottom_customArea_list .el-table__body tr:hover>td{ background-color:initial !important;} /* 自定义地区表格取消鼠标滑动 */
-.bottom_customArea_list .el-table__body tr.current-row>td{ background-color: initial !important;} /* 自定义地区表格取消鼠标滑动 */
-.travelTemplate .detailed .selection .el-checkbox+.el-checkbox{ float: left;} /* 出行模板多选按钮 */
 </style>
