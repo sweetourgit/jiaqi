@@ -12,7 +12,7 @@
             <!--产品名称-->
             <el-form-item label="产品名称" prop="productNamel" label-width="120px">
               <el-input v-model="ruleForm.productNamel" class="productName" placeholder="请输入正确产品名称"></el-input>
-              <span class="Numbers">{{ruleForm.productNamel.length}}/30字</span>
+              <span class="Numbers"><span>{{ruleForm.productNamel.length}}</span>/30字</span>
             </el-form-item>
             <!--出游类型-->
             <el-form-item label="出游类型" prop="travelType" label-width="120px">
@@ -49,8 +49,8 @@
             <!-- 行程天數 -->
             <div style="overflow:hidden">
               <el-form-item style="width:300px; float:left;" label='行程天数' prop="travelDays" label-width="120px">
-                <el-input style="width:105px;left:10px" v-model="ruleForm.travelDays" placeholder="请输入天数" ref="travelDays"></el-input>
-                <span class="travelDays-span" style="margin-left:15px;color: #333;">天</span>
+                <el-input style="width:105px;margin-left:-25px;" v-model="ruleForm.travelDays" placeholder="请输入天数" ref="travelDays"></el-input>
+                <span class="travelDays-span" style="margin-left:10px;color: #333;">天</span>
               </el-form-item>
               <el-form-item class="number-day" style="float:left; margin-left:-25px;" prop="travelNight">
                 <el-input style="width:105px;float:left; margin-right:10px;" v-model="ruleForm.travelNight" placeholder="请输入晚数"></el-input>
@@ -186,8 +186,8 @@
                   </el-form-item>
                   <!--出发地-->
                   <div class="setout"><span>*</span>出发地</div>
-                  <el-form-item prop="pod" style="float:left">
-                  <el-select class="depart" v-model="ruleForm.origin" placeholder="出发地" prop="origin">
+                  <el-form-item prop="origin" style="float:left">
+                  <el-select class="depart" v-model="ruleForm.origin" placeholder="出发地">
                     <el-option v-for="item in dynamicTags3" :key="item.pod" :label="item.pod" :value="item"></el-option>
                   </el-select>
                   </el-form-item>
@@ -1969,6 +1969,7 @@
       }
          }
       },
+
      childByValue: function(childValue) {
        // childValue就是子组件传过来的值
         this.travelDays = childValue;
@@ -2649,6 +2650,7 @@
   .Summary{ width:544px; float:left; margin-left:8px; }
   .bright-number{float: left; margin: 0 0 0 17px;}
   .el-form-item>>>.el-form-item__error{left: 10px;}
+  .vivo{text-align: center;}
   .vivo>>>.el-tabs__item { width: 144px ; margin-bottom: 10px; font-size: 16px; }
   .el-tag { height:36px; float: left; margin-top: 1px; margin-left: 5px; background-color: #d7d7d7; color: #666666; }
   .input-new-tag { width:100px; float: left; margin-left: 5px; height: 36px; line-height: 30px; padding-top: 2px;margin-top:1px; margin-bottom:1px;}

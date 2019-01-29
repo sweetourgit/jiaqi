@@ -12,9 +12,9 @@
      <div class="main">
      <el-row class="button">
        <el-button :disabled="forbidden1" @click="dialogFormVisible = true">更改状态</el-button>
-       <el-button :disabled="forbidden1" @click="dialogCost = true">成本</el-button>
-       <el-button :disabled="forbidden1">订单</el-button>
-       <el-button :disabled="forbidden1" @click="placeOrder">下单</el-button>
+       <el-button :disabled="forbidden2" @click="dialogCost = true">成本</el-button>
+       <el-button :disabled="forbidden2">订单</el-button>
+       <el-button :disabled="forbidden2" @click="placeOrder">下单</el-button>
      </el-row>
      <!--更改状态弹窗-->
      <el-dialog title="更改状态" :visible.sync="dialogFormVisible" class="city_list" width="500px">
@@ -150,6 +150,7 @@ export default {
         },
         formLabelWidth: '120px',
         forbidden1:true,         //按钮是否禁用
+        forbidden2:true
     }
   },
   mounted(){
@@ -166,13 +167,19 @@ export default {
       changeFun(val) {  //保存选中项的数据
         this.multipleSelection=val;
         if(this.multipleSelection.length==1){
+           this.forbidden2=false;
+        }else{
+           this.forbidden2=true;
+        }
+        
+        if(this.multipleSelection.length>0){
            this.forbidden1=false;
         }else{
            this.forbidden1=true;
         }
       },
       clickRow(row){    //选中行复选框勾选
-        this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+        //this.$refs.multipleTable.clearSelection(); //清空用户的选择  
         this.$refs.multipleTable.toggleRowSelection(row)
       },
       rowClass({row, rowIndex}){  //选中行样式改变
