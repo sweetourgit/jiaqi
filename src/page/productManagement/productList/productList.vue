@@ -7,7 +7,7 @@
     <el-button type="primary"  @click="dialogVisible = true" >添加产品</el-button>
     </div>
 
-    <div style="background: #f7f7f7; margin-left: 50px;width: 80%" >
+    <div style="background: #f7f7f7; margin-left: 50px;width: 1200px" >
     <div class="select_button">
       <el-button v-for="(item, index) in domains"
                  :key="item.key"
@@ -43,11 +43,11 @@
         </span>
       </el-dialog>
     </div>
-    <div style="height: 155px; margin-left: 20px">
+    <div style="width: 1200px; height: 155px; margin-left: 20px">
       <div class="select_two">
-      <div class="id">ID <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
-      <div class="product">商品名称 <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
-      <div class="options">产品操作人 <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
+      <div class="id">ID <el-input style="width: 100px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
+      <div class="product">商品名称 <el-input style="width: 150px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
+      <div class="options">产品操作人 <el-input style="width: 150px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
       <div class="prices">价格<el-input style="width: 100px; margin-left: 10px;"  placeholder="请输入内容"></el-input><span style="margin-left: 10px">——</span><el-input style="width: 100px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
       </div>
       <div class="select_two">
@@ -75,12 +75,12 @@
 
     <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px; width: 80%" >
     <div class="button_select">
-      <router-link to="/changepro"><el-button plain :disabled="reable">编辑</el-button></router-link>
+      <el-button @click=handDb plain :disabled="reable">编辑</el-button>
       <el-button plain :disabled="reable">复制</el-button>
       <el-button plain :disabled="reable">导出行程</el-button>
       <el-button plain :disabled="reable">退改</el-button>
       <el-button plain @click = "groupStage" :disabled="reable">团期/库存</el-button>
-      <el-button type="danger" plain :disabled="reable">删除</el-button>
+      <el-button type="danger" plain :disabled="reable" @click="handleDelete">删除</el-button>
     </div>
 
     <div class="table_trip" style="margin-left: 50px; width: 75%;">
@@ -721,6 +721,25 @@ import DateList from './component/DateList'
       }
     },
     methods: {
+      handleDelete(){
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/team/api/teamdelete",
+          {
+                "id": that.pid
+          }
+        )
+          .then(function (obj) {
+
+          })
+          .catch(function (obj) {
+
+          })
+      },
+      handDb(){
+        this.$router.push({path:"/changepro"});
+      },
+
       bandlePrice(item){
 
         this.piaid = this.ccc[item].id
@@ -1368,7 +1387,7 @@ import DateList from './component/DateList'
    padding-left: 50px;
  }
   .id{
-    width: 250px;
+    width: 150px;
     float: left;
     font-size: 14px;
     margin-left: 11px;
@@ -1385,13 +1404,13 @@ import DateList from './component/DateList'
     margin-left: 30px;
   }
  .product{
-   width: 300px;
+   width: 250px;
    float: left;
    margin-left: 10px;
    font-size: 14px;
  }
   .options{
-    width: 320px;
+    width: 300px;
     float: left;
     margin-left: 10px;
     font-size: 14px;
