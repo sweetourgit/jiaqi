@@ -7,7 +7,7 @@
           <el-input class="searchTemplate_index" v-model="input" placeholder="请输入内容"></el-input>
         </div>
         <div class="searchState">
-          <span>状态</span>
+          <span>类型</span>
           <el-select class="searchTemplate_index" v-model="searchValue" placeholder="请选择">
             <el-option
               v-for="(item, index) in options"
@@ -17,6 +17,7 @@
             </el-option>
           </el-select>
         </div>
+        <el-button class="searReset" type="primary" @click="searResetClick">重置</el-button>
       </div>
     </div>
     <div class="products">
@@ -1059,7 +1060,7 @@
                     "id": item.id,
                     "name": item.name,
                     "type" : item.type,
-                    "selection" : "选填",
+                    "selection" : "必填",
                     "InfoType" : item.InfoType,
                     "selectionValue" : []
                   })
@@ -1340,10 +1341,10 @@
           this.dataProducts.templateName = res.data.object.name;
           this.dataProducts.travelNum = String(res.data.object.isOne);
           this.dataProducts.traveFillIn = String(res.data.object.isRequired);
-          if(res.data.object.properties.length !== 0){
+          if(res.data.object.properties.length != 0){
             res.data.object.properties.forEach(item => {
               this.dataProducts.travelInfo.push(item.propertyListID);
-              if(item.options.length !== 0){
+              if(item.options.length != 0){
                 item.options.forEach(items => {
                   listStr.push(items.name);
                   this.fourDataTable(item.propertyListID, 'time', items.name);
@@ -1697,6 +1698,11 @@
             message: '已取消删除'
           });
         })
+      },
+      // 重置
+      searResetClick() {
+        this.input = '';
+        this.searchValue = '';
       }
     }
   }
@@ -1834,4 +1840,7 @@
   margin-left: -100px;
 }
 .travelTemplate>>>.selection .el-checkbox+.el-checkbox{ float: left;}
+.searReset{
+  margin-left: 20px;
+}
 </style>

@@ -49,6 +49,7 @@
         <template v-for="(dayobject,index) in days">
           <template v-if="dayobject.day.getMonth()+1 != currentMonth || dayobject.day.getTime() < today.getTime() - 24 * 60 * 60 * 1000">
             <li style="background: #F6F6F6;border: solid 1px #E7E7E7;border-left:none;border-top:none;cursor:not-allowed" :key="index" >
+              <span class="isShare" v-if="dayobject.data.person.share == 1">共享</span>
               <!--本月-->
               <!--如果不是本月  改变类名加灰色-->
               <span v-if="dayobject.day.getMonth()+1 != currentMonth" class="other-month">{{ dayobject.day.getDate() }}</span>
@@ -57,6 +58,13 @@
                 <!--今天  同年同月同日-->
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
+                
+                <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index">
+                  <p class='old'>{{data.name}}</p>
+                  <p>销售价：{{data.salePrice}}</p>
+                  <p>同业价：{{data.traderPrice}}</p>
+                  <p>已售/库存：0/0</p>
+                </div>
               </div>
               <!--显示剩余多少数量-->
               <!---->
@@ -111,18 +119,18 @@
         </el-form-item>
         <!-- 共享库存 -->
         <template  v-if='Rform.resource == "1"'>
-          <el-form-item label="共享库存:" prop="shareRepertory" style="margin-top:-15px;">
-            <el-select v-model="Rform.shareRepertory" placeholder="请选择" @change="shareSelect" style="width:150px">
+          <el-form-item label="共享库存:" prop="shareId" style="margin-top:-15px;">
+            <el-select v-model="Rform.shareId" placeholder="请选择" @change="shareSelect" style="width:150px">
               <el-option v-for="(item, index) in signUptypeSelect" :key="index" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <template v-if="Rform.shareRepertory">
+          <template v-if="Rform.shareId">
             <div><span>当前剩余:</span><span style="color:blue;margin-left:22px">{{Rform.shareNum}}</span></div>
           </template>
         </template>
         <!-- 非共享库存 -->
-        <el-form-item label="总库存:" v-show='Rform.resource == "2"' prop="sumRepertory" style="margin-top:-15px;" >
-          <el-input v-model="Rform.sumRepertory" style="width:200px;" ></el-input>
+        <el-form-item label="总库存:" v-show='Rform.resource == "2"' prop="sumNum" style="margin-top:-15px;" >
+          <el-input v-model="Rform.sumNum" style="width:200px;" ></el-input>
         </el-form-item>
       </el-form>
 
@@ -181,10 +189,10 @@
           date: '', // 日历时间
           region:'', // 报名类型
           resource:'', // 库存类型
-          shareRepertory:'', // 共享库存id
+          shareId:'', // 共享库存id
           sumId: '', // 非共享库存id
           shareNum: '', // 共享库存数量
-          sumRepertory:'', // 总库存数量
+          sumNum:'', // 总库存数量
         },
         form: {
           price: "",
@@ -199,46 +207,24 @@
         fri: false,
         sat: false,
         sun: false,
-        n: [],
-        // 配额
-        // quota:false,
-        // 共享或非公享第一次选择
-        share:false,
-        // 日期信息
-        // DayMessage:[],
+        n: [], // 当前选择的日期
+        share:false, // 共享或非公享第一次选择
         currentDay: 1,
-        currentMonth: 1,
-        currentYear: 1970,
-        currentWeek: 1,
-        // 右侧的选择表格
-        rightTable:false,
-        // 多日期共享禁用
-        forbidden:false,
-        days: [],
-        // {
-        //   id:5,
-        //   name:'单房差',
-        //   salePrice:'', // 销售价
-        //   traderPrice:'', // 同业价
-        //   quota:false,
-        //   quotaPrice:'', // 配额
-        // }
-        // 右侧表单
-        arr:[],
-        // 添加库存
-        // Addrepertory:[],
-        // 添加报名类型
-        // addType:[],
-        // 选择报名类型时候传的数值
-        // sku选择
-        ccc: [],
+        currentMonth: 1, // 当前月的月份
+        currentYear: 1970, // 当前月的年份
+        currentWeek: 1, // 当前月1号的星期
+        rightTable:false, // 右侧的表单显示开关
+        forbidden:false, // 多日期共享禁用
+        days: [], // 日历上每日日期
+        arr:[], // 右侧报名类型表单
+        ccc: [], // sku套餐选择
         clickData: '', // 当前点击的日期
         // 非共享库存验证 
         RformRuler: {
-          sumRepertory: [
+          sumNum: [
             { required: true, message: '请填写库存'}
           ],
-          shareRepertory: [
+          shareId: [
             { required: true, message: '共享库存不能为空'}
           ],
           resource: [
@@ -253,12 +239,6 @@
             { required: true, message: '不能为空'}
           ]
         },
-        // ccc:[{
-        //   ddd:"普吉岛情侣",
-        //   type:false,
-        //   // value:"1",
-        // }],
-
         // 附加增值服务
         // Addprice:[{
         //   name:"保险",
@@ -266,22 +246,23 @@
         //   explain:"保护安全",
         //   type:false,
         // }],
-
-        // 报名类型选择
-        typeSelect: [],
-        signUptypeSelect:[]
+        typeSelect: [], // 报名类型选择
+        signUptypeSelect:[] // 共享库存数据
       };
     },
     watch: {
       msgFather() {
-        setTimeout(res => {
-          // this.days.forEach(item => {
-          //   item.data.person = {}
-          // });
-          this.ccc = [];
-          this.ccc.push(this.msgFather[0].id);
-          this.calendarList(this.ccc[0]);
-        }, 100);
+        if (this.msgFather != '') {
+          this.clearchecked();
+          setTimeout(res => {
+              // this.days.forEach(item => {
+              //   item.data.person = {}
+              // });
+              this.ccc = [];
+              this.ccc.push(this.msgFather[0].id);
+              this.calendarList(this.ccc[0]);
+            }, 100);
+          }
       },
       // 筛选周一
       monday() {
@@ -293,18 +274,17 @@
           mon.forEach(item => {
             if (this.n.includes(item)) {
               return;
-
             } else {
-              if(this.n.length == 0 || item.data.person.id == undefined){
+              if(item.data.person.id == undefined){
                 item.name = item.day.getDay();
                 this.n.push(item);
               }
-              if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
-                this.n = [];
-                this.forbidden = false;
-                item.name = item.day.getDay();
-                this.n.push(item);
-              }
+              // if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
+              //   this.n = [];
+              //   this.forbidden = false;
+              //   item.name = item.day.getDay();
+              //   this.n.push(item);
+              // }
               // item.name = 1
               // this.n.push(item);
               if(this.n.length !=0){
@@ -346,16 +326,16 @@
             if (this.n.includes(item)) {
               return;
             } else {
-              if(this.n.length == 0 || item.data.person.id == undefined){
+              if(item.data.person.id == undefined){
                 item.name = item.day.getDay();
                 this.n.push(item);
               }
-              if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
-                this.n = [];
-                this.forbidden = false;
-                item.name = item.day.getDay();
-                this.n.push(item);
-              }
+              // if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
+              //   this.n = [];
+              //   this.forbidden = false;
+              //   item.name = item.day.getDay();
+              //   this.n.push(item);
+              // }
               // item.name = 2
               // this.n.push(item);
               if(this.n.length !=0){
@@ -393,16 +373,16 @@
             if (this.n.includes(item)) {
               return;
             } else {
-              if(this.n.length == 0 || item.data.person.id == undefined){
+              if(item.data.person.id == undefined){
                 item.name = item.day.getDay();
                 this.n.push(item);
               }
-              if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
-                this.n = [];
-                this.forbidden = false;
-                item.name = item.day.getDay();
-                this.n.push(item);
-              }
+              // if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
+              //   this.n = [];
+              //   this.forbidden = false;
+              //   item.name = item.day.getDay();
+              //   this.n.push(item);
+              // }
               // item.name = 3
               // this.n.push(item);
               if(this.n.length !=0){
@@ -440,16 +420,16 @@
             if (this.n.includes(item)) {
               return;
             } else {
-              if(this.n.length == 0 || item.data.person.id == undefined){
+              if(item.data.person.id == undefined){
                 item.name = item.day.getDay();
                 this.n.push(item);
               }
-              if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
-                this.n = [];
-                this.forbidden = false;
-                item.name = item.day.getDay();
-                this.n.push(item);
-              }
+              // if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
+              //   this.n = [];
+              //   this.forbidden = false;
+              //   item.name = item.day.getDay();
+              //   this.n.push(item);
+              // }
               // item.name = 4
               // this.n.push(item);
               if(this.n.length !=0){
@@ -487,16 +467,16 @@
             if (this.n.includes(item)) {
               return;
             } else {
-              if(this.n.length == 0 || item.data.person.id == undefined){
+              if(item.data.person.id == undefined){
                 item.name = item.day.getDay();
                 this.n.push(item);
               }
-              if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
-                this.n = [];
-                this.forbidden = false;
-                item.name = item.day.getDay();
-                this.n.push(item);
-              }
+              // if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
+              //   this.n = [];
+              //   this.forbidden = false;
+              //   item.name = item.day.getDay();
+              //   this.n.push(item);
+              // }
               // item.name = 5
               // this.n.push(item);
               if(this.n.length !=0){
@@ -534,16 +514,16 @@
             if (this.n.includes(item)) {
               return;
             } else {
-              if(this.n.length == 0 || item.data.person.id == undefined){
+              if(item.data.person.id == undefined){
                 item.name = item.day.getDay();
                 this.n.push(item);
               }
-              if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
-                this.n = [];
-                this.forbidden = false;
-                item.name = item.day.getDay();
-                this.n.push(item);
-              }
+              // if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
+              //   this.n = [];
+              //   this.forbidden = false;
+              //   item.name = item.day.getDay();
+              //   this.n.push(item);
+              // }
               // item.name = 6
               // this.n.push(item);
               if(this.n.length !=0){
@@ -581,16 +561,16 @@
             if (this.n.includes(item)) {
               return;
             } else {
-              if(this.n.length == 0 || item.data.person.id == undefined){
+              if(item.data.person.id == undefined){
               item.name = item.day.getDay();
               this.n.push(item);
             }
-            if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
-              this.n = [];
-              this.forbidden = false;
-              item.name = item.day.getDay();
-              this.n.push(item);
-            }
+            // if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
+            //   this.n = [];
+            //   this.forbidden = false;
+            //   item.name = item.day.getDay();
+            //   this.n.push(item);
+            // }
               // item.name = 0
               // this.n.push(item);
               if(this.n.length !=0){
@@ -622,15 +602,14 @@
       // 在vue初始化时调用
       this.initData(null);
       // 判断是否点击套餐
-      if(this.piapia == ''){
+      if (this.piapia == '') {
         this.ccc = [];
         this.ccc.push(this.msgFather[0].id);
-        this.calendarList(this.ccc[0]);
       } else {
         this.ccc = [];
         this.ccc.push(this.piapia);
-        this.calendarList(this.ccc[0]);
       }
+      this.calendarList(this.ccc[0]);
       // 获取报名类型数据
       this.initTypeSelect();
     },
@@ -638,67 +617,139 @@
       // 按套餐获取计划
       calendarList(id) {
         this.clearNull();
-        this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/list', {
+        let currentMonth = this.currentMonth;
+        if (currentMonth < 10) currentMonth = "0" + currentMonth;
+        this.$http.post(this.GLOBAL.serverSrc + '/team/calendar/api/get', {
           "object": {
-            "loadPlan_Enroll": true,
+            "year": this.currentYear,
+            "month": currentMonth,
             "packageID": id
           }
         }).then(res => {
           this.days.forEach(item => {
-            if(item.day.getTime() > new Date().getTime() || item.day.getDate() == new Date().getDate()){
-              if(item.day.getMonth() + 1 == this.currentMonth){
-                let str = this.formatDates(
-                  item.day.getFullYear(),
-                  item.day.getMonth() + 1,
-                  item.day.getDate()
-                )
-                item.data.person = {};
-                res.data.objects.forEach(items => {
-                  if(str == items.date){
-                    let planEnroll = [];
-                    items.planEnroll.forEach(list => {
-                      planEnroll.push({
-                        'id': list.id,
-                        'enrollID': list.enrollID,
-                        'name': list.enrollName,
-                        'salePrice': list.price_01,
-                        'traderPrice': list.price_02,
-                        'quotaPrice': list.quota
-                      })
+            let str = this.formatDates(
+              item.day.getFullYear(),
+              item.day.getMonth() + 1,
+              item.day.getDate()
+            )
+            // 清空日历里报名类型
+            item.data.person = {};
+            res.data.objects.forEach(items => {
+              if (str == items.date) {
+                let plan_Enrolls = [];
+                if (items.plan_Enrolls != '') {
+                  items.plan_Enrolls.forEach(list => {
+                    plan_Enrolls.push({
+                      'id': list.id,
+                      'enrollID': list.enrollID,
+                      'name': list.enrollName,
+                      'salePrice': list.price_01,
+                      'traderPrice': list.price_02,
+                      'quotaPrice': list.quota
                     })
-                    // 查找库存信息
-                    this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryget', {
-                      "id": items.inventoryID
-                    }).then(resList => {
-                      item.data.person = {
-                        'id': items.id,
-                        'inventoryID': items.inventoryID,
-                        'share': resList.data.object.share,
-                        'count': resList.data.object.count,
-                        'packageID': items.packageID,
-                        'planEnroll': planEnroll
-                      }
-                      this.n = [];
-                    }).catch(errList => {
-                      console.log('查找库存信息失败');
-                    })
+                  })
+                  item.data.person = {
+                    'id': items.planID,
+                    'packageID': items.packageID,
+                    'share': items.share,
+                    'planEnroll': plan_Enrolls
                   }
-                })
+                }
               }
-            }
+            })
           })
           this.n = [];
-        }).catch(err => {
-          console.log(err);
         })
+        // this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/list', {
+        //   "object": {
+        //     "loadPlan_Enroll": true,
+        //     "packageID": id
+        //   }
+        // }).then(res => {
+        //   this.days.forEach(item => {
+        //     // if(item.day.getTime() > new Date().getTime() || item.day.getDate() == new Date().getDate()){
+        //     //   if(item.day.getMonth() + 1 == this.currentMonth){
+                
+        //     //   }
+        //     // }
+        //     let str = this.formatDates(
+        //           item.day.getFullYear(),
+        //           item.day.getMonth() + 1,
+        //           item.day.getDate()
+        //         )
+        //     item.data.person = {};
+        //     res.data.objects.forEach(items => {
+        //       if (str == items.date) {
+        //         let planEnroll = [];
+        //         items.planEnroll.forEach(list => {
+        //         planEnroll.push({
+        //           'id': list.id,
+        //           'enrollID': list.enrollID,
+        //           'name': list.enrollName,
+        //           'salePrice': list.price_01,
+        //           'traderPrice': list.price_02,
+        //           'quotaPrice': list.quota
+        //         })
+        //       })
+        //         item.data.person = {
+        //           'id': items.id,
+        //           'inventoryID': items.inventoryID,
+        //           'packageID': items.packageID,
+        //           'planEnroll': planEnroll
+        //         }
+        //       }
+        //     })
+
+
+
+        //     // let str = this.formatDates(
+        //     //       item.day.getFullYear(),
+        //     //       item.day.getMonth() + 1,
+        //     //       item.day.getDate()
+        //     //     )
+        //     //     item.data.person = {};
+        //     //     res.data.objects.forEach(items => {
+        //     //       if(str == items.date){
+        //     //         let planEnroll = [];
+        //     //         items.planEnroll.forEach(list => {
+        //     //           planEnroll.push({
+        //     //             'id': list.id,
+        //     //             'enrollID': list.enrollID,
+        //     //             'name': list.enrollName,
+        //     //             'salePrice': list.price_01,
+        //     //             'traderPrice': list.price_02,
+        //     //             'quotaPrice': list.quota
+        //     //           })
+        //     //         })
+        //     //         // 查找库存信息
+        //     //         this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryget', {
+        //     //           "id": items.inventoryID
+        //     //         }).then(resList => {
+        //     //           item.data.person = {
+        //     //             'id': items.id,
+        //     //             'inventoryID': items.inventoryID,
+        //     //             'share': resList.data.object.share,
+        //     //             'count': resList.data.object.count,
+        //     //             'packageID': items.packageID,
+        //     //             'planEnroll': planEnroll
+        //     //           }
+        //     //           this.n = [];
+        //     //         }).catch(errList => {
+        //     //           console.log('查找库存信息失败');
+        //     //         })
+        //     //       }
+        //     //     })
+        //   })
+        //   this.n = [];
+        // })
       },
       // 非共享库存修改
       saveQuota(list, data, inventoryID, row, sumId) {
         let planEnroll = [];
         let isSave = true; // 是否编辑判断
-        if (list.data.person.planEnroll.length !== 0 ) {
+        if (list.data.person.planEnroll.length != 0 ) {
           list.data.person.planEnroll.forEach(item => {
-            if(item.enrollID == data.id && item.name == data.name){
+            if (item.enrollID == data.id && item.name == data.name){
               planEnroll.push({
                 'enrollID': data.id,
                 'enrollName': data.name,
@@ -760,7 +811,7 @@
           this.n = [];
           this.n.push(n);
           this.$message.success('修改成功');
-          if(row){
+          if (row) {
             // 修改成功后删除非共享库存
             this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorydelete', {
               "id": sumId
@@ -783,9 +834,9 @@
         if (this.Rform.id) {
           if (this.Rform.resource == '2') {
             // 验证是否填写总库存
-            if (this.Rform.sumRepertory !== '') {
+            if (this.Rform.sumNum != '') {
               this.$refs['form'][index].validate(valid => {
-                if(valid) {
+                if (valid) {
                   if (this.Rform.sumId) {
                     this.saveQuota(this.n[0], data, this.Rform.sumId);
                   } else {
@@ -793,7 +844,7 @@
                     this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', {
                       "object": {
                         "name": '',
-                        "count": this.Rform.sumRepertory,
+                        "count": this.Rform.sumNum,
                         "share": 2,
                         "date": this.Rform.date
                       }
@@ -807,37 +858,37 @@
                 }
               })
             } else {
-              this.$refs['Rform'].validateField('sumRepertory');
+              this.$refs['Rform'].validateField('sumNum');
             }
-          } else if(this.Rform.resource == '1') {
+          } else if (this.Rform.resource == '1') {
             // 验证是否选择共享库存
-            if (this.Rform.shareRepertory !== '') {
+            if (this.Rform.shareId != '') {
               this.$refs['form'][index].validate(valid => {
                 if(valid) {
                   if (!this.Rform.sumId) {
-                    this.saveQuota(this.n[0], data, this.Rform.shareRepertory);
+                    this.saveQuota(this.n[0], data, this.Rform.shareId);
                   } else {
-                    this.saveQuota(this.n[0], data, this.Rform.shareRepertory, 'delete', this.Rform.sumId);
+                    this.saveQuota(this.n[0], data, this.Rform.shareId, 'delete', this.Rform.sumId);
                   }
                 }
               })
             } else {
-              this.$refs['Rform'].validateField('shareRepertory');
+              this.$refs['Rform'].validateField('shareId');
             }
           }
         } else { // 没值执行添加操作
           // 验证库存类型是否选择
-          if (this.Rform.resource !== '') {
+          if (this.Rform.resource != '') {
             // 选择的是非共享库存
             if (this.Rform.resource == '2') {
               // 验证是否填写总库存
-              if (this.Rform.sumRepertory !== '') {
+              if (this.Rform.sumNum != '') {
                  this.$refs['form'][index].validate(valid => {
-                   if(valid) {
+                   if (valid) {
                       let n = [];
                       this.n.forEach(item => {
                         // 第一次添加时
-                        if(this.days[item.index].data.person.planEnroll == undefined){
+                        if (this.days[item.index].data.person.planEnroll == undefined) {
                           let planEnroll = [];
                           planEnroll.push({
                             'enrollID': data.id,
@@ -855,7 +906,8 @@
                               'inventoryID': '',
                               'packageID': this.ccc[0],
                               'date': date,
-                              'count': this.Rform.sumRepertory,
+                              'count': this.Rform.sumNum,
+                              'share': this.Rform.resource,
                               'planEnroll': planEnroll
                             }
                             n.push(this.days[item.index]);
@@ -868,7 +920,7 @@
                           let planEnroll = [];
                           let isSave = true; // 是否编辑判断
                           this.days[item.index].data.person.planEnroll.forEach(list => {
-                            if(list.enrollID == data.id && list.name == data.name){
+                            if (list.enrollID == data.id && list.name == data.name) {
                               planEnroll.push({
                                 'enrollID': data.id,
                                 'name': data.name,
@@ -887,7 +939,7 @@
                               })
                             }
                           })
-                          if(isSave){
+                          if (isSave) {
                             planEnroll.push({
                               'enrollID': data.id,
                               'name': data.name,
@@ -897,11 +949,11 @@
                             })
                           }
                           this.days[item.index].data.person = {
-                            'inventoryID': this.Rform.shareRepertory,
+                            'inventoryID': this.Rform.shareId,
                             'packageID': this.ccc[0],
                             'date': date,
                             'share': this.Rform.resource,
-                            'count': this.Rform.sumRepertory,
+                            'count': this.Rform.sumNum,
                             'planEnroll': planEnroll
                           }
                           n.push(this.days[item.index]);
@@ -912,20 +964,20 @@
                    }
                  })
               } else {
-                this.$refs['Rform'].validateField('sumRepertory');
+                this.$refs['Rform'].validateField('sumNum');
               }
-            } else if(this.Rform.resource == '1'){  // 选择的是共享库存
+            } else if (this.Rform.resource == '1') {  // 选择的是共享库存
               // 验证是否选择共享库存
-              if(this.Rform.shareRepertory !== ''){
+              if (this.Rform.shareId != '') {
                 this.$refs['form'][index].validate(valid => {
-                  if(valid) {
+                  if (valid) {
                     let planEnroll = [];
                     let date = this.formatDates(
                           this.n[0].day.getFullYear(),
                           this.n[0].day.getMonth() + 1,
                           this.n[0].day.getDate()
                         )
-                    if(this.days[this.n[0].index].data.person.planEnroll == undefined){
+                    if (this.days[this.n[0].index].data.person.planEnroll == undefined) {
                       planEnroll.push({
                         'enrollID': data.id,
                         'name': data.name,
@@ -936,7 +988,7 @@
                     } else {
                       let isSave = true; // 是否编辑判断
                       this.days[this.n[0].index].data.person.planEnroll.forEach(item => {
-                        if(item.enrollID == data.id && item.name == data.name){
+                        if (item.enrollID == data.id && item.name == data.name) {
                           planEnroll.push({
                             'enrollID': data.id,
                             'name': data.name,
@@ -955,7 +1007,7 @@
                           })
                         }
                       })
-                      if(isSave){
+                      if (isSave) {
                         planEnroll.push({
                           'enrollID': data.id,
                           'name': data.name,
@@ -966,9 +1018,10 @@
                       }
                     }
                     this.days[this.n[0].index].data.person = {
-                      'inventoryID': this.Rform.shareRepertory,
+                      'inventoryID': this.Rform.shareId,
                       'share': this.Rform.resource,
                       'packageID': this.ccc[0],
+                      'count': this.Rform.shareNum,
                       'date': date,
                       'planEnroll': planEnroll
                     }
@@ -979,7 +1032,7 @@
                   }
                 })
               } else {
-                this.$refs['Rform'].validateField('shareRepertory');
+                this.$refs['Rform'].validateField('shareId');
               }
             }
           } else {
@@ -991,6 +1044,7 @@
       },
       // 筛选周六周日按钮
       handleTwoClick() {
+        this.n = [];
         this.clearNull();
         const now = new Date().getTime();
         const today = new Date().getDate();
@@ -1005,22 +1059,24 @@
           if (this.n.includes(item)) {
             return;
           } else {
-            if(this.n.length == 0 || item.data.person.id == undefined){
+            if (item.data.person.id == undefined) {
               item.name = item.day.getDay();
               this.n.push(item);
             }
-            if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
-              this.n = [];
-              this.forbidden = false;
-              item.name = item.day.getDay();
-              this.n.push(item);
+            // if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
+            //   this.n = [];
+            //   this.forbidden = false;
+            //   item.name = item.day.getDay();
+            //   this.n.push(item);
+            // }
+            if (this.n.length == 0) {
+              this.rightTable = false;
             }
-            this.n.push(item);
-            if(this.n.length !=0){
+            if (this.n.length != 0) {
               this.rightTable = true;
             }
             // 当选中的日期大于一天的时候默认为"非公享"
-            if(this.n.length >1){
+            if (this.n.length > 1) {
               this.forbidden = true;
               this.Rform.resource = "2";
             }
@@ -1029,11 +1085,12 @@
       },
       // 筛选周一至周五
       handleWeekClick() {
+        this.n = [];
         this.clearNull();
         const now = new Date().getTime();
         const today = new Date().getDate();
         const week = this.days
-          .filter(item => item.day.getDay() !== 6 && item.day.getDay() !== 0)
+          .filter(item => item.day.getDay() != 6 && item.day.getDay() != 0)
           .filter(item => item.day.getMonth() + 1 == this.currentMonth)
           .filter(
             item => item.day.getTime() > now || item.day.getDate() == today
@@ -1042,21 +1099,24 @@
           if (this.n.includes(item)) {
             return;
           } else {
-            if(this.n.length == 0 || item.data.person.id == undefined){
+            if (item.data.person.id == undefined) {
               item.name = item.day.getDay();
               this.n.push(item);
             }
-            if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
-              this.n = [];
-              this.forbidden = false;
-              item.name = item.day.getDay();
-              this.n.push(item);
+            // if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
+            //   this.n = [];
+            //   this.forbidden = false;
+            //   item.name = item.day.getDay();
+            //   this.n.push(item);
+            // }
+            if (this.n.length == 0) {
+              this.rightTable = false;
             }
-            if(this.n.length !=0){
+            if (this.n.length != 0) {
               this.rightTable = true;
             }
             // 当选中的日期大于一天的时候默认为"非公享"
-            if(this.n.length >1){
+            if (this.n.length > 1) {
               this.forbidden = true;
               this.Rform.resource = "2";
             }
@@ -1065,6 +1125,7 @@
       },
       // 筛选全月
       handleallclick() {
+        this.n = [];
         this.clearNull();
         const now = new Date().getTime();
         const today = new Date().getDate();
@@ -1075,21 +1136,24 @@
           if (this.n.includes(item)) {
             return;
           } else {
-            if(this.n.length == 0 || item.data.person.id == undefined){
+            if (item.data.person.id == undefined) {
               item.name = item.day.getDay();
               this.n.push(item);
             }
-            if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
-              this.n = [];
-              this.forbidden = false;
-              item.name = item.day.getDay();
-              this.n.push(item);
+            // if(item.data.person.id !== undefined || this.n[0].data.person.id !== undefined){
+            //   this.n = [];
+            //   this.forbidden = false;
+            //   item.name = item.day.getDay();
+            //   this.n.push(item);
+            // }
+            if (this.n.length == 0) {
+              this.rightTable = false;
             }
-            if(this.n.length !=0){
+            if (this.n.length != 0) {
               this.rightTable = true;
             }
             // 当选中的日期大于一天的时候默认为"非公享"
-            if(this.n.length >1){
+            if (this.n.length > 1) {
               this.forbidden = true;
               this.Rform.resource = "2";
             }
@@ -1107,7 +1171,7 @@
         this.sun = false;
         this.wed = false;
         this.sat = false;
-        if(this.n.length ==0){
+        if(this.n.length == 0){
           this.rightTable = false;
         }
       },
@@ -1121,28 +1185,30 @@
           resource:'', // 库存类型
           sumId: '', // 非共享库存id
           shareNum: '', // 共享库存数量
-          shareRepertory:'', // 共享库存
-          sumRepertory:'', // 总库存
+          shareId:'', // 共享库存
+          sumNum:'', // 总库存
         };
         // 清空表单验证样式
-        // this.$refs['Rform'].resetFields();
+        if (this.$refs['Rform'] != undefined) {
+          this.$refs['Rform'].resetFields();
+        }
       },
       // 点击日期的时候
       handleitemclick(day, index) {
         // 取消选择时
         if (this.n.includes(day)) {
           this.n = this.n.filter(v => v != day);
-          if(this.n.length == 0){
+          if (this.n.length == 0) {
             this.share = false;
             this.rightTable = false;
           }
           // 当选中的日期为一天的时候可以选择"共享"
-          if(this.n.length < 2){
+          if (this.n.length < 2) {
             this.forbidden = false;
             this.Rform.resource = "";
           }
           // 当前点击一个日期时
-          if(this.n.length == 1){
+          if (this.n.length == 1) {
             this.clickData = this.formatDates(
               this.n[0].day.getFullYear(),
               this.n[0].day.getMonth() + 1,
@@ -1152,12 +1218,13 @@
         // 选择时
         } else {
           this.clearNull();
-          if (this.n.length == 0 || day.data.person.inventoryID == undefined) {
+          if (this.n.length == 0 || day.data.person.id == undefined) {
+            this.forbidden = false;
             day.name = day.day.getDay();
             day.index = index;
             this.n.push(day);
           }
-          if (day.data.person.inventoryID !== undefined || this.n[0].data.person.inventoryID !== undefined) {
+          if (day.data.person.id != undefined || this.n[0].data.person.id != undefined) {
             this.n = [];
             this.forbidden = false;
             day.name = day.day.getDay();
@@ -1179,50 +1246,74 @@
             )
           }
           // 选中的日期有类型时进行赋值
-          if (day.data.person.inventoryID !== undefined) {
-            let str = this.formatDates(
-              day.day.getFullYear(),
-              day.day.getMonth() + 1,
-              day.day.getDate()
-            )
-            this.Rform.id = day.data.person.id;
-            this.Rform.date = str;
-            // 点击增加非共享库存时
-            if (day.data.person.inventoryID == '') {
-              this.Rform.resource = '2';
-              this.Rform.sumRepertory = day.data.person.count;
+          if (day.data.person.id != undefined) {
+            this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/get', {
+              "id": day.data.person.id
+            }).then(res => {
+              day.data.person.inventoryID = res.data.object.inventoryID;
+              this.$http.post(this.GLOBAL.serverSrc +  '/team/api/inventoryget', {
+                "id": res.data.object.inventoryID
+              }).then(inventoryRes => {
+                day.data.person.count = inventoryRes.data.object.count;
+                this.Rform.resource = String(day.data.person.share);
+                this.xuanze(this.Rform.resource);
+                if (this.Rform.resource == 1) {
+                  // 共享库存数量
+                  this.Rform.shareNum = day.data.person.count;
+                  // 共享库存ID
+                  this.Rform.shareId = res.data.object.inventoryID;
+                } else {
+                  // 非共享库存数量
+                  this.Rform.sumNum = day.data.person.count;
+                  // 非共享库存ID
+                  this.Rform.sumId = res.data.object.inventoryID;
+                }
+                this.Rform.id = day.data.person.id;
+                this.Rform.date = this.formatDates(
+                  day.day.getFullYear(),
+                  day.day.getMonth() + 1,
+                  day.day.getDate()
+                )
+                // 给选中类型赋值
+                this.selectType(day);
+              })
+            })
+          } else if (day.data.person.packageID != undefined) {
+            this.Rform.resource = day.data.person.share;
+            this.xuanze(this.Rform.resource);
+            if (this.Rform.resource == 1) {
+              // 共享库存数量
+              this.Rform.shareNum = day.data.person.count;
+              // 共享库存ID
+              this.Rform.shareId = day.data.person.inventoryID;
             } else {
-              this.Rform.resource = String(day.data.person.share);
-              this.xuanze('1');
-              if (this.Rform.resource == 1) {
-                // 共享库存数量
-                this.Rform.shareNum = day.data.person.count;
-                // 共享库存ID
-                this.Rform.shareRepertory = day.data.person.inventoryID;
-              } else {
-                // 非共享库存数量
-                this.Rform.sumRepertory = day.data.person.count;
-                // 非共享库存ID
-                this.Rform.sumId = day.data.person.inventoryID;
-              }
+              // 非共享库存数量
+              this.Rform.sumNum = day.data.person.count;
+              // 非共享库存ID
+              this.Rform.sumId = day.data.person.inventoryID;
             }
             // 给选中类型赋值
-            for (let i = 0; i < day.data.person.planEnroll.length; i++){
-              this.Rform.region = day.data.person.planEnroll[i].enrollID + '-' + day.data.person.planEnroll[i].name;
-              this.AddType();
-              if(this.arr[i].id == day.data.person.planEnroll[i].enrollID && this.arr[i].name == day.data.person.planEnroll[i].name){
-                this.arr[i].isModify = true;
-                this.arr[i].salePrice = day.data.person.planEnroll[i].salePrice;
-                this.arr[i].traderPrice = day.data.person.planEnroll[i].traderPrice;
-                console.log(day.data.person.planEnroll[i].quotaPrice);
-                if(day.data.person.planEnroll[i].quotaPrice == null){
-                  this.arr[i].quota = false;
-                } else {
-                  this.arr[i].quota = true;
-                }
-                this.arr[i].quotaPrice = day.data.person.planEnroll[i].quotaPrice;
-              }
+            this.selectType(day);
+          }
+        }
+      },
+      // 单击日历赋值调用
+      selectType(day) {
+        // 给选中类型赋值
+        let _planEnroll = day.data.person.planEnroll; 
+        for (let i = 0; i < _planEnroll.length; i++) {
+          this.Rform.region = _planEnroll[i].enrollID + '-' + _planEnroll[i].name;
+          this.AddType();
+          if (this.arr[i].id == _planEnroll[i].enrollID && this.arr[i].name == _planEnroll[i].name) {
+            this.arr[i].isModify = true;
+            this.arr[i].salePrice = _planEnroll[i].salePrice;
+            this.arr[i].traderPrice = _planEnroll[i].traderPrice;
+            if (_planEnroll[i].quotaPrice == null) {
+              this.arr[i].quota = false;
+            } else {
+              this.arr[i].quota = true;
             }
+            this.arr[i].quotaPrice = _planEnroll[i].quotaPrice;
           }
         }
       },
@@ -1292,10 +1383,11 @@
           this.today.getMonth() + 1 < this.currentMonth ||
           this.today.getFullYear() < this.currentYear
         ) {
-          this.calendarList(this.ccc[0]);
+          this.clearchecked();
           var d = new Date(this.formatDate(year, month, 1));
           d.setDate(0);
           this.initData(this.formatDate(d.getFullYear(), d.getMonth() + 1, 1));
+          this.calendarList(this.ccc[0]);
           this.n = [];
         } else {
           // alert("不能选择以前的");
@@ -1307,10 +1399,11 @@
       },
       // 点击下个月
       pickNext(year, month) {
-        this.calendarList(this.ccc[0]);
+        this.clearchecked();
         var d = new Date(this.formatDate(year, month, 1));
         d.setDate(35);
         this.initData(this.formatDate(d.getFullYear(), d.getMonth() + 1, 1));
+        this.calendarList(this.ccc[0]);
         this.n = [];
       },
       // 返回 类似 2016-01-02 格式的字符串
@@ -1350,18 +1443,16 @@
       },
       // 选择库存类型
       xuanze(z) {
-        // this.share
         if (this.Rform.resource == '1') {
           this.listData();
         }
-        // console.log(shareID);
         // 传入的值
-        if (z =='1') {
+        if (z == '1') {
           if (this.Rform.resource == '1') {
             this.listData();
           }
         // 手动选择的值
-        } else if (z == '2' && this.Rform.shareRepertory !== '' || this.Rform.sumRepertory !== '') {
+        } else if (z == '2' && this.Rform.shareId != '' || this.Rform.sumNum != '') {
           this.$confirm('当前类型数据将重置，是否更改?', '更改库存类型', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -1369,9 +1460,9 @@
           }).then(() => {
             if(this.Rform.resource == '1'){
               this.listData();
-              this.Rform.sumRepertory = '';
+              this.Rform.sumNum = '';
             } else {
-              this.Rform.shareRepertory = '';
+              this.Rform.shareId = '';
               this.Rform.shareNum = '';
             }
           }).catch(() => {
@@ -1385,21 +1476,21 @@
       },
       // 选择共享库存时获取该库存下的剩余库存数量
       shareSelect() {
-        let shareID = this.signUptypeSelect.filter(item => item.id == this.Rform.shareRepertory);
+        let shareID = this.signUptypeSelect.filter(item => item.id == this.Rform.shareId);
         this.Rform.shareNum = shareID[0].count;
       },
       // 添加报名类型
       AddType(type) {
-        if(this.Rform.region) {
+        if (this.Rform.region) {
           let mon = true;
-          if(this.arr.length !== 0){
+          if (this.arr.length !== 0) {
             this.arr.forEach(item => {
-              if(item.id + '-' + item.name == this.Rform.region){
+              if (item.id + '-' + item.name == this.Rform.region) {
                 mon = false;
               }
             })
           }
-          if(mon){
+          if (mon) {
             let id = this.Rform.region.substring(0, this.Rform.region.indexOf('-'));
             let name = this.Rform.region.substring(this.Rform.region.lastIndexOf('-') + 1, this.Rform.region.length);
             this.arr.push({
@@ -1427,8 +1518,9 @@
       },
       // 删除卡片
       delect(item, index) {
+        let _n = this.n[0];
         if (item.isModify) {
-          if (this.n[0].data.person.planEnroll.length <= 1) {
+          if (_n.data.person.planEnroll.length <= 1) {
             console.log('剩一个类型时');
           } else {
             this.arr.splice(index,1);
@@ -1442,19 +1534,19 @@
                 'quota': data.quotaPrice
               })
             })
-            // 有两个及以上的值删除走修改接口
+            // 有两个及以上的值删除调用修改接口
             this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/save', {
               "object": {
                 "id": this.Rform.id,
-                "inventoryID": this.n[0].data.person.inventoryID,
+                "inventoryID": _n.data.person.inventoryID,
                 "packageID": this.ccc[0],
                 "date": this.Rform.date,
                 "planEnroll": planEnroll
               }
             }).then(res => {
-              this.days[this.n[0].index].data.person.planEnroll.splice(index,1);
+              this.days[_n.index].data.person.planEnroll.splice(index,1);
               let n = [];
-              n = this.days[this.n[0].index];
+              n = this.days[_n.index];
               this.n = [];
               this.n.push(n);
               this.$message.success('删除成功');
@@ -1464,15 +1556,18 @@
           }
         } else {
           this.arr.splice(index,1);
-          this.days[this.n[0].index].data.person.planEnroll.splice(index,1);
+          this.days[_n.index].data.person.planEnroll.splice(index,1);
           let n = [];
-          n = this.days[this.n[0].index]
+          n = this.days[_n.index]
           this.n = [];
           this.n.push(n);
-          if (this.n[0].data.person.planEnroll.length <= 1) {
-            this.days[this.n[0].index].data.person.share = '';
+          if (_n.data.person.planEnroll.length <= 1) {
+            this.days[_n.index].data.person.share = '';
           }
         }
+
+
+        
         // this.arr.splice(index,1);
       },
       // 添加配额
@@ -1495,7 +1590,7 @@
         let newAll = this.days
           .filter(item => item.day.getTime() > now || item.day.getDate() == today)
           .filter(item => item.day.getMonth() + 1 == this.currentMonth)
-          .filter(item => item.data.person.inventoryID !== undefined && item.data.person.id == undefined);
+          .filter(item => item.data.person.inventoryID != undefined && item.data.person.id == undefined);
         if (newAll.length == 0) {
           this.$message({
             message: '没有可供保存的计划',
@@ -1504,7 +1599,7 @@
         } else {
           newAll.forEach(item => {
             let planEnroll = [];
-            if(item.data.person.planEnroll.length !== 0 ){
+            if (item.data.person.planEnroll.length != 0 ) {
               item.data.person.planEnroll.forEach(list => {
                 // 判断是否填写配额
                 if (list.quotaPrice == '') {
@@ -1525,7 +1620,7 @@
                 }
               })
             }
-            if(item.data.person.inventoryID == ''){
+            if (item.data.person.inventoryID == '') {
               // 添加非共享库存
               this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', {
                 "object": {
@@ -1543,8 +1638,8 @@
                     "planEnroll": planEnroll
                   }
                 }).then(resAdd => {
-                  // 添加成功后赋值id
-                  item.data.person.id = '';
+                  // 添加成功后从新查找
+                  this.calendarList(this.ccc[0]);
                 }).catch(errAdd => {
                   console.log('添加计划失败');
                 })
@@ -1560,8 +1655,8 @@
                   "planEnroll": planEnroll
                 }
               }).then(res => {
-                // 添加成功后赋值id
-                item.data.person.id = '';
+                // 添加成功后从新查找
+                this.calendarList(this.ccc[0]);
               }).catch(err => {
                 console.log('添加计划失败');
               })
@@ -1576,7 +1671,7 @@
       // 点击套餐Sku
       setMeal(data){
         let id = '';
-        if(data.id == undefined){
+        if (data.id == undefined) {
           id = data;
         } else {
           id = data.id;
@@ -1592,8 +1687,8 @@
           resource:'', // 库存类型
           sumId: '', // 非共享库存id
           shareNum: '', // 共享库存数量
-          shareRepertory:'', // 共享库存
-          sumRepertory:'', // 总库存
+          shareId:'', // 共享库存
+          sumNum:'', // 总库存
         };
         this.arr = [];
         this.ccc = [];
