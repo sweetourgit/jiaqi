@@ -188,7 +188,7 @@ export default new Router({
       children: [
         {
           path: 'planList',
-          name: '团期计划',
+          name: '团期计划列表',
           component: planList,
           meta: {
             keepAlive: true,
@@ -196,7 +196,7 @@ export default new Router({
           },
         {
           path: 'placeOrder',
-          name: '团期计划',
+          name: '团期计划订单',
           component: placeOrder,
           meta: {
             keepAlive: true,
@@ -210,7 +210,7 @@ export default new Router({
       children: [
         {
           path: 'orderList',
-          name: '订单管理',
+          name: '订单列表',
           component: orderList,
           meta: {
             keepAlive: true,
@@ -218,7 +218,7 @@ export default new Router({
           },
         {
           path: 'orderDetail',
-          name: '订单管理',
+          name: '订单详情',
           component: orderDetail,
           meta: {
             keepAlive: true,
