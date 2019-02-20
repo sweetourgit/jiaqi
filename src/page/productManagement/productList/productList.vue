@@ -1467,5 +1467,6 @@ import DateList from './component/DateList'
 }
 .merchandise>>>.el-dialog{
   overflow:hidden !important;
+  min-width: 1455px;
 }
 </style>
