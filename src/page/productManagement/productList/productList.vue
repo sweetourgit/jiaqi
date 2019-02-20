@@ -171,7 +171,7 @@
     </div>
     </div>
 
-    <el-dialog class="merchandise" :visible.sync="merchandise"   :show-close="false" append-to-body width="80%">
+    <el-dialog class="merchandise" :visible.sync="merchandise"   :show-close="false" append-to-body width="76%">
      <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
           <el-radio-group v-model="isCollapse" >
             <el-radio-button  class="group" :label="true">库存</el-radio-button>
