@@ -190,7 +190,7 @@ export default {
         }
       },
       placeOrder(){
-        this.$router.push({path: "/regimentPlan/placeOrder"});
+        this.$router.push({path: "/regimentPlan/placeOrder?planid="+this.multipleSelection[0].id});
       },
       handleSizeChange(){
 
