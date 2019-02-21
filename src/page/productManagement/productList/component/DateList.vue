@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div class="ButtonCls">
-      <el-button style="width:100px;" @click="BandCancel">取消</el-button>
-      <el-button style="width:100px;" type="primary" @click="BandSave">保存</el-button>
-    </div>
+    
     <div class="leftSku" >
       <div style="font-size:20px;margin-left:40px;">Sku</div>
       <el-button style="margin-top:10px;margin-left:40px;width:220px;height: 64px;" :class="{'selectSku': ccc.includes(data.id)}" plain v-for="(data,index) in msgFather" :key="index"  @click="setMeal(data)">{{data.ddd}}</el-button>
@@ -94,14 +91,22 @@
           </template>
         </template>
       </ul>
+
+      <div class="ButtonCls">
+        <el-button style="width:100px;" @click="BandCancel">取消</el-button>
+        <el-button style="width:100px;" type="primary" @click="BandSave">保存</el-button>
+      </div>
+
     </div>
+
+    
 
     <!-- 右侧的表单 -->
     <div class="rightForm" v-show="rightTable">
       <!-- 表单 -->
       <el-form :model="Rform" :rules="RformRuler" ref="Rform">
         <el-form-item label="报名类型:">
-          <el-select v-model="Rform.region" filterable placeholder="请选择" style="width:150px">
+          <el-select v-model="Rform.region" filterable placeholder="请选择" style="width:180px">
             <el-option
               v-for="(item, index) in typeSelect"
               :label="item.name"
@@ -120,7 +125,7 @@
         <!-- 共享库存 -->
         <template  v-if='Rform.resource == "1"'>
           <el-form-item label="共享库存:" prop="shareId" style="margin-top:-15px;">
-            <el-select v-model="Rform.shareId" placeholder="请选择" @change="shareSelect" style="width:150px">
+            <el-select v-model="Rform.shareId" placeholder="请选择" @change="shareSelect" style="width:180px">
               <el-option v-for="(item, index) in signUptypeSelect" :key="index" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -131,6 +136,12 @@
         <!-- 非共享库存 -->
         <el-form-item label="总库存:" v-show='Rform.resource == "2"' prop="sumNum" style="margin-top:-15px;" >
           <el-input v-model="Rform.sumNum" style="width:200px;" ></el-input>
+        </el-form-item>
+        <el-form-item label="订单保留:" style="margin-top:20px">
+          <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:180px">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
 
@@ -193,6 +204,7 @@
           sumId: '', // 非共享库存id
           shareNum: '', // 共享库存数量
           sumNum:'', // 总库存数量
+          orderRetain: '', // 订单保留
         },
         form: {
           price: "",
@@ -648,12 +660,12 @@
                       'quotaPrice': list.quota
                     })
                   })
-                  item.data.person = {
-                    'id': items.planID,
-                    'packageID': items.packageID,
-                    'share': items.share,
-                    'planEnroll': plan_Enrolls
-                  }
+                }
+                item.data.person = {
+                  'id': items.planID,
+                  'packageID': items.packageID,
+                  'share': items.share,
+                  'planEnroll': plan_Enrolls
                 }
               }
             })
@@ -1779,7 +1791,7 @@
   }
   #calendar {
     float: left;
-    margin: 37px auto 20px 340px;
+    margin: 37px auto 20px 273px;
     width: 764px;
     /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.1), */
     /* 0 1px 5px 0 rgba(0, 0, 0, 0.12); */
@@ -1916,7 +1928,7 @@
     width:300px;
     height:500px;
     margin-top:125px;
-    margin-left:40px;
+    margin-left:-25px;
   }
   .selectSku{
     background: #409EFF !important;
@@ -1925,9 +1937,10 @@
     /* color: #409EFF; */
   }
   .rightForm{
-    float: right;
+    float: left;
     margin-top: 35px;
-    right: -360px;
+    margin-left: 35px;
+    /* right: -360px; */
     width: 339px;
   }
   .clearfix{
@@ -1937,8 +1950,9 @@
     /* font-weight:bold; */
   }
   .ButtonCls{
-    float: right;
-    margin-top: -35px;
+    margin: 30px 0 0 50%;
+    /* float: right; */
+    /* margin-top: -35px; */
   }
   .divform{
     margin-left: -10px;
