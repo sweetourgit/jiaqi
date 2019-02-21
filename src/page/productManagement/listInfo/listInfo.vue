@@ -20,7 +20,7 @@
                 <el-radio label="1" value="1">境外</el-radio>
                 <el-radio label="2" value="2">国内</el-radio>
               </el-radio-group>
-            </el-form-item>
+            </el-form-item> 
             <!--出发地-->
             <el-form-item label="出发地" ref="placeDeparture" style="clear:both;" label-width="120px">
               <span class="redStar">*</span>
@@ -281,7 +281,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                <el-date-picker style="width:200px;" v-model="item.podTime" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item>
                             </div>
                             <!--第二行结束-->
@@ -299,7 +299,7 @@
                                 </el-form-item>
                               <!--第三个-->
                                 <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                 <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -310,13 +310,13 @@
                             <div closable>
                               <div class="transit_border" v-show="lineshow"></div>
                               <div class="abc" v-for="(iteml, p) in item.ext_Stopover" :key="p" type="text">
-                                <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
+                                <el-form label-width="100px" style="float:left;">
                                   <el-form-item label="经停城市" prop="stopCity">
                                     <el-autocomplete class="inputBox" clearable placeholder="请输入经停城市" :fetch-suggestions="querySearch" v-model="iteml.stopCity" :trigger-on-focus="false">
                                     </el-autocomplete>
                                   </el-form-item>
                                 </el-form>
-                                <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
+                                <el-form label-width="100px" style="float:left;">
                                   <el-form-item label="经停时间" prop="stopDate">
                                     <el-autocomplete class="inputBox" clearable placeholder="请输入经停时间" :fetch-suggestions="querySearch" v-model="iteml.stopDate" :trigger-on-focus="false">
                                     </el-autocomplete>
@@ -358,7 +358,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                <el-date-picker style="width:200px;" v-model="item.podTime" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item>
                             </div>
                             <!--第二行结束-->
@@ -376,7 +376,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                 <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -403,7 +403,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                <el-date-picker style="width:200px;" v-model="item.podTime" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item>
                             </div>
                             <!--第二行结束-->
@@ -421,7 +421,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                 <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -461,7 +461,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                <el-date-picker style="width:200px;" v-model="item.podTime" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item>
                             </div>
                             <!--第二行结束-->
@@ -479,7 +479,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                 <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -490,13 +490,13 @@
                             <div closable>
                               <div class="transit_border" v-show="lineshow"></div>
                               <div class="abc" v-for="(iteml, p) in item.ext_Stopover" :key="p" type="text">
-                                <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
+                                <el-form label-width="100px" style="float:left;">
                                   <el-form-item label="经停城市" prop="stopCity">
                                     <el-autocomplete class="inputBox" clearable placeholder="请输入经停城市" :fetch-suggestions="querySearch" v-model="iteml.stopCity" :trigger-on-focus="false">
                                     </el-autocomplete>
                                   </el-form-item>
                                 </el-form>
-                                <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
+                                <el-form label-width="100px" style="float:left;">
                                   <el-form-item label="经停时间" prop="stopDate">
                                     <el-autocomplete class="inputBox" clearable placeholder="请输入经停时间" :fetch-suggestions="querySearch" v-model="iteml.stopDate" :trigger-on-focus="false">
                                     </el-autocomplete>
@@ -570,7 +570,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                <el-date-picker style="width:200px;" v-model="item.podTime" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item>
                             </div>
                             <!--第二行结束-->
@@ -588,7 +588,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                 <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -599,13 +599,13 @@
                             <div type="card" closable>
                               <div class="transit_border" v-show="Returnline"></div>
                               <div class="abc" v-for="(iteml, p) in item.ext_Stopover" :key="p" type="text">
-                                <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
+                                <el-form label-width="100px" style="float:left;">
                                   <el-form-item label="经停城市" prop="stopCity">
                                     <el-autocomplete class="inputBox" clearable placeholder="请输入经停城市" :fetch-suggestions="querySearch" v-model="iteml.stopCity" :trigger-on-focus="false">
                                     </el-autocomplete>
                                   </el-form-item>
                                 </el-form>
-                                <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
+                                <el-form label-width="100px" style="float:left;">
                                   <el-form-item label="经停时间" prop="stopDate">
                                     <el-autocomplete class="inputBox" clearable placeholder="请输入经停时间" :fetch-suggestions="querySearch" v-model="iteml.stopDate" :trigger-on-focus="false">
                                     </el-autocomplete>
@@ -647,7 +647,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                <el-date-picker style="width:200px;" v-model="item.podTime" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item>
                             </div>
                             <!--第二行结束-->
@@ -665,7 +665,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                 <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -692,7 +692,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                <el-date-picker style="width:200px;" v-model="item.podTime" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item>
                             </div>
                             <!--第二行结束-->
@@ -710,7 +710,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                 <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -751,7 +751,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                <el-date-picker style="width:200px;" v-model="item.podTime" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item>
                             </div>
                             <!--第二行结束-->
@@ -769,7 +769,7 @@
                                 </el-form-item>
                               <!--第三个-->
                               <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                  <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                 <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -780,13 +780,13 @@
                             <div type="card" closable>
                               <div class="transit_border" v-show="lineshow"></div>
                               <div class="abc" v-for="(iteml, p) in item.ext_Stopover" :key="p" type="text">
-                                <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
+                                <el-form label-width="100px" style="float:left;">
                                   <el-form-item label="经停城市" prop="stopCity">
                                     <el-autocomplete class="inputBox" clearable placeholder="请输入经停城市" :fetch-suggestions="querySearch" v-model="iteml.stopCity" :trigger-on-focus="false">
                                     </el-autocomplete>
                                   </el-form-item>
                                 </el-form>
-                                <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
+                                <el-form label-width="100px" style="float:left;">
                                   <el-form-item label="经停时间" prop="stopDate">
                                     <el-autocomplete class="inputBox" clearable placeholder="请输入经停时间" :fetch-suggestions="querySearch" v-model="iteml.stopDate" :trigger-on-focus="false">
                                     </el-autocomplete>
@@ -963,21 +963,18 @@
                               <div class="aviation_text">住宿</div>
                               <div class="type_radio" style="margin:10px 0 0 0;">
                                 <div>
-                                  <span @click="hotelNumber(index)"><el-radio  v-model="myradio" label="1">酒店</el-radio></span>
-                                  <span @click="otherNumber(index)"><el-radio  v-model="myradio" label="2">其他</el-radio></span>
-                                </div>
+                                  <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>
+                                  <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>
                                 <div class="explain">
-                                  <div v-show="hotell">
-                                    <span v-for="(itemCon,p) in item.schedule_hotel" style="margin-right:10px">
-                                    <el-button @click="baocun(p,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
+                                  <div v-show="myradio[index].lable=='0'">
+                                    <span v-for="(itemCon,p) in tabContents" style="margin-right:10px">
+                                    <el-button @click="baocun(itemCon.id,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
                                     </span>
                                   </div>
-                                  <div v-show="otherl">
-                                    <span v-for="(itemCon,p) in item.schedule_qita" style="margin-right:10px">
-                                    <!--<el-button @click="baocun2(p,index)">{{itemCon.name}}</el-button>-->
-                                    <el-input class="text_input" type="textarea" @click="baocun2(p,index)" :rows="5" placeholder="请输入内容"></el-input>
-                                    </span>
+                                  <div v-show="myradio[index].lable=='1'">
+                                    <el-input class="text_input"  v-model="item.ext_Hotel.Details" type="textarea" :rows="5" placeholder="请输入内容"></el-input>
                                   </div>
+                                </div>
                                 </div>
                               </div>
                             </div>
@@ -1604,10 +1601,7 @@
         radio3: '1',
         radio4: '1',
         //日程详情住宿选择
-        tabs: ["酒店", "其他"],
-        tabContents: ["酒店一", "酒店二"],
-        tabs1: ["景点", "购物", "自费项目"],
-        tabContents1: ["城市", "名称", "名称"],
+        tabContents: [{'id':0,'name':'酒店1'},{'id':1,'name':'酒店2'}],
         num: 0,
         num1: 0,
         param: '1',
@@ -1676,7 +1670,6 @@
         teturnBack: [],
         Returnline: false,
         //日程信息酒店切换
-        schedule: ["酒店", "其他"],
         num6: 0,
         schedule_radio: '0',
         //信息详情切换
@@ -1693,7 +1686,7 @@
         myxiangnumber: 0,
         hotell: true,
         otherl: false,
-        myradio: '1',
+        myradio:[],
         activeName: 'first',
         travelDays: '',
          //运营标签
@@ -1711,7 +1704,6 @@
         inputVal4: '',
         errorNull: ''
       }
-
     },
    watch:{ //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
       items: {
@@ -1738,7 +1730,7 @@
               day:i+1,
               subject: '',
               info: '',
-              createTime: new Date,
+              createTime: this.formatDate(new Date()),
               ext_Meals: [{
                 label: '早餐',
                 Myself: '0',
@@ -1760,29 +1752,17 @@
                 memo: '',
                 pictureID: '',
                 activityType:'1',
-                createTime: new Date
+                createTime: this.formatDate(new Date())
               }],
-              schedule_hotel: [{
-                label: "1",
-                name: "大运酒店",
-                iu: '0',
-                id: 0
-              }, {
-                label: "1",
-                name: "前程酒店",
-                iu: '0',
-                id: 0
-              }],
-              schedule_qita: [{
-                label: "1",
-                name: "其他1",
-                iu: '0',
-                id: 0
-              }]
-            })        
+              ext_Hotel: [
+                {IsHotel:0,Details:""}
+              ]
+            });
+            this.myradio.push({'lable':'0'});   //保存行程里面酒店信息单选值     
             }
           }else{
-           this.ruleForm.schedules.splice(newValue,oldValue-newValue)
+           this.ruleForm.schedules.splice(newValue,oldValue-newValue);
+           this.myradio.splice(newValue,oldValue-newValue)
           }
         }
         }
@@ -1867,6 +1847,9 @@
          for(var i=0;i<sche.length;i++){
               sche[i].ext_Meals=JSON.stringify(sche[i].ext_Meals);
          }
+         for(var i=0;i<sche.length;i++){
+              sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
+         }
         //行程信息
         var object={
                   //基本信息接口数据
@@ -1910,8 +1893,7 @@
                   instructions1:this.notes, //预订须知,预留接口无字段？
                   instructions2:this.instructions, //使用说明,预留接口无字段？
                   loadPackage: true
-                }
-        console.log(JSON.stringify(object))        
+                }      
         this.$refs[formName].validate((valid) => {
           if(valid){
               var _this = this;
@@ -1919,7 +1901,7 @@
                 object: object
               },
               ).then(function(response) {
-                  if(response.data.success==true){
+                  if(response.data.isSuccess==true){
                     _this.$message.success("添加成功");
                      _this.$router.push({path: "productList"});
                   }else{
@@ -1955,11 +1937,6 @@
        // childValue就是子组件传过来的值
         this.travelDays = childValue;
      },
-      //临时添加酒店切换
-      hotelNumber(index) {
-        this.hotell = true;
-        this.otherl = false;
-      },
       otherNumber() {
         this.hotell = false;
         this.otherl = true;
@@ -2142,7 +2119,7 @@
           memo: '',
           pictureID: 0,
           activityType: '1',
-          createTime: new Date
+          createTime: this.formatDate(new Date())
         })
       },
       deleteDetails(k, index) {
@@ -2152,20 +2129,8 @@
            this.ruleForm.schedules[index].activitys[k].activityType = v;
       },
       baocun(p, index) {
-        let myarray = [];
-        for (let i = 0; i < this.ruleForm.schedules[index].schedule_hotel.length; i++)
-        {
-          this.ruleForm.schedules[index].schedule_hotel[i].iu = '0';
-        }
-        this.ruleForm.schedules[index].schedule_hotel[p].iu = '1';
-      },
-      baocun2(p, index) {
-        let myarray = [];
-        for (let i = 0; i < this.ruleForm.schedules[index].schedule_qita.length; i++)
-        {
-          this.ruleForm.schedules[index].schedule_qita[i].iu = '0';
-        }
-        this.ruleForm.schedules[index].schedule_qita[p].iu = '1';
+        this.ruleForm.schedules[index].ext_Hotel[0].Details = p;
+        this.ruleForm.schedules[index].ext_Hotel[0].IsHotel = 0;
       },
       close() {
         this.comboshow = false;
@@ -2528,7 +2493,8 @@
            minute = minute < 10 ? ('0' + minute) : minute;  
        var second=date.getSeconds();  
            second=second < 10 ? ('0' + second) : second;  
-           return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;  
+           //return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;  
+           return y + '-' + m + '-' + d+' '+h+':'+minute;  
       }
     }
   }
