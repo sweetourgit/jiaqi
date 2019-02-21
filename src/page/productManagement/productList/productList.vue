@@ -73,7 +73,7 @@
     </div>
     </div>
 
-    <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px; width: 80%" >
+    <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px; width: 74%" >
     <div class="button_select">
       <el-button @click=handDb plain :disabled="reable">编辑</el-button>
       <el-button plain :disabled="reable">复制</el-button>
@@ -83,7 +83,7 @@
       <el-button type="danger" plain :disabled="reable" @click="handleDelete">删除</el-button>
     </div>
 
-    <div class="table_trip" style="margin-left: 50px; width: 75%;">
+    <div class="table_trip" style="margin-left: 50px; width: 80%;">
       <el-table
         :data="tableData"
         border
@@ -118,14 +118,14 @@
           prop="mu_address"
           label="目的地"
           align="center"
-          width="160%"
+          width="150%"
          >
         </el-table-column>
         <el-table-column
           prop="options"
           label="操作人"
           align="center"
-          width="160%"
+          width="150%"
          >
         </el-table-column>
         <el-table-column
@@ -156,20 +156,24 @@
         </el-table-column>
       </el-table>
 
+    </div>
+
+      <!--分页-->
       <div class="block">
-        <!-- <el-pagination
-          background
+        <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage4"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size=pagesize
+          :page-sizes="[5, 10, 50, 100]"
+          :page-size="10"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
-        </el-pagination> -->
+          :total=total>
+        </el-pagination>
       </div>
+      <!--分页-->
     </div>
-    </div>
+
+
 
     <el-dialog class="merchandise" :visible.sync="merchandise"   :show-close="false" append-to-body width="77%">
      <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
@@ -358,6 +362,8 @@ import DateList from './component/DateList'
     },
      data() {
       return {
+        pagesize:10,
+        total:0,
         reable:true,
         fid:0,
         buttonlist:[],
@@ -885,10 +891,77 @@ import DateList from './component/DateList'
         console.log(row);
       },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        this.pagesize = val
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/team/api/teampage",
+          {
+            "pageIndex": 1,
+            "pageSize": val,
+            "total": 0,
+            "object": {
+              "loadPackage": true
+            }
+          },
+          {
+            headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+          .then(function (obj) {
+            console.log(obj.data.total);
+            that.total = obj.data.total;
+            that.tableData =obj.data.objects;
+            that.tableData.forEach(function (v, k, arr) {
+              arr[k]['type'] = "跟团游"
+              arr[k]['name'] = "xxx 跟团游"
+              arr[k]['mu_address'] = "xxx"
+              arr[k]['options'] = "xxx"
+              arr[k]['status'] = "1"
+              arr[k]['opers'] = "飞猪 携程"
+              arr[k]['price'] = "7900"
+            })
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/team/api/teampage",
+          {
+            "pageIndex": val,
+            "pageSize": this.pagesize,
+            "total": 0,
+            "object": {
+              "loadPackage": true
+            }
+          },
+          {
+            headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+          .then(function (obj) {
+            console.log(obj.data.total);
+            that.total = obj.data.total;
+            that.tableData =obj.data.objects;
+            that.tableData.forEach(function (v, k, arr) {
+              arr[k]['type'] = "跟团游"
+              arr[k]['name'] = "xxx 跟团游"
+              arr[k]['mu_address'] = "xxx"
+              arr[k]['options'] = "xxx"
+              arr[k]['status'] = "1"
+              arr[k]['opers'] = "飞猪 携程"
+              arr[k]['price'] = "7900"
+            })
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
       },
       // 库存按钮出现
       groupStage() {
@@ -1311,7 +1384,7 @@ import DateList from './component/DateList'
         this.GLOBAL.serverSrc + "/team/api/teampage",
         {
           "pageIndex": 1,
-          "pageSize": 10,
+          "pageSize": this.pagesize,
           "total": 0,
           "object": {
             "loadPackage": true
@@ -1324,8 +1397,9 @@ import DateList from './component/DateList'
         }
       )
         .then(function (obj) {
-            //console.log(obj.data.objects)
-          that.tableData =obj.data.objects
+            console.log(obj.data.total);
+          that.total = obj.data.total;
+          that.tableData =obj.data.objects;
           that.tableData.forEach(function (v, k, arr) {
               arr[k]['type'] = "跟团游"
               arr[k]['name'] = "xxx 跟团游"
@@ -1442,8 +1516,8 @@ import DateList from './component/DateList'
   }
  .block{
   text-align right ;
-   margin-top: 50px;
-   margin-bottom: 80px;
+   margin-bottom: 25px;
+   width:75%
  }
  .group {
 /*  margin-left: calc(50% - 120px);*/
