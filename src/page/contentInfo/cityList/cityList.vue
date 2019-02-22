@@ -10,7 +10,9 @@
       </div>
       <!-- 区域列表 -->
       <template v-if="geography == 1">
-      <el-button class="add_country" type="primary" @click="addState = true">添加</el-button>
+      <template v-if="data.isLeaf == 2">
+        <el-button class="add_country" type="primary" @click="addState = true">添加</el-button>
+      </template>
         <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 70%;">
           <el-table-column :key="Math.random()" prop="id" label="ID" align="center" width="60%"></el-table-column>
           <el-table-column :key="Math.random()" label="名称" align="center">
@@ -32,12 +34,14 @@
           <el-table-column :key="Math.random()" prop="initials" label="首字母" align="center" width="70%"></el-table-column>
           <el-table-column :key="Math.random()" prop="initial" label="首拼" align="center"></el-table-column>
           <el-table-column :key="Math.random()" prop="code" label="代码" align="center" width="80%"></el-table-column>
-          <el-table-column :key="Math.random()" label="操作" align="center" width="240%">
+          <el-table-column :key="Math.random()" label="操作" align="center" width="230%">
           <template slot-scope="scope">
             <div class="table_button_left">
               <el-button class="table_button" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
               <el-button class="table_button" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              <template v-if="scope.row.isLeaf == 2">
               <el-button class="table_button1" type="success" @click="addStates(scope.$index, scope.row)">添加</el-button>
+              </template>
             </div>
           </template>
           </el-table-column>
@@ -182,7 +186,7 @@
             { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
-            {pattern: /^[a-z]+$/, message: '请输入小写字母,不能有空格'}
+            {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
           ],
           initials: [
             {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
@@ -195,7 +199,7 @@
             { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
-            {pattern: /^[a-z]+$/, message: '请输入小写字母,不能有空格'}
+            {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
           ],
           initials: [
             {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
@@ -303,7 +307,8 @@
       },
       // 单击tree节点
       treeClick(data){
-        this.tableData = []
+        this.tableData = [];
+        this.geography = 1
         this.data = data
         this.countryPopup.select = data.name
         this.countryPopup.parentID = this.editCountryPopup.parentID = data.id
@@ -441,19 +446,23 @@
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
                   }
                 }).then(res => {
-                  this.treeClick(this.data)
-                  this.addState = false;
-                  this.$message.success('添加成功！');
-                  this.getSon(
-                    this.node.key,
-                    this.node.label,
-                    this.node.id,
-                    this.node.isLeaf,
-                    this.resolve,
-                    this.level
-                  );
-                  this.$refs['countryPopup'].resetFields()
-                  this.countryPopup.initial = ''
+                  if (res.data.isSuccess == false) {
+                    this.$message.error('该名称以存在');
+                  } else {
+                    this.treeClick(this.data);
+                    this.addState = false;
+                    this.$message.success('添加成功！');
+                    this.getSon(
+                      this.node.key,
+                      this.node.label,
+                      this.node.id,
+                      this.node.isLeaf,
+                      this.resolve,
+                      this.level
+                    );
+                    this.$refs['countryPopup'].resetFields();
+                    this.countryPopup.initial = '';
+                  }
                 }).catch(err => {
                   console.log(err)
                 })
@@ -498,7 +507,9 @@
       // 添加国家弹窗
       addStates(key, data){
         this.countryPopup.select = data.country
-        this.countryPopup.parentID = this.editCountryPopup.parentID = data.id
+        this.countryPopup.parentID = data.id
+        this.editCountryPopup.parentID = data.id
+
         this.addState = true
       },
       // 编辑国家
@@ -591,6 +602,7 @@
         let table = {}
         table.name = data.country
         table.id = data.id
+        table.isLeaf = data.isLeaf
         this.treeClick(table)
       },
       // 分页显示条数的改变
@@ -628,9 +640,9 @@
 .searchButton{ margin-left:22px; }
 .search{float: left; margin-top:72px;margin-left:405px;}
 .table_list{ top: 10px;margin-bottom: 150px;left:261px;}
-.table_button{ width: 50px; height: 22px; padding: 0;}
+.table_button{ float:left; width: 50px; height: 22px; padding: 0;}
 .table_button_right{ float: right; margin: 0 20px 0 0;}
-.table_button1{ width: 70px; height: 22px; padding: 0;}
+.table_button1{ float:left; width: 70px; height: 22px; padding: 0;}
 .add_country{width:100px;float: left;margin-left:-615px;margin-top:72px;}
 .page{ float: right;}
 .pages{ height: 50px;margin-bottom: 50px;margin-top:-120px;width:1400px;}
