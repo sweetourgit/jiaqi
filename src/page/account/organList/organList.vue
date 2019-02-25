@@ -95,7 +95,7 @@
     <el-dialog class="Popup" :visible.sync="addSubdivision" title="添加子部门" custom-class="city_list" width="570px">
       <el-form style="padding-left:95px" :model="addInput" :rules="rules" status-icon ref="addInput">
         <el-form-item label="部门名称" :label-width="Width" prop="name" class="add_title">
-          <el-input v-model="addInput.name" auto-complete="off" class="add-input"></el-input>
+          <el-input v-model="addInput.name" auto-complete="off" class="add-input" maxlength="15"></el-input>
         </el-form-item>
         <el-form-item label="上级部门" :label-width="Width" prop="topDepartment" class="add_title">
           <el-input v-model="addInput.topDepartment" auto-complete="off" :disabled="true" class="add-input"></el-input>
@@ -160,7 +160,7 @@
         </div>
         <div slot="footer" class="btn">
           <el-button class="oppp" @click="addPersonnel2">取 消</el-button>
-          <el-button class="oppp" type="primary" @click="qqq">添加</el-button>
+          <el-button class="oppp" type="primary" @click="userInsert">添加</el-button>
         </div>
       </div>
     </el-dialog>
@@ -170,7 +170,7 @@
         <el-form-item label="姓名" :label-width="setLabelWidth" class="setinput">
           <el-input v-model="setPosition.name" auto-complete="off" :disabled="true" class="positionInput"></el-input>
         </el-form-item>
-        <span>职位</span>
+        <span style="margin-left:30px">职位</span>
         <el-select v-model="values" placeholder="请选择" class="setSelect">
           <el-option :key="item.value" :label="item" :value="index" v-for="(item,index) of option"></el-option>
         </el-select>
@@ -357,7 +357,7 @@ export default {
     qq(a) {
       this.dataNum = a;
     },
-    qqq() {
+    userInsert() {
       for (let i = 0; i < this.dataNum.length; i++) {
         for (let j = 0; j < this.tableList.length; j++) {
           if (this.tableList[j].id.indexOf(this.dataNum[i].id) !== -1) {
@@ -442,6 +442,22 @@ export default {
       } else {
         return ''
       }
+    },
+    del(index, rows){
+      let _this = this;
+      this.$confirm("是否删除此人员?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        
+
+      }).catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消删除"
+        });
+      });
     },
     //添加成员
     addPersonnel1() {
@@ -806,7 +822,7 @@ export default {
 };
 </script>
 
-<style scoped lang='stylus'>
+<style scoped>
 .organizationInput { right: 17%; }
 .tree { float: left; user-select: none; }
 .hh { float: left; margin-left: 30px; margin-top: 20px; width: 300px; height: 94%; overflow: auto; }
@@ -832,7 +848,7 @@ export default {
 .members { margin-bottom: -120px; top: -200px; left: 10%; width: 826px; }
 .btn { margin-top:380px; text-align :center; }
 .setinput { position: relative; right: 20px; }
-.setSelect { margin-bottom: 200px; margin-right: 97px; margin-left:10px; width: 250px; }
+.setSelect { margin-bottom: 200px;margin-left:8px; width: 280px; }
 .Popup { margin: 0 auto; }
 .kk { min-height: 700px; }
 .addTitle { position: absolute; top: 2%; left: 3%; font-size: 1.5em; }

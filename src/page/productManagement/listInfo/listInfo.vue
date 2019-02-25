@@ -1850,6 +1850,7 @@
          for(var i=0;i<sche.length;i++){
               sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
          }
+
         //行程信息
         var object={
                   //基本信息接口数据
@@ -1894,6 +1895,7 @@
                   instructions2:this.instructions, //使用说明,预留接口无字段？
                   loadPackage: true
                 }      
+                 console.log(JSON.stringify(object))
         this.$refs[formName].validate((valid) => {
           if(valid){
               var _this = this;
@@ -2411,7 +2413,7 @@
       });
     },
     departure(item){
-      this.dynamicTags3.push({"id": item.id,"pod": item.value});
+      this.dynamicTags3.push({"podId": item.id,"pod": item.value});
       this.ruleForm.placeDeparture = "";
       this.inputVisible3 = false;
     },
@@ -2456,7 +2458,7 @@
       });
     },
     dest(item){
-      this.dynamicTags4.push({"id": item.id,"destination": item.value});
+      this.dynamicTags4.push({"destinationId": item.id,"destination": item.value});
       this.ruleForm.destinations = "";
       this.inputVisible4 = false;
     },

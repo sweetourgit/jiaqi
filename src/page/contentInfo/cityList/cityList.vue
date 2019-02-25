@@ -5,8 +5,8 @@
       </div>
       <div class="search">
         <span class="keyword">输入关键字:</span>
-        <el-autocomplete class="inputBox" clearable placeholder="请输入关键字" :fetch-suggestions="querySearch" suffix-icon="el-icon-search" v-model="input" :trigger-on-focus="false"></el-autocomplete>
-        <el-button class="searchButton" type="primary" icon="el-icon-search"></el-button>
+        <el-autocomplete class="inputBox" clearable placeholder="请输入关键字" :fetch-suggestions="querySearch" @select="handleSelect" suffix-icon="el-icon-search" v-model="input" :trigger-on-focus="false"></el-autocomplete>
+        <el-button class="searchButton" type="primary" icon="el-icon-search" @click="searchClick"></el-button>
       </div>
       <!-- 区域列表 -->
       <template v-if="geography == 1">
@@ -139,6 +139,7 @@
   export default {
     data() {
       return {
+        searchInput: '', // 搜索
         list:[],
         lists: [], //子级
         vague: [], // 模糊搜索数组
@@ -186,7 +187,7 @@
             { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
-            {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
+            {pattern: /^[a-zA-Z]+$/, message: '请输入字母,不能有空格'}
           ],
           initials: [
             {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
@@ -199,7 +200,7 @@
             { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
-            {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
+            {pattern: /^[a-zA-Z]+$/, message: '请输入字母,不能有空格'}
           ],
           initials: [
             {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
@@ -238,8 +239,8 @@
                   name:obj.data.objects[i].areaName,
                   key: i,
                   id: obj.data.objects[i].id,
-                  isLeaf: obj.data.objects[i].isLeaf,
-                  Hierarchy: 0
+                  isLeaf: obj.data.objects[i].isLeaf, // 是否是末级
+                  Hierarchy: 0 // 层级
                 })
               }
               resolve(this.list);
@@ -306,18 +307,19 @@
         });
       },
       // 单击tree节点
-      treeClick(data){
+      treeClick(data,node){
         this.tableData = [];
         this.geography = 1
         this.data = data
         this.countryPopup.select = data.name
-        this.countryPopup.parentID = this.editCountryPopup.parentID = data.id
+        this.countryPopup.parentID = data.id
+        this.editCountryPopup.parentID = data.id
         if (data.Hierarchy == 0) {
           // 所属地区
           this.theContinent = data.id
         }
         if (data.isLeaf == 1) {
-          this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforget',{
+          this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforget',{
             id: data.id
           },{
           headers:{
@@ -335,6 +337,7 @@
               value: res.data.object.areaName,
               isLeaf: res.data.object.isLeaf,
               initial: res.data.object.initial,
+              parentID: res.data.objects[i].parentID
             })
             this.geography = 1
             this.currentPage = 1
@@ -377,7 +380,8 @@
                   code: res.data.objects[i].areaCode,
                   value: res.data.objects[i].areaName,
                   isLeaf: res.data.objects[i].isLeaf,
-                  initial: res.data.objects[i].initial
+                  initial: res.data.objects[i].initial,
+                  parentID: res.data.objects[i].parentID
                 })
               }
             }
@@ -400,7 +404,8 @@
           }).then(res => {
             for (let i = 0; i < res.data.objects.length; i++) {
               this.vague.push({
-                "value" : res.data.objects[i]
+                "id" : res.data.objects[i].id,
+                "value" : res.data.objects[i].areaName
               })
             }
             var results = queryString ? this.vague.filter(this.createFilter(queryString)) : [];
@@ -414,6 +419,31 @@
         return (restaurant) => {
           return (restaurant.value);
         }
+      },
+      handleSelect(item) {
+        this.searchInput = item;
+      },
+      searchClick() {
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforget', {
+          id: this.searchInput.id
+        }).then(res => {
+          this.tableData = [];
+          this.tableData.push({
+            id: res.data.object.id,
+            country: res.data.object.areaName,
+            continent: res.data.object.earth,
+            englishName: res.data.object.englishName,
+            pinyin: res.data.object.chineseFull,
+            initials: res.data.object.firstChar,
+            code: res.data.object.areaCode,
+            value: res.data.object.areaName,
+            isLeaf: res.data.object.isLeaf,
+            initial: res.data.object.initial,
+          })
+          this.geography = 1
+          this.currentPage = 1
+          this.total = 1
+        })
       },
       // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -452,6 +482,23 @@
                     this.treeClick(this.data);
                     this.addState = false;
                     this.$message.success('添加成功！');
+
+
+                    // let arr = {}
+                    // arr.id = -2;
+                    // arr.Hierarchy = this.data.Hierarchy + 1;
+                    // arr.isLeaf = Number(this.countryPopup.isLeaf);
+                    // arr.key = this.tableData.length;
+                    // if (arr.isLeaf == 1) {
+                    //   arr.leaf = true
+                    // } else {
+                    //   arr.leaf = false
+                    // }
+                    // arr.name = this.countryPopup.countryName;
+                    // this.$refs.refTree.append(arr, this.data)
+
+
+
                     this.getSon(
                       this.node.key,
                       this.node.label,
@@ -515,6 +562,7 @@
       // 编辑国家
       handleEdit(key, data){
         this.editState = true;
+        this.countryPopup.parentID = data.parentID
         this.editCountryPopup.id = data.id;
         this.editCountryPopup.code = data.code;
         this.editCountryPopup.countryName = data.country;
@@ -640,9 +688,9 @@
 .searchButton{ margin-left:22px; }
 .search{float: left; margin-top:72px;margin-left:405px;}
 .table_list{ top: 10px;margin-bottom: 150px;left:261px;}
-.table_button{ float:left; width: 50px; height: 22px; padding: 0;}
+.table_button{float: left; width: 50px; height: 22px; padding: 0;}
 .table_button_right{ float: right; margin: 0 20px 0 0;}
-.table_button1{ float:left; width: 70px; height: 22px; padding: 0;}
+.table_button1{float: left;  width: 70px; height: 22px; padding: 0;}
 .add_country{width:100px;float: left;margin-left:-615px;margin-top:72px;}
 .page{ float: right;}
 .pages{ height: 50px;margin-bottom: 50px;margin-top:-120px;width:1400px;}
