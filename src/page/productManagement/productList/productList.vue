@@ -43,28 +43,31 @@
         </span>
       </el-dialog>
     </div>
-    <div style="width: 1200px; height: 155px; margin-left: 20px">
+    <div style="width: 1200px; height: 223px; margin-left: 20px">
       <div class="select_two">
-      <div class="id">ID <el-input style="width: 100px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
-      <div class="product">商品名称 <el-input style="width: 150px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
-      <div class="options">产品操作人 <el-input style="width: 150px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
-      <div class="prices">价格<el-input style="width: 100px; margin-left: 10px;"  placeholder="请输入内容"></el-input><span style="margin-left: 10px">——</span><el-input style="width: 100px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
+      <div class="id">ID <el-input style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input></div>
+      <div class="product">商品名称 <el-input style="width: 500px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
       </div>
       <div class="select_two">
-        <div class="address">出发地 <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
+        <div class="address">出发地 <el-input style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input></div>
         <div class="name">目的地 <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
-        <div class="options11">状态
-          <el-select  style="margin-left: 33px;width: 200px;" v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-          </el-option>
-        </el-select>
-        </div>
+        <div class="options">产品操作人 <el-input style="width: 150px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
       </div>
+      <div class="select_two">
+        <div class="options11">状态
+          <el-select  style="width: 205px;margin-left: 20px;" v-model="value" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div class="prices">价格<el-input style="width: 104px; margin-left: 20px;"  placeholder="请输入内容"></el-input><span style="margin-left: 10px">——</span><el-input style="width: 104px; margin-left: 20px;"  placeholder="请输入内容"></el-input></div>
+      </div>
+
       <div class="select_two_button">
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
         <el-button type="primary" size="medium">重置</el-button>
@@ -743,8 +746,14 @@ import DateList from './component/DateList'
           })
       },
       handDb(){
-        this.$router.push({path:"/changepro"});
+        this.$router.push({
+          path: '/changepro',
+          query: {
+            id: this.pid
+          }
+        })
       },
+
 
       bandlePrice(item){
 
@@ -1461,16 +1470,17 @@ import DateList from './component/DateList'
    padding-left: 50px;
  }
   .id{
-    width: 150px;
+    width: 302px;
     float: left;
     font-size: 14px;
-    margin-left: 11px;
-    padding-left: 7px;
+    margin-left: 14px;
+    padding-left: 10px;
   }
  .address{
-   width: 260px;
+   width: 312px;
    float: left;
    font-size: 14px;
+   margin-left: -3px;
  }
   .select_two{
     height: 45px;
@@ -1478,9 +1488,9 @@ import DateList from './component/DateList'
     margin-left: 30px;
   }
  .product{
-   width: 250px;
+   width: 600px;
    float: left;
-   margin-left: 10px;
+   margin-left: 20px;
    font-size: 14px;
  }
   .options{
@@ -1496,14 +1506,15 @@ import DateList from './component/DateList'
    font-size: 14px;
  }
   .name{
-    width: 320px;
+    width: 312px;
     float: left;
-    margin-left: 8px;
     font-size: 14px;
+    margin-left: 51px;
   }
   .prices{
-    width: 320px;
+    width: 600px;
     float: left;
+    margin-left: 38px;
     font-size: 14px;
   }
   .select_two_button{

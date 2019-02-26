@@ -1846,16 +1846,60 @@
             that.ruleForm.nackPlane = []
             for (var i =0; i < obj.data.object.package[0].traffic.length; i++ ){
               if(obj.data.object.package[0].traffic[i].goOrBack == 1){
-                obj.data.object.package[0].traffic[i].ext_Stopover = [{city:1}];
+                obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
                 that.ruleForm.plane.push(obj.data.object.package[0].traffic[i]);
 
               }else{
+                obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
                 that.ruleForm.nackPlane.push(obj.data.object.package[0].traffic[i]);
               }
             }
+            //日程信息
+            for (let j = 0; j < obj.data.object.package[0].schedules.length; j++) {
+              setTimeout(arr => {
+               that.ruleForm.schedules[j].subject =  obj.data.object.package[0].schedules[j].subject //主题
+               that.ruleForm.schedules[j].info =  obj.data.object.package[0].schedules[j].info //详情
+                //早餐
+                if( JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].label == "早餐" && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].Myself == "0"){
+                    that.ruleForm.schedules[j].ext_Meals[0].Myself = "0"
+                }else if(JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].label == "早餐"  && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].Myself == "1"){
+                  that.ruleForm.schedules[j].ext_Meals[0].Myself = "1"
+                  that.ruleForm.schedules[j].ext_Meals[0].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].Detail
+                }
+                //午餐
+                if( JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].label == "午餐" && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Myself == "0"){
+                  that.ruleForm.schedules[j].ext_Meals[1].Myself = "0"
+                }else if(JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].label == "午餐"  && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Myself == "1"){
+                  that.ruleForm.schedules[j].ext_Meals[1].Myself = "1"
+                  that.ruleForm.schedules[j].ext_Meals[1].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Detail
+                }
+                // 晚餐
+                if( JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].label == "晚餐" && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].Myself == "0"){
+                  that.ruleForm.schedules[j].ext_Meals[2].Myself = "0"
+                }else if(JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].label == "晚餐"  && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].Myself == "1"){
+                  that.ruleForm.schedules[j].ext_Meals[2].Myself = "1"
+                  that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].Detail
+                }
+                that.ruleForm.schedules[j].activitys = []
+                  for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {
+                        that.ruleForm.schedules[j].activitys.push(obj.data.object.package[0].schedules[j].activitys[k])
+                    that.ruleForm.schedules[j].activitys[k].activityType = String(that.ruleForm.schedules[j].activitys[k].activityType)
+
+                  }
+
+                console.log( )
+              }, 100)
+            }
+
+            that.explain = []
+            for (let t = 0; t < obj.data.object.instructions.length; t++ ){
+              that.explain.push(obj.data.object.instructions[t])
+            }
+
+            console.log( obj.data.object.package)
 
 
-            console.log(obj.data.object.package[0].traffic)
+
           })
           .catch(function (obj) {
             console.log(obj)
@@ -1942,6 +1986,7 @@
         //行程信息
         var object={
           //基本信息接口数据
+          id:this.$route.query.id,
           createTime:this.formatDate(new Date()),
           title:this.ruleForm.productNamel,//基本信息产品名称
           isForeign:this.ruleForm.travelType,//基本信息产品类型
@@ -1983,18 +2028,19 @@
           instructions2:this.instructions, //使用说明,预留接口无字段？
           loadPackage: true
         }
+
         this.$refs[formName].validate((valid) => {
           if(valid){
             var _this = this;
-            this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
+            this.$http.post(this.GLOBAL.serverSrc + "/team/api/teamsave", {
                 object: object
               },
             ).then(function(response) {
               if(response.data.isSuccess==true){
-                _this.$message.success("添加成功");
+                _this.$message.success("修改成功");
                 _this.$router.push({path: "productList"});
               }else{
-                _this.$message.success("添加失败");
+                _this.$message.success("修改失败");
               }
 
 
