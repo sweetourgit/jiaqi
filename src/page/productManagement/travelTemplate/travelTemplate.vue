@@ -11,9 +11,9 @@
           <el-select class="searchTemplate_index" v-model="searchValue" placeholder="请选择">
             <el-option
               v-for="(item, index) in options"
-              :key="index"
-              :label="item.label"
-              :value="index">
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
             </el-option>
           </el-select>
         </div>
@@ -34,7 +34,7 @@
           </el-table-column>
       </el-table>
       <div class="pages">
-        <el-pagination class="page" background @size-change="pagesizes" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[2, 4, 8, 10]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+        <el-pagination class="page" background @size-change="pagesizes" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[2, 4, 8, 10]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
       </div>
       <!-- 添加产品 -->
       <el-dialog class="Products_popup" :visible.sync="addProducts" :show-close="false" width="75%">
@@ -55,9 +55,9 @@
             <el-select class="Products_select" v-model="dataProducts.templateType" placeholder="请选择">
               <el-option
                 v-for="(item, index) in options"
-                :key="index"
-                :label="item.label"
-                :value="index">
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -223,6 +223,16 @@
 <script>
   export default {
     created() {
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/template/api/templatetypeget', {
+
+      }).then(res => {
+        res.data.objects.forEach(item => {
+          this.options.push({
+            'id': item.id,
+            'name': item.name
+          })
+        })
+      })
       // options
       let y = new Date().getFullYear();
       let m = new Date().getMonth() + 1;
@@ -851,63 +861,7 @@
           "DataType": "tel",
           "InfoType": 4
         }],
-        options: [{
-          label: '自由行'
-        }, {
-          label: '私家团'
-        }, {
-          label: '游学团'
-        }, {
-          label: '特价机票套餐'
-        }, {
-          label: '特价机票'
-        }, {
-          label: '半自助游'
-        }, {
-          label: '跟团游'
-        }, {
-          label: '自由行定制'
-        }, {
-          label: '景点门票'
-        }, {
-          label: '一日游'
-        }, {
-          label: '多日游'
-        }, {
-          label: '当地体验'
-        }, {
-          label: '当地定制'
-        }, {
-          label: '私家定制团'
-        }, {
-          label: '酒店套餐'
-        }, {
-          label: '演出展览'
-        }, {
-          label: '美食'
-        }, {
-          label: '接送机'
-        }, {
-          label: '包车/拼车'
-        }, {
-          label: '交通卡/卷'
-        }, {
-          label: '租车'
-        }, {
-          label: '签证'
-        }, {
-          label: 'WIFI'
-        }, {
-          label: '电话卡'
-        }, {
-          label: '保险'
-        }, {
-          label: '邮轮'
-        }, {
-          label: '打折卷'
-        }, {
-          label: '购物'
-        }],
+        options: [],
         searchValue: '', // 下拉框
         // 模板信息
         tableData: [],
@@ -1027,22 +981,31 @@
       },
       // 出行模板数据
       initData(){
-        this.tableData = [];
+        // this.tableData = [];
         this.$http.post(this.GLOBAL.serverSrc + '/universal/template/api/templatepage', {
           "pageIndex": this.currentPage,
           "pageSize": this.pagesize,
           "object": {}
         }).then(res => {
+          this.tableData = res.data.objects;
           this.total = res.data.total;
-          res.data.objects.forEach(item => {
-            this.tableData.push({
-              "id": item.id,
-              "name": item.name,
-              "productType": item.productType,
-              "isOne": item.isOne,
-              "isRequired": item.isRequired,
-              "properties": item.properties
+          this.tableData.forEach(item => {
+            let productType = '';
+            this.options.forEach(obj => {
+              if (item.productType == obj.id) {
+                productType = obj.name;
+              }
             })
+            item.productType = productType
+
+            // this.tableData.push({
+            //   "id": item.id,
+            //   "name": item.name,
+            //   "productType": productType,
+            //   "isOne": item.isOne,
+            //   "isRequired": item.isRequired,
+            //   "properties": item.properties
+            // })
           })
         }).catch(err => {
           console.log(err);
@@ -1337,7 +1300,7 @@
           this.isJudge = false;
           this.templateEmpty();
           this.dataProducts.id = res.data.object.id;
-          this.dataProducts.templateType = '自由行'; // 默认值
+          this.dataProducts.templateType = res.data.object.productType; // 默认值
           this.dataProducts.templateName = res.data.object.name;
           this.dataProducts.travelNum = String(res.data.object.isOne);
           this.dataProducts.traveFillIn = String(res.data.object.isRequired);
@@ -1636,7 +1599,7 @@
               this.$http.post(this.GLOBAL.serverSrc + '/universal/template/api/templateinsert', {
                 "object": {
                   "name": this.dataProducts.templateName,
-                  "productType": 1,
+                  "productType": this.dataProducts.templateType,
                   "isOne": this.dataProducts.travelNum,
                   "isRequired": this.dataProducts.traveFillIn,
                   "createTime": this.createTime,
@@ -1656,7 +1619,7 @@
                 "object": {
                   "id": this.dataProducts.id,
                   "name": this.dataProducts.templateName,
-                  "productType": 1,
+                  "productType": this.dataProducts.templateType,
                   "isOne": this.dataProducts.travelNum,
                   "isRequired": this.dataProducts.traveFillIn,
                   "createTime": this.createTime,
