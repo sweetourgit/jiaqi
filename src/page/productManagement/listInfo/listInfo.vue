@@ -20,7 +20,7 @@
                 <el-radio label="1" value="1">境外</el-radio>
                 <el-radio label="2" value="2">国内</el-radio>
               </el-radio-group>
-            </el-form-item> 
+            </el-form-item>
             <!--出发地-->
             <el-form-item label="出发地" ref="placeDeparture" style="clear:both;" label-width="120px">
               <span class="redStar">*</span>
@@ -132,13 +132,13 @@
             <!-- 出游人群 -->
             <el-form-item label="出游人群" prop="Excursion" label-width="120px">
               <el-select v-model="ruleForm.Excursion" placeholder="请选择" class="Excursion-select">
-                <el-option :label="theme" :value="indexs" v-for="(theme,indexs) of excurList" :key="indexs" />
+                <el-option :label="theme.name" :value="theme.id" v-for="(theme,indexs) of excurList" :key="theme.id" />
               </el-select>
             </el-form-item>
             <!-- 主题 -->
             <el-form-item label="主题" prop="theme" label-width="120px">
               <el-select v-model="ruleForm.theme" placeholder="请选择" class="Excursion-select">
-                <el-option :label="item" :value="index" v-for="(item,index) of list" :key="index" />
+                <el-option :label="item.name" :value="item.id" v-for="(item,index) of list" :key="item.id" />
               </el-select>
             </el-form-item>
             <!-- 提前报名天数 -->
@@ -1874,12 +1874,16 @@
                   createUser:sessionStorage.getItem('id'),
                   proStat:1,
                   guid:localStorage.getItem("guid"),
+                  crowdID:this.ruleForm.Excursion,//基本信息出游人群
+                  themeID:this.ruleForm.theme,//基本信息主题
+                  mark:this.content_01,//基本信息产品概括
+                  
                   //行程信息接口数据
                   package: [
                     {
                       name: this.ruleForm.highlightWords,//行程信息套餐名
-                      podID: this.ruleForm.origin.id,//行程信息出发地
-                      destinationID: this.ruleForm.bourn.id,//行程信息目的地
+                      podID: this.ruleForm.origin.podId,//行程信息出发地id
+                      destinationID: this.ruleForm.bourn.destinationId,//行程信息目的地id
                       pod: this.ruleForm.origin.pod,
                       destination: this.ruleForm.bourn.destination,
                       isDeleted: 0,
@@ -1894,8 +1898,10 @@
                   instructions1:this.notes, //预订须知,预留接口无字段？
                   instructions2:this.instructions, //使用说明,预留接口无字段？
                   loadPackage: true
-                }      
-                 console.log(JSON.stringify(object))
+                }  
+                console.log(this.ruleForm.theme)
+                console.log(this.ruleForm.Excursion)
+                console.log(JSON.stringify(object))    
         this.$refs[formName].validate((valid) => {
           if(valid){
               var _this = this;
@@ -2352,11 +2358,12 @@
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(res =>{
-        for(let i = 0; i < res.data.objects.length; i++){
+        this.excurList =  res.data.objects;
+        /*for(let i = 0; i < res.data.objects.length; i++){
           this.excurList.push(
             res.data.objects[i].name
           );
-        }
+        }*/
       }).catch(function(err){
         console.log(err);
       })
@@ -2373,12 +2380,14 @@
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
-      }).then(function(response) {
-        for(let i = 0; i < response.data.objects.length; i++){
-          _this.list.push(
-            response.data.objects[i].name
+      })
+      .then(res =>{
+        this.list =  res.data.objects;
+        /*for(let i = 0; i < res.data.objects.length; i++){
+          this.excurList.push(
+            res.data.objects[i].name
           );
-        }
+        }*/
       }).catch(function(error){
         console.log(error);
       })
@@ -2413,7 +2422,7 @@
       });
     },
     departure(item){
-      this.dynamicTags3.push({"podId": item.id,"pod": item.value});
+      this.dynamicTags3.push({"podID": item.id,"pod": item.value});
       this.ruleForm.placeDeparture = "";
       this.inputVisible3 = false;
     },
@@ -2458,7 +2467,7 @@
       });
     },
     dest(item){
-      this.dynamicTags4.push({"destinationId": item.id,"destination": item.value});
+      this.dynamicTags4.push({"destinationID": item.id,"destination": item.value});
       this.ruleForm.destinations = "";
       this.inputVisible4 = false;
     },
