@@ -308,7 +308,7 @@
       },
       // 单击tree节点
       treeClick(data,node){
-        this.tableData = [];
+        // this.tableData = [];
         this.geography = 1
         this.data = data
         this.countryPopup.select = data.name
@@ -319,6 +319,7 @@
           this.theContinent = data.id
         }
         if (data.isLeaf == 1) {
+        this.tableData = [];
           this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforget',{
             id: data.id
           },{
@@ -367,23 +368,37 @@
                 this.treeClick(data)
               }
             } else {
+              this.tableData = res.data.objects
               this.total = res.data.total
               this.geography = 1
-              for (let i = 0; i < res.data.objects.length; i++) {
-                this.tableData.push({
-                  id: res.data.objects[i].id,
-                  country: res.data.objects[i].areaName,
-                  continent: res.data.objects[i].earth,
-                  englishName: res.data.objects[i].englishName,
-                  pinyin: res.data.objects[i].chineseFull,
-                  initials: res.data.objects[i].firstChar,
-                  code: res.data.objects[i].areaCode,
-                  value: res.data.objects[i].areaName,
-                  isLeaf: res.data.objects[i].isLeaf,
-                  initial: res.data.objects[i].initial,
-                  parentID: res.data.objects[i].parentID
-                })
-              }
+              this.tableData.forEach((item, i) => {
+                  item.id = res.data.objects[i].id,
+                  item.country = res.data.objects[i].areaName,
+                  item.continent = res.data.objects[i].earth,
+                  item.englishName = res.data.objects[i].englishName,
+                  item.pinyin = res.data.objects[i].chineseFull,
+                  item.initials = res.data.objects[i].firstChar,
+                  item.code = res.data.objects[i].areaCode,
+                  item.value = res.data.objects[i].areaName,
+                  item.isLeaf = res.data.objects[i].isLeaf,
+                  item.initial = res.data.objects[i].initial,
+                  item.parentID = res.data.objects[i].parentID
+              })
+              // for (let i = 0; i < res.data.objects.length; i++) {
+              //   this.tableData.push({
+              //     id: res.data.objects[i].id,
+              //     country: res.data.objects[i].areaName,
+              //     continent: res.data.objects[i].earth,
+              //     englishName: res.data.objects[i].englishName,
+              //     pinyin: res.data.objects[i].chineseFull,
+              //     initials: res.data.objects[i].firstChar,
+              //     code: res.data.objects[i].areaCode,
+              //     value: res.data.objects[i].areaName,
+              //     isLeaf: res.data.objects[i].isLeaf,
+              //     initial: res.data.objects[i].initial,
+              //     parentID: res.data.objects[i].parentID
+              //   })
+              // }
             }
           }).catch(err => {
             console.log(err)
