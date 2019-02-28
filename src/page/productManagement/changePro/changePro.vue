@@ -210,7 +210,7 @@
                     </div>
                     <!--保存修改-->
                     <div class="set_meal_name" >
-                    <el-button type="primary" size="small" style="float: left">修改保存</el-button>
+                    <el-button type="primary" size="small" style="float: left" @click="handleSetMeal('ruleForm')">修改保存</el-button>
                     </div>
                   <!--套餐名结束-->
                   </div>
@@ -961,7 +961,7 @@
                           <!--活动详情-->
                           <div class="traffic">
                             <div class="traffic_title">日程信息</div>
-                            <el-button type="primary" size="small" style="position: absolute;top: 40px;right: 245px;">修改保存</el-button>
+                            <el-button type="primary" size="small" style="position: absolute;top: 40px;right: 245px;" @click="handleNote('ruleForm')">修改保存</el-button>
                             <div class="details_border">
                               <div v-for="(item,index) in ruleForm.schedules" v-show=" index == mynumber" :key="index">
                                 <div class="date">DAY{{index+1}}</div>
@@ -1313,6 +1313,9 @@
     },
     data() {
       return {
+        activeID:[],//日程信息id
+        schedulsLeng:'',//几天日程信息
+        mealID:'',//mealId
         tabInformation:"traffic",
         isActive: false,//基本信息字数要求
         content_01:'',//基本信息产品概况文本编辑器
@@ -1518,6 +1521,8 @@
           theme: '',
           subject:'',
           origin:'',
+          podID:'',
+          destinationID:'',
           bourn:'',
           //交通工具
           //去程
@@ -1810,6 +1815,11 @@
           }
         )
           .then(function (obj) {
+            that.schedulsLeng = obj.data.object.package[0].schedules.length
+            for(let u = 0; u <that.schedulsLeng; u++ ){
+                that.activeID.push(obj.data.object.package[0].schedules[u].id)
+            }
+            that.mealID  =  obj.data.object.package[0].id //模板id
             that.ruleForm.productNamel = obj.data.object.title; //产品名称
             that.ruleForm.travelType = String(obj.data.object.isForeign); //出游类型
             that.dynamicTags3 = obj.data.object.pods//出发地
@@ -1840,8 +1850,8 @@
             that.ruleForm.highlightWords = obj.data.object.package[0].name //行程信息套餐名
             that.ruleForm.origin = obj.data.object.package[0].pod //行程信息出发地
             that.ruleForm.bourn = obj.data.object.package[0].destination //行程信息目的地
-            //that.ruleForm.origin.id = obj.data.object.package[0].podID //行程信息出发地ID
-            //that.ruleForm.bourn.id = obj.data.object.package[0].destinationID//行程信息目的地ID
+            that.ruleForm.podID = obj.data.object.package[0].podID //行程信息出发地ID
+            that.ruleForm.destinationID = obj.data.object.package[0].destinationID//行程信息目的地ID
             that.ruleForm.plane = []
             that.ruleForm.nackPlane = []
             for (var i =0; i < obj.data.object.package[0].traffic.length; i++ ){
@@ -1896,7 +1906,7 @@
               that.explain.push(obj.data.object.instructions[t])
             }
 
-            console.log( obj.data.object.package)
+            console.log( obj.data.object)
 
 
 
@@ -2011,8 +2021,8 @@
           package: [
             {
               name: this.ruleForm.highlightWords,//行程信息套餐名
-              podID: this.ruleForm.origin.id,//行程信息出发地
-              destinationID: this.ruleForm.bourn.id,//行程信息目的地
+              podID: this.ruleForm.origin.podID,//行程信息出发地
+              destinationID: this.ruleForm.bourn.destinationID,//行程信息目的地
               pod: this.ruleForm.origin.pod,
               destination: this.ruleForm.bourn.destination,
               isDeleted: 0,
@@ -2050,6 +2060,134 @@
 
           }
         })
+      },
+      //保存套餐信息
+      handleSetMeal(formName){
+
+        //经停信息转字符串
+        let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
+        let traff=JSON.parse(traff1);
+        for(var i=0;i<traff.length;i++){
+          traff[i].ext_Stopover=JSON.stringify(traff[i].ext_Stopover);
+        }
+        //行程餐食信息转字符串
+        let sche1=JSON.stringify(this.ruleForm.schedules);
+        let sche=JSON.parse(sche1);
+        for(var i=0;i<sche.length;i++){
+          sche[i].ext_Meals=JSON.stringify(sche[i].ext_Meals);
+        }
+        for(var i=0;i<sche.length;i++){
+          sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
+        }
+        //行程信息
+        var object={
+          //基本信息接口数据
+          id:this.mealID,
+          name: this.ruleForm.highlightWords,
+          podID: this.ruleForm.podID,
+          destinationID: this.ruleForm.destinationID,
+          pod: this.ruleForm.origin.pod,
+          destination: this.ruleForm.bourn.destination,
+          createTime:this.formatDate(new Date()),
+          traffic: traff,
+          loadPackage: true,
+          briefMark: "string",
+          plan: {
+            "id": 0,
+            "isDeleted": 0,
+            "createTime": "2019-02-26T08:28:40.467Z",
+            "code": "string",
+            "inventoryID": 0,
+            "planEnroll": [{
+              "id": 0,
+              "planID": 0,
+              "enrollID": 0,
+              "enrollName": "string",
+              "isDeleted": 0,
+              "price_01": 0,
+              "price_02": 0,
+              "quota": 0
+            }],
+            "loadPlan_Enroll": true,
+            "createUser": "string",
+            "packageID": 0,
+            "date": 0
+          },
+          loadPlan: true,
+          uptoDay: 0,
+          templateID: 0
+        }
+
+        this.$refs[formName].validate((valid) => {
+          if(valid){
+            var _this = this;
+            this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagesave", {
+                object: object
+              },
+            ).then(function(response) {
+              if(response.data.isSuccess==true){
+                _this.$message.success("修改成功");
+              }else{
+                _this.$message.success("修改失败");
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
+          }
+        })
+      },
+      //修改日程信息
+      handleNote(formName){
+        //行程餐食信息转字符串
+        let sche1=JSON.stringify(this.ruleForm.schedules);
+        let sche=JSON.parse(sche1);
+        for(var i=0;i<sche.length;i++){
+          sche[i].ext_Meals=JSON.stringify(sche[i].ext_Meals);
+        }
+        for(var i=0;i<sche.length;i++){
+          sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
+        }
+        for(let i=0; i < this.schedulsLeng; i++){
+          var object={
+            //基本信息接口数据
+            id:this.activeID[i],
+            packageID:this.mealID,
+            day:this.ruleForm.schedules[i].day,
+            subject:this.ruleForm.schedules[i].subject,
+            ext_Meals:JSON.stringify(this.ruleForm.schedules[i].ext_Meals),
+            info:this.ruleForm.schedules[i].info,
+            ext_Hotel:JSON.stringify(this.ruleForm.schedules[i].ext_Hotel),
+            activitys: this.ruleForm.schedules[i].activitys,//行程信息
+            createTime:this.formatDate(new Date()),
+            loadPlan: false,
+            code: "string"
+          }
+           this.$refs[formName].validate((valid) => {
+         if(valid){
+           var _this = this;
+           this.$http.post(this.GLOBAL.serverSrc + "/team/api/teamschedulesave", {
+               object: object
+             },
+           ).then(function(response) {
+             if(response.data.isSuccess==true){
+               _this.$message.success("修改成功");
+             }else{
+               _this.$message.success("修改失败");
+             }
+
+
+           }).catch(function(error) {
+             console.log(error);
+           });
+
+         }
+       })
+
+        }
+        //行程信息
+
+
+
       },
       // 取消
       cancel(){
@@ -2546,7 +2684,7 @@
         });
       },
       departure(item){
-        this.dynamicTags3.push({"id": item.id,"pod": item.value});
+        this.dynamicTags3.push({"podID": item.id,"pod": item.value});
         this.ruleForm.placeDeparture = "";
         this.inputVisible3 = false;
       },
@@ -2591,7 +2729,7 @@
         });
       },
       dest(item){
-        this.dynamicTags4.push({"id": item.id,"destination": item.value});
+        this.dynamicTags4.push({"destinationID": item.id,"destination": item.value});
         this.ruleForm.destinations = "";
         this.inputVisible4 = false;
       },
