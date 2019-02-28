@@ -1472,6 +1472,8 @@
         //日程信息详细说明
         info: '',
         ruleForm: {
+          mudidi:"",
+          chufadi:"",
           productNamel: '',
           destinations:'',
           travelType: '1',
@@ -2079,6 +2081,18 @@
         for(var i=0;i<sche.length;i++){
           sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
         }
+      if(this.ruleForm.bourn.destination == undefined){
+
+        this.ruleForm.mudidi = this.ruleForm.bourn
+      }else{
+        this.ruleForm.mudidi = this.ruleForm.bourn.destination
+      }
+        if(this.ruleForm.origin.pod == undefined){
+
+          this.ruleForm.chufadi = this.ruleForm.origin
+        }else{
+          this.ruleForm.chufadi = this.ruleForm.origin.pod
+        }
         //行程信息
         var object={
           //基本信息接口数据
@@ -2086,8 +2100,8 @@
           name: this.ruleForm.highlightWords,
           podID: this.ruleForm.podID,
           destinationID: this.ruleForm.destinationID,
-          pod: this.ruleForm.origin.pod,
-          destination: this.ruleForm.bourn.destination,
+          pod: this.ruleForm.chufadi,
+          destination: this.ruleForm.mudidi,
           createTime:this.formatDate(new Date()),
           traffic: traff,
           loadPackage: true,
@@ -2117,7 +2131,6 @@
           uptoDay: 0,
           templateID: 0
         }
-
         this.$refs[formName].validate((valid) => {
           if(valid){
             var _this = this;
