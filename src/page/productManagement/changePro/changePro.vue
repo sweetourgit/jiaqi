@@ -247,7 +247,7 @@
                                 <!--去程-->
                                 <div class="plane" v-for="(item, index) in ruleForm.plane" :key="item.index">
                                   <div class="" style=" clear:both; margin:0 0 0 0;">
-                                    <el-cascader class="plane_type" v-model="selectedOptions" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机"></el-cascader>
+                                    <el-cascader class="plane_type" v-model="item.www" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机"></el-cascader>
                                     <span class="plane_text">第</span>
                                     <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                                       <el-option v-for="(item,index) in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -537,7 +537,7 @@
                                 </div>
                                 <div class="plane" v-for="(item, index) in ruleForm.nackPlane" :key="item.index">
                                   <div class="" style=" clear:both; margin:0 0 0 0;">
-                                    <el-cascader class="plane_type" v-model="selectedOptions_01" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机"></el-cascader>
+                                    <el-cascader class="plane_type" v-model="item.www" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机"></el-cascader>
                                     <span class="plane_text">第</span>
                                     <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                                       <el-option v-for="item in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -1313,6 +1313,7 @@
     },
     data() {
       return {
+        qqq:[],
         activeID:[],//日程信息id
         schedulsLeng:'',//几天日程信息
         mealID:'',//mealId
@@ -1391,7 +1392,7 @@
           value: '4',
           label: '轮船',
         }],
-        selectedOptions: ['1'],
+        selectedOptions: ['2'],
         //去程天数
         goDate: [],
         //返程交通工具切换
@@ -1543,7 +1544,8 @@
             planeDay: '',
             trafficMode: '1',
             day: '1',
-            ext_Stopover: []
+            ext_Stopover: [],
+            www:['2']
           }],
           //返程
           nackPlane: [{
@@ -1561,7 +1563,8 @@
             planeDay: '',       //到达天数
             trafficMode: '1',  //出行方式
             day: '1',      //第几天
-            ext_Stopover: []
+            ext_Stopover: [],
+            www: ['2']
           }],
           //行程信息大表
           schedules: []
@@ -1857,15 +1860,22 @@
             that.ruleForm.plane = []
             that.ruleForm.nackPlane = []
             for (var i =0; i < obj.data.object.package[0].traffic.length; i++ ){
+              let arr = [];
               if(obj.data.object.package[0].traffic[i].goOrBack == 1){
                 obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
                 that.ruleForm.plane.push(obj.data.object.package[0].traffic[i]);
-
+                arr.push(String(obj.data.object.package[0].traffic[i].trafficMode));
+                that.ruleForm.plane[i].www = arr;
               }else{
                 obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
+                arr.push(String(obj.data.object.package[0].traffic[i].trafficMode));
+                obj.data.object.package[0].traffic[i].www = arr;
                 that.ruleForm.nackPlane.push(obj.data.object.package[0].traffic[i]);
+               
               }
+
             }
+
             //日程信息
             for (let j = 0; j < obj.data.object.package[0].schedules.length; j++) {
               setTimeout(arr => {
@@ -1908,7 +1918,9 @@
               that.explain.push(obj.data.object.instructions[t])
             }
 
-            console.log( obj.data.object)
+          //  console.log(that.selectedOptions )
+            console.log(that.ruleForm.plane)
+            console.log(that.ruleForm.nackPlane)
 
 
 
