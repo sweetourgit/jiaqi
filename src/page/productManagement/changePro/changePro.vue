@@ -221,7 +221,7 @@
                           <!--交通信息-->
                           <div class="traffic">
                             <div class="traffic_title">交通信息</div>
-                              <el-button type="primary" size="small" class="change_save">修改保存</el-button>
+                              <el-button type="primary" size="small" class="change_save" @click="handleSetMeal('ruleForm')">修改保存</el-button>
                             <!--描述方式-->
                             <div class="describe_way">描述方式</div>
                             <ul class="description">
