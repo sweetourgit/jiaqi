@@ -1871,7 +1871,7 @@
                 arr.push(String(obj.data.object.package[0].traffic[i].trafficMode));
                 obj.data.object.package[0].traffic[i].www = arr;
                 that.ruleForm.nackPlane.push(obj.data.object.package[0].traffic[i]);
-               
+
               }
 
             }
@@ -2118,30 +2118,9 @@
           traffic: traff,
           loadPackage: true,
           briefMark: "string",
-          plan: {
-            "id": 0,
-            "isDeleted": 0,
-            "createTime": "2019-02-26T08:28:40.467Z",
-            "code": "string",
-            "inventoryID": 0,
-            "planEnroll": [{
-              "id": 0,
-              "planID": 0,
-              "enrollID": 0,
-              "enrollName": "string",
-              "isDeleted": 0,
-              "price_01": 0,
-              "price_02": 0,
-              "quota": 0
-            }],
-            "loadPlan_Enroll": true,
-            "createUser": "string",
-            "packageID": 0,
-            "date": 0
-          },
           loadPlan: true,
-          uptoDay: 0,
-          templateID: 0
+          codePrefix: "string",
+          codeSuffix: "string"
         }
         this.$refs[formName].validate((valid) => {
           if(valid){

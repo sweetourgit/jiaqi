@@ -203,7 +203,7 @@
       <el-table-column
         prop="id"
         label="ID"
-        width="180"
+        width="100"
         align="center"
         >
       </el-table-column>
@@ -216,9 +216,21 @@
 
 
       </el-table-column>
+        <el-table-column
+          align="center"
+          label="团号">
+          <template slot-scope="scope">
+            <el-input :maxlength="10"  v-model="ccc[scope.$index].codePrefix" style="width:100px"></el-input>
+            <span >-</span>
+            <span >{{ccc[scope.$index].createTime}}</span>
+            <span >-</span>
+            <el-input :maxlength="10"  v-model="ccc[scope.$index].codeSuffix" style="width:100px"></el-input>
 
+          </template>
+        </el-table-column>
       <el-table-column
         align="center"
+        width="180"
         label="清位时间">
          <template slot-scope="scope">
            <span style="margin-right:5px">前</span>
@@ -227,11 +239,11 @@
           <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">时</span> -->
           <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">分</span> -->
 
-
         </template>
       </el-table-column>
         <el-table-column
         align="center"
+        width="180"
         label="出行模板">
         <template slot-scope="scope">
           <el-select v-model="ccc[scope.$index].value" placeholder="请选择">
@@ -247,7 +259,8 @@
         <el-table-column
         prop="name"
         align="center"
-        label="操作">
+        label="操作"
+        width="200">
         <template slot-scope="scope">
             <template v-if="ccc[scope.$index].type == false">
               <el-button size="mini" type="primary"  @click="online(scope.$index)">上线</el-button>
@@ -348,7 +361,7 @@
     </div>
     <!-- 价格 -->
     <div v-else>
-      <DateList v-on:merchandises="headCall"  :msg-father="ccc" :piapia="piaid"/>
+      <DateList v-on:merchandises="headCall"  :msg-father="ccc" :piapia="piaid" :codePrefix="codePrefix" :codeSuffix="codeSuffix"/>
     </div>
     </el-dialog>
   </div>
@@ -365,6 +378,8 @@ import DateList from './component/DateList'
     },
      data() {
       return {
+        codePrefix:"",
+        codeSuffix:'',
         pagesize:10,
         total:0,
         reable:true,
@@ -757,10 +772,10 @@ import DateList from './component/DateList'
 
       bandlePrice(item){
 
-        this.piaid = this.ccc[item].id
+        this.piaid = this.ccc[item].id;
+        this.codePrefix = this.ccc[item].codePrefix;
+        this.codeSuffix = this.ccc[item].codeSuffix;
         this.isCollapse = false;
-        console.log(this.piaid)
-
 
       },
 
@@ -991,7 +1006,7 @@ import DateList from './component/DateList'
         )
           .then(function (obj) {
 /*
-            console.log(obj.data.objects)
+
 */
 
             for (let i = 0; i < obj.data.objects.length; i++){
@@ -999,11 +1014,15 @@ import DateList from './component/DateList'
               that.ccc.push({
                   id:obj.data.objects[i].id,
                   ddd:obj.data.objects[i].name,
-                uptoDay:obj.data.objects[i].uptoDay,
-                value:obj.data.objects[i].templateID,
+                  uptoDay:obj.data.objects[i].uptoDay,
+                  value:obj.data.objects[i].templateID,
+                  codePrefix:obj.data.objects[i].codePrefix,
+                  codeSuffix:obj.data.objects[i].codeSuffix,
+                  createTime:obj.data.objects[i].createTime,
                   type:false,
                 })
               }
+            console.log(obj.data)
           })
           .catch(function (obj) {
             console.log(obj)
@@ -1406,7 +1425,7 @@ import DateList from './component/DateList'
         }
       )
         .then(function (obj) {
-            console.log(obj.data.total);
+            console.log(obj.data);
           that.total = obj.data.total;
           that.tableData =obj.data.objects;
           that.tableData.forEach(function (v, k, arr) {
