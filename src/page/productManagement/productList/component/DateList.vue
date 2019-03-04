@@ -613,6 +613,7 @@
     created: function() {
       // 在vue初始化时调用
       this.initData(null);
+      
       // 判断是否点击套餐
       if (this.piapia == '') {
         this.ccc = [];
@@ -761,16 +762,27 @@
         let isSave = true; // 是否编辑判断
         if (list.data.person.planEnroll.length != 0 ) {
           list.data.person.planEnroll.forEach(item => {
+            let quotaPrice = '';
             if (item.enrollID == data.id && item.name == data.name){
+              if (data.quotaPrice == '') {
+                quotaPrice = 0;
+              } else {
+                quotaPrice = data.quotaPrice;
+              }
               planEnroll.push({
                 'enrollID': data.id,
                 'enrollName': data.name,
                 'price_01': data.salePrice,
                 'price_02': data.traderPrice,
-                'quota': data.quotaPrice
+                'quota': quotaPrice
               })
               isSave = false;
             } else {
+              if (item.quotaPrice == '') {
+                quotaPrice = 0;
+              } else {
+                quotaPrice = item.quotaPrice;
+              }
               planEnroll.push({
                 'enrollID': item.enrollID,
                 'enrollName': item.name,
@@ -781,13 +793,19 @@
             }
           })
         }
+        let quotaPrice = '';
+        if (data.quotaPrice == '') {
+          quotaPrice = 0;
+        } else {
+          quotaPrice = data.quotaPrice;
+        }
         if (isSave) {
           planEnroll.push({
             'enrollID': data.id,
             'enrollName': data.name,
             'price_01': data.salePrice,
             'price_02': data.traderPrice,
-            'quota': data.quotaPrice
+            'quota': quotaPrice
           })
         }
         // 查到非共享库存后执行修改计划
@@ -1320,12 +1338,14 @@
             this.arr[i].isModify = true;
             this.arr[i].salePrice = _planEnroll[i].salePrice;
             this.arr[i].traderPrice = _planEnroll[i].traderPrice;
-            if (_planEnroll[i].quotaPrice == null) {
+            if (_planEnroll[i].quotaPrice == null || _planEnroll[i].quotaPrice == 0) {
               this.arr[i].quota = false;
+              this.arr[i].quotaPrice = '';
             } else {
               this.arr[i].quota = true;
+              this.arr[i].quotaPrice = _planEnroll[i].quotaPrice;
             }
-            this.arr[i].quotaPrice = _planEnroll[i].quotaPrice;
+            
           }
         }
       },
@@ -1613,23 +1633,20 @@
             let planEnroll = [];
             if (item.data.person.planEnroll.length != 0 ) {
               item.data.person.planEnroll.forEach(list => {
+                let quotaPrice = '';
                 // 判断是否填写配额
                 if (list.quotaPrice == '') {
-                  planEnroll.push({
-                    'enrollID': list.enrollID,
-                    'enrollName': list.name,
-                    'price_01': list.salePrice,
-                    'price_02': list.traderPrice,
-                  })
+                  quotaPrice = 0;
                 } else {
-                  planEnroll.push({
-                    'enrollID': list.enrollID,
-                    'enrollName': list.name,
-                    'price_01': list.salePrice,
-                    'price_02': list.traderPrice,
-                    'quota': list.quotaPrice
-                  })
+                  quotaPrice = list.quotaPrice;
                 }
+                planEnroll.push({
+                  'enrollID': list.enrollID,
+                  'enrollName': list.name,
+                  'price_01': list.salePrice,
+                  'price_02': list.traderPrice,
+                  'quota': quotaPrice
+                })
               })
             }
             if (item.data.person.inventoryID == '') {
@@ -1647,6 +1664,7 @@
                     "inventoryID": res.data.id,
                     "packageID": item.data.person.packageID,
                     "date": item.data.person.date,
+                    "teamCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix,
                     "planEnroll": planEnroll
                   }
                 }).then(resAdd => {
@@ -1664,6 +1682,7 @@
                   "inventoryID": item.data.person.inventoryID,
                   "packageID": item.data.person.packageID,
                   "date": item.data.person.date,
+                  "teamCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix,
                   "planEnroll": planEnroll
                 }
               }).then(res => {
