@@ -182,7 +182,7 @@
      <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
           <el-radio-group v-model="isCollapse" >
             <el-radio-button  class="group" :label="true">库存</el-radio-button>
-            <el-radio-button :label="false">价格</el-radio-button>
+            <el-radio-button :label="false"  >价格</el-radio-button>
           </el-radio-group>
      </div>
 
