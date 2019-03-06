@@ -1,285 +1,107 @@
 <template style=" position: relative;">
 <div class="labelList">
-	<!--标题切换-->
-  <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
-
-    <el-tab-pane :key="item.name" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name">
-      <div class="labelBorder">
-        <div class="searchBox">
-          <el-input placeholder="请输入内容" class="search" v-model="searchLabel" ref="searchLabel" clearable></el-input>
-          <el-button class="resetButton" @click="reset">重置</el-button>
-          <div style="float:right;">
-            <el-button type="primary" @click="editGather">编辑</el-button>
-            <el-button type="danger" @click="deleteLabel">删除</el-button>
-          </div>
-          <!--按钮-->
-          <div style=" clear:both;">
-            <div style="float:left; margin:30px 0 30px 0;">
-              <el-button plain @click="addTally">添加标签</el-button>
-              <el-button plain @click="editLabel">编辑标签</el-button>
-              <el-button plain @click="transferGather">转移集合</el-button>
-              <el-button type="danger" @click="removeLabel">删除标签</el-button>
+  <div>
+    <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
+      <el-tab-pane :key="index+''" v-for="(item, index) in editableTabs" :label="item.typeName" :name="index+''">
+        <div class="labelBorder">
+          <div class="searchBox">
+            <!--清空-->
+            <div style="float:left">
+              <el-input placeholder="搜索标签名称" v-model="empty" class="empty" clearable></el-input>
+              <el-button class="primary" @click="emptyButton()" type="primary">重置</el-button>
             </div>
-          </div>
-          <!--表格-->
-          <el-table :data="tableData3" ref="multipleTable" border :row-style="rowClass" @row-click="clickRow">
-            <el-table-column prop="box" type="selection" label=""></el-table-column>
-            <el-table-column prop="id" label="ID" width="100"></el-table-column>
-            <el-table-column prop="name" label="地标名称"></el-table-column>
-            <el-table-column prop="product" label="绑定相关产品" width="120">
-             <template slot-scope="scope">
-              <div style="color:#3095fa" @click="product()"><u>5</u></div>
-             </template>
-            </el-table-column>
-          </el-table>
-
-        </div>
-      </div>
-    </el-tab-pane>
-    <!--绑定相关产品弹窗-->
-      <div class="popup" v-show="messageShow">
-        <div class="mask"@click="titleClose()"></div>
-        <div class="message">
-          <div class="messageTitle">
-            <div class="titleText">绑定产品信息</div>
-            <div class="titleClose" @click="titleClose()">×</div>
-          </div>
-          <div style="width:90%; margin:3% 0 3% 5%; overflow:hidden">
-            <el-table :data="tableData" border>
-              <el-table-column prop="title" label="产品信息"></el-table-column>
-              <el-table-column prop="number" label="操作"></el-table-column>
+            <!--编辑删除主题-->
+            <div style="float:right;">
+              <el-button class="primary" type="primary">编辑集合</el-button>
+              <el-button class="primary" type="danger">删除集合</el-button>
+            </div>
+            <div class="actionButton">
+              <el-button>添加标签</el-button>
+              <el-button>编辑标签</el-button>
+              <el-button>转移集合</el-button>
+              <el-button type="danger">删除标签</el-button>
+            </div>
+            <el-table class="labelTable" :data="tableData" border style="width: 100%":header-cell-style="getRowClass">
+              <el-table-column prop="number" type="selection" width="55" align="center"></el-table-column>
+              <el-table-column prop="id" label="ID" width="180" align="center"></el-table-column>
+              <el-table-column prop="typeName" label="标签名称" width="180" align="center"></el-table-column>
+              <el-table-column prop="product" label="绑定相关产品" align="center"></el-table-column>
             </el-table>
-          </div>
-        </div>
-      </div>
-      <!--标签删除弹窗-->
-      <div class="popup" v-show="comboshow">
-        <div class="mask" @click="close()"></div>
-        <div class="add">
-          <div class="label">
-            <div class="left">删除标签</div>
-            <div class="right" @click="close()">×</div>
-          </div>
-          <div class="content">
-            <div class="text">是否删除该标签</div>
-            <div class="judge">
-              <el-button @click="close()">取消</el-button>
-              <el-button @click="confirm(ensure)" type="primary">确定</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--添加集合弹窗-->
-      <div class="popup" v-show="addLabel">
-        <div class="mask" @click="addclose"></div>
-        <div class="add">
-          <div class="label">
-            <div class="left">添加集合</div>
-            <div class="right" @click="addclose">×</div>
-          </div>
-          <div class="content">
-            <div class="labelName">
-              <div style="float:left; line-height:40px;">集合名称：</div>
-              <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="float:left;">
-                <el-form-item prop="highlightWords">
-                  <el-input style="width:180px;" maxlength=10 v-model="ruleForm.highlightWords" placeholder="10个字以内"></el-input>
-                  <span class="span1">{{ruleForm.highlightWords.length}}/10字</span>
-                </el-form-item>
-              </el-form>
-            </div>
-            <div class="judge">
-              <el-button @click="addclose">取消</el-button>
-              <el-button @click="addConfirm" type="primary">确定</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--编辑集合弹窗-->
-      <div class="popup" v-show="addGather">
-        <div class="mask" @click="closeGather"></div>
-        <div class="add">
-          <div class="label">
-            <div class="left">编辑集合</div>
-            <div class="right" @click="closeGather">×</div>
-          </div>
-          <div class="content">
-            <div class="labelName">
-              <div style="float:left; line-height:40px;">集合名称：</div>
-              <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="float:left;">
-                <el-form-item prop="highlightWords">
-                  <el-input style="width:180px;" maxlength=10 v-model="ruleForm.highlightWords" placeholder="10个字以内"></el-input>
-                  <span class="span1">{{ruleForm.highlightWords.length}}/10字</span>
-                </el-form-item>
-              </el-form>
-            </div>
-            <div class="judge">
-              <el-button @click="closeGather">取消</el-button>
-              <el-button @click="" type="primary">确定</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--添加标签弹窗-->
-      <div class="popup" v-show="addTag">
-        <div class="mask" @click="closeTag"></div>
-        <div class="add">
-          <div class="label">
-            <div class="left">添加标签</div>
-            <div class="right" @click="closeTag">×</div>
-          </div>
-          <div class="content">
-            <div class="labelName">
-              <div style="float:left; line-height:40px;">标签名称：</div>
-              <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="float:left;">
-                <el-form-item prop="highlightWords">
-                  <el-input style="width:180px;" maxlength=10 v-model="ruleForm.highlightWords" placeholder="10个字以内"></el-input>
-                  <span class="span1">{{ruleForm.highlightWords.length}}/10字</span>
-                </el-form-item>
-              </el-form>
-            </div>
-            <div class="judge">
-              <el-button @click="closeTag">取消</el-button>
-              <el-button @click="" type="primary">确定</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--编辑标签弹窗-->
-      <div class="popup" v-show="editShow">
-        <div class="mask" @click="closeEdit"></div>
-        <div class="add">
-          <div class="label">
-            <div class="left">编辑标签</div>
-            <div class="right" @click="closeEdit">×</div>
-          </div>
-          <div class="content">
-            <div class="labelName">
-              <div style="float:left; line-height:40px;">标签名称：</div>
-              <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="float:left;">
-                <el-form-item prop="highlightWords">
-                  <el-input style="width:180px;" maxlength=10 v-model="ruleForm.highlightWords" placeholder="10个字以内"></el-input>
-                  <span class="span1">{{ruleForm.highlightWords.length}}/10字</span>
-                </el-form-item>
-              </el-form>
-            </div>
-            <div class="judge">
-              <el-button @click="closeEdit">取消</el-button>
-              <el-button @click="" type="primary">确定</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--转移集合-->
-      <div class="popup" v-show="shiftGather">
-        <div class="mask" @click="closeGathers"></div>
-        <div class="add">
-          <div class="label">
-            <div class="left">转移集合</div>
-            <div class="right" @click="closeGathers">×</div>
-          </div>
-          <div class="content">
-            <div class="labelName">
-              <div style="float:left; line-height:40px;">集合</div>
-              <el-select v-model="transfer" placeholder="请选择" style="float:left; margin:0 0 0 10px;">
-                <el-option v-for="item in transfers" :key="item.value" :label="item.label":value="item.value"></el-option>
-              </el-select>
-            </div>
-            <div class="judge">
-              <el-button @click="closeGathers">取消</el-button>
-              <el-button @click="" type="primary">确定</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--删除标签弹窗-->
-      <div class="popup" v-show="cancelShow">
-        <div class="mask" @click="closeCancel"></div>
-        <div class="add">
-          <div class="label">
-            <div class="left">删除标签</div>
-            <div class="right" @click="closeCancel">×</div>
-          </div>
-          <div class="content">
-            <div class="text">是否删除该标签</div>
-            <div class="judge">
-              <el-button @click="closeCancel">取消</el-button>
-              <el-button @click="" type="primary">确定</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-  </el-tabs>
+            <!--分页-->
+            <el-pagination class="pageList" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 50]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
 
+          </div>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
+  <!--弹窗-->
+  <!--添加主题弹窗-->
+  <div class="popup" v-show="gatherShow">
+    <div class="mask" @click="gatherClose()"></div>
+    <div class="add">
+      <div class="gatherColor">
+        <div class="gatherTitle">添加集合</div>
+        <div class="gatherClose" @click="gatherClose()">×</div>
+      </div>
+      <div class="labelName">
+        <div style="float:left; line-height:40px; margin:0 10px 0 70px;">集合名称：</div>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="float:left;">
+          <el-form-item prop="highlightWords">
+            <el-input style="width:180px;" maxlength=10 v-model="ruleForm.highlightWords" placeholder="10个字以内"></el-input>
+            <span class="span1">{{ruleForm.highlightWords.length}}/10字</span>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="judge">
+        <el-button @click="gatherClose()">取消</el-button>
+        <el-button @click="addGather()" type="primary">确定</el-button>
+      </div>
+    </div>
+  </div>
+  <!--删除主题弹窗-->
+  <div class="popup" v-show="deleteGatherShow">
+    <div class="mask" @click="deleteGatherClose()"></div>
+    <div class="add">
+      <div class="gatherColor">
+        <div class="gatherTitle">删除集合</div>
+        <div class="gatherClose" @click="deleteGatherClose()">×</div>
+      </div>
+      <div class="judge">
+        <el-button @click="deleteGatherClose()">取消</el-button>
+        <el-button @click="deleteGather(ensure)" type="primary">确定</el-button>
+      </div>
+    </div>
+  </div>
+  <!--绑定相关产品弹窗-->
+  <div class="popup" v-show="contentShow=false">
+    <div class="mask"></div>
+    <div class="add">
+      <div class="gatherColor">
+        <div class="gatherTitle">绑定相关产品</div>
+        <div class="gatherClose">×</div>
+      </div>
+    </div>
+  </div>
 
-
-
-
-
-
- 
 </div>
+
 </template>
 <script>
   export default {
     data() {  
        return {
-        //标题切换
-        editableTabsValue: '2',
-        editableTabs: [{
-          title: '景点标签',
-          name: '1',
-          content: 'Tab 1 content'
-        }, {
-          title: '美食标签',
-          name: '2',
-          content: 'Tab 2 content'
-        }],
-        tabIndex: 2,
-        ensure:'',
+        editableTabsValue: '0',
+        editableTabs: [],
+        tabIndex: 0,
+        empty:'',//清空搜索框
+        tableData: [],
+        //分页
+        currentPage: 1,
+        total:1,
+        pagesize:2,
         aindex:0,
-        //搜索标签输入框  
-        searchLabel:'',
-        //表格
-        tableData3: [{
-          box:'1',
-          id: '1',
-          name: '名筑',
-          product: '5'
-        }, {
-          box:'2',
-          id: '2',
-          name: '地标',
-          product: '4'
-        }, {
-          box:'3',
-          id: '3',
-          name: '必去景点',
-          product: '5'
-        }],
-        multipleSelection: [],
-        
-
-
-        messageShow:false,
-        //弹窗表格
-        tableData:[{
-          title:'【沈阳领区】日本旅游签证(单次/三年多次+顺丰包邮+拒签全退套餐+可加急+一手送签+免机酒套餐)',
-          number:'解绑'
-        },{
-          title:'澳大利亚旅游签证(1年/3年多次+专业受理东三省客户+拒签退款套餐)',
-          number:'解绑'
-        }],
-        //重置
-        dynamicValidateForm: {
-          domains: [{
-            value: ''
-          }]
-        },
-        //标签删除弹窗
-        comboshow: false,
-        //标签添加弹窗
-        addLabel:false,
-        //
+        //弹窗字数限制
         ruleForm:{
           highlightWords: '',
         },
@@ -289,59 +111,39 @@
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
           ],
         },
-        //添加标签
-        addTag:false,
-        //编辑集合
-        addGather:false,
-        //编辑标签
-        editShow:false,
-        //转移集合
-        transfers: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-        transfer: '',
-        //转移集合
-        shiftGather:false,
-        //删除标签
-        cancelShow:false,
+        gatherShow:false,//添加主题弹窗
+        deleteGatherShow:false,//删除主题弹窗
+        ensure:'',//删除主题
        };   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         
     },
+    //进入页面开始执行的方法
+    mounted(){
+      this.pageList();
+    },
     methods: {
-      //主题标题添加删除
-       handleTabsEdit(targetName, action) {
+      //添加删除主题
+      handleTabsEdit(targetName, action) {
         if (action === 'add') {
-          if(this.addLabel==false){
-            this.addLabel=true;
+          if(this.gatherShow==false){
+            this.gatherShow=true;
             return false;
           }else{
           let newTabName = ++this.tabIndex + '';
           this.editableTabs.push({
-            title: this.ruleForm.highlightWords,
-            name: newTabName,
+            typeName: this.ruleForm.highlightWords,
+            //name: newTabName,
             content: 'New Tab content'
           });
-          this.editableTabsValue = newTabName;
+          this.editableTabsValue = (newTabName-1).toString();
+          console.log(this.editableTabsValue)
           }
         }
         if (action === 'remove') {
-          
-          if(this.comboshow==false){            
-            this.comboshow=true;
+           
+          if(this.deleteGatherShow==false){            
+            this.deleteGatherShow=true;
             this.aindex = targetName;
             return false;
           }
@@ -363,91 +165,125 @@
           }
         }
       },
-      //重置
-      reset(){
-        this.searchLabel='';
+      //清空搜索框
+      emptyButton(){
+        this.empty = ''
       },
-      //点击出现表格弹窗
-      product(){
-        this.messageShow=true;
-      },
-      //绑定相关产品弹窗
-      titleClose(){
-        this.messageShow=false;
-      },
-      //标签删除弹窗
-      close() {
-        this.comboshow = false;
-      },
-      //删除标签（大）
-      confirm(ensure){
-       // this.comboshow = true;
-       // this.editableTabs.splice(ensure, 1);
-        this.handleTabsEdit(this.aindex, "remove");
-        this.comboshow = false;
-      },
-      //标签添加弹窗
-      addclose(){
-        this.addLabel=false;
-      },
-      addConfirm() {
-        this.handleTabsEdit(this.aindex, "add");
-        this.addLabel = false;
-        this.ruleForm.highlightWords='';
-      },
-      //删除种类弹窗
-      deleteLabel(){
-        this.comboshow=true;
-      },
-      //添加标签
-      addTally(){
-        this.addTag=true;
-      },
-      closeTag(){
-        this.addTag=false;
-      },
-      //编辑集合
-      editGather(){
-        this.addGather=true;
-      },
-      closeGather(){
-        this.addGather=false;
-      },
-      //编辑标签
-      editLabel(){
-        this.editShow=true;
-      },
-      closeEdit(){
-        this.editShow=false;
-      },
-      //转移集合
-      transferGather(){
-        this.shiftGather=true;
-      },
-      closeGathers(){
-        this.shiftGather=false;
-      },
-      //删除标签
-      removeLabel(){
-        this.cancelShow=true;
-      },
-      closeCancel(){
-        this.cancelShow=false;
-      },
-      //表格勾选
-      clickRow(row){    //选中行复选框勾选
-        //this.$refs.multipleTable.clearSelection(); //清空用户的选择  
-        this.$refs.multipleTable.toggleRowSelection(row)
-      },
-      rowClass({row, rowIndex}){  //选中行样式改变
-       for(var i=0;i<this.multipleSelection.length;i++){
-          if(this.multipleSelection[i].id==row.id){
-             return { "background-color": "#ecf5ff" }
-          }
+      //表格标题样式
+      getRowClass({ row, column, rowIndex, columnIndex }) {
+        if (rowIndex == 0) {
+          return 'background:#F7F7F7'
+        } else {
+          return ''
         }
       },
+      //分页
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      },
+      //添加主题弹窗关闭、确定添加
+      gatherClose(){
+        this.gatherShow = false;
+        this.ruleForm.highlightWords='';
+      },
+      addGather() {
+        this.handleTabsEdit(this.tabIndex, "add");
+        this.gatherShow = false;
+        this.addTheme();
+        this.ruleForm.highlightWords='';
+      },
+      //删除主题弹窗关闭、确定删除
+      deleteGatherClose(){
+        this.deleteGatherShow = false;
+      },
+      deleteGather(ensure){
+        this.handleTabsEdit(this.tabIndex, "remove");
+        this.deleteGatherShow = false;
+      
+       // this.editTheme();
+      },
+      //添加主题方法
+      addTheme(){
+        this.$refs.ruleForm.validate((valid) => {
+          if (valid) {
+            var _this = this;
+            this.$http.post(this.GLOBAL.serverSrc + "/universal/labletype/api/insert",
+              {
+                object: {
+                  id: 0,
+                  typeName: this.ruleForm.highlightWords,
+                  createTime: "2019-03-04T06:08:17.118Z",
+                  code: "string",
+                  isDeleted: 0
+                }
+              })
+              .then(function(response) {
+                if(response.data.isSuccess == false){
+                  _this.$message.error("添加失败,该供应商已存在");
+                } else {
+                  _this.ruleForm.highlightWords = '';
+                  _this.pageList();
+                }
+                
+              })
+          } else {
+            return false;
+          }
+        });
+      },
+      //删除主题方法
+      editTheme(index){
+        let _this = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/labletype/api/delete", {
+          id: 0
+        })
+          .then(function(response) {
+            _this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            _this.pageList();
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      },
+      //列表显示
+      pageList() {
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/universal/labletype/api/list",
+          {
+            "pageIndex": 0,
+            "pageSize": 0,
+            "total": 0,
+            "object": {
+              "id": 0,
+              "typeName": "",
+              "createTime": "2019-03-04T06:03:19.464Z",
+              "code": "string",
+              "isDeleted": 0
+            }
+          },)
+          .then(function (obj) {
+            that.total = obj.data.total
+            that.editableTabs = obj.data.objects
+            that.tabIndex = that.editableTabs.length
+          //  that.editableTabsValue = that.editableTabs.length
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+      },
+
     }
 }
+
+
+
 
    
 
@@ -465,54 +301,32 @@
 
 
 
-
 <style scoped>
-	/*.labelList{ font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 100px 0; max-width: 900px; overflow: hidden;}*/
-  .labelList{ font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 100px 0;overflow: hidden; max-width: 900px; min-width: 630px;}
-  
-  /*标题切换*/
-  .labelTabs{text-align: left;}
-
-  .el-tabs--card>>>.el-tabs__header{margin: 0 !important;}
-
-  /*边框*/
-  .labelBorder{border-left:1px solid #e6e6e6; border-right:1px solid #e6e6e6; border-bottom:1px solid #e6e6e6; margin:0 0 20px 0; overflow: hidden;}
-
-  /*搜索框、按钮*/
-  .searchBox{ margin: 20px 15px 20px 15px; overflow: hidden; }
-  .search{ width: 340px; float: left; }
-  .resetButton{float: left; margin: 0 0 0 20px; background-color: #409EFF; color:#fff;}
-
-
-  /*表格*/
-  .tableLabel{ clear: both; background-color: #e6e6e6; width: 100%; line-height: 30px;}
-  .tableTitle{line-height: 60px;}
-
-  .el-table>>>.cell{text-align: center;}
-
-  /*弹窗*/
-  .mask{background-color: #000; width: 100%; height: 100%; position: fixed; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5; z-index: 100;}
-  .message{width: 60%;margin: auto;position: fixed; top:50%; left:40%; margin-top:-125px; margin-left:-20%; background: #fff; overflow: hidden; border:1px solid #eeeeee; border-radius: 3px; z-index: 1000; }
-  .messageTitle{height: 40px; line-height: 40px; background-color: #f6f6f6; overflow: hidden; width: 100%;}
-  .titleText{float: left; margin: 0 0 0 20px;}
-  .titleClose{float: right; margin: 0 20px 0 0; font-size: 14pt;cursor:pointer;}
-
-  /*标签删除弹窗*/
-  .add {width: 450px; height: 250px; margin:auto; position: fixed;top: 50%; left: 50%; margin-top: -125px; margin-left:-225px;background-color: #fff; overflow: hidden; border: 1px solid #eeeeee; border-radius: 3px; z-index: 1000;}
-  .label { background-color: #f6f6f6; border-bottom: 1px solid #eee; height: 57px; line-height: 40px; width: 450px;}
-  .left { float: left; margin:10px 0 0 20px;}
-  .right { float: right; margin: 0 20px 0 0; font-size: 16pt;cursor: pointer; line-height: 57px; }
-  .content { width: 310px; overflow: hidden; margin-left:auto; margin-right: auto;}
-  .text { float: left;line-height: 40px; margin:50px 0 0 0;  }
-  .input { float: left; width: 180px; margin:0 0 0 15px;}
-  .judge { padding: 30px 0 0 0; clear: both;}
-
-  /*标签添加弹窗*/
-  .labelName{width: 350px; margin-left:auto; margin-right:auto; margin: 50px 0 0 0;  }
-  .el-form>>>.el-form-item{margin-bottom:0px;}
-
-	
-	
+/*整体样式*/
+.labelList{ font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 100px 0;overflow: hidden; max-width: 900px; min-width: 630px;}
+/*外边框*/
+.labelBorder{border-left:1px solid #e6e6e6;border-right:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6; margin:0 0 20px 0; overflow: hidden; clear: both;}
+.searchBox{ margin: 20px 15px 20px 15px; overflow: hidden; }
+/*穿刺去除向上的距离*/
+.el-tabs--card>>>.el-tabs__header{margin: 0 !important;}
+/*清空搜索框*/
+.empty{float: left; width: 340px;}
+.primary{float: left; margin: 0 0 0 10px;}
+/*功能按钮*/
+.actionButton{clear: both; padding: 20px 0 0 0;}
+/*表格列表*/
+.labelTable{text-align: center; margin: 20px 0 0 0;}
+/*分页*/
+.pageList{float:right; margin: 20px 0 0 0;}
+/*弹窗*/
+.mask{background-color: #000; width: 100%; height: 100%; position: fixed; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5; z-index: 100;}
+.add {width: 450px; height: 250px; margin:auto; position: fixed;top: 50%; left: 50%; margin-top: -125px; margin-left:-225px;background-color: #fff; overflow: hidden; border: 1px solid #eeeeee; border-radius: 3px; z-index: 1000;}
+.gatherColor{height: 40px; background: #f6f6f6;border-bottom: 1px solid #eee; line-height: 40px;}
+.gatherTitle{float:left; margin: 0 0 0 20px;}
+.gatherClose{float:right; margin: 0 20px 0 0; font-size: 16pt; cursor:pointer; }
+.labelName{width: 400px; margin-left:auto; margin-right:auto; margin: 50px 0 0 0; text-align: center; }
+.el-form>>>.el-form-item{margin-bottom:0px;}
+.judge { padding: 30px 0 0 0; clear: both; text-align: center;}
 </style>
 
 

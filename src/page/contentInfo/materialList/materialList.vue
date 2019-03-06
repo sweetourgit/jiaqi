@@ -1,69 +1,57 @@
 <template>
 <div>
-    <div class="big">
-          <div class="header">
+    <div class="main-container">
+    <div class="header">
         <div class="header_add">
           <el-button type="primary" @click="addAlbum = true">添加相册</el-button>
         </div>
         <div class="header_seach">
           <div class="search-input">
-            <el-input v-model="addName" placeholder="请输入目的地名称"  clearable></el-input>
+            <el-input v-model="addName" placeholder="目的地\名称"  clearable></el-input>
           </div>
           <div class="search-button">
             <el-button   type="primary" icon="el-icon-search" ></el-button>
           </div>
         </div>
     </div>
-     
-        <div class="left-tree">
-           
-      
-           <div style="margin-left:80px;margin-top:50px;"> 
-              <el-tree
-                :props="props1"
-                :load="loadNode1"
-                lazy
-              >
-              </el-tree>
-           </div>
-            
-
-        </div>
-        <!-- 地址图片的最大框框 -->
-      <div class="address-big">
-            <div class="address-img" v-for="img in marterialist" :key="img.name" >
-                <div class="marterialist-img" @click="addAlbumImg1(img.name)" >
-                    <img style="width:100%;height:100%" :src="img.smallImg[0].imgs" alt="">
-                </div>
-                <!-- 图片介绍 -->
-                <div class="introduce">
-                    <!-- 图片标签 -->
-                    <div class="label">标签</div>
-                    <!-- 图片数量 -->
-                    <div class="number">{{img.smallImg.length}}张</div>
-                </div>
-                <!-- 景点名称 -->
-                <div class="address-name">
-                    {{img.title}}
-                </div>
-
-            </div>
-            
-     
-        </div>
-         <div class="page">
-        <!-- <span class="demonstration">完整功能</span> -->
-            <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage4"
-            :page-sizes="[100, 200, 300, 400]"
-            :page-size="100"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="400">
-            </el-pagination>
-        </div>
-      </div>
+    <!--左侧导航-->
+    <div class="left-tree">
+         <div style="margin-left:80px;margin-top:50px;"> 
+              <el-tree :props="props1" :load="loadNode1" lazy></el-tree>
+         </div>
+    </div>     
+    <!-- 地址图片的最大框框 -->
+    <div class="address-big">
+         <div class="address-img" v-for="img in marterialist" :key="img.name" >
+              <div class="marterialist-img" @click="addAlbumImg1(img.name)" >
+                   <img style="width:100%;height:100%" :src="img.imgs" alt="">
+              </div>
+              <!-- 图片介绍 -->
+              <div class="introduce">
+                   <!-- 图片标签 -->
+                   <div class="label">标签</div>
+                   <!-- 图片数量 -->
+                   <div class="number">{{img.num}}张</div>
+              </div>
+              <!-- 景点名称 -->
+              <div class="address-name">
+                  {{img.title}}
+              </div>
+         </div>    
+    </div>
+    <!--分页-->
+    <el-pagination class="pagination"
+          @size-change="handleSizeChange"
+          background
+          @current-change="handleCurrentChange"
+          :current-page="1"
+          :page-sizes="[10, 30, 50, 100]"
+          :page-size="10"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+    </el-pagination>
+    <!--分页end-->
+    </div>
         
 
     <!-- 所有的弹窗 -->
@@ -278,20 +266,54 @@
  
     data() {
         
-      return {
-        
+      return {       
+        // 分页
+        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
+        pageIndex: 1, // 设定当前页数
+        total: 100,
+        // 风景图        
+        marterialist:[{
+          name:'1',
+          title:'玄冰',
+          num:'10',
+          imgs:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
+        },{
+          name:'2',
+          title:'冰洞',
+          num:'10',
+          imgs:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
+        },{
+          name:'3',
+          title:'山洞',
+          num:'10',
+          imgs:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
+        },{
+          name:'4',
+          title:'潜水',
+          num:'10',
+          imgs:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
+        },{
+          name:'5',
+          title:'城堡',
+          num:'10',
+          imgs:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
+        },{
+          name:'6',
+          title:'悬崖',
+          num:'10',
+          imgs:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
+        }],
+
+
+
+
         // 选中
         classa:'',
         addName:'',
         // 相册第一张图片
         addressImg: '', 
-        // 分页
-        currentPage1: 5,
-        currentPage2: 5,
-        currentPage3: 5,
-        currentPage4: 4,
          // 树形控件的数据
-         props1: {
+        props1: {
           label: 'name',
           children: 'zones',
           isLeaf: 'leaf'
@@ -324,112 +346,6 @@
             }]
           }]
         }],
-        // 风景图
-        
-        marterialist:[{
-          name:'0',
-          title:'黄金海滩',
-          smallImg:[{
-          name:'0',
-          title:'思考',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184051405126879.jpg',
-        },{
-          name:'1',
-          title:'玄冰',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183733373374610.jpg',
-        },{
-          name:'2',
-          title:'冰洞',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
-        },{
-          name:'3',
-          title:'山洞',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183432343253991.jpg',
-        },{
-          name:'4',
-          title:'潜水',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_18380238220394.jpg',
-        },{
-          name:'5',
-          title:'城堡',
-          imgs:'http://img06.tooopen.com/images/20180603/tooopen_sy_241646862134.jpg',
-        },{
-          name:'6',
-          title:'悬崖',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183919391998803.jpg',
-        },{
-          name:'7',
-          title:'乌云',
-          imgs:'http://img06.tooopen.com/images/20180320/tooopen_sy_236629122223.jpg',
-        }],
-        },{
-          name:'1',
-          title:'巴厘岛',
-          smallImg:[{
-          name:'0',
-          title:'玄冰',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183733373374610.jpg',
-        },{
-          name:'1',
-          title:'冰洞',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
-        },{
-          name:'2',
-          title:'田野',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_11520952981795.jpg',
-        }],
-       },{
-          name:'2',
-          title:'澎湖湾',
-          smallImg:[{
-          name:'0',
-          title:'冰洞',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184344434481484.jpg',
-        },{
-          name:'1',
-          title:'潜水',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183241324193657.jpg',
-        }],
-        },{
-          name:'3',
-          title:'加勒比海',
-          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_184051405126879.jpg',
-          smallImg:[{
-          name:'0',
-          title:'山洞',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_184051405126879.jpg',
-        },{
-          name:'1',
-          title:'洞穴',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
-        }],
-       },{
-          name:'4',
-          title:'加勒比海',
-          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
-          smallImg:[{
-          name:'0',
-          title:'山洞',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183651365152058.jpg',
-        },{
-          name:'1',
-          title:'洞穴',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
-        }],
-       },{
-          name:'5',
-          title:'加勒比海',
-          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
-          smallImg:[{
-          name:'0',
-          title:'山洞',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183651365152058.jpg',
-        },{
-          name:'1',
-          title:'洞穴',
-          imgs:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
-        }],
-       }],
         // 相册里面的第一个图片
         addressImg:[{
 
@@ -439,22 +355,22 @@
         // 素材里面的其他图片
         marterialImg:[{
           name:'0',
-          img:'http://img07.tooopen.com/images/20180627/tooopen_sy_183614361487177.jpg',
+          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
         },{
           name:'1',
-          img:'http://img07.tooopen.com/images/20180614/tooopen_sy_23054854878452.jpg',
+          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
         },{
           name:'2',
-          img:'http://img07.tooopen.com/images/20180614/tooopen_sl_23073073033462.jpg',
+          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
         },{
           name:'3',
-          img:'http://img06.tooopen.com/images/20180605/tooopen_sl_241769979233.jpg',
+          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
         },{
           name:'4',
-          img:'http://img06.tooopen.com/images/20180603/tooopen_sl_241630538194.jpg',
+          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
         },{
           name:'5',
-          img:'http://img06.tooopen.com/images/20180603/tooopen_sl_241629626259.jpg',
+          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
         }],
         // 标签
         Label:[
@@ -866,356 +782,56 @@
 </script>
 
 <style lang="scss" scoped>
-.classa{
-  border: 3px solid #0FB99A;
-}
- .header{
-    height: 50px;
-  }
-  .header_add{
-    float: left;
-  }
-  .header_seach{
-    float: right;
-    margin-left: 100px;
-  }
-  .search-input{
-    width: 353px;
-    float: left;
-    margin-right:100px;
-  }
-  .search-button{
-    float: left;
-    margin-left: -78px;
-    /* margin-right:100px; */
-    
-  }
-.big{
-    width: 100%;
-    padding-bottom: 40px;
-    overflow: auto;
-    /* max-height:80%; */
-    /* border:1px solid green; */
-}
-.add-button{
-    /* position:relative; */
-    float: left;
-}
-.top{
-    
-    width:100%;
-    /* border: 1px solid red; */
-}
-.address-input{
-    float: left;
-  
-    /* position:relative !important; */
-    /* float: right; */
-    width:350px !important;
-    left:32%;
-}
-.top-button{
-    float: left;
-    /* margin-top:2px; */
-    /* height:35px; */
-    /* text-align: center; */
-    /* line-height: 35px; */
-}
-.left-tree{
-     float: left;
-      margin-top: 10px;
-      width: 400px;
-      height: 695px;
-      border:1px solid #fff;
-      box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;
-      margin-left: 5px;
-}
-.address-big{
-  margin-top: 10px;
-    float: left;
-    width: 74%;
-
-    /* margin-left:96px; */
-    /* // border:1px solid pink;  */
-}
-.address-img{
-    position: relative;
-    float: left;
-    /* left:425px; */
-    /* top:30px; */
-    /* top:10px; */
-    /* margin-bottom:500px; */
-    /* margin-top:20px; */
-    /* margin-right:20px; */
-    margin-left:28px;
-    
-    margin-bottom:42px;
-    /* width:585px; */
-    /* // height:450px;
-    // border:1px solid purple;  */
-}
-.marterialist-img{
-    width:368px;
-    height:252px;
-    cursor:pointer;
-    /* height:400px;
-    // border:1px solid red;  */
-    
-}
-.introduce{
-    /* position:absolute; */
-    width:120px;
-    height:30px;
-    margin-top:16px;
-    /* //  border:1px solid green;  */
-}
-.label{
-    float:left;
-    width:60px;
-    height:30px;
-    background:#2f96fa;
-    text-align: center;
-    line-height: 30px;
-    color:#fff;
-}
-.number{
-     float:right;
-     width:60px; 
-    height:30px;
-    /* text-align: center; */
-    line-height: 30px;
-    background:#eee;
-    color:#000;
-    
-}
-.address-name{
-    float:left;
-    margin-top:16px;
-    font-size:20 px;
-}
-.page{
-  float: right;
-    margin-right: 68px;
-    margin-top: 10px;
-}
-.add-album{
-  margin:0 auto;
-  width:3000px;
-  margin-left:-500px;
-  margin-top:-100px;
-}
-.add-address-img{
-  width:1400px;
-  height:800px;
-  margin-left:70px;
-  /* border:1px solid red; */
-}
-.left-img{
-  float:left;
-  width:1000px;
-  height:800px;
-  border:1px solid #fff;
-}
-.first-img{
-  width:1000px;
-  height:550px;
-  /* border:1px solid green; */
-  /* background-image:url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530187553628&di=8c6aa1a7b2daa91ff0ea96e42712b5c1&imgtype=0&src=http%3A%2F%2Fimg3.xiazaizhijia.com%2Fwalls%2F20150417%2Fmid_84422024ff063d3.jpg');
-  background-size: 100% 100%; */
-}
-.small-img{
-  /* float:left; */
-  margin-top:13px;
-  width:280px;
-  height:200px;
-  /* 使元素变成行内元素，拥有行内元素的特性，即可以与其他行内元素共享一行，不会独占一行 */
-  display:inline-block;
-  /* width:25%;
-  height:77%; */
-  /* border:1px solid yellow; */
-  margin-right:17px;
-  margin-bottom:30px;
-  cursor:pointer
-  
-}
-/* 相册小图片点击之后的样式  */
- .class-a{
-   border:1px solid #0FB99A;
- }
-.small-box{
-  position:absolute;
-  width:1000px;
-  height:250px;
-  /* 段落文本不换行 */
-  white-space:nowrap;
-  /* 如果横向溢出则提供滚动机制 */
-  overflow-x:auto;
-  /* 裁剪内容,提供滚动机制 */
-  overflow:scroll;
-  /* 如果纵向溢出,则不提供滚动机制 */
-  overflow-y:hidden;
-}
-.small_img_close{
-  position:absolute;
-  margin-left:61%;
-  top:9.5%;
-  font-size:20px;
-  /* margin-bottom:-10px; */
-  /* margin-left:95%; */
-  /* margin-top:10px; */
-  /* font-size:18px; */
-  /* border:1px solid red; */
-}
-.material-small-box{
-    float: left;
-   margin-top:50px;
-  width:1000px;
-  height:500px;
-  
-  /* // border:1px solid red;  */
-  overflow-x:auto;
-  
- 
-  
-}
-.material-small-img{
-  float:left;
-  margin-bottom:17px;
-  width:300px;
-  height:200px;
-  margin-right:17px;
-  /* //  border: solid blue;  */
-}
-.right-form{
-  /* //  position: absolute;  */
-  float:right;
-  width:380px;
-  /* height:800px; */
-  /* margin-top:-200px; */
-   /* border:1px solid purple;   */
-}
-.album-message{
-  width:380px;
-  height:320px;
-  border:1px solid #E6E6E6;
-  margin-bottom:20px;
-}
-.material-message{
-  /* margin-top:20px; */
-  width:380px;
-  height:350px;
-  border:1px solid #E6E6E6;
-}
-.material-message1{
-  /* margin-top:20px; */
-  width:380px;
- 
-  margin-top:-250px;
-  border:1px solid #E6E6E6;
-}
-.album-title{
-  width:150px;
-  height:30px;
-  margin-top:17px;
-  margin-left:20px;
-  /* background:red; */
-}
-.blue-box{
-  float:left;
-  width:5px;
-  height:30px;
-  background:#3095fa;
-}
-.album-text{
-  /* float:left; */
-  font-size:20px;
-  margin-top:7px;
-  margin-left:15px !important;
-  line-height:30px;
-  /* backgroud:blue; */
-}
-.album-name{
-  float:left;
-  margin-top:10px;
-  font-size:20px;
-}
-.album-form{
-  width:300px;
-  /* height:200px; */
-  /* border:1px solid red; */
-  margin-top:60px;
-  margin-left:20px;
-}
-.album-button{
-  width:250px;
-  height:50px;
-  margin-left:65px;
-  margin-top:10px;
-  /* margin: 0 auto; */
-  /* border:1px solid red; */
-}
-.material-button{
-  width:250px;
-  height:50px;
-  /* margin-left:40px; */
-  margin: 0 auto;
-  /* border:1px solid yellow; */
-}
+.classa{border: 3px solid #0FB99A}
+.header{height: 50px}
+.header_add{float: left;margin-left:.8%}
+.header_seach{float: right;margin-right:1.5%}
+.search-input{width: 353px;float: left;margin-right:100px}
+.search-button{float: left;margin-left: -78px}
+.main-container{width: 100%;padding-bottom: 60px;overflow: auto;max-width:1800px}
+.add-button{float: left}
+.top{width:100%}
+.address-input{float: left;width:350px !important;left:32%}
+.top-button{float: left}
+.left-tree{float: left;margin-top: 10px;width: 22%;height: 695px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;margin-left: 1%}
+.address-big{margin-top: 10px;float: left;width: 76%}
+.address-img{position: relative;float: left;margin-left:2.5%;width:30%;margin-bottom:42px}
+.marterialist-img{width:100%;height:252px;cursor:pointer}
+.introduce{width:100%;height:30px;margin-top:16px;font-size:14px}
+.label{float:left;width:60px;height:30px;background:#2f96fa;text-align: center;line-height: 30px;color:#fff}
+.number{float:right;width:60px;height:30px;line-height: 30px;background:#eee;color:#000;text-align:center}
+.address-name{float:left;margin-top:10px;font-size:18px}
+.pagination{float: right;margin-right: 68px;margin-top: 10px}
+.add-album{margin:0 auto;width:3000px;margin-left:-500px;margin-top:-100px}
+.add-address-img{width:1400px;height:800px;margin-left:70px}
+.left-img{float:left;width:1000px;height:800px;border:1px solid #fff}
+.first-img{width:1000px;height:550px}
+.small-img{margin-top:13px;width:280px;height:200px;display:inline-block;margin-right:17px;margin-bottom:30px;cursor:pointer}
+.class-a{border:1px solid #0FB99A}
+.small-box{position:absolute;width:1000px;height:250px;white-space:nowrap;overflow-x:auto;overflow:scroll;overflow-y:hidden}
+.small_img_close{position:absolute;margin-left:61%;top:9.5%;font-size:20px}
+.material-small-box{float: left;margin-top:50px;width:1000px;height:500px;overflow-x:auto}
+.material-small-img{float:left;margin-bottom:17px;width:300px;height:200px;margin-right:17px}
+.right-form{float:right;width:380px}
+.album-message{width:380px;height:320px;border:1px solid #E6E6E6;margin-bottom:20px}
+.material-message{width:380px;height:350px;border:1px solid #E6E6E6}
+.material-message1{width:380px;margin-top:-250px;border:1px solid #E6E6E6}
+.album-title{width:150px;height:30px;margin-top:17px;margin-left:20px}
+.blue-box{float:left;width:5px;height:30px;background:#3095fa}
+.album-text{font-size:20px;margin-top:7px;margin-left:15px !important;line-height:30px}
+.album-name{float:left;margin-top:10px;font-size:20px}
+.album-form{width:300px;margin-top:60px;margin-left:20px}
+.album-button{width:250px;height:50px;margin-left:65px;margin-top:10px}
+.material-button{width:250px;height:50px;margin: 0 auto}
 /* 上传图片 */
-.upload{
-  margin-top:14px;
-   width:400px;
-   /* height:230px; */
-  /* border:1px solid purple; */
-  border-radius: 20px; 
-}
-.upload-img{
-  width:50px;
-  height:50px;
-  margin-top:20%;
-}
+.upload{margin-top:14px;width:400px;border-radius: 20px}
+.upload-img{width:50px;height:50px;margin-top:20%}
 /* 标签内容框 */
-.add-label{
-  width:400px;
-  height:300px;
-  /* border: 1px solid blue; */
-}
-.label-name{
-  width:370px;
-  height:40px;
-  /* //  border: 1px solid yellow;  */
-  margin:33px 0px;
-  /* margin-top:33px; */
-}
-.select-label{
-  /* float:left; */
-  width:430px;
-  height:100px;
-  overflow: auto;
-  margin-right:20px;
-  overflow-x:auto;
-  margin:25px 0px 60px 0px;
-  /* border:1px solid green; */
-}
-.label-check{
-  float:left;
-  text-align:left;
-  /* width: 20%; */
-  padding-bottom:5px !important;
-  padding-right:25px !important;
-}
-.el-checkbox+.el-checkbox {
-    margin-left: 0px;
-}
-  .clearfix:after{
-    display: block;
-    clear: both;
-    content: "";
-    visibility: hidden;
-    height: 0;
-  }
-  .clearfix{
-    zoom:1;
-  }
- 
+.add-label{width:400px;height:300px}
+.label-name{width:370px;height:40px;margin:33px 0px}
+.select-label{width:430px;height:100px;overflow: auto;margin-right:20px;overflow-x:auto;margin:25px 0px 60px 0px}
+.label-check{float:left;text-align:left;padding-bottom:5px !important;padding-right:25px !important}
+.el-checkbox+.el-checkbox{margin-left: 0px}
+.clearfix:after{display: block;clear: both;content: "";visibility: hidden;height: 0}
+.clearfix{zoom:1}
 </style>
