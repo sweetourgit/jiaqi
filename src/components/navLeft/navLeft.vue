@@ -93,6 +93,10 @@
                 {
                   value: '商户信息',
                   router:'/merchantInfo'
+                },
+                {
+                  value: '权限管理',
+                  router:'/priInsert'
                 }
               ]
             },

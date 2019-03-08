@@ -653,7 +653,7 @@
       // 城市树形框架数据
        loadNode1(node, resolve) {
         if (node.level === 0) {
-          return resolve([{ name: '北京' }]);
+          return resolve([{ name: '北京' },{ name: '辽宁' }]);
         }
         if (node.level > 1) return resolve([]);
 
@@ -799,7 +799,7 @@
 .marterialist-img{width:100%;height:252px;cursor:pointer}
 .introduce{width:100%;height:30px;margin-top:16px;font-size:14px}
 .label{float:left;width:60px;height:30px;background:#2f96fa;text-align: center;line-height: 30px;color:#fff}
-.number{float:right;width:60px;height:30px;line-height: 30px;background:#eee;color:#000;text-align:center}
+.number{float:left;width:60px;height:30px;line-height: 30px;background:#eee;color:#000;text-align:center}
 .address-name{float:left;margin-top:10px;font-size:18px}
 .pagination{float: right;margin-right: 68px;margin-top: 10px}
 .add-album{margin:0 auto;width:3000px;margin-left:-500px;margin-top:-100px}

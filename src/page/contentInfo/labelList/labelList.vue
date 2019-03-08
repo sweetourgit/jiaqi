@@ -100,7 +100,6 @@
         currentPage: 1,
         total:1,
         pagesize:2,
-        aindex:0,
         //弹窗字数限制
         ruleForm:{
           highlightWords: '',
@@ -144,7 +143,7 @@
            
           if(this.deleteGatherShow==false){            
             this.deleteGatherShow=true;
-            this.aindex = targetName;
+            this.editableTabsValue = targetName;
             return false;
           }
           else{
@@ -191,9 +190,8 @@
       },
       addGather() {
         this.handleTabsEdit(this.tabIndex, "add");
-        this.gatherShow = false;
         this.addTheme();
-        this.ruleForm.highlightWords='';
+        //this.ruleForm.highlightWords='';
       },
       //删除主题弹窗关闭、确定删除
       deleteGatherClose(){
@@ -201,9 +199,7 @@
       },
       deleteGather(ensure){
         this.handleTabsEdit(this.tabIndex, "remove");
-        this.deleteGatherShow = false;
-      
-       // this.editTheme();
+        this.deleteTheme();
       },
       //添加主题方法
       addTheme(){
@@ -225,6 +221,7 @@
                   _this.$message.error("添加失败,该供应商已存在");
                 } else {
                   _this.ruleForm.highlightWords = '';
+                  _this.gatherShow = false;
                   _this.pageList();
                 }
                 
@@ -235,16 +232,23 @@
         });
       },
       //删除主题方法
-      editTheme(index){
+      deleteTheme(index){
+        var sid="";
+        for(var i =0; i<this.editableTabs.length; i++){
+          if(i= this.editableTabsValue){
+            sid = this.editableTabs[i].id
+          }
+        }
         let _this = this;
         this.$http.post(this.GLOBAL.serverSrc + "/universal/labletype/api/delete", {
-          id: 0
+          id: sid
         })
           .then(function(response) {
             _this.$message({
               type: "success",
               message: "删除成功!"
             });
+            _this.deleteGatherShow = false;
             _this.pageList();
           })
           .catch(function(error) {
@@ -270,7 +274,11 @@
           },)
           .then(function (obj) {
             that.total = obj.data.total
-            that.editableTabs = obj.data.objects
+            if(obj.data.objects){
+              that.editableTabs = obj.data.objects
+            }else{
+              that.editableTabs = []
+            }
             that.tabIndex = that.editableTabs.length
           //  that.editableTabsValue = that.editableTabs.length
           })
