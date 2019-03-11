@@ -334,14 +334,17 @@
       //获取当前项的标题
       handleClick(tab, event) {//点击切换获取当前值
         this.clickTab = tab.label;
+        this.themeList();
       },
       //显示编辑主题弹窗
       editGatherTheme(e){
         this.editGatherShow = true;
-        this.aaa();
+        this.cycleId();
         this.ruleForm_01.highlightWords01 = this.clickTab;
       },
-      aaa(){
+      //循环ID
+      cycleId(){
+        console.log("cycleId")
         for(var i =0; i<this.editableTabs.length; i++){
           if(i== this.editableTabsValue){
             this.clickTab = this.editableTabs[i].typeName;
@@ -384,7 +387,7 @@
       },
       //产品列表显示
       themeList() {
-        this.aaa();
+        this.cycleId();
         var that = this
         this.$http.post(
           this.GLOBAL.serverSrc + "/universal/olabel/api/olabelpage",
