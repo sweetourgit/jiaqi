@@ -1,7 +1,7 @@
 <template style=" position: relative;">
 <div class="labelList">
   <div>
-    <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
+    <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick">
       <el-tab-pane :key="index+''" v-for="(item, index) in editableTabs" :label="item.typeName" :name="index+''">
         <div class="labelBorder">
           <div class="searchBox">
@@ -12,7 +12,7 @@
             </div>
             <!--编辑删除主题-->
             <div style="float:right;">
-              <el-button class="primary" type="primary">编辑集合</el-button>
+              <el-button class="primary" @click="editGatherTheme($event)" type="primary">编辑集合</el-button>
               <el-button class="primary" type="danger">删除集合</el-button>
             </div>
             <div class="actionButton">
@@ -24,11 +24,11 @@
             <el-table class="labelTable" :data="tableData" border style="width: 100%":header-cell-style="getRowClass">
               <el-table-column prop="number" type="selection" width="55" align="center"></el-table-column>
               <el-table-column prop="id" label="ID" width="180" align="center"></el-table-column>
-              <el-table-column prop="typeName" label="标签名称" width="180" align="center"></el-table-column>
+              <el-table-column prop="labelName" label="标签名称" width="180" align="center"></el-table-column>
               <el-table-column prop="product" label="绑定相关产品" align="center"></el-table-column>
             </el-table>
             <!--分页-->
-            <el-pagination class="pageList" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 50]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+            <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
 
           </div>
         </div>
@@ -56,6 +56,29 @@
       <div class="judge">
         <el-button @click="gatherClose()">取消</el-button>
         <el-button @click="addGather()" type="primary">确定</el-button>
+      </div>
+    </div>
+  </div>
+  <!--编辑主题弹窗-->
+  <div class="popup" v-show="editGatherShow">
+    <div class="mask" @click="editGatherClose()"></div>
+    <div class="add">
+      <div class="gatherColor">
+        <div class="gatherTitle">添加集合</div>
+        <div class="gatherClose" @click="editGatherClose()">×</div>
+      </div>
+      <div class="labelName">
+        <div style="float:left; line-height:40px; margin:0 10px 0 70px;">集合名称：</div>
+        <el-form :model="ruleForm_01" :rules="rules" ref="ruleForm_01" style="float:left;">
+          <el-form-item prop="highlightWords01">
+            <el-input style="width:180px;" maxlength=10 v-model="ruleForm_01.highlightWords01" placeholder="10个字以内"></el-input>
+            <span class="span1">{{ruleForm_01.highlightWords01.length}}/10字</span>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="judge">
+        <el-button @click="editGatherClose()">取消</el-button>
+        <el-button @click="editTheme()" type="primary">确定</el-button>
       </div>
     </div>
   </div>
@@ -98,14 +121,21 @@
         tableData: [],
         //分页
         currentPage: 1,
-        total:1,
-        pagesize:2,
+        total:0,
+        pagesize:10,
         //弹窗字数限制
         ruleForm:{
           highlightWords: '',
         },
+        ruleForm_01:{
+          highlightWords01:'',
+        },
         rules:{
           highlightWords:[
+            { required: true, message: '不能为空', trigger: 'blur' },
+            { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
+          ],
+          highlightWords01:[
             { required: true, message: '不能为空', trigger: 'blur' },
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
           ],
@@ -113,6 +143,9 @@
         gatherShow:false,//添加主题弹窗
         deleteGatherShow:false,//删除主题弹窗
         ensure:'',//删除主题
+        editGatherShow:false,//编辑主题弹窗
+        clickTab:'',//点击切换获取当前值
+        sid:'',
        };   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         
@@ -177,11 +210,14 @@
         }
       },
       //分页
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+      handleSizeChange(page) {
+        this.currentPage = 1;
+        this.pagesize = page;
+        this.themeList();
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+      handleCurrentChange(currentPage) {
+        this.currentPage = currentPage;
+        this.themeList();
       },
       //添加主题弹窗关闭、确定添加
       gatherClose(){
@@ -220,6 +256,10 @@
                 if(response.data.isSuccess == false){
                   _this.$message.error("添加失败,该供应商已存在");
                 } else {
+                  _this.$message({
+                    type:"success",
+                    message:"添加成功"
+                  })
                   _this.ruleForm.highlightWords = '';
                   _this.gatherShow = false;
                   _this.pageList();
@@ -233,15 +273,14 @@
       },
       //删除主题方法
       deleteTheme(index){
-        var sid="";
         for(var i =0; i<this.editableTabs.length; i++){
-          if(i= this.editableTabsValue){
-            sid = this.editableTabs[i].id
+          if(i== this.editableTabsValue){
+            this.sid = this.editableTabs[i].id
           }
         }
         let _this = this;
         this.$http.post(this.GLOBAL.serverSrc + "/universal/labletype/api/delete", {
-          id: sid
+          id: this.sid
         })
           .then(function(response) {
             _this.$message({
@@ -255,7 +294,63 @@
             console.log(error);
           });
       },
-      //列表显示
+      //修改主题方法
+      editTheme(){
+        var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/universal/labletype/api/save",
+            {
+              "object": {
+                "id": this.sid,
+                "typeName": this.ruleForm_01.highlightWords01,
+                "createTime": "2019-03-08T08:19:11.173Z",
+                "code": "string",
+                "isDeleted": 0
+              }
+            },
+          )
+          .then(function (response) {
+            if(response.data.isSuccess == false){
+              _this.$message.error("修改失败,该标签已存在");
+            }
+            else{
+              _this.$message({
+                type:"success",
+                message:"修改成功"
+              })
+              _this.editGatherShow = false;
+              _this.pageList();
+            }  
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+      },
+      //关闭编辑主题弹窗
+      editGatherClose(){
+        this.editGatherShow = false;
+        this.ruleForm_01.highlightWords01 = '';
+      },
+      //获取当前项的标题
+      handleClick(tab, event) {//点击切换获取当前值
+        this.clickTab = tab.label;
+      },
+      //显示编辑主题弹窗
+      editGatherTheme(e){
+        this.editGatherShow = true;
+        this.aaa();
+        this.ruleForm_01.highlightWords01 = this.clickTab;
+      },
+      aaa(){
+        for(var i =0; i<this.editableTabs.length; i++){
+          if(i== this.editableTabsValue){
+            this.clickTab = this.editableTabs[i].typeName;
+            this.sid = this.editableTabs[i].id;
+          }
+        }
+      },
+      
+      //主题列表显示
       pageList() {
         var that = this
         this.$http.post(
@@ -281,12 +376,41 @@
             }
             that.tabIndex = that.editableTabs.length
           //  that.editableTabsValue = that.editableTabs.length
+            that.themeList();
           })
           .catch(function (obj) {
             console.log(obj)
           })
       },
-
+      //产品列表显示
+      themeList() {
+        this.aaa();
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/universal/olabel/api/olabelpage",
+          {
+            "pageIndex": this.currentPage,
+            "pageSize": this.pagesize,
+            "total": 0,
+            "object": {
+              "id": this.sid,
+              "labelName": "",
+              "tagType": 1,
+              "createTime": "2019-03-11T05:15:08.895Z",
+              "code": "string",
+              "isDeleted": 0
+            }
+          },)
+          .then(function (obj) {
+            that.total = obj.data.total
+            that.tableData = obj.data.objects
+            that.tabIndex = that.tableData.length
+          //  that.editableTabsValue = that.editableTabs.length
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+      },
     }
 }
 
