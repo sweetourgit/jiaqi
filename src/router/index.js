@@ -26,6 +26,7 @@ import sharedInventory from '@/page/productManagement/sharedInventory/sharedInve
 import changePro from '@/page/productManagement/changePro/changePro'
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 import priInsert from '@/page/contentInfo/priManagement/priInsert'
+import priList from '@/page/contentInfo/priManagement/priList'
 import searchOrder from '@/page/orderManagement/orderList/searchOrder'
 import orderList from '@/page/orderManagement/orderList/children/orderList'
 import orderDetail from '@/page/orderManagement/orderList/children/orderDetail'
@@ -162,9 +163,16 @@ export default new Router({
         keepAlive: true,
         auth:true}
     },{
+      path: '/priList',
+      component: priList,
+      name: '权限配置',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },{
       path: '/priInsert',
       component: priInsert,
-      name: '权限管理',
+      name: '添加模块',
       meta: {
         keepAlive: true,
         auth:true}

@@ -96,7 +96,7 @@
                 },
                 {
                   value: '权限管理',
-                  router:'/priInsert'
+                  router:'/priList'
                 }
               ]
             },
