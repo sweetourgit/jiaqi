@@ -2282,7 +2282,7 @@
       });
     },
     dest_01(item){
-      this.dynamicTags2.push({"labelID": item.id,"label": item.value});
+      this.dynamicTags2.push({"labelID": item.id,"label": item.value,"teamID":0});
       this.ruleForm.operationLabel = "";
       this.inputVisible2 = false;
     },
