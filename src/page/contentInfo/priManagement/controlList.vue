@@ -1,51 +1,40 @@
 <template>
   <div>
      <el-row class="button">
-       <el-button @click="insertModuleO">新增</el-button>
-       <el-button :disabled="forbidden" @click="delModule">删除</el-button>
-       <el-button :disabled="forbidden" @click="editModuleO">编辑</el-button>
-       <el-button :disabled="forbidden" @click="controlList">权限配置</el-button>
+       <el-button @click="insertControlO">新增</el-button>
+       <el-button :disabled="forbidden" @click="delControl">删除</el-button>
+       <el-button :disabled="forbidden" @click="editControlO">编辑</el-button>
      </el-row>
     <!--list-->
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
        <el-table-column  prop="id" label="ID" min-width="60"></el-table-column>
-       <el-table-column  prop="name" label="功能名称" min-width="150"></el-table-column>
-       <el-table-column  prop="uri" label="页面地址" min-width="280"></el-table-column>
-       <el-table-column  prop="guid" label="唯一标识" min-width="250"></el-table-column>
-       <el-table-column  prop="parentID" label="所属上级" min-width="150"></el-table-column>
+       <el-table-column  prop="name" label="名称" min-width="150"></el-table-column>
+       <el-table-column  prop="route" label="路径" min-width="280"></el-table-column>
+       <el-table-column  prop="key" label="控件ID" min-width="150"></el-table-column>
      </el-table>
-     <el-pagination class="pagination"
-        @size-change="handleSizeChange"
-        background
-        @current-change="handleCurrentChange"
-        :current-page="1"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination> 
       <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
-          <el-form :model="rformA" :rules="rules" ref="rformA" label-width="100px" class="demo-ruleForm">
-             <el-form-item label="功能名称" prop="name">
-                 <el-input v-model="rformA.name"></el-input>
+          <el-form :model="rformB" :rules="rules" ref="rformB" label-width="100px" class="demo-ruleForm">
+             <el-form-item label="名称" prop="name">
+                 <el-input v-model="rformB.name"></el-input>
              </el-form-item>
-             <el-form-item label="页面地址" prop="uri">
-                 <el-input v-model="rformA.uri"></el-input>
+             <el-form-item label="路径" prop="route">
+                 <el-input v-model="rformB.route"></el-input>
              </el-form-item>
-             <el-form-item label="所属上级" prop="parentID">
-                 <el-input v-model="rformA.parentID"></el-input>
+             <el-form-item label="控件ID" prop="key">
+                 <el-input v-model="rformB.key"></el-input>
              </el-form-item>
           </el-form>
           <div slot="footer">
             <el-button @click="cancel">取 消</el-button>
-            <el-button type="primary" @click="saveModule('rformA')" class="confirm">确 定</el-button>
+            <el-button type="primary" @click="saveControl('rformB')" class="confirm">确 定</el-button>
           </div>
       </el-dialog>
    </div>
 </template>
 
 <script>
+import {formatDate} from '../../../components/tools/publicMethod.js'
 export default {
   data() {
     return {
@@ -53,25 +42,22 @@ export default {
         groupList: [],
         multipleSelection: [],   //选中的list
         forbidden:true,         //按钮是否禁用
-        pageSize: 10, // 设定默认分页每页显示数
-        pageIndex: 1, // 设定当前页数
-        total: 0,
         title:"",
         dialogFormVisible:false,
-        rformA: {
+        rformB: {
           name: "",
-          uri: "",
-          parentID: ""
+          route: "",
+          key: ""
         },
         rules: {
-          name: [{ required: true, message: '功能名称不能为空', trigger: 'blur' }],
-          uri: [{ required: true, message: '页面地址不能为空', trigger: 'blur' }],
-          parentID: [{ required: true, message: '唯一标识不能为空', trigger: 'blur' }]
+          name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
+          route: [{ required: true, message: '路径不能为空', trigger: 'blur' }],
+          key: [{ required: true, message: '控件ID不能为空', trigger: 'blur' }]
         }
     }
   },
   created(){
-    this.moduleList()
+    this.controlList();
   },
   methods: {
       getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -100,33 +86,30 @@ export default {
           }
         }
       },
-      moduleList(){  //获取Module
-        this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/page',{
-             "pageIndex": this.pageIndex,
-             "pageSize": this.pageSize,
+      controlList(){  //获取control
+        this.$http.post(this.GLOBAL.serverSrc + '/org/control/api/list',{
              "object": {
-               "isDeleted": 0,
+               "guid": this.$route.query.guid
               }
             }).then(res => {
                 if(res.data.isSuccess == true){
                    this.groupList=res.data.objects;
-                   this.total=res.data.total;
                 }
         })
       },
-      delModule(){ //删除Module
+      delControl(){ //删除control
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
            type: "warning"
         })
         .then(() => {
-              this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/delete',{
+              this.$http.post(this.GLOBAL.serverSrc + '/org/control/api/delete',{
                     "id": this.multipleSelection[0].id
                   }).then(res => {
                       if(res.data.isSuccess == true){
                          this.$message.success("删除成功");
-                         this.moduleList();
+                         this.controlList();
                   }
                })
           })
@@ -137,60 +120,48 @@ export default {
           });
         });
       },
-      controlList(){
-        this.$router.push({path: "/controlList?guid="+this.multipleSelection[0].guid});
-      },
-      handleSizeChange(val){
-        this.pageSize = val;
-        this.pageIndex = 1;
-        this.moduleList();
-      },
-      handleCurrentChange(val){
-        this.pageIndex = val;
-        this.moduleList();
-      },
-      saveModule(formName){ 
-         if(this.title == "增加模块"){
-            this.insertModule(formName);
+      saveControl(formName){ 
+         if(this.title == "增加权限"){
+            this.insertControl(formName);
          }else{
-            this.editModule(formName);
+            this.editControl(formName);
          }
       },
-      editModuleO(){   //编辑弹窗
-        this.getModule();
-        this.title="编辑模块";
+      editControlO(){   //编辑弹窗
+        this.getControl();
+        this.title="编辑权限";
         this.dialogFormVisible = true;        
       },
-      getModule(){   //获取一条Module
-        this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/get',{
+      getControl(){   //获取一条control
+        this.$http.post(this.GLOBAL.serverSrc + '/org/control/api/get',{
            "id":this.multipleSelection[0].id
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
-                 this.rformA.name=data.name;
-                 this.rformA.uri=data.uri;
-                 this.rformA.parentID=data.parentID;
+                 this.rformB.name=data.name;
+                 this.rformB.route=data.route;
+                 this.rformB.key=data.key;
               }
         }) 
       },
-      editModule(formName){  //编辑保存
+      editControl(formName){  //编辑保存
          this.$refs[formName].validate((valid) => {
           if(valid){
-             this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/save',{
+             this.$http.post(this.GLOBAL.serverSrc + '/org/control/api/save',{
                "object": {
                 "id": this.multipleSelection[0].id,
                 "createTime": formatDate(new Date()),
                 "isDeleted": 0,
                 "code": "string",
-                "name": this.rformA.name,
-                "uri": this.rformA.uri,
+                "name": this.rformB.name,
+                "route": this.rformB.route,
                 "guid": this.multipleSelection[0].guid,
-                "parentID": this.rformA.parentID,
+                "key": this.rformB.key,
                 "leaf": 0
               }
             }).then(res => {
                 if(res.data.isSuccess == true){                
-                  this.moduleList();
+                  this.controlList();
                   this.dialogFormVisible = false
                   this.$refs[formName].resetFields();
               }else{
@@ -203,43 +174,30 @@ export default {
           }
         })
       },
-      insertModuleO(){  //新增弹窗
-        this.title="增加模块";
+      insertControlO(){  //新增弹窗
+        this.title="增加权限";
         this.dialogFormVisible = true;
       },
-      insertModule(formName) {  //新增保存
+      insertControl(formName) {  //新增保存
         this.$refs[formName].validate((valid) => {
           if(valid){
-             this.$http.post(this.GLOBAL.serverSrc + '/universal/utinity/api/getguid',{
-               "object": true
-            }).then(res => {
-                if(res.data.isSuccess == true){
-                   this.guid = res.data.object;
-                   this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/insert',{
+                   this.$http.post(this.GLOBAL.serverSrc + '/org/control/api/insert',{
                      "object": {
                       "id": 0,
-                      "createTime": formatDate(new Date()),
-                      "isDeleted": 0,
-                      "code": "string",
-                      "name": this.rformA.name,
-                      "uri": this.rformA.uri,
-                      "guid": this.guid,
-                      "parentID": this.rformA.parentID,
-                      "leaf": 0
+                      "name": this.rformB.name,
+                      "route": this.rformB.route,                     
+                      "key": this.rformB.key,
+                      "guid": this.$route.query.guid
                     }
                   }).then(res => {
                       if(res.data.isSuccess == true){
-                         this.moduleList();
+                         this.controlList();
                          this.dialogFormVisible = false
                          this.$refs[formName].resetFields();
                       }else{
                          this.$message.success(res.data.result.message);
                       }
-                  })  
-              }else{
-                  this.$message.success(res.data.result.message);
-             }
-          })
+                  })
           } else {
             console.log('error submit!!');
             return false;
@@ -248,7 +206,7 @@ export default {
       },
       cancel(){
         this.dialogFormVisible = false
-        this.$refs["rformA"].resetFields();
+        this.$refs["rformB"].resetFields();
       }
   }
 }

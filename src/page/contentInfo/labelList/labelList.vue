@@ -3,7 +3,40 @@
   <div>
     <!--tabs切换-->
     <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick">
+<<<<<<< HEAD
       <el-tab-pane :key="index+''" v-for="(item, index) in editableTabs" :label="item.typeName" :name="index+''"></el-tab-pane>
+=======
+      <el-tab-pane :key="index+''" v-for="(item, index) in editableTabs" :label="item.typeName" :name="index+''">
+        <div class="labelBorder">
+          <div class="searchBox">
+            <!--清空-->
+            <div style="float:left">
+              <el-input placeholder="搜索标签名称" v-model="empty" class="empty" clearable></el-input>
+              <el-button class="primary" @click="emptyButton()" type="primary">重置</el-button>
+            </div>
+            <!--编辑删除主题-->
+            <div style="float:right;">
+              <el-button class="primary" @click="editGatherTheme($event)" type="primary">编辑集合</el-button>
+              <el-button class="primary" type="danger" @click="deleteGatherTheme()">删除集合</el-button>
+            </div>
+            <div class="actionButton">
+              <el-button>添加标签</el-button>
+              <el-button :disabled="forbidden">编辑标签</el-button>
+              <el-button :disabled="forbidden1">转移集合</el-button>
+              <el-button :disabled="forbidden1">删除标签</el-button>
+            </div>
+            <el-table :data="tableData" ref="multipleTable" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass"@selection-change="changeFun" @row-click="clickRow">
+              <el-table-column prop="id" label="ID" width="180" align="center"></el-table-column>
+              <el-table-column prop="labelName" label="标签名称" width="180" align="center"></el-table-column>
+              <el-table-column prop="product" label="绑定相关产品" align="center"></el-table-column>
+            </el-table>
+            <!--分页-->
+            <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+
+          </div>
+        </div>
+      </el-tab-pane>
+>>>>>>> 4ebe0cbbeb16b43959c80a2c00cc2166a8ac165b
     </el-tabs>
     <!--表格-->
     <div class="labelBorder">

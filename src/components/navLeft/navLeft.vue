@@ -95,8 +95,11 @@
                   router:'/merchantInfo'
                 },
                 {
-                  value: '权限管理',
+                  value: '功能管理',
                   router:'/priList'
+                },{
+                  value: '权限列表',
+                  router:'/proList'
                 }
               ]
             },
