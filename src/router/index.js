@@ -27,6 +27,7 @@ import changePro from '@/page/productManagement/changePro/changePro'
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
+import proList from '@/page/contentInfo/proList/proList'
 import searchOrder from '@/page/orderManagement/orderList/searchOrder'
 import orderList from '@/page/orderManagement/orderList/children/orderList'
 import orderDetail from '@/page/orderManagement/orderList/children/orderDetail'
@@ -166,6 +167,13 @@ export default new Router({
       path: '/priList',
       component: priList,
       name: '功能列表',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },{
+      path: '/proList',
+      component: proList,
+      name: '权限列表',
       meta: {
         keepAlive: true,
         auth:true}

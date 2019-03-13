@@ -97,6 +97,9 @@
                 {
                   value: '功能管理',
                   router:'/priList'
+                },{
+                  value: '权限列表',
+                  router:'/proList'
                 }
               ]
             },
