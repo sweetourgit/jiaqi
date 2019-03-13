@@ -13,16 +13,15 @@
             <!--编辑删除主题-->
             <div style="float:right;">
               <el-button class="primary" @click="editGatherTheme($event)" type="primary">编辑集合</el-button>
-              <el-button class="primary" type="danger">删除集合</el-button>
+              <el-button class="primary" type="danger" @click="deleteGatherTheme()">删除集合</el-button>
             </div>
             <div class="actionButton">
               <el-button>添加标签</el-button>
-              <el-button>编辑标签</el-button>
-              <el-button>转移集合</el-button>
-              <el-button type="danger">删除标签</el-button>
+              <el-button :disabled="forbidden">编辑标签</el-button>
+              <el-button :disabled="forbidden1">转移集合</el-button>
+              <el-button :disabled="forbidden1">删除标签</el-button>
             </div>
-            <el-table class="labelTable" :data="tableData" border style="width: 100%":header-cell-style="getRowClass">
-              <el-table-column prop="number" type="selection" width="55" align="center"></el-table-column>
+            <el-table :data="tableData" ref="multipleTable" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass"@selection-change="changeFun" @row-click="clickRow">
               <el-table-column prop="id" label="ID" width="180" align="center"></el-table-column>
               <el-table-column prop="labelName" label="标签名称" width="180" align="center"></el-table-column>
               <el-table-column prop="product" label="绑定相关产品" align="center"></el-table-column>
@@ -118,7 +117,11 @@
         editableTabs: [],
         tabIndex: 0,
         empty:'',//清空搜索框
+        //表格数据
         tableData: [],
+        multipleSelection: [],
+        forbidden1:true,
+        forbidden:true,
         //分页
         currentPage: 1,
         total:0,
@@ -202,11 +205,37 @@
         this.empty = ''
       },
       //表格标题样式
-      getRowClass({ row, column, rowIndex, columnIndex }) {
+     getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
-          return 'background:#F7F7F7'
+          return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
         } else {
           return ''
+        }
+      },
+      //产品列表勾选button显示
+      changeFun(val) {
+        this.multipleSelection=val;
+        if(this.multipleSelection.length==1){
+          this.forbidden=false;
+        }else{
+          this.forbidden=true;
+        };
+        if(this.multipleSelection.length>0){
+          this.forbidden1=false;
+        }else{
+          this.forbidden1=true;
+        }
+        //event.cancelBubble = true;//row-click和selection-change耦合事件
+      },
+      clickRow(row){    //选中行复选框勾选
+        this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+        this.$refs.multipleTable.toggleRowSelection(row);
+      },
+      rowClass({row, rowIndex}){  //选中行样式改变
+       for(var i=0;i<this.multipleSelection.length;i++){
+          if(this.multipleSelection[i].id==row.id){
+             return { "background-color": "#ecf5ff" }
+          }
         }
       },
       //分页
@@ -236,6 +265,9 @@
       deleteGather(ensure){
         this.handleTabsEdit(this.tabIndex, "remove");
         this.deleteTheme();
+      },
+      deleteGatherTheme(){
+        this.deleteGatherShow = true;
       },
       //添加主题方法
       addTheme(){
@@ -342,7 +374,7 @@
         this.cycleId();
         this.ruleForm_01.highlightWords01 = this.clickTab;
       },
-      //循环ID
+      //循环主题ID
       cycleId(){
         console.log("cycleId")
         for(var i =0; i<this.editableTabs.length; i++){
@@ -352,7 +384,8 @@
           }
         }
       },
-      
+
+
       //主题列表显示
       pageList() {
         var that = this
@@ -462,6 +495,9 @@
 .labelName{width: 400px; margin-left:auto; margin-right:auto; margin: 50px 0 0 0; text-align: center; }
 .el-form>>>.el-form-item{margin-bottom:0px;}
 .judge { padding: 30px 0 0 0; clear: both; text-align: center;}
+/**/
+.actionButton .el-button{width:80px;padding: 0;line-height: 35px}
+.el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}
 </style>
 
 

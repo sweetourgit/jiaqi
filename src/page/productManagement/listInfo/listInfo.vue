@@ -85,15 +85,16 @@
               <span class="lightspot-span">{{ruleForm.highlightWords4.length}}/8字</span>
             </el-form-item>
             <!-- 运营标签 -->
-            <el-form-item label="运营标签" prop="operationLabel" ref="operationLabel" style="clear:both;" label-width="120px">
+            <el-form-item label="运营标签" ref="operationLabel" style="clear:both;" label-width="120px">
               <div class="destination-input">
-                <el-tag :key="tag2" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
-                  {{tag2}}
+                <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
+                  {{tag2.label}}
                 </el-tag>
-                <el-input class="lable_input" v-if="inputVisible2" placeholder="请输入运营标签" v-model="ruleForm.operationLabel" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm2" @blur="handleInputConfirm2">
-                </el-input>
+                <el-autocomplete id="input-error" class="lable_input" v-if="inputVisible2" v-model="ruleForm.operationLabel" ref="saveTagInput" size="small" placeholder="请输入运营标签" @keyup.enter.native="handleInputConfirm2" :fetch-suggestions="querySearch5" :trigger-on-focus="false" @select="dest_01" @blur="handleInputConfirm2">
+                </el-autocomplete>
                 <el-button v-else class="operation_Label" size="small" @click="showInput2">请输入运营标签</el-button>
               </div>
+              <span id="empty" v-show="empty">不能为空</span>
             </el-form-item>
             <!-- 头图 -->
             <el-form-item label="头图" prop="avatarImages" label-width="120px">
@@ -1329,6 +1330,7 @@
         slideshowUrl: '',
         vague: [],
         tableData1: [],
+        tableData2:[],
         list: [],
         excurList: [],
         //目的地
@@ -1693,6 +1695,7 @@
         dynamicTags2: [],
         inputVisible2: false,
         inputVal: '',
+        empty:'',
         // 出发地
       dynamicTags3: [],
         inputVisible3: false,
@@ -1831,10 +1834,10 @@
             strengths.push({"strength":this.ruleForm.highlightWords4})
         };
         //运营标签
-        let dynamicTagsc=[];
+        /*let dynamicTagsc=[];
         for(var i=0;i<this.dynamicTags2.length;i++){
             dynamicTagsc.push({"label":this.dynamicTags2[i]})
-        };
+        };*/
          //经停信息转字符串
          let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
          let traff=JSON.parse(traff1);
@@ -1850,7 +1853,6 @@
          for(var i=0;i<sche.length;i++){
               sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
          }
-
         //行程信息
         var object={
                   //基本信息接口数据
@@ -1864,7 +1866,7 @@
                   isDeleted:0,
                   confirmType:this.ruleForm.orderConfirmationType,//基本信息订单确认类型
                   strengths:strengths,//基本信息亮点词
-                  label:dynamicTagsc,//基本信息运营标签
+                  label:this.dynamicTags2,//基本信息运营标签
                   pictureID:0,//基本信息头图?
                   vedioID:0,//基本信息视频?
                   pepeatpic:"",//基本信息轮播图?
@@ -2268,6 +2270,9 @@
     },
     //运营标签
     handleClose2(tag2) {
+      if(tag2.id==this.ruleForm.bourn.id){
+         this.ruleForm.bourn=[];
+      }
       this.dynamicTags2.splice(this.dynamicTags2.indexOf(tag2), 1);
     },
     showInput2() {
@@ -2276,22 +2281,56 @@
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
+    dest_01(item){
+      this.dynamicTags2.push({"labelID": item.id,"label": item.value});
+      this.ruleForm.operationLabel = "";
+      this.inputVisible2 = false;
+    },
     handleInputConfirm2() {
       this.$refs['operationLabel'].validate()
-      var str = this.ruleForm.operationLabel;
-      var pat =  /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/
-      if(str.match(pat)){
-        let inputVal = this.ruleForm.operationLabel;
-        if (inputVal) {
-          this.dynamicTags2.push(inputVal);
+      if(this.ruleForm.operationLabel !== ''){
+        setTimeout(res =>{
+        let inputVal4 = this.ruleForm.operationLabel;
+       // if (inputVal4) {
+       //   this.dynamicTags4.push(inputVal4);
+      //  }
+          this.inputVisible2 = false;
+          this.ruleForm.operationLabel= '';
+          this.empty = false;
+        },200)
+      }else{
+        if(this.dynamicTags2.length == 0){
+          this.empty = true;
+          document.getElementById('input-error').style.border="solid 1px red";
+        }else{
+          this.inputVisible2 = false;
         }
-        this.inputVisible2 = false;
-        this.ruleForm.operationLabel= '';
-      }
-      if(this.ruleForm.operationLabel == ''){
-        this.inputVisible2 = false;
       }
     },
+    querySearch5(queryString5, cb) {
+      this.tableData2 = []
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/olabelfuzzy', {
+        "object": {
+          labelName: queryString5
+        }
+      }).then(res => {
+          for(let i=0;i<res.data.objects.length;i++){
+            this.tableData2.push({
+              "value" : res.data.objects[i].labelName,
+              "id":res.data.objects[i].id
+            })
+          }
+          var results = queryString5 ? this.tableData2.filter(this.createFilter(queryString5)) : [];
+          cb(results)
+        }).catch(err => {
+          console.log(err);
+        })
+      },
+      createFilter(queryString5){
+        return (restaurant) => {
+          return (restaurant.value);
+        }
+      },
     // 出发地
     querySearch3(queryString1, cb) {
       this.vague = []
@@ -2635,7 +2674,7 @@
   .el-autocomplete>>>.el-input--small .el-input__inner{ height: 35px!important; }
   .input-new-tags{ width:200px; float: left; margin-left: 5px; height: 30px; line-height: 30px; padding-top: 1px;margin-top:1px; margin-bottom:4px; padding-bottom: 2px}
   .operation_Label{ width:120px; float: left; margin-left: 5px; height: 36px; line-height: 30px; padding-top: 2px;margin-top:1px; margin-bottom:1px; }
-  #isNull,#zero{ position: relative; float: left; top:30px; left:-550px ; color: #f56c6c; font-size: 12px;}
+  #isNull,#zero,#empty{ position: relative; float: left; top:30px; left:-550px ; color: #f56c6c; font-size: 12px;}
   .redStar{ color: #f56c6c; float: left; margin-left:-64px;}
   .number-day>>>.el-form-item__error{ left:0px; }
   .err_span>>>.el-form-item__error{ left:0px; }

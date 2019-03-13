@@ -25,7 +25,7 @@ import placeOrder from '@/page/productManagement/regimentPlan/children/placeOrde
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 import changePro from '@/page/productManagement/changePro/changePro'
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
-import priInsert from '@/page/contentInfo/priManagement/priInsert'
+import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
 import searchOrder from '@/page/orderManagement/orderList/searchOrder'
 import orderList from '@/page/orderManagement/orderList/children/orderList'
@@ -165,14 +165,14 @@ export default new Router({
     },{
       path: '/priList',
       component: priList,
-      name: '权限配置',
+      name: '功能列表',
       meta: {
         keepAlive: true,
         auth:true}
     },{
-      path: '/priInsert',
-      component: priInsert,
-      name: '添加模块',
+      path: '/controlList',
+      component: controlList,
+      name: '权限配置',
       meta: {
         keepAlive: true,
         auth:true}
