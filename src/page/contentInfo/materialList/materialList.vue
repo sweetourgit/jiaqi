@@ -7,10 +7,10 @@
         </div>
         <div class="header_seach">
           <div class="search-input">
-            <el-input v-model="addName" placeholder="目的地\名称"  clearable></el-input>
+            <el-input v-model="searchName" placeholder="目的地\名称"  clearable></el-input>
           </div>
           <div class="search-button">
-            <el-button   type="primary" icon="el-icon-search" ></el-button>
+            <el-button type="primary" icon="el-icon-search" ></el-button>
           </div>
         </div>
     </div>
@@ -52,33 +52,36 @@
     </el-pagination>
     <!--分页end-->
     </div>
-        
-
     <!-- 所有的弹窗 -->
     <!-- 1.添加相册的弹窗 -->
-  <el-dialog title="添加相册" :visible.sync="addAlbum" custom-class="city_list" append-to-body width="27%"  class="clearfix form_left">
-  <el-form :model="form"  ref="form">
-   <el-form-item label="名称:" prop="name" :label-width="formLabelWidth" style="width:350px;margin-left:35px" >
-      <el-input v-model="form.name" auto-complete="off" placeholder="请输入相册名称"></el-input>
-    </el-form-item>
-    <el-form-item label="类型:" prop="type" :label-width="formLabelWidth" style="margin-left:35px;width:350px">
-      <el-select v-model="form.type" placeholder="请选择相册类型" style="width:250px">
-        <el-option label="区域一" value="shanghai"></el-option>
-        <el-option label="区域二" value="beijing"></el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item label="目的地:" prop="destination" :label-width="formLabelWidth" style="margin-left:35px;width:350px">
-      <el-select v-model="form.destination" placeholder="请选择目的地" style="width:250px">
-        <el-option label="区域一" value="shanghai"></el-option>
-        <el-option label="区域二" value="beijing"></el-option>
-      </el-select>
-    </el-form-item>
-  </el-form>
-  <div slot="footer" class="dialog-footer">
-    <el-button @click="albumClose">取 消</el-button>
-    <el-button type="primary" @click="albumSuccess">确 定</el-button>
-  </div>
-</el-dialog>
+    <el-dialog title="添加相册" :visible.sync="addAlbum" custom-class="city_list" append-to-body width="27%"  class="clearfix form_left">
+    <el-form :model="form"  ref="form">
+     <el-form-item label="名称:" prop="name" :label-width="formLabelWidth" style="width:350px;margin-left:35px" >
+        <el-input v-model="form.name" auto-complete="off" placeholder="请输入相册名称"></el-input>
+      </el-form-item>
+      <el-form-item label="类型:" prop="type" :label-width="formLabelWidth" style="margin-left:35px;width:350px">
+        <el-select v-model="form.type" placeholder="请选择相册类型" style="width:250px">
+          <el-option label="区域一" value="shanghai"></el-option>
+          <el-option label="区域二" value="beijing"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="目的地:" prop="destination" :label-width="formLabelWidth" style="margin-left:35px;width:350px">
+        <el-select v-model="form.destination" placeholder="请选择目的地" style="width:250px">
+          <el-option label="区域一" value="shanghai"></el-option>
+          <el-option label="区域二" value="beijing"></el-option>
+        </el-select>
+      </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="albumClose">取 消</el-button>
+          <el-button type="primary" @click="albumSuccess" class="confirm">确 定</el-button>
+        </div>
+    </el-dialog>
+
+
+
+
+
 
 <!-- 2.添加照片的弹窗 -->
 <el-dialog title="添加照片" :visible.sync="addAlbumImg" custom-class="city_list" style="margin-top:-100px"  append-to-body width="1600px"  class="clearfix form_left">
@@ -261,11 +264,8 @@
 </template>
 
 <script scoped>
-
   export default {
- 
-    data() {
-        
+    data() {        
       return {       
         // 分页
         pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
@@ -303,13 +303,17 @@
           num:'10',
           imgs:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
         }],
+        searchName:'',
+
+
+
+
 
 
 
 
         // 选中
-        classa:'',
-        addName:'',
+        classa:'',        
         // 相册第一张图片
         addressImg: '', 
          // 树形控件的数据
@@ -349,28 +353,6 @@
         // 相册里面的第一个图片
         addressImg:[{
 
-        }],
-        // 相册里面的其他图片
-        
-        // 素材里面的其他图片
-        marterialImg:[{
-          name:'0',
-          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
-        },{
-          name:'1',
-          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
-        },{
-          name:'2',
-          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
-        },{
-          name:'3',
-          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
-        },{
-          name:'4',
-          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
-        },{
-          name:'5',
-          img:'http://ht.sweetuu.com//PhotoGallery/2015/07/20/763773619351461d9e04e605673d1919.jpg',
         }],
         // 标签
         Label:[
@@ -834,4 +816,5 @@
 .el-checkbox+.el-checkbox{margin-left: 0px}
 .clearfix:after{display: block;clear: both;content: "";visibility: hidden;height: 0}
 .clearfix{zoom:1}
+.confirm{margin:0 140px 0 20px}
 </style>
