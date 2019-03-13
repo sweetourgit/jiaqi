@@ -23,7 +23,7 @@
         :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
-      </el-pagination>
+      </el-pagination> 
       <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformA" :rules="rules" ref="rformA" label-width="100px" class="demo-ruleForm">
