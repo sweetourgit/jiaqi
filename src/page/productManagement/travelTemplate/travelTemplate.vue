@@ -1647,6 +1647,9 @@
         this.$http.post(this.GLOBAL.serverSrc + '/universal/template/api/templatedelete', {
           'id': data.id
         }).then(res => {
+          if (this.tableData.length == 1) {
+            this.currentPage = this.currentPage - 1;
+          }
           this.initData();
           this.$message({
             type: 'success',
