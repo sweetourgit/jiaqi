@@ -110,7 +110,7 @@
             <el-option
               v-for="(item, index) in typeSelect"
               :label="item.name"
-              :value="item.id + '-' +item.name"
+              :value="item.id + '-' + item.name"
               :key="index">
             </el-option>
           </el-select>

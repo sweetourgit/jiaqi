@@ -4,10 +4,9 @@
     <!-- 年份 月份 -->
     <div class="month">
         <ul class="date">
-            <!--点击会触发pickpre函数，重新刷新当前日期 @click(vue v-on:click缩写) -->
+            <!--点击会触发pickpre函数，重新刷新当前日期 @click -->
             <li class="arrow" @click="pickPre(currentYear,currentMonth)"><</li>
             <li class="year-month" >
-              <!-- @click="pickYear(currentYear,currentMonth)" -->
                {{currentYear}}-{{currentMonth}}月
             </li>
             <li class="arrow" @click="pickNext(currentYear,currentMonth)">></li>
