@@ -19,8 +19,8 @@
           <el-button class="primary" type="danger" @click="deleteGatherTheme()">删除集合</el-button>
         </div>
         <div class="actionButton">
-          <el-button>添加标签</el-button>
-          <el-button :disabled="forbidden">编辑标签</el-button>
+          <el-button @click="addLabel()">添加标签</el-button>
+          <el-button @click="editLabel()" :disabled="forbidden">编辑标签</el-button>
           <el-button :disabled="forbidden1">转移集合</el-button>
           <el-button :disabled="forbidden1">删除标签</el-button>
         </div>
@@ -95,6 +95,20 @@
       </div>
     </div>
   </div>
+  <!--添加、编辑列表弹窗-->
+  <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
+    <div style="float:left; line-height:40px; margin:0 10px 0 70px;">标签名称：</div>
+    <el-form :model="rformA" :rules="rules" ref="rformA" label-width="100px" class="demo-ruleForm">
+      <el-form-item prop="highlightWords">
+       <el-input style="width:180px;" maxlength=10 v-model="rformA.highlightWords" placeholder="10个字以内"></el-input>
+       <span class="span1">{{rformA.highlightWords.length}}/10字</span>
+      </el-form-item>
+    </el-form>
+    <div slot="footer">
+      <el-button @click="cancel">取 消</el-button>
+      <el-button type="primary" @click="saveModule('rformA')" class="confirm">确 定</el-button>
+    </div>
+  </el-dialog>
   <!--绑定相关产品弹窗-->
   <div class="popup" v-show="contentShow=false">
     <div class="mask"></div>
@@ -113,6 +127,11 @@
   export default {
     data() {  
        return {
+        title:'',
+        dialogFormVisible:false,
+        rformA: {
+          highlightWords: ""
+        },
         editableTabsValue: '0',
         editableTabs: [],
         tabIndex: 0,
@@ -384,7 +403,19 @@
           }
         }
       },
-
+      //添加、编辑列表弹窗
+      cancel(){
+        this.dialogFormVisible = false
+        this.$refs["rformA"].resetFields();
+      },
+      addLabel(){
+        this.title="添加标签";
+        this.dialogFormVisible = true;
+      },
+      editLabel(){
+        this.title="编辑标签";
+        this.dialogFormVisible = true;
+      },
 
       //主题列表显示
       pageList() {
