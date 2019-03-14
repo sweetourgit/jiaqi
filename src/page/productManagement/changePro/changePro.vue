@@ -200,7 +200,7 @@
                     </el-select>
                   </el-form-item>
                   <!--目的地-->
-                    <div class="aid_address" style="float: left; margin-left: 355px">
+                    <div class="aid_address" style="float: left;">
                   <div class="setout"><span>*</span>目的地</div>
                   <el-form-item prop="bourn" style="float:left">
                     <el-select class="depart" v-model="ruleForm.bourn" placeholder="目的地" value-key="id">
@@ -2779,9 +2779,9 @@
 
 <style scoped>
   .change_save{ position: absolute;top: 70px;right: 206px;}
-  .aid_address{float: left; margin-left: 355px}
-  .set_meal_name{float: left;margin-bottom: 10px;margin-left: 600px;margin-top: -15px;}
-  .border_side{border: 1px solid #f2f2f2;  width: 850px; margin-left: 30px; float: left; padding-top: 10px;}
+  .aid_address{float: left; }
+  .set_meal_name{float: left;margin-left: 150px;margin-top: 5px;}
+  .border_side{border: 1px solid #f2f2f2; width:100%; margin-left: 30px; float: left; padding-top: 10px;}
   .span2{ float:left; margin-left:16px; }
   .tripInfo { font-family: '微软雅黑'; font-size: 14px; margin: 0 0 100px 0; }
   .warp { position: relative; padding-bottom: 100px; }

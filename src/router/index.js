@@ -259,6 +259,7 @@ export default new Router({
     },{
       path: '/changePro',
       component: changePro,
+      name: '编辑产品',
       meta: {
         keepAlive: true,
         auth:true}

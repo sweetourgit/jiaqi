@@ -84,6 +84,7 @@
       <el-button plain :disabled="reable">退改</el-button>
       <el-button plain @click = "groupStage" :disabled="reable">团期/库存</el-button>
       <el-button type="danger" plain :disabled="reable" @click="handleDelete">删除</el-button>
+
     </div>
 
     <div class="table_trip" style="margin-left: 50px; width: 80%;">
@@ -111,6 +112,7 @@
         <el-table-column
           prop="name"
           label="产品名称"
+
           align="center"
           >
           <template slot-scope="scope">
@@ -121,14 +123,14 @@
           prop="mu_address"
           label="目的地"
           align="center"
-          width="150%"
+          width="120%"
          >
         </el-table-column>
         <el-table-column
           prop="options"
           label="操作人"
           align="center"
-          width="150%"
+          width="100%"
          >
         </el-table-column>
         <el-table-column
@@ -162,7 +164,7 @@
     </div>
 
       <!--分页-->
-      <div class="block">
+      <div class="block" style="margin-bottom: 20px">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -378,6 +380,7 @@ import DateList from './component/DateList'
     },
      data() {
       return {
+        pageNum:'',
         codePrefix:"",
         codeSuffix:'',
         pagesize:10,
@@ -729,28 +732,18 @@ import DateList from './component/DateList'
        type: [],
         value: '',
         piaid:'',
-        tableData: [{
-          id:'1',
-          type:'跟团游',
-          name:'xxx 跟团游',
-          mu_address:'xxx',
-          options:'xxx',
-          status:'1',
-          opers:'飞猪 携程',
-          price:'7900'
-        }],
+        tableData: [],
       // 属性输入框
         price:[],
         abc: false
       }
     },
     methods: {
-      handleDelete(){
-        var that = this
+      deleta(){
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teamdelete",
           {
-                "id": that.pid
+            "id": that.pid
           }
         )
           .then(function (obj) {
@@ -759,6 +752,68 @@ import DateList from './component/DateList'
           .catch(function (obj) {
 
           })
+      },
+
+      handleDelete(){
+        this.$confirm('此操作将删除该模板', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          if(this.tableData.length ==1){
+            this.pageNum = this.pageNum - 1;
+          }
+          var that =  this;
+          this.$http.post( this.GLOBAL.serverSrc + "/team/api/teamdelete", {
+            "id": that.pid
+          }).then(res => {
+            var that = this
+            this.$http.post(
+              this.GLOBAL.serverSrc + "/team/api/teampage",
+              {
+                "pageIndex": this.pageNum,
+                "pageSize": this.pagesize,
+                "total": 0,
+                "object": {
+                  "loadPackage": true
+                }
+              },
+              {
+                headers:{
+                  'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+              }
+            )
+              .then(function (obj) {
+                console.log(obj.data.total);
+                that.total = obj.data.total;
+                that.tableData =obj.data.objects;
+                that.tableData.forEach(function (v, k, arr) {
+                  arr[k]['type'] = "跟团游"
+                  arr[k]['name'] = obj.data.objects[k].title;
+                  arr[k]['mu_address'] = "xxx"
+                  arr[k]['options'] = obj.data.objects[k].createUser
+                  arr[k]['status'] = "1"
+                  arr[k]['opers'] = "飞猪 携程"
+                  arr[k]['price'] = obj.data.objects[k].refPrice
+                })
+              })
+              .catch(function (obj) {
+                console.log(obj)
+              })
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+          }).catch(err => {
+            console.log(err);
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        })
       },
       handDb(){
         this.$router.push({
@@ -939,12 +994,12 @@ import DateList from './component/DateList'
             that.tableData =obj.data.objects;
             that.tableData.forEach(function (v, k, arr) {
               arr[k]['type'] = "跟团游"
-              arr[k]['name'] = "xxx 跟团游"
+              arr[k]['name'] = obj.data.objects[k].title;
               arr[k]['mu_address'] = "xxx"
-              arr[k]['options'] = "xxx"
+              arr[k]['options'] = obj.data.objects[k].createUser
               arr[k]['status'] = "1"
               arr[k]['opers'] = "飞猪 携程"
-              arr[k]['price'] = "7900"
+              arr[k]['price'] = obj.data.objects[k].refPrice
             })
           })
           .catch(function (obj) {
@@ -952,6 +1007,7 @@ import DateList from './component/DateList'
           })
       },
       handleCurrentChange(val) {
+        this.pageNum = val;
         var that = this
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teampage",
@@ -975,12 +1031,12 @@ import DateList from './component/DateList'
             that.tableData =obj.data.objects;
             that.tableData.forEach(function (v, k, arr) {
               arr[k]['type'] = "跟团游"
-              arr[k]['name'] = "xxx 跟团游"
+              arr[k]['name'] = obj.data.objects[k].title;
               arr[k]['mu_address'] = "xxx"
-              arr[k]['options'] = "xxx"
+              arr[k]['options'] = obj.data.objects[k].createUser
               arr[k]['status'] = "1"
               arr[k]['opers'] = "飞猪 携程"
-              arr[k]['price'] = "7900"
+              arr[k]['price'] = obj.data.objects[k].refPrice
             })
           })
           .catch(function (obj) {
@@ -1430,12 +1486,12 @@ import DateList from './component/DateList'
           that.tableData =obj.data.objects;
           that.tableData.forEach(function (v, k, arr) {
               arr[k]['type'] = "跟团游"
-              arr[k]['name'] = "xxx 跟团游"
+              arr[k]['name'] = obj.data.objects[k].title;
               arr[k]['mu_address'] = "xxx"
-              arr[k]['options'] = "xxx"
+              arr[k]['options'] = obj.data.objects[k].createUser
               arr[k]['status'] = "1"
               arr[k]['opers'] = "飞猪 携程"
-            arr[k]['price'] = "7900"
+            arr[k]['price'] = obj.data.objects[k].refPrice
           })
         })
         .catch(function (obj) {
