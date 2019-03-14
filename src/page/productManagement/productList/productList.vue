@@ -45,13 +45,13 @@
     </div>
     <div style="width: 1200px; height: 223px; margin-left: 20px">
       <div class="select_two">
-      <div class="id">ID <el-input style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input></div>
-      <div class="product">商品名称 <el-input style="width: 500px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
+      <div class="id">ID <el-input v-model="productId" style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input></div>
+      <div class="product">商品名称   <el-input  v-model="productTitle" style="width: 500px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
       </div>
       <div class="select_two">
-        <div class="address">出发地 <el-input style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input></div>
-        <div class="name">目的地 <el-input style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
-        <div class="options">产品操作人 <el-input style="width: 150px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
+        <div class="address">出发地 <el-input   v-model="productPos" style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input></div>
+        <div class="name">目的地 <el-input   v-model="productMod" style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
+        <div class="options">产品操作人 <el-input  v-model="productUser" style="width: 150px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
       </div>
       <div class="select_two">
         <div class="options11">状态
@@ -65,7 +65,7 @@
             </el-option>
           </el-select>
         </div>
-        <div class="prices">价格<el-input style="width: 104px; margin-left: 20px;"  placeholder="请输入内容"></el-input><span style="margin-left: 10px">——</span><el-input style="width: 104px; margin-left: 20px;"  placeholder="请输入内容"></el-input></div>
+        <div class="prices">价格<el-input  v-model="productPrefix" style="width: 104px; margin-left: 20px;"  placeholder="请输入内容"></el-input><span style="margin-left: 10px">——</span><el-input  v-model="productBehind" style="width: 104px; margin-left: 20px;"  placeholder="请输入内容"></el-input></div>
       </div>
 
       <div class="select_two_button">
@@ -76,7 +76,7 @@
     </div>
     </div>
 
-    <div style="border: 1px solid #e9eaea; margin-top: 30px; margin-left: 50px; width: 74%" >
+    <div style="border: 1px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 50px; width: 74%" >
     <div class="button_select">
       <el-button @click=handDb plain :disabled="reable">编辑</el-button>
       <el-button plain :disabled="reable">复制</el-button>
@@ -164,7 +164,7 @@
     </div>
 
       <!--分页-->
-      <div class="block" style="margin-bottom: 20px">
+      <div class="block" style="margin-top: 30px;">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -380,6 +380,13 @@ import DateList from './component/DateList'
     },
      data() {
       return {
+        productId:'',
+        productTitle:'',
+        productPos:'',
+        productMod:'',
+        productUser:'',
+        productPrefix:'',
+        productBehind:'',
         pageNum:'',
         codePrefix:"",
         codeSuffix:'',
@@ -946,9 +953,72 @@ import DateList from './component/DateList'
       BandCancel(){
         this.merchandise = false;
       },
-
+  //搜索
       searchHand(){
-        alert(13);
+        if(this.productId == ''){
+          this.productId = 0;
+        }else {
+          this.productId = 1
+        }
+        if (!this.productTitle){
+          this.productTitle = ""
+        }
+        if (!this.productUser){
+          this.productUser = ""
+        }
+        if (!this.productPos){
+          this.productPos = 0
+        }
+        if (!this.productMod){
+          this.productMod = 0
+        }
+        if (!this.productPrefix){
+          this.productPrefix = 0
+        }
+        if (!this.productBehind){
+          this.productBehind = 0
+        }
+
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/team/api/teamsearch",
+          {
+            "pageIndex": 1,
+            "pageSize": this.pagesize,
+            "total": 0,
+            "object": {
+              "id": that.productId,
+              "title": that.productTitle,
+              "createUser": that.productUser,
+              "minPrice": that.productPrefix,
+              "maxPrice": that.productBehind,
+              "podID": that.productPos,
+              "destinationID": that.productMod
+            }
+          },
+          {
+            headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+          .then(function (obj) {
+            that.total = obj.data.total;
+            that.tableData =obj.data.objects;
+            that.tableData.forEach(function (v, k, arr) {
+              arr[k]['type'] = "跟团游"
+              arr[k]['name'] = obj.data.objects[k].title;
+              arr[k]['mu_address'] = "xxx"
+              arr[k]['options'] = obj.data.objects[k].createUser
+              arr[k]['status'] = "1"
+              arr[k]['opers'] = "飞猪 携程"
+              arr[k]['price'] = obj.data.objects[k].refPrice
+            })
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+
       },
       clickHand(index){
         if( this.domains[index].status == "true"){
