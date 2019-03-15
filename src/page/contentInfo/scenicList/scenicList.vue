@@ -1,46 +1,26 @@
 <template>
   <div>
     <div class="search_dom">
-      <el-select v-model="countryValue" placeholder="全部国家">
-        <el-option
-          v-for="country in countryArr"
-          :key="country.value"
-          :label="country.label"
-          :value="country.value">
-        </el-option>
-      </el-select>
-      <el-select v-model="provinceValue" placeholder="全部省份">
-        <el-option
-          v-for="province in provinceArr"
-          :key="province.value"
-          :label="province.label"
-          :value="province.value"
-        >
-        </el-option>
-      </el-select>
-      <el-select v-model="cityValue" placeholder="全部城市">
-        <el-option
-          v-for="city in cityArr"
-          :key="city.value"
-          :label="city.label"
-          :value="city.value"
-        >
-        </el-option>
-      </el-select>
-      <el-input v-model="keyword" placeholder="请输入景点名称（中文或英文）" clearable></el-input>
-      <el-button type="primary" @click="subForm()" size="" class="sub_button" icon="el-icon-search"></el-button>
+      <div class="region_search">
+        <span class="keyword">地区筛选</span>
+        <el-autocomplete class="inputBox" clearable placeholder="请输入地区名称" :fetch-suggestions="querySearch" @select="handleSelect" suffix-icon="el-icon-search" v-model="input" :trigger-on-focus="false"></el-autocomplete>
+      </div>
+      <div class="spot_search">
+        <span class="keyword">景点名称</span>
+        <el-input class="search_input" v-model="input" placeholder="请输入景点名称(英文/中文)"></el-input>
+      </div>
     </div>
-    <div class="cl_both"></div>
+
     <div style="padding: 0 20px">
       <div style="text-align: left">
-       
-          <el-button @click="dialogFormVisible = true" type="primary" class="add_scenic">添加景点</el-button>
-        
+        <el-button type="primary" class="add_scenic" @click="dialogFormVisible = true">添加</el-button>
+        <el-button style="border:1px solid #3095fa;color:#3095fa;" class="add_scenic">编辑</el-button>
+        <el-button type="danger" class="add_scenic">删除</el-button>
       </div>
   
-      <div class="cl_both"></div>
       <el-table
         :data="checkLabelList"
+        class="table"
         :header-row-style="hrs"
         :cell-style="cs"
         border
@@ -48,26 +28,22 @@
         <el-table-column
           prop="id"
           label="景点ID"
-          width="180"
+          min-width="60"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="scenicName"
           label="景点名称"
-          width="180"
+          min-width="180"
           header-align="center">
         </el-table-column>
         <el-table-column
           prop="area"
           label="所属地区"
+          min-width="180"
           header-align="center">
         </el-table-column>
-        <el-table-column
-          prop="scenicUrl"
-          label="景点链接"
-          header-align="center">
-        </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="operate"
           label="操作"
           width=""
@@ -77,23 +53,15 @@
             <el-button type="primary" size="small" @click="dialogFormVisible = true" class="bt-edit">编辑</el-button>
             <el-button type="danger" size="small" @click="removeRole(scope.row.id)" class="bt-edit">删除</el-button>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        plain="false"
-        prev-text="上一页"
-        next-text="下一页"
-        :page-sizes="[2,3,4,5]"
-        :current-page.sync="pageIndex"
-        layout="total, prev, pager, next, sizes, jumper, ->"
-        :total="totalNum"
-        style="margin-bottom:50px;float:right">
-      </el-pagination>
+      <div class="pages">
+        <el-pagination class="page" background @size-change="pagesizes" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[2, 4, 8, 10]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        </el-pagination>
+      </div>
+
     </div>
-    <el-dialog width='45%' title="添加景点" :visible.sync="dialogFormVisible" custom-class="city_list">
-      
+    <el-dialog width='65%' title="景点信息" :visible.sync="dialogFormVisible" :show-close="false">
       <AddScenic @close='handleclose'></AddScenic>
     </el-dialog>
   </div>
@@ -110,6 +78,10 @@ import AddScenic from './components/Addscenic'
     },
     data() {
       return {
+        input: '', // 区域搜索
+        currentPage: 1, // 默认开始页数
+        pagesize:10, // 每页的数据条数
+        total: 1, // 分页总条数
         tableHead:{height: '60px', color: '#555555'},
         tableHeight:{padding: '0', height: '34px'},
         dialogFormVisible:false,
@@ -168,10 +140,6 @@ import AddScenic from './components/Addscenic'
         keyword: "",
         hrs: {height: '60px'},
         cs: {padding: '0', height: '40px'},
-        pageSize: 2,    // 设定默认分页每页显示数 todo 具体看需求
-        pageIndex: 1,    // 设定当前页数
-        totalNum: 6,
-        
       }
     },
     methods: {
@@ -232,27 +200,34 @@ import AddScenic from './components/Addscenic'
     padding-top: 22px;
     height: 40px;
     line-height: 40px;
-    padding-left: 176px;
+    padding-left: 20px;
     border-bottom: 1px solid #F1F1F1;
     padding-bottom: 22px;
-    .sub_button {
+    .region_search {
       float: left;
+      .inputBox {
+        margin-left: 10px;
+      }
     }
-    .el-select {
-      width: 200px;
+    .spot_search {
       float: left;
-      margin-right: 15px;
-    }
-    .el-input {
-      width: 350px;
-      float: left;
-      margin-right: 15px;
-    }
-    .bt-edit {
-      font-size: 12px;
+      margin-left: 60px;
+      .search_input {
+        width: 220px;
+        margin-left: 10px;
+      }
     }
   }
-
+  .table {
+    width:800px;
+    text-align: center;
+  }
+  .pages {
+    width: 800px;
+    .page {
+      float: right;
+    }
+  }
   .labels {
     text-align: left;
     margin-top: 20px;
@@ -263,6 +238,7 @@ import AddScenic from './components/Addscenic'
 
   .add_scenic {
     margin-top: 20px;
+    width: 100px;
   }
 
   .el-table {
