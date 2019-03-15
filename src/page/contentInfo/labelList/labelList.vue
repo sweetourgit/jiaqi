@@ -21,8 +21,8 @@
         <div class="actionButton">
           <el-button @click="addLabel()">添加标签</el-button>
           <el-button @click="editLabel()" :disabled="forbidden">编辑标签</el-button>
-          <el-button :disabled="forbidden1">转移集合</el-button>
-          <el-button :disabled="forbidden1">删除标签</el-button>
+          <el-button disabled>转移集合</el-button>
+          <el-button @click="deleteLabel()" :disabled="forbidden">删除标签</el-button>
         </div>
         <el-table :data="tableData" ref="multipleTable" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass"@selection-change="changeFun" @row-click="clickRow">
           <el-table-column prop="id" label="ID" width="180" align="center"></el-table-column>
@@ -89,7 +89,7 @@
         <div class="gatherTitle">删除集合</div>
         <div class="gatherClose" @click="deleteGatherClose()">×</div>
       </div>
-      <div class="judge">
+      <div class="judgeDelete">
         <el-button @click="deleteGatherClose()">取消</el-button>
         <el-button @click="deleteGather(ensure)" type="primary">确定</el-button>
       </div>
@@ -99,9 +99,9 @@
   <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
     <div style="float:left; line-height:40px; margin:0 10px 0 70px;">标签名称：</div>
     <el-form :model="rformA" :rules="rules" ref="rformA" label-width="100px" class="demo-ruleForm">
-      <el-form-item prop="highlightWords">
-       <el-input style="width:180px;" maxlength=10 v-model="rformA.highlightWords" placeholder="10个字以内"></el-input>
-       <span class="span1">{{rformA.highlightWords.length}}/10字</span>
+      <el-form-item prop="labelList">
+       <el-input style="width:180px;" maxlength=10 v-model="rformA.labelList" placeholder="10个字以内"></el-input>
+       <span class="span1">{{rformA.labelList.length}}/10字</span>
       </el-form-item>
     </el-form>
     <div slot="footer">
@@ -127,11 +127,7 @@
   export default {
     data() {  
        return {
-        title:'',
-        dialogFormVisible:false,
-        rformA: {
-          highlightWords: ""
-        },
+        
         editableTabsValue: '0',
         editableTabs: [],
         tabIndex: 0,
@@ -139,12 +135,16 @@
         //表格数据
         tableData: [],
         multipleSelection: [],
-        forbidden1:true,
         forbidden:true,
         //分页
         currentPage: 1,
         total:0,
         pagesize:10,
+        title:'',
+        dialogFormVisible:false,
+        rformA: {//编辑添加列表input
+          labelList: ""
+        },
         //弹窗字数限制
         ruleForm:{
           highlightWords: '',
@@ -158,6 +158,10 @@
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
           ],
           highlightWords01:[
+            { required: true, message: '不能为空', trigger: 'blur' },
+            { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
+          ],
+          labelList:[
             { required: true, message: '不能为空', trigger: 'blur' },
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
           ],
@@ -239,11 +243,11 @@
         }else{
           this.forbidden=true;
         };
-        if(this.multipleSelection.length>0){
+        /*if(this.multipleSelection.length>0){
           this.forbidden1=false;
         }else{
           this.forbidden1=true;
-        }
+        }*/
         //event.cancelBubble = true;//row-click和selection-change耦合事件
       },
       clickRow(row){    //选中行复选框勾选
@@ -399,22 +403,122 @@
         for(var i =0; i<this.editableTabs.length; i++){
           if(i== this.editableTabsValue){
             this.clickTab = this.editableTabs[i].typeName;
-            this.sid = this.editableTabs[i].id;
+            this.sid = this.editableTabs[i].id;            
           }
         }
       },
       //添加、编辑列表弹窗
-      cancel(){
-        this.dialogFormVisible = false
-        this.$refs["rformA"].resetFields();
+      saveModule(formName){ //判断显示编辑或者添加弹窗
+         if(this.title == "添加标签"){
+            this.addLabelTheme(formName);
+         }else{
+            this.editLabelTheme(formName);
+         }
       },
-      addLabel(){
+      addLabel(){//点击添加列表按钮
         this.title="添加标签";
         this.dialogFormVisible = true;
       },
-      editLabel(){
+      editLabel(){//点击编辑列表按钮
+        this.getLabel();
         this.title="编辑标签";
         this.dialogFormVisible = true;
+      },
+      getLabel(){//获取一条信息
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/olabelget',{
+           "id":this.multipleSelection[0].id
+          }).then(res => {
+              
+              if(res.data.isSuccess == true){
+                 let data = res.data.object;
+                 this.rformA.labelList=data.labelName;
+              }
+        }) 
+      },
+      addLabelTheme(formName){//添加一条列表
+         this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var _this = this;
+            this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/olabelinsert",
+              {
+                object: {
+                  id: 0,
+                  labelName: this.rformA.labelList,
+                  tagType:this.sid,
+                  createTime: "2019-03-04T06:08:17.118Z",
+                  code: "string",
+                  isDeleted: 0
+                }
+              })
+              .then(res => {
+                if(res.data.isSuccess == true){
+                   this.pageList();
+                   this.dialogFormVisible = false
+                   this.$refs[formName].resetFields();
+                }else{
+                   this.$message.success(res.data.result.message);
+                }
+            })
+          } else {
+            return false;
+          }
+        });
+      },
+      editLabelTheme(formName){//编辑一条列表
+        var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/universal/olabel/api/olabelsave",
+            {
+              "object": {
+                "id": this.multipleSelection[0].id,
+                "labelName": this.rformA.labelList,
+                "tagType":this.sid,
+                "createTime": "2019-03-08T08:19:11.173Z",
+                "code": "string",
+                "isDeleted": 0
+              }
+            },
+          )
+          .then(res => {
+            if(res.data.isSuccess == true){                
+              this.pageList();
+              this.dialogFormVisible = false
+              this.$refs[formName].resetFields();
+            }else{
+              this.$message.success(res.data.result.message);
+         }
+          })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+      },
+      deleteLabel(){ //删除Module
+        this.$confirm("确认删除?", "提示", {
+           confirmButtonText: "确定",
+           cancelButtonText: "取消",
+           type: "warning"
+        })
+        .then(() => {
+              this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/oplabledelete',{
+                    "id": this.multipleSelection[0].id
+                  }).then(res => {
+                      if(res.data.isSuccess == true){
+                         this.$message.success("删除成功");
+                         this.pageList();
+                  }
+               })
+          })
+          .catch(() => {
+            this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+      },
+
+      cancel(){
+        this.dialogFormVisible = false
+        this.$refs["rformA"].resetFields();
       },
 
       //主题列表显示
@@ -460,9 +564,9 @@
             "pageSize": this.pagesize,
             "total": 0,
             "object": {
-              "id": this.sid,
+              "id": 0,
               "labelName": "",
-              "tagType": 1,
+              "tagType": this.sid,
               "createTime": "2019-03-11T05:15:08.895Z",
               "code": "string",
               "isDeleted": 0
@@ -526,6 +630,7 @@
 .labelName{width: 400px; margin-left:auto; margin-right:auto; margin: 50px 0 0 0; text-align: center; }
 .el-form>>>.el-form-item{margin-bottom:0px;}
 .judge { padding: 30px 0 0 0; clear: both; text-align: center;}
+.judgeDelete { padding: 70px 0 0 0; clear: both; text-align: center;}
 /**/
 .actionButton .el-button{width:80px;padding: 0;line-height: 35px}
 .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}
