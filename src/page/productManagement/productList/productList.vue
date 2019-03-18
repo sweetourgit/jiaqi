@@ -957,8 +957,6 @@ import DateList from './component/DateList'
       searchHand(){
         if(this.productId == ''){
           this.productId = 0;
-        }else {
-          this.productId = 1
         }
         if (!this.productTitle){
           this.productTitle = ""
