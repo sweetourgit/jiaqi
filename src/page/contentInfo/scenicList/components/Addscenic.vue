@@ -26,13 +26,13 @@
         </div>
       </div>
     </el-form-item>
-    <el-form-item style="float: left" class="form-item" prop="lat" :label-width='formLabelWidth' label="地理坐标:">
+    <el-form-item class="form-item" prop="lat" :label-width='formLabelWidth' label="地理坐标:">
       <el-input class="form-input" v-model="form.lat" placeholder="请输入经度"></el-input>
     </el-form-item>
-    <el-form-item prop="lng">
-      <el-input style="width: 250px; margin-left:20px;" class="form-input" v-model="form.lng" placeholder="请输入纬度"></el-input>
+    <el-form-item class="form-item form-error" prop="lng">
+      <el-input style="width: 250px; margin-left:270px;margin-top: -62px;" class="form-input" v-model="form.lng" placeholder="请输入纬度"></el-input>
     </el-form-item>
-    <el-form-item class="form-item" prop="referenceTime" :label-width='formLabelWidth' label="参考用时:">
+    <el-form-item style="margin-top: -20px;" class="form-item" prop="referenceTime" :label-width='formLabelWidth' label="参考用时:">
       <el-radio-group v-model="form.referenceTime">
         <el-radio label="1"><1小时</el-radio>
         <el-radio label="2">1-3小时</el-radio>
@@ -57,17 +57,86 @@
       </el-checkbox-group>
     </el-form-item>
     <el-form-item class="form-item" prop="openingHours" :label-width='formLabelWidth' label="开放时间:">
-      <el-button style="border:1px solid #3095fa;color:#3095fa;" size="small">编辑</el-button>
+      <el-button style="border:1px solid #3095fa;color:#3095fa;" size="small" @click="showtime = true">编辑</el-button>
     </el-form-item>
     <!-- 信息展示预留 -->
-    <div>
-
+    <div v-if="dateTime.one.length != 0
+            || dateTime.tue.length != 0
+            || dateTime.wed.length != 0
+            || dateTime.thur.length != 0
+            || dateTime.fir.length != 0
+            || dateTime.sat.length != 0
+            || dateTime.sun.length != 0" style="margin-left:90px;width: 700px;background: #F7F7F7; padding: 20px;margin-bottom: 20px;float: left;">
+      <!-- 周一 -->
+      <div v-if="dateTime.one.length != 0" style="margin-top: -5px;float: left;">
+        <span style="float: left">周一</span>
+        <div style="margin-left:84px">
+          <div v-for="(item, index) in dateTime.one" :key="index" style="float: left; padding-left:10px">
+            <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.one.length > 1 && index != dateTime.one.length - 1">;</span>
+          </div>
+        </div>
+      </div>
+      <!-- 周二 -->
+      <div v-if="dateTime.tue.length != 0" style="margin-top: -5px;">
+        <span style="float: left">周二</span>
+        <div style="margin-left:84px">
+          <div v-for="(item, index) in dateTime.tue" :key="index" style="float: left; padding-left:10px">
+            <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.tue.length > 1 && index != dateTime.tue.length - 1">;</span>
+          </div>
+        </div>
+      </div>
+      <!-- 周三 -->
+      <div v-if="dateTime.wed.length != 0" style="margin-top: -5px;">
+        <span style="float: left">周三</span>
+        <div style="margin-left:84px">
+          <div v-for="(item, index) in dateTime.wed" :key="index" style="float: left; padding-left:10px">
+            <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.wed.length > 1 && index != dateTime.wed.length - 1">;</span>
+          </div>
+        </div>
+      </div>
+      <!-- 周四 -->
+      <div v-if="dateTime.thur.length != 0" style="margin-top: -5px;">
+        <span style="float: left">周四</span>
+        <div style="margin-left:84px">
+          <div v-for="(item, index) in dateTime.thur" :key="index" style="float: left; padding-left:10px">
+            <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.thur.length > 1 && index != dateTime.thur.length - 1">;</span>
+          </div>
+        </div>
+      </div>
+      <!-- 周五 -->
+      <div v-if="dateTime.fir.length != 0" style="margin-top: -5px;">
+        <span style="float: left">周五</span>
+        <div style="margin-left:84px">
+          <div v-for="(item, index) in dateTime.fir" :key="index" style="float: left; padding-left:10px">
+            <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.fir.length > 1 && index != dateTime.fir.length - 1">;</span>
+          </div>
+        </div>
+      </div>
+      <!-- 周六 -->
+      <div v-if="dateTime.sat.length != 0" style="margin-top: -5px;">
+        <span style="float: left">周六</span>
+        <div style="margin-left:84px">
+          <div v-for="(item, index) in dateTime.sat" :key="index" style="float: left; padding-left:10px">
+            <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.sat.length > 1 && index != dateTime.sat.length - 1">;</span>
+          </div>
+        </div>
+      </div>
+      <!-- 周日 -->
+      <div v-if="dateTime.sun.length != 0" style="margin-top: -5px;">
+        <span style="float: left">周日</span>
+        <div style="margin-left:84px">
+          <div v-for="(item, index) in dateTime.sun" :key="index" style="float: left; padding-left:10px">
+            <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.sun.length > 1 && index != dateTime.sun.length - 1">;</span>
+          </div>
+        </div>
+      </div>
+      
     </div>
     <!-- 信息展示预留END -->
     <el-form-item class="form-item" :label-width='formLabelWidth' label="图片:">
       <el-input v-model="form.imgs" disabled style="float:left;width:250px;">
       </el-input>
-      <el-upload on-preview="" class="upload-demo uploadimage" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit='1' accept=".jpg,.png,.gif" :on-remove="handleRemove">
+      <el-upload :on-preview="handleImgClick" class="upload-demo uploadimage" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit='1' accept=".jpg,.png,.gif" :on-remove="handleRemove">
         <el-button type="info" class="upload-btn">
           <div v-show="isShowImg" style="">
             <img style="display:block;width:100%;height:100%;" :src="imgUrl" alt="">
@@ -80,67 +149,6 @@
       <el-input style="width: 705px;" :rows="13" type="textarea" v-model="form.introduction"></el-input>
     </el-form-item>
 
-
-
-    <!-- <el-form-item class="form-item" label-width='80px'  label="景点标签">
-      <el-button @click="showEdit = true" class="form-btn" type="primary" size="mini">编辑</el-button>
-    </el-form-item>
-    <el-form-item class="form-item" label-width='80px'  label="地理位置">
-      <div style="float:left">
-        <div>
-          lat(纬度)：<el-input v-model="form.lat" style="width:200px"/>
-        </div>
-        <div style="margin-top:5px">
-          Int(经度)：<el-input v-model="form.int" style="width:200px"/>
-        </div>
-      </div>
-    </el-form-item>
-    
-    <el-form-item class="form-item" label-width='80px'  label="开放时间">
-      <el-button @click="showtime=true" style='float:left' type="primary">添加开放时间</el-button>
-    </el-form-item>
-    <ul class="weeklist">
-      <li class="weekitem" :key="item" v-for="item of weeklist">{{item}}</li>
-    </ul>
-    
-     <el-form-item class="form-item" label-width='80px'  label="适宜人群">
-      <el-checkbox-group style="float:left" v-model="form.person">
-        <el-checkbox label="老人"></el-checkbox>
-        <el-checkbox label="儿童"></el-checkbox>
-        <el-checkbox label="成人"></el-checkbox>
-      </el-checkbox-group>
-    </el-form-item>
-    <el-form-item class="form-item" label-width='80px'  label="景点图片">
-      <el-upload
-        class="upload-demo"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :file-list="fileList2"
-        list-type="picture">
-        <el-button size="small" type="primary">点击上传</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-      </el-upload>
-    </el-form-item>
-     <el-form-item class="form-item" label-width='80px'  label="景点简介">
-      <el-input class="text-area" resize="none" type="textarea" v-model="form.desc"></el-input>
-    </el-form-item>
-    <div style="margin-left:-80px">
-        <el-button
-          @click="handleclose"
-          style="padding:12px 30px" 
-          >取消
-        </el-button>
-        <el-button 
-          @click="handleclose"
-          style="padding:12px 30px" 
-          type="primary">
-          确认
-        </el-button>
-      </div> -->
-
-
-
    </el-form>
 
   <!-- 编辑 -->
@@ -149,8 +157,8 @@
   <LabelSelection></LabelSelection>
 </el-dialog>
 <!-- 开放时间 -->
-<el-dialog width='40%' top='20vh' append-to-body title="添加开放时间" :visible.sync="showtime" custom-class="city_list">
-  <OpenTime></OpenTime>
+<el-dialog width='65%' top='10vh' append-to-body title="添加开放时间" :visible.sync="showtime" :show-close="false">
+  <OpenTime v-on:timeList="timeList"></OpenTime>
 </el-dialog>
   </div>
 </template>
@@ -181,12 +189,11 @@ export default {
       }
     };
     var tagRule = (rule, value, callback) => {
-      if (!this.form.city) {
+      if (this.form.tags.length == 0) {
         return callback(new Error('输入至少一条标签数据'));
       } else {
         callback();
       }
-      console.log(this.form.city)
     };
     return {
       formLabelWidth: '90px',
@@ -205,8 +212,9 @@ export default {
       showEdit: false,
       fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
       isTag: false,
-      isBlur: true,        // 标签失去焦点判断
+      isBlur: true,         // 标签失去焦点判断
       inputTag: '',         // 标签input框
+      dateTime: [],         // 开放时间数据
       form: {
         chineseName: '',    // 中文名称
         englishName:'',     // 英文名称
@@ -215,10 +223,10 @@ export default {
         lat: '',            // 经度
         lng: '',            // 纬度
         referenceTime: '',  // 参考用时
-        seasons: [],        // 适宜季节
-        crowds: [],         // 适宜人群
-        openingHours: [],   // 开放时间
-        imgs: [],           // 图片
+        seasons: '',        // 适宜季节
+        crowds: '',         // 适宜人群
+        openingHours: '',   // 开放时间
+        imgs: '',           // 图片
         introduction: "",   // 产品概述
       },
         options: [{
@@ -431,9 +439,27 @@ export default {
           ],
           tags: [
             { validator: tagRule, trigger: 'blur' }
+          ],
+          lat: [
+            { required: true, message: '请填写地理坐标', trigger: 'blur' }
+          ],
+          lng: [
+            { required: true, message: '请填写地理坐标', trigger: 'blur' }
+          ],
+          referenceTime: [
+            { required: true, message: '请选择用时' }
           ]
         }
     }
+  },
+  created() {
+    this.dateTime.one = [];
+    this.dateTime.tue = [];
+    this.dateTime.wed = [];
+    this.dateTime.thur = [];
+    this.dateTime.fir = [];
+    this.dateTime.sat = [];
+    this.dateTime.sun = [];
   },
   methods:{
     handleChange(e){
@@ -452,6 +478,9 @@ export default {
 
     },
     querySearch() {
+
+    },
+    handleImgClick() {
 
     },
     // 标签input回车事件
@@ -478,6 +507,90 @@ export default {
     // 标签删除事件
     handleCancel(tag) {
       this.form.tags.splice(this.form.tags.indexOf(tag), 1);
+      // 触发验证
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.blur();
+      });
+    },
+    // 开放时间信息
+    timeList(list) {
+      this.dateTime.one = [];
+      this.dateTime.tue = [];
+      this.dateTime.wed = [];
+      this.dateTime.thur = [];
+      this.dateTime.fir = [];
+      this.dateTime.sat = [];
+      this.dateTime.sun = [];
+      this.showtime = false;
+      let data = list;
+      // 周一
+      data.one.forEach(item => {
+        if (item.start || item.end) {
+          this.dateTime.one.push({
+            start: item.start,
+            end: item.end
+          })
+        }
+      })
+      // 周二
+      data.tue.forEach(item => {
+        if (item.start || item.end) {
+          this.dateTime.tue.push({
+            start: item.start,
+            end: item.end
+          })
+        }
+      })
+      // 周三
+      data.wed.forEach(item => {
+        if (item.start || item.end) {
+          this.dateTime.wed.push({
+            start: item.start,
+            end: item.end
+          })
+        }
+      })
+      // 周四
+      data.thur.forEach(item => {
+        if (item.start || item.end) {
+          this.dateTime.thur.push({
+            start: item.start,
+            end: item.end
+          })
+        }
+      })
+      // 周五
+      data.fir.forEach(item => {
+        if (item.start || item.end) {
+          this.dateTime.fir.push({
+            start: item.start,
+            end: item.end
+          })
+        }
+      })
+      // 周六
+      data.sat.forEach(item => {
+        if (item.start || item.end) {
+          this.dateTime.sat.push({
+            start: item.start,
+            end: item.end
+          })
+        }
+      })
+      // 周日
+      data.sun.forEach(item => {
+        if (item.start || item.end) {
+          this.dateTime.sun.push({
+            start: item.sun.start,
+            end: item.end
+          })
+        }
+      })
+
+      // this.dateTime = list;
     }
     
   }
@@ -530,5 +643,9 @@ export default {
 }
 .input_tag>>>.el-input__inner {
   border: none;
+}
+.form-error>>>.el-form-item__error {
+  margin-left: 270px;
+  margin-top: -22px;
 }
 </style>

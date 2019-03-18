@@ -61,7 +61,7 @@
       </div>
 
     </div>
-    <el-dialog width='65%' title="景点信息" :visible.sync="dialogFormVisible" :show-close="false">
+    <el-dialog width='65%' top='10vh' title="景点信息" :visible.sync="dialogFormVisible" :show-close="false">
       <AddScenic @close='handleclose'></AddScenic>
     </el-dialog>
   </div>
@@ -189,6 +189,15 @@ import AddScenic from './components/Addscenic'
       },
       handleclose(){
         this.dialogFormVisible=false
+      },
+      handleSelect () {
+
+      },
+      querySearch () {
+
+      },
+      pagesizes () {
+
       }
     }
   }
