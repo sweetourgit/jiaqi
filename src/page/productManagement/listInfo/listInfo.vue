@@ -185,7 +185,7 @@
             <!--外边框-->
             <div class="outline">
               <!--套餐-->
-              <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
+              <el-tabs v-model="editableTabsValue" type="card" @edit="handleTabsEdit"> <!--editable不可编辑多个套餐-->
                 <el-tab-pane :key="index" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name">
                     <!--套餐名-->
                   <el-form-item class="setmeal" label="套餐名" label-width="100px">
