@@ -68,14 +68,14 @@ export default new Router({
         keepAlive: true,
         auth:true}
     },
-    {
+   /* {
       path: '/perList',
       component: perList,
       name: '权限列表',
       meta: {
         keepAlive: true,
         auth:true}
-    }, {
+    }*/, {
       path: '/accountInfor',
       component: accountInfor,
       name: '个人中心',
