@@ -61,8 +61,8 @@
       </div>
 
     </div>
-    <el-dialog width='65%' top='10vh' title="景点信息" :visible.sync="dialogFormVisible" :show-close="false">
-      <AddScenic @close='handleclose'></AddScenic>
+    <el-dialog width='1100px' top='10vh' title="景点信息" :visible.sync="dialogFormVisible" :show-close="false">
+      <AddScenic @close='handleclose' v-on:closeButton="dialogFormVisible = false"></AddScenic>
     </el-dialog>
   </div>
 </template>

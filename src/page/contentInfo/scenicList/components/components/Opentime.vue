@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="operation">
-      <el-button style="border:1px solid #3095fa;color:#3095fa;">取消</el-button>
+      <el-button style="border:1px solid #3095fa;color:#3095fa;" @click="$emit('closeButton', false)">取消</el-button>
       <el-button type="primary" @click="handSever">保存</el-button>
     </div>
     <el-form ref="form" :model="form" label-width="80px">
@@ -371,6 +371,7 @@ export default {
           end:'',
         })
         this.isOne = true;
+        this.formButtonOne = 'formButton1'
       }
     },
     // 添加时间(周二)
@@ -397,6 +398,7 @@ export default {
           end:'',
         })
         this.isTue = true;
+        this.formButtonTue = 'formButton1'
       }
     },
     // 添加时间(周三)
@@ -423,6 +425,7 @@ export default {
           end:'',
         })
         this.isWed = true;
+        this.formButtonWed = 'formButton1'
       }
     },
     // 添加时间(周四)
@@ -449,6 +452,7 @@ export default {
           end:'',
         })
         this.isThur = true;
+        this.formButtonThur = 'formButton1'
       }
     },
     // 添加时间(周五)
@@ -475,6 +479,7 @@ export default {
           end:'',
         })
         this.isFir = true;
+        this.formButtonFir = 'formButton1'
       }
     },
     // 添加时间(周六)
@@ -501,6 +506,7 @@ export default {
           end:'',
         })
         this.isSat = true;
+        this.formButtonSat = 'formButton1'
       }
     },
     // 添加时间(周日)
@@ -527,6 +533,7 @@ export default {
           end:'',
         })
         this.isSun = true;
+        this.formButtonSun = 'formButton1'
       }
     },
     // 保存
@@ -688,8 +695,8 @@ export default {
   margin-left: 10px;
 }
 .formButton3 {
-  margin-left: 50px;
   margin-top: 36px;
+  margin-left: 50px;
 }
 .formCheck {
   margin: 18px 0 0 30px;
