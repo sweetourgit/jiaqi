@@ -1820,6 +1820,7 @@
           }
         )
           .then(function (obj) {
+            console.log(obj.data.object);
             that.schedulsLeng = obj.data.object.package[0].schedules.length
             for(let u = 0; u <that.schedulsLeng; u++ ){
                 that.activeID.push(obj.data.object.package[0].schedules[u].id)
@@ -1848,6 +1849,7 @@
             that.ruleForm.avatarImages = obj.data.object.pictureID //TODO 基本信息头图不好使
             that.ruleForm.video = obj.data.object.vedioID    //TODO 基本信息视频不好使
             that.ruleForm.slideshow = "" //TODO 基本信息轮播不好使obj.data.object.pepeatpic
+            that.content_01 = obj.data.object.mark
              /* 出游人群，主题，产品概括目前没有传*/
             that.ruleForm.advanceRegistrationDays = obj.data.object.advanceDay
             that.ruleForm.timeHour = obj.data.object.advanceHour
@@ -1917,13 +1919,6 @@
             for (let t = 0; t < obj.data.object.instructions.length; t++ ){
               that.explain.push(obj.data.object.instructions[t])
             }
-
-          //  console.log(that.selectedOptions )
-            console.log(that.ruleForm.plane)
-            console.log(that.ruleForm.nackPlane)
-
-
-
           })
           .catch(function (obj) {
             console.log(obj)
@@ -2030,6 +2025,7 @@
           advanceMinute:this.ruleForm.timeMinute,
           createUser:sessionStorage.getItem('id'),
           proStat:1,
+          mark:this.content_01,
           guid:localStorage.getItem("guid"),
           //行程信息接口数据
           package: [
