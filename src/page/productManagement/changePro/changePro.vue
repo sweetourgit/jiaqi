@@ -85,17 +85,17 @@
               <span class="lightspot-span">{{ruleForm.highlightWords4.length}}/8字</span>
             </el-form-item>
             <!-- 运营标签 -->
-            <el-form-item label="运营标签" prop="operationLabel" ref="operationLabel" style="clear:both;" label-width="120px">
+            <el-form-item label="运营标签" ref="operationLabel" style="clear:both;" label-width="120px">
               <div class="destination-input">
-                <el-tag :key="tag2" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
-                  {{tag2}}
+                <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
+                  {{tag2.label}}
                 </el-tag>
-                <el-input class="lable_input" v-if="inputVisible2" placeholder="请输入运营标签" v-model="ruleForm.operationLabel" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm2" @blur="handleInputConfirm2">
-                </el-input>
+                <el-autocomplete id="input-error" class="lable_input" v-if="inputVisible2" v-model="ruleForm.operationLabel" ref="saveTagInput" size="small" placeholder="请输入运营标签" @keyup.enter.native="handleInputConfirm2" :fetch-suggestions="querySearch5" :trigger-on-focus="false" @select="dest_01" @blur="handleInputConfirm2">
+                </el-autocomplete>
                 <el-button v-else class="operation_Label" size="small" @click="showInput2">请输入运营标签</el-button>
               </div>
-            </el-form-item>
-            <!-- 头图 -->
+              <span id="empty" v-show="empty">不能为空</span>
+            </el-form-item>            <!-- 头图 -->
             <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative">
               </el-input>
@@ -1727,6 +1727,7 @@
         dynamicTags2: [],
         inputVisible2: false,
         inputVal: '',
+        empty:'',
         // 出发地
         dynamicTags3: [],
         inputVisible3: false,
@@ -1849,7 +1850,9 @@
             that.ruleForm.avatarImages = obj.data.object.pictureID //TODO 基本信息头图不好使
             that.ruleForm.video = obj.data.object.vedioID    //TODO 基本信息视频不好使
             that.ruleForm.slideshow = "" //TODO 基本信息轮播不好使obj.data.object.pepeatpic
-            that.content_01 = obj.data.object.mark
+            that.ruleForm.Excursion = obj.data.object.crowdID,//基本信息出游人群
+            that.ruleForm.theme  =obj.data.object.themeID,//基本信息主题
+            that.content_01 = obj.data.object.mark,
              /* 出游人群，主题，产品概括目前没有传*/
             that.ruleForm.advanceRegistrationDays = obj.data.object.advanceDay
             that.ruleForm.timeHour = obj.data.object.advanceHour
@@ -2016,7 +2019,7 @@
           isDeleted:0,
           confirmType:this.ruleForm.orderConfirmationType,//基本信息订单确认类型
           strengths:strengths,//基本信息亮点词
-          label:dynamicTagsc,//基本信息运营标签
+          label:this.dynamicTags2,
           pictureID:0,//基本信息头图?
           vedioID:0,//基本信息视频?
           pepeatpic:"",//基本信息轮播图?
@@ -2025,6 +2028,8 @@
           advanceMinute:this.ruleForm.timeMinute,
           createUser:sessionStorage.getItem('id'),
           proStat:1,
+          crowdID:this.ruleForm.Excursion,//基本信息出游人群
+          themeID:this.ruleForm.theme,//基本信息主题
           mark:this.content_01,
           guid:localStorage.getItem("guid"),
           //行程信息接口数据
@@ -2543,19 +2548,48 @@
       },
       handleInputConfirm2() {
         this.$refs['operationLabel'].validate()
-        var str = this.ruleForm.operationLabel;
-        var pat =  /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/
-        if(str.match(pat)){
-          let inputVal = this.ruleForm.operationLabel;
-          if (inputVal) {
-            this.dynamicTags2.push(inputVal);
+        if(this.ruleForm.operationLabel !== ''){
+          setTimeout(res =>{
+            let inputVal4 = this.ruleForm.operationLabel;
+            // if (inputVal4) {
+            //   this.dynamicTags4.push(inputVal4);
+            //  }
+            this.inputVisible2 = false;
+            this.ruleForm.operationLabel= '';
+            this.empty = false;
+          },200)
+        }else{
+          if(this.dynamicTags2.length == 0){
+            this.empty = true;
+            document.getElementById('input-error').style.border="solid 1px red";
+          }else{
+            this.inputVisible2 = false;
           }
-          this.inputVisible2 = false;
-          this.ruleForm.operationLabel= '';
         }
-        if(this.ruleForm.operationLabel == ''){
-          this.inputVisible2 = false;
-        }
+      },
+      querySearch5(queryString5, cb) {
+        this.tableData2 = []
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/olabelfuzzy', {
+          "object": {
+            labelName: queryString5
+          }
+        }).then(res => {
+          for(let i=0;i<res.data.objects.length;i++){
+            this.tableData2.push({
+              "value" : res.data.objects[i].labelName,
+              "id":res.data.objects[i].id
+            })
+          }
+          var results = queryString5 ? this.tableData2.filter(this.createFilter(queryString5)) : [];
+          cb(results)
+        }).catch(err => {
+          console.log(err);
+        })
+      },
+      dest_01(item){
+        this.dynamicTags2.push({"labelID": item.id,"label": item.value,"teamID":0});
+        this.ruleForm.operationLabel = "";
+        this.inputVisible2 = false;
       },
       // 出发地
       querySearch3(queryString1, cb) {
