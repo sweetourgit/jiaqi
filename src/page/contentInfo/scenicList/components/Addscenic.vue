@@ -14,8 +14,8 @@
       <span class="redStar">*</span>
       <el-input class="form-input" v-model="form.englishName" clearable placeholder="请输入英文名称"></el-input>
     </el-form-item>
-    <el-form-item class="form-item" prop="city" :label-width='formLabelWidth'  label="所属地区:">
-      <el-autocomplete class="form-input" clearable placeholder="请输入地区名称" :fetch-suggestions="querySearch" @select="handleSelect" v-model="form.city" :trigger-on-focus="false"></el-autocomplete>
+    <el-form-item class="form-item" prop="areaId" :label-width='formLabelWidth'  label="所属地区:">
+      <el-autocomplete class="form-input" clearable placeholder="请输入地区名称" :fetch-suggestions="querySearch" @blur="handleBlur" @select="handleSelect" v-model="form.areaId.value" :trigger-on-focus="false"></el-autocomplete>
     </el-form-item>
     <el-form-item class="form-item" prop="tags" :label-width='formLabelWidth' label="标签:">
       <span style="margin-left: -53px;" class="redStar">*</span>
@@ -36,26 +36,17 @@
     </el-form-item>
     <el-form-item style="margin-top: -20px;" class="form-item" prop="referenceTime" :label-width='formLabelWidth' label="参考用时:">
       <el-radio-group v-model="form.referenceTime">
-        <el-radio label="1"><1小时</el-radio>
-        <el-radio label="2">1-3小时</el-radio>
-        <el-radio label="3">3-5小时</el-radio>
-        <el-radio label="4">>5小时</el-radio>
+        <el-radio v-for="(item, index) in referenceTime" :key="index" :label="item">{{item.dict_Name}}</el-radio>
       </el-radio-group>
     </el-form-item>
     <el-form-item class="form-item" :label-width='formLabelWidth' label="适宜季节:">
       <el-checkbox-group style="float:left" v-model="form.seasons">
-        <el-checkbox label="1">春天</el-checkbox>
-        <el-checkbox label="2">夏天</el-checkbox>
-        <el-checkbox label="3">秋天</el-checkbox>
-        <el-checkbox label="4">冬天</el-checkbox>
+        <el-checkbox v-for="(item, index) in seasons" :key="index" :label="item">{{item.dict_Name}}</el-checkbox>
       </el-checkbox-group>
     </el-form-item>
     <el-form-item class="form-item" :label-width='formLabelWidth' label="适宜人群:">
       <el-checkbox-group style="float:left" v-model="form.crowds">
-        <el-checkbox label="1">家庭</el-checkbox>
-        <el-checkbox label="2">夫妻</el-checkbox>
-        <el-checkbox label="3">独自旅行</el-checkbox>
-        <el-checkbox label="4">商务</el-checkbox>
+        <el-checkbox v-for="(item, index) in crowds" :key="index" :label="item">{{item.dict_Name}}</el-checkbox>
       </el-checkbox-group>
     </el-form-item>
     <el-form-item class="form-item" prop="openingHours" :label-width='formLabelWidth' label="开放时间:">
@@ -63,12 +54,12 @@
       <el-button style="border:1px solid #3095fa;color:#3095fa;" size="small" @click="showtime = true">编辑</el-button>
     </el-form-item>
     <!-- 信息展示预留 -->
-     <div style="width: 1200px; float: left">
+    <div style="width: 1200px; float: left">
     <div v-if="isDataTime" style="margin-left:90px;width: 700px;background: #F7F7F7; padding: 20px;margin-bottom: 20px;float: left;">
       <!-- 周一 -->
       <div v-if="dateTime.one.length != 0" style="margin-top: -5px;float: left; width: 900px">
         <span style="float: left">周一</span>
-        <div v-if="dateTime.one.alltime" style="margin-left:84px">
+        <div v-if="!dateTime.one[0].alltime" style="margin-left:84px">
           <div v-for="(item, index) in dateTime.one" :key="index" style="float: left; padding-left:10px">
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.one.length > 1 && index != dateTime.one.length - 1">;</span>
           </div>
@@ -80,55 +71,73 @@
       <!-- 周二 -->
       <div v-if="dateTime.tue.length != 0" style="margin-top: -5px;float: left;width: 900px; margin-top: 10px">
         <span style="float: left">周二</span>
-        <div style="margin-left:84px">
+        <div v-if="!dateTime.tue[0].alltime" style="margin-left:84px">
           <div v-for="(item, index) in dateTime.tue" :key="index" style="float: left; padding-left:10px">
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.tue.length > 1 && index != dateTime.tue.length - 1">;</span>
           </div>
+        </div>
+        <div v-else style="margin-left:84px">
+          <span>全天营业</span>
         </div>
       </div>
       <!-- 周三 -->
       <div v-if="dateTime.wed.length != 0" style="margin-top: -5px;float: left;width: 900px; margin-top: 10px">
         <span style="float: left">周三</span>
-        <div style="margin-left:84px">
+        <div v-if="!dateTime.wed[0].alltime" style="margin-left:84px">
           <div v-for="(item, index) in dateTime.wed" :key="index" style="float: left; padding-left:10px">
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.wed.length > 1 && index != dateTime.wed.length - 1">;</span>
           </div>
+        </div>
+        <div v-else style="margin-left:84px">
+          <span>全天营业</span>
         </div>
       </div>
       <!-- 周四 -->
       <div v-if="dateTime.thur.length != 0" style="margin-top: -5px;float: left;width: 900px; margin-top: 10px">
         <span style="float: left">周四</span>
-        <div style="margin-left:84px">
+        <div v-if="!dateTime.thur[0].alltime" style="margin-left:84px">
           <div v-for="(item, index) in dateTime.thur" :key="index" style="float: left; padding-left:10px">
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.thur.length > 1 && index != dateTime.thur.length - 1">;</span>
           </div>
+        </div>
+        <div v-else style="margin-left:84px">
+          <span>全天营业</span>
         </div>
       </div>
       <!-- 周五 -->
       <div v-if="dateTime.fir.length != 0" style="margin-top: -5px;float: left;width: 900px; margin-top: 10px">
         <span style="float: left">周五</span>
-        <div style="margin-left:84px">
+        <div v-if="!dateTime.fir[0].alltime" style="margin-left:84px">
           <div v-for="(item, index) in dateTime.fir" :key="index" style="float: left; padding-left:10px">
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.fir.length > 1 && index != dateTime.fir.length - 1">;</span>
           </div>
+        </div>
+        <div v-else style="margin-left:84px">
+          <span>全天营业</span>
         </div>
       </div>
       <!-- 周六 -->
       <div v-if="dateTime.sat.length != 0" style="margin-top: -5px;float: left;width: 900px; margin-top: 10px">
         <span style="float: left">周六</span>
-        <div style="margin-left:84px">
+        <div v-if="!dateTime.sat[0].alltime" style="margin-left:84px">
           <div v-for="(item, index) in dateTime.sat" :key="index" style="float: left; padding-left:10px">
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.sat.length > 1 && index != dateTime.sat.length - 1">;</span>
           </div>
+        </div>
+        <div v-else style="margin-left:84px">
+          <span>全天营业</span>
         </div>
       </div>
       <!-- 周日 -->
       <div v-if="dateTime.sun.length != 0" style="margin-top: -5px; float: left;width: 900px; margin-top: 10px">
         <span style="float: left">周日</span>
-        <div style="margin-left:84px">
+        <div v-if="!dateTime.sun[0].alltime" style="margin-left:84px">
           <div v-for="(item, index) in dateTime.sun" :key="index" style="float: left; padding-left:10px">
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.sun.length > 1 && index != dateTime.sun.length - 1">;</span>
           </div>
+        </div>
+        <div v-else style="margin-left:84px">
+          <span>全天营业</span>
         </div>
       </div>
       <!-- 其他说明 -->
@@ -172,6 +181,7 @@
 import LabelSelection from './components/Labelselection'
 import OpenTime from './components/Opentime'
 export default {
+  props: ['referenceTime', 'seasons', 'crowds'],
   components:{
     LabelSelection,
     OpenTime
@@ -198,6 +208,15 @@ export default {
         }
         callback();
       }
+    };
+    var areaIdRule = (rule, value, callback) => {
+      setTimeout(() => {
+        if (!this.form.areaId.value) {
+          return callback(new Error('请选择所属地区'));
+        } else {
+          callback();
+        }
+      }, 200)
     };
     var tagRule = (rule, value, callback) => {
       if (this.form.tags.length == 0) {
@@ -241,6 +260,7 @@ export default {
       placeholderValue: '请输入标签',
       destinationInput: 'destination-input', // 标签class
       isTag: false,
+      isSelect: false,      // 判断是否进入select
       isBlur: true,         // 标签失去焦点判断
       inputTag: '',         // 标签input框
       isDataTime: false,    // 开放时间详情开关
@@ -248,212 +268,20 @@ export default {
       form: {
         chineseName: '',    // 中文名称
         englishName:'',     // 英文名称
-        city: '',           // 所属区域
+        areaId: {           // 所属区域
+          id: '',
+          value: ''
+        },         
         tags: [],           // 标签
         lat: '',            // 经度
         lng: '',            // 纬度
         referenceTime: '',  // 参考用时
-        seasons: '',        // 适宜季节
-        crowds: '',         // 适宜人群
+        seasons: [],        // 适宜季节
+        crowds: [],         // 适宜人群
         openingHours: '',   // 开放时间
         imgs: '',           // 图片
         introduction: "",   // 产品概述
       },
-        options: [{
-          value: 'zhinan',
-          label: '指南',
-          children: [{
-            value: 'shejiyuanze',
-            label: '设计原则',
-            children: [{
-              value: 'yizhi',
-              label: '一致'
-            }, {
-              value: 'fankui',
-              label: '反馈'
-            }, {
-              value: 'xiaolv',
-              label: '效率'
-            }, {
-              value: 'kekong',
-              label: '可控'
-            }]
-          }, {
-            value: 'daohang',
-            label: '导航',
-            children: [{
-              value: 'cexiangdaohang',
-              label: '侧向导航'
-            }, {
-              value: 'dingbudaohang',
-              label: '顶部导航'
-            }]
-          }]
-        }, {
-          value: 'zujian',
-          label: '组件',
-          children: [{
-            value: 'basic',
-            label: 'Basic',
-            children: [{
-              value: 'layout',
-              label: 'Layout 布局'
-            }, {
-              value: 'color',
-              label: 'Color 色彩'
-            }, {
-              value: 'typography',
-              label: 'Typography 字体'
-            }, {
-              value: 'icon',
-              label: 'Icon 图标'
-            }, {
-              value: 'button',
-              label: 'Button 按钮'
-            }]
-          }, {
-            value: 'form',
-            label: 'Form',
-            children: [{
-              value: 'radio',
-              label: 'Radio 单选框'
-            }, {
-              value: 'checkbox',
-              label: 'Checkbox 多选框'
-            }, {
-              value: 'input',
-              label: 'Input 输入框'
-            }, {
-              value: 'input-number',
-              label: 'InputNumber 计数器'
-            }, {
-              value: 'select',
-              label: 'Select 选择器'
-            }, {
-              value: 'cascader',
-              label: 'Cascader 级联选择器'
-            }, {
-              value: 'switch',
-              label: 'Switch 开关'
-            }, {
-              value: 'slider',
-              label: 'Slider 滑块'
-            }, {
-              value: 'time-picker',
-              label: 'TimePicker 时间选择器'
-            }, {
-              value: 'date-picker',
-              label: 'DatePicker 日期选择器'
-            }, {
-              value: 'datetime-picker',
-              label: 'DateTimePicker 日期时间选择器'
-            }, {
-              value: 'upload',
-              label: 'Upload 上传'
-            }, {
-              value: 'rate',
-              label: 'Rate 评分'
-            }, {
-              value: 'form',
-              label: 'Form 表单'
-            }]
-          }, {
-            value: 'data',
-            label: 'Data',
-            children: [{
-              value: 'table',
-              label: 'Table 表格'
-            }, {
-              value: 'tag',
-              label: 'Tag 标签'
-            }, {
-              value: 'progress',
-              label: 'Progress 进度条'
-            }, {
-              value: 'tree',
-              label: 'Tree 树形控件'
-            }, {
-              value: 'pagination',
-              label: 'Pagination 分页'
-            }, {
-              value: 'badge',
-              label: 'Badge 标记'
-            }]
-          }, {
-            value: 'notice',
-            label: 'Notice',
-            children: [{
-              value: 'alert',
-              label: 'Alert 警告'
-            }, {
-              value: 'loading',
-              label: 'Loading 加载'
-            }, {
-              value: 'message',
-              label: 'Message 消息提示'
-            }, {
-              value: 'message-box',
-              label: 'MessageBox 弹框'
-            }, {
-              value: 'notification',
-              label: 'Notification 通知'
-            }]
-          }, {
-            value: 'navigation',
-            label: 'Navigation',
-            children: [{
-              value: 'menu',
-              label: 'NavMenu 导航菜单'
-            }, {
-              value: 'tabs',
-              label: 'Tabs 标签页'
-            }, {
-              value: 'breadcrumb',
-              label: 'Breadcrumb 面包屑'
-            }, {
-              value: 'dropdown',
-              label: 'Dropdown 下拉菜单'
-            }, {
-              value: 'steps',
-              label: 'Steps 步骤条'
-            }]
-          }, {
-            value: 'others',
-            label: 'Others',
-            children: [{
-              value: 'dialog',
-              label: 'Dialog 对话框'
-            }, {
-              value: 'tooltip',
-              label: 'Tooltip 文字提示'
-            }, {
-              value: 'popover',
-              label: 'Popover 弹出框'
-            }, {
-              value: 'card',
-              label: 'Card 卡片'
-            }, {
-              value: 'carousel',
-              label: 'Carousel 走马灯'
-            }, {
-              value: 'collapse',
-              label: 'Collapse 折叠面板'
-            }]
-          }]
-        }, {
-          value: 'ziyuan',
-          label: '资源',
-          children: [{
-            value: 'axure',
-            label: 'Axure Components'
-          }, {
-            value: 'sketch',
-            label: 'Sketch Templates'
-          }, {
-            value: 'jiaohu',
-            label: '组件交互文档'
-          }]
-        }],
         // 表单验证
         rules: {
           chineseName: [
@@ -464,8 +292,9 @@ export default {
             { pattern: /[a-zA-Z]/, message: '请输入英文' },
             { validator: englishNameRule }
           ],
-          city: [
-            { required: true, message: '请选择所属地区', trigger: 'blur' }
+          areaId: [
+            { validator: areaIdRule, trigger: 'blur' }
+            // { required: true, message: '请选择所属地区', trigger: 'blur' }
           ],
           tags: [
             { validator: tagRule, trigger: 'blur' }
@@ -509,7 +338,22 @@ export default {
     },
     // 区域选择
     handleSelect(item) {
-      // this.form.city = item;
+      this.form.areaId = item;
+      this.isSelect = true;
+    },
+    // 区域选择失去焦点
+    handleBlur() {
+      setTimeout(() => {
+        if (!this.isSelect) {
+          this.form.areaId = {
+            'id': '',
+            'value': ''
+          }
+          this.isSelect = false;
+        } else {
+          this.isSelect = false;
+        }
+      }, 200)
     },
     // 区域联想
     querySearch(queryString, cb) {
@@ -572,7 +416,140 @@ export default {
     addsave() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          alert(12);
+          // 标签
+          let labels = this.form.tags.map(v => v.name).join();
+          // 参考用时
+          let referenceTime = {'dict_ID': this.form.referenceTime.id}
+          // 适宜季节
+          let seasons = this.form.seasons.map(v => {
+            return {'dict_ID': v.id}
+          })
+          // 适宜人群
+          let crowds = this.form.crowds.map(v => {
+            return {'dict_ID': v.id}
+          })
+          let openingHours = this.dateTime.one.map(v => {
+            if (v.alltime) {
+              return {
+                'theWeek':   1,
+                'beginDate': '00:00',
+                'endDate':   '24:00'
+              }
+            } else {
+              return {
+                'theWeek':   1,
+                'beginDate': v.start,
+                'endDate':   v.end
+              }
+            }
+          }).concat(this.dateTime.tue.map(v => {
+            if (v.alltime) {
+              return {
+                'theWeek':   2,
+                'beginDate': '00:00',
+                'endDate':   '24:00'
+              }
+            } else {
+              return {
+                'theWeek':   2,
+                'beginDate': v.start,
+                'endDate':   v.end
+              }
+            }
+          })).concat(this.dateTime.wed.map(v => {
+            if (v.alltime) {
+              return {
+                'theWeek':   3,
+                'beginDate': '00:00',
+                'endDate':   '24:00'
+              }
+            } else {
+              return {
+                'theWeek':   3,
+                'beginDate': v.start,
+                'endDate':   v.end
+              }
+            }
+          })).concat(this.dateTime.thur.map(v => {
+            if (v.alltime) {
+              return {
+                'theWeek':   4,
+                'beginDate': '00:00',
+                'endDate':   '24:00'
+              }
+            } else {
+              return {
+                'theWeek':   4,
+                'beginDate': v.start,
+                'endDate':   v.end
+              }
+            }
+          })).concat(this.dateTime.fir.map(v => {
+            if (v.alltime) {
+              return {
+                'theWeek':   5,
+                'beginDate': '00:00',
+                'endDate':   '24:00'
+              }
+            } else {
+              return {
+                'theWeek':   5,
+                'beginDate': v.start,
+                'endDate':   v.end
+              }
+            }
+          })).concat(this.dateTime.sat.map(v => {
+            if (v.alltime) {
+              return {
+                'theWeek':   6,
+                'beginDate': '00:00',
+                'endDate':   '24:00'
+              }
+            } else {
+              return {
+                'theWeek':   6,
+                'beginDate': v.start,
+                'endDate':   v.end
+              }
+            }
+          })).concat(this.dateTime.sun.map(v => {
+            if (v.alltime) {
+              return {
+                'theWeek':   7,
+                'beginDate': '00:00',
+                'endDate':   '24:00'
+              }
+            } else {
+              return {
+                'theWeek':   7,
+                'beginDate': v.start,
+                'endDate':   v.end
+              }
+            }
+          }))
+
+          this.$http.post(this.GLOBAL.serverSrc + '/scenicspot/api/insert', {
+            "object": {
+              'name':               this.form.englishName,
+              'chineseName':        this.form.chineseName,
+              'areaID':             this.form.areaId.id,
+              'areaName':           this.form.areaId.value,
+              'link':               '这是链接',
+              'labels':             labels,
+              'lat':                this.form.lat,
+              'lng':                this.form.lng,
+              'referenceTime':      referenceTime,
+              'openingHours':       openingHours,
+              'openingHourExplain': this.dateTime.desc,
+              'seasons':            seasons,
+              'crowds':             crowds,
+              'introduction':       this.form.introduction,
+              "createTime":         "2019-03-20T05:36:16.641Z",
+            }
+          }).then(res => {
+            console.log(res);
+          })
+          
         }
       })
     },
@@ -587,6 +564,7 @@ export default {
       this.dateTime.sun = [];
       this.showtime = false;
       let data = list;
+
       // 周一
       if (data.alltimeOne) {
         this.dateTime.one.push({
