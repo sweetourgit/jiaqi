@@ -244,7 +244,16 @@
                           </div>
                           <div v-if="item.trafficMode == '1'">
                             <!--第一行-->
-                            <div class="aviation" style="margin-top:20px; position:relative;">
+                            <div class="aviation" style=" position:relative;margin-top:20px;">
+                              <!--航班号自动填充-->
+                              <div class="aviation" style="position:absolute; top:-60px; left:300px;">
+                                <el-form :model="item" label-width="100px" style="float:left;">
+                                  <el-form-item label="自动填充" prop="pod">
+                                    <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelect">
+                                    </el-autocomplete> 
+                                  </el-form-item>
+                                </el-form>
+                              </div>
                               <!--第一个-->
                                   <el-form-item :prop="'plane.'+index+'.company'" :rules="rules.company" label="航空公司" label-width="100px" style="float:left;">
                                     <el-autocomplete class="inputBox" clearable placeholder="请输入航空公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
@@ -256,15 +265,6 @@
                                   <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.theNumber" :trigger-on-focus="false">
                                   </el-autocomplete>
                                 </el-form-item>
-                              </div>
-                              <!--航班号自动填充-->
-                              <div class="aviation" style="position:absolute; top:-60px; left:300px;">
-                                <el-form :model="item" label-width="100px" style="float:left;">
-                                  <el-form-item label="自动填充" prop="pod">
-                                    <el-autocomplete class="inputBox" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelect">
-                                    </el-autocomplete>
-                                  </el-form-item>
-                                </el-form>
                               </div>
                             </div>
                             <!--第一行结束-->
@@ -1366,6 +1366,8 @@
         items: {
           text: ''
         },
+        //去程交通信息自动填充
+        flightsList:[],
         //去程交通工具切换
         goRoad: [{
           value: '1',
@@ -1718,7 +1720,8 @@
       dynamicTags4: [],
         inputVisible4: false,
         inputVal4: '',
-        errorNull: ''
+        errorNull: '',
+        sid:'',
       }
     },
    watch:{ //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
@@ -1785,7 +1788,7 @@
       } ,
     mounted() {
       this.guid();
-      this.restaurants = this.loadAll();
+      //this.restaurants = this.loadAll();
     },
     created() {
       this.themeList();
@@ -2127,7 +2130,7 @@
         // console.log(file);
       },
       //自动填充数据
-      loadAll() {
+      /*loadAll() {
         return [{
             "value": "三全鲜食（北新泾店）",
             "id": "1"
@@ -2149,7 +2152,7 @@
             "id": "5"
           }
         ];
-      },
+      },*/
       //添加、删除详情
       addDetails(index) {
         this.ruleForm.schedules[index].activitys.push({
@@ -2220,11 +2223,58 @@
           }
         }
       },
+      //循环主题ID
+      cycleId(){
+        console.log("cycleId")
+        for(var i =0; i<this.ruleForm.plane.length; i++){
+            this.sid = this.ruleForm.plane[i].id;
+        }
+      },
+      //获取一条Flights
+      /*getFlights(){
+        this.$http.post(this.GLOBAL.serverSrc + '/flight/api/get',{
+           "id":this.sid
+          }).then(res => {
+              if(res.data.isSuccess == true){
+                 let data = res.data.object;
+                 //this.rformA.labelList=data.labelName;
+              }
+        }) 
+      },*/
       querySearch(queryString, cb) {
-        var restaurants = this.restaurants;
+        console.log(queryString);
+        // console.log(this.ruleForm.plane[0].pod);
+        this.flightsList =[]
+        this.$http.post(this.GLOBAL.serverSrc + '/flight/api/list', {
+          "object": {
+            "id": 0,
+            "byType": 0,
+            "day": 0,
+            "company": "",
+            "number": this.ruleForm.plane[0].pod,
+            "departureCity": "",
+            "departureAirport": "",
+            "departureTime": "",
+            "reachingCity": "",
+            "arrivalAirport": "",
+            "arrivalTime": "",
+            "createTime": "2019-03-21T01:58:24.499Z",
+            "code": "",
+            "isDeleted": 0,
+            "isForeign": 0
+          }
+        }).then(res => {
+          console.log(res)
+          
+          var results = queryString ? this.flightsList.filter(this.createFilter(queryString)) : [];
+          cb(results)
+        }).catch(err => {
+          console.log(err);
+        })
+        /*var restaurants = this.restaurants;
         var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
         // 调用 callback 返回建议列表的数据
-        cb(results);
+        cb(results);*/
       },
       createFilter(queryString) {
         return (restaurant) => {

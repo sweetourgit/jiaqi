@@ -428,7 +428,6 @@
         this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/olabelget',{
            "id":this.multipleSelection[0].id
           }).then(res => {
-              
               if(res.data.isSuccess == true){
                  let data = res.data.object;
                  this.rformA.labelList=data.labelName;
