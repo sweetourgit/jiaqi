@@ -36,22 +36,22 @@
     </el-form-item>
     <el-form-item style="margin-top: -20px;" class="form-item" prop="referenceTime" :label-width='formLabelWidth' label="参考用时:">
       <el-radio-group v-model="form.referenceTime">
-        <el-radio v-for="(item, index) in referenceTime" :key="index" :label="item">{{item.dict_Name}}</el-radio>
+        <el-radio v-for="(item, index) in referenceTime" :key="index" :label="item.id">{{item.dict_Name}}</el-radio>
       </el-radio-group>
     </el-form-item>
     <el-form-item class="form-item" :label-width='formLabelWidth' label="适宜季节:">
       <el-checkbox-group style="float:left" v-model="form.seasons">
-        <el-checkbox v-for="(item, index) in seasons" :key="index" :label="item">{{item.dict_Name}}</el-checkbox>
+        <el-checkbox v-for="(item, index) in seasons" :key="index" :label="item.id">{{item.dict_Name}}</el-checkbox>
       </el-checkbox-group>
     </el-form-item>
     <el-form-item class="form-item" :label-width='formLabelWidth' label="适宜人群:">
       <el-checkbox-group style="float:left" v-model="form.crowds">
-        <el-checkbox v-for="(item, index) in crowds" :key="index" :label="item">{{item.dict_Name}}</el-checkbox>
+        <el-checkbox v-for="(item, index) in crowds" :key="index" :label="item.id">{{item.dict_Name}}</el-checkbox>
       </el-checkbox-group>
     </el-form-item>
     <el-form-item class="form-item" prop="openingHours" :label-width='formLabelWidth' label="开放时间:">
       <span class="redStar">*</span>
-      <el-button style="border:1px solid #3095fa;color:#3095fa;" size="small" @click="showtime = true">编辑</el-button>
+      <el-button style="border:1px solid #3095fa;color:#3095fa;" size="small" @click="editBoo">编辑</el-button>
     </el-form-item>
     <!-- 信息展示预留 -->
     <div style="width: 1200px; float: left">
@@ -64,7 +64,7 @@
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.one.length > 1 && index != dateTime.one.length - 1">;</span>
           </div>
         </div>
-        <div v-else style="margin-left:84px">
+        <div v-else style="margin-left:92px">
           <span>全天营业</span>
         </div>
       </div>
@@ -76,7 +76,7 @@
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.tue.length > 1 && index != dateTime.tue.length - 1">;</span>
           </div>
         </div>
-        <div v-else style="margin-left:84px">
+        <div v-else style="margin-left:92px">
           <span>全天营业</span>
         </div>
       </div>
@@ -88,7 +88,7 @@
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.wed.length > 1 && index != dateTime.wed.length - 1">;</span>
           </div>
         </div>
-        <div v-else style="margin-left:84px">
+        <div v-else style="margin-left:92px">
           <span>全天营业</span>
         </div>
       </div>
@@ -100,7 +100,7 @@
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.thur.length > 1 && index != dateTime.thur.length - 1">;</span>
           </div>
         </div>
-        <div v-else style="margin-left:84px">
+        <div v-else style="margin-left:92px">
           <span>全天营业</span>
         </div>
       </div>
@@ -112,7 +112,7 @@
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.fir.length > 1 && index != dateTime.fir.length - 1">;</span>
           </div>
         </div>
-        <div v-else style="margin-left:84px">
+        <div v-else style="margin-left:92px">
           <span>全天营业</span>
         </div>
       </div>
@@ -124,7 +124,7 @@
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.sat.length > 1 && index != dateTime.sat.length - 1">;</span>
           </div>
         </div>
-        <div v-else style="margin-left:84px">
+        <div v-else style="margin-left:92px">
           <span>全天营业</span>
         </div>
       </div>
@@ -136,7 +136,7 @@
             <span>{{item.start}}</span> - <span>{{item.end}}</span><span v-if="dateTime.sun.length > 1 && index != dateTime.sun.length - 1">;</span>
           </div>
         </div>
-        <div v-else style="margin-left:84px">
+        <div v-else style="margin-left:92px">
           <span>全天营业</span>
         </div>
       </div>
@@ -171,8 +171,8 @@
   <LabelSelection></LabelSelection>
 </el-dialog>
 <!-- 开放时间 -->
-<el-dialog width='1100px' top='10vh' append-to-body title="添加开放时间" :visible.sync="showtime" :show-close="false">
-  <OpenTime v-on:timeList="timeList" v-on:closeButton="showtime = false"></OpenTime>
+<el-dialog width='1100px' top='10vh' append-to-body title="添加开放时间" :visible.sync="showtime" :show-close="false" @close="closeBoo">
+  <OpenTime v-on:timeList="timeList" v-on:closeButton="showtime = false" :dateTime="dateTime" v-if="hackReset"></OpenTime>
 </el-dialog>
   </div>
 </template>
@@ -181,7 +181,7 @@
 import LabelSelection from './components/Labelselection'
 import OpenTime from './components/Opentime'
 export default {
-  props: ['referenceTime', 'seasons', 'crowds'],
+  props: ['referenceTime', 'seasons', 'crowds', 'handleEditDate'],
   components:{
     LabelSelection,
     OpenTime
@@ -244,17 +244,9 @@ export default {
       formLabelWidth: '90px',
       isShowImg: '',
       imgUrl: '',
-      weeklist:{
-        0:'9:00-12:00 和 15:00-18:00',
-        1:'9:00-12:00 和 15:00-18:00',
-        2:'9:00-12:00 和 15:00-18:00',
-        3:'9:00-12:00 和 15:00-18:00',
-        4:'9:00-12:00 和 15:00-18:00',
-        5:'9:00-12:00 和 15:00-18:00',
-        6:'9:00-12:00 和 15:00-18:00',
-      },
       showtime: false,
       showEdit: false,
+      hackReset: true,
       fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
       vague: [],            // 模糊搜索数组
       placeholderValue: '请输入标签',
@@ -282,53 +274,203 @@ export default {
         imgs: '',           // 图片
         introduction: "",   // 产品概述
       },
-        // 表单验证
-        rules: {
-          chineseName: [
-            { pattern: /[\u4e00-\u9fa5]/, message: '请输入中文' },
-            { validator: chineseNameRule }
-          ],
-          englishName: [
-            { pattern: /[a-zA-Z]/, message: '请输入英文' },
-            { validator: englishNameRule }
-          ],
-          areaId: [
-            { validator: areaIdRule, trigger: 'blur' }
-            // { required: true, message: '请选择所属地区', trigger: 'blur' }
-          ],
-          tags: [
-            { validator: tagRule, trigger: 'blur' }
-          ],
-          lat: [
-            { required: true, message: '请填写地理坐标', trigger: 'blur' }
-          ],
-          lng: [
-            { required: true, message: '请填写地理坐标', trigger: 'blur' }
-          ],
-          referenceTime: [
-            { required: true, message: '请选择用时' }
-          ],
-          openingHours: [
-            { validator: openingHoursRule }
-          ]
-        }
+      // 表单验证
+      rules: {
+        chineseName: [
+          { pattern: /[\u4e00-\u9fa5]/, message: '请输入中文' },
+          { validator: chineseNameRule }
+        ],
+        englishName: [
+          { pattern: /[a-zA-Z]/, message: '请输入英文' },
+          { validator: englishNameRule }
+        ],
+        areaId: [
+          { validator: areaIdRule, trigger: 'blur' }
+          // { required: true, message: '请选择所属地区', trigger: 'blur' }
+        ],
+        tags: [
+          { validator: tagRule, trigger: 'blur' }
+        ],
+        lat: [
+          { required: true, message: '请填写地理坐标', trigger: 'blur' }
+        ],
+        lng: [
+          { required: true, message: '请填写地理坐标', trigger: 'blur' }
+        ],
+        referenceTime: [
+          { required: true, message: '请选择用时' }
+        ],
+        openingHours: [
+          { validator: openingHoursRule }
+        ]
+      }
     }
   },
   created() {
-    this.dateTime.one = [];
-    this.dateTime.tue = [];
-    this.dateTime.wed = [];
-    this.dateTime.thur = [];
-    this.dateTime.fir = [];
-    this.dateTime.sat = [];
-    this.dateTime.sun = [];
+    if (this.handleEditDate != '') {
+      this.templateEmpty();
+      this.changeData();
+    } else {
+      this.templateEmpty();
+      if (this.$refs['form'] != undefined) {
+        this.$refs['form'].resetFields();
+      }
+    }
+  },
+  watch: {
+    handleEditDate() {
+      if (this.handleEditDate != '') {
+        this.templateEmpty();
+        this.changeData();
+      } else {
+        this.templateEmpty();
+        if (this.$refs['form'] != undefined) {
+          this.$refs['form'].resetFields();
+        }
+      }
+    },
   },
   methods:{
-    handleChange(e){
-      console.log(e)
+    closeBoo(){
+      this.showtime = false;
+      setTimeout(() => {
+        this.hackReset = false;
+      },200)
     },
-    handleclose(){
-      this.$emit('close')
+    editBoo(){
+      this.showtime = true;
+      this.hackReset = true;
+    },
+    templateEmpty() {
+      this.dateTime.one = [];
+      this.dateTime.tue = [];
+      this.dateTime.wed = [];
+      this.dateTime.thur = [];
+      this.dateTime.fir = [];
+      this.dateTime.sat = [];
+      this.dateTime.sun = [];
+      this.form = {
+        chineseName: '',    // 中文名称
+        englishName:'',     // 英文名称
+        areaId: {           // 所属区域
+          id: '',
+          value: ''
+        },         
+        tags: [],           // 标签
+        lat: '',            // 经度
+        lng: '',            // 纬度
+        referenceTime: '',  // 参考用时
+        seasons: [],        // 适宜季节
+        crowds: [],         // 适宜人群
+        openingHours: '',   // 开放时间
+        imgs: '',           // 图片
+        introduction: "",   // 产品概述
+      }
+    },
+    changeData() {
+      let form = this.form;           // 表单数据
+      let data = this.handleEditDate; // 接口获取的数据
+      if (data.openingHours.length != 0) {
+        this.isDataTime = true;
+        data.openingHours.forEach(item => {
+          if (item.theWeek == 1) {
+            if (item.beginDate == '00:00' && item.endDate == '24:00') {
+              this.dateTime.one.push({
+                'alltime': true
+              })
+            } else {
+              this.dateTime.one.push({
+                'start': item.beginDate,
+                'end': item.endDate
+              });
+            }
+          } else if (item.theWeek == 2) {
+            if (item.beginDate == '00:00' && item.endDate == '24:00') {
+              this.dateTime.tue.push({
+                'alltime': true
+              })
+            } else {
+              this.dateTime.tue.push({
+                'start': item.beginDate,
+                'end': item.endDate
+              });
+            }
+          } else if (item.theWeek == 3) {
+            if (item.beginDate == '00:00' && item.endDate == '24:00') {
+              this.dateTime.wed.push({
+                'alltime': true
+              })
+            } else {
+              this.dateTime.wed.push({
+                'start': item.beginDate,
+                'end': item.endDate
+              });
+            }
+          } else if (item.theWeek == 4) {
+            if (item.beginDate == '00:00' && item.endDate == '24:00') {
+              this.dateTime.thur.push({
+                'alltime': true
+              })
+            } else {
+              this.dateTime.thur.push({
+                'start': item.beginDate,
+                'end': item.endDate
+              });
+            }
+          } else if (item.theWeek == 5) {
+            if (item.beginDate == '00:00' && item.endDate == '24:00') {
+              this.dateTime.fir.push({
+                'alltime': true
+              })
+            } else {
+              this.dateTime.fir.push({
+                'start': item.beginDate,
+                'end': item.endDate
+              });
+            }
+          } else if (item.theWeek == 6) {
+            if (item.beginDate == '00:00' && item.endDate == '24:00') {
+              this.dateTime.sat.push({
+                'alltime': true
+              })
+            } else {
+              this.dateTime.sat.push({
+                'start': item.beginDate,
+                'end': item.endDate
+              });
+            }
+          } else if (item.theWeek == 7) {
+            if (item.beginDate == '00:00' && item.endDate == '24:00') {
+              this.dateTime.sun.push({
+                'alltime': true
+              })
+            } else {
+              this.dateTime.sun.push({
+                'start': item.beginDate,
+                'end': item.endDate
+              });
+            }
+          }
+        })
+      }
+      form.id = data.id;
+      form.chineseName = data.chineseName;
+      form.englishName = data.name;
+      form.areaId = {
+        'id': data.areaID,
+        'value': data.areaName
+      };
+      form.tags = data.labels.split(',').map(v => {
+        return {'name': v};
+      });
+      if (form.tags != '') this.placeholderValue = '';
+      form.lat = data.lat;
+      form.lng = data.lng;
+      form.referenceTime = data.referenceTime? data.referenceTime.dict_ID: '';
+      form.seasons = data.seasons.map(v => v.dict_ID);
+      form.crowds = data.crowds.map(v => v.dict_ID);
+      form.introduction = data.introduction;
+      this.dateTime.desc = data.openingHourExplain;
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -349,7 +491,7 @@ export default {
             'id': '',
             'value': ''
           }
-          this.isSelect = false;
+          this.isSelect = true;
         } else {
           this.isSelect = false;
         }
@@ -419,14 +561,14 @@ export default {
           // 标签
           let labels = this.form.tags.map(v => v.name).join();
           // 参考用时
-          let referenceTime = {'dict_ID': this.form.referenceTime.id}
+          let referenceTime = {'dict_ID': this.form.referenceTime}
           // 适宜季节
           let seasons = this.form.seasons.map(v => {
-            return {'dict_ID': v.id}
+            return {'dict_ID': v}
           })
           // 适宜人群
           let crowds = this.form.crowds.map(v => {
-            return {'dict_ID': v.id}
+            return {'dict_ID': v}
           })
           let openingHours = this.dateTime.one.map(v => {
             if (v.alltime) {
@@ -528,28 +670,58 @@ export default {
             }
           }))
 
-          this.$http.post(this.GLOBAL.serverSrc + '/scenicspot/api/insert', {
-            "object": {
-              'name':               this.form.englishName,
-              'chineseName':        this.form.chineseName,
-              'areaID':             this.form.areaId.id,
-              'areaName':           this.form.areaId.value,
-              'link':               '这是链接',
-              'labels':             labels,
-              'lat':                this.form.lat,
-              'lng':                this.form.lng,
-              'referenceTime':      referenceTime,
-              'openingHours':       openingHours,
-              'openingHourExplain': this.dateTime.desc,
-              'seasons':            seasons,
-              'crowds':             crowds,
-              'introduction':       this.form.introduction,
-              "createTime":         "2019-03-20T05:36:16.641Z",
-            }
-          }).then(res => {
-            console.log(res);
-          })
-          
+          // 添加操作
+          if (this.handleEditDate == '') {
+            this.$http.post(this.GLOBAL.serverSrc + '/scenicspot/api/insert', {
+              "object": {
+                'name':               this.form.englishName,
+                'chineseName':        this.form.chineseName,
+                'areaID':             this.form.areaId.id,
+                'areaName':           this.form.areaId.value,
+                'link':               '这是链接',
+                'labels':             labels,
+                'lat':                this.form.lat,
+                'lng':                this.form.lng,
+                'referenceTime':      referenceTime,
+                'openingHours':       openingHours,
+                'openingHourExplain': this.dateTime.desc,
+                'seasons':            seasons,
+                'crowds':             crowds,
+                'introduction':       this.form.introduction,
+                "createTime":         "2019-03-20T05:36:16.641Z",
+              }
+            }).then(res => {
+              this.$message.success('添加成功！');
+              this.$emit('closeButton', false);
+              this.$emit('callInit', true);
+            })
+          } else { // 编辑操作
+            console.log(crowds)
+            this.$http.post(this.GLOBAL.serverSrc + '/scenicspot/api/save', {
+              "object": {
+                'id':                 this.form.id,
+                'name':               this.form.englishName,
+                'chineseName':        this.form.chineseName,
+                'areaID':             this.form.areaId.id,
+                'areaName':           this.form.areaId.value,
+                'link':               '这是链接',
+                'labels':             labels,
+                'lat':                this.form.lat,
+                'lng':                this.form.lng,
+                'referenceTime':      referenceTime,
+                'openingHours':       openingHours,
+                'openingHourExplain': this.dateTime.desc,
+                'seasons':            seasons,
+                'crowds':             crowds,
+                'introduction':       this.form.introduction,
+                "createTime":         "2019-03-20T05:36:16.641Z",    
+              }
+            }).then(res => {
+              this.$message.success('修改成功！');
+              this.$emit('closeButton', false);
+              this.$emit('callInit', true);
+            })
+          }
         }
       })
     },
@@ -670,7 +842,7 @@ export default {
         data.sun.forEach(item => {
           if (item.start || item.end) {
             this.dateTime.sun.push({
-              start: item.sun.start,
+              start: item.start,
               end: item.end
             })
           }
