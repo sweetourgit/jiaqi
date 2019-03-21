@@ -249,7 +249,7 @@
                               <div class="aviation" style="position:absolute; top:-60px; left:300px;">
                                 <el-form :model="item" label-width="100px" style="float:left;">
                                   <el-form-item label="自动填充" prop="pod">
-                                    <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelect">
+                                    <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
                                     </el-autocomplete> 
                                   </el-form-item>
                                 </el-form>
@@ -2225,25 +2225,35 @@
       },
       //循环主题ID
       cycleId(){
-        console.log("cycleId")
+        /*console.log("cycleId")
         for(var i =0; i<this.ruleForm.plane.length; i++){
-            this.sid = this.ruleForm.plane[i].id;
-        }
+            this.sid = this.ruleForm.plane[0].pod.id;
+        }*/
+        this.sid = this.ruleForm.plane[0].pod;
+        console.log( this.ruleForm.plane[0].pod)
       },
       //获取一条Flights
-      /*getFlights(){
+      handleSelectPod(){
         this.$http.post(this.GLOBAL.serverSrc + '/flight/api/get',{
            "id":this.sid
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
                  //this.rformA.labelList=data.labelName;
+                 this.ruleForm.plane[0].company=data.company;//航空公司
+                 this.ruleForm.plane[0].theNumber=data.number;//航班号
+                 this.ruleForm.plane[0].podCity=data.departureCity;//出发城市
+                 this.ruleForm.plane[0].podPlace=data.departureAirport;//出发机场
+                 this.ruleForm.plane[0].podTime=data.departureTime;//出发时间
+                 this.ruleForm.plane[0].arriveCity=data.reachingCity;//到达城市
+                 this.ruleForm.plane[0].arrivePlace=data.arrivalAirport; //到达机场
+                 this.ruleForm.plane[0].arriveTime=data.arrivalTime;//到达时间
+                 this.ruleForm.plane[0].planeDay=data.day;//到达天数
+                 this.ruleForm.plane[0].trafficMode=data.byType;//出行方式    
               }
         }) 
-      },*/
+      },
       querySearch(queryString, cb) {
-        console.log(queryString);
-        // console.log(this.ruleForm.plane[0].pod);
         this.flightsList =[]
         this.$http.post(this.GLOBAL.serverSrc + '/flight/api/list', {
           "object": {
@@ -2264,7 +2274,7 @@
             "isForeign": 0
           }
         }).then(res => {
-          console.log(res)
+          //console.log(res)
           for(let i=0;i<res.data.objects.length;i++){
             this.flightsList.push({
               "value" : res.data.objects[i].number,
