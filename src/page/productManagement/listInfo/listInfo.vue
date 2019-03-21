@@ -2265,7 +2265,12 @@
           }
         }).then(res => {
           console.log(res)
-          
+          for(let i=0;i<res.data.objects.length;i++){
+            this.flightsList.push({
+              "value" : res.data.objects[i].number,
+              "id":res.data.objects[i].id
+            })
+          }
           var results = queryString ? this.flightsList.filter(this.createFilter(queryString)) : [];
           cb(results)
         }).catch(err => {
