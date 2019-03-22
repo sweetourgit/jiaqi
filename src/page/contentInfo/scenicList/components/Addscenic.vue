@@ -342,6 +342,7 @@ export default {
       this.hackReset = true;
     },
     templateEmpty() {
+      this.isDataTime = false;
       this.dateTime.one = [];
       this.dateTime.tue = [];
       this.dateTime.wed = [];
@@ -349,6 +350,7 @@ export default {
       this.dateTime.fir = [];
       this.dateTime.sat = [];
       this.dateTime.sun = [];
+      this.dateTime.desc = '';
       this.form = {
         chineseName: '',    // 中文名称
         englishName:'',     // 英文名称

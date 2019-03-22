@@ -212,6 +212,8 @@ import AddScenic from './components/Addscenic'
       resetButton() {
         this.areaName = '';
         this.name = '';
+        this.pagesize = 10;
+        this.currentPage = 1;
         this.initData();
       },
       // 搜索按钮
