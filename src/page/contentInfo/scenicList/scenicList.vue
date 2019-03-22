@@ -290,7 +290,8 @@ import AddScenic from './components/Addscenic'
     text-align: center;
   }
   .pages {
-    width: 800px;
+    width: 830px;
+    height: 50px;
     .page {
       float: right;
     }
