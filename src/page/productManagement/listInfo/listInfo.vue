@@ -2248,30 +2248,9 @@
         }) 
       },*/
       //不带下拉框获取一条Flights
-      /*handleSelectPod_01(item){
+      handleSelectPod_01(item){
         this.$http.post(this.GLOBAL.serverSrc + '/Flight/flighs/api/getnum',{
            "number":this.ruleForm.plane[0].pod
-          }).then(res => {
-              if(res.data.isSuccess == true){
-                 let data = res.data.object;
-                 this.ruleForm.plane[0].company=data.company;//航空公司
-                 this.ruleForm.plane[0].theNumber=data.number;//航班号
-                 this.ruleForm.plane[0].podCity=data.departureCity;//出发城市
-                 this.ruleForm.plane[0].podPlace=data.departureAirport;//出发机场
-                 this.ruleForm.plane[0].podTime=data.departureTime;//出发时间
-                 this.ruleForm.plane[0].arriveCity=data.reachingCity;//到达城市
-                 this.ruleForm.plane[0].arrivePlace=data.arrivalAirport; //到达机场
-                 this.ruleForm.plane[0].arriveTime=data.arrivalTime;//到达时间
-                 this.ruleForm.plane[0].planeDay=data.day;//到达天数
-                 this.ruleForm.plane[0].trafficMode=data.byType;//出行方式    
-              }
-        }) 
-      },*/
-      handleSelectPod_01(item){
-        this.$http.post(this.GLOBAL.serverSrc + '/flight/api/list',{
-           "object":{
-              "number":this.ruleForm.plane[0].pod
-           }
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
