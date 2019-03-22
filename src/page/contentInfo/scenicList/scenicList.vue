@@ -188,6 +188,9 @@ import AddScenic from './components/Addscenic'
           this.$http.post(this.GLOBAL.serverSrc + '/scenicspot/api/delete', {
             "id": this.currentRow.id
           }).then(res => {
+            if (this.checkLabelList.length == 1) {
+              this.currentPage = this.currentPage - 1;
+            }
             this.$message({
               type: 'success',
               message: '删除成功!'
