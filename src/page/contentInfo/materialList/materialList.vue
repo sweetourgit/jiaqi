@@ -313,7 +313,7 @@
         }else{
           this.picForm.destination=this.data.name;
           this.picForm.destinationId=this.data.id;
-          this.leftTree1=false;
+          this.leftTree1=false; 
          }
         }
       },
