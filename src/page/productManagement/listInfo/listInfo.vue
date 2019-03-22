@@ -235,7 +235,7 @@
                         <!--去程-->
                         <div class="plane" v-for="(item, index) in ruleForm.plane" :key="item.index">
                           <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
-                            <el-cascader class="plane_type" v-model="selectedOptions" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机"></el-cascader>
+                            <el-cascader class="plane_type" v-model="selectedOptions" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficClear(index)"></el-cascader>
                             <span class="plane_text">第</span>
                             <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                               <el-option v-for="(item,index) in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -247,7 +247,7 @@
                                   <el-form-item label="自动填充" prop="pod">
                                     <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
                                      </el-autocomplete> -->
-                                     <el-input class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @change="handleSelectPod_01">
+                                     <el-input class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_01(index)">
                                     </el-input> 
                                   </el-form-item>
                                 </el-form>
@@ -527,18 +527,29 @@
                           </div>
                         </div>
                         <div class="plane" v-for="(item, index) in ruleForm.nackPlane" :key="item.index">
-                          <div class="" style=" clear:both; margin:0 0 0 0;">
-                            <el-cascader class="plane_type" v-model="selectedOptions_01" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机"></el-cascader>
+                          <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
+                            <el-cascader class="plane_type" v-model="selectedOptions_01" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficGoClear(index)"></el-cascader>
                             <span class="plane_text">第</span>
                             <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                               <el-option v-for="item in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
                             </el-select>
                             <span class="plane_text">天</span>
+                            <!--航班号自动填充-->
+                            <div class="aviation" style="position:absolute; top:20px; left:300px;">
+                                <el-form :model="item" label-width="100px" style="float:left;">
+                                  <el-form-item label="自动填充" prop="pod">
+                                    <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
+                                     </el-autocomplete> -->
+                                     <el-input class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_02(index)">
+                                    </el-input> 
+                                  </el-form-item>
+                                </el-form>
+                              </div>
                           </div>
                           <!--飞机-->
                           <div v-if="item.trafficMode == '1'">
                             <!--第一行-->
-                            <div class="aviation" style="margin-top:20px; position:relative;">
+                            <div class="aviation" style="margin-top:20px;">
                               <!--第一个-->
                                 <el-form-item label="航空公司" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.company'" :rules="rules.company">
                                   <el-autocomplete class="inputBox" clearable placeholder="请输入航空公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
@@ -549,15 +560,6 @@
                                   <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.theNumber" :trigger-on-focus="false">
                                   </el-autocomplete>
                                 </el-form-item>
-                              <!--航班号自动填充-->
-                              <div class="aviation" style="position:absolute; top:-60px; left:300px;">
-                                <el-form :model="item" label-width="100px" style="float:left;">
-                                  <el-form-item label="自动填充" prop="pod">
-                                    <el-autocomplete class="inputBox" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelect">
-                                    </el-autocomplete>
-                                  </el-form-item>
-                                </el-form>
-                              </div>
                             </div>
                             <!--第一行结束-->
                             <!--第二行-->
@@ -2042,6 +2044,32 @@
           ext_Stopover: []
         })
       },
+      trafficClear(index){//去程切换交通方式清空
+        this.ruleForm.plane[index].pod = '';
+        this.ruleForm.plane[index].company = '';
+        this.ruleForm.plane[index].theNumber = '';
+        this.ruleForm.plane[index].podCity = '';
+        this.ruleForm.plane[index].podPlace = '';
+        this.ruleForm.plane[index].podTime = '';
+        this.ruleForm.plane[index].arriveCity = '';
+        this.ruleForm.plane[index].arrivePlace = '';
+        this.ruleForm.plane[index].arriveTime = '';
+        this.ruleForm.plane[index].planeDay = '';
+        this.ruleForm.plane[index].day = '';
+      },
+      trafficGoClear(index){//返程切换交通方式清空
+        this.ruleForm.nackPlane[index].pod = '';
+        this.ruleForm.nackPlane[index].company = '';
+        this.ruleForm.nackPlane[index].theNumber = '';
+        this.ruleForm.nackPlane[index].podCity = '';
+        this.ruleForm.nackPlane[index].podPlace = '';
+        this.ruleForm.nackPlane[index].podTime = '';
+        this.ruleForm.nackPlane[index].arriveCity = '';
+        this.ruleForm.nackPlane[index].arrivePlace = '';
+        this.ruleForm.nackPlane[index].arriveTime = '';
+        this.ruleForm.nackPlane[index].planeDay = '';
+        this.ruleForm.nackPlane[index].day = '';
+      },
       addRTransit(index) {
         this.ruleForm.nackPlane.push({
           pod: '',  //套餐id
@@ -2248,22 +2276,41 @@
         }) 
       },*/
       //不带下拉框获取一条Flights
-      handleSelectPod_01(item){
+      handleSelectPod_01(index){//去程获取
         this.$http.post(this.GLOBAL.serverSrc + '/Flight/flighs/api/getnum',{
-           "number":this.ruleForm.plane[0].pod
+           "number":this.ruleForm.plane[index].pod
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
-                 this.ruleForm.plane[0].company=data.company;//航空公司
-                 this.ruleForm.plane[0].theNumber=data.number;//航班号
-                 this.ruleForm.plane[0].podCity=data.departureCity;//出发城市
-                 this.ruleForm.plane[0].podPlace=data.departureAirport;//出发机场
-                 this.ruleForm.plane[0].podTime=data.departureTime;//出发时间
-                 this.ruleForm.plane[0].arriveCity=data.reachingCity;//到达城市
-                 this.ruleForm.plane[0].arrivePlace=data.arrivalAirport; //到达机场
-                 this.ruleForm.plane[0].arriveTime=data.arrivalTime;//到达时间
-                 this.ruleForm.plane[0].planeDay=data.day;//到达天数
-                 this.ruleForm.plane[0].trafficMode=data.byType;//出行方式    
+                 this.ruleForm.plane[index].company=data.company;//航空公司
+                 this.ruleForm.plane[index].theNumber=data.number;//航班号
+                 this.ruleForm.plane[index].podCity=data.departureCity;//出发城市
+                 this.ruleForm.plane[index].podPlace=data.departureAirport;//出发机场
+                 this.ruleForm.plane[index].podTime=data.departureTime;//出发时间
+                 this.ruleForm.plane[index].arriveCity=data.reachingCity;//到达城市
+                 this.ruleForm.plane[index].arrivePlace=data.arrivalAirport; //到达机场
+                 this.ruleForm.plane[index].arriveTime=data.arrivalTime;//到达时间
+                 this.ruleForm.plane[index].planeDay=data.day;//到达天数
+                 this.ruleForm.plane[index].trafficMode=data.byType;//出行方式    
+              }
+        }) 
+      },
+      handleSelectPod_02(index){//返程获取
+        this.$http.post(this.GLOBAL.serverSrc + '/Flight/flighs/api/getnum',{
+           "number":this.ruleForm.nackPlane[index].pod
+          }).then(res => {
+              if(res.data.isSuccess == true){
+                 let data = res.data.object;
+                 this.ruleForm.nackPlane[index].company=data.company;//航空公司
+                 this.ruleForm.nackPlane[index].theNumber=data.number;//航班号
+                 this.ruleForm.nackPlane[index].podCity=data.departureCity;//出发城市
+                 this.ruleForm.nackPlane[index].podPlace=data.departureAirport;//出发机场
+                 this.ruleForm.nackPlane[index].podTime=data.departureTime;//出发时间
+                 this.ruleForm.nackPlane[index].arriveCity=data.reachingCity;//到达城市
+                 this.ruleForm.nackPlane[index].arrivePlace=data.arrivalAirport; //到达机场
+                 this.ruleForm.nackPlane[index].arriveTime=data.arrivalTime;//到达时间
+                 this.ruleForm.nackPlane[index].planeDay=data.day;//到达天数
+                 this.ruleForm.nackPlane[index].trafficMode=data.byType;//出行方式    
               }
         }) 
       },
@@ -2275,7 +2322,7 @@
             "byType": 0,
             "day": 0,
             "company": "",
-            "number": this.ruleForm.plane[0].pod,
+            "number": "",
             "departureCity": "",
             "departureAirport": "",
             "departureTime": "",
