@@ -1033,16 +1033,20 @@
                               <div class="aviation_text">住宿</div>
                               <div class="type_radio" style="margin:10px 0 0 0;">
                                 <div>
-                                  <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>
-                                  <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>
+                                  <!-- <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span> 
+                                  <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>-->
+                                  <span><el-radio v-model="myradio[index].lable" label="0">其他</el-radio></span>
                                 <div class="explain">
-                                  <div v-show="myradio[index].lable=='0'">
+                                  <!-- <div v-show="myradio[index].lable=='0'">
                                     <span v-for="(itemCon,p) in tabContents" style="margin-right:10px">
                                     <el-button @click="baocun(itemCon.id,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
                                     </span>
                                   </div>
                                   <div v-show="myradio[index].lable=='1'">
                                     <el-input class="text_input"  v-model="item.ext_Hotel.Details" type="textarea" :rows="5" placeholder="请输入内容"></el-input>
+                                  </div> -->
+                                  <div v-show="myradio[index].lable=='0'">
+                                    <el-input class="text_input"  v-model="item.ext_Hotel[0].Details" type="textarea" :rows="5" placeholder="请输入内容"></el-input>
                                   </div>
                                 </div>
                                 </div>
@@ -1076,7 +1080,7 @@
                               <el-input class="text_input" type="textarea" :rows="10" placeholder="请输入内容" v-model="item.info"></el-input>
                             </div>-->
                               <div class="cost_content" style="background: #FFFFFF">
-                                <vue-editor v-model="item.content_02"></vue-editor>
+                                <vue-editor v-model="item.info"></vue-editor>
                               </div>
                           </div>
                           <!--活动详情-->
@@ -1376,7 +1380,7 @@
       dialogVadi:false,//验证提示弹窗
       isActive: false,//基本信息字数要求
       content_01:'',//基本信息产品概况文本编辑器
-      content_02:'',//行程信息详情
+      //content_02:'',//行程信息详情
       tabIndex: 2,
         notes:[{
           title:'',
@@ -1687,7 +1691,7 @@
         radio3: '1',
         radio4: '1',
         //日程详情住宿选择
-        tabContents: [{'id':0,'name':'酒店1'},{'id':1,'name':'酒店2'}],
+        //tabContents: [{'id':0,'name':'酒店1'},{'id':1,'name':'酒店2'}],
         num: 0,
         num1: 0,
         param: '1',
@@ -1818,8 +1822,10 @@
               day:i+1,
               subject: '',
               info: '',
-              content_02:'',
               createTime: this.formatDate(new Date()),
+              ext_Hotel:[{
+                Details:''
+              }],
               ext_Meals: [{
                 label: '早餐',
                 Myself: '0',
@@ -1843,9 +1849,9 @@
                 activityType:'1',
                 createTime: this.formatDate(new Date())
               }],
-              ext_Hotel: [
+              /*ext_Hotel: [
                 {IsHotel:0,Details:""}
-              ]
+              ]*/
             });
             this.myradio.push({'lable':'0'});   //保存行程里面酒店信息单选值     
             }
