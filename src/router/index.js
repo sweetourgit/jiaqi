@@ -24,6 +24,8 @@ import planList from '@/page/productManagement/regimentPlan/children/planList'
 import placeOrder from '@/page/productManagement/regimentPlan/children/placeOrder'
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 import changePro from '@/page/productManagement/changePro/changePro'
+import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
+
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
@@ -260,6 +262,13 @@ export default new Router({
       path: '/changePro',
       component: changePro,
       name: '编辑产品',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },{
+      path: '/changeInfo',
+      component: changeInfo,
+      name: '行程信息',
       meta: {
         keepAlive: true,
         auth:true}

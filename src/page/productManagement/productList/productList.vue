@@ -78,11 +78,12 @@
 
     <div style="border: 1px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 50px; width: 74%" >
     <div class="button_select">
-      <el-button @click=handDb plain :disabled="reable">编辑</el-button>
+      <!--<el-button @click=handDb plain :disabled="reable">编辑</el-button>-->
       <el-button plain :disabled="reable">复制</el-button>
       <el-button plain :disabled="reable">导出行程</el-button>
       <el-button plain :disabled="reable">退改</el-button>
       <el-button plain @click = "groupStage" :disabled="reable">团期/库存</el-button>
+      <el-button @click=handDb plain :disabled="reable">修改行程信息</el-button>
       <el-button type="danger" plain :disabled="reable" @click="handleDelete">删除</el-button>
 
     </div>
@@ -224,7 +225,10 @@
           <template slot-scope="scope">
             <el-input :maxlength="10"  v-model="ccc[scope.$index].codePrefix" style="width:100px"></el-input>
             <span >-</span>
-            <span >{{ccc[scope.$index].createTime}}</span>
+            <span >{{</span>
+            <span >日期</span>
+
+            <span >}}</span>
             <span >-</span>
             <el-input :maxlength="10"  v-model="ccc[scope.$index].codeSuffix" style="width:100px"></el-input>
 
@@ -387,7 +391,7 @@ import DateList from './component/DateList'
         productUser:'',
         productPrefix:'',
         productBehind:'',
-        pageNum:'',
+        pageNum:1,
         codePrefix:"",
         codeSuffix:'',
         pagesize:10,
@@ -957,31 +961,45 @@ import DateList from './component/DateList'
       searchHand(){
         if(this.productId == ''){
           this.productId = 0;
+        }else{
+          this.pageNum = 1;
         }
         if (!this.productTitle){
           this.productTitle = ""
+        }else{
+          this.pageNum = 1;
         }
         if (!this.productUser){
           this.productUser = ""
+        }else{
+          this.pageNum = 1;
         }
         if (!this.productPos){
           this.productPos = 0
+        }else{
+          this.pageNum = 1;
         }
         if (!this.productMod){
           this.productMod = 0
+        }else{
+          this.pageNum = 1;
         }
         if (!this.productPrefix){
           this.productPrefix = 0
+        }else{
+          this.pageNum = 1;
         }
         if (!this.productBehind){
           this.productBehind = 0
+        }else{
+          this.pageNum = 1;
         }
 
         var that = this
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teamsearch",
           {
-            "pageIndex": 1,
+            "pageIndex": this.pageNum,
             "pageSize": this.pagesize,
             "total": 0,
             "object": {
@@ -1038,16 +1056,57 @@ import DateList from './component/DateList'
         console.log(row);
       },
       handleSizeChange(val) {
+        if(this.productId == ''){
+          this.productId = 0;
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productTitle){
+          this.productTitle = ""
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productUser){
+          this.productUser = ""
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productPos){
+          this.productPos = 0
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productMod){
+          this.productMod = 0
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productPrefix){
+          this.productPrefix = 0
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productBehind){
+          this.productBehind = 0
+        }else{
+          this.pageNum = 1;
+        }
         this.pagesize = val
         var that = this
         this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teampage",
+          this.GLOBAL.serverSrc + "/team/api/teamsearch",
           {
             "pageIndex": 1,
             "pageSize": val,
             "total": 0,
             "object": {
-              "loadPackage": true
+              "id": that.productId,
+              "title": that.productTitle,
+              "createUser": that.productUser,
+              "minPrice": that.productPrefix,
+              "maxPrice": that.productBehind,
+              "podID": that.productPos,
+              "destinationID": that.productMod
             }
           },
           {
@@ -1057,13 +1116,13 @@ import DateList from './component/DateList'
           }
         )
           .then(function (obj) {
-            console.log(obj.data.total);
+            console.log(obj.data);
             that.total = obj.data.total;
             that.tableData =obj.data.objects;
             that.tableData.forEach(function (v, k, arr) {
               arr[k]['type'] = "跟团游"
               arr[k]['name'] = obj.data.objects[k].title;
-              arr[k]['mu_address'] = "xxx"
+              arr[k]['mu_address'] = obj.data.objects[k].destinations[0].destination
               arr[k]['options'] = obj.data.objects[k].createUser
               arr[k]['status'] = "1"
               arr[k]['opers'] = "飞猪 携程"
@@ -1075,16 +1134,57 @@ import DateList from './component/DateList'
           })
       },
       handleCurrentChange(val) {
+        if(this.productId == ''){
+          this.productId = 0;
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productTitle){
+          this.productTitle = ""
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productUser){
+          this.productUser = ""
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productPos){
+          this.productPos = 0
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productMod){
+          this.productMod = 0
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productPrefix){
+          this.productPrefix = 0
+        }else{
+          this.pageNum = 1;
+        }
+        if (!this.productBehind){
+          this.productBehind = 0
+        }else{
+          this.pageNum = 1;
+        }
         this.pageNum = val;
         var that = this
         this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teampage",
+          this.GLOBAL.serverSrc + "/team/api/teamsearch",
           {
             "pageIndex": val,
             "pageSize": this.pagesize,
             "total": 0,
             "object": {
-              "loadPackage": true
+              "id": that.productId,
+              "title": that.productTitle,
+              "createUser": that.productUser,
+              "minPrice": that.productPrefix,
+              "maxPrice": that.productBehind,
+              "podID": that.productPos,
+              "destinationID": that.productMod
             }
           },
           {
@@ -1094,13 +1194,13 @@ import DateList from './component/DateList'
           }
         )
           .then(function (obj) {
-            console.log(obj.data.total);
+            console.log(obj.data);
             that.total = obj.data.total;
             that.tableData =obj.data.objects;
             that.tableData.forEach(function (v, k, arr) {
               arr[k]['type'] = "跟团游"
               arr[k]['name'] = obj.data.objects[k].title;
-              arr[k]['mu_address'] = "xxx"
+              arr[k]['mu_address'] = obj.data.objects[k].destinations[0].destination
               arr[k]['options'] = obj.data.objects[k].createUser
               arr[k]['status'] = "1"
               arr[k]['opers'] = "飞猪 携程"
@@ -1532,14 +1632,55 @@ import DateList from './component/DateList'
     created(){
       //产品列表
       var that = this
+      if(this.productId == ''){
+        this.productId = 0;
+      }else{
+        this.pageNum = 1;
+      }
+      if (!this.productTitle){
+        this.productTitle = ""
+      }else{
+        this.pageNum = 1;
+      }
+      if (!this.productUser){
+        this.productUser = ""
+      }else{
+        this.pageNum = 1;
+      }
+      if (!this.productPos){
+        this.productPos = 0
+      }else{
+        this.pageNum = 1;
+      }
+      if (!this.productMod){
+        this.productMod = 0
+      }else{
+        this.pageNum = 1;
+      }
+      if (!this.productPrefix){
+        this.productPrefix = 0
+      }else{
+        this.pageNum = 1;
+      }
+      if (!this.productBehind){
+        this.productBehind = 0
+      }else{
+        this.pageNum = 1;
+      }
       this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teampage",
+        this.GLOBAL.serverSrc + "/team/api/teamsearch",
         {
           "pageIndex": 1,
           "pageSize": this.pagesize,
           "total": 0,
           "object": {
-            "loadPackage": true
+            "id": that.productId,
+            "title": that.productTitle,
+            "createUser": that.productUser,
+            "minPrice": that.productPrefix,
+            "maxPrice": that.productBehind,
+            "podID": that.productPos,
+            "destinationID": that.productMod
           }
         },
         {
@@ -1555,7 +1696,7 @@ import DateList from './component/DateList'
           that.tableData.forEach(function (v, k, arr) {
               arr[k]['type'] = "跟团游"
               arr[k]['name'] = obj.data.objects[k].title;
-              arr[k]['mu_address'] = "xxx"
+              arr[k]['mu_address'] = obj.data.objects[k].destinations[0].destination
               arr[k]['options'] = obj.data.objects[k].createUser
               arr[k]['status'] = "1"
               arr[k]['opers'] = "飞猪 携程"
