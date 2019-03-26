@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="operation">
-      <el-button style="border:1px solid #3095fa;color:#3095fa;">取消</el-button>
+      <el-button style="border:1px solid #3095fa;color:#3095fa;" @click="$emit('closeButton', false)">取消</el-button>
       <el-button type="primary" @click="handSever">保存</el-button>
     </div>
     <el-form ref="form" :model="form" label-width="80px">
@@ -134,9 +134,10 @@
 <script>
 export default {
   name:'OpenTime',
+  props: ['dateTime', 'isWatch'],
   data() {
     return{
-      timeDiv: 'timeDiv',           // 添加时间divclass
+      timeDiv: 'timeDiv',            // 添加时间divclass
       formButtonOne: 'formButton1',  // (周一)添加时间按钮class
       formButtonTue: 'formButton1',  // (周二)添加时间按钮class
       formButtonWed: 'formButton1',  // (周三)添加时间按钮class
@@ -159,8 +160,6 @@ export default {
       isFir: true,                 // 星期五显示按钮
       isSat: true,                 // 星期六显示按钮
       isSun: true,                 // 星期日显示按钮
-      mondayStartTime:new Date(),
-      mondayEndTime:'',
       mondayList:[],
       tue:[],
       wed:[],
@@ -215,25 +214,76 @@ export default {
       }
     }
   },
+  created() {
+    this.changeData();
+  },
   methods:{
-    handleSaveClick() {
-      //如果是时期选择 吧时期传过去，如果是文字放在else分支
-      if(this.form.type=='time'){
-        let data = {}
-        let mon = []
-        this.mondayList.forEach(item=>{
-         
-          Object.assign({},item)
-
-          // console.log( [{...item}])
-          // for(let i in item.values()){
-          //   mon.push(i)
-          // }
-        })
-
-      }else{
-        alert('文字')
+    changeData() {
+      let data = this.dateTime;
+      if (data.one.length != 0) {
+        if (data.one[0].alltime) {
+          this.form.alltimeOne = true;
+          this.handChangeOne(true);
+        } else {
+          this.form.one = data.one
+          this.listClassOne(this.form.one);
+        }
       }
+      if (data.tue.length != 0) {
+        if (data.tue[0].alltime) {
+          this.form.alltimeTue = true;
+          this.handChangeTue(true);
+        } else {
+          this.form.tue = data.tue
+          this.listClassTue(this.form.tue);
+        }
+      }
+      if (data.wed.length != 0) {
+        if (data.wed[0].alltime) {
+          this.form.alltimeWed = true;
+          this.handChangeWed(true);
+        } else {
+          this.form.wed = data.wed
+          this.listClassWed(this.form.wed);
+        }
+      }
+      if (data.thur.length != 0) {
+        if (data.thur[0].alltime) {
+          this.form.alltimeThur = true;
+          this.handChangeThur(true);
+        } else {
+          this.form.thur = data.thur
+          this.listClassThur(this.form.thur);
+        }
+      }
+      if (data.fir.length != 0) {
+        if (data.fir[0].alltime) {
+          this.form.alltimeFir = true;
+          this.handChangeFir(true);
+        } else {
+          this.form.fir = data.fir
+          this.listClassFir(this.form.fir);
+        }
+      }
+      if (data.sat.length != 0) {
+        if (data.sat[0].alltime) {
+          this.form.alltimeSat = true;
+          this.handChangeSat(true);
+        } else {
+          this.form.sat = data.sat
+          this.listClassSat(this.form.sat);
+        }
+      }
+      if (data.sun.length != 0) {
+        if (data.sun[0].alltime) {
+          this.form.alltimeSun = true;
+          this.handChangeSun(true);
+        } else {
+          this.form.sun = data.sun
+          this.listClassSun(this.form.sun);
+        }
+      }
+      this.form.desc = data.desc;
     },
     // 样式变换(周一)
     listClassOne(time) {
@@ -365,12 +415,15 @@ export default {
       if (v) {
         this.isOne = false;
         this.form.one = [];
+        this.formCheckOne = 'formCheck1';
       } else {
         this.form.one.push({
           start:'',
           end:'',
         })
         this.isOne = true;
+        this.formButtonOne = 'formButton1'
+        this.formCheckOne = 'formCheck';
       }
     },
     // 添加时间(周二)
@@ -391,12 +444,15 @@ export default {
       if (v) {
         this.isTue = false;
         this.form.tue = [];
+        this.formCheckTue = 'formCheck1';
       } else {
         this.form.tue.push({
           start:'',
           end:'',
         })
         this.isTue = true;
+        this.formButtonTue = 'formButton1'
+        this.formCheckTue = 'formCheck';
       }
     },
     // 添加时间(周三)
@@ -417,12 +473,15 @@ export default {
       if (v) {
         this.isWed = false;
         this.form.wed = [];
+        this.formCheckWed = 'formCheck1';
       } else {
         this.form.wed.push({
           start:'',
           end:'',
         })
         this.isWed = true;
+        this.formButtonWed = 'formButton1'
+        this.formCheckWed = 'formCheck';
       }
     },
     // 添加时间(周四)
@@ -443,12 +502,15 @@ export default {
       if (v) {
         this.isThur = false;
         this.form.thur = [];
+        this.formCheckThur = 'formCheck1';
       } else {
-        this.form.Thur.push({
+        this.form.thur.push({
           start:'',
           end:'',
         })
         this.isThur = true;
+        this.formButtonThur = 'formButton1'
+        this.formCheckThur = 'formCheck';
       }
     },
     // 添加时间(周五)
@@ -469,12 +531,15 @@ export default {
       if (v) {
         this.isFir = false;
         this.form.fir = [];
+        this.formCheckFir = 'formCheck1';
       } else {
         this.form.fir.push({
           start:'',
           end:'',
         })
         this.isFir = true;
+        this.formButtonFir = 'formButton1'
+        this.formCheckFir = 'formCheck';
       }
     },
     // 添加时间(周六)
@@ -495,12 +560,15 @@ export default {
       if (v) {
         this.isSat = false;
         this.form.sat = [];
+        this.formCheckSat = 'formCheck1';
       } else {
         this.form.sat.push({
           start:'',
           end:'',
         })
         this.isSat = true;
+        this.formButtonSat = 'formButton1'
+        this.formCheckSat = 'formCheck';
       }
     },
     // 添加时间(周日)
@@ -521,89 +589,22 @@ export default {
       if (v) {
         this.isSun = false;
         this.form.sun = [];
+        this.formCheckSun = 'formCheck1';
       } else {
         this.form.sun.push({
           start:'',
           end:'',
         })
         this.isSun = true;
+        this.formButtonSun = 'formButton1'
+        this.formCheckSun = 'formCheck';
       }
     },
     // 保存
     handSever() {
       this.$emit("timeList", this.form);
     },
-
-
-
-
-      addlist2() {
-      this.tue.push({
-        start:'',
-        end:'',
-        alltime: false
-      })
-    },
-    closeMonday2(index){
-      console.log(index)
-      this.tue.splice(index,1)
-    },
-      addlist3() {
-      this.wed.push({
-        start:'',
-        end:'',
-        alltime: false
-      })
-    },
-    closeMonday3(index){
-      console.log(index)
-      this.wed.splice(index,1)
-    },
-      addlist4() {
-      this.thur.push({
-        start:'',
-        end:'',
-        alltime: false
-      })
-    },
-    closeMonday4(index){
-      console.log(index)
-      this.thur.splice(index,1)
-    },
-      addlist5() {
-      this.fir.push({
-        start:'',
-        end:'',
-        alltime: false
-      })
-    },
-    closeMonday5(index){
-      console.log(index)
-      this.fir.splice(index,1)
-    },
-      addlist6() {
-      this.sat.push({
-        start:'',
-        end:'',
-        alltime: false
-      })
-    },
-    closeMonday6(index){
-      console.log(index)
-      this.sat.splice(index,1)
-    },
-      addlist7() {
-      this.sun.push({
-        start:'',
-        end:'',
-        alltime: false
-      })
-    },
-    closeMonday7(index){
-      console.log(index)
-      this.sun.splice(index,1)
-    }
-  },
+  }
 }
 </script>
 
@@ -688,8 +689,8 @@ export default {
   margin-left: 10px;
 }
 .formButton3 {
-  margin-left: 50px;
   margin-top: 36px;
+  margin-left: 50px;
 }
 .formCheck {
   margin: 18px 0 0 30px;

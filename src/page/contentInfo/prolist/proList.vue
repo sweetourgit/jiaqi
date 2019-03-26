@@ -8,7 +8,7 @@
 			<i class="el-icon-caret-right" style="color:#F38F00;"></i>
 			<span>账户管理</span>
 		</div>
-		<el-checkbox v-for="item in fileList">{{item.name}}</el-checkbox>
+		<el-checkbox v-for="item in fileList" :key="item.value">{{item.name}}</el-checkbox>
 	</div>
   </div>
 </template>
@@ -134,4 +134,5 @@
 .treeDemo{margin: 20px 0 0 0;}
 .check{float:left; margin: 0 0 0 280px; line-height: 40px; width: 800px;}
 .checkTitle{font-size: 12pt; font-weight: bold;}
+.el-checkbox>>>.el-checkbox{margin: 0 30px 0 0!important; }
 </style>

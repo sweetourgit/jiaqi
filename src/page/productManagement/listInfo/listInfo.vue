@@ -234,17 +234,28 @@
                         </div>
                         <!--去程-->
                         <div class="plane" v-for="(item, index) in ruleForm.plane" :key="item.index">
-                          <div class="" style=" clear:both; margin:0 0 0 0;">
-                            <el-cascader class="plane_type" v-model="selectedOptions" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机"></el-cascader>
+                          <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
+                            <el-cascader class="plane_type" v-model="selectedOptions" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficClear(index)"></el-cascader>
                             <span class="plane_text">第</span>
                             <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                               <el-option v-for="(item,index) in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
                             </el-select>
                             <span class="plane_text">天</span>
+                              <!--航班号自动填充-->
+                              <div class="aviation" style="position:absolute; top:20px; left:300px;">
+                                <el-form :model="item" label-width="100px" style="float:left;">
+                                  <el-form-item label="自动填充" prop="pod">
+                                    <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
+                                     </el-autocomplete> -->
+                                     <el-input class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_01(index)">
+                                    </el-input> 
+                                  </el-form-item>
+                                </el-form>
+                              </div>
                           </div>
                           <div v-if="item.trafficMode == '1'">
                             <!--第一行-->
-                            <div class="aviation" style="margin-top:20px; position:relative;">
+                            <div class="aviation" style="margin-top:20px;">
                               <!--第一个-->
                                   <el-form-item :prop="'plane.'+index+'.company'" :rules="rules.company" label="航空公司" label-width="100px" style="float:left;">
                                     <el-autocomplete class="inputBox" clearable placeholder="请输入航空公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
@@ -257,17 +268,9 @@
                                   </el-autocomplete>
                                 </el-form-item>
                               </div>
-                              <!--航班号自动填充-->
-                              <div class="aviation" style="position:absolute; top:-60px; left:300px;">
-                                <el-form :model="item" label-width="100px" style="float:left;">
-                                  <el-form-item label="自动填充" prop="pod">
-                                    <el-autocomplete class="inputBox" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelect">
-                                    </el-autocomplete>
-                                  </el-form-item>
-                                </el-form>
-                              </div>
                             </div>
                             <!--第一行结束-->
+
                             <!--第二行-->
                             <div class="aviation">
                               <!--第一个-->
@@ -524,18 +527,29 @@
                           </div>
                         </div>
                         <div class="plane" v-for="(item, index) in ruleForm.nackPlane" :key="item.index">
-                          <div class="" style=" clear:both; margin:0 0 0 0;">
-                            <el-cascader class="plane_type" v-model="selectedOptions_01" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机"></el-cascader>
+                          <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
+                            <el-cascader class="plane_type" v-model="selectedOptions_01" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficGoClear(index)"></el-cascader>
                             <span class="plane_text">第</span>
                             <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                               <el-option v-for="item in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
                             </el-select>
                             <span class="plane_text">天</span>
+                            <!--航班号自动填充-->
+                            <div class="aviation" style="position:absolute; top:20px; left:300px;">
+                                <el-form :model="item" label-width="100px" style="float:left;">
+                                  <el-form-item label="自动填充" prop="pod">
+                                    <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
+                                     </el-autocomplete> -->
+                                     <el-input class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_02(index)">
+                                    </el-input> 
+                                  </el-form-item>
+                                </el-form>
+                              </div>
                           </div>
                           <!--飞机-->
                           <div v-if="item.trafficMode == '1'">
                             <!--第一行-->
-                            <div class="aviation" style="margin-top:20px; position:relative;">
+                            <div class="aviation" style="margin-top:20px;">
                               <!--第一个-->
                                 <el-form-item label="航空公司" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.company'" :rules="rules.company">
                                   <el-autocomplete class="inputBox" clearable placeholder="请输入航空公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
@@ -546,15 +560,6 @@
                                   <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.theNumber" :trigger-on-focus="false">
                                   </el-autocomplete>
                                 </el-form-item>
-                              <!--航班号自动填充-->
-                              <div class="aviation" style="position:absolute; top:-60px; left:300px;">
-                                <el-form :model="item" label-width="100px" style="float:left;">
-                                  <el-form-item label="自动填充" prop="pod">
-                                    <el-autocomplete class="inputBox" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelect">
-                                    </el-autocomplete>
-                                  </el-form-item>
-                                </el-form>
-                              </div>
                             </div>
                             <!--第一行结束-->
                             <!--第二行-->
@@ -819,18 +824,18 @@
                   </div>
                   <!--交通信息结束-->
                   <!--酒店信息-->
-                  <div class="traffic">
+                  <!-- <div class="traffic">
                     <div class="traffic_title">酒店信息</div>
                     <div class="traffic_border">
                       <div class="hotel_button">
                         <el-button @click="addHotel" type="primary">添加酒店</el-button>
                       </div>
-                      <!--酒店-->
+                      酒店
                       <div type="card" closable v-for="(item, index) in hotel" :key="index">
                         <div class="plane">
-                          <!--第一行-->
+                          第一行
                           <div class="aviation" style="margin-top:20px;">
-                            <!--第一个-->
+                            第一个
                             <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
                               <el-form-item label="自动填充" prop="hotelAuto">
                                 <el-autocomplete class="inputBox" clearable placeholder="输入酒店名称" :fetch-suggestions="querySearch" v-model="item.hotelAuto" :trigger-on-focus="false" @select="handleSelect">
@@ -838,17 +843,17 @@
                               </el-form-item>
                             </el-form>
                           </div>
-                          <!--第一行结束-->
-                          <!--第二行-->
+                          第一行结束
+                          第二行
                           <div class="aviation">
-                            <!--第一个-->
+                            第一个
                             <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
                               <el-form-item label="酒店中文" prop="hotelChinese">
                                 <el-autocomplete class="inputBox" clearable placeholder="请输入酒店中文" :fetch-suggestions="querySearch" v-model="item.hotelChinese" :trigger-on-focus="false">
                                 </el-autocomplete>
                               </el-form-item>
                             </el-form>
-                            <!--第二个-->
+                            第二个
                             <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
                               <el-form-item label="酒店英文" prop="hotelEnglish">
                                 <el-autocomplete class="inputBox" clearable placeholder="请输入酒店英文" :fetch-suggestions="querySearch" v-model="item.hotelEnglish" :trigger-on-focus="false">
@@ -856,17 +861,17 @@
                               </el-form-item>
                             </el-form>
                           </div>
-                          <!--第二行结束-->
-                          <!--第三行-->
+                          第二行结束
+                          第三行
                           <div class="aviation">
-                            <!--第一个-->
+                            第一个
                             <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
                               <el-form-item label="酒店地址" prop="hotelAddress">
                                 <el-autocomplete class="inputBox" clearable placeholder="请输入酒店地址" :fetch-suggestions="querySearch" v-model="item.hotelAddress" :trigger-on-focus="false">
                                 </el-autocomplete>
                               </el-form-item>
                             </el-form>
-                            <!--第二个-->
+                            第二个
                             <div class="aviation_first">
                               <div class="aviation_text">酒店星级</div>
                               <el-select class="aviation_input" v-model="item.hotelStar" placeholder="三星">
@@ -874,17 +879,17 @@
                               </el-select>
                             </div>
                           </div>
-                          <!--第三行结束-->
-                          <!--第四行-->
+                          第三行结束
+                          第四行
                           <div class="aviation">
-                            <!--第一个-->
+                            第一个
                             <el-form :model="item" :rules="rules" ref="ruleForm" label-width="100px" style="float:left;">
                               <el-form-item label="所在城市" prop="hotelCity">
                                 <el-autocomplete class="inputBox" clearable placeholder="请输入所在城市" :fetch-suggestions="querySearch" v-model="item.hotelCity" :trigger-on-focus="false">
                                 </el-autocomplete>
                               </el-form-item>
                             </el-form>
-                            <!--第二个-->
+                            第二个
                             <div class="aviation_first">
                               <div class="aviation_text">入住晚数</div>
                               <el-select class="aviation_input" v-model="item.hotelDay" placeholder="一天">
@@ -892,17 +897,17 @@
                               </el-select>
                             </div>
                           </div>
-                          <!--第四行结束-->
-                          <!--第五行-->
+                          第四行结束
+                          第五行
                           <div class="aviation">
-                            <!--第一个-->
+                            第一个
                             <div class="aviation_first">
                               <div class="aviation_text">房型</div>
                               <el-select class="aviation_input" v-model="item.hotelHouse" placeholder="单人间">
                                 <el-option v-for="item in hotelRoom" :key="item.value" :label="item.label" :value="item.value"></el-option>
                               </el-select>
                             </div>
-                            <!--第二个-->
+                            第二个
                             <div class="aviation_first">
                               <div class="aviation_text">床型</div>
                               <el-select class="aviation_input" v-model="item.hotelBed" placeholder="双人床">
@@ -910,8 +915,8 @@
                               </el-select>
                             </div>
                           </div>
-                          <!--第五行结束-->
-                          <!--第六行-->
+                          第五行结束
+                          第六行
                           <div class="aviation" style="padding-top:20px;">
                             <div class="aviation_first">
                               <div class="aviation_text">图片</div>
@@ -923,23 +928,23 @@
                               </div>
                             </div>
                           </div>
-                          <!--第六行结束-->
-                          <!--第七行-->
+                          第六行结束
+                          第七行
                           <div class="aviation" style="padding-top:20px;">
                             <div class="aviation_text">简介</div>
                             <div class="textarea">
                               <el-input type="textarea" :rows="10" placeholder="请输入简介" v-model="item.hotelAbstract"></el-input>
                             </div>
                           </div>
-                          <!--第七行结束-->
+                          第七行结束
                           <div class="stop">
                             <el-button @click="deleteHotel" class="stop_button" plain>删除酒店</el-button>
                           </div>
                         </div>
                       </div>
-                      <!--酒店结束-->
+                      酒店结束
                     </div>
-                  </div>
+                  </div> -->
                   <!--酒店信息结束-->
                   <!--活动详情-->
                   <div class="traffic">
@@ -1366,6 +1371,8 @@
         items: {
           text: ''
         },
+        //去程交通信息自动填充
+        flightsList:[],
         //去程交通工具切换
         goRoad: [{
           value: '1',
@@ -1718,7 +1725,8 @@
       dynamicTags4: [],
         inputVisible4: false,
         inputVal4: '',
-        errorNull: ''
+        errorNull: '',
+        sid:'',
       }
     },
    watch:{ //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
@@ -1785,7 +1793,7 @@
       } ,
     mounted() {
       this.guid();
-      this.restaurants = this.loadAll();
+      //this.restaurants = this.loadAll();
     },
     created() {
       this.themeList();
@@ -2036,6 +2044,32 @@
           ext_Stopover: []
         })
       },
+      trafficClear(index){//去程切换交通方式清空
+        this.ruleForm.plane[index].pod = '';
+        this.ruleForm.plane[index].company = '';
+        this.ruleForm.plane[index].theNumber = '';
+        this.ruleForm.plane[index].podCity = '';
+        this.ruleForm.plane[index].podPlace = '';
+        this.ruleForm.plane[index].podTime = '';
+        this.ruleForm.plane[index].arriveCity = '';
+        this.ruleForm.plane[index].arrivePlace = '';
+        this.ruleForm.plane[index].arriveTime = '';
+        this.ruleForm.plane[index].planeDay = '';
+        this.ruleForm.plane[index].day = '';
+      },
+      trafficGoClear(index){//返程切换交通方式清空
+        this.ruleForm.nackPlane[index].pod = '';
+        this.ruleForm.nackPlane[index].company = '';
+        this.ruleForm.nackPlane[index].theNumber = '';
+        this.ruleForm.nackPlane[index].podCity = '';
+        this.ruleForm.nackPlane[index].podPlace = '';
+        this.ruleForm.nackPlane[index].podTime = '';
+        this.ruleForm.nackPlane[index].arriveCity = '';
+        this.ruleForm.nackPlane[index].arrivePlace = '';
+        this.ruleForm.nackPlane[index].arriveTime = '';
+        this.ruleForm.nackPlane[index].planeDay = '';
+        this.ruleForm.nackPlane[index].day = '';
+      },
       addRTransit(index) {
         this.ruleForm.nackPlane.push({
           pod: '',  //套餐id
@@ -2127,7 +2161,7 @@
         // console.log(file);
       },
       //自动填充数据
-      loadAll() {
+      /*loadAll() {
         return [{
             "value": "三全鲜食（北新泾店）",
             "id": "1"
@@ -2149,7 +2183,7 @@
             "id": "5"
           }
         ];
-      },
+      },*/
       //添加、删除详情
       addDetails(index) {
         this.ruleForm.schedules[index].activitys.push({
@@ -2220,11 +2254,103 @@
           }
         }
       },
+      //获取一条Flights下拉点击获取id去程自动填充
+      /*handleSelectPod(item){
+        this.$http.post(this.GLOBAL.serverSrc + '/flight/api/get',{
+           "id":item.id
+          }).then(res => {
+              if(res.data.isSuccess == true){
+                 let data = res.data.object;
+                 //this.rformA.labelList=data.labelName;
+                 this.ruleForm.plane[0].company=data.company;//航空公司
+                 this.ruleForm.plane[0].theNumber=data.number;//航班号
+                 this.ruleForm.plane[0].podCity=data.departureCity;//出发城市
+                 this.ruleForm.plane[0].podPlace=data.departureAirport;//出发机场
+                 this.ruleForm.plane[0].podTime=data.departureTime;//出发时间
+                 this.ruleForm.plane[0].arriveCity=data.reachingCity;//到达城市
+                 this.ruleForm.plane[0].arrivePlace=data.arrivalAirport; //到达机场
+                 this.ruleForm.plane[0].arriveTime=data.arrivalTime;//到达时间
+                 this.ruleForm.plane[0].planeDay=data.day;//到达天数
+                 this.ruleForm.plane[0].trafficMode=data.byType;//出行方式    
+              }
+        }) 
+      },*/
+      //不带下拉框获取一条Flights
+      handleSelectPod_01(index){//去程获取
+        this.$http.post(this.GLOBAL.serverSrc + '/Flight/flighs/api/getnum',{
+           "number":this.ruleForm.plane[index].pod
+          }).then(res => {
+              if(res.data.isSuccess == true){
+                 let data = res.data.object;
+                 this.ruleForm.plane[index].company=data.company;//航空公司
+                 this.ruleForm.plane[index].theNumber=data.number;//航班号
+                 this.ruleForm.plane[index].podCity=data.departureCity;//出发城市
+                 this.ruleForm.plane[index].podPlace=data.departureAirport;//出发机场
+                 this.ruleForm.plane[index].podTime=data.departureTime;//出发时间
+                 this.ruleForm.plane[index].arriveCity=data.reachingCity;//到达城市
+                 this.ruleForm.plane[index].arrivePlace=data.arrivalAirport; //到达机场
+                 this.ruleForm.plane[index].arriveTime=data.arrivalTime;//到达时间
+                 this.ruleForm.plane[index].planeDay=data.day;//到达天数
+                 this.ruleForm.plane[index].trafficMode=data.byType;//出行方式    
+              }
+        }) 
+      },
+      handleSelectPod_02(index){//返程获取
+        this.$http.post(this.GLOBAL.serverSrc + '/Flight/flighs/api/getnum',{
+           "number":this.ruleForm.nackPlane[index].pod
+          }).then(res => {
+              if(res.data.isSuccess == true){
+                 let data = res.data.object;
+                 this.ruleForm.nackPlane[index].company=data.company;//航空公司
+                 this.ruleForm.nackPlane[index].theNumber=data.number;//航班号
+                 this.ruleForm.nackPlane[index].podCity=data.departureCity;//出发城市
+                 this.ruleForm.nackPlane[index].podPlace=data.departureAirport;//出发机场
+                 this.ruleForm.nackPlane[index].podTime=data.departureTime;//出发时间
+                 this.ruleForm.nackPlane[index].arriveCity=data.reachingCity;//到达城市
+                 this.ruleForm.nackPlane[index].arrivePlace=data.arrivalAirport; //到达机场
+                 this.ruleForm.nackPlane[index].arriveTime=data.arrivalTime;//到达时间
+                 this.ruleForm.nackPlane[index].planeDay=data.day;//到达天数
+                 this.ruleForm.nackPlane[index].trafficMode=data.byType;//出行方式    
+              }
+        }) 
+      },
       querySearch(queryString, cb) {
-        var restaurants = this.restaurants;
+        //this.flightsList =[]
+        this.$http.post(this.GLOBAL.serverSrc + '/flight/api/list', {
+          "object": {
+            "id": 0,
+            "byType": 0,
+            "day": 0,
+            "company": "",
+            "number": "",
+            "departureCity": "",
+            "departureAirport": "",
+            "departureTime": "",
+            "reachingCity": "",
+            "arrivalAirport": "",
+            "arrivalTime": "",
+            "createTime": "2019-03-21T01:58:24.499Z",
+            "code": "",
+            "isDeleted": 0,
+            "isForeign": 0
+          }
+        }).then(res => {
+          //console.log(res)
+          for(let i=0;i<res.data.objects.length;i++){
+            this.flightsList.push({
+              "value" : res.data.objects[i].number + this.ruleForm.plane[i].company,
+              "id":res.data.objects[i].id
+            })
+          }
+          var results = queryString ? this.flightsList.filter(this.createFilter(queryString)) : [];
+          cb(results)
+        }).catch(err => {
+          console.log(err);
+        })
+        /*var restaurants = this.restaurants;
         var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
         // 调用 callback 返回建议列表的数据
-        cb(results);
+        cb(results);*/
       },
       createFilter(queryString) {
         return (restaurant) => {

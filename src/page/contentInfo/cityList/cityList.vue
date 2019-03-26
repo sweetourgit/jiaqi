@@ -338,7 +338,7 @@
               value: res.data.object.areaName,
               isLeaf: res.data.object.isLeaf,
               initial: res.data.object.initial,
-              parentID: res.data.objects[i].parentID
+              parentID: res.data.object.parentID
             })
             this.geography = 1
             this.currentPage = 1
@@ -347,6 +347,7 @@
             console.log(err)
           })
         } else {
+          this.tableData = [];
           if (this.clickId != data.id) {
               this.currentPage = 1
             }
