@@ -986,11 +986,11 @@
                                           <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>
                                           <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>
                                           <div class="explain">
-                                            <div v-show="myradio[index].lable=='0'">
+                                        <!--    <div v-show="myradio[index].lable=='0'">
                                     <span v-for="(itemCon,p) in tabContents" style="margin-right:10px">
                                     <el-button @click="baocun(itemCon.id,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
                                     </span>
-                                            </div>
+                                            </div>-->
                                             <div v-show="myradio[index].lable=='1'">
                                               <el-input class="text_input"  v-model="item.ext_Hotel.Details" type="textarea" :rows="5" placeholder="请输入内容"></el-input>
                                             </div>
@@ -1794,7 +1794,7 @@
                   {IsHotel:0,Details:""}
                 ]
               });
-              this.myradio.push({'lable':'0'});   //保存行程里面酒店信息单选值
+              this.myradio.push({'lable':'1'});   //保存行程里面酒店信息单选值
             }
           }else{
             this.ruleForm.schedules.splice(newValue,oldValue-newValue);
@@ -1886,7 +1886,8 @@
             for (let j = 0; j < obj.data.object.package[0].schedules.length; j++) {
               setTimeout(arr => {
                that.ruleForm.schedules[j].subject =  obj.data.object.package[0].schedules[j].subject //主题
-               that.ruleForm.schedules[j].info =  obj.data.object.package[0].schedules[j].info //详情
+              /* that.ruleForm.schedules[j].ext_Hotel.Details =  obj.data.object.package[0].schedules[j].info //主题*/
+                that.content_02 =  obj.data.object.package[0].schedules[j].info //详情
                 //早餐
                 if( JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].label == "早餐" && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].Myself == "0"){
                     that.ruleForm.schedules[j].ext_Meals[0].Myself = "0"
