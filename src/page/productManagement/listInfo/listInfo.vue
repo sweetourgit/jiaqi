@@ -2895,7 +2895,7 @@
   .type_radio li { list-style: none; float: left; margin: 0 30px 0 0; }
   .details_ul { margin: 0 0 0 60px; }
   .explain { clear: both; padding: 15px 0 0 0; width: 100%; }
-  .details_border { border: 1px solid #f2f2f2; width: 80%; margin: 0 0 20px 0; clear: both; position: relative; }
+  .details_border { border: 1px solid #f2f2f2; width: 80%; margin: 0 0 20px 0; clear: both; position: relative; cursor: pointer;}
   .DAY { width: 40px; line-height: 40px; text-align: center; width: 100px; position: absolute; top: 55px; right: -120px; z-index: 10000 }
   .DAY_one { border-bottom: 1px solid #fff; }
   .DAY_two { background-color: #f7f7f7; border-bottom: 1px solid #fff; }

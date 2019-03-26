@@ -1,138 +1,213 @@
 <template>
-  <div class="proList">
-    <div class="cascade">
-      <el-tree :data="data"class="treeDemo" :props="defaultProps" accordion @node-click="handleNodeClick"></el-tree>
-	</div>
-	<div class="check">
-		<div class="checkTitle">
-			<i class="el-icon-caret-right" style="color:#F38F00;"></i>
-			<span>账户管理</span>
-		</div>
-		<el-checkbox v-for="item in fileList" :key="item.value">{{item.name}}</el-checkbox>
-	</div>
-  </div>
+<div>
+    <div class="main-container">
+      <!--左侧导航-->
+      <div class="left-tree">
+           <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
+      </div> 
+      <!--右侧数据--> 
+      <div class="check" v-for="item in file">
+        <div class="checkTitle">
+          <i class="el-icon-caret-right" style="color:#F38F00;"></i>
+          <span>{{item.name}}</span>
+        </div>
+        <el-checkbox v-for="item in item.fileList" :key="item.value">{{item.content}}</el-checkbox>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           
+   
+</div>
+ 
+
 </template>
 
-<script>
+<script scoped>
   export default {
-	data(){
-		return{
+    data() {        
+      return {   
+        //左侧菜单
+        props1: {
+          label: 'name',
+          isLeaf: 'leaf'
+        },
+        data: '', // 存单击数据
+        theContinent: '', // 所属地区id
+        node: '', // 获取tree子级数据
+        resolve: '', // 获取tree子级方法
+        level: '', // 层级数据
+        //右侧数据
+        file: [//右侧checkbox循环数据
+                {
+                  name: "账户管理",
+                  fileList: [
+                      {content: "用户列表" },
+                      {content: "组织列表" },
+                      {content: "职位列表" },
+                      {content: "角色列表" },
+                      {content: "用户列表" },
+                      {content: "用户列表" },
+                      {content: "组织列表" },
+                      {content: "职位列表" },
+                      {content: "角色列表" },
+                      {content: "用户列表" },
+                      {content: "用户列表" },
+                      {content: "组织列表" },
+                      {content: "职位列表" },
+                      {content: "角色列表" },
+                      {content: "用户列表" },
+                      {content: "用户列表" },
+                      {content: "组织列表" },
+                      {content: "职位列表" },
+                      {content: "角色列表" },
+                      {content: "用户列表" },
+                  ]
+                }
+              ],
 
-		fileList:[
-			{name:'备选项'},
-			{name:'123'},
-			{name:'账户管理'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'123'},
-			{name:'账户管理'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-			{name:'备选项'},
-		],
-			 data: [{
-		      label: '全部',
-		      children: [{
-		        label: '账户管理',
-		        children: [{
-		          label: '用户列表'
-		        },{
-		          label: '组织列表'
-		        },{
-		          label: '职位列表'
-		        },{
-		          label: '角色列表'
-		        }]
-		      },{
-		        label: '内容管理',
-		        children: [{
-		          label: '区域列表'
-		        },{
-		          label: '自定义地区'
-		        },{
-		          label: '景点列表'
-		        },{
-		          label: '标签列表'
-		        },{
-		          label: '素材列表'
-		        },{
-		          label: '酒店列表'
-		        },{
-		          label: '供应商列表'
-		        },{
-		          label: '商户列表'
-		        },{
-		          label: '功能列表'
-		        },{
-		          label: '权限列表'
-		        }]
-		      },{
-		        label: '产品管理',
-		        children: [{
-		          label: '产品列表'
-		        },{
-		          label: '出行模板'
-		        },{
-		          label: '团期计划'
-		        },{
-		          label: '共享库存'
-		        }]
-		      },{
-		        label: '订单管理',
-		        children: [{
-		          label: '订单管理'
-		        }]
-		      }]
-		    }],
-		    defaultProps: {
-		      children: 'children',
-		      label: 'label'
-		    }
-		}
-	},
-	methods: {
-      handleNodeClick(data) {
-        console.log(data);
+
+
+
+
+
+
+        
+
+      }
+    },
+    methods: {
+      loadNode1(node, resolve) {
+        this.node = node.data
+        this.resolve = resolve
+        this.level = node.level
+        /*添加第一级*/
+        if (node.level === 0) {
+          this.list=[];
+          this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",{
+              "object": {
+                "parentID": -1,
+              }
+            }).then(obj => {
+              for (let i = 0; i < obj.data.objects.length; i++) {
+                this.list.push({
+                  name:obj.data.objects[i].areaName,
+                  key: i,
+                  id: obj.data.objects[i].id,
+                  isLeaf: obj.data.objects[i].isLeaf, // 是否是末级
+                  Hierarchy: 0 // 层级
+                })
+              }
+              resolve(this.list);
+            }).catch(obj => {
+              console.log(obj)
+            })
+        }
+        if (node.level >= 1) {
+          this.getSon(
+            node.data.key,
+            node.data.label,
+            node.data.id,
+            node.data.isLeaf,
+            resolve,
+            node.level
+          );
+        }
       },
-    }
+      /*获取子集的方法*/
+      getSon(key, label, id, isLeaf, resolve, level){
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",
+          {
+            "object": {
+              "parentID": id,
+            }
+          }).then(res => {
+          this.lists = []
+          if (res.data.isSuccess == true) {
+            for (var i = 0; i < res.data.objects.length; i++) {
+              if (res.data.objects[i].isDeleted == 0) {
+                if (res.data.objects[i].isLeaf == 2) {
+                  this.lists.push({
+                    name:res.data.objects[i].areaName,
+                    key: i,
+                    id: res.data.objects[i].id,
+                    isLeaf: res.data.objects[i].isLeaf,
+                    leaf: false,
+                    Hierarchy: level
+                  })
+                } else {
+                  this.lists.push({
+                    name:res.data.objects[i].areaName,
+                    key: i,
+                    id: res.data.objects[i].id,
+                    isLeaf: res.data.objects[i].isLeaf,
+                    leaf: true,
+                    Hierarchy: level
+                  })
+                }
+              }
+            }
+          }
+          setTimeout(() => {
+            resolve(this.lists);
+          }, 200);
+        }).catch(error => {
+          console.log(error);
+        });
+      },
+      // 单击tree节点
+      treeClick(data,node){     
+        this.data = data;
+        if (data.isLeaf == 1) {
+          if(this.addAlbum==false){
+          this.geography = 1;
+          this.albumPage();
+        }else{
+          this.picForm.destination=this.data.name;
+          this.picForm.destinationId=this.data.id;
+          this.leftTree1=false; 
+         }
+        }
+      },
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    }    
   }
 </script>
 
-<style scoped>
-.proList{font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 100px 0;overflow: hidden;}
-.cascade{ float: left; user-select: none; border: solid 2px #e6e6e6; position: absolute; width: 240px; height: 60%; overflow: auto; box-shadow:1px 1px 1px #EDEDED,1px -1px 1px #EDEDED,-1px 1px 1px #EDEDED,-1px -1px 1px #EDEDED; margin: 10px 0 0 0;}
-.proList>>>.el-tree-node__label{ font-size: 16px;}
-.treeDemo{margin: 20px 0 0 0;}
-.check{float:left; margin: 0 0 0 280px; line-height: 40px; width: 800px;}
+<style lang="scss" scoped>
+/*左侧tree样式*/
+.treeDemo{margin:20px}
+.main-container{width: 100%;padding-bottom: 60px;overflow: auto;max-width:1800px}
+.left-tree{float: left;margin-top: 10px;width: 22%;height: 695px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;margin-left: 1%;overflow: auto;}
+/*右侧多选框样式*/
+.check{float:left; margin: 0 0 0 30px; line-height: 40px; width: 800px;}
 .checkTitle{font-size: 12pt; font-weight: bold;}
 .el-checkbox>>>.el-checkbox{margin: 0 30px 0 0!important; }
 </style>
