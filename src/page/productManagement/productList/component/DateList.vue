@@ -1664,7 +1664,7 @@
                     "inventoryID": res.data.id,
                     "packageID": item.data.person.packageID,
                     "date": item.data.person.date,
-                    "teamCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix,
+                    "groupCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix,
                     "planEnroll": planEnroll
                   }
                 }).then(resAdd => {
@@ -1682,7 +1682,7 @@
                   "inventoryID": item.data.person.inventoryID,
                   "packageID": item.data.person.packageID,
                   "date": item.data.person.date,
-                  "teamCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix,
+                  "groupCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix,
                   "planEnroll": planEnroll
                 }
               }).then(res => {
