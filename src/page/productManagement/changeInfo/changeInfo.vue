@@ -1584,6 +1584,7 @@
       this.oneInfo();
     },
     methods: {
+
       oneInfo(){
         var that = this
         this.$http.post(
@@ -1598,6 +1599,10 @@
         )
           .then(function (obj) {
             console.log(obj.data.object);
+            that.ruleForm.travelDays = obj.data.object.day//行程天数
+            that.ruleForm.travelNight = obj.data.object.night//行程晚数
+            that.dynamicTags3 = obj.data.object.pods//出发地
+            that.dynamicTags4 = obj.data.object.destinations//目的地
             that.ruleForm.highlightWords = obj.data.object.package[0].name //行程信息套餐名
             that.ruleForm.origin = obj.data.object.package[0].pod //行程信息出发地
             that.ruleForm.bourn = obj.data.object.package[0].destination //行程信息目的地
@@ -1661,10 +1666,8 @@
             that.mealID  =  obj.data.object.package[0].id //模板id
             that.ruleForm.productNamel = obj.data.object.title; //产品名称
             that.ruleForm.travelType = String(obj.data.object.isForeign); //出游类型
-            that.dynamicTags3 = obj.data.object.pods//出发地
-            that.dynamicTags4 = obj.data.object.destinations//目的地
-            that.ruleForm.travelDays = obj.data.object.day//行程天数
-            that.ruleForm.travelNight = obj.data.object.night//行程晚数
+
+
             that.explain = []
             for (let t = 0; t < obj.data.object.instructions.length; t++ ){
               that.explain.push(obj.data.object.instructions[t])
@@ -2180,6 +2183,64 @@
             content: 'New Tab content'
           });
           this.editableTabsValue = newTabName;
+          //清空数据
+          this.ruleForm.highlightWords = '' //行程信息套餐名
+          //去程
+          this.ruleForm.plane = [{
+            pod: '',
+            id: 0,
+            goOrBack:1,
+            company: '',
+            theNumber: '',
+            podCity: '',
+            podPlace: '',
+            podTime: '',
+            arriveCity: '',
+            arrivePlace: '',
+            arriveTime: '',
+            planeDay: '',
+            trafficMode: '1',
+            day: '1',
+            ext_Stopover: [],
+            www:['2']
+          }],
+            //返程
+          this.ruleForm.nackPlane =  [{
+            pod: '',  //套餐id
+            id: 0,
+            goOrBack:2,   //1去程 2返程
+            company: '',  //航空公司
+            theNumber: '',   //航班号
+            podCity: '',           //出发城市
+            podPlace: '',   //出发机场
+            podTime: '',    //出发时间
+            arriveCity: '',    //到达城市
+            arrivePlace: '',     //到达机场
+            arriveTime: '',      //到达时间
+            planeDay: '',       //到达天数
+            trafficMode: '1',  //出行方式
+            day: '1',      //第几天
+            ext_Stopover: [],
+            www: ['2']
+          }]
+          console.log(this.ruleForm)
+          for (let j = 0; j < this.ruleForm.schedules.length; j++){
+
+            //this.ruleForm.schedules[j].ext_Hotel =[]
+            this.ruleForm.schedules[j].ext_Meals[0].Detail = ""
+            this.ruleForm.schedules[j].ext_Meals[0].Myself = "0"
+            this.ruleForm.schedules[j].ext_Meals[0].label = "早餐"
+            this.ruleForm.schedules[j].ext_Meals[1].Detail = ""
+            this.ruleForm.schedules[j].ext_Meals[1].Myself = "0"
+            this.ruleForm.schedules[j].ext_Meals[1].label = "午餐"
+            this.ruleForm.schedules[j].ext_Meals[2].Detail = ""
+            this.ruleForm.schedules[j].ext_Meals[2].Myself = "0"
+            this.ruleForm.schedules[j].ext_Meals[2].label = "晚餐"
+            this.ruleForm.schedules[j].subject =''
+            this.content_02 = ""
+           this.ruleForm.schedules[j].activitys = []
+
+          }
         }
         if (action === 'remove') {
           if (this.comboshow == false) {
