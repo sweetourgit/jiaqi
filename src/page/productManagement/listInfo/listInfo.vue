@@ -1680,7 +1680,8 @@
           memo: [{ required: true, message: '不能为空', trigger: 'blur' }],
           details: [{ required: true, message: '不能为空', trigger: 'blur' }],
           pictureID: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          subject: [{ required: true, message: '日程信息主题不能为空', trigger: 'blur' }]
+          subject: [{ required: true, message: '日程信息主题不能为空', trigger: 'blur' },
+                    { min: 0, max: 20, message: '字数超过20汉字限制', trigger: 'blur' }]
         },
         //上传图片
         fileList2: [],
