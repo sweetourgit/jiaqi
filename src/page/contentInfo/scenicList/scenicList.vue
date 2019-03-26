@@ -12,7 +12,6 @@
       <el-button style="margin-left: 20px;" type="primary" @click="searchFormVisible">搜索</el-button>
       <el-button plain @click="resetButton">重置</el-button>
     </div>
-
     <div style="padding: 0 20px">
       <div style="text-align: left">
         <el-button type="primary" class="add_scenic" @click="addFormVisible">添加</el-button>
@@ -23,6 +22,7 @@
       </div>
   
       <el-table
+        ref="singleTable"
         :data="checkLabelList"
         class="table"
         :header-row-style="hrs"
@@ -128,13 +128,16 @@ import AddScenic from './components/Addscenic'
             'name': nameVal
           }
         }).then(res => {
+          this.currentRow = '';
           this.checkLabelList = res.data.objects;
           this.total = res.data.total;
         })
       },
       // 表格选中触发的事件
       handleChange(val) {
-        this.currentRow = val;
+        if (val) {
+          this.currentRow = val;
+        }
       },
       // 参考用时 适宜季节  适宜人群
       dataLoading(is) {

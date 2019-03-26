@@ -351,6 +351,7 @@ export default {
       this.dateTime.sat = [];
       this.dateTime.sun = [];
       this.dateTime.desc = '';
+      this.placeholderValue = '请输入标签';
       this.form = {
         chineseName: '',    // 中文名称
         englishName:'',     // 英文名称
@@ -372,7 +373,7 @@ export default {
     changeData() {
       let form = this.form;           // 表单数据
       let data = this.handleEditDate; // 接口获取的数据
-      if (data.openingHours.length != 0) {
+      if (data.openingHours.length != 0 || data.openingHourExplain != '') {
         this.isDataTime = true;
         data.openingHours.forEach(item => {
           if (item.theWeek == 1) {
@@ -698,7 +699,6 @@ export default {
               this.$emit('callInit', true);
             })
           } else { // 编辑操作
-            console.log(crowds)
             this.$http.post(this.GLOBAL.serverSrc + '/scenicspot/api/save', {
               "object": {
                 'id':                 this.form.id,
