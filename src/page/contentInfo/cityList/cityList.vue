@@ -347,7 +347,6 @@
             console.log(err)
           })
         } else {
-          this.tableData = [];
           if (this.clickId != data.id) {
               this.currentPage = 1
             }
@@ -364,6 +363,7 @@
               }
           }).then(res => {
             if (res.data.isSuccess == false) {
+              this.tableData = [];
               if (this.currentPage != 1) {
                 this.currentPage = 1
                 this.treeClick(data)
