@@ -83,6 +83,7 @@
       <el-button plain :disabled="reable">导出行程</el-button>
       <el-button plain :disabled="reable">退改</el-button>
       <el-button plain @click = "groupStage" :disabled="reable">团期/库存</el-button>
+      <el-button @click=handDb plain :disabled="reable">修改行程信息</el-button>
       <el-button type="danger" plain :disabled="reable" @click="handleDelete">删除</el-button>
 
     </div>
