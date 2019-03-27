@@ -5,6 +5,7 @@
         <el-button plain class="btn-button" @click="cancel()">取消</el-button>
         <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">保存</el-button>
       </div>
+      {{changeobj}}
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <!-- 行程信息 -->
         <el-tab-pane label="行程信息" name="second">
@@ -17,7 +18,7 @@
             <!--外边框-->
             <div class="outline">
               <!--套餐-->
-              <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handlePoint">
+              <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handlePoint" @tab-remove = "handledelete">
                 <el-tab-pane :key="index" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name">
                   <div  class="border_side">
                     <!--套餐名-->
@@ -41,10 +42,7 @@
                         </el-select>
                       </el-form-item>
                     </div>
-                    <!--保存修改-->
-                    <div class="set_meal_name" >
-                      <el-button type="primary" size="small" style="float: left" @click="handleSetMeal('ruleForm')">修改保存</el-button>
-                    </div>
+
                     <!--套餐名结束-->
                   </div>
                   <!--切换-->
@@ -54,7 +52,6 @@
                         <!--交通信息-->
                         <div class="traffic">
                           <div class="traffic_title">交通信息</div>
-                          <el-button type="primary" size="small" class="change_save" @click="handleSetMeal('ruleForm')">修改保存</el-button>
                           <!--描述方式-->
                           <div class="describe_way">描述方式</div>
                           <ul class="description">
@@ -79,17 +76,28 @@
                               </div>
                               <!--去程-->
                               <div class="plane" v-for="(item, index) in ruleForm.plane" :key="item.index">
-                                <div class="" style=" clear:both; margin:0 0 0 0;">
-                                  <el-cascader class="plane_type" v-model="item.www" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机"></el-cascader>
+                                <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
+                                  <el-cascader class="plane_type" v-model="selectedOptions" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficClear(index)"></el-cascader>
                                   <span class="plane_text">第</span>
                                   <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                                     <el-option v-for="(item,index) in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
                                   </el-select>
                                   <span class="plane_text">天</span>
+                                  <!--航班号自动填充-->
+                                  <div class="aviation" style="position:absolute; top:20px; left:300px;">
+                                    <el-form :model="item" label-width="100px" style="float:left;">
+                                      <el-form-item label="自动填充" prop="pod">
+                                        <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
+                                         </el-autocomplete> -->
+                                        <el-input class="inputBox" @clear="clearBle(index)" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_01(index)">
+                                        </el-input>
+                                      </el-form-item>
+                                    </el-form>
+                                  </div>
                                 </div>
                                 <div v-if="item.trafficMode == '1'">
                                   <!--第一行-->
-                                  <div class="aviation" style="margin-top:20px; position:relative;">
+                                  <div class="aviation" style="margin-top:20px;">
                                     <!--第一个-->
                                     <el-form-item :prop="'plane.'+index+'.company'" :rules="rules.company" label="航空公司" label-width="100px" style="float:left;">
                                       <el-autocomplete class="inputBox" clearable placeholder="请输入航空公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
@@ -102,17 +110,9 @@
                                         </el-autocomplete>
                                       </el-form-item>
                                     </div>
-                                    <!--航班号自动填充-->
-                                    <div class="aviation" style="position:absolute; top:-60px; left:300px;">
-                                      <el-form :model="item" label-width="100px" style="float:left;">
-                                        <el-form-item label="自动填充" prop="pod">
-                                          <el-autocomplete class="inputBox" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelect">
-                                          </el-autocomplete>
-                                        </el-form-item>
-                                      </el-form>
-                                    </div>
                                   </div>
                                   <!--第一行结束-->
+
                                   <!--第二行-->
                                   <div class="aviation">
                                     <!--第一个-->
@@ -126,8 +126,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                    <!-- <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
                                       <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                    </el-form-item> -->
+                                    <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入出发时间" :fetch-suggestions="querySearch" v-model="item.podTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                   </div>
                                   <!--第二行结束-->
@@ -144,8 +148,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
+                                    <!-- <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
                                       <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                    </el-form-item> -->
+                                    <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入到达时间" :fetch-suggestions="querySearch" v-model="item.arriveTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                     <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -203,8 +211,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                    <!-- <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
                                       <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                    </el-form-item> -->
+                                    <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入出发时间" :fetch-suggestions="querySearch" v-model="item.podTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                   </div>
                                   <!--第二行结束-->
@@ -221,8 +233,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                      <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                    <!-- <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
+                                        <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                      </el-form-item> -->
+                                    <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入到达时间" :fetch-suggestions="querySearch" v-model="item.arriveTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                     <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -248,8 +264,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                    <!-- <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
                                       <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                    </el-form-item> -->
+                                    <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入出发时间" :fetch-suggestions="querySearch" v-model="item.podTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                   </div>
                                   <!--第二行结束-->
@@ -266,8 +286,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                      <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                    <!-- <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
+                                        <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                      </el-form-item> -->
+                                    <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入到达时间" :fetch-suggestions="querySearch" v-model="item.arriveTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                     <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -306,8 +330,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                    <!-- <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
                                       <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                    </el-form-item> -->
+                                    <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入出发时间" :fetch-suggestions="querySearch" v-model="item.podTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                   </div>
                                   <!--第二行结束-->
@@ -324,8 +352,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                      <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                    <!-- <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
+                                        <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                      </el-form-item> -->
+                                    <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入到达时间" :fetch-suggestions="querySearch" v-model="item.arriveTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                     <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -369,18 +401,29 @@
                                 </div>
                               </div>
                               <div class="plane" v-for="(item, index) in ruleForm.nackPlane" :key="item.index">
-                                <div class="" style=" clear:both; margin:0 0 0 0;">
-                                  <el-cascader class="plane_type" v-model="item.www" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机"></el-cascader>
+                                <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
+                                  <el-cascader class="plane_type" v-model="selectedOptions_01" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficGoClear(index)"></el-cascader>
                                   <span class="plane_text">第</span>
                                   <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                                     <el-option v-for="item in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
                                   </el-select>
                                   <span class="plane_text">天</span>
+                                  <!--航班号自动填充-->
+                                  <div class="aviation" style="position:absolute; top:20px; left:300px;">
+                                    <el-form :model="item" label-width="100px" style="float:left;">
+                                      <el-form-item label="自动填充" prop="pod">
+                                        <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
+                                         </el-autocomplete> -->
+                                        <el-input class="inputBox" clearable @clear="clearBle_01(index)" placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_02(index)">
+                                        </el-input>
+                                      </el-form-item>
+                                    </el-form>
+                                  </div>
                                 </div>
                                 <!--飞机-->
                                 <div v-if="item.trafficMode == '1'">
                                   <!--第一行-->
-                                  <div class="aviation" style="margin-top:20px; position:relative;">
+                                  <div class="aviation" style="margin-top:20px;">
                                     <!--第一个-->
                                     <el-form-item label="航空公司" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.company'" :rules="rules.company">
                                       <el-autocomplete class="inputBox" clearable placeholder="请输入航空公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
@@ -391,15 +434,6 @@
                                       <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.theNumber" :trigger-on-focus="false">
                                       </el-autocomplete>
                                     </el-form-item>
-                                    <!--航班号自动填充-->
-                                    <div class="aviation" style="position:absolute; top:-60px; left:300px;">
-                                      <el-form :model="item" label-width="100px" style="float:left;">
-                                        <el-form-item label="自动填充" prop="pod">
-                                          <el-autocomplete class="inputBox" clearable placeholder="输入出发地名称" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelect">
-                                          </el-autocomplete>
-                                        </el-form-item>
-                                      </el-form>
-                                    </div>
                                   </div>
                                   <!--第一行结束-->
                                   <!--第二行-->
@@ -415,8 +449,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                    <!-- <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
                                       <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                    </el-form-item> -->
+                                    <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入出发时间" :fetch-suggestions="querySearch" v-model="item.podTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                   </div>
                                   <!--第二行结束-->
@@ -433,8 +471,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                      <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                    <!-- <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
+                                        <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                      </el-form-item> -->
+                                    <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入到达时间" :fetch-suggestions="querySearch" v-model="item.arriveTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                     <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -492,8 +534,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                    <!-- <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
                                       <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                    </el-form-item> -->
+                                    <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入出发时间" :fetch-suggestions="querySearch" v-model="item.podTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                   </div>
                                   <!--第二行结束-->
@@ -510,8 +556,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                      <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                    <!-- <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
+                                        <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                      </el-form-item> -->
+                                    <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入到达时间" :fetch-suggestions="querySearch" v-model="item.arriveTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                     <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -537,8 +587,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                    <!-- <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
                                       <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                    </el-form-item> -->
+                                    <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入出发时间" :fetch-suggestions="querySearch" v-model="item.podTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                   </div>
                                   <!--第二行结束-->
@@ -555,8 +609,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                      <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                    <!-- <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
+                                        <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                      </el-form-item> -->
+                                    <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入到达时间" :fetch-suggestions="querySearch" v-model="item.arriveTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                     <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -596,8 +654,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                    <!-- <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
                                       <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
+                                    </el-form-item> -->
+                                    <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入出发时间" :fetch-suggestions="querySearch" v-model="item.podTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                   </div>
                                   <!--第二行结束-->
@@ -614,8 +676,12 @@
                                       </el-autocomplete>
                                     </el-form-item>
                                     <!--第三个-->
-                                    <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
-                                      <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                    <!-- <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
+                                        <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
+                                      </el-form-item> -->
+                                    <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
+                                      <el-autocomplete class="inputBox" clearable placeholder="请输入到达时间" :fetch-suggestions="querySearch" v-model="item.arriveTime" :trigger-on-focus="false">
+                                      </el-autocomplete>
                                     </el-form-item>
                                     <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -795,7 +861,6 @@
                         <!--活动详情-->
                         <div class="traffic">
                           <div class="traffic_title">日程信息</div>
-                          <el-button type="primary" size="small" style="position: absolute;top: 40px;right: 245px;" @click="handleNote('ruleForm')">修改保存</el-button>
                           <div class="details_border">
                             <div v-for="(item,index) in ruleForm.schedules" v-show=" index == mynumber" :key="index">
                               <div class="date">DAY{{index+1}}</div>
@@ -1085,6 +1150,10 @@
     },
     data() {
       return {
+        changeobj:"",
+        changeIndex:0,//默认第一个套餐
+        changeAction:"",//判断是修改还是删除
+        packLen:"",//套餐长度
         qqq:[],
         activeID:[],//日程信息id
         schedulsLeng:'',//几天日程信息
@@ -1140,11 +1209,7 @@
         content1: '<h1>Some initial content111</h1>',
         //切换主题
         editableTabsValue: '1',
-        editableTabs: [{
-          title: '行程套餐',
-          name: '1',
-          content: 'Tab 1 content'
-        }],
+        editableTabs: [],
         //限制字数
         number: '0/10',
         items: {
@@ -1598,6 +1663,7 @@
           }
         )
           .then(function (obj) {
+
             console.log(obj.data.object);
             that.ruleForm.travelDays = obj.data.object.day//行程天数
             that.ruleForm.travelNight = obj.data.object.night//行程晚数
@@ -1608,6 +1674,16 @@
             that.ruleForm.bourn = obj.data.object.package[0].destination //行程信息目的地
             that.ruleForm.podID = obj.data.object.package[0].podID //行程信息出发地ID
             that.ruleForm.destinationID = obj.data.object.package[0].destinationID//行程信息目的地ID
+            that.packLen = obj.data.object.package.length
+            for(let j = 0; j < obj.data.object.package.length; j++){
+              let newTabName = ++that.tabIndex + '';
+              that.editableTabs.push({
+                title: "套餐"+j,
+                name: newTabName,
+                content: 'New Tab content',
+              });
+            }
+            that.editableTabsValue = "3"
             that.ruleForm.plane = []
             that.ruleForm.nackPlane = []
             for (var i =0; i < obj.data.object.package[0].traffic.length; i++ ){
@@ -1662,11 +1738,9 @@
                 console.log( )
               }, 100)
             }
-
-            that.mealID  =  obj.data.object.package[0].id //模板id
+            that.mealID  =  obj.data.object.package[that.changeIndex].id //模板id
             that.ruleForm.productNamel = obj.data.object.title; //产品名称
             that.ruleForm.travelType = String(obj.data.object.isForeign); //出游类型
-
 
             that.explain = []
             for (let t = 0; t < obj.data.object.instructions.length; t++ ){
@@ -1676,7 +1750,6 @@
           .catch(function (obj) {
             console.log(obj)
           })
-
       },
       handClick(tab, event){
         console.log(tab, event);
@@ -1721,110 +1794,146 @@
       },
       //保存
       addsave(formName) {
-        //基本信息亮点词
-        let strengths=[];
-        if(this.ruleForm.highlightWords1!=""){
-          strengths.push({"strength":this.ruleForm.highlightWords1})
+        if(this.changeIndex < this.packLen){
+          this.changeAction = "update";
         }
-        if(this.ruleForm.highlightWords2!=""){
-          strengths.push({"strength":this.ruleForm.highlightWords2})
-        }
-        if(this.ruleForm.highlightWords3!=""){
-          strengths.push({"strength":this.ruleForm.highlightWords3})
-        }
-        if(this.ruleForm.highlightWords4!=""){
-          strengths.push({"strength":this.ruleForm.highlightWords4})
-        };
-        //运营标签
-        let dynamicTagsc=[];
-        for(var i=0;i<this.dynamicTags2.length;i++){
-          dynamicTagsc.push({"label":this.dynamicTags2[i]})
-        };
-        //经停信息转字符串
-        let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
-        let traff=JSON.parse(traff1);
-        for(var i=0;i<traff.length;i++){
-          traff[i].ext_Stopover=JSON.stringify(traff[i].ext_Stopover);
-        }
-        //行程餐食信息转字符串
-        let sche1=JSON.stringify(this.ruleForm.schedules);
-        let sche=JSON.parse(sche1);
-        for(var i=0;i<sche.length;i++){
-          sche[i].ext_Meals=JSON.stringify(sche[i].ext_Meals);
-        }
-        for(var i=0;i<sche.length;i++){
-          sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
-        }
-        //行程信息
-        var object={
-          //基本信息接口数据
-          id:this.$route.query.id,
-          createTime:this.formatDate(new Date()),
-          title:this.ruleForm.productNamel,//基本信息产品名称
-          isForeign:this.ruleForm.travelType,//基本信息产品类型
-          day:this.ruleForm.travelDays,//基本信息行程天数
-          night:this.ruleForm.travelNight,//基本信息行程晚数
-          pods:this.dynamicTags3,//基本信息出发地
-          destinations:this.dynamicTags4,//基本信息目的地
-          isDeleted:0,
-          confirmType:this.ruleForm.orderConfirmationType,//基本信息订单确认类型
-          strengths:strengths,//基本信息亮点词
-          label:this.dynamicTags2,
-          pictureID:0,//基本信息头图?
-          vedioID:0,//基本信息视频?
-          pepeatpic:"",//基本信息轮播图?
-          advanceDay:this.ruleForm.advanceRegistrationDays,
-          advanceHour:this.ruleForm.timeHour,
-          advanceMinute:this.ruleForm.timeMinute,
-          createUser:sessionStorage.getItem('id'),
-          proStat:1,
-          crowdID:this.ruleForm.Excursion,//基本信息出游人群
-          themeID:this.ruleForm.theme,//基本信息主题
-          mark:this.content_01,
-          guid:localStorage.getItem("guid"),
-          //行程信息接口数据
-          package: [
-            {
-              name: this.ruleForm.highlightWords,//行程信息套餐名
-              podID: this.ruleForm.origin.podID,//行程信息出发地
-              destinationID: this.ruleForm.bourn.destinationID,//行程信息目的地
-              pod: this.ruleForm.origin.pod,
-              destination: this.ruleForm.bourn.destination,
-              isDeleted: 0,
-              createTime:this.formatDate(new Date()),
-              traffic: traff,//交通方式,
-              schedules: sche,//行程信息
-              briefMark: this.content,//简要说明
-              loadPlan: false
+        //添加套餐
+        if(this.changeAction == "add"){
+          //经停信息转字符串
+          let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
+          let traff=JSON.parse(traff1);
+          for(var i=0;i<traff.length;i++){
+            traff[i].ext_Stopover=JSON.stringify(traff[i].ext_Stopover);
+          }
+          //行程餐食信息转字符串
+          let sche1=JSON.stringify(this.ruleForm.schedules);
+          let sche=JSON.parse(sche1);
+          for(var i=0;i<sche.length;i++){
+            sche[i].ext_Meals=JSON.stringify(sche[i].ext_Meals);
+          }
+          for(var i=0;i<sche.length;i++){
+            sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
+          }
+          if(this.ruleForm.bourn.destination == undefined){
+
+            this.ruleForm.mudidi = this.ruleForm.bourn
+          }else{
+            this.ruleForm.mudidi = this.ruleForm.bourn.destination
+          }
+          if(this.ruleForm.origin.pod == undefined){
+
+            this.ruleForm.chufadi = this.ruleForm.origin
+          }else{
+            this.ruleForm.chufadi = this.ruleForm.origin.pod
+          }
+          //行程信息
+          var object={
+            //基本信息接口数据
+            teamID:this.$route.query.id,
+            name: this.ruleForm.highlightWords,
+            podID: this.ruleForm.podID,
+            destinationID: this.ruleForm.destinationID,
+            pod: this.ruleForm.chufadi,
+            destination: this.ruleForm.mudidi,
+            createTime:this.formatDate(new Date()),
+            traffic: traff,
+            schedules:sche,
+            loadPackage: true,
+            briefMark: "string",
+            loadPlan: true,
+            codePrefix: "string",
+            codeSuffix: "string"
+          }
+          this.$refs[formName].validate((valid) => {
+            if(valid){
+              var _this = this;
+              this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackageinsert", {
+                  object: object
+                },
+              ).then(function(response) {
+                if(response.data.isSuccess==true){
+                  _this.$message.success("添加成功");
+                }else{
+                  _this.$message.success("添加失败");
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
             }
-          ],
-          instructions:this.explain.concat(this.domains), //费用说明
-          instructions1:this.notes, //预订须知,预留接口无字段？
-          instructions2:this.instructions, //使用说明,预留接口无字段？
-          loadPackage: true
+          })
         }
+        else {
 
-        this.$refs[formName].validate((valid) => {
-          if(valid){
-            var _this = this;
-            this.$http.post(this.GLOBAL.serverSrc + "/team/api/teamsave", {
-                object: object
-              },
-            ).then(function(response) {
-              if(response.data.isSuccess==true){
-                _this.$message.success("修改成功");
-                _this.$router.push({path: "productList"});
-              }else{
-                _this.$message.success("修改失败");
-              }
+          //修改套餐
+          //经停信息转字符串
+          let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
+          let traff=JSON.parse(traff1);
+          for(var i=0;i<traff.length;i++){
+            traff[i].ext_Stopover=JSON.stringify(traff[i].ext_Stopover);
+          }
+          //行程餐食信息转字符串
+          let sche1=JSON.stringify(this.ruleForm.schedules);
+          let sche=JSON.parse(sche1);
+          for(var i=0;i<sche.length;i++){
+            sche[i].ext_Meals=JSON.stringify(sche[i].ext_Meals);
+          }
+          for(var i=0;i<sche.length;i++){
+            sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
+          }
+          if(this.ruleForm.bourn.destination == undefined){
 
+            this.ruleForm.mudidi = this.ruleForm.bourn
+          }else{
+            this.ruleForm.mudidi = this.ruleForm.bourn.destination
+          }
+          if(this.ruleForm.origin.pod == undefined){
 
-            }).catch(function(error) {
-              console.log(error);
-            });
+            this.ruleForm.chufadi = this.ruleForm.origin
+          }else{
+            this.ruleForm.chufadi = this.ruleForm.origin.pod
+          }
+          //行程信息
+          var object={
+            //基本信息接口数据
+            id:this.mealID,
+            teamID:this.$route.query.id,
+            name: this.ruleForm.highlightWords,
+            podID: this.ruleForm.podID,
+            destinationID: this.ruleForm.destinationID,
+            pod: this.ruleForm.chufadi,
+            destination: this.ruleForm.mudidi,
+            createTime:this.formatDate(new Date()),
+            traffic: traff,
+            schedules:sche,
+            loadPackage: true,
+            briefMark: "string",
+            loadPlan: true,
+            codePrefix: "string",
+            codeSuffix: "string",
 
           }
-        })
+          console.log(object)
+          this.$refs[formName].validate((valid) => {
+            if(valid){
+              var _this = this;
+              this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagesave", {
+                  object: object
+                },
+              ).then(function(response) {
+                if(response.data.isSuccess==true){
+                  _this.$message.success("修改成功");
+                }else{
+                  _this.$message.success("修改失败");
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
+            }
+          })
+
+        }
+
+
       },
       //保存套餐信息
       handleSetMeal(formName){
@@ -2023,6 +2132,58 @@
           ext_Stopover: []
         })
       },
+      trafficClear(index){//去程切换交通方式清空
+        this.ruleForm.plane[index].pod = '';
+        this.ruleForm.plane[index].company = '';
+        this.ruleForm.plane[index].theNumber = '';
+        this.ruleForm.plane[index].podCity = '';
+        this.ruleForm.plane[index].podPlace = '';
+        this.ruleForm.plane[index].podTime = '';
+        this.ruleForm.plane[index].arriveCity = '';
+        this.ruleForm.plane[index].arrivePlace = '';
+        this.ruleForm.plane[index].arriveTime = '';
+        this.ruleForm.plane[index].planeDay = '';
+        this.ruleForm.plane[index].day = '';
+      },
+      clearBle(index){
+        this.ruleForm.plane[index].company = '';
+        this.ruleForm.plane[index].theNumber = '';
+        this.ruleForm.plane[index].podCity = '';
+        this.ruleForm.plane[index].podPlace = '';
+        this.ruleForm.plane[index].podTime = '';
+        this.ruleForm.plane[index].arriveCity = '';
+        this.ruleForm.plane[index].arrivePlace = '';
+        this.ruleForm.plane[index].arriveTime = '';
+        this.ruleForm.plane[index].planeDay = '';
+        this.ruleForm.plane[index].day = '';
+
+      },
+      clearBle_01(index){
+        this.ruleForm.nackPlane[index].company = '';
+        this.ruleForm.nackPlane[index].theNumber = '';
+        this.ruleForm.nackPlane[index].podCity = '';
+        this.ruleForm.nackPlane[index].podPlace = '';
+        this.ruleForm.nackPlane[index].podTime = '';
+        this.ruleForm.nackPlane[index].arriveCity = '';
+        this.ruleForm.nackPlane[index].arrivePlace = '';
+        this.ruleForm.nackPlane[index].arriveTime = '';
+        this.ruleForm.nackPlane[index].planeDay = '';
+        this.ruleForm.nackPlane[index].day = '';
+
+      },
+      trafficGoClear(index){//返程切换交通方式清空
+        this.ruleForm.nackPlane[index].pod = '';
+        this.ruleForm.nackPlane[index].company = '';
+        this.ruleForm.nackPlane[index].theNumber = '';
+        this.ruleForm.nackPlane[index].podCity = '';
+        this.ruleForm.nackPlane[index].podPlace = '';
+        this.ruleForm.nackPlane[index].podTime = '';
+        this.ruleForm.nackPlane[index].arriveCity = '';
+        this.ruleForm.nackPlane[index].arrivePlace = '';
+        this.ruleForm.nackPlane[index].arriveTime = '';
+        this.ruleForm.nackPlane[index].planeDay = '';
+        this.ruleForm.nackPlane[index].day = '';
+      },
       addRTransit(index) {
         this.ruleForm.nackPlane.push({
           pod: '',  //套餐id
@@ -2165,6 +2326,29 @@
       },
       confirm() {
         this.handleTabsEdit(this.aindex, "remove");
+        var _this = this;
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/team/api/teaminfoget",
+          {
+            "object": {
+              "id": this.$route.query.id,
+              "loadPackage": true
+            }
+
+          }
+        )
+          .then(function (obj) {
+            _this.mealID =obj.data.object.package[_this.aindex-3].id
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+        this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagedelete", {
+            id: _this.mealID
+          },
+        ).then(function(response) {
+        }).catch(function(error) {
+        });
         this.comboshow = false;
       },
       tab(index) {
@@ -2176,6 +2360,8 @@
       //主题标题添加删除
       handleTabsEdit(targetName, action) {
         if (action === 'add') {
+          this.changeIndex = this.packLen+1
+          this.changeAction = action;
           let newTabName = ++this.tabIndex + '';
           this.editableTabs.push({
             title: 'New Tab',
@@ -2223,7 +2409,7 @@
             ext_Stopover: [],
             www: ['2']
           }]
-          console.log(this.ruleForm)
+         // console.log(this.ruleForm)
           for (let j = 0; j < this.ruleForm.schedules.length; j++){
 
             //this.ruleForm.schedules[j].ext_Hotel =[]
@@ -2265,8 +2451,321 @@
           }
         }
       },
+      //获取一条Flights下拉点击获取id去程自动填充
+      /*handleSelectPod(item){
+        this.$http.post(this.GLOBAL.serverSrc + '/flight/api/get',{
+           "id":item.id
+          }).then(res => {
+              if(res.data.isSuccess == true){
+                 let data = res.data.object;
+                 //this.rformA.labelList=data.labelName;
+                 this.ruleForm.plane[0].company=data.company;//航空公司
+                 this.ruleForm.plane[0].theNumber=data.number;//航班号
+                 this.ruleForm.plane[0].podCity=data.departureCity;//出发城市
+                 this.ruleForm.plane[0].podPlace=data.departureAirport;//出发机场
+                 this.ruleForm.plane[0].podTime=data.departureTime;//出发时间
+                 this.ruleForm.plane[0].arriveCity=data.reachingCity;//到达城市
+                 this.ruleForm.plane[0].arrivePlace=data.arrivalAirport; //到达机场
+                 this.ruleForm.plane[0].arriveTime=data.arrivalTime;//到达时间
+                 this.ruleForm.plane[0].planeDay=data.day;//到达天数
+                 this.ruleForm.plane[0].trafficMode=data.byType;//出行方式
+              }
+        })
+      },*/
+      //不带下拉框获取一条Flights
+      handleSelectPod_01(index){//去程获取
+        if(this.ruleForm.plane[index].pod == ''){
+          this.clearBle(index);
+          return false;
+        }
+        this.$http.post(this.GLOBAL.serverSrc + '/Flight/flighs/api/getnum',{
+          "number":this.ruleForm.plane[index].pod
+        }).then(res => {
+          if(res.data.isSuccess == true){
+            let data = res.data.object;
+            this.ruleForm.plane[index].company=data.company;//航空公司
+            this.ruleForm.plane[index].theNumber=data.number;//航班号
+            this.ruleForm.plane[index].podCity=data.departureCity;//出发城市
+            this.ruleForm.plane[index].podPlace=data.departureAirport;//出发机场
+            this.ruleForm.plane[index].podTime=data.departureTime;//出发时间
+            this.ruleForm.plane[index].arriveCity=data.reachingCity;//到达城市
+            this.ruleForm.plane[index].arrivePlace=data.arrivalAirport; //到达机场
+            this.ruleForm.plane[index].arriveTime=data.arrivalTime;//到达时间
+            this.ruleForm.plane[index].planeDay=data.day;//到达天数
+            this.ruleForm.plane[index].trafficMode=data.byType;//出行方式
+          }
+        })
+      },
+      handleSelectPod_02(index){//返程获取
+        if(this.ruleForm.nackPlane[index].pod == ''){
+          this.clearBle_01(index);
+          return false;
+        }
+        this.$http.post(this.GLOBAL.serverSrc + '/Flight/flighs/api/getnum',{
+          "number":this.ruleForm.nackPlane[index].pod
+        }).then(res => {
+          if(res.data.isSuccess == true){
+            let data = res.data.object;
+            this.ruleForm.nackPlane[index].company=data.company;//航空公司
+            this.ruleForm.nackPlane[index].theNumber=data.number;//航班号
+            this.ruleForm.nackPlane[index].podCity=data.departureCity;//出发城市
+            this.ruleForm.nackPlane[index].podPlace=data.departureAirport;//出发机场
+            this.ruleForm.nackPlane[index].podTime=data.departureTime;//出发时间
+            this.ruleForm.nackPlane[index].arriveCity=data.reachingCity;//到达城市
+            this.ruleForm.nackPlane[index].arrivePlace=data.arrivalAirport; //到达机场
+            this.ruleForm.nackPlane[index].arriveTime=data.arrivalTime;//到达时间
+            this.ruleForm.nackPlane[index].planeDay=data.day;//到达天数
+            this.ruleForm.nackPlane[index].trafficMode=data.byType;//出行方式
+          }
+        })
+      },
+      querySearch(queryString, cb) {
+        //this.flightsList =[]
+        this.$http.post(this.GLOBAL.serverSrc + '/flight/api/list', {
+          "object": {
+            "id": 0,
+            "byType": 0,
+            "day": 0,
+            "company": "",
+            "number": "",
+            "departureCity": "",
+            "departureAirport": "",
+            "departureTime": "",
+            "reachingCity": "",
+            "arrivalAirport": "",
+            "arrivalTime": "",
+            "createTime": "2019-03-21T01:58:24.499Z",
+            "code": "",
+            "isDeleted": 0,
+            "isForeign": 0
+          }
+        }).then(res => {
+          //console.log(res)
+          for(let i=0;i<res.data.objects.length;i++){
+            this.flightsList.push({
+              "value" : res.data.objects[i].number + this.ruleForm.plane[i].company,
+              "id":res.data.objects[i].id
+            })
+          }
+          var results = queryString ? this.flightsList.filter(this.createFilter(queryString)) : [];
+          cb(results)
+        }).catch(err => {
+          console.log(err);
+        })
+        /*var restaurants = this.restaurants;
+        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);*/
+      },
+      handledelete(name){
+
+      },
       handlePoint(targetName){
-        console.log(targetName)
+        if(this.changeIndex >= this.packLen){
+          this.$confirm('套餐未保存切换将丢失数据, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.changeIndex = targetName.index
+            var that = this
+            this.$http.post(
+              this.GLOBAL.serverSrc + "/team/api/teaminfoget",
+              {
+                "object": {
+                  "id": this.$route.query.id,
+                  "loadPackage": true
+                }
+
+              }
+            )
+              .then(function (obj) {
+
+                console.log(obj.data.object);
+                that.ruleForm.travelDays = obj.data.object.day//行程天数
+                that.ruleForm.travelNight = obj.data.object.night//行程晚数
+                that.dynamicTags3 = obj.data.object.pods//出发地
+                that.dynamicTags4 = obj.data.object.destinations//目的地
+                that.ruleForm.highlightWords = obj.data.object.package[that.changeIndex].name //行程信息套餐名
+                that.ruleForm.origin = obj.data.object.package[that.changeIndex].pod //行程信息出发地
+                that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
+                that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
+                that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
+                that.packLen = obj.data.object.package.length
+                that.ruleForm.plane = []
+                that.ruleForm.nackPlane = []
+                for (var i =0; i < obj.data.object.package[that.changeIndex].traffic.length; i++ ){
+                  let arr = [];
+                  if(obj.data.object.package[that.changeIndex].traffic[i].goOrBack == 1){
+                    obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
+                    that.ruleForm.plane.push(obj.data.object.package[that.changeIndex].traffic[i]);
+                    arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
+                    that.ruleForm.plane[i].www = arr;
+                  }else{
+                    obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
+                    arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
+                    obj.data.object.package[that.changeIndex].traffic[i].www = arr;
+                    that.ruleForm.nackPlane.push(obj.data.object.package[that.changeIndex].traffic[i]);
+
+                  }
+
+                }
+
+                //日程信息
+                for (let j = 0; j < obj.data.object.package[that.changeIndex].schedules.length; j++) {
+                  setTimeout(arr => {
+                    that.ruleForm.schedules[j].subject =  obj.data.object.package[that.changeIndex].schedules[j].subject //主题
+                    /* that.ruleForm.schedules[j].ext_Hotel.Details =  obj.data.object.package[0].schedules[j].info //主题*/
+                    that.content_02 =  obj.data.object.package[that.changeIndex].schedules[j].info //详情
+                    //早餐
+                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "0"){
+                      that.ruleForm.schedules[j].ext_Meals[0].Myself = "0"
+                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "1"){
+                      that.ruleForm.schedules[j].ext_Meals[0].Myself = "1"
+                      that.ruleForm.schedules[j].ext_Meals[0].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Detail
+                    }
+                    //午餐
+                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "0"){
+                      that.ruleForm.schedules[j].ext_Meals[1].Myself = "0"
+                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "1"){
+                      that.ruleForm.schedules[j].ext_Meals[1].Myself = "1"
+                      that.ruleForm.schedules[j].ext_Meals[1].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Detail
+                    }
+                    // 晚餐
+                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "0"){
+                      that.ruleForm.schedules[j].ext_Meals[2].Myself = "0"
+                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "1"){
+                      that.ruleForm.schedules[j].ext_Meals[2].Myself = "1"
+                      that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Detail
+                    }
+                    that.ruleForm.schedules[j].activitys = []
+                    for (let k = 0; k < obj.data.object.package[that.changeIndex].schedules[j].activitys.length; k++) {
+                      that.ruleForm.schedules[j].activitys.push(obj.data.object.package[that.changeIndex].schedules[j].activitys[k])
+                      that.ruleForm.schedules[j].activitys[k].activityType = String(that.ruleForm.schedules[j].activitys[k].activityType)
+                    }
+                    console.log( )
+                  }, 100)
+                }
+                that.mealID  =  obj.data.object.package[that.changeIndex].id //模板id
+                that.ruleForm.productNamel = obj.data.object.title; //产品名称
+                that.ruleForm.travelType = String(obj.data.object.isForeign); //出游类型
+
+                that.explain = []
+                for (let t = 0; t < obj.data.object.instructions.length; t++ ){
+                  that.explain.push(obj.data.object.instructions[t])
+                }
+              })
+              .catch(function (obj) {
+                console.log(obj)
+              })
+
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
+            this.editableTabsValue = String(parseInt(this.editableTabsValue)+1)
+          });
+
+        }else{
+          this.changeIndex = targetName.index
+            var that = this
+            this.$http.post(
+              this.GLOBAL.serverSrc + "/team/api/teaminfoget",
+              {
+                "object": {
+                  "id": this.$route.query.id,
+                  "loadPackage": true
+                }
+
+              }
+            )
+              .then(function (obj) {
+
+                console.log(obj.data.object);
+                that.ruleForm.travelDays = obj.data.object.day//行程天数
+                that.ruleForm.travelNight = obj.data.object.night//行程晚数
+                that.dynamicTags3 = obj.data.object.pods//出发地
+                that.dynamicTags4 = obj.data.object.destinations//目的地
+                that.ruleForm.highlightWords = obj.data.object.package[that.changeIndex].name //行程信息套餐名
+                that.ruleForm.origin = obj.data.object.package[that.changeIndex].pod //行程信息出发地
+                that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
+                that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
+                that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
+                that.packLen = obj.data.object.package.length
+                that.ruleForm.plane = []
+                that.ruleForm.nackPlane = []
+                for (var i =0; i < obj.data.object.package[that.changeIndex].traffic.length; i++ ){
+                  let arr = [];
+                  if(obj.data.object.package[that.changeIndex].traffic[i].goOrBack == 1){
+                    obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
+                    that.ruleForm.plane.push(obj.data.object.package[that.changeIndex].traffic[i]);
+                    arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
+                    that.ruleForm.plane[i].www = arr;
+                  }else{
+                    obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
+                    arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
+                    obj.data.object.package[that.changeIndex].traffic[i].www = arr;
+                    that.ruleForm.nackPlane.push(obj.data.object.package[that.changeIndex].traffic[i]);
+
+                  }
+
+                }
+
+                //日程信息
+                for (let j = 0; j < obj.data.object.package[that.changeIndex].schedules.length; j++) {
+                  setTimeout(arr => {
+                    that.ruleForm.schedules[j].subject =  obj.data.object.package[that.changeIndex].schedules[j].subject //主题
+                    /* that.ruleForm.schedules[j].ext_Hotel.Details =  obj.data.object.package[0].schedules[j].info //主题*/
+                    that.content_02 =  obj.data.object.package[that.changeIndex].schedules[j].info //详情
+                    //早餐
+                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "0"){
+                      that.ruleForm.schedules[j].ext_Meals[0].Myself = "0"
+                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "1"){
+                      that.ruleForm.schedules[j].ext_Meals[0].Myself = "1"
+                      that.ruleForm.schedules[j].ext_Meals[0].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Detail
+                    }
+                    //午餐
+                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "0"){
+                      that.ruleForm.schedules[j].ext_Meals[1].Myself = "0"
+                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "1"){
+                      that.ruleForm.schedules[j].ext_Meals[1].Myself = "1"
+                      that.ruleForm.schedules[j].ext_Meals[1].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Detail
+                    }
+                    // 晚餐
+                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "0"){
+                      that.ruleForm.schedules[j].ext_Meals[2].Myself = "0"
+                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "1"){
+                      that.ruleForm.schedules[j].ext_Meals[2].Myself = "1"
+                      that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Detail
+                    }
+                    that.ruleForm.schedules[j].activitys = []
+                    for (let k = 0; k < obj.data.object.package[that.changeIndex].schedules[j].activitys.length; k++) {
+                      that.ruleForm.schedules[j].activitys.push(obj.data.object.package[that.changeIndex].schedules[j].activitys[k])
+                      that.ruleForm.schedules[j].activitys[k].activityType = String(that.ruleForm.schedules[j].activitys[k].activityType)
+                    }
+                    console.log( )
+                  }, 100)
+                }
+                that.mealID  =  obj.data.object.package[that.changeIndex].id //模板id
+                that.ruleForm.productNamel = obj.data.object.title; //产品名称
+                that.ruleForm.travelType = String(obj.data.object.isForeign); //出游类型
+
+                that.explain = []
+                for (let t = 0; t < obj.data.object.instructions.length; t++ ){
+                  that.explain.push(obj.data.object.instructions[t])
+                }
+              })
+              .catch(function (obj) {
+                console.log(obj)
+              })
+
+
+        }
       },
       querySearch(queryString, cb) {
         var restaurants = this.restaurants;
