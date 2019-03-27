@@ -196,14 +196,14 @@
         today: new Date(),
         // 大表单
         Rform:{
-          id: '', // 计划id
-          date: '', // 日历时间
-          region:'', // 报名类型
-          resource:'', // 库存类型
-          shareId:'', // 共享库存id
-          sumId: '', // 非共享库存id
-          shareNum: '', // 共享库存数量
-          sumNum:'', // 总库存数量
+          id: '',          // 计划id
+          date: '',        // 日历时间
+          region:'',       // 报名类型
+          resource:'',     // 库存类型
+          shareId:'',      // 共享库存id
+          sumId: '',       // 非共享库存id
+          shareNum: '',    // 共享库存数量
+          sumNum:'',       // 总库存数量
           orderRetain: '', // 订单保留
         },
         form: {
@@ -538,7 +538,7 @@
               // }
               // item.name = 6
               // this.n.push(item);
-              if(this.n.length !=0){
+              if(this.n.length != 0){
                 this.rightTable = true;
               }
               // 当选中的日期大于一天的时候默认为"非公享"
@@ -552,7 +552,7 @@
           let del = this.n.filter(item => item.day.getDay() == 1);
           let name = this.n.filter(item =>  item.name !== 6)
           this.n = name;
-          if(this.n.length ==0){
+          if(this.n.length == 0){
             this.rightTable = false;
           }
           // 当选中的日期为一天的时候可以选择"共享"
@@ -585,7 +585,7 @@
             // }
               // item.name = 0
               // this.n.push(item);
-              if(this.n.length !=0){
+              if(this.n.length != 0){
                 this.rightTable = true;
               }
               // 当选中的日期大于一天的时候默认为"非公享"
@@ -599,7 +599,7 @@
           let del = this.n.filter(item => item.day.getDay() == 1);
           let name = this.n.filter(item =>  item.name !== 0)
           this.n = name;
-          if(this.n.length ==0){
+          if(this.n.length == 0){
             this.rightTable = false;
           }
           // 当选中的日期为一天的时候可以选择"共享"
@@ -857,12 +857,9 @@
       },
       // 报名类型保存之后
       addQuota(data, index) {
-        // console.log(this.n)
-        // console.log(this.Rform);
-        // console.log(data);
         // 有值执行修改操作
         if (this.Rform.id) {
-          if (this.Rform.resource == '2') {
+          if (this.Rform.resource == '2') { // 2为非共享库存
             // 验证是否填写总库存
             if (this.Rform.sumNum != '') {
               this.$refs['form'][index].validate(valid => {
@@ -890,12 +887,12 @@
             } else {
               this.$refs['Rform'].validateField('sumNum');
             }
-          } else if (this.Rform.resource == '1') {
+          } else if (this.Rform.resource == '1') { // 1为共享库存
             // 验证是否选择共享库存
             if (this.Rform.shareId != '') {
               this.$refs['form'][index].validate(valid => {
                 if(valid) {
-                  if (!this.Rform.sumId) {
+                  if (!this.Rform.sumId) { // 原数据为非共享库存时则删除原非共享库存
                     this.saveQuota(this.n[0], data, this.Rform.shareId);
                   } else {
                     this.saveQuota(this.n[0], data, this.Rform.shareId, 'delete', this.Rform.sumId);
@@ -1209,14 +1206,14 @@
       clearNull() {
         this.arr = [];
         this.Rform = {
-          id: '', // 计划id
-          date: '', // 日历时间
-          region:'', // 报名类型
-          resource:'', // 库存类型
-          sumId: '', // 非共享库存id
+          id: '',       // 计划id
+          date: '',     // 日历时间
+          region:'',    // 报名类型
+          resource:'',  // 库存类型
+          sumId: '',    // 非共享库存id
           shareNum: '', // 共享库存数量
-          shareId:'', // 共享库存
-          sumNum:'', // 总库存
+          shareId:'',   // 共享库存
+          sumNum:'',    // 总库存
         };
         // 清空表单验证样式
         if (this.$refs['Rform'] != undefined) {
@@ -1529,10 +1526,10 @@
               'id': id,
               'name': name,
               'isModify': false, // 计划id
-              'salePrice': '', // 销售价
+              'salePrice': '',   // 销售价
               'traderPrice': '', // 同业价
-              'quota': false, // 配额开关
-              'quotaPrice': '' // 配额
+              'quota': false,    // 配额开关
+              'quotaPrice': ''   // 配额
             })
           } else {
             this.$message({
@@ -1597,9 +1594,6 @@
             this.days[_n.index].data.person.share = '';
           }
         }
-
-
-        
         // this.arr.splice(index,1);
       },
       // 添加配额
@@ -1712,14 +1706,14 @@
         // 右侧表单显示
         this.rightTable = false;
         this.Rform = {
-          id: '', // 计划id
-          date: '', // 日历时间
-          region:'', // 报名类型
-          resource:'', // 库存类型
-          sumId: '', // 非共享库存id
+          id: '',       // 计划id
+          date: '',     // 日历时间
+          region:'',    // 报名类型
+          resource:'',  // 库存类型
+          sumId: '',    // 非共享库存id
           shareNum: '', // 共享库存数量
-          shareId:'', // 共享库存
-          sumNum:'', // 总库存
+          shareId:'',   // 共享库存
+          sumNum:'',    // 总库存
         };
         this.arr = [];
         this.ccc = [];
