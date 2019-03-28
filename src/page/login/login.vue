@@ -202,8 +202,8 @@
         select: '0',
         value: '',
         ruleForm: {
-          user: '',
-          password: '',
+          user: 'tester',
+          password: '123456',
           // verification: '',
 
 
