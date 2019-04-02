@@ -7,10 +7,10 @@
         </div>
         <div class="header_seach">
           <div class="search-input">
-            <el-input v-model="searchName" placeholder="目的地\名称"  clearable></el-input>
+            <el-input v-model="searchName" placeholder="目的地\名称" clearable></el-input>
           </div>
           <div class="search-button">
-            <el-button type="primary" icon="el-icon-search" ></el-button>
+            <el-button type="primary" icon="el-icon-search" @click="sealbumPage"></el-button>
           </div>
         </div>
     </div>
@@ -24,7 +24,8 @@
     <div v-show="geography == 1" class="address-big">
          <div class="address-img" v-for="img in albumList">
               <div class="marterialist-img" @click="getAlbum(img.id)">
-                   <img width="100%" height="100%" :src="img.pictures[0].url" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'"/>
+                   <img width="100%" height="100%" :src="img.pictures[0].url" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'" v-if="img.pictures.length>0"/>
+                   <img width="100%" height="100%" :src="'http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'" v-else/>
               </div>
               <!-- 图片介绍 -->
               <div class="introduce">
@@ -318,11 +319,10 @@
       handleSizeChange(val){
         this.pageSize = val;
         this.pageIndex = 1;
-        this.albumPage();
+        this.albumPage(1,val,this.data.id,this.searchName);
       },
       handleCurrentChange(val){
-        this.pageIndex = val;
-        this.albumPage();
+        this.albumPage(val,this.pageSize,this.data.id,this.searchName);
       },
       //获取景点类型
       albumtypeget(){
@@ -357,10 +357,9 @@
                   this.addAlbum = false;
                   this.$refs[formName].resetFields();
                   this.$message({
-                  message: '添加相册成功,请为它添加照片吧~',
+                  message: '添加相册成功',
                   type: 'success'
                   });
-                  this.albumPage();
                 }
               }).catch(err => {
                 console.log(err)
@@ -452,17 +451,23 @@
           }else{
              //左侧导航tree
               this.geography = 1;
-              this.albumPage();
+              this.searchName = "";
+              this.albumPage(this.pageIndex,this.pageSize,this.data.id,this.searchName);
           }
         }
       },
+      sealbumPage(){
+        this.geography = 1;
+        this.albumPage(this.pageIndex,this.pageSize,0,this.searchName);
+      },
       //相册list
-      albumPage(){
+      albumPage(pageIndex=this.pageIndex,pageSize=this.pageSize,areaID=0,name=""){
         this.$http.post('http://192.168.1.186:3024' + '/album/api/page',{
-            "pageIndex": this.pageIndex,
-            "pageSize": this.pageSize,
+            "pageIndex": pageIndex,
+            "pageSize": pageSize,
             "object": {
-              "areaID": this.data.id,
+              "name":name,
+              "areaID": areaID,
               "isDeleted": 0
             }
           }).then(res => {
@@ -734,7 +739,6 @@
 
     //目的地显示name
     //添加照片是否支持多张
-    //查询相册
     //视频暂不做
   
 
@@ -802,9 +806,6 @@
 .company-list .el-checkbox{min-width: 100px;margin:0 15px 7px 15px}
 .per-title{margin: 20px 0;padding: 0;float: left}
 .el-upload-list__item{width:50%}
-
-
-
 .swiper-container {
   width: 100%;
   height: 300px;
