@@ -24,8 +24,8 @@
     <div v-show="geography == 1" class="address-big">
          <div class="address-img" v-for="img in albumList">
               <div class="marterialist-img" @click="getAlbum(img.id)">
-                   <img width="100%" height="100%" :src="img.pictures[0].url" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'" v-if="img.pictures.length>0"/>
-                   <img width="100%" height="100%" :src="'http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'" v-else/>
+                 <img width="100%" height="100%" :src="img.pictures[0].url" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'" v-if="img.pictures.length>0"/>
+                 <img width="100%" height="100%" :src="'http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'" v-else/>               
               </div>
               <!-- 图片介绍 -->
               <div class="introduce">
@@ -88,7 +88,8 @@
           <div class="swiper-container gallery-top">
             <div class="swiper-wrapper">
               <div v-for="item in albumInfo.pictures" class="swiper-slide">
-                <img :src="item.url" width="100%" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'"/>
+               <img :src="item.url" width="100%" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'"/>
+               <!--<video poster="https://pic.qyer.com/video/cover/20181031/1540966129500?imageView2/1/w/700/h/394" src="https://media.qyer.com/video/source/20181031/1540966124475" autoplay="autoplay" controls="controls" width="100%" height="100%"></video>-->
               </div>
             </div>
             <!-- Add Arrows -->
@@ -113,7 +114,7 @@
               <div class="album-text">相册信息</div>
             </div>
             <div class="album-form">
-                <el-form :model="albumInfo"  ref="albumForm" label-width="100px" >
+                <el-form :model="albumInfo"  ref="albumForm" label-width="100px">
                   <div class="album-name1">
                     名称：<el-input v-model="albumInfo.name" placeholder="请输入素材名称" :disabled="albumDisabled"></el-input>
                     <span class="empty" v-if="albumNameEmpty">名称不能为空</span>
@@ -142,7 +143,7 @@
                 <div class="blue-box"></div>
                 <div class="album-text">素材信息</div>
              </div>
-             <div class="album-form">
+             <div class="album-form" v-show="picInfoShow">
                 <div class="album-name1">
                     名称：<el-input v-model="pictInfo.name" placeholder="请输入素材名称" :disabled="picDisabled"></el-input>
                     <span class="empty" v-if="picNameEmpty">名称不能为空</span>
@@ -158,7 +159,7 @@
                   <div class="size">大小：{{pictInfo.length}}</div>
                 </div>                    
             </div>
-            <div class="album-picbutton">              
+            <div class="album-picbutton" v-show="picInfoShow">              
                  <el-button type="primary" @click="savPic">{{savPicBut}}</el-button>
             </div>
            </div>
@@ -187,7 +188,7 @@
                 :on-preview="handlePreview" name="files">                
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件</div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，单次最多上传12张图片</div>
               </el-upload>
           </div>
          </div>
@@ -283,6 +284,7 @@
         saveAlbumBut:"修改属性",
         albumNameEmpty:false,
         //素材信息
+        picInfoShow:true,
         companyList:[], //全部公司
         picDisabled:true, //文本框禁用
         savPicBut:"修改属性",        
@@ -297,7 +299,8 @@
         fileList:[],//上传的图片集合
         insertCheCompany:[], //默认选中全部公司id
         uid:0,//上传图片缩略图选中项
-      
+        len:0,
+        time:0,
         rules:{
           name: [
             { required: true, message: '请输入相册名称', trigger: 'blur' },
@@ -495,7 +498,12 @@
                setTimeout(()=>{
                 this.mySwiper(0);
                },100)
-               this.getPicture(0);
+               if(res.data.object.pictures.length!=0){
+                 this.getPicture(0);
+                 this.picInfoShow=true;
+               }else{
+                 this.picInfoShow=false;
+               }
 
             }
           }).catch(err => {
@@ -667,25 +675,29 @@
           this.fileList = []
       },
       handleSuccess(res, file ,fileList) {
-          let len=0;    //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
-          if(this.fileList.length==0){
-             this.fileList=fileList;
-          }else{
-             len=this.fileList.length;
-             for(let i=len;i<fileList.length;i++){
-               this.fileList.push(fileList[i]);
+          //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
+          if(this.time!=fileList.length){  //多张图片情况只在第一次执行数组操作
+            this.time=fileList.length;         
+            if(this.fileList.length==0){
+               this.fileList=fileList;
+            }else{
+               this.len=this.fileList.length;
+               for(let i=this.len;i<fileList.length;i++){
+                 this.fileList.push(fileList[i]);
+               }
              }
-          }
-          for(let i=len;i<fileList.length;i++){
-           let paths=JSON.parse(fileList[i].response).paths;         
+          }     
+          var paths = null;
+          for(let i=this.len;i<fileList.length;i++){          
+           paths=JSON.parse(fileList[i].response).paths[0];         
            this.$set(this.fileList[i],"companies",this.insertCheCompany);
-           this.fileList[i].width=paths[0].Width;
-           this.fileList[i].height=paths[0].Height;
-           this.fileList[i].url1=paths[0].Url;
-           this.fileList[i].length=paths[0].Length;
-           this.fileList[i].name=paths[0].Name;
+           this.$set(this.fileList[i],"width",paths.Width);
+           this.$set(this.fileList[i],"height",paths.Height);
+           this.$set(this.fileList[i],"url1",paths.Url);
+           this.$set(this.fileList[i],"length",paths.Length);
+           this.$set(this.fileList[i],"name",paths.Name);
           }
-          this.uid=fileList[0].uid;         
+          this.uid=fileList[0].uid;      
       },
       //选中待上传的图片
       handlePreview(file) {
@@ -707,7 +719,7 @@
            picture.url=fileList[i].url1;
            picture.height=fileList[i].height;
            picture.width=fileList[i].width;
-           picture.length=fileList[i].size/1024;
+           picture.length=parseInt(fileList[i].size/1024);
            picture.createUser=sessionStorage.getItem('id');
            picture.companies=[];
            picture.createTime=new Date();
@@ -720,6 +732,7 @@
            }
            pictureList.push(picture);
         }
+
         this.$http.post('http://192.168.1.186:3024' + '/picture/api/insert',{
             "object":pictureList[0]
           }).then(res => {
