@@ -455,7 +455,7 @@
              //左侧导航tree
               this.geography = 1;
               this.searchName = "";
-              this.albumPage(this.pageIndex,this.pageSize,this.data.id,this.searchName);
+              this.albumPage(this.pageIndex,this.pageSize,this.data.id?this.data.id:0,this.searchName);
           }
         }
       },
@@ -523,6 +523,7 @@
              "object":this.albumInfo
           }).then(res => {
             if(res.data.isSuccess == true){
+              this.albumPage(this.pageIndex,this.pageSize,this.data.id,this.searchName);
               this.$message({
                 message: '保存成功',
                 type: 'success'
@@ -530,7 +531,6 @@
               this.albumNameEmpty=false;
               this.saveAlbumBut="修改属性";
               this.albumDisabled=true;
-
             }
           }).catch(err => {
             console.log(err)
@@ -540,6 +540,7 @@
       albumInfoClose(){
         this.getAlbumForm = false;
         this.leftTree2=false; 
+        this.albumDisabled=true;
       },
       mySwiper(index){
          var galleryThumbs = new Swiper('.gallery-thumbs', {
@@ -621,7 +622,7 @@
           });
         });
       },
-      //删除照片信息
+      //保存照片信息
       savPic(){
         if(this.picDisabled){
           this.picDisabled=false;
