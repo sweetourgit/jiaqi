@@ -7,7 +7,7 @@
         </div>
         <div class="header_seach">
           <div class="search-input">
-            <el-input v-model="searchName" placeholder="目的地\名称" clearable></el-input>
+            <el-input v-model="searchName" placeholder="请输入相册名称" clearable></el-input>
           </div>
           <div class="search-button">
             <el-button type="primary" icon="el-icon-search" @click="sealbumPage"></el-button>
@@ -125,7 +125,7 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item label="目的地：">
-                    <el-button plain @click="leftTree2 = leftTree2 == true?false:true" class="w200 tl" :disabled="albumDisabled">{{albumInfo.areaID}}</el-button>
+                    <el-button plain @click="leftTree2 = leftTree2 == true?false:true" class="w200 tl" :disabled="albumDisabled">{{albumInfo.areaName}}</el-button>
                   </el-form-item>
                   <!--修改相册目的地-->
                   <div class="left-tree2" v-if="leftTree2">
@@ -439,19 +439,19 @@
       },
       // 单击tree节点
       treeClick(data,node){     
-        this.data = data;
         if (data.isLeaf == 1) {
           if(this.addAlbum == true){
               //添加相册tree
-              this.picForm.destination=this.data.name;
-              this.picForm.destinationId=this.data.id;
+              this.picForm.destination=data.name;
+              this.picForm.destinationId=data.id;
               this.leftTree1=false;             
           }else if(this.getAlbumForm == true){
              //修改相册tree
-             // this.albumInfo.name=this.data.name;
-              this.albumInfo.areaID=this.data.id;
+              this.albumInfo.areaName=data.name;
+              this.albumInfo.areaID=data.id;
               this.leftTree2=false;
           }else{
+              this.data = data;
              //左侧导航tree
               this.geography = 1;
               this.searchName = "";
@@ -661,6 +661,7 @@
       getCompany(){
         this.$http.post('http://192.168.1.186:3024' + '/picture/api/companyget')
         .then(res => {
+            this.insertCheCompany=[];
             this.companyList=res.data.objects;
             for(let i=0;i<this.companyList.length;i++){
                this.insertCheCompany.push(this.companyList[i].id)
@@ -677,12 +678,12 @@
       },
       handleSuccess(res, file ,fileList) {
           //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
-          if(this.time!=fileList.length){  //多张图片情况只在第一次执行数组操作
+          if(this.time!=fileList.length){  //多张图片情况只在第一次执行数组操作，用time标识
             this.time=fileList.length;         
             if(this.fileList.length==0){
                this.fileList=fileList;
             }else{
-               this.len=this.fileList.length;
+               this.len=this.fileList.length;  //len循环初始值
                for(let i=this.len;i<fileList.length;i++){
                  this.fileList.push(fileList[i]);
                }
@@ -698,7 +699,8 @@
            this.$set(this.fileList[i],"length",paths.Length);
            this.$set(this.fileList[i],"name",paths.Name);
           }
-          this.uid=fileList[0].uid;      
+          this.uid=fileList[0].uid;  //编辑上传图片时默认到第一张图片  
+          
       },
       //选中待上传的图片
       handlePreview(file) {
@@ -707,6 +709,12 @@
       //删除待上传的图片
       handleRemove(file, fileList) {
         this.uid=fileList[0].uid;
+        for(let i=0;i<this.fileList.length;i++){
+           if(file.uid==this.fileList[i].uid){
+             this.fileList.splice(i,1);
+           }
+        }       
+        this.time=this.fileList.length;       
       },
       //添加素材
       pictureInsert(){
@@ -734,9 +742,10 @@
            pictureList.push(picture);
         }
 
-        this.$http.post('http://192.168.1.186:3024' + '/picture/api/insert',{
-            "object":pictureList[0]
+        this.$http.post('http://192.168.1.186:3024' + '/picture/api/insertlist',{
+            "object":{"pictures":pictureList}
           }).then(res => {
+             if(res.data.isSuccess == true){
              this.$message({
                message: '图片图片成功',
                type: 'success'
@@ -744,16 +753,14 @@
              this.getAlbum(this.albumId);
              this.fileList = [];
              this.getPictureForm=false;
+             this.time=0;
+             this.len=0;
+             }
           })
-          this.fileList = [];
+          
       },
 
       
-    
-
-    //目的地显示name
-    //添加照片是否支持多张
-    //视频暂不做
   
 
 
