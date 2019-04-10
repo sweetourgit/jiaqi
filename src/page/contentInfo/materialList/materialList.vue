@@ -24,8 +24,8 @@
     <div v-show="geography == 1" class="address-big">
          <div class="address-img" v-for="img in albumList">
               <div class="marterialist-img" @click="getAlbum(img.id)">
-                 <img width="100%" height="100%" :src="img.pictures[0].url" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'" v-if="img.pictures.length>0"/>
-                 <img width="100%" height="100%" :src="'http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'" v-else/>               
+                 <img width="100%" height="100%" :src="picSrc+img.pictures[0].url" v-if="img.pictures.length>0"/>
+                 <img width="100%" height="100%" :src="'../../../static/materialList/nopic.jpg'" v-else/> 
               </div>
               <!-- 图片介绍 -->
               <div class="introduce">
@@ -88,7 +88,7 @@
           <div class="swiper-container gallery-top">
             <div class="swiper-wrapper">
               <div v-for="item in albumInfo.pictures" class="swiper-slide">
-               <img :src="item.url" width="100%" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'"/>
+               <img :src="picSrc+item.url" width="100%" height="100%"/>
                <!--<video poster="https://pic.qyer.com/video/cover/20181031/1540966129500?imageView2/1/w/700/h/394" src="https://media.qyer.com/video/source/20181031/1540966124475" autoplay="autoplay" controls="controls" width="100%" height="100%"></video>-->
               </div>
             </div>
@@ -99,7 +99,7 @@
           <div class="swiper-container gallery-thumbs">
             <div class="swiper-wrapper">
               <div v-for="(item,index) in albumInfo.pictures" class="swiper-slide" @click="slideTo(index)">
-                <img :src="item.url" width="100%" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'"/>
+                <img :src="picSrc+item.url" width="100%" height="100%"/>
               </div>
             </div>
           </div>
@@ -244,6 +244,7 @@
   export default {
     data() {        
       return {       
+        picSrc:'http://192.168.1.186:3009/upload',
         //左侧菜单
         list:[],
         lists: [], //子级
@@ -541,6 +542,7 @@
         this.getAlbumForm = false;
         this.leftTree2=false; 
         this.albumDisabled=true;
+        this.saveAlbumBut="修改属性";
       },
       mySwiper(index){
          var galleryThumbs = new Swiper('.gallery-thumbs', {
