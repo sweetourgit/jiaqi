@@ -16,6 +16,31 @@
        <el-button :disabled="forbidden2">订单</el-button>
        <el-button :disabled="forbidden2" @click="placeOrder">下单</el-button>
      </el-row>
+     <!--list-->
+     <el-table :data="teamqueryList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
+       <el-table-column  prop="id" label="" fixed type="selection"></el-table-column>     
+       <el-table-column  type="index" label="序号" width="60"></el-table-column>
+       <el-table-column  prop="title" label="产品名称" min-width="340"></el-table-column>
+       <el-table-column  prop="groupCode" label="团号" width="220"></el-table-column>
+       <el-table-column  prop="dateFormat" label="出行日期" width="100"></el-table-column>
+       <el-table-column  prop="week" label="周" width="70"></el-table-column>
+       <el-table-column  prop="day" label="天数" width="70"></el-table-column>
+       <el-table-column  prop="refPrice" label="参考价" width="80"></el-table-column>
+       <el-table-column  prop="count" label="计划位" width="70"></el-table-column>
+       <el-table-column  prop="remaining" label="余位" width="70"></el-table-column>
+       <el-table-column  prop="shareCN" label="是否共享" width="80"></el-table-column>
+       <el-table-column  prop="op" label="操作" width="80"></el-table-column>      
+     </el-table>
+     <el-pagination class="pagination"
+            @size-change="handleSizeChange"
+            background
+            @current-change="handleCurrentChange"
+            :current-page="1"
+            :page-sizes="[10, 30, 50, 100]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
+     </el-pagination>
      <!--更改状态弹窗-->
      <el-dialog title="更改状态" :visible.sync="dialogFormVisible" class="city_list" width="500px">
       <el-form :model="form">
@@ -49,32 +74,7 @@
 
 
 
-    <!--list-->
-     <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
-       <el-table-column  prop="id" label="" fixed type="selection"></el-table-column>
-       <el-table-column  prop="serno" label="序号" min-width="60"></el-table-column>
-       <el-table-column  prop="state" label="状态" min-width="90"></el-table-column>
-       <el-table-column  prop="date" label="出行日期" min-width="110"></el-table-column>
-       <el-table-column  prop="groupSer" label="团期计划" min-width="240"></el-table-column>
-       <el-table-column  prop="price" label="成人价" min-width="75"></el-table-column>
-       <el-table-column  prop="plan" label="计划位" min-width="75"></el-table-column>
-       <el-table-column  prop="surplus" label="余位" min-width="75"></el-table-column>
-       <el-table-column  prop="conPt" label="确认占位" min-width="85"></el-table-column>
-       <el-table-column  prop="resPt" label="预定占位" min-width="85"></el-table-column>
-       <el-table-column  prop="resNpt" label="预定不占" min-width="85"></el-table-column>
-       <el-table-column  prop="operation" label="操作" min-width="80"></el-table-column>
-       <el-table-column  prop="name" label="产品名称" fixed="right" min-width="250"></el-table-column>
-     </el-table>
-     <el-pagination class="pagination"
-        @size-change="handleSizeChange"
-        background
-        @current-change="handleCurrentChange"
-        :current-page="4"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
-      </el-pagination>
+    
      </div>
      </div>
   </div>
@@ -87,6 +87,11 @@ export default {
        groupNo:'',
        startTime: '',
        endTime: '',
+       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
+       pageIndex: 1, // 设定当前页数
+       total: 0,
+       teamqueryList: [],
+       //成本
        costList:[{
           id:1,
           serno: 1,
@@ -112,36 +117,7 @@ export default {
           enclosure:'查看'
        }],
        costSelection: [],   //选中的list
-       groupList: [{
-          id:1,
-          serno: 1,
-          date: '2016-05-03',
-          state: '正常',
-          groupSer:'TC-GTY-1001-01-180806-01',
-          price:'200',
-          plan:'20',
-          surplus:'20',
-          conPt:'20',
-          resPt:'20',
-          resNpt:'20',
-          operation:'阳阳',
-          name: '泰国曼谷+芭提雅+沙美岛+清迈小镇7日游'
-        },
-        {
-          id:2,
-          serno: 1,
-          date: '2016-05-03',
-          state: '正常',
-          groupSer:'TC-GTY-1001-01-180806-01',
-          price:'200',
-          plan:'20',
-          surplus:'20',
-          conPt:'20',
-          resPt:'20',
-          resNpt:'20',
-          operation:'阳阳',
-          name: '泰国曼谷+芭提雅+沙美岛+清迈小镇7日游'
-        }],
+       
         multipleSelection: [],   //选中的list
         dialogFormVisible: false, //更改状态弹窗
         dialogCost: false, //成本弹窗
@@ -153,8 +129,8 @@ export default {
         forbidden2:true
     }
   },
-  mounted(){
-
+  created(){
+    this.teamQueryList();
   },
   methods: {
       getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -192,11 +168,30 @@ export default {
       placeOrder(){
         this.$router.push({path: "/regimentPlan/placeOrder?planid="+this.multipleSelection[0].id});
       },
-      handleSizeChange(){
-
+      handleSizeChange(val){
+        this.pageSize = val;
+        this.pageIndex = 1;
+        this.teamQueryList(1,val);
       },
-      handleCurrentChange(){
-
+      handleCurrentChange(val){
+        this.teamQueryList(val,this.pageSize);
+      },
+      //计划list
+      teamQueryList(pageIndex=this.pageIndex,pageSize=this.pageSize){
+        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/page',{
+            "pageIndex": pageIndex,
+            "pageSize": pageSize,
+            "object":{            
+              "title": "斯里兰卡",
+             }
+          }).then(res => {
+            if(res.data.isSuccess == true){
+               this.teamqueryList=[]=res.data.objects;
+               this.total=res.data.total;
+            }
+          }).catch(err => {
+            console.log(err)
+          })
       },
       //成本方法
       getCostClass({ row, column, rowIndex, columnIndex }) {
@@ -237,7 +232,7 @@ export default {
        .date-line{width:30px;border-bottom:1px solid #e6e6e6;display:inline-block;margin:0 3px 3px 0}
        .search-title{font-size: 14px;margin-left: 10px}
        .line{width:80%;min-width:800px;border-bottom:1px solid #e6e6e6;margin:25px 0 0 -20px;}
-       .table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 8px}
+       .table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 8px;width:1400px;}
        .costTable{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 0}
        .el-table tr{background: #f6f6f6 !important}
        .button{margin:25px 0 0 8px}
@@ -249,6 +244,6 @@ export default {
        .confirm{margin:0 140px 0 20px;}
        .el-form{line-height:50px}
        .fs{font-size: 16px}
-       .pagination{text-align:center;margin:70px 0 50px 0;}
+       .pagination{text-align:center;margin:30px 0 50px 0;}
        .dialog-footer{text-align: left;margin:20px 0 20px 108px;padding-top: 20px}
 </style>
