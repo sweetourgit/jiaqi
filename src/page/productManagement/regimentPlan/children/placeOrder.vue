@@ -45,60 +45,11 @@
                 </table>
            </div>
            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="订单来源" prop="orderRadio">
-                <el-radio label="1" class="radiomar" v-model="ruleForm.orderRadio">同业社</el-radio>
-                <el-radio label="2" class="radiomar" v-model="ruleForm.orderRadio">门店</el-radio>
-                <el-radio label="3" class="radiomar" v-model="ruleForm.orderRadio">线下直客</el-radio>
+            <el-form-item label="订单来源">
+              <div class="ml13">线下直客</div>
             </el-form-item>
-            <div v-if="ruleForm.orderRadio==1">
-                <el-form-item label="销售" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="同业社" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.travel" placeholder="请选择" class="optionw">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-            </div>
-            <div v-if="ruleForm.orderRadio==2">
-                <el-form-item label="销售" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="门店" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.travel" placeholder="请选择" class="optionw">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-            </div>
-            <div v-if="ruleForm.orderRadio==3">
-                <el-form-item label="销售" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-            </div>
-
-
             <el-form-item label="选择价格" prop="price" class="cb price">
-              <el-radio-group v-model="ruleForm.price"><br/>
-                <el-radio label="同业价" class="radiomar">同业价： 成人 （￥3800）  儿童（￥3000） 老人（￥3000） 单房差（￥200）</el-radio><br/>
-                <el-radio label="销售价" class="radiomar">销售价： 成人 （￥4800）  儿童（￥4000） 老人（￥4000） 单房差（￥300）</el-radio>
-                <el-radio label="自定义" class="radiomar">自定义： 
-                     成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
-                     儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
-                     老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
-                     单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
-                </el-radio>
-              </el-radio-group>
+              <div class="ml13">销售价： 成人 （￥4800）  儿童（￥4000） 老人（￥4000） 单房差（￥300）</div>
             </el-form-item>
             <el-form-item label="报名人数" prop="num1">            
               <div class="ml13">成人<el-input v-model="ruleForm.num1" class="numw" @input="peoNum('adult')"></el-input>余（17） ￥11400</div>
@@ -112,9 +63,19 @@
             <el-form-item label="" prop="">            
               <div class="ml13">单房差 ￥340</div>
             </el-form-item>
+            <!--其他费用-->
+            <el-form-item label="其他费用" prop="otherCost">            
+              <el-input v-model="ruleForm.otherCost" class="numw"></el-input>
+            </el-form-item>
+            <!--整体优惠-->
+            <el-form-item label="整体优惠" prop="allDiscount">            
+              <el-input v-model="ruleForm.allDiscount" class="numw"></el-input>
+            </el-form-item>
+            <!--总计-->
             <el-form-item label="总计" prop="totalPrice">            
               <div class="ml13">{{ruleForm.totalPrice}}</div>
             </el-form-item>
+            <!--下单方式-->
             <el-form-item label="下单方式" prop="type">
               <el-radio-group v-model="ruleForm.type"><br/>
                 <el-radio label="确认占位" class="radiomar">确认占位 （同业社额度： 总欠款 270,164 元）</el-radio><br/>
@@ -122,11 +83,12 @@
                 <el-radio label="预定不占" class="radiomar">预定不占 （订单保留24小时，到期提醒）</el-radio>
               </el-radio-group>
             </el-form-item>
+            <!--订单联系人-->
             <el-form-item label="订单联系人" prop="contact1">            
-              <div class="ml13">姓名<el-input v-model="ruleForm.contact1" class="numw"></el-input></div>
-            </el-form-item>
-            <el-form-item label="" prop="contact2">            
-              <div class="ml13">电话<el-input v-model="ruleForm.contact2" class="numw"></el-input></div>
+              <div class="ml13">
+                 姓名<el-input v-model="ruleForm.contact1" class="numw"></el-input>
+                 电话<el-input v-model="ruleForm.contact2" class="numw"></el-input>
+              </div>
             </el-form-item>
             <el-form-item label="出行人信息">            
                <div class="oh" v-show="typeNum1">
@@ -196,20 +158,14 @@ export default {
       typeNum2:false,
       typeNum3:false,
       winTitle:'',
-      ruleForm: {     
-          orderRadio:"1",            
-          resource:'',
-          sale:'',
-          travel:'',
-          price:'',
-          price1:'',
-          price2:'',
-          price3:'',
-          price4:'',
-          totalPrice:'',
+      ruleForm: {           
+          resource:'',         
           num1: '',
           num2: '',
           num3: '',
+          otherCost: '0',
+          allDiscount: '0',
+          totalPrice:'',
           type: '',    
           contact1:'',
           contact2:''
@@ -223,16 +179,14 @@ export default {
         },
         remark:'',
         rules: {
-          orderRadio: [{ required: true, message: '请选择订单来源', trigger: 'change' }],
           resource: [{ required: true, message: '请选择订单来源', trigger: 'change' }],
-          sale: [{ required: true, message: '请选择销售', trigger: 'change' }],
-          travel: [{ required: true, message: '请选择同业社', trigger: 'change' }],
-          price: [{ required: true, message: '请选择价格', trigger: 'change' }],
-          price1: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
-          price2: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
-          price3: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
-          price4: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
           totalPrice: [{ required: true, message: '价格不能为空'}],
+          otherCost: [
+            { required: true, message: '请输入其他费用', trigger: 'blur' },
+            { pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '必须为数字值，并且不允许是负数'}],
+          allDiscount: [
+            { required: true, message: '请输入整体优惠', trigger: 'blur' },
+            { pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '必须为数字值，并且不允许是负数'}],
           num1: [
             { required: true, message: '请输入数量', trigger: 'blur' },
             { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}],
@@ -345,8 +299,6 @@ export default {
     .demo-ruleForm{margin-left: 10px;}
     .fl{float: left}
     .cb{clear: both}
-    .optionw{width: 280px}
-    .price .pricew{width: 90px;text-align: center;margin:-5px 15px;}
     .numw{width: 125px;text-align: center;margin:0 15px;}
     .radiomar{margin:12px 13px}
     .ml13{margin-left: 13px}
