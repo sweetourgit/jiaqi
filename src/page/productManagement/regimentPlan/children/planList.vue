@@ -28,7 +28,7 @@
        <el-table-column  prop="refPrice" label="参考价" width="80"></el-table-column>
        <el-table-column  prop="count" label="计划位" width="70"></el-table-column>
        <el-table-column  prop="remaining" label="余位" width="70"></el-table-column>
-       <el-table-column  prop="shareCN" label="是否共享" width="80"></el-table-column>
+       <el-table-column  prop="shareCN" label="是否共享" width="85"></el-table-column>
        <el-table-column  prop="op" label="操作" width="80"></el-table-column>      
      </el-table>
      <el-pagination class="pagination"
