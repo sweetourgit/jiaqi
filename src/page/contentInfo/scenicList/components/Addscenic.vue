@@ -147,9 +147,9 @@
     </div>
      </div>
     <!-- 信息展示预留END -->
-    <el-form-item class="form-item" :label-width='formLabelWidth' label="图片:">
-      <el-input v-model="form.imgs" disabled style="float:left;width:250px;">
-      </el-input>
+
+    <!-- <el-form-item class="form-item" :label-width='formLabelWidth' label="图片:">
+      <el-input v-model="form.imgs" disabled style="float:left;width:250px;"></el-input>
       <el-upload :on-preview="handleImgClick" class="upload-demo uploadimage" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit='1' accept=".jpg,.png,.gif" :on-remove="handleRemove">
         <el-button type="info" class="upload-btn">
           <div v-show="isShowImg" style="">
@@ -158,15 +158,20 @@
           上传
         </el-button>
       </el-upload>
+    </el-form-item> -->
+
+    <el-form-item class="form-item" :label-width='formLabelWidth' label="图片:">
+      <div class="img_upload"></div>
+      <el-button class="img_button" type="info" @click="imgUpload = true">上传</el-button>
     </el-form-item>
+
     <el-form-item class="form-item" :label-width='formLabelWidth' label="产品概述:">
       <el-input style="width: 705px;" :rows="13" type="textarea" v-model="form.introduction"></el-input>
     </el-form-item>
 
    </el-form>
 
-  <!-- 编辑 -->
-
+<!-- 编辑 -->
 <el-dialog width='30%' top='20vh' append-to-body title="标签选择" :visible.sync="showEdit" custom-class="city_list">
   <LabelSelection></LabelSelection>
 </el-dialog>
@@ -174,17 +179,24 @@
 <el-dialog width='1100px' top='10vh' append-to-body title="添加开放时间" :visible.sync="showtime" :show-close="false" @close="closeBoo">
   <OpenTime v-on:timeList="timeList" v-on:closeButton="showtime = false" :dateTime="dateTime" v-if="hackReset"></OpenTime>
 </el-dialog>
-  </div>
+<!-- 上传 -->
+<el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
+  <MaterialList></MaterialList>
+</el-dialog>
+</div>
 </template>
 
 <script>
 import LabelSelection from './components/Labelselection'
 import OpenTime from './components/Opentime'
+import MaterialList from '@/common/Image'
+
 export default {
   props: ['referenceTime', 'seasons', 'crowds', 'handleEditDate'],
   components:{
     LabelSelection,
-    OpenTime
+    OpenTime,
+    MaterialList
   },
   data() {
     var chineseNameRule = (rule, value, callback) => {
@@ -244,8 +256,9 @@ export default {
       formLabelWidth: '90px',
       isShowImg: '',
       imgUrl: '',
-      showtime: false,
-      showEdit: false,
+      showtime: false,      // 开放时间弹窗
+      showEdit: false,      // 编辑弹窗
+      imgUpload: false,     // 上传弹窗
       hackReset: true,
       fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
       vague: [],            // 模糊搜索数组
@@ -483,6 +496,7 @@ export default {
     },
     // 区域选择
     handleSelect(item) {
+      console.log(item)
       this.form.areaId = item;
       this.isSelect = true;
     },
@@ -508,6 +522,7 @@ export default {
             areaName: queryString
           }
       }).then(res => {
+        console.log(res);
         for (let i = 0; i < res.data.objects.length; i++) {
           this.vague.push({
             "id" : res.data.objects[i].id,
@@ -947,5 +962,14 @@ export default {
   margin-top: -22px;
 }
 .redStar{ color: #f56c6c; float: left; margin-left:-82px;}
-
+.img_upload {
+  float: left;
+  width: 250px;
+  height: 40px;
+  background:#F5F7FA;
+  border: solid 1px #E4E7ED;
+}
+.img_button {
+  float: left;
+}
 </style>

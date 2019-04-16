@@ -1695,30 +1695,38 @@
       },
       // 点击套餐Sku
       setMeal(data){
-        let id = '';
-        if (data.id == undefined) {
-          id = data;
+        if (data.codePrefix != '' && data.codeSuffix != '') {
+          let id = '';
+          if (data.id == undefined) {
+            id = data;
+          } else {
+            id = data.id;
+          }
+          // 多日期共享禁用
+          this.forbidden = false;
+          // 右侧表单显示
+          this.rightTable = false;
+          this.Rform = {
+            id: '',       // 计划id
+            date: '',     // 日历时间
+            region:'',    // 报名类型
+            resource:'',  // 库存类型
+            sumId: '',    // 非共享库存id
+            shareNum: '', // 共享库存数量
+            shareId:'',   // 共享库存
+            sumNum:'',    // 总库存
+          };
+          this.arr = [];
+          this.ccc = [];
+          this.ccc.push(id);
+          this.calendarList(this.ccc[0]);
         } else {
-          id = data.id;
+          this.$message({
+            message: '该计划没有团号',
+            type: 'warning'
+          });
         }
-        // 多日期共享禁用
-        this.forbidden = false;
-        // 右侧表单显示
-        this.rightTable = false;
-        this.Rform = {
-          id: '',       // 计划id
-          date: '',     // 日历时间
-          region:'',    // 报名类型
-          resource:'',  // 库存类型
-          sumId: '',    // 非共享库存id
-          shareNum: '', // 共享库存数量
-          shareId:'',   // 共享库存
-          sumNum:'',    // 总库存
-        };
-        this.arr = [];
-        this.ccc = [];
-        this.ccc.push(id);
-        this.calendarList(this.ccc[0]);
+        
       },
       // 获取报名类型
       initTypeSelect() {

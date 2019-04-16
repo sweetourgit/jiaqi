@@ -291,10 +291,12 @@ export default {
         this.formButtonOne = 'formButton0';
       }else if (time.length == 1) {
         this.formButtonOne = 'formButton1'
+        this.formCheckOne = 'formCheck';
       }else if (time.length == 2) {
         this.formButtonOne  = 'formButton2';
       } else if (time.length == 3) {
         this.formButtonOne  = 'formButton3';
+        this.formCheckOne = 'formCheck';
         this.isOne = true;
       } else if (time.length == 4) {
         this.isOne = false;
@@ -307,10 +309,12 @@ export default {
         this.formButtonTue = 'formButton0';
       }else if (time.length == 1) {
         this.formButtonTue = 'formButton1'
+        this.formCheckTue = 'formCheck';
       }else if (time.length == 2) {
         this.formButtonTue  = 'formButton2';
       } else if (time.length == 3) {
         this.formButtonTue  = 'formButton3';
+        this.formCheckTue = 'formCheck';
         this.isTue = true;
       } else if (time.length == 4) {
         this.isTue = false;
@@ -323,10 +327,12 @@ export default {
         this.formButtonWed = 'formButton0';
       }else if (time.length == 1) {
         this.formButtonWed = 'formButton1'
+        this.formCheckWed = 'formCheck';
       }else if (time.length == 2) {
         this.formButtonWed  = 'formButton2';
       } else if (time.length == 3) {
         this.formButtonWed  = 'formButton3';
+        this.formCheckWed = 'formCheck';
         this.isWed = true;
       } else if (time.length == 4) {
         this.isWed = false;
@@ -339,10 +345,12 @@ export default {
         this.formButtonThur = 'formButton0';
       }else if (time.length == 1) {
         this.formButtonThur = 'formButton1'
+        this.formCheckThur = 'formCheck';
       }else if (time.length == 2) {
         this.formButtonThur  = 'formButton2';
       } else if (time.length == 3) {
         this.formButtonThur  = 'formButton3';
+        this.formCheckThur = 'formCheck';
         this.isThur = true;
       } else if (time.length == 4) {
         this.isThur = false;
@@ -355,10 +363,12 @@ export default {
         this.formButtonFir = 'formButton0';
       }else if (time.length == 1) {
         this.formButtonFir = 'formButton1'
+        this.formCheckFir = 'formCheck';
       }else if (time.length == 2) {
         this.formButtonFir  = 'formButton2';
       } else if (time.length == 3) {
         this.formButtonFir  = 'formButton3';
+        this.formCheckFir = 'formCheck';
         this.isFir = true;
       } else if (time.length == 4) {
         this.isFir = false;
@@ -371,10 +381,12 @@ export default {
         this.formButtonSat = 'formButton0';
       }else if (time.length == 1) {
         this.formButtonSat = 'formButton1'
+        this.formCheckSat = 'formCheck';
       }else if (time.length == 2) {
         this.formButtonSat  = 'formButton2';
       } else if (time.length == 3) {
         this.formButtonSat  = 'formButton3';
+        this.formCheckSat = 'formCheck';
         this.isSat = true;
       } else if (time.length == 4) {
         this.isSat = false;
@@ -387,10 +399,12 @@ export default {
         this.formButtonSun = 'formButton0';
       }else if (time.length == 1) {
         this.formButtonSun = 'formButton1'
+        this.formCheckSun = 'formCheck';
       }else if (time.length == 2) {
         this.formButtonSun  = 'formButton2';
       } else if (time.length == 3) {
         this.formButtonSun  = 'formButton3';
+        this.formCheckSun = 'formCheck';
         this.isSun = true;
       } else if (time.length == 4) {
         this.isSun = false;
