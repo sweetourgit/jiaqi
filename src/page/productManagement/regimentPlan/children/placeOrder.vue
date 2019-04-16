@@ -64,15 +64,21 @@
               <div class="ml13">单房差 ￥340</div>
             </el-form-item>
             <!--其他费用-->
-            <el-form-item label="其他费用" prop="otherCost">            
+            <el-form-item label="其他费用" prop="otherCost" class="fl">            
               <el-input v-model="ruleForm.otherCost" class="numw"></el-input>
             </el-form-item>
+            <div class="fl">            
+              备注<el-input v-model="ruleForm.otherCostRemark" class="cost-remark"></el-input>
+            </div>
             <!--整体优惠-->
-            <el-form-item label="整体优惠" prop="allDiscount">            
+            <el-form-item label="整体优惠" prop="allDiscount" class="cb fl">            
               <el-input v-model="ruleForm.allDiscount" class="numw"></el-input>
             </el-form-item>
+            <div class="fl">            
+              备注<el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
+            </div>
             <!--总计-->
-            <el-form-item label="总计" prop="totalPrice">            
+            <el-form-item label="总计" prop="totalPrice" class="cb">            
               <div class="ml13">{{ruleForm.totalPrice}}</div>
             </el-form-item>
             <!--下单方式-->
@@ -84,13 +90,14 @@
               </el-radio-group>
             </el-form-item>
             <!--订单联系人-->
-            <el-form-item label="订单联系人" prop="contact1">            
-              <div class="ml13">
-                 姓名<el-input v-model="ruleForm.contact1" class="numw"></el-input>
-                 电话<el-input v-model="ruleForm.contact2" class="numw"></el-input>
-              </div>
+            <el-form-item label="订单联系人" prop="contactName" class="fl">            
+                 <span class="ml13">姓名</span><el-input v-model="ruleForm.contactName" class="numw"></el-input>
             </el-form-item>
-            <el-form-item label="出行人信息">            
+            <el-form-item prop="contactPhone" class="fl" style="margin-left:-80px">            
+                 电话<el-input v-model="ruleForm.contactPhone" class="numw"></el-input>
+            </el-form-item>
+            <!--出行人信息-->
+            <el-form-item label="出行人信息" class="cb">            
                <div class="oh" v-show="typeNum1">
                  <div class="tour-til">成人</div>
                  <div class="tourist"><input v-for="(item,index) in adult" v-model="item.name" @click="fillTour('1',index)"/></div>
@@ -105,13 +112,9 @@
                </div>
             </el-form-item>
             <el-form-item label="备注" prop="">            
-              <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="remark"></el-input>
+              <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="ruleForm.remark"></el-input>
             </el-form-item>
           </el-form>
-          
-
-
-
           <!--填写游客信息-->
           <el-dialog :title="'出行人信息（'+winTitle+'）'" :visible.sync="dialogFormVisible" class="city_list"  width="700px">
             <el-form :model="conForm" :rules="rules" ref="conForm">
@@ -133,8 +136,6 @@
 
             </el-form>
             <div slot="footer" class="dialog-footer1 cb">
-              
-
               <el-button @click="dialogFormVisible = false">取 消</el-button>
               <el-button type="primary" @click="subInfo('conForm')" class="confirm">确 定</el-button>
             </div>
@@ -164,11 +165,14 @@ export default {
           num2: '',
           num3: '',
           otherCost: '0',
+          otherCostRemark: '',
           allDiscount: '0',
+          allDisRemark: '',
           totalPrice:'',
           type: '',    
-          contact1:'',
-          contact2:''
+          contactName:'',
+          contactPhone:'',
+          remark:'',
         },
         conForm: {   
           name:'',
@@ -177,7 +181,6 @@ export default {
           lastName:'',
           passport:''
         },
-        remark:'',
         rules: {
           resource: [{ required: true, message: '请选择订单来源', trigger: 'change' }],
           totalPrice: [{ required: true, message: '价格不能为空'}],
@@ -197,8 +200,8 @@ export default {
             { required: true, message: '请输入数量', trigger: 'blur' },
             { pattern: /^[+]{0,1}(\d+)$/, message: '数量必须为数字值'}],
           type: [{ required: true, message: '请选择下单方式', trigger: 'change' }],
-          contact1: [{ required: true, message: '请输入联系人信息', trigger: 'blur' }],
-          contact2: [{ required: true, message: '请输入联系人信息', trigger: 'blur' }],
+          contactName: [{ required: true, message: '请输入联系人姓名', trigger: 'blur' }],
+          contactPhone: [{ required: true, message: '请输入联系人电话', trigger: 'blur' }],
           name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
           phone: [
             { required: true, message: '请输入手机号', trigger: 'blur' },
@@ -290,6 +293,7 @@ export default {
 </script>
 
 <style scoped>
+    *{font-size:14px}
     .main{border:1px solid #e6e6e6;overflow:hidden;width: 70%;min-width:900px;padding-bottom: 50px;margin-bottom: 120px}
     .order-title{overflow: hidden}
     .order-title h2{font-size: 17px;font-weight: normal;float: left;margin:25px 30px}
@@ -299,7 +303,8 @@ export default {
     .demo-ruleForm{margin-left: 10px;}
     .fl{float: left}
     .cb{clear: both}
-    .numw{width: 125px;text-align: center;margin:0 15px;}
+    .numw{width: 150px;text-align: center;margin:0 15px}
+    .cost-remark{width: 300px;text-align: center;margin:0 15px}
     .radiomar{margin:12px 13px}
     .ml13{margin-left: 13px}
     .tourist{margin-left: 13px;float: left;width:85%}
