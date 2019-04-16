@@ -78,7 +78,7 @@
 
     <div style="border: 1px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 50px; width: 74%" >
     <div class="button_select">
-      <!--<el-button @click=handDb plain :disabled="reable">编辑</el-button>-->
+      <el-button @click=handDb plain :disabled="reable">编辑</el-button>
       <el-button plain :disabled="reable">复制</el-button>
       <el-button plain :disabled="reable">导出行程</el-button>
       <el-button plain :disabled="reable">退改</el-button>
