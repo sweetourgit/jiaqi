@@ -133,8 +133,30 @@
                   value: '订单管理',
                   router:'/searchOrder/orderList'
                 }
-              ]
-            }
+              ],
+            },
+          {
+            name: '财务管理',
+            img: 'order.png',
+            items: [
+              {
+                value: '无收入借款管理',
+                router:'/loanManagement'
+              },
+              {
+                value: '预付款管理',
+                router:'/advancePayment'
+              },
+              {
+                value: '报销管理',
+                router:'/reimburseManagement'
+              },
+              {
+                value: '欠款管理',
+                router:'/arrearsManagement'
+              }
+            ],
+          }
         ],
         isRouter:true,
         mouseActive:0,

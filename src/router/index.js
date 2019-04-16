@@ -33,6 +33,10 @@ import proList from '@/page/contentInfo/proList/proList'
 import searchOrder from '@/page/orderManagement/orderList/searchOrder'
 import orderList from '@/page/orderManagement/orderList/children/orderList'
 import orderDetail from '@/page/orderManagement/orderList/children/orderDetail'
+import loanManagement from '@/page/Finance/loanManagement/loanManagement'
+import advancePayment from '@/page/Finance/advancePayment/advancePayment'
+import reimburseManagement from '@/page/Finance/reimburseManagement/reimburseManagement'
+import arrearsManagement from '@/page/Finance/arrearsManagement/arrearsManagement'
 
 Vue.use(Router);
 
@@ -272,7 +276,40 @@ export default new Router({
       meta: {
         keepAlive: true,
         auth:true}
-    },{
+    },
+    {
+      path: '/loanManagement',
+      component: loanManagement,
+      name: '无收入借款管理',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },
+    {
+      path: '/advancePayment',
+      component: advancePayment,
+      name: '预付款管理',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },
+    {
+      path: '/reimburseManagement',
+      component: reimburseManagement,
+      name: '报销管理',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },
+    {
+      path: '/arrearsManagement',
+      component: arrearsManagement,
+      name: '欠款管理',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },
+    {
       path: '*',
       redirect:'/userList'
     }
