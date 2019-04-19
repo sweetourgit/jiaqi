@@ -278,9 +278,9 @@ import Permission from '@/page/account/userList/addUser/permission'
             { required: true,validator: checkPhone,trigger: 'blur' }
 
           ],
-          name: [
+         /* name: [
             {  required: true, validator:checkName, trigger: 'blur' }
-          ],
+          ],*/
           mail: [
             {  required: true, validator:checkMail, trigger: 'blur' }
           ],
