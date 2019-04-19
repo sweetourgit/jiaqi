@@ -325,51 +325,70 @@
         <!--添加报销弹窗-->
         <el-dialog
           width="60%"
-          title="选择报销的人"
+          title="添加报销"
           :visible.sync="dialogFormVisible3"
           append-to-body>
-          <div class="indialog">
-            <div class="indialog_search">
-              <span class="search_style">团期单号：</span> <el-input v-model="planNum" placeholder="请输入内容" class="search_input"></el-input>
-              <span class="search_style">产品名称：</span> <el-input v-model="planName" placeholder="请输入内容" class="search_input"></el-input>
-              <span class="search_style">出行日期：</span> <el-input v-model="planTime" placeholder="请输入内容" style="float: left; width: 100px"></el-input>
-              <span class="search__">—</span> <el-input v-model="planTime1" placeholder="请输入内容" style="float: left; width: 100px"></el-input>
-              <el-button type="primary" size="mini" round style="margin-top: 5px; margin-left: 10px">重置</el-button>
-            </div>
-            <el-table
-              :data="planData"
-              border
-              style="width: 100%; margin-top: 30px">
-              <el-table-column
-                prop="id"
-                label="团期计划ID"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="name"
-                label="产品名称"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="address"
-                label="目的地"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="time"
-                label="出行日期"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="ornize"
-                label="部门"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="proer"
-                label="产品录入人">
-              </el-table-column>
-            </el-table>
+          <el-table
+            :data="joinData1"
+            border
+            style="width: 100%; margin-top: 30px">
+            <el-table-column
+              prop="id"
+              label="关联单号"
+              width="80"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="type"
+              label="类型"
+              width="70"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="gys"
+              label="供应商"
+              width="60"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="bm"
+              label="部门"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="accpeter"
+              label="申请人"
+              width="80"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="time"
+              label="发起日期">
+            </el-table-column>
+            <el-table-column
+              prop="content"
+              label="摘要">
+            </el-table-column>
+            <el-table-column
+              prop="count"
+              label="金额"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              prop="wcount"
+              label="未报销金额">
+            </el-table-column>
+            <el-table-column
+              prop="bcount"
+              label="报销金额">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.bcount" style="width:100px;"></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div slot="footer" class="dialog-footer" >
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary"  @click="text('joinData1')">确 定</el-button>
           </div>
         </el-dialog>
         <!--添加报销弹窗end-->
@@ -566,6 +585,29 @@
             wcount: '17800.00',
             bcount: '17800.00',
           }],
+          joinData1: [{
+            id: '1',
+            type: '地接',
+            gys: '国旅',
+            bm: '辽宁大运通-北美部',
+            accpeter: '阳阳',
+            time: '2019-01-09 09:37',
+            content: '',
+            count: '17800.00',
+            wcount: '17800.00',
+            bcount: '',
+          },{
+            id: '1',
+            type: '地接',
+            gys: '国旅',
+            bm: '辽宁大运通-北美部',
+            accpeter: '阳阳',
+            time: '2019-01-09 09:37',
+            content: '',
+            count: '17800.00',
+            wcount: '17800.00',
+            bcount: '',
+          }],
 
           //文件上传列表
           fileList: [{
@@ -596,6 +638,9 @@
               return false;
             }
           });
+        },
+        text(formName){
+          console.log(this.joinData1)
         },
         // 报销弹窗
         dialogchange(){
