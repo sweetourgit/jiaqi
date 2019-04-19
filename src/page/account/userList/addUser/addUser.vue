@@ -274,10 +274,10 @@ import Permission from '@/page/account/userList/addUser/permission'
           }],
         },
         rules: {
-           phone: [
+          /* phone: [
             { required: true,validator: checkPhone,trigger: 'blur' }
 
-          ],
+          ],*/
          /* name: [
             {  required: true, validator:checkName, trigger: 'blur' }
           ],*/
