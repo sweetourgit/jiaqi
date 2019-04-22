@@ -7,8 +7,7 @@ import '../static/UE/ueditor.config.js'
 import '../static/UE/ueditor.all.min.js'
 import '../static/UE/lang/zh-cn/zh-cn.js'
 import '../static/UE/ueditor.parse.min.js'
-import "../dist/static/z-tree/jquery.ztree.core.js";
-import "../dist/static/z-tree/jquery.ztree.excheck.js";
+
 
 // element-ui
 import ElementUI from 'element-ui'
