@@ -676,6 +676,8 @@ import Permission from '@/page/account/userList/addUser/permission'
           console.log(this.value1.split("-")[1])
           console.log(this.value2.split("-")[1])
           console.log(this.value3.split("-")[1])
+          console.log(this.value4.split("-")[1])
+          console.log(this.value4)
             var arr =  Object.values(this.selectedOptions)
             var strb = arr.join("-"); //"aa:bb:cc"
             var wei =this.value8
