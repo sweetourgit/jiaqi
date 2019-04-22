@@ -17,7 +17,7 @@
               </div>
               <div class="reform">
                 <el-button type="primary" plain @click="dialogchange">申请报销</el-button>
-                <el-button type="primary" plain>查看</el-button>
+                <el-button type="primary" @click="dialogFind" plain>查看</el-button>
               </div>
             </div>
             <div class="table_style">
@@ -96,132 +96,172 @@
         </el-tab-pane>
         <!--报销end-->
         <!--报销弹窗-->
-        <el-dialog title="报销申请"  :visible.sync="dialogFormVisible" width=70% :show-close="false">
+          <el-dialog title="报销申请"  :visible.sync="dialogFormVisible" width=70% :show-close="false">
 
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
 
-            <el-form-item label="活动名称" prop="name">
-              <div class="reimbursementer">
-                <div style="margin-left: 5px;float: left"
-                     v-for="(val, index) in ruleForm.name"
-                >
-                  <el-tag type="info">{{val.tt}}</el-tag>
-                  <el-tag type="info">{{val.peo}}</el-tag>
+              <el-form-item label="报销人" prop="name">
+                <div class="reimbursementer">
+                  <div style="margin-left: 5px;float: left"
+                       v-for="(val, index) in ruleForm.name"
+                  >
+                    <el-tag type="info">{{val.tt}}</el-tag>
+                    <el-tag type="info">{{val.peo}}</el-tag>
 
+                  </div>
                 </div>
-              </div>
-              <el-button type="info" @click="adddialog">选择</el-button>
-            </el-form-item>
-            <!--多报销-->
-            <div>
-              <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
-                <el-tab-pane
-                  :key="item.name"
-                  v-for="(item, index) in editableTabs"
-                  :label="item.title"
-                  :name="item.name"
-                >
-                  <el-form-item label="团期计划" prop="plan">
-                    <el-input v-model="ruleForm.plan.planId" placeholder="请输入或者选择团期计划" style="width: 240px;" ></el-input>
-                    <el-input v-model="ruleForm.plan.planName" placeholder="请输入或者选择团期计划" style="width: 240px;" ></el-input>
-                    <el-button  size="mini" @click="planDialog">选择</el-button>
-                  </el-form-item>
-                  <el-form-item label="报销金额" prop="monkey">
-                    <el-input v-model="ruleForm.monkey.type" placeholder="请输入或者选择报销类型" style="width: 240px;" ></el-input>
-                    <el-input v-model="ruleForm.monkey.count" placeholder="请输入或者选择报销金额" style="width: 240px;" ></el-input>
-                  </el-form-item>
-                  <el-form-item label="摘要" prop="contents">
-                    <el-input v-model="ruleForm.content" placeholder="请输入或者选择报销类型" style="width: 480px;" ></el-input>
-                  </el-form-item>
-                  <el-form-item label="附件" >
-                    <el-upload
-                      class="upload-demo"
-                      action="https://jsonplaceholder.typicode.com/posts/"
-                      :on-change="handleChange"
-                      :file-list="fileList">
-                      <el-button size="small" type="primary">点击上传</el-button>
-                      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                    </el-upload>
-                  </el-form-item>
-                  <div class="re_style">
-                    <el-radio v-model="radio" label="1">关联单据</el-radio>
-                    <el-radio v-model="radio" label="2">手添报销单据</el-radio>
-                  </div>
-                  <div class="re_style" style="margin-top: 20px">
-                    <el-button @click="addbx">增加</el-button>
-                    <el-button>修改</el-button>
-                    <el-button type="danger">删除</el-button>
-                  </div>
-                  <div class="re_style">
+                <el-button type="info"  v-if="this.find==0" @click="adddialog">选择</el-button>
+              </el-form-item>
+              <!--多报销-->
+              <div>
+                <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" style="border: 1px solid #E4E7ED">
+                  <el-tab-pane
+                    :key="item.name"
+                    v-for="(item, index) in editableTabs"
+                    :label="item.title"
+                    :name="item.name"
+                  >
+                    <el-form-item label="团期计划" prop="plan">
+                      <el-input v-model="ruleForm.plan.planId" placeholder="请输入或者选择团期计划" style="width: 240px;"  :disabled="change"></el-input>
+                      <el-input v-model="ruleForm.plan.planName" placeholder="请输入或者选择团期计划" style="width: 240px;"   :disabled="change"></el-input>
+                      <el-button  size="mini" @click="planDialog" v-if="find==0">选择</el-button>
+                    </el-form-item>
+                    <el-form-item label="报销金额" prop="monkey">
+                      <el-input v-model="ruleForm.monkey.type" placeholder="请输入或者选择报销类型" style="width: 240px;" :disabled="change"></el-input>
+                      <el-input v-model="ruleForm.monkey.count" placeholder="请输入或者选择报销金额" style="width: 240px;" :disabled="change"></el-input>
+                    </el-form-item>
+                    <el-form-item label="摘要" prop="contents">
+                      <el-input v-model="ruleForm.content" placeholder="请输入或者选择报销类型" style="width: 480px;" :disabled="change" ></el-input>
+                    </el-form-item>
+                    <el-form-item label="附件" >
+                      <el-upload
+                        class="upload-demo"
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :on-change="handleChange"
+                        :file-list="fileList">
+                        <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
+                      </el-upload>
+                    </el-form-item>
+                    <div class="re_style">
+                      <el-radio v-model="radio" label="1">关联单据</el-radio>
+                      <el-radio v-model="radio" label="2">手添报销单据</el-radio>
+                    </div>
+                    <div v-if="radio==1">
+                      <div class="re_style" style="margin-top: 20px">
+                        <el-button @click="addbx" v-if="find==0">增加</el-button>
+                        <el-button @click="addbx" v-if="find==0">修改</el-button>
+                        <el-button type="danger" v-if="find==0">删除</el-button>
+                      </div>
+                      <div class="re_style">
+                      <el-table
+                        :data="joinData"
+                        border
+                        style="width: 100%; margin-top: 30px">
+                        <el-table-column
+                          prop="id"
+                          label="关联单号"
+                          width="80"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                          prop="type"
+                          label="类型"
+                          width="90"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                          prop="gys"
+                          label="供应商"
+                          width="100"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                          prop="bm"
+                          label="部门"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                          prop="accpeter"
+                          label="申请人"
+                          width="80"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                          prop="time"
+                          label="发起日期">
+                        </el-table-column>
+                        <el-table-column
+                          prop="content"
+                          label="摘要">
+                        </el-table-column>
+                        <el-table-column
+                          prop="count"
+                          label="金额">
+                        </el-table-column>
+                        <el-table-column
+                          prop="wcount"
+                          label="未报销金额">
+                        </el-table-column>
+                        <el-table-column
+                          prop="bcount"
+                          label="报销金额">
+                        </el-table-column>
+                      </el-table>
+                      </div>
+                      <div class="re_style" style="margin-top: 30px; margin-bottom: 30px">报销金额：100.00</div>
+                    </div>
+                    <div v-if="radio==2">
+                      <div class="re_style" style="margin-top: 20px" >
+                        <el-input  :disabled="change" v-model="ruleForm.monkey.type" placeholder="请输入或者选择报销类型" style="width: 240px;" ></el-input>
+                        <el-input  :disabled="change" v-model="ruleForm.monkey.count" placeholder="请输入或者选择报销金额" style="width: 240px;" ></el-input>
+                        <el-button type="primary" @click="addDomain" v-if="find==0">添加</el-button>
+
+                      </div>
+                      <div v-for="(domain, index) in domains" class="re_style" style="margin-top: 20px" >
+                        <el-input  :disabled="change" v-model="domain.type" placeholder="请输入或者选择报销类型" style="width: 240px;" ></el-input>
+                        <el-input :disabled="change"  v-model="domain.money" placeholder="请输入或者选择报销金额" style="width: 240px;" ></el-input>
+                        <el-button type="danger" @click="removeDomain(domain)" v-if="find==0" >删除</el-button>
+                      </div>
+                      <div class="re_style" style="margin-top: 30px; margin-bottom: 30px">报销金额：200.00</div>
+                    </div>
+                  </el-tab-pane>
+                </el-tabs>
+
+                <div class="re_style" style="margin-top: 20px">
                   <el-table
-                    :data="joinData"
+                    :data="reimData"
                     border
-                    style="width: 100%; margin-top: 30px">
+                    style="width: 100%">
                     <el-table-column
-                      prop="id"
-                      label="关联单号"
-                      width="80"
-                    >
+                      prop="reier"
+                      label="审批人"
+                      width="180">
                     </el-table-column>
                     <el-table-column
-                      prop="type"
-                      label="类型"
-                      width="90"
-                    >
+                      prop="reisult"
+                      label="审批结果"
+                      width="180">
                     </el-table-column>
                     <el-table-column
-                      prop="gys"
-                      label="供应商"
-                      width="100"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                      prop="bm"
-                      label="部门"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                      prop="accpeter"
-                      label="申请人"
-                      width="80"
-                    >
+                      prop="info"
+                      label="审批意见">
                     </el-table-column>
                     <el-table-column
                       prop="time"
-                      label="发起日期">
-                    </el-table-column>
-                    <el-table-column
-                      prop="content"
-                      label="摘要">
-                    </el-table-column>
-                    <el-table-column
-                      prop="count"
-                      label="金额">
-                    </el-table-column>
-                    <el-table-column
-                      prop="wcount"
-                      label="未报销金额">
-                    </el-table-column>
-                    <el-table-column
-                      prop="bcount"
-                      label="报销金额">
+                      label="审批时间">
                     </el-table-column>
                   </el-table>
-                  </div>
-
-                </el-tab-pane>
-              </el-tabs>
-            </div>
-            <!--多报销end-->
-          </el-form>
-            <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary"  @click="submitForm('ruleForm')">确 定</el-button>
-            </div>
-
-
-
-        </el-dialog>
+                </div>
+              </div>
+              <!--多报销end-->
+            </el-form>
+              <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button v-if="this.find == 0" type="primary"  @click="submitForm('ruleForm')">确 定</el-button>
+                <el-button  v-if="this.find == 1"  type="danger" @click="chanelSubmit('ruleForm')" plain>撤销申请</el-button>
+                <div v-if="this.find == 1" class="sh_style" >审核中</div>
+              </div>
+          </el-dialog>
         <!--报销弹窗end-->
         <!--报销人弹窗-->
         <el-dialog
@@ -430,6 +470,9 @@
         };
 
         return {
+          change:false,
+          //分辨查看
+          find:0,
           // 单选
           radio: '1',
           //团期计划弹窗
@@ -445,6 +488,11 @@
           planName:'',
           planTime:'',
           planTime1:'',
+          //手添报销
+          domains: [{
+            type: '地接',
+            money: '9000.00'
+          }],
           //报销表单
           ruleForm: {
             name: [
@@ -458,8 +506,8 @@
               planName: ''
             },
             monkey: {
-              type: '',
-              count: ''
+              type: '小费',
+              count: '1000.00'
             },
             content:''
           },
@@ -478,7 +526,14 @@
               { required: true, message: '请输入摘要信息', trigger: 'blur' },
             ],
           },
-          formLabelWidth: '120px',
+          //审批意见
+          reimData: [{
+            reier: '',
+            reisult: '',
+            info: '',
+            time: '',
+          }],
+            formLabelWidth: '120px',
           currentPage4:4,
           activeName: 'first',
           number: '',
@@ -628,6 +683,20 @@
         };
       },
       methods: {
+          //删除
+        removeDomain(item) {
+          var index = this.domains.indexOf(item)
+          if (index !== -1) {
+            this.domains.splice(index, 1)
+          }
+        },
+        //添加
+        addDomain() {
+          this.domains.push({
+            type: '',
+            money: ''
+          });
+        },
         // 提交
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
@@ -639,11 +708,37 @@
             }
           });
         },
+        //撤销申请
+        chanelSubmit(){
+          this.$confirm('是否撤销该条借款, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '撤销成功!'
+            });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消撤销'
+            });
+          });
+        },
         text(formName){
           console.log(this.joinData1)
         },
         // 报销弹窗
         dialogchange(){
+          this.find = 0;
+          this.change = false
+          this.dialogFormVisible = true;
+        },
+        //报销弹窗查看
+        dialogFind(){
+          this.find = 1;
+          this.change = true
           this.dialogFormVisible = true;
         },
         //添加报销
@@ -765,6 +860,16 @@
   }
   .re_style{
     margin-left: 65px;
+  }
+  .sh_style{
+    background: rgb(234, 234, 234);
+    position: absolute;
+    width: 66px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    top: -4px;
+    left: -1019px;
   }
 
 </style>
