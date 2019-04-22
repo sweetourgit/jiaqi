@@ -70,10 +70,10 @@
                 <el-button @click="resetForm('ruleForm')">取消</el-button>
               </el-form-item>
                 <!--弹出框> <-->
-                  <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="500px">
-                    <div class="qqqt">
+                  <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="500px" show-close>
+                    <!--<div class="qqqt">
                      <el-form ref="form"  label-width="110px">
-                       <!--<el-form-item label="部门:" class="form-la">
+                       &lt;!&ndash;<el-form-item label="部门:" class="form-la">
                          <el-cascader
                             placeholder="试试搜索：指南"
                             @active-item-change="handleItemChange"
@@ -82,9 +82,9 @@
                             filterable
                             v-model="selectedOptions"
                           ></el-cascader>
-                       </el-form-item>-->
+                       </el-form-item>&ndash;&gt;
 
-                       <!--plan b begin-->
+                       &lt;!&ndash;plan b begin&ndash;&gt;
                        <el-form-item label="组织:" class="form-la">
                          <el-select v-model="value" placeholder="请选择" @change="HandChange()">
                            <el-option
@@ -139,7 +139,7 @@
                            </el-option>
                          </el-select>
                        </el-form-item>
-                       <!--plan b end-->
+                       &lt;!&ndash;plan b end&ndash;&gt;
                        <el-form-item label="职位:" class="form-la">
                          <el-select v-model="value8" filterable placeholder="请选择">
                            <el-option
@@ -156,6 +156,15 @@
                         <div slot="footer" class="dialog-footer">
                         <el-button type="primary" @click="addmaster">确 定</el-button>
                       </div>
+                    </div>-->
+                    <div class="left">
+                      <div class="hh">
+                        <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey" highlight-current></el-tree>
+                      </div>
+                    </div>
+                    <div style="position: absolute;top: 10px;right: 10px">
+                      <el-button size="mini" @click="dialogFormVisible = false" type="primary">取消</el-button>
+                      <el-button size="mini" @click="addmaster" type="primary">确定</el-button>
                     </div>
                 </el-dialog>
                 <!--弹出框> <-->
@@ -222,6 +231,26 @@ import Permission from '@/page/account/userList/addUser/permission'
 
 
       return {
+        fID:'',
+        dname:'',
+        addInput: {
+          name: "",
+          topDepartment: "",
+          radio: "",
+          lastStage: "2",
+          departmentCode: "",
+          sort: "",
+          phone: "",
+          fax: "",
+          note: "",
+          ParentID: ""
+        },
+        treeKey: [],
+        isexpand: false,
+        props1: {
+          label: "label",
+          isLeaf: "leaf"
+        },
         userState:'',
         options: [],
         value: '',
@@ -248,9 +277,11 @@ import Permission from '@/page/account/userList/addUser/permission'
         hidval:"-1",
         selectedOptions: [],
         orilist: '甜程旅行网-财务部-经理',
+        ppid:'',
         ruleForm1: {
           domains: [{
-            value: '请点击添加'
+            value: '请点击添加',
+            id:''
           }],
         },
          bumen: [],
@@ -296,209 +327,197 @@ import Permission from '@/page/account/userList/addUser/permission'
 
         },
 
-       /* casc: [{
-          value: '甜程旅行网',
-          label: '甜程旅行网',
-          children: [{
-            value: '销售部',
-            label: '销售部',
-            children: [{
-              value: '销售',
-              label: '销售',
-              children: [{
-                value: '销售1',
-                label: '销售1',
-              }]
-            }, {
-              value: 'fankui',
-              label: '反馈'
-            }, {
-              value: 'xiaolv',
-              label: '效率'
-            }, {
-              value: 'kekong',
-              label: '可控'
-            }]
-          }, {
-            value: 'daohang',
-            label: '导航',
-            children: [{
-              value: 'cexiangdaohang',
-              label: '侧向导航'
-            }, {
-              value: 'dingbudaohang',
-              label: '顶部导航'
-            }]
-          }]
-        }, {
-          value: 'zujian',
-          label: '组件',
-          children: [{
-            value: 'basic',
-            label: 'Basic',
-            children: [{
-              value: 'layout',
-              label: 'Layout 布局'
-            }, {
-              value: 'color',
-              label: 'Color 色彩'
-            }, {
-              value: 'typography',
-              label: 'Typography 字体'
-            }, {
-              value: 'icon',
-              label: 'Icon 图标'
-            }, {
-              value: 'button',
-              label: 'Button 按钮'
-            }]
-          }, {
-            value: 'form',
-            label: 'Form',
-            children: [{
-              value: 'radio',
-              label: 'Radio 单选框'
-            }, {
-              value: 'checkbox',
-              label: 'Checkbox 多选框'
-            }, {
-              value: 'input',
-              label: 'Input 输入框'
-            }, {
-              value: 'input-number',
-              label: 'InputNumber 计数器'
-            }, {
-              value: 'select',
-              label: 'Select 选择器'
-            }, {
-              value: 'cascader',
-              label: 'Cascader 级联选择器'
-            }, {
-              value: 'switch',
-              label: 'Switch 开关'
-            }, {
-              value: 'slider',
-              label: 'Slider 滑块'
-            }, {
-              value: 'time-picker',
-              label: 'TimePicker 时间选择器'
-            }, {
-              value: 'date-picker',
-              label: 'DatePicker 日期选择器'
-            }, {
-              value: 'datetime-picker',
-              label: 'DateTimePicker 日期时间选择器'
-            }, {
-              value: 'upload',
-              label: 'Upload 上传'
-            }, {
-              value: 'rate',
-              label: 'Rate 评分'
-            }, {
-              value: 'form',
-              label: 'Form 表单'
-            }]
-          }, {
-            value: 'data',
-            label: 'Data',
-            children: [{
-              value: 'table',
-              label: 'Table 表格'
-            }, {
-              value: 'tag',
-              label: 'Tag 标签'
-            }, {
-              value: 'progress',
-              label: 'Progress 进度条'
-            }, {
-              value: 'tree',
-              label: 'Tree 树形控件'
-            }, {
-              value: 'pagination',
-              label: 'Pagination 分页'
-            }, {
-              value: 'badge',
-              label: 'Badge 标记'
-            }]
-          }, {
-            value: 'notice',
-            label: 'Notice',
-            children: [{
-              value: 'alert',
-              label: 'Alert 警告'
-            }, {
-              value: 'loading',
-              label: 'Loading 加载'
-            }, {
-              value: 'message',
-              label: 'Message 消息提示'
-            }, {
-              value: 'message-box',
-              label: 'MessageBox 弹框'
-            }, {
-              value: 'notification',
-              label: 'Notification 通知'
-            }]
-          }, {
-            value: 'navigation',
-            label: 'Navigation',
-            children: [{
-              value: 'menu',
-              label: 'NavMenu 导航菜单'
-            }, {
-              value: 'tabs',
-              label: 'Tabs 标签页'
-            }, {
-              value: 'breadcrumb',
-              label: 'Breadcrumb 面包屑'
-            }, {
-              value: 'dropdown',
-              label: 'Dropdown 下拉菜单'
-            }, {
-              value: 'steps',
-              label: 'Steps 步骤条'
-            }]
-          }, {
-            value: 'others',
-            label: 'Others',
-            children: [{
-              value: 'dialog',
-              label: 'Dialog 对话框'
-            }, {
-              value: 'tooltip',
-              label: 'Tooltip 文字提示'
-            }, {
-              value: 'popover',
-              label: 'Popover 弹出框'
-            }, {
-              value: 'card',
-              label: 'Card 卡片'
-            }, {
-              value: 'carousel',
-              label: 'Carousel 走马灯'
-            }, {
-              value: 'collapse',
-              label: 'Collapse 折叠面板'
-            }]
-          }]
-        }, {
-          value: '辽宁大运通',
-          label: '辽宁大运通',
-          children: [{
-            value: '财务部',
-            label: '财务部'
-          }, {
-            value: 'sketch',
-            label: 'Sketch Templates'
-          }, {
-            value: 'jiaohu',
-            label: '组件交互文档'
-          }]
-        }]*/
       }
 
     },
       methods: {
+        treeDblclick(a) {
+          this.treeKey = [];
+          if (this.dbSave.isLeaf == 2 || this.dbSave.isLeaf == 0) {
+            this.treeKey.push(this.dbSave.id);
+          }
+          this.dbSave = ''
+        },
+        getUser(key, label, id, isLeaf, resolve) {
+          this.data1 = [];
+          let _this = this;
+          this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
+            object: {
+              ParentID: id
+            }
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(response => {
+            for (let i = 0; i < response.data.objects.length; i++) {
+              if (response.data.objects[i].isDeleted !== 1) {
+                if (response.data.objects[i].isLeaf == 1) {
+                  _this.data1.push({
+                    label: response.data.objects[i].orgName,
+                    id: response.data.objects[i].id,
+                    key: i,
+                    cities: [],
+                    isLeaf: response.data.objects[i].isLeaf,
+                    leaf: true
+                  });
+                } else if (response.data.objects[i].isLeaf == 2) {
+                  _this.data1.push({
+                    label: response.data.objects[i].orgName,
+                    id: response.data.objects[i].id,
+                    key: i,
+                    cities: [],
+                    isLeaf: response.data.objects[i].isLeaf,
+                    leaf: false
+                  });
+                }
+              }
+            }
+            setTimeout(() => {
+              let data = _this.data1;
+              resolve(data);
+            }, 200);
+          })
+            .catch(function(error) {
+              console.log(error);
+            });
+        },
+        // 单击tree节点
+        treeClick(a, b, c) {
+
+          console.log(a.id)
+          console.log(a.label)
+          this.fID = a.id
+          this.dname = a.label
+          this.data = [];
+          this.org = a.id;
+          this.tableData = [];
+          this.tableList = [];
+          this.addInput.ParentID = a.id;
+          this.addInput.topDepartment = a.label;
+          this.dbSave = a;
+          var _this = this;
+          //下级部门
+          this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
+            object: {
+              ParentID: a.id
+            }
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(response => {
+            for (let i = 0; i < response.data.objects.length; i++) {
+              if (response.data.objects[i].isDeleted !== 1) {
+                _this.tableData.push({
+                  label: response.data.objects[i].orgName,
+                  id: response.data.objects[i].id,
+                  key: i,
+                  value: response.data.objects[i].id
+                });
+              }
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+          //部门人员
+          this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlistwithorg", {
+            id:a.id
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(res => {
+            for(let i = 0;i<res.data.objects.length;i++){
+              if(res.data.objects[i].sex == 1){
+                res.data.objects[i].sex = '男'
+              }else{
+                res.data.objects[i].sex = '女'
+              }
+              _this.tableList.push({
+                id:res.data.objects[i].id,
+                name:res.data.objects[i].name,
+                phone:res.data.objects[i].mobile,
+                sex:res.data.objects[i].sex
+              })
+            }
+          }).catch(function(error){
+            console.log(error)
+          })
+        },
+        renderContent(h, { node, data, store }) {
+          if (data.isLeaf == 1) {
+            return (
+              <span>
+              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/257785656210656304.png"/>
+              <span>{node.label}</span>
+            </span>
+          );
+          } else if (data.isLeaf == 2 || data.isLeaf == 0) {
+            return (
+              <span>
+              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/ewqdewq.png"/>
+              <span>{node.label}</span>
+            </span>
+          );
+          }
+        },
+        //树形控件父级数据加载
+        loadNode(node, resolve) {
+          this.node = node.data
+          this.removes = resolve
+          this.data = [];
+          let _this = this;
+          this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
+            object: {
+              ParentID: -1
+            }
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(response => {
+            for (let i = 0; i < response.data.objects.length; i++) {
+              if (node.level === 0) {
+                _this.options.push({
+                  label: response.data.objects[i].orgName,
+                  value: response.data.objects[i].id + "-" + response.data.objects[i].orgName
+                });
+                resolve([
+                  {
+                    label: response.data.objects[i].orgName,
+                    key: i,
+                    id: response.data.objects[i].id,
+                    isLeaf: response.data.objects[i].isLeaf
+                  }
+                ]);
+              }
+            }
+            let num = Array();
+            num.push({
+              id: response.data.objects[0].id,
+              isLeaf: response.data.objects[0].isLeaf,
+              key: 0,
+              label: response.data.objects[0].orgName
+            });
+            if (this.flag) {
+              _this.treeClick(num[0]);
+              this.flag = false;
+            }
+            this.treeKey.push(204);
+          }).catch(function(error) {
+            console.log(error);
+          });
+          if (node.level >= 1) {
+            this.getUser(
+              node.data.key,
+              node.data.label,
+              node.data.id,
+              node.data.isLeaf,
+              resolve
+            );
+          }
+        },
         HandChange () {
           this.arr = this.value.split('-')
           this.options1 = []
@@ -538,127 +557,6 @@ import Permission from '@/page/account/userList/addUser/permission'
             .catch(function (obj) {
             })
         },
-        HandChange1: function () {
-          this.arr1 = this.value1.split('-')
-          this.options2 = []
-          this.value2 = ''
-          this.value3 = ''
-          var that = this
-          // 获取顶级，第一级城市beg
-          this.$http.post(
-            this.GLOBAL.serverSrc + "/org/api/deptlist",
-            {
-              'order': 'string',
-              'object': {
-                'isDeleted': 0,
-                'parentID': this.arr1[0]
-              }
-            },{
-              headers:{
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-              }
-            }
-          )
-            .then(function (obj) {
-              if(obj.data.objects.length ==0){
-                that.bumen2 = false
-                that.bumen1 = false
-              }
-              if (obj.data.objects.length !== 0) {
-                that.bumen2 = true
-              }
-              // console.log(obj)
-              var i = ''
-              for (i = 0; i < obj.data.objects.length; i++) {
-                that.options2.push({
-                  label: obj.data.objects[i].orgName,
-                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
-                })
-              }
-            })
-            .catch(function (obj) {
-            })
-          // 获取顶级，第一级城市end
-        },
-        HandChange2 () {
-          this.arr2 = this.value2.split('-')
-          console.log(this.value2)
-          this.options3 = []
-          this.value3 = ''
-          console.log(this.arr2[0])
-          var that = this
-          // 获取顶级，第一级城市beg
-          this.$http.post(
-            this.GLOBAL.serverSrc + "/org/api/deptlist",
-            {
-              'order': 'string',
-              'object': {
-                'isDeleted': 0,
-                'parentID': this.arr2[0]
-              }
-            },{
-              headers:{
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-              }
-            }
-          )
-            .then(function (obj) {
-              if(obj.data.objects.length ==0){
-                that.bumen2 = true
-                that.bumen1 = false
-              }
-              if (obj.data.objects.length !== 0) {
-                that.bumen1 = true
-              }
-              var i = ''
-              for (i = 0; i < obj.data.objects.length; i++) {
-                that.options3.push({
-                  label: obj.data.objects[i].orgName,
-                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
-                })
-              }
-            })
-            .catch(function (obj) {
-            })
-          // 获取顶级，第一级城市end
-        },
-        HandChange3 () {
-          this.arr3 = this.value3.split('-')
-          this.options4 = []
-          this.value4 = ''
-          console.log(this.arr3[0])
-          var that = this
-          // 获取顶级，第一级城市beg
-          this.$http.post(
-            this.GLOBAL.serverSrc + "/org/api/deptlist",
-            {
-              'order': 'string',
-              'object': {
-                'isDeleted': 0,
-                'parentID': this.arr3[0]
-              }
-            },{
-              headers:{
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-              }
-            }
-          ).then(function (obj) {
-            if(obj.data.objects.length ==0){
-              that.bumen3 = false
-            }else{
-              that.bumen3 = true
-              var i = ''
-              for (i = 0; i < obj.data.objects.length; i++) {
-                that.options4.push({
-                  label: obj.data.objects[i].orgName,
-                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
-                })
-              }
-            }
-          })
-            .catch(function (obj) {
-            })
-        },
       /*----------*/
         changstatus(item){
           //默认的值
@@ -672,7 +570,7 @@ import Permission from '@/page/account/userList/addUser/permission'
         },
 
         addmaster() {
-          console.log(this.value.split("-")[1])
+        /*  console.log(this.value.split("-")[1])
           console.log(this.value1.split("-")[1])
           console.log(this.value2.split("-")[1])
           console.log(this.value3.split("-")[1])
@@ -680,12 +578,15 @@ import Permission from '@/page/account/userList/addUser/permission'
           console.log(this.value4)
             var arr =  Object.values(this.selectedOptions)
             var strb = arr.join("-"); //"aa:bb:cc"
-            var wei =this.value8
+            var wei =this.value8*/
             if(this.hidval== -1){
-                this.orilist = strb + '-' + wei
+                /*this.orilist = strb + '-' + wei*/
+              this.orilist = this.dname
+              this.ppid = this.fID
             }else{
-                this.ruleForm1.domains[this.hidval].value = strb + '-' + wei
-                this.hidval= -1
+                 this.ruleForm1.domains[this.hidval].value = this.dname
+                 this.ruleForm1.domains[this.hidval].id = this.fID
+                 this.hidval= -1
             }
 
 
@@ -821,6 +722,32 @@ import Permission from '@/page/account/userList/addUser/permission'
             }
           })
         },
+        bumen123(){
+          var that = this
+          this.$http.post(
+            /* "http://192.168.1.168:6001/org/api/userget",*/
+            this.GLOBAL.serverSrc + "/org/api/deptget",
+            {
+
+              id: that.ppid
+            },{
+              headers:{
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+              }
+            }
+          )
+            .then(function (obj) {
+
+              that.orilist = obj.data.object.orgName
+
+
+
+            })
+            .catch(function (obj) {
+
+
+            })
+        },
         submitForm(formName) {
           var that = this
           this.$refs[formName].validate((valid) => {
@@ -843,7 +770,8 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "tourGuide": this.ruleForm.trailid,
                     "sex": this.ruleForm.sex,
                     "userType": this.ruleForm.type,
-                    "userState":2
+                    "userState":2,
+                    "orgID": this.ppid,
                   },
                   "id": 0
                 },{
@@ -899,7 +827,8 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "tourGuide": this.ruleForm.trailid,
                     "sex": this.ruleForm.sex,
                     "userType": this.ruleForm.type,
-                    "userState":this.userState
+                    "userState":this.userState,
+                    "orgID": this.ppid,
                   },
                 },{
                   headers:{
@@ -950,6 +879,7 @@ import Permission from '@/page/account/userList/addUser/permission'
       }
     },
     created(){
+
       var that = this
       //获取职位
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/positionpage", {
@@ -977,34 +907,6 @@ import Permission from '@/page/account/userList/addUser/permission'
       });
 
 
-      // 获取顶级，第一级城市beg
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/org/api/deptlist",
-        {
-          'order': 'string',
-          'object': {
-            'isDeleted': 0,
-            'parentID': -1
-          }
-        },{
-          headers:{
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
-        }
-      )
-        .then(function (obj) {
-          var i = ''
-          for (i = 0; i < obj.data.objects.length; i++) {
-            that.options.push({
-              label: obj.data.objects[i].orgName,
-              value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
-            })
-          }
-        })
-        .catch(function (obj) {
-        })
-
-      console.log(this.$route.query.id)
       if(this.$route.query.id){
         this.buttonchange = true
         this.buttonsubmit = false
@@ -1035,12 +937,17 @@ import Permission from '@/page/account/userList/addUser/permission'
             that.ruleForm.type = String(obj.data.object.userType);
             that.ruleForm.passWord = obj.data.object.passWord
             that.userState = obj.data.object.userState
-            console.log(that.userState);
+            that.ppid = obj.data.object.orgID
             if(obj.data.object.userState == 2){
                 that.disable = true
             }else if(obj.data.object.userState == 3){
                 that.enable = true
             }
+            that.bumen123()
+
+
+
+
           })
           .catch(function (obj) {
 
@@ -1053,8 +960,8 @@ import Permission from '@/page/account/userList/addUser/permission'
       }
 
 
+    },
 
-    }
 
 }
 </script>
