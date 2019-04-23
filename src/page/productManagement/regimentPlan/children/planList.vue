@@ -2,11 +2,11 @@
   <div>
       <div class="demo-input-suffix">
          <span class="search-title">团号计划</span>
-         <el-input placeholder="输入团号" v-model="groupNo" class="group-no"></el-input>
+         <el-input placeholder="输入团号" v-model="groupCode" class="group-no"></el-input>
          <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
          <div class="date-line"></div>
          <el-date-picker v-model="endTime" type="date" placeholder="终止日期"></el-date-picker>
-         <el-button type="primary" icon="el-icon-search" class="search"></el-button>
+         <el-button type="primary" icon="el-icon-search" class="search" @click="teamQueryList(1,pageSize,groupCode)"></el-button>
      </div>
      <div class="line"></div>
      <div class="main">
@@ -53,8 +53,7 @@
       </div>
     </el-dialog>
     <!--成本弹窗-->
-    <el-dialog title="成本" :visible.sync="dialogCost" class="city_list" width="60%">
-        
+    <el-dialog title="成本" :visible.sync="dialogCost" class="city_list" width="60%">      
        <el-table :data="costList" ref="costTable" class="costTable" :header-cell-style="getCostClass" border :row-style="costrowClass" @selection-change="changeFunCost" @row-click="clickRowCost">
        <el-table-column  prop="id" label="" fixed type="selection"></el-table-column>
        <el-table-column  prop="serno" label="序号" min-width="50"></el-table-column>
@@ -84,7 +83,7 @@
 export default {
   data() {
     return {
-       groupNo:'',
+       groupCode:'',
        startTime: '',
        endTime: '',
        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
@@ -171,23 +170,24 @@ export default {
       handleSizeChange(val){
         this.pageSize = val;
         this.pageIndex = 1;
-        this.teamQueryList(1,val);
+        this.teamQueryList(1,val,this.groupCode);
       },
       handleCurrentChange(val){
-        this.teamQueryList(val,this.pageSize);
+        this.teamQueryList(val,this.pageSize,this.groupCode);
       },
       //计划list
-      teamQueryList(pageIndex=this.pageIndex,pageSize=this.pageSize){
+      teamQueryList(pageIndex=this.pageIndex,pageSize=this.pageSize,groupCode=this.groupCode){
         this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/page',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object":{            
-              "title": "斯里兰卡",
+              "groupCode": groupCode
              }
           }).then(res => {
+            this.teamqueryList=[];
+            this.total=res.data.total;
             if(res.data.isSuccess == true){
-               this.teamqueryList=[]=res.data.objects;
-               this.total=res.data.total;
+               this.teamqueryList=res.data.objects;              
             }
           }).catch(err => {
             console.log(err)
