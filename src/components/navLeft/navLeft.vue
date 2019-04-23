@@ -51,11 +51,7 @@
                 {
                   value: '角色模板',
                   router:'/role'
-                },
-               /* {
-                  value: '权限列表',
-                  router:'/perList'
-                }*/
+                }
               ]
             },
             {
@@ -131,7 +127,7 @@
               items: [
                 {
                   value: '订单管理',
-                  router:'/searchOrder/orderList'
+                  router:'/orderList'
                 }
               ],
             },
