@@ -174,9 +174,24 @@
                     </el-table-column>
                     <el-table-column prop="abstract" label="摘要" align="center">
                     </el-table-column>
-                    <el-table-column prop="approval" label="审批过程" align="center">
+                    <el-table-column label="审批过程" align="center">
+                      <template slot-scope="scope">
+                        <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
+                      </template>
                     </el-table-column>
                     <el-table-column prop="cancellationMoney" label="已核销金额" align="center">
+                    </el-table-column>
+                  </el-table>
+                </el-form-item>
+                <el-form-item label="" label-width="120px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible6">
+                  <el-table :data="tableData11" border style="width:55%" :header-cell-style="getRowClass2">
+                    <el-table-column prop="createTime" label="申请日期" align="center">
+                    </el-table-column>
+                    <el-table-column prop="user" label="申请人" align="center">
+                    </el-table-column>
+                    <el-table-column prop="status" label="状态" align="center">
+                    </el-table-column>
+                    <el-table-column prop="abstract" label="摘要" align="center">
                     </el-table-column>
                   </el-table>
                 </el-form-item>
@@ -201,9 +216,24 @@
                     </el-table-column>
                     <el-table-column prop="abstract" label="摘要" align="center">
                     </el-table-column>
-                    <el-table-column prop="approval" label="审批过程" align="center">
+                    <el-table-column label="审批过程" align="center">
+                      <template slot-scope="scope">
+                        <span style="color:blue;" v-on:click="advanceProcess(scope.row.id)">查看</span>
+                      </template>
                     </el-table-column>
                     <el-table-column prop="cancellationMoney" label="已核销金额" align="center">
+                    </el-table-column>
+                  </el-table>
+                </el-form-item>
+                <el-form-item label="" label-width="120px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible5">
+                  <el-table :data="tableData10" border style="width:55%" :header-cell-style="getRowClass2">
+                    <el-table-column prop="createTime" label="申请日期" align="center">
+                    </el-table-column>
+                    <el-table-column prop="user" label="申请人" align="center">
+                    </el-table-column>
+                    <el-table-column prop="status" label="状态" align="center">
+                    </el-table-column>
+                    <el-table-column prop="abstract" label="摘要" align="center">
                     </el-table-column>
                   </el-table>
                 </el-form-item>
@@ -770,9 +800,19 @@ export default {
         arrearsTime: '欠款日期',
         repaymentTime: '应还日期',
       }],
+      dialogVisible5: false,
+      dialogVisible6: false,
     };
   },
   methods: {
+    advanceProcess2(num) {
+      console.log(num)
+      this.dialogVisible6 = true
+    },
+    advanceProcess(num) {
+      console.log(num)
+      this.dialogVisible5 = true
+    },
     showInput2() {
       if (this.dynamicTags2.length < 1) {
         this.inputVisible2 = true;

@@ -179,9 +179,24 @@
                   </el-table-column>
                   <el-table-column prop="abstract" label="摘要" align="center">
                   </el-table-column>
-                  <el-table-column prop="approval" label="审批过程" align="center">
+                  <el-table-column label="审批过程" align="center">
+                    <template slot-scope="scope">
+                      <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
+                    </template>
                   </el-table-column>
                   <el-table-column prop="cancellationMoney" label="已核销金额" align="center">
+                  </el-table-column>
+                </el-table>
+              </el-form-item>
+              <el-form-item label="" label-width="120px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible6">
+                <el-table :data="tableData11" border style="width:55%" :header-cell-style="getRowClass2">
+                  <el-table-column prop="createTime" label="申请日期" align="center">
+                  </el-table-column>
+                  <el-table-column prop="user" label="申请人" align="center">
+                  </el-table-column>
+                  <el-table-column prop="status" label="状态" align="center">
+                  </el-table-column>
+                  <el-table-column prop="abstract" label="摘要" align="center">
                   </el-table-column>
                 </el-table>
               </el-form-item>
@@ -206,9 +221,24 @@
                   </el-table-column>
                   <el-table-column prop="abstract" label="摘要" align="center">
                   </el-table-column>
-                  <el-table-column prop="approval" label="审批过程" align="center">
+                  <el-table-column label="审批过程" align="center">
+                    <template slot-scope="scope">
+                      <span style="color:blue;" v-on:click="advanceProcess(scope.row.id)">查看</span>
+                    </template>
                   </el-table-column>
                   <el-table-column prop="cancellationMoney" label="已核销金额" align="center">
+                  </el-table-column>
+                </el-table>
+              </el-form-item>
+              <el-form-item label="" label-width="120px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible5">
+                <el-table :data="tableData10" border style="width:55%" :header-cell-style="getRowClass2">
+                  <el-table-column prop="createTime" label="申请日期" align="center">
+                  </el-table-column>
+                  <el-table-column prop="user" label="申请人" align="center">
+                  </el-table-column>
+                  <el-table-column prop="status" label="状态" align="center">
+                  </el-table-column>
+                  <el-table-column prop="abstract" label="摘要" align="center">
                   </el-table-column>
                 </el-table>
               </el-form-item>
@@ -351,8 +381,8 @@
     <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible4" width="50%">
       <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
       <div>
-      	<img :src="imgBig" alt="图片" :alt="imgBigName"/>
-      	<span>{{imgBigName}}</span>
+        <img :src="imgBig" alt="图片" :alt="imgBigName"/>
+        <span>{{imgBigName}}</span>
       </div>
     </el-dialog>
   </div>
@@ -438,11 +468,10 @@ export default {
         user: '申请人',
         createTime: '申请日期',
         abstract: '摘要',
-        approval: '审批过程',
         cancellationMoney: '已核销金额',
       }],
       tableData7: [{
-        id: 'ID',
+        id: '1',
         status: '状态',
         type: '类型',
         supplier: '供应商',
@@ -451,7 +480,28 @@ export default {
         user: '申请人',
         createTime: '申请日期',
         abstract: '摘要',
-        approval: '审批过程',
+        cancellationMoney: '已核销金额',
+      }, {
+        id: '2',
+        status: '状态',
+        type: '类型',
+        supplier: '供应商',
+        price: '付款金额',
+        org: '部门',
+        user: '申请人',
+        createTime: '申请日期',
+        abstract: '摘要',
+        cancellationMoney: '已核销金额',
+      }, {
+        id: '3',
+        status: '状态',
+        type: '类型',
+        supplier: '供应商',
+        price: '付款金额',
+        org: '部门',
+        user: '申请人',
+        createTime: '申请日期',
+        abstract: '摘要',
         cancellationMoney: '已核销金额',
       }],
       tableData8: [{
@@ -470,6 +520,32 @@ export default {
         account: '账户',
         bank: '开户行',
         name: '名称',
+      }],
+      tableData10: [{
+        id: '1',
+        createTime: '审批时间',
+        user: '审批人',
+        status: '审批结果',
+        abstract: '审批意见',
+      }, {
+        id: '2',
+        createTime: '审批时间',
+        user: '审批人',
+        status: '审批结果',
+        abstract: '审批意见',
+      }],
+      tableData11: [{
+        id: '1',
+        createTime: '审批时间',
+        user: '审批人',
+        status: '审批结果',
+        abstract: '审批意见',
+      }, {
+        id: '2',
+        createTime: '审批时间',
+        user: '审批人',
+        status: '审批结果',
+        abstract: '审批意见',
       }],
       supplier: '',
       supplierList: [{
@@ -588,6 +664,8 @@ export default {
       inputVisible2: false,
       dialogVisible3: false,
       dialogVisible4: false,
+      dialogVisible5: false,
+      dialogVisible6: false,
       dialogVisible2: false,
       dialogFormVisible: false,
       dialogVisible: false,
@@ -611,6 +689,14 @@ export default {
     },
   },
   methods: {
+    advanceProcess2(num) {
+      console.log(num)
+      this.dialogVisible6 = true
+    },
+    advanceProcess(num) {
+      console.log(num)
+      this.dialogVisible5 = true
+    },
     getRowClass2({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'
