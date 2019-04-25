@@ -464,6 +464,7 @@ import Permission from '@/page/account/userList/addUser/permission'
         },
         //树形控件父级数据加载
         loadNode(node, resolve) {
+          console.log(node.data)
           this.node = node.data
           this.removes = resolve
           this.data = [];
