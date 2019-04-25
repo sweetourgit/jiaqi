@@ -49,7 +49,7 @@
       </div>
     </div>
     <!--表格-->
-    <div class="user-table" style="width: 1111px">
+    <div class="user-table" style="width: 1031px">
       <el-table
         :data="tableData3"
         border
@@ -68,13 +68,7 @@
           prop="name"
           label="姓名"
           align="center"
-          width="70%">
-        </el-table-column>
-        <el-table-column
-          prop="userType"
-          label="用户类型"
-          align="center"
-          width="80%">
+          width="100%">
         </el-table-column>
         <el-table-column
           prop="mobile"
@@ -102,10 +96,10 @@
           width="80%">
         </el-table-column>
         <el-table-column
-          prop="organization"
-          label="组织-部门-职务"
+          prop="orgName"
+          label="部门"
           align="center"
-          width="180%"
+          width="150%"
          >
         </el-table-column>
         <el-table-column
@@ -520,7 +514,6 @@
             }else {
               arr[k]['userType'] = '管理员'
             }
-            arr[k]['organization'] = '吉林大运通-财务部-会计'
 
 
           })
