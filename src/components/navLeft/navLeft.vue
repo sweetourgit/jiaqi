@@ -144,6 +144,10 @@
                 router:'/advancePayment'
               },
               {
+                value: '收款管理',
+                router:'/collectionManagement'
+              },
+              {
                 value: '报销管理',
                 router:'/reimburseManagement'
               },

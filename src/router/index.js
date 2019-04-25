@@ -34,6 +34,7 @@ import loanManagement from '@/page/Finance/loanManagement/loanManagement'
 import advancePayment from '@/page/Finance/advancePayment/advancePayment'
 import reimburseManagement from '@/page/Finance/reimburseManagement/reimburseManagement'
 import arrearsManagement from '@/page/Finance/arrearsManagement/arrearsManagement'
+import collectionManagement from '@/page/Finance/collectionManagement/collectionManagement'
 
 Vue.use(Router);
 
@@ -279,6 +280,14 @@ export default new Router({
       path: '/reimburseManagement',
       component: reimburseManagement,
       name: '报销管理',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },
+    {
+      path: '/collectionManagement',
+      component: collectionManagement,
+      name: '收款管理',
       meta: {
         keepAlive: true,
         auth:true}
