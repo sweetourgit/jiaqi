@@ -268,7 +268,7 @@
     <el-dialog title="附件" :visible.sync="attachment" width="660px" custom-class="city_list" :show-close='false'>
       <el-button plain class="close" @click="attachment_close">关闭</el-button>
       <div style="text-align:left;margin-left:20px; overflow:hidden; position:relative;">
-        <el-upload ref="my-upload" class="upload-demo" action="http://192.168.1.168:6012/universal/supplier/api/upload" :on-success="handleSuccess" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="files" name="files" :headers="aaa" multiple list-type="picture" accept=".jpg,.png,.gif,.txt,.doc,.hlp,.wps,.html,.pdf">
+        <el-upload ref="my-upload" class="upload-demo" action="http://192.168.1.186:3017/universal/supplier/api/upload" :on-success="handleSuccess" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="files" name="files" :headers="aaa" multiple list-type="picture" accept=".jpg,.png,.gif,.txt,.doc,.hlp,.wps,.html,.pdf">
           <el-button plain>添加</el-button>
         </el-upload>
         <div style="position:absolute; top:0px;left:85px;">

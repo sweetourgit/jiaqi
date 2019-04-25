@@ -39,7 +39,7 @@
   <div class="popup" v-show="gatherShow">
     <div class="mask" @click="gatherClose()"></div>
     <div class="add">
-      <div class="gatherColor">
+      <div class="gatherColor"> 
         <div class="gatherTitle">添加集合</div>
         <div class="gatherClose" @click="gatherClose()">×</div>
       </div>
