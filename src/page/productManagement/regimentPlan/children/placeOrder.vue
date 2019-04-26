@@ -12,35 +12,35 @@
                 <table>
                    <tr>
                      <td width="80">产品：</td>
-                     <td>绝美斯米兰 蓝调普吉6晚8日游（往返转机）</td>
+                     <td>{{teampreviewData.title}}</td>
                    </tr>
                    <tr>
                      <td>团期计划：</td>
-                     <td>TC-GTY-1001-01-180806-01</td>
+                     <td>{{teampreviewData.groupCode}}</td>
                    </tr>
                    <tr>
                      <td>套餐名称：</td>
-                     <td>绝美斯米兰</td>
+                     <td>{{teampreviewData.package}}</td>
                    </tr>
                    <tr>
                      <td>出发地：</td>
-                     <td>沈阳</td>
+                     <td>{{teampreviewData.pod}}</td>
                    </tr>
                    <tr>
                      <td>目的地：</td>
-                     <td>普吉岛</td>
+                     <td>{{teampreviewData.destination}}</td>
                    </tr>
                    <tr>
                      <td>出发日期：</td>
-                     <td>2018-06-06</td>
+                     <td>{{teampreviewData.date}}</td>
                    </tr>
                    <tr>
                      <td>余位：</td>
-                     <td>20</td>
+                     <td>{{teampreviewData.remaining}}</td>
                    </tr>
                    <tr>
                      <td>参考结算：</td>
-                     <td>3000.00</td>
+                     <td>{{teampreviewData.refPrice}}</td>
                    </tr>
                 </table>
            </div>
@@ -90,7 +90,7 @@
             -->
             <el-form-item label="选择价格" prop="price" class="cb price">
               <el-radio-group v-model="ruleForm.price">
-                 <el-radio label="销售价" class="radiomar">销售价： 成人 （￥4800）  儿童（￥4000） 老人（￥4000） 单房差（￥300）</el-radio>
+                 <el-radio label="1" class="radiomar">销售价： 成人 （￥4500）  儿童（￥4000） 老人（￥3500） 单房差（￥300）</el-radio>
                  <!--<el-radio label="同业价" class="radiomar">同业价： 成人 （￥3800）  儿童（￥3000） 老人（￥3000） 单房差（￥200）</el-radio><br/>          
                   <el-radio label="自定义" class="radiomar">自定义： 
                        成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
@@ -101,14 +101,14 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item label="报名人数">            
-              <div class="ml13">成人<el-input v-model="ruleForm.num1" class="numw" @input="peoNum('adult')"></el-input>余（17） ￥11400</div>
+              <div class="ml13">成人<el-input v-model="ruleForm.num1" class="numw" @input="peoNum('adult')"></el-input>余（17） ￥4500</div>
               <div class="num-req">*</div>
             </el-form-item>
             <el-form-item label="">            
-              <div class="ml13">儿童<el-input v-model="ruleForm.num2" class="numw" @input="peoNum('child')"></el-input>余（17） ￥1140</div>
+              <div class="ml13">儿童<el-input v-model="ruleForm.num2" class="numw" @input="peoNum('child')"></el-input>余（17） ￥4000</div>
             </el-form-item>
             <el-form-item label="">            
-              <div class="ml13">老人<el-input v-model="ruleForm.num3" class="numw" @input="peoNum('elder')"></el-input>余（17） ￥1140</div>
+              <div class="ml13">老人<el-input v-model="ruleForm.num3" class="numw" @input="peoNum('elder')"></el-input>余（17） ￥3500</div>
             </el-form-item>
             <el-form-item label="" prop="">            
               <div class="ml13">单房差 ￥340</div>
@@ -150,15 +150,15 @@
             <el-form-item label="出行人信息" class="cb">            
                <div class="oh" v-show="typeNum1">
                  <div class="tour-til">成人</div>
-                 <div class="tourist"><input v-for="(item,index) in adult" v-model="item.name" @click="fillTour('1',index)"/></div>
+                 <div class="tourist"><input v-for="(item,index) in adult" placeholder="点击填写" v-model="item.cnName" @click="fillTour('1',index)"/></div>
                </div>
                <div class="oh" v-show="typeNum2">
                  <div class="tour-til">儿童</div>
-                 <div class="tourist"><input v-for="(item,index) in child" v-model="item.name" @click="fillTour('2',index)"/></div>
+                 <div class="tourist"><input v-for="(item,index) in child" placeholder="点击填写" v-model="item.cnName" @click="fillTour('2',index)"/></div>
                </div>
                <div class="oh" v-show="typeNum3">
                  <div class="tour-til">老人</div>
-                 <div class="tourist"><input v-for="(item,index) in elder" v-model="item.name" @click="fillTour('3',index)"/></div>
+                 <div class="tourist"><input v-for="(item,index) in elder" placeholder="点击填写" v-model="item.cnName" @click="fillTour('3',index)"/></div>
                </div>
             </el-form-item>
             <el-form-item label="备注" prop="">            
@@ -166,7 +166,7 @@
             </el-form-item>
           </el-form>
           <!--填写游客信息-->
-          <el-dialog :title="'出行人信息（'+winTitle+'）'" :visible.sync="dialogFormVisible" class="city_list"  width="700px">
+          <el-dialog :title="'出行人信息（'+winTitle+'）'" :visible.sync="dialogFormVisible" class="city_list" @close="cancelInfo('conForm')" width="700px">
             <el-form :model="conForm" :rules="rules" ref="conForm">
               <el-form-item label="中文姓名" prop="cnName" label-width="110px" class="fl">
                   <el-input type="text" v-model="conForm.cnName" class="w200 fl"></el-input>
@@ -204,9 +204,17 @@
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer1 cb">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button @click="cancelInfo('conForm')">取 消</el-button>
               <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
             </div>
+          </el-dialog>
+          <!--下单成功弹窗-->
+          <el-dialog title="提示" :visible.sync="orderSuc" class="city_list" width="500px">      
+              <h3 class="ordersuc-title">下单成功</h3>
+              <div class="text item">订单号：1233465667677777</div>
+              <div class="text item">产品名称：绝美斯米兰 蓝调普吉6晚8日游（往返转机）</div>
+              <div class="text item">团期计划：TC-GTY-1001-01-180806-01</div>
+              <el-button type="primary" style="margin:20px 0 10px 200px">关闭</el-button>
           </el-dialog>
       </div>
   </div>
@@ -216,29 +224,21 @@
 export default {
   data() {
     return {
-      adult:[],
-      child:[],
-      elder:[],
-      dialogFormVisible: false,
-      form:{
-          
-      },
-      typeNum1:false,
-      typeNum2:false,
-      typeNum3:false,
-      winTitle:'',
       ruleForm: {           
-          orderRadio:"3",          
+          orderRadio:'3',          
           sale:'',
           travel:'',  
-          price:'',
+          price:'1',
           price1:'',
           price2:'',
           price3:'',
           price4:'',    
-          num1: '',
+          num1: '', //报名人数
           num2: '',
           num3: '',
+          numpre1: 0, //记录上一次报名人数，修改人数时，改变出行人信息数组
+          numpre2: 0,
+          numpre3: 0,
           otherCost: '0',
           otherCostRemark: '',
           allDiscount: '0',
@@ -249,17 +249,44 @@ export default {
           contactPhone:'',
           remark:'',
         },
+        //游客信息
+        dialogFormVisible: false,
+        adult:[],//游客信息
+        child:[],
+        elder:[],
+        adultId:1,//游客类型id
+        childId:2,
+        elderId:3,
+        fillIndex:0,//当前添加的游客的索引
+        adultPrice:'4500',
+        childPrice:'4000',
+        elderPrice:'3500',
+        typeNum1:false,
+        typeNum2:false,
+        typeNum3:false,
+        winTitle:'',
         conForm: {   
+          id: 0,
+          isDeleted: 0,
+          code: "",
           cnName:'',
           enName:'',
           sex:"",
           mobile:'',          
           idCard:'',//身份证
-          bornDate:'',
-          credType:'',
+          bornDate:0,
+          credType:0,
           credCode:'',
-          credTOV:''
+          credTOV:0,
+          orderID: 0,
+          orderCode: 'string',
+          orgID: 0,
+          userID: 0
         },
+        //下单成功弹窗
+        orderSuc:false,
+        //团期计划订单信息
+        teampreviewData:{},
         rules: {
           orderRadio: [{ required: true, message: '请选择订单来源', trigger: 'change' }],
           sale: [{ required: true, message: '请选择销售', trigger: 'change' }],
@@ -286,7 +313,7 @@ export default {
             { required: true, message: '请输入姓（拼音）', trigger: 'blur' },
             { pattern: /(a[io]?|ou?|e[inr]?|ang?|ng|[bmp](a[io]?|[aei]ng?|ei|ie?|ia[no]|o|u)|pou|me|m[io]u|[fw](a|[ae]ng?|ei|o|u)|fou|wai|[dt](a[io]?|an|e|[aeio]ng|ie?|ia[no]|ou|u[ino]?|uan)|dei|diu|[nl](a[io]?|ei?|[eio]ng|i[eu]?|i?ang?|iao|in|ou|u[eo]?|ve?|uan)|nen|lia|lun|[ghk](a[io]?|[ae]ng?|e|ong|ou|u[aino]?|uai|uang?)|[gh]ei|[jqx](i(ao?|ang?|e|ng?|ong|u)?|u[en]?|uan)|([csz]h?|r)([ae]ng?|ao|e|i|ou|u[ino]?|uan)|[csz](ai?|ong)|[csz]h(ai?|uai|uang)|zei|[sz]hua|([cz]h|r)ong|y(ao?|[ai]ng?|e|i|ong|ou|u[en]?|uan))/, message: '姓（拼音）格式不正确'}],
           sex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
-          phone: [
+          mobile: [
             { required: true, message: '请输入手机号', trigger: 'blur' },
             { pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, message: '手机号格式不正确'}],
           idCard: [{ required: true, message: '身份证号不能为空', trigger: 'blur' },
@@ -294,17 +321,28 @@ export default {
         }
     }
   },
-  mounted(){
-
+  created(){
+     this.teampreview()
   },
   methods: {
+     teampreview(){  //团期计划订单信息预览
+       this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/teampreview',{
+            "id": this.$route.query.planid
+        }).then(res => {
+          if(res.data.isSuccess == true){
+             this.teampreviewData=res.data.object;
+          }
+       })
+     },
      peoNum(num){
         let arr;
-        let arrLength;
+        let arrLength;//报名人数
+        let preLength;//记录上一次报名人数
         if(num=='adult'){
-          this.adult=[];
           arr=this.adult;
+          preLength=this.ruleForm.numpre1;
           arrLength=this.ruleForm.num1;
+          this.ruleForm.numpre1=this.ruleForm.num1;
           if(arrLength!=0){
             this.typeNum1=true;
           }else{
@@ -312,9 +350,10 @@ export default {
           }
         }
         if(num=='child'){
-          this.child=[];
           arr=this.child;
+          preLength=this.ruleForm.numpre2;
           arrLength=this.ruleForm.num2;
+          this.ruleForm.numpre2=this.ruleForm.num2;
           if(arrLength!=0){
             this.typeNum2=true;
           }else{
@@ -322,85 +361,96 @@ export default {
           }
         }
         if(num=='elder'){
-          this.elder=[];
           arr=this.elder;
+          preLength=this.ruleForm.numpre3;
           arrLength=this.ruleForm.num3;
+          this.ruleForm.numpre3=this.ruleForm.num3;
           if(arrLength!=0){
             this.typeNum3=true;
           }else{
             this.typeNum3=false;
           }
         }
-        for(var i=0;i<arrLength;i++){
-           arr.push({name:"点击填写"});
-        }        
+        var len;
+        if(arrLength>preLength){  //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
+          len=arrLength-preLength;
+          for(var i=0;i<len;i++){
+            arr.push({cnName:'点击填写'});
+          }  
+        }else{
+          arr.splice(arrLength-preLength,preLength-arrLength);
+        }   
      },
      fillTour(type,index){
         if(type==1){
-          this.winTitle="成人";
+          this.winTitle='成人';
+          if(this.adult[index].cnName!='点击填写'){
+            this.conForm=JSON.parse(JSON.stringify(this.adult[index])); //如果已填完信息，把信息显示出来
+          }
         }
         if(type==2){
-          this.winTitle="儿童";
+          this.winTitle='儿童';
+          if(this.child[index].cnName!='点击填写'){
+            this.conForm=JSON.parse(JSON.stringify(this.child[index]));
+          }
         }
         if(type==3){
-          this.winTitle="老人";
+          this.winTitle='老人';
+          if(this.elder[index].cnName!='点击填写'){
+            this.conForm=JSON.parse(JSON.stringify(this.elder[index]));
+          }
         }
+        this.fillIndex=index;
         this.dialogFormVisible = true;
      },
      submitForm(formName) {
         this.$refs[formName].validate((valid) => {
             if(valid) {
+              let guestAll=this.adult.concat(this.child,this.elder);//合并所有游客信息
+              let guest=[];
+              for(let i=0;i<guestAll.length;i++){   //过滤掉未填写人员信息
+                 if(guestAll[i].cnName!='点击填写'){
+                    guest.push(guestAll[i]);
+                 }
+              }
               this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderinsert',{
                 "object": {
                   "id": 0,
                   "isDeleted": 0,
                   "code": "",
                   "orderCode": "",
-                  "proID": 0,  //?
+                  "proID": this.teampreviewData.teamID,  
                   "planID": this.$route.query.planid,
                   "orderStatus": 0,   //订单状态
                   "refundStatus": 0,  //退款状态
                   "occupyStatus": this.ruleForm.type,  //占位状态
                   "payable": this.ruleForm.totalPrice, //应付款
                   "paid": 0,           //已付款
-                  "favourable": [      //？
+                  "favourable": [      //优惠
                     {
                       "id": 0,
                       "orderID": 0,
-                      "price": 0,
-                      "title": "string",
+                      "price": this.ruleForm.otherCost,
+                      "title": "其他费用",
                       "favMode": 1,
-                      "mark": "string"
+                      "mark": this.ruleForm.otherCostRemark
+                    },
+                    {
+                      "id": 0,
+                      "orderID": 0,
+                      "price": this.ruleForm.allDiscount,
+                      "title": "整体优惠",
+                      "favMode": 2,
+                      "mark": this.ruleForm.allDisRemark,
                     }
                   ],
                   "contact": '{"Name":"'+ this.ruleForm.contactName +'","Tel":"'+ this.ruleForm.contactPhone +'"}',
-                  "endTime": 24,
+                  "endTime": 0,//?
                   "orderChannel": this.ruleForm.orderRadio,
                   "orgID": 0,
                   "userID": 0,
                   "mark": this.ruleForm.remark,
-                  "guest": [
-                    {
-                      "id": 0,
-                      "isDeleted": 0,
-                      "code": "",
-                      "cnName": "张三",
-                      "enName": "zhangsan",
-                      "sex": 0,
-                      "idCard": "210113199002188965",
-                      "enrollID": 1,
-                      "singlePrice": 2300,
-                      "mobile": "15840525695",
-                      "bornDate": 19900218,
-                      "credType": 1,
-                      "credCode": "15415456",
-                      "credTOV": 20200218,
-                      "orderID": 0,
-                      "orderCode": "string",
-                      "orgID": 0,
-                      "userID": 0
-                    }
-                  ]
+                  "guest":guest
                 }
             }).then(res => {
               if(res.data.isSuccess == true){
@@ -411,7 +461,7 @@ export default {
 
 
               }else{
-                 _this.$message.success("下单失败");
+                 _this.$message.success('下单失败');
               }
             }) 
           } else {
@@ -423,15 +473,30 @@ export default {
      subInfo(formName){
          this.$refs[formName].validate((valid) => {
           if (valid) {
-             
-
-
-
-
+             let guest=JSON.parse(JSON.stringify(this.conForm));
+             guest.bornDate = (new Date(guest.bornDate)).getTime()/1000;
+             guest.credTOV = (new Date(guest.credTOV)).getTime()/1000;
+             if(this.winTitle=='成人'){
+                guest.enrollID=this.adultId;  //填充报名类型
+                guest.singlePrice=this.adultPrice;  //填充价格
+                this.adult[this.fillIndex]=guest;
+             }else if(this.winTitle=='儿童'){
+                guest.enrollID=this.childId;
+                guest.singlePrice=this.childPrice;
+                this.child[this.fillIndex]=guest;
+             }else if(this.winTitle=='老人'){
+                guest.enrollID=this.elderId;
+                guest.singlePrice=this.elderPrice;
+                this.elder[this.fillIndex]=guest;
+             }
              this.dialogFormVisible = false;
+             this.$refs[formName].resetFields();
             }
           });
-         
+      },
+      cancelInfo(formName){
+        this.dialogFormVisible = false;
+        this.$refs[formName].resetFields();
       }
     }
 }
@@ -462,4 +527,7 @@ export default {
     .disib{display: inline-block;}
     .remark{width: 70%;margin-left: 12px}
     .w200{width: 200px}
+    .text{font-size: 14px}
+    .item {margin:0 20px 18px 20px}
+    .ordersuc-title{text-align: center;font-size: 16px;margin:0 0 30px 0}
 </style>
