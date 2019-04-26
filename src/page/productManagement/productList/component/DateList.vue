@@ -1551,6 +1551,12 @@
         if (item.isModify) {
           if (_n.data.person.planEnroll.length <= 1) {
             console.log('剩一个类型时');
+            // 删除最后一个类型时删除该计划
+            this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/delete', {
+                "id": this.Rform.id
+            }).then(res => {
+              console.log(res);
+            })
           } else {
             this.arr.splice(index,1);
             let planEnroll = [];
