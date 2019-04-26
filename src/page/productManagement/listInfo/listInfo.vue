@@ -97,7 +97,7 @@
               <span id="empty" v-show="empty">不能为空</span>
             </el-form-item>
             <!-- 头图 -->
-            <el-form-item label="头图" prop="avatarImages" label-width="120px">
+            <!-- <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative">
               </el-input>
               <el-upload :on-preview="handleImgClick" class="upload-demo uploadimage" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit='1' accept=".jpg,.png,.gif" :on-remove="handleRemove">
@@ -108,7 +108,39 @@
                   上传
                 </el-button>
               </el-upload>
+            </el-form-item> -->
+            <el-form-item label="头图" prop="avatarImages" label-width="120px">
+              <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative"></el-input>
+              <el-button type="info" class="upload-btn" style="margin:1px 0 0 200px;" @click="figureClick">上传</el-button>
             </el-form-item>
+            <!--头图弹窗-->
+            <div class="popup" style="width:100%; overflow:hidden;" v-show="figureShow">
+              <div class="mask" @click="figureClose"></div>
+              <div style="width:1100px; height:870px; position:fixed; top:50%;left:50%; margin-top:-435px; margin-left:-550px; background:#fff; z-index:1000;">
+                <div style="line-height:40px; font-weight:bold; font-size:14pt; float:left; margin:40px 0 0 3%;">图片选择</div>
+                <div style="float:right;margin:100px 3% 20px 0;">
+                  <el-input v-model="imageSearch" clearable style="float:left; width:200px; margin:0 15px 0 0;" placeholder="请输入内容"></el-input>
+                  <el-button type="primary" style="float:right;">搜索</el-button>
+                </div>
+                <div style="clear:both;">
+                  <!--左侧地区列表-->
+                  <div class="left-tree">
+                     <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree" :default-expanded-keys="[]"></el-tree>
+                  </div> 
+                  <!--右侧图片循环-->
+                  <div style="float:left; margin:10px 0 0 30px;">
+                    <div style="width:300px; height:200px; background:#f5f5f5;"></div>
+                    <div style="margin:10px 0 0 0;">
+                      <div style="float:left; width:60px; height:25px; background:#000; color:#fff;text-align:center;line-height:23px; font-size:14px;">景点</div>
+                      <div style="float:left; width:60px; height:25px; background:#5b5b5b; color:#fff;text-align:center;line-height:23px; font-size:14px;">5张</div>
+                    </div>
+                    <div style="font-size:14pt; clear:both; text-align:left; line-height:40px;">大帅府</div>
+                  </div>
+                </div>
+
+                <el-button style="position:absolute; bottom:20px; right:3%;" @click="figureClose">取消</el-button>
+              </div>
+            </div>
             <!-- 视频 -->
             <el-form-item label="视频" prop="video" label-width="120px">
               <el-input v-model="ruleForm.video" disabled style="width:110px;float:left;margin-left:10px;position:relative">
@@ -1796,6 +1828,19 @@
         inputVal4: '',
         errorNull: '',
         sid:'',
+        //头图上传
+        imageSearch:'',//弹窗搜索框
+        props1: {//头图上传左侧tree
+          label: 'name',
+          isLeaf: 'leaf'
+        },
+        data: '', // 存单击数据
+        theContinent: '', // 所属地区id
+        node: '', // 获取tree子级数据
+        resolve: '', // 获取tree子级方法
+        level: '', // 层级数据
+        figureShow:false,//头图弹窗
+        list_a:[],//tree数组
       }
     },
    watch:{ //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
@@ -1872,6 +1917,119 @@
       this.itemList();
     },
     methods: {
+      //头图上传左侧tree
+      loadNode1(node, resolve) {
+        this.node = node.data
+        this.resolve = resolve
+        this.level = node.level
+        /*添加第一级*/
+        if (node.level === 0) {
+          this.list_a=[];
+          this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",{
+              "object": {
+                "parentID": -1,
+              }
+            }).then(obj => {
+              for (let i = 0; i < obj.data.objects.length; i++) {
+                this.list_a.push({
+                  name:obj.data.objects[i].areaName,
+                  key: i,
+                  id: obj.data.objects[i].id,
+                  isLeaf: obj.data.objects[i].isLeaf, // 是否是末级
+                  Hierarchy: 0 // 层级
+                })
+              }
+              resolve(this.list_a);
+            }).catch(obj => {
+              console.log(obj)
+            })
+        }
+        if (node.level >= 1) {
+          this.getSon(
+            node.data.key,
+            node.data.label,
+            node.data.id,
+            node.data.isLeaf,
+            resolve,
+            node.level
+          );
+        }
+      },
+      /*获取子集的方法*/
+      getSon(key, label, id, isLeaf, resolve, level){
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",
+          {
+            "object": {
+              "parentID": id,
+            }
+          }).then(res => {
+          this.lists = []
+          if (res.data.isSuccess == true) {
+            for (var i = 0; i < res.data.objects.length; i++) {
+              if (res.data.objects[i].isDeleted == 0) {
+                if (res.data.objects[i].isLeaf == 2) {
+                  this.lists.push({
+                    name:res.data.objects[i].areaName,
+                    key: i,
+                    id: res.data.objects[i].id,
+                    isLeaf: res.data.objects[i].isLeaf,
+                    leaf: false,
+                    Hierarchy: level
+                  })
+                } else {
+                  this.lists.push({
+                    name:res.data.objects[i].areaName,
+                    key: i,
+                    id: res.data.objects[i].id,
+                    isLeaf: res.data.objects[i].isLeaf,
+                    leaf: true,
+                    Hierarchy: level
+                  })
+                }
+              }
+            }
+          }
+          setTimeout(() => {
+            resolve(this.lists);
+          }, 200);
+        }).catch(error => {
+          console.log(error);
+        });
+      },
+      // 单击tree节点
+      treeClick(data,node){     
+        this.data = data;
+        if (data.isLeaf == 1) {
+          if(this.addAlbum==false){
+          this.geography = 1;
+          this.albumPage();
+        }else{
+          this.picForm.destination=this.data.name;
+          this.picForm.destinationId=this.data.id;
+          this.leftTree1=false; 
+         }
+        }
+      },
+      //头图弹窗
+      figureClick(){
+        this.figureShow = true;
+        this.getFigure();
+      },
+      getFigure(){//获取当前ID的父级路径
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/getpa',{
+           "id":this.dynamicTags4[0].destinationID
+          }).then(res => {
+              if(res.data.isSuccess == true){
+                 let data = res.data.object;
+              }
+        }) 
+        //console.log(this.dynamicTags4)
+      },
+
+      figureClose(){
+        this.figureShow = false;
+      },
+
       myInput(){//基本信息文字限制30个字颜色变红
         if(this.ruleForm.productNamel.length>30){
           this.isActive=true;
@@ -2997,4 +3155,8 @@
   .delete_button button{border: 1px solid #f56c6c;margin-bottom: 30px}
 
   .delete_button button:hover{color:#f56c6c; border: 1px solid #f56c6c;}
+  /*头图上传弹窗*/
+  .treeDemo{margin:20px}
+  .main-container{width: 100%;padding-bottom: 60px;overflow: auto;max-width:1800px}
+  .left-tree{float: left;margin-top: 10px;width: 22%;height: 550px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;margin-left: 3%;overflow: auto;}
 </style>

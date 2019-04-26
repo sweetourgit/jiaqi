@@ -25,6 +25,11 @@ import placeOrder from '@/page/productManagement/regimentPlan/children/placeOrde
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 import changePro from '@/page/productManagement/changePro/changePro'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
+//<<<<<<< HEAD
+import blacklist from '@/page/contentInfo/blacklist/blacklist'
+
+//=======
+//>>>>>>> 13d0d1727c9e6bdf7b9bee06f087d28e823dc800
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
@@ -178,6 +183,13 @@ export default new Router({
       path: '/proList',
       component: proList,
       name: '权限列表',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },,{
+      path: '/blacklist',
+      component: blacklist,
+      name: '黑名单',
       meta: {
         keepAlive: true,
         auth:true}

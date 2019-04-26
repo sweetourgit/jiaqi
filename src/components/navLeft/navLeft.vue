@@ -96,6 +96,9 @@
                 },{
                   value: '权限列表',
                   router:'/proList'
+                },{
+                  value: '黑名单',
+                  router:'/blacklist'
                 }
               ]
             },
