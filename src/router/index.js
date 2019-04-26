@@ -25,19 +25,21 @@ import placeOrder from '@/page/productManagement/regimentPlan/children/placeOrde
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 import changePro from '@/page/productManagement/changePro/changePro'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
+<<<<<<< HEAD
 import blacklist from '@/page/contentInfo/blacklist/blacklist'
 
+=======
+>>>>>>> 13d0d1727c9e6bdf7b9bee06f087d28e823dc800
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
 import proList from '@/page/contentInfo/proList/proList'
-import searchOrder from '@/page/orderManagement/orderList/searchOrder'
-import orderList from '@/page/orderManagement/orderList/children/orderList'
-import orderDetail from '@/page/orderManagement/orderList/children/orderDetail'
+import orderList from '@/page/orderManagement/orderList/orderList'
 import loanManagement from '@/page/Finance/loanManagement/loanManagement'
 import advancePayment from '@/page/Finance/advancePayment/advancePayment'
 import reimburseManagement from '@/page/Finance/reimburseManagement/reimburseManagement'
 import arrearsManagement from '@/page/Finance/arrearsManagement/arrearsManagement'
+import collectionManagement from '@/page/Finance/collectionManagement/collectionManagement'
 
 Vue.use(Router);
 
@@ -242,27 +244,12 @@ export default new Router({
         }
       ]
     },{
-      path: '/searchOrder',
-      component: searchOrder,
+      path: '/orderList',
+      component: orderList,
       name: '订单管理',
-      children: [
-        {
-          path: 'orderList',
-          name: '订单列表',
-          component: orderList,
-          meta: {
-            keepAlive: true,
-            auth:true},
-          },
-        {
-          path: 'orderDetail',
-          name: '订单详情',
-          component: orderDetail,
-          meta: {
-            keepAlive: true,
-            auth:true},
-        }
-      ]
+      meta: {
+        keepAlive: true,
+        auth:true}
     },{
       path: '/sharedInventory',
       component: sharedInventory,
@@ -305,6 +292,14 @@ export default new Router({
       path: '/reimburseManagement',
       component: reimburseManagement,
       name: '报销管理',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },
+    {
+      path: '/collectionManagement',
+      component: collectionManagement,
+      name: '收款管理',
       meta: {
         keepAlive: true,
         auth:true}

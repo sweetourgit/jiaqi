@@ -134,9 +134,9 @@
             <!--下单方式-->
             <el-form-item label="下单方式" prop="type">
               <el-radio-group v-model="ruleForm.type">
-                <el-radio label="确认占位" class="radiomar">确认占位 （同业社额度： 总欠款 270,164 元）</el-radio><br/>
-                <el-radio label="预定占位" class="radiomar">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
-                <el-radio label="预定不占" class="radiomar">预定不占 （订单保留24小时，到期提醒）</el-radio>
+                <el-radio label="1" class="radiomar">确认占位 （同业社额度： 总欠款 270,164 元）</el-radio><br/>
+                <el-radio label="2" class="radiomar">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
+                <el-radio label="3" class="radiomar">预定不占 （订单保留24小时，到期提醒）</el-radio>
               </el-radio-group>
             </el-form-item>
             <!--订单联系人-->
@@ -168,22 +168,40 @@
           <!--填写游客信息-->
           <el-dialog :title="'出行人信息（'+winTitle+'）'" :visible.sync="dialogFormVisible" class="city_list"  width="700px">
             <el-form :model="conForm" :rules="rules" ref="conForm">
-              <el-form-item label="姓名" prop="name" label-width="110px" class="fl">
-                  <el-input type="text" v-model="conForm.name" class="w200 fl"></el-input>
+              <el-form-item label="中文姓名" prop="cnName" label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.cnName" class="w200 fl"></el-input>
               </el-form-item>
-              <el-form-item label="电话" prop="phone" label-width="110px" class="fl">
-                  <el-input type="text" v-model="conForm.phone" class="w200"></el-input>
+              <el-form-item label="英文姓名" prop="enName" label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.enName" class="w200"></el-input>
               </el-form-item>
-              <el-form-item label="姓(拼音)" prop="firstName" label-width="110px" class="fl">
-                  <el-input type="text" v-model="conForm.firstName" class="w200"></el-input>
+              <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px">
+                  <el-radio-group v-model="conForm.sex">
+                    <el-radio label="0">男</el-radio>
+                    <el-radio label="1">女</el-radio>
+                  </el-radio-group>
               </el-form-item>
-              <el-form-item label="名(拼音)" prop="lastName"  label-width="110px" class="fl">
-                  <el-input type="text" v-model="conForm.lastName" class="w200"></el-input>
+              <el-form-item label="电话" prop="mobile" label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.mobile" class="w200"></el-input>
               </el-form-item>
-              <el-form-item label="护照" prop="passport"  label-width="110px" class="fl">
-                  <el-input type="text" v-model="conForm.passport" class="w200"></el-input>
+              <el-form-item label="身份证" prop="idCard"  label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.idCard" class="w200"></el-input>
+              </el-form-item>              
+              <el-form-item label="出生日期" prop="bornDate"  label-width="110px" class="fl">
+                  <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" class="w200"></el-date-picker>
               </el-form-item>
-
+              <el-form-item label="证件类型"  label-width="110px" class="fl">
+                  <el-select v-model="conForm.credType" placeholder="请选择">
+                     <el-option label="护照" value="1"/>
+                     <el-option label="港澳通行证" value="2"/>
+                     <el-option label="军官证" value="3"/>
+                  </el-select>
+              </el-form-item>
+              <el-form-item label="证件号码"  label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.credCode" class="w200"></el-input>
+              </el-form-item>
+              <el-form-item label="证件有效期"  label-width="110px" class="fl">
+                  <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" class="w200"></el-date-picker>
+              </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer1 cb">
               <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -225,18 +243,22 @@ export default {
           otherCostRemark: '',
           allDiscount: '0',
           allDisRemark: '',
-          totalPrice:'',
+          totalPrice:'8000',
           type: '',    
           contactName:'',
           contactPhone:'',
           remark:'',
         },
         conForm: {   
-          name:'',
-          phone:'',
-          firstName:'',
-          lastName:'',
-          passport:''
+          cnName:'',
+          enName:'',
+          sex:"",
+          mobile:'',          
+          idCard:'',//身份证
+          bornDate:'',
+          credType:'',
+          credCode:'',
+          credTOV:''
         },
         rules: {
           orderRadio: [{ required: true, message: '请选择订单来源', trigger: 'change' }],
@@ -258,17 +280,17 @@ export default {
           type: [{ required: true, message: '请选择下单方式', trigger: 'change' }],
           contactName: [{ required: true, message: '请输入联系人姓名', trigger: 'blur' }],
           contactPhone: [{ required: true, message: '请输入联系人电话', trigger: 'blur' }],
-          name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+          //游客信息
+          cnName: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+          enName: [
+            { required: true, message: '请输入姓（拼音）', trigger: 'blur' },
+            { pattern: /(a[io]?|ou?|e[inr]?|ang?|ng|[bmp](a[io]?|[aei]ng?|ei|ie?|ia[no]|o|u)|pou|me|m[io]u|[fw](a|[ae]ng?|ei|o|u)|fou|wai|[dt](a[io]?|an|e|[aeio]ng|ie?|ia[no]|ou|u[ino]?|uan)|dei|diu|[nl](a[io]?|ei?|[eio]ng|i[eu]?|i?ang?|iao|in|ou|u[eo]?|ve?|uan)|nen|lia|lun|[ghk](a[io]?|[ae]ng?|e|ong|ou|u[aino]?|uai|uang?)|[gh]ei|[jqx](i(ao?|ang?|e|ng?|ong|u)?|u[en]?|uan)|([csz]h?|r)([ae]ng?|ao|e|i|ou|u[ino]?|uan)|[csz](ai?|ong)|[csz]h(ai?|uai|uang)|zei|[sz]hua|([cz]h|r)ong|y(ao?|[ai]ng?|e|i|ong|ou|u[en]?|uan))/, message: '姓（拼音）格式不正确'}],
+          sex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
           phone: [
             { required: true, message: '请输入手机号', trigger: 'blur' },
             { pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, message: '手机号格式不正确'}],
-          firstName: [
-            { required: true, message: '请输入姓（拼音）', trigger: 'blur' },
-            { pattern: /(a[io]?|ou?|e[inr]?|ang?|ng|[bmp](a[io]?|[aei]ng?|ei|ie?|ia[no]|o|u)|pou|me|m[io]u|[fw](a|[ae]ng?|ei|o|u)|fou|wai|[dt](a[io]?|an|e|[aeio]ng|ie?|ia[no]|ou|u[ino]?|uan)|dei|diu|[nl](a[io]?|ei?|[eio]ng|i[eu]?|i?ang?|iao|in|ou|u[eo]?|ve?|uan)|nen|lia|lun|[ghk](a[io]?|[ae]ng?|e|ong|ou|u[aino]?|uai|uang?)|[gh]ei|[jqx](i(ao?|ang?|e|ng?|ong|u)?|u[en]?|uan)|([csz]h?|r)([ae]ng?|ao|e|i|ou|u[ino]?|uan)|[csz](ai?|ong)|[csz]h(ai?|uai|uang)|zei|[sz]hua|([cz]h|r)ong|y(ao?|[ai]ng?|e|i|ong|ou|u[en]?|uan))/, message: '姓（拼音）格式不正确'}],
-          lastName: [
-            { required: true, message: '请输入名（拼音）', trigger: 'blur' },
-            { pattern: /(a[io]?|ou?|e[inr]?|ang?|ng|[bmp](a[io]?|[aei]ng?|ei|ie?|ia[no]|o|u)|pou|me|m[io]u|[fw](a|[ae]ng?|ei|o|u)|fou|wai|[dt](a[io]?|an|e|[aeio]ng|ie?|ia[no]|ou|u[ino]?|uan)|dei|diu|[nl](a[io]?|ei?|[eio]ng|i[eu]?|i?ang?|iao|in|ou|u[eo]?|ve?|uan)|nen|lia|lun|[ghk](a[io]?|[ae]ng?|e|ong|ou|u[aino]?|uai|uang?)|[gh]ei|[jqx](i(ao?|ang?|e|ng?|ong|u)?|u[en]?|uan)|([csz]h?|r)([ae]ng?|ao|e|i|ou|u[ino]?|uan)|[csz](ai?|ong)|[csz]h(ai?|uai|uang)|zei|[sz]hua|([cz]h|r)ong|y(ao?|[ai]ng?|e|i|ong|ou|u[en]?|uan))/, message: '名（拼音）格式不正确'}],
-          passport: [{ required: true, message: '请输入护照', trigger: 'blur' }],
+          idCard: [{ required: true, message: '身份证号不能为空', trigger: 'blur' },
+                   { pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '身份证号格式不正确', trigger: 'blur' }],
         }
     }
   },
@@ -332,7 +354,6 @@ export default {
                 "object": {
                   "id": 0,
                   "isDeleted": 0,
-                  "createTime": new Date(),
                   "code": "",
                   "orderCode": "",
                   "proID": 0,  //?
@@ -340,12 +361,11 @@ export default {
                   "orderStatus": 0,   //订单状态
                   "refundStatus": 0,  //退款状态
                   "occupyStatus": this.ruleForm.type,  //占位状态
-                  "payable": 4000,      //应付款
+                  "payable": this.ruleForm.totalPrice, //应付款
                   "paid": 0,           //已付款
                   "favourable": [      //？
                     {
                       "id": 0,
-                      "createTime": new Date(),
                       "orderID": 0,
                       "price": 0,
                       "title": "string",
@@ -363,7 +383,6 @@ export default {
                     {
                       "id": 0,
                       "isDeleted": 0,
-                      "createTime": new Date(),
                       "code": "",
                       "cnName": "张三",
                       "enName": "zhangsan",
@@ -401,10 +420,14 @@ export default {
           }
         });
       },
-      subInfo(formName){
+     subInfo(formName){
          this.$refs[formName].validate((valid) => {
           if (valid) {
-         
+             
+
+
+
+
              this.dialogFormVisible = false;
             }
           });
