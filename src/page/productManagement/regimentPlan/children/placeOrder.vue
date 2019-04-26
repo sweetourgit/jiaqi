@@ -211,10 +211,10 @@
           <!--下单成功弹窗-->
           <el-dialog title="提示" :visible.sync="orderSuc" class="city_list" width="500px">      
               <h3 class="ordersuc-title">下单成功</h3>
-              <div class="text item">订单号：1233465667677777</div>
-              <div class="text item">产品名称：绝美斯米兰 蓝调普吉6晚8日游（往返转机）</div>
-              <div class="text item">团期计划：TC-GTY-1001-01-180806-01</div>
-              <el-button type="primary" style="margin:20px 0 10px 200px">关闭</el-button>
+              <div class="text item">订单号：{{orderCode}}</div>
+              <div class="text item">产品名称：{{teampreviewData.title}}</div>
+              <div class="text item">团期计划：{{teampreviewData.groupCode}}</div>
+              <el-button type="primary" style="margin:20px 0 10px 200px" @click="orderSuc = false">关闭</el-button>
           </el-dialog>
       </div>
   </div>
@@ -275,7 +275,7 @@ export default {
           mobile:'',          
           idCard:'',//身份证
           bornDate:0,
-          credType:0,
+          credType:'',
           credCode:'',
           credTOV:0,
           orderID: 0,
@@ -287,6 +287,7 @@ export default {
         orderSuc:false,
         //团期计划订单信息
         teampreviewData:{},
+        orderCode:'',
         rules: {
           orderRadio: [{ required: true, message: '请选择订单来源', trigger: 'change' }],
           sale: [{ required: true, message: '请选择销售', trigger: 'change' }],
@@ -411,6 +412,8 @@ export default {
               for(let i=0;i<guestAll.length;i++){   //过滤掉未填写人员信息
                  if(guestAll[i].cnName!='点击填写'){
                     guest.push(guestAll[i]);
+                    guest[i].bornDate = (new Date(guest[i].bornDate)).getTime()/1000;
+                    guest[i].credTOV = (new Date(guest[i].credTOV)).getTime()/1000;
                  }
               }
               this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderinsert',{
@@ -454,12 +457,20 @@ export default {
                 }
             }).then(res => {
               if(res.data.isSuccess == true){
-                 
-
-
-
-
-
+                   this.orderCode = JSON.parse(res.data.result.details).OrderCode;
+                   this.orderSuc = true;
+                   //清空表单
+                   this.$refs[formName].resetFields();
+                   this.ruleForm.num1 = ''; //清空报名人数
+                   this.ruleForm.num2 = '';
+                   this.ruleForm.num3 = '';
+                   this.ruleForm.numpre1 = 0; //清空上一次报名人数
+                   this.ruleForm.numpre2 = 0;
+                   this.ruleForm.numpre3 = 0;
+                   this.adult = []; //清空游客信息
+                   this.child = [];
+                   this.elder = [];
+                   this.ruleForm.remark = '';
               }else{
                  _this.$message.success('下单失败');
               }
@@ -474,8 +485,6 @@ export default {
          this.$refs[formName].validate((valid) => {
           if (valid) {
              let guest=JSON.parse(JSON.stringify(this.conForm));
-             guest.bornDate = (new Date(guest.bornDate)).getTime()/1000;
-             guest.credTOV = (new Date(guest.credTOV)).getTime()/1000;
              if(this.winTitle=='成人'){
                 guest.enrollID=this.adultId;  //填充报名类型
                 guest.singlePrice=this.adultPrice;  //填充价格
