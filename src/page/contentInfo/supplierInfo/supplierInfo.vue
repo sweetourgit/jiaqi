@@ -9,7 +9,7 @@
     </el-form>
     <!-- 导航按钮 -->
     <div class="button" style="text-align:left; clear:both;">
-      <el-button plain @click="add_supplierInfo = true">添加</el-button>
+      <el-button plain @click="add_test">添加</el-button>
       <el-button plain :disabled="forbidden1" @click="test">编辑</el-button>
       <el-button plain :disabled="forbidden1" @click="contactPeoele">联系人</el-button>
       <el-button plain :disabled="forbidden1" @click="contactBank">银行账号</el-button>
@@ -24,7 +24,8 @@
       <el-table-column prop="userState" label="状态" min-width="80" align="center"></el-table-column>
       <el-table-column prop="expireTime" label="到期日期" min-width="150" align="center"></el-table-column>
       <el-table-column prop="name" label="名称" min-width="150" align="center"></el-table-column>
-      <el-table-column prop="supplierType" label="类型" min-width="150" align="center"></el-table-column>
+      <el-table-column prop="types1" label="类型" min-width="150" align="center">
+      </el-table-column>
       <el-table-column prop="productDirection" label="产品方向" min-width="130" align="center"></el-table-column>
       <el-table-column prop="isMonthly" label="借款方式" min-width="110" align="center"></el-table-column>
       <el-table-column prop="address" label="地址" min-width="220" align="center"></el-table-column>
@@ -37,7 +38,11 @@
     <el-pagination class="paging" :page-sizes="[10,20,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
     <!-- 供应商信息添加弹框 -->
-    <el-dialog title="供应商信息" :visible.sync="add_supplierInfo" width="900px" custom-class="city_list" :show-close='false'>
+    <el-dialog title="供应商信息" style="position:absolute;" :visible.sync="add_supplierInfo" width="900px" custom-class="city_list" :show-close='false'>
+      <div slot="footer" style="position:absolute; top:8px; right:10px;">
+        <el-button @click="addSupplierInfoCancel('addSupplierInfo')">取 消</el-button>
+        <el-button type="primary" @click="addSupplier">保 存</el-button>
+      </div>
       <el-form :model="addSupplierInfo" :label-position="labelPosition" label-width="80px" :rules="rules" ref="addSupplierInfo">
         <div class="supplierInfo_left">
           <el-form-item label="名称" :label-width="Width" prop="name" class="addContact_span">
@@ -66,13 +71,6 @@
           </el-form-item>
         </div>
         <div class="supplierInfo_right">
-          <el-form-item label="类型" prop="supplierType">
-            <el-select v-model="addSupplierInfo.supplierType" placeholder="请选择类型" class="addSupplierInfo_name">
-              <el-option label="签证，机票" value="0"></el-option>
-              <el-option label="地接" value="1"></el-option>
-              <el-option label="订车" value="2"></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="到期时间" prop="expireTime">
             <el-date-picker v-model="addSupplierInfo.expireTime" type="datetime" placeholder="选择到期时间" class="addSupplierInfo_name"></el-date-picker>
           </el-form-item>
@@ -87,14 +85,20 @@
             <el-input type="textarea" v-model="addSupplierInfo.memo" auto-complete="off" class="addSupplierInfo_textarea" :autosize="{ minRows: 10, maxRows: 15}"></el-input>
           </el-form-item>
         </div>
+        <el-form-item label="类型" prop="supplierType" class="addContact_span">
+          <el-checkbox-group v-model="addSupplierInfo.supplierType">
+            <el-checkbox v-for="itemList in companyList" :label="itemList.id" :key="itemList.id">{{itemList.name}}</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
       </el-form>
-      <div slot="footer" class="addSupplierInfo_btn">
-        <el-button @click="addSupplierInfoCancel('addSupplierInfo')">取 消</el-button>
-        <el-button type="primary" @click="addSupplier">保 存</el-button>
-      </div>
+      
     </el-dialog>
     <!-- 供应商信息编辑弹框 -->
     <el-dialog title="供应商信息" :visible.sync="edit_supplierInfo" width="900px" custom-class="city_list" :show-close='false'>
+      <div slot="footer" style="position:absolute; top:8px; right:10px;">
+        <el-button @click="editSupplierInfoCancel('editSupplierInfo')">取 消</el-button>
+        <el-button type="primary" @click="editDialogVisible('editSupplierInfo')">保 存</el-button>
+      </div>
       <el-form :model="editSupplierInfo" :label-position="labelPosition" label-width="80px" :rules="rules" ref="editSupplierInfo">
         <div class="supplierInfo_left">
           <el-form-item label="名称" :label-width="Width" prop="name" class="addContact_span">
@@ -123,13 +127,6 @@
           </el-form-item>
         </div>
         <div class="supplierInfo_right">
-          <el-form-item label="类型" prop="supplierType">
-            <el-select v-model="editSupplierInfo.supplierType" placeholder="请选择类型" class="addSupplierInfo_name">
-              <el-option label="签证，机票" value="0"></el-option>
-              <el-option label="地接" value="1"></el-option>
-              <el-option label="订车" value="2"></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="到期时间" prop="expireTime">
             <el-date-picker v-model="editSupplierInfo.expireTime" type="datetime" placeholder="选择到期时间" class="addSupplierInfo_name"></el-date-picker>
           </el-form-item>
@@ -144,11 +141,13 @@
             <el-input type="textarea" v-model="editSupplierInfo.memo" auto-complete="off" class="addSupplierInfo_textarea" :autosize="{ minRows: 10, maxRows: 15}"></el-input>
           </el-form-item>
         </div>
+        <el-form-item label="类型" prop="supplierType" class="addContact_span">
+          <el-checkbox-group v-model="editSupplierInfo.supplierType">
+            <el-checkbox v-for="itemList in companyList" :label="itemList.id" :key="itemList.id">{{itemList.name}}</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
       </el-form>
-      <div slot="footer" class="addSupplierInfo_btn">
-        <el-button @click="editSupplierInfoCancel('editSupplierInfo')">取 消</el-button>
-        <el-button type="primary" @click="editDialogVisible('editSupplierInfo')">保 存</el-button>
-      </div>
+      
     </el-dialog>
     <!-- 联系人信息列表弹框 -->
     <el-dialog title="联系人信息" :visible.sync="contact" width="690px" custom-class="city_list" :show-close='false'>
@@ -285,6 +284,7 @@
   export default {
     data(){
       return{
+        companyList:[],
         sid:0,
         a:[],
         b:[],
@@ -326,7 +326,7 @@
           destinationID: "",
           productDirection: "",
           userState: "",
-          supplierType: "",
+          supplierType: [],
           expireTime: "",
           isMonthly: "",
           memo: ""
@@ -341,7 +341,7 @@
           destinationID: "",
           productDirection: "",
           userState: "",
-          supplierType: "",
+          supplierType: [],
           expireTime: "",
           isMonthly: "",
           memo: ""
@@ -418,6 +418,8 @@
       }
     },
     methods:{
+      
+
       //表格标题样式
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -512,8 +514,31 @@
       clickRow(row){
         this.$refs.multipleTable.toggleRowSelection(row)
       },
+      //点击添加显示弹窗
+      add_test(){
+        this.add_supplierInfo = true;
+        this.getCompany();
+      },
+      //获取类型
+      getCompany(){
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/universal/suppliertype/api/get",
+        )
+        .then(res => {
+
+            this.companyList=res.data.objects;           
+        })
+      },
       // 供应商信息弹框添加和取消
       addSupplier(addSupplierInfo){
+        let types=[];
+        for(let i=0;i<this.addSupplierInfo.supplierType.length;i++){
+           types.push({
+            "id": 0,
+            "supplierType": this.addSupplierInfo.supplierType[i],
+            "supplierID": 0
+           })
+        }
         this.$refs.addSupplierInfo.validate((valid) => {
           if (valid) {
             var _this = this;
@@ -522,7 +547,7 @@
                 object: {
                   name: this.addSupplierInfo.name,
                   userState:this.addSupplierInfo.userState,
-                  supplierType:this.addSupplierInfo.supplierType,
+                  types:types,
                   address:this.addSupplierInfo.address,
                   destinationID:this.addSupplierInfo.destinationID,
                   productDirection:this.addSupplierInfo.productDirection,
@@ -612,6 +637,14 @@
         this.obtain(1);
       },
       editDialogVisible(editSupplierInfo){
+        let types=[];
+        for(let i=0;i<this.editSupplierInfo.supplierType.length;i++){
+           types.push({
+            "id": 0,
+            "supplierType": this.editSupplierInfo.supplierType[i],
+            "supplierID": 0
+           })
+        }
         this.edit_supplierInfo = false;
         this.$refs[editSupplierInfo].validate((valid) => {
           if(valid){
@@ -620,7 +653,7 @@
               object: {
                 name: this.editSupplierInfo.name,
                 userState:this.editSupplierInfo.userState,
-                supplierType:this.editSupplierInfo.supplierType,
+                types:types,
                 address:this.editSupplierInfo.address,
                 destinationID:this.editSupplierInfo.destinationID,
                 productDirection:this.editSupplierInfo.productDirection,
@@ -646,13 +679,6 @@
                     arr[k]['userState'] = '停用'
                   }else if(arr[k]['userState'] == 1) {
                     arr[k]['userState'] = '正常'
-                  }
-                  if(arr[k]['supplierType'] == 0){
-                    arr[k]['supplierType'] = '签证，机票'
-                  }else if(arr[k]['supplierType'] == 1) {
-                    arr[k]['supplierType'] = '地接'
-                  }else if(arr[k]['supplierType'] == 2) {
-                    arr[k]['supplierType'] = '订车'
                   }
                   if(arr[k]['isMonthly'] == 0){
                     arr[k]['isMonthly'] = '现金'
@@ -1095,17 +1121,19 @@
             that.total = obj.data.total
             that.tableData = obj.data.objects
             that.tableData.forEach(function (v,k,arr) {
+              let types='';
+              for(let i=0;i< arr[k].types.length;i++){
+                 types+=arr[k].types[i].supplierTypeEX;
+                 if(i!=arr[k].types.length-1){
+                  types+=','
+                 }
+              }
+              arr[k]['types1']=types;
+
               if(arr[k]['userState'] == 0){
                 arr[k]['userState'] = '停用'
               }else if(arr[k]['userState'] == 1) {
                 arr[k]['userState'] = '正常'
-              }
-              if(arr[k]['supplierType'] == 0){
-                arr[k]['supplierType'] = '签证，机票'
-              }else if(arr[k]['supplierType'] == 1) {
-                arr[k]['supplierType'] = '地接'
-              }else if(arr[k]['supplierType'] == 2) {
-                arr[k]['supplierType'] = '订车'
               }
               if(arr[k]['isMonthly'] == 0){
                 arr[k]['isMonthly'] = '现金'
@@ -1114,12 +1142,14 @@
               }else if(arr[k]['isMonthly'] == 2) {
                 arr[k]['isMonthly'] = '支付宝'
               }
+              
             })
             console.log(obj.data.objects)
           })
           .catch(function (obj) {
             console.log(obj)
           })
+
       },
       //联系人列表
 
@@ -1150,7 +1180,7 @@
   .supplierInfo_left{ width:410px; }
   .supplierInfo_right{ width:295px; float:right; margin-top:-436px; margin-right:60px; }
   .addSupplierInfo_textarea{ width:200px; margin-right:14px; }
-  .addSupplierInfo_btn{ position:absolute; margin-left:709px; margin-top:-557px; }
+  .addSupplierInfo_btn{ position:fixed; margin-left:709px; margin-top:-620px; }
   .attachment_btn{ position:absolute; margin-left:82px; }
   .upload-demo{float:left;}
   .upload-demo>>>.el-upload-list--picture .el-upload-list__item{ width:141px; display: inline-block; margin: 10px 4px 0 0px; }
