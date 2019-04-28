@@ -635,6 +635,7 @@
       test(){
         this.edit_supplierInfo = true;
         this.obtain(1);
+        this.getCompany();
       },
       editDialogVisible(editSupplierInfo){
         let types=[];
@@ -679,6 +680,13 @@
                     arr[k]['userState'] = '停用'
                   }else if(arr[k]['userState'] == 1) {
                     arr[k]['userState'] = '正常'
+                  }
+                  if(arr[k]['supplierType'] == 0){
+                    arr[k]['supplierType'] = '签证，机票'
+                  }else if(arr[k]['supplierType'] == 1) {
+                    arr[k]['supplierType'] = '地接'
+                  }else if(arr[k]['supplierType'] == 2) {
+                    arr[k]['supplierType'] = '订车'
                   }
                   if(arr[k]['isMonthly'] == 0){
                     arr[k]['isMonthly'] = '现金'
