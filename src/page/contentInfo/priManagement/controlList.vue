@@ -138,9 +138,7 @@ export default {
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
-                 this.rformB.name=data.name;
-                 this.rformB.route=data.route;
-                 this.rformB.key=data.key;
+                 this.rformB=data;
               }
         }) 
       },

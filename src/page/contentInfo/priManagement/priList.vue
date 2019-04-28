@@ -167,9 +167,7 @@ export default {
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
-                 this.rformA.name=data.name;
-                 this.rformA.uri=data.uri;
-                 this.rformA.parentID=data.parentID;
+                 this.rformA = data;
               }
         }) 
       },
