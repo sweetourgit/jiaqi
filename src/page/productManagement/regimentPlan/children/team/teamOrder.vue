@@ -472,6 +472,7 @@ export default {
                    this.elder = [];
                    this.ruleForm.remark = '';
               }else{
+                 //预留黑名单信息？？？
                  _this.$message.success('下单失败');
               }
             }) 

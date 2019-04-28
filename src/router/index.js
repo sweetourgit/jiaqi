@@ -19,9 +19,10 @@ import supplierInfo from '@/page/contentInfo/supplierInfo/supplierInfo'
 import productList from '@/page/productManagement/productList/productList'
 import baseInfo from '@/page/productManagement/listInfo/listInfo'
 import travelTemplate from '@/page/productManagement/travelTemplate/travelTemplate'
+//团期计划
 import regimentPlan from '@/page/productManagement/regimentPlan/regimentPlan'
-import planList from '@/page/productManagement/regimentPlan/children/planList'
-import placeOrder from '@/page/productManagement/regimentPlan/children/placeOrder'
+import teamPlanList from '@/page/productManagement/regimentPlan/children/team/teamPlanList'
+import teamOrder from '@/page/productManagement/regimentPlan/children/team/teamOrder'
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 import changePro from '@/page/productManagement/changePro/changePro'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
@@ -223,17 +224,17 @@ export default new Router({
       name: '团期计划',
       children: [
         {
-          path: 'planList',
+          path: 'teamPlanList',
           name: '团期计划列表',
-          component: planList,
+          component: teamPlanList,
           meta: {
             keepAlive: true,
             auth:true},
           },
         {
-          path: 'placeOrder',
+          path: 'teamOrder',
           name: '团期计划订单',
-          component: placeOrder,
+          component: teamOrder,
           meta: {
             keepAlive: true,
             auth:true},

@@ -116,7 +116,7 @@
                 },
                 {
                   value: '团期计划',
-                  router:'/regimentPlan/planList'
+                  router:'/regimentPlan/teamPlanList'
                 },
                 {
                   value: '共享库存',

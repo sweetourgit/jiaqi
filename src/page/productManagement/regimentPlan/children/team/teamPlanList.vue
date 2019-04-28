@@ -14,7 +14,7 @@
        <el-button :disabled="forbidden1" @click="dialogFormVisible = true">更改状态</el-button>
        <el-button :disabled="forbidden2" @click="dialogCost = true">报账单</el-button>
        <el-button :disabled="forbidden2">订单</el-button>
-       <el-button :disabled="forbidden2" @click="placeOrder">下单</el-button>
+       <el-button :disabled="forbidden2" @click="teamOrder">下单</el-button>
      </el-row>
      <!--list-->
      <el-table :data="teamqueryList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
@@ -164,8 +164,8 @@ export default {
           }
         }
       },
-      placeOrder(){
-        this.$router.push({path: "/regimentPlan/placeOrder?planid="+this.multipleSelection[0].id});
+      teamOrder(){
+        this.$router.push({path: "/regimentPlan/teamOrder?planid="+this.multipleSelection[0].id});
       },
       handleSizeChange(val){
         this.pageSize = val;
