@@ -90,6 +90,7 @@ export default {
        pageIndex: 1, // 设定当前页数
        total: 0,
        teamqueryList: [],
+       multipleSelection: [],   //选中的list
        //成本
        costList:[{
           id:1,
@@ -115,11 +116,10 @@ export default {
           num:'20',
           enclosure:'查看'
        }],
-       costSelection: [],   //选中的list
-       
-        multipleSelection: [],   //选中的list
-        dialogFormVisible: false, //更改状态弹窗
         dialogCost: false, //成本弹窗
+        costSelection: [],   //选中的list
+        //更改状态   
+        dialogFormVisible: false,   
         form: {
           radio: '',
         },
@@ -196,7 +196,7 @@ export default {
       //成本方法
       getCostClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
-          return 'background:#666;height:25px;textAlign:center;color:#fff;fontSize:15px'
+          return 'background:#f6f6f6;height:25px;textAlign:center;fontSize:15px'
         } else {
           return ''
         }
