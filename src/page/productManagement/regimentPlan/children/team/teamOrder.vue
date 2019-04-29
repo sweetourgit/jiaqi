@@ -90,9 +90,9 @@
             -->
             <el-form-item label="选择价格" prop="price" class="cb price">
               <el-radio-group v-model="ruleForm.price">
-                 <el-radio label="1" class="radiomar">销售价： 成人 （￥4500）  儿童（￥4000） 老人（￥3500） 单房差（￥300）</el-radio>
-                 <!--<el-radio label="同业价" class="radiomar">同业价： 成人 （￥3800）  儿童（￥3000） 老人（￥3000） 单房差（￥200）</el-radio><br/>          
-                  <el-radio label="自定义" class="radiomar">自定义： 
+                 <el-radio label="1" class="radiomar">销售价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio><br/>
+                 <el-radio label="2" class="radiomar">同业价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio><br/><!--
+                 <el-radio label="自定义" class="radiomar">自定义： 
                        成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
                        儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
                        老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
@@ -100,21 +100,23 @@
                   </el-radio>-->
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="报名人数">            
-              <div class="ml13">成人<el-input v-model="ruleForm.num1" class="numw" @input="peoNum('adult')"></el-input>余（17） ￥4500</div>
+            <el-form-item label="报名人数" class="fl">            
               <div class="num-req">*</div>
             </el-form-item>
-            <el-form-item label="">            
-              <div class="ml13">儿童<el-input v-model="ruleForm.num2" class="numw" @input="peoNum('child')"></el-input>余（17） ￥4000</div>
-            </el-form-item>
-            <el-form-item label="">            
-              <div class="ml13">老人<el-input v-model="ruleForm.num3" class="numw" @input="peoNum('elder')"></el-input>余（17） ￥3500</div>
-            </el-form-item>
+            <div class="fl">         
+              <div class="ml13 mb17" v-for="(item,index) in salePrice">{{item.enrollName}}
+                   <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index)"></el-input>
+                   余（{{item.quota}}）
+                   ￥<span v-show="ruleForm.price==1">{{item.price_01}}</span><span v-show="ruleForm.price==2">{{item.price_02}}</span>
+              </div>
+            </div>
+            <!--
             <el-form-item label="" prop="">            
               <div class="ml13">单房差 ￥340</div>
             </el-form-item>
+            -->
             <!--其他费用-->
-            <el-form-item label="其他费用" prop="otherCost" class="fl">            
+            <el-form-item label="其他费用" prop="otherCost" class="fl cb">            
               <el-input v-model="ruleForm.otherCost" class="numw"></el-input>
             </el-form-item>
             <div class="fl">            
@@ -148,17 +150,9 @@
             </el-form-item>
             <!--出行人信息-->
             <el-form-item label="出行人信息" class="cb">            
-               <div class="oh" v-show="typeNum1">
-                 <div class="tour-til">成人</div>
-                 <div class="tourist"><input v-for="(item,index) in adult" placeholder="点击填写" v-model="item.cnName" @click="fillTour('1',index)"/></div>
-               </div>
-               <div class="oh" v-show="typeNum2">
-                 <div class="tour-til">儿童</div>
-                 <div class="tourist"><input v-for="(item,index) in child" placeholder="点击填写" v-model="item.cnName" @click="fillTour('2',index)"/></div>
-               </div>
-               <div class="oh" v-show="typeNum3">
-                 <div class="tour-til">老人</div>
-                 <div class="tourist"><input v-for="(item,index) in elder" placeholder="点击填写" v-model="item.cnName" @click="fillTour('3',index)"/></div>
+               <div class="oh" v-for="(item,indexPrice) in salePrice">
+                 <div class="tour-til">{{item.enrollName}}</div>
+                 <div class="tourist"><input v-for="(item,index) in tour[indexPrice]" placeholder="点击填写" v-model="item.cnName" @click="fillTour(indexPrice,index)"/></div>
                </div>
             </el-form-item>
             <el-form-item label="备注" prop="">            
@@ -233,12 +227,6 @@ export default {
           price2:'',
           price3:'',
           price4:'',    
-          num1: '', //报名人数
-          num2: '',
-          num3: '',
-          numpre1: 0, //记录上一次报名人数，修改人数时，改变出行人信息数组
-          numpre2: 0,
-          numpre3: 0,
           otherCost: '0',
           otherCostRemark: '',
           allDiscount: '0',
@@ -250,21 +238,15 @@ export default {
           remark:'',
         },
         //游客信息
+        enrolNum:[], //报名人数[1,3]形式
         dialogFormVisible: false,
-        adult:[],//游客信息
-        child:[],
-        elder:[],
-        adultId:1,//游客类型id
-        childId:2,
-        elderId:3,
-        fillIndex:0,//当前添加的游客的索引
-        adultPrice:'4500',
-        childPrice:'4000',
-        elderPrice:'3500',
-        typeNum1:false,
-        typeNum2:false,
-        typeNum3:false,
-        winTitle:'',
+        salePrice:[],//报名类型价格列表数据
+        tourType:0,//报名类型索引
+        fillIndex:0,//报名类型下游客list索引
+        arrLength:[],//报名人数[1,3]形式
+        preLength:[],//记录上一次报名人数[1,3]形式
+        tour:[],//总游客信息,二维数组
+        winTitle:'',  //弹窗标题
         conForm: {   
           id: 0,
           isDeleted: 0,
@@ -323,9 +305,27 @@ export default {
     }
   },
   created(){
-     this.teampreview()
+     this.teamEnrolls();
+     this.teampreview();
   },
   methods: {
+     teamEnrolls(){  //获取报名类型列表数据
+       this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/enrolls',{
+            "id": this.$route.query.planid
+        }).then(res => {
+          if(res.data.isSuccess == true){
+             this.salePrice = res.data.objects;
+             this.enrolNum=[];
+             this.preLength=[];
+             this.tour=[];
+             this.enrolNum.length = res.data.objects.length;            
+             for(let i=0;i<res.data.objects.length;i++){
+                this.preLength.push('0');
+                this.tour.push([]);
+             }
+          }
+       })
+     },
      teampreview(){  //团期计划订单信息预览
        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/teampreview',{
             "id": this.$route.query.planid
@@ -335,84 +335,51 @@ export default {
           }
        })
      },
-     peoNum(num){
-        let arr;
+     peoNum(index){   //填写报名人数
         let arrLength;//报名人数
         let preLength;//记录上一次报名人数
-        if(num=='adult'){
-          arr=this.adult;
-          preLength=this.ruleForm.numpre1;
-          arrLength=this.ruleForm.num1;
-          this.ruleForm.numpre1=this.ruleForm.num1;
-          if(arrLength!=0){
-            this.typeNum1=true;
-          }else{
-            this.typeNum1=false;
-          }
-        }
-        if(num=='child'){
-          arr=this.child;
-          preLength=this.ruleForm.numpre2;
-          arrLength=this.ruleForm.num2;
-          this.ruleForm.numpre2=this.ruleForm.num2;
-          if(arrLength!=0){
-            this.typeNum2=true;
-          }else{
-            this.typeNum2=false;
-          }
-        }
-        if(num=='elder'){
-          arr=this.elder;
-          preLength=this.ruleForm.numpre3;
-          arrLength=this.ruleForm.num3;
-          this.ruleForm.numpre3=this.ruleForm.num3;
-          if(arrLength!=0){
-            this.typeNum3=true;
-          }else{
-            this.typeNum3=false;
-          }
-        }
+            preLength=this.preLength[index];  //获取上一次报名人数
+            arrLength=this.enrolNum[index];   //获取当前报名人数
+            this.preLength[index]=this.enrolNum[index];  //记录上一次报名人数为当前报名人数
         var len;
         if(arrLength>preLength){  //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
           len=arrLength-preLength;
           for(var i=0;i<len;i++){
-            arr.push({cnName:'点击填写'});
+            this.tour[index].push({cnName:'点击填写'});
           }  
         }else{
-          arr.splice(arrLength-preLength,preLength-arrLength);
-        }   
+          this.tour[index].splice(arrLength-preLength,preLength-arrLength);
+        }
      },
      fillTour(type,index){
-        if(type==1){
-          this.winTitle='成人';
-          if(this.adult[index].cnName!='点击填写'){
-            this.conForm=JSON.parse(JSON.stringify(this.adult[index])); //如果已填完信息，把信息显示出来
+          this.winTitle=this.salePrice[type].enrollName; //编辑游客信息弹窗标题
+
+          if(this.tour[type][index].cnName!='点击填写'){
+            this.conForm=JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
           }
-        }
-        if(type==2){
-          this.winTitle='儿童';
-          if(this.child[index].cnName!='点击填写'){
-            this.conForm=JSON.parse(JSON.stringify(this.child[index]));
-          }
-        }
-        if(type==3){
-          this.winTitle='老人';
-          if(this.elder[index].cnName!='点击填写'){
-            this.conForm=JSON.parse(JSON.stringify(this.elder[index]));
-          }
-        }
-        this.fillIndex=index;
-        this.dialogFormVisible = true;
+          this.tourType=type;
+          this.fillIndex=index;
+          this.dialogFormVisible = true;
      },
      submitForm(formName) {
         this.$refs[formName].validate((valid) => {
+            let number=0;   //获取报名总人数
+            for(let i=0;i<this.enrolNum.length;i++){
+              number+=parseInt(this.enrolNum[i]);
+            };
+            let guestAll=[];   //游客信息格式转换
             if(valid) {
-              let guestAll=this.adult.concat(this.child,this.elder);//合并所有游客信息
+              for(let i=0;i<this.tour.length;i++){
+                for(let j=0;j<this.tour[i].length;j++){
+                  guestAll.push(this.tour[i][j]);
+                }
+              }
+              
               let guest=[];
-              for(let i=0;i<guestAll.length;i++){   //过滤掉未填写人员信息
-                 if(guestAll[i].cnName!='点击填写'){
+              for(let i=0;i<guestAll.length;i++){   
+                 if(guestAll[i].cnName!='点击填写'){ //过滤掉未填写人员信息
                     guest.push(guestAll[i]);
-                    guest[i].bornDate = (new Date(guest[i].bornDate)).getTime()/1000;
+                    guest[i].bornDate = (new Date(guest[i].bornDate)).getTime()/1000;  //时间格式转换
                     guest[i].credTOV = (new Date(guest[i].credTOV)).getTime()/1000;
                  }
               }
@@ -428,7 +395,6 @@ export default {
                   "refundStatus": 0,  //退款状态
                   "occupyStatus": this.ruleForm.type,  //占位状态
                   "payable": this.ruleForm.totalPrice, //应付款
-                  "paid": 0,           //已付款
                   "favourable": [      //优惠
                     {
                       "id": 0,
@@ -453,7 +419,8 @@ export default {
                   "orgID": 0,
                   "userID": 0,
                   "mark": this.ruleForm.remark,
-                  "guest":guest
+                  "guest":guest,
+                  "number": number
                 }
             }).then(res => {
               if(res.data.isSuccess == true){
@@ -461,15 +428,7 @@ export default {
                    this.orderSuc = true;
                    //清空表单
                    this.$refs[formName].resetFields();
-                   this.ruleForm.num1 = ''; //清空报名人数
-                   this.ruleForm.num2 = '';
-                   this.ruleForm.num3 = '';
-                   this.ruleForm.numpre1 = 0; //清空上一次报名人数
-                   this.ruleForm.numpre2 = 0;
-                   this.ruleForm.numpre3 = 0;
-                   this.adult = []; //清空游客信息
-                   this.child = [];
-                   this.elder = [];
+                   this.teamEnrolls();
                    this.ruleForm.remark = '';
               }else{
                  //预留黑名单信息？？？
@@ -486,19 +445,13 @@ export default {
          this.$refs[formName].validate((valid) => {
           if (valid) {
              let guest=JSON.parse(JSON.stringify(this.conForm));
-             if(this.winTitle=='成人'){
-                guest.enrollID=this.adultId;  //填充报名类型
-                guest.singlePrice=this.adultPrice;  //填充价格
-                this.adult[this.fillIndex]=guest;
-             }else if(this.winTitle=='儿童'){
-                guest.enrollID=this.childId;
-                guest.singlePrice=this.childPrice;
-                this.child[this.fillIndex]=guest;
-             }else if(this.winTitle=='老人'){
-                guest.enrollID=this.elderId;
-                guest.singlePrice=this.elderPrice;
-                this.elder[this.fillIndex]=guest;
-             }
+                guest.enrollID=this.salePrice[this.tourType].enrollID;  //填充报名类型
+                if(this.ruleForm.price==1){
+                  guest.singlePrice=this.salePrice[this.tourType].price_01;  //填充价格
+                }else{
+                  guest.singlePrice=this.salePrice[this.tourType].price_02;
+                }                
+             this.tour[this.tourType][this.fillIndex]=guest;
              this.dialogFormVisible = false;
              this.$refs[formName].resetFields();
             }
@@ -530,6 +483,7 @@ export default {
     .cost-remark{width: 300px;text-align: center;margin:0 15px}
     .radiomar{margin:12px 13px}
     .ml13{margin-left: 13px}
+    .mb17{margin-bottom: 17px}
     .tourist{margin-left: 13px;float: left;width:85%}
     .tourist input{width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:1px 10px 10px 10px}
     .tour-til{float: left;margin-left: 13px;margin-right: -8px}
