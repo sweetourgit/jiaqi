@@ -141,8 +141,8 @@
             <el-input type="textarea" v-model="editSupplierInfo.memo" auto-complete="off" class="addSupplierInfo_textarea" :autosize="{ minRows: 10, maxRows: 15}"></el-input>
           </el-form-item>
         </div>
-        <el-form-item label="类型" prop="supplierType" class="addContact_span">
-          <el-checkbox-group v-model="editSupplierInfo.supplierType">
+        <el-form-item label="类型" prop="supplierType_edit" class="addContact_span">
+          <el-checkbox-group v-model="supplierType_edit">
             <el-checkbox v-for="itemList in companyList" :label="itemList.id" :key="itemList.id">{{itemList.name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -341,11 +341,12 @@
           destinationID: "",
           productDirection: "",
           userState: "",
-          supplierType: [],
           expireTime: "",
           isMonthly: "",
-          memo: ""
+          memo: "",
+          supplierType_edit:""
         },
+        supplierType_edit:[],
         // 附件
         attachment: false,
         labelPosition: 'right',
@@ -377,7 +378,8 @@
           userState: [{ required: true, message: '不能为空', trigger: 'change' }],
           supplierType: [{ required: true, message: '不能为空', trigger: 'change' }],
           expireTime: [{ required: true, message: '不能为空', trigger: 'change' }],
-          isMonthly: [{ required: true, message: '不能为空', trigger: 'change' }]
+          isMonthly: [{ required: true, message: '不能为空', trigger: 'change' }],
+          supplierType_edit: [{ required: true, message: '不能为空', trigger: 'change' }],
         },
         // 表格数据
         tableData: [],
@@ -605,7 +607,7 @@
           })
           .then(res => {
             if(num == 1){//获取一个供应商信息编辑
-              _this.editSupplierInfo.id = res.data.object.id;
+              /*_this.editSupplierInfo.id = res.data.object.id;
               _this.editSupplierInfo.name = res.data.object.name;
               _this.editSupplierInfo.userState = res.data.object.userState;
               _this.editSupplierInfo.supplierType = res.data.object.supplierType;
@@ -616,7 +618,13 @@
               _this.editSupplierInfo.leader = res.data.object.leader;
               _this.editSupplierInfo.phone = res.data.object.phone;
               _this.editSupplierInfo.expireTime = res.data.object.expireTime;
-              _this.editSupplierInfo.memo = res.data.object.memo;
+              _this.editSupplierInfo.memo = res.data.object.memo;*/
+              _this.editSupplierInfo = res.data.object;
+              for(let i=0;i<this.editSupplierInfo.types.length;i++){
+                this.supplierType_edit.push(
+                  this.editSupplierInfo.types[i].supplierType
+                )
+              }
             }else if(num == 2){//获取一个供应商信息联系人
               /* _this.contactData.push({
                  name:res.data.object.leader,
@@ -639,12 +647,12 @@
       },
       editDialogVisible(editSupplierInfo){
         let types=[];
-        for(let i=0;i<this.editSupplierInfo.supplierType.length;i++){
-           types.push({
-            "id": 0,
-            "supplierType": this.editSupplierInfo.supplierType[i],
-            "supplierID": 0
-           })
+        for(let i=0; i<this.supplierType_edit.length;i++){
+          types.push({
+            "id":this.companyList.id,
+            "supplierType":this.supplierType_edit[i],
+            "supplierID":this.sid
+          })
         }
         this.edit_supplierInfo = false;
         this.$refs[editSupplierInfo].validate((valid) => {
