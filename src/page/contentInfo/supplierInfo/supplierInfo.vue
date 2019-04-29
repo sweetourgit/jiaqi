@@ -141,8 +141,8 @@
             <el-input type="textarea" v-model="editSupplierInfo.memo" auto-complete="off" class="addSupplierInfo_textarea" :autosize="{ minRows: 10, maxRows: 15}"></el-input>
           </el-form-item>
         </div>
-        <el-form-item label="类型" prop="supplierType_edit" class="addContact_span">
-          <el-checkbox-group v-model="supplierType_edit">
+        <el-form-item label="类型" class="addContact_span" prop="supplierType_edit">
+          <el-checkbox-group v-model="editSupplierInfo.supplierType_edit">
             <el-checkbox v-for="itemList in companyList" :label="itemList.id" :key="itemList.id">{{itemList.name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -211,7 +211,7 @@
       </span>
     </el-dialog>
     <!-- 银行账列表弹框 -->
-    <el-dialog title="银行账号信息" :visible.sync="bankAccount" width="640px" custom-class="city_list" :show-close='false'>
+    <el-dialog title="银行账号信息" :visible.sync="bankAccount" width="740px" custom-class="city_list" :show-close='false'>
       <el-button plain class="close" @click="bankAccount_close">关闭</el-button>
       <div style="text-align:left;margin-left:20px;">
         <el-button plain @click="add_bankAccount = true">添加</el-button>
@@ -219,8 +219,9 @@
         <el-button plain :disabled="forbidden5" @click="deleteBank(index)" style="border:1px solid red;color:#FE1312">删除</el-button>
       </div>
       <div class="bankAccount_data">
-        <el-table :data="bankData" border ref="bankTable" :header-cell-style="getRowClass" style="width:561px"@row-click="clickBank" @selection-change="changeBank":row-style="rowStyleBank">
+        <el-table :data="bankData" border ref="bankTable" :header-cell-style="getRowClass" style="width:661px"@row-click="clickBank" @selection-change="changeBank":row-style="rowStyleBank">
           <el-table-column prop="number" fixed label="" type="selection" width="50" align="center"></el-table-column>
+          <el-table-column prop="cardName" label="开户名" width="100" align="center"></el-table-column>
           <el-table-column prop="cardNumber" label="卡号" width="210" align="center"></el-table-column>
           <el-table-column prop="bankName" label="银行" width="160" align="center"></el-table-column>
           <el-table-column prop="memo" label="备注" width="140" align="center"></el-table-column>
@@ -229,14 +230,17 @@
     </el-dialog>
     <!-- 添加银行账号弹框 -->
     <el-dialog title="银行账号" :visible.sync="add_bankAccount" width="440px" center custom-class="city_list">
-      <el-form :model="addBankAccount" :rules="rules" ref="addBankAccount" class="bankAccount_form">
+      <el-form :model="addBankAccount" label-width="65px" :rules="rules" ref="addBankAccount" class="bankAccount_form">
+        <el-form-item label="开户名" :label-width="Width" prop="cardName" class="addContact_span">
+          <el-input v-model="addBankAccount.cardName" auto-complete="off" class="addContact_name" placeholder="请输入开户名"></el-input>
+        </el-form-item>
         <el-form-item label="卡号" :label-width="Width" prop="cardNumber" class="addContact_span">
           <el-input v-model="addBankAccount.cardNumber" auto-complete="off" class="addContact_name" placeholder="请输入银行卡号"></el-input>
         </el-form-item>
         <el-form-item label="银行" :label-width="Width" prop="bankName" class="addContact_span">
           <el-input v-model="addBankAccount.bankName" auto-complete="off" class="addContact_name" placeholder="请输入银行名称"></el-input>
         </el-form-item>
-        <el-form-item label="备注" class="bankAccount_span" prop="memo">
+        <el-form-item label="备注" label-width="55px" class="bankAccount_span" prop="memo">
           <el-input type="textarea" v-model="addBankAccount.memo" auto-complete="off" class="addBankAccount_textarea" :autosize="{ minRows: 4, maxRows: 8}"></el-input>
         </el-form-item>
       </el-form>
@@ -247,14 +251,17 @@
     </el-dialog>
     <!-- 编辑银行账号弹框 -->
     <el-dialog title="银行账号" :visible.sync="edit_bankAccount" width="440px" center custom-class="city_list">
-      <el-form :model="editBankAccount" :rules="rules" ref="editBankAccount" class="bankAccount_form">
+      <el-form :model="editBankAccount" label-width="65px" :rules="rules" ref="editBankAccount" class="bankAccount_form">
+        <el-form-item label="开户名" :label-width="Width" prop="cardName" class="addContact_span">
+          <el-input v-model="editBankAccount.cardName" auto-complete="off" class="addContact_name" placeholder="请输入开户名"></el-input>
+        </el-form-item>
         <el-form-item label="卡号" :label-width="Width" prop="cardNumber" class="addContact_span">
           <el-input v-model="editBankAccount.cardNumber" auto-complete="off" class="addContact_name" placeholder="请输入银行卡号"></el-input>
         </el-form-item>
         <el-form-item label="银行" :label-width="Width" prop="bankName" class="addContact_span">
           <el-input v-model="editBankAccount.bankName" auto-complete="off" class="addContact_name" placeholder="请输入银行名称"></el-input>
         </el-form-item>
-        <el-form-item label="备注" class="bankAccount_span" prop="memo">
+        <el-form-item label="备注" label-width="55px" class="bankAccount_span" prop="memo">
           <el-input type="textarea" v-model="editBankAccount.memo" auto-complete="off" class="addBankAccount_textarea" :autosize="{ minRows: 4, maxRows: 8}"></el-input>
         </el-form-item>
       </el-form>
@@ -300,11 +307,13 @@
         edit_bankAccount:false,
         addBankAccount: {
           cardNumber: '',
+          cardName:'',
           bankName: '',
           memo: ''
         },
         editBankAccount: {
           cardNumber: '',
+          cardName:'',
           bankName: '',
           memo: ''
         },
@@ -344,9 +353,8 @@
           expireTime: "",
           isMonthly: "",
           memo: "",
-          supplierType_edit:""
+          supplierType_edit:[]
         },
-        supplierType_edit:[],
         // 附件
         attachment: false,
         labelPosition: 'right',
@@ -363,6 +371,7 @@
             { pattern: /^1(3|4|5|7|8)\d{9}$/,message:'请输入11位正确的手机号码' }],
           cardNumber: [{ required: true, message: '不能为空', trigger: 'blur' },
             { pattern: /^[0-9]{0,20}$/,message:'请输入20个数字以内的正确卡号' }],
+          cardName: [{ required: true, message: '不能为空', trigger: 'blur' }],
           bankName: [{ required: true, message: '不能为空', trigger: 'blur' },
             { pattern: /^[\u4e00-\u9fa5]{0,10}$/,message:'请输入10个汉字以内银行名称' }],
           name: [{ required: true, message: '不能为空', trigger: 'blur' },
@@ -619,9 +628,10 @@
               _this.editSupplierInfo.phone = res.data.object.phone;
               _this.editSupplierInfo.expireTime = res.data.object.expireTime;
               _this.editSupplierInfo.memo = res.data.object.memo;*/
-              _this.editSupplierInfo = res.data.object;
+              this.editSupplierInfo = res.data.object;
+              this.$set(this.editSupplierInfo,"supplierType_edit",[]);
               for(let i=0;i<this.editSupplierInfo.types.length;i++){
-                this.supplierType_edit.push(
+                this.editSupplierInfo.supplierType_edit.push(
                   this.editSupplierInfo.types[i].supplierType
                 )
               }
@@ -647,10 +657,10 @@
       },
       editDialogVisible(editSupplierInfo){
         let types=[];
-        for(let i=0; i<this.supplierType_edit.length;i++){
+        for(let i=0; i<this.editSupplierInfo.supplierType_edit.length;i++){
           types.push({
             "id":0,
-            "supplierType":this.supplierType_edit[i],
+            "supplierType":this.editSupplierInfo.supplierType_edit[i],
             "supplierID":this.sid
           })
         }
@@ -950,6 +960,7 @@
             console.log(res.data.object)
             _this.editBankAccount.id = res.data.object.id;
             _this.editBankAccount.cardNumber = res.data.object.cardNumber;
+            _this.editBankAccount.cardName = res.data.object.cardName;
             _this.editBankAccount.bankName = res.data.object.bankName;
             _this.editBankAccount.memo = res.data.object.memo;
 
@@ -999,6 +1010,7 @@
                   code: "string",
                   isDeleted: 0,
                   cardNumber: this.addBankAccount.cardNumber,
+                  cardName:this.addBankAccount.cardName,
                   bankName: this.addBankAccount.bankName,
                   memo: this.addBankAccount.memo,
                   supplierID: this.sid,
@@ -1009,6 +1021,7 @@
                   _this.$message.error("添加失败,该供应商已存在");
                 } else {
                   _this.addBankAccount.cardNumber = "";
+                  _this.addBankAccount.cardName = "";
                   _this.addBankAccount.bankName = "";
                   _this.addBankAccount.memo = "";
                   _this.$message.success("添加成功");
@@ -1033,6 +1046,7 @@
                   code: "string",
                   isDeleted: 0,
                   cardNumber: this.editBankAccount.cardNumber,
+                  cardName:this.editBankAccount.cardName,
                   bankName: this.editBankAccount.bankName,
                   memo: this.editBankAccount.memo,
                   supplierID: this.sid,
@@ -1213,6 +1227,8 @@
   .el-button.is-disabled:hover{color: #606266; border:1px solid #dcdfe6;}
   .delete_button{color:#fe1212; border:1px solid #fe1212;}
   .delete_button:hover{color:#fe1212; border:1px solid #fe1212;}
+
+  .el-form-item>>>.el-form-item__error{left:0;}
 
   /*分页*/
   .paging{float: right; margin:20px 0 0 0;}
