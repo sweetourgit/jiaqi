@@ -2,21 +2,21 @@
   <div class="vivo" style="position:relative">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="付款" name="first">
-        <span class="search-title">团期计划</span>
+        <span class="search-title">团期计划:</span>
         <el-input v-model="groupNo" class="input"></el-input>
-        <span class="search-title">申请人</span>
+        <span class="search-title">申请人:</span>
         <el-input v-model="user" class="input"></el-input>
         <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
         <div class="date-line"></div>
         <el-date-picker v-model="endTime" type="date" placeholder="终止日期" class="start-time"></el-date-picker>
-        <div style="border: 0px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; /* margin-left: 50px; */ width: 100%">
+        <div style="border: 0px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 20px; width: 100%">
           <div class="button_select">
             <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
             <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
           </div>
           <div class="button_select">
-            <el-button @click="dialogchange" plain>申请预付款</el-button>
-            <el-button @click=dialogFind plain :disabled="reable">查看借款</el-button>
+            <el-button type="primary" @click="dialogchange" plain>申请预付款</el-button>
+            <el-button type="primary" @click=dialogFind plain :disabled="reable">查看借款</el-button>
           </div>
           <div class="table_trip" style="width: 90%;">
             <el-table :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
@@ -55,7 +55,7 @@
       </el-tab-pane>
     </el-tabs>
     <!--申请预付款-->
-    <el-dialog title="申请预付款" :visible.sync="dialogFormVisible" width=80% :show-close="false">
+    <el-dialog title="申请预付款" :visible.sync="dialogFormVisible" width=60% :show-close="false">
       <div v-if="this.find == 1" class="sh_style">审核中</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="btn" style="width:200px;position:absolute;z-index:9;top:20px;right:1%;">
@@ -158,7 +158,7 @@
               </el-form-item>
               <el-form-item label="付款明细" label-width="120px" label-height="auto">
                 <br />
-                <el-table :data="tableData6" border style="width:90%" :header-cell-style="getRowClass2">
+                <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
                   <el-table-column prop="id" label="ID" align="center">
                   </el-table-column>
                   <el-table-column prop="status" label="状态" align="center">
@@ -202,7 +202,7 @@
               </el-form-item>
               <el-form-item label="无收入借款明细" label-width="120px" label-height="auto">
                 <br />
-                <el-table :data="tableData7" border style="width:85%" :header-cell-style="getRowClass2">
+                <el-table :data="tableData7" border style="width:90%" :header-cell-style="getRowClass2">
                   <el-table-column prop="id" label="ID" align="center">
                   </el-table-column>
                   <el-table-column prop="status" label="状态" align="center">
@@ -244,7 +244,7 @@
               </el-form-item>
               <el-form-item label="收入明细" label-width="120px" label-height="auto">
                 <br />
-                <el-table :data="tableData8" border style="width:80%" :header-cell-style="getRowClass2">
+                <el-table :data="tableData8" border style="width:85%" :header-cell-style="getRowClass2">
                   <el-table-column prop="oNo" label="订单编号" align="center">
                   </el-table-column>
                   <el-table-column prop="source" label="来源" align="center">
@@ -556,51 +556,9 @@ export default {
         label: '辽宁康辉'
       }],
       type: '',
-      typeList: [{
-        value: '选项1',
-        label: '地接'
-      }, {
-        value: '选项2',
-        label: '机票（本公司）'
-      }, {
-        value: '选项3',
-        label: '机票（非本公司）'
-      }, {
-        value: '选项4',
-        label: '小费'
-      }, {
-        value: '选项5',
-        label: '签证'
-      }, {
-        value: '选项6',
-        label: '火车票'
-      }, {
-        value: '选项7',
-        label: '汽车票'
-      }, {
-        value: '选项8',
-        label: '船票'
-      }, {
-        value: '选项9',
-        label: '其他'
-      }, {
-        value: '选项10',
-        label: '返款'
-      }],
+      typeList: [],
       payMode: '',
-      payModeList: [{
-        value: '选项1',
-        label: '网银'
-      }, {
-        value: '选项2',
-        label: '现金'
-      }, {
-        value: '选项3',
-        label: '支付宝'
-      }, {
-        value: '选项4',
-        label: '微信'
-      }],
+      payModeList: [],
       ruleForm: {
         loanMoney: '',
         loanNumber: '',
@@ -1206,7 +1164,6 @@ export default {
     },
     // 供应商
     dest_01(item) {
-      this.dynamicTags2.push({ "labelID": item.id, "label": item.value, "teamID": 0 });
       this.ruleForm.supplier = item.value;
       this.inputVisible2 = false;
     },
@@ -1252,14 +1209,14 @@ export default {
     },
     querySearch5(queryString5, cb) {
       this.tableData2 = []
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/olabelfuzzy', {
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
         "object": {
-          labelName: queryString5
+          supplier: queryString5
         }
       }).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
           this.tableData2.push({
-            "value": res.data.objects[i].labelName,
+            "value": res.data.objects[i].leader,
             "id": res.data.objects[i].id
           })
         }
@@ -1268,6 +1225,47 @@ export default {
       }).catch(err => {
         console.log(err);
       })
+    },
+    //获取供应商类型
+    querySearch6() {
+      this.typeList = []
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
+        "object": {
+          id: 1
+        }
+      }).then(res => {
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.typeList.push({
+            "value": res.data.objects[i].id,
+            "label": res.data.objects[i].name
+          })
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    //付款方式
+    querySearch7() {
+      this.payModeList = []
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/payway/api/get', {
+        "object": {
+          id: 1,
+        }
+      }).then(res => {
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.payModeList.push({
+            "value": res.data.objects[i].id,
+            "label": res.data.objects[i].name
+          })
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    createFilter(queryString) {
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
     },
     // 提交
     submitForm(formName) {
@@ -1340,6 +1338,8 @@ export default {
       .catch(function(obj) {
         console.log(obj)
       })
+    this.querySearch6()
+    this.querySearch7()
   },
 };
 
@@ -1382,7 +1382,8 @@ export default {
 
 .search-title {
   font-size: 14px;
-  margin-left: 10px
+  margin-left: 20px;
+  margin-top: 10px;
 }
 
 .el-input__inner {

@@ -1,5 +1,5 @@
 <template>
-  <div class="all">
+  <div class="all" style="position:relative">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <div class="borders" style="margin-bottom:100px;">
         <div>
@@ -50,7 +50,7 @@
       <!--报销end-->
       <!--报销弹窗-->
       <!--申请预付款-->
-      <el-dialog title="申请预付款" :visible.sync="dialogFormVisible" width=80% :show-close="false">
+      <el-dialog title="申请预付款" :visible.sync="dialogFormVisible" width=60% :show-close="false">
         <div v-if="this.find == 1" class="sh_style">审核中</div>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
           <div class="btn" style="position:absolute;z-index:9;top:20px;right:5%;">
@@ -153,7 +153,7 @@
                 </el-form-item>
                 <el-form-item label="付款明细" label-width="120px" label-height="auto">
                   <br />
-                  <el-table :data="tableData6" border style="width:90%" :header-cell-style="getRowClass2">
+                  <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
                     <el-table-column prop="id" label="ID" align="center">
                     </el-table-column>
                     <el-table-column prop="status" label="状态" align="center">
@@ -197,7 +197,7 @@
                 </el-form-item>
                 <el-form-item label="无收入借款明细" label-width="120px" label-height="auto">
                   <br />
-                  <el-table :data="tableData7" border style="width:85%" :header-cell-style="getRowClass2">
+                  <el-table :data="tableData7" border style="width:90%" :header-cell-style="getRowClass2">
                     <el-table-column prop="id" label="ID" align="center">
                     </el-table-column>
                     <el-table-column prop="status" label="状态" align="center">
@@ -239,7 +239,7 @@
                 </el-form-item>
                 <el-form-item label="收入明细" label-width="120px" label-height="auto">
                   <br />
-                  <el-table :data="tableData8" border style="width:80%" :header-cell-style="getRowClass2">
+                  <el-table :data="tableData8" border style="width:85%" :header-cell-style="getRowClass2">
                     <el-table-column prop="oNo" label="订单编号" align="center">
                     </el-table-column>
                     <el-table-column prop="source" label="来源" align="center">
@@ -368,7 +368,7 @@
       <!--添加报销弹窗end-->
       <!--驳回意见弹窗-->
       <el-dialog title="请填写审批意见" :visible.sync="dialogFormVisible4" width="30%">
-        <textarea style="width: 500px; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
+        <textarea style="width: 90%; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
         <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
@@ -674,6 +674,32 @@ export default {
         aNo: '收款单号',
         arrearsTime: '欠款日期',
         repaymentTime: '应还日期',
+      }],
+      tableData10: [{
+        id: '1',
+        createTime: '审批时间',
+        user: '审批人',
+        status: '审批结果',
+        abstract: '审批意见',
+      }, {
+        id: '2',
+        createTime: '审批时间',
+        user: '审批人',
+        status: '审批结果',
+        abstract: '审批意见',
+      }],
+      tableData11: [{
+        id: '1',
+        createTime: '审批时间',
+        user: '审批人',
+        status: '审批结果',
+        abstract: '审批意见',
+      }, {
+        id: '2',
+        createTime: '审批时间',
+        user: '审批人',
+        status: '审批结果',
+        abstract: '审批意见',
       }],
       //文件上传列表
       fileList: [{
