@@ -649,7 +649,7 @@
         let types=[];
         for(let i=0; i<this.supplierType_edit.length;i++){
           types.push({
-            "id":this.companyList.id,
+            "id":0,
             "supplierType":this.supplierType_edit[i],
             "supplierID":this.sid
           })
