@@ -12,9 +12,9 @@
       @open='handleOpen'
       ref='menu'
       >
-      <el-submenu v-for="(item,index) in category" :key="index" :index="String(index)" @mouseover.native="mouseOpen(index)">
+      <el-submenu class="nav_mouseActive" v-for="(item,index) in category" :key="index" :index="String(index)">
         <template slot="title">
-          <i :class='{ mouseActive : index == mouseActive}' :id="'d'+index"></i><img :src="('../static/navLeft/'+item.img)" width="15px" alt="">
+          <i class='mouseActive' :id="'d'+index"></i><img :src="('../static/navLeft/'+item.img)" width="15px" alt="">
           <span class="actionName">{{item.name}}</span>
         </template>
         <template v-for="(data,index1) in item.items">
@@ -162,15 +162,11 @@
           }
         ],
         isRouter:true,
-        mouseActive:0,
         menuNumber:[],
         index: ''
     }
   },
   methods: {
-    mouseOpen(key) {
-      this.mouseActive = key;
-    },
     handleOpen(key){
       let aa = Number(key)
       for(let i=0;i<this.category.length;i++){
@@ -201,16 +197,6 @@
   width: 200px;
   user-select:none;
 }
-.mouseActive{
-  content:'';
-  position:absolute;
-  top:0;
-  left: 0;
-  width:4px;
-  height:100%;
-  background:#3095FA;
-  display:block;
-}
 .tac{text-align: left;height:100%;}
 .nav{height:100%;}
 .col{height:100%;}
@@ -223,6 +209,16 @@
 }
 .el-submenu>>>.el-submenu__title:hover{
   color: #fff !important;
+}
+.nav_mouseActive:hover .mouseActive {
+  content:'';
+  position:absolute;
+  top:0;
+  left: 0;
+  width:4px;
+  height:100%;
+  background:#3095FA;
+  display:block;
 }
 </style>
 
