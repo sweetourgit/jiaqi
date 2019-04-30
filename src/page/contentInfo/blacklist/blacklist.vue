@@ -165,7 +165,7 @@ export default {
       },
       cancel(){
         this.dialogFormVisible = false;
-        this.$refs["rformA"].resetFields();
+        this.$refs["rformA"].resetFields();4
       },
       getLabel(){//获取一条信息
         this.$http.post(this.GLOBAL.serverSrc + '/order/blacklist/api/get',{
@@ -222,8 +222,39 @@ export default {
         });
       },
       //编辑黑名单
-      editLabelTheme(){
-
+      editLabelTheme(formName){
+        var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/order/blacklist/api/save",
+            {
+              "object": {
+                "id": this.multipleSelection[0].id,
+                "isDeleted": 0,
+                "name": this.rformA.name,
+                "mobile": this.rformA.mobile,
+                "idCard": this.rformA.idCard,
+                "passport": this.rformA.passport,
+                "source": this.rformA.source,
+                "sex": this.rformA.sex,
+                "reason": this.rformA.reason,
+                "cityID": this.rformA.cityID,
+                "mark": this.rformA.mark,
+                "createTime": 0
+              }
+            },
+          )
+          .then(res => {
+            if(res.data.isSuccess == true){                
+              this.pageList();
+              this.dialogFormVisible = false
+              this.$refs[formName].resetFields();
+            }else{
+              this.$message.success(res.data.result.message);
+            }
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
       },
       //删除黑名单
       deleteLabel(){
@@ -265,6 +296,27 @@ export default {
           .then(function (obj) {
             that.total = obj.data.total
             that.groupList = obj.data.objects
+            that.groupList.forEach(function (v,k,arr) {
+              if(arr[k]['sex'] == 0){
+                arr[k]['sex'] = '男'
+              }else if(arr[k]['sex'] == 1) {
+                arr[k]['sex'] = '女'
+              }
+              if(arr[k]['reason'] == 0){
+                arr[k]['reason'] = '未选择'
+              }else if(arr[k]['reason'] == 1) {
+                arr[k]['reason'] = '游客恶意报名'
+              }else if(arr[k]['reason'] == 2) {
+                arr[k]['reason'] = '同业恶意下单'
+              }else if(arr[k]['reason'] == 3) {
+                arr[k]['reason'] = '同业恶意占位'
+              }else if(arr[k]['reason'] == 4) {
+                arr[k]['reason'] = '游客黑名单'
+              }else if(arr[k]['reason'] == 5) {
+                arr[k]['reason'] = '同业黑名单'
+              }
+              
+            })
             console.log(obj.data.objects)
           })
           .catch(function (obj) {
