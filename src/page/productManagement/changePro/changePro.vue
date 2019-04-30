@@ -947,7 +947,7 @@
         var object={
           //基本信息接口数据
           id:this.$route.query.id,
-          createTime:this.formatDate(new Date()),
+          createTime:Date.parse(new Date()),
           title:this.ruleForm.productNamel,//基本信息产品名称
           isForeign:this.ruleForm.travelType,//基本信息产品类型
           day:this.ruleForm.travelDays,//基本信息行程天数
@@ -970,7 +970,7 @@
           themeID:this.ruleForm.theme,//基本信息主题
           mark:this.content_01,
           guid:localStorage.getItem("guid"),
-          //行程信息接口数据
+         /* //行程信息接口数据
           package: [
             {
               name: this.ruleForm.highlightWords,//行程信息套餐名
@@ -985,7 +985,7 @@
               briefMark: this.content,//简要说明
               loadPlan: false
             }
-          ],
+          ],*/
           instructions:this.explain.concat(this.domains), //费用说明
           instructions1:this.notes, //预订须知,预留接口无字段？
           instructions2:this.instructions, //使用说明,预留接口无字段？
