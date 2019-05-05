@@ -33,16 +33,15 @@
               <el-form-item label="用户类型" prop="type">
                 <el-radio-group v-model="ruleForm.type" class="form_type">
                   <el-radio label="1" class="from-radio">普通用户</el-radio>
-                  <el-radio label="2">管理员</el-radio>
                 </el-radio-group>
               </el-form-item>
               <div class="form_ori">
-              <el-form-item label="组织-部门-职务" >
+              <el-form-item label="部门" prop="orderList" >
                 <div class="addOri">
                     <el-button type="primary" plain @click="dialogFormVisible = true" v-model="orilist" class="but-left">{{orilist}}</el-button>
                     <div class="button-fun">
                   <el-button type="primary" size="mini" @click="addDomain" >添加</el-button>
-                  <el-button type="info" size="mini">默认职位</el-button>
+                  <!--<el-button type="info" size="mini">默认职位</el-button>-->
                     </div>
                 </div>
 
@@ -58,7 +57,7 @@
                   <el-button type="primary" plain @click="tanchu(domain) " v-model="ruleForm1" class="but-left">{{domain.value}}</el-button>
                   <div class="button-fun">
                  <el-button type="danger"  @click.prevent="removeDomain(domain)" size="mini" class="delete-adjust" >删除</el-button>
-                 <el-button type="primary" size="mini" class="delete-adjust" @click="changstatus(domain)">设置默认</el-button>
+               <!--  <el-button type="primary" size="mini" class="delete-adjust" @click="changstatus(domain)">设置默认</el-button>-->
                   </div>
 
               </div>
@@ -276,7 +275,7 @@ import Permission from '@/page/account/userList/addUser/permission'
         disable :false,
         hidval:"-1",
         selectedOptions: [],
-        orilist: '甜程旅行网-财务部-经理',
+        orilist: '请点击添加',
         ppid:'',
         ruleForm1: {
           domains: [{
@@ -300,6 +299,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           trailid:'',
           sex:'1',
           type:'1',
+          orderList:'',
           domains: [{
             value: ''
           }],
@@ -314,6 +314,9 @@ import Permission from '@/page/account/userList/addUser/permission'
           ],*/
           mail: [
             {  required: true, validator:checkMail, trigger: 'blur' }
+          ],
+          orderList: [
+            {  required: true, message: '请选择部门', trigger: 'blur' }
           ],
           number: [
             {  required: true, validator:checkTrail, trigger: 'blur' }
@@ -584,6 +587,7 @@ import Permission from '@/page/account/userList/addUser/permission'
                 /*this.orilist = strb + '-' + wei*/
               this.orilist = this.dname
               this.ppid = this.fID
+              this.ruleForm.orderList = this.dname
             }else{
                  this.ruleForm1.domains[this.hidval].value = this.dname
                  this.ruleForm1.domains[this.hidval].id = this.fID
