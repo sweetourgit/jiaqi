@@ -47,8 +47,9 @@
            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="订单来源" prop="orderRadio">
                 <!--<el-radio label="1" class="radiomar" v-model="ruleForm.orderRadio">同业社</el-radio>
-                <el-radio label="2" class="radiomar" v-model="ruleForm.orderRadio">门店</el-radio>-->
-                <el-radio label="3" class="radiomar" v-model="ruleForm.orderRadio">线下直客</el-radio>
+                <el-radio label="2" class="radiomar" v-model="ruleForm.orderRadio">门店</el-radio>
+                <el-radio label="3" class="radiomar" v-model="ruleForm.orderRadio">线下直客</el-radio>-->
+                <div class="ml13">线下直客</div>
             </el-form-item>
             <!--
             <div v-if="ruleForm.orderRadio==1">
@@ -88,10 +89,12 @@
                 </el-form-item>
             </div>
             -->
-            <el-form-item label="选择价格" prop="price" class="cb price">
+            <el-form-item label="价格" prop="price" class="cb price">
               <el-radio-group v-model="ruleForm.price">
+                 <span v-for="item in salePrice" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span><br/>
+                 <!--
                  <el-radio label="1" class="radiomar">销售价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio><br/>
-                 <el-radio label="2" class="radiomar">同业价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio><br/><!--
+                 <el-radio label="2" class="radiomar">同业价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio><br/>
                  <el-radio label="自定义" class="radiomar">自定义： 
                        成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
                        儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
@@ -104,11 +107,19 @@
               <div class="num-req">*</div>
             </el-form-item>
             <div class="fl">         
-              <div class="ml13 mb17" v-for="(item,index) in salePrice">{{item.enrollName}}
-                   <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index)"></el-input>
-                   余（{{item.quota}}）
-                   ￥<span v-show="ruleForm.price==1">{{item.price_01}}</span><span v-show="ruleForm.price==2">{{item.price_02}}</span>
-              </div>
+              <table class="ml13 mb17">
+                <tr v-for="(item,index) in salePrice">
+                  <td height="45">{{item.enrollName}}</td>
+                  <td height="45">
+                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index)" type="number" :min="0"></el-input>
+                      <span v-bind:class="{red:quota[index]}">
+                      余（{{item.quota}}）
+                      ￥<span v-show="ruleForm.price==1">{{item.price_01}}</span><span v-show="ruleForm.price==2">{{item.price_02}}</span>
+                      <span v-show="quota[index]">库存不足</span>
+                      </span>
+                  </td>
+                </tr>
+              </table>
             </div>
             <!--
             <el-form-item label="" prop="">            
@@ -117,14 +128,14 @@
             -->
             <!--其他费用-->
             <el-form-item label="其他费用" prop="otherCost" class="fl cb">            
-              <el-input v-model="ruleForm.otherCost" class="numw"></el-input>
+              <el-input v-model="ruleForm.otherCost" class="numw" type="number" :min="0"></el-input>
             </el-form-item>
             <div class="fl">            
               备注<el-input v-model="ruleForm.otherCostRemark" class="cost-remark"></el-input>
             </div>
             <!--整体优惠-->
             <el-form-item label="整体优惠" prop="allDiscount" class="cb fl">            
-              <el-input v-model="ruleForm.allDiscount" class="numw"></el-input>
+              <el-input v-model="ruleForm.allDiscount" class="numw" type="number" :min="0"></el-input>
             </el-form-item>
             <div class="fl">            
               备注<el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
@@ -232,15 +243,17 @@ export default {
           allDiscount: '0',
           allDisRemark: '',
           totalPrice:'8000',
-          type: '',    
+          type:'1',    
           contactName:'',
           contactPhone:'',
           remark:'',
         },
         //游客信息
+        quota:[], //余位信息负数红色提示
         enrolNum:[], //报名人数[1,3]形式
         dialogFormVisible: false,
         salePrice:[],//报名类型价格列表数据
+        salePriceNum:[],//报名类型价格列表数据副本,显示余位用
         tourType:0,//报名类型索引
         fillIndex:0,//报名类型下游客list索引
         arrLength:[],//报名人数[1,3]形式
@@ -257,7 +270,7 @@ export default {
           mobile:'',          
           idCard:'',//身份证
           bornDate:0,
-          credType:'',
+          credType:"",
           credCode:'',
           credTOV:0,
           orderID: 0,
@@ -270,6 +283,7 @@ export default {
         //团期计划订单信息
         teampreviewData:{},
         orderCode:'',
+        ifOrderInsert:true,
         rules: {
           orderRadio: [{ required: true, message: '请选择订单来源', trigger: 'change' }],
           sale: [{ required: true, message: '请选择销售', trigger: 'change' }],
@@ -308,6 +322,23 @@ export default {
      this.teamEnrolls();
      this.teampreview();
   },
+  watch:{
+    enrolNum:{
+      handler(newValue, oldValue) {
+　　　　this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
+        if(this.ruleForm.type==1||this.ruleForm.type==2){  //下单方式选择确认占位和预定占位，实时减少相关余位信息
+           for(let i=0;i<this.salePrice.length;i++){    //如果下单方式选择预定不占，则不需要同步余位信息
+              this.salePrice[i].quota=parseInt(this.salePrice[i].quota)-parseInt(this.enrolNum[i]);
+              if(this.salePrice[i].quota<0){
+                 this.quota[i]=true;
+              }else{
+                 this.quota[i]=false;
+              }
+           }
+        }
+　　　}
+    }
+  },
   methods: {
      teamEnrolls(){  //获取报名类型列表数据
        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/enrolls',{
@@ -315,12 +346,15 @@ export default {
         }).then(res => {
           if(res.data.isSuccess == true){
              this.salePrice = res.data.objects;
-             this.enrolNum=[];
+             this.salePriceNum = res.data.objects;            
              this.preLength=[];
-             this.tour=[];
-             this.enrolNum.length = res.data.objects.length;            
+             this.enrolNum=[];
+             this.quota=[];
+             this.tour=[];          
              for(let i=0;i<res.data.objects.length;i++){
                 this.preLength.push('0');
+                this.enrolNum.push('0');
+                this.quota.push(false); 
                 this.tour.push([]);
              }
           }
@@ -363,9 +397,28 @@ export default {
      },
      submitForm(formName) {
         this.$refs[formName].validate((valid) => {
-            let number=0;   //获取报名总人数
+            console.log(this.quota)
+            //如果库存不足，不提交订单
+            var blooen='0';
+            for(let i=0;i<this.quota.length;i++){  
+               if(this.quota[i]==true){
+                 blooen='1';
+               }
+            }
+            if(blooen=='1'){
+              return false;
+            }
+            //防止重复提交订单判断
+            if(this.ifOrderInsert==false){
+              return false;
+            }
+            this.ifOrderInsert=false;
+            //获取报名总人数
+            let number=0;   
             for(let i=0;i<this.enrolNum.length;i++){
-              number+=parseInt(this.enrolNum[i]);
+              if(this.enrolNum[i]){
+                number+=parseInt(this.enrolNum[i]);
+              }
             };
             let guestAll=[];   //游客信息格式转换
             if(valid) {
@@ -381,6 +434,9 @@ export default {
                     guest.push(guestAll[i]);
                     guest[i].bornDate = (new Date(guest[i].bornDate)).getTime()/1000;  //时间格式转换
                     guest[i].credTOV = (new Date(guest[i].credTOV)).getTime()/1000;
+                    if(guest[i].credType == ''){
+                      guest[i].credType = 0;
+                    } 
                  }
               }
               this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderinsert',{
@@ -424,15 +480,18 @@ export default {
                 }
             }).then(res => {
               if(res.data.isSuccess == true){
+                   this.$message.success("提交成功");
                    this.orderCode = JSON.parse(res.data.result.details).OrderCode;
                    this.orderSuc = true;
                    //清空表单
                    this.$refs[formName].resetFields();
                    this.teamEnrolls();
                    this.ruleForm.remark = '';
+                   this.ifOrderInsert=true;
               }else{
                  //预留黑名单信息？？？
                  _this.$message.success('下单失败');
+                 this.ifOrderInsert=true;
               }
             }) 
           } else {
@@ -446,11 +505,12 @@ export default {
           if (valid) {
              let guest=JSON.parse(JSON.stringify(this.conForm));
                 guest.enrollID=this.salePrice[this.tourType].enrollID;  //填充报名类型
+                guest.enrollName=this.salePrice[this.tourType].enrollName;  //填充报名类型name
                 if(this.ruleForm.price==1){
                   guest.singlePrice=this.salePrice[this.tourType].price_01;  //填充价格
                 }else{
                   guest.singlePrice=this.salePrice[this.tourType].price_02;
-                }                
+                }             
              this.tour[this.tourType][this.fillIndex]=guest;
              this.dialogFormVisible = false;
              this.$refs[formName].resetFields();
@@ -486,7 +546,7 @@ export default {
     .mb17{margin-bottom: 17px}
     .tourist{margin-left: 13px;float: left;width:85%}
     .tourist input{width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:1px 10px 10px 10px}
-    .tour-til{float: left;margin-left: 13px;margin-right: -8px}
+    .tour-til{float: left;margin-left: 13px;margin-right: -8px;width: 80px}
     .oh{overflow: hidden;}
     .disib{display: inline-block;}
     .remark{width: 70%;margin-left: 12px}
@@ -494,4 +554,5 @@ export default {
     .text{font-size: 14px}
     .item {margin:0 20px 18px 20px}
     .ordersuc-title{text-align: center;font-size: 16px;margin:0 0 30px 0}
+    .red{color: red}
 </style>
