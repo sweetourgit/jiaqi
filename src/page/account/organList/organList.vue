@@ -859,7 +859,7 @@ export default {
 .left-son { position: relative; width: 260px; height: 100%; border: 1px solid #CCCCCC; }
 .virtualDepartment { position: relative; float: left; left: 20px; margin-top: 13px; }
 .add-input { width: 250px; margin-right: 130px; }
-.add-department { margin-right: 200px; width: 200px; }
+.add-department {width: 250px; }
 .button-footer { margin-right: 157px; margin-top: -40px; }
 .small3 { float: left; margin-right: 7px; width: 5px; height: 22px; background: inherit; background-color: #F38F00; border: none; border-radius: 0px; box-shadow: none; line-height: 0; }
 .son-title { position: absolute; float: right; width: 106.4%; height: 8%; left: 0.2%; background-color: #F6F6F6; }
@@ -882,8 +882,8 @@ export default {
 .oppp{ margin: 20px; width:100px; }
 .add_title{ margin-left:-10px; }
 .add_radio{ margin-left:4px; }
-.positionInput{ width:280px; margin-right:200px; }
-.updataLabelWidth-input{ width:250px; margin-right:200px; }
+.positionInput{ width:250px;}
+.updataLabelWidth-input{ width:250px;}
 .add_radio>>>.el-form-item__error{ left:78px; }
 .hh>>>.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{ background-color: #F6F7D7!important; }
 </style>

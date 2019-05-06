@@ -14,6 +14,7 @@
        <el-table-column  prop="guid" label="唯一标识" min-width="250"></el-table-column>
        <el-table-column  prop="parentID" label="所属上级" min-width="150"></el-table-column>
      </el-table>
+     <div style="width:1100px;overflow:hidden">
      <el-pagination class="pagination"
         @size-change="handleSizeChange"
         background
@@ -24,6 +25,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination> 
+      </div>
       <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformA" :rules="rules" ref="rformA" label-width="100px" class="demo-ruleForm">
@@ -259,7 +261,7 @@ export default {
        .button .el-button{border:1px solid #3095fa;color:#3095fa;width:80px;padding: 0;line-height: 35px}
        .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}
        .el-table--enable-row-hover .el-table__body tr:hover>td{background-color: #f5f7fa !important}
-       .pagination{text-align:center;margin:70px 0 50px 0}
+       .pagination{float:right;margin:70px 0 50px 0}
        .confirm{margin:0 140px 0 20px}
        .demo-ruleForm{margin:20px}
        .demo-ruleForm .el-input{width:300px}
