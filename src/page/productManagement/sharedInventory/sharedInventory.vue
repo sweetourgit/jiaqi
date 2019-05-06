@@ -15,13 +15,13 @@
     </div>
       <!-- 星期 -->
       <ul class="weekdays">
-          <li style="color:red"></el-checkbox>日</li>
+          <li style="color:red">日</li>
           <li>一</li>
           <li>二</li>
           <li>三</li>
           <li>四</li>
           <li>五</li>
-          <li style="color:red"></el-checkbox>六</li>
+          <li style="color:red">六</li>
       </ul>
       <!-- 日期 -->
       <ul class="days">
@@ -477,7 +477,8 @@ body {
 }
 #calendar {
   /* margin: 37px auto 20px 340px; */
-  width: 764px;
+  /* width: 764px; */
+  width: 600px;
   /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.1), */
     /* 0 1px 5px 0 rgba(0, 0, 0, 0.12); */
   /* padding: 10px; */
@@ -549,7 +550,7 @@ body {
   box-sizing: border-box;
 }
 .days {
-  width:842px;
+  width:730px;
   padding: 0;
   background: #ffffff;
   margin: 0;
@@ -560,7 +561,7 @@ body {
   border-left: solid 1px #E7E7E7;
 }
 .days li {
-  min-height: 150px;
+  min-height: 110px;
   text-align: left !important;
   padding: 5px;
   color: #666666;
@@ -569,7 +570,7 @@ body {
 .days li {
   list-style-type: none;
   display: inline-block;
-  width: 120px;
+  width: 104.14px;
   text-align: center;
   padding-bottom: 15px;
   padding-top: 15px;
@@ -593,7 +594,8 @@ body {
   background: #e1e1e1;
 }
 .weekdays{
-  width:841px;
+  /* width:841px; */
+  width: 730px;
   border-right: solid 1px #E7E7E7;
   margin: 0;
   /* padding: 10px 0; */

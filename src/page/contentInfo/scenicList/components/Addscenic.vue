@@ -1,11 +1,8 @@
 <template>
   <!-- <div style="padding-left:80px"> -->
   <div>
-    <div class="operation">
-      <el-button style="border:1px solid #3095fa;color:#3095fa;" @click="$emit('closeButton', false)">取消</el-button>
-      <el-button type="primary" @click="addsave">保存</el-button>
-    </div>
-   <el-form ref="form" :model="form" :rules="rules" :label-width="formLabelWidth">
+    
+   <el-form style="margin-left: 130px;" ref="form" :model="form" :rules="rules" :label-width="formLabelWidth">
     <el-form-item ref="chineseName" class="form-item" prop="chineseName" :label-width='formLabelWidth' label="中文名称:">
       <span class="redStar">*</span>
       <el-input class="form-input" v-model="form.chineseName" clearable placeholder="请输入中文名称"></el-input>
@@ -28,13 +25,13 @@
         </div>
       </div>
     </el-form-item>
-    <el-form-item class="form-item" prop="lat" :label-width='formLabelWidth' label="地理坐标:">
+    <el-form-item class="form-item" prop="lat" :label-width='formLabelWidth' label="经度:">
       <el-input class="form-input" v-model="form.lat" clearable placeholder="请输入经度"></el-input>
     </el-form-item>
-    <el-form-item class="form-item form-error" prop="lng">
-      <el-input style="width: 250px; margin-left:270px;margin-top: -62px;" class="form-input" v-model="form.lng" clearable placeholder="请输入纬度"></el-input>
+    <el-form-item class="form-item" prop="lng" label="纬度:">
+      <el-input class="form-input" v-model="form.lng" clearable placeholder="请输入纬度"></el-input>
     </el-form-item>
-    <el-form-item style="margin-top: -20px;" class="form-item" prop="referenceTime" :label-width='formLabelWidth' label="参考用时:">
+    <el-form-item class="form-item" prop="referenceTime" :label-width='formLabelWidth' label="参考用时:">
       <el-radio-group v-model="form.referenceTime">
         <el-radio v-for="(item, index) in referenceTime" :key="index" :label="item.id">{{item.dict_Name}}</el-radio>
       </el-radio-group>
@@ -55,7 +52,7 @@
     </el-form-item>
     <!-- 信息展示预留 -->
     <div style="width: 1200px; float: left">
-    <div v-if="isDataTime" style="margin-left:90px;width: 700px;background: #F7F7F7; padding: 20px;margin-bottom: 20px;float: left;">
+    <div v-if="isDataTime" style="margin-left:90px;width: 565px;background: #F7F7F7; padding: 20px;margin-bottom: 20px;float: left;">
       <!-- 周一 -->
       <div v-if="dateTime.one.length != 0" style="margin-top: -5px;float: left; width: 900px">
         <span style="float: left">周一</span>
@@ -166,10 +163,15 @@
     </el-form-item>
 
     <el-form-item class="form-item" :label-width='formLabelWidth' label="产品概述:">
-      <el-input style="width: 705px;" :rows="13" type="textarea" v-model="form.introduction"></el-input>
+      <el-input style="width: 605px;" :rows="13" type="textarea" v-model="form.introduction"></el-input>
     </el-form-item>
 
    </el-form>
+
+    <div class="operation">
+      <el-button style="width: 100px; border:1px solid #3095fa;color:#3095fa;" @click="$emit('closeButton', false)">取消</el-button>
+      <el-button style="width: 100px;" type="primary" @click="addsave">保存</el-button>
+    </div>
 
 <!-- 编辑 -->
 <el-dialog width='30%' top='20vh' append-to-body title="标签选择" :visible.sync="showEdit" custom-class="city_list">
@@ -892,7 +894,7 @@ export default {
 .form-item
   .form-input
     float left
-    width 250px!important
+    width 300px!important
   .form-btn
     float left
     margin-top 5px
@@ -916,7 +918,7 @@ export default {
 }
 .destination-input {
   height: 40px;
-  min-width: 250px;
+  min-width: 300px;
   float: left;
   padding-bottom:-0.5px;
   border: 1px solid #dcdfe6;
@@ -927,7 +929,7 @@ export default {
 }
 .destination-input1 {
   height: 40px;
-  min-width: 250px;
+  min-width: 300px;
   float: left;
   padding-bottom:-0.5px;
   border: 1px solid red;
@@ -938,7 +940,7 @@ export default {
 }
 .destination-input2 {
   height: 40px;
-  min-width: 250px;
+  min-width: 300px;
   float: left;
   padding-bottom:-0.5px;
   border: 1px solid #67C23A;
@@ -951,8 +953,8 @@ export default {
   float: left;
 }
 .operation {
-  float: right;
-  margin-top: -65px;
+  // margin: 30px 0 0 50%;
+  text-align: center;
 }
 .input_tag>>>.el-input__inner {
   border: none;
@@ -964,7 +966,7 @@ export default {
 .redStar{ color: #f56c6c; float: left; margin-left:-82px;}
 .img_upload {
   float: left;
-  width: 250px;
+  width: 300px;
   height: 40px;
   background:#F5F7FA;
   border: solid 1px #E4E7ED;
