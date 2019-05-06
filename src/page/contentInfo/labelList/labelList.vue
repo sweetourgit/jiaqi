@@ -302,7 +302,7 @@
                 object: {
                   id: 0,
                   typeName: this.ruleForm.highlightWords,
-                  createTime: "2019-03-04T06:08:17.118Z",
+                  createTime: 0,
                   code: "string",
                   isDeleted: 0
                 }
@@ -358,7 +358,7 @@
               "object": {
                 "id": this.sid,
                 "typeName": this.ruleForm_01.highlightWords01,
-                "createTime": "2019-03-08T08:19:11.173Z",
+                "createTime": 0,
                 "code": "string",
                 "isDeleted": 0
               }
@@ -444,7 +444,7 @@
                   id: 0,
                   labelName: this.rformA.labelList,
                   tagType:this.sid,
-                  createTime: "2019-03-04T06:08:17.118Z",
+                  createTime: 0,
                   code: "string",
                   isDeleted: 0
                 }
@@ -472,7 +472,7 @@
                 "id": this.multipleSelection[0].id,
                 "labelName": this.rformA.labelList,
                 "tagType":this.sid,
-                "createTime": "2019-03-08T08:19:11.173Z",
+                "createTime": 0,
                 "code": "string",
                 "isDeleted": 0
               }
@@ -532,7 +532,7 @@
             "object": {
               "id": 0,
               "typeName": "",
-              "createTime": "2019-03-04T06:03:19.464Z",
+              "createTime": 0,
               "code": "string",
               "isDeleted": 0
             }
@@ -566,7 +566,7 @@
               "id": 0,
               "labelName": "",
               "tagType": this.sid,
-              "createTime": "2019-03-11T05:15:08.895Z",
+              "createTime": 0,
               "code": "string",
               "isDeleted": 0
             }
