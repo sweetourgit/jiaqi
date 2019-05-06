@@ -120,6 +120,7 @@
                   </td>
                 </tr>
               </table>
+              <div class="red mb17 ml13" v-show="enrolNums">报名人数不能为空</div>
             </div>
             <!--
             <el-form-item label="" prop="">            
@@ -238,11 +239,11 @@ export default {
           price2:'',
           price3:'',
           price4:'',    
-          otherCost: '0',
+          otherCost: 0,
           otherCostRemark: '',
-          allDiscount: '0',
+          allDiscount: 0,
           allDisRemark: '',
-          totalPrice:'8000',
+          totalPrice:0,
           type:'1',    
           contactName:'',
           contactPhone:'',
@@ -251,6 +252,7 @@ export default {
         //游客信息
         quota:[], //余位信息负数红色提示
         enrolNum:[], //报名人数[1,3]形式
+        enrolNums:false,//报名人数是否为空提示
         dialogFormVisible: false,
         salePrice:[],//报名类型价格列表数据
         salePriceNum:[],//报名类型价格列表数据副本,显示余位用
@@ -323,23 +325,41 @@ export default {
      this.teampreview();
   },
   watch:{
-    enrolNum:{
-      handler(newValue, oldValue) {
-　　　　this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
-        if(this.ruleForm.type==1||this.ruleForm.type==2){  //下单方式选择确认占位和预定占位，实时减少相关余位信息
-           for(let i=0;i<this.salePrice.length;i++){    //如果下单方式选择预定不占，则不需要同步余位信息
-              this.salePrice[i].quota=parseInt(this.salePrice[i].quota)-parseInt(this.enrolNum[i]);
-              if(this.salePrice[i].quota<0){
-                 this.quota[i]=true;
-              }else{
-                 this.quota[i]=false;
-              }
-           }
-        }
-　　　}
+    enrolNum:function(val){
+　　　　this.changeQuota();
+        this.compPrice();
+    },
+    'ruleForm.otherCost':function(val){
+        this.compPrice();
+    },
+    'ruleForm.allDiscount':function(val){
+        this.compPrice();
+    },
+    'ruleForm.type':function(val){
+        this.changeQuota();      
     }
   },
   methods: {
+     changeQuota(){  //余位变化方法
+       this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
+       let salePriceType3 = JSON.parse(JSON.stringify(this.salePriceNum));
+       let salePriceType={};
+          //下单方式选择确认占位和预定占位，实时减少相关余位信息，提示库存不足
+           for(let i=0;i<this.salePrice.length;i++){    //如果下单方式选择预定不占，则不需要同步余位信息，提示库存不足
+            if(this.ruleForm.type==1||this.ruleForm.type==2){
+              this.salePrice[i].quota=parseInt(this.salePrice[i].quota)-parseInt(this.enrolNum[i]);
+              salePriceType=this.salePrice[i];
+            }else{
+              salePriceType3[i].quota=parseInt(salePriceType3[i].quota)-parseInt(this.enrolNum[i]);  
+              salePriceType=salePriceType3[i];           
+            } 
+            if(salePriceType.quota<0){  //判断是否显示库存不足
+               this.quota[i]=true;
+            }else{
+               this.quota[i]=false;
+            }
+        }
+     },
      teamEnrolls(){  //获取报名类型列表数据
        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/enrolls',{
             "id": this.$route.query.planid
@@ -353,7 +373,7 @@ export default {
              this.tour=[];          
              for(let i=0;i<res.data.objects.length;i++){
                 this.preLength.push('0');
-                this.enrolNum.push('0');
+                this.enrolNum.push(0);
                 this.quota.push(false); 
                 this.tour.push([]);
              }
@@ -408,11 +428,6 @@ export default {
             if(blooen=='1'){
               return false;
             }
-            //防止重复提交订单判断
-            if(this.ifOrderInsert==false){
-              return false;
-            }
-            this.ifOrderInsert=false;
             //获取报名总人数
             let number=0;   
             for(let i=0;i<this.enrolNum.length;i++){
@@ -420,6 +435,12 @@ export default {
                 number+=parseInt(this.enrolNum[i]);
               }
             };
+            if(number==0){
+              this.enrolNums=true;
+              return false;
+            }else{
+              this.enrolNums=false;
+            }
             let guestAll=[];   //游客信息格式转换
             if(valid) {
               for(let i=0;i<this.tour.length;i++){
@@ -439,6 +460,11 @@ export default {
                     } 
                  }
               }
+              //防止重复提交订单判断
+              if(this.ifOrderInsert==false){
+                return false;
+              }
+              this.ifOrderInsert=false;
               this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderinsert',{
                 "object": {
                   "id": 0,
@@ -520,6 +546,14 @@ export default {
       cancelInfo(formName){
         this.dialogFormVisible = false;
         this.$refs[formName].resetFields();
+      },
+      compPrice(){  //计算总价
+          this.ruleForm.totalPrice=0;
+          for(let i=0;i<this.enrolNum.length;i++){
+             this.ruleForm.totalPrice+=this.enrolNum[i]*(this.ruleForm.price==1?this.salePrice[i].price_01:this.salePrice[i].price_02);
+          }
+          this.ruleForm.totalPrice+=parseInt(this.ruleForm.otherCost);
+          this.ruleForm.totalPrice-=parseInt(this.ruleForm.allDiscount);
       }
     }
 }
