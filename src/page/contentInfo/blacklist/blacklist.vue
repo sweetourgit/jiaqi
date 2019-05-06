@@ -106,7 +106,7 @@ export default {
           sex:[{ required: true, message: '不能为空', trigger: 'blur' }],
           reason:[{ required: true, message: '不能为空', trigger: 'blur' }],
           cityID:[{ required: true, message: '不能为空', trigger: 'blur' }],
-          mark:[{ required: true, message: '不能为空', trigger: 'blur' }]
+          //mark:[{ required: true, message: '不能为空', trigger: 'blur' }]
         },
         
     }
@@ -213,7 +213,7 @@ export default {
                    this.dialogFormVisible = false
                    this.$refs[formName].resetFields();
                 }else{
-                   this.$message.success(res.data.result.message);
+                   this.$message.success("添加失败");
                 }
             })
           } else {

@@ -6,12 +6,14 @@
            <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
       </div> 
       <!--右侧数据--> 
-      <div class="check" v-for="item in file">
-        <div class="checkTitle">
-          <i class="el-icon-caret-right" style="color:#F38F00;"></i>
-          <span>{{item.name}}</span>
+      <div style="float:left; margin:0 0 0 30px;">
+        <div class="check" v-for="item in file">
+          <div class="checkTitle">
+            <i class="el-icon-caret-right" style="color:#F38F00;"></i>
+            <span>{{item.name}}</span>
+          </div>
+          <el-checkbox v-for="item in item.fileList" :key="item.value">{{item.content}}</el-checkbox>
         </div>
-        <el-checkbox v-for="item in item.fileList" :key="item.value">{{item.content}}</el-checkbox>
       </div>
     </div>
 
@@ -205,9 +207,9 @@
 /*左侧tree样式*/
 .treeDemo{margin:20px}
 .main-container{width: 100%;padding-bottom: 60px;overflow: auto;max-width:1800px}
-.left-tree{float: left;margin-top: 10px;width: 22%;height: 695px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;margin-left: 1%;overflow: auto;}
+.left-tree{float: left;margin-top: 10px;width: 260px;height: 695px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;margin-left: 1%;overflow: auto;}
 /*右侧多选框样式*/
-.check{float:left; margin: 0 0 0 30px; line-height: 40px; width: 800px;}
+.check{line-height: 40px; width: 800px;}
 .checkTitle{font-size: 12pt; font-weight: bold;}
-.el-checkbox>>>.el-checkbox{margin: 0 30px 0 0!important; }
+.el-checkbox+>>>.el-checkbox{margin-right:30px!important; }
 </style>
