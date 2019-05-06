@@ -496,7 +496,7 @@ export default {
                     }
                   ],
                   "contact": '{"Name":"'+ this.ruleForm.contactName +'","Tel":"'+ this.ruleForm.contactPhone +'"}',
-                  "endTime": 0,//?
+                  "endTime": this.ruleForm.type==1?0:new Date().getTime()/1000+24*60*60,
                   "orderChannel": this.ruleForm.orderRadio,
                   "orgID": 0,
                   "userID": 0,
