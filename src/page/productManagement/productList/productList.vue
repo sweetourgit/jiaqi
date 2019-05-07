@@ -183,9 +183,9 @@
 
     <el-dialog class="merchandise" :visible.sync="merchandise"   :show-close="false" append-to-body width="77%">
      <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
-          <el-radio-group v-model="isCollapse" >
-            <el-radio-button  class="group" :label="true">库存</el-radio-button>
-            <el-radio-button :label="false" @change="qqq" >价格</el-radio-button>
+          <el-radio-group v-model="isCollapse"  @change="qqq">
+             <el-radio-button  class="group" :label="true">库存</el-radio-button>
+           <el-radio-button :label="false">价格</el-radio-button>
           </el-radio-group>
      </div>
 
@@ -1516,10 +1516,15 @@ import DateList from './component/DateList'
 
   },
       qqq(){
-        console.log(123)
+        console.log(this.ccc)
+        for(var i = 0; i < this.ccc.length;i++ ){
+          if(this.ccc[i].codeSuffix == "" ||this.ccc[i].codePrefix == ""){
+            this.isCollapse = true
+            this.$message.error('错了哦，团号不能为空');
+          }
+        }
       },
       headCall(data) {
-
         this.merchandise = data;
       },
   // 生成sku

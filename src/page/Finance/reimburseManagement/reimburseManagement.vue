@@ -871,5 +871,8 @@
     top: -4px;
     left: -1019px;
   }
+  .upload-demo >>>.el-upload-list__item{
+    width: 30%;
+  }
 
 </style>
