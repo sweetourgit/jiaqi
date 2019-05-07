@@ -51,28 +51,6 @@
 <script>
 export default {
   data() {
-    var validatepass = (rule, value, callback) => {
-      let m = this.form.positionName;
-      let n = /^[\u4e00-\u9fa5]{2,10}$/;
-      if (value === "") {
-        callback(new Error("请输入职位"));
-      } else if (m.match(n)) {
-        callback();
-      } else {
-        callback(new Error("请输入2-10位汉字"));
-      }
-    };
-    var validatepass1 = (rule, value, callback) => {
-      let m = this.updata.positionName;
-      let n = /^[\u4e00-\u9fa5]{2,10}$/;
-      if (value === "") {
-        callback(new Error("请输入职位"));
-      } else if (m.match(n)) {
-        callback();
-      } else {
-        callback(new Error("请输入2-10位汉字"));
-      }
-    };
     return {
       tableData: [],
       aa: "00",
@@ -90,19 +68,21 @@ export default {
       form: {
         positionName: ""
       },
-      formLabelWidth: "90px",
+      formLabelWidth: "92px",
       rules: {
-        positionName: [{ validator: validatepass }]
+        positionName: [{ required: true, message: '不能为空', trigger: 'blur' },
+                      { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{0,10}$/,message:'请输入10字以内的正确名称,含汉字、字母和数字' }]
       },
       rules1: {
-        positionName: [{ validator: validatepass1 }]
+        positionName: [{ required: true, message: '不能为空', trigger: 'blur' },
+                      { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{0,10}$/,message:'请输入10字以内的正确名称,含汉字、字母和数字' }]
       },
       // 编辑职位
       editPosition: false,
       updata: {
         positionName: ""
       },
-      updataLabelWidth: "90px"
+      updataLabelWidth: "92px"
     };
   },
   created() {
@@ -264,5 +244,5 @@ export default {
 .el-dialog__wrapper>>>.el-dialog { width: 400px; }
 .dialog-footer{ text-align :center; }
 .oppp{ margin: 20px; width:100px; }
-.addPosition-input{ width:250px; margin-right:100px; }
+.addPosition-input{ width:220px; margin-right:100px; }
 </style>

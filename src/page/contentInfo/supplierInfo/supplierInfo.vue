@@ -72,7 +72,7 @@
         </div>
         <div class="supplierInfo_right">
           <el-form-item label="到期时间" prop="expireTime">
-            <el-date-picker v-model="addSupplierInfo.expireTime" type="datetime" placeholder="选择到期时间" class="addSupplierInfo_name"></el-date-picker>
+            <el-date-picker v-model="addSupplierInfo.expireTime" type="datetime" placeholder="选择到期时间" style="width:200px;" class="addSupplierInfo_name"></el-date-picker>
           </el-form-item>
           <el-form-item label="结算方式" prop="isMonthly">
             <el-select v-model="addSupplierInfo.isMonthly" placeholder="请选择结算方式" class="addSupplierInfo_name">
@@ -86,7 +86,7 @@
           </el-form-item>
         </div>
         <el-form-item label="类型" prop="supplierType" class="addContact_span">
-          <el-checkbox-group v-model="addSupplierInfo.supplierType">
+          <el-checkbox-group v-model="addSupplierInfo.supplierType" style="width:700px;">
             <el-checkbox v-for="itemList in companyList" :label="itemList.id" :key="itemList.id">{{itemList.name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -128,7 +128,7 @@
         </div>
         <div class="supplierInfo_right">
           <el-form-item label="到期时间" prop="expireTime">
-            <el-date-picker v-model="editSupplierInfo.expireTime" type="datetime" placeholder="选择到期时间" class="addSupplierInfo_name"></el-date-picker>
+            <el-date-picker v-model="editSupplierInfo.expireTime" type="datetime" placeholder="选择到期时间" style="width:200px;" class="addSupplierInfo_name"></el-date-picker>
           </el-form-item>
           <el-form-item label="结算方式" prop="isMonthly">
             <el-select v-model="editSupplierInfo.isMonthly" placeholder="请选择结算方式" class="addSupplierInfo_name">
@@ -142,7 +142,7 @@
           </el-form-item>
         </div>
         <el-form-item label="类型" class="addContact_span" prop="supplierType_edit">
-          <el-checkbox-group v-model="editSupplierInfo.supplierType_edit">
+          <el-checkbox-group v-model="editSupplierInfo.supplierType_edit" style="width:700px;">
             <el-checkbox v-for="itemList in companyList" :label="itemList.id" :key="itemList.id">{{itemList.name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -151,7 +151,7 @@
     </el-dialog>
     <!-- 联系人信息列表弹框 -->
     <el-dialog title="联系人信息" :visible.sync="contact" width="690px" custom-class="city_list" :show-close='false'>
-      <el-button plain class="close" @click="contact_close">关闭</el-button>
+      <el-button plain style="position:absolute; right:20px; top:8px;" @click="contact_close">关闭</el-button>
       <div style="text-align:left;margin-left:20px;">
         <el-button plain @click="add_contact = true">添加</el-button>
         <el-button plain :disabled="forbidden2" @click="tests">编辑</el-button>
@@ -212,7 +212,7 @@
     </el-dialog>
     <!-- 银行账列表弹框 -->
     <el-dialog title="银行账号信息" :visible.sync="bankAccount" width="740px" custom-class="city_list" :show-close='false'>
-      <el-button plain class="close" @click="bankAccount_close">关闭</el-button>
+      <el-button plain  style="position:absolute; right:20px; top:8px;" @click="bankAccount_close">关闭</el-button>
       <div style="text-align:left;margin-left:20px;">
         <el-button plain @click="add_bankAccount = true">添加</el-button>
         <el-button plain :disabled="forbidden4" @click="editBank">编辑</el-button>
@@ -272,7 +272,7 @@
     </el-dialog>
     <!-- 附件弹框 -->
     <el-dialog title="附件" :visible.sync="attachment" width="660px" custom-class="city_list" :show-close='false'>
-      <el-button plain class="close" @click="attachment_close">关闭</el-button>
+      <el-button plain style="position:absolute; right:20px; top:8px;" @click="attachment_close">关闭</el-button>
       <div style="text-align:left;margin-left:20px; overflow:hidden; position:relative;">
         <el-upload ref="my-upload" class="upload-demo" action="http://192.168.1.186:3017/universal/supplier/api/upload" :on-success="handleSuccess" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="files" name="files" :headers="aaa" multiple list-type="picture" accept=".jpg,.png,.gif,.txt,.doc,.hlp,.wps,.html,.pdf">
           <el-button plain>添加</el-button>
@@ -1189,7 +1189,7 @@
     mounted(){
       this.pageList();
     },
-
+ 
   }
 </script>
 
@@ -1232,4 +1232,6 @@
 
   /*分页*/
   .paging{float: right; margin:20px 0 0 0;}
+
+  .el-checkbox.el-checkbox { margin-left: 0 !important; margin-right: 30px !important;}
 </style>

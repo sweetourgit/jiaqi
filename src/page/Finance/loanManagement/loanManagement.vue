@@ -809,7 +809,7 @@
 	.pageList{float:right; margin: 0 30px 20px 0;}
 	/*申请无收入借款弹窗*/
 	.mask{background-color: #000; width: 100%; height: 100%; position: fixed; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5; z-index: 100;}
-	.noIncome{width:1100px; position:absolute; top:50%;left:50%; margin-top:-435px; margin-left:-550px; background:#fff; z-index:1000; border-radius:3px;max-height: 95%;overflow:scroll;overflow-x:hidden;}
+	.noIncome{width:1100px; position:absolute; top:3%;left:50%; margin-left:-550px; background:#fff; z-index:1000; border-radius:3px;max-height: 95%;overflow:scroll;overflow-x:hidden;}
 	.noIncomeTitle{margin: 30px; overflow: hidden;}
 	.noIncomeTitle_l{float:left; font-size:13pt;line-height: 40px;}
 	.noIncomeTitle_r{float:right;}

@@ -12,7 +12,7 @@
             <i class="el-icon-caret-right" style="color:#F38F00;"></i>
             <span>{{item.name}}</span>
           </div>
-          <el-checkbox v-for="item in item.fileList" :key="item.value">{{item.content}}</el-checkbox>
+          <el-checkbox v-for="item in item.fileList" style="margin:0 30px 0 0;" :key="item.value">{{item.content}}</el-checkbox>
         </div>
       </div>
     </div>
@@ -211,5 +211,5 @@
 /*右侧多选框样式*/
 .check{line-height: 40px; width: 800px;}
 .checkTitle{font-size: 12pt; font-weight: bold;}
-.el-checkbox+>>>.el-checkbox{margin-right:30px!important; }
+.el-checkbox.el-checkbox { margin-left: 0 !important; margin-right: 30px !important;}
 </style>
