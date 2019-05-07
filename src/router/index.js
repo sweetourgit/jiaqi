@@ -22,7 +22,6 @@ import travelTemplate from '@/page/productManagement/travelTemplate/travelTempla
 //团期计划
 import regimentPlan from '@/page/productManagement/regimentPlan/regimentPlan'
 import teamPlanList from '@/page/productManagement/regimentPlan/children/team/teamPlanList'
-import teamOrder from '@/page/productManagement/regimentPlan/children/team/teamOrder'
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 import changePro from '@/page/productManagement/changePro/changePro'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
@@ -230,15 +229,7 @@ export default new Router({
           meta: {
             keepAlive: true,
             auth:true},
-          },
-        {
-          path: 'teamOrder',
-          name: '团期计划订单',
-          component: teamOrder,
-          meta: {
-            keepAlive: true,
-            auth:true},
-        }
+          }
       ]
     },{
       path: '/orderList',
