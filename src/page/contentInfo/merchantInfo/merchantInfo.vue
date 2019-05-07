@@ -22,7 +22,7 @@
       <el-table
         :data="tableData"
         border
-        style="width: 100%"
+        style="width: 82%"
         :highlight-current-row="true"
         @row-click="handleClick"
       >
@@ -83,25 +83,25 @@
         <el-table-column
           prop="settlementType"
           label="结算方式"
-          width="150"
+          width="100"
           align="center">
         </el-table-column>
         <el-table-column
           prop="quota"
           label="额度"
-          width="150"
+          width="100"
           align="center">
         </el-table-column>
         <el-table-column
           prop="arrears"
           label="剩余额度"
-          width="150"
+          width="120"
           align="center">
         </el-table-column>
         <el-table-column
           prop="balance"
           label="总欠款"
-          width="150"
+          width="120"
           align="center">
         </el-table-column>
       </el-table>
@@ -122,14 +122,9 @@
     <!--end-->
     <!--弹窗-->
     <el-dialog title="商户信息" :visible.sync="dialogFormVisible" :show-close="false">
-      <div class="ButtonCls">
-        <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">立即创建</el-button>
-        <el-button type="primary" v-else @click="editorForm('ruleForm')">修改</el-button>
-
-        <el-button @click="resetForm('ruleForm')">取消</el-button>
-      </div>
-      <div>
+      <div style="height: 600px; width: 900px">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+          <div class="saf" style="float: left">
           <el-form-item label="名称" prop="name">
             <el-input  v-model="ruleForm.name" style="width: 250px;"></el-input>
           </el-form-item>
@@ -174,20 +169,8 @@
               <el-option label="翻盘门店" value="2"></el-option>
             </el-select>
             </el-form-item>
-          <el-form-item label="经营范围" prop="scopeExt">
-            <el-checkbox-group v-model="ruleForm.scopeExt">
-              <el-checkbox label="出境" name="scopeExt"></el-checkbox>
-              <el-checkbox label="入境" name="scopeExt"></el-checkbox>
-              <el-checkbox label="国内" name="scopeExt"></el-checkbox>
-              <el-checkbox label="赴台游" name="scopeExt"></el-checkbox>
-              <el-checkbox label="住宿" name="scopeExt"></el-checkbox>
-              <el-checkbox label="票务" name="scopeExt"></el-checkbox>
-              <el-checkbox label="邮轮" name="scopeExt"></el-checkbox>
-              <el-checkbox label="汽车租赁" name="scopeExt"></el-checkbox>
-              <el-checkbox label="保险" name="scopeExt"></el-checkbox>
-              <el-checkbox label="其他" name="scopeExt"></el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
+          </div>
+         <div class="ty" style="float: left; margin-left: 100px">
           <el-form-item label="地址">
             <el-input  v-model="ruleForm.address" style="width: 250px;"></el-input>
           </el-form-item>
@@ -206,7 +189,29 @@
           <el-form-item label="对公账号" prop="bankcardNo">
             <el-input  v-model="ruleForm.bankcardNo" style="width: 250px;"></el-input>
           </el-form-item>
+       </div>
+          <div class="rrr" style="float: left;" >
+            <el-form-item label="经营范围" prop="scopeExt">
+            <el-checkbox-group v-model="ruleForm.scopeExt" >
+              <el-checkbox label="出境" name="scopeExt"></el-checkbox>
+              <el-checkbox label="入境" name="scopeExt"></el-checkbox>
+              <el-checkbox label="国内" name="scopeExt"></el-checkbox>
+              <el-checkbox label="赴台游" name="scopeExt"></el-checkbox>
+              <el-checkbox label="住宿" name="scopeExt"></el-checkbox>
+              <el-checkbox label="票务" name="scopeExt"></el-checkbox>
+              <el-checkbox label="邮轮" name="scopeExt"></el-checkbox>
+              <el-checkbox label="汽车租赁" name="scopeExt"></el-checkbox>
+              <el-checkbox label="保险" name="scopeExt"></el-checkbox>
+              <el-checkbox label="其他" name="scopeExt"></el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          </div>
         </el-form>
+        <div class="ButtonCls">
+          <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">确定</el-button>
+          <el-button type="primary" v-else @click="editorForm('ruleForm')">修改</el-button>
+          <el-button @click="resetForm('ruleForm')">取消</el-button>
+        </div>
       </div>
     </el-dialog>
     <!--end-->
@@ -702,8 +707,9 @@
     margin-top:20px ;
   }
   .ButtonCls{
-    float: right;
-    margin-top: -35px;
+    float:left;
+
+    margin-left: 315px;
   }
   .el-checkbox+.el-checkbox{
     margin-left: 10px;

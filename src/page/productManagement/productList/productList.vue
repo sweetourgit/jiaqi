@@ -7,7 +7,7 @@
     <el-button type="primary"  @click="dialogVisible = true" >添加产品</el-button>
     </div>
 
-    <div style="background: #f7f7f7; margin-left: 50px;width: 1200px" >
+    <div style="border: 1px solid rgb(241, 241, 241); margin-left: 50px;width: 1009px" >
     <div class="select_button">
       <el-button v-for="(item, index) in domains"
                  :key="item.key"
@@ -76,7 +76,7 @@
     </div>
     </div>
 
-    <div style="border: 1px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 50px; width: 74%" >
+    <div style="border: 1px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 50px; width: 62.5%" >
     <div class="button_select">
       <el-button @click=handDb plain :disabled="reable">编辑</el-button>
       <el-button plain :disabled="reable">复制</el-button>
@@ -88,7 +88,7 @@
 
     </div>
 
-    <div class="table_trip" style="margin-left: 50px; width: 80%;">
+    <div class="table_trip" style="margin-left: 50px; width: 92%;">
       <el-table
         :data="tableData"
         border
@@ -185,7 +185,7 @@
      <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
           <el-radio-group v-model="isCollapse" >
             <el-radio-button  class="group" :label="true">库存</el-radio-button>
-            <el-radio-button :label="false"  >价格</el-radio-button>
+            <el-radio-button :label="false" @change="qqq" >价格</el-radio-button>
           </el-radio-group>
      </div>
 
@@ -367,7 +367,7 @@
     </div>
     <!-- 价格 -->
     <div v-else>
-      <DateList v-on:merchandises="headCall"  :msg-father="ccc" :piapia="piaid" :codePrefix="codePrefix" :codeSuffix="codeSuffix"/>
+      <DateList   v-on:merchandises="headCall"  :msg-father="ccc" :piapia="piaid" :codePrefix="codePrefix" :codeSuffix="codeSuffix"/>
     </div>
     </el-dialog>
   </div>
@@ -849,8 +849,12 @@ import DateList from './component/DateList'
         this.piaid = this.ccc[item].id;
         this.codePrefix = this.ccc[item].codePrefix;
         this.codeSuffix = this.ccc[item].codeSuffix;
-        this.isCollapse = false;
 
+        if(this.codePrefix == '' ||this.codeSuffix ==""){
+            this.$message.error('错了哦，团号不能为空');
+        }else{
+          this.isCollapse = false;
+        }
       },
 
       BandSave(){
@@ -920,7 +924,7 @@ import DateList from './component/DateList'
                   }
                 ],
                 "briefMark": "string",
-                "plan": {
+                /*"plan": {
                   "id": 0,
                   "isDeleted": 0,
                   "createTime": "2018-12-04T06:46:08.555Z",
@@ -941,7 +945,7 @@ import DateList from './component/DateList'
                   "loadPlan_Enroll": true,
                   "createUser": "string",
                   "packageID": 0
-                },
+                },*/
                 "loadPlan": true,
                 "uptoDay": that.ccc[i].uptoDay,
                 "templateID": that.ccc[i].value
@@ -1511,7 +1515,11 @@ import DateList from './component/DateList'
     }
 
   },
+      qqq(){
+        console.log(123)
+      },
       headCall(data) {
+
         this.merchandise = data;
       },
   // 生成sku

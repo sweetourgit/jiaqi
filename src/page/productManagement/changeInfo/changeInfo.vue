@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-      <div class="btn" style="width:200px;position:absolute;z-index:99;top:0px;left:68%;">
+      <div class="btn" style="width:200px;position:absolute;z-index:99;top:0px;left:50%;">
         <el-button plain class="btn-button" @click="cancel()">取消</el-button>
         <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">保存</el-button>
       </div>
