@@ -1,6 +1,7 @@
 <template>
   <div>
      <div class="demo-input-suffix">
+          <!--搜索-->
           <span class="search-title">订单ID</span>
           <el-input v-model="groupNo" class="input"></el-input>
           <span class="search-title">产品ID</span>
@@ -31,42 +32,42 @@
           </ul></br>
           <el-button type="primary" class="search-but">搜索</el-button>
           <!--订单列表-->
-          <div class="pro-info">
+          <div class="pro-info" v-for="(item,index) in orderpage">
             <table cellpadding="5">
                 <tr>
                   <td width="60" class="tr">订单ID</td>
-                  <td>24093932018091010185273</td>
+                  <td>{{item.orderCode}}</td>
                   <td width="60" class="tr">产品ID</td>
-                  <td width="220">24093932018091010185273</td>
+                  <td width="220">{{item.teamID}}</td>
                   <td width="85" class="tr">订单状态</td>
                   <td width="70">订单确认</td>
                   <td width="60" class="tr">退款状态</td>
                   <td width="60">未退款</td>
                   <td width="60" class="tr">订单时间</td>
-                  <td>2018/09/10 13:37</td>
+                  <td>{{formatDate(new Date(item.createTime))}}</td>
                 </tr>
                 <tr>
                   <td width="60" class="tr">产品名</td>
-                  <td colspan="9">新加坡斜坡滑车+空中吊椅索道滑车SkylineLuge景点门票 ( 即订即用 圣淘沙景点门票）</td>
+                  <td colspan="9">{{item.name}}</td>
                 </tr>
                 <tr>
                   <td width="60" class="tr">套餐名称</td>
-                  <td colspan="3">君澜日式豪华房 含早餐 双人不限次温泉门票</td>
-                  <td width="60" class="tr">团期计划ID</td>
-                  <td colspan="5">24093932018091010185273</td>
+                  <td colspan="3">{{item.package}}</td>
+                  <td width="60" class="tr">团号</td>
+                  <td colspan="5">{{item.groupCode}}</td>
                 </tr>
                 <tr>
                   <td width="60" class="tr">应付</td>
-                  <td>1200</td>
+                  <td>{{item.payable}}</td>
                   <td width="60" class="tr">单价</td>
                   <td rowspan="2" valign="top">成人3000.00*1 单房差 500.00*1</td>
                   <td width="60" class="tr">优惠</td>
-                  <td colspan="4" rowspan="2" valign="top">满1000立减300 下单立减2块</td>
+                  <td colspan="4" rowspan="2" valign="top">{{item.favTitle}}</td>
                   <td rowspan="2">&nbsp;</td>
                 </tr>
                 <tr>
                   <td width="60" class="tr">已付</td>
-                  <td>2500</td>
+                  <td>{{item.paid}}</td>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>
                 </tr>
@@ -78,13 +79,13 @@
                   <td width="60" class="tr">订单来源</td>
                   <td colspan="3">xxx旅行社</td>
                   <td width="60" class="tr">销售</td>
-                  <td>阳阳</td>
+                  <td>{{item.saler}}</td>
                 </tr>
                 <tr>
                   <td width="60" class="tr">用户姓名</td>
-                  <td>阳阳</td>
+                  <td>{{item.contactName}}</td>
                   <td width="60" class="tr">电话</td>
-                  <td>13800001111</td>
+                  <td>{{item.contactTel}}</td>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>
@@ -281,10 +282,10 @@ export default {
       handleSizeChange(val){
         this.pageSize = val;
         this.pageIndex = 1;
-       // this.orderPage(1,val);
+        this.orderPage(1,val);
       },
       handleCurrentChange(val){
-       // this.orderPage(val,this.pageSize);
+        this.orderPage(val,this.pageSize);
       },
       orderPage(pageIndex=this.pageIndex,pageSize=this.pageSize){
         this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderpage',{
@@ -303,14 +304,26 @@ export default {
             console.log(err)
           })
       },
-
+      //流程管理
       processManage(){
         this.dialogFormProcess=true;
       },
       changeNum(){
         this.dialogFormNum=true;
-
-        
+      },
+      formatDate(date){
+       var y = date.getFullYear();  
+       var m = date.getMonth() + 1;  
+           m = m < 10 ? ('0' + m) : m;  
+       var d = date.getDate();  
+           d = d < 10 ? ('0' + d) : d;  
+       var h = date.getHours();  
+           h=h < 10 ? ('0' + h) : h;  
+       var minute = date.getMinutes();  
+           minute = minute < 10 ? ('0' + minute) : minute;  
+       var second=date.getSeconds();  
+           second=second < 10 ? ('0' + second) : second;  
+           return y + '-' + m + '-' + d +' '+ h + ':' + minute + ':' + second;
       }
       
 

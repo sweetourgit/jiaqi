@@ -8,7 +8,6 @@
          <el-date-picker v-model="endTime" type="date" placeholder="终止日期"></el-date-picker>
          <el-button type="primary" icon="el-icon-search" class="search" @click="teamQueryList(1,pageSize,groupCode)"></el-button>
      </div>
-     <div class="line"></div>
      <div class="main">
      <el-row class="button">
        <el-button :disabled="forbidden1" @click="dialogFormVisible = true">更改状态</el-button>
@@ -231,7 +230,6 @@ export default {
        .start-time{margin-left:25px}
        .date-line{width:30px;border-bottom:1px solid #e6e6e6;display:inline-block;margin:0 3px 3px 0}
        .search-title{font-size: 14px;margin-left: 10px}
-       .line{width:80%;min-width:800px;border-bottom:1px solid #e6e6e6;margin:25px 0 0 -20px;}
        .table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 8px;width:1400px;}
        .costTable{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 0}
        .el-table tr{background: #f6f6f6 !important}
