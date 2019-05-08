@@ -587,46 +587,55 @@ export default {
       this.removes = resolve
       this.data = [];
       let _this = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
-        object: {
-          ParentID: -1
-        }
-      },{
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        }
-      }).then(response => {
-        for (let i = 0; i < response.data.objects.length; i++) {
+      let obj=[{
+          code:null,
+          createTime:"2018-08-29T15:43:50",
+          createUser:null,
+          id:204,
+          isDeleted:0,
+          isDeletedCN:"未删除",
+          isLeaf:2,
+          isLeafCN:"不是末级",
+          loadLeader:false,
+          mark:"0",
+          officeFax:"0",
+          officeTel:"0",
+          orgCode:10000000,
+          orgName:"嘉麒集团",
+          organizationLeader:[],
+          parentID:-1,
+          physical:1,
+          rank:0
+        }];
+        for (let i = 0; i < obj.length; i++) {
           if (node.level === 0) {
             _this.options.push({
-              label: response.data.objects[i].orgName,
-              value: response.data.objects[i].id + "-" + response.data.objects[i].orgName
+              label: obj[i].orgName,
+              value: obj[i].id + "-" + obj[i].orgName
             });
             resolve([
               {
-                label: response.data.objects[i].orgName,
+                label: obj[i].orgName,
                 key: i,
-                id: response.data.objects[i].id,
-                isLeaf: response.data.objects[i].isLeaf
+                id: obj[i].id,
+                isLeaf: obj[i].isLeaf
               }
             ]);
           }
         }
         let num = Array();
         num.push({
-          id: response.data.objects[0].id,
-          isLeaf: response.data.objects[0].isLeaf,
+          id: obj[0].id,
+          isLeaf: obj[0].isLeaf,
           key: 0,
-          label: response.data.objects[0].orgName
+          label: obj[0].orgName
         });
         if (this.flag) {
           _this.treeClick(num[0]);
           this.flag = false;
         }
         this.treeKey.push(204);
-      }).catch(function(error) {
-        console.log(error);
-      });
+
       if (node.level >= 1) {
         this.getUser(
           node.data.key,
