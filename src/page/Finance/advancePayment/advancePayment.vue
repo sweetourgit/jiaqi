@@ -18,32 +18,32 @@
             <el-button type="primary" @click="dialogchange" plain>申请预付款</el-button>
             <el-button type="primary" @click=dialogFind plain :disabled="reable">查看借款</el-button>
           </div>
-          <div class="table_trip" style="width: 90%;">
+          <div class="table_trip" style="width: 70%;">
             <el-table :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-              <el-table-column prop="id" label="付款单号" align="center" width="80%">
+              <el-table-column prop="paymentID" label="付款单号" align="center" width="80%">
               </el-table-column>
-              <el-table-column prop="status" label="状态" width="100%" align="center">
+              <el-table-column prop="checkTypeEX" label="状态" width="100%" align="center">
               </el-table-column>
-              <el-table-column prop="time" label="发起时间" align="center" width="120%">
+              <el-table-column prop="createTime" label="发起时间" align="center" width="120%">
               </el-table-column>
-              <el-table-column prop="tour_plan" label="团期计划" align="center">
+              <el-table-column prop="groupCode" label="团期计划" align="center">
               </el-table-column>
-              <el-table-column prop="supplier" label="供应商名称" align="center">
+              <el-table-column prop="supplierName" label="供应商名称" align="center">
               </el-table-column>
-              <el-table-column prop="type" label="类型" align="center" width="110%">
+              <el-table-column prop="supplierTypeEX" label="类型" align="center" width="110%">
               </el-table-column>
-              <el-table-column cell-style prop="money" label="金额" align="center" width="110%">
+              <el-table-column cell-style prop="price" label="金额" align="center" width="110%">
               </el-table-column>
-              <el-table-column prop="org" label="申请组织" align="center" width="120%">
+              <el-table-column prop="orgName" label="申请组织" align="center" width="120%">
               </el-table-column>
-              <el-table-column prop="user" label="申请人" align="center" width="120%">
+              <el-table-column prop="createUser" label="申请人" align="center" width="120%">
               </el-table-column>
               <el-table-column prop="opinion" label="审批意见" align="center" width="120%">
               </el-table-column>
             </el-table>
           </div>
           <!--分页-->
-          <div class="block" style="margin-top: 30px;text-align:center;">
+          <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total>
             </el-pagination>
           </div>
@@ -56,12 +56,12 @@
     </el-tabs>
     <!--申请预付款-->
     <el-dialog title="申请预付款" :visible.sync="dialogFormVisible" width=60% :show-close="false">
-      <div v-if="this.find == 1" class="sh_style">审核中</div>
+      <div v-if="this.find == 1" class="sh_style">{{this.infoStatus}}</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-        <div class="btn" style="width:200px;position:absolute;z-index:9;top:20px;right:1%;">
+        <div class="btn" style="position:absolute;z-index:9;top:20px;right:1%;">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
-          <el-button v-if="this.find == 1" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销申请</el-button>
+          <el-button style="right: 1%;float: right;" v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+          <el-button style="right: 1%;float: right;" v-if="this.find == 1 && this.infoStatus=='审批中'" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销申请</el-button>
         </div>
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <!-- 基本信息 -->
@@ -69,74 +69,75 @@
             <div>
               <!--申请人-->
               <el-form-item label="申请人" prop="user" ref="user" label-width="120px">
-                <div class="destination-input">
+                <!--<div class="destination-input">
                   <el-tag :key="tag3.pod" v-for="tag3 in dynamicTags3" closable :disable-transitions="false" @close="handleClose3(tag3)">
                     {{tag3.pod}}
                   </el-tag>
                   <el-autocomplete id="ddd" class="input-new-tags" v-model="ruleForm.user" v-if="inputVisible3" ref="saveTagInput" size="small" placeholder="请输入申请人" :trigger-on-focus="false"></el-autocomplete>
                   <el-button v-else class="input-new-tag" size="small" :disabled="change" @click="showInput3">请输入申请人</el-button>
-                </div>
-                <span id="isNull" v-show="noNull">不能为空</span>
+                </div>-->
+                <el-input v-model="ruleForm.user" class="inputWidth" disabled placeholder="请输入申请人"></el-input>
               </el-form-item>
               <!--团期计划-->
-              <el-form-item label="团期计划" prop="tour" label-width="120px">
-                <el-input v-model="ruleForm.tour" @blur="tour_check" class="productName" placeholder="请输入或者选择团期计划"></el-input>
-                <el-input v-model="ruleForm.productName" :disabled="true" class="productName" placeholder="自动补充产品名称" style="width:30%;"></el-input>
+              <el-form-item label="团期计划" prop="tour" label-width="120px" style="float:left;">
+                <el-input v-model="ruleForm.tour" @blur="tour_check" :disabled="change" class="inputWidth" placeholder="请输入或者选择团期计划"></el-input>
+              </el-form-item>
+              <el-form-item prop="productName" style="float:left; margin-left:10px;">
+                <el-input v-model="ruleForm.productName" :disabled="true" class="inputWidth" placeholder="自动补充产品名称"></el-input>
                 <el-button class="input-new-tag2" size="small" :disabled="change" @click="showInput4">选择</el-button>
               </el-form-item>
               <!-- 供应商 -->
-              <el-form-item label="供应商" prop="supplier" ref="supplier" label-width="120px">
-                <div class="destination-input">
+              <el-form-item label="供应商" prop="supplier" ref="supplier" label-width="120px" style="clear:both;">
+                <div class="destination-input inputWidth">
                   <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
                     {{tag2.label}}
                   </el-tag>
                   <el-autocomplete id="input-error" :disabled="change" class="lable_input" v-if="inputVisible2" v-model="ruleForm.supplier" ref="saveTagInput" size="small" placeholder="请输入供应商" @keyup.enter.native="handleInputConfirm2" :fetch-suggestions="querySearch5" :trigger-on-focus="false" @select="dest_01" @blur="handleInputConfirm2">
                   </el-autocomplete>
-                  <el-button v-else class="operation_Label" :disabled="change" v-show="supplierLength" size="small" @click="showInput2">请输入供应商</el-button>
+                  <el-button v-else class="operation_Label inputWidth" :disabled="change" v-show="supplierLength" size="small" @click="showInput2">请输入供应商</el-button>
                 </div>
-                <span id="empty" v-show="empty">不能为空</span>
               </el-form-item>
               <!-- 类型 -->
               <el-form-item label="类型" prop="type" label-width="120px">
-                <el-select style="float: left;" v-model="ruleForm.type" placeholder="请选择" :disabled="change">
-                  <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value">
+                <el-select style="float: left;" class="inputWidth" v-model="ruleForm.type" placeholder="请选择类型" :disabled="change">
+                  <el-option v-for="item in typeList" :key="item.label" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
               <!-- 借款金额 -->
               <el-form-item label="借款金额" prop="loanMoney" label-width="120px">
-                <el-input type="number" v-model="ruleForm.loanMoney" class="bright" placeholder="借款金额" :disabled="change"></el-input>
+                <el-input type="number" v-model="ruleForm.loanMoney" class="bright inputWidth" placeholder="借款金额" :disabled="change"></el-input>
               </el-form-item>
               <!-- 借款数量 -->
-              <el-form-item label="借款数量" prop="loanNumber" class="bright_b" label-width="120px" style="margin-left: 35%;">
-                <el-input type="number" v-model="ruleForm.loanNumber" class="lightspot" placeholder="借款数量" :disabled="change" style='margin-left: 10px;'></el-input>
+              <el-form-item label="借款数量" prop="loanNumber" class="bright_b" label-width="80px" style="margin-left: 30%;">
+                <el-input type="number" v-model="ruleForm.loanNumber" class="lightspot inputWidth" placeholder="借款数量" :disabled="change" style='margin-left: 10px;'></el-input>
               </el-form-item>
               <!-- 摘要 -->
               <el-form-item label="摘要" prop="abstract" label-width="120px">
-                <el-input v-model="ruleForm.abstract" class="bright" placeholder="摘要" :disabled="change"></el-input>
+                <el-input v-model="ruleForm.abstract" class="bright inputWidth" placeholder="摘要" :disabled="change"></el-input>
               </el-form-item>
               <!-- 账户 -->
-              <el-form-item label="账户" prop="account" label-width="120px">
-                <el-input v-model="ruleForm.account" class="bright" placeholder="账户" :disabled="change"></el-input>
-                <el-button class="input-new-tag2" size="small" :disabled="change" @click="showInput5">选择</el-button>
+              <el-form-item label="账户" prop="cardNumber" label-width="120px">
+                <el-input v-model="ruleForm.cardNumber" class="bright inputWidth" placeholder="账户" :disabled="change"></el-input>
+                <el-button class="input-new-tag2 " size="small" :disabled="change" @click="showInput5">选择</el-button>
               </el-form-item>
               <!-- 开户行 -->
-              <el-form-item label="开户行" prop="bank" label-width="120px">
-                <el-input v-model="ruleForm.bank" class="bright" placeholder="开户行" :disabled="change"></el-input>
+              <el-form-item label="开户行" prop="bankName" label-width="120px">
+                <el-input v-model="ruleForm.bankName" class="bright inputWidth" placeholder="开户行" :disabled="change"></el-input>
               </el-form-item>
               <!-- 开户行 -->
-              <el-form-item label="开户名" prop="bankName" label-width="120px">
-                <el-input v-model="ruleForm.bankName" class="bright" placeholder="开户名" :disabled="change"></el-input>
+              <el-form-item label="开户名" prop="cardName" label-width="120px">
+                <el-input v-model="ruleForm.cardName" class="bright inputWidth" placeholder="开户名" :disabled="change"></el-input>
               </el-form-item>
               <!-- 付款方式 -->
               <el-form-item label="付款方式" prop="payMode" label-width="120px">
-                <el-select style="float: left;" v-model="ruleForm.payMode" placeholder="请选择" :disabled="change">
+                <el-select style="float: left;" class="inputWidth" v-model="ruleForm.payMode" placeholder="请选择" :disabled="change">
                   <el-option v-for="item in payModeList" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="附件" label-width="120px">
-                <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :disabled="change" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
+                <el-upload class="upload-demo" name="files" ref="upload" :limit="12" multiple :action="this.upload_url" :disabled="change" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview" list-type="picture">
                   <el-button size="small" type="primary">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
@@ -323,31 +324,29 @@
       <div style="text-align: center">
         <div style="width: 100%">
           <div class="button_select" style="margin-bottom: 30px;margin-top: -30px;">
-            <span class="search-title" >团期计划ID</span>
-            <el-input placeholder="团期计划ID" v-model="tour_id" class="group-no" style="width:20%"></el-input>
+            <span class="search-title" >团期计划</span>
+            <el-input placeholder="团期计划" v-model="tour_name" class="group-no" style="width:20%"></el-input>
             <span class="search-title" >产品名称</span>
             <el-input placeholder="产品名称" v-model="product_name" class="group-no" style="width:20%"></el-input>
-            <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
-            <el-date-picker v-model="endTime" type="date" placeholder="终止日期"></el-date-picker>
+            <el-date-picker v-model="startTime2" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
+            <el-date-picker v-model="endTime2" type="date" placeholder="终止日期"></el-date-picker>
             <el-button type="primary" icon="el-icon-search" class="search" @click="searchHand4()"></el-button>
           </div>
           <div class="table_trip" style=" width: 100%;">
             <el-table :data="tableData4" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle4" :header-cell-style="getRowClass4">
               <el-table-column prop="groupCode" label="团号"></el-table-column>
               <el-table-column prop="title" label="产品名称"></el-table-column>
-              <!--缺个目的地,用下面暂时代替-->
-              <el-table-column prop="refPrice" label="目的地"></el-table-column>
-              <el-table-column prop="dateFormat" label="出行日期"></el-table-column>
-              <!--缺个部门,用下面暂时代替-->
-              <el-table-column prop="count" label="部门"></el-table-column>
-              <el-table-column prop="op" label="操作"></el-table-column>
+              <el-table-column prop="destination" label="目的地"></el-table-column>
+              <el-table-column prop="date" label="出行日期"></el-table-column>
+              <el-table-column prop="orgName" label="部门"></el-table-column>
+              <el-table-column prop="name" label="操作"></el-table-column>
             </el-table>
           </div>
           <!--分页-->
-          <div class="block" style="margin-top: 30px;text-align:center;">
-            <el-pagination @size-change="handleSizeChange4" @current-change="handleCurrentChange4" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total>
+          <!-- <div class="block" style="margin-top: 30px;text-align:center;">
+            <el-pagination @size-change="handleSizeChange4" @current-change="handleCurrentChange4" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="5" layout="total, sizes, prev, pager, next, jumper" :total=total>
             </el-pagination>
-          </div>
+          </div> -->
           <!--分页-->
         </div>
       </div>
@@ -356,32 +355,25 @@
           <el-button type="primary" @click="routerHandle4()">确 定</el-button>
         </span>
     </el-dialog>
-    <el-dialog style="text-align: left" title="选择账户:" :visible.sync="dialogVisible3" width="70%">
+    <el-dialog style="text-align: left" title="选择账户:" :visible.sync="dialogVisible3" width="50%">
       <el-tabs v-model="activeName2" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="供应商" name="three">
-          <el-table :data="tableData9" border style="width: 100%" :highlight-current-row="true" :header-cell-style="getRowClass4">
-            <el-table-column prop="account" label="账户"></el-table-column>
-            <el-table-column prop="bank" label="开户行"></el-table-column>
-            <el-table-column prop="name" label="名称"></el-table-column>
-          </el-table>
-        </el-tab-pane>
-        <el-tab-pane label="个人" name="four">
-          <el-table :data="tableData9" border style="width: 100%" :highlight-current-row="true" :header-cell-style="getRowClass4">
-            <el-table-column prop="account" label="账户"></el-table-column>
-            <el-table-column prop="bank" label="开户行"></el-table-column>
-            <el-table-column prop="name" label="名称"></el-table-column>
+          <el-table :data="tableData9" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle5" :header-cell-style="getRowClass4">
+            <el-table-column prop="cardNumber" label="账户"></el-table-column>
+            <el-table-column prop="bankName" label="开户行"></el-table-column>
+            <el-table-column prop="cardName" label="名称"></el-table-column>
           </el-table>
         </el-tab-pane>
       </el-tabs>
       <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible3 = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible3 = false">确 定</el-button>
+          <el-button type="primary" @click="routerHandle5()">确 定</el-button>
         </span>
     </el-dialog>
     <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible4" width="50%">
       <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
       <div>
-        <img :src="imgBig" alt="图片" :alt="imgBigName"/>
+        <img :src="imgBig" style="max-width: 900px;" alt="图片" :alt="imgBigName"/>
         <span>{{imgBigName}}</span>
       </div>
     </el-dialog>
@@ -389,6 +381,7 @@
 </template>
 <script>
 import NeedApproval from '@/page/Finance/advancePayment/needApproval'
+import { formatDate } from '@/js/libs/formatDate.js'
 export default {
   name: "advancePayment",
   components: {
@@ -403,8 +396,11 @@ export default {
       user: '',
       startTime: '',
       endTime: '',
+      startTime2: '',
+      endTime2: '',
       pageIndex: 1, // 设定当前页数
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
+      pageSize2: 5, // 设定默认分页每页显示数 todo 具体看需求
       total: 0,
       total2: 0,
       pageIndex2: 1, // 设定当前页数
@@ -423,33 +419,7 @@ export default {
       tableData: [],
       tableData2: [],
       tableData3: [],
-      tableData4: [{
-          id: 1,
-          status: 1,
-          time: '2016-05-03',
-          tour_plan: '泰国曼谷+芭提雅+沙美岛+清迈小镇7日游',
-          supplier: '我是供应商',
-          type: '地接',
-          money: '20',
-          surplus: '20',
-          org: '国内部',
-          user: 'tester申请人',
-          opinion: '统一',
-        },
-        {
-          id: 2,
-          status: 2,
-          time: '2018-05-03',
-          tour_plan: '泰国曼谷+芭提雅+沙美岛+清迈小镇7日游',
-          supplier: '我是供应商',
-          type: '地接',
-          money: '20',
-          surplus: '20',
-          org: '国内部',
-          user: 'tester申请人',
-          opinion: '统一',
-        }
-      ],
+      tableData4: [],
       tableData5: [{
         total: '订单总额',
         isTotal: '已审批总额',
@@ -548,13 +518,7 @@ export default {
         abstract: '审批意见',
       }],
       supplier: '',
-      supplierList: [{
-        value: '选项1',
-        label: '辽宁大运通'
-      }, {
-        value: '选项2',
-        label: '辽宁康辉'
-      }],
+      supplier_id: 0,
       type: '',
       typeList: [],
       payMode: '',
@@ -562,40 +526,22 @@ export default {
       ruleForm: {
         loanMoney: '',
         loanNumber: '',
-        user: '',
+        user: localStorage.getItem('name'),
         productName: '',
         tour: '',
         supplier: '',
         abstract: '',
-        account: '',
-        bank: '',
+        cardNumber: '',
         bankName: '',
+        cardName: '',
         payMode: '',
+        type: '',
       }, //文件上传列表
-      fileList: [{
-        name: 'food.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }],
+      fileList: [],
       rules: {
+        //user: [{ required: true, message: '申请人不能为空', trigger: 'change' }],
         type: [{ required: true, message: '类型不能为空', trigger: 'change' }],
+        payMode: [{ required: true, message: '付款方式不能为空', trigger: 'change' }],
         loanMoney: [{ required: true, message: '借款金额不能为空', trigger: 'blur' }],
         loanNumber: [{ required: true, message: '借款数量不能为空', trigger: 'blur' },
           { pattern: /^[+]{0,1}(\d+)$/, message: '借款数量需为正整数' }
@@ -603,12 +549,10 @@ export default {
         tour: [{ required: true, message: '团期计划不能为空', trigger: 'change' }],
         supplier: [{ required: true, message: '供应商不能为空', trigger: 'blur' }],
         productName: [{ required: true, message: '产品名称不能为空', trigger: 'change' }],
-        user: [{ required: true, message: '申请人不能为空', trigger: 'change' }],
         abstract: [{ required: true, message: '摘要不能为空', trigger: 'blur' }],
-        account: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
-        bank: [{ required: true, message: '开户行不能为空', trigger: 'blur' }],
-        bankName: [{ required: true, message: '开户名不能为空', trigger: 'blur' }],
-        payMode: [{ required: true, message: '付款方式不能为空', trigger: 'change' }],
+        cardNumber: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
+        bankName: [{ required: true, message: '开户行不能为空', trigger: 'blur' }],
+        cardName: [{ required: true, message: '开户名不能为空', trigger: 'blur' }],
       },
       activeName: 'first',
       inputVisible3: false,
@@ -628,8 +572,9 @@ export default {
       dialogFormVisible: false,
       dialogVisible: false,
       apply_user_input: '',
-      tour_id: '',
-      tour_id_pre: '',
+      tour_name: '',
+      tour_name_pre: '',
+      tour_id: 0,
       product_name_pre: '',
       product_name: '',
       change: false,
@@ -637,6 +582,15 @@ export default {
       dynamicTags3: [],
       imgBig: '',
       imgBigName: '',
+      tour_group: [],
+      cardNumber_pre: '',
+      bankName_pre: '',
+      cardName_pre: '',
+      time: 0,
+      len: 0,
+      uid: 0, //上传图片缩略图选中项
+      infoStatus: '',
+      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',
     }
   },
   computed: {
@@ -677,17 +631,22 @@ export default {
     },
     // 报销弹窗
     dialogchange() {
+      if (this.find == 1) { this.$refs.ruleForm.resetFields(); }
+      this.clearForm();
       this.find = 0;
       this.change = false
       this.dialogFormVisible = true;
     },
     //报销弹窗查看
     dialogFind() {
+      this.clearForm()
       this.find = 1;
       this.change = true
       this.dialogFormVisible = true;
+      this.getPaymentInfo()
     },
     handlePreview(file, fileList) {
+      this.uid = file.uid
       this.dialogVisible4 = true
       this.imgBig = file.url
       this.imgBigName = file.name
@@ -698,12 +657,28 @@ export default {
       image.setAttribute("crossOrigin", "anonymous");
       image.onload = function() {
         var canvas = document.createElement("canvas");
+        // 图片原始尺寸
+        var originWidth = image.width;
+        var originHeight = image.height;
+        // 最大尺寸限制
+        let maxWidth = 1000;
+        let maxHeight = 1000;
+        // 图片尺寸超过400x400的限制
+        if (originWidth > maxWidth || originHeight > maxHeight) {
+          if (originWidth / originHeight > maxWidth / maxHeight) {
+            // 更宽，按照宽度限定尺寸
+            image.width = maxWidth;
+            image.height = Math.round(maxWidth * (originHeight / originWidth));
+          } else {
+            image.height = maxHeight;
+            image.width = Math.round(maxHeight * (originWidth / originHeight));
+          }
+        }
         canvas.width = image.width;
         canvas.height = image.height;
         var context = canvas.getContext("2d");
         context.drawImage(image, 0, 0, image.width, image.height);
         var url = canvas.toDataURL("image/png"); //得到图片的base64编码数据
-
         var a = document.createElement("a"); // 生成一个a元素
         var event = new MouseEvent("click"); // 创建一个单击事件
         a.download = name || "photo"; // 设置图片名称
@@ -713,14 +688,44 @@ export default {
       image.src = imgsrc;
     },
     downs() {
-      this.downloadIamge(this.imgBig, this.imgBigName)
+      window.open(this.imgBig);
+      //this.downloadIamge(this.imgBig, this.imgBigName)
     },
     handleRemove(file, fileList) {
+      this.uid = fileList[0].uid;
       this.fileList = fileList
     },
     //文件上传
     handleChange(file, fileList) {
       this.fileList = fileList.slice(-3);
+    },
+    handleError(err, file) {
+      console.log('失败')
+      this.fileList = []
+    },
+    handleSuccess(res, file, fileList) {
+      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
+      if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
+        this.time = fileList.length;
+        if (this.fileList.length == 0) {
+          this.fileList = fileList;
+        } else {
+          this.len = this.fileList.length;
+          for (let i = this.len; i < fileList.length; i++) {
+            this.fileList.push(fileList[i]);
+          }
+        }
+      }
+      var paths = null;
+      for (let i = this.len; i < fileList.length; i++) {
+        paths = JSON.parse(fileList[i].response).paths[0];
+        this.$set(this.fileList[i], "width", paths.Width);
+        this.$set(this.fileList[i], "height", paths.Height);
+        this.$set(this.fileList[i], "url1", paths.Url);
+        this.$set(this.fileList[i], "length", paths.Length);
+        this.$set(this.fileList[i], "name", paths.Name);
+      }
+      this.uid = fileList[0].uid;
     },
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -733,27 +738,24 @@ export default {
     //搜索
     searchHand() {
       this.pageNum = 1;
-
       if (!this.productBehind) {
         this.productBehind = 0
       } else {
         this.pageNum = 1;
       }
+      let objectRequest = {}
+      objectRequest.paymentType = 2;
+      if (this.groupNo) { objectRequest.groupCode = this.groupNo; }
+      if (this.user) { objectRequest.createUser = this.user; }
+      if (this.startTime) { objectRequest.beginTime = this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0; }
+      if (this.endTime) { objectRequest.endTime = this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0; }
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teamsearch", {
+          this.GLOBAL.serverSrc + "/finance/payment/api/page", {
             "pageIndex": this.pageNum,
             "pageSize": this.pageSize,
             "total": 0,
-            "object": {
-              "id": 0,
-              "title": '',
-              "createUser": '',
-              "minPrice": 0,
-              "maxPrice": 0,
-              "podID": 0,
-              "destinationID": 0
-            }
+            "object": objectRequest,
           }, {
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -763,17 +765,6 @@ export default {
         .then(function(obj) {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['status'] = "状态"
-            arr[k]['time'] = '2016-05-03'
-            arr[k]['tour_plan'] = '团期计划'
-            arr[k]['supplier'] = '供应商'
-            arr[k]['type'] = "类型:比如地接"
-            arr[k]['money'] = "金额"
-            arr[k]['org'] = '国内部'
-            arr[k]['user'] = 'tester申请人'
-            arr[k]['opinion'] = '同意'
-          })
         })
         .catch(function(obj) {
           console.log(obj)
@@ -788,21 +779,19 @@ export default {
       if (this.secondTab) {
         this.secondIndex = val
       }
+      let objectRequest = {}
+      objectRequest.paymentType = 2;
+      if (this.groupNo) { objectRequest.groupCode = this.groupNo; }
+      if (this.user) { objectRequest.createUser = this.user; }
+      if (this.startTime) { objectRequest.beginTime = this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0; }
+      if (this.endTime) { objectRequest.endTime = this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0; }
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teamsearch", {
+          this.GLOBAL.serverSrc + "/finance/payment/api/page", {
             "pageIndex": val,
             "pageSize": this.pageSize,
             "total": 0,
-            "object": {
-              "id": 0,
-              "title": '',
-              "createUser": '',
-              "minPrice": 0,
-              "maxPrice": 0,
-              "podID": 0,
-              "destinationID": 0
-            }
+            "object": objectRequest,
           }, {
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -812,17 +801,6 @@ export default {
         .then(function(obj) {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['status'] = "状态"
-            arr[k]['time'] = '2016-05-03'
-            arr[k]['tour_plan'] = '团期计划'
-            arr[k]['supplier'] = '供应商'
-            arr[k]['type'] = "类型:比如地接"
-            arr[k]['money'] = "金额"
-            arr[k]['org'] = '国内部'
-            arr[k]['user'] = 'tester申请人'
-            arr[k]['opinion'] = '同意'
-          })
         })
         .catch(function(obj) {
           console.log(obj)
@@ -830,21 +808,19 @@ export default {
     },
     handleSizeChange(val) {
       this.pagesize = val
+      let objectRequest = {}
+      objectRequest.paymentType = 2;
+      if (this.groupNo) { objectRequest.groupCode = this.groupNo; }
+      if (this.user) { objectRequest.createUser = this.user; }
+      if (this.startTime) { objectRequest.beginTime = this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0; }
+      if (this.endTime) { objectRequest.endTime = this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0; }
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teamsearch", {
+          this.GLOBAL.serverSrc + "/finance/payment/api/page", {
             "pageIndex": 1,
             "pageSize": val,
             "total": 0,
-            "object": {
-              "id": 0,
-              "title": '',
-              "createUser": '',
-              "minPrice": 0,
-              "maxPrice": 0,
-              "podID": 0,
-              "destinationID": 0
-            }
+            "object": objectRequest
           }, {
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -855,17 +831,6 @@ export default {
           console.log(obj.data);
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['status'] = "状态"
-            arr[k]['time'] = '2016-05-03'
-            arr[k]['tour_plan'] = '团期计划'
-            arr[k]['supplier'] = '供应商'
-            arr[k]['type'] = "类型:比如地接"
-            arr[k]['money'] = "金额"
-            arr[k]['org'] = '国内部'
-            arr[k]['user'] = 'tester申请人'
-            arr[k]['opinion'] = '同意'
-          })
         })
         .catch(function(obj) {
           console.log(obj)
@@ -1037,9 +1002,9 @@ export default {
     },
     //获取id
     clickBanle(row, event, column) {
-      this.pid = row['id'];
+      this.infoStatus = row['checkTypeEX'];
+      this.pid = row['paymentID'];
       this.reable = false;
-
     },
     handleClick(tab, event) {
       if (tab.name == 'first') {
@@ -1056,7 +1021,7 @@ export default {
       }
     },
     routerHandle4() { //团期计划
-      this.ruleForm.tour = this.tour_id_pre
+      this.ruleForm.tour = this.tour_name_pre
       this.ruleForm.productName = this.product_name_pre
       this.dialogVisible2 = false
     },
@@ -1077,37 +1042,62 @@ export default {
     },
     //获取id
     clickBanle4(row, event, column) {
-      this.tour_id_pre = row['groupCode'];
+      this.tour_id = row['planID'];
+      this.tour_name_pre = row['groupCode'];
       this.product_name_pre = row['title'];
       this.reable = false;
     },
+    //获取银行卡信息
+    clickBanle5(row, event, column) {
+      this.cardNumber_pre = row['cardNumber'];
+      this.bankName_pre = row['bankName'];
+      this.cardName_pre = row['cardName'];
+    },
+    routerHandle5() {
+      this.ruleForm.cardNumber = this.cardNumber_pre
+      this.ruleForm.bankName = this.bankName_pre
+      this.ruleForm.cardName = this.cardName_pre
+      this.dialogVisible3 = false
+      this.$refs.ruleForm.validateField('cardNumber')
+      this.$refs.ruleForm.validateField('bankName')
+      this.$refs.ruleForm.validateField('cardName')
+    },
     tour_check() {
       if (this.ruleForm.tour != '') {
-        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/page', {
+        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
           "pageIndex": 1,
           "pageSize": 1,
           "object": {
-            "title": this.tour,
+            "groupCode": this.ruleForm.tour, //团号
+            "title": '', //产品名称
+            "beginDate": 0, //搜索用开始日期
+            "endDate": 0, //搜索用结束日期
           }
         }).then(res => {
           if (res.data.isSuccess == true) {
-            this.product_name_pre = res.data.objects[0].groupCode
-            this.ruleForm.productName = res.data.objects[0].groupCode
+            this.product_name_pre = res.data.objects[0].title
+            this.ruleForm.productName = res.data.objects[0].title
           }
         }).catch(err => {
           console.log(err)
+          this.product_name_pre = ''
+          this.ruleForm.productName = ''
         })
       } else {
+        this.product_name_pre = ''
         this.ruleForm.productName = ''
       }
     },
     searchHand4() {
       this.pageNum = 1;
-      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/page', {
+      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
         "pageIndex": this.pageIndex,
-        "pageSize": this.pageSize,
+        "pageSize": this.pageSize2,
         "object": {
-          "title": "斯里兰卡",
+          "groupCode": this.tour_name, //团号
+          "title": this.product_name, //产品名称
+          "beginDate": this.startTime2 ? formatDate(this.startTime2, 'yyyyMMdd') : 0, //搜索用开始日期
+          "endDate": this.endTime2 ? formatDate(this.endTime2, 'yyyyMMdd') : 0, //搜索用结束日期
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
@@ -1120,12 +1110,14 @@ export default {
 
     },
     handleCurrentChange4(val) {
-      this.pageNum = val;
-      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/page', {
-        "pageIndex": this.pageNum,
-        "pageSize": this.pageSize,
+      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+        "pageIndex": val,
+        "pageSize": this.pageSize2,
         "object": {
-          "title": "斯里兰卡",
+          "groupCode": this.tour_name, //团号
+          "title": this.product_name, //产品名称
+          "beginDate": this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0, //搜索用开始日期
+          "endDate": this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0, //搜索用结束日期
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
@@ -1138,11 +1130,14 @@ export default {
     },
     handleSizeChange4(val) {
       this.pageSize = val
-      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/page', {
+      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
         "pageIndex": 1,
-        "pageSize": this.pageSize,
+        "pageSize": this.pageSize2,
         "object": {
-          "title": "斯里兰卡",
+          "groupCode": this.tour_name, //团号
+          "title": this.product_name, //产品名称
+          "beginDate": this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0, //搜索用开始日期
+          "endDate": this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0, //搜索用结束日期
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
@@ -1154,7 +1149,20 @@ export default {
       })
     },
     showInput5() {
-      this.dialogVisible3 = true;
+      if (this.supplier_id) {
+        this.dialogVisible3 = true;
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/banklist', {
+          "object": {
+            "supplierID": this.supplier_id, //供应商ID
+          }
+        }).then(res => {
+          this.tableData9 = res.data.objects;
+        }).catch(err => {
+          console.log(err)
+        })
+      } else {
+        this.$message.error('供应商未匹配后台数据,请手动输入银行信息!');
+      }
     },
     showInput4() {
       this.dialogVisible2 = true;
@@ -1194,13 +1202,13 @@ export default {
       this.supplierLength = true
       if (this.dynamicTags2.length < 1) {
         this.ruleForm.supplier = ''
+        this.supplier_id = 0
       }
       this.$refs.ruleForm.validateField('supplier')
     },
     showInput2() {
       if (this.dynamicTags2.length < 1) {
         this.inputVisible2 = true;
-        this.ruleForm.supplier
         this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus();
         });
@@ -1211,14 +1219,15 @@ export default {
       this.tableData2 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
         "object": {
-          supplier: queryString5
+          name: queryString5
         }
       }).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
           this.tableData2.push({
-            "value": res.data.objects[i].leader,
+            "value": res.data.objects[i].name,
             "id": res.data.objects[i].id
           })
+          this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
         }
         var results = queryString5 ? this.tableData2.filter(this.createFilter(queryString5)) : [];
         cb(results)
@@ -1229,17 +1238,14 @@ export default {
     //获取供应商类型
     querySearch6() {
       this.typeList = []
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
-        "object": {
-          id: 1
-        }
-      }).then(res => {
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {}).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
           this.typeList.push({
             "value": res.data.objects[i].id,
             "label": res.data.objects[i].name
           })
         }
+        this.getListDefault()
       }).catch(err => {
         console.log(err);
       })
@@ -1269,9 +1275,50 @@ export default {
     },
     // 提交
     submitForm(formName) {
+      //console.log(this.ruleForm.payMode)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          let pictureList = [];
+          for (let i = 0; i < this.fileList.length; i++) {
+            let picture = {};
+            picture.url = this.fileList[i].url1;
+            picture.name = this.fileList[i].name;
+            pictureList.push(picture);
+          }
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/insert', {
+            "object": {
+              createUser: sessionStorage.getItem('id'),
+              paymentType: 2, //借款类型 1无收入借款 2预付款
+              planID: this.tour_id, //对应计划ID --Plan，不存在传值0
+              supplierID: this.supplier_id, //对应供应商ID --Supplier，不存在传值0
+              supplierName: this.ruleForm.supplier, //Supplier不存在时补充供应商名称
+              supplierType: this.ruleForm.type, //供应商类型 0返款
+              price: this.ruleForm.loanMoney, //金额
+              peopleCount: this.ruleForm.loanNumber, //数量
+              mark: this.ruleForm.abstract, //摘要
+              cardNumber: this.ruleForm.cardNumber, //账号
+              bankName: this.ruleForm.bankName, //开户行
+              cardName: this.ruleForm.cardName, //开户名
+              payway: this.ruleForm.payMode, //付款方式
+              files: pictureList, //付款方式
+            }
+          }).then(res => {
+            console.log(res.data);
+            if (res.data.isSuccess == true) {
+              this.dialogFormVisible = false
+              this.sendBPM(res.data.object)
+              this.searchHand()
+            } else {
+              console.log('有错误!');
+              console.log(res.data);
+            }
+          }).catch(err => {
+            console.log(err);
+          })
+          this.$message({
+            type: 'success',
+            message: '创建成功!'
+          });
         } else {
           console.log('error submit!!');
           return false;
@@ -1285,59 +1332,167 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '撤销成功!'
-        });
-        this.dialogFormVisible = false
+        var that = this
+        that.$http.post(
+            that.GLOBAL.serverSrc + "/finance/payment/api/delete", {
+              "id": that.pid,
+            }, {
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+              }
+            }
+          )
+          .then(function(obj) {
+            if (obj.data.isSuccess == true) {
+              that.$message({
+                type: 'success',
+                message: '撤销成功!'
+              });
+              that.dialogFormVisible = false
+            } else {
+              that.$message.error(obj.data.result.message);
+              console.log(obj.data.result.message)
+            }
+          })
+          .catch(function(obj) {
+            console.log(obj)
+          })
+        that.getListDefault()
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消撤销'
+          message: '已取消撤销申请!'
         });
+        this.getListDefault()
       });
+    },
+    getListDefault() {
+      var that = this
+      let objectRequest = {}
+      objectRequest.paymentType = 2;
+      if (this.groupNo) { objectRequest.groupCode = this.groupNo; }
+      if (this.user) { objectRequest.createUser = this.user; }
+      if (this.startTime) { objectRequest.beginTime = this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0; }
+      if (this.endTime) { objectRequest.endTime = this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0; }
+      this.$http.post(
+          this.GLOBAL.serverSrc + "/finance/payment/api/page", {
+            "pageIndex": 1,
+            "pageSize": this.pageSize,
+            "total": 0,
+            "object": objectRequest
+          }, {
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+        .then(function(obj) {
+          that.total = obj.data.total;
+          that.tableData = obj.data.objects;
+        })
+        .catch(function(obj) {
+          console.log(obj)
+        })
+    },
+    sendBPM(result) {
+      this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
+        jQ_ID: result.guid,
+        jQ_Type: result.flowModel,
+        workflowCode: result.flowModelName,
+        userCode: sessionStorage.getItem('account'), //未指定呢
+      }).then(res => {
+        let result = JSON.parse(res.data);
+        if (result.code == '0') {
+          console.log('启动工作流成功');
+        } else {
+          console.log('启动工作流错误!');
+          console.log(res.data);
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    getPaymentInfo() {
+      var that = this
+      that.$http.post(
+          that.GLOBAL.serverSrc + "/finance/payment/api/get", {
+            id: this.pid
+          }, {
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+        .then(function(obj) {
+          that.ruleForm.user = obj.data.object.createUser
+          that.ruleForm.supplier = obj.data.object.createUser
+          that.supplier_id = obj.data.object.supplierID
+          that.supplier = obj.data.object.supplierName
+          that.supplierLength = false
+          that.tour_id = obj.data.object.planID
+          that.ruleForm.type = obj.data.object.supplierType
+          that.ruleForm.loanMoney = obj.data.object.price
+          that.ruleForm.loanNumber = obj.data.object.peopleCount
+          that.ruleForm.abstract = obj.data.object.mark
+          that.ruleForm.cardNumber = obj.data.object.cardNumber
+          that.ruleForm.bankName = obj.data.object.bankName
+          that.ruleForm.cardName = obj.data.object.cardName
+          that.ruleForm.payMode = obj.data.object.payway
+          //that.fileList = obj.data.object.files
+          that.$set(that.dynamicTags2, 0, { "labelID": obj.data.object.supplierID, "label": obj.data.object.supplierName, "teamID": 0 })
+          that.getTourByPlanId(obj.data.object.planID)
+          obj.data.object.files.forEach(function(v, k, arr) {
+            that.fileList.push({
+              "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
+              "name": arr[k]['name'],
+            });
+          })
+          console.log(that.fileList)
+        })
+        .catch(function(obj) {
+          console.log(obj)
+        })
+
+    },
+    getTourByPlanId(val) {
+      var that = this
+      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+        "object": {
+          planID: val, //团期计划ID
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.ruleForm.tour = res.data.objects[0].groupCode
+          that.ruleForm.productName = res.data.objects[0].title
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    clearForm() {
+      this.ruleForm = {
+        loanMoney: '',
+        loanNumber: '',
+        user: localStorage.getItem('name'),
+        productName: '',
+        tour: '',
+        supplier: '',
+        abstract: '',
+        cardNumber: '',
+        bankName: '',
+        cardName: '',
+        payMode: '',
+        type: '',
+      }
+      this.supplier_id = 0
+      this.supplier = ''
+      this.dynamicTags2.splice(0, 1);
+      this.supplierLength = true
+      this.tour_id = 0
+      this.fileList = []
     },
   },
   created() {
-    var that = this
-    this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-          "pageIndex": 1,
-          "pageSize": this.pageSize,
-          "total": 0,
-          "object": {
-            "id": 0,
-            "title": '',
-            "createUser": '',
-            "minPrice": 0,
-            "maxPrice": 0,
-            "podID": 0,
-            "destinationID": 0
-          }
-        }, {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
-        }
-      )
-      .then(function(obj) {
-        that.total = obj.data.total;
-        that.tableData = obj.data.objects;
-        that.tableData.forEach(function(v, k, arr) {
-          arr[k]['status'] = "状态"
-          arr[k]['time'] = '2016-05-03'
-          arr[k]['tour_plan'] = '团期计划'
-          arr[k]['supplier'] = '供应商'
-          arr[k]['type'] = "类型:比如地接"
-          arr[k]['money'] = "金额"
-          arr[k]['org'] = '国内部'
-          arr[k]['user'] = 'tester申请人'
-          arr[k]['opinion'] = '同意'
-        })
-      })
-      .catch(function(obj) {
-        console.log(obj)
-      })
     this.querySearch6()
     this.querySearch7()
   },
@@ -1436,6 +1591,10 @@ export default {
   line-height: 26px;
   top: 20px;
   left: 116px;
+}
+
+.inputWidth {
+  width: 200px;
 }
 
 </style>
