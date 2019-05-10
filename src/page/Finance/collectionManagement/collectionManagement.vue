@@ -4,7 +4,7 @@
       <el-tab-pane label="同业" name="first">
         <SameTradeManagement></SameTradeManagement>
       </el-tab-pane>
-       <el-tab-pane label="直客" name="second">
+      <el-tab-pane label="直客" name="second">
         <StraightGuestManagement></StraightGuestManagement>
       </el-tab-pane>
       <el-tab-pane label="待审批" name="third">

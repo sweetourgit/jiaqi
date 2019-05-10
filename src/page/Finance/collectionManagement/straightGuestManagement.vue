@@ -22,29 +22,29 @@
           </div>
         </div>
         <div class="table_style">
-          <el-table :data="tableData" border style="width:100%;" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-            <el-table-column prop="number" label="收款单号" width="100" align="center">
+          <el-table :data="tableData" border style="width:70%;" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
+            <el-table-column prop="number" label="收款单号" align="center">
             </el-table-column>
-            <el-table-column prop="status" label="状态" width="100" align="center">
+            <el-table-column prop="status" label="状态" align="center">
             </el-table-column>
-            <el-table-column prop="createTime" label="收款时间" width="110" align="center">
+            <el-table-column prop="createTime" label="收款时间" align="center">
             </el-table-column>
             <el-table-column prop="plan" label="团期计划" align="center">
             </el-table-column>
-            <el-table-column prop="orderNum" label="订单号" width="150" align="center">
+            <el-table-column prop="orderNum" label="订单号" align="center">
             </el-table-column>
-            <el-table-column prop="collectionAccount" label="收款账户" width="100" align="center">
+            <el-table-column prop="collectionAccount" label="收款账户" align="center">
             </el-table-column>
-            <el-table-column prop="money" label="金额" width="100" align="center">
+            <el-table-column prop="money" label="金额" align="center">
             </el-table-column>
-            <el-table-column prop="orinaze" label="申请组织" width="100" align="center">
+            <el-table-column prop="orinaze" label="申请组织" align="center">
             </el-table-column>
-            <el-table-column prop="accpter" label="申请人" width="100" align="center">
+            <el-table-column prop="accpter" label="申请人" align="center">
             </el-table-column>
-            <el-table-column prop="applyTime" label="申请时间" width="100" align="center">
+            <el-table-column prop="applyTime" label="申请时间" align="center">
             </el-table-column>
           </el-table>
-          <div class="block" style="margin-top: 30px;text-align:center;">
+          <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total background>
             </el-pagination>
           </div>
@@ -225,7 +225,7 @@ export default {
         return ''
       }
     },
-    
+
   },
   created() {
     var that = this
@@ -332,7 +332,7 @@ export default {
       float: left;
     }
 
-   
+
 
   }
 }
