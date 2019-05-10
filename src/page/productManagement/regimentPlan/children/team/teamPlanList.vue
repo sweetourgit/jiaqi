@@ -10,9 +10,9 @@
      </div>
      <div class="main">
      <el-row class="button">
-       <el-button :disabled="forbidden1" @click="dialogFormVisible = true">更改状态</el-button>
+       <!--<el-button :disabled="forbidden1" @click="dialogFormVisible = true">更改状态</el-button>
        <el-button :disabled="forbidden2" @click="dialogCost = true">报账单</el-button>
-       <el-button :disabled="forbidden2">订单</el-button>
+       <el-button :disabled="forbidden2">订单</el-button>-->
        <el-button :disabled="forbidden2" @click="teamOrder">下单</el-button>
      </el-row>
      <!--list-->
@@ -477,7 +477,7 @@ export default {
         }
       },
       clickRow(row){    //选中行复选框勾选
-        //this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+        this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选 
         this.$refs.multipleTable.toggleRowSelection(row)
       },
       rowClass({row, rowIndex}){  //选中行样式改变
