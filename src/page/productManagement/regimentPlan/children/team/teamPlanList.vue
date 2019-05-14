@@ -682,7 +682,7 @@ export default {
                   "orderCode": "",
                   "proID": this.teampreviewData.teamID,  
                   "planID": this.$route.query.planid,
-                  "orderStatus": 0,   //订单状态
+                  "orderStatus": 7,   //订单状态  7未确认
                   "refundStatus": 0,  //退款状态
                   "occupyStatus": this.ruleForm.type,  //占位状态
                   "payable": this.ruleForm.totalPrice, //应付款
@@ -708,7 +708,7 @@ export default {
                   "endTime": this.ruleForm.type==1?0:new Date().getTime()/1000+24*60*60,
                   "orderChannel": this.ruleForm.orderRadio,
                   "orgID": 0,
-                  "userID": 0,
+                  "userID": sessionStorage.getItem('id'),
                   "mark": this.ruleForm.remark,
                   "guest":guest,
                   "number": number
