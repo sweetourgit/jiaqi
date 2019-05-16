@@ -1,9 +1,10 @@
 <template>
   <div class="vivo" style="position:relative">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="同业" name="first">
+     <!-- <el-tab-pane label="同业" name="first">
         <SameTradeManagement></SameTradeManagement>
       </el-tab-pane>
+    -->
       <el-tab-pane label="直客" name="second">
         <StraightGuestManagement></StraightGuestManagement>
       </el-tab-pane>
@@ -26,7 +27,7 @@ export default {
   },
   data() {
     return {
-      activeName: 'first',
+      activeName: 'second',
     }
   },
   computed: {

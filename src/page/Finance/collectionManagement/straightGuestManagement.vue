@@ -23,25 +23,25 @@
         </div>
         <div class="table_style">
           <el-table :data="tableData" border style="width:70%;" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-            <el-table-column prop="number" label="收款单号" align="center">
+            <el-table-column prop="id" label="收款单号" align="center">
             </el-table-column>
-            <el-table-column prop="status" label="状态" align="center">
+            <el-table-column prop="checkTypeStatus" label="状态" align="center">
             </el-table-column>
-            <el-table-column prop="createTime" label="收款时间" align="center">
+            <el-table-column prop="collectionTime" label="收款时间" align="center">
             </el-table-column>
-            <el-table-column prop="plan" label="团期计划" align="center">
+            <el-table-column prop="groupCode" label="团期计划" align="center">
             </el-table-column>
-            <el-table-column prop="orderNum" label="订单号" align="center">
+            <el-table-column prop="orderNumber" label="订单号" align="center">
             </el-table-column>
-            <el-table-column prop="collectionAccount" label="收款账户" align="center">
+            <el-table-column prop="collectionNumber" label="收款账户" align="center">
             </el-table-column>
-            <el-table-column prop="money" label="金额" align="center">
+            <el-table-column prop="price" label="金额" align="center">
             </el-table-column>
-            <el-table-column prop="orinaze" label="申请组织" align="center">
+            <el-table-column prop="dept" label="申请组织" align="center">
             </el-table-column>
-            <el-table-column prop="accpter" label="申请人" align="center">
+            <el-table-column prop="createUser" label="申请人" align="center">
             </el-table-column>
-            <el-table-column prop="applyTime" label="申请时间" align="center">
+            <el-table-column prop="createTime" label="申请时间" align="center">
             </el-table-column>
           </el-table>
           <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
@@ -49,7 +49,7 @@
             </el-pagination>
           </div>
         </div>
-        <StraightGuestInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></StraightGuestInfo>
+        <StraightGuestInfo :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid" :change="change" :org="org" @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList" @close="closeAdd"></StraightGuestInfo>
       </div>
     </el-tabs>
   </div>
@@ -78,6 +78,15 @@ export default {
       pageSize: 10,
       pageNum: 1,
       find: 0,
+      org: '',
+      pid: '',
+      collectionAccountList: [],
+      accountList: {},
+      checkTypeList: {
+        '0': '审批中',
+        '1': '通过',
+        '2': '驳回',
+      },
     }
   },
   computed: {
@@ -210,7 +219,7 @@ export default {
     },
     //搜索按钮
     searchHand() {
-
+      this.getStraightGuestManagement()
     },
     //获取id
     clickBanle(row, event, column) {
@@ -225,50 +234,122 @@ export default {
         return ''
       }
     },
+    getUserOrg() {
+      var that = this
+      this.$http.post(
+          this.GLOBAL.serverSrc + "/org/api/userget/", {
+            "id": sessionStorage.getItem('id'),
+          }, {
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+        .then(function(obj) {
+          if (obj.data.object.orgID) {
+            that.$http.post(
+                that.GLOBAL.serverSrc + "/org/api/deptget", {
+                  "id": obj.data.object.orgID,
+                }, {
+                  headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                  }
+                }
+              )
+              .then(function(obj2) {
+                that.org = obj2.data.object.orgName
+                if (obj.data.object.orgID) {
 
+                }
+              })
+              .catch(function(obj2) {
+                console.log(obj2)
+              })
+          }
+        })
+        .catch(function(obj) {
+          console.log(obj)
+        })
+    },
+    getCollectionAccount() {
+      var that = this
+      this.$http.post(
+          this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list", {
+            "object": {
+              "id": 0,
+              "title": 'string',
+              "mark": 'string',
+              "isDeleted": 0,
+            }
+          }, {
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+        .then(function(obj) {
+          that.collectionAccountList = [];
+          obj.data.objects.forEach(function(v, k, arr) {
+            that.accountList[arr[k]['id']] = arr[k]['title']
+            that.collectionAccountList.push({ "value": arr[k]['id'], "label": arr[k]['title'] });
+          })
+        })
+        .catch(function(obj) {
+          console.log(obj)
+        })
+    },
+    getStraightGuestManagement() {
+      var that = this
+      this.$http.post(
+          this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+            "pageIndex": 1,
+            "pageSize": that.pageSize,
+            "object": {
+              "id": 0,
+              "checkType": 0,
+              "collectionTime": "2019-05-16T01:02:40.816Z",
+              "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd hh:mm:ss') : "2000-05-16 01:02:40",
+              "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd hh:mm:ss') : "2099-05-16 01:02:40",
+              "groupCode": this.plan ? this.plan : '',
+              "planID": 0,
+              "orderID": 0,
+              "orderNumber": "",
+              "collectionNumber": "",
+              "price": 0,
+              "dept": 0,
+              "createUser": this.accepter ? this.accepter : '',
+              "createTime": "2019-05-16 01:02:40",
+              "code": "",
+              "serialNumber": "",
+              "abstract": "",
+              "isDeleted": 0,
+            }
+
+          }, {
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+        .then(function(obj) {
+          that.total = obj.data.total;
+          that.tableData = obj.data.objects;
+          that.tableData.forEach(function(v, k, arr) {
+            arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
+            arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
+            arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
+            arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
+          })
+        })
+        .catch(function(obj) {
+          console.log(obj)
+        })
+    },
   },
   created() {
-    var that = this
-    this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-          "pageIndex": 1,
-          "pageSize": this.pageSize,
-          "total": 0,
-          "object": {
-            "id": 0,
-            "title": '',
-            "createUser": '',
-            "minPrice": 0,
-            "maxPrice": 0,
-            "podID": 0,
-            "destinationID": 0
-          }
-        }, {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
-        }
-      )
-      .then(function(obj) {
-        that.total = obj.data.total;
-        that.tableData = obj.data.objects;
-        that.tableData.forEach(function(v, k, arr) {
-          arr[k]['number'] = arr[k]['id']
-          arr[k]['status'] = "状态"
-          arr[k]['createTime'] = '2016-05-03-收款时间'
-          arr[k]['plan'] = '团期计划'
-          arr[k]['orderNum'] = '订单号'
-          arr[k]['collectionAccount'] = "收款账户"
-          arr[k]['money'] = "金额"
-          arr[k]['orinaze'] = '申请组织:国内部'
-          arr[k]['accpter'] = 'tester申请人'
-          arr[k]['opinion'] = '同意'
-          arr[k]['applyTime'] = '2016-05-03-申请时间'
-        })
-      })
-      .catch(function(obj) {
-        console.log(obj)
-      })
+    this.getUserOrg()
+    this.getCollectionAccount()
+    this.getStraightGuestManagement()
   }
 }
 
