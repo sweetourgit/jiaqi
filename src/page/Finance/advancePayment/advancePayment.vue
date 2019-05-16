@@ -144,48 +144,48 @@
               </el-form-item>
               <el-form-item label="" label-width="120px" label-height="auto">
                 <el-table :data="tableData5" border style="width:70%" :header-cell-style="getRowClass2">
-                  <el-table-column prop="total" label="订单总额" align="center">
+                  <el-table-column prop="payable" label="订单总额" align="center">
                   </el-table-column>
-                  <el-table-column prop="isTotal" label="已审批总额" align="center">
+                  <el-table-column prop="payment" label="已审批总额" align="center">
                   </el-table-column>
-                  <el-table-column prop="onTotal" label="审批中总额" align="center">
+                  <el-table-column prop="paymentChecking" label="审批中总额" align="center">
                   </el-table-column>
-                  <el-table-column prop="sucTotal" label="已收总额" align="center">
+                  <el-table-column prop="price" label="已收总额" align="center">
                   </el-table-column>
                   <el-table-column prop="supTotal" label="供应商欠款总额" align="center">
                   </el-table-column>
                   </el-table-column>
                 </el-table>
               </el-form-item>
-              <el-form-item label="付款明细" label-width="120px" label-height="auto">
+              <el-form-item label="预付付款明细" label-width="120px" label-height="auto">
                 <br />
                 <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
-                  <el-table-column prop="id" label="ID" align="center">
+                  <el-table-column prop="paymentID" label="ID" align="center">
                   </el-table-column>
-                  <el-table-column prop="status" label="状态" align="center">
+                  <el-table-column prop="checkType" label="状态" align="center">
                   </el-table-column>
-                  <el-table-column prop="type" label="类型" align="center">
+                  <el-table-column prop="paymentType" label="类型" align="center">
                   </el-table-column>
-                  <el-table-column prop="supplier" label="供应商" align="center">
+                  <el-table-column prop="supplierName" label="供应商" align="center">
                   </el-table-column>
                   <el-table-column prop="price" label="付款金额" align="center">
                   </el-table-column>
-                  <el-table-column prop="number" label="人数" align="center">
+                  <el-table-column prop="peopleCount" label="人数" align="center">
                   </el-table-column>
-                  <el-table-column prop="org" label="部门" align="center">
+                  <el-table-column prop="orgName" label="部门" align="center">
                   </el-table-column>
-                  <el-table-column prop="user" label="申请人" align="center">
+                  <el-table-column prop="createName" label="申请人" align="center">
                   </el-table-column>
                   <el-table-column prop="createTime" label="申请日期" align="center">
                   </el-table-column>
-                  <el-table-column prop="abstract" label="摘要" align="center">
+                  <el-table-column prop="mark" label="摘要" align="center">
                   </el-table-column>
                   <el-table-column label="审批过程" align="center">
                     <template slot-scope="scope">
                       <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="cancellationMoney" label="已核销金额" align="center">
+                  <el-table-column prop="expensePrice" label="已核销金额" align="center">
                   </el-table-column>
                 </el-table>
               </el-form-item>
@@ -204,30 +204,30 @@
               <el-form-item label="无收入借款明细" label-width="120px" label-height="auto">
                 <br />
                 <el-table :data="tableData7" border style="width:90%" :header-cell-style="getRowClass2">
-                  <el-table-column prop="id" label="ID" align="center">
+                  <el-table-column prop="paymentID" label="ID" align="center">
                   </el-table-column>
-                  <el-table-column prop="status" label="状态" align="center">
+                  <el-table-column prop="checkType" label="状态" align="center">
                   </el-table-column>
-                  <el-table-column prop="type" label="类型" align="center">
+                  <el-table-column prop="paymentType" label="类型" align="center">
                   </el-table-column>
-                  <el-table-column prop="supplier" label="供应商" align="center">
+                  <el-table-column prop="supplierName" label="供应商" align="center">
                   </el-table-column>
                   <el-table-column prop="price" label="付款金额" align="center">
                   </el-table-column>
-                  <el-table-column prop="org" label="部门" align="center">
+                  <el-table-column prop="orgName" label="部门" align="center">
                   </el-table-column>
-                  <el-table-column prop="user" label="申请人" align="center">
+                  <el-table-column prop="createName" label="申请人" align="center">
                   </el-table-column>
                   <el-table-column prop="createTime" label="申请日期" align="center">
                   </el-table-column>
-                  <el-table-column prop="abstract" label="摘要" align="center">
+                  <el-table-column prop="mark" label="摘要" align="center">
                   </el-table-column>
                   <el-table-column label="审批过程" align="center">
                     <template slot-scope="scope">
                       <span style="color:blue;" v-on:click="advanceProcess(scope.row.id)">查看</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="cancellationMoney" label="已核销金额" align="center">
+                  <el-table-column prop="expensePrice" label="已核销金额" align="center">
                   </el-table-column>
                 </el-table>
               </el-form-item>
@@ -420,60 +420,9 @@ export default {
       tableData2: [],
       tableData3: [],
       tableData4: [],
-      tableData5: [{
-        total: '订单总额',
-        isTotal: '已审批总额',
-        onTotal: '审批中总额',
-        sucTotal: '已收总额',
-        supTotal: '供应商欠款总额',
-      }],
-      tableData6: [{
-        id: 'ID',
-        status: '状态',
-        type: '类型',
-        supplier: '供应商',
-        price: '付款金额',
-        number: '人数',
-        org: '部门',
-        user: '申请人',
-        createTime: '申请日期',
-        abstract: '摘要',
-        cancellationMoney: '已核销金额',
-      }],
-      tableData7: [{
-        id: '1',
-        status: '状态',
-        type: '类型',
-        supplier: '供应商',
-        price: '付款金额',
-        org: '部门',
-        user: '申请人',
-        createTime: '申请日期',
-        abstract: '摘要',
-        cancellationMoney: '已核销金额',
-      }, {
-        id: '2',
-        status: '状态',
-        type: '类型',
-        supplier: '供应商',
-        price: '付款金额',
-        org: '部门',
-        user: '申请人',
-        createTime: '申请日期',
-        abstract: '摘要',
-        cancellationMoney: '已核销金额',
-      }, {
-        id: '3',
-        status: '状态',
-        type: '类型',
-        supplier: '供应商',
-        price: '付款金额',
-        org: '部门',
-        user: '申请人',
-        createTime: '申请日期',
-        abstract: '摘要',
-        cancellationMoney: '已核销金额',
-      }],
+      tableData5: [],
+      tableData6: [],
+      tableData7: [],
       tableData8: [{
         oNo: '订单编号',
         source: '来源',
@@ -575,6 +524,7 @@ export default {
       tour_name: '',
       tour_name_pre: '',
       tour_id: 0,
+      planID: '',
       product_name_pre: '',
       product_name: '',
       change: false,
@@ -861,23 +811,6 @@ export default {
         .then(function(obj) {
           that.total = obj.data.total;
           that.tableData3 = obj.data.objects;
-          that.tableData3.forEach(function(v, k, arr) {
-            arr[k]['org'] = '吉林大运通-财务部-会计'
-            if (arr[k]['sex'] == 1) {
-              arr[k]['sex'] = '男'
-            } else {
-              arr[k]['sex'] = '女'
-            }
-            if (arr[k]['userState'] == 0) {
-              arr[k]['status'] = '未选择'
-            } else if (arr[k]['userState'] == 1) {
-              arr[k]['status'] = '等待审核'
-            } else if (arr[k]['userState'] == 2) {
-              arr[k]['status'] = '正常'
-            } else {
-              arr[k]['status'] = '停用'
-            }
-          })
         })
         .catch(function(obj) {
           console.log(obj)
@@ -911,23 +844,6 @@ export default {
         .then(function(obj) {
           that.total = obj.data.total;
           that.tableData3 = obj.data.objects;
-          that.tableData3.forEach(function(v, k, arr) {
-            arr[k]['org'] = '吉林大运通-财务部-会计'
-            if (arr[k]['sex'] == 1) {
-              arr[k]['sex'] = '男'
-            } else {
-              arr[k]['sex'] = '女'
-            }
-            if (arr[k]['userState'] == 0) {
-              arr[k]['status'] = '未选择'
-            } else if (arr[k]['userState'] == 1) {
-              arr[k]['status'] = '等待审核'
-            } else if (arr[k]['userState'] == 2) {
-              arr[k]['status'] = '正常'
-            } else {
-              arr[k]['status'] = '停用'
-            }
-          })
         })
         .catch(function(obj) {
           console.log(obj)
@@ -958,23 +874,6 @@ export default {
         .then(function(obj) {
           that.total = obj.data.total;
           that.tableData3 = obj.data.objects;
-          that.tableData3.forEach(function(v, k, arr) {
-            arr[k]['org'] = '吉林大运通-财务部-会计'
-            if (arr[k]['sex'] == 1) {
-              arr[k]['sex'] = '男'
-            } else {
-              arr[k]['sex'] = '女'
-            }
-            if (arr[k]['userState'] == 0) {
-              arr[k]['status'] = '未选择'
-            } else if (arr[k]['userState'] == 1) {
-              arr[k]['status'] = '等待审核'
-            } else if (arr[k]['userState'] == 2) {
-              arr[k]['status'] = '正常'
-            } else {
-              arr[k]['status'] = '停用'
-            }
-          })
         })
         .catch(function(obj) {
           console.log(obj)
@@ -1023,6 +922,7 @@ export default {
     routerHandle4() { //团期计划
       this.ruleForm.tour = this.tour_name_pre
       this.ruleForm.productName = this.product_name_pre
+      this.getPaymentdetails(this.planID)
       this.dialogVisible2 = false
     },
     // 表格头部背景颜色
@@ -1035,16 +935,17 @@ export default {
     },
     //获取id
     clickBanle2(row, event, column) {
-      this.user_id = row['id'];
-      this.user_name = row['name'];
-      this.reable = false;
+      this.user_id = row['id']
+      this.user_name = row['name']
+      this.reable = false
 
     },
     //获取id
     clickBanle4(row, event, column) {
-      this.tour_id = row['planID'];
-      this.tour_name_pre = row['groupCode'];
-      this.product_name_pre = row['title'];
+      this.tour_id = row['planID']
+      this.tour_name_pre = row['groupCode']
+      this.product_name_pre = row['title']
+      this.planID = row['planID']
       this.reable = false;
     },
     //获取银行卡信息
@@ -1077,6 +978,7 @@ export default {
           if (res.data.isSuccess == true) {
             this.product_name_pre = res.data.objects[0].title
             this.ruleForm.productName = res.data.objects[0].title
+            this.getPaymentdetails(res.data.objects[0].planID)
           }
         }).catch(err => {
           console.log(err)
@@ -1441,6 +1343,7 @@ export default {
           //that.fileList = obj.data.object.files
           that.$set(that.dynamicTags2, 0, { "labelID": obj.data.object.supplierID, "label": obj.data.object.supplierName, "teamID": 0 })
           that.getTourByPlanId(obj.data.object.planID)
+          that.getPaymentdetails(obj.data.object.planID)
           obj.data.object.files.forEach(function(v, k, arr) {
             that.fileList.push({
               "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
@@ -1464,6 +1367,48 @@ export default {
         if (res.data.isSuccess == true) {
           that.ruleForm.tour = res.data.objects[0].groupCode
           that.ruleForm.productName = res.data.objects[0].title
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getPaymentdetails(val) {
+      var that = this
+      //预付付款明细
+      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+        "object": {
+          "paymentType": 2,
+          "planID": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableData6 = res.data.objects
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //无收入借款明细
+      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+        "object": {
+          "paymentType": 1,
+          "planID": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableData7 = res.data.objects
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
+      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
+        "object": {
+          "id": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableData5 = []
+          that.tableData5.push(res.data.object)
         }
       }).catch(err => {
         console.log(err)
