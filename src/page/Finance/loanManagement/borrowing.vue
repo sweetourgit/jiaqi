@@ -673,6 +673,7 @@
         }else{
           this.forbidden=true;
         };
+        
         //event.cancelBubble = true;//row-click和selection-change耦合事件
       },
       clickRow(row){    //选中行复选框勾选
