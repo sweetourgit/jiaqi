@@ -22,10 +22,12 @@
           <el-select v-model="proTypevalue" placeholder="请选择"  class="sec-type">
              <el-option v-for="item in proType" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select></br>
+          <!--订单状态-->
           <div class="status-title">订单状态</div>
           <ul class="order-status">
             <li v-for="(item,index) in orderStatus" @click="statusTab(1,index)" v-bind:class="{statusbg: orderNum==index}">{{item}}</li>
           </ul></br>
+          <!--退款状态-->
           <div class="status-title">退款状态</div>
           <ul class="order-status">
             <li v-for="(item,index) in refundStatus" @click="statusTab(2,index)" v-bind:class="{statusbg: refundNum==index}">{{item}}</li>
@@ -40,7 +42,7 @@
                   <td width="60" class="tr">产品ID</td>
                   <td width="220">{{item.teamID}}</td>
                   <td width="85" class="tr">订单状态</td>
-                  <td width="70">订单确认</td>
+                  <td width="70">{{getOrderStatus(item.orderStatus)}}</td>
                   <td width="60" class="tr">退款状态</td>
                   <td width="60">未退款</td>
                   <td width="60" class="tr">订单时间</td>
@@ -244,8 +246,8 @@ export default {
        pageIndex: 1, // 设定当前页数
        total: 0,
        orderpage:[],
-
-       dialogFormProcess:false,  //流程管理弹窗
+       //流程管理弹窗
+       dialogFormProcess:false,  
        adult:[{name:"点击填写"},{name:"点击填写"}],
        child:[{name:"点击填写"}],
        elder:[{name:"点击填写"}],
@@ -303,6 +305,17 @@ export default {
           }).catch(err => {
             console.log(err)
           })
+      },
+      //列表订单状态显示
+      getOrderStatus(status){
+          switch(status){
+            case 1:
+              return '';
+              break;
+            case 1:
+              return '';
+              break;
+          }
       },
       //流程管理
       processManage(){

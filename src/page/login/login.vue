@@ -431,6 +431,7 @@
                       
                     }).then(res => {
                       sessionStorage.setItem('id',res.data.id)
+                      sessionStorage.setItem('account',this.ruleForm.user)
                       store.save('name',res.data.name)
                       this.$router.push('/userList')
                       this.$message.success('登录成功');

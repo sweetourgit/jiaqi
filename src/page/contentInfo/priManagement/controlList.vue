@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {formatDate} from '../../../components/tools/publicMethod.js'
+import {formatDate} from '../../../js/libs/publicMethod.js'
 export default {
   data() {
     return {
