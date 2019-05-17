@@ -373,8 +373,8 @@
     <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible4" width="50%">
       <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
       <div>
-        <img :src="imgBig" style="max-width: 900px;" alt="图片" :alt="imgBigName"/>
-        <span>{{imgBigName}}</span>
+        <img :src="imgBig" style="width: 95%;" alt="图片" :alt="imgBigName"/>
+        <br/><span>{{imgBigName}}</span>
       </div>
     </el-dialog>
   </div>
@@ -628,7 +628,7 @@ export default {
         canvas.height = image.height;
         var context = canvas.getContext("2d");
         context.drawImage(image, 0, 0, image.width, image.height);
-        var url = canvas.toDataURL("image/png"); //得到图片的base64编码数据
+        var url = canvas.toDataURL("image/jpeg"); //得到图片的base64编码数据
         var a = document.createElement("a"); // 生成一个a元素
         var event = new MouseEvent("click"); // 创建一个单击事件
         a.download = name || "photo"; // 设置图片名称
@@ -638,8 +638,8 @@ export default {
       image.src = imgsrc;
     },
     downs() {
-      window.open(this.imgBig);
-      //this.downloadIamge(this.imgBig, this.imgBigName)
+      //window.open(this.imgBig);
+      this.downloadIamge(this.imgBig, this.imgBigName)
     },
     handleRemove(file, fileList) {
       this.uid = fileList[0].uid;

@@ -200,8 +200,8 @@
     <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible" width="50%">
       <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
       <div>
-        <img :src="imgBig" alt="图片" :alt="imgBigName"/>
-        <span>{{imgBigName}}</span>
+        <img :src="imgBig" alt="图片" style="width: 95%;" :alt="imgBigName"/>
+        <br/><span>{{imgBigName}}</span>
       </div>
     </el-dialog>
   </div>
@@ -479,8 +479,8 @@ export default {
                 type: 'success',
                 message: '撤销成功!'
               });
-              this.$emit('searchHand', '')
               that.closeAdd()
+              that.$emit('searchHand', '')
             } else {
               console.log(obj.data)
             }
@@ -574,12 +574,28 @@ export default {
       image.setAttribute("crossOrigin", "anonymous");
       image.onload = function() {
         var canvas = document.createElement("canvas");
+        // 图片原始尺寸
+        var originWidth = image.width;
+        var originHeight = image.height;
+        // 最大尺寸限制
+        let maxWidth = 1080;
+        let maxHeight = 1080;
+        // 图片尺寸超过400x400的限制
+        if (originWidth > maxWidth || originHeight > maxHeight) {
+          if (originWidth / originHeight > maxWidth / maxHeight) {
+            // 更宽，按照宽度限定尺寸
+            image.width = maxWidth;
+            image.height = Math.round(maxWidth * (originHeight / originWidth));
+          } else {
+            image.height = maxHeight;
+            image.width = Math.round(maxHeight * (originWidth / originHeight));
+          }
+        }
         canvas.width = image.width;
         canvas.height = image.height;
         var context = canvas.getContext("2d");
         context.drawImage(image, 0, 0, image.width, image.height);
-        var url = canvas.toDataURL("image/png"); //得到图片的base64编码数据
-
+        var url = canvas.toDataURL("image/jpeg"); //得到图片的base64编码数据
         var a = document.createElement("a"); // 生成一个a元素
         var event = new MouseEvent("click"); // 创建一个单击事件
         a.download = name || "photo"; // 设置图片名称
@@ -589,6 +605,7 @@ export default {
       image.src = imgsrc;
     },
     downs() {
+      // window.open(this.imgBig);
       this.downloadIamge(this.imgBig, this.imgBigName)
     },
     handleRemove(file, fileList) {
