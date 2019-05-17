@@ -134,18 +134,14 @@
       </div>
     </el-dialog>
     <!-- 添加成员弹框 -->
-    <el-dialog  class="popup" :visible.sync="addPersonnel" custom-class="city_list">
-      <div class="kk">
-        <div class="booms">
-          <span class="addTitle">添加成员</span>
-          <el-form class="from-content" :model="updata1">
-            <el-form-item :label-width="LabelWidth">
+    <el-dialog title="添加成员"  class="popup" :visible.sync="addPersonnel" custom-class="city_list" width="1000px" @close="addPersonnel2">
+        <el-form class="booms" :model="updata1">
+            <el-form-item>
               <el-input v-model="person.search" auto-complete="off" class="searchInput" placeholder="输入名称检索"></el-input>
+              <el-button type="primary" class="searchButton" @click="addPersonnel1">搜索</el-button>
             </el-form-item>
-          </el-form>
-          <el-button type="primary" class="searchButton">搜索</el-button>
-        </div>
-        <el-table ref="table" :data="members" border class="members" @selection-change="qq" :header-cell-style="getRowClass">
+        </el-form> 
+        <el-table ref="table" :data="members" border class="members" @selection-change="chooseDate" :header-cell-style="getRowClass">
           <el-table-column type="selection" width="35%" align="center"></el-table-column>
           <el-table-column prop="id" label="ID" align="center"  width="60%"></el-table-column>
           <el-table-column prop="name" label="姓名" align="center"  width="120%"></el-table-column>
@@ -154,15 +150,22 @@
           <el-table-column prop="sex" label="性别" align="center"  width="90%"></el-table-column>
           <el-table-column prop="state" label="状态" align="center"  width="120%"></el-table-column>
         </el-table>
-        <div class="black">
-          <el-pagination :page-sizes="[2,4,6,8,10]" background @size-change="pagesizes" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        <div class="pagination">
+          <el-pagination class="pagination"
+            @size-change="handleSizeChange"
+            background
+            @current-change="handleCurrentChange"
+            :current-page="1"
+            :page-sizes="[10, 30, 50, 100]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
           </el-pagination>
         </div>
         <div slot="footer" class="btn">
           <el-button class="oppp" @click="addPersonnel2">取 消</el-button>
           <el-button class="oppp" type="primary" @click="userInsert">添加</el-button>
         </div>
-      </div>
     </el-dialog>
     <!-- 设置职位弹框 -->
     <el-dialog class="Popup" title="设置职位" :visible.sync="position" custom-class="city_list" width="550px">
@@ -259,7 +262,7 @@ export default {
       tableList: [],
       members1: [],
       //每页的数据条数
-      pagesize: 10,
+      pageSize: 10,
       //默认开始页面
       currentPage: 1,
       total: 1,
@@ -354,8 +357,9 @@ export default {
         }
       })
     },
-    qq(a) {
+    chooseDate(a) {
       this.dataNum = a;
+      console.log(this.dataNum);
     },
     userInsert() {
       for (let i = 0; i < this.dataNum.length; i++) {
@@ -379,6 +383,7 @@ export default {
         }
         this.$message.success("添加成功");
         this.addPersonnel = false;
+        this.person.search='';
         this.currentPage = 1;
         this.dataNum = [];
       }
@@ -460,23 +465,19 @@ export default {
       });
     },
     //添加成员
-    addPersonnel1() {
-      this.members = [];
-      let _this = this;
+    addPersonnel1(){
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/userpage", {
         object: {
+          name:this.person.search,
           isDeleted: 0
         },
-        pageSize: _this.pagesize,
-        pageIndex: _this.currentPage,
+        pageSize: this.pageSize,
+        pageIndex: this.currentPage,
         isGetAll: true,
         id: 0
-      },{
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        }
-      }).then(function(response) {
-        _this.total = response.data.total;
+      }).then(response =>{
+        this.members = [];
+        this.total = response.data.total;
         for (let i = 0; i < response.data.objects.length; i++) {
           if(response.data.objects[i].sex == 1){
             response.data.objects[i].sex = '男'
@@ -493,7 +494,7 @@ export default {
           }else{
             response.data.objects[i].userState = '停用'
           }
-          _this.members.push({
+          this.members.push({
             id: response.data.objects[i].id,
             name: response.data.objects[i].name,
             phone: response.data.objects[i].mobile,
@@ -502,17 +503,8 @@ export default {
             state: response.data.objects[i].userState,
             key: i
           });
-          if(_this.org ==  response.data.objects[i].orgID){
-            var oppo = []
-            _this.oppo.push( _this.members[i])
-          }
-        }
-        if(_this.oppo){
-          _this.oppo.forEach(row => {
-            _this.$refs.table.toggleRowSelection(row, true)
-          })
-        }
-        _this.addPersonnel = true;
+          this.addPersonnel = true;
+        }        
       })
       .catch(function(error) {
         console.log(error);
@@ -520,6 +512,7 @@ export default {
     },
     addPersonnel2() {
       this.addPersonnel = false;
+      this.person.search='';
       this.currentPage = 1;
       this.dataNum = [];
     },
@@ -748,6 +741,11 @@ export default {
       this.currentPage = currentPage;
       this.addPersonnel1();
     },
+    handleSizeChange(val){
+        this.pageSize = val;
+        this.currentPage = 1;
+        this.addPersonnel1();
+    },
     renderContent(h, { node, data, store }) {
       if (data.isLeaf == 1) {
         return (
@@ -800,11 +798,6 @@ export default {
         console.log(error);
       });
     },
-    pagesizes(page) {
-      this.currentPage = 1;
-      this.pagesize = page;
-      this.addPersonnel1();
-    },
     //职位列表
     optionList(){
       this.option = [];
@@ -851,15 +844,14 @@ export default {
 .cascader { position: relative; left: 15px; width: 269px; }
 .cascaderTitle { position: relative; left: 6px; }
 .boom { position: relative; right: 20px; margin-top: -10px; }
-.searchInput { position: absolute; right: 492%; width: 200%; }
-.searchButton { float:left; margin-left:400px; margin-top:-22px; }
-.booms { margin-bottom: 250px; }
-.members { margin-bottom: -120px; top: -200px; left: 10%; width: 826px; }
-.btn { margin-top:380px; text-align :center; }
+.searchInput {float: left;width: 200px}
+.searchButton {float: left;margin-left: 20px}
+.booms {margin:0 0 30px 65px}
+.members {margin: 30px 0 30px 65px;width: 826px; }
+.btn {margin-top: -20px;text-align :center; }
 .setinput { position: relative; right: 20px; }
 .setSelect { margin-bottom: 200px;margin-left:8px; width: 280px; }
 .Popup { margin: 0 auto; }
-.kk { min-height: 700px; }
 .addTitle { position: absolute; top: 2%; left: 3%; font-size: 1.5em; }
 .enter { margin-left: 5%; }
 .right { position:absolute; height:82%; width:45%; margin-left: 415px; border: 2px solid #E6E6E6; }
@@ -875,7 +867,7 @@ export default {
 .right-top { position:relative; width: 100%; height: 50px; background-color: #F6F6F6; }
 .rightTitle { float:left; margin-left:30px; margin-top:15px; font-size: 20px; }
 .right-btn { height: 80px; }
-.black { margin-bottom:-350px; }
+.pagination {text-align: center;}
 .yy { position: relative; top: -5px; }
 .eidt-virtual { margin-top: 25px; margin-left: 12px; }
 .updata-virtual { position: relative; bottom: 5px; margin-left: 12px; }

@@ -99,7 +99,7 @@
             <div class="confirm-time">待确认剩余<span>1天22:33:33</span></div>
             <el-row class="but-row">
                <el-button>联系客人</el-button>
-               <el-button @click="processManage">流程管理</el-button>
+               <el-button @click="processManage(item.id)">流程管理</el-button>
                <el-button>备注信息</el-button>
                <el-button>未申请退款</el-button>
                <el-button>转团</el-button>
@@ -117,7 +117,7 @@
           </el-pagination>
        <!--流程管理弹窗-->
        <el-dialog title="流程管理" :visible.sync="dialogFormProcess" class="city_list" width="800px">
-              <div class="process-sta">订单状态：<span>预定不占</span></div>
+              <div class="process-sta">订单状态：<span>{{getOrderStatus(orderget.id)}}</span></div>
               <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                   <el-form-item label="订单联系人">            
                     <div class="ml13">姓名<el-input v-model="ruleForm.contactName" class="numw"></el-input></div>
@@ -247,7 +247,8 @@ export default {
        total: 0,
        orderpage:[],
        //流程管理弹窗
-       dialogFormProcess:false,  
+       dialogFormProcess:false,
+       orderget:{},//保存单个订单信息
        adult:[{name:"点击填写"},{name:"点击填写"}],
        child:[{name:"点击填写"}],
        elder:[{name:"点击填写"}],
@@ -310,16 +311,51 @@ export default {
       getOrderStatus(status){
           switch(status){
             case 1:
-              return '';
+              return '补充游客材料';
               break;
-            case 1:
-              return '';
+            case 2:
+              return '电子合同';
+              break;
+            case 3:
+              return '待出行';
+              break;
+            case 4:
+              return '旅行中';
+              break;
+            case 5:
+              return '待评价';
+              break;
+            case 6:
+              return '已完成';
+              break;
+            case 7:
+              return '确认占位';
+              break;
+            case 8:
+              return '签署合同';
+              break;
+            case 9:
+              return '订单作废';
+              break;
+            case 10:
+              return '订单确认';
               break;
           }
       },
       //流程管理
-      processManage(){
-        this.dialogFormProcess=true;
+      processManage(id){
+        //查询一条订单信息
+        this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderget',{
+             "id": id
+          }).then(res => {
+            this.orderget={};
+            if(res.data.isSuccess == true){
+               this.orderget=res.data.object;   
+               this.dialogFormProcess=true;           
+            }
+          }).catch(err => {
+            console.log(err)
+        })
       },
       changeNum(){
         this.dialogFormNum=true;
