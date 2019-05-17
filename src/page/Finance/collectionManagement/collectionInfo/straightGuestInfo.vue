@@ -201,7 +201,7 @@
       <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
       <div>
         <img :src="imgBig" alt="图片" style="width: 95%;" :alt="imgBigName"/>
-        <br/><span>{{imgBigName}}</span>
+        <br /><span>{{imgBigName}}</span>
       </div>
     </el-dialog>
   </div>
@@ -605,8 +605,8 @@ export default {
       image.src = imgsrc;
     },
     downs() {
-      // window.open(this.imgBig);
-      this.downloadIamge(this.imgBig, this.imgBigName)
+      window.open(this.imgBig);
+      // this.downloadIamge(this.imgBig, this.imgBigName)
     },
     handleRemove(file, fileList) {
       this.uid = fileList[0].uid;

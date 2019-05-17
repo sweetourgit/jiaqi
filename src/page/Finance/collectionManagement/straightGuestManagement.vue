@@ -114,22 +114,32 @@ export default {
       }
     },
     handleSizeChange(val) {
-      this.pagesize = val
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teamsearch", {
+          this.GLOBAL.serverSrc + "/finance/collection/api/page", {
             "pageIndex": 1,
             "pageSize": val,
-            "total": 0,
             "object": {
               "id": 0,
-              "title": '',
-              "createUser": '',
-              "minPrice": 0,
-              "maxPrice": 0,
-              "podID": 0,
-              "destinationID": 0
+              "checkType": 0,
+              "collectionTime": "2019-05-16T01:02:40.816Z",
+              "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd hh:mm:ss') : "2000-05-16 01:02:40",
+              "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd hh:mm:ss') : "2099-05-16 01:02:40",
+              "groupCode": this.plan ? this.plan : '',
+              "planID": 0,
+              "orderID": 0,
+              "orderNumber": "",
+              "collectionNumber": "",
+              "price": 0,
+              "dept": 0,
+              "createUser": this.accepter ? this.accepter : '',
+              "createTime": "2019-05-16 01:02:40",
+              "code": "",
+              "serialNumber": "",
+              "abstract": "",
+              "isDeleted": 0,
             }
+
           }, {
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -140,17 +150,10 @@ export default {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
           that.tableData.forEach(function(v, k, arr) {
-            arr[k]['number'] = arr[k]['id']
-            arr[k]['status'] = "状态"
-            arr[k]['createTime'] = '2016-05-03-收款时间'
-            arr[k]['plan'] = '团期计划'
-            arr[k]['orderNum'] = '订单号'
-            arr[k]['collectionAccount'] = "收款账户"
-            arr[k]['money'] = "金额"
-            arr[k]['orinaze'] = '申请组织:国内部'
-            arr[k]['accpter'] = 'tester申请人'
-            arr[k]['opinion'] = '同意'
-            arr[k]['applyTime'] = '2016-05-03-申请时间'
+            arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
+            arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
+            arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
+            arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
           })
         })
         .catch(function(obj) {
@@ -158,22 +161,32 @@ export default {
         })
     },
     handleCurrentChange(val) {
-      this.pageNum = val;
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teamsearch", {
+          this.GLOBAL.serverSrc + "/finance/collection/api/page", {
             "pageIndex": val,
             "pageSize": this.pageSize,
-            "total": 0,
             "object": {
               "id": 0,
-              "title": '',
-              "createUser": '',
-              "minPrice": 0,
-              "maxPrice": 0,
-              "podID": 0,
-              "destinationID": 0
+              "checkType": 0,
+              "collectionTime": "2019-05-16T01:02:40.816Z",
+              "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd hh:mm:ss') : "2000-05-16 01:02:40",
+              "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd hh:mm:ss') : "2099-05-16 01:02:40",
+              "groupCode": this.plan ? this.plan : '',
+              "planID": 0,
+              "orderID": 0,
+              "orderNumber": "",
+              "collectionNumber": "",
+              "price": 0,
+              "dept": 0,
+              "createUser": this.accepter ? this.accepter : '',
+              "createTime": "2019-05-16 01:02:40",
+              "code": "",
+              "serialNumber": "",
+              "abstract": "",
+              "isDeleted": 0,
             }
+
           }, {
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -184,17 +197,10 @@ export default {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
           that.tableData.forEach(function(v, k, arr) {
-            arr[k]['number'] = arr[k]['id']
-            arr[k]['status'] = "状态"
-            arr[k]['createTime'] = '2016-05-03-收款时间'
-            arr[k]['plan'] = '团期计划'
-            arr[k]['orderNum'] = '订单号'
-            arr[k]['collectionAccount'] = "收款账户"
-            arr[k]['money'] = "金额"
-            arr[k]['orinaze'] = '申请组织:国内部'
-            arr[k]['accpter'] = 'tester申请人'
-            arr[k]['opinion'] = '同意'
-            arr[k]['applyTime'] = '2016-05-03-申请时间'
+            arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
+            arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
+            arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
+            arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
           })
         })
         .catch(function(obj) {
