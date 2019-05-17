@@ -37,5 +37,5 @@ import approvalToBorrow from '@/page/Finance/loanManagement/approvalToBorrow'
   }
 </script>
 <style scoped>
-
+.el-tabs>>>.el-tabs__header{margin: 0 !important;}
 </style>

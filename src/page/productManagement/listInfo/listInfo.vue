@@ -2013,7 +2013,7 @@
       //头图弹窗
       figureClick(){
         this.figureShow = true;
-        this.getFigure();
+        //this.getFigure();
       },
       getFigure(){//获取当前ID的父级路径
         this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/getpa',{
