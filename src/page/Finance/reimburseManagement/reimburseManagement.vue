@@ -26,50 +26,50 @@
                 border
                 style="width: 100%;">
                 <el-table-column
-                  prop="number"
+                  prop="expenseID"
                   label="报销单号"
                   width="180"
                   align="center">
                 </el-table-column>
                 <el-table-column
-                  prop="type"
+                  prop="checkTypeEX"
                   label="状态"
                   width="180"
                   align="center">
                   <template slot-scope="scope">
 
-                    <div v-if="scope.row.type=='申请中'" style="color: #7F7F7F" >{{scope.row.type}}</div>
-                    <div v-if="scope.row.type=='驳回'" style="color: #FF4A3D" >{{scope.row.type}}</div>
-                    <div v-if="scope.row.type=='通过'" style="color: #33D174" >{{scope.row.type}}</div>
+                    <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
+                    <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
+                    <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="createtime"
+                  prop="createTime"
                   label="发起时间"
                   align="center">
                 </el-table-column>
                 <el-table-column
-                  prop="plan"
+                  prop="groupCode"
                   label="团期计划"
                   width="250"
                   align="center">
                 </el-table-column>
                 <el-table-column
-                  prop="monkey"
+                  prop="price"
                   label="报销金额"
                   width="180"
                   align="center">
                 </el-table-column>
                 <el-table-column
-                  prop="orinaze"
+                  prop="orgName"
                   label="申请组织"
                   width="180"
                   align="center">
                 </el-table-column>
                 <el-table-column
-                  prop="accpter"
+                  prop="createUser"
                   label="申请人"
-                  width="180"
+                  width="150"
                   align="center">
                 </el-table-column>
                 <el-table-column
@@ -85,10 +85,10 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page.sync="currentPage4"
-                :page-sizes="[100, 200, 300, 400]"
-                :page-size="100"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size= pageSize
                 layout="total, sizes, prev, pager, next, jumper"
-                :total="400"
+                :total=pageCount
                 background>
               </el-pagination>
             </div>
@@ -124,13 +124,13 @@
                     <el-form-item label="团期计划" prop="plan">
                       <el-input v-model="ruleForm.plan.planId" placeholder="请输入或者选择团期计划" style="width: 240px;"  :disabled="change"></el-input>
                       <el-input v-model="ruleForm.plan.planName" placeholder="请输入或者选择团期计划" style="width: 240px;"   :disabled="change"></el-input>
-                      <el-button  size="mini" @click="planDialog" v-if="find==0">选择</el-button>
+                      <el-button  size="mini" @click="planDialog"  v-if="find==0">选择</el-button>
                     </el-form-item>
                     <el-form-item label="报销金额" prop="monkey">
                       <el-input v-model="ruleForm.monkey.type" placeholder="请输入或者选择报销类型" style="width: 240px;" :disabled="change"></el-input>
                       <el-input v-model="ruleForm.monkey.count" placeholder="请输入或者选择报销金额" style="width: 240px;" :disabled="change"></el-input>
                     </el-form-item>
-                    <el-form-item label="摘要" prop="contents">
+                    <el-form-item label="摘要" prop="content">
                       <el-input v-model="ruleForm.content" placeholder="请输入或者选择报销类型" style="width: 480px;" :disabled="change" ></el-input>
                     </el-form-item>
                     <el-form-item label="附件" >
@@ -164,13 +164,13 @@
                         >
                         </el-table-column>
                         <el-table-column
-                          prop="type"
+                          prop="paymentType"
                           label="类型"
                           width="90"
                         >
                         </el-table-column>
                         <el-table-column
-                          prop="gys"
+                          prop="supplierType"
                           label="供应商"
                           width="100"
                         >
@@ -181,21 +181,21 @@
                         >
                         </el-table-column>
                         <el-table-column
-                          prop="accpeter"
+                          prop="createUser"
                           label="申请人"
                           width="80"
                         >
                         </el-table-column>
                         <el-table-column
-                          prop="time"
+                          prop="createTime"
                           label="发起日期">
                         </el-table-column>
                         <el-table-column
-                          prop="content"
+                          prop="mark"
                           label="摘要">
                         </el-table-column>
                         <el-table-column
-                          prop="count"
+                          prop="price"
                           label="金额">
                         </el-table-column>
                         <el-table-column
@@ -205,6 +205,10 @@
                         <el-table-column
                           prop="bcount"
                           label="报销金额">
+                        </el-table-column>
+                        <el-table-column
+                          prop="peopleCount"
+                          label="人数">
                         </el-table-column>
                       </el-table>
                       </div>
@@ -274,7 +278,13 @@
               <el-input v-model="number" placeholder="请输入内容" class="search_input"></el-input>
               <el-button type="primary" size="mini" round style="margin-top: 5px; margin-left: 10px">搜索</el-button>
             </div>
+            <div style=" position: absolute;right: 22px;top: 75px;">
+              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button type="primary"  @click="adduser">确 定</el-button>
+            </div>
             <el-table
+              :highlight-current-row="true"
+              @row-click="clickBanle"
               :data="tableData1"
               border
               style="width: 100%; margin-top: 30px">
@@ -289,76 +299,101 @@
              >
               </el-table-column>
               <el-table-column
-                prop="phone"
+                prop="mobile"
                 label="手机号"
               >
               </el-table-column>
               <el-table-column
-                prop="orinaze"
+                prop="orgName"
                 label="组织"
                >
               </el-table-column>
               <el-table-column
-                prop="sex"
+                prop="sexCN"
                 label="性别"
               >
               </el-table-column>
               <el-table-column
-                prop="type"
+                prop="userStateCN"
                 label="状态">
               </el-table-column>
             </el-table>
+
+            <el-pagination
+              style="margin-top: 10px"
+              :page-size="userSize"
+              :pager-count="11"
+              layout="prev, pager, next"
+              @current-change="handleCurrentChange1"
+              :total=userTotal>
+            </el-pagination>
           </div>
         </el-dialog>
         <!--报销人弹窗end-->
         <!--团期计划弹窗-->
         <el-dialog
           width="60%"
-          title="选择报销的人"
+          title="获取团期计划"
           :visible.sync="dialogFormVisible2"
-          append-to-body>
+          append-to-body
+          :show-close = false>
           <div class="indialog">
+            <div style=" position: absolute;right: 67px;top: 22px;">
+              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button type="primary"  @click="addplan">确 定</el-button>
+            </div>
             <div class="indialog_search">
-              <span class="search_style">团期单号：</span> <el-input v-model="planNum" placeholder="请输入内容" class="search_input"></el-input>
-              <span class="search_style">产品名称：</span> <el-input v-model="planName" placeholder="请输入内容" class="search_input"></el-input>
-              <span class="search_style">出行日期：</span> <el-input v-model="planTime" placeholder="请输入内容" style="float: left; width: 100px"></el-input>
-              <span class="search__">—</span> <el-input v-model="planTime1" placeholder="请输入内容" style="float: left; width: 100px"></el-input>
-              <el-button type="primary" size="mini" round style="margin-top: 5px; margin-left: 10px">重置</el-button>
+              <span class="search_style">团期单号：</span> <el-input v-model="tour_name" placeholder="请输入内容" class="search_input"></el-input>
+              <span class="search_style">产品名称：</span> <el-input v-model="product_name" placeholder="请输入内容" class="search_input"></el-input>
+              <span class="search_style">出行日期：</span>
+              <el-date-picker v-model="startTime2" type="date" placeholder="开始日期" style="float: left;width: 150px;"></el-date-picker>
+              <el-date-picker v-model="endTime2" type="date" placeholder="终止日期" style="float: left;width: 150px;"></el-date-picker>
+              <el-button type="primary" size="mini"  @click="searchHand4(1)" round style="margin-top: 5px; margin-left: 10px">搜索</el-button>
             </div>
             <el-table
               :data="planData"
               border
+              :highlight-current-row="true"
+              @row-click="planChange"
               style="width: 100%; margin-top: 30px">
               <el-table-column
-                prop="id"
+                prop="groupCode"
                 label="团期计划ID"
               >
               </el-table-column>
               <el-table-column
-                prop="name"
+                prop="title"
                 label="产品名称"
               >
               </el-table-column>
               <el-table-column
-                prop="address"
+                prop="destination"
                 label="目的地"
               >
               </el-table-column>
               <el-table-column
-                prop="time"
+                prop="date"
                 label="出行日期"
               >
               </el-table-column>
               <el-table-column
-                prop="ornize"
+                prop="orgName"
                 label="部门"
               >
               </el-table-column>
               <el-table-column
-                prop="proer"
+                prop="name"
                 label="产品录入人">
               </el-table-column>
             </el-table>
+          <!--  <el-pagination
+              style="margin-top: 10px;float: right"
+              :page-size="userSize"
+              :pager-count="11"
+              layout="prev, pager, next"
+              @current-change="handleCurrentChange2"
+              :total=planTotal>
+            </el-pagination>-->
           </div>
         </el-dialog>
         <!--团期计划弹窗end-->
@@ -444,6 +479,7 @@
 
 <script>
   import NeedApproval from '@/page/Finance/reimburseManagement/needApproval'
+  import { formatDate } from '@/js/libs/formatDate.js'
     export default {
         name: "reimburseManagement",
       components:{
@@ -470,6 +506,19 @@
         };
 
         return {
+          plans:{
+            planNum:'1',
+            planName:'2',
+            pid:''
+            },
+          planTotal:100,
+          userSize:10,
+          userTotal:100,
+          startTime2:'',
+          endTime2:'',
+          //每页偏移量
+          pageSize:10,
+          pageCount:100,
           change:false,
           //分辨查看
           find:0,
@@ -484,8 +533,8 @@
           //报销人弹窗
           dialogFormVisible1:false,
           //团期计划搜索
-          planNum:'',
-          planName:'',
+          tour_name:'',
+          product_name:'',
           planTime:'',
           planTime1:'',
           //手添报销
@@ -493,13 +542,14 @@
             type: '地接',
             money: '9000.00'
           }],
+          // 选中报销人字段
+          people:{
+            tt:'大运通-日本',
+            peo:'qq'
+          },
           //报销表单
           ruleForm: {
             name: [
-              {
-                tt:'大运通-日本',
-                 peo:'阳阳'
-              }
             ],
             plan: {
               planId: '',
@@ -522,7 +572,7 @@
             monkey: [
               { validator: areaMonkeyRule, trigger: 'blur' }
             ],
-            contents: [
+            content: [
               { required: true, message: '请输入摘要信息', trigger: 'blur' },
             ],
           },
@@ -534,7 +584,7 @@
             time: '',
           }],
             formLabelWidth: '120px',
-          currentPage4:4,
+          currentPage4:1,
           activeName: 'first',
           number: '',
           plan: '',
@@ -601,21 +651,7 @@
             type: '启用'
           }],
           //团期计划表格
-          planData: [{
-            id: 'TC-GTY-1001-01-180806-01',
-            name: '美国西海岸三城双奥莱10日之旅',
-            address: '西雅图',
-            time: '2019-01-09',
-            ornize: '辽宁大运通-北美部',
-            proer: '阳阳',
-          },{
-            id: 'TC-GTY-1001-01-180806-01',
-            name: '美国西海岸三城双奥莱10日之旅',
-            address: '西雅图',
-            time: '2019-01-09',
-            ornize: '辽宁大运通-北美部',
-            proer: '阳阳',
-          }],
+          planData: [],
           //关联单据表单
           joinData: [{
             id: '1',
@@ -683,6 +719,66 @@
         };
       },
       methods: {
+        addplan(){
+          this.ruleForm.plan.planId = this.plans.planNum
+          this.ruleForm.plan.planName = this.plans.planName
+          this.Associated(this.plans.pid)
+          this.dialogFormVisible2 = false
+
+        },
+        //获取关联单据
+        Associated(val){
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/checklist', {
+            "object": {
+              "planID": val,
+            }
+          }).then(res => {
+            this.joinData = res.data.objects
+            console.log(res)
+
+          }).catch(err => {
+            console.log(err)
+          })
+        },
+        //获取团号和name
+        planChange(row){
+          console.log(row)
+          this.plans = {};
+          this.plans.planName = row.title
+          this.plans.planNum = row.groupCode
+          this.plans.pid = row.planID
+        },
+        adduser(){
+          this.ruleForm.name.push(this.people);
+          this.dialogFormVisible1 = false
+
+
+        },
+          // 报销人选中行
+        clickBanle(row,){
+       this.people = {}
+       this.people.peo = row.name
+       this.people.tt = row.orgName
+        },
+          //
+        searchHand4(val) {
+          this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+            "pageIndex": val,
+            "pageSize": this.userSize,
+            "object": {
+              "groupCode": this.tour_name, //团号
+              "title": this.product_name, //产品名称
+              "beginDate": this.startTime2 ? formatDate(this.startTime2, 'yyyyMMdd') : 0, //搜索用开始日期
+              "endDate": this.endTime2 ? formatDate(this.endTime2, 'yyyyMMdd') : 0, //搜索用结束日期
+            }
+          }).then(res => {
+            console.log(res.data.objects)
+            this.planData = res.data.objects;
+          }).catch(err => {
+            console.log(err)
+          })
+
+        },
           //删除
         removeDomain(item) {
           var index = this.domains.indexOf(item)
@@ -699,6 +795,7 @@
         },
         // 提交
         submitForm(formName) {
+          console.log(this.ruleForm)
             this.$refs[formName].validate((valid) => {
             if (valid) {
               alert('submit!');
@@ -747,11 +844,38 @@
         },
         //报销人选择弹窗
         adddialog(){
+          this.getUserList(1)
           this.dialogFormVisible1 = true;
+        },
+        //获取用户列表
+        getUserList(val){
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/org/api/userpage",
+            {
+              "object": {
+                "isDeleted": 0,
+
+              },
+              "pageSize":this.userSize,
+              "pageIndex": val,
+              "isGetAll": true,
+              "id": 0
+            },
+          )
+            .then(function (obj) {
+              that.userTotal = obj.data.total
+              that.tableData1 = obj.data.objects
+              console.log( that.tableData1)
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
         },
         //团期计划弹窗
         planDialog(){
           this.dialogFormVisible2 = true;
+          this.searchHand4(1)
         },
         handleClick(tab, event) {
           console.log(tab, event);
@@ -760,6 +884,11 @@
           console.log(`每页 ${val} 条`);
         },
         handleCurrentChange(val) {
+          console.log(`当前页: ${val}`);
+        },
+        //选择报销人
+        handleCurrentChange1(val) {
+          this.getUserList(val)
           console.log(`当前页: ${val}`);
         },
         //文件上传
@@ -795,8 +924,35 @@
             this.editableTabsValue = activeName;
             this.editableTabs = tabs.filter(tab => tab.name !== targetName);
           }
+        },
+
+        //获取报销列表数据
+        reimList(){
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/finance/expense/api/page",
+            {
+              "pageIndex": this.currentPage4,
+              "pageSize": this.pageSize,
+              "total": 0,
+              "object": {
+              }
+            },
+          )
+            .then(function (obj) {
+              that.pageCount = obj.data.total
+            console.log(obj.data.objects)
+              that.tableData = obj.data.objects
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
         }
+      },
+      created(){
+          this.reimList();
       }
+
     }
 </script>
 
