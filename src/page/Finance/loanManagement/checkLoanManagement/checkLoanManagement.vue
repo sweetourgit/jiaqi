@@ -2,44 +2,44 @@
   <div class="loanManagement">
       <!--查看无收入借款弹窗-->
 	   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-	      	 <el-form-item label="借款人" prop="name">
-			    <el-input class="name_input" v-model="ruleForm.name" disabled></el-input>
+	      	 <el-form-item label="借款人" prop="createUser">
+			    <el-input class="name_input" v-model="ruleForm.createUser" disabled></el-input>
 			 </el-form-item>
-			 <el-form-item label="团期计划" prop="plan" style="float:left;">
-			    <el-input class="name_input" v-model="ruleForm.plan"disabled></el-input>
+			 <el-form-item label="团期计划" prop="groupCode" style="float:left;">
+			    <el-input class="name_input" v-model="ruleForm.groupCode"disabled></el-input>
 			 </el-form-item>
 			 <el-form-item prop="plan_01" style="float:left; margin-left:-90px;">
 			    <el-input class="name_input" v-model="ruleForm.plan_01"disabled></el-input>
 			 </el-form-item>
-			 <el-form-item label="供应商" prop="supplier" style="clear:both;">
-			    <el-input class="name_input" v-model="ruleForm.supplier"disabled></el-input>
+			 <el-form-item label="供应商" prop="supplierName" style="clear:both;">
+			    <el-input class="name_input" v-model="ruleForm.supplierName"disabled></el-input>
 			 </el-form-item>
-			 <el-form-item label="类型" prop="planType">
-			    <el-select v-model="ruleForm.planType" placeholder="请选择">
+			 <el-form-item label="类型" prop="supplierTypeEX">
+			    <el-select v-model="ruleForm.supplierTypeEX" placeholder="请选择">
 				  <el-option v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"disabled></el-option>
 				</el-select>
 			 </el-form-item>
-			 <el-form-item label="借款金额" prop="planAmount" style="clear:both;">
-			    <el-input class="name_input" v-model="ruleForm.planAmount"disabled></el-input>
+			 <el-form-item label="借款金额" prop="price" style="clear:both;">
+			    <el-input class="name_input" v-model="ruleForm.price"disabled></el-input>
 			 </el-form-item>
-			 <el-form-item label="摘要" prop="abstract" style="clear:both;">
-			    <el-input class="name_input01" v-model="ruleForm.abstract"disabled></el-input>
+			 <el-form-item label="摘要" prop="mark" style="clear:both;">
+			    <el-input class="name_input01" v-model="ruleForm.mark"disabled></el-input>
 			 </el-form-item>
-			 <el-form-item label="账号" prop="account">
-			    <el-input class="name_input" v-model="ruleForm.account"disabled></el-input>
+			 <el-form-item label="账号" prop="cardNumber">
+			    <el-input class="name_input" v-model="ruleForm.cardNumber"disabled></el-input>
 			 </el-form-item>
-			 <el-form-item label="开户行" prop="accountBank" style="clear:both;">
-			    <el-input class="name_input" v-model="ruleForm.accountBank"disabled></el-input>
+			 <el-form-item label="开户行" prop="bankName" style="clear:both;">
+			    <el-input class="name_input" v-model="ruleForm.bankName"disabled></el-input>
 			 </el-form-item>
-			 <el-form-item label="开户名" prop="accountOpenName" style="clear:both;">
-			    <el-input class="name_input" v-model="ruleForm.accountOpenName"disabled></el-input>
+			 <el-form-item label="开户名" prop="cardName" style="clear:both;">
+			    <el-input class="name_input" v-model="ruleForm.cardName"disabled></el-input>
 			 </el-form-item>
-			 <el-form-item label="付款方式" prop="payment">
-			    <el-select v-model="ruleForm.payment" placeholder="请选择">
+			 <el-form-item label="付款方式" prop="payway">
+			    <el-select v-model="ruleForm.payway" placeholder="请选择">
 				  <el-option v-for="item in payment_01" :key="item.value" :label="item.label" :value="item.value"disabled></el-option>
 				</el-select>
 			 </el-form-item>
-			 <el-form-item label="附件" prop="accessory" style="clear:both;">
+			 <el-form-item label="附件" prop="files" style="clear:both;">
 			    <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :file-list="fileList"disabled>
 			  		<el-button type="primary"disabled>选择文件</el-button>
 				</el-upload>
@@ -118,6 +118,11 @@
 <script>
 
   export default {
+    props: {
+     checkIncomeShow: false,
+     paymentID:0
+
+    },
     data(){
       return {
       	
@@ -137,7 +142,7 @@
          currentPage: 1,
          //无收入借款弹窗
          noIncomeShow:false,
-         ruleForm: {
+         /*ruleForm: {
           name: '',
           plan:'',
           plan_01:'',
@@ -150,6 +155,19 @@
           accountOpenName:'',
           payment:'',
           accessory:'',
+         },*/
+         ruleForm:{
+         	 createUser:'',
+             groupCode:'',
+             supplierName:'',
+             supplierTypeEX:'',
+             price:'',
+             mark:'',
+             cardNumber:'',
+             bankName:'',
+             cardName:'',
+             payway:'',
+             files:'',
          },
          borrowingType: [{//无收入借款类型选择器
           value: '选项1',
@@ -326,8 +344,6 @@
 			dates:'2019-01-01',
 			shouldAlso:'2019-01-30',
 		   }],
-		   //查看无收入借款弹窗
-		   checkIncomeShow:false,
 		   //查看无收入借款审批过程
 		   tableCourse:[{
 		   	people:'1',
@@ -403,31 +419,42 @@
       //获取一条信息
       getLabel(){
         this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
-           "id":this.multipleSelection[0].id
+           "id":this.paymentID
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
-                 this.ruleForm.name=data.name;
-                 this.ruleForm.plan=data.plan;
-                 this.ruleForm.plan_01=data.plan_01;
-                 this.ruleForm.supplier=data.supplier;
-                 this.ruleForm.planType=data.planType;
-                 this.ruleForm.planAmount=data.planAmount;
-                 this.ruleForm.abstract=data.abstract;
-                 this.ruleForm.account=data.account;
-                 this.ruleForm.accountBank=data.accountBank;
-                 this.ruleForm.accountOpenName=data.accountOpenName;
-                 this.ruleForm.payment=data.payment;
-                 this.ruleForm.accessory=data.accessory;
+                 this.ruleForm.createUser=data.createUser;
+                 this.ruleForm.groupCode=data.groupCode;
+                 this.ruleForm.supplierName=data.supplierName;
+                 this.ruleForm.supplierTypeEX=data.supplierTypeEX;
+                 this.ruleForm.price=data.price;
+                 this.ruleForm.mark=data.mark;
+                 this.ruleForm.cardNumber=data.cardNumber;
+                 this.ruleForm.bankName=data.bankName;
+                 this.ruleForm.cardName=data.cardName;
+                 this.ruleForm.payway=data.payway;
+                 this.ruleForm.files=data.files;
+
               }
-        }) 
+        }) .catch(err => {});
       },
       
 
     },
-
+    watch: {
+      // 如果 `dialogFormVisible` 发生改变，这个函数就会运行
+      checkIncomeShow: {
+         immediate:true,
+         handler:function(){
+           if (this.checkIncomeShow == true){
+           	this.getLabel();
+             //console.log(0);
+           }
+         }
+      }
+    },
     mounted(){
-      
+
     },
     
   }

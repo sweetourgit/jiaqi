@@ -268,7 +268,7 @@
       		<el-button @click="CloseCheckIncomeShow()">取消</el-button>
       		<el-button type="danger" plain>撤销借款</el-button>
       	</div>
-	    <checkLoanManagement v-on:closeButton="checkIncomeShow = false"></checkLoanManagement>
+	    <checkLoanManagement :checkIncomeShow="checkIncomeShow" :paymentID="paymentID"></checkLoanManagement>
 	  </el-dialog>
   </div>
 </template>
@@ -294,6 +294,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
          //借款表格
          forbidden:true,
 		 multipleSelection: [],
+		 paymentID:0,
          tableData:[],
 		 //分页
 		 pagesize: 10, // 设定默认分页每页显示数
@@ -537,6 +538,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       clickRow(row){    //选中行复选框勾选
       	this.$refs.multipleTable.clearSelection(); //清空用户的选择  
         this.$refs.multipleTable.toggleRowSelection(row);
+        this.paymentID=row.paymentID;
       },
       rowClass({row, rowIndex}){  //选中行样式改变
        for(var i=0;i<this.multipleSelection.length;i++){
@@ -680,16 +682,6 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
     mounted(){
       this.pageList();
     },
-    watch: {
-	    // 如果 `dialogFormVisible` 发生改变，这个函数就会运行
-	    checkIncomeShow: function() {
-	      if (this.checkIncomeShow == true && this.find != '0') {
-	        this.getLabel()
-	      } else {
-	        //this.clearForm()
-	      }
-	    }
-	  },
   }
 </script>
 <style scoped>
