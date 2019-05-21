@@ -1,14 +1,10 @@
 <template>
   <div class="arrears">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <span class="supplierName">{{this.supplierCurrentRow.name}}</span>
+      <el-button class="close" plain @click="$emit('closeSupplier', false)">关闭</el-button>
       <!-- 欠款列表 -->
-      <el-tab-pane class="tabs" label="欠款列表" name="first">
         <div class="search_dom">
           <div class="search_supplier">
-            <span class="keyword">供应商</span>
-            <el-input class="search_input" clearable v-model="supplier" placeholder="请输入供应商"></el-input>
-          </div>
-          <div class="search_league">
             <span class="keyword">团期计划</span>
             <el-input class="search_input" clearable v-model="league" placeholder="请输入团期计划"></el-input>
           </div>
@@ -51,75 +47,26 @@
       </div>
 
       <!-- 欠款信息详情 -->
-      <!-- <el-dialog width='1200px' top='10vh' title="详情" :visible.sync="dialogFormVisible" :show-close="false"> -->
-        <!-- <detailsForm v-on:closeButton="dialogFormVisible = false" :currentRow="currentRow"></detailsForm> -->
-        <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :searchHandList="searchHand"></AdvanceInfo>
-      <!-- </el-dialog> -->
+      <el-dialog width='1200px' :append-to-body="true" top='10vh' title="详情" :visible.sync="dialogFormVisible" :show-close="false">
+        <detailsForm v-on:closeButton="dialogFormVisible = false" :currentRow="currentRow"></detailsForm>
+      </el-dialog>
       <!-- 欠款信息详情END -->
 
-      </el-tab-pane>
       <!-- 欠款列表END -->
 
-      <!-- 供应商欠款 -->
-      <el-tab-pane class="tabs" label="供应商欠款" name="second">
-        <div class="search_dom_right">
-          <span class="keyword">供应商</span>
-          <el-input class="search_input" clearable v-model="supplier" placeholder="请输入供应商"></el-input>
-        </div>
-        <div><el-button class="search_button" type="primary">重置</el-button></div>
-        <el-button plain style="width: 100px;" v-if="supplierCurrentRow == ''" disabled class="see_button">查看</el-button>
-        <el-button plain style="width: 100px;border:1px solid #3095fa;color:#3095fa;" v-else class="see_button" @click="handelSupplierList">查看</el-button>
-
-        <el-table
-        :data="supplierList"
-        class="supplierListTable"
-        highlight-current-row
-        @current-change="handleSupplierChange"
-        border
-        style="width: 700px;"
-        :headerRowStyle="tableHead" :cellStyle="tableHeight" :header-cell-style="getRowClass">
-          <el-table-column prop="name" label="供应商名称" header-align="center"></el-table-column>
-          <el-table-column prop="price" label="欠款总额" header-align="center"></el-table-column>
-        </el-table>
-
-        <div class="supplier-pages">
-          <el-pagination class="pageTable" background @size-change="supplierPagesizes" @current-change="supplierCurrentChange" :current-page.sync="supplierPage" :page-sizes="[2, 4, 8, 10]" :page-size="supplierSize" layout="total, sizes, prev, pager, next, jumper" :total="supplierTotal">
-          </el-pagination>
-        </div>
-
-        <!-- 供应商欠款信息详情 -->
-        <!-- <el-dialog width='1200px' top='10vh' title="供应商欠款详情" :visible.sync="dialogSupplierVisible" :show-close="false">
-          <supplierArrearsList v-on:closeSupplier="dialogSupplierVisible = false" :supplierCurrentRow="supplierCurrentRow"></supplierArrearsList>
-        </el-dialog> -->
-        <!-- 供应商欠款信息详情END -->
-
-        <!-- 供应商欠款信息详情 -->
-        <el-dialog width='1600px' top='10vh' title="供应商欠款详情" :visible.sync="dialogSupplierVisible" :show-close="false">
-          <vendorArrears v-on:closeSupplier="dialogSupplierVisible = false" :supplierCurrentRow="supplierCurrentRow"></vendorArrears>
-        </el-dialog>
-        <!-- 供应商欠款信息详情END -->
 
 
-      </el-tab-pane>
-      <!-- 供应商欠款END -->
-
-    </el-tabs>
   </div>
 </template>
 
 <script>
-// import detailsForm from './detailsForm/detailsForm';
-// import supplierArrearsList from './detailsForm/supplierArrearsList'
-import vendorArrears from './vendorArrears/vendorArrears';
-import AdvanceInfo from '@/page/Finance/advancePayment/advanceInfo/advanceInfo';
+import detailsForm from '../detailsForm/detailsForm';
 
 export default {
   name: "arrearsManagement",
+  props: ['supplierCurrentRow'],
   components: {
-    // detailsForm,
-    vendorArrears,
-    AdvanceInfo
-    // supplierArrearsList
+    detailsForm,
   },
   data() {
     return {
@@ -134,11 +81,7 @@ export default {
       currentPage: 1,      // 默认开始页数
       pagesize:10,         // 每页的数据条数
       total: 100,          // 分页总条数
-      supplierPage: 1,
-      supplierSize: 10,
-      supplierTotal: 100,
       currentRow: '',      // 欠款表格选中的值
-      supplierCurrentRow: '', // 供应商欠款表格选中的值
       dialogFormVisible: false,     // 欠款信息详情
       dialogSupplierVisible: false, // 供应商欠款信息详情
       // 欠款列表表格
@@ -172,20 +115,12 @@ export default {
       },{
         supplierName: '国旅',     // 供应商名称
         arrearsTotal: '10000.00' // 欠款总额
-      }],
-      // 预付款信息
-      find: 5,
-      change: false,
-      pid: '',
-      typeList: [],
-      payModeList: []
-
+      }]
     };
   },
   created() {
-    this.querySearch6()
-    this.querySearch7()
     this.getData();
+    console.log(this.supplierCurrentRow);
   },
   methods: {
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -194,44 +129,6 @@ export default {
         } else {
           return ''
         }
-    },
-    searchHand() {
-
-    },
-    closeAdd() {
-      this.dialogFormVisible = false;
-    },
-    //获取供应商类型
-    querySearch6() {
-      this.typeList = []
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {}).then(res => {
-        for (let i = 0; i < res.data.objects.length; i++) {
-          this.typeList.push({
-            "value": res.data.objects[i].id,
-            "label": res.data.objects[i].name
-          })
-        }
-      }).catch(err => {
-        console.log(err);
-      })
-    },
-    //付款方式
-    querySearch7() {
-      this.payModeList = []
-      this.$http.post(this.GLOBAL.serverSrc + '/finance/payway/api/get', {
-        "object": {
-          id: 1,
-        }
-      }).then(res => {
-        for (let i = 0; i < res.data.objects.length; i++) {
-          this.payModeList.push({
-            "value": res.data.objects[i].id,
-            "label": res.data.objects[i].name
-          })
-        }
-      }).catch(err => {
-        console.log(err);
-      })
     },
     // 欠款列表页
     getData() {
@@ -242,42 +139,16 @@ export default {
           "object": {}
       }).then(res => {
         this.checkLabelList = res.data.objects;
-        this.total = res.data.total;
       })
-    },
-    // 供应商列表页
-    getSupplier() {
-      this.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/supplierpage', {
-        "pageIndex": this.currentPage,
-          "pageSize": this.pagesize,
-          "object": {}
-      }).then(res => {
-        this.supplierList = res.data.objects;
-        this.supplierTotal = res.data.total;
-      })
-    },
-    handleClick(tab, event) {
-      if(tab.name == 'first') {
-        this.getData();
-      } else if(tab.name == 'second') {
-        this.getSupplier();
-      }
     },
     // 欠款表格选中触发的事件
     handleChange(val) {
       if (val) this.currentRow = val;
     },
-    // 供应商欠款表格选中触发的事件
-    handleSupplierChange(val) {
-      if(val) this.supplierCurrentRow = val;
-    },
+
     // 查看欠款关联数据
     handelList() {
-      if(this.currentRow.paymentType == 2) {
-        this.pid = this.currentRow.id;
-        this.change = true
-        this.dialogFormVisible = true;
-      }
+      this.dialogFormVisible = true;
     },
     // 查看供应商欠款关联数据
     handelSupplierList() {
@@ -285,23 +156,11 @@ export default {
     },
     // 每页显示条数
     pagesizes(page) {
-      this.currentPage = 1;
-      this.pagesize = page;
-      this.getData();
-    },
-    supplierPagesizes(page) {
-      this.supplierPage = 1;
-      this.supplierSize = page;
-      this.getData();
+
     },
     // 改变当前页
     handleCurrentChange(currentPage) {
-      this.currentPage = currentPage;
-      this.getData();
-    },
-    supplierCurrentChange(currentPage) {
-      this.supplierPage = currentPage;
-      this.getData();
+
     }
   }
 }
@@ -312,7 +171,7 @@ export default {
   /* width: 167px; */
 }
 .search_dom {
-  width: 1330px;
+  width: 960px;
   margin: 30px 0 0 0;
 }
 .keyword {
@@ -320,7 +179,7 @@ export default {
 }
 .search_supplier {
   float: left;
-  margin-left: 10px;
+  margin-left: -15px;
 }
 .search_input {
   width: 220px;
@@ -373,7 +232,16 @@ export default {
 .search_dom_right {
   margin:  30px 0 0 10px;
 }
-.supplier-pages {
-  width: 1000px;
+.supplierName {
+  float: left;
+  position: relative;
+  top: -90px;
+  left: 145px;
+  color: #999999;
+}
+.close {
+  float: right;
+  width: 100px;
+  margin-top: -95px;
 }
 </style>

@@ -274,8 +274,7 @@ export default {
 }
 .league-span span {
   position: relative;
-  left: -20px;
-  top: -1px;
+  left: 6px;
 }
 .search_dom {
   margin: 20px 0 0 8px;

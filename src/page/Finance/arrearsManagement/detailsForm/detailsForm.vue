@@ -246,6 +246,7 @@
 <script>
 export default {
   name: "detailsForm",
+  props: ['currentRow'],
   data() {
     return {
       formLabelWidth: '90px',
@@ -351,18 +352,30 @@ export default {
       }],
     }
   },
+  created() {
+    this.getData();
+  },
+  watch: {
+    currentRow() {
+      this.getData();
+    }
+  },
   methods: {
     getRowClass({ row, column, rowIndex, columnIndex }) {
-        if (rowIndex == 0) {
-          return 'background:#F7F7F7'
-        } else {
-          return ''
-        }
-      },
-      // 预付款明细-审核过程查看
-      handlePaymentClick(row) {
-
+      if (rowIndex == 0) {
+        return 'background:#F7F7F7'
+      } else {
+        return ''
       }
+    },
+    // 预付款明细-审核过程查看
+    handlePaymentClick(row) {
+
+    },
+    // 数据获取
+    getData() {
+      
+    }
   }
 }
 </script>
