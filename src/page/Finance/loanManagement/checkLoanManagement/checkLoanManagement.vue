@@ -1,102 +1,47 @@
 <template>
   <div class="loanManagement">
-	<div class="loanBorder">
-		<div class="plan">
-			<div class="fl">
-				<span class="emptyPlan">团期计划</span>
-				<el-input v-model="empty" class="empty" clearable></el-input>
-			</div>
-			<div class="fl">
-				<span class="emptyPlan">申请人</span>
-				<el-input v-model="people" class="empty" clearable></el-input>
-			</div>
-			<div class="fl">
-				<span class="emptyPlan">发起时间</span>
-				<el-date-picker v-model="planTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
-				<span class="time">——</span>
-				<el-date-picker v-model="planData" type="date" class="planTime" placeholder="日期"></el-date-picker>
-			</div>
-		</div>
-		<div class="primary"><el-button @click="emptyButton()" type="primary">重置</el-button></div>
-		<div class="primary">
-			<el-button plain @click="noIncome()">申请无收入借款</el-button>
-			<el-button plain @click="checkIncome()" :disabled="forbidden">查看借款</el-button>
-		</div>
-		<el-table :data="tableData"  class="labelTable" ref="multipleTable" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
-	      <el-table-column prop="paymentID" label="借款单号" width="120" align="center"></el-table-column>
-	      <el-table-column prop="checkType" label="状态" width="80" align="center">
-	      	<template slot-scope="scope">
-	          <div v-if="scope.row.state=='申请中'" style="color: #7F7F7F" >{{scope.row.state}}</div>
-	          <div v-if="scope.row.state=='驳回'" style="color: #FF4A3D" >{{scope.row.state}}</div>
-	          <div v-if="scope.row.state=='通过'" style="color: #33D174" >{{scope.row.state}}</div>
-	        </template>
-	      </el-table-column>
-	      <el-table-column prop="beginTime" label="发起时间" width="180" align="center"></el-table-column>
-	      <el-table-column prop="groupCode" label="团期计划" width="180" align="center"></el-table-column>
-	      <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
-	      <el-table-column prop="supplierTypeEX" label="类型" width="80" align="center"></el-table-column>
-	      <el-table-column prop="price" label="借款金额" width="120" align="center"></el-table-column>
-	      <el-table-column prop="expensePrice" label="已核销金额" width="120" align="center"></el-table-column>
-	      <el-table-column prop="collectionPrice" label="已付款金额" width="120" align="center"></el-table-column>
-	      <el-table-column prop="orgName" label="申请组织" width="150" align="center"></el-table-column>
-	      <el-table-column prop="createUser" label="申请人" width="100" align="center"></el-table-column>
-	      <el-table-column prop="approvalOpinion" label="审批意见" width="180" align="center"></el-table-column>
-	    </el-table>
-	    <!--分页-->
-	    <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
-	</div>
-	<!--申请无收入借款弹窗-->
-	    <el-dialog title="借款申请" :visible.sync="noIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>  
-	      	<div style="position:absolute; top:8px; right:10px;">
-	      		<el-button @click="CloseNoIncomeShow()">取消</el-button>
-	      		<el-button type="primary"@click="ensureIncome()">申请</el-button>
-	      	</div>
-	      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+      <!--查看无收入借款弹窗-->
+	   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 	      	 <el-form-item label="借款人" prop="name">
 			    <el-input class="name_input" v-model="ruleForm.name"></el-input>
-			    <el-button class="name_button" @click="IncomeName()">选择</el-button>
 			 </el-form-item>
 			 <el-form-item label="团期计划" prop="plan" style="float:left;">
-			    <el-input class="name_input" v-model="ruleForm.plan"></el-input>
-			    <el-input class="name_input" disabled v-model="ruleForm.plan_01"></el-input>
-			    <el-button class="name_button" @click="IncomePlan()">选择</el-button>
+			    <el-input class="name_input" v-model="ruleForm.plan"disabled></el-input>
 			 </el-form-item>
-			 <!-- <el-form-item prop="plan_01" style="float:left; margin-left:-90px;">
-			    <el-input class="name_input" v-model="ruleForm.plan_01"></el-input>
-			    <el-button class="name_button" @click="IncomePlan()">选择</el-button>
-			 </el-form-item> -->
+			 <el-form-item prop="plan_01" style="float:left; margin-left:-90px;">
+			    <el-input class="name_input" v-model="ruleForm.plan_01"disabled></el-input>
+			 </el-form-item>
 			 <el-form-item label="供应商" prop="supplier" style="clear:both;">
-			    <el-input class="name_input" v-model="ruleForm.supplier"></el-input>
+			    <el-input class="name_input" v-model="ruleForm.supplier"disabled></el-input>
 			 </el-form-item>
 			 <el-form-item label="类型" prop="planType">
 			    <el-select v-model="ruleForm.planType" placeholder="请选择">
-				  <el-option v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+				  <el-option v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"disabled></el-option>
 				</el-select>
 			 </el-form-item>
 			 <el-form-item label="借款金额" prop="planAmount" style="clear:both;">
-			    <el-input class="name_input" v-model="ruleForm.planAmount"></el-input>
+			    <el-input class="name_input" v-model="ruleForm.planAmount"disabled></el-input>
 			 </el-form-item>
 			 <el-form-item label="摘要" prop="abstract" style="clear:both;">
-			    <el-input class="name_input01" v-model="ruleForm.abstract"></el-input>
+			    <el-input class="name_input01" v-model="ruleForm.abstract"disabled></el-input>
 			 </el-form-item>
 			 <el-form-item label="账号" prop="account">
-			    <el-input class="name_input" v-model="ruleForm.account"></el-input>
-			    <el-button class="name_button" @click="IncomeAccount()">选择</el-button>
+			    <el-input class="name_input" v-model="ruleForm.account"disabled></el-input>
 			 </el-form-item>
 			 <el-form-item label="开户行" prop="accountBank" style="clear:both;">
-			    <el-input class="name_input" v-model="ruleForm.accountBank"></el-input>
+			    <el-input class="name_input" v-model="ruleForm.accountBank"disabled></el-input>
 			 </el-form-item>
 			 <el-form-item label="开户名" prop="accountOpenName" style="clear:both;">
-			    <el-input class="name_input" v-model="ruleForm.accountOpenName"></el-input>
+			    <el-input class="name_input" v-model="ruleForm.accountOpenName"disabled></el-input>
 			 </el-form-item>
 			 <el-form-item label="付款方式" prop="payment">
 			    <el-select v-model="ruleForm.payment" placeholder="请选择">
-				  <el-option v-for="item in payment_01" :key="item.value" :label="item.label" :value="item.value"></el-option>
+				  <el-option v-for="item in payment_01" :key="item.value" :label="item.label" :value="item.value"disabled></el-option>
 				</el-select>
 			 </el-form-item>
 			 <el-form-item label="附件" prop="accessory" style="clear:both;">
-			    <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :file-list="fileList">
-			  		<el-button type="primary">选择文件</el-button>
+			    <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :file-list="fileList"disabled>
+			  		<el-button type="primary"disabled>选择文件</el-button>
 				</el-upload>
 			 </el-form-item>
 			 <el-table :data="tableMoney" border style="width: 70%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
@@ -156,120 +101,14 @@
 	           <el-table-column prop="dates" label="欠款日期" align="center"></el-table-column>
 	           <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
 	        </el-table>
+	        <div style="margin:0 0 0 25px;">审批过程</div>
+	        <el-table :data="tableCourse" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+	           <el-table-column prop="people" label="审批人" align="center"></el-table-column>
+	           <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
+	           <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
+	           <el-table-column prop="times" label="审批时间" align="center"></el-table-column>
+	        </el-table>
 	      </el-form>
-	    </el-dialog>
-	  
-	  <!--申请无收入借款中借款人选择弹窗-->
-	  <el-dialog width="45%" title="选择报销的人" :visible.sync="dialogFormVisible1"append-to-body>
-	      <div class="indialog">
-	        <div class="indialog_search">
-	          <el-input v-model="number_name" placeholder="请输入内容" class="name_input"></el-input>
-	          <el-button type="primary">搜索</el-button>
-	        </div>
-	        <el-table :data="tableName" border style="width: 100%; margin:30px 0 20px 0;":header-cell-style="getRowClass">
-	          <el-table-column prop="id" label="ID" align="center"></el-table-column>
-	          <el-table-column prop="name" label="姓名" align="center"></el-table-column>
-	          <el-table-column prop="phone" label="手机号" align="center"></el-table-column>
-	          <el-table-column prop="orinaze" label="组织" align="center"></el-table-column>
-	          <el-table-column prop="sex" label="性别" align="center"></el-table-column>
-	          <el-table-column prop="type" label="状态" align="center"></el-table-column>
-	        </el-table>
-	        <div class="number_button">
-	        	<el-button @click="numberCancel()">取消</el-button>
-	      		<el-button type="primary">申请</el-button>
-	        </div>
-	      </div>
-      </el-dialog>
-      <!--申请无收入借款中团期计划选择弹窗-->
-	  <el-dialog width="70%" title="选择报销的人" :visible.sync="dialogFormVisible_plan"append-to-body>
-	      <div class="indialog">
-	        <div class="indialog_search">
-	          <div class="plan_indialog">
-				<span class="indialog_plan">团期计划</span>
-				<el-input class="indialog_input" v-model="plan_stage" clearable></el-input>
-			  </div>
-			  <div class="plan_indialog">
-				<span class="indialog_plan">产品名称</span>
-				<el-input class="indialog_input" v-model="plan_name" clearable></el-input>
-			  </div>
-			  <div class="plan_indialog">
-				<span class="indialog_plan">出行日期</span>
-				<el-input class="indialog_input01" v-model="plan_data" clearable></el-input>
-				<span>——</span>
-				<el-input class="indialog_input01" v-model="plan_data01" clearable></el-input>
-			  </div>
-	          <el-button class="indialog_button" @click="planStage()" type="primary">重置</el-button>
-	        </div>
-	        <el-table :data="tablePlan" border style="width: 100%; margin:30px 0 20px 0;":header-cell-style="getRowClass">
-	          <el-table-column prop="id" label="团期计划ID" align="center"></el-table-column>
-	          <el-table-column prop="name" label="产品名称" align="center"></el-table-column>
-	          <el-table-column prop="destination" label="目的地" align="center"></el-table-column>
-	          <el-table-column prop="travelDates" label="出行日期" align="center"></el-table-column>
-	          <el-table-column prop="department" label="部门" align="center"></el-table-column>
-	          <el-table-column prop="productionPerson" label="产品录入人" align="center"></el-table-column>
-	        </el-table>
-	        <div class="number_button">
-	        	<el-button @click="planCancel()">取消</el-button>
-	      		<el-button type="primary">申请</el-button>
-	        </div>
-	      </div>
-      </el-dialog>
-      <!--申请无收入借款中账号选择弹窗-->
-      <el-dialog width="45%" title="选择账户" :visible.sync="dialogFormVisible_account"append-to-body>
-	      <div class="indialog">
-	        <el-tabs type="border-card" style=" margin:30px 0 20px 0;">
-			  <el-tab-pane label="供应商">
-			  	<el-table :data="tableAccount" border style="width: 100%;":header-cell-style="getRowClass">
-		          <el-table-column prop="accountNumber" width="200" label="账户" align="center"></el-table-column>
-		          <el-table-column prop="openBank" label="开户行" align="center"></el-table-column>
-		          <el-table-column prop="accountName" label="开户名" align="center"></el-table-column>
-		        </el-table>
-			  </el-tab-pane>
-			  <el-tab-pane label="个人">
-			  	<el-table :data="tableAccount" border style="width: 100%;">
-		          <el-table-column prop="accountNumber" width="200" label="账户" align="center"></el-table-column>
-		          <el-table-column prop="openBank" label="开户行" align="center"></el-table-column>
-		          <el-table-column prop="accountName" label="开户名" align="center"></el-table-column>
-		        </el-table>
-			  </el-tab-pane>
-			</el-tabs>
-	        <div class="number_button">
-	        	<el-button @click="accountCancel()">取消</el-button>
-	      		<el-button type="primary">申请</el-button>
-	        </div>
-	      </div>
-      </el-dialog>
-      <!--申请无收入借款中预付款明细查看弹窗-->
-      <el-dialog width="45%" title="预付款明细" :visible.sync="dialogFormVisible_paymenrt"append-to-body>
-	      <div class="indialog">
-	      	<el-table :data="tableApprove" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-	           <el-table-column prop="times" label="审批时间" width="150" align="center"></el-table-column>
-	           <el-table-column prop="people" label="审批人" align="center"></el-table-column>
-	           <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
-	           <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
-	        </el-table>
-	      </div>
-      </el-dialog>
-      <!--申请无收入借款中无收入借款明细查看弹窗-->
-      <el-dialog width="45%" title="无收入借款明细" :visible.sync="dialogFormVisible_Income"append-to-body>
-	      <div class="indialog">
-	      	<el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-	           <el-table-column prop="times" label="审批时间" width="150" align="center"></el-table-column>
-	           <el-table-column prop="people" label="审批人" align="center"></el-table-column>
-	           <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
-	           <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
-	        </el-table>
-	      </div>
-      </el-dialog>
-      <!--查看无收入借款弹窗-->
-	  <el-dialog title="借款申请" :visible.sync="checkIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>
-	    <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div>
-      	<div style="position:absolute; top:8px; right:10px;">
-      		<el-button @click="CloseCheckIncomeShow()">取消</el-button>
-      		<el-button type="danger" plain>撤销借款</el-button>
-      	</div>
-	    <checkLoanManagement v-on:closeButton="checkIncomeShow = false"></checkLoanManagement>
-	  </el-dialog>
   </div>
 </template>
 
@@ -277,12 +116,8 @@
 
 
 <script>
-import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
+
   export default {
-  	name: "borrowing",
-	components: {
-	  checkLoanManagement,
-	},
     data(){
       return {
       	
@@ -506,17 +341,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       }
     },
     methods: {
-	  handleClick(tab, event) {//表头点击切换
-	  	//this.tableData='';
-    	console.log(tab, event);
-	  },
-	  //重置
-	  emptyButton(){
-	  	this.empty = '';
-	  	this.people = '';
-	  	this.planTime = '';
-	  	this.planData = '';
-	  }, 
+	  
 	  //表格表头颜色
 	  getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -545,37 +370,8 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           }
         }
       },
-      //分页
-      handleSizeChange(val){
-        this.pageSize = val;
-        this.pageIndex = 1;
-        //this.moduleList();
-      },
-      handleCurrentChange(val){
-        this.pageIndex = val;
-        //this.moduleList();
-      },
-      //无收入借款弹窗
-      noIncome(){//点击显示弹窗
-      	this.noIncomeShow =true;
-      },
-      CloseNoIncomeShow(){//点击关闭弹窗
-      	this.noIncomeShow =false;
-      },
-      //无收入借款中借款人弹窗
-      IncomeName(){
-      	this.dialogFormVisible1 = true;
-      },
-      numberCancel(){
-      	this.dialogFormVisible1 = false;
-      },
-      //无收入借款中团期计划弹窗
-      IncomePlan(){
-      	this.dialogFormVisible_plan = true;
-      },
-      planCancel(){
-      	this.dialogFormVisible_plan = false;
-      },
+      
+     
       planStage(){
       	this.plan_stage = '';
       	this.plan_name = '';
@@ -598,88 +394,40 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       },
       //查看无收入借款弹窗
       checkIncome(){
-      	this.getLabel()
       	this.checkIncomeShow = true;
       },
       CloseCheckIncomeShow(){
       	this.checkIncomeShow = false;
       },
-      //查询列表
-      pageList() {
-      	let objectRequest = {}
-      	objectRequest.paymentType = 1;
-        var that = this
-        this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/payment/api/page",
-          {
-            "pageSize":this.pagesize,
-            "pageIndex":this.currentPage,
-            "total": 0,
-            "object": objectRequest,
-          },)
-          .then(function (obj) {
-            that.total = obj.data.total
-            that.tableData = obj.data.objects
-            console.log(obj.data.objects)
-          })
-          .catch(function (obj) {
-            console.log(obj)
-          })
+      
+      //获取一条信息
+      getLabel(){
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
+           "id":this.multipleSelection[0].id
+          }).then(res => {
+              if(res.data.isSuccess == true){
+                 let data = res.data.object;
+                 this.ruleForm.name=data.name;
+                 this.ruleForm.plan=data.plan;
+                 this.ruleForm.plan_01=data.plan_01;
+                 this.ruleForm.supplier=data.supplier;
+                 this.ruleForm.planType=data.planType;
+                 this.ruleForm.planAmount=data.planAmount;
+                 this.ruleForm.abstract=data.abstract;
+                 this.ruleForm.account=data.account;
+                 this.ruleForm.accountBank=data.accountBank;
+                 this.ruleForm.accountOpenName=data.accountOpenName;
+                 this.ruleForm.payment=data.payment;
+                 this.ruleForm.accessory=data.accessory;
+              }
+        }) 
       },
-      //申请无收入借款
-      ensureIncome(ruleForm){
-      	this.$refs.ruleForm.validate((valid) => {
-          if (valid) {
-          	let pictureList = [];
-	          for (let i = 0; i < this.fileList.length; i++) {
-	            let picture = {};
-	            picture.url = this.fileList[i].url1;
-	            picture.name = this.fileList[i].name;
-	            pictureList.push(picture);
-	          }
-            var _this = this;
-            this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insert",
-              {
-                object: {
-                  createUser: sessionStorage.getItem('id'),
-	              paymentType: 2, //借款类型 1无收入借款 2预付款
-	              planID: this.tour_id, //对应计划ID --Plan，不存在传值0
-	              supplierID: this.supplier_id, //对应供应商ID --Supplier，不存在传值0
-	              supplierName: this.ruleForm.supplier, //Supplier不存在时补充供应商名称
-	              supplierType: this.ruleForm.type, //供应商类型 0返款
-	              price: this.ruleForm.loanMoney, //金额
-	              peopleCount: this.ruleForm.loanNumber, //数量
-	              mark: this.ruleForm.abstract, //摘要
-	              cardNumber: this.ruleForm.cardNumber, //账号
-	              bankName: this.ruleForm.bankName, //开户行
-	              cardName: this.ruleForm.cardName, //开户名
-	              payway: this.ruleForm.payMode, //付款方式
-	              files: pictureList, //付款方式
-	            }
-                })
-              .then(function(response) {
-                if(response.data.isSuccess == false){
-                  _this.$message.error("添加失败,该供应商已存在");
-                } else {
-                  _this.addContact.contactName = "";
-                  _this.addContact.contactPhone = "";
-                  _this.addContact.weChat = "";
-                  _this.addContact.qq = "";
-                  _this.$message.success("添加成功");
-                  _this.link_people();
-                }
-              })
-            this.add_contact= false;
-          } else {
-            return false;
-          }
-        });
-      },
+      
 
     },
 
     mounted(){
-      this.pageList();
+      
     },
   }
 </script>
