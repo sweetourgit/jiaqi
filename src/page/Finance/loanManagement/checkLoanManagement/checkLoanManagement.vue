@@ -3,7 +3,7 @@
       <!--查看无收入借款弹窗-->
 	   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
 	      	 <el-form-item label="借款人" prop="name">
-			    <el-input class="name_input" v-model="ruleForm.name"></el-input>
+			    <el-input class="name_input" v-model="ruleForm.name" disabled></el-input>
 			 </el-form-item>
 			 <el-form-item label="团期计划" prop="plan" style="float:left;">
 			    <el-input class="name_input" v-model="ruleForm.plan"disabled></el-input>
@@ -429,6 +429,7 @@
     mounted(){
       
     },
+    
   }
 </script>
 <style scoped>

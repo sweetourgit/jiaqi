@@ -598,7 +598,6 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       },
       //查看无收入借款弹窗
       checkIncome(){
-      	this.getLabel()
       	this.checkIncomeShow = true;
       },
       CloseCheckIncomeShow(){
@@ -681,6 +680,16 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
     mounted(){
       this.pageList();
     },
+    watch: {
+	    // 如果 `dialogFormVisible` 发生改变，这个函数就会运行
+	    checkIncomeShow: function() {
+	      if (this.checkIncomeShow == true && this.find != '0') {
+	        this.getLabel()
+	      } else {
+	        //this.clearForm()
+	      }
+	    }
+	  },
   }
 </script>
 <style scoped>
