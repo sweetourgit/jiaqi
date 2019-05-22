@@ -681,7 +681,7 @@ export default {
                   "code": "",
                   "orderCode": "",
                   "proID": this.teampreviewData.teamID,  
-                  "planID": this.$route.query.planid,
+                  "planID": this.multipleSelection[0].id,
                   "orderStatus": 7,   //订单状态  7未确认
                   "refundStatus": 0,  //退款状态
                   "occupyStatus": this.ruleForm.type,  //占位状态
@@ -716,12 +716,14 @@ export default {
             }).then(res => {
               if(res.data.isSuccess == true){
                    this.$message.success("提交成功");
-                   this.orderCode = JSON.parse(res.data.result.details).OrderCode;
+                   let data = JSON.parse(res.data.result.details);
+                   this.orderCode = data.OrderCode;
                    this.orderSuc = true;
                    //清空表单
                    this.$refs[formName].resetFields();
                    this.dialogFormOrder=false;
                    this.ifOrderInsert=true;
+                   this.startUpWorkFlowForJQ(data.OrderID,data.FlowModel,data.FlowModelName,data.Usercode);
               }else{
                  //预留黑名单信息？？？
                  _this.$message.success('下单失败');
@@ -730,10 +732,32 @@ export default {
             }) 
           } else {
             console.log('error submit!!');
+            this.ifOrderInsert=true;
             return false;
           }
         });
       },
+      //启动工作流 
+      startUpWorkFlowForJQ(OrderID,FlowModel,FlowModelName,Usercode){
+        this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ',{
+            "jQ_ID": OrderID,
+            "jQ_Type": FlowModel,
+            "workflowCode": FlowModelName,
+            "userCode": Usercode
+          }).then(res => {
+            this.submitWAForJQ(Usercode,JSON.parse(res.data).data.workItemID);
+        })
+     },
+     //提交工作任务
+     submitWAForJQ(Usercode,workItemID){
+        this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GettingUnfinishedTasksForJQ',{
+            "userCode": Usercode,
+            "workItemID": workItemID,
+            "commentText": "测试"
+          }).then(res => {          
+
+        })
+     },
      subInfo(formName){
          this.$refs[formName].validate((valid) => {
           if (valid) {
