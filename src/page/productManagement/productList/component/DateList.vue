@@ -99,8 +99,6 @@
 
     </div>
 
-    
-
     <!-- 右侧的表单 -->
     <div class="rightForm" v-show="rightTable">
       <!-- 表单 -->
@@ -666,6 +664,7 @@
                   'id': items.planID,
                   'packageID': items.packageID,
                   'share': items.share,
+                  'date': str,
                   'planEnroll': plan_Enrolls
                 }
               }
@@ -815,7 +814,8 @@
             "inventoryID": inventoryID,
             "packageID": this.ccc[0],
             "planEnroll": planEnroll,
-            "date": this.Rform.date
+            "date": this.Rform.date,
+            "groupCode": this.msgFather[0].codePrefix + '-' + list.data.person.date + '-' + this.msgFather[0].codeSuffix,
           }
         }).then(resSave => {
           let planEnrolls = [];

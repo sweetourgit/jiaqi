@@ -628,7 +628,7 @@ body {
   margin: 0 0 0 10px;
 }
 .person {
-  width:110px;
+  width:93px;
   height: 60px;
   margin-top: 10px;
   /* margin-left: 5px; */

@@ -157,7 +157,11 @@
               {
                 value: '欠款管理',
                 router:'/arrearsManagement'
-              }
+              },
+              {
+                value: '银行账号管理',
+                router:'/bankAccount'
+              },
             ],
           }
         ],

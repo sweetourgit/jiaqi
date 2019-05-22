@@ -1,6 +1,6 @@
 <template>
   <!-- <div style="padding-left:80px"> -->
-  <div>
+  <div @click="handleList">
     
    <el-form style="margin-left: 130px;" ref="form" :model="form" :rules="rules" :label-width="formLabelWidth">
     <el-form-item ref="chineseName" class="form-item" prop="chineseName" :label-width='formLabelWidth' label="中文名称:">
@@ -158,8 +158,16 @@
     </el-form-item> -->
 
     <el-form-item class="form-item" :label-width='formLabelWidth' label="图片:">
-      <div class="img_upload"></div>
-      <el-button class="img_button" type="info" @click="imgUpload = true">上传</el-button>
+      <div class="img_upload">
+        <template v-for="(item, index) in form.imgs">
+          <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
+          <div class="img_div" :key="index">x</div>
+        </template>
+      </div>
+      <el-button class="img_button" type="info" @click="handleImgUpload">上传</el-button>
+      <div v-show="isImgUrlShow" class="show_div">
+        <img class="show_img" :src="imgUrlShow" alt="">
+      </div>
     </el-form-item>
 
     <el-form-item class="form-item" :label-width='formLabelWidth' label="产品概述:">
@@ -183,7 +191,7 @@
 </el-dialog>
 <!-- 上传 -->
 <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
-  <MaterialList></MaterialList>
+  <MaterialList :imgData="imgData" :chineseName="form.chineseName" v-on:checkList="checkList" v-on:closeButton="imgUpload = false"></MaterialList>
 </el-dialog>
 </div>
 </template>
@@ -256,8 +264,11 @@ export default {
     };
     return {
       formLabelWidth: '90px',
+      isImgUrlShow: false,
+      imgUrlShow: '', // 点击查看图片
       isShowImg: '',
       imgUrl: '',
+      imgData: [],
       showtime: false,      // 开放时间弹窗
       showEdit: false,      // 编辑弹窗
       imgUpload: false,     // 上传弹窗
@@ -286,7 +297,7 @@ export default {
         seasons: [],        // 适宜季节
         crowds: [],         // 适宜人群
         openingHours: '',   // 开放时间
-        imgs: '',           // 图片
+        imgs: [],           // 图片
         introduction: "",   // 产品概述
       },
       // 表单验证
@@ -346,6 +357,33 @@ export default {
     },
   },
   methods:{
+    handleList(a) {
+      if (a.target.id != 'showDiv') {
+        this.isImgUrlShow = false;
+      }
+    },
+    // 点击图片查看
+    imgClickShow(data) {
+      this.$http.post('http://192.168.1.186:3024' + '/picture/api/get',{
+          "id": data.img_ID,
+      }).then(res => {
+        this.isImgUrlShow = true;
+        this.imgUrlShow = "http://192.168.1.186:3009/upload" + res.data.object.url;
+      })
+    },
+    // 图片添加
+    checkList(data) {
+      this.form.imgs = data.map(v => {
+        return {
+          img_ID: v,
+        }
+      })
+    },
+    // 上传按钮
+    handleImgUpload() {
+      this.imgData = this.form.imgs.map(v => v.img_ID);
+      this.imgUpload = true;
+    },
     closeBoo(){
       this.showtime = false;
       setTimeout(() => {
@@ -381,7 +419,7 @@ export default {
         seasons: [],        // 适宜季节
         crowds: [],         // 适宜人群
         openingHours: '',   // 开放时间
-        imgs: '',           // 图片
+        imgs: [],           // 图片
         introduction: "",   // 产品概述
       }
     },
@@ -488,29 +526,25 @@ export default {
       form.seasons = data.seasons.map(v => v.dict_ID);
       form.crowds = data.crowds.map(v => v.dict_ID);
       form.introduction = data.introduction;
+      form.imgs = data.imgs.map(v => {
+        return {img_ID: v.img_ID}
+      })
       this.dateTime.desc = data.openingHourExplain;
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
+      console.log(data)
     },
     // 区域选择
     handleSelect(item) {
-      console.log(item)
       this.form.areaId = item;
       this.isSelect = true;
     },
     // 区域选择失去焦点
     handleBlur() {
       setTimeout(() => {
-        if (!this.isSelect) {
+        if(this.isSelect === false) {
           this.form.areaId = {
             'id': '',
             'value': ''
-          }
-          this.isSelect = true;
+          };
         } else {
           this.isSelect = false;
         }
@@ -524,7 +558,6 @@ export default {
             areaName: queryString
           }
       }).then(res => {
-        console.log(res);
         for (let i = 0; i < res.data.objects.length; i++) {
           this.vague.push({
             "id" : res.data.objects[i].id,
@@ -540,9 +573,6 @@ export default {
       return (restaurant) => {
         return (restaurant.value);
       }
-    },
-    handleImgClick() {
-
     },
     // 标签input回车事件
     handleInputConfirm(val) {
@@ -708,6 +738,7 @@ export default {
                 'seasons':            seasons,
                 'crowds':             crowds,
                 'introduction':       this.form.introduction,
+                'imgs':               this.form.imgs,
                 "createTime":         "2019-03-20T05:36:16.641Z",
               }
             }).then(res => {
@@ -733,6 +764,7 @@ export default {
                 'seasons':            seasons,
                 'crowds':             crowds,
                 'introduction':       this.form.introduction,
+                'imgs':               this.form.imgs,
                 "createTime":         "2019-03-20T05:36:16.641Z",    
               }
             }).then(res => {
@@ -968,10 +1000,44 @@ export default {
   float: left;
   width: 300px;
   height: 40px;
-  background:#F5F7FA;
+  // background:#F5F7FA;
   border: solid 1px #E4E7ED;
+}
+.img_list {
+  float: left;
+  margin: 5px 0 0 10px;
+  width: 30px;
+  height: 30px;
+}
+.img_list:hover {
+  cursor:pointer;
+}
+.img_div {
+  float: left;
+  margin: 9px 0 0 0;
+  border: solid 2px #717171;
+  width: 10px;
+  height: 18px;
+  text-align: center;
+  line-height: 16px;
+  font-size: 18px;
+  background: #FFFFFF;
+}
+.img_div:hover {
+  cursor:pointer;
 }
 .img_button {
   float: left;
+}
+.show_div {
+  width: 300px;
+  margin-top: 40px;
+  position: relative;
+  top: 10px;
+  z-index: 999;
+}
+.show_img {
+  width: 100%;
+  height: 200px;
 }
 </style>

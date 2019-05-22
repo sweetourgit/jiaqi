@@ -2,12 +2,9 @@
 <div>
     <div class="main-container">
     <div class="header">
-        <!-- <div class="header_add">
-          <el-button type="primary" @click="addAlbum = true">添加相册</el-button>
-        </div> -->
         <div class="header_seach">
           <div class="search-input">
-            <el-input v-model="searchName" placeholder="目的地\名称" clearable></el-input>
+            <el-input v-model="searchName" placeholder="请输入相册名称" clearable></el-input>
           </div>
           <div class="search-button">
             <el-button type="primary" icon="el-icon-search" @click="sealbumPage"></el-button>
@@ -17,21 +14,21 @@
       
     <!--左侧导航-->
     <div class="left-tree">
-         <el-tree :default-expanded-keys="[1]" :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
+         <el-tree :props="props1" :default-expanded-keys="[1,12,474]" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
     </div>  
 
     <!-- 图片list -->
     <div v-show="geography == 1" class="address-big">
          <div class="address-img" v-for="img in albumList">
               <div class="marterialist-img" @click="getAlbum(img.id)">
-                 <img width="100%" height="100%" :src="img.pictures[0].url" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'" v-if="img.pictures.length>0"/>
-                 <img width="100%" height="100%" :src="'http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'" v-else/>               
+                 <img width="100%" height="100%" :src="picSrc+img.pictures[0].url" v-if="img.pictures.length>0"/>
+                 <img width="100%" height="100%" :src="'../../../static/materialList/nopic.jpg'" v-else/> 
               </div>
               <!-- 图片介绍 -->
               <div class="introduce">
                    <div v-for="item in albumtype">
                       <div class="label" v-if="img.albumType==item.id">{{item.name}}</div>
-                   </div>                  
+                   </div>                   
                    <!-- 图片数量 -->
                    <div class="number">{{img.pictures.length}}张</div>
               </div>
@@ -55,48 +52,52 @@
     </div>
     </div>
     <!-- 所有的弹窗 -->
-    <!-- 1.添加相册的弹窗 -->
-   
+
 
     <!-- 2.单个相册详情的弹窗 -->
     <el-dialog title="相册" :visible.sync="getAlbumForm" custom-class="city_list" :append-to-body="true" width="1220px" @close="albumInfoClose" class="clearfix" style="margin-top:-50px">  
       <div class="add-address-img">
-          <div class="left-img" style="overflow:auto">
-            <el-checkbox-group v-model="checkList">
-              <div v-for="item in albumInfo.pictures" class="img-div">
-                <el-checkbox class="img-div-box" :label="item.id">
-                    <img :src="item.url" width="100%" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'"/>
-                </el-checkbox>
-              </div>
-
-            </el-checkbox-group>
-          </div>
-
-        <!-- <div class="left-img">
-          
-          <div class="swiper-container gallery-top">
-            <div class="swiper-wrapper">
-              <div v-for="item in albumInfo.pictures" class="swiper-slide">
-               <img :src="item.url" width="100%" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'"/>
-              </div>
+        <div class="left-img" style="overflow:auto">
+          <el-checkbox-group v-model="checkList">
+            <div v-for="item in albumInfo.pictures" class="img-div">
+              <el-checkbox class="img-div-box" :label="item.id">
+                  <img :src="picSrc+item.url" width="220px" height="147px"/>
+              </el-checkbox>
             </div>
-            
-            <div class="swiper-button-next swiper-button-white" @click="nextSwiper"></div>
-            <div class="swiper-button-prev swiper-button-white" @click="prevSwiper"></div>
-          </div>
-          <div class="swiper-container gallery-thumbs">
-            <div class="swiper-wrapper">
-              <div v-for="(item,index) in albumInfo.pictures" class="swiper-slide" @click="slideTo(index)">
-                <img :src="item.url" width="100%" onerror="this.src='http://ht.sweetuu.com//PhotoGallery/2018/03/28/01cf4ff2e3974e4f9d109b6dafe818f3.jpg'"/>
-              </div>
-            </div>
-          </div>
-          <i class="el-icon-circle-close-outline" @click="delPic"></i>
-        </div> -->
 
-
+          </el-checkbox-group>
+        </div>
          <div class="right-form">
-           
+
+
+           <!-- <div class="album-message">
+            <div class="album-title">
+              <div class="blue-box"></div>
+              <div class="album-text">相册信息</div>
+            </div>
+            <div class="album-form">
+                <el-form :model="albumInfo"  ref="albumForm" label-width="100px">
+                  <div class="album-name1">
+                    名称：<el-input v-model="albumInfo.name" placeholder="请输入素材名称" :disabled="albumDisabled"></el-input>
+                    <span class="empty" v-if="albumNameEmpty">名称不能为空</span>
+                  </div>
+                  <el-form-item label="类型：" style="margin-top:20px">
+                    <el-select  v-model="albumInfo.albumType">
+                      <el-option :key="item.id" v-for="item in albumtype" :label="item.name" :value="item.id" :disabled="albumDisabled"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="目的地：">
+                    <el-button plain @click="leftTree2 = leftTree2 == true?false:true" class="w200 tl" :disabled="albumDisabled">{{albumInfo.areaName}}</el-button>
+                  </el-form-item>
+                  <div class="left-tree2" v-if="leftTree2">
+                       <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
+                  </div>
+              </el-form>
+              
+            </div>       
+           </div> -->
+
+
            <div class="material-message">
              <div class="album-title">
                 <div class="blue-box"></div>
@@ -118,66 +119,19 @@
                   <div class="size">大小：{{pictInfo.length}}</div>
                 </div>                    
             </div>
-            <div class="album-picbutton" v-show="picInfoShow">              
-                 <el-button type="primary" @click="savPic">{{savPicBut}}</el-button>
-            </div>
            </div>
         </div> 
-      </div> 
+        <div class="button-bottom">
+          <el-button style="width: 130px;" plain @click="getAlbumForm = false">取消</el-button>
+          <el-button style="width: 130px;margin-left: 40px;" type="primary" @click="handleSave">保存</el-button>
+        </div>
+      </div>
+
+      
+        
+
     </el-dialog>
    
-    <!-- 3.添加素材弹窗 -->
-    <el-dialog title="添加照片" :visible.sync="getPictureForm" custom-class="city_list" :append-to-body="true" width="1350px" @close="pictureFormClose" class="clearfix">  
-      <div class="add-address-imgpic">
-        <div class="left-imgpic">
-          <!--图片上传-->
-          <div class="upload">
-              <el-upload
-                class="upload-demo"
-                ref="upload"
-                :limit="12"
-                drag
-                :file-list="fileList"
-                action="http://192.168.1.186:3009/upload/api/picture"
-                multiple
-                list-type="picture"
-                :on-error="handleError"
-                :on-success="handleSuccess"
-                :on-remove="handleRemove"
-                :on-preview="handlePreview" name="files">                
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，单次最多上传12张图片</div>
-              </el-upload>
-          </div>
-         </div>
-         <div class="right-form1">
-             <div class="album-title">
-                <div class="blue-box"></div>
-                <div class="album-text">素材信息</div>
-             </div>
-             <div class="album-form" v-for="(item,index) in fileList" v-show="uid==item.uid">
-                <div class="album-name1">
-                    名称：<el-input placeholder="请输入素材名称" v-model="item.name"></el-input>
-                </div>
-                <div class="album-info">
-                  <div>
-                      <p class="per-title">权限：</p>
-                      <el-checkbox-group v-model="item.companies" class="company-list">
-                        <el-checkbox v-for="itemList in companyList" :label="itemList.id" :key="itemList.id">{{itemList.name}}</el-checkbox>
-                      </el-checkbox-group>
-                  </div>
-                  <div class="size">尺寸： {{item.width}}*{{item.height}}</div>
-                  <div class="size">大小： {{item.length}}</div>
-                </div>                    
-            </div>
-            <div class="uploadBut">
-               <el-button @click="pictureFormClose">取消</el-button>  
-               <el-button type="primary" @click="pictureInsert">添加素材</el-button> 
-            </div> 
-        </div> 
-      </div> 
-    </el-dialog>
 </div>
  
 
@@ -187,9 +141,11 @@
   import Swiper from "swiper"
   import 'swiper/dist/css/swiper.min.css';
   export default {
+    props: ['chineseName', 'imgData'],
     data() {        
-      return {  
-        checkList: [],     
+      return {       
+        checkList: [],
+        picSrc:'http://192.168.1.186:3009/upload',
         //左侧菜单
         list:[],
         lists: [], //子级
@@ -210,7 +166,12 @@
         //搜索
         searchName:'',
         //添加相册弹窗
-  
+        picForm: {
+            name: '',
+            type: '',
+            destination: '请选择目的地',
+            destinationId: 0
+        },
         formLabelWidth: '100px',
         addAlbum: false, //添加相册弹窗
         leftTree1:false, //添加相册选择目的地       
@@ -242,13 +203,39 @@
         uid:0,//上传图片缩略图选中项
         len:0,
         time:0,
-
+        rules:{
+          name: [
+            { required: true, message: '请输入相册名称', trigger: 'blur' },
+            { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+          ],
+          type: [
+            { required: true, message: '请选择类型',trigger: 'blur' }
+          ],
+          destination: [
+            { required: true, message: '请选择目的地',trigger: 'blur' }
+          ]        
+        }
+      }
+    },
+    watch: {
+      chineseName() {
+        this.searchName = this.chineseName;
+      },
+      imgData() {
+        this.checkList = this.imgData;
       }
     },
     created(){
+      this.checkList = this.imgData;
+      this.searchName = this.chineseName;
       this.albumtypeget();
     },
     methods: {
+      handleSave() {
+        this.getAlbumForm = false;
+        this.$emit('closeButton', false);
+        this.$emit('checkList', this.checkList);
+      },
       handleSizeChange(val){
         this.pageSize = val;
         this.pageIndex = 1;
@@ -267,8 +254,6 @@
             console.log(err)
         })
       },
-      // 关闭相册弹窗
-
 
       loadNode1(node, resolve) {
         this.node = node.data
@@ -337,25 +322,21 @@
           console.log(error);
         });
       },
+      
       // 单击tree节点
       treeClick(data,node){     
-        this.data = data;
         if (data.isLeaf == 1) {
-          if(this.addAlbum == true){
-              //添加相册tree
-              this.picForm.destination=this.data.name;
-              this.picForm.destinationId=this.data.id;
-              this.leftTree1=false;             
-          }else if(this.getAlbumForm == true){
-             //修改相册tree
-             // this.albumInfo.name=this.data.name;
-              this.albumInfo.areaID=this.data.id;
+          if(this.getAlbumForm == true){
+            //修改相册tree
+            this.albumInfo.areaName=data.name;
+            this.albumInfo.areaID=data.id;
               this.leftTree2=false;
           }else{
-             //左侧导航tree
-              this.geography = 1;
-              this.searchName = "";
-              this.albumPage(this.pageIndex,this.pageSize,this.data.id,this.searchName);
+            this.data = data;
+            //左侧导航tree
+            this.geography = 1;
+            this.searchName = "";
+            this.albumPage(this.pageIndex,this.pageSize,this.data.id?this.data.id:0,this.searchName);
           }
         }
       },
@@ -374,7 +355,6 @@
               "isDeleted": 0
             }
           }).then(res => {
-              console.log(res);
             if(res.data.isSuccess == true){
                this.albumList=res.data.objects;
                this.total=res.data.total;
@@ -411,36 +391,12 @@
             console.log(err)
           })
       },
-      saveAlbum(){
-        if(this.albumDisabled){
-          this.albumDisabled=false;
-          this.saveAlbumBut="保存属性";
-        }else{
-          if(!this.albumInfo.name){
-            this.albumNameEmpty=true;
-            return false;
-          }         
-          this.$http.post('http://192.168.1.186:3024' + '/album/api/save',{
-             "object":this.albumInfo
-          }).then(res => {
-            if(res.data.isSuccess == true){
-              this.$message({
-                message: '保存成功',
-                type: 'success'
-              });
-              this.albumNameEmpty=false;
-              this.saveAlbumBut="修改属性";
-              this.albumDisabled=true;
 
-            }
-          }).catch(err => {
-            console.log(err)
-          })          
-        }        
-      },
       albumInfoClose(){
         this.getAlbumForm = false;
         this.leftTree2=false; 
+        this.albumDisabled=true;
+        this.saveAlbumBut="修改属性";
       },
       mySwiper(index){
          var galleryThumbs = new Swiper('.gallery-thumbs', {
@@ -468,19 +424,8 @@
             }
           });
       },
-      slideTo(index){
-         this.getPicture(index);
-      },
-      prevSwiper(){
-        this.getPicture(this.activeIndex-1);
-      },
-      nextSwiper(){
-        this.getPicture(this.activeIndex+1);
-      },
-      pictureFormClose(){
-        this.fileList = [];
-        this.getPictureForm=false;
-      },
+ 
+
       //查询一个素材信息
       getPicture(index){
         this.picDisabled=true;
@@ -498,168 +443,22 @@
              }
           })
       },
-      //删除一张照片
-      delPic(){
-        this.$confirm("确认删除?", "提示", {
-           confirmButtonText: "确定",
-           cancelButtonText: "取消",
-           type: "warning"
-        })
-        .then(() => {
-              this.$http.post('http://192.168.1.186:3024' + '/picture/api/delete',{
-                    "id": this.pictInfo.id
-                  }).then(res => {
-                      if(res.data.isSuccess == true){
-                         this.$message.success("删除成功");
-                         this.getAlbum(this.albumId);
-                  }
-               })
-          })
-          .catch(() => {
-            this.$message({
-            type: "info",
-            message: "已取消"
-          });
-        });
-      },
-      //删除照片信息
-      savPic(){
-        if(this.picDisabled){
-          this.picDisabled=false;
-          this.savPicBut="保存属性";
-        }else{
-          if(!this.pictInfo.name){
-            this.picNameEmpty=true;
-            return false;
-          }       
-          this.pictInfo.companies=[];
-          for(let i=0;i<this.checkedCompany.length;i++){
-              this.pictInfo.companies.push({
-                  "id": 0,
-                  "company": this.checkedCompany[i],
-                  "pictureID": this.pictInfo.id
-              });
-          } 
-          this.$http.post('http://192.168.1.186:3024' + '/picture/api/save',{
-             "object":this.pictInfo
-          }).then(res => {
-            if(res.data.isSuccess == true){
-              this.$message({
-                message: '保存成功',
-                type: 'success'
-              });
-              this.picNameEmpty=false;
-              this.savPicBut="修改属性";
-              this.picDisabled=true;
-            }
-          }).catch(err => {
-            console.log(err)
-          })          
-        }  
-      },
+
+
       //获取公司
       getCompany(){
         this.$http.post('http://192.168.1.186:3024' + '/picture/api/companyget')
         .then(res => {
+            this.insertCheCompany=[];
             this.companyList=res.data.objects;
             for(let i=0;i<this.companyList.length;i++){
                this.insertCheCompany.push(this.companyList[i].id)
             }            
           })
       },
-      //添加素材弹窗
-      createPic(){
-        this.getPictureForm=true;
-      },
-      handleError(err, file) {
-          console.log('失败')
-          this.fileList = []
-      },
-      handleSuccess(res, file ,fileList) {
-          //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
-          if(this.time!=fileList.length){  //多张图片情况只在第一次执行数组操作
-            this.time=fileList.length;         
-            if(this.fileList.length==0){
-               this.fileList=fileList;
-            }else{
-               this.len=this.fileList.length;
-               for(let i=this.len;i<fileList.length;i++){
-                 this.fileList.push(fileList[i]);
-               }
-             }
-          }     
-          var paths = null;
-          for(let i=this.len;i<fileList.length;i++){          
-           paths=JSON.parse(fileList[i].response).paths[0];         
-           this.$set(this.fileList[i],"companies",this.insertCheCompany);
-           this.$set(this.fileList[i],"width",paths.Width);
-           this.$set(this.fileList[i],"height",paths.Height);
-           this.$set(this.fileList[i],"url1",paths.Url);
-           this.$set(this.fileList[i],"length",paths.Length);
-           this.$set(this.fileList[i],"name",paths.Name);
-          }
-          this.uid=fileList[0].uid;      
-      },
-      //选中待上传的图片
-      handlePreview(file) {
-        this.uid=file.uid;
-      },
-      //删除待上传的图片
-      handleRemove(file, fileList) {
-        this.uid=fileList[0].uid;
-      },
-      //添加素材
-      pictureInsert(){
-        let pictureList=[];  //图片数据字段转换
-        let fileList=this.fileList;
-        for(let i=0;i<fileList.length;i++){
-           let picture={};
-           picture.id=0;
-           picture.albumID=this.albumId;
-           picture.name=fileList[i].name;
-           picture.url=fileList[i].url1;
-           picture.height=fileList[i].height;
-           picture.width=fileList[i].width;
-           picture.length=parseInt(fileList[i].size/1024);
-           picture.createUser=sessionStorage.getItem('id');
-           picture.companies=[];
-           picture.createTime=new Date();
-           for(let j=0;j<fileList[i].companies.length;j++){             
-              picture.companies.push({
-                  "id": 0,
-                  "company": fileList[i].companies[j],
-                  "pictureID": 0
-                });
-           }
-           pictureList.push(picture);
-        }
 
-        this.$http.post('http://192.168.1.186:3024' + '/picture/api/insert',{
-            "object":pictureList[0]
-          }).then(res => {
-             this.$message({
-               message: '图片图片成功',
-               type: 'success'
-             });
-             this.getAlbum(this.albumId);
-             this.fileList = [];
-             this.getPictureForm=false;
-          })
-          this.fileList = [];
-      },
+ 
 
-      
-    
-
-    //目的地显示name
-    //添加照片是否支持多张
-    //视频暂不做
-  
-
-
-
-
-  
     
     }    
   }
@@ -689,7 +488,7 @@
 .pagination{float: right;margin-right: 68px;margin-top: 10px;clear:both}
 .add-address-img{width:1150px;height:670px;margin-left:20px}
 .add-address-imgpic{width:1350px;height:620px;margin-left:20px}
-.left-img{float:left;width:740px;height:620px;border:1px solid #fff;position: relative; right: 20px;overflow:auto}
+.left-img{float:left;width:730px;height:620px;border:1px solid #fff;position: relative}
 .left-img i{position: absolute;top:10px;right:10px;display: block;z-index: 2;color: #fff;font-size: 30px}
 .left-imgpic{float:left;width:880px;height:470px;border:1px solid #fff}
 .right-form{float:left;width:380px;margin-left: 20px}
@@ -747,20 +546,25 @@ opacity: 0.4;
 .gallery-thumbs .swiper-slide-thumb-active {
 opacity: 1;
 }
-.img-div{
-    float: left;
-    width: 230px;
-    padding-top: 20px;
-    padding-left: 10px;
+.img-div {
+  float: left;
+  width: 230px;
+  padding-top: 20px;
+  padding-left: 10px;
 }
 .img-div-box {
-    /* position: relative; */
-    /* bottom: 150px; */
-    /* left: 210px; */
+  /* position: relative; */
+  /* bottom: 150px; */
+  /* left: 210px; */
 }
-.img-div-box>>>.el-checkbox__input{
-    position: relative;
-    bottom: 130px;
-    left: 225px;
+.img-div-box >>> .el-checkbox__input {
+  position: relative;
+  bottom: 130px;
+  left: 225px;
+}
+.button-bottom{
+  position: relative;
+  top: 250px;
+  left: 60px;
 }
 </style>
