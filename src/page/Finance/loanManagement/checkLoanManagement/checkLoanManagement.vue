@@ -5,8 +5,8 @@
 	      	 <el-form-item label="借款人" prop="createUser">
 			    <el-input class="name_input" v-model="ruleForm.createUser" disabled></el-input>
 			 </el-form-item>
-			 <el-form-item label="团期计划" prop="planID" style="float:left;">
-			    <el-input class="name_input" v-model="ruleForm.planID"disabled></el-input>
+			 <el-form-item label="团期计划" prop="tour" @blur="tour_check" style="float:left;">
+			    <el-input class="name_input" v-model="ruleForm.tour"disabled></el-input>
 			 </el-form-item>
 			 <el-form-item prop="plan_01" style="float:left; margin-left:-90px;">
 			    <el-input class="name_input" v-model="ruleForm.plan_01"disabled></el-input>
@@ -158,7 +158,7 @@
          },*/
          ruleForm:{
          	 createUser:'',
-             planID:'',
+             tour:'',
              supplierName:'',
              supplierTypeEX:'',
              price:'',
@@ -169,6 +169,8 @@
              payway:'',
              files:'',
          },
+         product_name_pre: '',
+         tour_id:0,
          borrowingType: [{//无收入借款类型选择器
           value: '选项1',
           label: '地接'
@@ -424,7 +426,7 @@
               if(res.data.isSuccess == true){
                  let data = res.data.object;
                  this.ruleForm.createUser=data.createUser;
-                 this.ruleForm.planID=data.planID;
+                 this.ruleForm.tour=data.tour;
                  this.ruleForm.supplierName=data.supplierName;
                  this.ruleForm.supplierTypeEX=data.supplierTypeEX;
                  this.ruleForm.price=data.price;
@@ -434,11 +436,54 @@
                  this.ruleForm.cardName=data.cardName;
                  this.ruleForm.payway=data.payway;
                  this.ruleForm.files=data.files;
+                 this.tour_id = obj.data.object.planID
 
               }
+              _that.getTourByPlanId(obj.data.object.planID)
         }) .catch(err => {});
       },
-      
+      tour_check() {
+      if (this.ruleForm.tour != '') {
+        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+          "pageIndex": 1,
+          "pageSize": 1,
+          "object": {
+            "groupCode": this.ruleForm.tour, //团号
+            "title": '', //产品名称
+            "beginDate": 0, //搜索用开始日期
+            "endDate": 0, //搜索用结束日期
+          }
+        }).then(res => {
+          if (res.data.isSuccess == true) {
+            this.product_name_pre = res.data.objects[0].title
+            this.ruleForm.plan_01 = res.data.objects[0].title
+            this.getPaymentdetails(res.data.objects[0].planID)
+          }
+        }).catch(err => {
+          console.log(err)
+          this.product_name_pre = ''
+          this.ruleForm.plan_01 = ''
+        })
+      } else {
+        this.product_name_pre = ''
+        this.ruleForm.plan_01 = ''
+      }
+    },
+    getTourByPlanId(val) {
+      var that = this
+      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+        "object": {
+          planID: val, //团期计划ID
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.ruleForm.tour = res.data.objects[0].groupCode
+          that.ruleForm.plan_01 = res.data.objects[0].title
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
 
     },
     watch: {
