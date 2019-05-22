@@ -5,8 +5,8 @@
 	      	 <el-form-item label="借款人" prop="createUser">
 			    <el-input class="name_input" v-model="ruleForm.createUser" disabled></el-input>
 			 </el-form-item>
-			 <el-form-item label="团期计划" prop="groupCode" style="float:left;">
-			    <el-input class="name_input" v-model="ruleForm.groupCode"disabled></el-input>
+			 <el-form-item label="团期计划" prop="planID" style="float:left;">
+			    <el-input class="name_input" v-model="ruleForm.planID"disabled></el-input>
 			 </el-form-item>
 			 <el-form-item prop="plan_01" style="float:left; margin-left:-90px;">
 			    <el-input class="name_input" v-model="ruleForm.plan_01"disabled></el-input>
@@ -158,7 +158,7 @@
          },*/
          ruleForm:{
          	 createUser:'',
-             groupCode:'',
+             planID:'',
              supplierName:'',
              supplierTypeEX:'',
              price:'',
@@ -424,7 +424,7 @@
               if(res.data.isSuccess == true){
                  let data = res.data.object;
                  this.ruleForm.createUser=data.createUser;
-                 this.ruleForm.groupCode=data.groupCode;
+                 this.ruleForm.planID=data.planID;
                  this.ruleForm.supplierName=data.supplierName;
                  this.ruleForm.supplierTypeEX=data.supplierTypeEX;
                  this.ruleForm.price=data.price;
