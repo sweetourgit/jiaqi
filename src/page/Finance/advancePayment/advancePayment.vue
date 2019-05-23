@@ -54,7 +54,7 @@
         <NeedApproval></NeedApproval>
       </el-tab-pane>
     </el-tabs>
-    <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :infoStatus="infoStatus" :searchHandList="searchHand"></AdvanceInfo>
+    <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :infoStatus="infoStatus" @searchHandList="searchHand"></AdvanceInfo>
   </div>
 </template>
 <script>

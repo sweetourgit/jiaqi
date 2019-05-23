@@ -998,7 +998,7 @@ export default {
             if (res.data.isSuccess == true) {
               this.closeAdd()
               this.sendBPM(res.data.object)
-              this.searchHand()
+              this.$emit('searchHandList', false);
             } else {
               console.log('有错误!');
               console.log(res.data);
