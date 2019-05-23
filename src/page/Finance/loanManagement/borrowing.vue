@@ -268,7 +268,7 @@
       		<el-button @click="CloseCheckIncomeShow()">取消</el-button>
       		<el-button type="danger" plain>撤销借款</el-button>
       	</div>
-	    <checkLoanManagement :checkIncomeShow="checkIncomeShow" :paymentID="paymentID"></checkLoanManagement>
+	    <checkLoanManagement :checkIncomeShow="checkIncomeShow" :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
 	  </el-dialog>
   </div>
 </template>
@@ -295,6 +295,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
          forbidden:true,
 		 multipleSelection: [],
 		 paymentID:0,
+		 groupCode:0,
          tableData:[],
 		 //分页
 		 pagesize: 10, // 设定默认分页每页显示数
