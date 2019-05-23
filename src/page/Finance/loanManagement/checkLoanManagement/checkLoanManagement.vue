@@ -427,7 +427,7 @@
               if(res.data.isSuccess == true){
                  let data = res.data.object;
                  this.ruleForm.createUser=data.createUser;
-                 this.ruleForm.tour=data.tour;
+                 this.ruleForm.groupCode=data.groupCode;
                  this.ruleForm.supplierName=data.supplierName;
                  this.ruleForm.supplierTypeEX=data.supplierTypeEX;
                  this.ruleForm.price=data.price;
@@ -463,10 +463,10 @@
 	    },
     watch: {
       // 如果 `dialogFormVisible` 发生改变，这个函数就会运行
-      checkIncomeShow: {
+      paymentID: {
          immediate:true,
          handler:function(){
-           if (this.checkIncomeShow == true){
+           if (this.paymentID !=-1){
            	this.getLabel();
            	this.getTourByPlanId();
              //console.log(0);

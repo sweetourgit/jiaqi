@@ -540,6 +540,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       	this.$refs.multipleTable.clearSelection(); //清空用户的选择  
         this.$refs.multipleTable.toggleRowSelection(row);
         this.paymentID=row.paymentID;
+        this.groupCode=row.groupCode;
       },
       rowClass({row, rowIndex}){  //选中行样式改变
        for(var i=0;i<this.multipleSelection.length;i++){
