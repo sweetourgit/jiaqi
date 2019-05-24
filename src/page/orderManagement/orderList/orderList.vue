@@ -100,7 +100,7 @@
             <el-row class="but-row">
                <el-button>联系客人</el-button>
                <el-button @click="processManage(item.id)">流程管理</el-button>
-               <el-button>备注信息</el-button>
+               <el-button @click="remarksInfor(item.id)">备注信息</el-button>
                <el-button>未申请退款</el-button>
                <el-button>转团</el-button>
             </el-row>
@@ -115,16 +115,19 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
           </el-pagination>
-          <process-manage :orderId="orderId" :variable="variable"></process-manage>
+          <process-manage :orderId="orderId" :variable="variable" :dialogType="dialogType"></process-manage>
+          <remarks-infor :orderId="orderId" :variable="variable" :dialogType="dialogType"></remarks-infor>
      </div>
   </div>
 </template>
 
 <script>
 import processManage from './common/processManage';
+import remarksInfor from './common/remarksInfor';
 export default {
   components:{
-    "process-manage":processManage
+    "process-manage":processManage,
+    "remarks-infor":remarksInfor
   },
   data() {
     return {
@@ -158,7 +161,8 @@ export default {
        total: 0,
        orderpage:[],
        orderId:0,
-       variable:0 //设置一个变量展示弹窗
+       variable:0, //设置一个变量展示弹窗
+       dialogType:0,//弹窗类型  1：流程管理  2：备注信息
     }
   },
   created(){
@@ -252,6 +256,13 @@ export default {
       processManage(orderId){
            this.orderId = orderId;
            this.variable++;
+           this.dialogType=1;
+      },
+      //备注信息弹窗
+      remarksInfor(orderId){
+           this.orderId = orderId;
+           this.variable++;
+           this.dialogType=2;
       }
    }
 }

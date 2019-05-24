@@ -112,6 +112,7 @@ export default {
   props:{
     orderId:0,
     variable:0,
+    dialogType:0
   },
   data() {
     return {
@@ -151,8 +152,10 @@ export default {
   },
   watch: {
       variable:function(){      
+        if(this.dialogType==1){
           this.processManage(this.orderId);   
           this.dialogFormProcess=true;    
+        }    
      }
   },
   methods: {
