@@ -1016,6 +1016,24 @@ export default {
         }
       });
     },
+    sendBPM(result) {
+      this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
+        jQ_ID: result.guid,
+        jQ_Type: result.flowModel,
+        workflowCode: result.flowModelName,
+        userCode: sessionStorage.getItem('account'), //未指定呢
+      }).then(res => {
+        let result = JSON.parse(res.data);
+        if (result.code == '0') {
+          console.log('启动工作流成功');
+        } else {
+          console.log('启动工作流错误!');
+          console.log(res.data);
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    },
     //撤销申请
     chanelSubmit() {
       this.$confirm('是否撤销该条借款, 是否继续?', '提示', {
@@ -1057,24 +1075,7 @@ export default {
         this.$emit('searchHandList', false);
       });
     },
-    sendBPM(result) {
-      this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
-        jQ_ID: result.guid,
-        jQ_Type: result.flowModel,
-        workflowCode: result.flowModelName,
-        userCode: sessionStorage.getItem('account'), //未指定呢
-      }).then(res => {
-        let result = JSON.parse(res.data);
-        if (result.code == '0') {
-          console.log('启动工作流成功');
-        } else {
-          console.log('启动工作流错误!');
-          console.log(res.data);
-        }
-      }).catch(err => {
-        console.log(err);
-      })
-    },
+    
     getPaymentInfo() {
       var that = this
       that.$http.post(

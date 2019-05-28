@@ -119,7 +119,6 @@
 
   export default {
     props: {
-     checkIncomeShow: false,
      paymentID:0,
      groupCode:''
 
@@ -448,7 +447,7 @@
 	          //planID: this.paymentID, //团期计划ID
 	          //groupCode:this.ruleForm.groupCode,//团期计划(团号)
 	          //title:this.ruleForm.plan_01,//产品标题
-	          groupCode:this.ruleForm.groupCode
+	          groupCode:this.groupCode
 	        }
 	      }).then(res => {
 	        if (res.data.isSuccess == true) {
@@ -466,11 +465,12 @@
       paymentID: {
          immediate:true,
          handler:function(){
-           if (this.paymentID !=-1){
-           	this.getLabel();
-           	this.getTourByPlanId();
+           /*if (this.checkIncomeShow == true){
+           	
              //console.log(0);
-           }
+           }*/
+           this.getLabel();
+           this.getTourByPlanId();
          }
       }
     },

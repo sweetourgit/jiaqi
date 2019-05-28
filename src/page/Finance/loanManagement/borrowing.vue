@@ -1,4 +1,5 @@
 <template>
+<!--借款页面-->
   <div class="loanManagement">
 	<div class="loanBorder">
 		<div class="plan">
@@ -24,11 +25,11 @@
 		</div>
 		<el-table :data="tableData"  class="labelTable" ref="multipleTable" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
 	      <el-table-column prop="paymentID" label="借款单号" width="120" align="center"></el-table-column>
-	      <el-table-column prop="checkType" label="状态" width="80" align="center">
+	      <el-table-column prop="checkTypeEX" label="状态" width="80" align="center">
 	      	<template slot-scope="scope">
-	          <div v-if="scope.row.state=='申请中'" style="color: #7F7F7F" >{{scope.row.state}}</div>
-	          <div v-if="scope.row.state=='驳回'" style="color: #FF4A3D" >{{scope.row.state}}</div>
-	          <div v-if="scope.row.state=='通过'" style="color: #33D174" >{{scope.row.state}}</div>
+	          <div v-if="scope.row.checkTypeEX=='申请中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
+	          <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
+	          <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
 	        </template>
 	      </el-table-column>
 	      <el-table-column prop="beginTime" label="发起时间" width="180" align="center"></el-table-column>
@@ -169,10 +170,10 @@
 	        <el-table :data="tableName" border style="width: 100%; margin:30px 0 20px 0;":header-cell-style="getRowClass">
 	          <el-table-column prop="id" label="ID" align="center"></el-table-column>
 	          <el-table-column prop="name" label="姓名" align="center"></el-table-column>
-	          <el-table-column prop="phone" label="手机号" align="center"></el-table-column>
-	          <el-table-column prop="orinaze" label="组织" align="center"></el-table-column>
+	          <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
+	          <el-table-column prop="orgName" label="组织" align="center"></el-table-column>
 	          <el-table-column prop="sex" label="性别" align="center"></el-table-column>
-	          <el-table-column prop="type" label="状态" align="center"></el-table-column>
+	          <el-table-column prop="userStateCN" label="状态" align="center"></el-table-column>
 	        </el-table>
 	        <div class="number_button">
 	        	<el-button @click="numberCancel()">取消</el-button>
@@ -268,7 +269,7 @@
       		<el-button @click="CloseCheckIncomeShow()">取消</el-button>
       		<el-button type="danger" plain>撤销借款</el-button>
       	</div>
-	    <checkLoanManagement :checkIncomeShow="checkIncomeShow" :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
+	    <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
 	  </el-dialog>
   </div>
 </template>
@@ -318,6 +319,8 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           payment:'',
           accessory:'',
          },
+         tour_id:0,//无收入弹窗id
+         supplier_id:0,//无收入供应商id
          borrowingType: [{//无收入借款类型选择器
           value: '选项1',
           label: '地接'
@@ -370,35 +373,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
          //无收入借款中借款人弹窗
          dialogFormVisible1:false,
          number_name:'',
-         tableName: [{//申请无收入借款中借款人选择弹窗表格
-            id: '001',
-            name: '张三',
-            phone: '15566447881',
-            orinaze: '大运通-财务部',
-            sex: '男',
-            type: '启用'
-          },{
-            id: '001',
-            name: '张三',
-            phone: '15566447881',
-            orinaze: '大运通-财务部',
-            sex: '男',
-            type: '启用'
-          }, {
-            id: '001',
-            name: '张三',
-            phone: '15566447881',
-            orinaze: '大运通-财务部',
-            sex: '男',
-            type: '启用'
-          }, {
-            id: '001',
-            name: '张三',
-            phone: '15566447881',
-            orinaze: '大运通-财务部',
-            sex: '男',
-            type: '启用'
-          }],
+         tableName: [],//申请无收入借款中借款人选择弹窗表格
           //无收入借款中团期计划弹窗
           dialogFormVisible_plan:false,
           plan_stage:'',
@@ -569,6 +544,28 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       //无收入借款中借款人弹窗
       IncomeName(){
       	this.dialogFormVisible1 = true;
+      	this.incomeNameList();
+      },
+      //查询借款人列表
+      incomeNameList() {
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/org/api/userlist",
+          {
+             object: {
+	          isDeleted: 0
+	        },
+	        isGetAll: true,
+	        id: 0
+          },)
+          .then(function (obj) {
+            that.total = obj.data.total
+            that.tableName = obj.data.objects
+            console.log(obj.data.objects)
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
       },
       numberCancel(){
       	this.dialogFormVisible1 = false;
@@ -644,45 +641,79 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
             this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insert",
               {
                 object: {
-                  createUser: sessionStorage.getItem('id'),
-	              paymentType: 2, //借款类型 1无收入借款 2预付款
+                  createUser:this.ruleForm.name ,
+	              paymentType: 1, //借款类型 1无收入借款 2预付款
 	              planID: this.tour_id, //对应计划ID --Plan，不存在传值0
 	              supplierID: this.supplier_id, //对应供应商ID --Supplier，不存在传值0
 	              supplierName: this.ruleForm.supplier, //Supplier不存在时补充供应商名称
-	              supplierType: this.ruleForm.type, //供应商类型 0返款
-	              price: this.ruleForm.loanMoney, //金额
-	              peopleCount: this.ruleForm.loanNumber, //数量
+	              supplierType: this.ruleForm.planType, //供应商类型 0返款
+	              price: this.ruleForm.planAmount, //金额
 	              mark: this.ruleForm.abstract, //摘要
-	              cardNumber: this.ruleForm.cardNumber, //账号
-	              bankName: this.ruleForm.bankName, //开户行
-	              cardName: this.ruleForm.cardName, //开户名
-	              payway: this.ruleForm.payMode, //付款方式
+	              cardNumber: this.ruleForm.account, //账号
+	              bankName: this.ruleForm.accountBank, //开户行
+	              cardName: this.ruleForm.accountOpenName, //开户名
+	              payway: this.ruleForm.payment, //付款方
 	              files: pictureList, //付款方式
-	            }
-                })
-              .then(function(response) {
-                if(response.data.isSuccess == false){
-                  _this.$message.error("添加失败,该供应商已存在");
-                } else {
-                  _this.addContact.contactName = "";
-                  _this.addContact.contactPhone = "";
-                  _this.addContact.weChat = "";
-                  _this.addContact.qq = "";
-                  _this.$message.success("添加成功");
-                  _this.link_people();
                 }
               })
-            this.add_contact= false;
+              .then(function(response) {
+                if(res.data.isSuccess == true){
+                   this.pageList();
+                   this.noIncomeShow = false
+                }else{
+                   this.$message.success("添加失败");
+                }
+                
+              })
           } else {
             return false;
           }
         });
       },
+      //付款方式
+      payment(){
+      	this.payment_01 = [];
+	      this.$http.post(this.GLOBAL.serverSrc + '/finance/payway/api/get', {}).then(res => {
+	        for (let i = 0; i < res.data.objects.length; i++) {
+	          this.payment_01.push({
+	            "value": res.data.objects[i].id,
+	            "label": res.data.objects[i].name
+	          })
+	        }
+	      })
+	      .then(res =>{
+	        this.payment_01 =  res.data.objects;
+	      }).catch(function(err){
+	        console.log(err);
+	      })
+	    
+      },
+      //供应商类型
+      themeList(){
+	      this.borrowingType = [];
+	      this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {}).then(res => {
+	        for (let i = 0; i < res.data.objects.length; i++) {
+	          this.borrowingType.push({
+	            "value": res.data.objects[i].id,
+	            "label": res.data.objects[i].name
+	          })
+	        }
+	      })
+	      .then(res =>{
+	        this.borrowingType =  res.data.objects;
+	      }).catch(function(err){
+	        console.log(err);
+	      })
+	    },
 
     },
 
     mounted(){
       this.pageList();
+    },
+    created(){
+      this.themeList();
+      this.payment();
     },
   }
 </script>
