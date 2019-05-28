@@ -393,8 +393,8 @@ export default {
           credTOV:0,
           orderID: 0,
           orderCode: 'string',
-          orgID: 0,
-          userID: 0
+          orgID: sessionStorage.getItem('orgID'),
+          userID: sessionStorage.getItem('id')
         },
         //下单成功弹窗
         orderSuc:false,
@@ -709,7 +709,7 @@ export default {
                   "contact": '{"Name":"'+ this.ruleForm.contactName +'","Tel":"'+ this.ruleForm.contactPhone +'"}',
                   "endTime": this.ruleForm.type==1?0:new Date().getTime()/1000+24*60*60,
                   "orderChannel": this.ruleForm.orderRadio,
-                  "orgID": 0,
+                  "orgID": sessionStorage.getItem('orgID'),
                   "userID": sessionStorage.getItem('id'),
                   "mark": this.ruleForm.remark,
                   "guest":guest,
