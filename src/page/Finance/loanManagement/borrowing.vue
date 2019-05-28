@@ -637,6 +637,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	            picture.name = this.fileList[i].name;
 	            pictureList.push(picture);
 	          }
+	          
             var _this = this;
             this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insert",
               {
