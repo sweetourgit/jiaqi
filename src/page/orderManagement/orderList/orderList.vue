@@ -99,8 +99,8 @@
             <div class="confirm-time">待确认剩余<span>1天22:33:33</span></div>
             <el-row class="but-row">
                <el-button>联系客人</el-button>
-               <el-button @click="processManage(item.id)">流程管理</el-button>
-               <el-button @click="remarksInfor(item.id)">备注信息</el-button>
+               <el-button @click="operation(item.id,1)">流程管理</el-button>
+               <el-button @click="operation(item.id,2)">备注信息</el-button>
                <el-button>未申请退款</el-button>
                <el-button>转团</el-button>
             </el-row>
@@ -251,18 +251,15 @@ export default {
        var second=date.getSeconds();  
            second=second < 10 ? ('0' + second) : second;  
            return y + '-' + m + '-' + d +' '+ h + ':' + minute + ':' + second;
-      },
-      //流程管理弹窗
-      processManage(orderId){
-           this.orderId = orderId;
-           this.variable++;
-           this.dialogType=1;
-      },
-      //备注信息弹窗
-      remarksInfor(orderId){
-           this.orderId = orderId;
-           this.variable++;
-           this.dialogType=2;
+      },      
+      operation(orderId,i){
+          this.orderId = orderId;
+          this.variable++;
+          if(i==1){
+            this.dialogType=1; //流程管理弹窗
+          }else if(i==2){
+            this.dialogType=2; //备注信息弹窗
+          }         
       }
    }
 }

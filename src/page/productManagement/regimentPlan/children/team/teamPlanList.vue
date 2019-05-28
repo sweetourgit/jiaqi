@@ -175,7 +175,7 @@
                 <tr v-for="(item,index) in salePrice">
                   <td height="45">{{item.enrollName}}</td>
                   <td height="45">
-                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index)" type="number" :min="0"></el-input>
+                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index,item.enrollID)" type="number" :min="0"></el-input>
                       <span v-bind:class="{red:quota[index]}">
                       余（{{item.quota}}）
                       ￥<span v-show="ruleForm.price==1">{{item.price_01}}</span><span v-show="ruleForm.price==2">{{item.price_02}}</span>
@@ -599,7 +599,7 @@ export default {
           }
        })
      },
-     peoNum(index){   //填写报名人数
+     peoNum(index,enrollID){   //填写报名人数
         let arrLength;//报名人数
         let preLength;//记录上一次报名人数
             preLength=this.preLength[index];  //获取上一次报名人数
@@ -609,7 +609,7 @@ export default {
         if(arrLength>preLength){  //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
           len=arrLength-preLength;
           for(var i=0;i<len;i++){
-            this.tour[index].push({cnName:'点击填写'});
+            this.tour[index].push({cnName:'点击填写',enrollID:enrollID});
           }  
         }else{
           this.tour[index].splice(arrLength-preLength,preLength-arrLength);
@@ -667,7 +667,9 @@ export default {
                     if(guest[i].credType == ''){
                       guest[i].credType = 0;
                     } 
-                 }
+               }else{
+                    guest.push(guestAll[i]);
+               }
               }
               //防止重复提交订单判断
               if(this.ifOrderInsert==false){

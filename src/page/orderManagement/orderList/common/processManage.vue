@@ -10,27 +10,23 @@
                   <el-form-item label="">            
                     <div class="ml13">电话<el-input v-model="ruleForm.contactPhone" class="numw"></el-input></div>
                   </el-form-item>
-                  <el-form-item label="出行人信息">            
-                     <div class="oh">
-                       <div class="tour-til">成人</div>
-                       <div class="tourist"><input v-for="(item,index) in adult" v-model="item.name" @click="fillTour('1',index)"/></div>
+                  <el-form-item label="出行人信息" class="cb">            
+                     <div class="oh" v-for="(item,indexPrice) in salePrice">
+                       <div class="tour-til">{{item.enrollName}}</div>
+                       <div class="tourist"><input v-for="(item,index) in tour[indexPrice]" placeholder="点击填写" v-model="item.cnName" @click="fillTour(indexPrice,index)"/></div>                     
                      </div>
-                     <div class="oh">
-                       <div class="tour-til">儿童</div>
-                       <div class="tourist"><input v-for="(item,index) in child" v-model="item.name" @click="fillTour('2',index)"/></div>
-                     </div>
-                     <div class="oh">
-                       <div class="tour-til">老人</div>
-                       <div class="tourist"><input v-for="(item,index) in elder" v-model="item.name" @click="fillTour('3',index)"/></div>
-                     </div>
+                  </el-form-item>
+                  <el-form-item label="" class="cb">   
                      <div class="change-num" @click="changeNum">变更数量</div>
                      <div class="change-num">查看合同</div>
-                  </el-form-item>
-                  <el-form-item label="下单方式" prop="type">
-                    <div class="surplus">成人：余3</br>儿童：余2</div>
+                  </el-form-item>     
+                  <el-form-item label="更改订单状态" prop="type">
+                    <div class="surplus">
+                         <div v-for="(item,index) in salePrice">{{item.enrollName}}：余{{item.quota}}</div>
+                    </div>
                     <el-radio-group v-model="ruleForm.type"><br/>
-                      <el-radio label="确认占位" class="radiomar">确认占位 （同业社额度： 总欠款 <span class="color-blue">270,164</span> 元）</el-radio><br/>
-                      <el-radio label="预定占位" class="radiomar">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
+                      <el-radio label="1" class="radiomar">确认占位 （同业社额度： 总欠款 <span class="color-blue">270,164</span> 元）</el-radio><br/>
+                      <el-radio label="2" class="radiomar">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
                       <el-radio label="确认订单" class="radiomar">确认订单</el-radio><br/>
                       <el-radio style="display:none" label="提交用户信息" class="radiomar">提交用户信息</el-radio><br/>
                       <el-radio style="display:none" label="发送电子合同给客人" class="radiomar">发送电子合同给客人</el-radio><br/>
@@ -41,7 +37,7 @@
                      <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="ruleForm.remark"></el-input>
                   </el-form-item>
               </el-form>
-              <div slot="footer" class="dialog-footer">
+              <div slot="footer" class="dialog-footer" v-if="false">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="subInfo('conForm')" class="confirm">保存修改</el-button>
               </div>
@@ -51,58 +47,112 @@
        </el-dialog>
        <!--变更数量弹窗-->
        <el-dialog title="变更数量" :visible.sync="dialogFormNum" class="city_list" width="800px" style="margin-top:-50px">
-          <el-form :model="numForm" ref="numForm" :rules="rules" label-width="100px" class="demo-ruleForm numForm">
+          <el-form :model="ruleForm" ref="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm numForm">
            <el-form-item label="" prop="">            
-              <div class="ml13">结算参考 <span class="color-red">￥340</span></div>
+              <div class="ml13">结算参考 <span class="color-red">￥{{teampreviewData.refPrice}}</span></div>
            </el-form-item>
-           <el-form-item label="选择价格" prop="price" class="cb price">
-              <el-radio-group v-model="ruleForm.price"><br/>
-                <el-radio label="同业价" class="radiomar">同业价： 成人 （￥3800）  儿童（￥3000） 老人（￥3000） 单房差（￥200）</el-radio><br/>
-                <el-radio label="销售价" class="radiomar">销售价： 成人 （￥4800）  儿童（￥4000） 老人（￥4000） 单房差（￥300）</el-radio>
-                <el-radio label="自定义" class="radiomar">自定义： 
-                  成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
-                  儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
-                  老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
-                  单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
-                </el-radio>
-              </el-radio-group>
+           <el-form-item label="价格" prop="price" class="cb price">
+              <span v-for="item in salePrice" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span><br/>
+              <!--<el-radio-group v-model="ruleForm.price">              
+                 
+                 <el-radio label="1" class="radiomar">销售价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio><br/>
+                 <el-radio label="2" class="radiomar">同业价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio><br/>
+                 <el-radio label="自定义" class="radiomar">自定义： 
+                       成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
+                       儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
+                       老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
+                       单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
+                  </el-radio>
+              </el-radio-group>-->
             </el-form-item>
-            <el-form-item label="报名人数" prop="num1">            
-              <div class="ml13">成人<el-input v-model="ruleForm.num1" class="numw" @input="peoNum('adult')"></el-input><span class="color-red">余（17） ￥11400</span></div>
+            <el-form-item label="报名人数" class="fl">            
+              <div class="num-req">*</div>
             </el-form-item>
-            <el-form-item label="" prop="num2">            
-              <div class="ml13">儿童<el-input v-model="ruleForm.num2" class="numw" @input="peoNum('child')"></el-input><span class="color-red">余（17） ￥1140</span></div>
-            </el-form-item>
-            <el-form-item label="" prop="num3">            
-              <div class="ml13">老人<el-input v-model="ruleForm.num3" class="numw" @input="peoNum('elder')"></el-input><span class="color-red">余（17） ￥1140</span></div>
-            </el-form-item>
-            <el-form-item label="" prop="">            
-              <div class="ml13">单房差 <span class="color-red">￥340</span></div>
-            </el-form-item>
+            <div class="fl">         
+              <table style="margin:-7px 0 17px 13px">
+                <tr v-for="(item,index) in salePrice">
+                  <td height="45">{{item.enrollName}}</td>
+                  <td height="45">
+                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index,item.enrollID)" type="number" :min="0"></el-input>
+                      <span v-bind:class="{red:quota[index]}">
+                      余（{{item.quota}}）
+                      ￥<span v-show="ruleForm.price==1">{{item.price_01}}</span><span v-show="ruleForm.price==2">{{item.price_02}}</span>
+                      <span v-show="quota[index]">库存不足</span>
+                      </span>
+                  </td>
+                </tr>
+              </table>
+              <div class="red ml13" style="margin-top:-30px" v-show="enrolNums">报名人数不能为空</div>
+            </div>
             <!--其他费用-->
-            <div style="height:60px">
+            <div class="cb" style="height:60px">
               <el-form-item label="其他费用" prop="otherCost" class="fl cb">            
                 <el-input v-model="ruleForm.otherCost" class="numw" type="number" :min="0"></el-input>
               </el-form-item>
-              <div class="fl mtn5">            
+              <div class="fl">            
                 备注<el-input v-model="ruleForm.otherCostRemark" class="cost-remark"></el-input>
               </div>
             </div>
             <!--整体优惠-->
-            <el-form-item label="整体优惠" prop="allDiscount" class="fl cb">            
-              <el-input v-model="ruleForm.allDiscount" class="numw" type="number" :min="0"></el-input>
-            </el-form-item>
-            <div class="fl mtn5">            
-              备注<el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
+            <div class="cb">
+              <el-form-item label="整体优惠" prop="allDiscount" class="fl cb">            
+                <el-input v-model="ruleForm.allDiscount" class="numw" type="number" :min="0"></el-input>
+              </el-form-item>
+              <div class="fl">            
+                备注<el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
+              </div>
             </div>
-            <el-form-item label="总计" prop="totalPrice" class="cb">            
-              <div class="ml13"><span class="color-red">￥{{numForm.totalPrice}}</span></div>
+            <el-form-item label="总计" prop="payable" class="cb">            
+              <div class="ml13"><span class="color-red">￥{{orderget.payable}}</span></div>
             </el-form-item>
           </el-form>
           <div slot="footer" class="numdialog-footer">
                <el-button @click="dialogFormNum = false">取 消</el-button>
                <el-button type="primary" @click="subInfo('conForm')" class="confirm">保 存</el-button>
           </div>
+       </el-dialog>
+       <!--填写游客信息-->
+       <el-dialog :title="'出行人信息（'+winTitle+'）'" :visible.sync="dialogFormTour" class="city_list" @close="cancelInfo('conForm')" width="700px" height="500">
+            <el-form :model="conForm" :rules="rules" ref="conForm">
+              <el-form-item label="中文姓名" prop="cnName" label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.cnName" class="w200 fl"></el-input>
+              </el-form-item>
+              <el-form-item label="英文姓名" prop="enName" label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.enName" class="w200"></el-input>
+              </el-form-item>
+              <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px">
+                  <el-radio-group v-model="conForm.sex">
+                    <el-radio label="0">男</el-radio>
+                    <el-radio label="1">女</el-radio>
+                  </el-radio-group>
+              </el-form-item>
+              <el-form-item label="电话" prop="mobile" label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.mobile" class="w200"></el-input>
+              </el-form-item>
+              <el-form-item label="身份证" prop="idCard"  label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.idCard" class="w200"></el-input>
+              </el-form-item>              
+              <el-form-item label="出生日期" prop="bornDate"  label-width="110px" class="fl">
+                  <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" class="w200"></el-date-picker>
+              </el-form-item>
+              <el-form-item label="证件类型"  label-width="110px" class="fl">
+                  <el-select v-model="conForm.credType" placeholder="请选择">
+                     <el-option label="护照" value="1"/>
+                     <el-option label="港澳通行证" value="2"/>
+                     <el-option label="军官证" value="3"/>
+                  </el-select>
+              </el-form-item>
+              <el-form-item label="证件号码"  label-width="110px" class="fl">
+                  <el-input type="text" v-model="conForm.credCode" class="w200"></el-input>
+              </el-form-item>
+              <el-form-item label="证件有效期"  label-width="110px" class="fl">
+                  <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" class="w200"></el-date-picker>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer cb">
+              <el-button @click="cancelInfo('conForm')">取 消</el-button>
+              <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
+            </div>
        </el-dialog>
   </div>
 </template>
@@ -119,29 +169,74 @@ export default {
        //流程管理弹窗
        dialogFormProcess:false,
        orderget:{},//保存单个订单信息
-       adult:[{name:"点击填写"},{name:"点击填写"}],
-       child:[{name:"点击填写"}],
-       elder:[{name:"点击填写"}],
+       teampreviewData:{},//团期计划订单信息预览
        ruleForm: {  
+         //流程管理
          contactName:'',
          contactPhone:'',
-         remark:'',
+         type:"1",
+         remark:'',  //评价信息
+         //变更数量
+         price:'1',
          otherCost: 0,
          otherCostRemark: '',
          allDiscount: 0,
-         allDisRemark: '',
+         allDisRemark: '',         
        },
-       dialogFormNum:false,  //变更数量弹窗
-       numForm:{
-         totalPrice:13000
-       },
-       rules:{
+       //变更数量弹窗
+       dialogFormNum:false,  
+       //游客信息
+      quota:[], //余位信息负数红色提示
+      enrolNum:[], //报名人数[1,3]形式
+      enrolNums:false,//报名人数是否为空提示
+      dialogFormTour: false,
+      salePrice:[],//报名类型价格列表数据
+      salePriceNum:[],//报名类型价格列表数据副本,显示余位用
+      tourType:0,//报名类型索引
+      fillIndex:0,//报名类型下游客list索引
+      arrLength:[],//报名人数[1,3]形式
+      preLength:[],//记录上一次报名人数[1,3]形式
+      tour:[],//总游客信息,二维数组
+      winTitle:'',  //弹窗标题
+      conForm: {
+        id: 0,
+        isDeleted: 0,
+        code: "",
+        cnName:'',
+        enName:'',
+        sex:"",
+        mobile:'',          
+        idCard:'',//身份证
+        bornDate:0,
+        credType:"",
+        credCode:'',
+        credTOV:0,
+        orderID: 0,
+        orderCode: 'string',
+        orgID: 0,
+        userID: 0
+      },
+       rules:{      
+         //变更数量
+         price: [{ required: true, message: '请选择价格', trigger: 'change' }],
          otherCost: [
             { required: true, message: '请输入其他费用', trigger: 'blur' },
             { pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '必须为数字值，并且不允许是负数'}],
          allDiscount: [
             { required: true, message: '请输入整体优惠', trigger: 'blur' },
             { pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '必须为数字值，并且不允许是负数'}],
+         payable: [{ required: true, message: '价格不能为空'}],
+         //游客信息
+         cnName: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+         enName: [
+            { required: true, message: '请输入姓（拼音）', trigger: 'blur' },
+            { pattern: /(a[io]?|ou?|e[inr]?|ang?|ng|[bmp](a[io]?|[aei]ng?|ei|ie?|ia[no]|o|u)|pou|me|m[io]u|[fw](a|[ae]ng?|ei|o|u)|fou|wai|[dt](a[io]?|an|e|[aeio]ng|ie?|ia[no]|ou|u[ino]?|uan)|dei|diu|[nl](a[io]?|ei?|[eio]ng|i[eu]?|i?ang?|iao|in|ou|u[eo]?|ve?|uan)|nen|lia|lun|[ghk](a[io]?|[ae]ng?|e|ong|ou|u[aino]?|uai|uang?)|[gh]ei|[jqx](i(ao?|ang?|e|ng?|ong|u)?|u[en]?|uan)|([csz]h?|r)([ae]ng?|ao|e|i|ou|u[ino]?|uan)|[csz](ai?|ong)|[csz]h(ai?|uai|uang)|zei|[sz]hua|([cz]h|r)ong|y(ao?|[ai]ng?|e|i|ong|ou|u[en]?|uan))/, message: '姓（拼音）格式不正确'}],
+         sex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
+         mobile: [
+            { required: true, message: '请输入手机号', trigger: 'blur' },
+            { pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, message: '手机号格式不正确'}],
+         idCard: [{ required: true, message: '身份证号不能为空', trigger: 'blur' },
+                   { pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '身份证号格式不正确', trigger: 'blur' }]
        } 
        
 
@@ -156,7 +251,20 @@ export default {
           this.processManage(this.orderId);   
           this.dialogFormProcess=true;    
         }    
-     }
+     },
+     enrolNum:function(val){
+　　　　this.changeQuota();
+        this.compPrice();
+    },
+    'ruleForm.otherCost':function(val){
+        this.compPrice();
+    },
+    'ruleForm.allDiscount':function(val){
+        this.compPrice();
+    },
+    'ruleForm.type':function(val){
+        this.changeQuota();      
+    }
   },
   methods: {
       //流程管理
@@ -168,7 +276,11 @@ export default {
             this.orderget={};
             if(res.data.isSuccess == true){
                this.orderget=res.data.object;   
-               this.dialogFormProcess=true;           
+               this.ruleForm.contactName=JSON.parse(res.data.object.contact).Name;
+               this.ruleForm.contactPhone=JSON.parse(res.data.object.contact).Tel;
+               this.dialogFormProcess=true;   
+               this.teamEnrolls(res.data.object.planID);
+               this.teampreview(res.data.object.planID);        
             }
           }).catch(err => {
             console.log(err)
@@ -212,6 +324,108 @@ export default {
               break;
           }
       },
+      changeQuota(){  //余位变化方法
+       this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
+       let salePriceType3 = JSON.parse(JSON.stringify(this.salePriceNum));
+       let salePriceType={};
+          //实时减少相关余位信息，提示库存不足
+           for(let i=0;i<this.salePrice.length;i++){    
+             this.salePrice[i].quota=parseInt(this.salePrice[i].quota)-parseInt(this.enrolNum[i]);
+             salePriceType=this.salePrice[i];         
+             if(salePriceType.quota<0){  //判断是否显示库存不足
+                this.quota[i]=true;
+             }else{
+                this.quota[i]=false;
+             }
+        }
+     },
+     peoNum(index,enrollID){   //填写报名人数
+        let arrLength;//报名人数
+        let preLength;//记录上一次报名人数
+            preLength=this.preLength[index];  //获取上一次报名人数
+            arrLength=this.enrolNum[index];   //获取当前报名人数
+            this.preLength[index]=this.enrolNum[index];  //记录上一次报名人数为当前报名人数
+        var len;
+        if(arrLength>preLength){  //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
+          len=arrLength-preLength;
+          for(var i=0;i<len;i++){
+            this.tour[index].push({cnName:'点击填写'});
+          }  
+        }else{
+          this.tour[index].splice(arrLength-preLength,preLength-arrLength);
+        }
+     },
+     fillTour(type,index){
+          this.winTitle=this.salePrice[type].enrollName; //编辑游客信息弹窗标题
+
+          if(this.tour[type][index].cnName!='点击填写'){
+            this.conForm=JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
+          }
+          this.tourType=type;
+          this.fillIndex=index;
+          this.dialogFormTour = true;
+     },
+      //游客信息保存
+      subInfo(formName){
+         this.$refs[formName].validate((valid) => {
+          if (valid) {
+             let guest=JSON.parse(JSON.stringify(this.conForm));
+                guest.enrollID=this.salePrice[this.tourType].enrollID;  //填充报名类型
+                guest.enrollName=this.salePrice[this.tourType].enrollName;  //填充报名类型name
+                if(this.ruleForm.price==1){
+                  guest.singlePrice=this.salePrice[this.tourType].price_01;  //填充价格
+                }else{
+                  guest.singlePrice=this.salePrice[this.tourType].price_02;
+                }             
+             this.tour[this.tourType][this.fillIndex]=guest;
+             this.dialogFormTour = false;
+             this.$refs[formName].resetFields();
+            }
+          });
+      },
+      //游客信息取消
+      cancelInfo(formName){
+        this.dialogFormTour = false;
+        this.$refs[formName].resetFields();
+      },
+      teamEnrolls(planId){  //获取报名类型列表数据
+       this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/enrolls',{
+            "id": planId
+        }).then(res => {
+          if(res.data.isSuccess == true){
+             this.salePrice = res.data.objects;
+             console.log(this.salePrice);
+             this.salePriceNum = res.data.objects;            
+             this.preLength=[];
+             this.enrolNum=[];
+             this.quota=[];
+             this.tour=[];          
+             for(let i=0;i<res.data.objects.length;i++){
+                this.preLength.push('0');
+                this.enrolNum.push(0);
+                this.quota.push(false); 
+                this.tour.push([]);
+             }
+          }
+       })
+     },
+     teampreview(planId){  //团期计划订单信息预览
+       this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/teampreview',{
+            "id": planId
+        }).then(res => {
+          if(res.data.isSuccess == true){
+             this.teampreviewData=res.data.object;
+          }
+       })
+     },
+     compPrice(){  //计算总价
+          this.orderget.payable=0;
+          for(let i=0;i<this.enrolNum.length;i++){
+             this.orderget.payable+=this.enrolNum[i]*(this.ruleForm.price==1?this.salePrice[i].price_01:this.salePrice[i].price_02);
+          }
+          this.orderget.payable+=parseInt(this.ruleForm.otherCost);
+          this.orderget.payable-=parseInt(this.ruleForm.allDiscount);
+      }
     }
 }
 </script>
@@ -230,7 +444,7 @@ export default {
        .change-num{width: 110px;background-color: #f6f6f6;text-align: center;height: 30px;line-height: 30px;margin: 10px 0 0 13px;cursor: pointer}
        .radiomar{margin:12px 13px;}
        .ml13{margin-left: 13px}
-       .dialog-footer{text-align: left;margin:-40px 0 20px 265px;display: none}
+       .dialog-footer{text-align: left;margin:-40px 0 20px 265px;}
        .dialog-footer1{text-align: left;margin:-40px 0 20px 340px;}
        .dialog-footer1 span{margin: 0 15px}
        .numdialog-footer{text-align: left;margin:-40px 0 20px 265px}
@@ -245,4 +459,12 @@ export default {
        .numForm .el-form-item{margin-bottom: 5px}
        .fl{float: left}
        .cb{clear: both}
+       .num-req{position: absolute;top:2px;left:-77px;color:red}
+       .price .pricew{width: 90px;text-align: center;margin:-5px 15px;}
+       .tourist{margin-left: 13px;float: left;width:85%}
+       .tourist input{width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:1px 10px 10px 10px}
+       .tour-til{float: left;margin-left: 13px;margin-right: -8px;width: 80px}
+       .red{color: red}
+       .w200{width: 200px}
+       .text{font-size: 14px}
 </style>
