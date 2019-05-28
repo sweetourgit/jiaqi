@@ -7,7 +7,7 @@
           <el-button @click="closeAdd">取 消</el-button>
           <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">提 交</el-button>
           <el-button v-if="this.find == 1" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销申请</el-button>
-          <el-button v-if="this.find == 2" type="primary" @click="Transfer ('ruleForm')">转办</el-button>
+          <!-- <el-button v-if="this.find == 2" type="primary" @click="Transfer ('ruleForm')">转办</el-button> -->
           <el-button v-if="this.find == 2" type="primary" @click="adoptForm('ruleForm')">通过</el-button>
           <el-button v-if="this.find == 2" type="danger" @click="boSubmit('ruleForm')">驳回</el-button>
         </div>
@@ -139,7 +139,7 @@
           </el-table>
         </el-form-item>
         <!-- 审批过程 -->
-        <el-form-item v-if="this.find == 1" label="审批过程" label-width="120px" label-height="auto">
+        <!--  <el-form-item v-if="this.find == 1" label="审批过程" label-width="120px" label-height="auto">
         </el-form-item>
         <el-form-item v-if="this.find == 1" label="" label-width="" label-height="auto">
           <el-table :data="tableData2" border style="width: 97.8%;margin-left: 30px;margin-top: -25px;">
@@ -152,12 +152,12 @@
             <el-table-column prop="abstract" label="摘要" align="center">
             </el-table-column>
           </el-table>
-        </el-form-item>
+        </el-form-item> -->
         <div style="height: 200px;"></div>
       </el-form>
     </el-dialog>
     <!--协办弹窗-->
-    <el-dialog style="text-align: left" title="选择协办人:" :visible.sync="dialogFormVisible1" width="50%">
+    <!--<el-dialog style="text-align: left" title="选择协办人:" :visible.sync="dialogFormVisible1" width="50%">
       <div style="text-align: center">
         <div style="width: 100%">
           <div class="button_select" style="margin-bottom: 30px;margin-top: -30px;">
@@ -175,35 +175,33 @@
               </el-table-column>
             </el-table>
           </div>
-          <!--分页-->
           <div class="block" style="margin-top: 30px;text-align:center;">
             <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="5" layout="total, sizes, prev, pager, next, jumper" :total=total>
             </el-pagination>
           </div>
-          <!--分页-->
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible1 = false">取 消</el-button>
           <el-button type="primary" @click="routerHandle2()">确 定</el-button>
         </span>
-    </el-dialog>
-    <!--驳回意见弹窗end-->
-    <!--驳回意见弹窗-->
-    <el-dialog title="请填写审批意见" :visible.sync="dialogFormVisible2" width="30%">
-      <textarea style="width: 90%; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
-      <span slot="footer" class="dialog-footer">
+      </el-dialog> -->
+      <!--驳回意见弹窗end-->
+      <!--驳回意见弹窗-->
+      <!--<el-dialog title="请填写审批意见" :visible.sync="dialogFormVisible2" width="30%">
+        <textarea style="width: 90%; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
+        <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="rejectHandle2()">确 定</el-button>
       </span>
-    </el-dialog>
-    <!--驳回意见弹窗end-->
-    <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible" width="50%">
-      <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
-      <div>
-        <img :src="imgBig" alt="图片" style="width: 95%;" :alt="imgBigName"/>
-        <br /><span>{{imgBigName}}</span>
-      </div>
-    </el-dialog>
+        </el-dialog> -->
+        <!--驳回意见弹窗end-->
+        <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible" width="50%">
+          <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
+          <div>
+            <img :src="imgBig" alt="图片" style="width: 95%;" :alt="imgBigName"/>
+            <br /><span>{{imgBigName}}</span>
+          </div>
+        </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
@@ -217,6 +215,7 @@ export default {
     change: false,
     org: '',
     pid: '',
+    dept: '',
     collectionAccountList: {
       type: Array,
       default: () => []
@@ -389,7 +388,8 @@ export default {
         .catch(function(obj) {
           console.log(obj)
         })
-    }, // 提交
+    },
+    // 提交
     submitForm(formName) {
       console.log(this.org)
       console.log(this.collectionAccountList)
@@ -414,7 +414,7 @@ export default {
             orderNumber: this.ruleForm.orderNumber, //订单号
             collectionNumber: this.ruleForm.collectionNumber, //收款账户
             price: this.ruleForm.price, //金额
-            dept: 1, //this.org, //组织部门
+            dept: this.dept, //this.org, //组织部门
             createUser: localStorage.getItem('name'), //
             createTime: newDate, //申请时间
             serialNumber: this.ruleForm.serialNumber, //流水号
@@ -454,7 +454,43 @@ export default {
     },
     //驳回
     boSubmit() {
-      this.dialogFormVisible2 = true
+      this.$confirm('是否驳回该条收款, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        var that = this
+        that.$http.post(
+            that.GLOBAL.serverSrc + "/finance/collection/api/getCollIDBH", {
+              "id": that.pid,
+            }, {
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+              }
+            }
+          )
+          .then(function(obj) {
+            if (obj.data.isSuccess == true) {
+              that.$message({
+                type: 'success',
+                message: '驳回成功!'
+              });
+              that.closeAdd()
+              that.$emit('searchHand', '')
+            } else {
+              console.log(obj.data)
+            }
+          })
+          .catch(function(obj) {
+            console.log(obj)
+          })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消(驳回)'
+        });
+      });
+      // this.dialogFormVisible2 = true
     },
     //撤销申请
     chanelSubmit() {
@@ -502,11 +538,31 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '通过成功!'
-        });
-        this.closeAdd()
+        var that = this
+        that.$http.post(
+            that.GLOBAL.serverSrc + "/finance/collection/api/getCollIDTG", {
+              "id": that.pid,
+            }, {
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+              }
+            }
+          )
+          .then(function(obj) {
+            if (obj.data.isSuccess == true) {
+              that.$message({
+                type: 'success',
+                message: '通过成功!'
+              });
+              that.closeAdd()
+              that.$emit('searchHand', '')
+            } else {
+              console.log(obj.data)
+            }
+          })
+          .catch(function(obj) {
+            console.log(obj)
+          })
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -541,11 +597,31 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '驳回成功!'
-        });
-        this.closeAdd()
+        var that = this
+        that.$http.post(
+            that.GLOBAL.serverSrc + "/finance/collection/api/getCollIDBH", {
+              "id": that.pid,
+            }, {
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+              }
+            }
+          )
+          .then(function(obj) {
+            if (obj.data.isSuccess == true) {
+              that.$message({
+                type: 'success',
+                message: '驳回成功!'
+              });
+              that.closeAdd()
+              that.$emit('searchHand', '')
+            } else {
+              console.log(obj.data)
+            }
+          })
+          .catch(function(obj) {
+            console.log(obj)
+          })
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -806,6 +882,7 @@ export default {
               "name": arr[k]['name'],
             });
           })
+          console.log(obj.data.object)
           that.ruleForm.abstract = obj.data.object.abstract
           that.ruleForm.checkType = obj.data.object.checkType
           that.ruleForm.collectionNumber = that.accountList[obj.data.object.collectionNumber]
@@ -839,7 +916,24 @@ export default {
         .catch(function(obj) {
           console.log(obj)
         })
-
+    },
+    sendBPM(result) {
+      this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
+        jQ_ID: result.guid,
+        jQ_Type: result.flowModel,
+        workflowCode: result.flowModelName,
+        userCode: sessionStorage.getItem('account'), //未指定呢
+      }).then(res => {
+        let result = JSON.parse(res.data);
+        if (result.code == '0') {
+          console.log('启动工作流成功');
+        } else {
+          console.log('启动工作流错误!');
+          console.log(res.data);
+        }
+      }).catch(err => {
+        console.log(err);
+      })
     },
     clearForm() {
       this.ruleForm = {

@@ -49,7 +49,7 @@
             </el-pagination>
           </div>
         </div>
-        <StraightGuestInfo :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid" :change="change" :org="org" @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList" @close="closeAdd"></StraightGuestInfo>
+        <StraightGuestInfo :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid" :change="change" :org="org" @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList" @close="closeAdd" :dept="dept"></StraightGuestInfo>
       </div>
     </el-tabs>
   </div>
@@ -87,6 +87,7 @@ export default {
         '1': '通过',
         '2': '驳回',
       },
+      dept: '',
     }
   },
   computed: {
@@ -240,43 +241,6 @@ export default {
         return ''
       }
     },
-    getUserOrg() {
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/org/api/userget/", {
-            "id": sessionStorage.getItem('id'),
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        .then(function(obj) {
-          if (obj.data.object.orgID) {
-            that.$http.post(
-                that.GLOBAL.serverSrc + "/org/api/deptget", {
-                  "id": obj.data.object.orgID,
-                }, {
-                  headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                  }
-                }
-              )
-              .then(function(obj2) {
-                that.org = obj2.data.object.orgName
-                if (obj.data.object.orgID) {
-
-                }
-              })
-              .catch(function(obj2) {
-                console.log(obj2)
-              })
-          }
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
-    },
     getCollectionAccount() {
       var that = this
       this.$http.post(
@@ -351,11 +315,29 @@ export default {
           console.log(obj)
         })
     },
+    getDept() { //通过用户ID,获取部门名称
+      var that = this
+      that.$http.post(
+          that.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+            id: sessionStorage.getItem('id'),
+          }, {
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+        .then(function(obj) {
+          that.dept = obj.data.isSuccess == true ? obj.data.objects[0].name : ''
+        })
+        .catch(function(obj) {
+          console.log(obj)
+        })
+    },
   },
   created() {
-    this.getUserOrg()
     this.getCollectionAccount()
     this.getStraightGuestManagement()
+    this.getDept()
   }
 }
 
