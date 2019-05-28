@@ -641,7 +641,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
             this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insert",
               {
                 object: {
-                  createUser:this.ruleForm.name ,
+                  createUser:this.ruleForm.name,
 	              paymentType: 1, //借款类型 1无收入借款 2预付款
 	              planID: this.tour_id, //对应计划ID --Plan，不存在传值0
 	              supplierID: this.supplier_id, //对应供应商ID --Supplier，不存在传值0
@@ -656,7 +656,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	              files: pictureList, //付款方式
                 }
               })
-              .then(function(response) {
+              .then(function(response) { 
                 if(res.data.isSuccess == true){
                    this.pageList();
                    this.noIncomeShow = false
