@@ -465,10 +465,6 @@
       paymentID: {
          immediate:true,
          handler:function(){
-           /*if (this.checkIncomeShow == true){
-           	
-             //console.log(0);
-           }*/
            this.getLabel();
            this.getTourByPlanId();
          }

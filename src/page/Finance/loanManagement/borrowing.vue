@@ -660,7 +660,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
               .then(function(response) { 
                 if(res.data.isSuccess == true){
                    this.pageList();
-                   this.noIncomeShow = false
+                   this.noIncomeShow = false;
                 }else{
                    this.$message.success("添加失败");
                 }
