@@ -102,7 +102,7 @@
                <el-button @click="operation(item.id,1)">流程管理</el-button>
                <el-button @click="operation(item.id,2)">备注信息</el-button>
                <el-button>未申请退款</el-button>
-               <el-button>转团</el-button>
+               <el-button @click="operation(item.id,4)">转团</el-button>
             </el-row>
           </div>
           <el-pagination class="pagination"
@@ -117,6 +117,7 @@
           </el-pagination>
           <process-manage :orderId="orderId" :variable="variable" :dialogType="dialogType"></process-manage>
           <remarks-infor :orderId="orderId" :variable="variable" :dialogType="dialogType"></remarks-infor>
+          <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
      </div>
   </div>
 </template>
@@ -124,10 +125,12 @@
 <script>
 import processManage from './common/processManage';
 import remarksInfor from './common/remarksInfor';
+import orderTransfer from './common/orderTransfer';
 export default {
   components:{
     "process-manage":processManage,
-    "remarks-infor":remarksInfor
+    "remarks-infor":remarksInfor,
+    "order-transfer":orderTransfer
   },
   data() {
     return {
@@ -259,7 +262,9 @@ export default {
             this.dialogType=1; //流程管理弹窗
           }else if(i==2){
             this.dialogType=2; //备注信息弹窗
-          }         
+          }else if(i==4){
+            this.dialogType=4; //转团
+          }           
       }
    }
 }
