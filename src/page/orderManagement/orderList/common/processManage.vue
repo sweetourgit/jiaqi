@@ -37,12 +37,12 @@
                      <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="ruleForm.remark"></el-input>
                   </el-form-item>
               </el-form>
-              <div slot="footer" class="dialog-footer" v-if="false">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormProcess = false">取 消</el-button>
                 <el-button type="primary" @click="subInfo('conForm')" class="confirm">保存修改</el-button>
               </div>
-              <div slot="footer" class="dialog-footer1">
-                <el-button @click="dialogFormVisible = false"><span>关 闭</span></el-button>
+              <div slot="footer" class="dialog-footer1" v-if="false">
+                <el-button @click="dialogFormProcess = false"><span>关 闭</span></el-button>
               </div>
        </el-dialog>
        <!--变更数量弹窗-->
@@ -279,6 +279,11 @@ export default {
                this.ruleForm.contactName=JSON.parse(res.data.object.contact).Name;
                this.ruleForm.contactPhone=JSON.parse(res.data.object.contact).Tel;
                this.dialogFormProcess=true;   
+               //出游人信息转换格式
+               for(let i=0;i<res.data.object.guest;i++){
+                 
+               }
+
                this.teamEnrolls(res.data.object.planID);
                this.teampreview(res.data.object.planID);        
             }
