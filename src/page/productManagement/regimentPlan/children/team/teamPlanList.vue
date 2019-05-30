@@ -175,7 +175,7 @@
                 <tr v-for="(item,index) in salePrice">
                   <td height="45">{{item.enrollName}}</td>
                   <td height="45">
-                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index,item.enrollID)" type="number" :min="0"></el-input>
+                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index,item.enrollID,item.enrollName)" type="number" :min="0"></el-input>
                       <span v-bind:class="{red:quota[index]}">
                       余（{{item.quota}}）
                       ￥<span v-show="ruleForm.price==1">{{item.price_01}}</span><span v-show="ruleForm.price==2">{{item.price_02}}</span>
@@ -599,7 +599,7 @@ export default {
           }
        })
      },
-     peoNum(index,enrollID){   //填写报名人数
+     peoNum(index,enrollID,enrollName){   //填写报名人数
         let arrLength;//报名人数
         let preLength;//记录上一次报名人数
             preLength=this.preLength[index];  //获取上一次报名人数
@@ -609,7 +609,27 @@ export default {
         if(arrLength>preLength){  //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
           len=arrLength-preLength;
           for(var i=0;i<len;i++){
-            this.tour[index].push({cnName:'点击填写',enrollID:enrollID});
+            this.tour[index].push({            
+              enrollID:enrollID,
+              enrollName:enrollName,
+              id: 0,
+              isDeleted: 0,
+              code: "string",
+              cnName:'点击填写',
+              enName: "string",
+              sex: 0,
+              idCard: "string",
+              singlePrice: 0,
+              mobile: "string",
+              bornDate: 0,
+              credType: 1,
+              credCode: "string",
+              credTOV: 0,
+              orderID: 0,
+              orderCode: "string",
+              orgID: 0,
+              userID: 0
+            });
           }  
         }else{
           this.tour[index].splice(arrLength-preLength,preLength-arrLength);
@@ -660,16 +680,17 @@ export default {
               
               let guest=[];
               for(let i=0;i<guestAll.length;i++){   
-                 if(guestAll[i].cnName!='点击填写'){ //过滤掉未填写人员信息
-                    guest.push(guestAll[i]);
+                if(guestAll[i].cnName!='点击填写'){ //过滤掉未填写人员信息
+                    guest.push(guestAll[i]);     
                     guest[i].bornDate = (new Date(guest[i].bornDate)).getTime()/1000;  //时间格式转换
-                    guest[i].credTOV = (new Date(guest[i].credTOV)).getTime()/1000;
+                    guest[i].credTOV = (new Date(guest[i].credTOV)).getTime()/1000;              
                     if(guest[i].credType == ''){
                       guest[i].credType = 0;
                     } 
                }else{
                     guest.push(guestAll[i]);
                }
+               
               }
               //防止重复提交订单判断
               if(this.ifOrderInsert==false){
@@ -684,7 +705,7 @@ export default {
                   "orderCode": "",
                   "proID": this.teampreviewData.teamID,  
                   "planID": this.multipleSelection[0].id,
-                  "orderStatus": 7,   //订单状态  7未确认
+                  "orderStatus": 0,   //订单状态  7未确认
                   "refundStatus": 0,  //退款状态
                   "occupyStatus": this.ruleForm.type,  //占位状态
                   "payable": this.ruleForm.totalPrice, //应付款
@@ -706,7 +727,7 @@ export default {
                       "mark": this.ruleForm.allDisRemark,
                     }
                   ],
-                  "contact": '{"Name":"'+ this.ruleForm.contactName +'","Tel":"'+ this.ruleForm.contactPhone +'"}',
+                  "contact": '{\\"Name\\":\\"'+ this.ruleForm.contactName +'\\",\\"Tel\\":\\"'+ this.ruleForm.contactPhone +'\\"}',
                   "endTime": this.ruleForm.type==1?0:new Date().getTime()/1000+24*60*60,
                   "orderChannel": this.ruleForm.orderRadio,
                   "orgID": sessionStorage.getItem('orgID'),

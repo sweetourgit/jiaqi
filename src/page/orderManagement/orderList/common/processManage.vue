@@ -2,7 +2,7 @@
   <div>
        <!--流程管理弹窗-->
        <el-dialog title="流程管理" :visible.sync="dialogFormProcess" class="city_list" width="800px" style="margin-top:-50px">
-              <div class="process-sta">订单状态：<span>{{getOrderStatus(orderget.id)}}</span></div>
+              <div class="process-sta">订单状态：<span>{{getOrderStatus(orderget.orderStatus)}}</span></div>
               <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                   <el-form-item label="订单联系人">            
                     <div class="ml13">姓名<el-input v-model="ruleForm.contactName" class="numw"></el-input></div>
@@ -73,7 +73,7 @@
                 <tr v-for="(item,index) in salePrice">
                   <td height="45">{{item.enrollName}}</td>
                   <td height="45">
-                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index,item.enrollID)" type="number" :min="0"></el-input>
+                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index,item.enrollID,item.enrollName)" type="number" :min="0"></el-input>
                       <span v-bind:class="{red:quota[index]}">
                       余（{{item.quota}}）
                       ￥<span v-show="ruleForm.price==1">{{item.price_01}}</span><span v-show="ruleForm.price==2">{{item.price_02}}</span>
@@ -339,7 +339,7 @@ export default {
              }
         }
      },
-     peoNum(index,enrollID){   //填写报名人数
+     peoNum(index,enrollID,enrollName){   //填写报名人数
         let arrLength;//报名人数
         let preLength;//记录上一次报名人数
             preLength=this.preLength[index];  //获取上一次报名人数
@@ -349,7 +349,27 @@ export default {
         if(arrLength>preLength){  //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
           len=arrLength-preLength;
           for(var i=0;i<len;i++){
-            this.tour[index].push({cnName:'点击填写'});
+            this.tour[index].push({            
+              enrollID:enrollID,
+              enrollName:enrollName,
+              id: 0,
+              isDeleted: 0,
+              code: "string",
+              cnName:'点击填写',
+              enName: "string",
+              sex: 0,
+              idCard: "string",
+              singlePrice: 0,
+              mobile: "string",
+              bornDate: 0,
+              credType: 1,
+              credCode: "string",
+              credTOV: 0,
+              orderID: 0,
+              orderCode: "string",
+              orgID: 0,
+              userID: 0
+            });
           }  
         }else{
           this.tour[index].splice(arrLength-preLength,preLength-arrLength);
