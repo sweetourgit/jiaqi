@@ -435,8 +435,10 @@ export default {
           if(res.data.isSuccess == true){
              this.salePrice = res.data.objects;
              this.salePriceNum = res.data.objects;            
+             this.preLength=[];
+             this.enrolNum=[];
              this.quota=[];
-             this.tour=[];          
+             this.tour=[];            
              for(let i=0;i<res.data.objects.length;i++){
                 this.quota.push(false); 
                 this.tour.push([]);
