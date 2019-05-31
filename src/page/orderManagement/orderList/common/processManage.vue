@@ -122,8 +122,8 @@
               </el-form-item>
               <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px">
                   <el-radio-group v-model="conForm.sex">
-                    <el-radio label="0">男</el-radio>
-                    <el-radio label="1">女</el-radio>
+                    <el-radio :label="0">男</el-radio>
+                    <el-radio :label="1">女</el-radio>
                   </el-radio-group>
               </el-form-item>
               <el-form-item label="电话" prop="mobile" label-width="110px" class="fl">
@@ -135,17 +135,17 @@
               <el-form-item label="出生日期" prop="bornDate"  label-width="110px" class="fl">
                   <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" class="w200"></el-date-picker>
               </el-form-item>
-              <el-form-item label="证件类型"  label-width="110px" class="fl">
+              <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
                   <el-select v-model="conForm.credType" placeholder="请选择">
                      <el-option label="护照" value="1"/>
                      <el-option label="港澳通行证" value="2"/>
                      <el-option label="军官证" value="3"/>
                   </el-select>
               </el-form-item>
-              <el-form-item label="证件号码"  label-width="110px" class="fl">
+              <el-form-item label="证件号码" prop="credCode" label-width="110px" class="fl">
                   <el-input type="text" v-model="conForm.credCode" class="w200"></el-input>
               </el-form-item>
-              <el-form-item label="证件有效期"  label-width="110px" class="fl">
+              <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl">
                   <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" class="w200"></el-date-picker>
               </el-form-item>
             </el-form>
@@ -194,7 +194,6 @@ export default {
       salePriceNum:[],//报名类型价格列表数据副本,显示余位用
       tourType:0,//报名类型索引
       fillIndex:0,//报名类型下游客list索引
-      arrLength:[],//报名人数[1,3]形式
       preLength:[],//记录上一次报名人数[1,3]形式
       tour:[],//总游客信息,二维数组
       winTitle:'',  //弹窗标题
@@ -230,11 +229,11 @@ export default {
          cnName: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
          enName: [
             { required: true, message: '请输入姓（拼音）', trigger: 'blur' },
-            { pattern: /(a[io]?|ou?|e[inr]?|ang?|ng|[bmp](a[io]?|[aei]ng?|ei|ie?|ia[no]|o|u)|pou|me|m[io]u|[fw](a|[ae]ng?|ei|o|u)|fou|wai|[dt](a[io]?|an|e|[aeio]ng|ie?|ia[no]|ou|u[ino]?|uan)|dei|diu|[nl](a[io]?|ei?|[eio]ng|i[eu]?|i?ang?|iao|in|ou|u[eo]?|ve?|uan)|nen|lia|lun|[ghk](a[io]?|[ae]ng?|e|ong|ou|u[aino]?|uai|uang?)|[gh]ei|[jqx](i(ao?|ang?|e|ng?|ong|u)?|u[en]?|uan)|([csz]h?|r)([ae]ng?|ao|e|i|ou|u[ino]?|uan)|[csz](ai?|ong)|[csz]h(ai?|uai|uang)|zei|[sz]hua|([cz]h|r)ong|y(ao?|[ai]ng?|e|i|ong|ou|u[en]?|uan))/, message: '姓（拼音）格式不正确'}],
+            { pattern: /(a[io]?|ou?|e[inr]?|ang?|ng|[bmp](a[io]?|[aei]ng?|ei|ie?|ia[no]|o|u)|pou|me|m[io]u|[fw](a|[ae]ng?|ei|o|u)|fou|wai|[dt](a[io]?|an|e|[aeio]ng|ie?|ia[no]|ou|u[ino]?|uan)|dei|diu|[nl](a[io]?|ei?|[eio]ng|i[eu]?|i?ang?|iao|in|ou|u[eo]?|ve?|uan)|nen|lia|lun|[ghk](a[io]?|[ae]ng?|e|ong|ou|u[aino]?|uai|uang?)|[gh]ei|[jqx](i(ao?|ang?|e|ng?|ong|u)?|u[en]?|uan)|([csz]h?|r)([ae]ng?|ao|e|i|ou|u[ino]?|uan)|[csz](ai?|ong)|[csz]h(ai?|uai|uang)|zei|[sz]hua|([cz]h|r)ong|y(ao?|[ai]ng?|e|i|ong|ou|u[en]?|uan))/, message: '姓（拼音）格式不正确', trigger: 'blur'}],
          sex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
          mobile: [
             { required: true, message: '请输入手机号', trigger: 'blur' },
-            { pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, message: '手机号格式不正确'}],
+            { pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, message: '手机号格式不正确', trigger: 'blur'}],
          idCard: [{ required: true, message: '身份证号不能为空', trigger: 'blur' },
                    { pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '身份证号格式不正确', trigger: 'blur' }]
        } 
@@ -279,11 +278,7 @@ export default {
                this.ruleForm.contactName=JSON.parse(res.data.object.contact).Name;
                this.ruleForm.contactPhone=JSON.parse(res.data.object.contact).Tel;
                this.dialogFormProcess=true;   
-               //出游人信息转换格式
-               for(let i=0;i<res.data.object.guest;i++){
-                 
-               }
-
+               
                this.teamEnrolls(res.data.object.planID);
                this.teampreview(res.data.object.planID);        
             }
@@ -362,7 +357,7 @@ export default {
               code: "string",
               cnName:'点击填写',
               enName: "string",
-              sex: 0,
+              sex: '0',
               idCard: "string",
               singlePrice: 0,
               mobile: "string",
@@ -382,9 +377,27 @@ export default {
      },
      fillTour(type,index){
           this.winTitle=this.salePrice[type].enrollName; //编辑游客信息弹窗标题
-
           if(this.tour[type][index].cnName!='点击填写'){
             this.conForm=JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
+          }else{
+            this.conForm={
+            id: 0,
+            isDeleted: 0,
+            code: "",
+            cnName:'',
+            enName:'',
+            sex:"",
+            mobile:'',          
+            idCard:'',//身份证
+            bornDate:0,
+            credType:"",
+            credCode:'',
+            credTOV:0,
+            orderID: 0,
+            orderCode: 'string',
+            orgID: 0,
+            userID: 0
+           }
           }
           this.tourType=type;
           this.fillIndex=index;
@@ -409,9 +422,11 @@ export default {
           });
       },
       //游客信息取消
-      cancelInfo(formName){
-        this.dialogFormTour = false;
-        this.$refs[formName].resetFields();
+      cancelInfo(formName){       
+        this.dialogFormTour = false;    
+        setTimeout(()=>{
+         this.$refs[formName].resetFields();   
+        },500)    
       },
       teamEnrolls(planId){  //获取报名类型列表数据
        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/enrolls',{
@@ -419,17 +434,27 @@ export default {
         }).then(res => {
           if(res.data.isSuccess == true){
              this.salePrice = res.data.objects;
-             console.log(this.salePrice);
              this.salePriceNum = res.data.objects;            
-             this.preLength=[];
-             this.enrolNum=[];
              this.quota=[];
              this.tour=[];          
              for(let i=0;i<res.data.objects.length;i++){
-                this.preLength.push('0');
-                this.enrolNum.push(0);
                 this.quota.push(false); 
                 this.tour.push([]);
+             }
+             //出游人信息转换格式,二维数组，通过类型分类
+             var guest=this.orderget.guest;   
+             var j=0;
+             for(let i=0;i<guest.length;i++){
+               if(i>0&&guest[i].enrollName!=guest[i-1].enrollName){
+                 this.tour[j+1].push(guest[i])
+               }else{
+                 this.tour[j].push(guest[i])
+               }
+             }
+             //设置报名人数
+             for(let i=0;i<this.tour.length;i++){
+               this.preLength.push(this.tour[i].length);
+               this.enrolNum.push(this.tour[i].length);
              }
           }
        })

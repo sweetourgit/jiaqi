@@ -252,8 +252,8 @@
               </el-form-item>
               <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px">
                   <el-radio-group v-model="conForm.sex">
-                    <el-radio label="0">男</el-radio>
-                    <el-radio label="1">女</el-radio>
+                    <el-radio :label="0">男</el-radio>
+                    <el-radio :label="1">女</el-radio>
                   </el-radio-group>
               </el-form-item>
               <el-form-item label="电话" prop="mobile" label-width="110px" class="fl">
@@ -265,17 +265,17 @@
               <el-form-item label="出生日期" prop="bornDate"  label-width="110px" class="fl">
                   <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" class="w200"></el-date-picker>
               </el-form-item>
-              <el-form-item label="证件类型"  label-width="110px" class="fl">
+              <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
                   <el-select v-model="conForm.credType" placeholder="请选择">
                      <el-option label="护照" value="1"/>
                      <el-option label="港澳通行证" value="2"/>
                      <el-option label="军官证" value="3"/>
                   </el-select>
               </el-form-item>
-              <el-form-item label="证件号码"  label-width="110px" class="fl">
+              <el-form-item label="证件号码" prop="credCode" label-width="110px" class="fl">
                   <el-input type="text" v-model="conForm.credCode" class="w200"></el-input>
               </el-form-item>
-              <el-form-item label="证件有效期"  label-width="110px" class="fl">
+              <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl">
                   <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" class="w200"></el-date-picker>
               </el-form-item>
             </el-form>
@@ -374,7 +374,6 @@ export default {
         salePriceNum:[],//报名类型价格列表数据副本,显示余位用
         tourType:0,//报名类型索引
         fillIndex:0,//报名类型下游客list索引
-        arrLength:[],//报名人数[1,3]形式
         preLength:[],//记录上一次报名人数[1,3]形式
         tour:[],//总游客信息,二维数组
         winTitle:'',  //弹窗标题
