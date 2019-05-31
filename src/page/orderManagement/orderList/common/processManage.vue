@@ -39,14 +39,14 @@
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormProcess = false">取 消</el-button>
-                <el-button type="primary" @click="subInfo('conForm')" class="confirm">保存修改</el-button>
+                <el-button type="primary" @click="" class="confirm">保存修改</el-button>
               </div>
               <div slot="footer" class="dialog-footer1" v-if="false">
                 <el-button @click="dialogFormProcess = false"><span>关 闭</span></el-button>
               </div>
        </el-dialog>
        <!--变更数量弹窗-->
-       <el-dialog title="变更数量" :visible.sync="dialogFormNum" class="city_list" width="800px" style="margin-top:-50px">
+       <el-dialog title="变更数量" :visible.sync="dialogFormNum" class="city_list" width="800px" style="margin-top:-50px" @close="cancelNum">
           <el-form :model="ruleForm" ref="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm numForm">
            <el-form-item label="" prop="">            
               <div class="ml13">结算参考 <span class="color-red">￥{{teampreviewData.refPrice}}</span></div>
@@ -107,8 +107,8 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="numdialog-footer">
-               <el-button @click="dialogFormNum = false">取 消</el-button>
-               <el-button type="primary" @click="subInfo('conForm')" class="confirm">保 存</el-button>
+               <el-button @click="cancelNum">取 消</el-button>
+               <el-button type="primary" @click="subNum" class="confirm">保 存</el-button>
           </div>
        </el-dialog>
        <!--填写游客信息-->
@@ -188,6 +188,7 @@ export default {
        //游客信息
       quota:[], //余位信息负数红色提示
       enrolNum:[], //报名人数[1,3]形式
+      enrolNumCopy:[], //报名人数副本[1,3]形式，作为修改数量用
       enrolNums:false,//报名人数是否为空提示
       dialogFormTour: false,
       salePrice:[],//报名类型价格列表数据
@@ -251,7 +252,7 @@ export default {
           this.dialogFormProcess=true;    
         }    
      },
-     enrolNum:function(val){
+    enrolNum:function(val){
 　　　　this.changeQuota();
         this.compPrice();
     },
@@ -277,6 +278,7 @@ export default {
                this.orderget=res.data.object;   
                this.ruleForm.contactName=JSON.parse(res.data.object.contact).Name;
                this.ruleForm.contactPhone=JSON.parse(res.data.object.contact).Tel;
+
                this.dialogFormProcess=true;   
                
                this.teamEnrolls(res.data.object.planID);
@@ -287,7 +289,29 @@ export default {
         })
       },
       changeNum(){
+        //优惠信息数据绑定
+        this.ruleForm.otherCost = this.orderget.favourable[0].price;
+        this.ruleForm.otherCostRemark = this.orderget.favourable[0].mark;
+        this.ruleForm.allDiscount = this.orderget.favourable[1].price;
+        this.ruleForm.allDisRemark = this.orderget.favourable[1].mark;
+        //数量数组
+        this.enrolNumCopy = [...this.enrolNum];
+
         this.dialogFormNum=true;
+      }, 
+      subNum(){
+        //优惠信息数据绑定
+        this.orderget.favourable[0].price = this.ruleForm.otherCost;
+        this.orderget.favourable[0].mark = this.ruleForm.otherCostRemark;
+        this.orderget.favourable[1].price = this.ruleForm.allDiscount;
+        this.orderget.favourable[1].mark = this.ruleForm.allDisRemark;
+              
+        this.dialogFormNum=false;
+      },
+      cancelNum(){
+        //数量数组复原
+        this.enrolNum = [...this.enrolNumCopy];
+        this.dialogFormNum = false;
       },
       //列表订单状态显示
       getOrderStatus(status){
