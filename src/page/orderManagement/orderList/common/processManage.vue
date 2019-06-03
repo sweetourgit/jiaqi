@@ -108,7 +108,7 @@
           </el-form>
           <div slot="footer" class="numdialog-footer">
                <el-button @click="cancelNum">取 消</el-button>
-               <el-button type="primary" @click="subNum" class="confirm">保 存</el-button>
+               <el-button type="primary" @click="subNum(2)" class="confirm">保 存</el-button>
           </div>
        </el-dialog>
        <!--填写游客信息-->
@@ -185,6 +185,7 @@ export default {
        },
        //变更数量弹窗
        dialogFormNum:false,  
+       cancelType:1, //1取消按钮触发，2确定触发，作为修改数量用
        //游客信息
       quota:[], //余位信息负数红色提示
       enrolNum:[], //报名人数[1,3]形式
@@ -196,7 +197,9 @@ export default {
       tourType:0,//报名类型索引
       fillIndex:0,//报名类型下游客list索引
       preLength:[],//记录上一次报名人数[1,3]形式
+      preLengthCopy:[],//记录上一次报名人数[1,3]形式副本，作为修改数量用
       tour:[],//总游客信息,二维数组
+      tourCopy:[],//总游客信息副本,二维数组
       winTitle:'',  //弹窗标题
       conForm: {
         id: 0,
@@ -296,6 +299,10 @@ export default {
         this.ruleForm.allDisRemark = this.orderget.favourable[1].mark;
         //数量数组
         this.enrolNumCopy = [...this.enrolNum];
+        //出游人数组
+        this.tourCopy = JSON.parse(JSON.stringify(this.tour));
+        //上一次报名人数
+        this.preLengthCopy = [...this.preLength];
 
         this.dialogFormNum=true;
       }, 
@@ -305,13 +312,20 @@ export default {
         this.orderget.favourable[0].mark = this.ruleForm.otherCostRemark;
         this.orderget.favourable[1].price = this.ruleForm.allDiscount;
         this.orderget.favourable[1].mark = this.ruleForm.allDisRemark;
-              
-        this.dialogFormNum=false;
-      },
-      cancelNum(){
-        //数量数组复原
-        this.enrolNum = [...this.enrolNumCopy];
+        this.cancelType=2;
         this.dialogFormNum = false;
+      },
+      cancelNum(){   
+        if(this.cancelType==1){
+          //数量数组复原
+          this.enrolNum = [...this.enrolNumCopy];
+          //出游人数组复原
+          this.tour = JSON.parse(JSON.stringify(this.tourCopy));
+          //上一次报名人数
+          this.preLength = [...this.preLengthCopy];
+        }
+        this.dialogFormNum = false;
+        this.cancelType=1;
       },
       //列表订单状态显示
       getOrderStatus(status){
@@ -350,7 +364,6 @@ export default {
       },
       changeQuota(){  //余位变化方法
        this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
-       let salePriceType3 = JSON.parse(JSON.stringify(this.salePriceNum));
        let salePriceType={};
           //实时减少相关余位信息，提示库存不足
            for(let i=0;i<this.salePrice.length;i++){    
@@ -363,7 +376,7 @@ export default {
              }
         }
      },
-     peoNum(index,enrollID,enrollName){   //填写报名人数
+     peoNum(index,enrollID,enrollName){   //填写报名人数 
         let arrLength;//报名人数
         let preLength;//记录上一次报名人数
             preLength=this.preLength[index];  //获取上一次报名人数
