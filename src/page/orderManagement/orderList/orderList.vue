@@ -42,7 +42,7 @@
                   <td width="60" class="tr">产品ID</td>
                   <td width="220">{{item.teamID}}</td>
                   <td width="85" class="tr">订单状态</td>
-                  <td width="70">{{getOrderStatus(item.orderStatus)}}</td>
+                  <td width="90">{{getOrderStatus(item.orderStatus)}}</td>
                   <td width="60" class="tr">退款状态</td>
                   <td width="60">未退款</td>
                   <td width="60" class="tr">订单时间</td>
@@ -115,7 +115,7 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
           </el-pagination>
-          <process-manage :orderId="orderId" :variable="variable" :dialogType="dialogType"></process-manage>
+          <process-manage :orderId="orderId" :variable="variable" :dialogType="dialogType" @orderPage="orderPage"></process-manage>
           <remarks-infor :orderId="orderId" :variable="variable" :dialogType="dialogType"></remarks-infor>
           <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
      </div>
@@ -188,6 +188,7 @@ export default {
       },
       handleCurrentChange(val){
         this.orderPage(val,this.pageSize);
+        this.pageIndex=val;
       },
       orderPage(pageIndex=this.pageIndex,pageSize=this.pageSize){
         this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderpage',{
@@ -210,10 +211,10 @@ export default {
       getOrderStatus(status){
           switch(status){
             case 1:
-              return '补充游客材料';
+              return '签订电子合同';
               break;
             case 2:
-              return '电子合同';
+              return '待出行';
               break;
             case 3:
               return '待出行';
@@ -231,13 +232,13 @@ export default {
               return '确认占位';
               break;
             case 8:
-              return '签署合同';
+              return '签署合同';//？
               break;
             case 9:
               return '订单作废';
               break;
             case 10:
-              return '订单确认';
+              return '补充游客材料';
               break;
           }
       },

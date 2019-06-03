@@ -17,31 +17,31 @@
                      </div>
                   </el-form-item>
                   <el-form-item label="" class="cb">   
-                     <div class="change-num" @click="changeNum">变更数量</div>
-                     <div class="change-num">查看合同</div>
+                     <div class="change-num" @click="changeNum" v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9">变更数量</div>
+                     <div class="change-num" v-if="orderget.orderStatus!=7&&orderget.orderStatus!=10">查看合同</div>
                   </el-form-item>     
-                  <el-form-item label="更改订单状态" prop="type">
-                    <div class="surplus">
+                  <el-form-item label="更改订单状态" prop="type" v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9">
+                    <div class="surplus" v-if="false">
                          <div v-for="(item,index) in salePrice">{{item.enrollName}}：余{{item.quota}}</div>
                     </div>
                     <el-radio-group v-model="ruleForm.type"><br/>
-                      <el-radio label="1" class="radiomar">确认占位 （同业社额度： 总欠款 <span class="color-blue">270,164</span> 元）</el-radio><br/>
-                      <el-radio label="2" class="radiomar">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
-                      <el-radio label="确认订单" class="radiomar">确认订单</el-radio><br/>
-                      <el-radio style="display:none" label="提交用户信息" class="radiomar">提交用户信息</el-radio><br/>
-                      <el-radio style="display:none" label="发送电子合同给客人" class="radiomar">发送电子合同给客人</el-radio><br/>
-                      <el-radio style="display:none" label="作废订单" class="radiomar">作废订单</el-radio>
+                      <el-radio :label="0" class="radiomar" v-if="false">确认占位 （同业社额度： 总欠款 <span class="color-blue">270,164</span> 元）</el-radio><br/>
+                      <el-radio :label="0" class="radiomar" v-if="false">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
+                      <el-radio :label="10" class="radiomar" v-if="orderget.orderStatus==7">确认订单</el-radio><br/>
+                      <el-radio :label="1" class="radiomar" v-if="orderget.orderStatus==10">提交用户信息</el-radio><br/>
+                      <el-radio :label="2" class="radiomar" v-if="orderget.orderStatus==1">发送电子合同给客人</el-radio><br/>
+                      <el-radio :label="9" class="radiomar" v-if="orderget.orderStatus==7||orderget.orderStatus==10||orderget.orderStatus==1||orderget.orderStatus==2">作废订单</el-radio>
                     </el-radio-group>
                   </el-form-item>
-                  <el-form-item style="display:none" label="评价信息" prop="">            
-                     <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="ruleForm.remark"></el-input>
+                  <el-form-item v-if="orderget.orderStatus==6" label="评价信息" prop="">            
+                     <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="ruleForm.remark" :disabled="true"></el-input>
                   </el-form-item>
               </el-form>
-              <div slot="footer" class="dialog-footer">
+              <div slot="footer" class="dialog-footer" v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9">
                 <el-button @click="dialogFormProcess = false">取 消</el-button>
-                <el-button type="primary" @click="" class="confirm">保存修改</el-button>
+                <el-button type="primary" @click="orderModification(ruleForm.type)" class="confirm">保存修改</el-button>
               </div>
-              <div slot="footer" class="dialog-footer1" v-if="false">
+              <div slot="footer" class="dialog-footer1"  v-if="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9">
                 <el-button @click="dialogFormProcess = false"><span>关 闭</span></el-button>
               </div>
        </el-dialog>
@@ -73,7 +73,7 @@
                 <tr v-for="(item,index) in salePrice">
                   <td height="45">{{item.enrollName}}</td>
                   <td height="45">
-                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index,item.enrollID,item.enrollName)" type="number" :min="0"></el-input>
+                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index,item.enrollID,item.enrollName)" type="number" :min="0" :disabled="true"></el-input>
                       <span v-bind:class="{red:quota[index]}">
                       余（{{item.quota}}）
                       ￥<span v-show="ruleForm.price==1">{{item.price_01}}</span><span v-show="ruleForm.price==2">{{item.price_02}}</span>
@@ -174,7 +174,7 @@ export default {
          //流程管理
          contactName:'',
          contactPhone:'',
-         type:"1",
+         type:0,
          remark:'',  //评价信息
          //变更数量
          price:'1',
@@ -278,7 +278,23 @@ export default {
           }).then(res => {
             this.orderget={};
             if(res.data.isSuccess == true){
-               this.orderget=res.data.object;   
+               this.orderget=res.data.object; 
+               //设置订单状态选项
+               switch(this.orderget.orderStatus){
+                  case 7:
+                    this.ruleForm.type=10;
+                    break;
+                  case 10:
+                    this.ruleForm.type=1;
+                    break;
+                  case 1:
+                    this.ruleForm.type=2;
+                    break;
+                  case 3:
+                    this.ruleForm.type=9;
+                    break;
+               }
+               console.log(this.ruleForm.type);
                this.ruleForm.contactName=JSON.parse(res.data.object.contact).Name;
                this.ruleForm.contactPhone=JSON.parse(res.data.object.contact).Tel;
 
@@ -291,7 +307,38 @@ export default {
             console.log(err)
         })
       },
-      changeNum(){
+      orderModification(type){
+        let url='/order/stat/api';
+        switch(type){
+          case 10:
+            url+='/confirmed';
+            break;
+          case 1:
+            url+='/material';
+            break;
+          case 2:
+            url+='/econtract';
+            break;
+          case 9:
+            url+='/invalid';
+            break;
+        }
+        this.$http.post(this.GLOBAL.serverSrc + url,{
+            "object": {
+              id:this.orderget.id
+            }
+          }).then(res => {
+            if(res.data.isSuccess == true){
+               this.$message({
+                  message: '提交成功',
+                  type: 'success'
+               });
+               this.dialogFormProcess = false;
+               this.$emit('orderPage');
+            }
+          })
+      },
+      changeNum(){  //修改数量
         //优惠信息数据绑定
         this.ruleForm.otherCost = this.orderget.favourable[0].price;
         this.ruleForm.otherCostRemark = this.orderget.favourable[0].mark;
@@ -306,7 +353,7 @@ export default {
 
         this.dialogFormNum=true;
       }, 
-      subNum(){
+      subNum(){  //修改数量确认提交
         //优惠信息数据绑定
         this.orderget.favourable[0].price = this.ruleForm.otherCost;
         this.orderget.favourable[0].mark = this.ruleForm.otherCostRemark;
@@ -315,7 +362,7 @@ export default {
         this.cancelType=2;
         this.dialogFormNum = false;
       },
-      cancelNum(){   
+      cancelNum(){  //修改数量取消
         if(this.cancelType==1){
           //数量数组复原
           this.enrolNum = [...this.enrolNumCopy];
@@ -331,10 +378,10 @@ export default {
       getOrderStatus(status){
           switch(status){
             case 1:
-              return '补充游客材料';
+              return '签订电子合同';
               break;
             case 2:
-              return '电子合同';
+              return '待出行';
               break;
             case 3:
               return '待出行';
@@ -352,13 +399,13 @@ export default {
               return '确认占位';
               break;
             case 8:
-              return '签署合同';
+              return '签署合同';//？
               break;
             case 9:
               return '订单作废';
               break;
             case 10:
-              return '订单确认';
+              return '补充游客材料';
               break;
           }
       },
