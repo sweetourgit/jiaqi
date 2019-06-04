@@ -137,9 +137,10 @@
               </el-form-item>
               <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
                   <el-select v-model="conForm.credType" placeholder="请选择">
-                     <el-option label="护照" value="1"/>
-                     <el-option label="港澳通行证" value="2"/>
-                     <el-option label="军官证" value="3"/>
+                     <el-option label="请选择" :value="0"/>
+                     <el-option label="护照" :value="1"/>
+                     <el-option label="港澳通行证" :value="2"/>
+                     <el-option label="军官证" :value="3"/>
                   </el-select>
               </el-form-item>
               <el-form-item label="证件号码" prop="credCode" label-width="110px" class="fl">
@@ -480,7 +481,7 @@ export default {
             this.conForm=JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
           }else{
             this.conForm={
-            id: 0,
+            id: this.tour[type][index].id,
             isDeleted: 0,
             code: "",
             cnName:'',
