@@ -13,7 +13,7 @@
                   <el-form-item label="出行人信息" class="cb">            
                      <div class="oh" v-for="(item,indexPrice) in salePrice">
                        <div class="tour-til">{{item.enrollName}}</div>
-                       <div class="tourist"><input v-for="(item,index) in tour[indexPrice]" placeholder="点击填写" v-model="item.cnName" @click="fillTour(indexPrice,index)"/></div>                     
+                       <div class="tourist"><input v-for="(item,index) in tour[indexPrice]" placeholder="点击填写" v-model="item.cnName" @click="fillTour(indexPrice,index)" :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9" /></div>                     
                      </div>
                   </el-form-item>
                   <el-form-item label="" class="cb">   
@@ -82,7 +82,7 @@
                   </td>
                 </tr>
               </table>
-              <div class="red ml13" style="margin-top:-30px" v-show="enrolNums">报名人数不能为空</div>
+              <div class="red ml13" style="height:35px" v-show="enrolNums">报名人数不能为空</div>
             </div>
             <!--其他费用-->
             <div class="cb" style="height:60px">
@@ -191,6 +191,7 @@ export default {
       enrolNum:[], //报名人数[1,3]形式
       enrolNumCopy:[], //报名人数副本[1,3]形式，作为修改数量用
       enrolNums:false,//报名人数是否为空提示
+      number:0,//报名总人数
       dialogFormTour: false,
       salePrice:[],//报名类型价格列表数据
       salePriceNum:[],//报名类型价格列表数据副本,显示余位用
@@ -276,10 +277,9 @@ export default {
         this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderget',{
              "id": orderId
           }).then(res => {
-            this.orderget={};
             if(res.data.isSuccess == true){
-               this.orderget=res.data.object; 
-               //设置订单状态选项
+               this.orderget = res.data.object; 
+               //根据订单状态设置默认选项
                switch(this.orderget.orderStatus){
                   case 7:
                     this.ruleForm.type=10;
@@ -294,7 +294,7 @@ export default {
                     this.ruleForm.type=9;
                     break;
                }
-               console.log(this.ruleForm.type);
+               //联系人信息
                this.ruleForm.contactName=JSON.parse(res.data.object.contact).Name;
                this.ruleForm.contactPhone=JSON.parse(res.data.object.contact).Tel;
 
@@ -307,7 +307,7 @@ export default {
             console.log(err)
         })
       },
-      orderModification(type){
+      orderModification(type){  //订单修改保存
         let url='/order/stat/api';
         switch(type){
           case 10:
@@ -323,6 +323,10 @@ export default {
             url+='/invalid';
             break;
         }
+        this.ordersave();
+        if(type==0){
+          return false;
+        }
         this.$http.post(this.GLOBAL.serverSrc + url,{
             "object": {
               id:this.orderget.id
@@ -333,7 +337,7 @@ export default {
                   message: '提交成功',
                   type: 'success'
                });
-               this.dialogFormProcess = false;
+               this.processManage(this.orderId);   
                this.$emit('orderPage');
             }
           })
@@ -354,6 +358,17 @@ export default {
         this.dialogFormNum=true;
       }, 
       subNum(){  //修改数量确认提交
+        for(let i=0;i<this.enrolNum.length;i++){  //数量不能为0
+              if(this.enrolNum[i]){
+                this.number+=parseInt(this.enrolNum[i]);
+            }
+        };
+        if(this.number==0){
+          this.enrolNums=true;
+          return false;
+        }else{
+          this.enrolNums=false;
+        }
         //优惠信息数据绑定
         this.orderget.favourable[0].price = this.ruleForm.otherCost;
         this.orderget.favourable[0].mark = this.ruleForm.otherCostRemark;
@@ -498,7 +513,12 @@ export default {
                   guest.singlePrice=this.salePrice[this.tourType].price_01;  //填充价格
                 }else{
                   guest.singlePrice=this.salePrice[this.tourType].price_02;
-                }             
+                }
+                guest.bornDate = (new Date(guest.bornDate)).getTime()/1000;  //时间格式转换
+                guest.credTOV = (new Date(guest.credTOV)).getTime()/1000;              
+                if(guest.credType == ''){
+                  guest.credType = 0;
+                }              
              this.tour[this.tourType][this.fillIndex]=guest;
              this.dialogFormTour = false;
              this.$refs[formName].resetFields();
@@ -561,6 +581,35 @@ export default {
           }
           this.orderget.payable+=parseInt(this.ruleForm.otherCost);
           this.orderget.payable-=parseInt(this.ruleForm.allDiscount);
+      },     
+      ordersave(){  //更新订单，补充游客信息
+          
+          let obj=JSON.parse(JSON.stringify(this.orderget));
+          obj.contact='{"Name":"'+ this.ruleForm.contactName +'","Tel":"'+ this.ruleForm.contactPhone +'"}';
+         
+          //获取报名总人数          
+          obj.number=this.number;
+
+          //出游人信息
+          let guest=[];
+          for(let i=0;i<this.tour.length;i++){
+            for(let j=0;j<this.tour[i].length;j++){
+              guest.push(this.tour[i][j]);
+            }
+          }
+          obj.guest=guest;
+          //判断订单信息是否更改，如果更改，修改订单信息
+          if(JSON.stringify(obj)==JSON.stringify(this.orderget)){
+            return false;
+          }
+          console.log(123);
+          this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/ordersave',{
+            "object": obj
+          }).then(res => {
+            if(res.data.isSuccess == true){
+               this.processManage(this.orderId);   
+            }
+         })
       }
     }
 }
