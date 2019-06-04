@@ -267,9 +267,10 @@
               </el-form-item>
               <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
                   <el-select v-model="conForm.credType" placeholder="请选择">
-                     <el-option label="护照" value="1"/>
-                     <el-option label="港澳通行证" value="2"/>
-                     <el-option label="军官证" value="3"/>
+                     <el-option label="请选择" :value="0"/>
+                     <el-option label="护照" :value="1"/>
+                     <el-option label="港澳通行证" :value="2"/>
+                     <el-option label="军官证" :value="3"/>
                   </el-select>
               </el-form-item>
               <el-form-item label="证件号码" prop="credCode" label-width="110px" class="fl">
@@ -387,7 +388,7 @@ export default {
           mobile:'',          
           idCard:'',//身份证
           bornDate:0,
-          credType:"",
+          credType:0,
           credCode:'',
           credTOV:0,
           orderID: 0,
@@ -621,7 +622,7 @@ export default {
               singlePrice: 0,
               mobile: "string",
               bornDate: 0,
-              credType: 1,
+              credType: 0,
               credCode: "string",
               credTOV: 0,
               orderID: 0,
@@ -681,11 +682,8 @@ export default {
               for(let i=0;i<guestAll.length;i++){   
                 if(guestAll[i].cnName!='点击填写'){ //过滤掉未填写人员信息
                     guest.push(guestAll[i]);     
-                    guest[i].bornDate = (new Date(guest[i].bornDate)).getTime()/1000;  //时间格式转换
-                    guest[i].credTOV = (new Date(guest[i].credTOV)).getTime()/1000;              
-                    if(guest[i].credType == ''){
-                      guest[i].credType = 0;
-                    } 
+                    guest[i].bornDate = new Date(guest[i].bornDate).getTime();  //时间格式转换
+                    guest[i].credTOV = new Date(guest[i].credTOV).getTime();              
                }else{
                     guest.push(guestAll[i]);
                }

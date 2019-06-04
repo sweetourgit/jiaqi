@@ -213,7 +213,7 @@ export default {
         mobile:'',          
         idCard:'',//身份证
         bornDate:0,
-        credType:"",
+        credType:0,
         credCode:'',
         credTOV:0,
         orderID: 0,
@@ -462,7 +462,7 @@ export default {
               singlePrice: 0,
               mobile: "string",
               bornDate: 0,
-              credType: 1,
+              credType: 0,
               credCode: "string",
               credTOV: 0,
               orderID: 0,
@@ -490,7 +490,7 @@ export default {
             mobile:'',          
             idCard:'',//身份证
             bornDate:0,
-            credType:"",
+            credType:0,
             credCode:'',
             credTOV:0,
             orderID: 0,
@@ -508,6 +508,7 @@ export default {
          this.$refs[formName].validate((valid) => {
           if (valid) {
              let guest=JSON.parse(JSON.stringify(this.conForm));
+             console.log(guest.bornDate)
                 guest.enrollID=this.salePrice[this.tourType].enrollID;  //填充报名类型
                 guest.enrollName=this.salePrice[this.tourType].enrollName;  //填充报名类型name
                 if(this.ruleForm.price==1){
@@ -515,11 +516,6 @@ export default {
                 }else{
                   guest.singlePrice=this.salePrice[this.tourType].price_02;
                 }
-                guest.bornDate = (new Date(guest.bornDate)).getTime()/1000;  //时间格式转换
-                guest.credTOV = (new Date(guest.credTOV)).getTime()/1000;              
-                if(guest.credType == ''){
-                  guest.credType = 0;
-                }              
              this.tour[this.tourType][this.fillIndex]=guest;
              this.dialogFormTour = false;
              this.$refs[formName].resetFields();
@@ -598,6 +594,10 @@ export default {
               guest.push(this.tour[i][j]);
             }
           }
+          for(let i=0;i<guest.length;i++){   
+             guest[i].bornDate = new Date(guest[i].bornDate).getTime();  //时间格式转换
+             guest[i].credTOV = new Date(guest[i].credTOV).getTime();              
+          }                      
           obj.guest=guest;
           //判断订单信息是否更改，如果更改，修改订单信息
           if(JSON.stringify(obj)==JSON.stringify(this.orderget)){
@@ -611,7 +611,15 @@ export default {
                this.processManage(this.orderId);   
             }
          })
-      }
+      },
+      formatDate(date){
+       var y = date.getFullYear();  
+       var m = date.getMonth() + 1;  
+           m = m < 10 ? ('0' + m) : m;  
+       var d = date.getDate();  
+           d = d < 10 ? ('0' + d) : d;  
+           return y + '-' + m + '-' + d;
+      }, 
     }
 }
 </script>
