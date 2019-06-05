@@ -202,12 +202,12 @@
 	          <el-button class="indialog_button" @click="planStage()" type="primary">重置</el-button>
 	        </div>
 	        <el-table :data="tablePlan" border style="width: 100%; margin:30px 0 20px 0;":header-cell-style="getRowClass">
-	          <el-table-column prop="id" label="团期计划ID" align="center"></el-table-column>
-	          <el-table-column prop="name" label="产品名称" align="center"></el-table-column>
+	          <el-table-column prop="groupCode" label="团期计划ID" align="center"></el-table-column>
+	          <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
 	          <el-table-column prop="destination" label="目的地" align="center"></el-table-column>
-	          <el-table-column prop="travelDates" label="出行日期" align="center"></el-table-column>
-	          <el-table-column prop="department" label="部门" align="center"></el-table-column>
-	          <el-table-column prop="productionPerson" label="产品录入人" align="center"></el-table-column>
+	          <el-table-column prop="date" label="出行日期" align="center"></el-table-column>
+	          <el-table-column prop="orgName" label="部门" align="center"></el-table-column>
+	          <el-table-column prop="name" label="产品录入人" align="center"></el-table-column>
 	        </el-table>
 	        <div class="number_button">
 	        	<el-button @click="planCancel()">取消</el-button>
@@ -380,21 +380,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           plan_name:'',
           plan_data:'',
           plan_data01:'',
-          tablePlan:[{//申请无收入借款中团期计划选择弹窗表格
-          	id:'TC-GTY-1001-01-180806-01',
-          	name:'美国西海岸三城双奥莱10日之旅',
-          	destination:'西雅图',
-          	travelDates:'2019-01-01',
-          	department:'辽宁大运通-北美部',
-          	productionPerson:'洋洋'
-          },{
-          	id:'TC-GTY-1001-01-180806-01',
-          	name:'美国西海岸三城双奥莱10日之旅',
-          	destination:'西雅图',
-          	travelDates:'2019-01-01',
-          	department:'辽宁大运通-北美部',
-          	productionPerson:'洋洋'
-          }],
+          tablePlan:[],//申请无收入借款中团期计划选择弹窗表格
           //无收入借款中账户弹窗
           dialogFormVisible_account:false,
           tableAccount:[{//无收入借款中账户弹窗表格
@@ -572,7 +558,29 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       },
       //无收入借款中团期计划弹窗
       IncomePlan(){
+      	this.planList();
       	this.dialogFormVisible_plan = true;
+      },
+      //查询无收入借款团期计划列表
+      planList(){
+      	this.$http.post(
+          this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancelist",
+          {
+            "object": {
+	          "groupCode": this.plan_stage, //团号
+	          "title": this.plan_name, //产品名称
+	          "beginDate": this.plan_data ? formatDate(this.plan_data, 'yyyyMMdd') : 0, //搜索用开始日期
+	          "endDate": this.plan_data01 ? formatDate(this.plan_data01, 'yyyyMMdd') : 0, //搜索用结束日期
+	        }
+          },)
+          .then(res => {
+            //that.total = obj.data.total
+            this.tablePlan = res.data.objects;
+            console.log(res.data.objects)
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
       },
       planCancel(){
       	this.dialogFormVisible_plan = false;
@@ -627,7 +635,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           })
       },
       //申请无收入借款
-      ensureIncome(ruleForm){
+      ensureIncome(){
       	this.$refs.ruleForm.validate((valid) => {
           if (valid) {
           	let pictureList = [];
@@ -657,15 +665,15 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	              files: pictureList, //付款方式
                 }
               })
-              .then(function(response) { 
+              .then(res => {
                 if(res.data.isSuccess == true){
                    this.pageList();
-                   this.noIncomeShow = false;
+                   this.noIncomeShow = false
+                   this.$refs[formName].resetFields();
                 }else{
                    this.$message.success("添加失败");
                 }
-                
-              })
+            })
           } else {
             return false;
           }
