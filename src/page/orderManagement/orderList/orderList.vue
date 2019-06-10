@@ -44,7 +44,7 @@
                   <td width="85" class="tr">订单状态</td>
                   <td width="90">{{getOrderStatus(item.orderStatus)}}</td>
                   <td width="60" class="tr">退款状态</td>
-                  <td width="60">未退款</td>
+                  <td width="60">{{getrefundStatus(item.refundStatus)}}</td>
                   <td width="60" class="tr">订单时间</td>
                   <td>{{formatDate(new Date(item.createTime))}}</td>
                 </tr>
@@ -239,6 +239,29 @@ export default {
               break;
             case 10:
               return '补充游客材料';
+              break;
+          }
+      },
+      //列表退款状态显示
+      getrefundStatus(status){
+         switch(status){
+            case 1:
+              return '退款中';
+              break;
+            case 2:
+              return '拒绝退款';
+              break;
+            case 3:
+              return '已退款';
+              break;
+            case 4:
+              return '无退款';
+              break;
+            case 5:
+              return '申请退款';
+              break;
+            case 6:
+              return '完成退款';
               break;
           }
       },
