@@ -61,8 +61,8 @@
                 <tr>
                   <td width="60" class="tr">应付</td>
                   <td>{{item.payable}}</td>
-                  <td width="60" class="tr">单价</td>
-                  <td rowspan="2" valign="top">成人3000.00*1 单房差 500.00*1</td>
+                  <td width="60" class="tr">电话</td>
+                  <td rowspan="2" valign="top">{{item.contactTel}}</td>
                   <td width="60" class="tr">优惠</td>
                   <td colspan="4" rowspan="2" valign="top">{{item.favTitle}}</td>
                   <td rowspan="2">&nbsp;</td>
@@ -86,8 +86,8 @@
                 <tr>
                   <td width="60" class="tr">用户姓名</td>
                   <td>{{item.contactName}}</td>
-                  <td width="60" class="tr">电话</td>
-                  <td>{{item.contactTel}}</td>
+                  <td width="60" class="tr"></td>
+                  <td></td>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>

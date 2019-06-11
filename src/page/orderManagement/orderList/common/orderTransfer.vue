@@ -9,7 +9,7 @@
            <div class="pro-info">
                 <table>
                    <tr>
-                     <td width="80">产品：</td>
+                     <td width="80">产  品 ：</td>
                      <td>{{teampreviewData.title}}</td>
                    </tr>
                    <tr>
@@ -21,11 +21,11 @@
                      <td>{{teampreviewData.package}}</td>
                    </tr>
                    <tr>
-                     <td>出发地：</td>
+                     <td>出 发 地 ：</td>
                      <td>{{teampreviewData.pod}}</td>
                    </tr>
                    <tr>
-                     <td>目的地：</td>
+                     <td>目 的 地 ：</td>
                      <td>{{teampreviewData.destination}}</td>
                    </tr>
                    <tr>
@@ -33,60 +33,12 @@
                      <td>{{teampreviewData.date}}</td>
                    </tr>
                    <tr>
-                     <td>余位：</td>
-                     <td>{{teampreviewData.remaining}}</td>
-                   </tr>
-                   <tr>
-                     <td>参考结算：</td>
-                     <td>{{teampreviewData.refPrice}}</td>
+                     <td>总  价 ：</td>
+                     <td></td>
                    </tr>
                 </table>
            </div>
            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="订单来源" prop="orderRadio">
-                <!--<el-radio label="1" class="radiomar" v-model="ruleForm.orderRadio">同业社</el-radio>
-                <el-radio label="2" class="radiomar" v-model="ruleForm.orderRadio">门店</el-radio>
-                <el-radio label="3" class="radiomar" v-model="ruleForm.orderRadio">线下直客</el-radio>-->
-                <div class="ml13">线下直客</div>
-            </el-form-item>
-            <!--
-            <div v-if="ruleForm.orderRadio==1">
-                <el-form-item label="销售" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="同业社" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.travel" placeholder="请选择" class="optionw">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-            </div>
-            <div v-if="ruleForm.orderRadio==2">
-                <el-form-item label="销售" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="门店" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.travel" placeholder="请选择" class="optionw">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-            </div>
-            <div v-if="ruleForm.orderRadio==3">
-                <el-form-item label="销售" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-            </div>
-            -->
             <el-form-item label="价格" prop="price" class="cb price">
               <el-radio-group v-model="ruleForm.price">
                  <span v-for="item in salePrice" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span><br/>
@@ -142,14 +94,6 @@
             <!--总计-->
             <el-form-item label="总计" prop="totalPrice" class="cb">            
               <div class="ml13">{{ruleForm.totalPrice}}</div>
-            </el-form-item>
-            <!--下单方式-->
-            <el-form-item label="下单方式" prop="type">
-              <el-radio-group v-model="ruleForm.type">
-                <el-radio label="1" class="radiomar">确认占位 （同业社额度： 总欠款 270,164 元）</el-radio><br/>
-                <el-radio label="2" class="radiomar">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
-                <el-radio label="3" class="radiomar">预定不占 （订单保留24小时，到期提醒）</el-radio>
-              </el-radio-group>
             </el-form-item>
             <!--订单联系人-->
             <el-form-item label="订单联系人" prop="contactName" class="fl">            
@@ -237,16 +181,13 @@ export default {
   props:{
     planId:0,
     variable:0,
-    dialogType:0
+    dialogType:0,
   },
   data() {
     return {
         //下单弹窗
         dialogFormTransfer:false,
-        ruleForm: {           
-          orderRadio:'3',          
-          sale:'',
-          travel:'',  
+        ruleForm: {                      
           price:'1',
           price1:'',
           price2:'',
@@ -257,7 +198,6 @@ export default {
           allDiscount: 0,
           allDisRemark: '',
           totalPrice:0,
-          type:'1',    
           contactName:'',
           contactPhone:'',
           remark:'',
@@ -299,9 +239,6 @@ export default {
         orderCode:'',
         ifOrderInsert:true,
         rules: {
-          orderRadio: [{ required: true, message: '请选择订单来源', trigger: 'change' }],
-          sale: [{ required: true, message: '请选择销售', trigger: 'change' }],
-          travel: [{ required: true, message: '请选择同业社', trigger: 'change' }],
           price: [{ required: true, message: '请选择价格', trigger: 'change' }],
           price1: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
           price2: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
@@ -315,7 +252,6 @@ export default {
             { required: true, message: '请输入整体优惠', trigger: 'blur' },
             { pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '必须为数字值，并且不允许是负数'}],
           num: [{ required: true, message: '请输入数量', trigger: 'blur' }],
-          type: [{ required: true, message: '请选择下单方式', trigger: 'change' }],
           contactName: [{ required: true, message: '请输入联系人姓名', trigger: 'blur' }],
           contactPhone: [{ required: true, message: '请输入联系人电话', trigger: 'blur' }],
           //游客信息
@@ -338,8 +274,8 @@ export default {
     variable:function(){      
         if(this.dialogType==4){
           console.log()
-        //  this.teamEnrolls(this.planId);
-        //  this.teampreview(this.planId);       
+          this.teamEnrolls(9);//this.planId?
+          this.teampreview(9);//this.planId?  
           this.dialogFormTransfer=true;   
           this.enrolNums=false;
           this.ruleForm.remark = '';
@@ -356,25 +292,16 @@ export default {
     },
     'ruleForm.allDiscount':function(val){
         this.compPrice();
-    },
-    'ruleForm.type':function(val){
-        this.changeQuota();      
     }
   },
   methods: {
       changeQuota(){  //余位变化方法
        this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
-       let salePriceType3 = JSON.parse(JSON.stringify(this.salePriceNum));
        let salePriceType={};
           //下单方式选择确认占位和预定占位，实时减少相关余位信息，提示库存不足
            for(let i=0;i<this.salePrice.length;i++){    //如果下单方式选择预定不占，则不需要同步余位信息，提示库存不足
-            if(this.ruleForm.type==1||this.ruleForm.type==2){
               this.salePrice[i].quota=parseInt(this.salePrice[i].quota)-parseInt(this.enrolNum[i]);
               salePriceType=this.salePrice[i];
-            }else{
-              salePriceType3[i].quota=parseInt(salePriceType3[i].quota)-parseInt(this.enrolNum[i]);  
-              salePriceType=salePriceType3[i];           
-            } 
             if(salePriceType.quota<0){  //判断是否显示库存不足
                this.quota[i]=true;
             }else{
