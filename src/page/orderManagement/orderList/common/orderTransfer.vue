@@ -39,6 +39,23 @@
                 </table>
            </div>
            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <!--产品名称-->
+            <el-form-item label="产品名称" prop="productName" class="fl cb">            
+              <el-input v-model="ruleForm.productName" class="ml13 w200" type="text"></el-input>
+            </el-form-item>
+            <!--套餐-->
+            <el-form-item label="套餐" prop="setMeal" class="fl">            
+              <el-select v-model="ruleForm.setMeal" placeholder="请选择">        
+                 <el-option label="套餐1" :value="1"/>
+                 <el-option label="套餐2" :value="2"/>
+                 <el-option label="套餐3" :value="3"/>
+              </el-select>
+            </el-form-item>
+            <!--团期计划-->
+            <el-form-item label="团期计划" prop="productName" class="cb">            
+              <el-input v-model="ruleForm.orderCode" class="ml13 w200" type="text"></el-input>
+            </el-form-item>
+            <!--价格-->
             <el-form-item label="价格" prop="price" class="cb price">
               <el-radio-group v-model="ruleForm.price">
                  <span v-for="item in salePrice" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span><br/>
@@ -81,14 +98,14 @@
             <el-form-item label="其他费用" prop="otherCost" class="fl cb">            
               <el-input v-model="ruleForm.otherCost" class="numw" type="number" :min="0"></el-input>
             </el-form-item>
-            <div class="fl mtn5">            
+            <div class="fl">            
               备注<el-input v-model="ruleForm.otherCostRemark" class="cost-remark"></el-input>
             </div>
             <!--整体优惠-->
             <el-form-item label="整体优惠" prop="allDiscount" class="cb fl">            
               <el-input v-model="ruleForm.allDiscount" class="numw" type="number" :min="0"></el-input>
             </el-form-item>
-            <div class="fl mtn5">            
+            <div class="fl">            
               备注<el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
             </div>
             <!--总计-->
@@ -187,7 +204,10 @@ export default {
     return {
         //下单弹窗
         dialogFormTransfer:false,
-        ruleForm: {                      
+        ruleForm: {   
+          productName:'',   
+          setMeal:'', 
+          orderCode:'',        
           price:'1',
           price1:'',
           price2:'',
@@ -239,6 +259,9 @@ export default {
         orderCode:'',
         ifOrderInsert:true,
         rules: {
+          productName: [{ required: true, message: '请输入产品名称', trigger: 'blur' }],
+          setMeal: [{ required: true, message: '请选择套餐', trigger: 'change' }],
+          orderCode: [{ required: true, message: '请输入团号', trigger: 'blur' }],
           price: [{ required: true, message: '请选择价格', trigger: 'change' }],
           price1: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
           price2: [{ pattern: /^[+]{0,1}(\d+)$/, message: '价格必须为数字值'}],
@@ -572,7 +595,6 @@ export default {
       .radiomar{margin:12px 13px}
       .ml13{margin-left: 13px}
       .mb17{margin-bottom: 17px}
-      .mtn5{margin-top: -5px}
       .tourist{margin-left: 13px;float: left;width:85%}
       .tourist input{width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:1px 10px 10px 10px}
       .tour-til{float: left;margin-left: 13px;margin-right: -8px;width: 80px}

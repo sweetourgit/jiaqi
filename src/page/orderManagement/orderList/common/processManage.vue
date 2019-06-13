@@ -345,10 +345,20 @@ export default {
       },
       changeNum(){  //修改数量
         //优惠信息数据绑定
-        this.ruleForm.otherCost = this.orderget.favourable[0].price;
-        this.ruleForm.otherCostRemark = this.orderget.favourable[0].mark;
-        this.ruleForm.allDiscount = this.orderget.favourable[1].price;
-        this.ruleForm.allDisRemark = this.orderget.favourable[1].mark;
+        if(this.orderget.favourable[0]){
+          this.ruleForm.otherCost = this.orderget.favourable[0].price;
+          this.ruleForm.otherCostRemark = this.orderget.favourable[0].mark;
+        }else{
+          this.ruleForm.otherCost=0;
+          this.ruleForm.otherCostRemark='';
+        }
+        if(this.orderget.favourable[1]){
+          this.ruleForm.allDiscount = this.orderget.favourable[1].price;
+          this.ruleForm.allDisRemark = this.orderget.favourable[1].mark;
+        }else{
+          this.ruleForm.allDiscount=0;
+          this.ruleForm.allDisRemark='';
+        }
         //数量数组
         this.enrolNumCopy = [...this.enrolNum];
         //出游人数组

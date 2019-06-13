@@ -4,21 +4,21 @@
        <el-dialog title="订单备注" :visible.sync="dialogFormMark" class="city_list" width="780px">
           <el-form :model="markForm" ref="markForm" label-width="80px" class="demo-ruleForm">
                <el-form-item label="客人：">            
-                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markForm.remark"></el-input>
+                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markForm.remark" :disabled="true"></el-input>
                   <div class="time">2018-10-11 17:23:23</div>
                </el-form-item>
                <el-form-item label="阳阳：">            
-                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markForm.remark"></el-input>
+                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" v-model="markForm.remark" :disabled="true"></el-input>
                   <div class="time">2018-10-11 17:23:23</div>
                </el-form-item>
                <el-form-item label="填写备注">            
-                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markForm.remark"></el-input>
+                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markForm.remark1"></el-input>
                </el-form-item>
                <el-form-item>
                   <el-button type="info" size="medium" class="submitMark">提交备注</el-button>
                </el-form-item>
                <el-form-item>
-                  <el-button class="colse">关闭</el-button>
+                  <el-button class="colse" @click="dialogFormMark=false">关闭</el-button>
                </el-form-item>
           </el-form>
        </el-dialog>
@@ -37,7 +37,8 @@ export default {
        //备注信息弹窗
        dialogFormMark:false,     
        markForm:{
-
+          remark:'*******',
+          remark1:'*******'
        }
     }
   },

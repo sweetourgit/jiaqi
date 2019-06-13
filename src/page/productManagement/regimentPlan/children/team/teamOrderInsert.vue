@@ -129,14 +129,14 @@
             <el-form-item label="其他费用" prop="otherCost" class="fl cb">            
               <el-input v-model="ruleForm.otherCost" class="numw" type="number" :min="0"></el-input>
             </el-form-item>
-            <div class="fl mtn5">            
+            <div class="fl">            
               备注<el-input v-model="ruleForm.otherCostRemark" class="cost-remark"></el-input>
             </div>
             <!--整体优惠-->
             <el-form-item label="整体优惠" prop="allDiscount" class="cb fl">            
               <el-input v-model="ruleForm.allDiscount" class="numw" type="number" :min="0"></el-input>
             </el-form-item>
-            <div class="fl mtn5">            
+            <div class="fl">            
               备注<el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
             </div>
             <!--总计-->
@@ -645,7 +645,6 @@ export default {
       .radiomar{margin:12px 13px}
       .ml13{margin-left: 13px}
       .mb17{margin-bottom: 17px}
-      .mtn5{margin-top: -5px}
       .tourist{margin-left: 13px;float: left;width:85%}
       .tourist input{width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:1px 10px 10px 10px}
       .tour-til{float: left;margin-left: 13px;margin-right: -8px;width: 80px}
