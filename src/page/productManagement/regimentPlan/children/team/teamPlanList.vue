@@ -16,7 +16,7 @@
        <el-button :disabled="forbidden2" @click="operation(1)">下单</el-button>
      </el-row>
      <!--list-->
-     <el-table :data="teamqueryList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
+     <el-table :data="teamqueryList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">
        <el-table-column  prop="id" label="" fixed type="selection"></el-table-column>     
        <el-table-column  type="index" label="序号" width="60"></el-table-column>
        <el-table-column  prop="title" label="产品名称" min-width="340"></el-table-column>
@@ -53,7 +53,7 @@
     </el-dialog>
     <!--报账单弹窗-->
     <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list" width="60%">      
-       <el-table :data="costList" ref="costTable" class="costTable" :header-cell-style="getCostClass" border :row-style="costrowClass" @selection-change="changeFunCost" @row-click="clickRowCost">
+       <el-table :data="costList" ref="costTable" class="costTable" :header-cell-style="getCostClass" border :row-style="costrowClass" :cell-style="getCellClass" @selection-change="changeFunCost" @row-click="clickRowCost">
        <el-table-column  prop="id" label="" fixed type="selection"></el-table-column>
        <el-table-column  prop="serno" label="序号" min-width="50"></el-table-column>
        <el-table-column  prop="state" label="审核状态" min-width="90"></el-table-column>
@@ -138,6 +138,9 @@ export default {
         } else {
           return ''
         }
+      },
+      getCellClass(){
+        return 'textAlign:center'
       },
       changeFun(val) {  //保存选中项的数据
         this.multipleSelection=val;

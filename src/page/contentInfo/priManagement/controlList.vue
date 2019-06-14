@@ -7,10 +7,10 @@
      </el-row>
     <!--list-->
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
-       <el-table-column  prop="id" label="ID" min-width="60"></el-table-column>
-       <el-table-column  prop="name" label="名称" min-width="150"></el-table-column>
-       <el-table-column  prop="route" label="路径" min-width="280"></el-table-column>
-       <el-table-column  prop="key" label="控件ID" min-width="150"></el-table-column>
+       <el-table-column  prop="id" label="ID" min-width="60" align="center"></el-table-column>
+       <el-table-column  prop="name" label="名称" min-width="150" align="center"></el-table-column>
+       <el-table-column  prop="route" label="路径" min-width="280" align="center"></el-table-column>
+       <el-table-column  prop="key" label="控件ID" min-width="150" align="center"></el-table-column>
      </el-table>
       <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">

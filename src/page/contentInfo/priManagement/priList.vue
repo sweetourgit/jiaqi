@@ -9,10 +9,10 @@
     <!--list-->
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
        <el-table-column  prop="id" label="ID" min-width="60"></el-table-column>
-       <el-table-column  prop="name" label="功能名称" min-width="150"></el-table-column>
-       <el-table-column  prop="uri" label="页面地址" min-width="280"></el-table-column>
-       <el-table-column  prop="guid" label="唯一标识" min-width="250"></el-table-column>
-       <el-table-column  prop="parentID" label="所属上级" min-width="150"></el-table-column>
+       <el-table-column  prop="name" label="功能名称" min-width="150" align="center"></el-table-column>
+       <el-table-column  prop="uri" label="页面地址" min-width="280" align="center"></el-table-column>
+       <el-table-column  prop="guid" label="唯一标识" min-width="250" align="center"></el-table-column>
+       <el-table-column  prop="parentID" label="所属上级" min-width="150" align="center"></el-table-column>
      </el-table>
      <div style="width:1100px;overflow:hidden">
      <el-pagination class="pagination"
