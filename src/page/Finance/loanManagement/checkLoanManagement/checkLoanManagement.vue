@@ -45,70 +45,70 @@
 				</el-upload>
 			 </el-form-item>
 			 <el-table :data="tableMoney" border style="width: 70%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-	           <el-table-column prop="totalOrder" label="订单总额" align="center"></el-table-column>
-	           <el-table-column prop="approval" label="已审批总额" align="center"></el-table-column>
-	           <el-table-column prop="examination" label="审批中总额" align="center"></el-table-column>
-	           <el-table-column prop="received" label="已收总额" align="center"></el-table-column>
-	           <el-table-column prop="arrears" label="供应商欠款总额" align="center"></el-table-column>
-	        </el-table>
-	        <div style="margin:0 0 0 25px;">预付款明细</div>
-	        <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-	           <el-table-column prop="id" label="ID" width="50" align="center"></el-table-column>
-	           <el-table-column prop="state" label="状态" align="center"></el-table-column>
-	           <el-table-column prop="type" label="类型" align="center"></el-table-column>
-	           <el-table-column prop="supplier" label="供应商" align="center"></el-table-column>
-	           <el-table-column prop="paymentAmount" label="付款金额" align="center"></el-table-column>
-	           <el-table-column prop="people" label="人数" align="center"></el-table-column>
-	           <el-table-column prop="department" label="部门" align="center"></el-table-column>
-	           <el-table-column prop="applicant" label="申请人" align="center"></el-table-column>
-	           <el-table-column prop="times" label="日期" align="center"></el-table-column>
-	           <el-table-column prop="digest" label="摘要" align="center"></el-table-column>
-	           <el-table-column prop="process" label="审批过程" align="center">
-	           	<template slot-scope="scope">
+         <el-table-column prop="totalOrder" label="订单总额" align="center"></el-table-column>
+         <el-table-column prop="approval" label="已审批总额" align="center"></el-table-column>
+         <el-table-column prop="examination" label="审批中总额" align="center"></el-table-column>
+         <el-table-column prop="received" label="已收总额" align="center"></el-table-column>
+         <el-table-column prop="arrears" label="供应商欠款总额" align="center"></el-table-column>
+       </el-table>
+	     <div style="margin:0 0 0 25px;">预付款明细</div>
+       <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+         <el-table-column prop="id" label="ID" width="50" align="center"></el-table-column>
+         <el-table-column prop="state" label="状态" align="center"></el-table-column>
+         <el-table-column prop="type" label="类型" align="center"></el-table-column>
+         <el-table-column prop="supplier" label="供应商" align="center"></el-table-column>
+         <el-table-column prop="paymentAmount" label="付款金额" align="center"></el-table-column>
+         <el-table-column prop="people" label="人数" align="center"></el-table-column>
+         <el-table-column prop="department" label="部门" align="center"></el-table-column>
+         <el-table-column prop="applicant" label="申请人" align="center"></el-table-column>
+         <el-table-column prop="times" label="日期" align="center"></el-table-column>
+         <el-table-column prop="digest" label="摘要" align="center"></el-table-column>
+         <el-table-column prop="process" label="审批过程" align="center">
+         	<template slot-scope="scope">
 			      <div @click="processPaymenrt(scope.row)">查看</div>
 			    </template>
-	           </el-table-column>
-	           <el-table-column prop="verification" label="已核销金额" align="center"></el-table-column>
-	        </el-table>
-	        <div style="margin:0 0 0 25px;">无收入借款明细</div>
-	        <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-	           <el-table-column prop="id" label="ID" width="50" align="center"></el-table-column>
-	           <el-table-column prop="state" label="状态" align="center"></el-table-column>
-	           <el-table-column prop="type" label="类型" align="center"></el-table-column>
-	           <el-table-column prop="supplier" label="供应商" align="center"></el-table-column>
-	           <el-table-column prop="paymentAmount" label="付款金额" align="center"></el-table-column>
-	           <el-table-column prop="department" label="部门" align="center"></el-table-column>
-	           <el-table-column prop="applicant" label="申请人" align="center"></el-table-column>
-	           <el-table-column prop="times" label="日期" align="center"></el-table-column>
-	           <el-table-column prop="digest" label="摘要" align="center"></el-table-column>
-	           <el-table-column prop="process" label="审批过程" align="center">
-	           	<template slot-scope="scope">
-			      <div @click="processIncome(scope.row)">查看</div>
-			    </template>
-	           </el-table-column>
-	           <el-table-column prop="verification" label="已核销金额" align="center"></el-table-column>
-	        </el-table>
-	        <div style="margin:0 0 0 25px;">收入明细</div>
-	        <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-	           <el-table-column prop="number" label="订单编号" align="center"></el-table-column>
-	           <el-table-column prop="source" label="来源" align="center"></el-table-column>
-	           <el-table-column prop="contact" label="联系人" align="center"></el-table-column>
-	           <el-table-column prop="people" label="人数" align="center"></el-table-column>
-	           <el-table-column prop="figure" label="订单金额" align="center"></el-table-column>
-	           <el-table-column prop="received" label="已收" align="center"></el-table-column>
-	           <el-table-column prop="arrears" label="欠款" align="center"></el-table-column>
-	           <el-table-column prop="numbers" label="收款单号" align="center"></el-table-column>
-	           <el-table-column prop="dates" label="欠款日期" align="center"></el-table-column>
-	           <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
-	        </el-table>
-	        <div style="margin:0 0 0 25px;">审批过程</div>
-	        <el-table :data="tableCourse" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-	           <el-table-column prop="people" label="审批人" align="center"></el-table-column>
-	           <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
-	           <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
-	           <el-table-column prop="times" label="审批时间" align="center"></el-table-column>
-	        </el-table>
-	      </el-form>
+         </el-table-column>
+        <el-table-column prop="verification" label="已核销金额" align="center"></el-table-column>
+        </el-table>
+        <div style="margin:0 0 0 25px;">无收入借款明细</div>
+        <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+           <el-table-column prop="id" label="ID" width="50" align="center"></el-table-column>
+           <el-table-column prop="state" label="状态" align="center"></el-table-column>
+           <el-table-column prop="type" label="类型" align="center"></el-table-column>
+           <el-table-column prop="supplier" label="供应商" align="center"></el-table-column>
+           <el-table-column prop="paymentAmount" label="付款金额" align="center"></el-table-column>
+           <el-table-column prop="department" label="部门" align="center"></el-table-column>
+           <el-table-column prop="applicant" label="申请人" align="center"></el-table-column>
+           <el-table-column prop="times" label="日期" align="center"></el-table-column>
+           <el-table-column prop="digest" label="摘要" align="center"></el-table-column>
+           <el-table-column prop="process" label="审批过程" align="center">
+           	<template slot-scope="scope">
+  			      <div @click="processIncome(scope.row)">查看</div>
+  			    </template>
+           </el-table-column>
+           <el-table-column prop="verification" label="已核销金额" align="center"></el-table-column>
+        </el-table>
+        <div style="margin:0 0 0 25px;">收入明细</div>
+        <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+           <el-table-column prop="number" label="订单编号" align="center"></el-table-column>
+           <el-table-column prop="source" label="来源" align="center"></el-table-column>
+           <el-table-column prop="contact" label="联系人" align="center"></el-table-column>
+           <el-table-column prop="people" label="人数" align="center"></el-table-column>
+           <el-table-column prop="figure" label="订单金额" align="center"></el-table-column>
+           <el-table-column prop="received" label="已收" align="center"></el-table-column>
+           <el-table-column prop="arrears" label="欠款" align="center"></el-table-column>
+           <el-table-column prop="numbers" label="收款单号" align="center"></el-table-column>
+           <el-table-column prop="dates" label="欠款日期" align="center"></el-table-column>
+           <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
+        </el-table>
+        <div style="margin:0 0 0 25px;">审批过程</div>
+        <el-table :data="tableCourse" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+           <el-table-column prop="people" label="审批人" align="center"></el-table-column>
+           <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
+           <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
+           <el-table-column prop="times" label="审批时间" align="center"></el-table-column>
+        </el-table>
+	     </el-form>
   </div>
 </template>
 
