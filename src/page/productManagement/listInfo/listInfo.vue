@@ -2107,7 +2107,8 @@
         //行程信息
         var object={
                   //基本信息接口数据
-                  createTime:this.formatDate(new Date()),
+                  //createTime:this.formatDate(new Date()),
+                  createTime:0,
                   title:this.ruleForm.productNamel,//基本信息产品名称
                   isForeign:this.ruleForm.travelType,//基本信息产品类型
                   day:this.ruleForm.travelDays,//基本信息行程天数
