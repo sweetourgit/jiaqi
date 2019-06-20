@@ -127,17 +127,19 @@
                       <el-button  size="mini" @click="planDialog"  v-if="find==0">选择</el-button>
                     </el-form-item>
                     <el-form-item label="报销金额" prop="monkey">
-                      <el-input v-model="ruleForm.monkey.type" placeholder="请输入或者选择报销类型" style="width: 240px;" :disabled="change"></el-input>
-                      <el-input v-model="ruleForm.monkey.count" placeholder="请输入或者选择报销金额" style="width: 240px;" :disabled="change"></el-input>
+                      <el-input v-model="ruleForm.monkey.mark" placeholder="请输入或者选择报销类型" style="width: 240px;" :disabled="change"></el-input>
+                      <el-input v-model="ruleForm.monkey.price" placeholder="请输入或者选择报销金额" style="width: 240px;" :disabled="change"></el-input>
                     </el-form-item>
                     <el-form-item label="摘要" prop="content">
                       <el-input v-model="ruleForm.content" placeholder="请输入或者选择报销类型" style="width: 480px;" :disabled="change" ></el-input>
                     </el-form-item>
                     <el-form-item label="附件" >
                       <el-upload
+                        name="files"
                         class="upload-demo"
-                        action="https://jsonplaceholder.typicode.com/posts/"
+                        action="http://192.168.1.186:3009/upload/api/picture"
                         :on-change="handleChange"
+                        :on-success="handleSucess"
                         :file-list="fileList">
                         <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
                       </el-upload>
@@ -216,14 +218,14 @@
                     </div>
                     <div v-if="radio==2">
                       <div class="re_style" style="margin-top: 20px" >
-                        <el-input  :disabled="change" v-model="ruleForm.monkey.type" placeholder="请输入或者选择报销类型" style="width: 240px;" ></el-input>
-                        <el-input  :disabled="change" v-model="ruleForm.monkey.count" placeholder="请输入或者选择报销金额" style="width: 240px;" ></el-input>
+                        <el-input  :disabled="change" v-model="ruleForm.monkeys.mark" placeholder="请输入或者选择报销类型" style="width: 240px;" ></el-input>
+                        <el-input  :disabled="change" v-model="ruleForm.monkeys.price" placeholder="请输入或者选择报销金额" style="width: 240px;" ></el-input>
                         <el-button type="primary" @click="addDomain" v-if="find==0">添加</el-button>
 
                       </div>
                       <div v-for="(domain, index) in domains" class="re_style" style="margin-top: 20px" >
-                        <el-input  :disabled="change" v-model="domain.type" placeholder="请输入或者选择报销类型" style="width: 240px;" ></el-input>
-                        <el-input :disabled="change"  v-model="domain.money" placeholder="请输入或者选择报销金额" style="width: 240px;" ></el-input>
+                        <el-input  :disabled="change" v-model="domain.mark" placeholder="请输入或者选择报销类型" style="width: 240px;" ></el-input>
+                        <el-input :disabled="change"  v-model="domain.price" placeholder="请输入或者选择报销金额" style="width: 240px;" ></el-input>
                         <el-button type="danger" @click="removeDomain(domain)" v-if="find==0" >删除</el-button>
                       </div>
                       <div class="re_style" style="margin-top: 30px; margin-bottom: 30px">报销金额：200.00</div>
@@ -455,7 +457,16 @@
             </el-table-column>
             <el-table-column
               prop="bcount"
+              width="130"
               label="报销金额">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.bcount" style="width:100px;"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="bcount"
+              width="130"
+              label="人数">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.bcount" style="width:100px;"></el-input>
               </template>
@@ -506,6 +517,7 @@
         };
 
         return {
+          hand:[],
           plans:{
             planNum:'1',
             planName:'2',
@@ -539,8 +551,8 @@
           planTime1:'',
           //手添报销
           domains: [{
-            type: '地接',
-            money: '9000.00'
+            mark: '',
+            price: ''
           }],
           // 选中报销人字段
           people:{
@@ -556,8 +568,12 @@
               planName: ''
             },
             monkey: {
-              type: '小费',
-              count: '1000.00'
+              mark: '小费',
+              price: '1000.00'
+            },
+            monkeys: {
+              mark: '小费',
+              price: '1000.00'
             },
             content:''
           },
@@ -699,15 +715,10 @@
             wcount: '17800.00',
             bcount: '',
           }],
-
+          file:[
+          ],
           //文件上传列表
-          fileList: [{
-            name: 'food.jpeg',
-            url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-          }, {
-            name: 'food2.jpeg',
-            url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-          }],
+          fileList: [],
           editableTabsValue: '1',
           editableTabs: [{
             title: 'Tab 1',
@@ -789,21 +800,80 @@
         //添加
         addDomain() {
           this.domains.push({
-            type: '',
-            money: ''
+            mark: '',
+            price: ''
           });
         },
         // 提交
         submitForm(formName) {
-          console.log(this.ruleForm)
             this.$refs[formName].validate((valid) => {
             if (valid) {
-              alert('submit!');
+              this.hand = []
+              for(var i=0;  i<this.domains.length; i++){
+                this.hand.push(this.domains[i])
+              }
+              this.hand.push(this.ruleForm.monkeys)
+              var createUser = this.ruleForm.name[0].peo
+              var pid = this.plans.pid
+              var price = this.ruleForm.monkey.price
+              var mark = this.ruleForm.content
+              var files = this.fileList
+              var check = 0
+              var others = this.hand
+
+              this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/insertlist', {
+                "object": [
+                  {
+                    "createUser": createUser,
+                    "planID": pid,
+                    "price": price,
+                    "mark": mark,
+                    "files": files,
+                    "checkType": check,
+                    "payments": [
+                    ],
+                    "others":  others
+                  }
+                ]
+              }).then(res => {
+                if(res.data.isSuccess == true){
+                  this.beginWokeing(res.data.object)
+                  this.reimList();
+                }
+              }).catch(err => {
+                console.log(err)
+              })
+              this.$message({
+                type: 'success',
+                message: '创建成功!'
+              });
+
+              this.dialogFormVisible  = false
             } else {
               console.log('error submit!!');
               return false;
             }
           });
+        },
+        //启动工作流
+        beginWokeing(res){
+          console.log(res)
+          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
+            "jQ_ID": res.guid,
+            "jQ_Type": res.flowModel,
+            "workflowCode": res.flowModelName,
+            "userCode": sessionStorage.getItem('account')
+          }).then(res => {
+            let result = JSON.parse(res.data);
+            if (result.code == '0') {
+              console.log('启动工作流成功');
+            } else {
+              console.log('启动工作流错误!');
+              console.log(res.data);
+            }
+          }).catch(err => {
+            console.log(err)
+          })
         },
         //撤销申请
         chanelSubmit(){
@@ -881,10 +951,13 @@
           console.log(tab, event);
         },
         handleSizeChange(val) {
-          console.log(`每页 ${val} 条`);
+          this.pageSize = val
+          this.currentPage4 = 1
+          this.reimList()
         },
         handleCurrentChange(val) {
-          console.log(`当前页: ${val}`);
+          this.currentPage4 = val
+          this.reimList()
         },
         //选择报销人
         handleCurrentChange1(val) {
@@ -893,9 +966,22 @@
         },
         //文件上传
         handleChange(file, fileList) {
+
           this.fileList = fileList.slice(-3);
         },
+        //图片上传成功
+        handleSucess(res,file, fileList){
 
+          var paths = null;
+          for (var i = 0; i<fileList.length; i++){
+            paths=JSON.parse(fileList[i].response).paths[0];
+            this.$set(this.fileList[i],"url",paths.Url);
+            this.$set(this.fileList[i],"name",paths.Name);
+          }
+          console.log(fileList)
+
+
+        },
         //添加报销和删除
         handleTabsEdit(targetName, action) {
           if (action === 'add') {

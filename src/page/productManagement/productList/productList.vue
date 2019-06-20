@@ -444,7 +444,7 @@ import DateList from './component/DateList'
         currentPage1: 5,
         currentPage2: 5,
         currentPage3: 5,
-        currentPage4: 4,
+        currentPage4: 1,
 
         merchandise: false,
         isCollapse: true,
@@ -1036,7 +1036,7 @@ import DateList from './component/DateList'
             that.tableData.forEach(function (v, k, arr) {
               arr[k]['type'] = "跟团游"
               arr[k]['name'] = obj.data.objects[k].title;
-              arr[k]['mu_address'] = "xxx"
+              arr[k]['mu_address'] = obj.data.objects[k].destinations[0].destination
               arr[k]['options'] = obj.data.objects[k].createUser
               arr[k]['status'] = "1"
               arr[k]['opers'] = "飞猪 携程"
@@ -1059,10 +1059,17 @@ import DateList from './component/DateList'
       },
       routerHandle(){
         console.log(this.about);
+        if(this.about == ""){
+          this.$message({
+            showClose: true,
+            message: '请选择要添加的产品类型',
+            type: 'error'
+          });
+        }
         if(this.about == 1){
           this.$router.push({path: "listInfo"});
         }
-        this.dialogVisible = false
+
       },
       handleClick(row) {
         console.log(row);
