@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative">
+  <div class="vivo" style="position:relative" @click="handleList">
    <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
     <div class="btn" style="width:200px;position:absolute;z-index:99;top:0px;left:68%;">
       <el-button plain class="btn-button" @click="cancel()">取消</el-button>
@@ -111,38 +111,33 @@
                 </el-button>
               </el-upload>
             </el-form-item> -->
-            <el-form-item label="头图" prop="avatarImages" label-width="120px">
+
+            <!-- <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative"></el-input>
               <el-button type="info" class="upload-btn" style="margin:1px 0 0 200px;" @click="figureClick">上传</el-button>
-            </el-form-item>
-            <!--头图弹窗-->
-            <div class="popup" style="width:100%; overflow:hidden;" v-show="figureShow">
-              <div class="mask" @click="figureClose"></div>
-              <div style="width:1100px; height:870px; position:fixed; top:50%;left:50%; margin-top:-435px; margin-left:-550px; background:#fff; z-index:1000;">
-                <div style="line-height:40px; font-weight:bold; font-size:14pt; float:left; margin:40px 0 0 3%;">图片选择</div>
-                <div style="float:right;margin:100px 3% 20px 0;">
-                  <el-input v-model="imageSearch" clearable style="float:left; width:200px; margin:0 15px 0 0;" placeholder="请输入内容"></el-input>
-                  <el-button type="primary" style="float:right;">搜索</el-button>
-                </div>
-                <div style="clear:both;">
-                  <!--左侧地区列表-->
-                  <div class="left-tree">
-                     <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree" :default-expanded-keys="[]"></el-tree>
-                  </div> 
-                  <!--右侧图片循环-->
-                  <div style="float:left; margin:10px 0 0 30px;">
-                    <div style="width:300px; height:200px; background:#f5f5f5;"></div>
-                    <div style="margin:10px 0 0 0;">
-                      <div style="float:left; width:60px; height:25px; background:#000; color:#fff;text-align:center;line-height:23px; font-size:14px;">景点</div>
-                      <div style="float:left; width:60px; height:25px; background:#5b5b5b; color:#fff;text-align:center;line-height:23px; font-size:14px;">5张</div>
-                    </div>
-                    <div style="font-size:14pt; clear:both; text-align:left; line-height:40px;">大帅府</div>
-                  </div>
-                </div>
+            </el-form-item> -->
 
-                <el-button style="position:absolute; bottom:20px; right:3%;" @click="figureClose">取消</el-button>
+            <!-- 头图 -->
+            <el-form-item label="头图" prop="avatarImages" label-width="120px">
+              <div class="img_upload">
+                <template v-for="(item, index) in ruleForm.avatarImages">
+                  <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
+                  <div class="img_div" :key="index" @click="imgDelete(item)">x</div>
+                </template>
               </div>
-            </div>
+              <el-button class="img_button" type="info" @click="handleImgUpload">上传</el-button>
+              <div v-show="isImgUrlShow" class="show_div">
+                <img class="show_img" :src="imgUrlShow" alt="">
+              </div>
+            </el-form-item>
+
+            
+            <!--头图弹窗-->
+            <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
+              <MaterialList :imgData="imgData" v-on:checkList="checkList" v-on:closeButton="imgUpload = false"></MaterialList>
+            </el-dialog>
+
+
             <!-- 视频 -->
             <el-form-item label="视频" prop="video" label-width="120px">
               <el-input v-model="ruleForm.video" disabled style="width:110px;float:left;margin-left:10px;position:relative">
@@ -151,8 +146,10 @@
                 <el-button type="info" class="upload-btn">上传</el-button>
               </el-upload>
             </el-form-item>
+            
+
             <!-- 轮播图 -->
-            <el-form-item label="轮播图" prop="slideshow" label-width="120px">
+            <!-- <el-form-item label="轮播图" prop="slideshow" label-width="120px">
               <el-input v-model="ruleForm.slideshow" disabled class="banner" placeholder="3-6张图片">
               </el-input>
                <el-upload :on-preview="slideshowClick" style="float:left;" method="post" action="http://192.168.1.168:6012/universal/supplier/api/upload" list-type="picture" :limit='6' accept=".jpg,.png,.gif" :on-remove="handleRemove2" :multiple="true">
@@ -163,7 +160,31 @@
                   上传</el-button>
               </el-upload>
               <input id="fileItem" type="file" multiple style="float:left; margin-left:10px;">
+            </el-form-item> -->
+
+            <!-- 轮播图 -->
+            <el-form-item label="轮播图" ref="slideshow" prop="slideshow" label-width="120px">
+              <span class="redStar">*</span>
+              <div class="img_upload_slideshow" :style="isInfo ? 'border: solid 1px #f56c6c;' : ''">
+                <template v-for="(item, index) in ruleForm.slideshow">
+                  <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShowAvatar(item)">
+                  <div class="img_div" :key="index" @click="imgDeleteAvatar(item)">x</div>
+                </template>
+              </div>
+              <el-button class="img_button" type="info" @click="handleImgUploadAvatar">上传</el-button>
+              <div v-show="isImgUrlShowAvatar" class="show_div">
+                <img class="show_img" :src="imgUrlShowAvatar" alt="">
+              </div>
+              <span v-if="isInfo" style="position: relative; top: 30px; left: -765px; font-size: 12px; color: #f56c6c;">请选择3-6张图片</span>
             </el-form-item>
+
+
+            <!--轮播图弹窗-->
+            <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUploadAvatar" custom-class="city_list">
+              <MaterialList :imgData="imgDataAvatar" :isType="true" v-on:isInfo="isInfoAvatar" v-on:checkList="checkListAvatar" v-on:closeButton="imgUploadAvatar = false"></MaterialList>
+            </el-dialog>
+
+
             <!-- 出游人群 -->
             <el-form-item label="出游人群" prop="Excursion" label-width="120px">
               <el-select v-model="ruleForm.Excursion" placeholder="请选择" class="Excursion-select">
@@ -182,18 +203,18 @@
               <span class="apply_day">天</span>
             </el-form-item>
             <!-- 最晚收客时间 -->
-            <div class="latest">
-              <!-- 时 -->
+            <!-- <div class="latest">
+
               <el-form-item style="width:300px; float:left;" label='最晚收客时间' prop="timeHour" label-width="120px">
                 <el-input style="width:50px; float:left; margin-left:10px;" v-model="ruleForm.timeHour"></el-input>
                 <span style="float:left;color: #333; margin-left:10px;">时</span>
               </el-form-item>
-              <!-- 分 -->
+
               <el-form-item style="float:left; margin-left:-85px;" prop="timeMinute" class="err_span">
                 <el-input style="width:50px;float:left;" v-model="ruleForm.timeMinute" class="err_span"></el-input>
                 <span style="float:left;color: #333; margin-left:10px;">分</span>
               </el-form-item>
-            </div>
+            </div> -->
             <!-- 产品概括 -->
             <!--<el-form-item label="产品概括" prop="productSummary" label-width="120px">
               <el-input type="textarea" :autosize="{ minRows: 8, maxRows: 8}" v-model="ruleForm.productSummary" class="Summary"></el-input>
@@ -247,7 +268,7 @@
                     <!--描述方式-->
                     <div class="describe_way">描述方式</div>
                     <ul class="description">
-                      <li v-for="(item,index) in describe" :key="index" :class="{active:index == num}" @click="tab(index)">
+                      <li v-for="(item,index) in describe" :key="index" :class="{active:index == num}" @click="tab(index)" @change="changeTab(index)">
                         <span v-if="index=='0'">
                           <el-radio  label="0" v-model="matter_radio" checked>{{item}}</el-radio>
                         </span>
@@ -269,7 +290,7 @@
                         <!--去程-->
                         <div class="plane" v-for="(item, index) in ruleForm.plane" :key="item.index">
                           <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
-                            <el-cascader class="plane_type" v-model="selectedOptions" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficClear(index)"></el-cascader>
+                            <el-cascader style="width: 100px;" class="plane_type" v-model="selectedOptions" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficClear(index)"></el-cascader>
                             <span class="plane_text">第</span>
                             <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                               <el-option v-for="(item,index) in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -281,13 +302,8 @@
                                   <el-form-item label="自动填充" prop="pod">
                                     <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
                                      </el-autocomplete> -->
-<<<<<<< HEAD
-                                     <el-input class="inputBox" @clear="clearBle(index)" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_01(index)">
-                                    </el-input> 
-=======
                                      <el-input class="inputBox" @clear="clearBle(index)" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_01(index,'ruleForm')">
                                     </el-input>
->>>>>>> 9726b2d45315595f480edef1369cf140a9477403
                                   </el-form-item>
                                 </el-form>
                               </div>
@@ -297,8 +313,10 @@
                             <div class="aviation" style="margin-top:20px;">
                               <!--第一个-->
                                   <el-form-item :prop="'plane.'+index+'.company'" :rules="rules.company" label="航空公司" label-width="100px" style="float:left;">
-                                    <el-autocomplete class="inputBox" clearable placeholder="请输入航空公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
-                                    </el-autocomplete>
+                                    <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航空公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
+                                    </el-autocomplete> -->
+                                    <el-input class="inputBox" v-model="item.company" @input="myInput" clearable placeholder="请输入航空公司"></el-input>
+
                                   </el-form-item>
                               <!--第二个-->
                               <div style="float:left;">
@@ -333,7 +351,7 @@
                             </div>
                             <!--第二行结束-->
                             <!--第三行-->
-                            <div class="aviation">
+                            <div class="aviation" >
                               <!--第一个-->
                                 <el-form-item label="到达城市" label-width="100px" :prop="'plane.'+index+'.arriveCity'" :rules="rules.arriveCity" style="float:left">
                                   <el-autocomplete class="inputBox" clearable placeholder="请输入到达城市" :fetch-suggestions="querySearch" v-model="item.arriveCity" :trigger-on-focus="false">
@@ -499,13 +517,13 @@
                             <!--第一行-->
                             <div class="aviation" style="margin-top:20px; position:relative;">
                               <!--第一个-->
-                                <el-form-item label="游轮公司" :prop="'plane.'+index+'.company'" :rules="rules.company" label-width="100px" style="float:left;">
-                                  <el-autocomplete class="inputBox" clearable placeholder="请输入游轮公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
+                                <el-form-item label="邮轮公司" :prop="'plane.'+index+'.company'" :rules="rules.company" label-width="100px" style="float:left;">
+                                  <el-autocomplete class="inputBox" clearable placeholder="请输入邮轮公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
                                   </el-autocomplete>
                                 </el-form-item>
                               <!--第二个-->
-                                <el-form-item label="游轮号" label-width="100px" style="float:left;" :prop="'plane.'+index+'.theNumber'" :rules="rules.theNumber">
-                                  <el-autocomplete class="inputBox" clearable placeholder="请输入游轮号" :fetch-suggestions="querySearch" v-model="item.theNumber" :trigger-on-focus="false">
+                                <el-form-item label="邮轮号" label-width="100px" style="float:left;" :prop="'plane.'+index+'.theNumber'" :rules="rules.theNumber">
+                                  <el-autocomplete class="inputBox" clearable placeholder="请输入邮轮号" :fetch-suggestions="querySearch" v-model="item.theNumber" :trigger-on-focus="false">
                                   </el-autocomplete>
                                 </el-form-item>
                             </div>
@@ -595,7 +613,7 @@
                         </div>
                         <div class="plane" v-for="(item, index) in ruleForm.nackPlane" :key="item.index">
                           <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
-                            <el-cascader class="plane_type" v-model="selectedOptions_01" :options="goRoad" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficGoClear(index)"></el-cascader>
+                            <el-cascader style="width: 100px" class="plane_type" v-model="selectedOptions_01" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficGoClear(index)"></el-cascader>
                             <span class="plane_text">第</span>
                             <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                               <el-option v-for="item in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -607,13 +625,8 @@
                                   <el-form-item label="自动填充" prop="pod">
                                     <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
                                      </el-autocomplete> -->
-<<<<<<< HEAD
-                                     <el-input class="inputBox" clearable @clear="clearBle_01(index)" placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_02(index)">
-                                    </el-input> 
-=======
                                      <el-input class="inputBox" clearable @clear="clearBle_01(index)" placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_02(index,'ruleForm')">
                                     </el-input>
->>>>>>> 9726b2d45315595f480edef1369cf140a9477403
                                   </el-form-item>
                                 </el-form>
                               </div>
@@ -825,13 +838,13 @@
                             <!--第一行-->
                             <div class="aviation" style="margin-top:20px; position:relative;">
                               <!--第一个-->
-                                <el-form-item label="游轮公司" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.company'" :rules="rules.company">
-                                  <el-autocomplete class="inputBox" clearable placeholder="请输入游轮公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
+                                <el-form-item label="邮轮公司" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.company'" :rules="rules.company">
+                                  <el-autocomplete class="inputBox" clearable placeholder="请输入邮轮公司" :fetch-suggestions="querySearch" v-model="item.company" :trigger-on-focus="false">
                                   </el-autocomplete>
                                 </el-form-item>
                               <!--第二个-->
-                                <el-form-item label="游轮号" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.theNumber'" :rules="rules.theNumber">
-                                  <el-autocomplete class="inputBox" clearable placeholder="请输入游轮号" :fetch-suggestions="querySearch" v-model="item.theNumber" :trigger-on-focus="false">
+                                <el-form-item label="邮轮号" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.theNumber'" :rules="rules.theNumber">
+                                  <el-autocomplete class="inputBox" clearable placeholder="请输入邮轮号" :fetch-suggestions="querySearch" v-model="item.theNumber" :trigger-on-focus="false">
                                   </el-autocomplete>
                                 </el-form-item>
                             </div>
@@ -1066,11 +1079,11 @@
                           </div>
                           <div class="aviation">
                             <!--住宿-->
-                            <div class="aviation_first">
+                            <div class="aviation_first" style="margin-top: 10px">
                               <div class="aviation_text">住宿</div>
                               <div class="type_radio" style="margin:10px 0 0 0;">
                                 <div>
-                                  <!-- <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span> 
+                                  <!-- <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>
                                   <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>-->
                                   <span><el-radio v-model="myradio[index].lable" label="0">其他</el-radio></span>
                                 <div class="explain">
@@ -1405,13 +1418,25 @@
 <script>
   // import BaseInfo from '@/page/productManagement/baseInfo/baseInfo'
   import {VueEditor} from 'vue2-editor'
+  import MaterialList from '@/common/Image'
+
   export default {
     name: "listInfo",
     components: {
       // BaseInfo,
-      VueEditor
+      VueEditor,
+      MaterialList
     },
     data() {
+      var areaIdRule = (rule, value, callback) => {
+        if(value.length == 0 || value.length < 3 || value.length > 6) {
+          this.isInfo = true;
+          return callback(new Error('请选择3-6张图片'));
+        } else {
+          this.isInfo = false;
+          callback();
+        }
+      };
     return {
       validaError:[],
       dialogVadi:false,//验证提示弹窗
@@ -1491,6 +1516,19 @@
         }, {
           value: '4',
           label: '轮船',
+        }],
+        goRoads: [{
+          value: '1',
+          label: '中转飞机'
+        }, {
+          value: '2',
+          label: '中转火车',
+        }, {
+          value: '3',
+          label: '中转汽车',
+        }, {
+          value: '4',
+          label: '中转轮船',
         }],
         selectedOptions: ['1'],
         //去程天数
@@ -1590,14 +1628,14 @@
           Excursion: '',
           excurList: '',
           advanceRegistrationDays: '',
-          timeHour: '',
-          timeMinute: '',
+          // timeHour: '',
+          // timeMinute: '',
           highlightWords1: '',
           highlightWords2: '',
           highlightWords3: '',
           highlightWords4: '',
-          avatarImages: '',
-          slideshow: '',
+          avatarImages: [], // 图片
+          slideshow: [], // 轮播图
           hotelAuto: '',
           hotelChinese: '',
           hotelEnglish: '',
@@ -1674,9 +1712,10 @@
                          { min: 0, max: 30, message: '产品名称字数超过30汉字限制', trigger: 'blur' },
                          { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
           travelType: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          avatarImages:[{ required: true, message: '头图不能为空', trigger: 'blur' }],
           orderConfirmationType: [{ required: true, message: '订单确认类型不能为空', trigger: 'change' }],
           advanceRegistrationDays: [{ required: true, message: '提前报名天数不能为空', trigger: 'blur' },
-                                    { pattern: /^[+]{0,1}(\d+)$/, message: '提前报名天数需为正整数' }],
+            { pattern: /^[1-9]\d*$/, message: '提前报名天数需为正整数', trigger: 'blur' }],
           highlightWords1: [{ required: true, message: '亮点词不能为空', trigger: 'blur' },
                             { min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
           highlightWords2: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
@@ -1687,8 +1726,8 @@
           travelNight: [{ required: true, message: '行程晚数不能为空', trigger: 'blur' },
             { pattern: /^[1-9]\d*$/, message: '行程晚数需为正整数' }],
           stopDate:[{required: true, message: '经停时间不能为空', trigger: 'blur'}],
-          timeHour: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
-                     { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
+          // timeHour: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
+          //            { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
           timeMinute: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
                        { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
           operationLabel: [{ pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/, message: '不能有标点符号' }],
@@ -1705,8 +1744,8 @@
           hotelHouse: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelBed: [{ required: true, message: '不能为空', trigger: 'blur' }],
           pod: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          company: [{ required: true, message: '航空公司/游轮公司不能为空', trigger: 'blur' }],
-          theNumber: [{ required: true, message: '航班号/车次/游轮号不能为空', trigger: 'blur' }],
+          company: [{ required: true, message: '航空公司/邮轮公司不能为空', trigger: 'blur' }],
+          theNumber: [{ required: true, message: '航班号/车次/邮轮号不能为空', trigger: 'blur' }],
           podCity:[{ required: true, message: '出发城市不能为空', trigger: 'blur' }],
           podPlace: [{ required: true, message: '出发机场/出发车站/出发码头不能为空', trigger: 'blur' }],
           podTime: [{ required: true, message: '出发时间不能为空', trigger: 'blur' }],
@@ -1720,7 +1759,7 @@
           time: [{ required: true, message: '不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '不能为空', trigger: 'blur' }],
           details: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          // slideshow:[{ required: true, message: '不能为空', trigger: 'blur' }],
+          slideshow:[{ validator: areaIdRule}],
           memo: [{ required: true, message: '不能为空', trigger: 'blur' }],
           details: [{ required: true, message: '不能为空', trigger: 'blur' }],
           pictureID: [{ required: true, message: '不能为空', trigger: 'blur' }],
@@ -1842,18 +1881,29 @@
         inputVal4: '',
         errorNull: '',
         sid:'',
-        //头图上传
-        imageSearch:'',//弹窗搜索框
-        props1: {//头图上传左侧tree
-          label: 'name',
-          isLeaf: 'leaf'
-        },
+        
+        //头图上传 ========
+        isImgUrlShow: false,
+        imgUrlShow: '', // 点击查看图片
+        imgUpload: false,     // 上传弹窗
+        imgData: [],
+        // 头图上传END ======
+
+        // 轮播图上传 =======
+        isImgUrlShowAvatar: false,
+        imgUrlShowAvatar: '', // 点击查看图片
+        imgUploadAvatar: false,     // 上传弹窗
+        imgDataAvatar: [],
+        isInfo: false, // 验证
+        // 轮播图END =======
+
+
+
         data: '', // 存单击数据
         theContinent: '', // 所属地区id
         node: '', // 获取tree子级数据
         resolve: '', // 获取tree子级方法
         level: '', // 层级数据
-        figureShow:false,//头图弹窗
         list_a:[],//tree数组
       }
     },
@@ -1876,7 +1926,7 @@
           }
           //日常信息数据
           if(newValue>oldValue){
-            this.mydate = newValue-oldValue;         
+            this.mydate = newValue-oldValue;
             for (let i = 0; i < this.mydate; i++) {
             this.ruleForm.schedules.push({
               day:i+1,
@@ -1913,7 +1963,7 @@
                 {IsHotel:0,Details:""}
               ]*/
             });
-            this.myradio.push({'lable':'0'});   //保存行程里面酒店信息单选值     
+            this.myradio.push({'lable':'0'});   //保存行程里面酒店信息单选值
             }
           }else{
            this.ruleForm.schedules.splice(newValue,oldValue-newValue);
@@ -1931,47 +1981,7 @@
       this.itemList();
     },
     methods: {
-      qwer(){
-        console.log(312)
-      },
-      //头图上传左侧tree
-      loadNode1(node, resolve) {
-        this.node = node.data
-        this.resolve = resolve
-        this.level = node.level
-        /*添加第一级*/
-        if (node.level === 0) {
-          this.list_a=[];
-          this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",{
-              "object": {
-                "parentID": -1,
-              }
-            }).then(obj => {
-              for (let i = 0; i < obj.data.objects.length; i++) {
-                this.list_a.push({
-                  name:obj.data.objects[i].areaName,
-                  key: i,
-                  id: obj.data.objects[i].id,
-                  isLeaf: obj.data.objects[i].isLeaf, // 是否是末级
-                  Hierarchy: 0 // 层级
-                })
-              }
-              resolve(this.list_a);
-            }).catch(obj => {
-              console.log(obj)
-            })
-        }
-        if (node.level >= 1) {
-          this.getSon(
-            node.data.key,
-            node.data.label,
-            node.data.id,
-            node.data.isLeaf,
-            resolve,
-            node.level
-          );
-        }
-      },
+
       /*获取子集的方法*/
       getSon(key, label, id, isLeaf, resolve, level){
         this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",
@@ -2013,23 +2023,9 @@
           console.log(error);
         });
       },
-      // 单击tree节点
-      treeClick(data,node){     
-        this.data = data;
-        if (data.isLeaf == 1) {
-          if(this.addAlbum==false){
-          this.geography = 1;
-          this.albumPage();
-        }else{
-          this.picForm.destination=this.data.name;
-          this.picForm.destinationId=this.data.id;
-          this.leftTree1=false; 
-         }
-        }
-      },
+
       //头图弹窗
       figureClick(){
-        this.figureShow = true;
         //this.getFigure();
       },
       getFigure(){//获取当前ID的父级路径
@@ -2043,9 +2039,6 @@
         //console.log(this.dynamicTags4)
       },
 
-      figureClose(){
-        this.figureShow = false;
-      },
 
       myInput(){//基本信息文字限制30个字颜色变红
         if(this.ruleForm.productNamel.length>30){
@@ -2153,8 +2146,8 @@
                   vedioID:0,//基本信息视频?
                   pepeatpic:"",//基本信息轮播图?
                   advanceDay:this.ruleForm.advanceRegistrationDays,
-                  advanceHour:this.ruleForm.timeHour,
-                  advanceMinute:this.ruleForm.timeMinute,
+                  // advanceHour:this.ruleForm.timeHour,
+                  // advanceMinute:this.ruleForm.timeMinute,
                   createUser:sessionStorage.getItem('id'),
                   proStat:1,
                   guid:localStorage.getItem("guid"),
@@ -2182,11 +2175,31 @@
                   instructions1:this.notes, //预订须知,预留接口无字段？
                   instructions2:this.instructions, //使用说明,预留接口无字段？
                   loadPackage: true
-                }  
+                }
               //  console.log(this.ruleForm.theme)
                // console.log(this.ruleForm.Excursion)
-               // console.log(JSON.stringify(object))    
+               // console.log(JSON.stringify(object))
         this.$refs[formName].validate((valid) => {
+        // this.$refs['form'].clearValidate('openingHours');
+        if(this.matter_radio == 1) {
+          this.$refs[formName].clearValidate('plane.0.company');
+          this.$refs[formName].clearValidate('plane.0.theNumber'); 
+          this.$refs[formName].clearValidate('plane.0.podCity'); 
+          this.$refs[formName].clearValidate('plane.0.podPlace'); 
+          this.$refs[formName].clearValidate('plane.0.podTime'); 
+          this.$refs[formName].clearValidate('plane.0.arriveCity'); 
+          this.$refs[formName].clearValidate('plane.0.arrivePlace'); 
+          this.$refs[formName].clearValidate('plane.0.arriveTime'); 
+
+          this.$refs[formName].clearValidate('nackPlane.0.company');
+          this.$refs[formName].clearValidate('nackPlane.0.theNumber'); 
+          this.$refs[formName].clearValidate('nackPlane.0.podCity'); 
+          this.$refs[formName].clearValidate('nackPlane.0.podPlace'); 
+          this.$refs[formName].clearValidate('nackPlane.0.podTime'); 
+          this.$refs[formName].clearValidate('nackPlane.0.arriveCity'); 
+          this.$refs[formName].clearValidate('nackPlane.0.arrivePlace'); 
+          this.$refs[formName].clearValidate('nackPlane.0.arriveTime'); 
+        }
           if(valid){
               var _this = this;
               this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
@@ -2202,7 +2215,7 @@
               }).catch(function(error) {
                 console.log(error);
               });
-              
+
           }else{
             this.errors();
           }
@@ -2224,7 +2237,7 @@
           if(_this.dynamicTags4.length==0){
              _this.validaError.unshift("基本信息目的地不能为空");
           }
-        },500);              
+        },500);
       },
       // 取消
       cancel(){
@@ -2268,14 +2281,44 @@
         this.ruleForm.plane[index].ext_Stopover.splice(p, 1)
       },
       deletePanel(index) {
-        this.ruleForm.plane.splice(index, 1)
+         this.$confirm('是否删除该交通信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.ruleForm.plane.splice(index, 1)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       },
       //返程添加经停、删除经停
       reDeleteItem(p, index) {
         this.ruleForm.nackPlane[index].ext_Stopover.splice(p, 1)
       },
       reDeletePanel(index) {
-        this.ruleForm.nackPlane.splice(index, 1)
+        this.$confirm('是否删除该交通信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.ruleForm.nackPlane.splice(index, 1)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       },
       reStopping(index) {
         {
@@ -2329,7 +2372,7 @@
           this.ruleForm.plane[index].arriveTime = '';
           this.ruleForm.plane[index].planeDay = '';
           this.ruleForm.plane[index].day = '';
-      
+
       },
       clearBle_01(index){
           this.ruleForm.nackPlane[index].company = '';
@@ -2342,7 +2385,7 @@
           this.ruleForm.nackPlane[index].arriveTime = '';
           this.ruleForm.nackPlane[index].planeDay = '';
           this.ruleForm.nackPlane[index].day = '';
-      
+
       },
       trafficGoClear(index){//返程切换交通方式清空
         this.ruleForm.nackPlane[index].pod = '';
@@ -2501,8 +2544,59 @@
         this.handleTabsEdit(this.aindex, "remove");
         this.comboshow = false;
       },
+      changeTab(data) {
+        this.$confirm('切换之后会清空交通信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.num = data;
+          //去程
+          this.ruleForm.plane = [{
+            pod: '',
+            id: 0,
+            goOrBack:1,
+            company: '',
+            theNumber: '',
+            podCity: '',
+            podPlace: '',
+            podTime: '',
+            arriveCity: '',
+            arrivePlace: '',
+            arriveTime: '',
+            planeDay: '',
+            trafficMode: '1',
+            day: '1',
+            ext_Stopover: []
+          }];
+          //返程
+          this.ruleForm.nackPlane = [{
+            pod: '',  //套餐id
+            id: 0,
+            goOrBack:2,   //1去程 2返程
+            company: '',  //航空公司
+            theNumber: '',   //航班号
+            podCity: '',           //出发城市
+            podPlace: '',   //出发机场
+            podTime: '',    //出发时间
+            arriveCity: '',    //到达城市
+            arrivePlace: '',     //到达机场
+            arriveTime: '',      //到达时间
+            planeDay: '',       //到达天数
+            trafficMode: '1',  //出行方式
+            day: '1',      //第几天
+            ext_Stopover: []
+          }];
+        }).catch(() => {
+          if(data == 0) {
+            this.matter_radio = '1';
+          } else if(data == 1) {
+            this.matter_radio = '0';
+          }
+        });
+      },
       tab(index) {
-        this.num = index;
+        // this.num = index;
       },
       tab1(index) {
         this.num1 = index;
@@ -2558,9 +2652,9 @@
                  this.ruleForm.plane[0].arrivePlace=data.arrivalAirport; //到达机场
                  this.ruleForm.plane[0].arriveTime=data.arrivalTime;//到达时间
                  this.ruleForm.plane[0].planeDay=data.day;//到达天数
-                 this.ruleForm.plane[0].trafficMode=data.byType;//出行方式    
+                 this.ruleForm.plane[0].trafficMode=data.byType;//出行方式
               }
-        }) 
+        })
       },*/
       //不带下拉框获取一条Flights
       handleSelectPod_01(index,ruleForm){//去程获取
@@ -2582,10 +2676,6 @@
                  this.ruleForm.plane[index].arriveCity=data.reachingCity;//到达城市
                  this.ruleForm.plane[index].arrivePlace=data.arrivalAirport; //到达机场
                  this.ruleForm.plane[index].arriveTime=data.arrivalTime;//到达时间
-<<<<<<< HEAD
-                 this.ruleForm.plane[index].planeDay=data.day;//到达天数
-                 this.ruleForm.plane[index].trafficMode=data.byType;//出行方式    
-=======
                 if(data.day == 0 ){
                   this.ruleForm.plane[index].planeDay="当日";
                 }else if (data.day == 1){
@@ -2594,9 +2684,8 @@
                   this.ruleForm.plane[index].planeDay="第三天";
                 }
                  this.ruleForm.plane[index].trafficMode=data.byType;//出行方式
->>>>>>> 9726b2d45315595f480edef1369cf140a9477403
               }
-        }) 
+        })
       },
       handleSelectPod_02(index,ruleForm){//返程获取
         this.$refs[ruleForm].resetFields();
@@ -2617,10 +2706,6 @@
                  this.ruleForm.nackPlane[index].arriveCity=data.reachingCity;//到达城市
                  this.ruleForm.nackPlane[index].arrivePlace=data.arrivalAirport; //到达机场
                  this.ruleForm.nackPlane[index].arriveTime=data.arrivalTime;//到达时间
-<<<<<<< HEAD
-                 this.ruleForm.nackPlane[index].planeDay=data.day;//到达天数
-                 this.ruleForm.nackPlane[index].trafficMode=data.byType;//出行方式    
-=======
                 if(data.day == 0 ){
                   this.ruleForm.nackPlane[index].planeDay="当日";
                 }else if (data.day == 1){
@@ -2629,9 +2714,8 @@
                   this.ruleForm.nackPlane[index].planeDay="第三天";
                 }
                  this.ruleForm.nackPlane[index].trafficMode=data.byType;//出行方式
->>>>>>> 9726b2d45315595f480edef1369cf140a9477403
               }
-        }) 
+        })
       },
       querySearch(queryString, cb) {
         //this.flightsList =[]
@@ -3021,6 +3105,74 @@
            second=second < 10 ? ('0' + second) : second;  
            //return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;  
            return y + '-' + m + '-' + d+' '+h+':'+minute;  
+      },
+      // 图片上传==================
+      handleList(a) {
+        if (a.target.id != 'showDiv') {
+          this.isImgUrlShow = false;
+          this.isImgUrlShowAvatar = false;
+        }
+      },
+      // 点击图片查看
+      imgClickShow(data) {
+        this.$http.post('http://192.168.1.186:3024' + '/picture/api/get',{
+            "id": data.img_ID,
+        }).then(res => {
+          this.isImgUrlShow = true;
+          this.imgUrlShow = "http://192.168.1.186:3009/upload" + res.data.object.url;
+        })
+      },
+      // 上传按钮
+      handleImgUpload() {
+        this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
+        this.imgUpload = true;
+      },
+      // 点击删除图片
+      imgDelete(data) {
+        this.ruleForm.avatarImages.splice(this.ruleForm.avatarImages.indexOf(data), 1);
+      },
+      // 图片添加
+      checkList(data) {
+        this.ruleForm.avatarImages = data.map(v => {
+          return {
+            img_ID: v,
+          }
+        })
+      },
+      // 图片上传END================
+
+      // 轮播图上传=================
+      // 点击图片查看
+      imgClickShowAvatar(data) {
+        this.$http.post('http://192.168.1.186:3024' + '/picture/api/get',{
+            "id": data.img_ID,
+        }).then(res => {
+          this.isImgUrlShowAvatar = true;
+          this.imgUrlShowAvatar = "http://192.168.1.186:3009/upload" + res.data.object.url;
+        })
+      },
+      // 上传按钮
+      handleImgUploadAvatar() {
+        this.imgDataAvatar = this.ruleForm.slideshow.map(v => v.img_ID);
+        this.imgUploadAvatar = true;
+      },
+      // 点击删除图片
+      imgDeleteAvatar(data) {
+        this.ruleForm.slideshow.splice(this.ruleForm.slideshow.indexOf(data), 1);
+      },
+      // 图片添加
+      checkListAvatar(data) {
+        this.ruleForm.slideshow = data.map(v => {
+          return {
+            img_ID: v,
+          }
+        })
+      },
+      isInfoAvatar(data) {
+        this.isInfo = data;
+        if(!data) {
+          this.$refs.slideshow.clearValidate();
+        }
       }
     }
   }
@@ -3050,7 +3202,7 @@
   .plane { width: 98%; overflow: hidden; background-color: #fafafa; margin-left: 1%; margin-bottom: 20px; margin-top: 20px; }
   .plane_type { width: 80px; margin: 20px 0 0 20px; }
   .plane_text { margin: 0 0 0 15px; }
-  .aviation { padding: 0 0 0 0; clear: both; width: 100%; }
+  .aviation { padding: 0 0 0 0; clear: both; width: 100%; padding-top: 7px; }
   .aviation_first { margin: 0 0 0 0; float: left; }
   .aviation_text { width: 85px; text-align: right; margin: 0 15px 0 0; float: left; line-height: 40px; }
   .aviation_input { width: 200px; float: left; }
@@ -3214,4 +3366,60 @@
   .treeDemo{margin:20px}
   .main-container{width: 100%;padding-bottom: 60px;overflow: auto;max-width:1800px}
   .left-tree{float: left;margin-top: 10px;width: 22%;height: 550px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;margin-left: 3%;overflow: auto;}
+
+  .img_upload {
+    float: left;
+    min-width: 110px;
+    height: 40px;
+    margin-left: 10px;
+    border: solid 1px #E4E7ED;
+    background-color: #f5f7fa;
+  }
+  .img_list {
+    float: left;
+    margin: 5px 0 0 10px;
+    width: 30px;
+    height: 30px;
+    user-select:none;
+  }
+  .img_list:hover {
+    cursor:pointer;
+  }
+  .img_div {
+    float: left;
+    margin: 9px 0 0 0;
+    border: solid 2px #717171;
+    width: 10px;
+    height: 18px;
+    text-align: center;
+    line-height: 16px;
+    font-size: 18px;
+    background: #FFFFFF;
+    user-select:none;
+  }
+  .img_div:hover {
+    cursor:pointer;
+  }
+  .img_button {
+    float: left;
+  }
+  .show_div {
+    width: 300px;
+    margin: 40px 0 0 10px;
+    position: relative;
+    top: 10px;
+    z-index: 999;
+  }
+  .show_img {
+    width: 100%;
+    height: 200px;
+  }
+  .img_upload_slideshow {
+    float: left;
+    min-width: 540px;
+    height: 38px;
+    margin-left: 10px;
+    border: solid 1px #E4E7ED;
+    background-color: #f5f7fa;
+  }
 </style>
