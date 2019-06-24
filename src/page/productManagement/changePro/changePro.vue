@@ -1071,7 +1071,7 @@
         for(var i=0;i<sche.length;i++){
           sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
         }
-      if(this.ruleForm.bourn.destination == undefined){
+      if(this.ruleForm.bourn.destination == undefined){ 
 
         this.ruleForm.mudidi = this.ruleForm.bourn
       }else{
@@ -1789,7 +1789,7 @@
   /*验证提示弹窗*/
   .tips ul{text-align: left;margin:-20px 0 30px 10px;line-height: 25px;padding: 0;}
   .tips ul li{margin: 10px 0 10px 50px;height: 20px;}
-  
+
   .change_save{ position: absolute;top: 70px;right: 206px;}
   .aid_address{float: left; }
   .set_meal_name{float: left;margin-left: 150px;margin-top: 5px;}

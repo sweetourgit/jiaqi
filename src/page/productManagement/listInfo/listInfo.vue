@@ -32,6 +32,7 @@
                 <el-button v-else class="input-new-tag" size="small" @click="showInput3">请输入出发地</el-button>
               </div>
               <span id="isNull" v-show="noNull">不能为空</span>
+              <span v-show="noNull1" style="color: #f56c6c;font-size: 12px; position: relative;left: -430px;">不能为空</span>
             </el-form-item>
             <!-- 目的地 -->
             <el-form-item label="目的地" ref="destinations" style="clear:both;" label-width="120px">
@@ -45,6 +46,7 @@
                 <el-button v-else class="input-new-tag" size="small" @click="showInput4">请输入目的地</el-button>
               </div>
               <span id="zero" v-show="errorNull">不能为空</span>
+              <span v-show="noNull2" style="color: #f56c6c;font-size: 12px; position: relative;left: -430px;">不能为空</span>
             </el-form-item>
             <!-- 行程天數 -->
             <div style="overflow:hidden">
@@ -220,22 +222,22 @@
               <el-tabs v-model="editableTabsValue" type="card" @edit="handleTabsEdit"> <!--editable不可编辑多个套餐-->
                 <el-tab-pane :key="index" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name">
                     <!--套餐名-->
-                  <el-form-item class="setmeal" label="套餐名" label-width="100px">
+                  <el-form-item class="setmeal" label="套餐名" label-width="100px" prop="highlightWords">
                     <el-input maxlength=10 v-model="ruleForm.highlightWords" class="highlightWords-input1" placeholder="10个字以内"></el-input>
                     <span class="span1">{{ruleForm.highlightWords.length}}/10字</span>
                   </el-form-item>
                   <!--出发地-->
                   <div class="setout"><span>*</span>出发地</div>
-                  <el-form-item prop="origin" style="float:left">
+                  <el-form-item prop="origin" style="float:left" >
                   <el-select class="depart" v-model="ruleForm.origin" placeholder="出发地" value-key="id">
-                    <el-option v-for="item in dynamicTags3" :key="item.pod" :label="item.pod" :value="item"></el-option>
+                    <el-option v-for="item in dynamicTags3" :key="item.pod" :label="item.pod" :value="item.podID" ></el-option>
                   </el-select>
                   </el-form-item>
                   <!--目的地-->
                   <div class="setout"><span>*</span>目的地</div>
                   <el-form-item prop="bourn" style="float:left">
                   <el-select class="depart" v-model="ruleForm.bourn" placeholder="目的地" value-key="id">
-                    <el-option v-for="item in dynamicTags4" :key="item.destination" :label="item.destination" :value="item"></el-option>
+                    <el-option v-for="item in dynamicTags4" :key="item.destination" :label="item.destination" :value="item.destinationID"></el-option>
                   </el-select>
                   </el-form-item>
                   <!--套餐名结束-->
@@ -274,13 +276,18 @@
                             </el-select>
                             <span class="plane_text">天</span>
                               <!--航班号自动填充-->
-                              <div class="aviation" style="position:absolute; top:20px; left:300px;">
+                              <div  v-if="selectedOptions== 1" class="aviation" style="position:absolute; top:20px; left:300px;">
                                 <el-form :model="item" label-width="100px" style="float:left;">
                                   <el-form-item label="自动填充" prop="pod">
                                     <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
                                      </el-autocomplete> -->
+<<<<<<< HEAD
                                      <el-input class="inputBox" @clear="clearBle(index)" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_01(index)">
                                     </el-input> 
+=======
+                                     <el-input class="inputBox" @clear="clearBle(index)" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_01(index,'ruleForm')">
+                                    </el-input>
+>>>>>>> 9726b2d45315595f480edef1369cf140a9477403
                                   </el-form-item>
                                 </el-form>
                               </div>
@@ -346,32 +353,28 @@
                                   </el-autocomplete>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
-                                <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                <el-option  v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
                               </el-select>
+                              <div closable>
+                                <div class="transit_border" v-show="lineshow"></div>
+                                <div class="abc" v-for="(iteml, p) in item.ext_Stopover" :key="p" type="text">
+                                  <el-form-item label="经停城市" prop="stopCity" label-width="100px"  :rules="rules.stopCity" style="float:left">
+                                    <el-autocomplete class="inputBox" clearable placeholder="请输入经停城市" :fetch-suggestions="querySearch" v-model="iteml.stopCity" :trigger-on-focus="false" style="margin:0;">
+                                    </el-autocomplete>
+                                  </el-form-item>
+                                  <el-form-item label="经停时间" :prop="'plane.'+index+'.ext_Stopover.'+p+'.stopDate'" label-width="100px"  :rules="rules.stopDate" style="float:left">
+                                    <el-autocomplete class="inputBox" clearable placeholder="请输入经停时间" :fetch-suggestions="querySearch" v-model="iteml.stopDate" :trigger-on-focus="false" style="margin:0;">
+                                    </el-autocomplete>
+                                  </el-form-item>
+                                  <div class="minutes">分钟</div>
+                                  <div class="delete" @click="deleteItem(p,index)">删除</div>
+                                </div>
+                              </div>
                             </div>
                             <!--第三行结束-->
                             <!--添加经停-->
-                            <div closable>
-                              <div class="transit_border" v-show="lineshow"></div>
-                              <div class="abc" v-for="(iteml, p) in item.ext_Stopover" :key="p" type="text">
-                                <el-form label-width="100px" style="float:left;">
-                                  <el-form-item label="经停城市" prop="stopCity">
-                                    <el-autocomplete class="inputBox" clearable placeholder="请输入经停城市" :fetch-suggestions="querySearch" v-model="iteml.stopCity" :trigger-on-focus="false">
-                                    </el-autocomplete>
-                                  </el-form-item>
-                                </el-form>
-                                <el-form label-width="100px" style="float:left;">
-                                  <el-form-item label="经停时间" prop="stopDate">
-                                    <el-autocomplete class="inputBox" clearable placeholder="请输入经停时间" :fetch-suggestions="querySearch" v-model="iteml.stopDate" :trigger-on-focus="false">
-                                    </el-autocomplete>
-                                  </el-form-item>
-                                </el-form>
-                                <div class="minutes">分钟</div>
-                                <div class="delete" @click="deleteItem(p,index)">删除</div>
-                              </div>
-                            </div>
                             <!--添加经停结束-->
-                            <div class="transit">
+                            <div class="transit"  v-if="selectedOptions== 1">
                               <el-button style="float:left; margin-bottom:10px;" @click="stopping(index)">添加经停</el-button>
                             </div>
                             <div class="addTab">
@@ -575,7 +578,7 @@
                               </div>
                             </div>
                             <!--添加经停结束-->
-                            <div class="transit">
+                            <div   v-if="selectedOptions== 1" class="transit">
                               <el-button style="float:left; margin-bottom:10px;" @click="stopping(index)">添加经停</el-button>
                             </div>
                             <div class="addTab" v-show="deleteTransit">
@@ -599,13 +602,18 @@
                             </el-select>
                             <span class="plane_text">天</span>
                             <!--航班号自动填充-->
-                            <div class="aviation" style="position:absolute; top:20px; left:300px;">
+                            <div v-if="selectedOptions_01 == 1" class="aviation" style="position:absolute; top:20px; left:300px;">
                                 <el-form :model="item" label-width="100px" style="float:left;">
                                   <el-form-item label="自动填充" prop="pod">
                                     <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
                                      </el-autocomplete> -->
+<<<<<<< HEAD
                                      <el-input class="inputBox" clearable @clear="clearBle_01(index)" placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_02(index)">
                                     </el-input> 
+=======
+                                     <el-input class="inputBox" clearable @clear="clearBle_01(index)" placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_02(index,'ruleForm')">
+                                    </el-input>
+>>>>>>> 9726b2d45315595f480edef1369cf140a9477403
                                   </el-form-item>
                                 </el-form>
                               </div>
@@ -671,28 +679,25 @@
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                 <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
                               </el-select>
+                              <div closable>
+                                <div class="transit_border" v-show="lineshow"></div>
+                                <div class="abc" v-for="(iteml, p) in item.ext_Stopover" :key="p" type="text">
+                                  <el-form-item label="经停城市" prop="stopCity" label-width="100px"  :rules="rules.stopCity" style="float:left">
+                                    <el-autocomplete class="inputBox" clearable placeholder="请输入经停城市" :fetch-suggestions="querySearch" v-model="iteml.stopCity" :trigger-on-focus="false" style="margin:0;">
+                                    </el-autocomplete>
+                                  </el-form-item>
+                                  <el-form-item label="经停时间" :prop="'plane.'+index+'.ext_Stopover.'+p+'.stopDate'" label-width="100px"  :rules="rules.stopDate" style="float:left">
+                                    <el-autocomplete class="inputBox" clearable placeholder="请输入经停时间" :fetch-suggestions="querySearch" v-model="iteml.stopDate" :trigger-on-focus="false" style="margin:0;">
+                                    </el-autocomplete>
+                                  </el-form-item>
+                                  <div class="minutes">分钟</div>
+                                  <div class="delete" @click="deleteItem(p,index)">删除</div>
+                                </div>
+                              </div>
                             </div>
                             <!--第三行结束-->
                             <!--添加经停-->
-                            <div type="card" closable>
-                              <div class="transit_border" v-show="Returnline"></div>
-                              <div class="abc" v-for="(iteml, p) in item.ext_Stopover" :key="p" type="text">
-                                <el-form label-width="100px" style="float:left;">
-                                  <el-form-item label="经停城市" prop="stopCity">
-                                    <el-autocomplete class="inputBox" clearable placeholder="请输入经停城市" :fetch-suggestions="querySearch" v-model="iteml.stopCity" :trigger-on-focus="false">
-                                    </el-autocomplete>
-                                  </el-form-item>
-                                </el-form>
-                                <el-form label-width="100px" style="float:left;">
-                                  <el-form-item label="经停时间" prop="stopDate">
-                                    <el-autocomplete class="inputBox" clearable placeholder="请输入经停时间" :fetch-suggestions="querySearch" v-model="iteml.stopDate" :trigger-on-focus="false">
-                                    </el-autocomplete>
-                                  </el-form-item>
-                                </el-form>
-                                <div class="minutes">分钟</div>
-                                <div class="delete" @click="reDeleteItem(p,index)">删除</div>
-                              </div>
-                            </div>
+
                             <!--添加经停结束-->
                             <div class="transit">
                               <el-button style="float:left; margin-bottom:10px;" @click="reStopping(index)">添加经停</el-button>
@@ -899,7 +904,7 @@
                               </div>
                             </div>
                             <!--添加经停结束-->
-                            <div class="transit">
+                            <div class="transit" v-if="selectedOptions_01 == 1" >
                               <el-button style="float:left; margin-bottom:10px;" @click="reStopping(index)">添加经停</el-button>
                             </div>
                             <div class="addTab" v-show="deleteTransit">
@@ -1507,17 +1512,23 @@
         selectedOptions_01: ['1'],
         //去程、返程当日选择
         goDay: [{
-          value: '选项1',
+          value: '0',
           label: '当日'
         }, {
-          value: '选项2',
-          label: '第一天'
+          value: '2',
+          label: '第二天'
         }, {
-          value: '选项3',
-          label: '第一天'
+          value: '3',
+          label: '第三天'
         }, {
-          value: '选项4',
-          label: '第一天'
+          value: '4',
+          label: '第四天'
+        }, {
+          value: '5',
+          label: '第五天'
+        }, {
+          value: '6',
+          label: '第六天'
         }],
         //酒店星级
         hotelStars: [{
@@ -1672,15 +1683,16 @@
           highlightWords3: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
           highlightWords4: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
           travelDays: [{ required: true, message: '行程天数不能为空', trigger: 'blur' },
-                       { pattern: /^[+]{0,1}(\d+)$/, message: '行程天数需为正整数' }],
+            { pattern: /^[1-9]\d*$/, message: '行程天数需为正整数' }],
           travelNight: [{ required: true, message: '行程晚数不能为空', trigger: 'blur' },
-                        { pattern: /^[+]{0,1}(\d+)$/, message: '行程晚数需为正整数'}],
+            { pattern: /^[1-9]\d*$/, message: '行程晚数需为正整数' }],
+          stopDate:[{required: true, message: '经停时间不能为空', trigger: 'blur'}],
           timeHour: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
                      { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
           timeMinute: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
                        { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
           operationLabel: [{ pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/, message: '不能有标点符号' }],
-          highlightWords: [{ required: true, message: '不能为空', trigger: 'blur' },
+          highlightWords: [{ required: true, message: '套餐名不能为空', trigger: 'blur' },
                            { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' }],
           origin: [{ required: true, message: '行程出发地不能为空', trigger: 'change' }],
           bourn: [{ required: true, message: '行程目的地不能为空', trigger: 'change' }],
@@ -1822,6 +1834,8 @@
         inputVisible3: false,
         inputVal3: '',
         noNull: false,
+        noNull1:false,
+        noNull2:false,
         //目的地
       dynamicTags4: [],
         inputVisible4: false,
@@ -1917,6 +1931,9 @@
       this.itemList();
     },
     methods: {
+      qwer(){
+        console.log(312)
+      },
       //头图上传左侧tree
       loadNode1(node, resolve) {
         this.node = node.data
@@ -2070,6 +2087,19 @@
       },
       //保存
       addsave(formName) {
+        console.log(this.dynamicTags3)
+        this.noNull1 = false
+        this.noNull2 = false
+        if(this.dynamicTags3 == ""){
+         this.noNull1 = true
+        }else{
+          this.noNull1 = false
+        }
+        if(this.dynamicTags4 == ""){
+          this.noNull2 = true
+        }else{
+          this.noNull1 = false
+        }
         //基本信息亮点词
         let strengths=[];
         if(this.ruleForm.highlightWords1!=""){
@@ -2533,7 +2563,8 @@
         }) 
       },*/
       //不带下拉框获取一条Flights
-      handleSelectPod_01(index){//去程获取
+      handleSelectPod_01(index,ruleForm){//去程获取
+        this.$refs[ruleForm].resetFields();
         if(this.ruleForm.plane[index].pod == ''){
           this.clearBle(index);
           return false;
@@ -2551,12 +2582,24 @@
                  this.ruleForm.plane[index].arriveCity=data.reachingCity;//到达城市
                  this.ruleForm.plane[index].arrivePlace=data.arrivalAirport; //到达机场
                  this.ruleForm.plane[index].arriveTime=data.arrivalTime;//到达时间
+<<<<<<< HEAD
                  this.ruleForm.plane[index].planeDay=data.day;//到达天数
                  this.ruleForm.plane[index].trafficMode=data.byType;//出行方式    
+=======
+                if(data.day == 0 ){
+                  this.ruleForm.plane[index].planeDay="当日";
+                }else if (data.day == 1){
+                  this.ruleForm.plane[index].planeDay="第二天";
+                }else if (data.day == 2){
+                  this.ruleForm.plane[index].planeDay="第三天";
+                }
+                 this.ruleForm.plane[index].trafficMode=data.byType;//出行方式
+>>>>>>> 9726b2d45315595f480edef1369cf140a9477403
               }
         }) 
       },
-      handleSelectPod_02(index){//返程获取
+      handleSelectPod_02(index,ruleForm){//返程获取
+        this.$refs[ruleForm].resetFields();
          if(this.ruleForm.nackPlane[index].pod == ''){
           this.clearBle_01(index);
           return false;
@@ -2574,8 +2617,19 @@
                  this.ruleForm.nackPlane[index].arriveCity=data.reachingCity;//到达城市
                  this.ruleForm.nackPlane[index].arrivePlace=data.arrivalAirport; //到达机场
                  this.ruleForm.nackPlane[index].arriveTime=data.arrivalTime;//到达时间
+<<<<<<< HEAD
                  this.ruleForm.nackPlane[index].planeDay=data.day;//到达天数
                  this.ruleForm.nackPlane[index].trafficMode=data.byType;//出行方式    
+=======
+                if(data.day == 0 ){
+                  this.ruleForm.nackPlane[index].planeDay="当日";
+                }else if (data.day == 1){
+                 this.ruleForm.nackPlane[index].planeDay="第二天";
+                }else if (data.day == 2){
+                  this.ruleForm.nackPlane[index].planeDay="第三天";
+                }
+                 this.ruleForm.nackPlane[index].trafficMode=data.byType;//出行方式
+>>>>>>> 9726b2d45315595f480edef1369cf140a9477403
               }
         }) 
       },
@@ -3000,7 +3054,7 @@
   .aviation_first { margin: 0 0 0 0; float: left; }
   .aviation_text { width: 85px; text-align: right; margin: 0 15px 0 0; float: left; line-height: 40px; }
   .aviation_input { width: 200px; float: left; }
-  .day { width: 85px; float: left; margin: 0 0 0 25px; }
+  .day { width: 125px; float: left; margin: 0 0 0 25px; }
   .stop { clear: both; padding: 20px 0 20px 20px; }
   .stop_button { border: 1px solid #ff4b3a; }
   .hotel_button { line-height: 40px; margin: 10px 0 20px 15px; }
@@ -3038,7 +3092,7 @@
   .judge { padding: 30px 0 0 0; clear: both; }
   .mask { background-color: #000; width: 100%; height: 100%; position: fixed; top: 0; left: 0; filter: alpha(opacity=50); opacity: 0.5; z-index: 100; }
   .inputBox { width: 200px; }
-  .abc { height: 40px; width: 200px; line-height: 40px; text-align: center; margin: 10px 0 0 0; width: 100%; clear: both; }
+  .abc { height: 40px; width: 200px; line-height: 40px; text-align: center;padding-top: 10px; margin: 10px 0 0 0; width: 100%; clear: both; }
   .transit { clear: both; padding: 0 0 0 20px; }
   .transit_border { border: 1px dashed #e5e5e5; width: 98%; margin-left: 1%; overflow: hidden; }
   .delete { float: left; line-height: 40px; margin: 0 0 0 40px; color: #2e96f9; cursor: pointer; }
