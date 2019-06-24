@@ -1105,7 +1105,7 @@
             var _this = this;
             this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagesave", {
                 object: object
-              },
+              }, 
             ).then(function(response) {
               if(response.data.isSuccess==true){
                 _this.$message.success("修改成功");
