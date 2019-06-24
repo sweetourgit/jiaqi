@@ -109,7 +109,7 @@
                 </el-button>
               </el-upload>
             </el-form-item> -->
-            <el-form-item label="头图" prop="avatarImages" label-width="120px" >
+            <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative"></el-input>
               <el-button type="info" class="upload-btn" style="margin:1px 0 0 200px;" @click="figureClick">上传</el-button>
             </el-form-item>
@@ -126,7 +126,7 @@
                   <!--左侧地区列表-->
                   <div class="left-tree">
                      <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree" :default-expanded-keys="[]"></el-tree>
-                  </div>
+                  </div> 
                   <!--右侧图片循环-->
                   <div style="float:left; margin:10px 0 0 30px;">
                     <div style="width:300px; height:200px; background:#f5f5f5;"></div>
@@ -201,7 +201,7 @@
                 <vue-editor v-model="content_01"></vue-editor>
               </div>
             </el-form-item>
-
+            
 
           </div>
         </el-tab-pane>
@@ -280,7 +280,7 @@
                                     <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
                                      </el-autocomplete> -->
                                      <el-input class="inputBox" @clear="clearBle(index)" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_01(index)">
-                                    </el-input>
+                                    </el-input> 
                                   </el-form-item>
                                 </el-form>
                               </div>
@@ -326,7 +326,7 @@
                             </div>
                             <!--第二行结束-->
                             <!--第三行-->
-                            <div class="aviation" >
+                            <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="到达城市" label-width="100px" :prop="'plane.'+index+'.arriveCity'" :rules="rules.arriveCity" style="float:left">
                                   <el-autocomplete class="inputBox" clearable placeholder="请输入到达城市" :fetch-suggestions="querySearch" v-model="item.arriveCity" :trigger-on-focus="false">
@@ -605,7 +605,7 @@
                                     <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @select="handleSelectPod">
                                      </el-autocomplete> -->
                                      <el-input class="inputBox" clearable @clear="clearBle_01(index)" placeholder="请输入航班号" :fetch-suggestions="querySearch" v-model="item.pod" :trigger-on-focus="false" @blur="handleSelectPod_02(index)">
-                                    </el-input>
+                                    </el-input> 
                                   </el-form-item>
                                 </el-form>
                               </div>
@@ -1061,11 +1061,11 @@
                           </div>
                           <div class="aviation">
                             <!--住宿-->
-                            <div class="aviation_first" style="margin-top: 10px">
+                            <div class="aviation_first">
                               <div class="aviation_text">住宿</div>
                               <div class="type_radio" style="margin:10px 0 0 0;">
                                 <div>
-                                  <!-- <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>
+                                  <!-- <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span> 
                                   <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>-->
                                   <span><el-radio v-model="myradio[index].lable" label="0">其他</el-radio></span>
                                 <div class="explain">
@@ -1663,7 +1663,6 @@
                          { min: 0, max: 30, message: '产品名称字数超过30汉字限制', trigger: 'blur' },
                          { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
           travelType: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          avatarImages:[{ required: true, message: '头图不能为空', trigger: 'blur' }],
           orderConfirmationType: [{ required: true, message: '订单确认类型不能为空', trigger: 'change' }],
           advanceRegistrationDays: [{ required: true, message: '提前报名天数不能为空', trigger: 'blur' },
                                     { pattern: /^[+]{0,1}(\d+)$/, message: '提前报名天数需为正整数' }],
@@ -1863,7 +1862,7 @@
           }
           //日常信息数据
           if(newValue>oldValue){
-            this.mydate = newValue-oldValue;
+            this.mydate = newValue-oldValue;         
             for (let i = 0; i < this.mydate; i++) {
             this.ruleForm.schedules.push({
               day:i+1,
@@ -1900,7 +1899,7 @@
                 {IsHotel:0,Details:""}
               ]*/
             });
-            this.myradio.push({'lable':'0'});   //保存行程里面酒店信息单选值
+            this.myradio.push({'lable':'0'});   //保存行程里面酒店信息单选值     
             }
           }else{
            this.ruleForm.schedules.splice(newValue,oldValue-newValue);
@@ -1998,7 +1997,7 @@
         });
       },
       // 单击tree节点
-      treeClick(data,node){
+      treeClick(data,node){     
         this.data = data;
         if (data.isLeaf == 1) {
           if(this.addAlbum==false){
@@ -2007,7 +2006,7 @@
         }else{
           this.picForm.destination=this.data.name;
           this.picForm.destinationId=this.data.id;
-          this.leftTree1=false;
+          this.leftTree1=false; 
          }
         }
       },
@@ -2023,7 +2022,7 @@
               if(res.data.isSuccess == true){
                  let data = res.data.object;
               }
-        })
+        }) 
         //console.log(this.dynamicTags4)
       },
 
@@ -2132,7 +2131,7 @@
                   crowdID:this.ruleForm.Excursion,//基本信息出游人群
                   themeID:this.ruleForm.theme,//基本信息主题
                   mark:this.content_01,//基本信息产品概括
-
+                  
                   //行程信息接口数据
                   package: [
                     {
@@ -2153,10 +2152,10 @@
                   instructions1:this.notes, //预订须知,预留接口无字段？
                   instructions2:this.instructions, //使用说明,预留接口无字段？
                   loadPackage: true
-                }
+                }  
               //  console.log(this.ruleForm.theme)
                // console.log(this.ruleForm.Excursion)
-               // console.log(JSON.stringify(object))
+               // console.log(JSON.stringify(object))    
         this.$refs[formName].validate((valid) => {
           if(valid){
               var _this = this;
@@ -2173,7 +2172,7 @@
               }).catch(function(error) {
                 console.log(error);
               });
-
+              
           }else{
             this.errors();
           }
@@ -2195,7 +2194,7 @@
           if(_this.dynamicTags4.length==0){
              _this.validaError.unshift("基本信息目的地不能为空");
           }
-        },500);
+        },500);              
       },
       // 取消
       cancel(){
@@ -2300,7 +2299,7 @@
           this.ruleForm.plane[index].arriveTime = '';
           this.ruleForm.plane[index].planeDay = '';
           this.ruleForm.plane[index].day = '';
-
+      
       },
       clearBle_01(index){
           this.ruleForm.nackPlane[index].company = '';
@@ -2313,7 +2312,7 @@
           this.ruleForm.nackPlane[index].arriveTime = '';
           this.ruleForm.nackPlane[index].planeDay = '';
           this.ruleForm.nackPlane[index].day = '';
-
+      
       },
       trafficGoClear(index){//返程切换交通方式清空
         this.ruleForm.nackPlane[index].pod = '';
@@ -2529,9 +2528,9 @@
                  this.ruleForm.plane[0].arrivePlace=data.arrivalAirport; //到达机场
                  this.ruleForm.plane[0].arriveTime=data.arrivalTime;//到达时间
                  this.ruleForm.plane[0].planeDay=data.day;//到达天数
-                 this.ruleForm.plane[0].trafficMode=data.byType;//出行方式
+                 this.ruleForm.plane[0].trafficMode=data.byType;//出行方式    
               }
-        })
+        }) 
       },*/
       //不带下拉框获取一条Flights
       handleSelectPod_01(index){//去程获取
@@ -2553,9 +2552,9 @@
                  this.ruleForm.plane[index].arrivePlace=data.arrivalAirport; //到达机场
                  this.ruleForm.plane[index].arriveTime=data.arrivalTime;//到达时间
                  this.ruleForm.plane[index].planeDay=data.day;//到达天数
-                 this.ruleForm.plane[index].trafficMode=data.byType;//出行方式
+                 this.ruleForm.plane[index].trafficMode=data.byType;//出行方式    
               }
-        })
+        }) 
       },
       handleSelectPod_02(index){//返程获取
          if(this.ruleForm.nackPlane[index].pod == ''){
@@ -2576,9 +2575,9 @@
                  this.ruleForm.nackPlane[index].arrivePlace=data.arrivalAirport; //到达机场
                  this.ruleForm.nackPlane[index].arriveTime=data.arrivalTime;//到达时间
                  this.ruleForm.nackPlane[index].planeDay=data.day;//到达天数
-                 this.ruleForm.nackPlane[index].trafficMode=data.byType;//出行方式
+                 this.ruleForm.nackPlane[index].trafficMode=data.byType;//出行方式    
               }
-        })
+        }) 
       },
       querySearch(queryString, cb) {
         //this.flightsList =[]
@@ -2955,19 +2954,19 @@
       }
     },
     formatDate(date){
-       var y = date.getFullYear();
-       var m = date.getMonth() + 1;
-           m = m < 10 ? ('0' + m) : m;
-       var d = date.getDate();
-           d = d < 10 ? ('0' + d) : d;
-       var h = date.getHours();
-           h=h < 10 ? ('0' + h) : h;
-       var minute = date.getMinutes();
-           minute = minute < 10 ? ('0' + minute) : minute;
-       var second=date.getSeconds();
-           second=second < 10 ? ('0' + second) : second;
-           //return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
-           return y + '-' + m + '-' + d+' '+h+':'+minute;
+       var y = date.getFullYear();  
+       var m = date.getMonth() + 1;  
+           m = m < 10 ? ('0' + m) : m;  
+       var d = date.getDate();  
+           d = d < 10 ? ('0' + d) : d;  
+       var h = date.getHours();  
+           h=h < 10 ? ('0' + h) : h;  
+       var minute = date.getMinutes();  
+           minute = minute < 10 ? ('0' + minute) : minute;  
+       var second=date.getSeconds();  
+           second=second < 10 ? ('0' + second) : second;  
+           //return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;  
+           return y + '-' + m + '-' + d+' '+h+':'+minute;  
       }
     }
   }
@@ -2997,7 +2996,7 @@
   .plane { width: 98%; overflow: hidden; background-color: #fafafa; margin-left: 1%; margin-bottom: 20px; margin-top: 20px; }
   .plane_type { width: 80px; margin: 20px 0 0 20px; }
   .plane_text { margin: 0 0 0 15px; }
-  .aviation { padding: 0 0 0 0; clear: both; width: 100%; padding-top: 7px; }
+  .aviation { padding: 0 0 0 0; clear: both; width: 100%; }
   .aviation_first { margin: 0 0 0 0; float: left; }
   .aviation_text { width: 85px; text-align: right; margin: 0 15px 0 0; float: left; line-height: 40px; }
   .aviation_input { width: 200px; float: left; }

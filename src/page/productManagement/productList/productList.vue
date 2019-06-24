@@ -57,7 +57,7 @@
         <div class="options11">状态
           <el-select  style="width: 205px;margin-left: 20px;" v-model="value" placeholder="请选择">
             <el-option
-              v-for="item in options"
+              v-for="item in typeList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -70,7 +70,7 @@
 
       <div class="select_two_button">
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
-        <el-button type="primary" size="medium">重置</el-button>
+        <el-button type="primary" @click="reset()" size="medium">重置</el-button>
       </div>
 
     </div>
@@ -113,12 +113,11 @@
         <el-table-column
           prop="name"
           label="产品名称"
-
           align="center"
           >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
               <el-button type="text" >{{tableData[scope.$index].name}}</el-button>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           prop="mu_address"
@@ -403,7 +402,7 @@ import DateList from './component/DateList'
         domains: [{
           value: '跟团游',
           status:"false"
-        },{
+        }/*,{
           value: '自由行',
           status:"false"
         },{
@@ -430,7 +429,7 @@ import DateList from './component/DateList'
         },{
           value: '保险',
           status:"false"
-        }],
+        }*/],
         thisClass:'',
         options1: [{
           value1: '1',
@@ -439,6 +438,19 @@ import DateList from './component/DateList'
           value1: '2',
           label: '自由行'
         }],
+        typeList:[{//状态搜索
+          value:'0',
+          label:'未上架'
+        },{
+          value:'1',
+          label:'erp上架'
+        },{
+          value:'2',
+          label:'线上上架'
+        },{
+          value:'3',
+          label:'全部'
+        },],
         about:'',
         dialogVisible: false,
         currentPage1: 5,
@@ -764,9 +776,18 @@ import DateList from './component/DateList'
 
           })
       },
-
+      reset(){//重置
+        this.productId = '';
+        this.productTitle = '';
+        this.productPos = '';
+        this.productMod = '';
+        this.productUser = '';
+        this.value = '';
+        this.productPrefix = '';
+        this.productBehind = '';
+      },
       handleDelete(){
-        this.$confirm('此操作将删除该模板', '提示', {
+        this.$confirm('此操作将删除该跟团游信息', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -1660,11 +1681,7 @@ import DateList from './component/DateList'
     created(){
       //产品列表
       var that = this
-      if(this.productId == ''){
-        this.productId = 0;
-      }else{
-        this.pageNum = 1;
-      }
+      this.pageNum = 1;
       if (!this.productTitle){
         this.productTitle = ""
       }else{
@@ -1675,26 +1692,6 @@ import DateList from './component/DateList'
       }else{
         this.pageNum = 1;
       }
-      if (!this.productPos){
-        this.productPos = 0
-      }else{
-        this.pageNum = 1;
-      }
-      if (!this.productMod){
-        this.productMod = 0
-      }else{
-        this.pageNum = 1;
-      }
-      if (!this.productPrefix){
-        this.productPrefix = 0
-      }else{
-        this.pageNum = 1;
-      }
-      if (!this.productBehind){
-        this.productBehind = 0
-      }else{
-        this.pageNum = 1;
-      }
       this.$http.post(
         this.GLOBAL.serverSrc + "/team/api/teamsearch",
         {
@@ -1702,13 +1699,13 @@ import DateList from './component/DateList'
           "pageSize": this.pagesize,
           "total": 0,
           "object": {
-            "id": that.productId,
+            "id": 0,
             "title": that.productTitle,
             "createUser": that.productUser,
-            "minPrice": that.productPrefix,
-            "maxPrice": that.productBehind,
-            "podID": that.productPos,
-            "destinationID": that.productMod
+            "minPrice": 0,
+            "maxPrice": 0,
+            "podID": 0,
+            "destinationID": 0
           }
         },
         {

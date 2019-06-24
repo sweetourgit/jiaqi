@@ -132,13 +132,13 @@
             <!-- 出游人群 -->
             <el-form-item label="出游人群" prop="Excursion" label-width="120px">
               <el-select v-model="ruleForm.Excursion" placeholder="请选择" class="Excursion-select">
-                <el-option :label="theme" :value="indexs" v-for="(theme,indexs) of excurList" :key="indexs" />
+                <el-option :label="theme.name" :value="theme.id" v-for="theme of excurList" :key="theme.id"></el-option>
               </el-select>
             </el-form-item>
             <!-- 主题 -->
             <el-form-item label="主题" prop="theme" label-width="120px">
               <el-select v-model="ruleForm.theme" placeholder="请选择" class="Excursion-select">
-                <el-option :label="item" :value="index" v-for="(item,index) of list" :key="index" />
+                <el-option :label="item.name" :value="item.id" v-for="(item,index) of list" :key="item.id"></el-option>
               </el-select>
             </el-form-item>
             <!-- 提前报名天数 -->
@@ -236,6 +236,13 @@
         </el-tab-pane>
       </el-tabs>
     </el-form>
+    <el-dialog title="提示信息" :visible.sync="dialogVadi" class="city_list tips" width="400px">
+          <div>
+             <ul v-for="item in validaError">
+               <li>{{item}}</li>
+             </ul>
+          </div>
+     </el-dialog>
   </div>
 </template>
 
@@ -250,6 +257,8 @@
     },
     data() {
       return {
+        validaError:[],
+        dialogVadi:false,//验证提示弹窗
         qqq:[],
         activeID:[],//日程信息id
         schedulsLeng:'',//几天日程信息
@@ -674,7 +683,8 @@
         dynamicTags4: [],
         inputVisible4: false,
         inputVal4: '',
-        errorNull: ''
+        errorNull: '',
+        sid:'',
       }
     },
     watch:{ //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
@@ -860,6 +870,14 @@
             for (let t = 0; t < obj.data.object.instructions.length; t++ ){
               that.explain.push(obj.data.object.instructions[t])
             }
+            that.notes = []
+            for (let t = 0; t < obj.data.object.instructions.length; t++ ){
+              that.notes.push(obj.data.object.instructions[t])
+            }
+            that.instructions = []
+            for (let t = 0; t < obj.data.object.instructions.length; t++ ){
+              that.notes.push(obj.data.object.instructions[t])
+            }
           })
           .catch(function (obj) {
             console.log(obj)
@@ -987,8 +1005,8 @@
             }
           ],*/
           instructions:this.explain.concat(this.domains), //费用说明
-          instructions1:this.notes, //预订须知,预留接口无字段？
-          instructions2:this.instructions, //使用说明,预留接口无字段？
+          /*instructions1:this.notes, //预订须知,预留接口无字段？
+          instructions2:this.instructions, //使用说明,预留接口无字段？*/
           loadPackage: true
         }
 
@@ -1012,7 +1030,28 @@
             });
 
           }
+          else{
+            this.errors();
+          }
         })
+      },
+      errors(){
+        this.dialogVadi = true;
+        let _this=this;
+        setTimeout(function(){
+          const validaError1=[];
+          var errors = $(".el-form-item__error");
+          for(var i=0;i<errors.length;i++){
+            validaError1.push(errors.eq(i).html().trim());
+          }
+          _this.validaError=[...new Set(validaError1)];
+          if(_this.dynamicTags3.length==0){
+             _this.validaError.unshift("基本信息出发地不能为空");
+          }
+          if(_this.dynamicTags4.length==0){
+             _this.validaError.unshift("基本信息目的地不能为空");
+          }
+        },500);
       },
       //保存套餐信息
       handleSetMeal(formName){
@@ -1588,6 +1627,7 @@
         this.excurList = [];
         this.$http.post(this.GLOBAL.serverSrc + "/universal/crowd/api/crowdlist", {
           object: {
+            //id:this.sid,
             isDeleted: 0
           }
         },{
@@ -1597,7 +1637,7 @@
         }).then(res =>{
           for(let i = 0; i < res.data.objects.length; i++){
             this.excurList.push(
-              res.data.objects[i].name
+              res.data.objects[i]
             );
           }
         }).catch(function(err){
@@ -1619,7 +1659,7 @@
         }).then(function(response) {
           for(let i = 0; i < response.data.objects.length; i++){
             _this.list.push(
-              response.data.objects[i].name
+              response.data.objects[i]
             );
           }
         }).catch(function(error){
@@ -1746,6 +1786,10 @@
 </script>
 
 <style scoped>
+  /*验证提示弹窗*/
+  .tips ul{text-align: left;margin:-20px 0 30px 10px;line-height: 25px;padding: 0;}
+  .tips ul li{margin: 10px 0 10px 50px;height: 20px;}
+  
   .change_save{ position: absolute;top: 70px;right: 206px;}
   .aid_address{float: left; }
   .set_meal_name{float: left;margin-left: 150px;margin-top: 5px;}
