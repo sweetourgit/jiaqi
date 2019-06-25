@@ -290,13 +290,11 @@
                         <!--去程-->
                         <div class="plane" v-for="(item, index) in ruleForm.plane" :key="item.index">
                           <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
-                            <el-cascader style="width: 100px;" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficClear(index)"></el-cascader>
-                            <span class="plane_text"><span>*</span>第</span>
-                            <el-form-item class="plane_day" :prop="'plane.'+index+'.day'" :rules="rules.day">
+                            <el-cascader style="width: 100px;" class="plane_type" v-model="selectedOptions" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficClear(index)"></el-cascader>
+                            <span class="plane_text">第</span>
                             <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                               <el-option v-for="(item,index) in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
                             </el-select>
-                            </el-form-item>
                             <span class="plane_text">天</span>
                               <!--航班号自动填充-->
                               <div  v-if="selectedOptions== 1" class="aviation" style="position:absolute; top:20px; left:300px;">
@@ -494,8 +492,8 @@
                                   </el-autocomplete>
                                 </el-form-item>
                               <!--第二个-->
-                                <el-form-item label="到达车站" prop="podPlace" label-width="100px" style="float:left;" :prop="'plane.'+index+'.arrivePlace'" :rules="rules.arrivePlace">
-                                  <el-autocomplete class="inputBox" clearable placeholder="请输入到达车站" :fetch-suggestions="querySearch" v-model="item.arrivePlace" :trigger-on-focus="false">
+                                <el-form-item label="到达车站" prop="podPlace" label-width="100px" style="float:left;" :prop="'plane.'+index+'.podPlace'" :rules="rules.podPlace">
+                                  <el-autocomplete class="inputBox" clearable placeholder="请输入到达车站" :fetch-suggestions="querySearch" v-model="item.podPlace" :trigger-on-focus="false">
                                   </el-autocomplete>
                                 </el-form-item>
                               <!--第三个-->
@@ -615,13 +613,11 @@
                         </div>
                         <div class="plane" v-for="(item, index) in ruleForm.nackPlane" :key="item.index">
                           <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
-                            <el-cascader style="width: 100px" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficGoClear(index)"></el-cascader>
-                            <span class="plane_text"><span>*</span>第</span>
-                            <el-form-item class="plane_day"  :prop="'nackPlane.'+index+'.day'" :rules="rules.day">
+                            <el-cascader style="width: 100px" class="plane_type" v-model="selectedOptions_01" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficGoClear(index)"></el-cascader>
+                            <span class="plane_text">第</span>
                             <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                               <el-option v-for="item in goDate" :key="item.value" :label="item.label" :value="item.value"></el-option>
                             </el-select>
-                            </el-form-item>
                             <span class="plane_text">天</span>
                             <!--航班号自动填充-->
                             <div v-if="selectedOptions_01 == 1" class="aviation" style="position:absolute; top:20px; left:300px;">
@@ -816,8 +812,8 @@
                                   </el-autocomplete>
                                 </el-form-item>
                               <!--第二个-->
-                                <el-form-item label="到达车站" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.poarrivePlacedPlace'" :rules="rules.arrivePlace">
-                                  <el-autocomplete class="inputBox" clearable placeholder="请输入到达车站" :fetch-suggestions="querySearch" v-model="item.arrivePlace" :trigger-on-focus="false">
+                                <el-form-item label="到达车站" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.podPlace'" :rules="rules.podPlace">
+                                  <el-autocomplete class="inputBox" clearable placeholder="请输入到达车站" :fetch-suggestions="querySearch" v-model="item.podPlace" :trigger-on-focus="false">
                                   </el-autocomplete>
                                 </el-form-item>
                               <!--第三个-->
@@ -1077,47 +1073,52 @@
                               <el-form-item label="主题" label-width="100px" style="float:left; margin:30px 0 0 0;" :prop="'schedules.'+index+'.subject'" :rules="rules.subject">
                                 <!--<el-autocomplete class="inputBox" clearable placeholder="请输入主题" :fetch-suggestions="querySearch" v-model="item.subject" :trigger-on-focus="false">
                                 </el-autocomplete>-->
-                                <el-input class="inputBox" maxlength="20" clearable placeholder="请输入主题" v-model="item.subject">
+                                <el-input class="inputBox" clearable placeholder="请输入主题" :fetch-suggestions="querySearch" v-model="item.subject" :trigger-on-focus="false">
                                 </el-input>
-                                <div style="float:right;margin-left:10px">{{item.subject.length}}/20字</div>
                               </el-form-item>
                           </div>
                           <div class="aviation">
                             <!--住宿-->
-                            <el-form-item class="aviation_first">
-                              <div class="aviation_textday"><span>*</span>住宿</div>
-                              <div class="type_radio">
+                            <div class="aviation_first" style="margin-top: 10px">
+                              <div class="aviation_text">住宿</div>
+                              <div class="type_radio" style="margin:10px 0 0 0;">
                                 <div>
-                                  <!--<span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>-->
-                                  <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>
-                                   <!--<div v-show="myradio[index].lable=='0'">
+                                  <!-- <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>
+                                  <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>-->
+                                  <span><el-radio v-model="myradio[index].lable" label="0">其他</el-radio></span>
+                                <div class="explain">
+                                  <!-- <div v-show="myradio[index].lable=='0'">
                                     <span v-for="(itemCon,p) in tabContents" style="margin-right:10px">
                                     <el-button @click="baocun(itemCon.id,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
                                     </span>
-                                   </div>-->
-                                  <el-form-item v-if="myradio[index].lable=='1'" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details">
-                                    <el-input class="inputBox" v-model="item.ext_Hotel.Details" type="text" placeholder="住宿说明"></el-input>
-                                  </el-form-item> 
+                                  </div>
+                                  <div v-show="myradio[index].lable=='1'">
+                                    <el-input class="text_input"  v-model="item.ext_Hotel.Details" type="textarea" :rows="5" placeholder="请输入内容"></el-input>
+                                  </div> -->
+                                  <div v-show="myradio[index].lable=='0'">
+                                    <el-input class="text_input"  v-model="item.ext_Hotel[0].Details" type="textarea" :rows="5" placeholder="请输入内容"></el-input>
+                                  </div>
+                                </div>
                                 </div>
                               </div>
-                            </el-form-item>
+                            </div>
                           </div>
                           <div class="aviation">
                             <!--餐饮-->
                             <div class="food_text">餐饮</div>
                           </div>
                           <!--餐饮循环-->
-                          <div class="aviation" style="margin-top:-100px;" v-for="(it,p) in item.ext_Meals" :key="p">
+                          <div class="aviation" style="padding-top:20px;" v-for="(it,p) in item.ext_Meals" :key="p">
                             <div class="aviation_first">
                               <div class="food_radio" style="line-height:40px;">
                                 <div class="repast">{{it.label}}</div>
                                 <el-radio v-model="it.Myself" label="0">自理</el-radio>
                                 <el-radio v-model="it.Myself" label="1">详细说明</el-radio>
                               </div>
-                              <div style="float:left">
-                                <el-form-item v-if="it.Myself=='1'" :prop="'schedules.'+index+'.ext_Meals.Details'" :rules="rules.mealDetails">
+                              <div class="aviation_first">
+                                <div v-show="it.Myself=='1'">
                                   <el-input class="state" placeholder="餐饮说明" v-model="it.Detail"></el-input>
-                                </el-form-item>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -1152,46 +1153,35 @@
                                 </div>
                               <div>
                                   <div class="explain">
-                                    <div v-if="item.activityType==l+1"  v-for="(list, l) in item.info">
+                                    <div v-if="item.activityType==1">
                                       <div class="aviation" style="padding:20px 0 0 0;">
-                                        <div class="aviation_text" v-show="l==0">城市</div>
-                                        <div class="aviation_text" v-show="l==1||l==2">名称</div>
+                                        <div class="aviation_text">城市</div>
                                         <div class="aviation_input">
-                                          <el-input v-model="list.name" placeholder="请输入城市" v-show="l==0"></el-input>
-                                          <el-input v-model="list.name" placeholder="请输入名称" v-show="l==1||l==2"></el-input>
+                                          <el-input v-model="item.typeExt" placeholder="请输入城市"></el-input>
                                         </div>
                                         <div class="aviation_text">活动时间</div>
-                                        <el-form-item class="city_input" :prop="'schedules.'+index+'.activitys.'+k+'.info.'+l+'.time'" :rules="rules.activeTime">
-                                          <el-input v-model="list.time" placeholder=""></el-input>
-                                        </el-form-item>
+                                        <div class="city_input">
+                                          <el-input v-model="item.time" placeholder=""></el-input>
+                                        </div>
                                         <div class="minutes">分钟</div>
                                       </div>
                                       <div class="aviation" style="padding:20px 0 0 0;">
-                                        <div class="aviation_text" v-show="l==0">景点名称</div>
-                                        <div class="aviation_text" v-show="l==1">营业产品</div>
-                                        <div class="aviation_text" v-show="l==2">参考价格</div>
-                                        <el-form-item class="aviation_input" v-if="l==0">
-                                          <el-input v-model="list.typeExt" placeholder="请输入景点名称"></el-input>
-                                        </el-form-item>
-                                        <el-form-item class="aviation_input" v-if="l==1">
-                                          <el-input v-model="list.typeExt" placeholder="请输入营业产品"></el-input>
-                                        </el-form-item>
-                                        <el-form-item class="aviation_input" v-if="l==2" :prop="'schedules.'+index+'.activitys.'+k+'.info.'+l+'.typeExt'" :rules="rules.typeExtPrice">
-                                          <el-input v-model="list.typeExt" placeholder="请输入参考价格"></el-input>
-                                        </el-form-item>
-                                        <div class="minutes" v-show="l==2">元/人</div>
+                                        <div class="aviation_text">景点名称</div>
+                                        <div class="aviation_input">
+                                          <el-input v-model="item.name" placeholder="请输入景点名称"></el-input>
+                                        </div>
                                       </div>
                                       <div class="aviation" style="padding-top:20px;">
                                         <div class="aviation_text">详细说明</div>
                                         <div class="textarea">
-                                          <el-input class="text_input" type="textarea" :rows="3" placeholder="请输入详细说明" v-model="list.details"></el-input>
+                                          <el-input class="text_input" type="textarea" :rows="3" placeholder="请输入详细说明" v-model="item.details"></el-input>
                                         </div>
                                       </div>
                                       <div class="dashed">&nbsp;</div>
                                       <div class="aviation_first">
                                         <div class="aviation_text">图片</div>
                                         <div class="aviation_input" style="position: relative;">
-                                          <el-input v-model="list.pictureID" placeholder="请输入图片内容"></el-input>
+                                          <el-input v-model="item.pictureID" placeholder="请输入图片内容"></el-input>
                                           <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList2" list-type="picture">
                                             <el-button type="primary">上传</el-button>
                                           </el-upload>
@@ -1200,7 +1190,90 @@
                                       <div class="aviation" style="padding-top:20px;">
                                         <div class="aviation_text">简介</div>
                                         <div class="textarea">
-                                          <el-input class="text_input" type="textarea" :rows="3" placeholder="请输入简介内容" v-model="list.memo"></el-input>
+                                          <el-input class="text_input" type="textarea" :rows="3" placeholder="请输入简介内容" v-model="item.memo"></el-input>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div v-if="item.activityType==2">
+                                      <div class="aviation" style="padding:20px 0 0 0;">
+                                        <div class="aviation_text">名称</div>
+                                        <div class="aviation_input">
+                                          <el-input v-model="item.name" placeholder="请输入名称"></el-input>
+                                        </div>
+                                        <div class="aviation_text">活动时间</div>
+                                        <div class="city_input">
+                                          <el-input v-model="item.time" placeholder=""></el-input>
+                                        </div>
+                                        <div class="minutes">分钟</div>
+                                      </div>
+                                      <div class="aviation" style="padding:20px 0 0 0;">
+                                        <div class="aviation_text">营业产品</div>
+                                        <div class="aviation_input">
+                                          <el-input v-model="item.typeExt" placeholder="请输入营业产品"></el-input>
+                                        </div>
+                                      </div>
+                                      <div class="aviation" style="padding-top:20px;">
+                                        <div class="aviation_text">详细说明</div>
+                                        <div class="textarea">
+                                          <el-input class="text_input" type="textarea" :rows="3" placeholder="请输入详细说明" v-model="item.details"></el-input>
+                                        </div>
+                                      </div>
+                                      <div class="dashed">&nbsp;</div>
+                                      <div class="aviation_first">
+                                        <div class="aviation_text">图片</div>
+                                        <div class="aviation_input" style="position: relative;">
+                                          <el-input v-model="item.pictureID" placeholder="请输入图片内容"></el-input>
+                                          <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList2" list-type="picture">
+                                            <el-button type="primary">上传</el-button>
+                                          </el-upload>
+                                        </div>
+                                      </div>
+                                      <div class="aviation" style="padding-top:20px;">
+                                        <div class="aviation_text">简介</div>
+                                        <div class="textarea">
+                                          <el-input class="text_input" type="textarea" :rows="3" placeholder="请输入简介内容" v-model="item.memo"></el-input>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div v-if="item.activityType==3">
+                                      <div class="aviation" style="padding:20px 0 0 0;">
+                                        <div class="aviation_text">名称</div>
+                                        <div class="aviation_input">
+                                          <el-input v-model="item.name" placeholder="请输入名称"></el-input>
+                                        </div>
+                                        <div class="aviation_text">活动时间</div>
+                                        <div class="city_input">
+                                          <el-input v-model="item.time" placeholder=""></el-input>
+                                        </div>
+                                        <div class="minutes">分钟</div>
+                                      </div>
+                                      <div class="aviation" style="padding:20px 0 0 0;">
+                                        <div class="aviation_text">参考价格</div>
+                                        <div class="aviation_input">
+                                          <el-input v-model="item.typeExt" placeholder="请输入参考价格"></el-input>
+                                        </div>
+                                        <div class="minutes">元/人</div>
+                                      </div>
+                                      <div class="aviation" style="padding-top:20px;">
+                                        <div class="aviation_text">详细说明</div>
+                                        <div class="textarea">
+                                          <el-input class="text_input" type="textarea" :rows="3" placeholder="请输入详细说明" v-model="item.details"></el-input>
+                                        </div>
+                                      </div>
+                                      <div class="dashed">&nbsp;</div>
+                                      <div class="aviation_first">
+                                        <div class="aviation_text">图片</div>
+                                        <div class="aviation_input" style="position: relative;">
+                                          <el-input v-model="item.pictureID" placeholder="请输入图片内容"></el-input>
+                                          <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList2" list-type="picture">
+                                            <el-button type="primary">上传</el-button>
+                                          </el-upload>
+                                        </div>
+                                      </div>
+                                      <div class="aviation" style="padding-top:20px;">
+                                        <div class="aviation_text">简介</div>
+                                        <div class="textarea">
+                                          <el-input class="text_input" type="textarea" :rows="3" placeholder="请输入简介内容" v-model="item.memo"></el-input>
                                         </div>
                                       </div>
                                     </div>
@@ -1681,22 +1754,17 @@
           arriveTime: [{ required: true, message: '到达时间不能为空', trigger: 'blur' }],
           planeDay: [{ required: true, message: '不能为空', trigger: 'blur' }],
           trafficMode: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          day: [{ required: true, message: '请选择天数'}],
+          day: [{ required: true, message: '不能为空', trigger: 'blur' }],
           typeExt: [{ required: true, message: '不能为空', trigger: 'blur' }],
           time: [{ required: true, message: '不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '不能为空', trigger: 'blur' }],
           details: [{ required: true, message: '不能为空', trigger: 'blur' }],
           slideshow:[{ validator: areaIdRule}],
           memo: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          Details: [{ required: true, message: '住宿说明不能为空', trigger: 'blur' }],
+          details: [{ required: true, message: '不能为空', trigger: 'blur' }],
           pictureID: [{ required: true, message: '不能为空', trigger: 'blur' }],
           subject: [{ required: true, message: '日程信息主题不能为空', trigger: 'blur' },
-                    { min: 0, max: 20, message: '字数超过20汉字限制', trigger: 'blur' }],
-          mealDetails: [{ required: true, message: '餐饮说明不能为空', trigger: 'blur' }],
-          typeExtPrice: [{ pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '参考价格输入不正确'},
-                        { pattern: /^(\d+|\d+\.\d{1,2})$/, message: '参考价格输入不正确'}
-          ],
-          activeTime: [{ pattern: /^[0-9]+$/, message: '活动时间需为正整数'}],
+                    { min: 0, max: 20, message: '字数超过20汉字限制', trigger: 'blur' }]
         },
         //上传图片
         fileList2: [],
@@ -1882,38 +1950,20 @@
                 Detail: ''
               }],
               activitys: [{
+                typeExt: '',
+                time: '',
+                name: '',
+                details: '',
+                memo: '',
+                pictureID: '',
                 activityType:'1',
-                info:[{
-                  typeExt: '',
-                  time: '',
-                  name: '',
-                  details: '',
-                  memo: '',
-                  pictureID: '',
-                  createTime: this.formatDate(new Date())
-                },{
-                  typeExt: '',
-                  time: '',
-                  name: '',
-                  details: '',
-                  memo: '',
-                  pictureID: '',
-                  createTime: this.formatDate(new Date())
-                },{
-                  typeExt: '',
-                  time: '',
-                  name: '',
-                  details: '',
-                  memo: '',
-                  pictureID: '',
-                  createTime: this.formatDate(new Date())
-                }],            
+                createTime: this.formatDate(new Date())
               }],
               /*ext_Hotel: [
                 {IsHotel:0,Details:""}
               ]*/
             });
-            this.myradio.push({'lable':'1'});   //保存行程里面酒店信息单选值
+            this.myradio.push({'lable':'0'});   //保存行程里面酒店信息单选值
             }
           }else{
            this.ruleForm.schedules.splice(newValue,oldValue-newValue);
@@ -2011,54 +2061,15 @@
       },
       //删除预订须知
       deleteNotice(index){
-        this.$confirm("是否删除该预订须知?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
         this.notes.splice(index, 1)
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
-        });
       },
       //删除使用说明
       deleteState(index){
-         this.$confirm("是否删除该使用说明?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
         this.instructions.splice(index, 1)
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
-        });
       },
       //费用说明删除
       deleteState_01(index){
-        this.$confirm("是否删除该费用说明?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.domains.splice(index, 1)
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
-        });
+        this.domains.splice(index, 1)
       },
       //添加
       getUEContent(){
@@ -2116,13 +2127,6 @@
          for(var i=0;i<sche.length;i++){
               sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
          }
-         //活动详情格式修改
-        for(var i=0;i<sche.length;i++){
-            for(var j=0;j<sche[i].activitys.length;j++){
-              sche[i].activitys[j]=sche[i].activitys[j].info[sche[i].activitys[j].activityType-1];
-              sche[i].activitys[j].activityType=this.ruleForm.schedules[i].activitys[j].activityType;
-            }
-          }
         //行程信息
         var object={
                   //基本信息接口数据
@@ -2340,7 +2344,7 @@
           arriveTime: '',      //到达时间
           planeDay: '',       //到达天数
           trafficMode: '1',  //出行方式
-          day: '',     //第几天
+          day: '1',      //第几天
           ext_Stopover: []
         })
       },
@@ -2513,49 +2517,18 @@
       //添加、删除详情
       addDetails(index) {
         this.ruleForm.schedules[index].activitys.push({
-                activityType:'1',
-                info:[{
-                  typeExt: '',
-                  time: '',
-                  name: '',
-                  details: '',
-                  memo: '',
-                  pictureID: '',
-                  createTime: this.formatDate(new Date())
-                },{
-                  typeExt: '',
-                  time: '',
-                  name: '',
-                  details: '',
-                  memo: '',
-                  pictureID: '',
-                  createTime: this.formatDate(new Date())
-                },{
-                  typeExt: '',
-                  time: '',
-                  name: '',
-                  details: '',
-                  memo: '',
-                  pictureID: '',
-                  createTime: this.formatDate(new Date())
-                }],            
-              })
+          typeExt: '',
+          time: '',
+          name: '',
+          details: '',
+          memo: '',
+          pictureID: 0,
+          activityType: '1',
+          createTime: this.formatDate(new Date())
+        })
       },
       deleteDetails(k, index) {
-        this.$confirm("是否删除该活动信息?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-        .then(() => {
-          this.ruleForm.schedules[index].activitys.splice(k, 1);
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
-        });
+        this.ruleForm.schedules[index].activitys.splice(k, 1)
       },
       diaoyong(v,k,index){
            this.ruleForm.schedules[index].activitys[k].activityType = v;
@@ -3228,9 +3201,7 @@
   .traffic_button { float: left; margin: 10px 0 20px 30px; line-height: 40px; font-size: 20px; }
   .plane { width: 98%; overflow: hidden; background-color: #fafafa; margin-left: 1%; margin-bottom: 20px; margin-top: 20px; }
   .plane_type { width: 80px; margin: 20px 0 0 20px; }
-  .plane_text { margin: 0 0 0 15px;}
-  .plane_text span{color:red;margin-right: 5px}
-  .plane_day{display: inline-block}
+  .plane_text { margin: 0 0 0 15px; }
   .aviation { padding: 0 0 0 0; clear: both; width: 100%; padding-top: 7px; }
   .aviation_first { margin: 0 0 0 0; float: left; }
   .aviation_text { width: 85px; text-align: right; margin: 0 15px 0 0; float: left; line-height: 40px; }
@@ -3395,8 +3366,7 @@
   .treeDemo{margin:20px}
   .main-container{width: 100%;padding-bottom: 60px;overflow: auto;max-width:1800px}
   .left-tree{float: left;margin-top: 10px;width: 22%;height: 550px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;margin-left: 3%;overflow: auto;}
-  .aviation_textday { width: 88px; text-align: right; margin: 0 15px 0 0; float: left; line-height: 40px; }
-  .aviation_textday span{color:red;margin:0 5px};
+
   .img_upload {
     float: left;
     min-width: 110px;

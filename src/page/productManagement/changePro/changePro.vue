@@ -95,7 +95,8 @@
                 <el-button v-else class="operation_Label" size="small" @click="showInput2">请输入运营标签</el-button>
               </div>
               <span id="empty" v-show="empty">不能为空</span>
-            </el-form-item>            <!-- 头图 -->
+            </el-form-item>            
+            <!-- 头图 -->
             <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative">
               </el-input>
@@ -829,10 +830,10 @@
             }
 
             //日程信息
-            for (let j = 0; j < obj.data.object.package[0].schedules.length; j++) {
+            /*for (let j = 0; j < obj.data.object.package[0].schedules.length; j++) {
               setTimeout(arr => {
                that.ruleForm.schedules[j].subject =  obj.data.object.package[0].schedules[j].subject //主题
-              /* that.ruleForm.schedules[j].ext_Hotel.Details =  obj.data.object.package[0].schedules[j].info //主题*/
+              // that.ruleForm.schedules[j].ext_Hotel.Details =  obj.data.object.package[0].schedules[j].info //主题
                 that.content_02 =  obj.data.object.package[0].schedules[j].info //详情
                 //早餐
                 if( JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].label == "早餐" && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].Myself == "0"){
@@ -864,7 +865,7 @@
 
                 console.log( )
               }, 100)
-            }
+            }*/
 
             that.explain = []
             for (let t = 0; t < obj.data.object.instructions.length; t++ ){
@@ -1008,8 +1009,12 @@
           /*instructions1:this.notes, //预订须知,预留接口无字段？
           instructions2:this.instructions, //使用说明,预留接口无字段？*/
           loadPackage: true
+          
         }
-
+        if(this.dynamicTags3.length==0||this.dynamicTags4.length==0){
+           this.errors();
+           return;
+        }
         this.$refs[formName].validate((valid) => {
           if(valid){
             var _this = this;
