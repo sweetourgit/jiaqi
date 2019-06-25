@@ -131,7 +131,7 @@
               </div>
             </el-form-item>
 
-            
+
             <!--头图弹窗-->
             <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
               <MaterialList :imgData="imgData" v-on:checkList="checkList" v-on:closeButton="imgUpload = false"></MaterialList>
@@ -146,7 +146,7 @@
                 <el-button type="info" class="upload-btn">上传</el-button>
               </el-upload>
             </el-form-item>
-            
+
 
             <!-- 轮播图 -->
             <!-- <el-form-item label="轮播图" prop="slideshow" label-width="120px">
@@ -224,7 +224,7 @@
                 <vue-editor v-model="content_01"></vue-editor>
               </div>
             </el-form-item>
-            
+
 
           </div>
         </el-tab-pane>
@@ -1097,7 +1097,7 @@
                                    </div>-->
                                   <el-form-item v-if="myradio[index].lable=='1'" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details">
                                     <el-input class="inputBox" v-model="item.ext_Hotel.Details" type="text" placeholder="住宿说明"></el-input>
-                                  </el-form-item> 
+                                  </el-form-item>
                                 </div>
                               </div>
                             </el-form-item>
@@ -1813,7 +1813,7 @@
         inputVal4: '',
         errorNull: '',
         sid:'',
-        
+
         //头图上传 ========
         isImgUrlShow: false,
         imgUrlShow: '', // 点击查看图片
@@ -1907,7 +1907,7 @@
                   memo: '',
                   pictureID: '',
                   createTime: this.formatDate(new Date())
-                }],            
+                }],
               }],
               /*ext_Hotel: [
                 {IsHotel:0,Details:""}
@@ -1985,7 +1985,7 @@
               if(res.data.isSuccess == true){
                  let data = res.data.object;
               }
-        }) 
+        })
         //console.log(this.dynamicTags4)
       },
 
@@ -2150,7 +2150,7 @@
                   crowdID:this.ruleForm.Excursion,//基本信息出游人群
                   themeID:this.ruleForm.theme,//基本信息主题
                   mark:this.content_01,//基本信息产品概括
-                  
+
                   //行程信息接口数据
                   package: [
                     {
@@ -2179,22 +2179,22 @@
         // this.$refs['form'].clearValidate('openingHours');
         if(this.matter_radio == 1) {
           this.$refs[formName].clearValidate('plane.0.company');
-          this.$refs[formName].clearValidate('plane.0.theNumber'); 
-          this.$refs[formName].clearValidate('plane.0.podCity'); 
-          this.$refs[formName].clearValidate('plane.0.podPlace'); 
-          this.$refs[formName].clearValidate('plane.0.podTime'); 
-          this.$refs[formName].clearValidate('plane.0.arriveCity'); 
-          this.$refs[formName].clearValidate('plane.0.arrivePlace'); 
-          this.$refs[formName].clearValidate('plane.0.arriveTime'); 
+          this.$refs[formName].clearValidate('plane.0.theNumber');
+          this.$refs[formName].clearValidate('plane.0.podCity');
+          this.$refs[formName].clearValidate('plane.0.podPlace');
+          this.$refs[formName].clearValidate('plane.0.podTime');
+          this.$refs[formName].clearValidate('plane.0.arriveCity');
+          this.$refs[formName].clearValidate('plane.0.arrivePlace');
+          this.$refs[formName].clearValidate('plane.0.arriveTime');
 
           this.$refs[formName].clearValidate('nackPlane.0.company');
-          this.$refs[formName].clearValidate('nackPlane.0.theNumber'); 
-          this.$refs[formName].clearValidate('nackPlane.0.podCity'); 
-          this.$refs[formName].clearValidate('nackPlane.0.podPlace'); 
-          this.$refs[formName].clearValidate('nackPlane.0.podTime'); 
-          this.$refs[formName].clearValidate('nackPlane.0.arriveCity'); 
-          this.$refs[formName].clearValidate('nackPlane.0.arrivePlace'); 
-          this.$refs[formName].clearValidate('nackPlane.0.arriveTime'); 
+          this.$refs[formName].clearValidate('nackPlane.0.theNumber');
+          this.$refs[formName].clearValidate('nackPlane.0.podCity');
+          this.$refs[formName].clearValidate('nackPlane.0.podPlace');
+          this.$refs[formName].clearValidate('nackPlane.0.podTime');
+          this.$refs[formName].clearValidate('nackPlane.0.arriveCity');
+          this.$refs[formName].clearValidate('nackPlane.0.arrivePlace');
+          this.$refs[formName].clearValidate('nackPlane.0.arriveTime');
         }
           if(valid){
               var _this = this;
@@ -2291,7 +2291,7 @@
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
       },
       //返程添加经停、删除经停
@@ -2313,7 +2313,7 @@
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
       },
       reStopping(index) {
@@ -2538,7 +2538,7 @@
                   memo: '',
                   pictureID: '',
                   createTime: this.formatDate(new Date())
-                }],            
+                }],
               })
       },
       deleteDetails(k, index) {
@@ -2685,7 +2685,23 @@
       },*/
       //不带下拉框获取一条Flights
       handleSelectPod_01(index,ruleForm){//去程获取
-        this.$refs[ruleForm].resetFields();
+        this.$refs[ruleForm].clearValidate('plane.0.company');
+        this.$refs[ruleForm].clearValidate('plane.0.theNumber');
+        this.$refs[ruleForm].clearValidate('plane.0.podCity');
+        this.$refs[ruleForm].clearValidate('plane.0.podPlace');
+        this.$refs[ruleForm].clearValidate('plane.0.podTime');
+        this.$refs[ruleForm].clearValidate('plane.0.arriveCity');
+        this.$refs[ruleForm].clearValidate('plane.0.arrivePlace');
+        this.$refs[ruleForm].clearValidate('plane.0.arriveTime');
+
+        this.$refs[ruleForm].clearValidate('nackPlane.0.company');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.theNumber');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.podCity');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.podPlace');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.podTime');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.arriveCity');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.arrivePlace');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.arriveTime');
         if(this.ruleForm.plane[index].pod == ''){
           this.clearBle(index);
           return false;
@@ -2715,7 +2731,23 @@
         })
       },
       handleSelectPod_02(index,ruleForm){//返程获取
-        this.$refs[ruleForm].resetFields();
+        this.$refs[ruleForm].clearValidate('plane.0.company');
+        this.$refs[ruleForm].clearValidate('plane.0.theNumber');
+        this.$refs[ruleForm].clearValidate('plane.0.podCity');
+        this.$refs[ruleForm].clearValidate('plane.0.podPlace');
+        this.$refs[ruleForm].clearValidate('plane.0.podTime');
+        this.$refs[ruleForm].clearValidate('plane.0.arriveCity');
+        this.$refs[ruleForm].clearValidate('plane.0.arrivePlace');
+        this.$refs[ruleForm].clearValidate('plane.0.arriveTime');
+
+        this.$refs[ruleForm].clearValidate('nackPlane.0.company');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.theNumber');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.podCity');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.podPlace');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.podTime');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.arriveCity');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.arrivePlace');
+        this.$refs[ruleForm].clearValidate('nackPlane.0.arriveTime');
          if(this.ruleForm.nackPlane[index].pod == ''){
           this.clearBle_01(index);
           return false;
@@ -3119,19 +3151,19 @@
       }
     },
     formatDate(date){
-       var y = date.getFullYear();  
-       var m = date.getMonth() + 1;  
-           m = m < 10 ? ('0' + m) : m;  
-       var d = date.getDate();  
-           d = d < 10 ? ('0' + d) : d;  
-       var h = date.getHours();  
-           h=h < 10 ? ('0' + h) : h;  
-       var minute = date.getMinutes();  
-           minute = minute < 10 ? ('0' + minute) : minute;  
-       var second=date.getSeconds();  
-           second=second < 10 ? ('0' + second) : second;  
-           //return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;  
-           return y + '-' + m + '-' + d+' '+h+':'+minute;  
+       var y = date.getFullYear();
+       var m = date.getMonth() + 1;
+           m = m < 10 ? ('0' + m) : m;
+       var d = date.getDate();
+           d = d < 10 ? ('0' + d) : d;
+       var h = date.getHours();
+           h=h < 10 ? ('0' + h) : h;
+       var minute = date.getMinutes();
+           minute = minute < 10 ? ('0' + minute) : minute;
+       var second=date.getSeconds();
+           second=second < 10 ? ('0' + second) : second;
+           //return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
+           return y + '-' + m + '-' + d+' '+h+':'+minute;
       },
       // 图片上传==================
       handleList(a) {
