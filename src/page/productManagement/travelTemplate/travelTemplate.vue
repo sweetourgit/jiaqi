@@ -1588,7 +1588,7 @@
                 "type": item.type,
                 "infoType": item.InfoType,
                 "isRequired": selection,
-                "createTime": this.createTime,
+                "createTime": 0,
                 "dataType": "string",
                 "options": options
               })
@@ -1602,8 +1602,8 @@
                   "productType": this.dataProducts.templateType,
                   "isOne": this.dataProducts.travelNum,
                   "isRequired": this.dataProducts.traveFillIn,
-                  "createTime": this.createTime,
-                  "properties": properties
+                  "properties": properties,
+                  "createTime": 0
                 }
               }).then(res => {
                 this.addProducts = false;
@@ -1622,8 +1622,8 @@
                   "productType": this.dataProducts.templateType,
                   "isOne": this.dataProducts.travelNum,
                   "isRequired": this.dataProducts.traveFillIn,
-                  "createTime": this.createTime,
-                  "properties": properties
+                  "properties": properties,
+                  "createTime": 0
                 }
               }).then(res => {
                 this.addProducts = false;
