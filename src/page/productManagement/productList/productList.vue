@@ -49,8 +49,14 @@
       <div class="product">商品名称   <el-input  v-model="productTitle" style="width: 500px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
       </div>
       <div class="select_two">
-        <div class="address">出发地 <el-input   v-model="productPos" style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input></div>
-        <div class="name">目的地 <el-input   v-model="productMod" style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
+        <div class="address">出发地 
+          <!-- <el-input v-model="productPos" style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input> -->
+          <el-autocomplete class="inline-input" style="width: 205px;margin-left: 20px;" v-model="originPlace" :fetch-suggestions="querySearch3"placeholder="请输入内容" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+        </div>
+        <div class="name">目的地
+          <!-- <el-input   v-model="productMod" style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input> -->
+          <el-autocomplete class="inline-input" style="width: 205px;margin-left: 10px;" v-model="originMod" :fetch-suggestions="querySearch4"placeholder="请输入内容" :trigger-on-focus="false"@select="departure1"></el-autocomplete>
+        </div>
         <div class="options">产品操作人 <el-input  v-model="productUser" style="width: 150px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
       </div>
       <div class="select_two">
@@ -386,7 +392,9 @@ import DateList from './component/DateList'
         productId:'',
         productTitle:'',
         productPos:'',
+        originPlace:'',//出发地
         productMod:'',
+        originMod:'',//目的地
         productUser:'',
         productPrefix:'',
         productBehind:'',
@@ -762,6 +770,79 @@ import DateList from './component/DateList'
       }
     },
     methods: {
+
+    //出发地
+    querySearch3(queryString1, cb) {
+      this.vague = []
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+        "object": {
+          areaName: queryString1
+        }
+        }).then(res => {
+          for(let i=0;i<res.data.objects.length;i++){
+            this.vague.push({
+              "id":res.data.objects[i].id,
+              "value" : res.data.objects[i].areaName
+            })
+          }
+          var results = queryString1 ? this.vague.filter(this.createFilter(queryString1)) : [];
+          cb(results)
+        }).catch(err => {
+          console.log(err);
+        })
+    },
+    /*querySearch1(queryString1, cb1) {//搜索出发地方法
+        var results1 = queryString1 ? this.tableData1.filter(this.createFilter(queryString1)) : [];
+        cb1(results1);
+    },*/
+    createFilter(queryString1){
+      return (restaurant) => {
+        return (restaurant.value);
+      }
+    },
+    departure(item){
+      console.log(item)
+      /*this.productPos = item.id;
+      this.originPlace = item.value;*/
+      this.productPos = item.id;
+      this.originPlace = item.value;
+    },
+    //目的地
+    querySearch4(queryString2, cb) {
+      this.tableData1 = []
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+        "object": {
+          areaName: queryString2
+        }
+      },{
+        headers:{
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }).then(res => {
+          for(let i=0;i<res.data.objects.length;i++){
+            this.tableData1.push({
+              "value" : res.data.objects[i].areaName,
+              "id":res.data.objects[i].id
+            })
+          }
+          var results = queryString2 ? this.tableData1.filter(this.createFilter(queryString2)) : [];
+          cb(results)
+        }).catch(err => {
+          console.log(err);
+        })
+      },
+    createFilter(queryString2){
+      return (restaurant) => {
+        return (restaurant.value);
+      }
+    },
+    departure1(item){
+      console.log(item)
+      /*this.productPos = item.id;
+      this.originPlace = item.value;*/
+      this.productMod = item.id;
+      this.originMod = item.value;
+    },
       deleta(){
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teamdelete",
@@ -992,11 +1073,8 @@ import DateList from './component/DateList'
       },
   //搜索
       searchHand(){
-        if(this.productId == ''){
-          this.productId = 0;
-        }else{
           this.pageNum = 1;
-        }
+        
         if (!this.productTitle){
           this.productTitle = ""
         }else{
@@ -1017,16 +1095,6 @@ import DateList from './component/DateList'
         }else{
           this.pageNum = 1;
         }
-        if (!this.productPrefix){
-          this.productPrefix = 0
-        }else{
-          this.pageNum = 1;
-        }
-        if (!this.productBehind){
-          this.productBehind = 0
-        }else{
-          this.pageNum = 1;
-        }
 
         var that = this
         this.$http.post(
@@ -1036,11 +1104,11 @@ import DateList from './component/DateList'
             "pageSize": this.pagesize,
             "total": 0,
             "object": {
-              "id": that.productId,
+              "id": 0,
               "title": that.productTitle,
               "createUser": that.productUser,
-              "minPrice": that.productPrefix,
-              "maxPrice": that.productBehind,
+              "minPrice": 0,
+              "maxPrice": 0,
               "podID": that.productPos,
               "destinationID": that.productMod
             }
