@@ -244,7 +244,7 @@
             this.$emit('isInfo', false);
           }
         }
-        this.getAlbumForm = false;
+        this.getAlbumForm = false; 
         this.$emit('closeButton', false);
         this.$emit('checkList', this.checkList);
       },
