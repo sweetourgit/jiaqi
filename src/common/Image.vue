@@ -141,9 +141,10 @@
   import Swiper from "swiper"
   import 'swiper/dist/css/swiper.min.css';
   export default {
-    props: ['chineseName', 'imgData'],
+    props: ['chineseName', 'imgData', 'isType'],
     data() {        
       return {       
+        isTypes: false, // 是否是轮播图
         checkList: [],
         picSrc:'http://192.168.1.186:3009/upload',
         //左侧菜单
@@ -223,15 +224,26 @@
       },
       imgData() {
         this.checkList = this.imgData;
+      },
+      isType() {
+        this.isTypes = this.isType;
       }
     },
     created(){
       this.checkList = this.imgData;
       this.searchName = this.chineseName;
+      this.isTypes = this.isType;
       this.albumtypeget();
     },
     methods: {
       handleSave() {
+        if(this.isTypes) {
+          if(this.checkList.length < 3 || this.checkList.length > 6) {
+            this.$emit('isInfo', true);
+          } else {
+            this.$emit('isInfo', false);
+          }
+        }
         this.getAlbumForm = false;
         this.$emit('closeButton', false);
         this.$emit('checkList', this.checkList);
