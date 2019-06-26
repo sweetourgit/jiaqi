@@ -2190,7 +2190,7 @@
          if(this.dynamicTags4[i].destinationID==this.ruleForm.bourn){
            destination=this.dynamicTags4[i].destination
          }
-       }
+       }  
         //行程信息
         var object={
                   //基本信息接口数据
