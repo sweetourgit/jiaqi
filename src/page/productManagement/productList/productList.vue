@@ -882,7 +882,7 @@ import DateList from './component/DateList'
           }).then(res => {
             var that = this
             this.$http.post(
-              this.GLOBAL.serverSrc + "/team/api/teampage",
+              this.GLOBAL.serverSrc + "/team/api/teamsearch",
               {
                 "pageIndex": this.pageNum,
                 "pageSize": this.pagesize,
@@ -904,7 +904,7 @@ import DateList from './component/DateList'
                 that.tableData.forEach(function (v, k, arr) {
                   arr[k]['type'] = "跟团游"
                   arr[k]['name'] = obj.data.objects[k].title;
-                  arr[k]['mu_address'] = "xxx"
+                  arr[k]['mu_address'] = obj.data.objects[k].destinations[0].destination
                   arr[k]['options'] = obj.data.objects[k].createUser
                   arr[k]['status'] = "1"
                   arr[k]['opers'] = "飞猪 携程"

@@ -148,18 +148,16 @@
               <span class="apply_day">天</span>
             </el-form-item>
             <!-- 最晚收客时间 -->
-            <div class="latest">
-              <!-- 时 -->
+            <!-- <div class="latest">  时,分
               <el-form-item style="width:300px; float:left;" label='最晚收客时间' prop="timeHour" label-width="120px">
                 <el-input style="width:50px; float:left; margin-left:10px;" v-model="ruleForm.timeHour"></el-input>
                 <span style="float:left;color: #333; margin-left:10px;">时</span>
               </el-form-item>
-              <!-- 分 -->
               <el-form-item style="float:left; margin-left:-85px;" prop="timeMinute" class="err_span">
                 <el-input style="width:50px;float:left;" v-model="ruleForm.timeMinute" class="err_span"></el-input>
                 <span style="float:left;color: #333; margin-left:10px;">分</span>
               </el-form-item>
-            </div>
+            </div> -->
             <!-- 产品概括 -->
             <!--<el-form-item label="产品概括" prop="productSummary" label-width="120px">
               <el-input type="textarea" :autosize="{ minRows: 8, maxRows: 8}" v-model="ruleForm.productSummary" class="Summary"></el-input>
@@ -522,8 +520,8 @@
             { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
           travelType: [{ required: true, message: '不能为空', trigger: 'blur' }],
           orderConfirmationType: [{ required: true, message: '不能为空', trigger: 'change' }],
-          advanceRegistrationDays: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
+          advanceRegistrationDays: [{ required: true, message: '提前报名天数不能为空', trigger: 'blur' },
+            { pattern: /^[1-9]\d*$/, message: '提前报名天数需为正整数', trigger: 'blur' }],
           highlightWords1: [{ required: true, message: '不能为空', trigger: 'blur' },
             { min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
           highlightWords2: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
@@ -909,15 +907,48 @@
       },
       //删除预订须知
       deleteNotice(index){
-        this.notes.splice(index, 1)
+        this.$confirm('是否删除该活动信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.notes.splice(index, 1)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        })
       },
       //删除使用说明
       deleteState(index){
-        this.instructions.splice(index, 1)
+        this.$confirm('是否删除该活动信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.instructions.splice(index, 1)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        })
       },
       //费用说明删除
       deleteState_01(index){
-        this.domains.splice(index, 1)
+        this.$confirm('是否删除该活动信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.domains.splice(index, 1)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        })
       },
       //添加
       getUEContent(){
