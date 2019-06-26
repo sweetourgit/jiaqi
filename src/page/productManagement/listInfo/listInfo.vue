@@ -1129,7 +1129,7 @@
                                 <el-radio v-model="it.Myself" label="1">详细说明</el-radio>
                               </div>
                               <div style="float:left">
-                                <el-form-item v-if="it.Myself=='1'" :prop="'schedules.'+index+'.ext_Meals.Details'" :rules="rules.mealDetails">
+                                <el-form-item v-if="it.Myself=='1'" :prop="'schedules.'+index+'.ext_Meals.'+ p +'.Detail'" :rules="rules.mealDetails">
                                   <el-input class="state" placeholder="餐饮说明" v-model="it.Detail"></el-input>
                                 </el-form-item>
                               </div>
@@ -2178,6 +2178,19 @@
       for(var i =0;i < this.instructions.length; i++){
 			   this.notes.push(this.instructions[i]);
       }
+        
+       let pod='';
+       for(let i=0;i<this.dynamicTags3.length;i++){
+         if(this.dynamicTags3[i].podID==this.ruleForm.origin){
+           pod=this.dynamicTags3[i].pod
+         }
+       }
+       let destination='';
+       for(let i=0;i<this.dynamicTags4.length;i++){
+         if(this.dynamicTags4[i].destinationID==this.ruleForm.bourn){
+           destination=this.dynamicTags4[i].destination
+         }
+       }
         //行程信息
         var object={
                   //基本信息接口数据
@@ -2211,10 +2224,10 @@
                   package: [
                     {
                       name: this.ruleForm.highlightWords,//行程信息套餐名
-                      podID: this.ruleForm.origin.podId,//行程信息出发地id
-                      destinationID: this.ruleForm.bourn.destinationId,//行程信息目的地id
-                      pod: this.ruleForm.origin.pod,
-                      destination: this.ruleForm.bourn.destination,
+                      podID: this.ruleForm.origin,//行程信息出发地id
+                      destinationID: this.ruleForm.bourn,//行程信息目的地id
+                      pod: pod,
+                      destination: destination,
                       isDeleted: 0,
                       createTime:this.formatDate(new Date()),
                       traffic: traff,//交通方式,
