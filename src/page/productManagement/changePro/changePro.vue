@@ -962,6 +962,10 @@
         for(var i=0;i<sche.length;i++){
           sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
         }
+        for(var i =0;i < this.instructions.length; i++){
+         this.notes.push(this.instructions[i]);
+      }
+
         //行程信息
         var object={
           //基本信息接口数据
@@ -1006,6 +1010,7 @@
             }
           ],*/
           instructions:this.explain.concat(this.domains), //费用说明
+          others:this.notes,
           /*instructions1:this.notes, //预订须知,预留接口无字段？
           instructions2:this.instructions, //使用说明,预留接口无字段？*/
           loadPackage: true
