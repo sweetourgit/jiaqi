@@ -8,7 +8,6 @@
       {{changeobj}}
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <!-- 行程信息 -->
-        {{chuxian}}
         <el-tab-pane label="行程信息" name="second">
           <!-- <TripInfo :inputravelDays="travelDays"></TripInfo> -->
           <div class="tripInfo">
@@ -1219,7 +1218,6 @@
         qqqq: '3',
         schedulesId:'',
         packID:'',
-        chuxian:'',
         changeobj:"",
         changeIndex:0,//默认第一个套餐
         changeAction:"",//判断是修改还是删除
@@ -2036,8 +2034,8 @@
             loadPackage: true,
             briefMark: "string",
             loadPlan: true,
-            codePrefix: "string",
-            codeSuffix: "string"
+            codePrefix: new Date().toLocaleString( ),
+            codeSuffix: new Date().toLocaleString( ),
           }
           this.$refs[formName].validate((valid) => {
             if(valid){
@@ -2114,8 +2112,8 @@
             loadPackage: true,
             briefMark: "string",
             loadPlan: true,
-            codePrefix: "string",
-            codeSuffix: "string",
+            codePrefix: new Date().toLocaleString( ),
+            codeSuffix: new Date().toLocaleString( ),
 
           }
           this.chuxian = object
