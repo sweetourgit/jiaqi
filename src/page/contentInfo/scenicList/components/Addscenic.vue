@@ -161,7 +161,7 @@
       <div class="img_upload">
         <template v-for="(item, index) in form.imgs">
           <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
-          <div class="img_div" :key="index">x</div>
+          <div class="img_div" :key="index" @click="imgDelete(item)">x</div>
         </template>
       </div>
       <el-button class="img_button" type="info" @click="handleImgUpload">上传</el-button>
@@ -361,6 +361,10 @@ export default {
       if (a.target.id != 'showDiv') {
         this.isImgUrlShow = false;
       }
+    },
+    // 点击删除图片
+    imgDelete(data) {
+      this.form.imgs.splice(this.form.imgs.indexOf(data), 1);
     },
     // 点击图片查看
     imgClickShow(data) {
@@ -1008,6 +1012,7 @@ export default {
   margin: 5px 0 0 10px;
   width: 30px;
   height: 30px;
+  user-select:none;
 }
 .img_list:hover {
   cursor:pointer;
@@ -1022,6 +1027,7 @@ export default {
   line-height: 16px;
   font-size: 18px;
   background: #FFFFFF;
+  user-select:none;
 }
 .img_div:hover {
   cursor:pointer;
