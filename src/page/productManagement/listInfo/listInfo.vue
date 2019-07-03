@@ -333,7 +333,7 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="出发城市" label-width="100px" :prop="'plane.'+index+'.podCity'" :rules="rules.podCity" style="float:left">
-                                
+
                                   <el-input class="inputBox" v-model="item.podCity" @input="myInput" clearable placeholder="请输入出发城市"></el-input>
                                   </el-autocomplete>
 
@@ -348,7 +348,7 @@
                                 <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item> -->
                               <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                              
+
                                  <el-input class="inputBox" v-model="item.podTime" @input="myInput" clearable placeholder="请输入出发时间"></el-input>
                               </el-form-item>
                             </div>
@@ -357,12 +357,12 @@
                             <div class="aviation" >
                               <!--第一个-->
                                 <el-form-item label="到达城市" label-width="100px" :prop="'plane.'+index+'.arriveCity'" :rules="rules.arriveCity" style="float:left">
-                                 
+
                                   <el-input class="inputBox" v-model="item.arriveCity" @input="myInput" clearable placeholder="请输入到达城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="到达机场" label-width="100px" :prop="'plane.'+index+'.arrivePlace'" :rules="rules.arrivePlace" style="float:left;">
-                               
+
                                    <el-input class="inputBox" v-model="item.arrivePlace" @input="myInput" clearable placeholder="请输入到达机场"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -370,7 +370,7 @@
                                   <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item> -->
                                 <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
-                                  
+
                                   <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
@@ -407,9 +407,9 @@
                             <div class="aviation" style="margin-top:20px;">
                               <!--第一个-->
                                 <el-form-item label="车次" label-width="100px" :prop="'plane.'+index+'.theNumber'" :rules="rules.theNumber">
-                                 
+
                                   <el-input class="inputBox" v-model="item.theNumber" @input="myInput" clearable placeholder="请输入出发车次"></el-input>
-                                  </el-autocomplete>
+
                                 </el-form-item>
                             </div>
                             <!--第一行结束-->
@@ -417,26 +417,25 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="出发城市" label-width="100px" :prop="'plane.'+index+'.podCity'" :rules="rules.podCity" style="float:left;">
-                                
+
                                   <el-input class="inputBox" v-model="item.podCity" @input="myInput" clearable placeholder="请输入出发城市"></el-input>
-                                  </el-autocomplete>
+
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="出发车站" label-width="100px" :prop="'plane.'+index+'.podPlace'" :rules="rules.podPlace" style="float:left;">
-                                  
+
                                  <el-input class="inputBox" v-model="item.podPlace" @input="myInput" clearable placeholder="请输入出发车站"></el-input>
 
-                                  </el-autocomplete>
                                 </el-form-item>
                               <!--第三个-->
                               <!-- <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
                                 <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item> -->
                               <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                
+
                                 <el-input class="inputBox" v-model="item.podTime" @input="myInput" clearable placeholder="请输入出发时间"></el-input>
 
-                                </el-autocomplete>
+
                               </el-form-item>
                             </div>
                             <!--第二行结束-->
@@ -444,25 +443,25 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="到达城市" label-width="100px" :prop="'plane.'+index+'.arriveCity'" :rules="rules.arriveCity" style="float:left;">
-                                 
+
                                   <el-input class="inputBox" v-model="item.arriveCity" @input="myInput" clearable placeholder="请输入到达城市"></el-input>
 
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="到达车站" label-width="100px" :prop="'plane.'+index+'.arrivePlace'" :rules="rules.arrivePlace" style="float:left;">
-                                  
+
 
                                   <el-input class="inputBox" v-model="item.arrivePlace" @input="myInput" clearable placeholder="请输入到达车站"></el-input>
-                                  </el-autocomplete>
+
                                 </el-form-item>
                               <!--第三个-->
                               <!-- <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left;">
                                   <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item> -->
                                 <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
-                                 
+
                                   <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
-                                  </el-autocomplete>
+
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                 <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -479,21 +478,21 @@
                             <div class="aviation" style="margin-top:20px;">
                               <!--第一个-->
                                 <el-form-item label="出发城市" style="float:left;" label-width="100px" :prop="'plane.'+index+'.podCity'" :rules="rules.podCity">
-                                 
+
                                   <el-input class="inputBox" v-model="item.podCity" @input="myInput" clearable placeholder="请输入出发城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="出发车站"  label-width="100px" style="float:left;" :prop="'plane.'+index+'.podPlace'" :rules="rules.podPlace">
-                                  
+
                                   <el-input class="inputBox" v-model="item.podPlace" @input="myInput" clearable placeholder="出发车站"></el-input>
-                                  
+
                                 </el-form-item>
                               <!--第三个-->
                               <!-- <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
                                 <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item> -->
                               <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                               
+
                                 <el-input class="inputBox" v-model="item.podTime" @input="myInput" clearable placeholder="请输入出发时间"></el-input>
                               </el-form-item>
                             </div>
@@ -502,13 +501,13 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="到达城市" label-width="100px" style="float:left;" :prop="'plane.'+index+'.arriveCity'" :rules="rules.arriveCity">
-                                  
+
                                   <el-input class="inputBox" v-model="item.arriveCity" @input="myInput" clearable placeholder="请输入到达城市"></el-input>
-                                  
+
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="到达车站" prop="podPlace" label-width="100px" style="float:left;" :prop="'plane.'+index+'.arrivePlace'" :rules="rules.arrivePlace">
-                                  
+
                                   <el-input class="inputBox" v-model="item.arrivePlace" @input="myInput" clearable placeholder="请输入到达车站"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -516,7 +515,7 @@
                                   <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item> -->
                                 <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
-                                  
+
                                   <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
@@ -533,12 +532,12 @@
                             <div class="aviation" style="margin-top:20px; position:relative;">
                               <!--第一个-->
                                 <el-form-item label="邮轮公司" :prop="'plane.'+index+'.company'" :rules="rules.company" label-width="100px" style="float:left;">
-                                 
+
                                   <el-input class="inputBox" v-model="item.company" @input="myInput" clearable placeholder="请输入邮轮公司"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="邮轮号" label-width="100px" style="float:left;" :prop="'plane.'+index+'.theNumber'" :rules="rules.theNumber">
-                                  
+
                                    <el-input class="inputBox" v-model="item.theNumber" @input="myInput" clearable placeholder="请输入邮轮号"></el-input>
                                 </el-form-item>
                             </div>
@@ -547,12 +546,12 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="出发城市" label-width="100px" style="float:left;" :prop="'plane.'+index+'.podCity'" :rules="rules.podCity">
-                                  
+
                                    <el-input class="inputBox" v-model="item.podCity" @input="myInput" clearable placeholder="请输入出发城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="出发码头" label-width="100px" style="float:left;" :prop="'plane.'+index+'.podPlace'" :rules="rules.podPlace">
-                                  
+
                                    <el-input class="inputBox" v-model="item.podPlace" @input="myInput" clearable placeholder="请输入出发码头"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -560,7 +559,7 @@
                                 <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item> -->
                               <el-form-item label="出发时间" label-width="100px" :prop="'plane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                
+
                                  <el-input class="inputBox" v-model="item.podTime" @input="myInput" clearable placeholder="请输入出发时间"></el-input>
                               </el-form-item>
                             </div>
@@ -569,12 +568,12 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="到达城市" label-width="100px" style="float:left;" :prop="'plane.'+index+'.arriveCity'" :rules="rules.arriveCity">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arriveCity" @input="myInput" clearable placeholder="请输入到达城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="到达码头" label-width="100px" style="float:left;" :prop="'plane.'+index+'.arrivePlace'" :rules="rules.arrivePlace">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arrivePlace" @input="myInput" clearable placeholder="请输入到达码头"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -582,7 +581,7 @@
                                   <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item> -->
                                 <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
-                                 
+
                                    <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
@@ -654,12 +653,12 @@
                             <div class="aviation" style="margin-top:20px;">
                               <!--第一个-->
                                 <el-form-item label="航空公司" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.company'" :rules="rules.company">
-                                 
+
                                    <el-input class="inputBox" v-model="item.company" @input="myInput" clearable placeholder="请输入航空公司"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="航班号" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.theNumber'" :rules="rules.theNumber">
-                                 
+
                                    <el-input class="inputBox" v-model="item.theNumber" @input="myInput" clearable placeholder="请输入航班号"></el-input>
                                 </el-form-item>
                             </div>
@@ -668,12 +667,12 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="出发城市" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.podCity'" :rules="rules.podCity">
-                                  
+
                                    <el-input class="inputBox" v-model="item.podCity" @input="myInput" clearable placeholder="请输入出发城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="出发机场" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.podPlace'" :rules="rules.podPlace">
-                                 
+
                                    <el-input class="inputBox" v-model="item.podPlace" @input="myInput" clearable placeholder="请输入出发机场"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -681,7 +680,7 @@
                                 <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item> -->
                               <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                               
+
                                  <el-input class="inputBox" v-model="item.podTime" @input="myInput" clearable placeholder="请输入出发时间"></el-input>
                               </el-form-item>
                             </div>
@@ -690,12 +689,12 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="到达城市" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.arriveCity'" :rules="rules.arriveCity">
-                                 
+
                                    <el-input class="inputBox" v-model="item.arriveCity" @input="myInput" clearable placeholder="请输入到达城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="到达机场" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.arrivePlace'" :rules="rules.arrivePlace">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arrivePlace" @input="myInput" clearable placeholder="请输入到达机场"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -703,7 +702,7 @@
                                   <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item> -->
                                 <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
@@ -741,7 +740,7 @@
                             <div class="aviation" style="margin-top:20px;">
                               <!--第一个-->
                                 <el-form-item label="车次" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.theNumber'" :rules="rules.theNumber">
-                                 
+
                                    <el-input class="inputBox" v-model="item.theNumber" @input="myInput" clearable placeholder="请输入车次"></el-input>
                                 </el-form-item>
                             </div>
@@ -750,12 +749,12 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="出发城市" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.podCity'" :rules="rules.podCity">
-                                  
+
                                    <el-input class="inputBox" v-model="item.podCity" @input="myInput" clearable placeholder="请输入出发城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="出发车站" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.podPlace'" :rules="rules.podPlace">
-                                  
+
                                    <el-input class="inputBox" v-model="item.podPlace" @input="myInput" clearable placeholder="请输入出发车站"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -763,7 +762,7 @@
                                 <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item> -->
                               <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                               
+
                                  <el-input class="inputBox" v-model="item.podTime" @input="myInput" clearable placeholder="请输入出发时间"></el-input>
                               </el-form-item>
                             </div>
@@ -772,12 +771,12 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="到达城市" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.arriveCity'" :rules="rules.arriveCity">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arriveCity" @input="myInput" clearable placeholder="请输入到达城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="到达车站" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.arrivePlace'" :rules="rules.arrivePlace">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arrivePlace" @input="myInput" clearable placeholder="请输入到达车站"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -785,7 +784,7 @@
                                   <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item> -->
                                 <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
@@ -803,12 +802,12 @@
                             <div class="aviation" style="margin-top:20px;">
                               <!--第一个-->
                                 <el-form-item label="出发城市" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.podCity'" :rules="rules.podCity">
-                                  
+
                                    <el-input class="inputBox" v-model="item.podCity" @input="myInput" clearable placeholder="请输入出发城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="出发车站" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.podPlace'" :rules="rules.podPlace">
-                                  
+
                                    <el-input class="inputBox" v-model="item.podPlace" @input="myInput" clearable placeholder="请输入出发车站"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -816,7 +815,7 @@
                                 <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item> -->
                               <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                
+
                                  <el-input class="inputBox" v-model="item.podTime" @input="myInput" clearable placeholder="请输入出发时间"></el-input>
                               </el-form-item>
                             </div>
@@ -825,12 +824,12 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="到达城市" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.arriveCity'" :rules="rules.arriveCity">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arriveCity" @input="myInput" clearable placeholder="请输入到达城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="到达车站" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.poarrivePlacedPlace'" :rules="rules.arrivePlace">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arrivePlace" @input="myInput" clearable placeholder="请输入到达车站"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -838,7 +837,7 @@
                                   <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item> -->
                                 <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
-                                 
+
                                    <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
@@ -856,12 +855,12 @@
                             <div class="aviation" style="margin-top:20px; position:relative;">
                               <!--第一个-->
                                 <el-form-item label="邮轮公司" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.company'" :rules="rules.company">
-                                  
+
                                    <el-input class="inputBox" v-model="item.company" @input="myInput" clearable placeholder="请输入邮轮公司"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="邮轮号" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.theNumber'" :rules="rules.theNumber">
-                                
+
                                    <el-input class="inputBox" v-model="item.theNumber" @input="myInput" clearable placeholder="请输入邮轮号"></el-input>
                                 </el-form-item>
                             </div>
@@ -870,12 +869,12 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="出发城市" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.podCity'" :rules="rules.podCity">
-                                  
+
                                    <el-input class="inputBox" v-model="item.podCity" @input="myInput" clearable placeholder="请输入出发城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="出发码头" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.podPlace'" :rules="rules.podPlace">
-                                 
+
                                    <el-input class="inputBox" v-model="item.podPlace" @input="myInput" clearable placeholder="请输入出发码头"></el-input>
                                 </el-form-item>
 
@@ -884,7 +883,7 @@
                                 <el-date-picker style="width:200px;" v-model="item.podTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择出发时间"></el-date-picker>
                               </el-form-item> -->
                               <el-form-item label="出发时间" label-width="100px" :prop="'nackPlane.'+index+'.podTime'" :rules="rules.podTime" style="float:left">
-                                
+
                                  <el-input class="inputBox" v-model="item.podTime" @input="myInput" clearable placeholder="请输入出发时间"></el-input>
                               </el-form-item>
                             </div>
@@ -893,12 +892,12 @@
                             <div class="aviation">
                               <!--第一个-->
                                 <el-form-item label="到达城市" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.arriveCity'" :rules="rules.arriveCity">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arriveCity" @input="myInput" clearable placeholder="请输入到达城市"></el-input>
                                 </el-form-item>
                               <!--第二个-->
                                 <el-form-item label="到达码头" label-width="100px" style="float:left;" :prop="'nackPlane.'+index+'.arrivePlace'" :rules="rules.arrivePlace">
-                                  
+
                                    <el-input class="inputBox" v-model="item.arrivePlace" @input="myInput" clearable placeholder="请输入到达码头"></el-input>
                                 </el-form-item>
                               <!--第三个-->
@@ -906,7 +905,7 @@
                                   <el-date-picker style="width:200px;" v-model="item.arriveTime" value-format="yyyy-MM-dd HH-mm-ss" type="datetime" placeholder="选择到达时间"></el-date-picker>
                                 </el-form-item> -->
                                 <el-form-item label="到达时间" label-width="100px" :prop="'nackPlane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
-                                 
+
                                    <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
                                 </el-form-item>
                               <el-select class="day" v-model="item.planeDay" placeholder="当日">
@@ -2167,7 +2166,7 @@
          for(var i=0;i<sche.length;i++){
               sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
          }
-         //活动详情格式修改     
+         //活动详情格式修改
         for(var i=0;i<sche.length;i++){
             for(var j=0;j<sche[i].activitys.length;j++){
               sche[i].activitys[j]=sche[i].activitys[j].info[sche[i].activitys[j].activityType-1];
@@ -2178,7 +2177,7 @@
       for(var i =0;i < this.instructions.length; i++){
 			   this.notes.push(this.instructions[i]);
       }
-        
+
        let pod='';
        for(let i=0;i<this.dynamicTags3.length;i++){
          if(this.dynamicTags3[i].podID==this.ruleForm.origin){
@@ -2190,7 +2189,7 @@
          if(this.dynamicTags4[i].destinationID==this.ruleForm.bourn){
            destination=this.dynamicTags4[i].destination
          }
-       }  
+       }
         //行程信息
         var object={
                   //基本信息接口数据

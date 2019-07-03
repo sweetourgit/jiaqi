@@ -49,7 +49,7 @@
       <div class="product">商品名称   <el-input  v-model="productTitle" style="width: 500px; margin-left: 10px;"  placeholder="请输入内容"></el-input></div>
       </div>
       <div class="select_two">
-        <div class="address">出发地 
+        <div class="address">出发地
           <!-- <el-input v-model="productPos" style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input> -->
           <el-autocomplete class="inline-input" style="width: 205px;margin-left: 20px;" v-model="originPlace" :fetch-suggestions="querySearch3"placeholder="请输入内容" :trigger-on-focus="false"@select="departure"></el-autocomplete>
         </div>
@@ -186,7 +186,7 @@
 
 
 
-    <el-dialog class="merchandise" :visible.sync="merchandise"   :show-close="false" append-to-body width="77%">
+    <el-dialog  :close-on-click-modal="false" class="merchandise" :visible.sync="merchandise"   :show-close="false" append-to-body width="77%">
      <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
           <el-radio-group v-model="isCollapse"  @change="qqq">
              <el-radio-button  class="group" :label="true">库存</el-radio-button>
@@ -285,89 +285,6 @@
       </el-table-column>
     </el-table>
 
-    <!-- 增值服务 -->
-    <!-- <div v-show="accretion">
-        <div style="width:90%;margin-left:60px;margin-top:60px;">
-          <span style="font-size:25px;color:#333">增值服务</span><br/>
-          <span style="color:#dcdcdc">附加增值服务说明：不可单独购买，只能跟主产品库存一起购买的需要额外付费的项目或资源，包含但不限于夜间服务费、接送区域外附加费、儿童座椅、酒店升级、行李额服务、代办签证费、小费、司导服务费、加急费等等</span><br/>
-          <el-button type="primary" size="medium"  @click="appreciation()">添加增值</el-button>
-        </div> -->
-          <!-- 添加增值的弹窗 -->
-          <!-- <el-dialog title="增值信息" :visible.sync="accretionBall" append-to-body width="30%" custom-class="city_list">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm"  >
-                <el-form-item label="名称 :" prop="name" style="margin-left:35px" >
-                   <el-input v-model="ruleForm.name" auto-complete="off" style="width:60%;" ></el-input>
-                </el-form-item>
-                <el-form-item label="价格类型 :" prop="priceSelect" style="margin-left:35px" >
-                    <el-radio-group v-model="ruleForm.priceSelect">
-                      <el-radio label="非日历价格"></el-radio>
-                      <el-radio label="日历价格"></el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="说明 :" prop="explain" style="margin-left:35px" >
-                   <el-input v-model="ruleForm.explain" auto-complete="off" style="width:60%;" ></el-input>
-                </el-form-item>
-                <el-form-item style="margin-left:70%;">
-                  <el-button size="mediun">删除</el-button>
-                  <el-button size="mediun" type="primary" @click="save('ruleForm')">保存</el-button>
-                </el-form-item>
-            </el-form>
-          </el-dialog> -->
-
-        <!-- 增值服务列表 -->
-          <!-- <el-table
-            v-show="accretionTable"
-            :data="Addprice"
-            border
-            style="width: 1340px;margin:20px auto;"
-            :header-cell-style="getRowClass">
-          <el-table-column
-            prop="id"
-            label="ID"
-            width="180"
-            align="center"
-            >
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="名称"
-            width="180"
-            align="center"
-            >
-          </el-table-column>
-
-          <el-table-column
-            prop="explain"
-            align="center"
-            label="说明">
-          </el-table-column>
-        <el-table-column
-          prop="priceSelect"
-          align="center"
-          label="价格"
-        >
-
-          </el-table-column>
-            <el-table-column
-            prop="name"
-            align="center"
-            label="操作">
-            <template slot-scope="scope">
-              <template v-if="Addprice[scope.$index].type == false">
-                <el-button size="mini" type="primary" @click="addOnline(scope.$index)">上线</el-button>
-              </template>
-              <template v-else>
-                <el-button size="mini" type="primary" @click="addOffline(scope.$index)">下线</el-button>
-              </template>
-                <el-button size="mini" type="primary">价格</el-button>
-                <template v-if="Addprice[scope.$index].type == false">
-                  <el-button size="mini" type="primary">修改</el-button>
-                </template>
-                <el-button size="mini" type="danger" @click="delPrice(scope.$index)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-    </div> -->
 
     </div>
     <!-- 价格 -->
@@ -958,7 +875,40 @@ import DateList from './component/DateList'
           this.isCollapse = false;
         }
       },
+      //库存修改
+      inventorysave(){
+      console.log(this.ccc)
+        var that = this
+       /* this.$http.post(
+          this.GLOBAL.serverSrc + "/team/api/inventorysave",
+          {
+            "object": {
+              "id": 0,
+              "name": "string",
+              "isDeleted": 0,
+              "createTime": 0,
+              "code": "string",
+              "count": 0,
+              "orgID": 0,
+              "teamID": 0,
+              "createUser": "string",
+              "share": 0,
+              "date": 0
+            }
+          },
+          {
+            headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+          .then(function (obj) {
 
+          })
+          .catch(function (obj) {
+
+          })*/
+      },
       BandSave(){
 
 
@@ -1050,8 +1000,28 @@ import DateList from './component/DateList'
                 },*/
                 "loadPlan": true,
                 "uptoDay": that.ccc[i].uptoDay,
-                "templateID": that.ccc[i].value
+                "templateID": that.ccc[i].value,
+                 "codePrefix": that.ccc[i].codePrefix,
+                "codeSuffix": that.ccc[i].codeSuffix
               }
+             /* "object":{
+                "id": that.ccc[i].id,
+                "name": that.ccc[i].ddd,
+                "podID": 0,
+                "destinationID": 0,
+                "pod": "string",
+                "destination": "string",
+                "teamID": that.ccc[i].id,
+                "isDeleted": 0,
+                "createTime": "2019-07-03T05:49:12.613Z",
+                "code": "string",
+                "briefMark": "string",
+                "loadPlan": true,
+                "uptoDay":that.ccc[i].uptoDay,
+                "templateID": that.ccc[i].value,
+                "codePrefix": that.ccc[i].codePrefix,
+                "codeSuffix": that.ccc[i].codeSuffix
+              }*/
             },
             {
               headers:{
@@ -1070,11 +1040,12 @@ import DateList from './component/DateList'
       },
       BandCancel(){
         this.merchandise = false;
+        this.isCollapse = true
       },
   //搜索
       searchHand(){
           this.pageNum = 1;
-        
+
         if (!this.productTitle){
           this.productTitle = ""
         }else{
@@ -1343,6 +1314,7 @@ import DateList from './component/DateList'
 
             for (let i = 0; i < obj.data.objects.length; i++){
              /* console.log(obj.data.objects[0].id)*/
+
               that.ccc.push({
                   id:obj.data.objects[i].id,
                   ddd:obj.data.objects[i].name,
@@ -1353,6 +1325,10 @@ import DateList from './component/DateList'
                   createTime:obj.data.objects[i].createTime,
                   type:false,
                 })
+              if(that.ccc[i].value == 0){
+                that.ccc[i].value = "请选择"
+              }
+
               }
             console.log(obj.data)
           })
@@ -1621,6 +1597,10 @@ import DateList from './component/DateList'
         }
       },
       headCall(data) {
+      console.log(this.merchandise)
+        if(this.merchandise == true){
+          this.isCollapse = true
+        }
         this.merchandise = data;
       },
   // 生成sku

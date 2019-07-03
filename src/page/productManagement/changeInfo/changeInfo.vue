@@ -379,7 +379,7 @@
                               </div>
                               <div class="plane" v-for="(item, index) in ruleForm.nackPlane" :key="item.index">
                                 <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
-                                  <el-cascader style="width: 105px" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficGoClear(index)"></el-cascader> 
+                                  <el-cascader style="width: 105px" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficGoClear(index)"></el-cascader>
                                   <span class="plane_text"><span style="color:red">*</span>第</span>
                                   <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                                     <el-option v-for="(day,index) in item.arrDay" :key="day.value" :label="day.label" :value="day.value"></el-option>
@@ -1880,7 +1880,7 @@
                   that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].Detail
                 }
                 that.ruleForm.schedules[j].activitys = []
-                for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {                
+                for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {
                   that.ruleForm.schedules[j].activitys.push({
                       activityType:obj.data.object.package[0].schedules[j].activitys[k].activityType + '',
                       info:[{
@@ -2011,7 +2011,7 @@
           }else{
             this.ruleForm.chufadi = this.ruleForm.origin.pod
           }
-          //活动详情格式修改      
+          //活动详情格式修改
           for(var i=0;i<sche.length;i++){
             for(var j=0;j<sche[i].activitys.length;j++){
               sche[i].activitys[j]=sche[i].activitys[j].info[sche[i].activitys[j].activityType-1];
@@ -2034,8 +2034,8 @@
             loadPackage: true,
             briefMark: "string",
             loadPlan: true,
-            codePrefix: new Date().toLocaleString( ),
-            codeSuffix: new Date().toLocaleString( ),
+            codePrefix:'',
+            codeSuffix: '',
           }
           this.$refs[formName].validate((valid) => {
             if(valid){
@@ -2088,7 +2088,7 @@
           }else{
             this.ruleForm.chufadi = this.ruleForm.origin.pod
           }
-          //活动详情格式修改      
+          //活动详情格式修改
           for(var i=0;i<sche.length;i++){
             for(var j=0;j<sche[i].activitys.length;j++){
               sche[i].activitys[j]=sche[i].activitys[j].info[sche[i].activitys[j].activityType-1];
@@ -2112,8 +2112,8 @@
             loadPackage: true,
             briefMark: "string",
             loadPlan: true,
-            codePrefix: new Date().toLocaleString( ),
-            codeSuffix: new Date().toLocaleString( ),
+            codePrefix: '',
+            codeSuffix:'',
 
           }
           this.chuxian = object
@@ -2693,7 +2693,7 @@
                       that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Detail
                     }
                     that.ruleForm.schedules[j].activitys = []
-                for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {                
+                for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {
                   that.ruleForm.schedules[j].activitys.push({
                       activityType:obj.data.object.package[0].schedules[j].activitys[k].activityType + '',
                       info:[{
@@ -2748,7 +2748,7 @@
 
 
               })
-       
+
           }
         } else {
           this.handleTabsEdit(this.aindex, "remove");
@@ -2777,7 +2777,7 @@
         });
         this.comboshow = false;
         }
-        
+
       },
       tab(index) {
         this.num = index;
@@ -3192,7 +3192,7 @@
                       that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Detail
                     }
                     that.ruleForm.schedules[j].activitys = []
-                for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {                
+                for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {
                   that.ruleForm.schedules[j].activitys.push({
                       activityType:obj.data.object.package[0].schedules[j].activitys[k].activityType + '',
                       info:[{
@@ -3365,7 +3365,7 @@
         }
           } else {
 
-          
+
           this.changeIndex = targetName.index
             var that = this
             this.$http.post(
@@ -3438,7 +3438,7 @@
                       that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Detail
                     }
                     that.ruleForm.schedules[j].activitys = []
-                for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {                
+                for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {
                   that.ruleForm.schedules[j].activitys.push({
                       activityType:obj.data.object.package[0].schedules[j].activitys[k].activityType + '',
                       info:[{
@@ -3488,7 +3488,7 @@
                   that.explain.push(obj.data.object.instructions[t])
                 }
               })
-             
+
           }
 
         }
