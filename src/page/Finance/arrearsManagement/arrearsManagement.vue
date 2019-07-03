@@ -54,6 +54,10 @@
       <!-- <el-dialog width='1200px' top='10vh' title="详情" :visible.sync="dialogFormVisible" :show-close="false"> -->
         <!-- <detailsForm v-on:closeButton="dialogFormVisible = false" :currentRow="currentRow"></detailsForm> -->
         <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :searchHandList="searchHand"></AdvanceInfo>
+        <el-dialog width='1200px' top='10vh' title="无收入借款详情" :visible.sync="ischeckLoanManagement" :show-close="false">
+	        <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
+        </el-dialog>
+
       <!-- </el-dialog> -->
       <!-- 欠款信息详情END -->
 
@@ -112,13 +116,15 @@
 // import supplierArrearsList from './detailsForm/supplierArrearsList'
 import vendorArrears from './vendorArrears/vendorArrears';
 import AdvanceInfo from '@/page/Finance/advancePayment/advanceInfo/advanceInfo';
+import checkLoanManagement from '@/page/Finance/loanManagement/checkLoanManagement/checkLoanManagement'
 
 export default {
   name: "arrearsManagement",
   components: {
     // detailsForm,
     vendorArrears,
-    AdvanceInfo
+    AdvanceInfo,
+    checkLoanManagement
     // supplierArrearsList
   },
   data() {
@@ -142,43 +148,19 @@ export default {
       dialogFormVisible: false,     // 欠款信息详情
       dialogSupplierVisible: false, // 供应商欠款信息详情
       // 欠款列表表格
-      checkLabelList: [{
-        id: '1',
-        league: 'TC-GTY-1001-01-180806-01', // 团期计划
-        leagueName: '纯玩纯净-北京',         // 产品名称
-        launchDate: '2019-03-17',           // 发起时间
-        supplierName: '国旅',               // 供应商名称
-        type: '地接',                       // 类型
-        apple: '辽宁大运通-国内部',          // 申请组织
-        applePeople: '央鸯',                // 申请人
-        arrearsMoney: '1000.00',           // 欠款金额
-        relationBill: '1'                  // 关联单据号
-      },{
-        id: '1',
-        league: 'TC-GTY-1001-01-180806-01',
-        leagueName: '纯玩纯净-北京',
-        launchDate: '2019-03-17',
-        supplierName: '国旅',
-        type: '地接',
-        apple: '辽宁大运通-国内部',
-        applePeople: '央鸯',
-        arrearsMoney: '1000.00',
-        relationBill: '1'
-      }],
+      checkLabelList: [],
       // 供应商欠款列表表格
-      supplierList: [{
-        supplierName: '国旅',     // 供应商名称
-        arrearsTotal: '10000.00' // 欠款总额
-      },{
-        supplierName: '国旅',     // 供应商名称
-        arrearsTotal: '10000.00' // 欠款总额
-      }],
+      supplierList: [],
       // 预付款信息
       find: 5,
       change: false,
       pid: '',
       typeList: [],
-      payModeList: []
+      payModeList: [],
+      // 无收入借款
+      paymentID: 0,
+      groupCode: '',
+      ischeckLoanManagement: false
 
     };
   },
@@ -277,6 +259,10 @@ export default {
         this.pid = this.currentRow.id;
         this.change = true
         this.dialogFormVisible = true;
+      } else if(this.currentRow.paymentType == 1) {
+        this.paymentID = this.currentRow.id;
+        this.groupCode = this.currentRow.groupCode;
+        this.ischeckLoanManagement = true;
       }
     },
     // 查看供应商欠款关联数据
