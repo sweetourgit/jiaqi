@@ -228,14 +228,14 @@
           align="center"
           label="团号">
           <template slot-scope="scope">
-            <el-input :maxlength="10"  v-model="ccc[scope.$index].codePrefix" style="width:100px"></el-input>
+            <el-input :maxlength="10"  v-model="ccc[scope.$index].codePrefix" :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"  ></el-input>
             <span >-</span>
             <span >{{</span>
             <span >日期</span>
 
             <span >}}</span>
             <span >-</span>
-            <el-input :maxlength="10"  v-model="ccc[scope.$index].codeSuffix" style="width:100px"></el-input>
+            <el-input :maxlength="10"  v-model="ccc[scope.$index].codeSuffix"  :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'" @blur="fucking"></el-input>
 
           </template>
         </el-table-column>
@@ -271,7 +271,7 @@
         prop="name"
         align="center"
         label="操作"
-        width="200">
+        width="300">
         <template slot-scope="scope">
             <template v-if="ccc[scope.$index].type == false">
               <el-button size="mini" type="primary"  @click="online(scope.$index)">上线</el-button>
@@ -280,12 +280,101 @@
             <el-button size="mini" type="primary"  @click="offline(scope.$index)">下线</el-button>
             </template>
             <el-button size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
+          <el-button size="mini" type="primary" @click="basicPrice">成本</el-button>
             <!-- <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
 
+   <!--成本-->
+   <el-dialog
+     title="成本"
+     :visible.sync="basicbutton"
+     width="30%"
+     append-to-body>
+     <div>
+       <el-button  type="primary" @click="addcost">添加</el-button>
+       <el-button type="primary" @click="addcost">编辑</el-button>
+       <el-button  type="danger" @click="basicPrice">删除</el-button>
+     </div>
+     <div style="margin-top: 30px">
+       <div style="float: left; margin-top: 10px">毛利率：</div>
+       <div style="float: left;margin-left: 10px"><el-input v-model="lilv" placeholder="利率" style="width: 70px"></el-input></div>
+       <div style="margin-top: 10px;float: left;margin-left: 30px;">人均结算价({{count}})</div>
+     </div>
+      <div style="margin-top: 100px">
+        <el-table
+          ref="multipleTable12"
+          :data="tableData12"
+          tooltip-effect="dark"
+          style="width: 100%"
+          @selection-change="handleSelectionChange">
+          <el-table-column
+            type="selection"
+            width="55">
+          </el-table-column>
+          <el-table-column
+            label="序号"
+            width="120">
+            <template slot-scope="scope">{{ scope.row.date }}</template>
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="成本类型"
+            width="120">
+          </el-table-column>
+          <el-table-column
+            prop="address"
+            label="供应商"
+            show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+            prop="address"
+            label="金额"
+            show-overflow-tooltip>
+          </el-table-column>
+        </el-table>
+      </div>
 
+
+   </el-dialog>
+    <!--添加-->
+   <el-dialog
+     title="提示"
+     :visible.sync="cost"
+     width="30%"
+     append-to-body
+    >
+     <el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="100px" class="demo-ruleForm">
+       <el-form-item label="供应商" prop="region">
+         <el-select v-model="ruleForm1.region" placeholder="请选择">
+           <el-option
+             v-for="item in options2"
+             :key="item.value"
+             :label="item.label"
+             :value="item.value">
+           </el-option>
+         </el-select>
+       </el-form-item>
+       <el-form-item label="成本类型" prop="costType">
+         <el-select v-model="ruleForm1.costType" placeholder="请选择">
+           <el-option
+             v-for="item in options3"
+             :key="item.value"
+             :label="item.label"
+             :value="item.value">
+           </el-option>
+         </el-select>
+       </el-form-item>
+       <el-form-item label="金额" prop="name" style="width: 320px">
+         <el-input v-model="ruleForm1.name"></el-input>
+       </el-form-item>
+       <el-form-item>
+         <el-button type="primary" @click="submitForm1('ruleForm1')">立即创建</el-button>
+         <el-button @click="resetForm1('ruleForm1')">重置</el-button>
+       </el-form-item>
+     </el-form>
+   </el-dialog>
     </div>
     <!-- 价格 -->
     <div v-else>
@@ -306,6 +395,91 @@ import DateList from './component/DateList'
     },
      data() {
       return {
+        ruleForm1: {
+          name: '',
+          region: '',
+          costType: ''
+        },
+        options2: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        options3: [{
+          value: '选项1',
+          label: '金糕'
+        }, {
+          value: '选项2',
+          label: '皮奶'
+        }, {
+          value: '选项3',
+          label: '仔煎'
+        }, {
+          value: '选项4',
+          label: '须面'
+        }, {
+          value: '选项5',
+          label: '京烤鸭'
+        }],
+        value2: '',
+        rules1: {
+          name: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+          region: [
+            { required: true, message: '请选择活动区1域', trigger: 'change' }
+          ],
+          costType:[
+            { required: true, message: '请选择活动区1域', trigger: 'change' }
+          ]
+        },
+        cost:false,
+        tableData12: [{
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-08',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-06',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-07',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }],
+        multipleSelection12: [],
+        count:'5778.78',
+        lilv:'',
+        basicbutton:false,
+        isInfo:false,
         productId:'',
         productTitle:'',
         productPos:'',
@@ -687,7 +861,40 @@ import DateList from './component/DateList'
       }
     },
     methods: {
-
+      submitForm1(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      resetForm1(formName) {
+        this.$refs[formName].resetFields();
+      },
+      addcost(){
+        console.log(123)
+        this.cost = true
+      },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
+      basicPrice(){
+      this.basicbutton = true
+      },
+      fucking(){
+        for(let i = 0; i<this.ccc.length;i++) {
+          if (this.ccc[i].codePrefix == this.ccc[i].codeSuffix) {
+            this.isInfo = true
+            this.$message.error('错了哦，团号不能重复');
+            break;
+          }else{
+            this.isInfo = false
+          }
+        }
+      },
     //出发地
     querySearch3(queryString1, cb) {
       this.vague = []
@@ -910,133 +1117,140 @@ import DateList from './component/DateList'
           })*/
       },
       BandSave(){
-
+          console.log(this.ccc)
 
         for(let i = 0; i<this.ccc.length;i++){
-          var that = this
-          this.$http.post(
-            this.GLOBAL.serverSrc + "/team/api/teampackagesave",
-            {
-              "object": {
-                "id": that.ccc[i].id,
-                "name": that.ccc[i].ddd,
-                "podID": 0,
-                "destinationID": 0,
-                "pod": "string",
-                "destination": "string",
-                "teamID": that.ccc[i].id,
-                "isDeleted": 0,
-                "createTime": "2018-12-04T06:46:08.554Z",
-                "code": "string",
-                "traffic": [
-                  {
-                    "id": 0,
-                    "packageID": 0,
-                    "goOrBack": 1,
-                    "trafficMode": 1,
-                    "day": 0,
+             var that = this
+             this.$http.post(
+               this.GLOBAL.serverSrc + "/team/api/teampackagesave",
+               {
+                 "object": {
+                   "id": that.ccc[i].id,
+                   "name": that.ccc[i].ddd,
+                   "podID": 0,
+                   "destinationID": 0,
+                   "pod": "string",
+                   "destination": "string",
+                   "teamID": that.ccc[i].id,
+                   "isDeleted": 0,
+                   "createTime": "2018-12-04T06:46:08.554Z",
+                   "code": "string",
+                   "traffic": [
+                     {
+                       "id": 0,
+                       "packageID": 0,
+                       "goOrBack": 1,
+                       "trafficMode": 1,
+                       "day": 0,
+                       "pod": "string",
+                       "company": "string",
+                       "theNumber": "string",
+                       "podCity": "string",
+                       "podPlace": "string",
+                       "podTime": "string",
+                       "arriveCity": "string",
+                       "arrivePlace": "string",
+                       "arriveTime": "string",
+                       "ext_Stopover": "string"
+                     }
+                   ],
+                   "schedules": [
+                     {
+                       "id": 0,
+                       "packageID": 0,
+                       "day": 0,
+                       "subject": "string",
+                       "ext_Meals": "string",
+                       "info": "string",
+                       "ext_Hotel": "string",
+                       "activitys": [
+                         {
+                           "id": 0,
+                           "scheduleID": 0,
+                           "activityType": 0,
+                           "time": 0,
+                           "name": "string",
+                           "details": "string",
+                           "typeExt": "string",
+                           "pictureID": 0,
+                           "memo": "string",
+                           "createTime": "2018-12-04T06:46:08.555Z",
+                           "code": "string"
+                         }
+                       ],
+                       "createTime": "2018-12-04T06:46:08.555Z",
+                       "code": "string"
+                     }
+                   ],
+                   "briefMark": "string",
+                   /*"plan": {
+                     "id": 0,
+                     "isDeleted": 0,
+                     "createTime": "2018-12-04T06:46:08.555Z",
+                     "code": "string",
+                     "inventoryID": 0,
+                     "planEnroll": [
+                       {
+                         "id": 0,
+                         "planID": 0,
+                         "enrollID": 0,
+                         "enrollName": "string",
+                         "isDeleted": 0,
+                         "price_01": 0,
+                         "price_02": 0,
+                         "quota": 0
+                       }
+                     ],
+                     "loadPlan_Enroll": true,
+                     "createUser": "string",
+                     "packageID": 0
+                   },*/
+                   "loadPlan": true,
+                   "uptoDay": that.ccc[i].uptoDay,
+                   "templateID": that.ccc[i].value,
+                   "codePrefix": that.ccc[i].codePrefix,
+                   "codeSuffix": that.ccc[i].codeSuffix
+                 }
+                 /* "object":{
+                    "id": that.ccc[i].id,
+                    "name": that.ccc[i].ddd,
+                    "podID": 0,
+                    "destinationID": 0,
                     "pod": "string",
-                    "company": "string",
-                    "theNumber": "string",
-                    "podCity": "string",
-                    "podPlace": "string",
-                    "podTime": "string",
-                    "arriveCity": "string",
-                    "arrivePlace": "string",
-                    "arriveTime": "string",
-                    "ext_Stopover": "string"
-                  }
-                ],
-                "schedules": [
-                  {
-                    "id": 0,
-                    "packageID": 0,
-                    "day": 0,
-                    "subject": "string",
-                    "ext_Meals": "string",
-                    "info": "string",
-                    "ext_Hotel": "string",
-                    "activitys": [
-                      {
-                        "id": 0,
-                        "scheduleID": 0,
-                        "activityType": 0,
-                        "time": 0,
-                        "name": "string",
-                        "details": "string",
-                        "typeExt": "string",
-                        "pictureID": 0,
-                        "memo": "string",
-                        "createTime": "2018-12-04T06:46:08.555Z",
-                        "code": "string"
-                      }
-                    ],
-                    "createTime": "2018-12-04T06:46:08.555Z",
-                    "code": "string"
-                  }
-                ],
-                "briefMark": "string",
-                /*"plan": {
-                  "id": 0,
-                  "isDeleted": 0,
-                  "createTime": "2018-12-04T06:46:08.555Z",
-                  "code": "string",
-                  "inventoryID": 0,
-                  "planEnroll": [
-                    {
-                      "id": 0,
-                      "planID": 0,
-                      "enrollID": 0,
-                      "enrollName": "string",
-                      "isDeleted": 0,
-                      "price_01": 0,
-                      "price_02": 0,
-                      "quota": 0
-                    }
-                  ],
-                  "loadPlan_Enroll": true,
-                  "createUser": "string",
-                  "packageID": 0
-                },*/
-                "loadPlan": true,
-                "uptoDay": that.ccc[i].uptoDay,
-                "templateID": that.ccc[i].value,
-                 "codePrefix": that.ccc[i].codePrefix,
-                "codeSuffix": that.ccc[i].codeSuffix
-              }
-             /* "object":{
-                "id": that.ccc[i].id,
-                "name": that.ccc[i].ddd,
-                "podID": 0,
-                "destinationID": 0,
-                "pod": "string",
-                "destination": "string",
-                "teamID": that.ccc[i].id,
-                "isDeleted": 0,
-                "createTime": "2019-07-03T05:49:12.613Z",
-                "code": "string",
-                "briefMark": "string",
-                "loadPlan": true,
-                "uptoDay":that.ccc[i].uptoDay,
-                "templateID": that.ccc[i].value,
-                "codePrefix": that.ccc[i].codePrefix,
-                "codeSuffix": that.ccc[i].codeSuffix
-              }*/
-            },
-            {
-              headers:{
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-              }
-            }
-          )
-            .then(function (obj) {
+                    "destination": "string",
+                    "teamID": that.ccc[i].id,
+                    "isDeleted": 0,
+                    "createTime": "2019-07-03T05:49:12.613Z",
+                    "code": "string",
+                    "briefMark": "string",
+                    "loadPlan": true,
+                    "uptoDay":that.ccc[i].uptoDay,
+                    "templateID": that.ccc[i].value,
+                    "codePrefix": that.ccc[i].codePrefix,
+                    "codeSuffix": that.ccc[i].codeSuffix
+                  }*/
+               },
+               {
+                 headers:{
+                   'Authorization': 'Bearer ' + localStorage.getItem('token')
+                 }
+               }
+             )
+               .then(function (obj) {
 
-            })
-            .catch(function (obj) {
+               })
+               .catch(function (obj) {
 
-            })
+               })
+
+
+
         }
-        this.merchandise = false;
+        if(this.isInfo == false){
+          this.merchandise = false;
+        }
+
+
       },
       BandCancel(){
         this.merchandise = false;
@@ -1326,7 +1540,7 @@ import DateList from './component/DateList'
                   type:false,
                 })
               if(that.ccc[i].value == 0){
-                that.ccc[i].value = "请选择"
+                that.ccc[i].value = ""
               }
 
               }
