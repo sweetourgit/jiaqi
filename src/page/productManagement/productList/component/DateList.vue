@@ -8,6 +8,10 @@
       <el-button class="selectSku" plain v-for="(item,index) in Addprice" :key="item.id">{{item.name}}</el-button> -->
     </div>
     <div id="calendar" >
+      <div style="margin-bottom: 10px;">
+        <span>结算参考</span>
+        <span style="margin-left: 5px;color: red;">1100.00</span>
+      </div>
       <!-- 年份 月份 -->
       <div class="month">
         <ul class="date">
@@ -60,7 +64,7 @@
                   <p class='old'>{{data.name}}</p>
                   <p>销售价：{{data.salePrice}}</p>
                   <p>同业价：{{data.traderPrice}}</p>
-                  <p>已售/库存：0/0</p>
+                  <!-- <p>已售/库存：0/0</p> -->
                 </div>
               </div>
               <!--显示剩余多少数量-->
@@ -79,11 +83,11 @@
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
                 <!--  -->
-                  <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index">
+                  <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index" v-if="index<=2">
                     <p class='old'>{{data.name}}</p>
                     <p>销售价：{{data.salePrice}}</p>
                     <p>同业价：{{data.traderPrice}}</p>
-                    <p>已售/库存：0/0</p>
+                    <!-- <p>已售/库存：0/0</p> -->
                   </div>
               </div>
               <!--显示剩余多少数量-->
@@ -114,7 +118,7 @@
           </el-select>
           <el-button size="mini" type="primary" @click="AddType">添加</el-button>
         </el-form-item>
-        <el-form-item label="库存类型:" prop="resource">
+        <el-form-item ref="resource" label="库存类型:" prop="resource">
           <el-radio-group v-model="Rform.resource" @change="xuanze('2')">
             <el-radio :disabled="forbidden" label="1">共享</el-radio>
             <el-radio  label="2">非共享</el-radio>
@@ -157,7 +161,7 @@
               <template v-else>
                 <el-button @click="DelectQuota(index)"  type="primary" size="mini">删除配额</el-button>
               </template>
-              <el-button type="primary" size="mini" @click="addQuota(item, index)">保存</el-button>
+              <el-button type="primary" size="mini" id="inventorysave" @click="addQuota(item, index)">保存</el-button>
               <el-button @click="delect(item, index)"  type="danger" size="mini">删除</el-button>
             </div>
           </div>
@@ -1241,6 +1245,7 @@
               this.n[0].day.getMonth() + 1,
               this.n[0].day.getDate()
             )
+            this.clearNull()
           }
         // 选择时
         } else {
@@ -1561,12 +1566,19 @@
             this.arr.splice(index,1);
             let planEnroll = [];
             this.arr.forEach(data => {
+              let quotaPrice = '';
+              // 判断是否填写配额
+              if (data.quotaPrice == '') {
+                quotaPrice = 0;
+              } else {
+                quotaPrice = data.quotaPrice;
+              }
               planEnroll.push({
                 'enrollID': data.id,
                 'enrollName': data.name,
                 'price_01': data.salePrice,
                 'price_02': data.traderPrice,
-                'quota': data.quotaPrice
+                'quota': quotaPrice
               })
             })
             // 有两个及以上的值删除调用修改接口
@@ -1624,10 +1636,7 @@
           .filter(item => item.day.getMonth() + 1 == this.currentMonth)
           .filter(item => item.data.person.inventoryID != undefined && item.data.person.id == undefined);
         if (newAll.length == 0) {
-          this.$message({
-            message: '没有可供保存的计划',
-            type: 'warning'
-          });
+          $("#inventorysave").click();
         } else {
           newAll.forEach(item => {
             let planEnroll = [];

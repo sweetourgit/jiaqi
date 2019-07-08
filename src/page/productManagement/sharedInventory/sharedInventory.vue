@@ -41,7 +41,7 @@
                   <div class='person' v-for="(data,index) in dayobject.data.person" :key="index">  
                     <p>{{data.name}}</p>
                     <p style="width:113px">库存余位:{{data.count}}/100</p>
-                    <p>关联团期: 1</p>
+                    <p>关联团期:{{data.relaInventory}}</p>
                   </div>  
               </div>
               <!--显示剩余多少数量-->
@@ -62,9 +62,9 @@
                   <!--  -->
                   <div class='person persons' v-for="(data,index) in dayobject.data.person" :key="index" @click="countClick(dayobject.data.person[index])">  
                       <!-- v-show="dayobject.data.person.price" -->
-                    <p>{{data.name}}</p>
+                    <p class="more-breaking">{{data.name}}</p>
                     <p style="width:113px">库存余位:{{data.count}}/100</p>
-                    <p>关联团期: 1</p>
+                    <p>关联团期:{{data.relaInventory}}</p>
                     <!-- <p>同业价：{{dayobject.data.person[index].traderPrice}}</p> -->
                     <!-- <p>已售/库存：0/{{dayobject.data.person.number}}</p> -->
                     <!-- <p>上下限:{{dayobject.data.person.top}}/{{dayobject.data.person.down}}</p> -->
@@ -79,7 +79,7 @@
     </div>
     
     <!-- 添加共享库存弹窗 -->
-    <el-dialog title="新增共享库存" :visible.sync="dialogVisible" width="578px">
+    <el-dialog title="新增共享库存" :visible.sync="dialogVisible" width="578px" @close="cancelAddStock('addStock')">
       <el-form :model="addStock" :rules="rules" ref="addStock">
         <el-form-item label="库存名称" prop="name" :label-width="formLabelWidth">
           <el-input class="addStorkInput" v-model="addStock.name" maxlength=20></el-input>
@@ -88,9 +88,12 @@
         <el-form-item label="库存" prop="count" :label-width="formLabelWidth">
           <el-input class="addStorkInput" v-model="addStock.count"></el-input>
         </el-form-item>
+        <el-form-item label="人均成本" :label-width="formLabelWidth">
+          <el-input class="addStorkInput" v-model="addStock.cost"></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="cancelAddStock('addStock')">取 消</el-button>
         <el-button type="primary" @click="handleallclick('addStock')">确 定</el-button>
       </span>
     </el-dialog>
@@ -103,8 +106,11 @@
           <el-form-item label="库存名称" prop="name" class="editStock" :label-width="formLabelWidth">
             <el-input class="addStorkInputs" v-model="addStocks.name" :disabled="true" maxlength=20></el-input>
           </el-form-item>
-          <el-form-item label="库存" prop="count" class="editStock" :label-width="formLabelWidth">
-            <el-input class="addStorkInputs" v-model="addStocks.count"></el-input>
+          <el-form-item label="总库存" prop="count" class="editStock" :label-width="formLabelWidth">
+            <el-input class="addStorkInputs_a" v-model="addStocks.count"></el-input>
+          </el-form-item>
+          <el-form-item label="人均成本" class="editStock" :label-width="formLabelWidth">
+            <el-input class="addStorkInputs_a" v-model="addStocks.cost"></el-input>
           </el-form-item>
           <div class="surplus">
             <span class="surplus1">剩余</span>
@@ -120,32 +126,35 @@
 
 
       <!-- 计划信息 -->
-      <div class="proList" >
+      <div class="proList" :style="index != 0 ? 'margin-top: 20px;' : ''" v-for="(item, index) in planningInfo" :key="index">
         <div class="proListHeight">
           <span style="font-weight: 700;">团期</span>
           <span style="margin-left: 20px;">24093932018091010185273</span>
           <span style="font-weight: 700;margin-left: 50px;">产品</span>
           <span style="margin-left: 20px;">扬州直飞普吉7/8天往返含税特价机票（往返各15kg行李+赠送电子地图攻略）</span>
+          <span style="font-weight: 700; margin-left: 50px;">结算参考</span>
+          <span style="margin-left: 20px;">1000.00</span>
         </div>
         <!-- 报名类型信息 -->
-        <div class="stockList">
+        <div class="stockList" :style="k > 2 ? 'margin-top: 20px;' : ''" v-for="(data, k) in item.planEnroll" :key="k">
           <div style="margin-left: 30px;">
-            <span style="color: red;">成人</span>
+            <span style="color: red;">{{data.enrollName}}</span>
             <span style="margin-left:10px;">已售</span>
             <span style="margin-left:10px;">25</span>
           </div>
           <div style="margin-left: 38px;">
             <span style="margin-left: -10px;">库存</span>
-            <el-input style="width: 120px;margin-left:30px" v-model="input" disabled></el-input>
-            <el-checkbox style="margin-left:30px;" v-model="checked" disabled>配额</el-checkbox>
+            <el-input v-if="data.checked" style="width: 120px;margin-left:30px" v-model="data.quota"></el-input>
+            <el-input v-else style="width: 120px;margin-left:30px" v-model="data.quota" disabled></el-input>
+            <el-checkbox style="margin-left:30px;" v-model="data.checked">配额</el-checkbox>
           </div>
           <div>
             <span>销售价格</span>
-            <el-input style="width: 120px;margin-left:20px" v-model="input" disabled></el-input>
+            <el-input style="width: 120px;margin-left:20px" v-model="data.price_01"></el-input>
           </div>
           <div>
             <span>同业价格</span>
-            <el-input style="width: 120px;margin-left:20px" v-model="input" disabled></el-input>
+            <el-input style="width: 120px;margin-left:20px" v-model="data.price_02"></el-input>
           </div>
         </div>
         <!-- 报名类型信息ENG -->
@@ -156,10 +165,10 @@
 
 
       <div class="frameBottom">
-        <el-button class="frameBottom-delete" type="danger" plain>删除库存</el-button>
+        <el-button class="frameBottom-delete" type="danger" plain @click="handDelete">删除库存</el-button>
         <div class="frameBottom-right ">
           <el-button plain @click="dialogStock = false">取消</el-button>
-          <el-button plain>保存</el-button>
+          <el-button plain @click="handSave">保存</el-button>
         </div>
       </div>
     </el-dialog>
@@ -176,7 +185,8 @@ export default {
   data() {
     return {
       input: '',
-      checked: '',
+      checked: true,
+      checkeds: false,
       today: new Date(),
       days: [],
       n: [],
@@ -195,12 +205,15 @@ export default {
       // 添加共享库存
       addStock: {
         name: '',
-        count: ''
+        count: '',
+        cost: ''
       },
       // 修改共享库存
       addStocks: {
+        id: '',
         name: '',
-        count: ''
+        count: '',
+        cost: ''
       },
       // 浏览共享库存
       listStock: {
@@ -323,6 +336,9 @@ export default {
         this.days.push(dayobject);
         this.days.map(item => (item.data = { person: [], children: {} }));
       }
+      this.handList();
+    },
+    handList() {
       // 共享库存数据
       this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorylist', {
         "object": {
@@ -340,13 +356,16 @@ export default {
             item.day.getMonth() + 1,
             item.day.getDate()
           )
+          // 清空日历里报名类型
+          item.data.person = {};
           this.arr = [];
           res.data.objects.forEach(items => {
             if (str == items.date) {
               this.arr.push({
                 id: items.id,
                 name: items.name,
-                count: items.count
+                count: items.count,
+                relaInventory: items.relaInventory
               })
               item.data.person = this.arr
             }
@@ -371,6 +390,10 @@ export default {
       if (d < 10) d = "0" + d;
       return y + '' + m + '' + d;
     },
+    cancelAddStock(formName){
+        this.dialogVisible = false;
+        this.$refs[formName].resetFields();
+    },
     // 增加共享库存
     handleallclick(formName) {
       this.$refs[formName].validate(valid => {
@@ -385,9 +408,17 @@ export default {
               "name": this.addStock.name,
               "count": this.addStock.count,
               "date": str,
-              "share": 1
+              "share": 1,
+              "orgID": 0,
             }
           }).then(res => {
+            if(res.data.id == 0){
+                this.$message({
+                  message: '库存名称不能重复',
+                  type: 'warning'
+                });
+                return false;
+            }
             if (this.days[this.n[0].index].data.person.length == 0) {
               this.days[this.n[0].index].data.person.push({
                 'name': this.addStock.name,
@@ -413,6 +444,7 @@ export default {
             this.addStock.name = '';
             this.addStock.count = '';
             this.$refs['addStock'].resetFields();
+            this.handList();
           }).catch(err => {
             console.log(err);
           })
@@ -445,6 +477,7 @@ export default {
     // 点击库存的时候
     countClick(data){
       this.dialogStock = true;
+      this.addStocks.id = data.id;
       this.addStocks.name = data.name;
       this.addStocks.count = data.count;
       this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/list', {
@@ -453,12 +486,37 @@ export default {
           "loadPlan_Enroll": true
         }
       }).then(res => {
-        console.log(res);
-        this.planningInfo = [];
-        this.planningInfo.push({
-          
+        res.data.objects.map(v => {
+          v.planEnroll.map(d => {
+            d.checked = d.quota != 0 ? true : false;
+          })
         })
+        this.planningInfo = res.data.objects;
       })
+    },
+    handSave() {
+      console.log(this.checked)
+    },
+    /* 库存删除 */
+    handDelete(){
+      if(this.planningInfo.length == 0){
+        this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorydelete', {
+          "id":this.addStocks.id,
+        }).then(res => {
+          this.dialogStock = false;
+          this.handList();
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+        })
+      } else {
+        this.$message({
+          message: '每个绑定的团期库存需要解绑才能删除该库存',
+          type: 'warning'
+        });
+      }
+
     }
   }
 }
@@ -621,7 +679,10 @@ body {
   width: 300px;
 }
 .addStorkInputs{
-  width: 240px;
+  width: 280px;
+}
+.addStorkInputs_a {
+  width: 140px;
 }
 .addStock-number{
   /* float: left; */
@@ -688,14 +749,25 @@ body {
   margin: 5px 70px 0 12px;
   min-height: 265px;
   line-height: 45px;
+  overflow:hidden;
 }
 .proListHeight{
   padding: 10px 0 0 30px;
 }
 .stockList{
+  float: left;
   line-height: 60px;
+  min-width: 380px;
 }
 .stockList div{
   margin-left: 10px;
+}
+.person p.more-breaking {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 15px;
 }
 </style>
