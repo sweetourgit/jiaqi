@@ -369,10 +369,10 @@ export default {
           //下单方式选择确认占位和预定占位，实时减少相关余位信息，提示库存不足
            for(let i=0;i<this.salePrice.length;i++){    //如果下单方式选择预定不占，则不需要同步余位信息，提示库存不足
             if(this.ruleForm.type==1||this.ruleForm.type==2){
-              this.salePrice[i].quota=parseInt(this.salePrice[i].quota)-parseInt(this.enrolNum[i]);
+              this.salePrice[i].quota=parseInt(this.salePrice[i].quota)-parseInt(this.enrolNum[i]?parseInt(this.enrolNum[i]):0);
               salePriceType=this.salePrice[i];
             }else{
-              salePriceType3[i].quota=parseInt(salePriceType3[i].quota)-parseInt(this.enrolNum[i]);  
+              salePriceType3[i].quota=parseInt(salePriceType3[i].quota)-parseInt(this.enrolNum[i]?parseInt(this.enrolNum[i]):0); 
               salePriceType=salePriceType3[i];           
             } 
             if(salePriceType.quota<0){  //判断是否显示库存不足
@@ -416,6 +416,9 @@ export default {
         let preLength;//记录上一次报名人数
             preLength=this.preLength[index];  //获取上一次报名人数
             arrLength=this.enrolNum[index];   //获取当前报名人数
+            if(arrLength>=999){
+              this.enrolNum[index]=this.preLength[index];
+            }
             this.preLength[index]=this.enrolNum[index];  //记录上一次报名人数为当前报名人数
         var len;
         if(arrLength>preLength){  //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
@@ -620,8 +623,8 @@ export default {
           for(let i=0;i<this.enrolNum.length;i++){
              this.ruleForm.totalPrice+=this.enrolNum[i]*(this.ruleForm.price==1?this.salePrice[i].price_01:this.salePrice[i].price_02);
           }
-          this.ruleForm.totalPrice+=parseInt(this.ruleForm.otherCost);
-          this.ruleForm.totalPrice-=parseInt(this.ruleForm.allDiscount);
+          this.ruleForm.totalPrice+=parseInt(this.ruleForm.otherCost?this.ruleForm.otherCost:0);
+          this.ruleForm.totalPrice-=parseInt(this.ruleForm.allDiscount?this.ruleForm.allDiscount:0);
       }
   }
 }

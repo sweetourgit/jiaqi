@@ -3,6 +3,7 @@
       <div class="demo-input-suffix">
          <span class="search-title">团号计划</span>
          <el-input placeholder="输入团号" v-model="groupCode" class="group-no"></el-input>
+         <span class="search-title">出行日期</span>
          <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
          <div class="date-line"></div>
          <el-date-picker v-model="endTime" type="date" placeholder="终止日期"></el-date-picker>
@@ -84,7 +85,7 @@ export default {
        variable:0, //设置一个变量展示弹窗
        dialogType:0,//弹窗类型  1：下单
        groupCode:'',
-       startTime: '',
+       startTime: new Date(),
        endTime: '',
        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
        pageIndex: 1, // 设定当前页数
@@ -235,7 +236,7 @@ export default {
        .demo-input-suffix{width: 900px}
        .el-input{width:auto}
        .group-no{margin-left:10px}
-       .start-time{margin-left:25px}
+       .start-time{margin-left:10px}
        .date-line{width:30px;border-bottom:1px solid #e6e6e6;display:inline-block;margin:0 3px 3px 0}
        .search-title{font-size: 14px;margin-left: 10px}
        .table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 8px;width:1400px;}
