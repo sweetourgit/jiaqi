@@ -226,9 +226,9 @@
       </el-table-column>
         <el-table-column
           align="center"
-          label="团号">
+          label="前缀-团号-后缀">
           <template slot-scope="scope">
-            <el-input :maxlength="10"  v-model="ccc[scope.$index].codePrefix" :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"  ></el-input>
+            <el-input :maxlength="10"  v-model="ccc[scope.$index].codePrefix" :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'" @blur="fucking" ></el-input>
             <span >-</span>
             <span >{{</span>
             <span >日期</span>
@@ -1122,113 +1122,16 @@ import DateList from './component/DateList'
         for(let i = 0; i<this.ccc.length;i++){
              var that = this
              this.$http.post(
-               this.GLOBAL.serverSrc + "/team/api/teampackagesave",
+               this.GLOBAL.serverSrc + "/team/package/saveshort",
                {
-                 "object": {
-                   "id": that.ccc[i].id,
-                   "name": that.ccc[i].ddd,
-                   "podID": 0,
-                   "destinationID": 0,
-                   "pod": "string",
-                   "destination": "string",
-                   "teamID": that.ccc[i].id,
-                   "isDeleted": 0,
-                   "createTime": "2018-12-04T06:46:08.554Z",
-                   "code": "string",
-                   "traffic": [
-                     {
-                       "id": 0,
-                       "packageID": 0,
-                       "goOrBack": 1,
-                       "trafficMode": 1,
-                       "day": 0,
-                       "pod": "string",
-                       "company": "string",
-                       "theNumber": "string",
-                       "podCity": "string",
-                       "podPlace": "string",
-                       "podTime": "string",
-                       "arriveCity": "string",
-                       "arrivePlace": "string",
-                       "arriveTime": "string",
-                       "ext_Stopover": "string"
-                     }
-                   ],
-                   "schedules": [
-                     {
-                       "id": 0,
-                       "packageID": 0,
-                       "day": 0,
-                       "subject": "string",
-                       "ext_Meals": "string",
-                       "info": "string",
-                       "ext_Hotel": "string",
-                       "activitys": [
-                         {
-                           "id": 0,
-                           "scheduleID": 0,
-                           "activityType": 0,
-                           "time": 0,
-                           "name": "string",
-                           "details": "string",
-                           "typeExt": "string",
-                           "pictureID": 0,
-                           "memo": "string",
-                           "createTime": "2018-12-04T06:46:08.555Z",
-                           "code": "string"
-                         }
-                       ],
-                       "createTime": "2018-12-04T06:46:08.555Z",
-                       "code": "string"
-                     }
-                   ],
-                   "briefMark": "string",
-                   /*"plan": {
-                     "id": 0,
-                     "isDeleted": 0,
-                     "createTime": "2018-12-04T06:46:08.555Z",
-                     "code": "string",
-                     "inventoryID": 0,
-                     "planEnroll": [
-                       {
-                         "id": 0,
-                         "planID": 0,
-                         "enrollID": 0,
-                         "enrollName": "string",
-                         "isDeleted": 0,
-                         "price_01": 0,
-                         "price_02": 0,
-                         "quota": 0
-                       }
-                     ],
-                     "loadPlan_Enroll": true,
-                     "createUser": "string",
-                     "packageID": 0
-                   },*/
-                   "loadPlan": true,
-                   "uptoDay": that.ccc[i].uptoDay,
-                   "templateID": that.ccc[i].value,
-                   "codePrefix": that.ccc[i].codePrefix,
-                   "codeSuffix": that.ccc[i].codeSuffix
-                 }
-                 /* "object":{
-                    "id": that.ccc[i].id,
-                    "name": that.ccc[i].ddd,
-                    "podID": 0,
-                    "destinationID": 0,
-                    "pod": "string",
-                    "destination": "string",
-                    "teamID": that.ccc[i].id,
-                    "isDeleted": 0,
-                    "createTime": "2019-07-03T05:49:12.613Z",
-                    "code": "string",
-                    "briefMark": "string",
-                    "loadPlan": true,
-                    "uptoDay":that.ccc[i].uptoDay,
-                    "templateID": that.ccc[i].value,
-                    "codePrefix": that.ccc[i].codePrefix,
-                    "codeSuffix": that.ccc[i].codeSuffix
-                  }*/
+                "object":{
+                  "id": that.ccc[i].id,
+                  "loadPlan": true,
+                  "uptoDay": that.ccc[i].uptoDay,
+                  "templateID": that.ccc[i].value,
+                  "codePrefix": that.ccc[i].codePrefix,
+                  "codeSuffix": that.ccc[i].codeSuffix
+                }
                },
                {
                  headers:{

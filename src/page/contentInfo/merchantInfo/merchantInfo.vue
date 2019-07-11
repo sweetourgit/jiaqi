@@ -108,7 +108,7 @@
     </div>
     <!--end-->
     <!--分页-->
-    <div class="block">
+    <div class="block" style="margin-bottom: 20px;margin-top: 20px">
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"

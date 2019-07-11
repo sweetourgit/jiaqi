@@ -9,6 +9,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <!-- 行程信息 -->
         <el-tab-pane label="行程信息" name="second">
+          {{chuxian}}
           <!-- <TripInfo :inputravelDays="travelDays"></TripInfo> -->
           <div class="tripInfo">
             <!-- <div class="btn">
@@ -1215,6 +1216,7 @@
     },
     data() {
       return {
+        chuxian:'',
         qqqq: '3',
         schedulesId:'',
         packID:'',
@@ -2034,8 +2036,8 @@
             loadPackage: true,
             briefMark: "string",
             loadPlan: true,
-            codePrefix:'',
-            codeSuffix: '',
+            codePrefix: "LKCO",
+            codeSuffix:"US621",
           }
           this.$refs[formName].validate((valid) => {
             if(valid){
@@ -2112,8 +2114,8 @@
             loadPackage: true,
             briefMark: "string",
             loadPlan: true,
-            codePrefix: '',
-            codeSuffix:'',
+            codePrefix: "LKCO",
+            codeSuffix:"US621",
 
           }
           this.chuxian = object
