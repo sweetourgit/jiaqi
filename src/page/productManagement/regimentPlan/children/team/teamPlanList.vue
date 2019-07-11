@@ -4,10 +4,10 @@
          <span class="search-title">团号计划</span>
          <el-input placeholder="输入团号" v-model="groupCode" class="group-no"></el-input>
          <span class="search-title">出行日期</span>
-         <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
+         <el-date-picker v-model="startDate" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
          <div class="date-line"></div>
-         <el-date-picker v-model="endTime" type="date" placeholder="终止日期"></el-date-picker>
-         <el-button type="primary" icon="el-icon-search" class="search" @click="teamQueryList(1,pageSize,groupCode)"></el-button>
+         <el-date-picker v-model="endDate" type="date" placeholder="终止日期"></el-date-picker>
+         <el-button type="primary" icon="el-icon-search" class="search" @click="teamQueryList(1,pageSize,groupCode,startDate,endDate)"></el-button>
      </div>
      <div class="main">
      <el-row class="button">
@@ -85,8 +85,8 @@ export default {
        variable:0, //设置一个变量展示弹窗
        dialogType:0,//弹窗类型  1：下单
        groupCode:'',
-       startTime: new Date(),
-       endTime: '',
+       startDate:'',
+       endDate: '',
        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
        pageIndex: 1, // 设定当前页数
        total: 0,
@@ -178,12 +178,30 @@ export default {
         this.teamQueryList(val,this.pageSize,this.groupCode);
       },
       //计划list
-      teamQueryList(pageIndex=this.pageIndex,pageSize=this.pageSize,groupCode=this.groupCode){
+      teamQueryList(pageIndex=this.pageIndex,pageSize=this.pageSize,groupCode=this.groupCode,startDate=this.startDate,endDate=this.endDate){
+        if(startDate){
+          let y=startDate.getFullYear();
+          let m=(startDate.getMonth()+1)>9?startDate.getMonth()+1:'0'+(startDate.getMonth()+1);
+          let d=startDate.getDate()>9?startDate.getDate():'0'+startDate.getDate();
+          startDate=''+ y + m + d
+        }else{
+          startDate=0
+        }
+        if(endDate){
+          let y=endDate.getFullYear();
+          let m=(endDate.getMonth()+1)>9?endDate.getMonth()+1:'0'+(endDate.getMonth()+1);
+          let d=endDate.getDate()>9?endDate.getDate():'0'+endDate.getDate();
+          endDate=''+ y + m + d
+        }else{
+          endDate=0
+        }
         this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/page',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object":{            
-              "groupCode": groupCode
+              "groupCode": groupCode,
+              "startDate": startDate,
+              "endDate": endDate
              }
           }).then(res => {
             this.teamqueryList=[];
