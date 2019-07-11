@@ -118,7 +118,7 @@
                   </td>
                 </tr>
               </table>
-              <div class="red ml13" style="margin-top:-30px" v-show="enrolNums">报名人数不能为空</div>
+              <div class="red ml13" style="margin-top:-18px" v-show="enrolNums">{{enrolNumsWarn}}</div>
             </div>
             <!--
             <el-form-item label="" prop="">            
@@ -146,7 +146,7 @@
             <!--下单方式-->
             <el-form-item label="下单方式" prop="type">
               <el-radio-group v-model="ruleForm.type">
-                <el-radio label="1" class="radiomar">确认占位 （同业社额度： 总欠款 270,164 元）</el-radio><br/>
+                <el-radio label="1" class="radiomar">确认占位</el-radio><br/>
                 <el-radio label="2" class="radiomar">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
                 <el-radio label="3" class="radiomar">预定不占 （订单保留24小时，到期提醒）</el-radio>
               </el-radio-group>
@@ -162,7 +162,7 @@
             <el-form-item label="出行人信息" class="cb">            
                <div class="oh" v-for="(item,indexPrice) in salePrice">
                  <div class="tour-til">{{item.enrollName}}</div>
-                 <div class="tourist"><input v-for="(item,index) in tour[indexPrice]" placeholder="点击填写" v-model="item.cnName" @click="fillTour(indexPrice,index)"/></div>
+                 <div class="tourist"><span v-for="(item,index) in tour[indexPrice]" placeholder="点击填写" @click="fillTour(indexPrice,index)">{{item.cnName}}</span></div>
                </div>
             </el-form-item>
             <el-form-item label="备注" prop="">            
@@ -197,7 +197,7 @@
                   <el-input type="text" v-model="conForm.idCard" class="w200"></el-input>
               </el-form-item>              
               <el-form-item label="出生日期" prop="bornDate"  label-width="110px" class="fl">
-                  <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" class="w200"></el-date-picker>
+                  <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" style="width:200px"></el-date-picker>
               </el-form-item>
               <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
                   <el-select v-model="conForm.credType" placeholder="请选择">
@@ -210,8 +210,8 @@
               <el-form-item label="证件号码" prop="credCode" label-width="110px" class="fl">
                   <el-input type="text" v-model="conForm.credCode" class="w200"></el-input>
               </el-form-item>
-              <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl">
-                  <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" class="w200"></el-date-picker>
+              <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl cb">
+                  <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" style="width:200px"></el-date-picker>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer cb">
@@ -266,6 +266,7 @@ export default {
         quota:[], //余位信息负数红色提示
         enrolNum:[], //报名人数[1,3]形式
         enrolNums:false,//报名人数是否为空提示
+        enrolNumsWarn:'',
         dialogFormTour: false,
         salePrice:[],//报名类型价格列表数据
         salePriceNum:[],//报名类型价格列表数据副本,显示余位用
@@ -286,7 +287,7 @@ export default {
           bornDate:0,
           credType:0,
           credCode:'',
-          credTOV:0,
+          credTOV:'',
           orderID: 0,
           orderCode: 'string',
           orgID: sessionStorage.getItem('orgID'),
@@ -326,7 +327,7 @@ export default {
           sex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
           mobile: [
             { required: true, message: '请输入手机号', trigger: 'blur' },
-            { pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, message: '手机号格式不正确'}],
+            { pattern: /^(13[0-9]|14[5|7|9]|15[0|1|2|3|5|6|7|8|9]|16[6]|17[0|1|2|3|5|6|7|8]|18[0-9]|19[8|9])\d{8}$/, message: '手机号格式不正确'}],
           idCard: [{ required: true, message: '身份证号不能为空', trigger: 'blur' },
                    { pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '身份证号格式不正确', trigger: 'blur' }],
         }
@@ -338,7 +339,6 @@ export default {
     variable:function(){      
         if(this.dialogType==1){
           console.log()
-          this.teamEnrolls(this.planId);
           this.teampreview(this.planId);       
           this.dialogFormOrder=true;   
           this.enrolNums=false;
@@ -386,19 +386,23 @@ export default {
        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/enrolls',{
             "id": ID
         }).then(res => {
-          if(res.data.isSuccess == true){
-             this.salePrice = res.data.objects;
-             this.salePriceNum = res.data.objects;            
+          if(res.data.isSuccess == true){            
              this.preLength=[];
              this.enrolNum=[];
              this.quota=[];
              this.tour=[];          
-             for(let i=0;i<res.data.objects.length;i++){
+             let data=res.data.objects;
+             for(let i=0;i<data.length;i++){
                 this.preLength.push('0');
                 this.enrolNum.push(0);
                 this.quota.push(false); 
                 this.tour.push([]);
+                if(data[i].quota==0||data[i].quota>this.teampreviewData.remaining){
+                   data[i].quota=this.teampreviewData.remaining;
+                }
              }
+             this.salePrice = data;
+             this.salePriceNum = data;    
           }
        })
      },
@@ -408,6 +412,7 @@ export default {
         }).then(res => {
           if(res.data.isSuccess == true){
              this.teampreviewData=res.data.object;
+             this.teamEnrolls(this.planId);        
           }
        })
      },
@@ -416,10 +421,18 @@ export default {
         let preLength;//记录上一次报名人数
             preLength=this.preLength[index];  //获取上一次报名人数
             arrLength=this.enrolNum[index];   //获取当前报名人数
-            if(arrLength>=999){
-              this.enrolNum[index]=this.preLength[index];
+            //如果填写数量大于余位，则显示余位数量
+            if(arrLength>this.salePriceNum[index].quota){
+              this.enrolNum[index]=this.salePriceNum[index].quota;
+              arrLength=this.salePriceNum[index].quota;
             }
-            this.preLength[index]=this.enrolNum[index];  //记录上一次报名人数为当前报名人数
+            //记录上一次报名人数为当前报名人数
+            this.preLength[index]=this.enrolNum[index];  
+            
+            //去掉报名人数提示
+            if(arrLength>0){
+              this.enrolNums=false;
+            }
         var len;
         if(arrLength>preLength){  //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
           len=arrLength-preLength;
@@ -480,6 +493,11 @@ export default {
               }
             };
             if(number==0){
+              this.enrolNumsWarn="报名人数不能为空",
+              this.enrolNums=true;
+              return false;
+            }else if(number>this.teampreviewData.remaining){
+              this.enrolNumsWarn="报名总人数不能超过余位",
               this.enrolNums=true;
               return false;
             }else{
@@ -649,7 +667,7 @@ export default {
       .ml13{margin-left: 13px}
       .mb17{margin-bottom: 17px}
       .tourist{margin-left: 13px;float: left;width:85%}
-      .tourist input{width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:1px 10px 10px 10px}
+      .tourist span{display: inline-block;width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:1px 10px 10px 10px}
       .tour-til{float: left;margin-left: 13px;margin-right: -8px;width: 80px}
       .oh{overflow: hidden;}
       .disib{display: inline-block;}

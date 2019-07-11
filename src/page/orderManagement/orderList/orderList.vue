@@ -3,21 +3,21 @@
      <div class="demo-input-suffix">
           <!--搜索-->
           <span class="search-title">订单ID</span>
-          <el-input v-model="groupNo" class="input"></el-input>
+          <el-input v-model="orderID" class="input"></el-input>
           <span class="search-title">产品ID</span>
-          <el-input v-model="groupNo" class="input"></el-input>
+          <el-input v-model="proId" class="input"></el-input>
           <span class="search-title">团期计划ID</span>
-          <el-input v-model="groupNo" class="input"></el-input>
+          <el-input v-model="planId" class="input"></el-input>
           <span class="search-title">订单时间</span>
           <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
              <div class="date-line"></div>
           <el-date-picker v-model="endTime" type="date" placeholder="终止日期" class="start-time"></el-date-picker></br>
           <span class="search-title">产品名称</span>
-          <el-input v-model="groupNo" class="input"></el-input>
+          <el-input v-model="proName" class="input"></el-input>
           <span class="search-title">目的地</span>
-          <el-input v-model="groupNo" class="input"></el-input>
+          <el-input v-model="estination" class="input"></el-input>
           <span class="search-title">销售</span>
-          <el-input v-model="groupNo" class="input"></el-input>
+          <el-input v-model="saler" class="input"></el-input>
           <span class="search-title">产品类型</span>
           <el-select v-model="proTypevalue" placeholder="请选择"  class="sec-type">
              <el-option v-for="item in proType" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -134,7 +134,7 @@ export default {
   },
   data() {
     return {
-       orderStatus:["全部","未确认（3）","签署合同（2）","出行中（3）","待点评（3）","完成订单","作废订单"],
+       orderStatus:["全部","未确认（3）","补充资料（4）","签署合同（2）","出行中（3）","待点评（3）","完成订单","作废订单"],
        orderNum:"0",
        refundStatus:["全部","申请退款（3）","退款中（3）","完成退款","拒绝退款"],
        refundNum:"0",
@@ -155,9 +155,14 @@ export default {
           label: '周边游'
        }],
        proTypevalue: '',
-       groupNo:'',
+       orderID:'',
+       proId:'',
+       planId:'',
        startTime: '',
        endTime: '',
+       proName:'',
+       destination:'',
+       saler:'',
        //订单列表
        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
        pageIndex: 1, // 设定当前页数

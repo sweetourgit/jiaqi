@@ -15,10 +15,10 @@
                   <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markForm.remark1"></el-input>
                </el-form-item>
                <el-form-item>
-                  <el-button type="info" size="medium" class="submitMark">提交备注</el-button>
+                  <el-button type="info" size="medium" class="submitMark" @click="submitMark">提交备注</el-button>
                </el-form-item>
                <el-form-item>
-                  <el-button class="colse" @click="dialogFormMark=false">关闭</el-button>
+                  <el-button class="colse" @click="close">关闭</el-button>
                </el-form-item>
           </el-form>
        </el-dialog>
@@ -38,7 +38,7 @@ export default {
        dialogFormMark:false,     
        markForm:{
           remark:'*******',
-          remark1:'*******'
+          remark1:''
        }
     }
   },
@@ -52,7 +52,14 @@ export default {
      }
   },
   methods: {
-
+      close(){
+        this.dialogFormMark=false;
+        this.markForm.remark1='';
+      },
+      submitMark(){
+        this.dialogFormMark=false;
+        this.markForm.remark1='';
+      }
     }
 }
 </script>

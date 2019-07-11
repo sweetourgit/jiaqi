@@ -75,10 +75,11 @@ html{
 .el-menu-vertical-demo .el-menu-item.is-active{background: #3095FA !important;} /* 导航选中 */
 body .el-table th.gutter{ display: table-cell!important; } /* 表格头部固定 */
 /*模糊查询下拉框样式*/
-.el-autocomplete-suggestion li:hover{background-color: #3095fa;color: #fff}
-.el-popper[x-placement^=bottom] .popper__arrow::after{border-bottom-color:#e9eaea}
-.el-autocomplete-suggestion{background-color: #e9eaea}
+.el-autocomplete-suggestion li:hover{background-color: #3095fa !important;color: #fff !important}
+.el-popper[x-placement^=bottom] .popper__arrow::after{border-bottom-color:#e9eaea !important}
+.el-popper[x-placement^=top] .popper__arrow::after{border-top-color:#e9eaea !important}
+.el-autocomplete-suggestion{background-color: #e9eaea !important}
 /*select下拉框样式*/
-.el-select-dropdown__item.hover, .el-select-dropdown__item:hover{background-color: #3095fa;color: #fff}
-.el-select-dropdown{background-color: #e9eaea}
+.el-select-dropdown__item.hover, .el-select-dropdown__item:hover{background-color: #3095fa !important;color: #fff !important}
+.el-select-dropdown{background-color: #e9eaea !important}
 </style>
