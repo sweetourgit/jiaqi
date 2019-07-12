@@ -3,36 +3,36 @@
      <div class="demo-input-suffix">
           <!--搜索-->
           <span class="search-title">订单ID</span>
-          <el-input v-model="orderID" class="input"></el-input>
+          <el-input v-model="orderCode" class="input"></el-input>
           <span class="search-title">产品ID</span>
-          <el-input v-model="proId" class="input"></el-input>
+          <el-input v-model="teamID" class="input"></el-input>
           <span class="search-title">团期计划ID</span>
-          <el-input v-model="planId" class="input"></el-input>
+          <el-input v-model="groupCode" class="input"></el-input>
           <span class="search-title">订单时间</span>
-          <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
+          <el-date-picker v-model="beginDate" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
              <div class="date-line"></div>
-          <el-date-picker v-model="endTime" type="date" placeholder="终止日期" class="start-time"></el-date-picker></br>
+          <el-date-picker v-model="endDate" type="date" placeholder="终止日期" class="start-time"></el-date-picker></br>
           <span class="search-title">产品名称</span>
-          <el-input v-model="proName" class="input"></el-input>
+          <el-input v-model="name" class="input"></el-input>
           <span class="search-title">目的地</span>
-          <el-input v-model="estination" class="input"></el-input>
+          <el-autocomplete class="input" v-model="destination" :fetch-suggestions="querySearch"placeholder="请输入内容" :trigger-on-focus="false"@select="departure"></el-autocomplete>
           <span class="search-title">销售</span>
           <el-input v-model="saler" class="input"></el-input>
           <span class="search-title">产品类型</span>
-          <el-select v-model="proTypevalue" placeholder="请选择"  class="sec-type">
+          <el-select v-model="productType" placeholder="请选择"  class="sec-type">
              <el-option v-for="item in proType" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select></br>
-          <!--订单状态-->
+          <!--订单状态
           <div class="status-title">订单状态</div>
           <ul class="order-status">
             <li v-for="(item,index) in orderStatus" @click="statusTab(1,index)" v-bind:class="{statusbg: orderNum==index}">{{item}}</li>
-          </ul></br>
-          <!--退款状态-->
+          </ul></br>-->
+          <!--退款状态
           <div class="status-title">退款状态</div>
           <ul class="order-status">
             <li v-for="(item,index) in refundStatus" @click="statusTab(2,index)" v-bind:class="{statusbg: refundNum==index}">{{item}}</li>
-          </ul></br>
-          <el-button type="primary" class="search-but">搜索</el-button>
+          </ul></br>-->
+          <el-button type="primary" class="search-but" @click="orderPage(1,pageSize)">搜索</el-button>
           <!--订单列表-->
           <div class="pro-info" v-for="(item,index) in orderpage">
             <table cellpadding="5">
@@ -138,10 +138,20 @@ export default {
        orderNum:"0",
        refundStatus:["全部","申请退款（3）","退款中（3）","完成退款","拒绝退款"],
        refundNum:"0",
+       orderCode:'',  //订单ID
+       teamID:'',     //产品ID
+       groupCode:'',  //团期计划ID
+       beginDate: '',
+       endDate: '',
+       name:'',       //产品名称
+       destinationID:'', //目的地
+       destination:'', //目的地
+       saler:'',   //销售
+       productType: '',  //产品类型
        proType: [{
           value: '0',
           label: '跟团游'
-        }, {
+        }/*, {
           value: '1',
           label: '自由行'
         }, {
@@ -153,16 +163,7 @@ export default {
         }, {
           value: '4',
           label: '周边游'
-       }],
-       proTypevalue: '',
-       orderID:'',
-       proId:'',
-       planId:'',
-       startTime: '',
-       endTime: '',
-       proName:'',
-       destination:'',
-       saler:'',
+       }*/],
        //订单列表
        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
        pageIndex: 1, // 设定当前页数
@@ -173,10 +174,46 @@ export default {
        dialogType:0,//弹窗类型  1：流程管理  2：备注信息
     }
   },
+  watch:{
+    destination:function(val){
+　　　if(this.destination==''){
+        this.destinationID=0
+      }
+    }
+  },
   created(){
     this.orderPage();
   },
   methods: {
+      //目的地
+    querySearch(queryString, cb) {
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+        "object": {
+          areaName: queryString
+        }
+      }).then(res => {
+          let tableData=[];
+          for(let i=0;i<res.data.objects.length;i++){
+            tableData.push({
+              "value" : res.data.objects[i].areaName,
+              "id":res.data.objects[i].id
+            })
+          }
+          var results = queryString ? tableData.filter(this.createFilter(queryString)) : [];
+          cb(results)
+        }).catch(err => {
+          console.log(err);
+        })
+      },
+      createFilter(queryString){
+        return (restaurant) => {
+          return (restaurant.value);
+        }
+      },
+      departure(item){
+        this.destinationID = item.id;
+        this.destination = item.value;
+      },
       statusTab(num,index){
         if(num==1){
           this.orderNum=index;
@@ -195,12 +232,36 @@ export default {
         this.orderPage(val,this.pageSize);
         this.pageIndex=val;
       },
-      orderPage(pageIndex=this.pageIndex,pageSize=this.pageSize){
+      orderPage(pageIndex=this.pageIndex,pageSize=this.pageSize,orderCode=this.orderCode,teamID=this.teamID,groupCode=this.groupCode,beginDate=this.beginDate,endDate=this.endDate,name=this.name,destinationID=this.destinationID,saler=this.saler,productType=this.productType){
+        if(beginDate){
+          let y=beginDate.getFullYear();
+          let m=(beginDate.getMonth()+1)>9?beginDate.getMonth()+1:'0'+(beginDate.getMonth()+1);
+          let d=beginDate.getDate()>9?beginDate.getDate():'0'+beginDate.getDate();
+          beginDate=''+ y + m + d
+        }else{
+          beginDate=0
+        }
+        if(endDate){
+          let y=endDate.getFullYear();
+          let m=(endDate.getMonth()+1)>9?endDate.getMonth()+1:'0'+(endDate.getMonth()+1);
+          let d=endDate.getDate()>9?endDate.getDate():'0'+endDate.getDate();
+          endDate=''+ y + m + d
+        }else{
+          endDate=0
+        }
         this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderpage',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object":{            
-           //   "groupCode": groupCode
+                "orderCode":orderCode,  //可用
+                "teamID":teamID?teamID:0,
+                "groupCode":groupCode,
+                "beginDate": beginDate,
+                "endDate": endDate,
+                "name":name,
+                "destinationID":destinationID?destinationID:0,
+                "saler":saler,
+                "productType":productType?productType:0
              }
           }).then(res => {
             this.orderpage=[];
