@@ -36,6 +36,7 @@ import advancePayment from '@/page/Finance/advancePayment/advancePayment'
 import reimburseManagement from '@/page/Finance/reimburseManagement/reimburseManagement'
 import arrearsManagement from '@/page/Finance/arrearsManagement/arrearsManagement'
 import collectionManagement from '@/page/Finance/collectionManagement/collectionManagement'
+import predepositManagement from '@/page/Finance/predepositManagement/predepositList'
 import bankAccount from '@/page/Finance/bankAccount/bankAccount'
 import enrollTypeA from '@/page/contentInfo/enrollType/enrollTypeA'
 import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
@@ -314,6 +315,14 @@ export default new Router({
       path: '/arrearsManagement',
       component: arrearsManagement,
       name: '欠款管理',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },
+    {
+      path: '/predepositManagement',
+      component: predepositManagement,
+      name: '客商预存款管理',
       meta: {
         keepAlive: true,
         auth:true}

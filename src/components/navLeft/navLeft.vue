@@ -168,6 +168,10 @@
                 value: '银行账号管理',
                 router:'/bankAccount'
               },
+              {
+                value: '客商预存款管理',
+                router:'/predepositManagement'
+              },
             ],
           }
         ],
