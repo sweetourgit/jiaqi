@@ -99,6 +99,12 @@
                 },{
                   value: '黑名单',
                   router:'/blacklist'
+                },{
+                  value:'报名类型A',
+                  router:'/enrollTypeA'
+                },{
+                  value:'报名类型B',
+                  router:'/enrollTypeB'
                 }
               ]
             },

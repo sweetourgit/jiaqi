@@ -37,6 +37,8 @@ import reimburseManagement from '@/page/Finance/reimburseManagement/reimburseMan
 import arrearsManagement from '@/page/Finance/arrearsManagement/arrearsManagement'
 import collectionManagement from '@/page/Finance/collectionManagement/collectionManagement'
 import bankAccount from '@/page/Finance/bankAccount/bankAccount'
+import enrollTypeA from '@/page/contentInfo/enrollType/enrollTypeA'
+import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
 
 Vue.use(Router);
 
@@ -183,7 +185,7 @@ export default new Router({
       meta: {
         keepAlive: true,
         auth:true}
-    },,{
+    },{
       path: '/blacklist',
       component: blacklist,
       name: '黑名单',
@@ -191,6 +193,21 @@ export default new Router({
         keepAlive: true,
         auth:true}
     },{
+      path: '/enrollTypeA',
+      component: enrollTypeA,
+      name: '报名类型A',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },{
+      path: '/enrollTypeB',
+      component: enrollTypeB,
+      name: '报名类型B',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },
+    {
       path: '/controlList',
       component: controlList,
       name: '权限配置',

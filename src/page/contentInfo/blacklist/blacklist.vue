@@ -19,7 +19,7 @@
        <el-table-column  prop="cityID" label="城市" min-width="100" align="center"></el-table-column>
        <el-table-column  prop="mark" label="黑名单备注信息" min-width="180" align="center"></el-table-column>
      </el-table>
-     <el-pagination class="pagination" :page-sizes="[10,20,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+     <el-pagination class="pagination" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
      </el-pagination>
      <!--添加、编辑黑名单弹窗-->
       <el-dialog :title="title"  :visible.sync="dialogFormVisible" width="500px" center custom-class="city_list" @close="cancel">
@@ -56,7 +56,8 @@
             </el-select>
           </el-form-item>
           <el-form-item label="城市"  prop="cityID" class="addContact_span">
-            <el-input v-model="rformA.cityID" auto-complete="off" class="addContact_name" placeholder="请输入城市"></el-input>
+            <!-- <el-input v-model="rformA.cityID" auto-complete="off" class="addContact_name" placeholder="请输入城市"></el-input> -->
+            <el-autocomplete class="inline-input addContact_name" v-model="rformA.cityName" :fetch-suggestions="querySearch3"placeholder="请输入城市" :trigger-on-focus="false"@select="departure"></el-autocomplete>
           </el-form-item>
           <el-form-item label="备注"  prop="mark" class="addContact_span">
             <el-input v-model="rformA.mark" auto-complete="off" class="addContact_name" placeholder="请输入备注"></el-input>
@@ -93,6 +94,7 @@ export default {
           source:"",
           sex:"",
           reason:"",
+          cityName:"",
           cityID:"",
           mark:""
         },
@@ -112,6 +114,37 @@ export default {
     }
   },
   methods: {
+    querySearch3(queryString1, cb) {
+      this.vague = []
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+        "object": {
+          areaName: queryString1
+        }
+        }).then(res => {
+          for(let i=0;i<res.data.objects.length;i++){
+            this.vague.push({
+              "id":res.data.objects[i].id,
+              "value" : res.data.objects[i].areaName
+            })
+          }
+          var results = queryString1 ? this.vague.filter(this.createFilter(queryString1)) : [];
+          cb(results)
+        }).catch(err => {
+          console.log(err);
+        })
+    },
+    createFilter(queryString1){
+      return (restaurant) => {
+        return (restaurant.value);
+      }
+    },
+    departure(item){
+      console.log(item)
+      this.rformA.cityID = item.id;
+      this.rformA.cityName = item.value;
+      /*this.productPos = item.id;
+      this.originPlace = item.value;*/
+    },
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
@@ -203,6 +236,7 @@ export default {
                   "sex": this.rformA.sex,
                   "reason": this.rformA.reason,
                   "cityID": this.rformA.cityID,
+                  "cityName": this.rformA.cityName,
                   "mark": this.rformA.mark,
                   "createTime": 0
                 }

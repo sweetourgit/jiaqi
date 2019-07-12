@@ -1,10 +1,47 @@
 <template>
   <div class="supplierList">
-    <el-button type="primary" @click="addSupplier">添加</el-button>
+    <el-form :model="ruleForm" label-width="120px">
+      <div>
+        <el-form-item label="供应商名称" prop="supplierName" style="float:left;">
+          <el-input class="name_input" v-model="ruleForm.supplierName"placeholder="请输入供应商名称"></el-input>
+        </el-form-item>
+        <el-form-item label="ID" prop="supplierCard" style="float:left; margin:0 90px 0 90px;">
+          <el-input class="name_input" v-model="ruleForm.supplierCard"></el-input>
+        </el-form-item>
+        <el-form-item label="结算方式" prop="settlement" style="float:left;">
+          <!-- <el-input class="name_input" v-model="ruleForm.settlement"></el-input> -->
+          
+          <el-cascader :options="settlement" v-model="ruleForm.settlement" clearable></el-cascader>
+        </el-form-item>
+      </div>
+      <div>
+        <el-form-item label="状态" prop="condition" style="float:left;">
+          <!-- <el-input class="name_input" v-model="ruleForm.condition"></el-input> -->
+          <el-select v-model="ruleForm.condition" placeholder="请选择结算方式">
+            <el-option v-for="item in condition" :key="item.value":label="item.label":value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="类别" prop="category" style="float:left; margin:0 90px 0 90px;">
+          <!-- <el-input class="name_input" v-model="ruleForm.category"></el-input> -->
+           <el-cascader :options="borrowingType" v-model="ruleForm.category" clearable></el-cascader>
+        </el-form-item>
+        <el-form-item label="可见区域" prop="visibleArea" style="float:left;">
+          <!-- <el-input class="name_input" v-model="ruleForm.visibleArea"></el-input> -->
+          <el-select v-model="ruleForm.visibleArea" placeholder="请选择结算方式">
+            <el-option v-for="item in condition" :key="item.value":label="item.label":value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+      </div>
+      <div style="float:right; margin:0 0 30px 0;">
+        <el-button type="primary">搜索</el-button>
+        <el-button type="primary" plain @click="reset()">重置</el-button>
+      </div>
+    </el-form>
+    <div style="clear:both;"><el-button type="primary" @click="addSupplier">添加</el-button></div>
     <!--表格-->
     <el-table :data="tableData" border class="tableData">
       <el-table-column prop="id" label="ID" width="150"align="center"></el-table-column>
-      <el-table-column prop="name" label="供应商名称" width="300"align="center"></el-table-column>
+      <el-table-column prop="name" label="供应商名称" width="230"align="center"></el-table-column>
       <el-table-column prop="userState" label="状态" width="100" align="center">
         <template slot-scope="scope">
           <div v-if="scope.row.userState=='正常'" style="color: #7F7F7F" >{{scope.row.userState}}</div>
@@ -12,14 +49,16 @@
           <div v-if="scope.row.userState=='待审核'" style="color: #33D174" >{{scope.row.userState}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="isMonthly" label="结算方式" width="150"align="center"></el-table-column>
       <el-table-column prop="supplierType" label="类型" width="150"align="center"></el-table-column>
-      <el-table-column prop="destinationID" label="所属部门" width="240"align="center"></el-table-column>
-      <el-table-column label="操作" width="109" align="center">
+      <el-table-column prop="isMonthly" label="结算方式" width="150"align="center"></el-table-column>
+      <el-table-column prop="destinationID" label="所属部门" width="200"align="center"></el-table-column>
+      <el-table-column label="操作" width="159" align="center">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row)" type="text" size="small" class="table_details">详情</el-button>
           <div class="table_line">|</div>
-          <el-button type="text" class="table_editor" size="small">编辑</el-button>
+          <el-button type="text" class="table_details" size="small">编辑</el-button>
+          <div class="table_line">|</div>
+          <el-button type="text" class="table_editor" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -64,8 +103,8 @@
           </el-form-item>
           <el-form-item label="附件" prop="supplierUpload">
             <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :file-list="fileList">
-		  		<el-button size="small" type="primary">选择文件</el-button>
-			</el-upload>
+    		  		<el-button size="small" type="primary">选择文件</el-button>
+    			  </el-upload>
           </el-form-item>
         </div>
         <div style="float:right; margin:0 200px 0 0; overflow:hidden;">
@@ -153,12 +192,38 @@
         	cardNumber:'1234 1234 1234 1234 123',
         	memo:'1'
         }],
+        settlement: [{//结算方式
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        condition:[{//状态
+          value:'正常',
+          label:'正常'
+        },{
+          value:'停用',
+          label:'停用'
+        },{
+          value:'待审核',
+          label:'待审核'
+        }],
         //分页
         currentPage: 1,
         total:0,
         pagesize:10,
         //添加弹窗
-        supplierShow:true,
+        supplierShow:false,
         ruleForm:{
           name:'',
           visible:'',
@@ -178,6 +243,12 @@
           operator:'',
           agreement:'',
           remark:'',
+          supplierName:'',
+          supplierCard:'',
+          settlement:'',
+          condition:'',
+          category:'',
+          visibleArea:'',
         },
         ruleForm_01:{
         	accountName:'',
@@ -506,9 +577,9 @@
       //清空表单
       emptyForm(){
       	this.ruleForm_01.accountName = "",
-    	this.ruleForm_01.openingBank = "",
-    	this.ruleForm_01.account = "",
-    	this.ruleForm_01.note = ""
+      	this.ruleForm_01.openingBank = "",
+      	this.ruleForm_01.account = "",
+      	this.ruleForm_01.note = ""
       },
       //添加银行账户
       addBank(){
@@ -542,7 +613,7 @@
         this.clear();
       },
       clear(){//取消弹窗文本框清空
-      	  this.ruleForm.name = "";
+      	this.ruleForm.name = "";
 	      this.ruleForm.visible = "";
 	      this.ruleForm.supplierState = "";
 	      this.ruleForm.supplierType = "";
@@ -561,6 +632,15 @@
 	      this.ruleForm.agreement = "";
 	      this.ruleForm.remark = "";
       },
+      //搜索重置
+      reset(){
+        this.ruleForm.supplierName = "",
+        this.ruleForm.supplierCard = "",
+        this.ruleForm.settlement = "",
+        this.ruleForm.condition = "",
+        this.ruleForm.category = "",
+        this.ruleForm.visibleArea = ""
+      },
     },
     
     mounted(){
@@ -574,8 +654,8 @@
 </script>
 
 <style scoped lang='stylus'>
-  .supplierList{width:1200px;}
-  .tableData{width:1200px; margin:20px 0 0 0;}
+  .supplierList{width:1140px;}
+  .tableData{width:1140px; margin:20px 0 0 0;}
   /*表格操作*/
   .table_details{float:left; margin:0 0 0 5px; color:#000;}
   .table_line{float:left; margin:3px 10px 0 10px;}
