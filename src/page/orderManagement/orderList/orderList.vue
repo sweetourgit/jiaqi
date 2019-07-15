@@ -253,7 +253,7 @@ export default {
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object":{            
-                "orderCode":orderCode,  
+                "orderCode":orderCode,   
                 "teamID":teamID?teamID:0,
                 "groupCode":groupCode,
                 "beginDate": beginDate,

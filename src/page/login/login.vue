@@ -16,7 +16,7 @@
         <span class="forget-title">嘉麒应用管理中心</span>
         <div class="forget-group">
           <div class="forget-account">用户登录</div>
-          <div class="forget-border"></div>
+          <div class="forget-border"></div> 
         </div>
 
 

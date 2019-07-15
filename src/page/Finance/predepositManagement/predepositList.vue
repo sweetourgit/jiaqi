@@ -23,7 +23,7 @@
               <span @click="handleClick(scope.row)" class="cursor">详情</span>
               <span>|</span>
               <span @click="handleClick(scope.row)" class="cursor blue">编辑</span>
-           </template>
+           </template> 
        </el-table-column>
      </el-table>
      <div style="width:1100px;overflow:hidden">
