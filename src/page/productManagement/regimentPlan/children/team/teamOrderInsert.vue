@@ -233,6 +233,7 @@
 </template>
 
 <script>
+import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   props:{
     planId:0,
@@ -562,7 +563,7 @@ export default {
                   "orderChannel": this.ruleForm.orderRadio,
                   "orgID": sessionStorage.getItem('orgID'),
                   "userID": sessionStorage.getItem('id'),
-                  "mark": this.ruleForm.remark,
+                  "mark": JSON.stringify([{"OrderCode":"","Mark":this.ruleForm.remark,"CreateTime":formatDate(new Date())}]),
                   "guest":guest,
                   "number": number
                 }
@@ -579,7 +580,7 @@ export default {
                    this.startUpWorkFlowForJQ(data.OrderID,data.FlowModel,data.FlowModelName,data.Usercode);
               }else{
                  //预留黑名单信息？？？
-                 _this.$message.success('下单失败');
+                 this.$message.error('下单失败');
                  this.ifOrderInsert=true;
               }
             }) 

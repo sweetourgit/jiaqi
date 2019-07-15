@@ -2,17 +2,15 @@
   <div>
        <!--备注信息弹窗-->
        <el-dialog title="订单备注" :visible.sync="dialogFormMark" class="city_list" width="780px">
-          <el-form :model="markForm" ref="markForm" label-width="80px" class="demo-ruleForm">
-               <el-form-item label="客人：">            
-                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markForm.remark" :disabled="true"></el-input>
-                  <div class="time">2018-10-11 17:23:23</div>
+          <el-form :model="markFormAdd" :rules="rules" ref="markFormAdd" label-width="80px" class="demo-ruleForm">
+               <div v-for="item in markForms">
+               <el-form-item :label="name">            
+                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="item.Mark" :disabled="true"></el-input>
+                  <div class="time">{{item.CreateTime}}</div>
                </el-form-item>
-               <el-form-item label="阳阳：">            
-                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" v-model="markForm.remark" :disabled="true"></el-input>
-                  <div class="time">2018-10-11 17:23:23</div>
-               </el-form-item>
-               <el-form-item label="填写备注">            
-                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markForm.remark1"></el-input>
+               </div>
+               <el-form-item label="填写备注" prop="Mark">            
+                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markFormAdd.Mark"></el-input>
                </el-form-item>
                <el-form-item>
                   <el-button type="info" size="medium" class="submitMark" @click="submitMark">提交备注</el-button>
@@ -26,6 +24,7 @@
 </template>
 
 <script>
+import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   props:{
     orderId:0,
@@ -34,11 +33,18 @@ export default {
   },
   data() {
     return {
+       name:localStorage.getItem('name'),
        //备注信息弹窗
        dialogFormMark:false,     
-       markForm:{
-          remark:'*******',
-          remark1:''
+       markFormAdd:{
+         "OrderCode":"",
+         'Mark':'',
+         "CreateTime":formatDate(new Date())
+       },
+       markForms:[],
+       orderget:{},
+       rules:{      
+         Mark: [{ required: true, message: '请填写备注信息', trigger: 'blur' }]
        }
     }
   },
@@ -47,6 +53,7 @@ export default {
   watch: {
       variable:function(){        
         if(this.dialogType==2){
+          this.orderGet(this.orderId);   
           this.dialogFormMark=true;    
         }
      }
@@ -54,11 +61,39 @@ export default {
   methods: {
       close(){
         this.dialogFormMark=false;
-        this.markForm.remark1='';
+        this.$refs['markFormAdd'].resetFields();
+      },
+      orderGet(orderId){
+        //查询一条订单信息
+        this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderget',{
+             "id": orderId
+          }).then(res => {
+            if(res.data.isSuccess == true){
+               this.orderget = res.data.object;
+               this.markForms = res.data.object.remark?JSON.parse(res.data.object.remark):[];
+            }
+          }).catch(err => {
+            console.log(err)
+        })
       },
       submitMark(){
-        this.dialogFormMark=false;
-        this.markForm.remark1='';
+        this.$refs['markFormAdd'].validate((valid) => {
+          let obj=JSON.parse(JSON.stringify(this.markForms));
+          obj.push(this.markFormAdd);
+          this.orderget.remark=JSON.stringify(obj);
+          this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderinsert',{
+                "object":this.orderget
+          }).then(res => {
+            if(res.data.isSuccess == true){
+              this.$message.success("提交成功");
+              this.dialogFormMark=false;
+              this.$refs['markFormAdd'].resetFields();
+            }else{
+              this.$message.error('提交失败');
+            }            
+          });
+        });      
+        
       }
     }
 }

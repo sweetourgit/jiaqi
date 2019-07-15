@@ -26,7 +26,7 @@ import '@/style/main.css'
 Vue.prototype.GLOBAL = global
 Vue.config.productionTip = false
 
-// import '!style-loader!css-loader!less-loader!./style/libs/iconfont/iconfont.css'
+ //import '!style-loader!css-loader!less-loader!./style/libs/iconfont/iconfont.css'
 //http request 请求拦截器
 axios.interceptors.request.use(
   config => {
