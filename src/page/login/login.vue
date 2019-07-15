@@ -433,6 +433,7 @@
                       sessionStorage.setItem('id',res.data.id)
                       sessionStorage.setItem('orgID',res.data.orgID)
                       sessionStorage.setItem('account',this.ruleForm.user)
+                      sessionStorage.setItem('userCode',res.data.userCode)
                       store.save('name',res.data.name)
                       this.$router.push('/userList')
                       this.$message.success('登录成功');
