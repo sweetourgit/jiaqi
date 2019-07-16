@@ -280,7 +280,8 @@
             <el-button size="mini" type="primary"  @click="offline(scope.$index)">下线</el-button>
             </template>
             <el-button size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
-          <el-button size="mini" type="primary" @click="basicPrice">成本</el-button>
+          <el-button size="mini" type="primary" @click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)">成本</el-button>
+
             <!-- <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button> -->
         </template>
       </el-table-column>
@@ -294,12 +295,12 @@
      append-to-body>
      <div>
        <el-button  type="primary" @click="addcost">添加</el-button>
-       <el-button type="primary" @click="addcost">编辑</el-button>
-       <el-button  type="danger" @click="basicPrice">删除</el-button>
+       <el-button type="primary" @click="editorcb">编辑</el-button>
+       <el-button  type="danger" @click="delcb">删除</el-button>
      </div>
      <div style="margin-top: 30px">
        <div style="float: left; margin-top: 10px">毛利率：</div>
-       <div style="float: left;margin-left: 10px"><el-input v-model="lilv" placeholder="利率" style="width: 70px"></el-input></div>
+       <div style="float: left;margin-left: 10px"><el-input v-model="lilv" placeholder="利率" style="width: 70px" @blur="changinpt"></el-input>%</div>
        <div style="margin-top: 10px;float: left;margin-left: 30px;">人均结算价({{count}})</div>
      </div>
       <div style="margin-top: 100px">
@@ -308,7 +309,9 @@
           :data="tableData12"
           tooltip-effect="dark"
           style="width: 100%"
-          @selection-change="handleSelectionChange">
+          @selection-change="handleSelectionChange"
+        @select="changselet"
+        >
           <el-table-column
             type="selection"
             width="55">
@@ -316,20 +319,20 @@
           <el-table-column
             label="序号"
             width="120">
-            <template slot-scope="scope">{{ scope.row.date }}</template>
+            <template slot-scope="scope">{{ scope.row.id }}</template>
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="supplierTypeEX"
             label="成本类型"
             width="120">
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="name"
             label="供应商"
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="money"
             label="金额"
             show-overflow-tooltip>
           </el-table-column>
@@ -347,7 +350,7 @@
     >
      <el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="100px" class="demo-ruleForm">
        <el-form-item label="供应商" prop="region">
-         <el-select v-model="ruleForm1.region" placeholder="请选择">
+         <el-select v-model="ruleForm1.region" placeholder="请选择" @change="changys">
            <el-option
              v-for="item in options2"
              :key="item.value"
@@ -370,7 +373,8 @@
          <el-input v-model="ruleForm1.name"></el-input>
        </el-form-item>
        <el-form-item>
-         <el-button type="primary" @click="submitForm1('ruleForm1')">立即创建</el-button>
+         <el-button v-if="this.chengben.length == 0" type="primary" @click="submitForm1('ruleForm1')">添加</el-button>
+         <el-button  v-else type="primary" @click="submitForm2('ruleForm1')">修改</el-button>
          <el-button @click="resetForm1('ruleForm1')">重置</el-button>
        </el-form-item>
      </el-form>
@@ -396,9 +400,18 @@ import DateList from './component/DateList'
      data() {
       return {
         ruleForm1: {
+          //金额
           name: '',
+          //供应商
           region: '',
-          costType: ''
+          //供应商
+          region1: '',
+          //供应商类型
+          costType: '',
+          //供应商类型中文
+          supplierTypeEX:'',
+          //供应商id
+          supplierID:''
         },
         options2: [{
           value: '选项1',
@@ -436,7 +449,6 @@ import DateList from './component/DateList'
         rules1: {
           name: [
             { required: true, message: '请输入活动名称', trigger: 'blur' },
-            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
           region: [
             { required: true, message: '请选择活动区1域', trigger: 'change' }
@@ -857,32 +869,278 @@ import DateList from './component/DateList'
         tableData: [],
       // 属性输入框
         price:[],
-        abc: false
+        abc: false,
+        array1:'',
+        team:'',
+        chengben:[]
       }
     },
     methods: {
+      changselet(selection, row){
+        this.chengben = selection
+
+      },
+      changinpt(){
+        this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/saverate', {
+          "object": {
+            "id": this.team,
+            "rate": this.lilv,
+          }
+        }).then(res => {
+          this.ccc = []
+          var that = this
+          this.$http.post(
+            this.GLOBAL.serverSrc + "/team/api/teampackagelist",
+            {
+              "object": {
+                "teamID": this.pid,
+              }
+            },
+            {
+              headers:{
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+              }
+            }
+          )
+            .then(function (obj) {
+              /*
+
+              */
+
+              for (let i = 0; i < obj.data.objects.length; i++){
+                /* console.log(obj.data.objects[0].id)*/
+
+                that.ccc.push({
+                  id:obj.data.objects[i].id,
+                  ddd:obj.data.objects[i].name,
+                  uptoDay:obj.data.objects[i].uptoDay,
+                  value:obj.data.objects[i].templateID,
+                  codePrefix:obj.data.objects[i].codePrefix,
+                  codeSuffix:obj.data.objects[i].codeSuffix,
+                  createTime:obj.data.objects[i].createTime,
+                  type:false,
+                  rate:obj.data.objects[i].rate
+                })
+                if(that.ccc[i].value == 0){
+                  that.ccc[i].value = ""
+                }
+
+              }
+              console.log(obj.data)
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+        })
+
+      },
+      changys(res){
+        console.log(res)
+        this.ruleForm1.region1 = res.substring(res.indexOf("+")+1,res.indexOf("-"))
+        this.ruleForm1.supplierID = res.substring(res.indexOf("|")+1,res.indexOf("+"))
+        this.ruleForm1.costType =res.substring(res.indexOf("-")+1,res.indexOf("*"))
+        this.ruleForm1.supplierTypeEX =res.slice(res.indexOf("*")+1)
+
+        /*this.ruleForm1.costType = res.slice(res.indexOf("-")+1)*/
+     /*   //供应商id
+        console.log( res.substring(res.indexOf("|")+1,res.indexOf("+")))
+        //供应商名称
+        console.log( res.substring(res.indexOf("+")+1,res.indexOf("-")))
+        //类型cn
+        console.log(  res.substring(res.indexOf("-")+1,res.indexOf("*")))
+        //类型ty
+        console.log(  res.slice(res.indexOf("*")+1))*/
+      },
       submitForm1(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/insert', {
+              "object": {
+                "id": 0,
+                "createTime": 0,
+                "code": "string",
+                "createUser": "string",
+                "packageID": this.team,
+                "supplierID": this.ruleForm1.supplierID,
+                "name": this.ruleForm1.region1,
+                "supplierType": this.ruleForm1.supplierTypeEX,
+                "money": this.ruleForm1.name
+              }
+            }).then(res => {
+              this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/list', {
+                "object": {
+                  "packageID": this.team,
+                }
+              }).then(res => {
+                this.tableData12 = res.data.objects
+              })
+              this.cost = false
+            })
           } else {
             console.log('error submit!!');
             return false;
           }
         });
       },
+      submitForm2(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/save', {
+              "object": {
+                "id": this.chengben[0].id,
+                "createTime": 0,
+                "code": "string",
+                "createUser": "string",
+                "packageID": this.team,
+                "supplierID": this.ruleForm1.supplierID,
+                "name": this.ruleForm1.region1,
+                "supplierType": this.ruleForm1.supplierTypeEX,
+                "money": this.ruleForm1.name
+
+              }
+            }).then(res => {
+              this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/list', {
+                "object": {
+                  "packageID": this.team,
+                }
+              }).then(res => {
+                this.tableData12 = res.data.objects
+              })
+            this.cost = false
+            })
+          } else {
+            console.log(123123)
+          }
+        });
+      },
       resetForm1(formName) {
         this.$refs[formName].resetFields();
       },
+      editorcb(){
+        var arry = [];
+        var arry1 = [];
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage",
+          {
+            "object": {
+              "isDeleted": 0,
+            },
+            "pageSize":1000,
+            "pageIndex": 1,
+            "isGetAll": true,
+            "id": 0
+          },)
+          .then(function (obj) {
+            for (var j = 0; j<obj.data.objects.length;j++){
+              arry1.push(obj.data.objects[j])
+              arry1[j].label = arry1[j].name
+              arry1[j].value = "|"+ arry1[j].id+"+"+arry1[j].name +"-"+ arry1[j].types[0].supplierTypeEX +"*"+ arry1[j].types[0]. supplierType
+            }
+            that.options2 = arry1
+
+          })
+
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
+        }).then(res => {
+
+          for (var i = 0; i<res.data.objects.length;i++){
+            arry.push(res.data.objects[i])
+            arry[i].label = arry[i].name
+            arry[i].value = arry[i].id
+          }
+          this.options3 = arry
+
+        })
+       /* console.log(this.chengben[0].id)*/
+        this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/get', {
+          "id": this.chengben[0].id
+        }).then(res => {
+          console.log(res.data.object)
+          this.cost = true
+          this.ruleForm1.region = res.data.object.name
+          this.ruleForm1.costType = res.data.object.supplierTypeEX
+          this.ruleForm1.name = res.data.object.money
+        })
+
+      },
+      delcb(){
+        for (var i=0;i<this.chengben.length; i++){
+          this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/delete', {
+            "id": this.chengben[i].id
+          }).then(res => {
+
+          })
+        }
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        });
+        this.basicbutton = false
+        this.chengben = []
+      },
       addcost(){
-        console.log(123)
+        console.log(this.chengben)
+        var arry = [];
+        var arry1 = [];
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage",
+          {
+            "object": {
+              "isDeleted": 0,
+            },
+            "pageSize":1000,
+            "pageIndex": 1,
+            "isGetAll": true,
+            "id": 0
+          },)
+          .then(function (obj) {
+            for (var j = 0; j<obj.data.objects.length;j++){
+              arry1.push(obj.data.objects[j])
+              arry1[j].label = arry1[j].name
+              arry1[j].value = "|"+ arry1[j].id+"+"+arry1[j].name +"-"+ arry1[j].types[0].supplierTypeEX +"*"+ arry1[j].types[0]. supplierType
+            }
+            that.options2 = arry1
+
+          })
+
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
+        }).then(res => {
+
+          for (var i = 0; i<res.data.objects.length;i++){
+            arry.push(res.data.objects[i])
+            arry[i].label = arry[i].name
+            arry[i].value = arry[i].id
+          }
+          this.options3 = arry
+
+        })
+
         this.cost = true
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
-      basicPrice(){
+      basicPrice(id,rate){
       this.basicbutton = true
+        this.team = id
+        this.lilv = rate
+        console.log(rate)
+        this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/list', {
+          "object": {
+            "packageID": this.team,
+          }
+        }).then(res => {
+          this.tableData12 = res.data.objects
+        })
+        this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
+          "id": this.team
+        }).then(res => {
+          this.count = res.data.average
+        })
+
+
       },
       fucking(){
         for(let i = 0; i<this.ccc.length;i++) {
@@ -1441,6 +1699,7 @@ import DateList from './component/DateList'
                   codeSuffix:obj.data.objects[i].codeSuffix,
                   createTime:obj.data.objects[i].createTime,
                   type:false,
+                  rate:obj.data.objects[i].rate
                 })
               if(that.ccc[i].value == 0){
                 that.ccc[i].value = ""
