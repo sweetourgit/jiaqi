@@ -115,11 +115,16 @@
 			 				  <el-option v-for="item in payment_01" :key="item.value" :label="item.label" :value="item.value"></el-option>
 			 				</el-select>
 			 </el-form-item> -->
-			 <el-form-item label="附件" prop="accessory" style="clear:both;">
+			 <!-- <el-form-item label="附件" prop="accessory" style="clear:both;">
 			    <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :file-list="fileList">
 			  		<el-button type="primary">选择文件</el-button>
-				</el-upload>
-			 </el-form-item>
+			 				</el-upload>
+			 </el-form-item> -->
+			 <el-form-item label="附件" style="clear:both;" prop="accessory">
+                <el-upload class="upload-demo" name="files" ref="upload" :action="this.upload_url" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview" list-type="picture">
+                  <el-button size="small" type="primary">点击上传</el-button>
+                </el-upload>
+              </el-form-item>
 			 <div class="basicTitle">相关信息</div>
 			 <el-table :data="tableMoney" border style="width: 70%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
 	           <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
@@ -230,11 +235,6 @@
 	          <el-table-column prop="date" label="出行日期" align="center"></el-table-column>
 	          <!-- <el-table-column prop="orgName" label="部门" align="center"></el-table-column> -->
 	          <el-table-column prop="name" label="产品录入人" align="center"></el-table-column>
-	          <el-table-column prop="process" label="操作" align="center">
-	           	<template slot-scope="scope">
-			      <el-button type="text" size="small">选择</el-button>
-			    </template>
-	           </el-table-column>
 	        </el-table>
 	        <div class="number_button">
 	        	<el-button @click="planCancel()">取消</el-button>
@@ -344,7 +344,10 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           accountBank:'',
           accountOpenName:'',
           payment:'',
-          accessory:'',
+          //accessory:'',
+         },
+         upload:{
+         	accessory:'',
          },
          tour_id:0,//无收入弹窗id
          supplier_id:0,//无收入供应商id
@@ -451,6 +454,8 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 		    //供应商选择银行账号
 		    supplier_id:0,
 		    tableData2:[],
+		    upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',//图片上传
+		    uid: 0, //上传图片缩略图选中项
 		   
 
 
@@ -551,10 +556,6 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
         console.log(err);
       })
     },
-    /*querySearch1(queryString1, cb1) {//搜索出发地方法
-        var results1 = queryString1 ? this.tableData1.filter(this.createFilter(queryString1)) : [];
-        cb1(results1);
-    },*/
     createFilter(queryString1){
       return (restaurant) => {
         return (restaurant.value);
@@ -567,16 +568,16 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       this.productPos = item.id;
       this.originPlace = item.value;
     },
-      //分页
-      handleSizeChange(val){
-        this.pageSize = val;
-        this.pageIndex = 1;
-        //this.moduleList();
-      },
-      handleCurrentChange(val){
-        this.pageIndex = val;
-        //this.moduleList();
-      },
+    //分页
+    handleSizeChange(page) {
+      this.currentPage = 1;
+      this.pagesize = page;
+      this.pageList();
+    },
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
+      this.pageList();
+    },
       //无收入借款弹窗
       noIncome(){//点击显示弹窗
       	this.noIncomeShow =true;
@@ -592,6 +593,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
              this.$message.success("借款申请已取消");
              this.noIncomeShow =false;
   		     this.$refs["ruleForm"].resetFields();
+  		     this.clearPlan();
            })
         .catch(() => {
           this.$message({
@@ -612,6 +614,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       	this.ruleForm.accountOpenName = '';
       	this.ruleForm.accountBank = '';
       	//this.accessory = '';
+      	this.tour_id = 0;
 
       },
       //无收入借款中借款人弹窗
@@ -673,7 +676,8 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
         this.$refs.multipleTablePlan.toggleRowSelection(row);
         this.tour_name_pre = row['groupCode'];
       	this.product_name_pre = row['title'];
-      	this.planID = row['planID']
+      	this.planID = row['planID'];
+      	this.tour_id = row['planID']
       },
       rowClassPlan({row, rowIndex}){  //选中行样式改变
        for(var i=0;i<this.multipleSelectionPlan.length;i++){
@@ -785,7 +789,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       checkIncome(row){
       	this.checkIncomeShow = true;
       	this.ruleForm = row;
-      	this.getLabel();
+      	//this.getLabel();
       },
       CloseCheckIncomeShow(){
       	this.checkIncomeShow = false;
@@ -812,7 +816,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
             console.log(obj)
           })
       },
-      getLabel(){//获取一条信息
+      /*getLabel(){//获取一条信息
         this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
            "id":this.multipleSelection[0].id
           }).then(res => {
@@ -828,9 +832,10 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 				 this.ruleForm.accountBank=data.accountBank;
 				 this.ruleForm.accountOpenName=data.accountOpenName;
 				 this.ruleForm.payment=data.payment;
+				 this.tour_id = obj.data.object.planID
               }
         }) 
-      },
+      },*/
       //申请无收入借款
       ensureIncome(){
       	this.$refs.ruleForm.validate((valid) => {
@@ -838,7 +843,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           	let pictureList = [];
 	          for (let i = 0; i < this.fileList.length; i++) {
 	            let picture = {};
-	            picture.url = this.fileList[i].url1;
+	            picture.url = this.fileList[i].url;
 	            picture.name = this.fileList[i].name;
 	            pictureList.push(picture);
 	          }
@@ -847,7 +852,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
             this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insert",
               {
                 object: {
-                  createUser:this.ruleForm.name,
+                  createUser:sessionStorage.getItem('id'),
 	              paymentType: 1, //借款类型 1无收入借款 2预付款
 	              planID: this.tour_id, //对应计划ID --Plan，不存在传值0
 	              supplierID: this.supplier_id, //对应供应商ID --Supplier，不存在传值0
@@ -930,6 +935,48 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	      }).catch(function(err){
 	        console.log(err);
 	      })
+	    },
+	    //文件上传
+	    handleChange(file, fileList) {
+	      this.fileList = fileList.slice(-3);
+	    },
+	    handleError(err, file) {
+	      console.log('失败')
+	      this.fileList = []
+	    },
+	    handleSuccess(res, file, fileList) {
+	      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
+	      if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
+	        this.time = fileList.length;
+	        if (this.fileList.length == 0) {
+	          this.fileList = fileList;
+	        } else {
+	          this.len = this.fileList.length;
+	          for (let i = this.len; i < fileList.length; i++) {
+	            this.fileList.push(fileList[i]);
+	          }
+	        }
+	      }
+	      var paths = null;
+	      for (let i = this.len; i < fileList.length; i++) {
+	        paths = JSON.parse(fileList[i].response).paths[0];
+	        this.$set(this.fileList[i], "width", paths.Width);
+	        this.$set(this.fileList[i], "height", paths.Height);
+	        this.$set(this.fileList[i], "url1", paths.Url);
+	        this.$set(this.fileList[i], "length", paths.Length);
+	        this.$set(this.fileList[i], "name", paths.Name);
+	      }
+	      this.uid = fileList[0].uid;
+	    },
+	    handleRemove(file, fileList) {
+	      this.uid = fileList[0].uid;
+	      this.fileList = fileList
+	    },
+	    handlePreview(file, fileList) {
+	      this.uid = file.uid
+	      /*this.dialogVisible4 = true
+	      this.imgBig = file.url
+	      this.imgBigName = file.name*/
 	    },
 
     },

@@ -4,8 +4,8 @@
       <el-tab-pane label="借款" name="first">
         <borrowing></borrowing>
       </el-tab-pane>
-       <el-tab-pane label="需要您审批的" name="second">
-        <approvalToBorrow></approvalToBorrow>
+       <el-tab-pane :label="examine + msg" name="second">
+        <approvalToBorrow v-on:headCallBack="headCall"></approvalToBorrow>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -26,12 +26,15 @@ import approvalToBorrow from '@/page/Finance/loanManagement/approvalToBorrow'
     data(){
       return {
       	activeName: 'first',
-
+        examine:'需要您审批',
+        msg:'',
 
       }
     },
     methods: {
-      
+      headCall: function (msg) { //回调方法，接收子组件传的参数
+        this.msg = '(' + msg + ')';
+      }
 
     }
   }

@@ -3,36 +3,41 @@
         <div class="plan">
           <div class="fl">
             <span class="emptyPlan">团期计划</span>
-            <el-input v-model="empty_01" class="empty" clearable></el-input>
+            <el-input v-model="empty_01" class="empty" clearable placeholder="请输入团期计划"></el-input>
           </div>
           <div class="fl">
             <span class="emptyPlan">申请人</span>
-            <el-input v-model="people_01" class="empty" clearable></el-input>
+            <el-input v-model="people_01" class="empty" clearable placeholder="请输入申请人"></el-input>
           </div>
           <div class="fl">
             <span class="emptyPlan">发起时间</span>
-            <el-date-picker v-model="planTime_01" type="date" class="planTime" placeholder="日期"></el-date-picker>
+            <el-date-picker v-model="planTime_01" type="date" class="planTime" placeholder="开始天数"></el-date-picker>
             <span class="time">——</span>
-            <el-date-picker v-model="planData_01" type="date" class="planTime" placeholder="日期"></el-date-picker>
+            <el-date-picker v-model="planData_01" type="date" class="planTime" placeholder="结束天数"></el-date-picker>
           </div>
         </div>
-        <div class="primary"><el-button @click="emptyButton_01()" type="primary">重置</el-button></div>
         <div class="primary">
-          <el-button plain>审批</el-button>
+          <el-button type="primary">搜索</el-button>
+          <el-button @click="emptyButton_01()" type="primary">重置</el-button>
         </div>
-        <el-table :data="tableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border>
-              <el-table-column prop="order" label="借款单号" width="120" align="center"></el-table-column>
-              <el-table-column prop="state" label="状态" width="80" align="center"></el-table-column>
-              <el-table-column prop="startingTime" label="发起时间" width="180" align="center"></el-table-column>
-              <el-table-column prop="groupPlan" label="团期计划" width="180" align="center"></el-table-column>
-              <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
-              <el-table-column prop="genre" label="类型" width="80" align="center"></el-table-column>
-              <el-table-column prop="amount" label="借款金额" width="120" align="center"></el-table-column>
-              <el-table-column prop="organization" label="申请组织" width="150" align="center"></el-table-column>
-              <el-table-column prop="proposer" label="申请人" width="100" align="center"></el-table-column>
-            </el-table>
-            <!--分页-->
-            <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+        <div style="width:1130px;">
+          <el-table :data="tableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border>
+            <el-table-column prop="paymentID" label="借款单号" width="100" align="center"></el-table-column>
+            <el-table-column prop="beginTime" label="发起时间" width="180" align="center"></el-table-column>
+            <el-table-column prop="groupCode" label="团期计划" width="219" align="center"></el-table-column>
+            <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
+            <el-table-column prop="supplierTypeEX" label="类型" width="80" align="center"></el-table-column>
+            <el-table-column prop="price" label="借款金额" width="120" align="center"></el-table-column>
+            <el-table-column prop="createUser" label="申请人" width="100" align="center"></el-table-column>
+            <el-table-column label="审批" width="150" align="center">
+              <template slot-scope="scope">
+                <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--分页-->
+          <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+        </div>
       </div>
 </template>
 
@@ -45,55 +50,16 @@
     data(){
       return {
         //表头切换
-         empty_01:'',
-         people_01:'',
-         planTime_01:'',
-         planData_01:'',
-         //借款表格
-         tableData:[{
-      order:'1',
-      state:'申请中',
-      startingTime:'2019-01-09 09:37',
-      groupPlan:'TC-GTY-1001-01-180806-01',
-      supplierName:'国旅',
-      genre:'地接',
-      amount:'17800.00',
-      verification:'0',
-      payment:'0',
-      organization:'辽宁大运通-国内部',
-      proposer:'养养',
-      approvalOpinion:'',
-     },{
-      order:'2',
-      state:'申请中',
-      startingTime:'2019-01-09 09:37',
-      groupPlan:'TC-GTY-1001-01-180806-01',
-      supplierName:'国旅',
-      genre:'签证',
-      amount:'17800.00',
-      verification:'0',
-      payment:'0',
-      organization:'辽宁大运通-国内部',
-      proposer:'养养',
-      approvalOpinion:'郑总：信息不全',
-     },{
-      order:'3',
-      state:'申请中',
-      startingTime:'2019-01-09 09:37',
-      groupPlan:'TC-GTY-1001-01-180806-01',
-      supplierName:'国旅',
-      genre:'地接',
-      amount:'17800.00',
-      verification:'0',
-      payment:'0',
-      organization:'辽宁大运通-国内部',
-      proposer:'养养',
-      approvalOpinion:'',
-     }],
-     //分页
-     currentPage: 1,
-         total:0,
-         pagesize:10,
+        empty_01:'',
+        people_01:'',
+        planTime_01:'',
+        planData_01:'',
+        //借款表格
+        tableData:[],
+        //分页
+        currentPage: 1,
+        total:0,
+        pagesize:10,
 
       }
     },
@@ -114,11 +80,44 @@
       },
       //分页
       handleSizeChange(page) {
+        this.currentPage = 1;
+        this.pagesize = page;
+        this.pageList();
       },
       handleCurrentChange(currentPage) {
+        this.currentPage = currentPage;
+        this.pageList();
+      },
+      //查询列表
+      pageList() {
+        let objectRequest = {}
+        objectRequest.paymentType = 1;
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/finance/payment/api/page",
+          {
+            "pageSize":this.pagesize,
+            "pageIndex":this.currentPage,
+            "total": 0,
+            "object": objectRequest,
+            "checkType":0,
+          },)
+          .then(function (obj) {
+            
+            that.total = obj.data.total
+            that.tableData = obj.data.objects
+            console.log(obj.data.objects)
+            that.$emit('headCallBack', obj.data.total);
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
       },
 
-    }
+    },
+    mounted(){
+      this.pageList();
+    },
   }
 </script>
 <style scoped>
@@ -133,10 +132,9 @@
   /*重置*/
   .primary{clear: both;overflow: hidden;margin: 0 0 20px 30px;}
   /*表格*/
-  .labelTable{margin: 0 30px 20px 30px; text-align: center;max-width: 1581px;}
-  .multipleTable{margin: 0 30px 20px 30px; text-align: center;width: 1161px;}
+  .multipleTable{margin: 0 30px 20px 30px; text-align: center;width: 1100px;}
   /*分页*/
-  .pageList{float:right; margin: 0 30px 20px 0;}
+  .pageList{float:right; margin: 0 0 20px 0;}
   /*申请无收入借款弹窗*/
   .mask{background-color: #000; width: 100%; height: 100%; position: fixed; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5; z-index: 100;}
   .noIncome{width:1100px; position:absolute; top:3%;left:50%; margin-left:-550px; background:#fff; z-index:1000; border-radius:3px;max-height: 95%;overflow:scroll;overflow-x:hidden;}

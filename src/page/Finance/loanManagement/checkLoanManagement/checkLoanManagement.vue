@@ -45,48 +45,48 @@
 				</el-upload>
 			 </el-form-item>
 			 <el-table :data="tableMoney" border style="width: 70%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-         <el-table-column prop="totalOrder" label="订单总额" align="center"></el-table-column>
-         <el-table-column prop="approval" label="已审批总额" align="center"></el-table-column>
-         <el-table-column prop="examination" label="审批中总额" align="center"></el-table-column>
-         <el-table-column prop="received" label="已收总额" align="center"></el-table-column>
-         <el-table-column prop="arrears" label="供应商欠款总额" align="center"></el-table-column>
+         <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
+         <el-table-column prop="payment" label="已审批总额" align="center"></el-table-column>
+         <el-table-column prop="paymentChecking" label="审批中总额" align="center"></el-table-column>
+         <el-table-column prop="price" label="已收总额" align="center"></el-table-column>
+         <el-table-column prop="supTotal" label="供应商欠款总额" align="center"></el-table-column>
        </el-table>
 	     <div style="margin:0 0 0 25px;">预付款明细</div>
        <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-         <el-table-column prop="id" label="ID" width="50" align="center"></el-table-column>
-         <el-table-column prop="state" label="状态" align="center"></el-table-column>
-         <el-table-column prop="type" label="类型" align="center"></el-table-column>
-         <el-table-column prop="supplier" label="供应商" align="center"></el-table-column>
-         <el-table-column prop="paymentAmount" label="付款金额" align="center"></el-table-column>
-         <el-table-column prop="people" label="人数" align="center"></el-table-column>
-         <el-table-column prop="department" label="部门" align="center"></el-table-column>
-         <el-table-column prop="applicant" label="申请人" align="center"></el-table-column>
-         <el-table-column prop="times" label="日期" align="center"></el-table-column>
-         <el-table-column prop="digest" label="摘要" align="center"></el-table-column>
-         <el-table-column prop="process" label="审批过程" align="center">
-         	<template slot-scope="scope">
-			      <div @click="processPaymenrt(scope.row)">查看</div>
-			    </template>
-         </el-table-column>
-        <el-table-column prop="verification" label="已核销金额" align="center"></el-table-column>
+           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
+           <el-table-column prop="checkType" label="状态" align="center"></el-table-column>
+           <el-table-column prop="paymentType" label="类型" align="center"></el-table-column>
+           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+           <el-table-column prop="price" label="付款金额" align="center"></el-table-column>
+           <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
+           <el-table-column prop="orgName" label="部门" align="center"></el-table-column>
+           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
+           <el-table-column prop="createTime" label="日期" align="center"></el-table-column>
+           <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
+           <el-table-column prop="process" label="审批过程" align="center">
+            <template slot-scope="scope">
+          <div @click="processPaymenrt(scope.row)">查看</div>
+        </template>
+           </el-table-column>
+           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
         </el-table>
         <div style="margin:0 0 0 25px;">无收入借款明细</div>
         <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="id" label="ID" width="50" align="center"></el-table-column>
-           <el-table-column prop="state" label="状态" align="center"></el-table-column>
-           <el-table-column prop="type" label="类型" align="center"></el-table-column>
-           <el-table-column prop="supplier" label="供应商" align="center"></el-table-column>
-           <el-table-column prop="paymentAmount" label="付款金额" align="center"></el-table-column>
-           <el-table-column prop="department" label="部门" align="center"></el-table-column>
-           <el-table-column prop="applicant" label="申请人" align="center"></el-table-column>
-           <el-table-column prop="times" label="日期" align="center"></el-table-column>
-           <el-table-column prop="digest" label="摘要" align="center"></el-table-column>
+           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
+           <el-table-column prop="checkType" label="状态" align="center"></el-table-column>
+           <el-table-column prop="paymentType" label="类型" align="center"></el-table-column>
+           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+           <el-table-column prop="price" label="付款金额" align="center"></el-table-column>
+           <el-table-column prop="orgName" label="部门" align="center"></el-table-column>
+           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
+           <el-table-column prop="createTime" label="日期" align="center"></el-table-column>
+           <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
            <el-table-column prop="process" label="审批过程" align="center">
-           	<template slot-scope="scope">
-  			      <div @click="processIncome(scope.row)">查看</div>
-  			    </template>
+            <template slot-scope="scope">
+          <div @click="processIncome(scope.row)">查看</div>
+        </template>
            </el-table-column>
-           <el-table-column prop="verification" label="已核销金额" align="center"></el-table-column>
+           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
         </el-table>
         <div style="margin:0 0 0 25px;">收入明细</div>
         <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
@@ -213,13 +213,7 @@
           accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],
           payment:[{ required: true, message: '请选择付款方式', trigger: 'blur' }],
          },
-         fileList: [{//申请无收入借款中附件信息
-          name: 'food.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-         }, {
-          name: 'food2.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-         }],
+         fileList: [],//申请无收入借款中附件信息
          //无收入借款中借款人弹窗
          dialogFormVisible1:false,
          number_name:'',
@@ -353,6 +347,7 @@
 		   	opinion:'同意',
 		   	times:'2019-04-25'
 		   }],
+       planID:'',
 		   
 
 
@@ -427,6 +422,7 @@
                  let data = res.data.object;
                  this.ruleForm.createUser=data.createUser;
                  this.ruleForm.groupCode=data.groupCode;
+                 this.ruleForm.plan_01=data.plan_01;
                  this.ruleForm.supplierName=data.supplierName;
                  this.ruleForm.supplierTypeEX=data.supplierTypeEX;
                  this.ruleForm.price=data.price;
@@ -436,37 +432,85 @@
                  this.ruleForm.cardName=data.cardName;
                  this.ruleForm.payway=data.payway;
                  this.ruleForm.files=data.files;
+                 this.tour_id = data.planID;
+                 this.getTourByPlanId(res.data.object.planID);
+                 this.getPaymentdetails(res.data.object.planID);
+                 res.data.object.files.forEach(function(v, k, arr) {
+                  that.fileList.push({
+                    "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
+                    "name": arr[k]['name'],
+                  });
+                })
 
               }
         }) .catch(err => {});
       },
-	    getTourByPlanId() {
-	      var that = this
-	      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
-	        "object": {
-	          //planID: this.paymentID, //团期计划ID
-	          //groupCode:this.ruleForm.groupCode,//团期计划(团号)
-	          //title:this.ruleForm.plan_01,//产品标题
-	          groupCode:this.groupCode
-	        }
-	      }).then(res => {
-	        if (res.data.isSuccess == true) {
-	          that.ruleForm.groupCode = res.data.objects[0].groupCode
-	          that.ruleForm.plan_01 = res.data.objects[0].title
-	        }
-	      }).catch(err => {
-	        console.log(err)
-	      })
-	    },
+	    getTourByPlanId(val) {
+      var that = this
+      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+        "object": {
+          planID: val, //团期计划ID
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.ruleForm.groupCode = res.data.objects[0].groupCode
+          that.ruleForm.plan_01 = res.data.objects[0].title
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getPaymentdetails(val) {
+      var that = this
+      //预付付款明细
+      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+        "object": {
+          "paymentType": 2,
+          "planID": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tablePayment = res.data.objects
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //无收入借款明细
+      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+        "object": {
+          "paymentType": 1,
+          "planID": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableIncome = res.data.objects
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
+      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
+        "object": {
+          "id": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableMoney = []
+          that.tableMoney.push(res.data.object)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
 
 	    },
     watch: {
       // 如果 `dialogFormVisible` 发生改变，这个函数就会运行
       paymentID: {
-         immediate:true,
+        // immediate:true,
          handler:function(){
            this.getLabel();
-           this.getTourByPlanId();
+          // this.getTourByPlanId();
          }
       }
     },
