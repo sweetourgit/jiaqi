@@ -172,15 +172,17 @@
 	        </el-table>
 	        <div style="margin:0 0 0 25px;">收入明细</div>
 	        <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-	           <el-table-column prop="number" label="订单编号" align="center"></el-table-column>
-	           <el-table-column prop="source" label="来源" align="center"></el-table-column>
-	           <el-table-column prop="contact" label="联系人" align="center"></el-table-column>
-	           <el-table-column prop="people" label="人数" align="center"></el-table-column>
-	           <el-table-column prop="figure" label="订单金额" align="center"></el-table-column>
-	           <el-table-column prop="received" label="已收" align="center"></el-table-column>
-	           <el-table-column prop="arrears" label="欠款" align="center"></el-table-column>
-	           <el-table-column prop="numbers" label="收款单号" align="center"></el-table-column>
-	           <el-table-column prop="dates" label="欠款日期" align="center"></el-table-column>
+	           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+	           <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
+	           <el-table-column prop="contactName" label="订单联系人" align="center"></el-table-column>
+	           <el-table-column prop="number" label="人数" align="center"></el-table-column>
+	           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
+	           <el-table-column prop="paid" label="已收金额" align="center"></el-table-column>
+	           <!-- <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column> -->
+	           <el-table-column label="欠款金额" align="center">
+	           	<template slot-scope="scope">{{scope.row.payable-scope.row.paid}}</template>
+	           </el-table-column>
+	           <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
 	           <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
 	        </el-table>
 	      </el-form>
@@ -279,8 +281,8 @@
 	      </div>
       </el-dialog>
       <!--查看无收入借款弹窗-->
-	  <el-dialog title="借款申请" :visible.sync="checkIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>
-	    <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div>
+	  <el-dialog title="借款申请详情" :visible.sync="checkIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>
+	    <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
       	<div style="position:absolute; top:8px; right:10px;">
       		<el-button @click="CloseCheckIncomeShow()">取消</el-button>
       		<el-button type="danger" plain>撤销借款</el-button>
@@ -372,7 +374,8 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           supplier:[{ required: true, message: '请输入供应商名称', trigger: 'blur' }],
           planType:[{ required: true, message: '请选择借款类型', trigger: 'change' }],
           planAmount:[{ required: true, message: '请输入借款金额', trigger: 'blur' }],
-          abstract:[{ required: true, message: '请输入摘要', trigger: 'blur' }],
+          abstract:[{ required: true, message: '请输入摘要', trigger: 'blur' },
+          			{ min: 0, max: 30, message: '摘要字数超过80汉字限制', trigger: 'blur' },],
           account:[{ required: true, message: '请输入汇款账号', trigger: 'blur' }],
           accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
           accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],
@@ -427,18 +430,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 			opinion:'不同意'
           }],
           //无收入借款弹窗中收入明细表格
-          tableEarning:[{
-			number:'123',
-			source:'国旅',
-			contact:'洋洋',
-			people:'5',
-			figure:'17800',
-			received:'7800',
-			arrears:'10000',
-			numbers:'123',
-			dates:'2019-01-01',
-			shouldAlso:'2019-01-30',
-		   }],
+          tableEarning:[],
 		   //查看无收入借款弹窗
 		   checkIncomeShow:false,
 		   //查看无收入借款审批过程
@@ -729,6 +721,19 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
         if (res.data.isSuccess == true) {
           that.tableMoney = []
           that.tableMoney.push(res.data.object)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //收入明细
+      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderlist', {
+        "object": {
+          "planID": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableEarning = res.data.objects
+          //that.tableEarning.push(res.data.object)
         }
       }).catch(err => {
         console.log(err)
