@@ -42,7 +42,7 @@
             </el-table-column>
           </el-table>
           <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total background>
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total' background>
             </el-pagination>
           </div>
         </div>

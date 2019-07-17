@@ -1,26 +1,32 @@
 <template>
   <div class="vivo" style="position:relative">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="付款" name="first">
+      <el-tab-pane label="借款记录" name="first">
         <span class="search-title">团期计划:</span>
         <el-input v-model="groupNo" class="input"></el-input>
         <span class="search-title">申请人:</span>
         <el-input v-model="user" class="input"></el-input>
-        <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
+        <span class="search-title">发起时间:</span>
+        <el-date-picker v-model="startTime" type="date" placeholder="开始日期"></el-date-picker>
         <div class="date-line"></div>
-        <el-date-picker v-model="endTime" type="date" placeholder="终止日期" class="start-time"></el-date-picker>
+        <el-date-picker v-model="endTime" type="date" placeholder="终止日期"></el-date-picker><br/><br/>
+        <span class="search-title" style="margin-left:47px">状态:</span>
+        <el-select v-model="checkType" placeholder="请选择" style="width:185px">
+          <el-option  key="0" label="审批中" value="0"></el-option>
+          <el-option  key="1" label="驳回" value="1"></el-option>
+          <el-option  key="2" label="通过" value="2"></el-option>
+        </el-select>
         <div style="border: 0px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 20px; width: 100%">
           <div class="button_select">
             <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
             <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
           </div>
           <div class="button_select">
-            <el-button type="primary" @click="dialogchange" plain>申请预付款</el-button>
-            <el-button type="primary" @click=dialogFind plain :disabled="reable">查看借款</el-button>
+            <el-button type="primary" @click="dialogchange" plain>申请</el-button>
           </div>
           <div class="table_trip" style="width: 70%;">
             <el-table :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-              <el-table-column prop="paymentID" label="付款单号" align="center" width="80%">
+              <el-table-column prop="paymentID" label="借款单号" align="center" width="80%">
               </el-table-column>
               <el-table-column prop="checkTypeEX" label="状态" width="100%" align="center">
               </el-table-column>
@@ -32,19 +38,24 @@
               </el-table-column>
               <el-table-column prop="supplierTypeEX" label="类型" align="center" width="110%">
               </el-table-column>
-              <el-table-column cell-style prop="price" label="金额" align="center" width="110%">
+              <el-table-column cell-style prop="price" label="借款金额" align="center" width="110%">
               </el-table-column>
-              <el-table-column prop="orgName" label="申请组织" align="center" width="120%">
+              <el-table-column cell-style prop="expensePrice" label="已核销金额" align="center" width="110%">
               </el-table-column>
               <el-table-column prop="createUser" label="申请人" align="center" width="120%">
               </el-table-column>
               <el-table-column prop="opinion" label="审批意见" align="center" width="120%">
               </el-table-column>
+              <el-table-column prop="opinion" label="操作" align="center" width="120%">
+                 <template slot-scope="scope">
+                    <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+                 </template>
+              </el-table-column>
             </el-table>
           </div>
           <!--分页-->
           <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total>
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>
             </el-pagination>
           </div>
           <!--分页-->
@@ -74,6 +85,7 @@ export default {
       user: '',
       startTime: '',
       endTime: '',
+      checkType:'',
       reable: true,
       tableData: [],
       currentPage4: 1,
@@ -97,6 +109,13 @@ export default {
     },
   },
   methods: {
+    resetHand(){
+      this.groupNo='';
+      this.user='';
+      this.startTime='';
+      this.endTime='';
+      this.checkType='';
+    },
     closeAdd() {
       this.dialogFormVisible = false;
     },
@@ -148,12 +167,12 @@ export default {
       if (this.user) { objectRequest.createUser = this.user; }
       if (this.startTime) { objectRequest.beginTime = this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0; }
       if (this.endTime) { objectRequest.endTime = this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0; }
+      if (this.checkType) { objectRequest.checkType = this.checkType; }
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/finance/payment/api/page", {
             "pageIndex": 1,
             "pageSize": val,
-            "total": 0,
             "object": objectRequest
           }, {
             headers: {
@@ -179,12 +198,12 @@ export default {
       if (this.user) { objectRequest.createUser = this.user; }
       if (this.startTime) { objectRequest.beginTime = this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0; }
       if (this.endTime) { objectRequest.endTime = this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0; }
+      if (this.checkType) { objectRequest.checkType = this.checkType; }
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/finance/payment/api/page", {
             "pageIndex": this.pageNum,
             "pageSize": this.pageSize,
-            "total": 0,
             "object": objectRequest,
           }, {
             headers: {
@@ -215,6 +234,7 @@ export default {
       if (this.user) { objectRequest.createUser = this.user; }
       if (this.startTime) { objectRequest.beginTime = this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0; }
       if (this.endTime) { objectRequest.endTime = this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0; }
+      if (this.checkType) { objectRequest.checkType = this.checkType; }
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/finance/payment/api/page", {
