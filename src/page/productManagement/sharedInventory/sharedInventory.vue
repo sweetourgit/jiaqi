@@ -39,7 +39,7 @@
                   <span v-else>{{ dayobject.day.getDate() }}</span>
                   
                   <div class='person' v-for="(data,index) in dayobject.data.person" :key="index">  
-                    <p>{{data.name}}</p>
+                    <p class="more-breaking">{{data.name}}</p>
                     <p style="width:113px">库存余位:{{data.count}}/100</p>
                     <p>关联团期:{{data.relaInventory}}</p>
                   </div>  
@@ -89,7 +89,7 @@
           <el-input class="addStorkInput" v-model="addStock.count"></el-input>
         </el-form-item>
         <el-form-item label="人均成本" :label-width="formLabelWidth">
-          <el-input class="addStorkInput" v-model="addStock.cost"></el-input>
+          <el-input class="addStorkInput" v-model="addStock.averageCost"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -110,7 +110,7 @@
             <el-input class="addStorkInputs_a" v-model="addStocks.count"></el-input>
           </el-form-item>
           <el-form-item label="人均成本" class="editStock" :label-width="formLabelWidth">
-            <el-input class="addStorkInputs_a" v-model="addStocks.cost"></el-input>
+            <el-input class="addStorkInputs_a" v-model="addStocks.averageCost"></el-input>
           </el-form-item>
           <div class="surplus">
             <span class="surplus1">剩余</span>
@@ -206,14 +206,14 @@ export default {
       addStock: {
         name: '',
         count: '',
-        cost: ''
+        averageCost: ''
       },
       // 修改共享库存
       addStocks: {
         id: '',
         name: '',
         count: '',
-        cost: ''
+        averageCost: ''
       },
       // 浏览共享库存
       listStock: {
@@ -357,7 +357,7 @@ export default {
             item.day.getDate()
           )
           // 清空日历里报名类型
-          item.data.person = {};
+          item.data.person = [];
           this.arr = [];
           res.data.objects.forEach(items => {
             if (str == items.date) {
@@ -365,7 +365,8 @@ export default {
                 id: items.id,
                 name: items.name,
                 count: items.count,
-                relaInventory: items.relaInventory
+                relaInventory: items.relaInventory,
+                averageCost: items.averageCost
               })
               item.data.person = this.arr
             }
@@ -407,6 +408,7 @@ export default {
             "object": {
               "name": this.addStock.name,
               "count": this.addStock.count,
+              "averageCost": this.addStock.averageCost,
               "date": str,
               "share": 1,
               "orgID": 0,
@@ -422,7 +424,8 @@ export default {
             if (this.days[this.n[0].index].data.person.length == 0) {
               this.days[this.n[0].index].data.person.push({
                 'name': this.addStock.name,
-                'count': this.addStock.count 
+                'count': this.addStock.count,
+                'averageCost': this.addStock.averageCost
               })
             } else {
               let person = [];
@@ -434,7 +437,8 @@ export default {
               })
               person.push({
                 'name': this.addStock.name,
-                'count': this.addStock.count 
+                'count': this.addStock.count,
+                'averageCost': this.addStock.averageCost
               })
               this.days[this.n[0].index].data.person = person;
             }
@@ -445,8 +449,6 @@ export default {
             this.addStock.count = '';
             this.$refs['addStock'].resetFields();
             this.handList();
-          }).catch(err => {
-            console.log(err);
           })
         }
       })
@@ -480,6 +482,7 @@ export default {
       this.addStocks.id = data.id;
       this.addStocks.name = data.name;
       this.addStocks.count = data.count;
+      this.addStocks.averageCost = data.averageCost;
       this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/list', {
         "object": {
           "inventoryID": data.id,
