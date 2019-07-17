@@ -98,17 +98,20 @@
             <el-button type="primary" @click="chooseAccount" class="confirm">确 定</el-button>
          </div>
       </el-dialog>
+      <predeposit-detail :predepositId="predepositId" :variable="variable"></predeposit-detail>
   </div>
 </template>
 
 <script>
-
+import predepositDetail from './predepositDetail';
 export default {
   components:{
-
+      "predeposit-detail":predepositDetail
   },
   data() {
     return {
+      predepositId:0,
+      variable:0, //设置一个变量展示弹窗
       customerName:'',
       saler:'',
       //list
@@ -243,6 +246,10 @@ export default {
       this.accountBank=this.multipleSelection[0].openingBank;
       this.depositForm.account=this.multipleSelection[0].id;
       this.accountFormVisible=false;
+    },
+    predepositDetail(item){
+      this.predepositId = item.id;
+      this.variable++;
     }
    }
 }
