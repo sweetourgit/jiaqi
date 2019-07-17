@@ -656,7 +656,6 @@
             "packageID": id
           }
         }).then(res => {
-          console.log(res)
           this.days.forEach(item => {
             let str = this.formatDates(
               item.day.getFullYear(),
