@@ -137,7 +137,11 @@
                 {
                   value: '订单管理',
                   router:'/orderList'
-                }
+                },
+                {
+                  value: '外部订单',
+                  router:'/externalOrderList'
+                },
               ],
             },
           {

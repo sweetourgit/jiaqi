@@ -31,6 +31,7 @@ import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
 import proList from '@/page/contentInfo/proList/proList'
 import orderList from '@/page/orderManagement/orderList/orderList'
+import externalOrderList from '@/page/orderManagement/externalOrderList/externalOrderList'
 import loanManagement from '@/page/Finance/loanManagement/loanManagement'
 import advancePayment from '@/page/Finance/advancePayment/advancePayment'
 import reimburseManagement from '@/page/Finance/reimburseManagement/reimburseManagement'
@@ -254,6 +255,13 @@ export default new Router({
       path: '/orderList',
       component: orderList,
       name: '订单管理',
+      meta: {
+        keepAlive: true,
+        auth:true}
+    },{
+      path: '/externalOrderList',
+      component: externalOrderList,
+      name: '外部订单',
       meta: {
         keepAlive: true,
         auth:true}
