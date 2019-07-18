@@ -7,7 +7,7 @@
          <el-date-picker v-model="startDate" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
          <div class="date-line"></div>
          <el-date-picker v-model="endDate" type="date" placeholder="终止日期"></el-date-picker>
-         <el-button type="primary" icon="el-icon-search" class="search" @click="teamQueryList(1,pageSize,groupCode,startDate,endDate)"></el-button>
+         <el-button type="primary" icon="el-icon-search" class="search" @click="search"></el-button>
      </div>
      <div class="main">
      <el-row class="button">
@@ -31,7 +31,7 @@
        <el-table-column  prop="shareCN" label="是否共享" width="85"></el-table-column>
        <el-table-column  prop="op" label="操作" width="80"></el-table-column>      
      </el-table>
-     <el-pagination class="pagination"
+     <el-pagination v-if="pageshow" class="pagination"
             @size-change="handleSizeChange"
             background
             @current-change="handleCurrentChange"
@@ -81,6 +81,7 @@ export default {
   },
   data() {
     return {
+       pageshow:true,
        planId:0,
        variable:0, //设置一个变量展示弹窗
        dialogType:0,//弹窗类型  1：下单
@@ -172,10 +173,10 @@ export default {
       handleSizeChange(val){
         this.pageSize = val;
         this.pageIndex = 1;
-        this.teamQueryList(1,val,this.groupCode);
+        this.teamQueryList(1,val,this.groupCode,this.startDate,this.endDate);
       },
       handleCurrentChange(val){
-        this.teamQueryList(val,this.pageSize,this.groupCode);
+        this.teamQueryList(val,this.pageSize,this.groupCode,this.startDate,this.endDate);
       },
       //计划list
       teamQueryList(pageIndex=this.pageIndex,pageSize=this.pageSize,groupCode=this.groupCode,startDate=this.startDate,endDate=this.endDate){
@@ -245,8 +246,16 @@ export default {
           if(i==1){
             this.dialogType=1; //下单弹窗
           }          
+      },
+      search(){
+        this.pageIndex = 1;
+        this.pageshow = false;
+        this.teamQueryList()
+        this.$nextTick(() => {
+            this.pageshow = true;
+        })
       }
-  }
+   }
 }
 </script>
 

@@ -24,29 +24,32 @@
           <div class="button_select">
             <el-button type="primary" @click="dialogchange" plain>申请</el-button>
           </div>
-          <div class="table_trip" style="width: 70%;">
+          <div class="table_trip" style="width: 80%;">
             <el-table :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
               <el-table-column prop="paymentID" label="借款单号" align="center" width="80%">
               </el-table-column>
-              <el-table-column prop="checkTypeEX" label="状态" width="100%" align="center">
+              <el-table-column prop="checkTypeEX" label="状态" width="90" align="center">
               </el-table-column>
-              <el-table-column prop="createTime" label="发起时间" align="center" width="120%">
+              <el-table-column label="发起时间" align="center" width="190">
+                <template slot-scope="scope">
+                  {{formatDate1(scope.row.createTime)}}
+                </template>
               </el-table-column>
-              <el-table-column prop="groupCode" label="团期计划" align="center">
+              <el-table-column prop="groupCode" label="团期计划" align="center" width="180">
               </el-table-column>
-              <el-table-column prop="supplierName" label="供应商名称" align="center">
+              <el-table-column prop="supplierName" label="供应商名称" align="center" width="120">
               </el-table-column>
-              <el-table-column prop="supplierTypeEX" label="类型" align="center" width="110%">
+              <el-table-column prop="supplierTypeEX" label="类型" align="center" width="90">
               </el-table-column>
-              <el-table-column cell-style prop="price" label="借款金额" align="center" width="110%">
+              <el-table-column cell-style prop="price" label="借款金额" align="center" width="90">
               </el-table-column>
-              <el-table-column cell-style prop="expensePrice" label="已核销金额" align="center" width="110%">
+              <el-table-column cell-style prop="expensePrice" label="已核销金额" align="center" width="95">
               </el-table-column>
-              <el-table-column prop="createUser" label="申请人" align="center" width="120%">
+              <el-table-column prop="createUser" label="申请人" align="center" width="90">
               </el-table-column>
-              <el-table-column prop="opinion" label="审批意见" align="center" width="120%">
+              <el-table-column prop="opinion" label="审批意见" align="center">
               </el-table-column>
-              <el-table-column prop="opinion" label="操作" align="center" width="120%">
+              <el-table-column prop="opinion" label="操作" align="center" width="100">
                  <template slot-scope="scope">
                     <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
                  </template>
@@ -55,7 +58,7 @@
           </div>
           <!--分页-->
           <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>
+            <el-pagination v-if="pageshow" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>
             </el-pagination>
           </div>
           <!--分页-->
@@ -80,6 +83,7 @@ export default {
   },
   data() {
     return {
+      pageshow:true,
       activeName: 'first',
       groupNo: '',
       user: '',
@@ -192,6 +196,7 @@ export default {
     //搜索
     searchHand() {
       this.pageNum = 1;
+      this.pageshow = false
       let objectRequest = {}
       objectRequest.paymentType = 2;
       if (this.groupNo) { objectRequest.groupCode = this.groupNo; }
@@ -205,20 +210,18 @@ export default {
             "pageIndex": this.pageNum,
             "pageSize": this.pageSize,
             "object": objectRequest,
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
           }
         )
         .then(function(obj) {
           that.total = obj.data.total;
-          that.tableData = obj.data.objects;
+          that.tableData = obj.data.objects;      
         })
         .catch(function(obj) {
           console.log(obj)
         })
-
+        this.$nextTick(() => {
+             this.pageshow = true
+        })
     },
     handleCurrentChange(val) {
       this.pageNum = val;
@@ -288,6 +291,11 @@ export default {
         console.log(err);
       })
     },
+    formatDate1(dates){
+       var dateee = new Date(dates).toJSON();
+       var date = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')  
+       return date;
+      }, 
   },
   created() {
     this.querySearch6()
