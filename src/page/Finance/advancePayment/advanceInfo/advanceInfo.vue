@@ -14,38 +14,37 @@
           <el-tab-pane label="预付款申请" name="first">
             <div>
               <!--申请人-->
-              <el-form-item label="申请人" prop="user" ref="user" label-width="120px">
-                <!--<div class="destination-input">
-                  <el-tag :key="tag3.pod" v-for="tag3 in dynamicTags3" closable :disable-transitions="false" @close="handleClose3(tag3)">
-                    {{tag3.pod}}
-                  </el-tag>
-                  <el-autocomplete id="ddd" class="input-new-tags" v-model="ruleForm.user" v-if="inputVisible3" ref="saveTagInput" size="small" placeholder="请输入申请人" :trigger-on-focus="false"></el-autocomplete>
-                  <el-button v-else class="input-new-tag" size="small" :disabled="change" @click="showInput3">请输入申请人</el-button>
-                </div>-->
-                <el-input v-model="ruleForm.user" class="inputWidth" disabled placeholder="请输入申请人"></el-input>
-              </el-form-item>
+              <!--<el-form-item label="申请人" prop="user" ref="user" label-width="120px">-->
+              <!--<div class="destination-input">
+                <el-tag :key="tag3.pod" v-for="tag3 in dynamicTags3" closable :disable-transitions="false" @close="handleClose3(tag3)">
+                  {{tag3.pod}}
+                </el-tag>
+                <el-autocomplete id="ddd" class="input-new-tags" v-model="ruleForm.user" v-if="inputVisible3" ref="saveTagInput" size="small" placeholder="请输入申请人" :trigger-on-focus="false"></el-autocomplete>
+                <el-button v-else class="input-new-tag" size="small" :disabled="change" @click="showInput3">请输入申请人</el-button>
+              </div>-->
+             <!-- <el-input v-model="ruleForm.user" class="inputWidth" disabled placeholder="请输入申请人"></el-input>
+            </el-form-item>-->
               <!--团期计划-->
               <el-form-item label="团期计划" prop="tour" label-width="120px" style="float:left;">
                 <el-input v-model="ruleForm.tour" @blur="tour_check" :disabled="change" class="inputWidth" placeholder="请输入或者选择团期计划"></el-input>
               </el-form-item>
               <el-form-item prop="productName" style="float:left; margin-left:10px;">
-                <el-input v-model="ruleForm.productName" :disabled="true" class="inputWidth" placeholder="自动补充产品名称"></el-input>
+                <el-input v-model="ruleForm.productName" :disabled="true" class="inputWidth" placeholder="通过输入团期计划，自动补全产品名称"></el-input>
                 <el-button class="input-new-tag2" size="small" :disabled="change" @click="showInput4">选择</el-button>
               </el-form-item>
               <!-- 供应商 -->
-              <el-form-item label="供应商" prop="supplier" ref="supplier" label-width="120px" style="clear:both;">
+              <el-form-item label="供应商名称" prop="supplier" ref="supplier" label-width="120px" style="clear:both;">
                 <div class="destination-input inputWidth">
                   <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
                     {{tag2.label}}
                   </el-tag>
                   <el-autocomplete id="input-error" :disabled="change" class="lable_input" v-if="inputVisible2" v-model="ruleForm.supplier" ref="saveTagInput" size="small" placeholder="请输入供应商" @keyup.enter.native="handleInputConfirm2" :fetch-suggestions="querySearch5" :trigger-on-focus="false" @select="dest_01" @blur="handleInputConfirm2">
                   </el-autocomplete>
-                  <el-button v-else class="operation_Label inputWidth" :disabled="change" v-show="supplierLength" size="small" @click="showInput2">请输入供应商</el-button>
                 </div>
               </el-form-item>
               <!-- 类型 -->
-              <el-form-item label="类型" prop="type" label-width="120px">
-                <el-select style="float: left;" class="inputWidth" v-model="ruleForm.type" placeholder="请选择类型" :disabled="change">
+              <el-form-item label="借款类型" prop="type" label-width="120px">
+                <el-select style="float: left;" class="inputWidth" v-model="ruleForm.type" placeholder="请选择" :disabled="change">
                   <el-option v-for="item in typeList" :key="item.label" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
@@ -55,25 +54,25 @@
                 <el-input type="number" v-model="ruleForm.loanMoney" class="bright inputWidth" placeholder="借款金额" :disabled="change"></el-input>
               </el-form-item>
               <!-- 借款数量 -->
-              <el-form-item label="借款数量" prop="loanNumber" class="bright_b" label-width="80px" style="margin-left: 30%;">
-                <el-input type="number" v-model="ruleForm.loanNumber" class="lightspot inputWidth" placeholder="借款数量" :disabled="change" style='margin-left: 10px;'></el-input>
+              <el-form-item label="借款人数" prop="loanNumber" class="bright_b" label-width="80px" style="margin-left: 30%;">
+                <el-input type="number" v-model="ruleForm.loanNumber" class="lightspot inputWidth" placeholder="请输入人数" :disabled="change" style='margin-left: 10px;'></el-input>
               </el-form-item>
               <!-- 摘要 -->
               <el-form-item label="摘要" prop="abstract" label-width="120px">
                 <el-input v-model="ruleForm.abstract" class="bright inputWidth" placeholder="摘要" :disabled="change"></el-input>
               </el-form-item>
               <!-- 账户 -->
-              <el-form-item label="账户" prop="cardNumber" label-width="120px">
-                <el-input v-model="ruleForm.cardNumber" class="bright inputWidth" placeholder="账户" :disabled="change"></el-input>
+              <el-form-item label="汇款账户" prop="cardNumber" label-width="120px">
+                <el-input v-model="ruleForm.cardNumber" class="bright inputWidth" placeholder="请输入汇款账户" :disabled="change"></el-input>
                 <el-button class="input-new-tag2 " size="small" :disabled="change" @click="showInput5">选择</el-button>
               </el-form-item>
               <!-- 开户行 -->
               <el-form-item label="开户行" prop="bankName" label-width="120px">
-                <el-input v-model="ruleForm.bankName" class="bright inputWidth" placeholder="开户行" :disabled="change"></el-input>
+                <el-input v-model="ruleForm.bankName" class="bright inputWidth" placeholder="请输入开户行" :disabled="change"></el-input>
               </el-form-item>
               <!-- 开户行 -->
               <el-form-item label="开户名" prop="cardName" label-width="120px">
-                <el-input v-model="ruleForm.cardName" class="bright inputWidth" placeholder="开户名" :disabled="change"></el-input>
+                <el-input v-model="ruleForm.cardName" class="bright inputWidth" placeholder="请输入开户名" :disabled="change"></el-input>
               </el-form-item>
               <!-- 付款方式 -->
               <el-form-item label="付款方式" prop="payMode" label-width="120px">
@@ -82,11 +81,24 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="附件" label-width="120px">
-                <el-upload class="upload-demo" name="files" ref="upload" :limit="12" multiple :action="this.upload_url" :disabled="change" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview" list-type="picture">
+              <div style="    color: red;position: absolute;top: 571px;left: 65px;">*</div>
+              <el-form-item label="附件" label-width="120px"  prop="pass">
+                <el-upload class="upload-demo" name="files" ref="upload" :limit="12" multiple :action="this.upload_url" :disabled="change" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview"  list-type="picture" >
                   <el-button size="small" type="primary">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
+               <!-- <el-upload
+                  class="upload-demo"
+                  name="files"
+                  ref="upload"
+                  :limit="12"
+                  :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview"
+                  multiple :action="this.upload_url"
+                  :disabled="change"
+                  :file-list="fileList">
+                  <el-button size="small" type="primary">点击上传</el-button>
+                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                </el-upload>-->
               </el-form-item>
               <el-form-item label="" label-width="120px" label-height="auto">
                 <el-table :data="tableData5" border style="width:70%" :header-cell-style="getRowClass2">
@@ -275,7 +287,7 @@
             <span class="search-title" >产品名称</span>
             <el-input placeholder="产品名称" v-model="product_name" class="group-no" style="width:20%"></el-input>
             <el-date-picker v-model="startTime2" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
-            <el-date-picker v-model="endTime2" type="date" placeholder="终止日期"></el-date-picker>
+           <!-- <el-date-picker v-model="endTime2" type="date" placeholder="终止日期"></el-date-picker>-->
             <el-button type="primary" icon="el-icon-search" class="search" @click="searchHand4()"></el-button>
           </div>
           <div class="table_trip" style=" width: 100%;">
@@ -289,10 +301,17 @@
             </el-table>
           </div>
           <!--分页-->
-          <!-- <div class="block" style="margin-top: 30px;text-align:center;">
-            <el-pagination @size-change="handleSizeChange4" @current-change="handleCurrentChange4" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="5" layout="total, sizes, prev, pager, next, jumper" :total=total>
+          <div class="block">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage4"
+              :page-sizes="[10, 20, 30, 50]"
+              :page-size=pagesize3
+              layout="total, sizes, prev, pager, next, jumper"
+              :total=count3>
             </el-pagination>
-          </div> -->
+          </div>
           <!--分页-->
         </div>
       </div>
@@ -346,7 +365,20 @@ export default {
     },
   },
   data() {
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('文件不能为空'));
+      } else {
+        if (this.ruleForm.checkPass !== '') {
+          this.$refs.ruleForm.validateField('checkPass');
+        }
+        callback();
+      }
+    };
     return {
+      pagesize3:10,
+      count3:300,
+      currentPage4: 1,
       activeName: 'first',
       activeName2: 'three',
       //付款搜索
@@ -431,8 +463,11 @@ export default {
         cardName: '',
         payMode: '',
         type: '',
+        pass:'',
       }, //文件上传列表
       fileList: [],
+
+      fiels:'',
       rules: {
         //user: [{ required: true, message: '申请人不能为空', trigger: 'change' }],
         type: [{ required: true, message: '类型不能为空', trigger: 'change' }],
@@ -442,12 +477,16 @@ export default {
           { pattern: /^[+]{0,1}(\d+)$/, message: '借款数量需为正整数' }
         ],
         tour: [{ required: true, message: '团期计划不能为空', trigger: 'change' }],
-        supplier: [{ required: true, message: '供应商不能为空', trigger: 'blur' }],
+        supplier: [{ required: true, message: '供应商不能为空', trigger: 'change' }],
         productName: [{ required: true, message: '产品名称不能为空', trigger: 'change' }],
         abstract: [{ required: true, message: '摘要不能为空', trigger: 'blur' }],
         cardNumber: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
         bankName: [{ required: true, message: '开户行不能为空', trigger: 'blur' }],
         cardName: [{ required: true, message: '开户名不能为空', trigger: 'blur' }],
+        pass: [
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        fiels:[{ required: true, message: '不能为空', trigger: 'blur' }],
       },
       activeName: 'first',
       inputVisible3: false,
@@ -458,7 +497,7 @@ export default {
       dialogVadi: false,
       supplierLength: true,
       inputVisible3: false,
-      inputVisible2: false,
+      inputVisible2: true,
       dialogVisible3: false,
       dialogVisible4: false,
       dialogVisible5: false,
@@ -499,6 +538,12 @@ export default {
     },
   },
   methods: {
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
     closeAdd() {
       this.clearForm()
       this.$emit('close', false);
@@ -590,7 +635,9 @@ export default {
       this.fileList = []
     },
     handleSuccess(res, file, fileList) {
-      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
+      this.ruleForm.pass = 1
+
+      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
         this.time = fileList.length;
         if (this.fileList.length == 0) {
@@ -815,8 +862,8 @@ export default {
     searchHand4() {
       this.pageNum = 1;
       this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
-        "pageIndex": this.pageIndex,
-        "pageSize": this.pageSize2,
+        "pageIndex": this.currentPage4,
+        "pageSize": this.pagesize3,
         "object": {
           "groupCode": this.tour_name, //团号
           "title": this.product_name, //产品名称
@@ -825,8 +872,10 @@ export default {
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
+          console.log(res.data.objects.length-1)
           this.tableData4 = res.data.objects;
           this.total = res.data.total;
+          this.count3 = res.data.objects.length-1
         }
       }).catch(err => {
         console.log(err)
@@ -845,6 +894,7 @@ export default {
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
+
           this.tableData4 = res.data.objects;
           this.total = res.data.total;
         }
@@ -890,6 +940,7 @@ export default {
     },
     showInput4() {
       this.dialogVisible2 = true;
+      this.searchHand4()
     },
     showInput3() {
       this.dialogVisible = true
@@ -922,6 +973,7 @@ export default {
       this.$refs.ruleForm.validateField('supplier')
     },
     handleClose2(tag2) {
+      this.inputVisible2 = true
       this.dynamicTags2.splice(this.dynamicTags2.indexOf(tag2), 1);
       this.supplierLength = true
       if (this.dynamicTags2.length < 1) {
@@ -1075,7 +1127,7 @@ export default {
         this.$emit('searchHandList', false);
       });
     },
-    
+
     getPaymentInfo() {
       var that = this
       that.$http.post(
@@ -1302,5 +1354,8 @@ export default {
 .inputWidth {
   width: 200px;
 }
-
+.vivo>>>.el-upload-list__item {
+  width: 800px !important;
+  color: red;
+}
 </style>
