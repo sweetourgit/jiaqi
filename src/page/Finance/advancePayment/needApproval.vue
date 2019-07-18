@@ -8,38 +8,40 @@
             <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
             <span class="search_style">申请人：</span>
             <el-input v-model="accepter" placeholder="请输入内容" class="search_input"></el-input>
-            <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
+            <span class="search-title">发起时间:</span>
+            <el-date-picker v-model="startTime" type="date" placeholder="开始日期"></el-date-picker>
             <div class="date-line"></div>
-            <el-date-picker v-model="endTime" type="date" placeholder="终止日期" class="start-time"></el-date-picker>
+            <el-date-picker v-model="endTime" type="date" placeholder="终止日期"></el-date-picker><br/><br/>
           </div>
           <div class="reform">
             <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
             <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
           </div>
-          <div class="reform">
-            <el-button type="primary" :disabled="reable" @click="dialogFind" plain>审批</el-button>
-          </div>
         </div>
         <div class="table_style">
           <el-table :data="tableData" border style="width:70%;" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-            <el-table-column prop="number" label="付款单号" width="100" align="center">
-            </el-table-column>
-            <el-table-column prop="status" label="状态" width="100" align="center">
-            </el-table-column>
-            <el-table-column prop="createtime" label="发起时间" width="100" align="center">
-            </el-table-column>
-            <el-table-column prop="plan" label="团期计划" align="center">
-            </el-table-column>
-            <el-table-column prop="supplier" label="供应商" width="150" align="center">
-            </el-table-column>
-            <el-table-column prop="type" label="类型" width="100" align="center">
-            </el-table-column>
-            <el-table-column prop="money" label="金额" width="100" align="center">
-            </el-table-column>
-            <el-table-column prop="orinaze" label="申请组织" width="100" align="center">
-            </el-table-column>
-            <el-table-column prop="accpter" label="申请人" width="100" align="center">
-            </el-table-column>
+              <el-table-column prop="paymentID" label="借款单号" align="center">
+              </el-table-column>
+              <el-table-column label="发起时间" align="center" width="190">
+                <template slot-scope="scope">
+                  {{formatDate1(scope.row.createTime)}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="groupCode" label="团期计划" align="center" width="230">
+              </el-table-column>
+              <el-table-column prop="supplierName" label="供应商名称" align="center" width="170">
+              </el-table-column>
+              <el-table-column prop="supplierTypeEX" label="类型" align="center" width="90">
+              </el-table-column>
+              <el-table-column cell-style prop="price" label="借款金额" align="center" width="90">
+              </el-table-column>
+              <el-table-column prop="createUser" label="申请人" align="center" width="90">
+              </el-table-column>
+              <el-table-column prop="opinion" label="操作" align="center" width="100">
+                 <template slot-scope="scope">
+                    <el-button @click="dialogFind(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+                 </template>
+              </el-table-column>
           </el-table>
           <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total' background>
@@ -481,32 +483,13 @@ export default {
       endTime: '',
       //报销table
       tableData: [{
-        number: '1',
-        type: '申请中',
-        createtime: '2016-05-02',
-        plan: 'TC-GTY-1001-01-180806-01',
-        money: '国旅',
-        orinaze: '辽宁大运通-国内部',
-        accpter: '阳阳',
-        info: '',
-      }, {
-        number: '1',
-        type: '驳回',
-        createtime: '2016-05-02',
-        plan: 'TC-GTY-1001-01-180806-01',
-        money: '国旅',
-        orinaze: '辽宁大运通-国内部',
-        accpter: '阳阳',
-        info: '郑总：信息补全',
-      }, {
-        number: '1',
-        type: '通过',
-        createtime: '2016-05-02',
-        plan: 'TC-GTY-1001-01-180806-01',
-        money: '国旅',
-        orinaze: '辽宁大运通-国内部',
-        accpter: '阳阳',
-        info: '',
+        paymentID: '1',
+        createTime: '2019-07-18T13:00:17.25',
+        groupCode: 'TC-GTY-1001-01-180806-01',
+        supplierName: '国旅',
+        supplierTypeEX: '地接',
+        price: '1230',
+        申请人: '阳阳',
       }],
       //报销人表单
       tableData1: [{
@@ -1334,48 +1317,30 @@ export default {
           console.log(obj)
         })
     },
+    formatDate1(dates){
+       var dateee = new Date(dates).toJSON();
+       var date = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')  
+       return date;
+    },
   },
   created() {
     var that = this
     this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-          "pageIndex": 1,
-          "pageSize": this.pageSize,
-          "total": 0,
-          "object": {
-            "id": 0,
-            "title": '',
-            "createUser": '',
-            "minPrice": 0,
-            "maxPrice": 0,
-            "podID": 0,
-            "destinationID": 0
+        this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
+            "userCode": sessionStorage.getItem('userCode'),
+            "startTime": "2018-07-18T05:30:17.471Z",
+            "endTime": "2019-07-18T05:30:17.471Z",
           }
-        }, {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
-        }
       )
       .then(function(obj) {
-        that.total = obj.data.total;
-        that.tableData = obj.data.objects;
-        that.tableData.forEach(function(v, k, arr) {
-          arr[k]['number'] = "付款单号"
-          arr[k]['status'] = '状态'
-          arr[k]['createtime'] = '发起时间'
-          arr[k]['plan'] = '团期计划'
-          arr[k]['supplier'] = "供应商"
-          arr[k]['type'] = "类型"
-          arr[k]['money'] = '金额'
-          arr[k]['orinaze'] = '申请组织'
-          arr[k]['accpter'] = '申请人'
-        })
+        //that.total = obj.data.total;
+        //that.tableData = obj.data.objects;
       })
       .catch(function(obj) {
         console.log(obj)
       })
   },
+  
 }
 
 </script>
@@ -1496,5 +1461,9 @@ export default {
 .start-time {
   margin-left: 25px
 }
-
+.search-title {
+  font-size: 14px;
+  margin-left: 20px;
+  margin-top: 10px;
+}
 </style>

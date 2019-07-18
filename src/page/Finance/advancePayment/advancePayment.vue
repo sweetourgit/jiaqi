@@ -3,7 +3,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="借款记录" name="first">
         <span class="search-title">团期计划:</span>
-        <el-input v-model="groupNo" class="input"></el-input>
+        <el-input v-model="planID" class="input"></el-input>
         <span class="search-title">申请人:</span>
         <el-input v-model="user" class="input"></el-input>
         <span class="search-title">发起时间:</span>
@@ -13,8 +13,8 @@
         <span class="search-title" style="margin-left:47px">状态:</span>
         <el-select v-model="checkType" placeholder="请选择" style="width:185px">
           <el-option  key="0" label="审批中" value="0"></el-option>
-          <el-option  key="1" label="驳回" value="1"></el-option>
-          <el-option  key="2" label="通过" value="2"></el-option>
+          <el-option  key="1" label="通过" value="1"></el-option>
+          <el-option  key="2" label="驳回" value="2"></el-option>
         </el-select>
         <div style="border: 0px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 20px; width: 100%">
           <div class="button_select">
@@ -85,7 +85,7 @@ export default {
     return {
       pageshow:true,
       activeName: 'first',
-      groupNo: '',
+      planID: '',
       user: '',
       startTime: '',
       endTime: '',
@@ -114,7 +114,7 @@ export default {
   },
   methods: {
     resetHand(){
-      this.groupNo='';
+      this.planID='';
       this.user='';
       this.startTime='';
       this.endTime='';
@@ -167,11 +167,11 @@ export default {
       this.pagesize = val
       let objectRequest = {}
       objectRequest.paymentType = 2;
-      if (this.groupNo) { objectRequest.groupCode = this.groupNo; }
+      if (this.planID) { objectRequest.planID = this.planID; }
       if (this.user) { objectRequest.createUser = this.user; }
-      if (this.startTime) { objectRequest.beginTime = this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0; }
-      if (this.endTime) { objectRequest.endTime = this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0; }
-      if (this.checkType) { objectRequest.checkType = this.checkType; }
+      if (this.startTime) { objectRequest.beginTime = this.startTime}
+      if (this.endTime) { objectRequest.endTime = this.endTime}
+      if (this.checkType) { objectRequest.checkType = this.checkType; }else{objectRequest.checkType='-1'}
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/finance/payment/api/page", {
@@ -199,11 +199,11 @@ export default {
       this.pageshow = false
       let objectRequest = {}
       objectRequest.paymentType = 2;
-      if (this.groupNo) { objectRequest.groupCode = this.groupNo; }
+      if (this.planID) { objectRequest.planID = this.planID; }
       if (this.user) { objectRequest.createUser = this.user; }
-      if (this.startTime) { objectRequest.beginTime = this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0; }
-      if (this.endTime) { objectRequest.endTime = this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0; }
-      if (this.checkType) { objectRequest.checkType = this.checkType; }
+      if (this.startTime) { objectRequest.beginTime = this.startTime}
+      if (this.endTime) { objectRequest.endTime = this.endTime}
+      if (this.checkType) { objectRequest.checkType = this.checkType; }else{objectRequest.checkType='-1'}
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/finance/payment/api/page", {
@@ -233,11 +233,11 @@ export default {
       }
       let objectRequest = {}
       objectRequest.paymentType = 2;
-      if (this.groupNo) { objectRequest.groupCode = this.groupNo; }
+      if (this.planID) { objectRequest.planID = this.planID; }
       if (this.user) { objectRequest.createUser = this.user; }
-      if (this.startTime) { objectRequest.beginTime = this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0; }
-      if (this.endTime) { objectRequest.endTime = this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0; }
-      if (this.checkType) { objectRequest.checkType = this.checkType; }
+      if (this.startTime) { objectRequest.beginTime = this.startTime}
+      if (this.endTime) { objectRequest.endTime = this.endTime}
+      if (this.checkType) { objectRequest.checkType = this.checkType; }else{objectRequest.checkType='-1'}
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/finance/payment/api/page", {
