@@ -11,12 +11,14 @@
       <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数"></el-date-picker><br /><br />
       <span class="search-title">报账状态:</span>
       <el-select v-model="activeForm.status" placeholder="请选择" style="width:200px">
-        <el-option key="0" label="审批中" value="0"></el-option>
-        <el-option key="1" label="驳回" value="1"></el-option>
-        <el-option key="2" label="通过" value="2"></el-option>
+        <el-option key="" label="全部" value=""></el-option>
+        <el-option key="0" label="未报账" value="0"></el-option>
+        <el-option key="1" label="报账中" value="1"></el-option>
+        <el-option key="2" label="已报账" value="2"></el-option>
       </el-select>
       <span class="search-title">是否关联产品:</span>
       <el-select v-model="activeForm.proRelation" placeholder="请选择" style="width:200px">
+        <el-option key="" label="全部" value=""></el-option>
         <el-option key="1" label="是" value="1"></el-option>
         <el-option key="2" label="否" value="2"></el-option>
       </el-select>

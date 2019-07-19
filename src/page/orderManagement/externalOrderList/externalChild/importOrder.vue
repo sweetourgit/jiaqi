@@ -1,21 +1,21 @@
 <template>
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
-    <el-dialog title="导入外部订单" :visible="dialogFormVisible2" width=60% @close="closeAdd">
+    <el-dialog title="导入外部订单" :visible="dialogFormVisible2" width=50% @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div style="height: 600px;">
-          <el-form-item label="平台" prop="tour" label-width="120px" style="float:left;">
+          <el-form-item label="平台" prop="platform" label-width="120px" style="float:left;">
             <el-select style="float: left;" class="inputWidth" v-model="ruleForm.type" placeholder="请选择类型">
               <el-option v-for="item in typeList" :key="item.label" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
-          </el-form-item><br />
-          <el-form-item label="平台订单" prop="tour" label-width="120px" style="float:left;">
+          </el-form-item><br /><br />
+          <el-form-item label="平台订单" prop="platformOrder" label-width="120px" style="float:left;">
             <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :limit="20" :on-exceed="handleExceed" :file-list="fileList">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item><br />
-          <el-form-item label="票付通订单" prop="tour" label-width="120px" style="float:left;margin-top: 20px;">
+          <el-form-item label="票付通订单" prop="ticketOrder" label-width="120px" style="float:left;margin-top: 20px;">
             <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview2" :on-remove="handleRemove2" :before-remove="beforeRemove2" multiple :limit="20" :on-exceed="handleExceed2" :file-list="fileList2">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
@@ -40,7 +40,10 @@ export default {
   data() {
     return {
       ruleForm: {},
-      rules: {},
+      rules: {
+        platform: [{ required: true, message: '请选择平台', trigger: 'change' }],
+        platformOrder: [{ required: true, message: '平台订单不能为空', trigger: 'change' }],
+      },
       typeList: [{
           label: '美团',
           value: '1',
@@ -110,10 +113,17 @@ export default {
         })
       }
     },
-    submitForm() {
-      this.$message({
-        type: 'success',
-        message: '提交成功!'
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$message({
+            type: 'success',
+            message: '提交成功!'
+          });
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
       });
     },
     handleRemove(file, fileList) {
@@ -164,7 +174,7 @@ export default {
 }
 
 .inputWidth {
-  width: 300px;
+  width: 450px;
 }
 
 .upload-demo {
