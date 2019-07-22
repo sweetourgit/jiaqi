@@ -1,0 +1,227 @@
+<template>
+  <div class="vivo" style="position:relative">
+    <div style="padding-top:1px;">
+      <el-button style="float: right;" @click="close()" size="medium">关闭</el-button>
+    </div>
+    <div class="demo-input-suffix">
+      <span class="search-title" style="margin-right: 40px;">导入人:</span>
+      <el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>
+      <span class="search-title">导入时间:</span>
+      <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数"></el-date-picker>
+      <div class="date-line"></div>
+      <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数"></el-date-picker>
+      <br /><br />
+      <div class="button_select">
+        <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
+        <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
+      </div>
+    </div>
+    <div class="table_trip" style="width: 100%;">
+      <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
+        <el-table-column prop="user" label="导入人" align="center" width="80%">
+        </el-table-column>
+        <el-table-column prop="platform" label="导入平台" align="center">
+        </el-table-column>
+        <el-table-column prop="file" label="文件" align="center">
+        </el-table-column>
+        <el-table-column prop="orderNumber" label="导入订单个数" align="center">
+        </el-table-column>
+        <el-table-column prop="importTime" label="导入时间" align="center">
+        </el-table-column>
+        <el-table-column prop="option" label="操作" align="center" width="250">
+          <template slot-scope="scope">
+            <el-button @click="infoOrder(scope.row)" type="primary" size="small" class="table_details">导入订单详情</el-button>
+            <el-button @click="delOrder(scope.row)" type="danger" size="small" class="table_details">一键删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <ImportOrderInfo :dialogFormVisible="dialogFormVisible" :infoId="infoId" @close2="close2"></ImportOrderInfo>
+    <!--分页-->
+    <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>
+      </el-pagination>
+    </div>
+  </div>
+</template>
+<script type="text/javascript">
+import ImportOrderInfo from '@/page/orderManagement/externalOrderList/importOrderInfo/importOrderInfo'
+export default {
+  name: "importHistory",
+  components: {
+    ImportOrderInfo
+  },
+  data() {
+    return {
+      total: 10, //总条数
+      currentPage4: 1,
+      pageIndex: 1, // 设定当前页数
+      pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
+      activeForm: {
+        user: '',
+        startTime: '',
+        endTime: '',
+      },
+      tableData: [{
+        id: '1',
+        user: '阳阳',
+        platform: '马蜂窝',
+        file: '马蜂窝.exl 票付通.exl',
+        orderNumber: '32',
+        importTime: '2019-01-09 09:37',
+      }, {
+        id: '2',
+        user: '阳阳',
+        platform: '马蜂窝',
+        file: '马蜂窝.exl 票付通.exl',
+        orderNumber: '32',
+        importTime: '2019-01-09 09:37',
+      }, {
+        id: '3',
+        user: '阳阳',
+        platform: '马蜂窝',
+        file: '马蜂窝.exl 票付通.exl',
+        orderNumber: '32',
+        importTime: '2019-01-09 09:37',
+      }, ],
+      reable: true,
+      pid: '',
+      infoId: '',
+      transmit: false,
+      dialogFormVisible: false,
+    }
+  },
+  computed: {
+    // 计算属性的 getter
+  },
+  watch: {},
+  methods: {
+    //导入订单详情
+    infoOrder(row) {
+      this.dialogFormVisible = true
+      this.infoId = row['id']
+      console.log(this.infoId)
+    },
+    close() {
+      this.$router.push({ path: "/externalOrderList" });
+    },
+    close2() {
+      this.dialogFormVisible = false
+      this.infoId = ''
+    },
+    // 表格头部背景颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+      } else {
+        return ''
+      }
+    },
+    //获取id
+    clickBanle(row, event, column) {
+      this.pid = row['id']
+    },
+    delOrder(row) {
+      console.log(row['id'])
+      this.$confirm('是否需要一键删除所有订单?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
+    //搜索
+    searchHand() {
+      this.$message({
+        type: 'success',
+        message: '搜索成功!'
+      });
+    },
+    handleSizeChange(val) {
+      this.tableData = this.tableData
+      this.total = this.total
+    },
+
+    handleCurrentChange(val) {
+      this.tableData = this.tableData
+      this.total = this.total
+    },
+    resetHand() {
+      this.activeForm = {
+        user: '',
+        startTime: '',
+        endTime: '',
+      }
+    }
+  },
+  created() {}
+
+}
+
+</script>
+<style lang="scss" scoped>
+.vivo {
+  .demo-input-suffix {
+    width: auto;
+    background-color: #F7F7F7;
+    margin-top: 40px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    .search-title {
+      font-size: 14px;
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+
+    .el-input {
+      width: auto;
+    }
+
+    .el-input__inner {
+      width: 10%;
+    }
+
+    .demo-input-suffix {
+      width: 900px
+    }
+
+    .date-line {
+      width: 10px;
+      border-bottom: 1px solid #e6e6e6;
+      display: inline-block;
+      margin: 0 3px 3px 0
+    }
+
+    .button_select {
+      display: inline;
+      margin-left: 85%;
+    }
+  }
+
+  .table_trip {
+    margin-top: 40px;
+  }
+
+}
+
+
+
+.el-tabs__nav>>>.el-tabs__item {
+  font-size: 30px !important;
+}
+
+.el-autocomplete>>>.el-input--small .el-input__inner {
+  height: 35px !important;
+}
+
+</style>

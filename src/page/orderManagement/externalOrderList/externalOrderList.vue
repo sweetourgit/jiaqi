@@ -36,6 +36,7 @@
     <div class="main">
       <el-button type="primary" @click="importOrder" plain>导入订单</el-button>
       <el-button type="primary" :disabled="reable" @click="delOrder" plain>删除订单</el-button>
+      <el-button type="primary" @click="importHistory" plain>导入历史</el-button>
       <el-button type="primary" :disabled="reable" @click="relation" plain>关联</el-button>
       <el-button type="primary" :disabled="reable" @click="unbinding" plain>解绑</el-button>
     </div>
@@ -180,6 +181,10 @@ export default {
           message: '已取消删除'
         });
       });
+    },
+    //导入历史
+    importHistory() {
+      this.$router.push({ path: "/importHistory" });
     },
     //关联
     relation() {
