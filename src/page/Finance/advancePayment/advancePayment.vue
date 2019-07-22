@@ -27,7 +27,7 @@
           <div class="table_trip" style="width: 80%;">
             <el-table :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
               <el-table-column prop="paymentID" label="借款单号" align="center" width="80%">
-              </el-table-column>
+              </el-table-column> 
               <el-table-column prop="checkTypeEX" label="状态" width="90" align="center">
               </el-table-column>
               <el-table-column label="发起时间" align="center" width="190">

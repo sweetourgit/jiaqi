@@ -1149,7 +1149,7 @@ export default {
           })
         })
         .catch(function(obj) {
-          console.log(obj)
+          console.log(obj) 
         })
     },
     formatDate1(dates){
