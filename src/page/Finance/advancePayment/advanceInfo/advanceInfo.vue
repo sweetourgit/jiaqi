@@ -123,9 +123,13 @@
                 <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
                   <el-table-column prop="paymentID" label="ID" align="center">
                   </el-table-column>
-                  <el-table-column prop="checkType" label="审批状态" align="center">
+                  <el-table-column prop="checkTypeEX" label="审批状态" align="center">
                   </el-table-column>
-                  <el-table-column prop="paymentType" label="借款类型" align="center">
+                  <el-table-column label="借款类型" align="center">
+                    <template slot-scope="scope">
+                      <span v-if="scope.row.paymentType==1">无收入借款</span>
+                      <span v-if="scope.row.paymentType==2">预付款</span>
+                    </template>
                   </el-table-column>
                   <el-table-column prop="supplierName" label="供应商" align="center">
                   </el-table-column>
@@ -161,9 +165,13 @@
                 <el-table :data="tableData7" border style="width:100%" :header-cell-style="getRowClass2">
                   <el-table-column prop="paymentID" label="ID" align="center">
                   </el-table-column>
-                  <el-table-column prop="checkType" label="审批状态" align="center">
+                  <el-table-column prop="checkTypeEX" label="审批状态" align="center">
                   </el-table-column>
-                  <el-table-column prop="paymentType" label="借款类型" align="center">
+                  <el-table-column label="借款类型" align="center">
+                    <template slot-scope="scope">
+                      <span v-if="scope.row.paymentType==1">无收入借款</span>
+                      <span v-if="scope.row.paymentType==2">预付款</span>
+                    </template>
                   </el-table-column>
                   <el-table-column prop="supplierName" label="供应商" align="center">
                   </el-table-column>

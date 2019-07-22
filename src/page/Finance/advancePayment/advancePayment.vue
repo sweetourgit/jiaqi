@@ -58,14 +58,14 @@
           </div>
           <!--分页-->
           <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-            <el-pagination v-if="pageshow" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>
+            <el-pagination v-if="pageshow" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total' background>
             </el-pagination>
           </div>
           <!--分页-->
         </div>
       </el-tab-pane>
-      <el-tab-pane label="需要您审批" name="second">
-        <NeedApproval></NeedApproval>
+      <el-tab-pane :label="'需要您审批'+msg" name="second">
+        <NeedApproval v-on:headCallBack="headCall"></NeedApproval>
       </el-tab-pane>
     </el-tabs>
     <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :infoStatus="infoStatus" @searchHandList="searchHand"></AdvanceInfo>
@@ -103,6 +103,7 @@ export default {
       pid: '',
       infoStatus: '',
       dialogFormVisible: false,
+      msg:'',
     }
   },
   computed: {
@@ -113,6 +114,9 @@ export default {
     },
   },
   methods: {
+    headCall: function (msg) { //回调方法，接收子组件传的参数
+        this.msg = '(' + msg + ')';
+    },
     resetHand(){
       this.planID='';
       this.user='';
@@ -149,6 +153,7 @@ export default {
         this.secondTab = true
         this.pageIndex = this.secondIndex;
         this.currentPage4 = this.secondIndex;
+        this.variable++;
       }
     },
     // 报销弹窗
@@ -164,7 +169,7 @@ export default {
       this.dialogFormVisible = true;
     },
     handleSizeChange(val) {
-      this.pagesize = val
+      this.pageSize = val
       let objectRequest = {}
       objectRequest.paymentType = 2;
       if (this.planID) { objectRequest.planID = this.planID; }

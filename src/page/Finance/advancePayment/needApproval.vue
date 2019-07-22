@@ -5,16 +5,16 @@
         <div>
           <div class="search">
             <span class="search_style">团期计划：</span>
-            <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
+            <el-input v-model="planID" placeholder="请输入内容" class="search_input"></el-input>
             <span class="search_style">申请人：</span>
-            <el-input v-model="accepter" placeholder="请输入内容" class="search_input"></el-input>
+            <el-input v-model="user" placeholder="请输入内容" class="search_input"></el-input>
             <span class="search-title">发起时间:</span>
             <el-date-picker v-model="startTime" type="date" placeholder="开始日期"></el-date-picker>
             <div class="date-line"></div>
             <el-date-picker v-model="endTime" type="date" placeholder="终止日期"></el-date-picker><br/><br/>
           </div>
           <div class="reform">
-            <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
+            <el-button type="primary" @click="searchHand(1,pageSize)" size="medium">搜索</el-button>
             <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
           </div>
         </div>
@@ -44,7 +44,7 @@
               </el-table-column>
           </el-table>
           <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total' background>
+            <el-pagination v-if="pageshow1" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total' background>
             </el-pagination>
           </div>
         </div>
@@ -405,7 +405,7 @@ export default {
     return {
       //选择申请人员
       apply_user_input: '',
-      pageIndex: 1, // 设定当前页数
+      pageNum: 1, // 设定当前页数
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       total: 0,
       total2: 0,
@@ -473,24 +473,18 @@ export default {
         time: '',
       }],
       formLabelWidth: '120px',
-      currentPage4: 1,
       currentPage2: 1,
       activeName: 'first',
       number: '',
       plan: '',
       accepter: '',
+      pageshow1:true,
+      planID: '',
+      user: '',
       startTime: '',
       endTime: '',
       //报销table
-      tableData: [{
-        paymentID: '1',
-        createTime: '2019-07-18T13:00:17.25',
-        groupCode: 'TC-GTY-1001-01-180806-01',
-        supplierName: '国旅',
-        supplierTypeEX: '地接',
-        price: '1230',
-        申请人: '阳阳',
-      }],
+      tableData: [],
       //报销人表单
       tableData1: [{
         id: '001',
@@ -585,33 +579,6 @@ export default {
         bcount: '',
       }],
       tableData3: [],
-      tableData4: [{
-          id: 1,
-          status: 1,
-          time: '2016-05-03',
-          tour_plan: '泰国曼谷+芭提雅+沙美岛+清迈小镇7日游',
-          supplier: '我是供应商',
-          type: '地接',
-          money: '20',
-          surplus: '20',
-          org: '国内部',
-          user: 'tester申请人',
-          opinion: '统一',
-        },
-        {
-          id: 2,
-          status: 2,
-          time: '2018-05-03',
-          tour_plan: '泰国曼谷+芭提雅+沙美岛+清迈小镇7日游',
-          supplier: '我是供应商',
-          type: '地接',
-          money: '20',
-          surplus: '20',
-          org: '国内部',
-          user: 'tester申请人',
-          opinion: '统一',
-        }
-      ],
       tableData5: [{
         total: '订单总额',
         isTotal: '已审批总额',
@@ -993,12 +960,6 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
     //文件上传
     handleChange(file, fileList) {
       this.fileList = fileList.slice(-3);
@@ -1032,55 +993,6 @@ export default {
         this.editableTabsValue = activeName;
         this.editableTabs = tabs.filter(tab => tab.name !== targetName);
       }
-    }, //搜索
-    searchHand() {
-      this.pageNum = 1;
-
-      if (!this.productBehind) {
-        this.productBehind = 0
-      } else {
-        this.pageNum = 1;
-      }
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-            "pageIndex": this.pageNum,
-            "pageSize": this.pageSize,
-            "total": 0,
-            "object": {
-              "id": 0,
-              "title": '',
-              "createUser": '',
-              "minPrice": 0,
-              "maxPrice": 0,
-              "podID": 0,
-              "destinationID": 0
-            }
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['number'] = "付款单号"
-            arr[k]['status'] = '状态'
-            arr[k]['createtime'] = '发起时间'
-            arr[k]['plan'] = '团期计划'
-            arr[k]['supplier'] = "供应商"
-            arr[k]['type'] = "类型"
-            arr[k]['money'] = '金额'
-            arr[k]['orinaze'] = '申请组织'
-            arr[k]['accpter'] = '申请人'
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
-
     },
     handleCurrentChange(val) {
       this.pageNum = val;
@@ -1090,88 +1002,11 @@ export default {
       if (this.secondTab) {
         this.secondIndex = val
       }
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-            "pageIndex": val,
-            "pageSize": this.pageSize,
-            "total": 0,
-            "object": {
-              "id": 0,
-              "title": '',
-              "createUser": '',
-              "minPrice": 0,
-              "maxPrice": 0,
-              "podID": 0,
-              "destinationID": 0
-            }
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['number'] = "付款单号"
-            arr[k]['status'] = '状态'
-            arr[k]['createtime'] = '发起时间'
-            arr[k]['plan'] = '团期计划'
-            arr[k]['supplier'] = "供应商"
-            arr[k]['type'] = "类型"
-            arr[k]['money'] = '金额'
-            arr[k]['orinaze'] = '申请组织'
-            arr[k]['accpter'] = '申请人'
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
+      this.searchHand(val,this.pageSize);
     },
     handleSizeChange(val) {
-      this.pagesize = val
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-            "pageIndex": 1,
-            "pageSize": val,
-            "total": 0,
-            "object": {
-              "id": 0,
-              "title": '',
-              "createUser": '',
-              "minPrice": 0,
-              "maxPrice": 0,
-              "podID": 0,
-              "destinationID": 0
-            }
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        .then(function(obj) {
-          console.log(obj.data);
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['number'] = "付款单号"
-            arr[k]['status'] = '状态'
-            arr[k]['createtime'] = '发起时间'
-            arr[k]['plan'] = '团期计划'
-            arr[k]['supplier'] = "供应商"
-            arr[k]['type'] = "类型"
-            arr[k]['money'] = '金额'
-            arr[k]['orinaze'] = '申请组织'
-            arr[k]['accpter'] = '申请人'
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
+      this.pageSize = val;
+      this.searchHand(1,val);
     },
     searchHand2() {
       this.pageNum = 1;
@@ -1322,8 +1157,48 @@ export default {
        var date = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')  
        return date;
     },
+    resetHand(){
+      this.planID='';
+      this.user='';
+      this.startTime='';
+      this.endTime='';
+    },
+    searchHand(pageNum,pageSize) {
+      this.pageNum = pageNum;
+      this.pageSize = pageSize;
+      this.pageshow1 = false;
+      let objectRequest = {};
+      objectRequest.paymentType = 2;
+      objectRequest.checkType = 0;
+      if (this.planID) { objectRequest.planID = this.planID; }
+      if (this.user) { objectRequest.createUser = this.user; }
+      if (this.startTime) { objectRequest.beginTime = this.startTime}
+      if (this.endTime) { objectRequest.endTime = this.endTime}
+      var that = this
+      this.$http.post(
+          this.GLOBAL.serverSrc + "/finance/payment/api/page", {
+            "pageIndex": pageNum,
+            "pageSize":  pageSize,
+            "object": objectRequest,
+          }
+        )
+        .then(function(obj) {
+          that.total = obj.data.total;
+          that.tableData = obj.data.objects;    
+          that.$emit('headCallBack', obj.data.total);  
+        })
+        .catch(function(obj) {
+          console.log(obj)
+        })
+        this.$nextTick(() => {
+             this.pageshow1 = true
+        })
   },
-  created() {
+  },
+  created(){
+   this.searchHand(1,this.pageSize);
+
+   /*工作流
     var that = this
     this.$http.post(
         this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
@@ -1338,7 +1213,7 @@ export default {
       })
       .catch(function(obj) {
         console.log(obj)
-      })
+      })*/
   },
   
 }
