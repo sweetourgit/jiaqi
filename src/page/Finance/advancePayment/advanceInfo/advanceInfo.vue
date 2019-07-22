@@ -38,7 +38,7 @@
                   <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
                     {{tag2.label}}
                   </el-tag>
-                  <el-autocomplete id="input-error" :disabled="change" class="lable_input" v-if="inputVisible2" v-model="ruleForm.supplier" ref="saveTagInput" size="small" placeholder="请输入供应商" @keyup.enter.native="handleInputConfirm2" :fetch-suggestions="querySearch5" :trigger-on-focus="false" @select="dest_01" @blur="handleInputConfirm2">
+                  <el-autocomplete id="input-error" :disabled="change" class="lable_input" v-if="inputVisible2" v-model="ruleForm.supplier" ref="saveTagInput"  placeholder="请输入供应商" @keyup.enter.native="handleInputConfirm2" :fetch-suggestions="querySearch5" :trigger-on-focus="false" @select="dest_01" @blur="handleInputConfirm2">
                   </el-autocomplete>
                 </div>
               </el-form-item>
@@ -51,7 +51,7 @@
               </el-form-item>
               <!-- 借款金额 -->
               <el-form-item label="借款金额" prop="loanMoney" label-width="120px">
-                <el-input type="number" v-model="ruleForm.loanMoney" class="bright inputWidth" placeholder="借款金额" :disabled="change"></el-input>
+                <el-input v-model="ruleForm.loanMoney" class="bright inputWidth" placeholder="借款金额" :disabled="change"></el-input>
               </el-form-item>
               <!-- 借款数量 -->
               <el-form-item label="借款人数" prop="loanNumber" class="bright_b" label-width="80px" style="margin-left: 30%;">
@@ -100,125 +100,118 @@
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>-->
               </el-form-item>
-              <el-form-item label="" label-width="120px" label-height="auto">
-                <el-table :data="tableData5" border style="width:70%" :header-cell-style="getRowClass2">
+              <el-form-item label="" label-width="120px" label-height="auto" v-if="tableData5.length != 0">
+                <el-table :data="tableData5" border style="width:90%" :header-cell-style="getRowClass2">
                   <el-table-column prop="payable" label="订单总额" align="center">
                   </el-table-column>
-                  <el-table-column prop="payment" label="已审批总额" align="center">
+                  <el-table-column prop="paymentChecking" label="审批中借款总额" align="center">
                   </el-table-column>
-                  <el-table-column prop="paymentChecking" label="审批中总额" align="center">
+                  <el-table-column prop="payment" label="已审批借款总额" align="center">
+                  </el-table-column>
+                  <el-table-column prop="" label="报销中总额" align="center">
+                  </el-table-column>
+                  <el-table-column prop="" label="已报销总额" align="center">
                   </el-table-column>
                   <el-table-column prop="price" label="已收总额" align="center">
                   </el-table-column>
                   <el-table-column prop="supTotal" label="供应商欠款总额" align="center">
                   </el-table-column>
-                  </el-table-column>
                 </el-table>
               </el-form-item>
-              <el-form-item label="预付付款明细" label-width="120px" label-height="auto">
+              <el-form-item label="预付款明细" label-width="120px" label-height="auto">
                 <br />
                 <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
                   <el-table-column prop="paymentID" label="ID" align="center">
                   </el-table-column>
-                  <el-table-column prop="checkType" label="状态" align="center">
+                  <el-table-column prop="checkType" label="审批状态" align="center">
                   </el-table-column>
-                  <el-table-column prop="paymentType" label="类型" align="center">
+                  <el-table-column prop="paymentType" label="借款类型" align="center">
                   </el-table-column>
                   <el-table-column prop="supplierName" label="供应商" align="center">
                   </el-table-column>
-                  <el-table-column prop="price" label="付款金额" align="center">
+                  <el-table-column prop="price" label="金额" align="center">
                   </el-table-column>
-                  <el-table-column prop="peopleCount" label="人数" align="center">
-                  </el-table-column>
-                  <el-table-column prop="orgName" label="部门" align="center">
+                  <el-table-column prop="expensePrice" label="已核销金额" align="center">
                   </el-table-column>
                   <el-table-column prop="createName" label="申请人" align="center">
-                  </el-table-column>
-                  <el-table-column prop="createTime" label="申请日期" align="center">
-                  </el-table-column>
-                  <el-table-column prop="mark" label="摘要" align="center">
                   </el-table-column>
                   <el-table-column label="审批过程" align="center">
                     <template slot-scope="scope">
                       <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="expensePrice" label="已核销金额" align="center">
-                  </el-table-column>
                 </el-table>
               </el-form-item>
-              <el-form-item label="" label-width="120px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible6">
-                <el-table :data="tableData11" border style="width:55%" :header-cell-style="getRowClass2">
-                  <el-table-column prop="createTime" label="申请日期" align="center">
+
+              <el-dialog title="审批过程" class="aaaaa" custom-class="approvalClass" :append-to-body="true" :visible.sync="dialogVisible6" width=900px>
+                <el-table :data="tableData11" border style="800px;" :header-cell-style="getRowClass2">
+                  <el-table-column prop="createTime" label="审批时间" align="center">
                   </el-table-column>
-                  <el-table-column prop="user" label="申请人" align="center">
+                  <el-table-column prop="user" label="审批人" align="center">
                   </el-table-column>
-                  <el-table-column prop="status" label="状态" align="center">
+                  <el-table-column prop="status" label="审批结果" align="center">
                   </el-table-column>
-                  <el-table-column prop="abstract" label="摘要" align="center">
+                  <el-table-column prop="abstract" label="审批意见" align="center">
                   </el-table-column>
                 </el-table>
-              </el-form-item>
+              </el-dialog>
+
               <el-form-item label="无收入借款明细" label-width="120px" label-height="auto">
                 <br />
-                <el-table :data="tableData7" border style="width:90%" :header-cell-style="getRowClass2">
+                <el-table :data="tableData7" border style="width:100%" :header-cell-style="getRowClass2">
                   <el-table-column prop="paymentID" label="ID" align="center">
                   </el-table-column>
-                  <el-table-column prop="checkType" label="状态" align="center">
+                  <el-table-column prop="checkType" label="审批状态" align="center">
                   </el-table-column>
-                  <el-table-column prop="paymentType" label="类型" align="center">
+                  <el-table-column prop="paymentType" label="借款类型" align="center">
                   </el-table-column>
                   <el-table-column prop="supplierName" label="供应商" align="center">
                   </el-table-column>
-                  <el-table-column prop="price" label="付款金额" align="center">
+                  <el-table-column prop="price" label="金额" align="center">
                   </el-table-column>
-                  <el-table-column prop="orgName" label="部门" align="center">
+                  <el-table-column prop="expensePrice" label="已核销金额" align="center">
                   </el-table-column>
                   <el-table-column prop="createName" label="申请人" align="center">
-                  </el-table-column>
-                  <el-table-column prop="createTime" label="申请日期" align="center">
-                  </el-table-column>
-                  <el-table-column prop="mark" label="摘要" align="center">
                   </el-table-column>
                   <el-table-column label="审批过程" align="center">
                     <template slot-scope="scope">
                       <span style="color:blue;" v-on:click="advanceProcess(scope.row.id)">查看</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="expensePrice" label="已核销金额" align="center">
-                  </el-table-column>
+                  
                 </el-table>
               </el-form-item>
-              <el-form-item label="" label-width="120px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible5">
-                <el-table :data="tableData10" border style="width:55%" :header-cell-style="getRowClass2">
-                  <el-table-column prop="createTime" label="申请日期" align="center">
+
+              <el-dialog title="审批过程" class="aaaaa" custom-class="approvalClass" :append-to-body="true" :visible.sync="dialogVisible5" width=900px>
+                <el-table :data="tableData10" border style="800px;" :header-cell-style="getRowClass2">
+                  <el-table-column prop="createTime" label="审批时间" align="center">
                   </el-table-column>
-                  <el-table-column prop="user" label="申请人" align="center">
+                  <el-table-column prop="user" label="审批人" align="center">
                   </el-table-column>
-                  <el-table-column prop="status" label="状态" align="center">
+                  <el-table-column prop="status" label="审批结果" align="center">
                   </el-table-column>
-                  <el-table-column prop="abstract" label="摘要" align="center">
+                  <el-table-column prop="abstract" label="审批意见" align="center">
                   </el-table-column>
                 </el-table>
-              </el-form-item>
+              </el-dialog>
+
+
               <el-form-item label="收入明细" label-width="120px" label-height="auto">
                 <br />
                 <el-table :data="tableData8" border style="width:85%" :header-cell-style="getRowClass2">
                   <el-table-column prop="oNo" label="订单编号" align="center">
                   </el-table-column>
-                  <el-table-column prop="source" label="来源" align="center">
+                  <el-table-column prop="source" label="订单来源" align="center">
                   </el-table-column>
-                  <el-table-column prop="user" label="联系人" align="center">
+                  <el-table-column prop="user" label="订单联系人" align="center">
                   </el-table-column>
                   <el-table-column prop="number" label="人数" align="center">
                   </el-table-column>
                   <el-table-column prop="total" label="订单金额" align="center">
                   </el-table-column>
-                  <el-table-column prop="accepted" label="已收" align="center">
+                  <el-table-column prop="accepted" label="已收金额" align="center">
                   </el-table-column>
-                  <el-table-column prop="arrears" label="欠款" align="center">
-                  </el-table-column>
-                  <el-table-column prop="aNo" label="收款单号" align="center">
+                  <el-table-column prop="arrears" label="欠款金额" align="center">
                   </el-table-column>
                   <el-table-column prop="arrearsTime" label="欠款日期" align="center">
                   </el-table-column>
@@ -422,29 +415,17 @@ export default {
       }],
       tableData10: [{
         id: '1',
-        createTime: '审批时间',
-        user: '审批人',
-        status: '审批结果',
-        abstract: '审批意见',
-      }, {
-        id: '2',
-        createTime: '审批时间',
-        user: '审批人',
-        status: '审批结果',
-        abstract: '审批意见',
+        createTime: '2019-01-14 18:00:00',
+        user: '阳阳',
+        status: '通过',
+        abstract: '',
       }],
       tableData11: [{
         id: '1',
-        createTime: '审批时间',
-        user: '审批人',
-        status: '审批结果',
-        abstract: '审批意见',
-      }, {
-        id: '2',
-        createTime: '审批时间',
-        user: '审批人',
-        status: '审批结果',
-        abstract: '审批意见',
+        createTime: '2019-01-14 18:00:00',
+        user: '阳阳',
+        status: '通过',
+        abstract: '',
       }],
       supplier: '',
       supplier_id: 0,
@@ -472,8 +453,9 @@ export default {
         //user: [{ required: true, message: '申请人不能为空', trigger: 'change' }],
         type: [{ required: true, message: '类型不能为空', trigger: 'change' }],
         payMode: [{ required: true, message: '付款方式不能为空', trigger: 'change' }],
-        loanMoney: [{ required: true, message: '借款金额不能为空', trigger: 'blur' }],
-        loanNumber: [{ required: true, message: '借款数量不能为空', trigger: 'blur' },
+        loanMoney: [{ required: true, message: '借款金额不能为空', trigger: 'blur' },
+                    { pattern: /^[+-]?\d+(\.\d+)?$|^$|^(\d+|\-){7,}$/, message: '借款金额需为整数或浮点数'} ],
+        loanNumber: [{ required: true, message: '借款人数不能为空', trigger: 'blur' },
           { pattern: /^[+]{0,1}(\d+)$/, message: '借款数量需为正整数' }
         ],
         tour: [{ required: true, message: '团期计划不能为空', trigger: 'change' }],
@@ -549,7 +531,6 @@ export default {
       this.$emit('close', false);
     },
     advanceProcess2(num) {
-      console.log(num)
       this.dialogVisible6 = true
     },
     advanceProcess(num) {
@@ -845,6 +826,7 @@ export default {
           }
         }).then(res => {
           if (res.data.isSuccess == true) {
+            this.tour_id = res.data.objects[0].planID
             this.product_name_pre = res.data.objects[0].title
             this.ruleForm.productName = res.data.objects[0].title
             this.getPaymentdetails(res.data.objects[0].planID)
@@ -855,6 +837,7 @@ export default {
           this.ruleForm.productName = ''
         })
       } else {
+        this.tableData5 = [];
         this.product_name_pre = ''
         this.ruleForm.productName = ''
       }
@@ -872,7 +855,6 @@ export default {
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
-          console.log(res.data.objects.length-1)
           this.tableData4 = res.data.objects;
           this.total = res.data.total;
           this.count3 = res.data.objects.length-1
@@ -998,17 +980,19 @@ export default {
           name: queryString5
         }
       }).then(res => {
-        for (let i = 0; i < res.data.objects.length; i++) {
-          this.tableData2.push({
-            "value": res.data.objects[i].name,
-            "id": res.data.objects[i].id
-          })
-          this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+        if(res.data.objects != null) {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.tableData2.push({
+              "value": res.data.objects[i].name,
+              "id": res.data.objects[i].id
+            })
+            this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+          }
+          var results = queryString5 ? this.tableData2.filter(this.createFilter(queryString5)) : [];
+          cb(results)
+        } else {
+          cb()
         }
-        var results = queryString5 ? this.tableData2.filter(this.createFilter(queryString5)) : [];
-        cb(results)
-      }).catch(err => {
-        console.log(err);
       })
     },
     createFilter(queryString) {
@@ -1021,6 +1005,7 @@ export default {
       //console.log(this.ruleForm.payMode)
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.inputVisible2 = true;
           let pictureList = [];
           for (let i = 0; i < this.fileList.length; i++) {
             let picture = {};
@@ -1046,7 +1031,6 @@ export default {
               files: pictureList, //付款方式
             }
           }).then(res => {
-            console.log(res.data);
             if (res.data.isSuccess == true) {
               this.closeAdd()
               this.sendBPM(res.data.object)
@@ -1249,6 +1233,11 @@ export default {
       this.supplierLength = true
       this.tour_id = 0
       this.fileList = []
+      this.tableData5 = [];
+      // 清空表单验证样式
+      if (this.$refs['ruleForm'] != undefined) {
+        this.$refs['ruleForm'].resetFields();
+      }
     },
   },
   created() {
@@ -1358,4 +1347,5 @@ export default {
   width: 800px !important;
   color: red;
 }
+
 </style>
