@@ -947,7 +947,7 @@ export default {
       } else {
         if (this.dynamicTags2.length == 0) {
           this.empty = true;
-          document.getElementById('input-error').style.border = "solid 1px red";
+          // document.getElementById('input-error').style.border = "solid 1px red";
         } else {
           this.inputVisible2 = false;
         }
@@ -1238,6 +1238,7 @@ export default {
       if (this.$refs['ruleForm'] != undefined) {
         this.$refs['ruleForm'].resetFields();
       }
+      
     },
   },
   created() {
