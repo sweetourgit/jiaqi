@@ -1192,8 +1192,8 @@ export default {
             "userCode": "rbop01",
             "startTime": this.startTime?this.startTime:"1970-07-23T01:30:54.452Z",
             "endTime": this.endTime?this.endTime:new Date(),
-            "startIndex": 1,
-            "endIndex": 1
+            "startIndex": 1,  //页码
+            "endIndex": 1   //每页条数
           }
       )
       .then(obj=>{
