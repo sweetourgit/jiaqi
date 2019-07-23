@@ -17,8 +17,7 @@
        <el-button :disabled="forbidden2" @click="operation(1)">下单</el-button>
      </el-row>
      <!--list-->
-     <el-table :data="teamqueryList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">
-       <el-table-column  prop="id" label="" fixed type="selection"></el-table-column>     
+     <el-table :data="teamqueryList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
        <el-table-column  type="index" label="序号" width="60"></el-table-column>
        <el-table-column  prop="title" label="产品名称" min-width="340"></el-table-column>
        <el-table-column  prop="groupCode" label="团号" width="220"></el-table-column>
