@@ -595,7 +595,7 @@ export default {
       startUpWorkFlowForJQ(OrderID,FlowModel,FlowModelName,Usercode){
         this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ',{
             "jQ_ID": OrderID,
-            "jQ_Type": FlowModel,
+            "jQ_Type": FlowModel, 
             "workflowCode": FlowModelName,
             "userCode": Usercode
           }).then(res => {
@@ -604,7 +604,7 @@ export default {
      },
      //提交工作任务
      submitWAForJQ(Usercode,workItemID){
-        this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GettingUnfinishedTasksForJQ',{
+        this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/SubmitWorkAssignmentsForJQ',{
             "userCode": Usercode,
             "workItemID": workItemID,
             "commentText": "测试"
