@@ -8,9 +8,11 @@
       </div>
       <div class="table_trip" style="width: 100%;">
         <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-          <el-table-column prop="order" label="订单ID" align="center" width="80%">
+          <el-table-column prop="oid" label="订单ID" align="center" >
           </el-table-column>
           <el-table-column prop="title" label="产品名称" align="center">
+          </el-table-column>
+          <el-table-column prop="type" label="类别" align="center" width="70%">
           </el-table-column>
           <el-table-column prop="time" label="销售时间" align="center">
           </el-table-column>
@@ -52,7 +54,8 @@ export default {
       order: '123456',
       tableData: [{
         id: '1',
-        order: '311123',
+        oid: '311123',
+        type: '门票',
         title: '丹东百瀑峡门票（成人票）',
         time: '2019-01-09 09:37',
         money: '收入：123.12 应付金额：123.12 商家承担优惠：19.99 单票成本：111.00 总成本：111.00',
@@ -63,7 +66,8 @@ export default {
         accountStatus: '未报账',
       }, {
         id: '2',
-        order: '311123',
+        oid: '311123',
+        type: '门票',
         title: '丹东百瀑峡门票（成人票）',
         time: '2019-01-09 09:37',
         money: '收入：123.12 应付金额：123.12 商家承担优惠：19.99 单票成本：111.00 总成本：111.00',
@@ -74,7 +78,8 @@ export default {
         accountStatus: '未报账',
       }, {
         id: '3',
-        order: '311123',
+        oid: '311123',
+        type: '门票',
         title: '丹东百瀑峡门票（成人票）',
         time: '2019-01-09 09:37',
         money: '收入：123.12 应付金额：123.12 商家承担优惠：19.99 单票成本：111.00 总成本：111.00',
