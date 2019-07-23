@@ -4,10 +4,6 @@
       <div class="borders" style="margin-bottom:100px;">
         <div>
           <div class="search">
-            <span class="search_style">团期计划：</span>
-            <el-input v-model="planID" placeholder="请输入内容" class="search_input"></el-input>
-            <span class="search_style">申请人：</span>
-            <el-input v-model="user" placeholder="请输入内容" class="search_input"></el-input>
             <span class="search-title">发起时间:</span>
             <el-date-picker v-model="startTime" type="date" placeholder="开始日期"></el-date-picker>
             <div class="date-line"></div>
@@ -479,8 +475,6 @@ export default {
       plan: '',
       accepter: '',
       pageshow1:true,
-      planID: '',
-      user: '',
       startTime: '',
       endTime: '',
       //报销table
@@ -1170,8 +1164,6 @@ export default {
       let objectRequest = {};
       objectRequest.paymentType = 2;
       objectRequest.checkType = 0;
-      if (this.planID) { objectRequest.planID = this.planID; }
-      if (this.user) { objectRequest.createUser = this.user; }
       if (this.startTime) { objectRequest.beginTime = this.startTime}
       if (this.endTime) { objectRequest.endTime = this.endTime}
       var that = this
@@ -1194,26 +1186,29 @@ export default {
              this.pageshow1 = true
         })
   },
-  },
-  created(){
-   this.searchHand(1,this.pageSize);
-
-   /*工作流
-    var that = this
-    this.$http.post(
-        this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
-            "userCode": sessionStorage.getItem('userCode'),
-            "startTime": "2018-07-18T05:30:17.471Z",
-            "endTime": "2019-07-18T05:30:17.471Z",
+  //工作流获取代办
+  gettingUnfinished(){
+     this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
+            "userCode": "rbop01",
+            "startTime": this.startTime?this.startTime:"1970-07-23T01:30:54.452Z",
+            "endTime": this.endTime?this.endTime:new Date(),
+            "startIndex": 1,
+            "endIndex": 1
           }
       )
-      .then(function(obj) {
-        //that.total = obj.data.total;
-        //that.tableData = obj.data.objects;
+      .then(obj=>{
+        //this.total = obj.data.total;
+        //this.tableData = obj.data.objects;
       })
       .catch(function(obj) {
         console.log(obj)
-      })*/
+      })
+   }
+  },
+  created(){
+   //this.searchHand(1,this.pageSize);
+   this.gettingUnfinished();
+    
   },
   
 }
