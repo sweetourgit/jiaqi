@@ -22,6 +22,10 @@ import travelTemplate from '@/page/productManagement/travelTemplate/travelTempla
 //团期计划
 import regimentPlan from '@/page/productManagement/regimentPlan/regimentPlan'
 import teamPlanList from '@/page/productManagement/regimentPlan/children/team/teamPlanList'
+import scenicTicketingList from '@/page/productManagement/regimentPlan/children/team/scenicTicketingList'
+import scenicTicketingDetails from '@/page/productManagement/regimentPlan/children/team/scenicTicketingDetails'
+import scenicTicketingPledging from '@/page/productManagement/regimentPlan/children/team/scenicTicketingPledging'
+import scenicTicketingBillReporting from '@/page/productManagement/regimentPlan/children/team/scenicTicketingBillReporting'
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 import changePro from '@/page/productManagement/changePro/changePro'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
@@ -32,6 +36,7 @@ import priList from '@/page/contentInfo/priManagement/priList'
 import proList from '@/page/contentInfo/proList/proList'
 import orderList from '@/page/orderManagement/orderList/orderList'
 import externalOrderList from '@/page/orderManagement/externalOrderList/externalOrderList'
+import importHistory from '@/page/orderManagement/externalOrderList/importHistory'
 import loanManagement from '@/page/Finance/loanManagement/loanManagement'
 import advancePayment from '@/page/Finance/advancePayment/advancePayment'
 import reimburseManagement from '@/page/Finance/reimburseManagement/reimburseManagement'
@@ -45,169 +50,192 @@ import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
 Vue.use(Router);
 
 export default new Router({
-  routes: [
-    {
-      path: '/', redirect: 'login',
+  routes: [{
+      path: '/',
+      redirect: 'login',
     }, {
       path: '/userList',
       component: userList,
       name: '用户列表',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/organList',
       component: organList,
       name: '组织列表',
       meta: {
         keepAlive: true,
-        title:'组织列表',
-        auth:true}
+        title: '组织列表',
+        auth: true
+      }
     }, {
       path: '/role',
       component: role,
       name: '角色模板',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/addRole',
       component: addRole,
       name: "添加角色权限模板",
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     },
-   /* {
-      path: '/perList',
-      component: perList,
-      name: '权限列表',
-      meta: {
-        keepAlive: true,
-        auth:true}
-    }*/, {
+    /* {
+       path: '/perList',
+       component: perList,
+       name: '权限列表',
+       meta: {
+         keepAlive: true,
+         auth:true}
+     }*/
+    , {
       path: '/accountInfor',
       component: accountInfor,
       name: '个人中心',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/login',
       component: login,
       meta: {
-        keepAlive: false}
+        keepAlive: false
+      }
     }, {
       path: '/positionList',
       component: positionList,
       name: '职位列表',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/userList',
       component: userList,
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/userList/addUser',
       component: addUser,
       name: '用户添加',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/cityList',
       component: cityList,
       name: '区域列表',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/customArea',
       component: customArea,
       name: '自定义地区',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/scenicList',
       component: scenicList,
       name: '景点列表',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/labelList',
       component: labelList,
       name: '标签列表',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/materialList',
       component: materialList,
       name: '素材列表',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/hotelList',
       component: hotelList,
       name: '酒店列表',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/supplierInfo',
       component: supplierInfo,
       name: '供应商信息',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/merchantInfo',
       component: merchantInfo,
       name: '商户信息',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
       path: '/priList',
       component: priList,
       name: '功能列表',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
       path: '/proList',
       component: proList,
       name: '权限列表',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
       path: '/blacklist',
       component: blacklist,
       name: '黑名单',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
       path: '/enrollTypeA',
       component: enrollTypeA,
       name: '报名类型A',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
       path: '/enrollTypeB',
       component: enrollTypeB,
       name: '报名类型B',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     },
     {
       path: '/controlList',
@@ -215,77 +243,129 @@ export default new Router({
       name: '权限配置',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
       path: '/productList',
       component: productList,
       name: '产品列表',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
       path: '/listInfo',
       component: baseInfo,
       name: '添加跟团游',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/travelTemplate',
       component: travelTemplate,
       name: '出行模板',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     }, {
       path: '/regimentPlan',
       component: regimentPlan,
       name: '团期计划',
-      children: [
-        {
+      children: [{
           path: 'teamPlanList',
           name: '团期计划列表',
           component: teamPlanList,
           meta: {
             keepAlive: true,
-            auth:true},
-          }
+            auth: true
+          },
+        },
+        {
+          path: 'scenicTicketingList',
+          name: '景区/票务',
+          component: scenicTicketingList,
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+
       ]
-    },{
+    },
+    {
+      path: '/scenicTicketingDetails',
+      name: '产品管理  /团期计划  /详情',
+      component: scenicTicketingDetails,
+      meta: {
+        keepAlive: true,
+        auth: true
+      },
+    }, {
+      path: '/scenicTicketingPledging',
+      name: '产品管理  /团期计划  /认款',
+      component: scenicTicketingPledging,
+      meta: {
+        keepAlive: true,
+        auth: true
+      },
+    }, {
+      path: '/scenicTicketingBillReporting',
+      name: '产品管理  /团期计划  /报账单',
+      component: scenicTicketingBillReporting,
+      meta: {
+        keepAlive: true,
+        auth: true
+      },
+    }, {
       path: '/orderList',
       component: orderList,
       name: '订单管理',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
       path: '/externalOrderList',
       component: externalOrderList,
       name: '外部订单',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
+      path: '/importHistory',
+      component: importHistory,
+      name: '外部订单管理/订单管理/导入历史',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '/sharedInventory',
       component: sharedInventory,
       name: '共享库存',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
       path: '/changePro',
       component: changePro,
       name: '编辑产品',
       meta: {
         keepAlive: true,
-        auth:true}
-    },{
+        auth: true
+      }
+    }, {
       path: '/changeInfo',
       component: changeInfo,
       name: '行程信息',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     },
     {
       path: '/loanManagement',
@@ -293,7 +373,8 @@ export default new Router({
       name: '无收入借款管理',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     },
     {
       path: '/advancePayment',
@@ -301,7 +382,8 @@ export default new Router({
       name: '预付款管理',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     },
     {
       path: '/reimburseManagement',
@@ -309,7 +391,8 @@ export default new Router({
       name: '报销管理',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     },
     {
       path: '/collectionManagement',
@@ -317,7 +400,8 @@ export default new Router({
       name: '收款管理',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     },
     {
       path: '/arrearsManagement',
@@ -325,7 +409,8 @@ export default new Router({
       name: '欠款管理',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     },
     {
       path: '/predepositManagement',
@@ -333,7 +418,8 @@ export default new Router({
       name: '客商预存款管理',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     },
     {
       path: '/bankAccount',
@@ -341,11 +427,12 @@ export default new Router({
       name: '银行账号管理',
       meta: {
         keepAlive: true,
-        auth:true}
+        auth: true
+      }
     },
     {
       path: '*',
-      redirect:'/userList'
+      redirect: '/userList'
     }
   ],
 })

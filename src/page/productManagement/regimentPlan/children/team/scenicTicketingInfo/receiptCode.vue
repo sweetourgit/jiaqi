@@ -1,0 +1,155 @@
+<template>
+  <div class="vivo" style="position:relative">
+    <!--申请预付款-->
+    <el-dialog title="收款编码数据详情" :visible="dialogFormVisible" width=70% @close="closeAdd">
+      <div class="totalMoney"><i class="el-icon-info"></i>总计：{{totalMoney}}元 </div>
+      <div class="table_trip">
+        <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
+          <el-table-column prop="oid" label="订单ID" align="center" width="80%">
+          </el-table-column>
+          <el-table-column prop="title" label="产品名称" align="center">
+          </el-table-column>
+          <el-table-column prop="platform" label="平台" align="center">
+          </el-table-column>
+          <el-table-column prop="cost" label="成本" align="center">
+          </el-table-column>
+          <el-table-column prop="income" label="收入" align="center">
+          </el-table-column>
+          <el-table-column prop="guestInformation" label="客人信息" align="center">
+          </el-table-column>
+          <el-table-column prop="number" label="数量" align="center">
+          </el-table-column>
+          <el-table-column prop="untreatedMoney" label="未处理金额" align="center">
+          </el-table-column>
+          <el-table-column prop="money" label="申请金额" align="center">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.money" placeholder="申请金额"></el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="footer">
+        <el-button @click="submitForm" type="primary" size="small" class="table_details">保存</el-button>
+        <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+<script type="text/javascript">
+export default {
+  name: "receiptCode",
+  components: {},
+  props: {
+    dialogFormVisible: false,
+    info: '',
+  },
+  data() {
+    return {
+      totalMoney: '222.00', //总计
+      currentRow: true,
+      tableData: [{
+        id: '1',
+        oid: '311123',
+        title: '丹东百瀑峡门票（成人票）',
+        platform: '途牛',
+        cost: '111.00',
+        income: '111.00',
+        guestInformation: '取票人：阳阳 手机：1388888883',
+        number: '2',
+        untreatedMoney: '20.00',
+        money: '111.00',
+      }, {
+        id: '2',
+        oid: '311124',
+        title: '丹东百瀑峡门票（成人票）',
+        platform: '途牛',
+        cost: '111.00',
+        income: '111.00',
+        guestInformation: '取票人：阳阳 手机：1388888883',
+        number: '2',
+        untreatedMoney: '33.00',
+        money: '111.00',
+      }, ],
+    }
+  },
+  computed: {
+    // 计算属性的 getter
+  },
+  watch: {
+
+  },
+  methods: {
+    //获取id
+    clickBanle(row, event, column) {
+      this.pid = row['id']
+    },
+    // 表格头部背景颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+      } else {
+        return ''
+      }
+    },
+    closeAdd() {
+      this.$emit('close', false);
+    },
+    submitForm(formName) {
+      this.$confirm('存在订单未填写申请金额 , 点击保存则自动移除以上订单。', '提示', {
+        confirmButtonText: '保存',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '保存成功!'
+        });
+        this.$emit('close', false);
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消保存'
+        });
+      });
+    },
+
+  },
+  created() {},
+  mounted() {}
+}
+
+</script>
+<style lang="scss" scoped>
+.footer {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  float: right;
+  margin-top: -10px;
+}
+
+.el-button {
+  bottom: 1%;
+  right: 1%;
+  float: right;
+  margin: 0 10px;
+}
+
+.inputWidth {
+  width: 400px;
+}
+
+.totalMoney {
+  width: 95%;
+  background-color: #E6F3FC;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 30px;
+}
+
+.table_trip {
+  width: 95%;
+  margin: 30px 30px;
+}
+
+</style>
