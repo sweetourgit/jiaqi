@@ -14,7 +14,7 @@
         <el-col :span="8">
           <div class="button">
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
-            <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">预览报账单</el-button>
+            <el-button class="el-button" type="primary" @click="toPreview">预览报账单</el-button>
             <el-button class="el-button" type="primary" @click="submitForm">保 存</el-button>
             <el-button class="el-button" type="primary" @click="delInfo">提交报账单</el-button>
           </div>
@@ -114,8 +114,8 @@
             </el-table-column>
             <el-table-column prop="option" label="操作" align="center" width="220">
               <template slot-scope="scope">
-                <el-button @click="unbinding(scope.row)" type="danger" size="small" class="table_details">更改人数</el-button>
-                <el-button @click="unbinding(scope.row)" type="danger" size="small" class="table_details">设置收入来源</el-button>
+                <el-button @click="toUpddateIncome(scope.row)" type="primary" size="small" class="table_details">更改人数</el-button>
+                <el-button @click="toUpddateSource(scope.row)" type="primary" size="small" class="table_details">设置收入来源</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -130,15 +130,24 @@
         </span>
       </el-dialog>
       <GetOrder :dialogFormVisible="dialogFormVisible" @close="close2" :info="info"></GetOrder>
+      <ToUpddateSource :dialogFormVisible="dialogFormVisible2" @close="close2" :info="info"></ToUpddateSource>
+      <ToUpddateIncome :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpddateIncome>
+      <ToPreview :dialogFormVisible="dialogFormVisible4" @close="close2" :info="info"></ToPreview>
     </div>
   </div>
 </template>
 <script type="text/javascript">
 import GetOrder from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/getOrder'
+import ToUpddateSource from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/toUpddateSource'
+import ToUpddateIncome from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/toUpddateIncome'
+import ToPreview from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/toPreview'
 export default {
   name: "scenicTicketingBillReporting",
   components: {
-    GetOrder
+    GetOrder,
+    ToUpddateSource,
+    ToUpddateIncome,
+    ToPreview
   },
   data() {
     return {
@@ -150,6 +159,9 @@ export default {
       number: '166',
       transmit: false,
       dialogFormVisible: false,
+      dialogFormVisible2: false,
+      dialogFormVisible3: false,
+      dialogFormVisible4: false,
       saveDialogVisible: false,
       tableData: [{
         id: '1',
@@ -199,32 +211,27 @@ export default {
     closeAdd() {
       this.$router.push({ path: "/regimentPlan/scenicTicketingList" });
     },
+
     delInfo() {
       this.saveDialogVisible = true
     },
-    unbinding(row) {
-      console.log(row['tour'])
-      this.$confirm('是否删除此订单?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
+    toUpddateSource(row) {
+      this.dialogFormVisible2 = true
+    },
+    toUpddateIncome(row) {
+      this.dialogFormVisible3 = true
+    },
+    toPreview() {
+      this.dialogFormVisible4 = true
     },
     getOrder(row) {
       this.dialogFormVisible = true
     },
     close2() {
       this.dialogFormVisible = false
+      this.dialogFormVisible2 = false
+      this.dialogFormVisible3 = false
+      this.dialogFormVisible4 = false
     },
     //获取id
     clickBanle(row, event, column) {

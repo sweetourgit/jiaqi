@@ -15,6 +15,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.use(ElementUI);
 
+import Print  from './js/libs/print.js'
+Vue.use(Print) // 打印
+
 //axios
 import axios from 'axios'
 import qs from 'qs'

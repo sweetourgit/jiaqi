@@ -14,7 +14,7 @@
         <el-col :span="8">
           <div class="button">
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
-            <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">修 改</el-button>
+            <el-button class="el-button" type="primary" @click="toUpdate">修 改</el-button>
             <el-button class="el-button" type="primary" @click="pledging">认 款</el-button>
             <el-button class="el-button" type="danger" @click="delInfo">删 除</el-button>
           </div>
@@ -173,16 +173,19 @@
           </el-tab-pane>
         </el-tabs>
       </div>
+      <ToUpdate :dialogFormVisible="dialogFormVisible2" @close="close2" :info="info"></ToUpdate>
       <GetOrder :dialogFormVisible="dialogFormVisible" @close="close2" :info="info"></GetOrder>
     </div>
   </div>
 </template>
 <script type="text/javascript">
 import GetOrder from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/getOrder'
+import ToUpdate from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/toUpdate'
 export default {
   name: "scenicTicketingDetails",
   components: {
-    GetOrder
+    GetOrder,
+    ToUpdate
   },
   data() {
     return {
@@ -192,6 +195,7 @@ export default {
       info: '',
       transmit: false,
       dialogFormVisible: false,
+      dialogFormVisible2: false,
       status: {
         0: '审核中',
         1: '通过',
@@ -268,6 +272,9 @@ export default {
     closeAdd() {
       this.$router.push({ path: "/regimentPlan/scenicTicketingList" });
     },
+    toUpdate() {
+      this.dialogFormVisible2 = true
+    },
     delInfo() {
       console.log(this.$route.query.id)
       this.$confirm('是否删除此团期计划?', '提示', {
@@ -309,6 +316,7 @@ export default {
     },
     close2() {
       this.dialogFormVisible = false
+      this.dialogFormVisible2 = false
     },
     //获取id
     clickBanle(row, event, column) {
