@@ -271,9 +271,9 @@
           <el-col :span="4" class="">
           </el-col>
           <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
+            <div style="position:relative;z-index: 99;height: 68px;line-height: 68px;">总经理</div>
           </el-col>
           <el-col :span="4" class="">
-            <div style="position:relative;z-index: 99;height: 68px;line-height: 68px;">总经理</div>
           </el-col>
         </el-row>
         <el-row>
