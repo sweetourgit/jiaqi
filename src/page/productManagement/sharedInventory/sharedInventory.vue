@@ -408,7 +408,7 @@ export default {
             "object": {
               "name": this.addStock.name,
               "count": this.addStock.count,
-              "averageCost": this.addStock.averageCost,
+              "averageCost": this.addStock.averageCost == '' ? 0 : this.addStock.averageCost,
               "date": str,
               "share": 1,
               "orgID": 0,
