@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
-    <el-dialog title="新建报账团号" :visible="dialogFormVisible" width=32% @close="closeAdd">
+    <el-dialog title="新建报账团号" :visible="dialogFormVisible" width="600px" @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div style="height: 300px;">
           <el-form-item label="报账团期" prop="tour" label-width="120px" style="float:left;">
@@ -140,7 +140,11 @@ export default {
 }
 
 .inputWidth {
-  width: 400px;
+  min-width: 400px;
+}
+
+.inputWidth2 {
+  min-width: 400px;
 }
 
 </style>
