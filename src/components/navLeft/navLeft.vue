@@ -165,6 +165,10 @@
                 router:'/reimburseManagement'
               },
               {
+                value: '报账单',
+                router:'/checkSheet'
+              },
+              {
                 value: '欠款管理',
                 router:'/arrearsManagement'
               },

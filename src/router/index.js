@@ -49,6 +49,7 @@ import pledgingManagementApproval from '@/page/Finance/pledgingManagement/pledgi
 import pledgingManagementSee from '@/page/Finance/pledgingManagement/pledgingManagementSee'
 import enrollTypeA from '@/page/contentInfo/enrollType/enrollTypeA'
 import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
+import checkSheet from '@/page/Finance/checkSheet/checkSheet'//报账单  by  张伊
 
 Vue.use(Router);
 
@@ -453,6 +454,14 @@ export default new Router({
       path: '/pledgingManagementSee',
       component: pledgingManagementSee,
       name: '财务管理   / 财务认款管理   / 查看',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
+      path: '/checkSheet',
+      component: checkSheet,
+      name: '报账单',
       meta: {
         keepAlive: true,
         auth: true
