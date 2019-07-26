@@ -179,8 +179,8 @@
   </div>
 </template>
 <script type="text/javascript">
-import GetOrder from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/getOrder'
-import ToUpdate from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/toUpdate'
+import GetOrder from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrder'
+import ToUpdate from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpdate'
 export default {
   name: "scenicTicketingDetails",
   components: {

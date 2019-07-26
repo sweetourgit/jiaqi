@@ -137,10 +137,10 @@
   </div>
 </template>
 <script type="text/javascript">
-import GetOrder from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/getOrder'
-import ToUpddateSource from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/toUpddateSource'
-import ToUpddateIncome from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/toUpddateIncome'
-import ToPreview from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/toPreview'
+import GetOrder from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrder'
+import ToUpddateSource from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateSource'
+import ToUpddateIncome from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateIncome'
+import ToPreview from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toPreview'
 export default {
   name: "scenicTicketingBillReporting",
   components: {

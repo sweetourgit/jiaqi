@@ -59,7 +59,7 @@
   </div>
 </template>
 <script type="text/javascript">
-import NewTour from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/newTour'
+import NewTour from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/newTour'
 
 
 export default {

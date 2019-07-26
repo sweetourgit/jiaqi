@@ -167,10 +167,10 @@
   </div>
 </template>
 <script type="text/javascript">
-import GetOrderCode from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/getOrderCode'
-import GetOrderInvoice from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/getOrderInvoice'
-import ReceiptCode from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/receiptCode'
-import Invoice from '@/page/productManagement/regimentPlan/children/team/scenicTicketingInfo/invoice'
+import GetOrderCode from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrderCode'
+import GetOrderInvoice from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrderInvoice'
+import ReceiptCode from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/receiptCode'
+import Invoice from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/invoice'
 export default {
   name: "scenicTicketingPledging",
   components: {
