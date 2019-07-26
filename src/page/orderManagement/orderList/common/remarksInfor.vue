@@ -1,7 +1,7 @@
 <template>
   <div>
        <!--备注信息弹窗-->
-       <el-dialog title="订单备注" :visible.sync="dialogFormMark" class="city_list" width="780px">
+       <el-dialog title="订单备注" :visible.sync="dialogFormMark" class="city_list" width="780px" @close="close">
           <el-form :model="markFormAdd" :rules="rules" ref="markFormAdd" label-width="80px" class="demo-ruleForm">
                <div v-for="item in markForms">
                <el-form-item :label="name">            

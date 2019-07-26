@@ -348,13 +348,7 @@ export default {
       operation(orderId,i){
           this.orderId = orderId;
           this.variable++;
-          if(i==1){
-            this.dialogType=1; //流程管理弹窗
-          }else if(i==2){
-            this.dialogType=2; //备注信息弹窗
-          }else if(i==4){
-            this.dialogType=4; //转团
-          }           
+          this.dialogType=i;         
       }
    }
 }

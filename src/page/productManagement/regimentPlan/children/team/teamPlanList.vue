@@ -1,25 +1,33 @@
 <template>
   <div>
       <div class="demo-input-suffix">
-         <span class="search-title">团号计划</span>
-         <el-input placeholder="输入团号" v-model="groupCode" class="group-no"></el-input>
+         <span class="search-title">产品名称</span>
+         <el-input placeholder="请输入" v-model="title" class="group-no"></el-input>
+         <span class="search-title">报账团号</span>
+         <el-input placeholder="请输入" v-model="groupCode" class="group-no"></el-input>
          <span class="search-title">出行日期</span>
-         <el-date-picker v-model="startDate" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
-         <div class="date-line"></div>
-         <el-date-picker v-model="endDate" type="date" placeholder="终止日期"></el-date-picker>
-         <el-button type="primary" icon="el-icon-search" class="search" @click="search"></el-button>
+         <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期"  end-placeholder="结束日期" align="right" class="group-no">
+         </el-date-picker>
+         <br/>
+         <span class="search-title">操作人员</span>
+         <el-input placeholder="请输入" v-model="op" class="group-no"></el-input>
+         <span class="search-title">报账状态</span>
+         <el-select v-model="financeState" placeholder="请选择"  class="group-no" style="width:185px">
+             <el-option v-for="item in financeType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+         </el-select>
+
+         <el-button type="primary" class="search-but" @click="search">搜索</el-button>
+         <el-button type="primary" plain @click="reset">重置</el-button>
      </div>
      <div class="main">
      <el-row class="button">
-       <!--<el-button :disabled="forbidden1" @click="dialogFormVisible = true">更改状态</el-button>
-       <el-button :disabled="forbidden2" @click="dialogCost = true">报账单</el-button>
-       <el-button :disabled="forbidden2">订单</el-button>-->
-       <el-button :disabled="forbidden2" @click="operation(1)">下单</el-button>
+       <!--
+       <el-button :disabled="forbidden2" @click="dialogCost = true">报账单</el-button>-->
      </el-row>
      <!--list-->
      <el-table :data="teamqueryList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
        <el-table-column  type="index" label="序号" width="60"></el-table-column>
-       <el-table-column  prop="title" label="产品名称" min-width="340"></el-table-column>
+       <el-table-column  prop="title" label="产品名称" min-width="200"></el-table-column>
        <el-table-column  prop="groupCode" label="团号" width="220"></el-table-column>
        <el-table-column  prop="dateFormat" label="出行日期" width="100"></el-table-column>
        <el-table-column  prop="week" label="周" width="70"></el-table-column>
@@ -28,7 +36,16 @@
        <el-table-column  prop="count" label="计划位" width="70"></el-table-column>
        <el-table-column  prop="remaining" label="余位" width="70"></el-table-column>
        <el-table-column  prop="shareCN" label="是否共享" width="85"></el-table-column>
-       <el-table-column  prop="op" label="操作" width="80"></el-table-column>      
+       <el-table-column  prop="op" label="操作人员" width="80"></el-table-column>      
+       <el-table-column label="操作" width="150">
+           <template slot-scope="scope">
+              <span class="cursor blue" @click="haltSales(scope.row.id)">停售</span>
+              <span class="em">|</span>
+              <span class="cursor blue" @click="operation(1)">下单</span>
+              <span class="em">|</span>
+              <span class="cursor blue" @click="operation(2)">详情</span>
+           </template> 
+       </el-table-column>      
      </el-table>
      <el-pagination v-if="pageshow" class="pagination"
             @size-change="handleSizeChange"
@@ -40,17 +57,6 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
      </el-pagination>
-     <!--更改状态弹窗-->
-     <el-dialog title="更改状态" :visible.sync="dialogFormVisible" class="city_list" width="500px">
-      <el-form :model="form">
-          <el-radio v-model="form.radio" label="1"><span class="fs">正常</span></el-radio>
-          <el-radio v-model="form.radio" label="2"><span class="fs">停售</span></el-radio>
-      </el-form>
-      <div slot="footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false" class="confirm">确 定</el-button>
-      </div>
-    </el-dialog>
     <!--报账单弹窗-->
     <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list" width="60%">      
        <el-table :data="costList" ref="costTable" class="costTable" :header-cell-style="getCostClass" border :row-style="costrowClass" :cell-style="getCellClass" @selection-change="changeFunCost" @row-click="clickRowCost">
@@ -84,9 +90,23 @@ export default {
        planId:0,
        variable:0, //设置一个变量展示弹窗
        dialogType:0,//弹窗类型  1：下单
-       groupCode:'',
-       startDate:'',
-       endDate: '',
+       title:'',//产品名称
+       groupCode:'', //团号
+       date:'', //日期
+       op:'', //操作人员
+       financeState:'', //报账状态
+       financeType: [{
+          value: '0',
+          label: '全部'
+       },
+       {
+          value: '1',
+          label: '未报账'
+       },
+       {
+          value: '2',
+          label: '已报账'
+       }],
        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
        pageIndex: 1, // 设定当前页数
        total: 0,
@@ -119,14 +139,6 @@ export default {
        }],
         dialogCost: false, //成本弹窗
         costSelection: [],   //选中的list
-        //更改状态   
-        dialogFormVisible: false,   
-        form: {
-          radio: '',
-        },
-        formLabelWidth: '120px',
-        forbidden1:true,         //按钮是否禁用
-        forbidden2:true,
     }
   },
   created(){
@@ -145,17 +157,6 @@ export default {
       },
       changeFun(val) {  //保存选中项的数据
         this.multipleSelection=val;
-        if(this.multipleSelection.length==1){
-           this.forbidden2=false;
-        }else{
-           this.forbidden2=true;
-        }
-        
-        if(this.multipleSelection.length>0){
-           this.forbidden1=false;
-        }else{
-           this.forbidden1=true;
-        }
       },
       clickRow(row){    //选中行复选框勾选
         this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选 
@@ -172,13 +173,13 @@ export default {
       handleSizeChange(val){
         this.pageSize = val;
         this.pageIndex = 1;
-        this.teamQueryList(1,val,this.groupCode,this.startDate,this.endDate);
+        this.teamQueryList(1,val);
       },
       handleCurrentChange(val){
-        this.teamQueryList(val,this.pageSize,this.groupCode,this.startDate,this.endDate);
+        this.teamQueryList(val,this.pageSize);
       },
       //计划list
-      teamQueryList(pageIndex=this.pageIndex,pageSize=this.pageSize,groupCode=this.groupCode,startDate=this.startDate,endDate=this.endDate){
+      teamQueryList(pageIndex=this.pageIndex,pageSize=this.pageSize,title=this.title,groupCode=this.groupCode,startDate=this.date[0],endDate=this.date[1],op=this.op){
         if(startDate){
           let y=startDate.getFullYear();
           let m=(startDate.getMonth()+1)>9?startDate.getMonth()+1:'0'+(startDate.getMonth()+1);
@@ -199,9 +200,11 @@ export default {
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object":{            
+              "title":title,
               "groupCode": groupCode,
               "startDate": startDate,
-              "endDate": endDate
+              "endDate": endDate,
+              "op":op,
              }
           }).then(res => {
             this.teamqueryList=[];
@@ -242,9 +245,7 @@ export default {
       },
       operation(i){
           this.variable++;
-          if(i==1){
-            this.dialogType=1; //下单弹窗
-          }          
+          this.dialogType=i;          
       },
       search(){
         this.pageIndex = 1;
@@ -253,30 +254,63 @@ export default {
         this.$nextTick(() => {
             this.pageshow = true;
         })
-      }
+      },
+      reset(){
+        this.title='';
+        this.groupCode='';
+        this.date='';
+        this.op='';
+        this.financeState='';
+      },
+      haltSales(status){  //停售
+        this.$confirm("该团期是否停售?", "提示",{
+          confirmButtonText: "停售",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            this.$message({
+              type: "info",
+              message: "已停售"
+            })
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消"
+            })
+          })
+      },
+
+
+
+
+
+
    }
 }
 </script>
 
 <style scoped>
-       .demo-input-suffix{width: 900px}
+       /*search*/
+       .demo-input-suffix{padding:20px 0 10px 10px;width: 1390px;background-color: #f7f7f7}
        .el-input{width:auto}
        .group-no{margin-left:10px}
        .start-time{margin-left:10px}
        .date-line{width:30px;border-bottom:1px solid #e6e6e6;display:inline-block;margin:0 3px 3px 0}
-       .search-title{font-size: 14px;margin-left: 10px}
-       .table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 8px;width:1400px;}
+       .search-title{font-size: 14px;margin-left: 30px}
+       .search-but{margin: 20px 0 15px 295px}
+       /*list*/
+       .table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 0;width:1400px;}
        .costTable{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 0}
        .el-table tr{background: #f6f6f6 !important}
        .button{margin:25px 0 0 8px}
        .button .el-button{border:1px solid #3095fa;color:#3095fa;width:80px;padding: 0;line-height: 35px}
        .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}
        .el-table--enable-row-hover .el-table__body tr:hover>td{background-color: #f5f7fa !important}
-       .search{margin-left: 15px}
        .city_list{text-align: center}
-       .confirm{margin:0 140px 0 20px;}
-       .el-form{line-height:50px}
-       .fs{font-size: 16px}
        .pagination{text-align:center;margin:30px 0 50px 0;}
        .dialog-footer{text-align: left;margin:20px 0 20px 108px;}
+       .blue{color: #2e94f9}
+       .cursor{cursor: pointer}
 </style>
