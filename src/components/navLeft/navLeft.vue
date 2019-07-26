@@ -176,6 +176,10 @@
                 value: '客商预存款管理',
                 router:'/predepositManagement'
               },
+              {
+                value: '财务认款管理',
+                router:'/pledgingManagement'
+              },
             ],
           }
         ],

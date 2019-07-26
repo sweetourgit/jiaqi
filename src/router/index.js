@@ -44,6 +44,9 @@ import arrearsManagement from '@/page/Finance/arrearsManagement/arrearsManagemen
 import collectionManagement from '@/page/Finance/collectionManagement/collectionManagement'
 import predepositManagement from '@/page/Finance/predepositManagement/predepositList'
 import bankAccount from '@/page/Finance/bankAccount/bankAccount'
+import pledgingManagement from '@/page/Finance/pledgingManagement/pledgingManagement'
+import pledgingManagementApproval from '@/page/Finance/pledgingManagement/pledgingManagementApproval'
+import pledgingManagementSee from '@/page/Finance/pledgingManagement/pledgingManagementSee'
 import enrollTypeA from '@/page/contentInfo/enrollType/enrollTypeA'
 import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
 
@@ -425,6 +428,31 @@ export default new Router({
       path: '/bankAccount',
       component: bankAccount,
       name: '银行账号管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/pledgingManagement',
+      component: pledgingManagement,
+      name: '财务认款管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/pledgingManagementApproval',
+      component: pledgingManagementApproval,
+      name: '财务管理   / 财务认款管理   / 审批',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/pledgingManagementSee',
+      component: pledgingManagementSee,
+      name: '财务管理   / 财务认款管理   / 查看',
       meta: {
         keepAlive: true,
         auth: true
