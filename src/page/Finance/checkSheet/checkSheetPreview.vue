@@ -322,7 +322,7 @@
               class="areaIn"
               type="textarea"
               :rows="3"
-              placeholder="请输入内容"
+              placeholder="请输入内容(选填)"
               v-model="areaIn">
             </el-input>
           </div>
@@ -347,7 +347,7 @@
               class="areaIn"
               type="textarea"
               :rows="3"
-              placeholder="请输入内容"
+              placeholder="请输入内容(选填)"
               v-model="areaIn">
             </el-input>
           </div>
