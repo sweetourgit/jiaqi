@@ -2,32 +2,32 @@
   <div class="vivo" style="position:relative">
     <div class="demo-input-suffix ">
       <div class="button_select">
-        <el-button @click="searchHand()" size="medium">取消</el-button>
-        <el-button type="primary" @click="resetHand()" size="medium">保存</el-button>
-        <el-button type="warning" @click="searchHand()" size="medium">一键驳回</el-button>
-        <el-button type="success" @click="resetHand()" size="medium">审核提交</el-button>
+        <el-button @click="cancel()" size="medium">取消</el-button>
+        <el-button type="primary" @click="save()" size="medium">保存</el-button>
+        <el-button type="warning" @click="reject()" size="medium">一键驳回</el-button>
+        <el-button type="success" @click="submit()" size="medium">审核提交</el-button>
       </div>
     </div>
     <StartNumber :dialogFormVisible="dialogFormVisible" @close="close" :frameTitle1="frameTitle1" :frameTitle2="frameTitle2"></StartNumber>
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="认款记录" name="one">
-        <Record @selection="selection" :reable="reable" :pid="pid" :transmit="transmit"></Record>
+      <el-tab-pane label="收款编码" name="one">
+        <Receivables @selection="selection" :reable="reable" :pid="pid" :transmit="transmit"></Receivables>
       </el-tab-pane>
-      <el-tab-pane :label="'需要您审批 ('+number+')'" name="two">
-        <Approval @getNumber="getNumber" @selection="selection" :reable="reable" :pid="pid" :transmit="transmit"></Approval>
+      <el-tab-pane label="发票" name="two">
+        <Invoice @selection="selection" :reable="reable" :pid="pid" :transmit="transmit"></Invoice>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 <script type="text/javascript">
-import Record from '@/page/Finance/pledgingManagement/pledgingManagementInfo/record'
-import Approval from '@/page/Finance/pledgingManagement/pledgingManagementInfo/approval'
+import Invoice from '@/page/Finance/pledgingManagement/pledgingManagementInfo/invoice'
+import Receivables from '@/page/Finance/pledgingManagement/pledgingManagementInfo/receivables'
 import StartNumber from '@/page/Finance/pledgingManagement/pledgingManagementInfo/startNumber'
 export default {
   name: "pledgingManagementApproval",
   components: {
-    Record,
-    Approval,
+    Invoice,
+    Receivables,
     StartNumber,
   },
   data() {
@@ -39,7 +39,6 @@ export default {
       frameTitle2: '',
       transmit: false,
       dialogFormVisible: false,
-      number: 10,
     }
   },
   computed: {
@@ -47,9 +46,6 @@ export default {
   },
   watch: {},
   methods: {
-    getNumber(number) {
-      this.number = number
-    },
     selection(reable, pid) {
       this.reable = reable
       this.pid = pid
@@ -67,11 +63,59 @@ export default {
     close() {
       this.dialogFormVisible = false
     },
+    reject() {
+      this.$confirm('是否一键驳回所有认款记录?', '提示', {
+        confirmButtonText: '驳回',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '驳回成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消驳回'
+        });
+      });
+    },
+    save() {
+      this.$confirm('是否保存审批记录?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '保存成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消保存'
+        });
+      });
+    },
+    cancel() {
+      this.$router.push({ path: "/pledgingManagement" });
+    },
     //搜索
-    searchHand() {
-      this.$message({
-        type: 'success',
-        message: '搜索成功!'
+    submit() {
+      this.$confirm('是否审核提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '保存成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消保存'
+        });
       });
     },
     resetHand() {}

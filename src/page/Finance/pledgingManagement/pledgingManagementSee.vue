@@ -1,55 +1,44 @@
 <template>
   <div class="vivo" style="position:relative">
     <div class="demo-input-suffix ">
-      <span class="search-title">报账团期：</span>
-      <el-input v-model="activeForm.tour" class="input" placeholder="请输入"></el-input>
-      <span class="search-title">操作人：</span>
-      <el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>
       <div class="button_select">
-        <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
-        <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
+        <el-button @click="cancel()" size="medium">取消</el-button>
+        <el-button type="primary" @click="save()" size="medium">保存</el-button>
+        <el-button type="warning" @click="reject()" size="medium">一键驳回</el-button>
+        <el-button type="success" @click="submit()" size="medium">审核提交</el-button>
       </div>
-    </div>
-    <div class="main">
-      <el-button type="primary" @click="startNumber('发票号','发票起始号:')" plain>发票起始号：T123456</el-button>
-      <el-button type="primary" @click="startNumber('收款编码号','收款编码起始号:')" plain>收款编码起始号：123456</el-button>
     </div>
     <StartNumber :dialogFormVisible="dialogFormVisible" @close="close" :frameTitle1="frameTitle1" :frameTitle2="frameTitle2"></StartNumber>
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="认款记录" name="one">
-        <Record @selection="selection" :activeForm="activeForm" :reable="reable" :pid="pid" :transmit="transmit"></Record>
+      <el-tab-pane label="收款编码" name="one">
+        <Receivables @selection="selection" :reable="reable" :pid="pid" :transmit="transmit"></Receivables>
       </el-tab-pane>
-      <el-tab-pane :label="'需要您审批 ('+number+')'" name="two">
-        <Approval @getNumber="getNumber" @selection="selection" :activeForm="activeForm" :reable="reable" :pid="pid" :transmit="transmit"></Approval>
+      <el-tab-pane label="发票" name="two">
+        <Invoice @selection="selection" :reable="reable" :pid="pid" :transmit="transmit"></Invoice>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 <script type="text/javascript">
-import Record from '@/page/Finance/pledgingManagement/pledgingManagementInfo/record'
-import Approval from '@/page/Finance/pledgingManagement/pledgingManagementInfo/approval'
+import Invoice from '@/page/Finance/pledgingManagement/pledgingManagementInfo/invoice'
+import Receivables from '@/page/Finance/pledgingManagement/pledgingManagementInfo/receivables'
 import StartNumber from '@/page/Finance/pledgingManagement/pledgingManagementInfo/startNumber'
 export default {
   name: "pledgingManagementSee",
   components: {
-    Record,
-    Approval,
+    Invoice,
+    Receivables,
     StartNumber,
   },
   data() {
     return {
       activeName: 'one',
-      activeForm: {
-        user: '',
-        tour: '',
-      },
       reable: true,
       pid: '',
       frameTitle1: '',
       frameTitle2: '',
       transmit: false,
       dialogFormVisible: false,
-      number: 10,
     }
   },
   computed: {
@@ -57,9 +46,6 @@ export default {
   },
   watch: {},
   methods: {
-    getNumber(number) {
-      this.number = number
-    },
     selection(reable, pid) {
       this.reable = reable
       this.pid = pid
@@ -77,19 +63,62 @@ export default {
     close() {
       this.dialogFormVisible = false
     },
-    //搜索
-    searchHand() {
-      this.$message({
-        type: 'success',
-        message: '搜索成功!'
+    reject() {
+      this.$confirm('是否一键驳回所有认款记录?', '提示', {
+        confirmButtonText: '驳回',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '驳回成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消驳回'
+        });
       });
     },
-    resetHand() {
-      this.activeForm = {
-        user: '',
-        tour: '',
-      }
-    }
+    save() {
+      this.$confirm('是否保存审批记录?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '保存成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消保存'
+        });
+      });
+    },
+    cancel() {
+      this.$router.push({ path: "/pledgingManagement" });
+    },
+    //搜索
+    submit() {
+      this.$confirm('是否审核提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '保存成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消保存'
+        });
+      });
+    },
+    resetHand() {}
   },
   created() {}
 
@@ -101,8 +130,9 @@ export default {
   .demo-input-suffix {
     width: auto;
     background-color: #F7F7F7;
-    padding: 40px;
+    padding: 20px;
     margin-top: 20px;
+    margin-bottom: 30px;
 
     .search-title {
       font-size: 14px;
@@ -131,7 +161,7 @@ export default {
 
     .button_select {
       display: inline;
-      margin-left: 15%;
+      margin-left: 65%;
     }
 
   }

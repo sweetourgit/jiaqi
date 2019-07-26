@@ -25,7 +25,7 @@
         <el-table-column prop="option" label="操作" align="center">
           <template slot-scope="scope">
             <el-button @click="approvalList(scope.row)" v-if="scope.row.id==1" type="primary" size="small" class="table_details">审批</el-button>
-            <el-button @click="SeeList(scope.row)" v-if="scope.row.id==2" size="small" class="table_details">查看</el-button>
+            <el-button @click="seeList(scope.row)" v-if="scope.row.id==2" size="small" class="table_details">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
