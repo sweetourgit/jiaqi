@@ -440,7 +440,7 @@ export default {
        let salePriceType={};
           //实时减少相关余位信息，提示库存不足
            for(let i=0;i<this.salePrice.length;i++){    
-             this.salePrice[i].quota=parseInt(this.salePrice[i].quota)-parseInt(this.enrolNum[i]);
+             this.salePrice[i].quota=parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
              salePriceType=this.salePrice[i];         
              if(salePriceType.quota<0){  //判断是否显示库存不足
                 this.quota[i]=true;
@@ -543,14 +543,13 @@ export default {
        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/enrolls',{
             "id": planId
         }).then(res => {
-          if(res.data.isSuccess == true){
-             this.salePrice = res.data.objects;
-             this.salePriceNum = res.data.objects;            
+          if(res.data.isSuccess == true){      
              this.preLength=[];
              this.enrolNum=[];
              this.quota=[];
              this.tour=[];            
-             for(let i=0;i<res.data.objects.length;i++){
+             let data=res.data.objects;
+             for(let i=0;i<data.length;i++){
                 this.quota.push(false); 
                 this.tour.push([]);
              }
@@ -569,6 +568,15 @@ export default {
                this.preLength.push(this.tour[i].length);
                this.enrolNum.push(this.tour[i].length);
              }
+             for(let i=0;i<data.length;i++){
+                if(data[i].quota==0||data[i].quota>this.teampreviewData.remaining){  //如果配额为0或者配额大于库存，余位显示总库存
+                   data[i].quota=this.teampreviewData.remaining;
+                }else{
+                   data[i].quota=parseInt(data[i].quota) + parseInt(this.enrolNum[i]);
+                }
+             }
+             this.salePrice = data;
+             this.salePriceNum = data;   
           }
        })
      },

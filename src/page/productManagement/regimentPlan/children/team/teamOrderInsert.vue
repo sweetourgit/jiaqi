@@ -398,7 +398,7 @@ export default {
                 this.enrolNum.push(0);
                 this.quota.push(false); 
                 this.tour.push([]);
-                if(data[i].quota==0||data[i].quota>this.teampreviewData.remaining){
+                if(data[i].quota==0||data[i].quota>this.teampreviewData.remaining){  //如果配额为0或者配额大于库存，余位显示总库存
                    data[i].quota=this.teampreviewData.remaining;
                 }
              }
