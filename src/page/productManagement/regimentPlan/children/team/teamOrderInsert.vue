@@ -87,7 +87,7 @@
                 </el-form-item>
             </div>
             -->
-            <el-form-item label="价格" prop="price" class="cb price">
+            <el-form-item label="价格选择" prop="price" class="cb price">
               <el-radio-group v-model="ruleForm.price">
                  <span v-for="item in salePrice" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span><br/>
                  <!--
@@ -105,19 +105,19 @@
               <div class="num-req">*</div>
             </el-form-item>
             <div class="fl">         
-              <table style="margin:-7px 0 17px 13px">
-                <tr v-for="(item,index) in salePrice">
-                  <td height="45">{{item.enrollName}}</td>
-                  <td height="45">
-                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index,item.enrollID,item.enrollName)" type="number" :min="0"></el-input>
-                      <span v-bind:class="{red:quota[index]}">
-                      余（{{item.quota}}）
-                      ￥<span v-show="ruleForm.price==1">{{item.price_01}}</span><span v-show="ruleForm.price==2">{{item.price_02}}</span>
-                      <span v-show="quota[index]">库存不足</span>
-                      </span>
-                  </td>
-                </tr>
-              </table>
+              <div class="registration" v-for="(item,index) in salePrice">
+                 {{item.enrollName}}￥
+                 <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+                 <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
+                 <div>
+                  <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)" :min="0" :max="item.quota" size="medium"></el-input-number>
+                 </div>
+                 <div v-bind:class="{red:quota[index]}">
+                  余位{{item.quota}}
+                  <span v-show="quota[index]">库存不足</span>
+                 </div>
+                 
+              </div>
               <div class="red ml13" style="margin-top:-18px" v-show="enrolNums">{{enrolNumsWarn}}</div>
             </div>
             <!--
@@ -679,4 +679,7 @@ export default {
       .ordersuc-title{text-align: center;font-size: 16px;margin:0 0 30px 0}
       .red{color: red}
       .dialog-footer{text-align: left;margin:20px 0 20px 108px;}
+      .registration{float: left;margin: 12px;text-align: center;}
+      .el-input-number--medium{width: 170px}
+      .input-num{margin:10px 0}
 </style>
