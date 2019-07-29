@@ -119,7 +119,11 @@
 
       },
       resetFun(){
-
+        this.plan = '';
+        this.reimbursementPer = '';
+        this.productName = '';
+        this.startTime = '';
+        this.endTime = '';
       },
       handleClick(tab, event) {
 //        console.log(tab, event);
