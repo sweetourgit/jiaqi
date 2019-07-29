@@ -22,16 +22,16 @@
           <el-select v-model="productType" placeholder="请选择"  class="sec-type">
              <el-option v-for="item in proType" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select></br>
-          <!--订单状态
+          <!--订单状态-->
           <div class="status-title">订单状态</div>
           <ul class="order-status">
-            <li v-for="(item,index) in orderStatus" @click="statusTab(1,index)" v-bind:class="{statusbg: orderNum==index}">{{item}}</li>
-          </ul></br>-->
-          <!--退款状态
+            <li v-for="(item,index) in orderStatusSearch" @click="statusTab(1,index,item.status)" v-bind:class="{statusbg: orderNum==index}">{{item.name}}</li>
+          </ul></br>
+          <!--退款状态-->
           <div class="status-title">退款状态</div>
           <ul class="order-status">
-            <li v-for="(item,index) in refundStatus" @click="statusTab(2,index)" v-bind:class="{statusbg: refundNum==index}">{{item}}</li>
-          </ul></br>-->
+            <li v-for="(item,index) in refundStatusSearch" @click="statusTab(2,index,item.status)" v-bind:class="{statusbg: refundNum==index}">{{item.name}}</li>
+          </ul></br>
           <el-button type="primary" class="search-but" @click="orderPage(1,pageSize)">搜索</el-button>
           <!--订单列表-->
           <div class="pro-info" v-for="(item,index) in orderpage">
@@ -134,9 +134,26 @@ export default {
   },
   data() {
     return {
-       orderStatus:["全部","未确认（3）","补充资料（4）","签署合同（2）","出行中（3）","待点评（3）","完成订单","作废订单"],
+       orderStatusSearch:[
+         {'status':0,'name':"全部"},
+         {'status':7,'name':"未确认"},
+         {'status':1,'name':"补充资料"},
+         {'status':8,'name':"签署合同"},
+         {'status':4,'name':"出行中"},
+         {'status':5,'name':"待点评"},
+         {'status':6,'name':"完成订单"},
+         {'status':9,'name':"作废订单"}
+       ],
        orderNum:"0",
-       refundStatus:["全部","申请退款（3）","退款中（3）","完成退款","拒绝退款"],
+       orderStatus:0,
+       refundStatusSearch:[
+         {'status':0,'name':"全部"},
+         {'status':5,'name':"申请退款"},
+         {'status':1,'name':"退款中"},
+         {'status':6,'name':"完成退款"},
+         {'status':2,'name':"拒绝退款"}
+       ],
+       refundStatus:0,
        refundNum:"0",
        orderCode:'',  //订单ID
        teamID:'',     //产品ID
@@ -214,12 +231,16 @@ export default {
         this.destinationID = item.id;
         this.destination = item.value;
       },
-      statusTab(num,index){
+      statusTab(num,index,status){
         if(num==1){
-          this.orderNum=index;
+          this.orderNum = index;
+          this.orderStatus = status;
+          this.orderPage(1,this.pageSize)
         }
         if(num==2){
-          this.refundNum=index;
+          this.refundNum = index;
+          this.refundStatus = status;
+          this.orderPage(1,this.pageSize)
         }
       },
       //订单列表
@@ -232,7 +253,7 @@ export default {
         this.orderPage(val,this.pageSize);
         this.pageIndex=val;
       },
-      orderPage(pageIndex=this.pageIndex,pageSize=this.pageSize,orderCode=this.orderCode,teamID=this.teamID,groupCode=this.groupCode,beginDate=this.beginDate,endDate=this.endDate,name=this.name,destinationID=this.destinationID,saler=this.saler,productType=this.productType){
+      orderPage(pageIndex=this.pageIndex,pageSize=this.pageSize,orderCode=this.orderCode,teamID=this.teamID,groupCode=this.groupCode,beginDate=this.beginDate,endDate=this.endDate,name=this.name,destinationID=this.destinationID,saler=this.saler,productType=this.productType,orderStatus=this.orderStatus,refundStatus=this.refundStatus){
         if(beginDate){
           let y=beginDate.getFullYear();
           let m=(beginDate.getMonth()+1)>9?beginDate.getMonth()+1:'0'+(beginDate.getMonth()+1);
@@ -261,7 +282,9 @@ export default {
                 "name":name,
                 "destinationID":destinationID?destinationID:0,
                 "saler":saler,
-                "productType":productType?productType:0
+                "productType":productType?productType:0,
+                "orderStatus":this.orderStatus,
+                "refundStatus":this.refundStatus
              }
           }).then(res => {
             this.orderpage=[];
@@ -277,10 +300,10 @@ export default {
       getOrderStatus(status){
           switch(status){
             case 1:
-              return '签订电子合同';
+              return '补充游客材料';
               break;
             case 2:
-              return '待出行';
+              return '签订电子合同';
               break;
             case 3:
               return '待出行';
@@ -295,7 +318,7 @@ export default {
               return '已完成';
               break;
             case 7:
-              return '确认占位';
+              return '未确认';
               break;
             case 8:
               return '签署合同';//？
@@ -304,7 +327,7 @@ export default {
               return '订单作废';
               break;
             case 10:
-              return '补充游客材料';
+              return '订单确认';
               break;
           }
       },

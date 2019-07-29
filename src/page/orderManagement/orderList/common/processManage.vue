@@ -404,10 +404,10 @@ export default {
       getOrderStatus(status){
           switch(status){
             case 1:
-              return '签订电子合同';
+              return '补充游客材料';
               break;
             case 2:
-              return '待出行';
+              return '签订电子合同';
               break;
             case 3:
               return '待出行';
@@ -422,7 +422,7 @@ export default {
               return '已完成';
               break;
             case 7:
-              return '确认占位';
+              return '未确认';
               break;
             case 8:
               return '签署合同';//？
@@ -431,7 +431,7 @@ export default {
               return '订单作废';
               break;
             case 10:
-              return '补充游客材料';
+              return '订单确认';
               break;
           }
       },

@@ -81,7 +81,7 @@ export default {
           let obj=JSON.parse(JSON.stringify(this.markForms));
           obj.push(this.markFormAdd);
           this.orderget.remark=JSON.stringify(obj);
-          this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderinsert',{
+          this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/ordersave',{
                 "object":this.orderget
           }).then(res => {
             if(res.data.isSuccess == true){
