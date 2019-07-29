@@ -1,14 +1,14 @@
 <template>
   <div class="loanBorder">
         <div class="plan">
-          <div class="fl">
+          <!-- <div class="fl">
             <span class="emptyPlan">团期计划</span>
             <el-input v-model="empty_01" class="empty" clearable placeholder="请输入团期计划"></el-input>
           </div>
           <div class="fl">
             <span class="emptyPlan">申请人</span>
             <el-input v-model="people_01" class="empty" clearable placeholder="请输入申请人"></el-input>
-          </div>
+          </div> -->
           <div class="fl">
             <span class="emptyPlan">发起时间</span>
             <el-date-picker v-model="planTime_01" type="date" class="planTime" placeholder="开始天数"></el-date-picker>
@@ -90,7 +90,7 @@
       },
       //查询列表
       pageList() {
-        let objectRequest = {}
+        /*let objectRequest = {}
         objectRequest.paymentType = 1;
         var that = this
         this.$http.post(
@@ -111,8 +111,43 @@
           })
           .catch(function (obj) {
             console.log(obj)
+          })*/
+          var that = this
+          this.$http.post(
+          this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
+              "userCode": sessionStorage.getItem('userCode'),
+              "startTime": "2018-07-18T05:30:17.471Z",
+              "endTime": "2019-07-18T05:30:17.471Z",
+            }
+          )
+          .then(function(obj) {
+            //that.total = obj.data.total;
+            //that.tableData = obj.data.objects;
+            that.total = obj.data.total
+            that.tableData = obj.data.objects
+            console.log(obj.data.objects)
+            that.$emit('headCallBack', obj.data.total);
+          })
+          .catch(function(obj) {
+            console.log(obj)
           })
       },
+      /*工作流
+      var that = this
+      this.$http.post(
+          this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
+              "userCode": sessionStorage.getItem('userCode'),
+              "startTime": "2018-07-18T05:30:17.471Z",
+              "endTime": "2019-07-18T05:30:17.471Z",
+            }
+        )
+        .then(function(obj) {
+          //that.total = obj.data.total;
+          //that.tableData = obj.data.objects;
+        })
+        .catch(function(obj) {
+          console.log(obj)
+        })*/
 
     },
     mounted(){

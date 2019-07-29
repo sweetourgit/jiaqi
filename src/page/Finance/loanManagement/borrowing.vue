@@ -126,49 +126,45 @@
                 </el-upload>
               </el-form-item>
 			 <div class="basicTitle">相关信息</div>
-			 <el-table :data="tableMoney" border style="width: 70%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+			 <el-table :data="tableMoney" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
 	           <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
-	           <el-table-column prop="payment" label="已审批总额" align="center"></el-table-column>
-	           <el-table-column prop="paymentChecking" label="审批中总额" align="center"></el-table-column>
+	           <el-table-column prop="paymentChecking" label="审批中借款总额" align="center"></el-table-column>
+	           <el-table-column prop="payment" label="已审批借款总额" align="center"></el-table-column>
+	           <el-table-column prop="expenseChecking" label="报销中总额" align="center"></el-table-column>
+	           <el-table-column prop="expense" label="已报销总额" align="center"></el-table-column>
 	           <el-table-column prop="price" label="已收总额" align="center"></el-table-column>
 	           <el-table-column prop="supTotal" label="供应商欠款总额" align="center"></el-table-column>
-	        </el-table>
-	        <div style="margin:0 0 0 25px;">预付款明细</div>
-	        <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-	           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-	           <el-table-column prop="checkType" label="状态" align="center"></el-table-column>
-	           <el-table-column prop="paymentType" label="类型" align="center"></el-table-column>
-	           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-	           <el-table-column prop="price" label="付款金额" align="center"></el-table-column>
-	           <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
-	           <el-table-column prop="orgName" label="部门" align="center"></el-table-column>
-	           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
-	           <el-table-column prop="createTime" label="日期" align="center"></el-table-column>
-	           <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
-	           <el-table-column prop="process" label="审批过程" align="center">
-	           	<template slot-scope="scope">
-			      <div @click="processPaymenrt(scope.row)">查看</div>
-			    </template>
-	           </el-table-column>
-	           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
 	        </el-table>
 	        <div style="margin:0 0 0 25px;">无收入借款明细</div>
 	        <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
 	           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-	           <el-table-column prop="checkType" label="状态" align="center"></el-table-column>
-	           <el-table-column prop="paymentType" label="类型" align="center"></el-table-column>
+	           <el-table-column prop="checkType" label="审批状态" align="center"></el-table-column>
+	           <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
 	           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-	           <el-table-column prop="price" label="付款金额" align="center"></el-table-column>
-	           <el-table-column prop="orgName" label="部门" align="center"></el-table-column>
+	           <el-table-column prop="price" label="金额" align="center"></el-table-column>
+	           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
 	           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
-	           <el-table-column prop="createTime" label="日期" align="center"></el-table-column>
-	           <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
 	           <el-table-column prop="process" label="审批过程" align="center">
 	           	<template slot-scope="scope">
 			      <div @click="processIncome(scope.row)">查看</div>
 			    </template>
 	           </el-table-column>
+	           
+	        </el-table>
+	        <div style="margin:0 0 0 25px;">预付款明细</div>
+	        <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+	           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
+	           <el-table-column prop="checkType" label="审批状态" align="center"></el-table-column>
+	           <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
+	           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+	           <el-table-column prop="price" label="金额" align="center"></el-table-column>
 	           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
+	           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
+	           <el-table-column prop="process" label="审批过程" align="center">
+	           	<template slot-scope="scope">
+			      <div @click="processIncome(scope.row)">查看</div>
+			    </template>
+	           </el-table-column>
 	        </el-table>
 	        <div style="margin:0 0 0 25px;">收入明细</div>
 	        <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
@@ -187,7 +183,14 @@
 	        </el-table>
 	      </el-form>
 	    </el-dialog>
-	  
+	    <!--查看图片文件弹窗-->
+	  	<el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible4" width="50%">
+	      <!-- <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button> -->
+	      <div>
+	        <img :src="imgBig" style="width: 95%;" alt="图片" :alt="imgBigName"/>
+	        <br /><span>{{imgBigName}}</span>
+	      </div>
+	    </el-dialog>
 	  <!--申请无收入借款中借款人选择弹窗-->
 	  <!-- <el-dialog width="45%" title="选择报销的人" :visible.sync="dialogFormVisible1"append-to-body>
 	      <div class="indialog">
@@ -285,7 +288,7 @@
 	    <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
       	<div style="position:absolute; top:8px; right:10px;">
       		<el-button @click="CloseCheckIncomeShow()">取消</el-button>
-      		<el-button type="danger" plain>撤销借款</el-button>
+      		<el-button @click="repeal()" type="danger" plain>撤销借款</el-button>
       	</div>
 	    <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
 	  </el-dialog>
@@ -348,6 +351,9 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           payment:'',
           //accessory:'',
          },
+         dialogVisible4:false,//查看图片文件弹窗
+         imgBig: '',
+         imgBigName: '',
          upload:{
          	accessory:'',
          },
@@ -373,7 +379,8 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           plan_01: [{ required: true, message: '请输入团期计划', trigger: 'blur' }],
           supplier:[{ required: true, message: '请输入供应商名称', trigger: 'blur' }],
           planType:[{ required: true, message: '请选择借款类型', trigger: 'change' }],
-          planAmount:[{ required: true, message: '请输入借款金额', trigger: 'blur' }],
+          planAmount:[{ required: true, message: '请输入借款金额', trigger: 'blur' },
+          			  { pattern: /^[+]{0,1}(\d+)$/, message: '借款金额需为正整数' }],
           abstract:[{ required: true, message: '请输入摘要', trigger: 'blur' },
           			{ min: 0, max: 30, message: '摘要字数超过80汉字限制', trigger: 'blur' },],
           account:[{ required: true, message: '请输入汇款账号', trigger: 'blur' }],
@@ -486,6 +493,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       	this.$refs.multipleTable.clearSelection(); //清空用户的选择  
         this.$refs.multipleTable.toggleRowSelection(row);
         this.paymentID=row.paymentID;
+        this.guid=row.guid;
         this.groupCode=row.groupCode;
       },
       rowClass({row, rowIndex}){  //选中行样式改变
@@ -979,10 +987,87 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	    },
 	    handlePreview(file, fileList) {
 	      this.uid = file.uid
-	      /*this.dialogVisible4 = true
+	      this.dialogVisible4 = true
 	      this.imgBig = file.url
-	      this.imgBigName = file.name*/
+	      this.imgBigName = file.name
 	    },
+	    //撤销借款
+	    /*repeal(){
+	        this.$confirm("其否需要撤销该笔借款?", "提示", {
+	           confirmButtonText: "确定",
+	           cancelButtonText: "取消",
+	           type: "warning"
+	        })
+	        .then(() => {
+	          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
+	          {
+	            "id": this.paymentID
+	          })
+	          .then(res => {
+	            if(res.data.isSuccess == true){
+	               this.$message.success("撤销成功");
+	               this.pageList();
+	               this.checkIncomeShow = false;
+
+	              }
+	           })
+	        })
+	        .catch(() => {
+	          this.$message({
+	            type: "info",
+	            message: "撤销借款已取消"
+	          });
+	        });
+	      },*/
+	      repeal(){
+	        this.$confirm("其否需要撤销该笔借款?", "提示", {
+	           confirmButtonText: "确定",
+	           cancelButtonText: "取消",
+	           type: "warning"
+	        })
+	        .then(() => {
+	          this.$http.post(
+	          this.GLOBAL.jqUrl + "/api/JQ/EndProcessForJQ",
+	          {
+	            "jq_id": this.guid,
+	            "jQ_Type": 1
+	          })
+	          .then(res => {
+	            if(res.data.isSuccess == true){
+	               this.$message.success("撤销成功");
+	               //this.pageList();
+	               this.deleteBorrow();
+
+	              }
+	           })
+	        })
+	        .catch(() => {
+	          this.$message({
+	            type: "info",
+	            message: "撤销借款已取消"
+	          });
+	        });
+	      },
+	      deleteBorrow(){
+	          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
+	          {
+	            "id": this.paymentID
+	          })
+	          .then(res => {
+	            if(res.data.isSuccess == true){
+	               this.$message.success("撤销成功");
+	               this.pageList();
+	               this.checkIncomeShow = false;
+
+	              }
+	           })
+	        .catch(() => {
+	          this.$message({
+	            type: "info",
+	            message: "撤销借款已取消"
+	          });
+	        });
+	      },
 
     },
 

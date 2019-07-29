@@ -2,13 +2,18 @@
   <div class="loanManagement">
       <!--查看无收入借款弹窗-->
 	     <div style="margin:10px 0 0 25px; font-size:14pt;">基本信息</div>
-       <div class="checkType">审核中</div>
-       <div slot-scope="scope" class="checkType">
-         <div v-if="scope.row.checkTypeEX=='审批中'" style="background: #ffa200" >{{scope.row.checkTypeEX}}</div>
-         <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #ff0000" >{{scope.row.checkTypeEX}}</div>
-         <div v-if="scope.row.checkTypeEX=='通过'" style="color: #007500" >{{scope.row.checkTypeEX}}</div>
-       </div>
+       <!-- <div class="checkType">审核中</div> -->
+       
        <table class="basictable">
+         <tr>
+          <td>
+             <div>
+               <div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
+               <div class="checkType" v-if="fundamental.checkType=='2'" style="background: #ff0000" >驳回</div>
+               <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500" >通过</div>
+             </div>
+          </td>
+         </tr>
          <tr>
            <td class="basictd">
              <span class="basicspan_01">ID:</span>
@@ -76,76 +81,70 @@
            </td>
          </tr>
        </table>
+       <div style="margin:20px 0 0 25px; font-size:14pt;">审核结果</div>
+       <el-table :data="tableCourse" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+         <el-table-column prop="people" label="审批人" align="center"></el-table-column>
+         <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
+         <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
+         <el-table-column prop="times" label="审批时间" align="center"></el-table-column>
+       </el-table>
+       <div style="margin:20px 0 0 25px; font-size:14pt;">相关信息</div>
 
-
-
-
-			 <el-table :data="tableMoney" border style="width: 70%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+			 <el-table :data="tableMoney" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
          <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
-         <el-table-column prop="payment" label="已审批总额" align="center"></el-table-column>
-         <el-table-column prop="paymentChecking" label="审批中总额" align="center"></el-table-column>
+         <el-table-column prop="paymentChecking" label="审批中借款总额" align="center"></el-table-column>
+         <el-table-column prop="payment" label="已审批借款总额" align="center"></el-table-column>
+         <el-table-column prop="expenseChecking" label="报销中总额" align="center"></el-table-column>
+         <el-table-column prop="expense" label="已报销总额" align="center"></el-table-column>
          <el-table-column prop="price" label="已收总额" align="center"></el-table-column>
          <el-table-column prop="supTotal" label="供应商欠款总额" align="center"></el-table-column>
-       </el-table>
-	     <div style="margin:0 0 0 25px;">预付款明细</div>
-       <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-           <el-table-column prop="checkType" label="状态" align="center"></el-table-column>
-           <el-table-column prop="paymentType" label="类型" align="center"></el-table-column>
-           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-           <el-table-column prop="price" label="付款金额" align="center"></el-table-column>
-           <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
-           <el-table-column prop="orgName" label="部门" align="center"></el-table-column>
-           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
-           <el-table-column prop="createTime" label="日期" align="center"></el-table-column>
-           <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
-           <el-table-column prop="process" label="审批过程" align="center">
-            <template slot-scope="scope">
-          <div @click="processPaymenrt(scope.row)">查看</div>
-        </template>
-           </el-table-column>
-           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
-        </el-table>
-        <div style="margin:0 0 0 25px;">无收入借款明细</div>
+      </el-table>
+	    <div style="margin:0 0 0 25px;">无收入借款明细</div>
         <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-           <el-table-column prop="checkType" label="状态" align="center"></el-table-column>
-           <el-table-column prop="paymentType" label="类型" align="center"></el-table-column>
+           <el-table-column prop="checkType" label="审批状态" align="center"></el-table-column>
+           <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
            <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-           <el-table-column prop="price" label="付款金额" align="center"></el-table-column>
-           <el-table-column prop="orgName" label="部门" align="center"></el-table-column>
+           <el-table-column prop="price" label="金额" align="center"></el-table-column>
+           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
            <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
-           <el-table-column prop="createTime" label="日期" align="center"></el-table-column>
-           <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
+           <el-table-column prop="process" label="审批过程" align="center">
+            <template slot-scope="scope">
+              <div @click="processIncome(scope.row)">查看</div>
+            </template>
+           </el-table-column>
+        </el-table>
+        <div style="margin:0 0 0 25px;">预付款明细</div>
+        <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
+           <el-table-column prop="checkType" label="审批状态" align="center"></el-table-column>
+           <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
+           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+           <el-table-column prop="price" label="金额" align="center"></el-table-column>
+           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
+           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
            <el-table-column prop="process" label="审批过程" align="center">
             <template slot-scope="scope">
           <div @click="processIncome(scope.row)">查看</div>
         </template>
            </el-table-column>
-           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
         </el-table>
         <div style="margin:0 0 0 25px;">收入明细</div>
         <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-             <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-             <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
-             <el-table-column prop="contactName" label="订单联系人" align="center"></el-table-column>
-             <el-table-column prop="number" label="人数" align="center"></el-table-column>
-             <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
-             <el-table-column prop="paid" label="已收金额" align="center"></el-table-column>
-             <!-- <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column> -->
-             <el-table-column label="欠款金额" align="center">
-              <template slot-scope="scope">{{scope.row.payable-scope.row.paid}}</template>
-             </el-table-column>
-             <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
-             <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
-          </el-table>
-        <div style="margin:0 0 0 25px;">审批过程</div>
-        <el-table :data="tableCourse" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="people" label="审批人" align="center"></el-table-column>
-           <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
-           <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
-           <el-table-column prop="times" label="审批时间" align="center"></el-table-column>
+           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+           <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
+           <el-table-column prop="contactName" label="订单联系人" align="center"></el-table-column>
+           <el-table-column prop="number" label="人数" align="center"></el-table-column>
+           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
+           <el-table-column prop="paid" label="已收金额" align="center"></el-table-column>
+           <!-- <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column> -->
+           <el-table-column label="欠款金额" align="center">
+            <template slot-scope="scope">{{scope.row.payable-scope.row.paid}}</template>
+           </el-table-column>
+           <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
+           <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
         </el-table>
+        
 	     </el-form>
   </div>
 </template>
@@ -405,19 +404,19 @@
         }) .catch(err => {});
       },*/
 	    getTourByPlanId(val) {
-      var that = this
-      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
-        "object": {
-          planID: val, //团期计划ID
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.ruleForm.groupCode = res.data.objects[0].groupCode
-          that.ruleForm.plan_01 = res.data.objects[0].title
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+        var that = this
+        that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+          "object": {
+            planID: val, //团期计划ID
+          }
+        }).then(res => {
+          if (res.data.isSuccess == true) {
+            that.fundamental.groupCode = res.data.objects[0].groupCode
+            that.fundamental.plan_01 = res.data.objects[0].title
+          }
+        }).catch(err => {
+          console.log(err)
+        })
     },
     getPaymentdetails(val) {
       var that = this
@@ -541,6 +540,6 @@
   .basictd{width:400px; padding:15px 0 0 0;}
   .basicspan_01{width:80px; text-align:right;}
   .basicspan_02{margin:0 0 0 10px;}
-  .checkType{background: #ffa200; padding: 0 5px; width:50px; margin:10px 0 0 25px; border-radius:5px; color:#fff; line-height:30px; text-align:center;}
+  .checkType{padding: 0 5px; width:50px; margin:10px 0 0 0; border-radius:5px; color:#fff; line-height:30px; text-align:center;}
 
 </style>
