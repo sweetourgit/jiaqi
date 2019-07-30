@@ -513,6 +513,9 @@ import DateList from './component/DateList'
         domains: [{
           value: '跟团游',
           status:"false"
+        },{
+          value: '景区/票务',
+          status:"false"
         }/*,{
           value: '自由行',
           status:"false"
@@ -548,6 +551,9 @@ import DateList from './component/DateList'
         }, {
           value1: '2',
           label: '自由行'
+        }, {
+          value1: '3',
+          label: '景区/票务'
         }],
         typeList:[{//状态搜索
           value:'0',
@@ -1484,6 +1490,7 @@ import DateList from './component/DateList'
 
       },
       clickHand(index){
+        console.log(this.domains)
         if( this.domains[index].status == "true"){
           this.domains[index].status = "false"
         }else{
@@ -1503,6 +1510,9 @@ import DateList from './component/DateList'
         }
         if(this.about == 1){
           this.$router.push({path: "listInfo"});
+        }
+        if(this.about == 3){
+          this.$router.push({path: "listInfoScenic"});
         }
 
       },

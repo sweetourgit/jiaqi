@@ -18,6 +18,7 @@ import hotelList from '@/page/contentInfo/hotelList/hotelList'
 import supplierInfo from '@/page/contentInfo/supplierInfo/supplierInfo'
 import productList from '@/page/productManagement/productList/productList'
 import baseInfo from '@/page/productManagement/listInfo/listInfo'
+import listInfoScenic from '@/page/productManagement/listInfoScenic/listInfoScenic'
 import travelTemplate from '@/page/productManagement/travelTemplate/travelTemplate'
 //团期计划
 import regimentPlan from '@/page/productManagement/regimentPlan/regimentPlan'
@@ -49,7 +50,7 @@ import pledgingManagementApproval from '@/page/Finance/pledgingManagement/pledgi
 import pledgingManagementSee from '@/page/Finance/pledgingManagement/pledgingManagementSee'
 import enrollTypeA from '@/page/contentInfo/enrollType/enrollTypeA'
 import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
-import checkSheet from '@/page/Finance/checkSheet/checkSheet'//报账单  by  张伊
+import checkSheet from '@/page/Finance/checkSheet/checkSheet' //报账单  by  张伊
 
 Vue.use(Router);
 
@@ -266,6 +267,14 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/listInfoScenic',
+      component: listInfoScenic,
+      name: '添加景区/票务',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '/travelTemplate',
       component: travelTemplate,
       name: '出行模板',
@@ -458,7 +467,7 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    },{
+    }, {
       path: '/checkSheet',
       component: checkSheet,
       name: '报账单',
