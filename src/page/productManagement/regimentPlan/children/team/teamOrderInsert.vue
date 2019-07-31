@@ -110,7 +110,7 @@
                  <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
                  <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
                  <div>
-                  <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)" :min="0" :max="item.quota" size="medium"></el-input-number>
+                  <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)" :min="0" :max="salePriceNum[index].quota" size="medium"></el-input-number>
                  </div>
                  <div v-bind:class="{red:quota[index]}">
                   余位{{item.quota}}

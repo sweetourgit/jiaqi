@@ -1,116 +1,89 @@
 <template>
   <div>
        <!--流程管理弹窗-->
-       <el-dialog title="流程管理" :visible.sync="dialogFormProcess" class="city_list" width="800px" style="margin-top:-50px">
-              <div class="process-sta">订单状态：<span>{{getOrderStatus(orderget.orderStatus)}}</span></div>
-              <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                  <el-form-item label="订单联系人">            
-                    <div class="ml13">姓名<el-input v-model="ruleForm.contactName" class="numw"></el-input></div>
-                  </el-form-item>
-                  <el-form-item label="">            
-                    <div class="ml13">电话<el-input v-model="ruleForm.contactPhone" class="numw"></el-input></div>
-                  </el-form-item>
-                  <el-form-item label="出行人信息" class="cb">            
-                     <div class="oh" v-for="(item,indexPrice) in salePrice">
-                       <div class="tour-til">{{item.enrollName}}</div>
-                       <div class="tourist"><input v-for="(item,index) in tour[indexPrice]" placeholder="点击填写" v-model="item.cnName" @click="fillTour(indexPrice,index)" :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9" /></div>                     
-                     </div>
-                  </el-form-item>
-                  <el-form-item label="" class="cb">   
-                     <div class="change-num" @click="changeNum" v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9">变更数量</div>
-                     <div class="change-num" v-if="orderget.orderStatus!=7&&orderget.orderStatus!=10">查看合同</div>
-                  </el-form-item>     
-                  <el-form-item label="更改订单状态" prop="type" v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9">
-                    <div class="surplus" v-if="false">
-                         <div v-for="(item,index) in salePrice">{{item.enrollName}}：余{{item.quota}}</div>
-                    </div>
-                    <el-radio-group v-model="ruleForm.type"><br/>
-                      <el-radio :label="0" class="radiomar" v-if="false">确认占位 （同业社额度： 总欠款 <span class="color-blue">270,164</span> 元）</el-radio><br/>
-                      <el-radio :label="0" class="radiomar" v-if="false">预定占位 （订单保留24小时，到期提醒）</el-radio><br/>
-                      <el-radio :label="10" class="radiomar" v-if="orderget.orderStatus==7">确认订单</el-radio><br/>
-                      <el-radio :label="1" class="radiomar" v-if="orderget.orderStatus==10">提交用户信息</el-radio><br/>
-                      <el-radio :label="2" class="radiomar" v-if="orderget.orderStatus==1">发送电子合同给客人</el-radio><br/>
-                      <el-radio :label="9" class="radiomar" v-if="orderget.orderStatus==7||orderget.orderStatus==10||orderget.orderStatus==1||orderget.orderStatus==2">作废订单</el-radio>
-                    </el-radio-group>
-                  </el-form-item>
-                  <el-form-item v-if="orderget.orderStatus==6" label="评价信息" prop="">            
-                     <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="ruleForm.remark" :disabled="true"></el-input>
-                  </el-form-item>
+       <el-dialog title="流程管理" :visible.sync="dialogFormProcess" class="city_list" width="850px" style="margin-top:-50px" @close="cancle">
+              <!--订单状态-->
+              <div style="position:relative;height:50px">
+                <el-button type="primary" plain icon="el-icon-check" circle size="medium"></el-button>
+                <span class="sta-title">{{statusNow}}</span>
+                <span v-if="statusNext!=''">
+                <em class="line line1"></em>
+                <el-button type="primary" circle size="medium">&nbsp;2&nbsp;</el-button>
+                <span class="sta-title">{{statusNext}}</span>
+                <span class="confirm-time" v-if="false">10:19:00</span>
+                </span>
+                <span v-if="statusEnd!=''">
+                <em class="line line2"></em>
+                <el-button circle size="medium">&nbsp;3&nbsp;</el-button>
+                <span class="sta-title">{{statusEnd}}</span>
+                </span>
+              </div>
+              <!--报名人数-->
+              <el-form :model="ruleForm" ref="ruleForm" class="demo-ruleForm cb" :rules="rules">
+                <div>            
+                  <span class="num-req">*</span>
+                  报名人数
+                </div>       
+                <div class="registration" v-for="(item,index) in salePrice">
+                   {{item.enrollName}}￥
+                   <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+                   <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
+                   <div>
+                    <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)" :min="0" :max="salePriceNum[index].quota" size="medium" :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"></el-input-number>
+                   </div>
+                   <div v-bind:class="{red:quota[index]}">
+                    余位{{item.quota}}
+                    <span v-show="quota[index]">库存不足</span>
+                   </div>
+                </div>
+                <div class="red cb" v-show="enrolNums">{{enrolNumsWarn}}</div>
+                <!--其他费用-->
+                <div class="cb" v-for="item in orderget.favourable">
+                   <p>{{item.title}}</p>
+                   <br/>
+                   <el-input v-model="item.price" placeholder="请输入金额" class="input" @input="compPrice"></el-input>
+                   <el-input v-model="item.mark" placeholder="请输入摘要" class="input1"></el-input>
+                </div>
+                <!--总价-->
+                <div class="price">
+                   <p class="totle">总价：￥{{orderget.payable}}</p>
+                   <p class="surplus" v-if="false">剩余额度：￥400,000.00</p>
+                </div>
+                <hr/>
+                <!--订单联系人-->
+                <el-form-item label="订单联系人" class="contact" prop="contactName">
+                <br/>
+                <el-input v-model="ruleForm.contactName" placeholder="请输入" class="input" :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"></el-input>
+                </el-form-item>
+                <el-form-item label="联系电话" class="contact" prop="contactPhone">
+                  <br/>
+                  <el-input v-model="ruleForm.contactPhone" placeholder="请输入" class="input" :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"></el-input>
+                </el-form-item>
+                <hr/> 
+
+
+
+
+
+                <el-form-item label="出行人信息" class="cb">            
+                   <div class="oh" v-for="(item,indexPrice) in salePrice">
+                     <div class="tour-til">{{item.enrollName}}</div>
+                     <div class="tourist"><span v-for="(item,index) in tour[indexPrice]" placeholder="点击填写" @click="fillTour(indexPrice,index)" :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9">{{item.cnName}}</span></div>                     
+                   </div>
+                </el-form-item>
               </el-form>
-              <div slot="footer" class="dialog-footer" v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9">
-                <el-button @click="dialogFormProcess = false">取 消</el-button>
-                <el-button type="primary" @click="orderModification(ruleForm.type)" class="confirm">保存修改</el-button>
-              </div>
-              <div slot="footer" class="dialog-footer1"  v-if="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9">
-                <el-button @click="dialogFormProcess = false"><span>关 闭</span></el-button>
+              <!--按钮-->
+              <hr/> 
+              <div style="height:50px;margin-top:25px">           
+                <el-button class="fl" @click="orderModification(orderget.orderStatus,1)" v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9">取消订单</el-button>
+                <el-button type="primary" v-if="orderget.orderStatus!=3&&orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9" @click="orderModification(orderget.orderStatus)" class="confirm fr">{{statusNext}}</el-button>
+                <el-button type="primary" v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9" @click="ordersave" class="confirm fr">保存更改</el-button>
+                <el-button class="fr" @click="cancle">取消</el-button>                
               </div>
        </el-dialog>
-       <!--变更数量弹窗-->
-       <el-dialog title="变更数量" :visible.sync="dialogFormNum" class="city_list" width="800px" style="margin-top:-50px" @close="cancelNum">
-          <el-form :model="ruleForm" ref="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm numForm">
-           <el-form-item label="" prop="">            
-              <div class="ml13">结算参考 <span class="color-red">￥{{teampreviewData.refPrice}}</span></div>
-           </el-form-item>
-           <el-form-item label="价格" prop="price" class="cb price">
-              <span v-for="item in salePrice" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span><br/>
-              <!--<el-radio-group v-model="ruleForm.price">              
-                 
-                 <el-radio label="1" class="radiomar">销售价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio><br/>
-                 <el-radio label="2" class="radiomar">同业价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio><br/>
-                 <el-radio label="自定义" class="radiomar">自定义： 
-                       成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
-                       儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
-                       老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
-                       单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
-                  </el-radio>
-              </el-radio-group>-->
-            </el-form-item>
-            <el-form-item label="报名人数" class="fl">            
-              <div class="num-req">*</div>
-            </el-form-item>
-            <div class="fl">         
-              <table style="margin:-7px 0 17px 13px">
-                <tr v-for="(item,index) in salePrice">
-                  <td height="45">{{item.enrollName}}</td>
-                  <td height="45">
-                      <el-input v-model="enrolNum[index]" class="numw" @input="peoNum(index,item.enrollID,item.enrollName)" type="number" :min="0" :disabled="true"></el-input>
-                      <span v-bind:class="{red:quota[index]}">
-                      余（{{item.quota}}）
-                      ￥<span v-show="ruleForm.price==1">{{item.price_01}}</span><span v-show="ruleForm.price==2">{{item.price_02}}</span>
-                      <span v-show="quota[index]">库存不足</span>
-                      </span>
-                  </td>
-                </tr>
-              </table>
-              <div class="red ml13" style="height:35px" v-show="enrolNums">报名人数不能为空</div>
-            </div>
-            <!--其他费用-->
-            <div class="cb" style="height:60px">
-              <el-form-item label="其他费用" prop="otherCost" class="fl cb">            
-                <el-input v-model="ruleForm.otherCost" class="numw" type="number" :min="0"></el-input>
-              </el-form-item>
-              <div class="fl">            
-                备注<el-input v-model="ruleForm.otherCostRemark" class="cost-remark"></el-input>
-              </div>
-            </div>
-            <!--整体优惠-->
-            <div class="cb">
-              <el-form-item label="整体优惠" prop="allDiscount" class="fl cb">            
-                <el-input v-model="ruleForm.allDiscount" class="numw" type="number" :min="0"></el-input>
-              </el-form-item>
-              <div class="fl">            
-                备注<el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
-              </div>
-            </div>
-            <el-form-item label="总计" prop="payable" class="cb">            
-              <div class="ml13"><span class="color-red">￥{{orderget.payable}}</span></div>
-            </el-form-item>
-          </el-form>
-          <div slot="footer" class="numdialog-footer">
-               <el-button @click="cancelNum">取 消</el-button>
-               <el-button type="primary" @click="subNum(2)" class="confirm">保 存</el-button>
-          </div>
-       </el-dialog>
+
+
+
        <!--填写游客信息-->
        <el-dialog :title="'出行人信息（'+winTitle+'）'" :visible.sync="dialogFormTour" class="city_list" @close="cancelInfo('conForm')" width="700px" height="500">
             <el-form :model="conForm" :rules="rules" ref="conForm">
@@ -171,27 +144,20 @@ export default {
        dialogFormProcess:false,
        orderget:{},//保存单个订单信息
        teampreviewData:{},//团期计划订单信息预览
+       statusNow:"",
+       statusNext:"",
+       statusEnd:"",
        ruleForm: {  
          //流程管理
          contactName:'',
          contactPhone:'',
-         type:0,
-         remark:'',  //评价信息
-         //变更数量
-         price:'1',
-         otherCost: 0,
-         otherCostRemark: '',
-         allDiscount: 0,
-         allDisRemark: '',         
+         price:'1', //价格类型  
        },
-       //变更数量弹窗
-       dialogFormNum:false,  
-       cancelType:1, //1取消按钮触发，2确定触发，作为修改数量用
        //游客信息
       quota:[], //余位信息负数红色提示
       enrolNum:[], //报名人数[1,3]形式
-      enrolNumCopy:[], //报名人数副本[1,3]形式，作为修改数量用
       enrolNums:false,//报名人数是否为空提示
+      enrolNumsWarn:'',
       number:0,//报名总人数
       dialogFormTour: false,
       salePrice:[],//报名类型价格列表数据
@@ -199,9 +165,7 @@ export default {
       tourType:0,//报名类型索引
       fillIndex:0,//报名类型下游客list索引
       preLength:[],//记录上一次报名人数[1,3]形式
-      preLengthCopy:[],//记录上一次报名人数[1,3]形式副本，作为修改数量用
       tour:[],//总游客信息,二维数组
-      tourCopy:[],//总游客信息副本,二维数组
       winTitle:'',  //弹窗标题
       conForm: {
         id: 0,
@@ -224,13 +188,13 @@ export default {
        rules:{      
          //变更数量
          price: [{ required: true, message: '请选择价格', trigger: 'change' }],
-         otherCost: [
-            { required: true, message: '请输入其他费用', trigger: 'blur' },
-            { pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '必须为数字值，并且不允许是负数'}],
-         allDiscount: [
-            { required: true, message: '请输入整体优惠', trigger: 'blur' },
-            { pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '必须为数字值，并且不允许是负数'}],
-         payable: [{ required: true, message: '价格不能为空'}],
+         contactName: [
+            { required: true, message: '联系人不能为空', trigger: 'blur' },
+         ],
+         contactPhone: [
+            { required: true, message: '联系电话不能为空', trigger: 'blur' },
+            {pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, message: '电话号格式不正确', trigger: 'blur' }
+         ],
          //游客信息
          cnName: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
          enName: [
@@ -260,15 +224,6 @@ export default {
     enrolNum:function(val){
 　　　　this.changeQuota();
         this.compPrice();
-    },
-    'ruleForm.otherCost':function(val){
-        this.compPrice();
-    },
-    'ruleForm.allDiscount':function(val){
-        this.compPrice();
-    },
-    'ruleForm.type':function(val){
-        this.changeQuota();      
     }
   },
   methods: {
@@ -279,22 +234,9 @@ export default {
              "id": orderId
           }).then(res => {
             if(res.data.isSuccess == true){
-               this.orderget = res.data.object; 
-               //根据订单状态设置默认选项
-               switch(this.orderget.orderStatus){
-                  case 7:
-                    this.ruleForm.type=10;
-                    break;
-                  case 10:
-                    this.ruleForm.type=1;
-                    break;
-                  case 1:
-                    this.ruleForm.type=2;
-                    break;
-                  case 3:
-                    this.ruleForm.type=9;
-                    break;
-               }
+               this.orderget = res.data.object;
+               this.getOrderStatus(this.orderget.orderStatus)
+
                //联系人信息
                this.ruleForm.contactName=JSON.parse(res.data.object.contact).Name;
                this.ruleForm.contactPhone=JSON.parse(res.data.object.contact).Tel;
@@ -308,25 +250,22 @@ export default {
             console.log(err)
         })
       },
-      orderModification(type){  //订单修改保存
+      orderModification(status,cancle){  //订单修改保存
         let url='/order/stat/api';
-        switch(type){
-          case 10:
+        switch(status){
+          case 0:
+          case 7:
             url+='/confirmed';
             break;
-          case 1:
+          case 10:
             url+='/material';
             break;
-          case 2:
+          case 1:
             url+='/econtract';
             break;
-          case 9:
-            url+='/invalid';
-            break;
         }
-        this.ordersave();
-        if(type==0){
-          return false;
+        if(cancle){
+          url='/order/stat/api/invalid';
         }
         this.$http.post(this.GLOBAL.serverSrc + url,{
             "object": {
@@ -338,100 +277,58 @@ export default {
                   message: '提交成功',
                   type: 'success'
                });
-               this.processManage(this.orderId);   
                this.$emit('orderPage');
+               this.cancle();
             }
           })
-      },
-      changeNum(){  //修改数量
-        //优惠信息数据绑定
-        if(this.orderget.favourable[0]){
-          this.ruleForm.otherCost = this.orderget.favourable[0].price;
-          this.ruleForm.otherCostRemark = this.orderget.favourable[0].mark;
-        }else{
-          this.ruleForm.otherCost=0;
-          this.ruleForm.otherCostRemark='';
-        }
-        if(this.orderget.favourable[1]){
-          this.ruleForm.allDiscount = this.orderget.favourable[1].price;
-          this.ruleForm.allDisRemark = this.orderget.favourable[1].mark;
-        }else{
-          this.ruleForm.allDiscount=0;
-          this.ruleForm.allDisRemark='';
-        }
-        //数量数组
-        this.enrolNumCopy = [...this.enrolNum];
-        //出游人数组
-        this.tourCopy = JSON.parse(JSON.stringify(this.tour));
-        //上一次报名人数
-        this.preLengthCopy = [...this.preLength];
-
-        this.dialogFormNum=true;
-      }, 
-      subNum(){  //修改数量确认提交
-        for(let i=0;i<this.enrolNum.length;i++){  //数量不能为0
-              if(this.enrolNum[i]){
-                this.number+=parseInt(this.enrolNum[i]);
-            }
-        };
-        if(this.number==0){
-          this.enrolNums=true;
-          return false;
-        }else{
-          this.enrolNums=false;
-        }
-        //优惠信息数据绑定
-        this.orderget.favourable[0].price = this.ruleForm.otherCost;
-        this.orderget.favourable[0].mark = this.ruleForm.otherCostRemark;
-        this.orderget.favourable[1].price = this.ruleForm.allDiscount;
-        this.orderget.favourable[1].mark = this.ruleForm.allDisRemark;
-        this.cancelType=2;
-        this.dialogFormNum = false;
-      },
-      cancelNum(){  //修改数量取消
-        if(this.cancelType==1){
-          //数量数组复原
-          this.enrolNum = [...this.enrolNumCopy];
-          //出游人数组复原
-          this.tour = JSON.parse(JSON.stringify(this.tourCopy));
-          //上一次报名人数
-          this.preLength = [...this.preLengthCopy];
-        }
-        this.dialogFormNum = false;
-        this.cancelType=1;
       },
       //列表订单状态显示
       getOrderStatus(status){
           switch(status){
-            case 1:
-              return '补充游客材料';
+            case 0:   //订单状态0，暂按未确认处理
+              this.statusNow = '未确认';
+              this.statusNext = '订单确认';
+              this.statusEnd = '补充资料';
               break;
-            case 2:
-              return '签订电子合同';
+            case 1:
+              this.statusNow = '补充材料';
+              this.statusNext = '签订合同';
+              this.statusEnd = '待出行';
               break;
             case 3:
-              return '待出行';
+              this.statusNow = '待出行';
+              this.statusNext = '出行中';
+              this.statusEnd = '待点评';
               break;
             case 4:
-              return '旅行中';
+              this.statusNow = '出行中';
+              this.statusNext = '待点评';
+              this.statusEnd = '订单完成';
               break;
             case 5:
-              return '待评价';
+              this.statusNow = '待点评';
+              this.statusNext = '订单完成';
+              this.statusEnd = '';
               break;
             case 6:
-              return '已完成';
+              this.statusNow = '订单完成';
+              this.statusNext = '';
+              this.statusEnd = '';
               break;
             case 7:
-              return '未确认';
-              break;
-            case 8:
-              return '签署合同';//？
+              this.statusNow = '未确认';
+              this.statusNext = '订单确认';
+              this.statusEnd = '补充资料';
               break;
             case 9:
-              return '订单作废';
+              this.statusNow = '作废订单';
+              this.statusNext = '';
+              this.statusEnd = '';
               break;
             case 10:
-              return '订单确认';
+              this.statusNow = '订单确认';
+              this.statusNext = '补充资料';
+              this.statusEnd = '签订合同';
               break;
           }
       },
@@ -594,8 +491,12 @@ export default {
           for(let i=0;i<this.enrolNum.length;i++){
              this.orderget.payable+=this.enrolNum[i]*(this.ruleForm.price==1?this.salePrice[i].price_01:this.salePrice[i].price_02);
           }
-          this.orderget.payable+=parseInt(this.ruleForm.otherCost);
-          this.orderget.payable-=parseInt(this.ruleForm.allDiscount);
+          if(this.orderget.favourable[0]){
+            this.orderget.payable+=parseInt(this.orderget.favourable[0].price);
+          }
+          if(this.orderget.favourable[1]){
+            this.orderget.payable-=parseInt(this.orderget.favourable[1].price);
+          }      
       },     
       ordersave(){  //更新订单，补充游客信息
           
@@ -603,8 +504,23 @@ export default {
           obj.contact='{"Name":"'+ this.ruleForm.contactName +'","Tel":"'+ this.ruleForm.contactPhone +'"}';
          
           //获取报名总人数          
-          obj.number=this.number;
-
+          obj.number=this.number;   
+            for(let i=0;i<this.enrolNum.length;i++){
+              if(this.enrolNum[i]){
+                obj.number+=parseInt(this.enrolNum[i]);
+              }
+            };
+            if(obj.number==0){
+              this.enrolNumsWarn="报名人数不能为空",
+              this.enrolNums=true;
+              return false;
+            }else if(obj.number>this.teampreviewData.remaining){
+              this.enrolNumsWarn="报名总人数不能超过余位",
+              this.enrolNums=true;
+              return false;
+            }else{
+              this.enrolNums=false;
+          }
           //出游人信息
           let guest=[];
           for(let i=0;i<this.tour.length;i++){
@@ -617,66 +533,68 @@ export default {
              guest[i].credTOV = new Date(guest[i].credTOV).getTime();              
           }                      
           obj.guest=guest;
-          //判断订单信息是否更改，如果更改，修改订单信息
-          if(JSON.stringify(obj)==JSON.stringify(this.orderget)){
-            return false;
-          }
-          console.log(123);
           this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/ordersave',{
             "object": obj
           }).then(res => {
             if(res.data.isSuccess == true){
-               this.processManage(this.orderId);   
+               this.$message({
+                  message: '更改成功',
+                  type: 'success'
+               });
+               this.$emit('orderPage');
+               this.cancle();
             }
          })
       },
-      formatDate(date){
-       var y = date.getFullYear();  
-       var m = date.getMonth() + 1;  
-           m = m < 10 ? ('0' + m) : m;  
-       var d = date.getDate();  
-           d = d < 10 ? ('0' + d) : d;  
-           return y + '-' + m + '-' + d;
-      }, 
+      cancle(){   
+        this.enrolNums = false;
+        this.$refs['ruleForm'].resetFields();
+        this.dialogFormProcess=false;
+      }
     }
 }
 </script>
 
 <style scoped>
-       .process-sta{background-color: #d1cfd0;height: 40px;padding: 25px 0 0 20px}
-       .process-sta span{margin-left: 20px;color: #3096fa}
+       /*订单状态*/
+       .line{display: inline-block;margin: 5px 8px;height: 2px;width: 220px}
+       .line1{background-color: #2e94f9}
+       .line2{background-color: #eee}
+       .sta-title{font-size: 16px}
+       .confirm-time{position: absolute;top:30px;left:394px}
+       /*报名人数*/
        .demo-ruleForm{margin-top: 20px}
        .demo-ruleForm .el-form-item{margin-bottom: 13px}
-       .numw{width: 125px;text-align: center;margin:0 15px}
-       .cost-remark{width: 300px;text-align: center;margin:0 15px}
-       .tourist{float: left;width: 600px}
-       .tourist input{width: 110px;background-color: #f6f6f6;color:#606266;text-align: center;border:0;height: 30px;margin:1px 10px 10px 4px}
-       .tour-til{float: left;margin:0 13px}
-       .oh{overflow: hidden}
-       .change-num{width: 110px;background-color: #f6f6f6;text-align: center;height: 30px;line-height: 30px;margin: 10px 0 0 13px;cursor: pointer}
-       .radiomar{margin:12px 13px;}
+       .num-req{color:red}
+       .registration{float: left;margin: 40px 15px 40px 3px;text-align: center}
+       .el-input-number--medium{width: 170px}
+       .input-num{margin:10px 0}
        .ml13{margin-left: 13px}
-       .dialog-footer{text-align: left;margin:-40px 0 20px 265px;}
-       .dialog-footer1{text-align: left;margin:-40px 0 20px 340px;}
-       .dialog-footer1 span{margin: 0 15px}
-       .numdialog-footer{text-align: left;margin:-40px 0 20px 265px}
+       /*费用*/
+       .input{width: 200px;margin:-15px 0 0 0px}
+       .input1{width: 200px;margin:-15px 0 0 15px}
+       /*总价*/
+       .price{height: 50px;margin-top:-25px;text-align: right;}
+       .price p{margin:8px 0}
+       .totle{font-size: 17px;font-weight: bold;}
+       .surplus{font-size: 12px;}
+       hr{background-color: #eee;height: 1px;border:0;clear: both}
+       /*订单联系人*/
+       .contact{float: left;margin:35px 50px 0 0;height: 95px}
+       .contact .el-input{width: 300px}
+       /*按钮*/
        .confirm{margin-left: 20px}
-       .surplus{margin:8px 13px;line-height: 25px}
-       .color-blue{color: #3096fa}
-       .color-red{color: #ff4b3e}
-       .remark{width: 98%;margin:7px 0 0 13px}
-       .disib{display: inline-block;}
-       .pricew{width: 85px;text-align: center;margin:-5px 8px}
-       .numForm{margin-top: -10px}
-       .numForm .el-form-item{margin-bottom: 5px}
-       .fl{float: left}
-       .cb{clear: both}
-       .num-req{position: absolute;top:2px;left:-77px;color:red}
-       .price .pricew{width: 90px;text-align: center;margin:-5px 15px;}
-       .tourist{margin-left: 13px;float: left;width:85%}
-       .tourist input{width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:1px 10px 10px 10px}
+       /*游客信息*/
+       .tourist{margin-left: 13px;float: left;width: 600px}
+       .tourist span{display: inline-block;width: 110px;background-color: #f6f6f6;text-align: center;border:0;height: 40px;margin-left: 15px;margin:1px 10px 10px 10px}
        .tour-til{float: left;margin-left: 13px;margin-right: -8px;width: 80px}
        .red{color: red}
        .w200{width: 200px}
        .text{font-size: 14px}
+       .oh{overflow: hidden}
+       /*通用*/
+       .fl{float: left}
+       .fr{float: right}
+       .cb{clear: both}
+       .dialog-footer{text-align: left;margin:-40px 0 20px 265px}  
 </style>
