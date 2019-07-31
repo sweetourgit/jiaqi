@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative">
+  <div class="vivo" style="position:relative" id="uploadStyle">
     <!--申请预付款-->
     <el-dialog title="发票" :visible="dialogFormVisible" width=80% @close="closeAdd">
       <div class="approval">
@@ -32,9 +32,11 @@
                 <el-input v-model="ruleForm.bank" class="inputWidth" maxlength="80" show-word-limit placeholder="请输入"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="凭证:" prop="voucher" label-width="150px">
-                <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :limit="1" :on-exceed="handleExceed" :file-list="fileList">
+          </el-row>
+          <el-row>
+            <el-col>
+              <el-form-item label="凭证:" prop="voucher" label-width="120px">
+                <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :file-list="fileList">
                   <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
               </el-form-item>
@@ -49,7 +51,7 @@
           </el-table-column>
           <el-table-column prop="title" label="产品名称" align="center">
           </el-table-column>
-          <el-table-column prop="platform" label="平台" align="center">
+          <el-table-column prop="platform" label="分销商" align="center">
           </el-table-column>
           <el-table-column prop="cost" label="成本" align="center">
           </el-table-column>
@@ -191,8 +193,8 @@ export default {
 }
 
 </script>
-<style lang="scss" scoped>
-.footer {
+<style lang="scss">
+  #uploadStyle .footer {
   position: relative;
   width: 100%;
   height: 50px;
@@ -200,18 +202,18 @@ export default {
   margin-top: -10px;
 }
 
-.el-button {
+#uploadStyle .el-button {
   bottom: 1%;
   right: 1%;
   float: right;
   margin: 0 10px;
 }
 
-.inputWidth {
+#uploadStyle .inputWidth {
   width: 300px;
 }
 
-.totalMoney {
+#uploadStyle .totalMoney {
   width: 95%;
   background-color: #E6F3FC;
   height: 30px;
@@ -219,33 +221,23 @@ export default {
   margin: 0 30px;
 }
 
-.approval {
-  height: 150px;
+#uploadStyle .approval {
+  /*height: 150px;*/
   line-height: 30px;
   width: 95%;
   margin: -15px 30px 30px 30px;
+  overflow: hidden;
 }
 
-.table_trip {
+#uploadStyle .table_trip {
   width: 95%;
   margin: 30px 30px;
 }
 
-.upload-demo {
+#uploadStyle .upload-demo {
   width: 1000px;
-
-  .el-upload-list {
-    width: 1000px;
-  }
-
-  .el-upload-list__item {
-    width: 300px;
-    display: inline-block;
-  }
-
-  .el-upload-list--text {
-    width: 1000px;
-  }
 }
-
+#uploadStyle .el-upload-list__item{
+  margin-top: 10px !important;
+}
 </style>

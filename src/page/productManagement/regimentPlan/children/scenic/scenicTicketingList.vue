@@ -19,7 +19,7 @@
       </el-select>
       <div class="button_select">
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
-        <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
+        <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
       </div>
     </div>
     <div class="main">
@@ -31,11 +31,14 @@
         </el-table-column>
         <el-table-column prop="title" label="产品名称" align="center">
         </el-table-column>
-        <el-table-column prop="time" label="开始时间/结束时间" align="center">
+        <el-table-column label="出发日期/返回日期" align="center">
+          <template slot-scope="scope">
+            <p>出发日期：{{scope.row.startTime}}<br>返回日期：{{scope.row.endTime}}</p>
+          </template>
         </el-table-column>
         <el-table-column prop="status" label="报账状态" align="center">
         </el-table-column>
-        <el-table-column prop="createTime" label="开始时间/结束时间" align="center">
+        <el-table-column prop="createTime" label="创建时间" align="center">
         </el-table-column>
         <el-table-column prop="user" label="操作人员" align="center">
         </el-table-column>
@@ -44,8 +47,8 @@
             <el-button @click="infoTour(scope.row)" type="primary" size="small" class="table_details">详情</el-button>
             <el-button @click="createNew(scope.row)" type="warning" size="small" class="table_details">修改</el-button>
             <el-button @click="pledging(scope.row)" type="primary" size="small" class="table_details">认款</el-button>
+            <el-button @click="billReporting(scope.row)" type="success" size="small" class="table_details">报账单</el-button>
             <el-button @click="delTour(scope.row)" type="danger" size="small" class="table_details">删除</el-button>
-            <el-button @click="billReporting(scope.row)" type="primary" size="small" class="table_details">报账单</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -89,7 +92,8 @@ export default {
         id : '1',
         tour: '311123',
         title: '丹东百瀑峡门票（成人票）',
-        time: '开始时间：2019-01-09结束时间：2019-01-09',
+        startTime: '2019-01-09',
+        endTime: '2019-01-19',
         status: '未报账',
         createTime: '2019-01-09 09:37',
         user: '阳阳',
@@ -97,7 +101,8 @@ export default {
         id : '2',
         tour: '311124',
         title: '丹东百瀑峡门票（成人票）',
-        time: '开始时间：2019-01-09结束时间：2019-01-09',
+        startTime: '2019-07-30',
+        endTime: '2019-08-10',
         status: '未报账',
         createTime: '2019-01-09 09:37',
         user: '阳阳',
@@ -113,8 +118,11 @@ export default {
   methods: {
     //关联
     createNew(row) {
-      this.info = row
-      this.dialogFormVisible = true
+//      console.log(row);
+      if(row.id){
+        this.info = row;
+      }
+      this.dialogFormVisible = true;
     },
     //报账单
     billReporting(row) {
@@ -129,9 +137,9 @@ export default {
       this.$router.push({path: "/scenicTicketingDetails?id="+row['id']});
     },
     close() {
-      this.dialogFormVisible = false
-      this.dialogFormVisible2 = false
-      this.dialogFormVisible3 = false
+      this.dialogFormVisible = false;
+      this.dialogFormVisible2 = false;
+      this.dialogFormVisible3 = false;
     },
     //获取id
     clickBanle(row, event, column) {

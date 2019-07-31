@@ -9,7 +9,7 @@
           </el-table-column>
           <el-table-column prop="title" label="产品名称" align="center">
           </el-table-column>
-          <el-table-column prop="platform" label="平台" align="center">
+          <el-table-column prop="platform" label="分销商" align="center">
           </el-table-column>
           <el-table-column prop="cost" label="成本" align="center">
           </el-table-column>

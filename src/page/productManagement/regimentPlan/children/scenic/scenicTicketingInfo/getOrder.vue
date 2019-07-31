@@ -9,7 +9,7 @@
           </el-table-column>
           <el-table-column prop="title" label="产品名称" align="center">
           </el-table-column>
-          <el-table-column prop="platform" label="平台" align="center">
+          <el-table-column prop="platform" label="分销商" align="center">
           </el-table-column>
           <el-table-column prop="cost" label="成本" align="center">
           </el-table-column>
@@ -20,9 +20,9 @@
           <el-table-column prop="number" label="数量" align="center">
           </el-table-column>
           <el-table-column prop="money" label="申请金额" align="center">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.money" placeholder="申请金额"></el-input>
-            </template>
+            <!--<template slot-scope="scope">-->
+              <!--<el-input v-model="scope.row.money" placeholder="申请金额"></el-input>-->
+            <!--</template>-->
           </el-table-column>
         </el-table>
       </div>

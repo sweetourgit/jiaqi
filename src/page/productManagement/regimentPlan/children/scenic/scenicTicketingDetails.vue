@@ -45,12 +45,12 @@
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>开始时间：</p>2019-01-01
+            <p>出发日期：</p>2019-01-01
           </div>
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>结束时间：</p>2019-01-31
+            <p>返回日期：</p>2019-01-31
           </div>
         </el-col>
       </el-row>
@@ -67,7 +67,7 @@
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>支出：</p>12322.00
+            <p>成本：</p>12322.00
           </div>
         </el-col>
       </el-row>
@@ -101,19 +101,30 @@
       <div class="footer">
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="订单" name="1">
-            <div class="table_trip" style="width: 80%;">
+            <div class="table_trip" style="width: 88%;">
               <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
                 <el-table-column prop="oid" label="订单ID" align="center" width="80%">
                 </el-table-column>
                 <el-table-column prop="title" label="产品名称" align="center">
                 </el-table-column>
-                <el-table-column prop="time" label="开始时间/结束时间" align="center">
+                <el-table-column prop="distributor" label="分销商" align="center">
                 </el-table-column>
-                <el-table-column prop="status" label="报账状态" align="center">
+                <el-table-column label="客人信息" align="center" width="180px;">
+                  <template slot-scope="scope">
+                    <p>取票人：{{scope.row.guestName}}<br>手机号：{{scope.row.guestPhone}}</p>
+                  </template>
                 </el-table-column>
-                <el-table-column prop="createTime" label="开始时间/结束时间" align="center">
+                <el-table-column prop="num" label="数量" align="center">
                 </el-table-column>
-                <el-table-column prop="user" label="操作人员" align="center">
+                <el-table-column prop="cost" label="成本" align="center">
+                </el-table-column>
+                <el-table-column prop="income" label="收入" align="center">
+                </el-table-column>
+                <el-table-column prop="outstanding" label="未处理金额" align="center">
+                </el-table-column>
+                <el-table-column prop="collectionCode" label="收款编码" align="center">
+                </el-table-column>
+                <el-table-column prop="invoice" label="发票" align="center">
                 </el-table-column>
                 <el-table-column prop="option" label="操作" align="center" width="100">
                   <template slot-scope="scope">
@@ -204,18 +215,28 @@ export default {
       tableData: [{
         oid: '311123',
         title: '丹东百瀑峡门票（成人票）',
-        time: '开始时间：2019-01-09结束时间：2019-01-09',
-        status: '未报账',
-        createTime: '2019-01-09 09:37',
-        user: '阳阳',
+        distributor: '美团',
+        guestName: '杨洋',
+        guestPhone: '13023984938',
+        num: '31',
+        cost: '234.55',
+        income: '23.00',
+        outstanding: '0.00',
+        collectionCode: '收款编码',
+        invoice: '发票'
       }, {
         oid: '311124',
         title: '丹东百瀑峡门票（成人票）',
-        time: '开始时间：2019-01-09结束时间：2019-01-09',
-        status: '未报账',
-        createTime: '2019-01-09 09:37',
-        user: '阳阳',
-      }, ],
+        distributor: '途牛',
+        guestName: '杨洋',
+        guestPhone: '13023984938',
+        num: '31',
+        cost: '234.55',
+        income: '23.00',
+        outstanding: '0.00',
+        collectionCode: '收款编码',
+        invoice: '发票'
+      }],
       tableData2: [{
         receiptCode: '收款编码1',
         status: '2',
@@ -276,7 +297,7 @@ export default {
       this.dialogFormVisible2 = true
     },
     delInfo() {
-      console.log(this.$route.query.id)
+      console.log(this.$route.query.id);
       this.$confirm('是否删除此团期计划?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -294,8 +315,8 @@ export default {
       });
     },
     unbinding(row) {
-      console.log(row['tour'])
-      this.$confirm('是否删除此订单?', '提示', {
+      console.log(row['oid']);
+      this.$confirm('是否解绑此订单?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

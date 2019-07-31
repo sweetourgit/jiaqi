@@ -32,6 +32,7 @@ export default {
   components: {},
   props: {
     dialogFormVisible: false,
+    info: ''
   },
   data() {
     return {
@@ -47,8 +48,20 @@ export default {
   computed: {
     // 计算属性的 getter
   },
-  watch: {},
+  watch: {
+    info: {
+      handler:function(){
+        this.loadData()
+      }
+    }
+  },
   methods: {
+    loadData(){
+      console.log(this.info);
+      if(this.info.id){
+        this.ruleForm = this.info;
+      };
+    },
     closeAdd() {
       this.ruleForm.tour = ''
       this.ruleForm.title = ''

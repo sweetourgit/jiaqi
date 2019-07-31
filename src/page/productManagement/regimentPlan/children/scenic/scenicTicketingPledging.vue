@@ -80,7 +80,7 @@
                 </el-table-column>
                 <el-table-column prop="title" label="产品名称" align="center">
                 </el-table-column>
-                <el-table-column prop="platform" label="平台" align="center">
+                <el-table-column prop="platform" label="分销商" align="center">
                 </el-table-column>
                 <el-table-column prop="cost" label="成本" align="center">
                 </el-table-column>
@@ -404,32 +404,37 @@ export default {
     //获取id
     clickBanle(row, event, column) {
       if (row.untreatedMoney > 0) {
-        this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选 
+        this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选
         this.$refs.multipleTable.toggleRowSelection(row)
         this.pid = this.multipleSelection[0].id
       }
     },
     selectionChange(val) {
-      let array = []
-      var that = this
+//      console.log(val);
+      let array = [];
       if (val.length > 0) {
         val.forEach(function(v, k, arr) {
           if (arr[k]['untreatedMoney'] > 0) {
             array.push(arr[k])
           }
-        })
-        this.multipleSelection = array
+        });
+        this.multipleSelection = array;
+        console.log(array);
         if (this.multipleSelection.length > 0) {
           this.forbidden = false
         } else {
           this.forbidden = true
         }
+      }else{
+        this.forbidden = true
       }
     },
     select(selection, row) {
-      var that = this
-      let zeng = false
-      let untreatedMoney = -1
+//      console.log(selection);
+//      console.log(row);
+      var that = this;
+      let zeng = false;
+      let untreatedMoney = -1;
       if (selection.length > 0) {
         selection.forEach(function(v, k, arr) {
           if (arr[k]['id'] == row['id']) {
@@ -445,32 +450,33 @@ export default {
       }
     },
     selectAll(val) {
-      var that = this
+//      console.log(val);
+      var that = this;
       if (!this.isSelectAll) {
         if (val.length > 0) {
-          this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选 
+          this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选
           val.forEach(function(v, k, arr) {
             if (arr[k]['untreatedMoney'] > 0) {
               that.$refs.multipleTable.toggleRowSelection(arr[k])
             }
           })
         } else {
-          this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选 
+          this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选
         }
       } else {
-        this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选 
+        this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选
       }
       this.isSelectAll = !this.isSelectAll
     },
     //发票
     invoice() {
-      console.log(this.multipleSelection)
+      console.log(this.multipleSelection);
       this.dialogFormVisible3 = true
     },
     //收款编码
     receiptCode() {
-      console.log(this.multipleSelection)
-      this.dialogFormVisible2 = true
+      console.log(this.multipleSelection);
+      this.dialogFormVisible2 = true;
     },
     save() {
       this.saveDialogVisible = true
@@ -535,6 +541,7 @@ export default {
     line-height: 35px;
     float: right;
     padding-right: 10px;
+    font-size: 14px;
   }
 
   .button_select {
