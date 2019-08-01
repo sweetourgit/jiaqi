@@ -32,6 +32,7 @@ import changePro from '@/page/productManagement/changePro/changePro'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
 import blacklist from '@/page/contentInfo/blacklist/blacklist'
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
+import merchantInfo1 from '@/page/contentInfo/merchantInfo/merchantInfo1'
 import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
 import proList from '@/page/contentInfo/proList/proList'
@@ -202,6 +203,14 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/merchantInfo1',
+      component: merchantInfo1,
+      name: '商户信息1',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
       path: '/priList',
       component: priList,
       name: '功能列表',
