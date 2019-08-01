@@ -7,7 +7,7 @@
       <el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>
       <div class="button_select">
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
-        <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
+        <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
       </div>
     </div>
     <div class="main">

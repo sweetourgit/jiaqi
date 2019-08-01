@@ -30,6 +30,7 @@
       <el-input v-model="activeForm.tour" class="input"></el-input>
       <span class="search-title">类别:</span>
       <el-select v-model="activeForm.type" placeholder="请选择" style="width:200px">
+        <el-option key="" label="全部" value=""></el-option>
         <el-option key="0" label="门票" value="0"></el-option>
         <el-option key="1" label="酒店" value="1"></el-option>
       </el-select>
@@ -57,7 +58,8 @@
     </div>
     <div class="tableDv">
       <div class="table_trip" style="width: 88%;">
-        <el-table ref="singleTable" :data="tableData" border style="width: 100%;" :highlight-current-row="currentRow" @row-click="selection" :header-cell-style="getRowClass">
+        <el-table ref="multipleTable" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
+          <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="oid" label="订单ID" align="center" width="80%">
           </el-table-column>
           <el-table-column prop="distributors" label="分销商" align="center" width="80%">
@@ -147,7 +149,7 @@ export default {
         importTime: '2019-07-08',
         validationTime: '2019-09-09',
         relationPid: '关联的产品',
-        accountingStatus: '已报账',
+        accountingStatus: '未报账',
       }, {
         oid: '2',
         title: '泰国7日游',
@@ -157,7 +159,7 @@ export default {
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
         relationPid: '关联的产品',
-        accountingStatus: '已报账',
+        accountingStatus: '未报账',
       }, {
         oid: '3',
         title: '泰国7日游',
@@ -167,7 +169,7 @@ export default {
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
         relationPid: '关联的产品',
-        accountingStatus: '已报账',
+        accountingStatus: '未报账',
       }, {
         oid: '4',
         title: '泰国7日游',
@@ -227,7 +229,7 @@ export default {
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
         relationPid: '关联的产品',
-        accountingStatus: '已报账',
+        accountingStatus: '未报账',
       }, {
         oid: '10',
         title: '泰国7日游',
@@ -237,8 +239,9 @@ export default {
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
         relationPid: '关联的产品',
-        accountingStatus: '已报账',
+        accountingStatus: '未报账',
       }],
+      multipleSelection: [],
       currentRow: true
     }
   },
@@ -254,11 +257,6 @@ export default {
       } else {
         return ''
       }
-    },
-    selection(row, event, column) {
-      this.reable = false;
-      this.currentRow = true;
-      this.pid = row['oid'];
     },
     handleClick() {
       this.reable = true;
@@ -353,6 +351,27 @@ export default {
     handleCurrentChange(val) {
 //      this.tableData = this.tableData;
 //      this.total = this.total;
+    },
+    selectInit(row, index){
+      if(row.accountingStatus == '已报账'){
+        return false  //不可勾选
+      }else{
+        return true  //可勾选
+      }
+    },
+    selectionChange(val) {
+      console.log(val);
+      if(val.length > 0){
+        this.reable = false;
+      }else{
+        this.reable = true;
+      }
+      this.multipleSelection = val;
+    },
+    handleRowClick(row, column, event){
+      if(row.accountingStatus != '已报账'){
+        this.$refs.multipleTable.toggleRowSelection(row);
+      }
     }
   },
   created() {}

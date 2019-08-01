@@ -34,7 +34,14 @@
             </template>
           </el-table-column>
         </el-table>
+
+        <!--分页-->
+        <div class="block">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>
+          </el-pagination>
+        </div>
       </div>
+
       <div class="footer">
         <el-button class="el-button" type="warning" @click="closeAdd">取 消</el-button>
       </div>
@@ -51,6 +58,11 @@ export default {
   },
   data() {
     return {
+      total: 10, //总条数
+      currentPage: 1,
+      pageIndex: 1, // 设定当前页数
+      pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
+
       order: '123456',
       tableData: [{
         id: '1',
@@ -88,7 +100,7 @@ export default {
         importTime: '2019-01-09 09:37',
         product: '产品名称：丹东门票 团期计划：LTSZ-1904-QHSD',
         accountStatus: '未报账',
-      }, ],
+      }],
     }
   },
   computed: {
@@ -139,6 +151,15 @@ export default {
         }
       });
     },
+    handleSizeChange(val) {
+      this.tableData = this.tableData
+      this.total = this.total
+    },
+
+    handleCurrentChange(val) {
+      this.tableData = this.tableData
+      this.total = this.total
+    },
   },
   created() {
 
@@ -174,5 +195,11 @@ export default {
 .upload-demo {
   width: 550px;
 }
-
+.el-dialog__body{
+  overflow: hidden;
+}
+.block{
+  text-align: center;
+  margin: 18px auto;
+}
 </style>

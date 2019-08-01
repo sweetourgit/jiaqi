@@ -5,7 +5,7 @@
         <el-button @click="cancel()" size="medium">取消</el-button>
         <el-button type="primary" @click="save()" size="medium">保存</el-button>
         <el-button type="warning" @click="reject()" size="medium">一键驳回</el-button>
-        <el-button type="success" @click="submit()" size="medium">审核提交</el-button>
+        <el-button type="success" @click="submit()" size="medium">审批提交</el-button>
       </div>
     </div>
     <StartNumber :dialogFormVisible="dialogFormVisible" @close="close" :frameTitle1="frameTitle1" :frameTitle2="frameTitle2"></StartNumber>
