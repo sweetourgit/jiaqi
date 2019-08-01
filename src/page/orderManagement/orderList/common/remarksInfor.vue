@@ -78,6 +78,7 @@ export default {
       },
       submitMark(){
         this.$refs['markFormAdd'].validate((valid) => {
+          if(valid){
           let obj=JSON.parse(JSON.stringify(this.markForms));
           obj.push(this.markFormAdd);
           this.orderget.remark=JSON.stringify(obj);
@@ -92,6 +93,7 @@ export default {
               this.$message.error('提交失败');
             }            
           });
+         }
         });      
         
       }

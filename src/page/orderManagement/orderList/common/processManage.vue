@@ -29,7 +29,7 @@
                    <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
                    <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
                    <div>
-                    <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)" :min="0" :max="salePriceNum[index].quota" size="medium" :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"></el-input-number>
+                    <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)" :min="0" :max="salePriceNum[index].quota" size="medium" :disabled="orderget.orderStatus==2||orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"></el-input-number>
                    </div>
                    <div v-bind:class="{red:quota[index]}">
                     余位{{item.quota}}
@@ -38,11 +38,14 @@
                 </div>
                 <div class="red cb" v-show="enrolNums">{{enrolNumsWarn}}</div>
                 <!--其他费用-->
-                <div class="cb" v-for="item in orderget.favourable">
-                   <p>{{item.title}}</p>
-                   <br/>
-                   <el-input v-model="item.price" placeholder="请输入金额" class="input" @input="compPrice"></el-input>
-                   <el-input v-model="item.mark" placeholder="请输入摘要" class="input1"></el-input>
+                <div v-for="(item,index) in ruleForm.favourable" class="other-cost">
+                  <el-form-item class="fl" :prop="'favourable.'+ index +'.price'" :rules="rules.otherCost">
+                     <div>{{item.title}}</div>
+                     <el-input v-model="item.price" placeholder="请输入金额" class="input" @input="compPrice(2,index)"></el-input>
+                  </el-form-item>
+                  <el-form-item class="otherCost-mark">
+                     <el-input v-model="item.mark" placeholder="请输入摘要" class="input1"></el-input>
+                  </el-form-item>
                 </div>
                 <!--总价-->
                 <div class="price">
@@ -60,11 +63,7 @@
                   <el-input v-model="ruleForm.contactPhone" placeholder="请输入" class="input" :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"></el-input>
                 </el-form-item>
                 <hr/> 
-
-
-
-
-
+                <!--出行人信息-->
                 <el-form-item label="出行人信息" class="cb">            
                    <div class="oh" v-for="(item,indexPrice) in salePrice">
                      <div class="tour-til">{{item.enrollName}}</div>
@@ -75,9 +74,13 @@
               <!--按钮-->
               <hr/> 
               <div style="height:50px;margin-top:25px">           
+                <!--取消订单按钮-->
                 <el-button class="fl" @click="orderModification(orderget.orderStatus,1)" v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9">取消订单</el-button>
-                <el-button type="primary" v-if="orderget.orderStatus!=3&&orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9" @click="orderModification(orderget.orderStatus)" class="confirm fr">{{statusNext}}</el-button>
+                <!--修改订单状态按钮-->
+                <el-button type="primary" v-if="orderget.orderStatus!=2&&orderget.orderStatus!=3&&orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9" @click="orderModification(orderget.orderStatus)" class="confirm fr">{{statusNext=="签订合同"?"已签合同":statusNext}}</el-button>
+                <!--保存游客信息按钮-->
                 <el-button type="primary" v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9" @click="ordersave" class="confirm fr">保存更改</el-button>
+                <!--取消按钮-->
                 <el-button class="fr" @click="cancle">取消</el-button>                
               </div>
        </el-dialog>
@@ -152,6 +155,7 @@ export default {
          contactName:'',
          contactPhone:'',
          price:'1', //价格类型  
+         favourable:[]
        },
        //游客信息
       quota:[], //余位信息负数红色提示
@@ -179,7 +183,7 @@ export default {
         bornDate:0,
         credType:0,
         credCode:'',
-        credTOV:0,
+        credTOV:'',
         orderID: 0,
         orderCode: 'string',
         orgID: 0,
@@ -195,6 +199,8 @@ export default {
             { required: true, message: '联系电话不能为空', trigger: 'blur' },
             {pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, message: '电话号格式不正确', trigger: 'blur' }
          ],
+         otherCost: [
+            { pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '必须为数字值，并且不允许是负数'}],
          //游客信息
          cnName: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
          enName: [
@@ -203,13 +209,10 @@ export default {
          sex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
          mobile: [
             { required: true, message: '请输入手机号', trigger: 'blur' },
-            { pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/, message: '手机号格式不正确', trigger: 'blur'}],
+            { pattern: /^1[3456789]\d{9}$/, message: '手机号格式不正确', trigger: 'blur'}],
          idCard: [{ required: true, message: '身份证号不能为空', trigger: 'blur' },
                    { pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '身份证号格式不正确', trigger: 'blur' }]
        } 
-       
-
-
     }
   },
   created(){
@@ -223,7 +226,7 @@ export default {
      },
     enrolNum:function(val){
 　　　　this.changeQuota();
-        this.compPrice();
+        this.compPrice(1);
     }
   },
   methods: {
@@ -235,8 +238,8 @@ export default {
           }).then(res => {
             if(res.data.isSuccess == true){
                this.orderget = res.data.object;
-               this.getOrderStatus(this.orderget.orderStatus)
-
+               this.ruleForm.favourable = this.orderget.favourable;
+               this.getOrderStatus(this.orderget.orderStatus);
                //联系人信息
                this.ruleForm.contactName=JSON.parse(res.data.object.contact).Name;
                this.ruleForm.contactPhone=JSON.parse(res.data.object.contact).Tel;
@@ -262,6 +265,9 @@ export default {
             break;
           case 1:
             url+='/econtract';
+            break;
+          case 2:
+            url+='/signcontract';
             break;
         }
         if(cancle){
@@ -294,6 +300,11 @@ export default {
               this.statusNow = '补充材料';
               this.statusNext = '签订合同';
               this.statusEnd = '待出行';
+              break;
+            case 2:
+              this.statusNow = '签订合同';
+              this.statusNext = '待出行';
+              this.statusEnd = '出行中';
               break;
             case 3:
               this.statusNow = '待出行';
@@ -371,7 +382,7 @@ export default {
               bornDate: 0,
               credType: 0,
               credCode: "string",
-              credTOV: 0,
+              credTOV: '',
               orderID: 0,
               orderCode: "string",
               orgID: 0,
@@ -399,7 +410,7 @@ export default {
             bornDate:0,
             credType:0,
             credCode:'',
-            credTOV:0,
+            credTOV:'',
             orderID: 0,
             orderCode: 'string',
             orgID: 0,
@@ -450,10 +461,13 @@ export default {
                 this.quota.push(false); 
                 this.tour.push([]);
              }
-             //出游人信息转换格式,二维数组，通过类型分类
+             //出游人信息转换格式,二维数组，通过类型分类,便于页面分类型显示出游人
              var guest=this.orderget.guest;   
              var j=0;
              for(let i=0;i<guest.length;i++){
+               if(guest[i].credTOV==0){
+                 guest[i].credTOV=''; //转为空字符，日历日期显示当前月份
+               }
                if(i>0&&guest[i].enrollName!=guest[i-1].enrollName){
                  this.tour[j+1].push(guest[i])
                }else{
@@ -486,23 +500,29 @@ export default {
           }
        })
      },
-     compPrice(){  //计算总价
+     compPrice(type,index){  //计算总价
+          if(type==2){
+            if(typeof(this.ruleForm.favourable[index].price) !== 'number'&&this.ruleForm.favourable[index].price!=''){
+              return;
+            }
+          }
           this.orderget.payable=0;
           for(let i=0;i<this.enrolNum.length;i++){
              this.orderget.payable+=this.enrolNum[i]*(this.ruleForm.price==1?this.salePrice[i].price_01:this.salePrice[i].price_02);
           }
           if(this.orderget.favourable[0]){
-            this.orderget.payable+=parseInt(this.orderget.favourable[0].price);
+            this.orderget.payable+=parseInt(this.orderget.favourable[0].price?this.orderget.favourable[0].price:0);
           }
           if(this.orderget.favourable[1]){
-            this.orderget.payable-=parseInt(this.orderget.favourable[1].price);
+            this.orderget.payable-=parseInt(this.orderget.favourable[1].price?this.orderget.favourable[1].price:0);
           }      
       },     
       ordersave(){  //更新订单，补充游客信息
-          
+        this.$refs['ruleForm'].validate((valid) => {
+          if(valid){
           let obj=JSON.parse(JSON.stringify(this.orderget));
           obj.contact='{"Name":"'+ this.ruleForm.contactName +'","Tel":"'+ this.ruleForm.contactPhone +'"}';
-         
+        
           //获取报名总人数          
           obj.number=this.number;   
             for(let i=0;i<this.enrolNum.length;i++){
@@ -521,6 +541,7 @@ export default {
             }else{
               this.enrolNums=false;
           }
+
           //出游人信息
           let guest=[];
           for(let i=0;i<this.tour.length;i++){
@@ -529,9 +550,14 @@ export default {
             }
           }
           for(let i=0;i<guest.length;i++){   
+             if(guest[i].cnName == '点击填写'){
+                 this.$message.error('请补全游客资料');
+                 return;
+             }        
              guest[i].bornDate = new Date(guest[i].bornDate).getTime();  //时间格式转换
              guest[i].credTOV = new Date(guest[i].credTOV).getTime();              
-          }                      
+          }    
+
           obj.guest=guest;
           this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/ordersave',{
             "object": obj
@@ -545,6 +571,8 @@ export default {
                this.cancle();
             }
          })
+        }
+       })
       },
       cancle(){   
         this.enrolNums = false;
@@ -573,6 +601,8 @@ export default {
        /*费用*/
        .input{width: 200px;margin:-15px 0 0 0px}
        .input1{width: 200px;margin:-15px 0 0 15px}
+       .other-cost{clear:both;height: 85px}
+       .otherCost-mark{float: left;margin-top: 40px}
        /*总价*/
        .price{height: 50px;margin-top:-25px;text-align: right;}
        .price p{margin:8px 0}

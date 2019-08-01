@@ -33,6 +33,10 @@
                      <td>{{teampreviewData.date}}</td>
                    </tr>
                    <tr>
+                     <td>报名人数：</td>
+                     <td>成人 * 3，儿童 * 1</td>
+                   </tr>
+                   <tr>
                      <td>总  价 ：</td>
                      <td></td>
                    </tr>

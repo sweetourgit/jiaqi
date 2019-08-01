@@ -474,7 +474,7 @@ export default {
           this.fillIndex=index;
           this.dialogFormTour = true;
      },
-     submitForm(formName) {
+     submitForm(formName){
         this.$refs[formName].validate((valid) => {
             //如果库存不足，不提交订单
             var blooen='0';
