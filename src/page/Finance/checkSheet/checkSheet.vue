@@ -187,6 +187,9 @@
           console.log(res);
           this.info = res;
           this.dialogFormVisible = true;
+//          name: "Result",
+//          query: { name: 'name' },
+//          params: { usersitelist: 'userlist' }
         },
         detail(res){
           console.log(res);
@@ -206,8 +209,9 @@
 
 <style scoped>
   .borders{
-    height: 900px;
-    /*border: 1px solid #E6E6E6;*/
+    overflow: hidden;
+    border: 1px solid #E6E6E6;
+    margin-bottom: 30px;
   }
   .search{
     float: left;

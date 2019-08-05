@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative">
+  <div class="vivo" style="position:relative" id="uploadStyle">
     <!--申请预付款-->
     <el-dialog title="发票" :visible="dialogFormVisible" width=80% @close="closeAdd">
       <div class="approval">
@@ -32,10 +32,19 @@
                 <el-input v-model="ruleForm.bank" :disabled="true" class="inputWidth" maxlength="80" show-word-limit placeholder="请输入"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="凭证:" prop="voucher" label-width="150px">
-                <el-upload class="upload-demo" :disabled="true" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :limit="1" :on-exceed="handleExceed" :file-list="fileList">
-                  <el-button size="small" type="primary">点击上传</el-button>
+            <!--<el-col :span="8">-->
+              <!--<el-form-item label="凭证:" prop="voucher" label-width="150px">-->
+                <!--<el-upload class="upload-demo" :disabled="true" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :limit="1" :on-exceed="handleExceed" :file-list="fileList">-->
+                  <!--<el-button size="small" type="primary">点击上传</el-button>-->
+                <!--</el-upload>-->
+              <!--</el-form-item>-->
+            <!--</el-col>-->
+          </el-row>
+          <el-row>
+            <el-col>
+              <el-form-item label="凭证:" prop="voucher" label-width="120px">
+                <el-upload class="upload-demo" :disabled="true" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :file-list="fileList">
+                  <el-button size="small" type="info" disabled="true">点击上传</el-button>
                 </el-upload>
               </el-form-item>
             </el-col>
@@ -219,7 +228,7 @@ export default {
 }
 
 .approval {
-  height: 150px;
+  /*height: 150px;*/
   line-height: 30px;
   width: 95%;
   margin: -15px 30px 30px 30px;

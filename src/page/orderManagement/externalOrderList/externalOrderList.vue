@@ -43,7 +43,13 @@
       <span class="search-title">取票人手机:</span>
       <el-input v-model="activeForm.ticketPhone" class="input"></el-input>
       <span class="search-title">分销商:</span>
-      <el-input v-model="activeForm.distributors" class="input" style="width: 485px;"></el-input>
+      <el-input v-model="activeForm.distributors" class="input" style="width: 485px;"></el-input><br /><br />
+      <span class="search-title">卖出支付方式:</span>
+      <el-select v-model="activeForm.typePay" placeholder="请选择" style="width:200px">
+        <el-option key="" label="全部" value=""></el-option>
+        <el-option key="0" label="余额支付" value="0"></el-option>
+        <el-option key="1" label="授信支付" value="1"></el-option>
+      </el-select>
       <div class="button_select">
         <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
@@ -77,6 +83,8 @@
           <el-table-column prop="guestInformation" label="客人信息" align="center">
           </el-table-column>
           <el-table-column prop="validationTime" label="验证时间" align="center">
+          </el-table-column>
+          <el-table-column prop="payType" label="卖出支付方式" align="center">
           </el-table-column>
           <el-table-column prop="importTime" label="导入时间" align="center">
           </el-table-column>
@@ -120,6 +128,7 @@ export default {
         proRelation: '',
         tour: '',
         type: '',
+        typePay: '',
         validationStartTime: '',
         validationEndTime: '',
         ticketPerson: '',
@@ -147,99 +156,146 @@ export default {
         number: '3',
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
+        payType: '余额支付',
         validationTime: '2019-09-09',
         relationPid: '关联的产品',
         accountingStatus: '未报账',
+        binding: true
       }, {
         oid: '2',
+        distributors: '美团',
         title: '泰国7日游',
+        type: '门票',
         salesTime: '2019-07-18',
         money: '2899',
         number: '3',
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
+        payType: '余额支付',
+        validationTime: '2019-09-09',
         relationPid: '关联的产品',
         accountingStatus: '未报账',
+        binding: true
       }, {
         oid: '3',
+        distributors: '美团',
         title: '泰国7日游',
+        type: '门票',
         salesTime: '2019-07-18',
         money: '2899',
         number: '3',
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
+        payType: '余额支付',
+        validationTime: '2019-09-09',
         relationPid: '关联的产品',
         accountingStatus: '未报账',
+        binding: false
       }, {
         oid: '4',
+        distributors: '美团',
         title: '泰国7日游',
+        type: '门票',
         salesTime: '2019-07-18',
         money: '2899',
         number: '3',
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
+        payType: '余额支付',
+        validationTime: '2019-09-09',
         relationPid: '关联的产品',
-        accountingStatus: '已报账',
+        accountingStatus: '未报账',
+        binding: true
       }, {
         oid: '5',
+        distributors: '美团',
         title: '泰国7日游',
+        type: '门票',
         salesTime: '2019-07-18',
         money: '2899',
         number: '3',
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
+        payType: '余额支付',
+        validationTime: '2019-09-09',
         relationPid: '关联的产品',
-        accountingStatus: '已报账',
+        accountingStatus: '未报账',
+        binding: true
       }, {
         oid: '6',
+        distributors: '美团',
         title: '泰国7日游',
+        type: '门票',
         salesTime: '2019-07-18',
         money: '2899',
         number: '3',
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
+        payType: '余额支付',
+        validationTime: '2019-09-09',
         relationPid: '关联的产品',
-        accountingStatus: '已报账',
+        accountingStatus: '未报账',
+        binding: true
       }, {
         oid: '7',
+        distributors: '美团',
         title: '泰国7日游',
+        type: '门票',
         salesTime: '2019-07-18',
         money: '2899',
         number: '3',
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
+        payType: '余额支付',
+        validationTime: '2019-09-09',
         relationPid: '关联的产品',
-        accountingStatus: '已报账',
+        accountingStatus: '未报账',
+        binding: false
       }, {
         oid: '8',
+        distributors: '美团',
         title: '泰国7日游',
+        type: '门票',
         salesTime: '2019-07-18',
         money: '2899',
         number: '3',
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
+        payType: '余额支付',
+        validationTime: '2019-09-09',
         relationPid: '关联的产品',
-        accountingStatus: '已报账',
+        accountingStatus: '未报账',
+        binding: false
       }, {
         oid: '9',
+        distributors: '美团',
         title: '泰国7日游',
+        type: '门票',
         salesTime: '2019-07-18',
         money: '2899',
         number: '3',
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
+        payType: '余额支付',
+        validationTime: '2019-09-09',
         relationPid: '关联的产品',
         accountingStatus: '未报账',
+        binding: true
       }, {
         oid: '10',
+        distributors: '美团',
         title: '泰国7日游',
+        type: '门票',
         salesTime: '2019-07-18',
         money: '2899',
         number: '3',
         guestInformation: '客人信息,没啥问题',
         importTime: '2019-07-08',
+        payType: '授信支付',
+        validationTime: '2019-09-09',
         relationPid: '关联的产品',
         accountingStatus: '未报账',
+        binding: true
       }],
       multipleSelection: [],
       currentRow: true
@@ -270,7 +326,7 @@ export default {
       this.dialogFormVisible2 = false
     },
     delOrder() {
-      console.log(this.pid);
+      console.log(this.multipleSelection);
       this.$confirm('是否删除此外部订单?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -293,6 +349,7 @@ export default {
     },
     //关联
     relation() {
+        console.log(this.multipleSelection);
       this.dialogFormVisible = true
     },
     close() {
@@ -300,7 +357,7 @@ export default {
     },
     //解绑
     unbinding() {
-      console.log(this.pid);
+      console.log(this.multipleSelection);
       this.$confirm('是否需要解绑选中订单?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -385,6 +442,7 @@ export default {
     width: auto;
     background-color: #F7F7F7;
     padding: 20px;
+    min-width: 1350px;
 
     .search-title {
       font-size: 14px;
@@ -416,7 +474,10 @@ export default {
     }
 
     .button_select {
-      width: 1300px;
+      /*width: 1300px;*/
+      display: inline-block;
+      float: right;
+      margin-right: 265px;
       overflow: hidden;
       padding: 10px;
       box-sizing: border-box;

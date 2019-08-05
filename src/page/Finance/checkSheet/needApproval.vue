@@ -1,5 +1,5 @@
 <template>
-  <div class="all">
+  <div class="all" id="needApprovalAll">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <!--报销-->
       <div class="borders">
@@ -148,38 +148,42 @@
   }
 </script>
 
-<style scoped>
-  .borders{
-    height: 900px;
-    /*border: 1px solid #E6E6E6;*/
+<style>
+  #needApprovalAll .el-tabs__header{
+    margin-top: -14px!important;
   }
-  .search{
+  #needApprovalAll .borders{
+    overflow: hidden;
+    border: 1px solid #E6E6E6;
+    margin-bottom: 30px;
+  }
+  #needApprovalAll .search{
     float: left;
     margin-top: 30px;
   }
-  .date-line {
+  #needApprovalAll .date-line {
     width: 10px;
     border-bottom: 1px solid #e6e6e6;
     display: inline-block;
     margin: 0 3px 3px 0
   }
-  .search_style{
+  #needApprovalAll .search_style{
     /*float: left;*/
     margin-top: 10px;
     margin-left: 20px;
     font-size: 14px
   }
-  .search_input{
+  #needApprovalAll .search_input{
     /*float: left;*/
     width: 200px
   }
-  .table_style{
+  #needApprovalAll .table_style{
     width: 1500px;
     margin-left: 20px;
     margin-top: 20px;
     float: left;
   }
-  .block{
+  #needApprovalAll .block{
     float: left;
     margin-left: 600px;
     margin-top: 70px;
