@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative;width:100%;">
+  <div class="vivo" style="position:relative;width:100%;" id="productDo">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
       <div class="btn" style="z-index:99;right:10%;height:50px;width: 100%;">
         <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">添加</el-button>
@@ -61,7 +61,7 @@ export default {
   methods: {
     // 取消
     cancel() {
-      this.$router.push({ path: "productList" });
+      this.$router.push({ path: "/productList/scenicOrTicketList" });
     },
     showInput() {
       this.errorNull = false
@@ -150,7 +150,7 @@ export default {
           }, ).then(function(response) {
             if (response.data.code == '200') {
               _this.$message.success("添加成功");
-              _this.$router.push({ path: "productList" });
+              _this.$router.push({ path: "productList/scenicOrTicketList" });
             } else {
               _this.$message.success("添加失败");
             }
@@ -167,22 +167,26 @@ export default {
 }
 
 </script>
-<style scoped>
-.address {
+<style>
+#productDo .address {
   display: none;
 }
 
-#zero {
+#productDo #zero {
   color: red;
 }
 
-.productName {
+#productDo .productName {
   width: 30%;
 }
 
-.btn-button {
+#productDo .btn-button {
   float: right;
   margin-left: 10px;
+}
+
+#productDo .destination-input .el-tag{
+  margin-right: 15px;
 }
 
 </style>

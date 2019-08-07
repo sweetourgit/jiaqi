@@ -2,10 +2,10 @@
   <div class="vivo" style="position:relative">
     <div class="demo-input-suffix ">
       <div class="button_select">
-        <el-button @click="cancel()" size="medium">取消</el-button>
-        <el-button type="primary" @click="save()" size="medium">保存</el-button>
-        <el-button type="warning" @click="reject()" size="medium">一键驳回</el-button>
-        <el-button type="success" @click="submit()" size="medium">审批提交</el-button>
+        <el-button type="primary" @click="cancel()" size="medium" plain>取消</el-button>
+        <el-button type="primary" @click="save()" size="medium" plain>保存</el-button>
+        <el-button type="primary" @click="reject()" size="medium" plain>一键驳回</el-button>
+        <el-button type="primary" @click="submit()" size="medium">审批提交</el-button>
       </div>
     </div>
     <StartNumber :dialogFormVisible="dialogFormVisible" @close="close" :frameTitle1="frameTitle1" :frameTitle2="frameTitle2"></StartNumber>

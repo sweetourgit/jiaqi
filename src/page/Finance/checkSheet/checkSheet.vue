@@ -60,7 +60,7 @@
       <!--报账单end-->
 
       <!--需要你审批-->
-      <el-tab-pane label="需要您审批" name="second">
+      <el-tab-pane :label="'需要您审批 ('+number+')'" name="second">
         <NeedApproval></NeedApproval>
       </el-tab-pane>
       <!--审批end-->
@@ -81,6 +81,8 @@
       },
       data() {
         return {
+//        报账单需要审批数量
+          number: '12',
 //        搜索字段
           plan: '',
           reimbursementPer: '',

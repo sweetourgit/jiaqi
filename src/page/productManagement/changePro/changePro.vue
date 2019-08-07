@@ -95,7 +95,7 @@
                 <el-button v-else class="operation_Label" size="small" @click="showInput2">请输入运营标签</el-button>
               </div>
               <span id="empty" v-show="empty">不能为空</span>
-            </el-form-item>            
+            </el-form-item>
             <!-- 头图 -->
             <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative">
@@ -1045,7 +1045,7 @@
           /*instructions1:this.notes, //预订须知,预留接口无字段？
           instructions2:this.instructions, //使用说明,预留接口无字段？*/
           loadPackage: true
-          
+
         }
         if(this.dynamicTags3.length==0||this.dynamicTags4.length==0){
            this.errors();
@@ -1060,7 +1060,7 @@
             ).then(function(response) {
               if(response.data.isSuccess==true){
                 _this.$message.success("修改成功");
-                _this.$router.push({path: "productList"});
+                _this.$router.push({path: "/productList/packageTour"});
               }else{
                 _this.$message.success("修改失败");
               }
@@ -1112,7 +1112,7 @@
         for(var i=0;i<sche.length;i++){
           sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
         }
-      if(this.ruleForm.bourn.destination == undefined){ 
+      if(this.ruleForm.bourn.destination == undefined){
 
         this.ruleForm.mudidi = this.ruleForm.bourn
       }else{
@@ -1146,7 +1146,7 @@
             var _this = this;
             this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagesave", {
                 object: object
-              }, 
+              },
             ).then(function(response) {
               if(response.data.isSuccess==true){
                 _this.$message.success("修改成功");
@@ -1214,7 +1214,7 @@
       },
       // 取消
       cancel(){
-        this.$router.push({path: "productList"});
+        this.$router.push({path: "/productList/packageTour"});
       },
       handleClick(tab, event) {
         if(event.target.getAttribute('id')=='tab-second'){

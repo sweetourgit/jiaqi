@@ -51,8 +51,10 @@ import pledgingManagementApproval from '@/page/Finance/pledgingManagement/pledgi
 import pledgingManagementSee from '@/page/Finance/pledgingManagement/pledgingManagementSee'
 import enrollTypeA from '@/page/contentInfo/enrollType/enrollTypeA'
 import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
-import checkSheet from '@/page/Finance/checkSheet/checkSheet' //报账单  by  张伊
-
+import checkSheet from '@/page/Finance/checkSheet/checkSheet'
+import packageTour from '@/page/productManagement/productList/tab/packageTour'
+import scenicOrTicketList from '@/page/productManagement/productList/tab/scenicOrTicketList'
+import listInfoEdit from '@/page/productManagement/listInfoScenic/listInfoEdit'
 Vue.use(Router);
 
 export default new Router({
@@ -263,10 +265,25 @@ export default new Router({
       path: '/productList',
       component: productList,
       name: '产品列表',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
+      children: [{
+        path: 'packageTour',
+        name: '跟团游',
+        component: packageTour,
+        meta: {
+          keepAlive: true,
+          auth: true
+        },
+      },
+        {
+          path: 'scenicOrTicketList',
+          name: '景区/票务',
+          component: scenicOrTicketList,
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+      ]
     }, {
       path: '/listInfo',
       component: baseInfo,
@@ -279,6 +296,14 @@ export default new Router({
       path: '/listInfoScenic',
       component: listInfoScenic,
       name: '添加景区/票务',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/listInfoEdit',
+      component: listInfoEdit,
+      name: '编辑景区/票务',
       meta: {
         keepAlive: true,
         auth: true

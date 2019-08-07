@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+
     <div class="leftSku" >
       <div style="font-size:20px;margin-left:40px;">Sku</div>
       <el-button style="margin-top:10px;margin-left:40px;width:220px;height: 64px;" :class="{'selectSku': ccc.includes(data.id)}" plain v-for="(data,index) in msgFather" :key="index"  @click="setMeal(data)">{{data.ddd}}</el-button>
@@ -28,7 +28,7 @@
           <span @click="handleWeekClick" style="float:left;padding:10px 20px;margin-left:8px;cursor: pointer;">周一 ~ 周五</span>
           <span @click="clearchecked" style="float:left;padding:10px 20px;margin-left:8px;cursor: pointer;">全部清除</span>
           <template v-if="rightTable">
-            <i style="float:left;padding:10px 10px;margin-left:25px;font-size:15px;font-style: normal;">已选{{n.length}}天</i>            
+            <i style="float:left;padding:10px 10px;margin-left:25px;font-size:15px;font-style: normal;">已选{{n.length}}天</i>
           </template>
         </div>
       </div>
@@ -60,7 +60,7 @@
                 <!--今天  同年同月同日-->
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
-                
+
                 <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index">
                   <p class='old'>{{data.name}}</p>
                   <p>销售价：{{data.salePrice}}</p>
@@ -239,7 +239,7 @@
         arr:[], // 右侧报名类型表单
         ccc: [], // sku套餐选择
         clickData: '', // 当前点击的日期
-        // 非共享库存验证 
+        // 非共享库存验证
         RformRuler: {
           sumNum: [
             { required: true, message: '请填写库存'},
@@ -701,7 +701,7 @@
         //   this.days.forEach(item => {
         //     // if(item.day.getTime() > new Date().getTime() || item.day.getDate() == new Date().getDate()){
         //     //   if(item.day.getMonth() + 1 == this.currentMonth){
-                
+
         //     //   }
         //     // }
         //     let str = this.formatDates(
@@ -886,7 +886,7 @@
             this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorydelete', {
               "id": sumId
             }).then(resDelete => {
-              
+
             }).catch(errDelete => {
               console.log('删除非共享库存失败');
             })
@@ -1470,7 +1470,7 @@
       // 单击日历赋值调用
       selectType(day) {
         // 给选中类型赋值
-        let _planEnroll = day.data.person.planEnroll; 
+        let _planEnroll = day.data.person.planEnroll;
         for (let i = 0; i < _planEnroll.length; i++) {
           this.Rform.region = _planEnroll[i].enrollID + '-' + _planEnroll[i].name;
           this.AddType();
@@ -1485,7 +1485,7 @@
               this.arr[i].quota = true;
               this.arr[i].quotaPrice = _planEnroll[i].quotaPrice;
             }
-            
+
           }
         }
       },
@@ -1698,7 +1698,7 @@
             type: 'warning'
           });
         }
-        
+
       },
       // 删除卡片
       delect(item, index) {
@@ -1891,7 +1891,7 @@
             type: 'warning'
           });
         }
-        
+
       },
       // 获取报名类型
       initTypeSelect() {
@@ -1927,7 +1927,7 @@
   .person {
     width:100px;
     margin-top: 10px;
-    background: #f6f6f6; 
+    background: #f6f6f6;
   }
   .person p {
     color: #2c3e50;
