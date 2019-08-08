@@ -21,7 +21,7 @@
          <!--直客审批弹窗-->
          <el-dialog width="80%" title="审批" :visible.sync="customerApproval" append-to-body custom-class="city_list" >
           
-          
+        
         </el-dialog>
        </el-tab-pane>
        <el-tab-pane label="同业(2)">
