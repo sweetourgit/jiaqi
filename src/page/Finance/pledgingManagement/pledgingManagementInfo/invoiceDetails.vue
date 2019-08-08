@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative">
+  <div class="vivo" style="position:relative" id="invoiceDetails">
     <!--申请预付款-->
     <el-dialog title="发票" :visible="dialogVisible" width=70% @close="closeAdd">
       <div class="approval">
@@ -32,10 +32,12 @@
                 <el-input v-model="ruleForm.bank" :disabled="true" class="inputWidth" maxlength="80" show-word-limit placeholder="请输入"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="凭证:" prop="voucher" label-width="150px">
-                <el-upload class="upload-demo" :disabled="true" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :limit="1" :on-exceed="handleExceed" :file-list="fileList">
-                  <el-button size="small" type="primary">点击上传</el-button>
+          </el-row>
+          <el-row>
+            <el-col>
+              <el-form-item label="凭证:" prop="voucher" label-width="120px">
+                <el-upload class="upload-demo" :disabled="true" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :file-list="fileList">
+                  <!--<el-button size="small" type="info" :disabled="true">点击上传</el-button>-->
                 </el-upload>
               </el-form-item>
             </el-col>
@@ -102,7 +104,10 @@ export default {
         ],
       },
       fileList: [
-        { name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
+        { name: 'food0.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
+        { name: 'food1.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
+        { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
+        { name: 'food3.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }
       ],
       tableData: [{
         id: '1',
@@ -209,8 +214,8 @@ export default {
 }
 
 </script>
-<style lang="scss" scoped>
-.footer {
+<style lang="scss">
+#invoiceDetails .footer {
   position: relative;
   width: 100%;
   height: 50px;
@@ -218,18 +223,18 @@ export default {
   margin-top: -10px;
 }
 
-.el-button {
+#invoiceDetails .el-button {
   bottom: 1%;
   right: 1%;
   float: right;
   margin: 0 10px;
 }
 
-.inputWidth {
+#invoiceDetails .inputWidth {
   width: 100%;
 }
 
-.totalMoney {
+#invoiceDetails .totalMoney {
   width: 95%;
   background-color: #E6F3FC;
   height: 30px;
@@ -237,36 +242,28 @@ export default {
   margin: 0 30px;
 }
 
-.approval {
-  height: 150px;
+#invoiceDetails .approval {
+  /*height: 150px;*/
   line-height: 30px;
   width: 95%;
   margin: -15px 30px 30px 30px;
+  overflow: hidden;
 }
 
-.table_trip {
+#invoiceDetails .table_trip {
   width: 95%;
   margin: 30px 30px;
 }
-
-.upload-demo {
+#invoiceDetails .upload-demo {
   width: 1000px;
-
-  .el-upload-list {
-    width: 1000px;
-  }
-
-  .el-upload-list__item {
-    width: 300px;
-    display: inline-block;
-  }
-
-  .el-upload-list--text {
-    width: 1000px;
-  }
 }
-
-.vivo {
+#invoiceDetails .el-upload{
+  display: none;
+}
+#invoiceDetails .el-upload-list__item {
+  margin-top: 5px!important;
+}
+.vivo#invoiceDetails  {
   min-width: 1200px;
 }
 

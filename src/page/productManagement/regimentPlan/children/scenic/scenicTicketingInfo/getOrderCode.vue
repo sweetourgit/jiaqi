@@ -43,7 +43,7 @@
           </el-table-column>
           <el-table-column prop="money" label="申请金额" align="center">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.money" placeholder="申请金额"></el-input>
+              <el-input v-model="scope.row.money" :disabled="true" placeholder="申请金额"></el-input>
             </template>
           </el-table-column>
         </el-table>

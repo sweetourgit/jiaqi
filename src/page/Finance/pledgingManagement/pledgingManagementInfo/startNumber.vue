@@ -8,7 +8,7 @@
             <el-input v-model="ruleForm.number" class="input" placeholder="请输入"></el-input>
           </el-form-item><br /><br />
           <div class="footer">
-            <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+            <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">修 改</el-button>
             <el-button class="el-button" type="danger" @click="closeAdd">取 消</el-button>
           </div>
         </div>

@@ -28,7 +28,7 @@
     <el-dialog title="审批通过" :visible.sync="dialogVisible" width="500px" height="100%">
       <div class="header">
         <el-form>
-          <el-form-item label="通过说明：" prop="explain" label-width="150px" style="float:left;margin-left: -70px;">
+          <el-form-item label="通过说明：" prop="explain" label-width="150px" style="margin-left: -60px;">
             <el-input type="textarea" v-model="explain" :autosize="{ minRows: 4, maxRows:6}" style="width:300px;" placeholder="选填"></el-input>
           </el-form-item><br /><br />
         </el-form>
@@ -41,7 +41,7 @@
     <el-dialog title="审批驳回" :visible.sync="dialogVisible2" width="500px" height="100%">
       <div class="header">
         <el-form>
-          <el-form-item label="驳回意见：" prop="content" label-width="150px" style="float:left;margin-left: -70px;">
+          <el-form-item label="驳回意见：" prop="content" label-width="150px" style="margin-left: -60px;">
             <el-input type="textarea" v-model="content" :autosize="{ minRows: 4, maxRows:6}" style="width:300px;" placeholder="选填"></el-input>
           </el-form-item><br /><br />
         </el-form>
@@ -185,15 +185,15 @@ export default {
 
 .header {
   width: 100%;
-  height: 180px;
-
+  /*height: 180px;*/
+  overflow: hidden;
 }
 
 .footer {
   width: 100%;
   height: 50px;
   float: right;
-  margin-top: -50px;
+  margin-top: -30px;
 
   .el-button {
     float: right;

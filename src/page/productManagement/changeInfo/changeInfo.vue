@@ -2262,7 +2262,7 @@
       },
       // 取消
       cancel(){
-        this.$router.push({path: "productList"});
+        this.$router.push({path: "/productList/packageTour"});
       },
       handleClick(tab, event) {
         if(event.target.getAttribute('id')=='tab-second'){

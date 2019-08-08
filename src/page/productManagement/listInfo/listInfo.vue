@@ -2253,7 +2253,7 @@
               ).then(function(response) {
                   if(response.data.isSuccess==true){
                     _this.$message.success("添加成功");
-                    _this.$router.push({path: "productList"});
+                    _this.$router.push({path: "/productList/packageTour"});
                   }else{
                      _this.$message.success("添加失败");
                   }
@@ -2286,7 +2286,7 @@
       },
       // 取消
       cancel(){
-        this.$router.push({path: "productList"});
+        this.$router.push({path: "/productList/packageTour"});
       },
       handleClick(tab, event) {
          if(event.target.getAttribute('id')=='tab-second'){

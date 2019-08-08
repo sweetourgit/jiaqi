@@ -20,7 +20,7 @@
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="订单" name="1">
             <div class="demo-input-suffix">
-              <el-row>
+              <el-row class="topRow">
                 <el-col :span="1">
                   <span class="search-title">订单ID:</span>
                 </el-col>
@@ -74,13 +74,13 @@
               <el-button type="primary" @click="unbinding" plain>解绑</el-button>
             </div>
             <div class="table_trip" style="width: 95%;">
-              <el-table ref="multipleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass" @selection-change="selectionChange" @select-all="selectAll" @select="select">
-                <el-table-column prop="id" label="" fixed type="selection"></el-table-column>
+              <el-table ref="multipleTable" :data="tableData" border style="width: 100%" @row-click="handleRowClick" :header-cell-style="getRowClass" @selection-change="selectionChange">
+                <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
                 <el-table-column prop="oid" label="订单ID" align="center" width="80%">
                 </el-table-column>
                 <el-table-column prop="title" label="产品名称" align="center">
                 </el-table-column>
-                <el-table-column prop="platform" label="平台" align="center">
+                <el-table-column prop="platform" label="分销商" align="center">
                 </el-table-column>
                 <el-table-column prop="cost" label="成本" align="center">
                 </el-table-column>
@@ -404,73 +404,41 @@ export default {
     //获取id
     clickBanle(row, event, column) {
       if (row.untreatedMoney > 0) {
-        this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选 
+        this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选
         this.$refs.multipleTable.toggleRowSelection(row)
         this.pid = this.multipleSelection[0].id
       }
     },
+    selectInit(row, index){
+      if(row.untreatedMoney > 0){
+        return true  //不可勾选
+      }else{
+        return false  //可勾选
+      }
+    },
     selectionChange(val) {
-      let array = []
-      var that = this
-      if (val.length > 0) {
-        val.forEach(function(v, k, arr) {
-          if (arr[k]['untreatedMoney'] > 0) {
-            array.push(arr[k])
-          }
-        })
-        this.multipleSelection = array
-        if (this.multipleSelection.length > 0) {
-          this.forbidden = false
-        } else {
-          this.forbidden = true
-        }
+      console.log(val);
+      if(val.length > 0){
+        this.forbidden = false;
+      }else{
+        this.forbidden = true;
       }
+      this.multipleSelection = val;
     },
-    select(selection, row) {
-      var that = this
-      let zeng = false
-      let untreatedMoney = -1
-      if (selection.length > 0) {
-        selection.forEach(function(v, k, arr) {
-          if (arr[k]['id'] == row['id']) {
-            zeng = true
-          }
-          if (arr[k]['untreatedMoney'] <= 0) {
-            untreatedMoney = k
-          }
-        })
+    handleRowClick(row, column, event){
+      if(row.untreatedMoney > 0){
+        this.$refs.multipleTable.toggleRowSelection(row);
       }
-      if (zeng && untreatedMoney >= 0) {
-        that.$refs.multipleTable.toggleRowSelection(selection[untreatedMoney]);
-      }
-    },
-    selectAll(val) {
-      var that = this
-      if (!this.isSelectAll) {
-        if (val.length > 0) {
-          this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选 
-          val.forEach(function(v, k, arr) {
-            if (arr[k]['untreatedMoney'] > 0) {
-              that.$refs.multipleTable.toggleRowSelection(arr[k])
-            }
-          })
-        } else {
-          this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选 
-        }
-      } else {
-        this.$refs.multipleTable.clearSelection() //清空用户的选择,注释掉可多选 
-      }
-      this.isSelectAll = !this.isSelectAll
     },
     //发票
     invoice() {
-      console.log(this.multipleSelection)
+      console.log(this.multipleSelection);
       this.dialogFormVisible3 = true
     },
     //收款编码
     receiptCode() {
-      console.log(this.multipleSelection)
-      this.dialogFormVisible2 = true
+      console.log(this.multipleSelection);
+      this.dialogFormVisible2 = true;
     },
     save() {
       this.saveDialogVisible = true
@@ -529,12 +497,15 @@ export default {
   padding: 20px;
   margin-bottom: 30px;
   margin-right: 50px;
-
+  .topRow{
+    margin-bottom: 15px!important;
+  }
   .search-title {
     height: 35px;
     line-height: 35px;
     float: right;
     padding-right: 10px;
+    font-size: 14px;
   }
 
   .button_select {

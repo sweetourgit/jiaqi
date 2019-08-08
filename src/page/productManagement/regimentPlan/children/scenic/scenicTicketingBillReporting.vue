@@ -109,6 +109,11 @@
             <el-table-column prop="basics" label="基础信息" align="center">
             </el-table-column>
             <el-table-column prop="number" label="人数" align="center" style="color:red">
+              <template slot-scope="scope" slot="header">
+                <el-tooltip effect="light" content="订单可能在不同的收款编码(或发票)。人数会重复增加，需要请修改警示框内的人数" placement="top" >
+                 <span>人数<i class="el-icon-warning" style="color: red;margin-left: 6px;"></i></span>
+                </el-tooltip>
+              </template>
             </el-table-column>
             <el-table-column prop="money" label="金额" align="center">
             </el-table-column>

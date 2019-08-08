@@ -117,7 +117,7 @@
               items: [
                 {
                   value: '产品列表',
-                  router:'/productList'
+                  router:'/productList/packageTour'
                 },
                 {
                   value: '出行模板',

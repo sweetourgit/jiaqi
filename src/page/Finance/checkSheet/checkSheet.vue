@@ -60,7 +60,7 @@
       <!--报账单end-->
 
       <!--需要你审批-->
-      <el-tab-pane label="需要您审批" name="second">
+      <el-tab-pane :label="'需要您审批 ('+number+')'" name="second">
         <NeedApproval></NeedApproval>
       </el-tab-pane>
       <!--审批end-->
@@ -81,6 +81,8 @@
       },
       data() {
         return {
+//        报账单需要审批数量
+          number: '12',
 //        搜索字段
           plan: '',
           reimbursementPer: '',
@@ -143,7 +145,11 @@
 
         },
         resetFun(){
-
+          this.plan = '';
+          this.reimbursementPer = '';
+          this.productName = '';
+          this.startTime = '';
+          this.endTime = '';
         },
         handleClick(tab, event) {
 //          console.log(tab, event);
@@ -183,6 +189,9 @@
           console.log(res);
           this.info = res;
           this.dialogFormVisible = true;
+//          name: "Result",
+//          query: { name: 'name' },
+//          params: { usersitelist: 'userlist' }
         },
         detail(res){
           console.log(res);
@@ -202,8 +211,9 @@
 
 <style scoped>
   .borders{
-    height: 900px;
-    /*border: 1px solid #E6E6E6;*/
+    overflow: hidden;
+    border: 1px solid #E6E6E6;
+    margin-bottom: 30px;
   }
   .search{
     float: left;

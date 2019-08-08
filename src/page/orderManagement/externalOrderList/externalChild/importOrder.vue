@@ -3,20 +3,21 @@
     <!--申请预付款-->
     <el-dialog title="导入外部订单" :visible="dialogFormVisible2" width=50% @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-        <div style="height: 600px;">
+        <div style="height: 420px;">
           <el-form-item label="平台" prop="platform" label-width="120px" style="float:left;">
             <el-select style="float: left;" class="inputWidth" v-model="ruleForm.type" placeholder="请选择类型">
               <el-option v-for="item in typeList" :key="item.label" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
-          </el-form-item><br /><br />
-          <el-form-item label="平台订单" prop="platformOrder" label-width="120px" style="float:left;">
-            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :limit="20" :on-exceed="handleExceed" :file-list="fileList">
+          </el-form-item>
+          <br /><br />
+          <el-form-item label="平台订单" prop="platformOrder" label-width="120px" style="float:left;" v-if="ruleForm.type != 2">
+            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :limit="1" :on-exceed="handleExceed" :file-list="fileList">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item><br />
           <el-form-item label="票付通订单" prop="ticketOrder" label-width="120px" style="float:left;margin-top: 20px;">
-            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview2" :on-remove="handleRemove2" :before-remove="beforeRemove2" multiple :limit="20" :on-exceed="handleExceed2" :file-list="fileList2">
+            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-success="handleSuccess2" :on-error="handleError2" :on-remove="handleRemove2" :before-remove="beforeRemove2" :limit="1" :on-exceed="handleExceed2" :file-list="fileList2">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item>
@@ -38,47 +39,46 @@ export default {
     pid: '',
   },
   data() {
+    var checkPlat = (rule, value, callback) => {
+      if(this.ruleForm.type == ""){
+        return callback(new Error('请选择平台类型'));
+      }
+    };
+    var checkOrder = (rule, value, callback) => {
+      if(this.ruleForm.type == 1 && this.fileList.length == 0){
+        return callback(new Error('平台订单不能为空'));
+      }
+    };
+    var ticketOrder = (rule, value, callback) => {
+      if(this.fileList2.length == 0){
+        return callback(new Error('票付通订单不能为空'));
+      }
+    };
     return {
-      ruleForm: {},
+      ruleForm: {
+        type: '',
+
+      },
       rules: {
-        platform: [{ required: true, message: '请选择平台', trigger: 'change' }],
-        platformOrder: [{ required: true, message: '平台订单不能为空', trigger: 'change' }],
+        platform: [{ required: true, validator:checkPlat, trigger: 'change' }],
+        platformOrder: [{ required: true, validator:checkOrder, trigger: 'change' }],
+        ticketOrder: [{ required: true, validator:ticketOrder, trigger: 'change' }]
       },
       typeList: [{
-          label: '美团',
+          label: '飞猪',
           value: '1',
         }, {
-          label: '途牛',
+          label: '票付通',
           value: '2',
-        },
-        {
-          label: '携程',
-          value: '3',
-        },
-        {
-          label: '有赞',
-          value: '4',
-        },
-        {
-          label: '去哪',
-          value: '5',
-        },
-        {
-          label: '飞猪',
-          value: '6',
-        },
-        {
-          label: '马蜂窝',
-          value: '7',
-        },
+        }
       ],
       fileList: [
-        { name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
-        { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }
+//        { name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
+//        { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }
       ],
       fileList2: [
-        { name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
-        { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }
+//        { name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
+//        { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }
       ],
     }
   },
@@ -87,31 +87,9 @@ export default {
   },
   methods: {
     closeAdd() {
-      this.ruleForm.tour = ''
-      this.ruleForm.title = ''
+      this.ruleForm.tour = '';
+      this.ruleForm.title = '';
       this.$emit('close2', false);
-    },
-    tour_check() {
-      if (this.ruleForm.tour != '') {
-        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
-          "pageIndex": 1,
-          "pageSize": 1,
-          "object": {
-            "groupCode": this.ruleForm.tour, //团号
-            "title": '', //产品名称
-            "beginDate": 0, //搜索用开始日期
-            "endDate": 0, //搜索用结束日期
-          }
-        }).then(res => {
-          if (res.data.isSuccess == true) {
-            //this.product_name_pre = res.data.objects[0].title
-            this.ruleForm.title = res.data.objects.length > 0 ? res.data.objects[0].title : ''
-            //this.getPaymentdetails(res.data.objects[0].planID)
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      }
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -126,26 +104,36 @@ export default {
         }
       });
     },
+//    平台订单
+    handleSuccess(response, file, fileList){
+//      console.log(response, file, fileList);
+      this.fileList = fileList;
+    },
+    handleError(err, file, fileList){
+      this.$message.warning(`文件上传失败，请重新上传！`);
+    },
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
-    handlePreview(file) {
-      console.log(file);
-    },
     handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      this.$message.warning(`平台订单只支持一个附件上传！`);
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
+//    票付通订单
+    handleSuccess2(response, file, fileList){
+//      console.log(response, file, fileList);
+      this.fileList2 = fileList;
+    },
+    handleError2(err, file, fileList){
+      this.$message.warning(`文件上传失败，请重新上传！`);
+    },
     handleRemove2(file, fileList) {
       console.log(file, fileList);
     },
-    handlePreview2(file) {
-      console.log(file);
-    },
     handleExceed2(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      this.$message.warning(`票付通订单只支持一个附件上传！`);
     },
     beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
@@ -159,11 +147,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 .footer {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 50px;
-  float: right;
-  margin-top: 100px;
+  bottom: 10px;
+  right: 20px;
 }
 
 .el-button {

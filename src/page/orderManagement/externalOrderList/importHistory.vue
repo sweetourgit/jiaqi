@@ -13,7 +13,7 @@
       <br /><br />
       <div class="button_select">
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
-        <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
+        <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
       </div>
     </div>
     <div class="table_trip" style="width: 100%;">
