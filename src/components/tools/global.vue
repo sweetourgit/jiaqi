@@ -5,7 +5,7 @@
   const serverSrcPhp="http://www.around.com";
   const token="";
   const userId="";
-  const hasEnter=false;
+  const hasEnter=false; 
 
   export default {
   serverSrc,//服务器地址
