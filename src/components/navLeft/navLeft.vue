@@ -105,6 +105,9 @@
                 },{
                   value:'报名类型B',
                   router:'/enrollTypeB'
+                },{
+                  value:'工作流接口查询管理',
+                  router:'/workFlowList'
                 }
               ]
             },

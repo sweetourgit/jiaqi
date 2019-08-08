@@ -589,7 +589,8 @@
               { validator: areaMonkeyRule, trigger: 'blur' }
             ],
             content: [
-              { required: true, message: '请输入摘要信息', trigger: 'blur' },
+              { required: true, message: '请输入摘要', trigger: 'change' },
+                { min: 0, max: 30, message: '摘要字数不能超过80字', trigger: 'change' },
             ],
           },
           //审批意见

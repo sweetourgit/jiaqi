@@ -1,44 +1,40 @@
 <template>
   <div class="vivo" style="position:relative">
-    <el-dialog :title="title" :visible="dialogFormVisible" width=60% :show-close="false" class="addReceivables" @close="closeAdd">
+    <el-dialog :title="title" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" width=1100px :show-close="false" custom-class="city_list" class="addReceivables" @close="closeAdd">
       <div v-if="this.find == 1 || this.find == 2" class="sh_style">审核中</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-        <div class="btn" style="position:absolute;z-index:9;top:20px;right:1%;">
-          <el-button @click="closeAdd">取 消</el-button>
+        <div class="btn" style="position:absolute;z-index:9;top:8px;right:1%;">
+          <el-button @click="aaa">取 消</el-button>
           <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">提 交</el-button>
           <el-button v-if="this.find == 1" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销收款</el-button>
           <el-button v-if="this.find == 2" type="primary" @click="Transfer ('ruleForm')">转办</el-button>
           <el-button v-if="this.find == 2" type="primary" @click="adoptForm('ruleForm')">通过</el-button>
           <el-button v-if="this.find == 2" type="danger" @click="boSubmit('ruleForm')">驳回</el-button>
         </div>
+        <div style="margin:10px 0 20px 25px; font-size:14pt;">基本信息</div>
         <el-form-item label="收款时间" prop="createTime" label-width="120px">
-          <el-date-picker v-model="ruleForm.createTime" type="date" placeholder="收款时间" :disabled="change"></el-date-picker>
+          <el-date-picker v-model="ruleForm.createTime" style="width:200px;" type="date" placeholder="收款时间" :disabled="change"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="同业社名称" prop="sameTrade" label-width="120px">
+          <el-input style="width:200px;" v-model="ruleForm.sameTrade" placeholder="请输入同业社名称" :disabled="change"></el-input>
         </el-form-item>
         <el-form-item label="收款账户" prop="collectionAccount" label-width="120px">
-          <el-select style="float: left;" v-model="ruleForm.collectionAccount" placeholder="请选择" :disabled="change">
-            <el-option v-for="item in collectionAccountList" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="同业社" prop="sameTrade" label-width="120px">
-          <el-select style="float: left;" v-model="ruleForm.sameTrade" placeholder="请选择" :disabled="change">
-            <el-option v-for="item in sameTradeList" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
+          <el-input style="width:200px;" v-model="ruleForm.collectionAccount" placeholder="请输入收款账户" :disabled="change"></el-input>
+          <el-button class="collection" @click="account()">选择</el-button>
         </el-form-item>
         <el-form-item label="收款金额" prop="money" label-width="120px">
-          <el-input type="number" v-model="ruleForm.money" class="bright" placeholder="收款金额" :disabled="change"></el-input>
+          <el-input v-model="ruleForm.money" style="width:200px;" placeholder="收款金额" :disabled="change"></el-input>
         </el-form-item>
         <el-form-item label="摘要" prop="abstract" label-width="120px">
-          <el-input v-model="ruleForm.abstract" class="bright2" placeholder="摘要" :disabled="change"></el-input>
+          <el-input v-model="ruleForm.abstract" style="width:600px;" placeholder="摘要" :disabled="change"></el-input>
         </el-form-item>
         <el-form-item label="凭证" label-width="120px">
           <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :disabled="change" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="是否开发票" prop="isInvoice" label-width="120px">
+        <el-form-item label=""  prop="isInvoice">
+          <div style="font-size:14pt; float:left; margin:0 20px 0 30px;">开发票</div>
           <el-radio-group v-model="ruleForm.isInvoice" :disabled="change" @change="isInvoice">
             <el-radio label="1">是</el-radio>
             <el-radio label="0">否</el-radio>
@@ -46,6 +42,7 @@
         </el-form-item>
         <!-- 发票信息 -->
         <el-form-item label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible2">
+        <el-button style="margin: 5px 0 10px 0;" type="primary"@click="handleEdit()">添加</el-button>
           <el-table :data="ruleForm.invoiceList" border style="width: 100%;">
             <el-table-column label="发票类型" width="120" align="center">
               <template slot-scope="scope">
@@ -112,32 +109,32 @@
               <template slot-scope="scope">
                 <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 <br />
-                <el-button style="margin-top: 5px;" size="mini" type="primary" v-if="invoiceListCount==scope.$index" @click="handleEdit(scope.$index, scope.row)">添加</el-button>
+                <!-- <el-button style="margin-top: 5px;" size="mini" type="primary" v-if="invoiceListCount==scope.$index" @click="handleEdit(scope.$index, scope.row)">添加</el-button> -->
               </template>
             </el-table-column>
           </el-table>
         </el-form-item>
         <!-- 关联欠款 -->
-        <el-form-item label="关联欠款" label-width="120px" label-height="auto">
-          <span style="float: right;color:red;">欠款关联:&nbsp;&nbsp;{{arrearsRelation}}</el-input></span>
-        </el-form-item>
-        <el-form-item label="" label-width="" label-height="auto">
-          <el-table :data="arrearsList" border style="width: 97.8%;margin-left: 30px;margin-top: -25px;">
-            <el-table-column prop="orderNumber" label="订单号" align="center"></el-table-column>
-            <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
-            <el-table-column prop="tour" label="团期计划" align="center"></el-table-column>
-            <el-table-column prop="tourStartTime" label="出团日期" align="center"></el-table-column>
-            <el-table-column prop="orderMoney" label="订单金额" align="center"></el-table-column>
-            <el-table-column prop="arrearsMoney" label="欠款金额" align="center"></el-table-column>
-            <el-table-column prop="repaymentMoney" label="已还金额" align="center"></el-table-column>
-            <el-table-column prop="inAuditMoney" label="待审核金额" align="center"></el-table-column>
-            <el-table-column label="匹配收款金额" align="center">
+        <div style="margin:30px 0 20px 25px; font-size:14pt;">关联欠款</div>
+        <div class="associated">
+          <div class="associatedIcon"><i class="el-icon-warning"></i></div>
+          <div class="associatedItems">已关联<span style="margin:0 5px; font-weight: bold;">1</span>项</div>
+          <div class="associatedMoney">总计：1200.00元</div>
+        </div>
+        <el-table :data="arrearsList" border style="width: 1030px; margin:10px 0 20px 25px;":header-cell-style="getRowClass">
+           <el-table-column prop="orderNumber" label="订单编号" align="center"></el-table-column>
+           <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+           <el-table-column prop="tour" label="团期计划" align="center"></el-table-column>
+           <el-table-column prop="tourStartTime" label="出发日期" align="center"></el-table-column>
+           <el-table-column prop="orderMoney" label="订单金额" align="center"></el-table-column>
+           <el-table-column prop="arrearsMoney" label="欠款金额" align="center"></el-table-column>
+           <el-table-column prop="repaymentMoney" label="已还金额" align="center"></el-table-column>
+           <el-table-column label="匹配收款金额" align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.matchingMoney" placeholder="匹配收款金额" :disabled="change"></el-input>
               </template>
-            </el-table-column>
-          </el-table>
-        </el-form-item>
+           </el-table-column>
+        </el-table>
         <!-- 审批过程 -->
         <el-form-item v-if="this.find == 1 || this.find == 2" label="审批过程" label-width="120px" label-height="auto">
         </el-form-item>
@@ -155,6 +152,27 @@
         </el-form-item>
         <div style="height: 200px;"></div>
       </el-form>
+    </el-dialog>
+    <!--收款账户选择弹窗-->
+    <el-dialog title="选择账户" :visible.sync="accountShow" width="70%" custom-class="city_list">
+      <div style="overflow:hidden;">
+        <el-table :data="accountTable" border style="width: 100%" :header-cell-style="getRowClass">
+          <el-table-column prop="accountType" label="类型" align="center"></el-table-column>
+          <el-table-column prop="accountID" label="账号名称" align="center"></el-table-column>
+          <el-table-column prop="accountCard" label="卡号" align="center"></el-table-column>
+          <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+          <el-table-column prop="accountHolder" label="开户人" align="center"></el-table-column>
+          <el-table-column prop="operation" label="操作" align="center">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" class="table_details">选择</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="accountButton">
+          <el-button @click="accountClose()">取消</el-button>
+          <el-button  type="primary">确认</el-button>
+        </div>
+      </div>
     </el-dialog>
     <!--协办弹窗-->
     <el-dialog style="text-align: left" title="选择协办人:" :visible.sync="dialogFormVisible1" width="50%">
@@ -253,7 +271,7 @@ export default {
       },
       rules: {
         createTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
-        collectionAccount: [{ required: true, message: '收款账户不能为空', trigger: 'change' }],
+        collectionAccount: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
         sameTrade: [{ required: true, message: '同业社不能为空', trigger: 'change' }],
         money: [
           { required: true, message: '收款金额不能为空', trigger: 'blur' },
@@ -335,24 +353,14 @@ export default {
       fileList: [{
         name: 'food.jpeg',
         url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+      }],
+      accountShow:false,//选择账户弹窗
+      accountTable:[{
+        accountType:'收款',
+        accountID:'洋洋',
+        accountCard:'123.00',
+        openingBank:'123.00',
+        accountHolder:'阳阳',
       }],
     }
   },
@@ -362,7 +370,7 @@ export default {
       return this.ruleForm.invoiceList.length - 1;
     },
     title() {
-      return (this.find == 1 || this.find == 2) ? "查看同业收款" : "添加同业收款"
+      return (this.find == 1 || this.find == 2) ? "查看同业收款" : "申请同业收款"
     },
   },
   methods: {
@@ -374,14 +382,41 @@ export default {
         return ''
       }
     },
+    //选择账户弹窗
+    account(){
+      this.accountShow = true;
+    },
+    accountClose(){
+      this.accountShow = false;
+    },
     //获取id
     clickBanle(row, event, column) {
       this.user_id = row['id'];
       this.user_name = row['name'];
       this.reable = false;
     },
-    closeAdd() {
-      this.$emit('close', false);
+    closeAdd(){
+        this.$emit('close', false);
+    },
+    aaa(){
+      //this.$emit('close', false);
+      this.$confirm("去否取消本次收款申请?", "提示", {
+           confirmButtonText: "确定",
+           cancelButtonText: "取消",
+           type: "warning"
+        }).then(() => {
+             this.$message.success("收款申请已取消");
+             //this.dialogFormVisible =false;
+             this.closeAdd();
+             this.$refs["ruleForm"].resetFields();
+           //this.clearPlan();
+           })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
     },
     changeInvoice() {
       this.ruleForm.invoiceList.forEach(function(v, k, arr) {
@@ -700,7 +735,7 @@ export default {
 .bright {
   width: 220px;
 }
-
+.collection{background:#eaeaea; color:#a4a4a4;}
 .bright2 {
   width: 70%;
 }
@@ -720,5 +755,11 @@ export default {
   float: left;
   width: 200px
 }
+.accountButton{float:right; margin:20px 0 0 0; overflow: hidden;}
+/*关联欠款*/
+  .associated{ line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc;width: 1030px; margin: 0 0 0 25px; border-radius: 5px;overflow: hidden; }
+  .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}
+  .associatedItems{float:left; margin: 0 0 0 10px;}
+  .associatedMoney{float:left; margin: 0 0 0 30px;}
 
 </style>

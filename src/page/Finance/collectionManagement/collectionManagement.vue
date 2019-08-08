@@ -1,14 +1,13 @@
 <template>
   <div class="vivo" style="position:relative">
     <el-tabs v-model="activeName">
-     <!-- <el-tab-pane label="同业" name="first">
+     <el-tab-pane label="同业" name="first">
         <SameTradeManagement></SameTradeManagement>
       </el-tab-pane>
-    -->
       <el-tab-pane label="直客" name="second">
         <StraightGuestManagement></StraightGuestManagement>
       </el-tab-pane>
-      <el-tab-pane label="待审批" name="third">
+      <el-tab-pane label="需要您审批" name="third">
         <PendingApprovalManagement></PendingApprovalManagement>
       </el-tab-pane>
     </el-tabs>
@@ -27,7 +26,7 @@ export default {
   },
   data() {
     return {
-      activeName: 'second',
+      activeName: 'third',
     }
   },
   computed: {

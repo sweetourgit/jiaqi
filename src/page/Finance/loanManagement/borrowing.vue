@@ -54,7 +54,7 @@
 	      <el-table-column prop="orgName" label="申请组织" width="150" align="center"></el-table-column> -->
 	      <el-table-column prop="createUser" label="申请人" width="100" align="center"></el-table-column>
 	      <el-table-column prop="approvalOpinion" label="审批意见" width="180" align="center"></el-table-column>
-	      <el-table-column prop="approvalOpinion" label="操作" width="180" align="center">
+	      <el-table-column label="操作" width="180" align="center">
 	      	<template slot-scope="scope">
 	          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
 	        </template>
@@ -381,8 +381,8 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           planType:[{ required: true, message: '请选择借款类型', trigger: 'change' }],
           planAmount:[{ required: true, message: '请输入借款金额', trigger: 'blur' },
           			  { pattern: /^[+]{0,1}(\d+)$/, message: '借款金额需为正整数' }],
-          abstract:[{ required: true, message: '请输入摘要', trigger: 'blur' },
-          			{ min: 0, max: 30, message: '摘要字数超过80汉字限制', trigger: 'blur' },],
+          abstract:[{ required: true, message: '请输入摘要', trigger: 'change' },
+          			{ min: 0, max: 30, message: '摘要字数不能超过80字', trigger: 'change' },],
           account:[{ required: true, message: '请输入汇款账号', trigger: 'blur' }],
           accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
           accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],

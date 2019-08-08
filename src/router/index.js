@@ -30,6 +30,7 @@ import sharedInventory from '@/page/productManagement/sharedInventory/sharedInve
 import changePro from '@/page/productManagement/changePro/changePro'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
 import blacklist from '@/page/contentInfo/blacklist/blacklist'
+import workFlowList from '@/page/contentInfo/workFlowList/workFlowList'//工作流接口查询管理
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
@@ -236,6 +237,14 @@ export default new Router({
       path: '/enrollTypeB',
       component: enrollTypeB,
       name: '报名类型B',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
+      path: '/workFlowList',
+      component: workFlowList,
+      name: '工作流接口查询管理',
       meta: {
         keepAlive: true,
         auth: true

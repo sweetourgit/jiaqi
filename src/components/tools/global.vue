@@ -1,6 +1,6 @@
 <script>
-  const serverSrc="http://192.168.1.186:3017";
-  const imgUrl="http://192.168.1.186:3009";
+  const serverSrc="http://192.168.2.4:3017";
+  const imgUrl="http://192.168.2.4:3009";
   const jqUrl="http://192.168.1.198:6019";
   const serverSrcPhp="http://www.around.com";
   const token="";
