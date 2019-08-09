@@ -1,12 +1,12 @@
 <script>
-  const serverSrc="http://192.168.2.4:3017";
+  const serverSrc="http://192.168.2.65:3017";
   const imgUrl="http://192.168.2.4:3009";
-  const jqUrl="http://192.168.1.198:6019";
+  //const jqUrl="http://192.168.1.198:6019";
+  const jqUrl="http://192.168.2.6:6019";
   const serverSrcPhp="http://www.around.com";
   const token="";
   const userId="";
   const hasEnter=false; 
-
   export default {
   serverSrc,//服务器地址
   imgUrl,//图片服务器地址

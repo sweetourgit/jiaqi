@@ -5,7 +5,7 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="btn" style="position:absolute;z-index:9;top:8px;right:1%;">
           <el-button @click="aaa()">取 消</el-button>
-          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">提 交</el-button>
+          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">申 请</el-button>
           <el-button v-if="this.find == 1" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销申请</el-button>
           <!-- <el-button v-if="this.find == 2" type="primary" @click="Transfer ('ruleForm')">转办</el-button> -->
           <el-button v-if="this.find == 2" type="primary" @click="adoptForm('ruleForm')">通过</el-button>
@@ -347,7 +347,7 @@ export default {
       rules: {
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         collectionNumber: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
-        serialNumber: [{ required: true, message: '交易流水号不能为空', trigger: 'blur' }],
+        /*serialNumber: [{ required: true, message: '交易流水号不能为空', trigger: 'blur' }],*/
         price: [
           { required: true, message: '收款金额不能为空', trigger: 'blur' },
           { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
@@ -525,7 +525,7 @@ export default {
             orderID: this.ruleForm.orderID, //订单ID
             orderNumber: this.ruleForm.orderNumber, //订单号
             collectionNumber: this.ruleForm.collectionNumber, //收款账户
-            price: this.ruleForm.price, //金额
+            //price: this.ruleForm.price, //金额
             dept: this.dept, //this.org, //组织部门
             createUser: localStorage.getItem('name'), //
             createTime: newDate, //申请时间

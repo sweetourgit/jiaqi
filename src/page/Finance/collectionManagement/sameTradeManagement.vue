@@ -145,14 +145,14 @@
          </tr>
         </table>
         <div style="margin:30px 0 20px 25px; font-size:14pt;">审核结果</div>
-        <el-table :data="tableAudit" border style="width: 1080px; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="tableAudit" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="auditTime" label="审批时间" align="center"></el-table-column>
            <el-table-column prop="auditPeople" label="审批人" align="center"></el-table-column>
            <el-table-column prop="auditResult" label="审批结果" align="center"></el-table-column>
            <el-table-column prop="auditIdea" label="审批意见" align="center"></el-table-column>
         </el-table>
         <div style="margin:30px 0 20px 25px; font-size:14pt;">发票</div>
-        <el-table :data="tableInvoice" border style="width: 1080px; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="tableInvoice" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="invoiceType" label="发票类型" align="center"></el-table-column>
            <el-table-column prop="invoiceUnit" label="个人/单位" align="center"></el-table-column>
            <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
@@ -170,7 +170,7 @@
           <div class="associatedItems">已关联<span style="margin:0 5px; font-weight: bold;">1</span>项</div>
           <div class="associatedMoney">总计：1200.00元</div>
         </div>
-        <el-table :data="tableAssociated" border style="width: 1080px; margin:10px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="tableAssociated" border style="width: 90%; margin:10px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="productID" label="订单编号" align="center"></el-table-column>
            <el-table-column prop="productPlan" label="产品名称" align="center"></el-table-column>
            <el-table-column prop="planID" label="团期计划" align="center"></el-table-column>
@@ -542,7 +542,7 @@ export default {
   .checkType{padding: 0 5px; width:50px; margin:10px 0 0 0; border-radius:5px; color:#fff; line-height:30px; text-align:center;}
 
   /*关联欠款*/
-  .associated{ line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc;width: 1080px; margin: 0 0 0 25px; border-radius: 5px;overflow: hidden; }
+  .associated{ line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc;width: 90%; margin: 0 0 0 25px; border-radius: 5px;overflow: hidden; }
   .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}
   .associatedItems{float:left; margin: 0 0 0 10px;}
   .associatedMoney{float:left; margin: 0 0 0 30px;}

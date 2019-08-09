@@ -5,7 +5,7 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="btn" style="position:absolute;z-index:9;top:8px;right:1%;">
           <el-button @click="aaa">取 消</el-button>
-          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">提 交</el-button>
+          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">申 请</el-button>
           <el-button v-if="this.find == 1" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销收款</el-button>
           <el-button v-if="this.find == 2" type="primary" @click="Transfer ('ruleForm')">转办</el-button>
           <el-button v-if="this.find == 2" type="primary" @click="adoptForm('ruleForm')">通过</el-button>

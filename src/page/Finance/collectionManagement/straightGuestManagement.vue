@@ -85,7 +85,7 @@
             </el-table-column>
             <el-table-column label="操作" width="100" align="center">
               <template slot-scope="scope">
-                <el-button @click="dialogFind(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+                <el-button @click="dialogFind(scope.row.id)" type="text" size="small" class="table_details">详情</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -108,12 +108,12 @@
         <table class="basictable">
          <tr>
           <td>
-             <!-- <div>
+              <div>
                <div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
                <div class="checkType" v-if="fundamental.checkType=='2'" style="background: #ff0000" >驳回</div>
                <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500" >通过</div>
-             </div> -->
-             <div class="checkType" style="background: #ffa200">审批中</div>
+             </div>
+             <!-- <div class="checkType" style="background: #ffa200">审批中</div> -->
           </td>
          </tr>
          <tr>
@@ -137,11 +137,11 @@
            </td>
            <td class="basictd">
              <span class="basicspan_01">收款账户:</span>
-             <span class="basicspan_02">{{fundamental.plan_01}}</span>
+             <span class="basicspan_02">{{fundamental.collectionNumber}}</span>
            </td>
            <td class="basictd">
              <span class="basicspan_01">收款金额:</span>
-             <span class="basicspan_02">{{fundamental.supplierName}}</span>
+             <span class="basicspan_02">{{fundamental.price}}</span>
            </td>
          </tr>
          <tr>
@@ -155,7 +155,11 @@
            </td>
            <td class="basictd">
              <span class="basicspan_01">开发票:</span>
-             <span class="basicspan_02">{{fundamental.mark}}</span>
+             <!-- <span class="basicspan_02">{{fundamental.mark}}</span> -->
+             <span class="basicspan_02">
+               <div class="invoice" v-if="fundamental.invoice=='0'">否</div>
+               <div class="invoice" v-if="fundamental.invoice=='1'">是</div>
+             </span>
            </td>
          </tr>
          <tr>
@@ -166,14 +170,14 @@
          </tr>
         </table>
         <div style="margin:30px 0 20px 25px; font-size:14pt;">审核结果</div>
-        <el-table :data="tableAudit" border style="width: 1080px; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="tableAudit" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="auditTime" label="审批时间" align="center"></el-table-column>
            <el-table-column prop="auditPeople" label="审批人" align="center"></el-table-column>
            <el-table-column prop="auditResult" label="审批结果" align="center"></el-table-column>
            <el-table-column prop="auditIdea" label="审批意见" align="center"></el-table-column>
         </el-table>
         <div style="margin:30px 0 20px 25px; font-size:14pt;">发票</div>
-        <el-table :data="tableInvoice" border style="width: 1080px; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="tableInvoice" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="invoiceType" label="发票类型" align="center"></el-table-column>
            <el-table-column prop="invoiceUnit" label="个人/单位" align="center"></el-table-column>
            <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
@@ -191,7 +195,7 @@
           <div class="associatedItems">已关联<span style="margin:0 5px; font-weight: bold;">1</span>项</div>
           <div class="associatedMoney">总计：1200.00元</div>
         </div> -->
-        <el-table :data="tableAssociated" border style="width: 1080px; margin:10px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="tableAssociated" border style="width: 90%; margin:10px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="productID" label="订单编号" align="center"></el-table-column>
            <el-table-column prop="productPlan" label="产品名称" align="center"></el-table-column>
            <el-table-column prop="planID" label="团期计划" align="center"></el-table-column>
@@ -272,6 +276,8 @@ export default {
         auditMoney:'1200.00',
         collectionMoney:'1200.00',
       }],
+      paymentID:0,
+      tour_id:0,
     }
   },
   computed: {
@@ -299,6 +305,7 @@ export default {
       }
     },
     handleSizeChange(val) {
+      this.pageSize = val
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/finance/collection/api/page", {
@@ -306,7 +313,7 @@ export default {
             "pageSize": val,
             "object": {
               "id": 0,
-              "checkType": this.settlement_01,
+              "checkType": this.settlement_01?this.settlement_01:-1,
               "collectionTime": "2019-05-16T01:02:40.816Z",
               "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd hh:mm:ss') : "2000-05-16 01:02:40",
               "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd hh:mm:ss') : "2099-05-16 01:02:40",
@@ -346,6 +353,7 @@ export default {
         })
     },
     handleCurrentChange(val) {
+      this.pageNum = val;
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/finance/collection/api/page", {
@@ -353,7 +361,7 @@ export default {
             "pageSize": this.pageSize,
             "object": {
               "id": 0,
-              "checkType": this.settlement_01,
+              "checkType": this.settlement_01?this.settlement_01:-1,
               "collectionTime": "2019-05-16T01:02:40.816Z",
               "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd hh:mm:ss') : "2000-05-16 01:02:40",
               "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd hh:mm:ss') : "2099-05-16 01:02:40",
@@ -393,11 +401,12 @@ export default {
         })
     },
     //查询详情
-    dialogFind() {
+    dialogFind(id) {
       //this.find = 1;
       //this.change = true
       //this.dialogFormVisible = true;
       this.detailstShow = true;
+      this.getLabel(id);
     },
     closeDetailstShow(){//取消关闭查看详情弹窗
       this.detailstShow = false;
@@ -424,6 +433,8 @@ export default {
     clickBanle(row, event, column) {
       this.pid = row['id'];
       this.reable = false;
+      this.paymentID=row.paymentID;
+      this.tour_id = row['planID']
 
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -525,6 +536,25 @@ export default {
           console.log(obj)
         })
     },
+    //获取一条信息
+      getLabel(id){
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/get',{
+            "id":id
+        }).then(res => {
+          if(res.data.isSuccess == true){
+             this.fundamental=res.data.object;
+             this.tour_id = res.data.object.planID;
+             //this.getTourByPlanId(res.data.object.planID);
+             //this.getPaymentdetails(res.data.object.planID);
+             /*res.data.object.files.forEach(function(v, k, arr) {
+                  that.fileList.push({
+                    "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
+                    "name": arr[k]['name'],
+                  });
+                })*/
+          }
+       })
+      },
   },
   created() {
     this.getCollectionAccount()
@@ -603,4 +633,6 @@ export default {
   .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
   .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
   .time{margin: 0 0 0 10px;}
+  .basicspan_01{width:80px;float:left; text-align:left;}
+  .basicspan_02{margin:0 0 0 10px;float:left}
 </style>
