@@ -150,6 +150,9 @@
         }
       },
       searchFun(){
+        if(this.destination == ''){
+          this.destinationID = '';
+        }
         this.reimList();
       },
       resetFun(){
@@ -213,9 +216,6 @@
         })
       },
       reimList(){
-        if(this.destination == ''){
-          this.destinationID = '';
-        }
         //加载数据
         var that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/product/product/listpage", {

@@ -7,6 +7,12 @@
           <el-form-item label="收入来源：" prop="source" label-width="100px">
             <el-input v-model="ruleForm.source" class="inputWidth" show-word-limit placeholder="请输入"></el-input>
           </el-form-item>
+          <el-form-item label="经手人：" prop="distributor" label-width="100px">
+            <el-input v-model="ruleForm.distributor" class="inputWidth" show-word-limit placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="备注：" prop="text" label-width="100px">
+            <el-input v-model="ruleForm.text" class="inputWidth" show-word-limit placeholder="请输入"></el-input>
+          </el-form-item>
         </el-form>
       </div>
       <div class="footer">
@@ -27,10 +33,14 @@ export default {
   data() {
     return {
       ruleForm: {
-        source: ''
+        source: '',
+        distributor: '',
+        text: ''
       },
       rules: {
         source: [{ required: true, message: '收入来源不能为空!', trigger: 'blur' }],
+        distributor: [{ required: true, message: '经手人不能为空!', trigger: 'blur' }],
+        text: [{ required: false, message: '', trigger: 'blur' }]
       },
     }
   },
@@ -45,11 +55,31 @@ export default {
       this.$emit('close', false);
     },
     submitForm(formName) {
+      const that = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/updincome", {
+            "id": this.info,
+            "distributor": this.ruleForm.distributor,
+            "handler": this.ruleForm.source,
+            "text": this.ruleForm.text
+          }, ).then(function(response) {
+            if (response.data.code == '200') {
+              console.log(response);
+              that.ruleForm = {
+                source: '',
+                distributor: '',
+                text: ''
+              };
+              that.$message({
+                type: 'success',
+                message: '提交成功!'
+              });
+            } else {
+              that.$message.success("提交数据失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
           });
           this.$emit('close', false);
         } else {
@@ -57,7 +87,7 @@ export default {
           return false;
         }
       });
-    },
+    }
   },
   created() {},
   mounted() {}

@@ -5,7 +5,13 @@
         <el-col :span="8">
           <div class="status">
             <span class="header">基本信息</span><br><br>
-            <el-button type="success" round size="mini">认款通过</el-button>
+            <el-button type="info" round size="mini" v-if="statusBtn == 1">未认款</el-button>
+            <el-button type="warning" round size="mini" v-if="statusBtn == 2">认款申请</el-button>
+            <el-button type="danger" round size="mini" v-if="statusBtn == 3">认款待修改</el-button>
+            <el-button type="success" round size="mini" v-if="statusBtn == 4">认款通过</el-button>
+            <el-button type="warning" round size="mini" v-if="statusBtn == 5">报账中</el-button>
+            <el-button type="danger" round size="mini" v-if="statusBtn == 6">报账驳回</el-button>
+            <el-button type="success" round size="mini" v-if="statusBtn == 7">已报账</el-button>
           </div>
         </el-col>
         <el-col :span="8">
@@ -23,58 +29,58 @@
       <el-row>
         <el-col :span="8">
           <div class="info">
-            <p>报账团期 :</p>123456
+            <p>报账团期 :</p>{{msg.tour_no}}
           </div>
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>操作人：</p> 大运通-财务部-阳阳
+            <p>操作人：</p> {{msg.op_id}}
           </div>
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>报账日期：</p>2019-12-23 12:23:23
-          </div>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <div class="info">
-            <p>团队人数：</p>83人
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="info">
-            <p>全程天数：</p>0
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="info">
-            <p>总收入：</p>11072.94
+            <p>报账日期：</p>{{msg.billTime}}
           </div>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <div class="info">
-            <p>总支出：</p>11039.00
+            <p>团队人数：</p>{{msg.team_num}}人
           </div>
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>毛利额：</p>33.94
+            <p>全程天数：</p>{{msg.days}}
           </div>
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>毛利率：</p>0.31%
+            <p>总收入：</p>{{msg.total_income}}
           </div>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <div class="info">
-            <p>成本项目：</p>门票
+            <p>总支出：</p>{{msg.total_cost}}
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="info">
+            <p>毛利额：</p>{{msg.gross_profit}}
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="info">
+            <p>毛利率：</p>{{msg.gross_rate}}%
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <div class="info">
+            <p>成本项目：</p>{{msg.product_name}}
           </div>
         </el-col>
         <el-col :span="8">
@@ -102,20 +108,29 @@
       <div class="footer">
         <div class="table_trip" style="width: 95%;">
           <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass" :cell-style="cellStyle">
-            <el-table-column prop="code" label="收款编码/发票" align="center">
+            <el-table-column prop="serial_sn" label="收款编码/发票" align="center">
             </el-table-column>
-            <el-table-column prop="income" label="收入来源" align="center">
+            <el-table-column prop="handler" label="收入来源" align="center">
             </el-table-column>
             <el-table-column prop="basics" label="基础信息" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.invoiceinfo.title">
+                  <span>发票抬头：{{scope.row.invoiceinfo.title}}</span><br>
+                  <span>纳税人识别号：{{scope.row.invoiceinfo.pay_taxes_no}}</span><br>
+                  <span>手机号：{{scope.row.invoiceinfo.phone}}</span><br>
+                  <span>地址：{{scope.row.invoiceinfo.address}}</span><br>
+                  <span>开户行：{{scope.row.invoiceinfo.bank}}</span>
+                </div>
+              </template>
             </el-table-column>
-            <el-table-column prop="number" label="人数" align="center" style="color:red">
+            <el-table-column prop="people_num" label="人数" align="center" style="color:red">
               <template slot-scope="scope" slot="header">
                 <el-tooltip effect="light" content="订单可能在不同的收款编码(或发票)。人数会重复增加，需要请修改警示框内的人数" placement="top" >
                  <span>人数<i class="el-icon-warning" style="color: red;margin-left: 6px;"></i></span>
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column prop="money" label="金额" align="center">
+            <el-table-column prop="income" label="金额" align="center">
             </el-table-column>
             <el-table-column prop="option" label="操作" align="center" width="220">
               <template slot-scope="scope">
@@ -135,7 +150,7 @@
         </span>
       </el-dialog>
       <GetOrder :dialogFormVisible="dialogFormVisible" @close="close2" :info="info"></GetOrder>
-      <ToUpddateSource :dialogFormVisible="dialogFormVisible2" @close="close2" :info="info"></ToUpddateSource>
+      <ToUpddateSource :dialogFormVisible="dialogFormVisible2" @close="close2" :info="updateSource"></ToUpddateSource>
       <ToUpddateIncome :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpddateIncome>
       <ToPreview :dialogFormVisible="dialogFormVisible4" @close="close2" :info="info"></ToPreview>
     </div>
@@ -146,6 +161,7 @@ import GetOrder from '@/page/productManagement/regimentPlan/children/scenic/scen
 import ToUpddateSource from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateSource'
 import ToUpddateIncome from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateIncome'
 import ToPreview from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toPreview'
+import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   name: "scenicTicketingBillReporting",
   components: {
@@ -156,6 +172,21 @@ export default {
   },
   data() {
     return {
+      param: '',
+      statusBtn: '',
+      msg: {
+        tour_no: '',
+        op_id: '',
+        billTime: '',
+        team_num: '',
+        days: '',
+        total_income: '',
+        total_cost: '',
+        gross_profit: '',
+        gross_rate: '',
+        product_name: ''
+      },
+
       activeName: '1',
       currentRow: true,
       pid: '',
@@ -168,21 +199,8 @@ export default {
       dialogFormVisible3: false,
       dialogFormVisible4: false,
       saveDialogVisible: false,
-      tableData: [{
-        id: '1',
-        code: '311123',
-        income: '丹东百瀑峡门票（成人票）',
-        basics: '开始时间：2019-01-09结束时间：2019-01-09',
-        number: '83',
-        money: '2019-01-09 09:37',
-      }, {
-        id: '1',
-        code: '311123',
-        income: '丹东百瀑峡门票（成人票）',
-        basics: '开始时间：2019-01-09结束时间：2019-01-09',
-        number: '84',
-        money: '2019-01-09 09:37',
-      }, ],
+      tableData: [],
+      updateSource: ''
     }
   },
   computed: {
@@ -198,8 +216,8 @@ export default {
       }
     },
     handleClick() {
-      this.transmit = !this.transmit
-      this.pid = ''
+      this.transmit = !this.transmit;
+      this.pid = '';
     },
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -221,22 +239,24 @@ export default {
       this.saveDialogVisible = true
     },
     toUpddateSource(row) {
-      this.dialogFormVisible2 = true
+      this.updateSource = row.rec_id;
+      this.dialogFormVisible2 = true;
     },
     toUpddateIncome(row) {
-      this.dialogFormVisible3 = true
+      this.dialogFormVisible3 = true;
     },
     toPreview() {
-      this.dialogFormVisible4 = true
+      this.dialogFormVisible4 = true;
     },
     getOrder(row) {
-      this.dialogFormVisible = true
+      this.dialogFormVisible = true;
     },
     close2() {
-      this.dialogFormVisible = false
-      this.dialogFormVisible2 = false
-      this.dialogFormVisible3 = false
-      this.dialogFormVisible4 = false
+      this.dialogFormVisible = false;
+      this.dialogFormVisible2 = false;
+      this.dialogFormVisible3 = false;
+      this.dialogFormVisible4 = false;
+      this.loadData();
     },
     //获取id
     clickBanle(row, event, column) {
@@ -252,10 +272,61 @@ export default {
       });
       this.saveDialogVisible = false
     },
-
+    loadData(){
+      const that = this;
+//      获取基本信息
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/viewbill", {
+        "id": this.param
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log(response);
+          let billTime = '';
+          if(response.data.data.bill_at){
+            billTime = formatDate(new Date(response.data.data.bill_at*1000));
+          }else{
+            billTime = '';
+          }
+          that.msg = {
+            tour_no: response.data.data.tour_no,
+            op_id: response.data.data.op_id,
+            billTime: billTime,
+            team_num: response.data.data.team_num,
+            days: response.data.data.days,
+            total_income: response.data.data.total_income,
+            total_cost: response.data.data.total_cost,
+            gross_profit: response.data.data.gross_profit,
+            gross_rate: response.data.data.gross_rate,
+            product_name: response.data.data.product_name
+          };
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+//      获取认款信息
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/recinfo", {
+        "id": this.param
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log(response);
+          that.tableData = response.data.data;
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
   },
   created() {
-
+    if(this.$route.params.id){
+      this.param = this.$route.params.id;
+      this.statusBtn = this.$route.params.bill_status;
+      this.loadData();
+    }else{
+      this.closeAdd();
+    }
   },
   mounted() {}
 }

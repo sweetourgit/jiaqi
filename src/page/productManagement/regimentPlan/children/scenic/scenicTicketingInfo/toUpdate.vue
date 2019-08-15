@@ -7,6 +7,18 @@
           <el-form-item label="全程天数：" prop="days" label-width="100px">
             <el-input v-model="ruleForm.days" class="inputWidth" show-word-limit placeholder="请输入"></el-input>
           </el-form-item>
+          <el-form-item label="导陪：" prop="days" label-width="100px">
+            <el-input v-model="ruleForm.days" class="inputWidth" show-word-limit placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="接团社：" prop="days" label-width="100px">
+            <el-input v-model="ruleForm.days" class="inputWidth" show-word-limit placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="成本项目：" prop="days" label-width="100px">
+            <el-input v-model="ruleForm.days" class="inputWidth" show-word-limit placeholder="请输入"></el-input>
+            <p style="margin: 0;">订单人数：80人</p>
+            <el-input v-model="ruleForm.days" class="inputWidth" show-word-limit placeholder="请输入"></el-input>
+            <p style="margin: 0;">订单人数：60人</p>
+          </el-form-item>
         </el-form>
       </div>
       <div class="footer">
