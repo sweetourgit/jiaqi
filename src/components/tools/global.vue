@@ -3,7 +3,7 @@
   const imgUrl="http://192.168.2.65:3009";
   //const jqUrl="http://192.168.1.198:6019";
   const jqUrl="http://192.168.2.6:6019";
-  const serverSrcPhp="http://192.168.2.17";
+  const serverSrcPhp="http://www.around.com";
   const token="";
   const userId="";
   const hasEnter=false;
