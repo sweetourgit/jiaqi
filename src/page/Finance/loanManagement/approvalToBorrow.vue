@@ -132,22 +132,31 @@
             console.log(obj)
           })
       },
-      /*工作流
-      var that = this
-      this.$http.post(
-          this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
-              "userCode": sessionStorage.getItem('userCode'),
-              "startTime": "2018-07-18T05:30:17.471Z",
-              "endTime": "2019-07-18T05:30:17.471Z",
-            }
-        )
-        .then(function(obj) {
-          //that.total = obj.data.total;
-          //that.tableData = obj.data.objects;
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })*/
+
+      //工作流
+      pageList(){
+        var that = this
+        this.$http.post(
+            this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
+                /*"userCode": sessionStorage.getItem('userCode'),
+                "startTime": "2018-07-18T05:30:17.471Z",
+                "endTime": "2019-07-18T05:30:17.471Z",*/
+                "userCode": "rbop01",
+                "startTime": this.startTime?this.startTime:"1970-07-23T01:30:54.452Z",
+                "endTime": this.endTime?this.endTime:new Date(),
+                "startIndex": 1,  //页码
+                "endIndex": 1 ,  //每页条数
+                "workflowCode": "string"
+              }
+          )
+          .then(function(obj) {
+            //that.total = obj.data.total;
+            //that.tableData = obj.data.objects;
+          })
+          .catch(function(obj) {
+            console.log(obj)
+          })
+        }
 
     },
     mounted(){
