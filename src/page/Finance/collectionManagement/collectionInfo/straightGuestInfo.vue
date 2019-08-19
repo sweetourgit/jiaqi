@@ -26,7 +26,7 @@
         </el-form-item> -->
         <el-form-item label="收款账户" prop="collectionNumber" label-width="120px">
           <el-input style="width:200px;" v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
-          <el-button class="collection" @click="account()">选择</el-button>
+          <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
         <!-- <el-form-item label="收款金额" prop="price" label-width="120px">
           <el-input type="number" v-model="ruleForm.price" class="bright inputWidth" placeholder="收款金额" :disabled="change"></el-input>
@@ -86,6 +86,8 @@
                   <el-option v-for="item in invoiceType" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
+                <div style="color:red; text-align:left;" v-if="scope.row.invoiceID !== '1' && a != false">不能为空</div> 
+                <!-- <div style="color:red;" v-show="null11">发票类型不能为空</div> -->
               </template>
             </el-table-column>
             <el-table-column label="个人/单位" width="120" align="center">
@@ -96,49 +98,57 @@
                   <el-option key="2" label="单位" value="2">
                   </el-option>
                 </el-select>
+                <div style="color:red; text-align:left;" v-if="scope.row.invoiceType == '' && a != false">不能为空</div> 
               </template>
             </el-table-column>
             <el-table-column label="纳税人识别号" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.invoiceNumber" required placeholder="纳税人识别号" :disabled="change"></el-input>
+                <el-input v-model="scope.row.invoiceNumber" required placeholder="纳税人识别号"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.invoiceNumber == '' && a != false" disabled="change">不能为空</div> 
               </template>
             </el-table-column>
             <el-table-column label="发票抬头/手机号" align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.invoiceHeaderOrTel" placeholder="发票抬头/手机号" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.invoiceHeaderOrTel == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="发票项目" width="120" align="center">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.invoiceItem" placeholder="发票项目" :disabled="change">
-                  <el-option v-for="item in invoiceProject" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
+                  <el-option v-for="item in invoiceProject" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
+                <div style="color:red; text-align:left;" v-if="scope.row.invoiceItem == '' && a != false">不能为空</div> 
               </template>
             </el-table-column>
             <el-table-column label="金额" align="center">
               <template slot-scope="scope">
-                <el-input type='number' v-model="scope.row.invoicePrice" placeholder="金额" :disabled="change"></el-input>
+                <el-input v-model="scope.row.invoicePrice" placeholder="金额" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.invoicePrice == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="帐号" align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.cardNumber" placeholder="帐号" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.cardNumber == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="开户行" align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.bankName" placeholder="开户行" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.bankName == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="地址" align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.address" placeholder="地址" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.address == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="电话" align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.tel" placeholder="电话" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.tel == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="70" align="center">
@@ -161,23 +171,23 @@
           <el-form-item label="订单" prop="indent" label-width="60px" style="float:left; margin:0 30px 20px 0;">
             <el-input placeholder="请输入" v-model="indent" :disabled="change"></el-input>
           </el-form-item>
-          <el-form-item label="订单联系人" prop="indentPeople" label-width="120px" style="float:left; margin:0 50px 20px 0;">
+          <!-- <el-form-item label="订单联系人" prop="indentPeople" label-width="120px" style="float:left; margin:0 50px 20px 0;">
             <el-input placeholder="请输入" v-model="indentPeople" :disabled="change"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <div style="float:left;">
-            <el-button type="primary">搜索</el-button>
+            <el-button type="primary" @click="receiptorder()">搜索</el-button>
             <el-button type="primary" @click="resetIndent()">重置</el-button>
           </div>
         </div>
         <el-table :data="arrearsList" border style="width: 1030px; margin:10px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="orderNumber" label="订单编号" align="center"></el-table-column>
-           <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
-           <el-table-column prop="tour" label="团期计划" align="center"></el-table-column>
-           <el-table-column prop="tourStartTime" label="出发日期" align="center"></el-table-column>
-           <el-table-column prop="orderMoney" label="订单金额" align="center"></el-table-column>
-           <el-table-column prop="arrearsMoney" label="未收金额" align="center"></el-table-column>
-           <el-table-column prop="repaymentMoney" label="已收金额" align="center"></el-table-column>
-           <el-table-column prop="repaymentMoney" label="待审批金额" align="center"></el-table-column>
+           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+           <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
+           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+           <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
+           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
+           <el-table-column prop="uncollectedMoney" label="未收金额" align="center"></el-table-column>
+           <el-table-column prop="collectedMoney" label="已收金额" align="center"></el-table-column>
+           <el-table-column prop="examineMoney" label="待审批金额" align="center"></el-table-column>
            <el-table-column prop="repaymentMoney" label="匹配收款金额" align="center"></el-table-column>
         </el-table>
         <!-- 审批过程 -->
@@ -247,15 +257,16 @@
         <!--收款账户选择弹窗-->
           <el-dialog title="选择账户" :visible.sync="accountShow" width="70%" custom-class="city_list">
             <div style="overflow:hidden;">
-              <el-table :data="accountTable" border style="width: 100%" :header-cell-style="getRowClass">
-                <el-table-column prop="accountType" label="类型" align="center"></el-table-column>
-                <el-table-column prop="accountID" label="账号名称" align="center"></el-table-column>
-                <el-table-column prop="accountCard" label="卡号" align="center"></el-table-column>
+              <el-table :data="accountTable" border style="width: 100%" :header-cell-style="getRowClass" @row-click="clickPlan">
+                <el-table-column prop="id" label="ID" align="center"></el-table-column>
+                <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+                <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+                <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
                 <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
-                <el-table-column prop="accountHolder" label="开户人" align="center"></el-table-column>
+                <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
                 <el-table-column prop="operation" label="操作" align="center">
                   <template slot-scope="scope">
-                    <el-button type="text" size="small" class="table_details">选择</el-button>
+                    <el-button type="text" size="small" @click="routerHandle4()" class="table_details">选择</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -290,6 +301,7 @@ export default {
   },
   data() {
     return {
+      a: false,
       user_id: '',
       user_name: '',
       reable: false,
@@ -347,14 +359,16 @@ export default {
       rules: {
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         collectionNumber: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
+        invoiceID: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
         /*serialNumber: [{ required: true, message: '交易流水号不能为空', trigger: 'blur' }],*/
         price: [
           { required: true, message: '收款金额不能为空', trigger: 'blur' },
           { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
         ],
-        abstract: [{ required: true, message: '请输入摘要', trigger: 'change' },
+        abstract: [{ required: true, message: '请输入摘要', trigger: 'blur' },
                 { min: 0, max: 30, message: '摘要字数不能超过80字', trigger: 'change' },],
         orderNumber: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
+        invoiceID: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
       },
       tableData1: [],
       tableData2: [{
@@ -375,19 +389,11 @@ export default {
         openingBank:'123.00',
         accountHolder:'阳阳',
       }],
-      arrearsList: [{//关联欠款
-        orderNumber: '51548979998051',
-        productName: '【HKN-101】椰风海岸（海口）双飞6日游',
-        tour: 'TC-GTY-1001-01-180806-01',
-        tourStartTime: '2018-05-23',
-        orderMoney: '1699.00',
-        arrearsMoney: '1699.00',
-        repaymentMoney: '0.00',
-        inAuditMoney: '0.00',
-        matchingMoney: '',
-      }],
+      arrearsList: [],//关联欠款
       indent:'',//关联欠款订单号搜索
       indentPeople:'',//订单关联订单联系人搜索
+      tour_name_pre:'',
+      null11:false,
     }
   },
   computed: { // 计算属性的 getter
@@ -420,9 +426,34 @@ export default {
     //选择账户弹窗
     account(){
       this.accountShow = true;
+      var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
+          {
+            "object": {
+              "isDeleted": 0
+            },
+          },)
+          .then(function (obj) {
+            that.accountTable = obj.data.objects
+            console.log(obj.data.objects)
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
     },
     accountClose(){
       this.accountShow = false;
+    },
+    //收款账户选择
+    routerHandle4() {
+      this.ruleForm.collectionNumber = this.tour_name_pre
+      this.accountShow = false
+    },
+    clickPlan(row){//收款账户点击
+      this.tour_name_pre = row['title'];
+      this.planID = row['planID'];
+      this.tour_id = row['planID']
     },
     //获取id
     clickBanle(row, event, column) {
@@ -432,6 +463,11 @@ export default {
     },
     closeAdd() {
       this.$emit('close', false);
+      this.$refs["ruleForm"].resetFields();
+      this.arrearsList = [];
+      this.indent = '';
+      this.dialogVisible2 = false;
+      this.a = false;
     },
     aaa(){
       //this.$emit('close', false);
@@ -444,6 +480,10 @@ export default {
              //this.dialogFormVisible =false;
              this.closeAdd();
              this.$refs["ruleForm"].resetFields();
+             this.arrearsList = [];
+             this.indent = '';
+             this.dialogVisible2 = false;
+             this.a = false;
            //this.clearPlan();
            })
         .catch(() => {
@@ -452,9 +492,11 @@ export default {
             message: "已取消"
           });
         });
+
+
     },
     receiptorder() { //通过订单号获取直客收款订单详情
-      this.tableData1 = []
+      this.arrearsList = []
       this.ruleForm.planID = ''
       this.ruleForm.orderID = ''
       this.ruleForm.groupCode = ''
@@ -462,18 +504,15 @@ export default {
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/teamquery/get/api/receiptorder", {
-            orderCode: that.ruleForm.orderNumber,
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
+            orderCode: that.indent,
           }
         )
         .then(function(obj) {
           obj.data.object.collectedMoney = that.collectedMoney
           obj.data.object.uncollectedMoney = obj.data.object.payable - obj.data.object.collectedMoney
           obj.data.object.collectedMoney = that.examineMoney
-          that.tableData1.push(obj.data.object)
+          //obj.data.object.examineMoney = that.examineMoney
+          that.arrearsList.push(obj.data.object)
           that.ruleForm.planID = obj.data.object.planID
           that.ruleForm.orderID = obj.data.object.id
           that.ruleForm.groupCode = obj.data.object.groupCode
@@ -487,11 +526,7 @@ export default {
       var that = this
       that.$http.post(
           that.GLOBAL.serverSrc + "/finance/collection/api/getnumber", {
-            number: that.ruleForm.orderNumber,
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
+            number: that.indent,
           }
         )
         .then(function(obj) {
@@ -505,7 +540,7 @@ export default {
     submitForm(formName) {
       console.log(this.org)
       console.log(this.collectionAccountList)
-
+      this.a = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let pictureList = [];
@@ -523,7 +558,7 @@ export default {
             groupCode: this.ruleForm.groupCode, //团号
             planID: this.ruleForm.planID, //团期计划的ID
             orderID: this.ruleForm.orderID, //订单ID
-            orderNumber: this.ruleForm.orderNumber, //订单号
+            orderNumber: this.indent, //订单号
             collectionNumber: this.ruleForm.collectionNumber, //收款账户
             //price: this.ruleForm.price, //金额
             dept: this.dept, //this.org, //组织部门
@@ -533,6 +568,9 @@ export default {
             abstract: this.ruleForm.abstract, //摘要
             files: pictureList, //图片
             invoice: this.ruleForm.invoice, //是否发票
+            collectionType:1,//直客1.同业2
+            localCompID:0,//直客0，同业变成同业社id
+            //invoiceTable:this.ruleForm.invoiceTable,
           }
           if (this.ruleForm.invoice == '1') {
             objectRequest.invoiceTable = this.ruleForm.invoice ? this.ruleForm.invoiceTable : [] //发票表格}
@@ -834,7 +872,10 @@ export default {
       this.fileList = []
     },
     isInvoiceChange(value) {
-      this.dialogVisible2 = value == '1' ? true : false
+      console.log(value)
+      this.dialogVisible2 = value == '1' ? true : false;
+
+      //this.ruleForm.invoiceTable = [];
     },
     searchHand2() {
       this.pageNum = 1;
@@ -1000,7 +1041,7 @@ export default {
           that.ruleForm.collectionNumber = that.accountList[obj.data.object.collectionNumber]
           that.ruleForm.collectionTime = obj.data.object.collectionTime
           that.ruleForm.createUser = obj.data.object.createUser
-          that.ruleForm.orderNumber = obj.data.object.orderNumber
+          that.indent = obj.data.object.indent
           that.ruleForm.price = obj.data.object.price
           that.ruleForm.serialNumber = obj.data.object.serialNumber
           that.ruleForm.invoice = obj.data.object.invoice.toString()
@@ -1079,6 +1120,7 @@ export default {
       this.indent = '';
       this.indentPeople = '';
     },
+
   },
   created() {
 

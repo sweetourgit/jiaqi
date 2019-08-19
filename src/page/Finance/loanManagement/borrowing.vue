@@ -230,7 +230,7 @@
 				<!-- <span>——</span>
 				<el-input class="indialog_input01" v-model="plan_data01" clearable></el-input> -->
 			  </div>
-			  <el-button class="indialog_button" type="primary">搜索</el-button>
+			  <el-button class="indialog_button" @click="planSelect()" type="primary">搜索</el-button>
 	          <el-button class="indialog_button" @click="planStage()" type="primary">重置</el-button>
 	        </div>
 	        <el-table :data="tablePlan" border ref="multipleTablePlan" style="width: 100%; margin:30px 0 20px 0;":header-cell-style="getRowClass" @row-click="clickPlan" :row-style="rowClassPlan"@selection-change="changeFunPlan">
@@ -647,7 +647,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       },*/
       //无收入借款中团期计划弹窗
       IncomePlan(){
-      	this.planList();
+      	//this.planList();
       	this.dialogFormVisible_plan = true;
       },
       //查询无收入借款团期计划列表
@@ -721,10 +721,8 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
         console.log(err)
       })
       //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
-      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
-        "object": {
+      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {        
           "id": val,
-        }
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableMoney = []
@@ -781,6 +779,9 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       },
       planCancel(){
       	this.dialogFormVisible_plan = false;
+      },
+      planSelect() {
+        this.planList();
       },
       planStage(){
       	this.plan_stage = '';
@@ -883,7 +884,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
               .then(res => {
                 if(res.data.isSuccess == true){
                    this.pageList();
-                   this.sendBPM(res.data.object)
+                   //this.sendBPM(res.data.object)
                    this.noIncomeShow = false;
                    this.$refs["ruleForm"].resetFields();
                    //this.$refs[formName].resetFields();
@@ -897,6 +898,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
         });
       },
       sendBPM(result) {
+
 	      this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
 	        jQ_ID: result.guid,
 	        jQ_Type: result.flowModel,
@@ -933,9 +935,27 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	    
       },
       //供应商类型
-      themeList(){
+      /*themeList(){
 	      this.borrowingType = [];
 	      this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {}).then(res => {
+	        for (let i = 0; i < res.data.objects.length; i++) {
+	          this.borrowingType.push({
+	            "value": res.data.objects[i].id,
+	            "label": res.data.objects[i].name
+	          })
+	        }
+	      })
+	      .then(res =>{
+	        this.borrowingType =  res.data.objects;
+	      }).catch(function(err){
+	        console.log(err);
+	      })
+	    },*/
+	    themeList(){
+	      this.borrowingType = [];
+	      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierget', {
+	      	id:0
+	      }).then(res => {
 	        for (let i = 0; i < res.data.objects.length; i++) {
 	          this.borrowingType.push({
 	            "value": res.data.objects[i].id,

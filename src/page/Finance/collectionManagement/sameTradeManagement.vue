@@ -39,30 +39,30 @@
         </div>
         <div class="table_style">
           <el-table :data="tableData" border style="width:100%;" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-            <el-table-column prop="number" label="收款单号" align="center">
+            <el-table-column prop="collectionID" label="收款单号" align="center">
             </el-table-column>
-            <el-table-column prop="status" label="状态" width="80" align="center">
+            <el-table-column prop="" label="状态" width="80" align="center">
               <template slot-scope="scope">
-                <div v-if="scope.row.status=='审批中'" style="color: #7F7F7F" >{{scope.row.status}}</div>
-                <div v-if="scope.row.status=='驳回'" style="color: #FF4A3D" >{{scope.row.status}}</div>
-                <div v-if="scope.row.status=='通过'" style="color: #33D174" >{{scope.row.status}}</div>
+                <div v-if="scope.row.checkTypeStatus=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeStatus}}</div>
+                <div v-if="scope.row.checkTypeStatus=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeStatus}}</div>
+                <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174" >{{scope.row.checkTypeStatus}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="createTime" label="收款时间" align="center">
+            <el-table-column prop="date" label="收款时间" align="center">
             </el-table-column>
-            <el-table-column prop="plan" label="团期计划" align="center">
+            <el-table-column prop="groupCode" label="团期计划" align="center">
             </el-table-column>
-            <el-table-column prop="orderNum" label="订单号" align="center">
+            <el-table-column prop="orderCode" label="订单号" align="center">
             </el-table-column>
-            <el-table-column prop="sameTrade" label="同业社名称" align="center">
+            <el-table-column prop="productName" label="同业社名称" align="center">
             </el-table-column>
-            <el-table-column prop="money" label="收款金额" align="center">
+            <el-table-column prop="price" label="收款金额" align="center">
             </el-table-column>
-            <el-table-column prop="accpter" label="申请人" align="center">
+            <el-table-column prop="createUser" label="申请人" align="center">
             </el-table-column>
-            <el-table-column prop="applyTime" label="审批意见" align="center">
+            <el-table-column prop="" label="审批意见" align="center">
             </el-table-column>
-            <el-table-column prop="approvalOpinion" label="操作" width="100" align="center">
+            <el-table-column label="操作" width="100" align="center">
               <template slot-scope="scope">
                 <el-button @click="dialogFind(scope.row)" type="text" size="small" class="table_details">详情</el-button>
               </template>
@@ -251,6 +251,7 @@ export default {
         auditMoney:'1200.00',
         collectionMoney:'1200.00',
       }],
+      sid:1,
     }
   },
   computed: {
@@ -413,9 +414,34 @@ export default {
         return ''
       }
     },
+    //查询列表
+      pageList() {
+        //let objectRequest = {}
+        //objectRequest.paymentType = 1;
+        var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/finance/collection/api/page",
+          {
+            "pageSize":this.pagesize,
+            "pageIndex":this.currentPage,
+            "total": 0,
+            "object": {
+              "collectionType":2,//直客1.同业2
+              "localCompID":this.sid,//直客0,同业变成同业社id
+            },
+          },)
+          .then(function (obj) {
+            that.total = obj.data.total
+            that.tableData = obj.data.objects
+            console.log(obj.data.objects)
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+      },
 
   },
-  created() {
+  /*created() {
     var that = this
     this.$http.post(
         this.GLOBAL.serverSrc + "/team/api/teamsearch", {
@@ -458,7 +484,10 @@ export default {
       .catch(function(obj) {
         console.log(obj)
       })
-  }
+  },*/
+  mounted(){
+    this.pageList();
+  },
 }
 
 </script>

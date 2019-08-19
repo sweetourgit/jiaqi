@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
-    <el-tabs v-model="activeName">
+    <el-tabs v-model="activeName" @tab-click="handleClick">
      <el-tab-pane label="同业" name="first">
         <SameTradeManagement></SameTradeManagement>
       </el-tab-pane>
@@ -26,17 +26,99 @@ export default {
   },
   data() {
     return {
-      activeName: 'third',
+      activeName: 'first',
+      clickTab:'',//点击切换获取当前值
     }
   },
   computed: {
     // 计算属性的 getter
   },
   methods: {
+    //获取当前项的标题
+    handleClick(tab, event) {//点击切换获取当前值
+      if(tab.label == "直客"){
+        this.getStraightGuestManagement();
+      }else{
+        this.pageList();
+      }     
+      this.clickTab = tab.label;
+    },
+    //直客查询列表
+    getStraightGuestManagement() {
+      var that = this
+      this.$http.post(
+          this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+            "pageIndex": 1,
+            "pageSize": that.pageSize,
+            "object": {
+              "id": 0,
+              "checkType": this.settlement_01?this.settlement_01:-1,
+              "collectionTime": "2019-05-16",
+              "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd') : "2000-05-16",
+              "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd') : "2099-05-16",
+              "groupCode": this.plan ? this.plan : '',
+              "planID": 0,
+              "orderID": 0,
+              "orderNumber": "",
+              "collectionNumber": "",
+              "price": 0,
+              "dept": 0,
+              "createUser": this.accepter ? this.accepter : '',
+              "createTime": "2019-05-16 01:02:40",
+              "code": "",
+              "serialNumber": "",
+              "abstract": "",
+              "isDeleted": 0,
+              "collectionType":1,//直客1.同业2
+              "localCompID":0,//直客0,同业变成同业社id
+            }
 
+          }, {
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+        .then(function(obj) {
+          that.total = obj.data.total;
+          that.tableData = obj.data.objects;
+          that.tableData.forEach(function(v, k, arr) {
+            arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
+            arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
+            arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
+            arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
+          })
+        })
+        .catch(function(obj) {
+          console.log(obj)
+        })
+    },
+    //同业查询列表
+    pageList() {
+      var that = this
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/finance/collection/api/page",
+        {
+          "pageSize":this.pagesize,
+          "pageIndex":this.currentPage,
+          "total": 0,
+          "object": {
+            "collectionType":2,//直客1.同业2
+            "localCompID":this.sid,//直客0,同业变成同业社id
+          },
+        },)
+        .then(function (obj) {
+          that.total = obj.data.total
+          that.tableData = obj.data.objects
+          console.log(obj.data.objects)
+        })
+        .catch(function (obj) {
+          console.log(obj)
+        })
+    },
   },
   created() {
-
+    this.pageList();
   }
 }
 
