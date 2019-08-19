@@ -2,30 +2,35 @@
   <div class="vivo" style="position:relative">
     <div class="table_trip" style="width: 90%;">
       <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
-        <el-table-column prop="tour" label="报账团号" align="center" width="80%">
+        <el-table-column prop="tour_no" label="报账团号" align="center">
         </el-table-column>
-        <el-table-column prop="status" label="审批状态" align="center">
+        <el-table-column prop="bill_status" label="审批状态" align="center">
+          <template slot-scope="scope">
+            <span>{{status[scope.row.bill_status]}}</span>
+          </template>
         </el-table-column>
-        <el-table-column prop="title" label="产品名称" align="center">
+        <el-table-column prop="product_name" label="产品名称" align="center">
         </el-table-column>
-        <el-table-column prop="time" label="开始时间/结束时间" align="center">
+        <el-table-column prop="begin_at" label="出发日期/返回日期" align="center" width="210">
+          <template slot-scope="scope">
+            <span>出发日期：{{scope.row.begin_at}}</span><br>
+            <span>返回日期：{{scope.row.end_at}}</span>
+          </template>
         </el-table-column>
-        <el-table-column prop="number" label="减免人数" align="center">
+        <el-table-column prop="info.total_income" label="收入" align="center">
         </el-table-column>
-        <el-table-column prop="income" label="收入" align="center">
+        <el-table-column prop="info.total_cost" label="成本" align="center">
         </el-table-column>
-        <el-table-column prop="cost" label="成本" align="center">
+        <el-table-column prop="info.gross_rate" label="毛利率" align="center">
         </el-table-column>
-        <el-table-column prop="grossInterestRate" label="毛利率" align="center">
+        <el-table-column prop="create_uid" label="申请人" align="center">
         </el-table-column>
-        <el-table-column prop="user" label="申请人" align="center">
-        </el-table-column>
-        <el-table-column prop="applicationTime" label="申请时间" align="center">
+        <el-table-column prop="created_at" label="申请时间" align="center" width="150">
         </el-table-column>
         <el-table-column prop="option" label="操作" align="center">
           <template slot-scope="scope">
-            <el-button @click="approvalList(scope.row)" v-if="scope.row.id==1" type="primary" size="small" class="table_details">审批</el-button>
-            <el-button @click="seeList(scope.row)" v-if="scope.row.id==2" size="small" class="table_details">查看</el-button>
+            <el-button @click="approvalList(scope.row)" v-if="scope.row.bill_status==2" type="primary" size="small" class="table_details">审批</el-button>
+            <el-button @click="seeList(scope.row)" v-else size="small" class="table_details">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -38,6 +43,8 @@
   </div>
 </template>
 <script type="text/javascript">
+import {formatDate} from '@/js/libs/publicMethod.js'
+
 export default {
   name: "record",
   components: {},
@@ -58,33 +65,18 @@ export default {
       currentPage4: 1,
       pageIndex: 1, // 设定当前页数
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
-      tableData: [{
-        id: '1',
-        tour: '311123',
-        status: '认款申请',
-        title: '丹东百瀑峡门票（成人票）',
-        time: '开始时间：2019-01-09 结束时间：2019-01-09',
-        number: '2',
-        income: '111.00',
-        cost: '90.00',
-        grossInterestRate: '2',
-        user: '阳阳',
-        applicationTime: '2019-12-23 12:23:23',
-      }, {
-        id: '2',
-        tour: '311123',
-        status: '认款申请',
-        title: '丹东百瀑峡门票（成人票）',
-        time: '开始时间：2019-01-09 结束时间：2019-01-09',
-        number: '2',
-        income: '111.00',
-        cost: '90.00',
-        grossInterestRate: '2',
-        user: '阳阳',
-        applicationTime: '2019-12-23 12:23:23',
-      }, ],
+      tableData: [],
       form: {},
       currentRow: true,
+      status: {
+        1: '未认款',
+        2: '认款申请',
+        3: '认款待修改',
+        4: '认款通过',
+        5: '报账中',
+        6: '报账驳回',
+        7: '已报账',
+      }
     }
   },
   watch: {
@@ -103,10 +95,18 @@ export default {
   },
   methods: {
     approvalList(row) {
-      this.$router.push({ path: "/pledgingManagementApproval?id=" + row['id'] });
+      this.$router.push({
+        path: "/pledgingManagementApproval",
+        name: "财务管理   / 财务认款管理   / 审批",
+        params: row
+      });
     },
     seeList(row) {
-      this.$router.push({ path: "/pledgingManagementSee?id=" + row['id'] });
+      this.$router.push({
+        path: "/pledgingManagementSee",
+        name: "财务管理   / 财务认款管理   / 查看",
+        params: row
+      });
     },
     //获取id
     clickBanle(row, event, column) {
@@ -122,22 +122,52 @@ export default {
       }
     },
     handleSizeChange(val) {
-      this.tableData = this.tableData
-      this.total = this.total
+      this.pageSize =  val;
+      this.loadDataRecord();
     },
 
     handleCurrentChange(val) {
-      this.tableData = this.tableData
-      this.total = this.total
+      this.pageIndex = val;
+      this.loadDataRecord();
     },
+
+    loadDataRecord(){
+      const that = this;
+      console.log(this.$parent.$parent.$parent);
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/recognition/recognition/recognitionpage", {
+        "pageIndex": this.pageIndex,
+        "pageSize": this.pageSize,
+        "tour_no": this.$parent.$parent.$parent.activeForm.tour,
+        "create_account": this.$parent.$parent.$parent.activeForm.user,
+        "bill_status": "",
+        "limit": "0"
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log(response);
+          that.tableData = response.data.data.list;
+          that.total = response.data.data.total - 0;
+          that.tableData.forEach(function (item, index, arr) {
+            item.begin_at = formatDate(new Date(item.begin_at*1000));
+            item.end_at = formatDate(new Date(item.end_at*1000));
+            item.created_at = formatDate(new Date(item.created_at*1000));
+          })
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
   },
-  created() {}
+  created() {
+    this.loadDataRecord();
+  }
 }
 
 </script>
 <style lang="scss" scoped>
 .vivo {
-  margin-bottom: 200px;
+  margin-bottom: 50px;
 }
 
 </style>

@@ -22,7 +22,6 @@ export default {
   components: {},
   props: {
     dialogFormVisible: false,
-    pid: '',
     frameTitle1: '',
     frameTitle2: '',
   },
@@ -32,31 +31,60 @@ export default {
         number: 'T311123',
       },
       rules: {
-        number: [{ required: true, message: '平台订单不能为空', trigger: 'blur' }],
+        number: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
       },
     }
   },
   computed: {
     // 计算属性的 getter
   },
+  watch: {
+    frameTitle1: {
+      handler:function(){
+        this.loadData()
+      }
+    }
+  },
   methods: {
     closeAdd() {
       this.$emit('close', false);
     },
     submitForm(formName) {
+      const that = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
+          let str = '';
+          if(this.frameTitle1 == "发票号"){
+            str = "/addinvoice";
+          }else if(this.frameTitle1 == "收款编码号"){
+            str = "/addreceiv";
+          }
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/params/parameter" + str, {
+            "value": this.ruleForm.number
+          }, ).then(function(response) {
+            if (response.data.code == '200') {
+              console.log(response);
+              that.$message.success("添加成功！");
+              that.$emit('close', false);
+            } else {
+              that.$message.warning("不可重复添加同意码值~");
+            }
+          }).catch(function(error) {
+            console.log(error);
           });
-          this.$emit('close', false);
         } else {
           console.log('error submit!!');
           return false;
         }
       });
     },
+    loadData(){
+      if(this.frameTitle1 == "发票号"){
+        this.ruleForm.number = this.$parent.invoiceStart;
+      }else if(this.frameTitle1 == "收款编码号"){
+        this.ruleForm.number = this.$parent.receivStart;
+      }
+    }
   },
   created() {
 

@@ -11,16 +11,16 @@
       </div>
     </div>
     <div class="main">
-      <el-button type="primary" @click="startNumber('发票号','发票起始号:')" plain>发票起始号：T123456</el-button>
-      <el-button type="primary" @click="startNumber('收款编码号','收款编码起始号:')" plain>收款编码起始号：123456</el-button>
+      <el-button type="primary" @click="startNumber('发票号','发票起始号:')" plain>发票起始号：{{invoiceStart}}</el-button>
+      <el-button type="primary" @click="startNumber('收款编码号','收款编码起始号:')" plain>收款编码起始号：{{receivStart}}</el-button>
     </div>
     <StartNumber :dialogFormVisible="dialogFormVisible" @close="close" :frameTitle1="frameTitle1" :frameTitle2="frameTitle2"></StartNumber>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="认款记录" name="one">
-        <Record @selection="selection" :activeForm="activeForm" :reable="reable" :pid="pid" :transmit="transmit"></Record>
+        <Record ref="record" :activeForm="activeForm" :reable="reable" :pid="pid" :transmit="transmit"></Record>
       </el-tab-pane>
       <el-tab-pane :label="'需要您审批 ('+number+')'" name="two">
-        <Approval @getNumber="getNumber" @selection="selection" :activeForm="activeForm" :reable="reable" :pid="pid" :transmit="transmit"></Approval>
+        <Approval ref="approval" @getNumber="getNumber" :activeForm="activeForm" :reable="reable" :pid="pid" :transmit="transmit"></Approval>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -50,6 +50,8 @@ export default {
       transmit: false,
       dialogFormVisible: false,
       number: 10,
+      invoiceStart: '12321',
+      receivStart: '214321'
     }
   },
   computed: {
@@ -58,40 +60,62 @@ export default {
   watch: {},
   methods: {
     getNumber(number) {
-      this.number = number
-    },
-    selection(reable, pid) {
-      this.reable = reable
-      this.pid = pid
+      this.number = number;
     },
     handleClick() {
-      this.reable = true
-      this.transmit = !this.transmit
-      this.pid = ''
+      this.reable = true;
+      this.transmit = !this.transmit;
+      this.pid = '';
     },
     startNumber(title, name) {
-      this.frameTitle1 = title
-      this.frameTitle2 = name
-      this.dialogFormVisible = true
+      this.frameTitle1 = title;
+      this.frameTitle2 = name;
+      this.dialogFormVisible = true;
     },
     close() {
-      this.dialogFormVisible = false
+      this.dialogFormVisible = false;
     },
     //搜索
     searchHand() {
-      this.$message({
-        type: 'success',
-        message: '搜索成功!'
-      });
+      if(this.activeName == "one"){
+        this.$refs.record.loadDataRecord();
+      }else{
+        this.$refs.approval.loadDataApproval();
+      }
     },
     resetHand() {
       this.activeForm = {
         user: '',
         tour: '',
       }
+    },
+    loadData(){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/params/parameter/getinvoice", {}, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log(response);
+          that.invoiceStart = response.data.data.value;
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/params/parameter/getreceiv", {}, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log(response);
+          that.receivStart = response.data.data.value;
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     }
   },
-  created() {}
+  created() {
+    this.loadData();
+  }
 
 }
 
