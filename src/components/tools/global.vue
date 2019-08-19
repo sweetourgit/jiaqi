@@ -3,10 +3,10 @@
   const imgUrl="http://192.168.2.4:3009";
   //const jqUrl="http://192.168.1.198:6019";
   const jqUrl="http://192.168.2.6:6019";
-  const serverSrcPhp="http://www.around.com";
+  const serverSrcPhp="http://192.168.2.17";
   const token="";
   const userId="";
-  const hasEnter=false; 
+  const hasEnter=false;
   export default {
   serverSrc,//服务器地址
   imgUrl,//图片服务器地址
