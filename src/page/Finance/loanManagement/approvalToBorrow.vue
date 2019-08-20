@@ -88,56 +88,31 @@
         this.currentPage = currentPage;
         this.pageList();
       },
-      //查询列表
-      pageList() {
-        /*let objectRequest = {}
-        objectRequest.paymentType = 1;
-        var that = this
-        this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/payment/api/page",
-          {
-            "pageSize":this.pagesize,
-            "pageIndex":this.currentPage,
-            "total": 0,
-            "object": objectRequest,
-            "checkType":0,
-          },)
-          .then(function (obj) {
-            
-            that.total = obj.data.total
-            that.tableData = obj.data.objects
-            console.log(obj.data.objects)
-            that.$emit('headCallBack', obj.data.total);
-          })
-          .catch(function (obj) {
-            console.log(obj)
-          })*/
-          var that = this
-          this.$http.post(
-          this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
-              "userCode": sessionStorage.getItem('userCode'),
-              "startTime": "2018-07-18T05:30:17.471Z",
-              "endTime": "2019-07-18T05:30:17.471Z",
-            }
-          )
-          .then(function(obj) {
-            //that.total = obj.data.total;
-            //that.tableData = obj.data.objects;
-            that.total = obj.data.total
-            that.tableData = obj.data.objects
-            console.log(obj.data.objects)
-            that.$emit('headCallBack', obj.data.total);
-          })
-          .catch(function(obj) {
-            console.log(obj)
-          })
+      //workflowCode获取FlowModel传递
+      FlowModel() {
+        console.log(211)
+        
+       
       },
 
-      //工作流
+      //请求工作流接口获取未完成的任务
       pageList(){
-        var that = this
-        this.$http.post(
-            this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
+        // let objectRequest = {}
+        // objectRequest.name = "loan_noIncome2";
+        // console.log( objectRequest.name)
+        //workflowCode获取FlowModel传递
+        /*this.$http.post(
+          this.GLOBAL.serverSrc + "/universal/supplier/api/dictionaryget",
+          {
+             enumname: 'FlowModel'
+          })*/
+        //this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=FlowModel','loan_noIncome2')
+        this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=FlowModel',{
+          FlowModel:'loan_noIncome2'
+        })
+        .then(obj => {
+          console.log(obj)
+          this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
                 /*"userCode": sessionStorage.getItem('userCode'),
                 "startTime": "2018-07-18T05:30:17.471Z",
                 "endTime": "2019-07-18T05:30:17.471Z",*/
@@ -146,16 +121,19 @@
                 "endTime": this.endTime?this.endTime:new Date(),
                 "startIndex": 1,  //页码
                 "endIndex": 1 ,  //每页条数
-                "workflowCode": "string"
+                "workflowCode": "loan_noIncome2"
               }
           )
-          .then(function(obj) {
+          .then(obj => {
             //that.total = obj.data.total;
             //that.tableData = obj.data.objects;
           })
-          .catch(function(obj) {
-            console.log(obj)
-          })
+      
+        })
+
+        // var that = this
+        // this.FlowModel();
+        
         }
 
     },
