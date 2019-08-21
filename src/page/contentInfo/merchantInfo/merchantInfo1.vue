@@ -1,20 +1,43 @@
 <template>
-  <div>
+  <div class="qqq">
     <!--搜索heard-->
     <div>
-      <div class="search">
-        搜索
-        <el-input v-model="input" placeholder="请输入商户名称" class="search_input"></el-input>
+      <div class="search"style="float: left">
+      <div style="float:left;margin-top: 10px">商户名称</div>
+        <el-input  style="float:left; width: 400px"v-model="input" placeholder="请输入商户名称" class="search_input"></el-input>
+        <div style="float:left;margin-top: 10px;margin-left: 60px">状态</div>
+        <el-select v-model="value" placeholder="请选择" style="float: left;margin-left: 20px; width: 250">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <div style="float:left;margin-top: 10px;margin-left: 60px">结算方式</div>
+        <el-select v-model="value1" placeholder="请选择" style="float: left;margin-left: 20px;width: 250px">
+          <el-option
+            v-for="item in options1"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </div>
+      <div style="    width: 1300px;float: left;margin-top: 10px;margin-left: 1050px;">
+        <el-button type="primary" @click="add_info">搜索</el-button>
+        <el-button type="primary" @click="add_info">重置</el-button>
+      </div>
+
     </div>
     <!--end-->
     <!--功能button-->
     <div class="button_style">
       <el-button type="primary" @click="add_info">添加</el-button>
-      <el-button type="primary" v-if="tid <= 0" disabled>编辑</el-button>
+     <!-- <el-button type="primary" v-if="tid <= 0" disabled>编辑</el-button>
       <el-button type="primary" v-else @click="edit_info" >编辑</el-button>
       <el-button type="danger"  v-if="tid <= 0" disabled @click="open7" plain>删除</el-button>
-      <el-button type="danger" v-else @click="open7" plain>删除</el-button>
+      <el-button type="danger" v-else @click="open7" plain>删除</el-button>-->
     </div>
     <!--end-->
     <!--商户信息-->
@@ -22,7 +45,7 @@
       <el-table
         :data="tableData"
         border
-        style="width: 82%"
+        style="width: 90%"
         :highlight-current-row="true"
         @row-click="handleClick"
       >
@@ -104,11 +127,22 @@
           width="120"
           align="center">
         </el-table-column>
+        <el-table-column
+          prop="balance"
+          label="详情"
+          width="200"
+          align="center">
+          <template slot-scope="scope">
+            <div  style="color: #f5a142;float: left;margin-left: 43px" >详情 |</div>
+            <div  style="color: #f5a142;float: left;" > 编辑 </div>
+          </template>
+        </el-table-column>
+
       </el-table>
     </div>
     <!--end-->
     <!--分页-->
-    <div class="block" style="margin-bottom: 20px;margin-top: 20px">
+    <div class="block" style="margin-bottom: 20px;margin-top: 20px;float: right;margin-right: 145px;">
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -122,7 +156,7 @@
     <!--end-->
     <!--弹窗-->
     <el-dialog title="商户信息" :visible.sync="dialogFormVisible" :show-close="false">
-      <div style="height: 600px; width: 900px">
+      <div style="height: 800px; width: 900px">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <div class="saf" style="float: left">
           <el-form-item label="名称" prop="name">
@@ -155,19 +189,31 @@
           <el-form-item  v-if="ruleForm.settlementType == '月结'" label="额度" prop="quota" >
             <el-input  v-model="ruleForm.quota" style="width: 250px;"></el-input>
           </el-form-item>
-            <el-form-item label="部们-管理" prop="department">
-              <el-select v-model="ruleForm.department" placeholder="请选择部门" style="width: 250px;">
-                <el-option label="门店" value="1"></el-option>
-                <el-option label="同业" value="2"></el-option>
-                <el-option label="翻盘门店" value="3"></el-option>
+            <el-form-item label="商户角色" prop="role">
+              <el-select v-model="ruleForm.role" placeholder="请选择角色" style="width: 250px;">
+                <el-option label="旅游组团社" value="1"></el-option>
+                <el-option label="独立旅行社" value="2"></el-option>
+                <el-option label="个人/独立旅游顾问" value="3"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item  prop="people" >
-            <el-select v-model="ruleForm.people" placeholder="请选择人员" style="width: 250px;">
-              <el-option label="门店" value="0"></el-option>
-              <el-option label="同业" value="1"></el-option>
-              <el-option label="翻盘门店" value="2"></el-option>
-            </el-select>
+            <el-form-item label="门市类型" prop="market">
+              <el-select v-model="ruleForm.market" placeholder="请选择门市" style="width: 250px;">
+                <el-option label="无" value="1"></el-option>
+                <el-option label="大运通自营" value="2"></el-option>
+                <el-option label="加盟门市" value="3"></el-option>
+                <el-option label="第三方门市" value="4"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="销售人员" prop="saler">
+              <el-cascader  v-model = "ruleForm.saler":props="props" style="width: 250px;"></el-cascader>
+            </el-form-item>
+
+            <el-form-item label="到期时间" prop="dq_time">
+              <el-date-picker
+                v-model="ruleForm.dq_time"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
             </el-form-item>
           </div>
          <div class="ty" style="float: left; margin-left: 100px">
@@ -189,6 +235,16 @@
           <el-form-item label="对公账号" prop="bankcardNo">
             <el-input  v-model="ruleForm.bankcardNo" style="width: 250px;"></el-input>
           </el-form-item>
+           <el-form-item label="公司logo" >
+             <el-upload
+               class="upload-demo"
+               action="https://jsonplaceholder.typicode.com/posts/"
+               multiple
+               :limit="1"
+               :file-list="fileList">
+               <el-button size="small" type="primary">点击上传</el-button>
+             </el-upload>
+           </el-form-item>
        </div>
           <div class="rrr" style="float: left;" >
             <el-form-item label="经营范围" prop="scopeExt">
@@ -205,6 +261,13 @@
               <el-checkbox label="其他" name="scopeExt"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
+            <el-form-item label="经营范围" prop="scoperange">
+              <el-checkbox-group v-model="ruleForm.scoperange" >
+                <el-checkbox label="旅游组团社" name="scoperange"></el-checkbox>
+                <el-checkbox label="独立旅行社" name="scoperange"></el-checkbox>
+                <el-checkbox label="个人/独立旅游顾问" name="scoperange"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
           </div>
         </el-form>
         <div class="ButtonCls">
@@ -220,11 +283,57 @@
 
 <script>
     import state from "../../../store/state";
-
+    let id = 0;
     export default {
         name: "merchantInfo",
         data() {
           return {
+            props: {
+              lazy: true,
+              _this: this,
+              lazyLoad (node, resolve) {
+                console.log(node)
+                const { level } = node;
+                let nId = 204;
+                if(level > 0) {
+                  nId = node.value;
+                }
+                this._this.$http.post(this._this.GLOBAL.serverSrc + "/org/api/deptlist", {
+                  "object": {
+                    "ParentID": nId
+                  }
+                }).then(res => {
+
+                  console.log(res)
+                  let data = res.data.objects.map(v => {
+                    return {
+                      'label': v.orgName,
+                      'value': v.id,
+                      'leaf': v.isLeaf < 2
+                    }
+                  })
+                  resolve(data);
+                })
+              }
+            },
+            options: [{
+              value: '1',
+              label: '正常',
+              method:'312',
+            }, {
+              value: '0',
+              label: '停用'
+            }],
+            value: '',
+            options1: [{
+              value: '1',
+              label: '月结'
+            }, {
+              value: '2',
+              label: '非月结'
+            }],
+            fileList: [],
+            value1: '',
             tid:0,
             pagesize:10,
             total:1,
@@ -239,12 +348,17 @@
               department:'',
               people:'',
               scopeExt: [],
+              scoperange: [],
               address:'',
               linker:'',
               phone:'',
               publicName:'',
               bankName:'',
-              bankcardNo:''
+              bankcardNo:'',
+              role:'',
+              market:'4',
+              dq_time:'',
+              saler:[210, 265, 269, 270, 273 ]
             },
             rules: {
               name: [
@@ -270,10 +384,22 @@
               department: [
                 { required: true, message: '请选择类型', trigger: 'change' }
               ],
+              role: [
+                { required: true, message: '请选择类型', trigger: 'change' }
+              ],
+              saler: [
+                { required: true, message: '请选择类型', trigger: 'change' }
+              ],
+              market: [
+            { required: true, message: '请选择类型', trigger: 'change' }
+               ],
               people: [
                 { required: true, message: '请选择类型', trigger: 'change' }
               ],
               scopeExt: [
+                { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+              ],
+              scoperange: [
                 { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
               ],
               linker: [
@@ -392,7 +518,7 @@
         },
         add_info(){
           this.tid = 0
-           this.clear();
+          /* this.clear();*/
           this.dialogFormVisible = true;
           },
         edit_info(){
@@ -688,6 +814,7 @@
       },
       created(){
         this.list();
+        console.log(this.props)
       }
 
     }
@@ -702,6 +829,7 @@
   }
   .button_style{
     margin-top:10px ;
+   width: 1000px;
   }
   .info_table{
     margin-top:20px ;
@@ -719,4 +847,9 @@
     margin-top: 50px;
     margin-bottom: 50px;
   }
+  .qqq >>>.el-upload-list__item
+  {
+    width: 109%!important;
+  }
+
 </style>

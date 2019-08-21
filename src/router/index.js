@@ -487,7 +487,7 @@ export default new Router({
     {
       path: '/arrearsManagement',
       component: arrearsManagement,
-      name: '欠款管理',
+      name: '供应商欠款管理',
       meta: {
         keepAlive: true,
         auth: true

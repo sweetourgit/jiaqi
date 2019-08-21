@@ -12,15 +12,15 @@
           <el-button v-if="this.find == 2" type="danger" @click="boSubmit('ruleForm')">驳回</el-button>
         </div>
         <div style="margin:10px 0 20px 25px; font-size:14pt;">基本信息</div>
-        <el-form-item label="收款时间" prop="createTime" label-width="120px">
-          <el-date-picker v-model="ruleForm.createTime" style="width:200px;" type="date" placeholder="收款时间" :disabled="change"></el-date-picker>
+        <el-form-item label="收款时间" prop="collectionTime" label-width="120px">
+          <el-date-picker v-model="ruleForm.collectionTime" style="width:200px;" type="date" placeholder="收款时间" :disabled="change"></el-date-picker>
         </el-form-item>
         <el-form-item label="同业社名称" prop="sameTrade" label-width="120px">
-          <el-input style="width:200px;" v-model="ruleForm.sameTrade" placeholder="请输入同业社名称" :disabled="change"></el-input>
+          <el-autocomplete style="width:200px;" v-model="ruleForm.sameTrade" :fetch-suggestions="querySearch3"placeholder="请输入同业社名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
         </el-form-item>
         <el-form-item label="收款账户" prop="collectionAccount" label-width="120px">
-          <el-input style="width:200px;" v-model="ruleForm.collectionAccount" placeholder="请输入收款账户" :disabled="change"></el-input>
-          <el-button class="collection" @click="account()">选择</el-button>
+          <el-input style="width:200px;" v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
+          <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
         <el-form-item label="收款金额" prop="money" label-width="120px">
           <el-input v-model="ruleForm.money" style="width:200px;" placeholder="收款金额" :disabled="change"></el-input>
@@ -29,8 +29,8 @@
           <el-input v-model="ruleForm.abstract" style="width:600px;" placeholder="摘要" :disabled="change"></el-input>
         </el-form-item>
         <el-form-item label="凭证" label-width="120px">
-          <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :disabled="change" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
-            <el-button size="small" type="primary">点击上传</el-button>
+          <el-upload class="upload-demo" name="files" ref="upload" :limit="12" multiple :action="this.upload_url" :disabled="change" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview" list-type="picture">
+            <el-button size="small" type="primary">上传文件</el-button>
           </el-upload>
         </el-form-item>
         <el-form-item label=""  prop="isInvoice">
@@ -222,6 +222,28 @@
         <span>{{imgBigName}}</span>
       </div>
     </el-dialog>
+    <!--收款账户选择弹窗-->
+    <el-dialog title="选择账户" :visible.sync="accountShow" width="70%" custom-class="city_list">
+      <div style="overflow:hidden;">
+        <el-table :data="accountTable" border style="width: 100%" :header-cell-style="getRowClass" @row-click="clickPlan">
+          <el-table-column prop="id" label="ID" align="center"></el-table-column>
+          <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+          <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+          <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
+          <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+          <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
+          <el-table-column prop="operation" label="操作" align="center">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="routerHandle4()" class="table_details">选择</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="accountButton">
+          <el-button @click="accountClose()">取消</el-button>
+          <el-button  type="primary">确认</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
@@ -350,10 +372,7 @@ export default {
         label: '项目4'
       }],
 
-      fileList: [{
-        name: 'food.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }],
+      fileList: [],
       accountShow:false,//选择账户弹窗
       accountTable:[{
         accountType:'收款',
@@ -362,6 +381,13 @@ export default {
         openingBank:'123.00',
         accountHolder:'阳阳',
       }],
+      tableData2:[],//同业社名称模糊查询
+      supplier_id:0,//同业社名称ID
+      accountShow:false,//选择账户弹窗
+      tour_name_pre:'',
+      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',//上传凭证
+      planID:'',
+
     }
   },
   computed: {
@@ -382,13 +408,7 @@ export default {
         return ''
       }
     },
-    //选择账户弹窗
-    account(){
-      this.accountShow = true;
-    },
-    accountClose(){
-      this.accountShow = false;
-    },
+    
     //获取id
     clickBanle(row, event, column) {
       this.user_id = row['id'];
@@ -432,7 +452,7 @@ export default {
         this.ruleForm.invoiceList.push({})
       }
     }, // 提交
-    submitForm(formName) {
+    /*submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.arrearsRelation != 0 || this.arrearsRelation != '0.00') {
@@ -448,7 +468,7 @@ export default {
           return false;
         }
       });
-    },
+    },*/
     //撤销申请
     chanelSubmit() {
       this.$confirm('是否撤销该条收款, 是否继续?', '提示', {
@@ -712,6 +732,162 @@ export default {
         .catch(function(obj) {
           console.log(obj)
         })
+    },
+    //同业社名称模糊查询
+    querySearch3(queryString3, cb) {
+      this.tableData2 = []
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
+        "object": {
+          name: queryString3
+        }
+      }).then(res => {
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.tableData2.push({
+            "value": res.data.objects[i].name,
+            "id": res.data.objects[i].id
+          })
+          this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+        }
+        var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
+        cb(results)
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    createFilter(queryString1){
+      return (restaurant) => {
+        return (restaurant.value);
+      }
+    },
+    departure(item){
+      console.log(item)
+      this.productPos = item.id;
+      this.originPlace = item.value;
+    },
+    //选择账户弹窗
+    account(){
+      this.accountShow = true;
+      var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
+          {
+            "object": {
+              "isDeleted": 0
+            },
+          },)
+          .then(function (obj) {
+            that.accountTable = obj.data.objects
+            console.log(obj.data.objects)
+          })
+          .catch(function (obj) {
+            console.log(obj)
+          })
+    },
+    accountClose(){
+      this.accountShow = false;
+    },
+    //收款账户选择
+    routerHandle4() {
+      this.ruleForm.collectionNumber = this.tour_name_pre
+      this.accountShow = false
+    },
+    clickPlan(row){//收款账户点击
+      this.tour_name_pre = row['title'];
+      this.planID = row['planID'];
+      this.tour_id = row['planID']
+    },
+    //文件上传
+    handleChange(file, fileList) {
+      this.fileList = fileList.slice(-3);
+    },
+    handleError(err, file) {
+      console.log('失败')
+      this.fileList = []
+    },
+    handleSuccess(res, file, fileList) {
+      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
+      if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
+        this.time = fileList.length;
+        if (this.fileList.length == 0) {
+          this.fileList = fileList;
+        } else {
+          this.len = this.fileList.length;
+          for (let i = this.len; i < fileList.length; i++) {
+            this.fileList.push(fileList[i]);
+          }
+        }
+      }
+      var paths = null;
+      for (let i = this.len; i < fileList.length; i++) {
+        paths = JSON.parse(fileList[i].response).paths[0];
+        this.$set(this.fileList[i], "width", paths.Width);
+        this.$set(this.fileList[i], "height", paths.Height);
+        this.$set(this.fileList[i], "url1", paths.Url);
+        this.$set(this.fileList[i], "length", paths.Length);
+        this.$set(this.fileList[i], "name", paths.Name);
+      }
+      this.uid = fileList[0].uid;
+      console.log(this.fileList)
+    },
+    submitForm(formName) {
+      this.a = true
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let pictureList = [];
+          let newDate = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss')
+          for (let i = 0; i < this.fileList.length; i++) {
+            let picture = {};
+            picture.url = this.fileList[i].url1;
+            picture.name = this.fileList[i].name;
+            picture.createTime = newDate
+            pictureList.push(picture);
+          }
+          let objectRequest = {}
+          objectRequest = {
+            collectionTime: formatDate(this.ruleForm.collectionTime, 'yyyy-MM-dd'), //收款时间
+            groupCode: this.ruleForm.groupCode, //团号
+            planID: this.ruleForm.planID, //团期计划的ID
+            orderID: this.ruleForm.orderID, //订单ID
+            orderNumber: this.indent, //订单号
+            collectionNumber: this.ruleForm.collectionNumber, //收款账户
+            //price: this.ruleForm.price, //金额
+            dept: this.dept, //this.org, //组织部门
+            createUser: localStorage.getItem('name'), //
+            createTime: newDate, //申请时间
+            serialNumber: this.ruleForm.serialNumber, //流水号
+            abstract: this.ruleForm.abstract, //摘要
+            files: pictureList, //图片
+            invoice: this.ruleForm.invoice, //是否发票
+            collectionType:1,//直客1.同业2
+            localCompID:0,//直客0，同业变成同业社id
+            //invoiceTable:this.ruleForm.invoiceTable,
+          }
+          if (this.ruleForm.invoice == '1') {
+            objectRequest.invoiceTable = this.ruleForm.invoice ? this.ruleForm.invoiceTable : [] //发票表格}
+          }
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/insert', {
+            "object": objectRequest
+          }).then(res => {
+            console.log(res.data);
+            if (res.data.isSuccess == true) {
+              this.$emit('searchHand', '')
+              this.$message({
+                type: 'success',
+                message: '创建成功!'
+              });
+              this.closeAdd()
+            } else {
+              console.log('有错误!')
+              console.log(res.data)
+            }
+          }).catch(err => {
+            console.log(err)
+          })
+        } else {
+          console.log('error submit!!')
+          return false;
+        }
+      });
     },
   },
   created() {
