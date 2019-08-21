@@ -172,7 +172,7 @@
                 router:'/checkSheet'
               },
               {
-                value: '供应商欠款管理',
+                value: '欠款管理',
                 router:'/arrearsManagement'
               },
               {
