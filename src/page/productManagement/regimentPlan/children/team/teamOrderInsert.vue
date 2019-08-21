@@ -44,10 +44,10 @@
            </div>
            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="订单来源" prop="orderRadio">
-                <!--<el-radio label="1" class="radiomar" v-model="ruleForm.orderRadio">同业社</el-radio>
+                <el-radio label="1" class="radiomar" v-model="ruleForm.orderRadio">同业社</el-radio>
                 <el-radio label="2" class="radiomar" v-model="ruleForm.orderRadio">门店</el-radio>
-                <el-radio label="3" class="radiomar" v-model="ruleForm.orderRadio">线下直客</el-radio>-->
-                <div class="ml13">线下直客</div>
+                <el-radio label="3" class="radiomar" v-model="ruleForm.orderRadio">线下直客</el-radio>
+                <!-- <div class="ml13">线下直客</div> -->
             </el-form-item>
             <!--
             <div v-if="ruleForm.orderRadio==1">

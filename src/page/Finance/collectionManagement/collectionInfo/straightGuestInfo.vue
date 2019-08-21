@@ -358,7 +358,7 @@ export default {
       },
       rules: {
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
-        collectionNumber: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
+        collectionNumber: [{ required: true, message: '收款账户不能为空', trigger: 'change' }],
         invoiceID: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
         /*serialNumber: [{ required: true, message: '交易流水号不能为空', trigger: 'blur' }],*/
         price: [
@@ -447,10 +447,14 @@ export default {
     },
     //收款账户选择
     routerHandle4() {
-      this.ruleForm.collectionNumber = this.tour_name_pre
-      this.accountShow = false
+      setTimeout(v => {
+        this.ruleForm.collectionNumber = this.tour_name_pre
+        this.accountShow = false
+      }, 200)
+      
     },
     clickPlan(row){//收款账户点击
+      // console.log(row)
       this.tour_name_pre = row['title'];
       this.planID = row['planID'];
       this.tour_id = row['planID']

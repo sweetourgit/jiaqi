@@ -898,7 +898,6 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
         });
       },
       sendBPM(result) {
-
 	      this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
 	        jQ_ID: result.guid,
 	        jQ_Type: result.flowModel,
@@ -951,7 +950,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	        console.log(err);
 	      })
 	    },*/
-	    themeList(){
+	    /*themeList(){
 	      this.borrowingType = [];
 	      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierget', {
 	      	id:0
@@ -968,7 +967,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	      }).catch(function(err){
 	        console.log(err);
 	      })
-	    },
+	    },*/
 	    //文件上传
 	    handleChange(file, fileList) {
 	      this.fileList = fileList.slice(-3);
@@ -1095,7 +1094,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       this.pageList();
     },
     created(){
-      this.themeList();
+      //this.themeList();
       this.payment();
     },
   }

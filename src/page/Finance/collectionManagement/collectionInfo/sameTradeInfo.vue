@@ -18,7 +18,7 @@
         <el-form-item label="同业社名称" prop="sameTrade" label-width="120px">
           <el-autocomplete style="width:200px;" v-model="ruleForm.sameTrade" :fetch-suggestions="querySearch3"placeholder="请输入同业社名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
         </el-form-item>
-        <el-form-item label="收款账户" prop="collectionAccount" label-width="120px">
+        <el-form-item label="收款账户" prop="collectionNumber" label-width="120px">
           <el-input style="width:200px;" v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
           <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
@@ -278,6 +278,7 @@ export default {
         money: '',
         abstract: '',
         isInvoice: '0',
+        collectionNumber:'',
         invoiceList: [{
           type: '',
           userType: '',
@@ -290,10 +291,11 @@ export default {
           address: '',
           mobile: '',
         }],
+
       },
       rules: {
         createTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
-        collectionAccount: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
+        //collectionAccount: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
         sameTrade: [{ required: true, message: '同业社不能为空', trigger: 'change' }],
         money: [
           { required: true, message: '收款金额不能为空', trigger: 'blur' },
@@ -304,6 +306,7 @@ export default {
           { pattern: /^[+]{0,1}(\d+)$/, message: '纳税人识别号需为正整数' }
         ],
         isInvoice: [{ required: true, message: '是否开发票不能为空', trigger: 'blur' }],
+        collectionNumber:[{ required: true, message: '收款账户不能为空', trigger: 'change' }]
       },
       collectionAccountList: [{
         value: '1',
@@ -429,6 +432,10 @@ export default {
              //this.dialogFormVisible =false;
              this.closeAdd();
              this.$refs["ruleForm"].resetFields();
+             this.arrearsList = [];
+             this.indent = '';
+             this.dialogVisible2 = false;
+             this.a = false;
            //this.clearPlan();
            })
         .catch(() => {
@@ -788,8 +795,10 @@ export default {
     },
     //收款账户选择
     routerHandle4() {
-      this.ruleForm.collectionNumber = this.tour_name_pre
-      this.accountShow = false
+      setTimeout(v => {
+        this.ruleForm.collectionNumber = this.tour_name_pre
+        this.accountShow = false
+      }, 200)
     },
     clickPlan(row){//收款账户点击
       this.tour_name_pre = row['title'];

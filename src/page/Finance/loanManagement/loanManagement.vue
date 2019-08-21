@@ -28,9 +28,15 @@ import approvalToBorrow from '@/page/Finance/loanManagement/approvalToBorrow'
       	activeName: 'first',
         examine:'需要您审批',
         msg:'',
-
       }
     },
+    /*computed: {
+      // 计算属性的 getter
+      approval: function() {
+        // `this` 指向 vm 实例
+        return this.approvalTotal > 0 ? '您需要审批(' + this.approvalTotal + ')' : '您需要审批'
+      },
+    },*/
     methods: {
       headCall: function (msg) { //回调方法，接收子组件传的参数
         this.msg = '(' + msg + ')';
