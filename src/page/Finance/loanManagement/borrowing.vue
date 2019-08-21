@@ -58,7 +58,7 @@
 	      	<template slot-scope="scope">
 	          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
 	          <span v-if="scope.row.checkTypeEX=='通过'">|</span>
-	          <el-button @click="checkIncome(scope.row)" v-if="scope.row.checkTypeEX=='通过'" type="text" size="small" class="table_details">付款账户</el-button>
+	          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过'" type="text" size="small" class="table_details">付款账户</el-button>
 	        </template>
 	      </el-table-column>
 	    </el-table>
@@ -294,6 +294,22 @@
       	</div>
 	    <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
 	  </el-dialog>
+	  <!--付款账户弹窗-->
+	  <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
+	    <div class="close" @click="closeAccount()">×</div>
+	    <el-table :data="tableSelect" border :header-cell-style="getRowClass">
+	       <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+	       <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+	       <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
+	       <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+	       <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
+	       <el-table-column label="操作" align="center">
+	       	  <template slot-scope="scope">
+		        <el-button type="text" size="small" class="table_details">选择</el-button>
+		      </template>
+	       </el-table-column>
+	    </el-table>
+	  </el-dialog>
   </div>
 </template>
 
@@ -457,7 +473,9 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 		    tableData2:[],
 		    upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',//图片上传
 		    uid: 0, //上传图片缩略图选中项
-		    status:""
+		    status:"",
+		    SelectAccount:false,//选择账户弹窗
+		    tableSelect:[],//选择弹窗表格
 		   
 
 
@@ -1063,6 +1081,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	          });
 	        });
 	      },*/
+	      //结束工作流程
 	      repeal(){
 	        this.$confirm("其否需要撤销该笔借款?", "提示", {
 	           confirmButtonText: "确定",
@@ -1092,25 +1111,45 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	          });
 	        });
 	      },
+	      //结束工作流程后删除
 	      deleteBorrow(){
-	          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
-	          {
-	            "id": this.paymentID
-	          })
-	          .then(res => {
-	          	console.log(res)
-	            /*if(res.data.isSuccess == true){
-	               this.$message.success("撤销成功");
-	               this.pageList();
-	               this.checkIncomeShow = false;
-
-	              }*/
-	           })
+	        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
+	        {
+	          "id": this.paymentID
+	        })
+	        .then(res => {
+	           console.log(res)
+	         })
 	        .catch(() => {
 	          console.log(res)
 	        });
 	      },
-
+	      //选择账户弹窗
+	      bankAccount(){
+	      	this.SelectAccount = true;
+	      	this.selectList();
+	      },
+	      closeAccount(){
+	      	this.SelectAccount = false;
+	      },
+	      //选择账户表格查询
+	      selectList(){
+	        var that = this
+	        this.$http.post(
+	          this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
+	          {
+	            "object": {
+	              "isDeleted": 0
+	            },
+	          },)
+	          .then(function (obj) {
+	          	that.tableSelect = obj.data.objects
+	            console.log(obj.data.objects)
+	          })
+	          .catch(function (obj) {
+	            console.log(obj)
+	          })
+	      },
     },
 
     mounted(){
@@ -1169,5 +1208,6 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	.el-dialog__wrapper{top:-10%;}
 
 	.basicTitle{font-size: 14pt; line-height: 40px; margin: 0 0 20px 0;}
+	.close{position: absolute; top: 15px; right: 15px; font-size: 20pt; cursor:pointer;}
 
 </style>
