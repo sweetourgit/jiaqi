@@ -336,6 +336,8 @@
         },
         //详情弹窗
         checkIncome(row){
+          // console.log(row)
+          this.pid = row.paymentID;
           this.detailstShow = true;
           this.getLabel();
         },
@@ -344,6 +346,7 @@
         },
         //获取一条详情
         getLabel(){
+          console.log(this.pid)
           //console.log(this.multipleSelection[0].id)
           this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
               "id":this.pid
@@ -434,7 +437,7 @@
         },
         //获取id
         clickBanle(row, event, column) {
-          this.pid = row['id'];
+          // this.pid = row['id'];
           this.reable = false;
           this.paymentID=row.paymentID;
           this.tour_id = row['planID'];
