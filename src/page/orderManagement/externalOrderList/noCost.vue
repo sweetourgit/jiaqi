@@ -64,8 +64,6 @@
       <el-button type="primary" @click="importOrder" plain>导入订单</el-button>
       <el-button type="primary" :disabled="reable" @click="delOrder" plain>删除订单</el-button>
       <el-button type="primary" @click="importHistory" plain>导入历史</el-button>
-      <el-button type="primary" :disabled="reable" @click="relation" plain>关联</el-button>
-      <el-button type="primary" :disabled="reable" @click="unbinding" plain>解绑</el-button>
     </div>
     <div class="tableDv">
       <div class="table_trip" style="width: 88%;">
@@ -132,19 +130,16 @@
         </el-pagination>
       </div>
     </div>
-    <Relation :dialogFormVisible="dialogFormVisible" @close="close"></Relation>
     <ImportOrder :dialogFormVisible2="dialogFormVisible2" @close2="close2"></ImportOrder>
 
   </div>
 </template>
 <script type="text/javascript">
-  import Relation from '@/page/orderManagement/externalOrderList/externalChild/relation'//关联弹窗
   import ImportOrder from '@/page/orderManagement/externalOrderList/externalChild/importOrder'//导入订单弹窗
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "externalOrderList",
     components: {
-      Relation,
       ImportOrder,
     },
     data() {
@@ -239,87 +234,6 @@
       //导入历史
       importHistory() {
         this.$router.push({ path: "/importHistory" });
-      },
-      //关联
-      relation() {
-        console.log(this.multipleSelection);
-        let related = 0;
-        let order = '';
-        this.multipleSelection.forEach(function (item, index, arr) {
-          if(item.is_relate_pro != 1){
-            order += item.order_sn + ",";
-            related++;
-            return;
-          }
-        });
-        if(related == 0){
-          this.dialogFormVisible = true;
-        }else{
-          order = order.substr(0,order.length-1);
-          this.$message.warning(order + "订单已关联，不可再次关联");
-        }
-      },
-      close() {
-        this.dialogFormVisible = false;
-        this.loadData();
-      },
-      //解绑
-      unbinding() {
-        console.log(this.multipleSelection);
-        let num = 0;
-        let orderS = '';
-        this.multipleSelection.forEach(function (item, index, arr) {
-//        alert(item.bill_status == 1 && item.is_relate_pro == 2);
-          if(item.bill_status == 1 && item.is_relate_pro == 2){
-
-          }else{
-            orderS += item.order_sn + ",";
-            num++;
-            return;
-          }
-        });
-//      alert(num);
-        if(num == 0){
-          this.$confirm('是否需要解绑选中订单?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-
-            let order_sn = '';
-            this.multipleSelection.forEach(function (item, index, arr) {
-              order_sn += item.order_sn + ','
-            });
-            order_sn = order_sn.substr(0,order_sn.length-1);
-            this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/order/external-order/unbind', {
-              "order_sn": order_sn
-            }).then(res => {
-              console.log(res);
-              if (res.data.code == 200) {
-                this.$message({
-                  type: 'success',
-                  message: '解绑成功!'
-                });
-                this.loadData();
-              }else{
-                this.$message({
-                  type: 'warning',
-                  message: res.data.message
-                });
-              }
-            }).catch(err => {
-              console.log(err)
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消解绑'
-            });
-          });
-        }else{
-          orderS = orderS.substr(0,orderS.length-1);
-          this.$message.warning(orderS + "订单不是已关联或未报账状态，不可解绑");
-        }
       },
       //搜索
       searchHand() {
