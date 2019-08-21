@@ -57,6 +57,8 @@
 	      <el-table-column label="操作" width="180" align="center">
 	      	<template slot-scope="scope">
 	          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+	          <span v-if="scope.row.checkTypeEX=='通过'">|</span>
+	          <el-button @click="checkIncome(scope.row)" v-if="scope.row.checkTypeEX=='通过'" type="text" size="small" class="table_details">付款账户</el-button>
 	        </template>
 	      </el-table-column>
 	    </el-table>
@@ -288,7 +290,7 @@
 	    <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
       	<div style="position:absolute; top:8px; right:10px;">
       		<el-button @click="CloseCheckIncomeShow()">取消</el-button>
-      		<el-button @click="repeal()" type="danger" plain>撤销借款</el-button>
+      		<el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button>
       	</div>
 	    <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
 	  </el-dialog>
@@ -455,6 +457,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 		    tableData2:[],
 		    upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',//图片上传
 		    uid: 0, //上传图片缩略图选中项
+		    status:""
 		   
 
 
@@ -802,6 +805,8 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       //查看无收入借款弹窗
       checkIncome(row){
       	this.checkIncomeShow = true;
+      	console.log(row)
+      	this.status = row.checkTypeEX;
       	this.ruleForm = row;
       	//this.getLabel();
       },
@@ -812,6 +817,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       pageList() {
       	let objectRequest = {}
       	objectRequest.paymentType = 1;
+      	objectRequest.checkType = -1;
         var that = this
         this.$http.post(
           this.GLOBAL.serverSrc + "/finance/payment/api/page",
@@ -819,7 +825,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
             "pageSize":this.pagesize,
             "pageIndex":this.currentPage,
             "total": 0,
-            "object": objectRequest,
+            "object": objectRequest, 
           },)
           .then(function (obj) {
             that.total = obj.data.total
@@ -928,6 +934,25 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	      })
 	      .then(res =>{
 	        this.payment_01 =  res.data.objects;
+	      }).catch(function(err){
+	        console.log(err);
+	      })
+	    
+      },
+      //借款类型
+      themeList(){
+      	this.borrowingType = [];
+	      this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=SupplierType')
+	      .then(res => {
+	        for (let i = 0; i < res.data.objects.length; i++) {
+	          this.borrowingType.push({
+	            "value": res.data.objects[i].id,
+	            "label": res.data.objects[i].name
+	          })
+	        }
+	      })
+	      .then(res =>{
+	        this.borrowingType =  res.data.objects;
 	      }).catch(function(err){
 	        console.log(err);
 	      })
@@ -1052,12 +1077,12 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	            "jQ_Type": 1
 	          })
 	          .then(res => {
-	            if(res.data.isSuccess == true){
-	               this.$message.success("撤销成功");
-	               //this.pageList();
-	               this.deleteBorrow();
-
-	              }
+	            this.$message.success("撤销成功");
+                this.checkIncomeShow = false;
+                this.pageList();
+                this.deleteBorrow();
+                //this.$router.go(0);//vue刷新页面
+                this.history.go(0);//刷新页面
 	           })
 	        })
 	        .catch(() => {
@@ -1073,18 +1098,16 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	            "id": this.paymentID
 	          })
 	          .then(res => {
-	            if(res.data.isSuccess == true){
+	          	console.log(res)
+	            /*if(res.data.isSuccess == true){
 	               this.$message.success("撤销成功");
 	               this.pageList();
 	               this.checkIncomeShow = false;
 
-	              }
+	              }*/
 	           })
 	        .catch(() => {
-	          this.$message({
-	            type: "info",
-	            message: "撤销借款已取消"
-	          });
+	          console.log(res)
 	        });
 	      },
 
@@ -1094,7 +1117,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       this.pageList();
     },
     created(){
-      //this.themeList();
+      this.themeList();
       this.payment();
     },
   }

@@ -41,8 +41,8 @@
         <el-dialog title="详情" :visible.sync="detailstShow" width="80%" custom-class="city_list" :show-close='false'>
           <div style="position:absolute; top:8px; right:10px;">
             <el-button @click="closeDetailstShow()">取消</el-button>
-            <el-button type="danger" plain>通过</el-button>
-            <el-button type="danger" plain>驳回</el-button>
+            <el-button @click="through()" type="danger" plain>通过</el-button>
+            <el-button @click="rejected()" type="danger" plain>驳回</el-button>
           </div>
           <div class="loanManagement">
               <!--查看无收入借款弹窗-->
@@ -251,6 +251,8 @@
            tour_id:0,
            multipleSelection: [],
            pid:'',
+           arr1:[],
+           guid:''
       }
     },
     methods: {
@@ -302,6 +304,7 @@
       pageList(){
         var that = this
         var arr = []
+        
         //workflowCode获取FlowModel传递
         this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=FlowModel')
         .then(obj => {
@@ -319,7 +322,10 @@
           .then(obj => {
              obj.data.forEach(v=>{
               arr.push(v.jq_ID)
+              that.arr1.push(v.workItemID)
+
              })
+
              this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid',
               {
                 "guid": arr
@@ -332,11 +338,69 @@
           })
       
         })
-        
+        },
+        //删除
+        repeal(){
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
+            {
+              "id": this.paymentID
+            })
+            .then(res => {
+              if(res.data.isSuccess == true){
+                 this.$message.success("撤销成功");
+                 this.pageList();
+                 this.detailstShow = false;
+                }
+             })
+          .then(res =>() => {
+            console.log(res)
+          })
+          .catch(res =>() => {
+            console.log(res)
+          });
+        },
+        //通过
+        through(){
+          var that = this;
+          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/SubmitWorkAssignmentsForJQ',
+          {
+            "userCode": "rbop01",
+            "workItemID": this.arr1[0],
+            "commentText": "1"
+          }).then(res =>{
+              that.detailstShow = false;
+              //that.repeal();
+          })
+        },
+        //驳回
+        rejected(){
+          var that = this;
+          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/RejectionOfWorkTasksForJQ',
+          {
+            "userCode": "rbop01",
+            "workItemID": this.arr1[0],
+            "commentText": "1"
+          }).then(res =>{
+              that.detailstShow = false;
+              that.rejectedSuccess();
+              //that.repeal();
+            
+          })
+        },
+        //驳回成功通过guid将checktype修改成2
+        rejectedSuccess(){
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',
+          {
+            /*"guid": this.guid,
+            "checkType": 2*/
+             "object": {               
+                "guid": this.guid,
+                "checkType": 2
+              }
+          })
         },
         //详情弹窗
         checkIncome(row){
-          // console.log(row)
           this.pid = row.paymentID;
           this.detailstShow = true;
           this.getLabel();
@@ -346,12 +410,12 @@
         },
         //获取一条详情
         getLabel(){
-          console.log(this.pid)
-          //console.log(this.multipleSelection[0].id)
+          console.log(this.tableData)
           this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
               "id":this.pid
           }).then(res => {
             if(res.data.isSuccess == true){
+                this.guid = res.data.object.guid
                this.fundamental=res.data.object;
                this.tour_id = res.data.object.planID;
                this.getTourByPlanId(res.data.object.planID);
