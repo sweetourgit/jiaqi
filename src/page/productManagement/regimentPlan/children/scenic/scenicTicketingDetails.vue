@@ -294,7 +294,8 @@ export default {
       this.$router.push({ path: "/regimentPlan/scenicTicketingList" });
     },
     toUpdate() {
-      this.dialogFormVisible2 = true
+      this.dialogFormVisible2 = true;
+
     },
     delInfo() {
       const that = this;
@@ -426,15 +427,16 @@ export default {
           console.log(response);
           if(num == 1){
             console.log("1",response.data.data.list);
-            that.tableData2 = response.data.data.list;//还没渲染到页面
+            that.tableData2 = response.data.data.list;
           }else if(num == 2){
             console.log("2",response.data.data.list);
-            that.tableData3 = response.data.data.list;//还没渲染到页面
+            that.tableData3 = response.data.data.list;
             that.tableData3.forEach(function (item, index, arr) {
-
               item.file = JSON.parse(item.file);
               console.log(item.file);
-              item.file.url = that.GLOBAL.serverSrcPhp + item.file.url;
+              for(var i = 0; i < item.file.length; i++){
+                item.file[i].url = that.GLOBAL.serverSrcPhp + item.file[i].url;
+              }
             })
           }
         } else {

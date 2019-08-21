@@ -20,25 +20,25 @@
             部门
           </el-col>
           <el-col :span="3" class="content">
-            甜程周边
+            {{msg.org_id}}
           </el-col>
           <el-col :span="2" class="title">
             操作人
           </el-col>
           <el-col :span="3" class="content">
-            阳阳
+            {{msg.op_id}}
           </el-col>
           <el-col :span="2" class="title">
             导陪
           </el-col>
           <el-col :span="3" class="content">
-            阳阳2
+            {{msg.guide}}
           </el-col>
           <el-col :span="2" class="title">
             接团社
           </el-col>
           <el-col :span="7" class="content">
-            界社团123
+            {{msg.associations}}
           </el-col>
         </el-row>
         <el-row>
@@ -46,13 +46,13 @@
             团号
           </el-col>
           <el-col :span="8" class="content">
-            LCSZ-1810-BXSD
+            {{msg.tour_no}}
           </el-col>
           <el-col :span="2" class="title">
             线路名称
           </el-col>
           <el-col :span="12" class="content">
-            我是线路
+            {{msg.product_name}}
           </el-col>
         </el-row>
         <el-row>
@@ -60,31 +60,31 @@
             团队人数
           </el-col>
           <el-col :span="3" class="content">
-            83
+            {{msg.team_num}}
           </el-col>
           <el-col :span="2" class="title">
             减免人数
           </el-col>
           <el-col :span="3" class="content">
-            3
+            {{msg.reduce_num}}
           </el-col>
           <el-col :span="2" class="title">
             出发日期
           </el-col>
           <el-col :span="3" class="content">
-            2019-07-24
+            {{msg.startTime}}
           </el-col>
           <el-col :span="2" class="title">
             返回日期
           </el-col>
           <el-col :span="3" class="content">
-            2019-07-31
+            {{msg.endTime}}
           </el-col>
           <el-col :span="2" class="title">
             全程天数
           </el-col>
           <el-col :span="2" class="content">
-            3
+            {{msg.days}}
           </el-col>
         </el-row>
         <el-row>
@@ -97,25 +97,25 @@
             总收入
           </el-col>
           <el-col :span="3" class="content">
-            63510.00
+            {{msg.total_income}}
           </el-col>
           <el-col :span="2" class="title">
             总支出
           </el-col>
           <el-col :span="3" class="content">
-            58192.00
+            {{msg.total_cost}}
           </el-col>
           <el-col :span="2" class="title">
             毛利额
           </el-col>
           <el-col :span="3" class="content">
-            5318.00
+            {{msg.gross_profit}}
           </el-col>
           <el-col :span="2" class="title">
             毛利率
           </el-col>
           <el-col :span="7" class="content">
-            8.37%
+            {{msg.gross_rate}}
           </el-col>
         </el-row>
         <el-row>
@@ -148,25 +148,25 @@
         <template v-for="(bill,index) in billReporting">
           <el-row>
             <el-col :span="2" class="content">
-              {{bill.id}}
+              {{index + 1}}
             </el-col>
             <el-col :span="5" class="content">
+              {{bill.handler}}
+            </el-col>
+            <el-col :span="5" class="content">
+              {{bill.distributor}}
+            </el-col>
+            <el-col :span="3" class="content">
+              {{bill.people_num}}
+            </el-col>
+            <el-col :span="3" class="content">
               {{bill.income}}
             </el-col>
-            <el-col :span="5" class="content">
-              {{bill.user}}
+            <el-col :span="3" class="content">
+              {{bill.serial_sn}}
             </el-col>
             <el-col :span="3" class="content">
-              {{bill.number}}
-            </el-col>
-            <el-col :span="3" class="content">
-              {{bill.receivables}}
-            </el-col>
-            <el-col :span="3" class="content">
-              {{bill.invoice}}
-            </el-col>
-            <el-col :span="3" class="content">
-              {{bill.remarks}}
+              {{bill.remark}}
             </el-col>
           </el-row>
         </template>
@@ -219,29 +219,29 @@
           </el-col>
         </el-row>
         <template v-for="(cost,index) in costDetails">
-          <el-row>
-            <el-col :span="3" class="content">
-              {{cost.id}}
+          <el-row :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+              {{index + 1}}
             </el-col>
-            <el-col :span="3" class="content">
-              {{cost.costItems}}
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+              {{cost.cost_type}}
             </el-col>
-            <el-col :span="4" class="content">
+            <el-col :span="4" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
               {{cost.supplier}}
             </el-col>
-            <el-col :span="2" class="content">
-              {{cost.number}}
+            <el-col :span="2" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+              {{cost.people_num}}
             </el-col>
-            <el-col :span="3" class="content">
-              {{cost.totalCost}}
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+              {{cost.cost}}
             </el-col>
-            <el-col :span="3" class="content">
-              {{cost.paymented}}
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+              {{cost.paid_cost}}
             </el-col>
-            <el-col :span="3" class="content">
-              {{cost.bill}}
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+              {{cost.settle_cost}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
               {{cost.remarks}}
             </el-col>
           </el-row>
@@ -262,28 +262,28 @@
             {{costPaymented}}
           </el-col>
           <el-col :span="3" class="title">
-            挂账
+            <!--挂账-->
           </el-col>
           <el-col :span="3" class="title">
-            备注
+            <!--备注-->
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="3" class="title">
             审批人
           </el-col>
-          <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
-            <div style="position:relative;z-index: 99;height: 68px;line-height: 68px;">计调</div>
+          <el-col :span="3" class="title" style="">
+            <div style="position:relative;z-index: 99;top: 16px;">计调</div>
           </el-col>
           <el-col :span="4" class="">
           </el-col>
           <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
-            <div style="position:relative;z-index: 99;height: 68px;line-height: 68px;">财务部</div>
+            <div style="position:relative;z-index: 99;top: 16px;">财务部</div>
           </el-col>
           <el-col :span="4" class="">
           </el-col>
-          <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
-            <div style="position:relative;z-index: 99;height: 68px;line-height: 68px;">总经理</div>
+          <el-col :span="3" class="title" style="">
+            <div style="position:relative;z-index: 99;top: 16px;">总经理</div>
           </el-col>
           <el-col :span="4" class="">
           </el-col>
@@ -361,6 +361,8 @@
   </div>
 </template>
 <script type="text/javascript">
+import {formatDate} from '@/js/libs/publicMethod.js'
+
 export default {
   name: "checkSheetPreview",
   components: {},
@@ -373,57 +375,16 @@ export default {
       dialogVisiblePass: false,
       dialogVisibleReject: false,
       areaIn: '',
-      billReporting: [{
-        id: 1,
-        income: '线下',
-        user: '经手人1',
-        number: '80',
-        receivables: '63500.00',
-        invoice: '123456',
-        remarks: '',
-      }, {
-        id: 2,
-        income: '线下',
-        user: '经手人2',
-        number: '1',
-        receivables: '5.00',
-        invoice: '123456',
-        remarks: '',
-      }, {
-        id: 3,
-        income: '线下',
-        user: '经手人2',
-        number: '2',
-        receivables: '5.00',
-        invoice: '123456',
-        remarks: '',
-      }],
-      billTotalNumber: '83',
-      billTotalReceivables: '63510.00',
+      msg:{},
+      billReporting: [],
+      billTotalNumber: 0,
+      billTotalReceivables: 0,
       billTotalInvoice: '',
       billTotalRmarks: '',
-      costDetails: [{
-        id: 1,
-        costItems: '门票',
-        supplier: '经手人1',
-        number: '83',
-        totalCost: '58192.00',
-        paymented: '58192.00',
-        bill: '',
-        remarks: '',
-      }, {
-        id: 2,
-        costItems: '',
-        supplier: '',
-        number: '',
-        totalCost: '',
-        paymented: '',
-        bill: '',
-        remarks: '',
-      }, ],
-      costTotalNumber: '83',
-      costTotalCost: '58192.00',
-      costPaymented: '58192.00',
+      costDetails: [],
+      costTotalNumber: 0,
+      costTotalCost: 0,
+      costPaymented: 0,
       ruleForm: {
         days: ''
       },
@@ -453,6 +414,85 @@ export default {
     },
     loadData(){
       console.log(this.info);
+      const that = this;
+//      获取基本信息
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/viewbill", {
+        "id": this.info.id
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log("基本信息",response);
+          let billTime = '', startTime = '', endTime = '';
+          if(response.data.data.bill_at){
+            billTime = formatDate(new Date(response.data.data.bill_at*1000));
+          }else{
+            billTime = '';
+          }
+          if(response.data.data.start_at){
+            startTime = formatDate(new Date(response.data.data.start_at*1000)).split(" ")[0];
+            endTime = formatDate(new Date(response.data.data.back_at*1000)).split(" ")[0];
+          }
+          that.msg = {
+            tour_no: response.data.data.tour_no,
+            op_id: response.data.data.op_id,
+            billTime: billTime,
+            team_num: response.data.data.team_num,
+            days: response.data.data.days,
+            total_income: response.data.data.total_income,
+            total_cost: response.data.data.total_cost,
+            gross_profit: response.data.data.gross_profit,
+            gross_rate: response.data.data.gross_rate,
+            product_name: response.data.data.product_name,
+            startTime: startTime,
+            endTime: endTime,
+            reduce_num: response.data.data.reduce_num,
+            guide: response.data.data.guide,
+            associations: response.data.data.associations,
+            org_id: response.data.data.org_id
+          };
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+//      获取认款信息
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/recinfo", {
+        "id": this.info.id
+      }, ).then(function(response) {
+        console.log("认款信息",response);
+        if (response.data.code == '200') {
+          console.log(response);
+          that.billReporting = response.data.data;
+          that.billTotalReceivables = 0;
+          that.billTotalNumber = 0;
+          that.billReporting.forEach(function (item, index, arr) {
+            that.billTotalReceivables += parseFloat(item.income);
+            that.billTotalNumber += parseInt(item.people_num);
+          })
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+//      获取成本信息
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/costinfo", {
+        "id": this.info.id
+      }, ).then(function(response) {
+//        console.log("成本信息",response);
+        if (response.data.code == '200') {
+//          console.log(response);
+          that.costDetails = response.data.data.listInfo;
+          that.costTotalNumber = response.data.data.quantity_total;
+          that.costTotalCost = response.data.data.cost_total;
+          that.costPaymented = response.data.data.paid_cost_total;
+
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     },
     goDetail(){
       this.$router.push({path: "/scenicTicketingDetails?id=1"});

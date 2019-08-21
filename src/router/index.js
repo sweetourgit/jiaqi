@@ -39,6 +39,9 @@ import priList from '@/page/contentInfo/priManagement/priList'
 import proList from '@/page/contentInfo/proList/proList'
 import orderList from '@/page/orderManagement/orderList/orderList'
 import externalOrderList from '@/page/orderManagement/externalOrderList/externalOrderList'
+import canRecognition from '@/page/orderManagement/externalOrderList/canRecognition'
+import noRecognition from '@/page/orderManagement/externalOrderList/noRecognition'
+import noCost from '@/page/orderManagement/externalOrderList/noCost'
 import importHistory from '@/page/orderManagement/externalOrderList/importHistory'
 import loanManagement from '@/page/Finance/loanManagement/loanManagement'
 import advancePayment from '@/page/Finance/advancePayment/advancePayment'
@@ -386,10 +389,32 @@ export default new Router({
       path: '/externalOrderList',
       component: externalOrderList,
       name: '外部订单',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
+      children: [{
+        path: 'canRecognition',
+        name: '外部订单  /可认款报账',
+        component: canRecognition,
+        meta: {
+          keepAlive: true,
+          auth: true
+        },
+      }, {
+          path: 'noRecognition',
+          name: '外部订单  /未认收款',
+          component: noRecognition,
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }, {
+          path: 'noCost',
+          name: '外部订单  /无成本',
+          component: noCost,
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+      ]
     }, {
       path: '/importHistory',
       component: importHistory,

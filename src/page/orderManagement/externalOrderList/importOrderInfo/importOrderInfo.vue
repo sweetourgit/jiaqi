@@ -54,7 +54,7 @@ export default {
   components: {},
   props: {
     dialogFormVisible: false,
-    pid: '',
+    infoId: '',
   },
   data() {
     return {
@@ -64,47 +64,18 @@ export default {
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
 
       order: '123456',
-      tableData: [{
-        id: '1',
-        oid: '311123',
-        type: '门票',
-        title: '丹东百瀑峡门票（成人票）',
-        time: '2019-01-09 09:37',
-        money: '收入：123.12 应付金额：123.12 商家承担优惠：19.99 单票成本：111.00 总成本：111.00',
-        number: '1',
-        customer: '取票人：阳阳 手机：1388888883',
-        importTime: '2019-01-09 09:37',
-        product: '产品名称：丹东门票 团期计划：LTSZ-1904-QHSD',
-        accountStatus: '未报账',
-      }, {
-        id: '2',
-        oid: '311123',
-        type: '门票',
-        title: '丹东百瀑峡门票（成人票）',
-        time: '2019-01-09 09:37',
-        money: '收入：123.12 应付金额：123.12 商家承担优惠：19.99 单票成本：111.00 总成本：111.00',
-        number: '1',
-        customer: '取票人：阳阳 手机：1388888883',
-        importTime: '2019-01-09 09:37',
-        product: '产品名称：丹东门票 团期计划：LTSZ-1904-QHSD',
-        accountStatus: '未报账',
-      }, {
-        id: '3',
-        oid: '311123',
-        type: '门票',
-        title: '丹东百瀑峡门票（成人票）',
-        time: '2019-01-09 09:37',
-        money: '收入：123.12 应付金额：123.12 商家承担优惠：19.99 单票成本：111.00 总成本：111.00',
-        number: '1',
-        customer: '取票人：阳阳 手机：1388888883',
-        importTime: '2019-01-09 09:37',
-        product: '产品名称：丹东门票 团期计划：LTSZ-1904-QHSD',
-        accountStatus: '未报账',
-      }],
+      tableData: [],
     }
   },
   computed: {
     // 计算属性的 getter
+  },
+  watch: {
+    infoId: {
+      handler:function(){
+        this.loadData()
+      }
+    }
   },
   methods: {
     // 表格头部背景颜色
@@ -160,6 +131,30 @@ export default {
       this.tableData = this.tableData
       this.total = this.total
     },
+    loadData(){
+      console.log(this.infoId);
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/importlist", {
+        "pageIndex": this.pageIndex,
+        "pageSize": this.pageSize,
+        "start_time": this.activeForm.startTime,
+        "end_time": this.activeForm.endTime,
+        "create_account": this.activeForm.user
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log(response);
+          that.tableData = response.data.data.list;
+          that.total = response.data.data.total - 0;
+          that.tableData.forEach(function (item, index, arr) {
+            item.import_at = formatDate(new Date(item.import_at*1000));
+          })
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {ao
+        console.log(error);
+      });
+    }
   },
   created() {
 

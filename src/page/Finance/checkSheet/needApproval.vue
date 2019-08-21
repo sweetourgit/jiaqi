@@ -17,12 +17,18 @@
         </div>
         <div class="table_style">
           <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
-            <el-table-column prop="plan" label="团期计划" width="180" align="center"></el-table-column>
-            <el-table-column prop="type" label="状态" width="120" align="center"></el-table-column>
-            <el-table-column prop="orinaze" label="产品名称" align="center"></el-table-column>
-            <el-table-column prop="accpter" label="申请人" width="120" align="center"></el-table-column>
-            <el-table-column prop="createtime" label="申请时间" width="180" align="center"></el-table-column>
-            <el-table-column prop="info" label="审批意见" width="250" align="center"></el-table-column>
+            <el-table-column prop="tour_no" label="团期计划" width="180" align="center"></el-table-column>
+            <el-table-column prop="bill_status" label="状态" width="120" align="center">
+              <template slot-scope="scope">
+                <div style="color: #7F7F7F">报账中</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="product_name" label="产品名称" align="center"></el-table-column>
+            <el-table-column prop="create_uid" label="申请人" width="120" align="center"></el-table-column>
+            <el-table-column prop="created_at" label="申请时间" width="180" align="center"></el-table-column>
+            <el-table-column prop="info" label="审批意见" width="250" align="center">
+              <span>审批意见</span>
+            </el-table-column>
             <el-table-column prop="opinion" label="操作" align="center" width="100">
               <template slot-scope="scope">
                 <el-button @click="approve(scope.row)" type="text" size="small" class="table_details">审批</el-button>
@@ -51,6 +57,7 @@
 
 <script>
   import checkSheetPreview from '@/page/Finance/checkSheet/checkSheetPreview';
+  import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "needApproval",
     components:{
@@ -73,37 +80,7 @@
         dialogFormVisible: false,
         info: '',
         //待审批table
-        tableData: [{
-          number: '1',
-          type: '申请中',
-          checkType: '0',
-          createtime: '2016-05-02',
-          plan: 'TC-GTY-1001-01-180806-01',
-          monkey: '国旅',
-          orinaze: '辽宁大运通-国内部',
-          accpter: '阳阳',
-          info: '',
-        }, {
-          number: '1',
-          type: '驳回',
-          checkType: '-1',
-          createtime: '2016-05-02',
-          plan: 'TC-GTY-1001-01-180806-01',
-          monkey: '国旅',
-          orinaze: '辽宁大运通-国内部',
-          accpter: '阳阳',
-          info: '郑总：信息补全',
-        }, {
-          number: '1',
-          type: '通过',
-          checkType: '1',
-          createtime: '2016-05-02',
-          plan: 'TC-GTY-1001-01-180806-01',
-          monkey: '国旅',
-          orinaze: '辽宁大运通-国内部',
-          accpter: '阳阳',
-          info: '',
-        }]
+        tableData: []
       };
     },
     methods: {
@@ -116,7 +93,7 @@
         }
       },
       searchFun(){
-
+        this.loadData();
       },
       resetFun(){
         this.plan = '';
@@ -124,6 +101,7 @@
         this.productName = '';
         this.startTime = '';
         this.endTime = '';
+        this.loadData();
       },
       handleClick(tab, event) {
 //        console.log(tab, event);
@@ -143,7 +121,38 @@
       },
       closeFun(){
         this.dialogFormVisible = false;
+      },
+      loadData(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/listpage", {
+          "pageIndex": this.pageIndex,
+          "pageSize": this.pageSize,
+          "product_name": this.productName,
+          "tour_no": this.plan,
+          "start_time": this.startTime,
+          "end_time": this.endTime,
+          "create_account": this.reimbursementPer,
+          "bill_status": '4'
+        }, ).then(function(response) {
+//            console.log(response);
+          if (response.data.code == '200') {
+            console.log(response);
+            that.tableData = response.data.data.list;
+            that.pageCount = response.data.data.total - 0;
+            that.tableData.forEach(function (item, index, arr) {
+              item.created_at = formatDate(new Date(item.created_at*1000));
+              item.created_at = item.created_at.split(" ")[0];
+            })
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       }
+    },
+    created(){
+      this.loadData();
     }
   }
 </script>

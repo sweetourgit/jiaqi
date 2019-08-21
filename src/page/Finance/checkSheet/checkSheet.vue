@@ -18,27 +18,30 @@
           </div>
           <div class="table_style">
             <el-table :data="tableData" border :header-cell-style="getRowClass" style="width: 100%;">
-              <el-table-column prop="expenseID" label="团期计划" width="180" align="center"></el-table-column>
-              <el-table-column prop="checkTypeEX" label="状态" width="120" align="center">
+              <el-table-column prop="tour_no" label="团期计划" width="180" align="center"></el-table-column>
+              <el-table-column prop="" label="状态" width="120" align="center">
                 <template slot-scope="scope">
-                  <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
-                  <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
-                  <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
+                  <div v-if="scope.row.bill_status=='5'" style="color: #7F7F7F" >报账中</div>
+                  <div v-if="scope.row.bill_status=='6'" style="color: #FF4A3D" >报账驳回</div>
+                  <div v-if="scope.row.bill_status=='7'" style="color: #33D174" >已报账</div>
+                  <div v-else style="color: #0094ff" >暂无认款通过后状态</div>
                 </template>
               </el-table-column>
-              <el-table-column prop="createTime" label="产品名称" align="center"></el-table-column>
-              <el-table-column prop="groupCode" label="申请人" width="120" align="center"></el-table-column>
-              <el-table-column prop="price" label="申请时间" width="180" align="center"></el-table-column>
-              <el-table-column prop="orgName" label="审批意见" width="250" align="center"></el-table-column>
+              <el-table-column prop="product_name" label="产品名称" align="center"></el-table-column>
+              <el-table-column prop="create_uid" label="申请人" width="120" align="center"></el-table-column>
+              <el-table-column prop="created_at" label="申请时间" width="180" align="center"></el-table-column>
+              <el-table-column prop="orgName" label="审批意见" width="250" align="center">
+                <span>审批意见：字段暂无</span>
+              </el-table-column>
               <el-table-column prop="opinion" label="操作" align="center" width="100">
                 <template slot-scope="scope">
-                  <div v-if="scope.row.checkTypeEX=='审批中'">
+                  <div v-if="scope.row.bill_status=='4'">
                     <el-button @click="approve(scope.row)" type="text" size="small" class="table_details">审批</el-button>
                   </div>
-                  <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >
+                  <div v-if="scope.row.bill_status=='7'" style="color: #33D174" >
                     <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
                   </div>
-                  <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" ></div>
+                  <div v-if="scope.row.bill_status=='6'" style="color: #FF4A3D" ></div>
                 </template>
               </el-table-column>
             </el-table>
@@ -72,7 +75,7 @@
 <script>
     import NeedApproval from '@/page/Finance/checkSheet/needApproval';
     import checkSheetPreview from '@/page/Finance/checkSheet/checkSheetPreview';
-    import { formatDate } from '@/js/libs/formatDate.js';
+    import {formatDate} from '@/js/libs/publicMethod.js'
     export default {
       name: "checkSheet",
       components:{
@@ -99,37 +102,7 @@
           dialogFormVisible: false,
           info: '',
 //        报账单table
-          tableData: [{
-            number: '1',
-            type: '申请中',
-            checkType: '0',
-            createtime: '2016-05-02',
-            plan: 'TC-GTY-1001-01-180806-01',
-            monkey: '国旅',
-            orinaze: '辽宁大运通-国内部',
-            accpter: '阳阳',
-            info: '',
-          }, {
-            number: '1',
-            type: '驳回',
-            checkType: '-1',
-            createtime: '2016-05-02',
-            plan: 'TC-GTY-1001-01-180806-01',
-            monkey: '国旅',
-            orinaze: '辽宁大运通-国内部',
-            accpter: '阳阳',
-            info: '郑总：信息补全',
-          }, {
-              number: '1',
-              type: '通过',
-              checkType: '1',
-              createtime: '2016-05-02',
-              plan: 'TC-GTY-1001-01-180806-01',
-              monkey: '国旅',
-              orinaze: '辽宁大运通-国内部',
-              accpter: '阳阳',
-              info: '',
-            }]
+          tableData: []
         };
       },
       methods: {
@@ -142,7 +115,7 @@
           }
         },
         searchFun(){
-
+          this.reimList();
         },
         resetFun(){
           this.plan = '';
@@ -150,6 +123,7 @@
           this.productName = '';
           this.startTime = '';
           this.endTime = '';
+          this.reimList();
         },
         handleClick(tab, event) {
 //          console.log(tab, event);
@@ -165,24 +139,36 @@
         },
 //        获取报账单列表数据
         reimList(){
-          var that = this;
-          this.$http.post(
-            this.GLOBAL.serverSrc + "/finance/expense/api/page",
-            {
-              "pageIndex": that.currentPage,
-              "pageSize": that.pageSize,
-              "total": 0,
-              "object": {
-              }
-            },
-          ).then(function (obj) {
-            that.pageCount = obj.data.total;
-//            console.log(obj.data.objects);
-            that.tableData = obj.data.objects;
-          })
-          .catch(function (obj) {
-            console.log(obj);
-          })
+          const that = this;
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/listpage", {
+            "pageIndex": this.pageIndex,
+            "pageSize": this.pageSize,
+            "product_name": this.productName,
+            "tour_no": this.plan,
+            "start_time": this.startTime,
+            "end_time": this.endTime,
+            "create_account": this.reimbursementPer,
+            "bill_status": '4,5,6,7'
+          }, ).then(function(response) {
+//            console.log(response);
+            if (response.data.code == '200') {
+              console.log(response);
+              that.tableData = response.data.data.list;
+              that.pageCount = response.data.data.total - 0;
+              that.tableData.forEach(function (item, index, arr) {
+//                item.begin_at = formatDate(new Date(item.begin_at*1000));
+//                item.begin_at = item.begin_at.split(" ")[0];
+//                item.end_at = formatDate(new Date(item.end_at*1000));
+//                item.end_at = item.end_at.split(" ")[0];
+                item.created_at = formatDate(new Date(item.created_at*1000));
+                item.created_at = item.created_at.split(" ")[0];
+              })
+            } else {
+              that.$message.success("加载数据失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
         },
 //        审批报账单
         approve(res){

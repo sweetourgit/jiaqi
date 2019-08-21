@@ -134,7 +134,7 @@
             </el-table-column>
             <el-table-column prop="option" label="操作" align="center" width="220">
               <template slot-scope="scope">
-                <el-button @click="toUpddateIncome(scope.row)" type="primary" size="small" class="table_details">更改人数</el-button>
+                <!--<el-button @click="toUpddateIncome(scope.row)" type="primary" size="small" class="table_details">更改人数</el-button>-->
                 <el-button @click="toUpddateSource(scope.row)" type="primary" size="small" class="table_details">设置收入来源</el-button>
               </template>
             </el-table-column>
@@ -152,7 +152,7 @@
       <GetOrder :dialogFormVisible="dialogFormVisible" @close="close2" :info="info"></GetOrder>
       <ToUpddateSource :dialogFormVisible="dialogFormVisible2" @close="close2" :info="updateSource"></ToUpddateSource>
       <ToUpddateIncome :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpddateIncome>
-      <ToPreview :dialogFormVisible="dialogFormVisible4" @close="close2" :info="info"></ToPreview>
+      <ToPreview :dialogFormVisible="dialogFormVisible4" @close="close2" :info="msg"></ToPreview>
     </div>
   </div>
 </template>
@@ -184,15 +184,21 @@ export default {
         total_cost: '',
         gross_profit: '',
         gross_rate: '',
-        product_name: ''
+        product_name: '',
+        startTime: '',
+        endTime: '',
+        reduce_num: '',
+        guide: '',
+        associations: '',
+        org_id: ''
       },
 
       activeName: '1',
       currentRow: true,
       pid: '',
       info: '',
-      totalMoney: '222.00',
-      number: '166',
+      totalMoney: 0,
+      number: 0,
       transmit: false,
       dialogFormVisible: false,
       dialogFormVisible2: false,
@@ -278,14 +284,19 @@ export default {
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/viewbill", {
         "id": this.param
       }, ).then(function(response) {
-        if (response.data.code == '200') {
-          console.log(response);
-          let billTime = '';
+          if (response.data.code == '200') {
+          console.log("基本信息",response);
+          let billTime = '', startTime = '', endTime = '';
           if(response.data.data.bill_at){
             billTime = formatDate(new Date(response.data.data.bill_at*1000));
           }else{
             billTime = '';
           }
+          if(response.data.data.start_at){
+            startTime = formatDate(new Date(response.data.data.start_at*1000)).split(" ")[0];
+            endTime = formatDate(new Date(response.data.data.back_at*1000)).split(" ")[0];
+          }
+
           that.msg = {
             tour_no: response.data.data.tour_no,
             op_id: response.data.data.op_id,
@@ -296,7 +307,13 @@ export default {
             total_cost: response.data.data.total_cost,
             gross_profit: response.data.data.gross_profit,
             gross_rate: response.data.data.gross_rate,
-            product_name: response.data.data.product_name
+            product_name: response.data.data.product_name,
+            startTime: startTime,
+            endTime: endTime,
+            reduce_num: response.data.data.reduce_num,
+            guide: response.data.data.guide,
+            associations: response.data.data.associations,
+            org_id: response.data.data.org_id
           };
         } else {
           that.$message.success("加载数据失败~");
@@ -308,9 +325,16 @@ export default {
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/recinfo", {
         "id": this.param
       }, ).then(function(response) {
+        console.log("认款信息",response);
         if (response.data.code == '200') {
           console.log(response);
           that.tableData = response.data.data;
+          that.totalMoney = 0;
+          that.number = 0;
+          that.tableData.forEach(function (item, index, arr) {
+            that.totalMoney += parseFloat(item.income);
+            that.number += parseInt(item.people_num);
+          })
         } else {
           that.$message.success("加载数据失败~");
         }
@@ -320,6 +344,7 @@ export default {
     }
   },
   created() {
+    console.log(this.$route.params);
     if(this.$route.params.id){
       this.param = this.$route.params.id;
       this.statusBtn = this.$route.params.bill_status;

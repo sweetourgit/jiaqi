@@ -143,7 +143,7 @@
                 },
                 {
                   value: '外部订单',
-                  router:'/externalOrderList'
+                  router:'/externalOrderList/canRecognition'
                 },
               ],
             },

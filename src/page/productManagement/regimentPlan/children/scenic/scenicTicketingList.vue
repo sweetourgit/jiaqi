@@ -247,7 +247,7 @@ export default {
 //    数据加载
     loadData(){
       //加载数据
-      var that = this;
+      const that = this;
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/listpage", {
         "pageIndex": this.pageIndex,
         "pageSize": this.pageSize,

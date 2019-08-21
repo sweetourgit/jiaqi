@@ -18,15 +18,19 @@
     </div>
     <div class="table_trip" style="width: 100%;">
       <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-        <el-table-column prop="user" label="导入人" align="center" width="80%">
+        <el-table-column prop="create_uid" label="导入人" align="center" width="80%">
         </el-table-column>
-        <el-table-column prop="platform" label="导入平台" align="center">
+        <el-table-column prop="source_name" label="导入平台" align="center">
         </el-table-column>
         <el-table-column prop="file" label="文件" align="center">
+          <template slot-scope="scope">
+            <p v-if="scope.row.source_id == 1"><a :href="scope.row.file_platform_url">{{scope.row.file_platform_name}}</a></p>
+            <p><a :href="scope.row.file_pft_url">{{scope.row.file_pdf_name}}</a></p>
+          </template>
         </el-table-column>
-        <el-table-column prop="orderNumber" label="导入订单个数" align="center">
+        <el-table-column prop="success_num" label="导入订单个数" align="center">
         </el-table-column>
-        <el-table-column prop="importTime" label="导入时间" align="center">
+        <el-table-column prop="import_at" label="导入时间" align="center">
         </el-table-column>
         <el-table-column prop="option" label="操作" align="center" width="250">
           <template slot-scope="scope">
@@ -38,7 +42,7 @@
     </div>
     <ImportOrderInfo :dialogFormVisible="dialogFormVisible" :infoId="infoId" @close2="close2"></ImportOrderInfo>
     <!--分页-->
-    <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
+    <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;margin-bottom: 50px;">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>
       </el-pagination>
     </div>
@@ -46,6 +50,7 @@
 </template>
 <script type="text/javascript">
 import ImportOrderInfo from '@/page/orderManagement/externalOrderList/importOrderInfo/importOrderInfo'
+import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   name: "importHistory",
   components: {
@@ -53,7 +58,7 @@ export default {
   },
   data() {
     return {
-      total: 10, //总条数
+      total: 0, //总条数
       currentPage4: 1,
       pageIndex: 1, // 设定当前页数
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
@@ -62,28 +67,7 @@ export default {
         startTime: '',
         endTime: '',
       },
-      tableData: [{
-        id: '1',
-        user: '阳阳',
-        platform: '马蜂窝',
-        file: '马蜂窝.exl 票付通.exl',
-        orderNumber: '32',
-        importTime: '2019-01-09 09:37',
-      }, {
-        id: '2',
-        user: '阳阳',
-        platform: '马蜂窝',
-        file: '马蜂窝.exl 票付通.exl',
-        orderNumber: '32',
-        importTime: '2019-01-09 09:37',
-      }, {
-        id: '3',
-        user: '阳阳',
-        platform: '马蜂窝',
-        file: '马蜂窝.exl 票付通.exl',
-        orderNumber: '32',
-        importTime: '2019-01-09 09:37',
-      }, ],
+      tableData: [],
       reable: true,
       pid: '',
       infoId: '',
@@ -98,16 +82,16 @@ export default {
   methods: {
     //导入订单详情
     infoOrder(row) {
-      this.dialogFormVisible = true
-      this.infoId = row['id']
-      console.log(this.infoId)
+      this.dialogFormVisible = true;
+      this.infoId = row['id'];
+      console.log(row);
     },
     close() {
       this.$router.push({ path: "/externalOrderList" });
     },
     close2() {
-      this.dialogFormVisible = false
-      this.infoId = ''
+      this.dialogFormVisible = false;
+      this.infoId = '';
     },
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -122,7 +106,7 @@ export default {
       this.pid = row['id']
     },
     delOrder(row) {
-      console.log(row['id'])
+      console.log(row['id']);
       this.$confirm('是否需要一键删除所有订单?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -141,19 +125,15 @@ export default {
     },
     //搜索
     searchHand() {
-      this.$message({
-        type: 'success',
-        message: '搜索成功!'
-      });
+      this.loadData();
     },
     handleSizeChange(val) {
-      this.tableData = this.tableData
-      this.total = this.total
+      this.pageSize = val;
+      this.loadData();
     },
-
     handleCurrentChange(val) {
-      this.tableData = this.tableData
-      this.total = this.total
+      this.pageIndex =val;
+      this.loadData();
     },
     resetHand() {
       this.activeForm = {
@@ -161,9 +141,34 @@ export default {
         startTime: '',
         endTime: '',
       }
+    },
+    loadData(){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/importlist", {
+        "pageIndex": this.pageIndex,
+        "pageSize": this.pageSize,
+        "start_time": this.activeForm.startTime,
+        "end_time": this.activeForm.endTime,
+        "create_account": this.activeForm.user
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log(response);
+          that.tableData = response.data.data.list;
+          that.total = response.data.data.total - 0;
+          that.tableData.forEach(function (item, index, arr) {
+            item.import_at = formatDate(new Date(item.import_at*1000));
+          })
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {ao
+        console.log(error);
+      });
     }
   },
-  created() {}
+  created() {
+    this.loadData();
+  }
 
 }
 

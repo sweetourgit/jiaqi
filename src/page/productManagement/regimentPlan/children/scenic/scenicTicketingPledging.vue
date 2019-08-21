@@ -328,10 +328,21 @@ export default {
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {
-            that.$message({
-              type: 'success',
-              message: response.data.data
-            });
+            if(response.data.data == ''){
+              that.$message({
+                type: 'success',
+                message: "删除成功"
+              });
+              that.loadDataOne();
+              that.loadDatabyNum(1);
+              that.loadDatabyNum(2);
+            }else{
+              that.$message({
+                type: 'success',
+                message: response.data.data
+              });
+            }
+
           } else {
             that.$message.success("删除失败~");
           }
@@ -489,15 +500,16 @@ export default {
 //          console.log(response);
           if(num == 1){
             console.log("1",response.data.data.list);
-            that.tableData2 = response.data.data.list;//还没渲染到页面
+            that.tableData2 = response.data.data.list;
           }else if(num == 2){
             console.log("2",response.data.data.list);
-            that.tableData3 = response.data.data.list;//还没渲染到页面
+            that.tableData3 = response.data.data.list;
             that.tableData3.forEach(function (item, index, arr) {
-
               item.file = JSON.parse(item.file);
               console.log(item.file);
-              item.file.url = that.GLOBAL.serverSrcPhp + item.file.url;
+              for(var i = 0; i < item.file.length; i++){
+                item.file[i].url = that.GLOBAL.serverSrcPhp + item.file[i].url;
+              }
             })
           }
         } else {

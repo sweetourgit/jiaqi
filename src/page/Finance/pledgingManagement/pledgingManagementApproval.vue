@@ -10,10 +10,10 @@
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="收款编码" name="one">
-        <Receivables></Receivables>
+        <Receivables ref="receivables"></Receivables>
       </el-tab-pane>
       <el-tab-pane label="发票" name="two">
-        <Invoice></Invoice>
+        <Invoice ref="invoice"></Invoice>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -65,6 +65,8 @@ export default {
               type: 'success',
               message: '驳回成功!'
             });
+            that.$refs.receivables.loadData();
+            that.$refs.invoice.loadData();
           } else {
             that.$message.success("驳回失败~");
           }

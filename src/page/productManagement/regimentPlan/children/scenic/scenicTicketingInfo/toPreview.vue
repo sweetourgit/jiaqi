@@ -8,25 +8,25 @@
             部门
           </el-col>
           <el-col :span="3" class="content">
-            甜程周边
+            {{info.org_id}}
           </el-col>
           <el-col :span="2" class="title">
             操作人
           </el-col>
           <el-col :span="3" class="content">
-            阳阳
+            {{info.op_id}}
           </el-col>
           <el-col :span="2" class="title">
             导陪
           </el-col>
           <el-col :span="3" class="content">
-            阳阳2
+            {{info.guide}}
           </el-col>
           <el-col :span="2" class="title">
             接团社
           </el-col>
           <el-col :span="7" class="content">
-            界社团123
+            {{info.associations}}
           </el-col>
         </el-row>
         <el-row>
@@ -34,13 +34,13 @@
             团号
           </el-col>
           <el-col :span="8" class="content">
-            LCSZ-1810-BXSD
+            {{info.tour_no}}
           </el-col>
           <el-col :span="2" class="title">
             线路名称
           </el-col>
           <el-col :span="12" class="content">
-            我是线路
+            {{info.product_name}}
           </el-col>
         </el-row>
         <el-row>
@@ -48,31 +48,31 @@
             团队人数
           </el-col>
           <el-col :span="3" class="content">
-            83
+            {{info.team_num}}
           </el-col>
           <el-col :span="2" class="title">
             减免人数
           </el-col>
           <el-col :span="3" class="content">
-            3
+            {{info.reduce_num}}
           </el-col>
           <el-col :span="2" class="title">
             出发日期
           </el-col>
           <el-col :span="3" class="content">
-            2019-07-24
+            {{info.startTime}}
           </el-col>
           <el-col :span="2" class="title">
             返回日期
           </el-col>
           <el-col :span="3" class="content">
-            2019-07-31
+            {{info.endTime}}
           </el-col>
           <el-col :span="2" class="title">
             全程天数
           </el-col>
           <el-col :span="2" class="content">
-            3
+            {{info.days}}
           </el-col>
         </el-row>
         <el-row>
@@ -85,25 +85,25 @@
             总收入
           </el-col>
           <el-col :span="3" class="content">
-            63510.00
+            {{info.total_income}}
           </el-col>
           <el-col :span="2" class="title">
             总支出
           </el-col>
           <el-col :span="3" class="content">
-            58192.00
+            {{info.total_cost}}
           </el-col>
           <el-col :span="2" class="title">
             毛利额
           </el-col>
           <el-col :span="3" class="content">
-            5318.00
+            {{info.gross_profit}}
           </el-col>
           <el-col :span="2" class="title">
             毛利率
           </el-col>
           <el-col :span="7" class="content">
-            8.37%
+            {{info.gross_rate}}
           </el-col>
         </el-row>
         <el-row>
@@ -136,25 +136,25 @@
         <template v-for="(bill,index) in billReporting">
           <el-row>
             <el-col :span="2" class="content">
-              {{bill.id}}
+              {{index + 1}}
             </el-col>
             <el-col :span="5" class="content">
+              {{bill.handler}}
+            </el-col>
+            <el-col :span="5" class="content">
+              {{bill.distributor}}
+            </el-col>
+            <el-col :span="3" class="content">
+              {{bill.people_num}}
+            </el-col>
+            <el-col :span="3" class="content">
               {{bill.income}}
             </el-col>
-            <el-col :span="5" class="content">
-              {{bill.user}}
+            <el-col :span="3" class="content">
+              {{bill.serial_sn}}
             </el-col>
             <el-col :span="3" class="content">
-              {{bill.number}}
-            </el-col>
-            <el-col :span="3" class="content">
-              {{bill.receivables}}
-            </el-col>
-            <el-col :span="3" class="content">
-              {{bill.invoice}}
-            </el-col>
-            <el-col :span="3" class="content">
-              {{bill.remarks}}
+              {{bill.remark}}
             </el-col>
           </el-row>
         </template>
@@ -207,29 +207,29 @@
           </el-col>
         </el-row>
         <template v-for="(cost,index) in costDetails">
-          <el-row>
-            <el-col :span="3" class="content">
-              {{cost.id}}
+          <el-row :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              {{index + 1}}
             </el-col>
-            <el-col :span="3" class="content">
-              {{cost.costItems}}
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              {{cost.cost_type}}
             </el-col>
-            <el-col :span="4" class="content">
+            <el-col :span="4" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
               {{cost.supplier}}
             </el-col>
-            <el-col :span="2" class="content">
-              {{cost.number}}
+            <el-col :span="2" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              {{cost.people_num}}
             </el-col>
-            <el-col :span="3" class="content">
-              {{cost.totalCost}}
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              {{cost.cost}}
             </el-col>
-            <el-col :span="3" class="content">
-              {{cost.paymented}}
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              {{cost.paid_cost}}
             </el-col>
-            <el-col :span="3" class="content">
-              {{cost.bill}}
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              {{cost.settle_cost}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
               {{cost.remarks}}
             </el-col>
           </el-row>
@@ -250,28 +250,28 @@
             {{costPaymented}}
           </el-col>
           <el-col :span="3" class="title">
-            挂账
+            <!--挂账-->
           </el-col>
           <el-col :span="3" class="title">
-            备注
+            <!--备注-->
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="3" class="title">
             审批人
           </el-col>
-          <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
-            <div style="position:relative;z-index: 99;height: 68px;line-height: 68px;">计调</div>
+          <el-col :span="3" class="title" style="">
+            <div style="position:relative;z-index: 99;top: 16px;">计调</div>
           </el-col>
           <el-col :span="4" class="">
           </el-col>
           <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
-            <div style="position:relative;z-index: 99;height: 68px;line-height: 68px;">财务部</div>
+            <div style="position:relative;z-index: 99;top: 16px;">财务部</div>
           </el-col>
           <el-col :span="4" class="">
           </el-col>
-          <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
-            <div style="position:relative;z-index: 99;height: 68px;line-height: 68px;">总经理</div>
+          <el-col :span="3" class="title" style="">
+            <div style="position:relative;z-index: 99;top: 16px;">总经理</div>
           </el-col>
           <el-col :span="4" class="">
           </el-col>
@@ -312,57 +312,15 @@ export default {
   },
   data() {
     return {
-      billReporting: [{
-        id: 1,
-        income: '线下',
-        user: '经手人1',
-        number: '80',
-        receivables: '63500.00',
-        invoice: '123456',
-        remarks: '',
-      }, {
-        id: 2,
-        income: '线下',
-        user: '经手人2',
-        number: '1',
-        receivables: '5.00',
-        invoice: '123456',
-        remarks: '',
-      }, {
-        id: 3,
-        income: '线下',
-        user: '经手人2',
-        number: '2',
-        receivables: '5.00',
-        invoice: '123456',
-        remarks: '',
-      }],
-      billTotalNumber: '83',
-      billTotalReceivables: '63510.00',
+      billReporting: [],
+      billTotalNumber: 0,
+      billTotalReceivables: 0,
       billTotalInvoice: '',
       billTotalRmarks: '',
-      costDetails: [{
-        id: 1,
-        costItems: '门票',
-        supplier: '经手人1',
-        number: '83',
-        totalCost: '58192.00',
-        paymented: '58192.00',
-        bill: '',
-        remarks: '',
-      }, {
-        id: 2,
-        costItems: '',
-        supplier: '',
-        number: '',
-        totalCost: '',
-        paymented: '',
-        bill: '',
-        remarks: '',
-      }, ],
-      costTotalNumber: '83',
-      costTotalCost: '58192.00',
-      costPaymented: '58192.00',
+      costDetails: [],
+      costTotalNumber: '0',
+      costTotalCost: '0',
+      costPaymented: '0',
       ruleForm: {
         days: ''
       },
@@ -377,7 +335,11 @@ export default {
     // 计算属性的 getter
   },
   watch: {
-
+    info: {
+      handler: function () {
+        this.loadData();
+      }
+    }
   },
   methods: {
     closeAdd() {
@@ -386,9 +348,46 @@ export default {
     print(formName) {
       this.$print(this.$refs.print)
     },
+    loadData(){
+      const that = this;
+//      console.log("info", this.info);
+      this.billReporting = this.$parent.tableData;
+      that.billTotalNumber = 0;
+      that.billTotalReceivables = 0;
+      this.billReporting.forEach(function (item, index, arr) {
+        that.billTotalNumber += parseInt(item.people_num);
+        that.billTotalReceivables += parseFloat(item.income);
+      });
+//      console.log('this.$parent.param',this.$parent.param);
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/costinfo", {
+        "id": this.$parent.param
+      }, ).then(function(response) {
+//        console.log("成本信息",response);
+        if (response.data.code == '200') {
+//          console.log(response);
+          that.costDetails = response.data.data.listInfo;
+          that.costTotalNumber = response.data.data.quantity_total;
+          that.costTotalCost = response.data.data.cost_total;
+          that.costPaymented = response.data.data.paid_cost_total;
+
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+    getHigh(){
+
+    }
+
   },
-  created() {},
-  mounted() {}
+  created() {
+
+  },
+  mounted() {
+
+  }
 }
 
 </script>
@@ -433,17 +432,18 @@ export default {
 }
 
 .el-row {
-  height: 34px;
+  /*height: 34px;*/
   line-height: 33px;
-
+  /*overflow: hidden;*/
   &:first-child {}
 
   .el-col {
     border: 1px solid black;
     border-bottom: 0px solid black;
     border-right: 0px solid black;
-    height: 34px;
-    line-height: 34px;
+    min-height: 34px;
+    /*height: 100%;*/
+    /*line-height: 34px;*/
     text-align: center;
 
     &:last-child {
