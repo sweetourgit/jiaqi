@@ -202,7 +202,7 @@
                       </el-table-column>
                     </el-table>
                   </div>
-                  <div class="re_style" style="margin-top: 30px; margin-bottom: 30px">报销金额：100.00</div>
+                  <!-- <div class="re_style" style="margin-top: 30px; margin-bottom: 30px">报销金额：100.00</div> -->
                 </div>
                 <div v-if="radio==2">
                   <div style="float:left;margin: 10px 0 0 65px;width: 70px;">报销明细:</div>
@@ -771,7 +771,7 @@ export default {
     },
     //撤销申请
     chanelSubmit() {
-      this.$confirm("是否撤销该条借款, 是否继续?", "提示", {
+      this.$confirm("是否需要撤销该笔报销", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
