@@ -64,8 +64,7 @@
       <el-button type="primary" @click="importOrder" plain>导入订单</el-button>
       <el-button type="primary" :disabled="reable" @click="delOrder" plain>删除订单</el-button>
       <el-button type="primary" @click="importHistory" plain>导入历史</el-button>
-      <el-button type="primary" :disabled="reable" @click="relation" plain>关联</el-button>
-      <el-button type="primary" :disabled="reable" @click="unbinding" plain>解绑</el-button>
+      <el-button type="primary" :disabled="reable" @click="recognition" plain>认收款</el-button>
     </div>
     <div class="tableDv">
       <div class="table_trip" style="width: 88%;">
@@ -132,19 +131,16 @@
         </el-pagination>
       </div>
     </div>
-    <Relation :dialogFormVisible="dialogFormVisible" @close="close"></Relation>
     <ImportOrder :dialogFormVisible2="dialogFormVisible2" @close2="close2"></ImportOrder>
 
   </div>
 </template>
 <script type="text/javascript">
-  import Relation from '@/page/orderManagement/externalOrderList/externalChild/relation'//关联弹窗
   import ImportOrder from '@/page/orderManagement/externalOrderList/externalChild/importOrder'//导入订单弹窗
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "externalOrderList",
     components: {
-      Relation,
       ImportOrder,
     },
     data() {
@@ -240,24 +236,22 @@
       importHistory() {
         this.$router.push({ path: "/importHistory" });
       },
-      //关联
-      relation() {
-        console.log(this.multipleSelection);
-        let related = 0;
-        let order = '';
-        this.multipleSelection.forEach(function (item, index, arr) {
-          if(item.is_relate_pro != 1){
-            order += item.order_sn + ",";
-            related++;
-            return;
-          }
-        });
-        if(related == 0){
-          this.dialogFormVisible = true;
-        }else{
-          order = order.substr(0,order.length-1);
-          this.$message.warning(order + "订单已关联，不可再次关联");
+      //认收款
+      recognition() {
+//        console.log(this.multipleSelection);
+//        console.log(this.multipleSelection.length);
+//        console.log(this.multipleSelection[0]);
+        let arr = [];
+        for(let i = 0; i < this.multipleSelection.length; i++){
+          arr.push(this.multipleSelection[i]);
         }
+//        console.log(arr);
+        this.$router.push({
+          path: "/recognitionMsg",
+          name: '订单管理/外部订单/认收款信息',
+          params: this.multipleSelection,
+          query: arr
+        });
       },
       close() {
         this.dialogFormVisible = false;
@@ -361,13 +355,13 @@
         }
       },
       selectionChange(val) {
-        console.log(val);
         if(val.length > 0){
           this.reable = false;
         }else{
           this.reable = true;
         }
         this.multipleSelection = val;
+        console.log(this.multipleSelection);
       },
       handleRowClick(row, column, event){
         if(row.accountingStatus != '已报账'){

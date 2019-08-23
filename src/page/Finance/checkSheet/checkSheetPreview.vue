@@ -2,13 +2,13 @@
   <div class="vivo" style="position:relative;">
     <!--报账单-->
     <el-dialog title="沈阳甜程国际旅行社有限公司旅游团队报账单" :visible="dialogFormVisible" width=70% @close="closeAdd" style="font-size: 20px; font-weight: 700;">
-      <div class="operation" v-if="info.checkType == 0">
+      <div class="operation" v-if="info.bill_status == 5">
         <el-button @click="goDetail" type="primary" size="small" class="table_details">团期详情</el-button>
         <el-button @click="dialogVisiblePass = true" type="success" size="small" class="table_details">通过</el-button>
         <el-button @click="dialogVisibleReject = true" type="warning" size="small" class="table_details">驳回</el-button>
         <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
       </div>
-      <div class="operation" v-if="info.checkType == 1">
+      <div class="operation" v-if="info.checkType == 7">
         <el-button @click="print" type="success" size="small" class="table_details">打印</el-button>
         <el-button @click="goDetail" type="primary" size="small" class="table_details">团期详情</el-button>
         <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
@@ -323,7 +323,7 @@
               type="textarea"
               :rows="3"
               placeholder="请输入内容(选填)"
-              v-model="areaIn">
+              v-model="areaIn1">
             </el-input>
           </div>
           <div slot="footer" style="overflow: hidden;">
@@ -348,7 +348,7 @@
               type="textarea"
               :rows="3"
               placeholder="请输入内容(选填)"
-              v-model="areaIn">
+              v-model="areaIn2">
             </el-input>
           </div>
           <div slot="footer" style="overflow: hidden;">
@@ -374,7 +374,8 @@ export default {
     return {
       dialogVisiblePass: false,
       dialogVisibleReject: false,
-      areaIn: '',
+      areaIn1: '',
+      areaIn2: '',
       msg:{},
       billReporting: [],
       billTotalNumber: 0,
@@ -417,7 +418,7 @@ export default {
       const that = this;
 //      获取基本信息
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/viewbill", {
-        "id": this.info.id
+        "id": this.info.tour_id
       }, ).then(function(response) {
         if (response.data.code == '200') {
           console.log("基本信息",response);
@@ -457,7 +458,7 @@ export default {
       });
 //      获取认款信息
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/recinfo", {
-        "id": this.info.id
+        "id": this.info.tour_id
       }, ).then(function(response) {
         console.log("认款信息",response);
         if (response.data.code == '200') {
@@ -477,7 +478,7 @@ export default {
       });
 //      获取成本信息
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/costinfo", {
-        "id": this.info.id
+        "id": this.info.tour_id
       }, ).then(function(response) {
 //        console.log("成本信息",response);
         if (response.data.code == '200') {
@@ -495,19 +496,61 @@ export default {
       });
     },
     goDetail(){
-      this.$router.push({path: "/scenicTicketingDetails?id=1"});
-    },
-    passFun(){
-
-    },
-    rejectFun(){
-
+      this.$router.push({
+        path: "/scenicTicketingDetails",
+        name: "产品管理  /团期计划  /详情",
+        params: this.info
+      });
     },
     passSubmit(){
-
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/savebill", {
+        "tour_no": this.info.tour_no,
+        "bill_status": '7',
+        "mark": this.areaIn1,
+        "create_uid": sessionStorage.getItem('id'),
+        "org_id": '1'//this.msg.org_id
+      }, ).then(function(response) {
+        console.log(response);
+        if (response.data.code == '200') {
+          that.$message({
+            type: 'success',
+            message: '提交成功'
+          });
+          that.dialogVisiblePass = false;
+          that.closeAdd();
+        } else {
+          that.$message.warning(response.data.message);
+        }
+      }).catch(function(error) {
+        console.log(error);
+        that.$message.warning("提交失败~");
+      });
     },
     rejectSubmit(){
-
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/savebill", {
+        "tour_no": this.info.tour_no,
+        "bill_status": '6',
+        "mark": this.areaIn2,
+        "create_uid": sessionStorage.getItem('id'),
+        "org_id": '1'//this.msg.org_id
+      }, ).then(function(response) {
+        console.log(response);
+        if (response.data.code == '200') {
+          that.$message({
+            type: 'success',
+            message: '提交成功'
+          });
+          that.dialogVisibleReject = false;
+          that.closeAdd();
+        } else {
+          that.$message.warning(response.data.message);
+        }
+      }).catch(function(error) {
+        console.log(error);
+        that.$message.warning("提交失败~");
+      });
     }
   },
   created() {},

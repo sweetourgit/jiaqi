@@ -7,7 +7,9 @@
           <div class="search">
             <span class="search_style">产品ID：</span> <el-input v-model="productID" placeholder="请输入内容" class="search_input"></el-input>
             <span class="search_style">产品名称：</span> <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
-            <span class="search_style">操作人员：</span> <el-input v-model="operator" placeholder="请输入内容" class="search_input"></el-input>
+            <span class="search_style">操作人员：</span>
+            <!--<el-input v-model="operator" placeholder="请输入内容" class="search_input"></el-input>-->
+            <el-autocomplete class="search_input" v-model="operator" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
             <!--<span class="search_style">价格：</span>-->
             <!--<el-input v-model="priceLow" class="search_input"></el-input>-->
             <!--<div class="date-line"></div>-->
@@ -46,7 +48,7 @@
               </template>
             </el-table-column>
             <!--<el-table-column prop="accpter" label="价格" width="120" align="center"></el-table-column>-->
-            <el-table-column prop="operator" label="操作人员" width="180" align="center"></el-table-column>
+            <el-table-column prop="create_uid" label="操作人员" width="180" align="center"></el-table-column>
             <!--<el-table-column prop="info" label="线上状态" width="120" align="center"></el-table-column>-->
             <!--<el-table-column prop="info" label="erp状态" width="120" align="center"></el-table-column>-->
             <el-table-column prop="opinion" label="操作" align="center" width="180">
@@ -88,8 +90,10 @@
         operator: '',
         destination: '',
         destinationID: '',
+        operatorID: '',
 //        status: '',
         destinationList: [],
+        operatorList: [],
 
         pageSize: 10,
         currentPage: 1,
@@ -102,6 +106,7 @@
     },
     created(){
         this.reimList();
+        this.loadOper();
     },
     methods: {
       // 表格头部背景颜色
@@ -114,6 +119,21 @@
       },
       routerHandle(){
         this.$router.push({path: "/listInfoScenic"});
+      },
+      querySearchOper(queryString, cb){
+        const operatorList = this.operatorList;
+        var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter1(queryString) {
+        return (operatorList) => {
+          return (operatorList.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      handleSelectOper(item){
+        console.log(item);
+        this.operatorID = item.id;
       },
       querySearch(queryString2, cb) {
         this.destinationList = [];
@@ -159,9 +179,11 @@
         this.productID = '';
         this.productName = '';
         this.operator = '';
+        this.operatorID = '';
         this.destination = '';
         this.destinationID = '';
 //        this.status = '';
+        this.reimList();
       },
       handleClick(tab, event) {
 //        console.log(tab, event);
@@ -224,12 +246,87 @@
           "id": this.productID,
           "product_name": this.productName,
           "destination_id": this.destinationID,
-          "create_account": this.operator
+          "create_uid": this.operatorID
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log(response);
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
+            that.tableData.forEach(function (item, index, arr) {
+              console.log(item.create_uid);
+              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                "id": item.create_uid
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }).then(function(response) {
+
+                if (response.data.isSuccess) {
+                  item.create_uid = response.data.object.name
+                } else {
+                  that.$message.success("加载数据失败~");
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
+            })
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+      loadOper(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+          "object": {
+            "id": 0,
+            "createTime": '2019-08-23T03:03:10.386Z',
+            "isDeleted": 0,
+            "code": "",
+            "mobile": "",
+            "name": "",
+            "email": "",
+            "userCode": "",
+            "passWord": "",
+            "iDcard": "",
+            "tourGuide": "",
+            "sex": 0,
+            "userType": 0,
+            "userState": 0,
+            "orgID": 0,
+            "orgName": "",
+            "user_Position": [
+              {
+                "id": 0,
+                "userID": 0,
+                "positionID": 0,
+                "positionName": "",
+                "isDefault": 0,
+                "orgID": 0,
+                "orgName": ""
+              }
+            ]
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(function(response) {
+
+          if (response.data.isSuccess) {
+//            console.log('操作人员列表',response.data.objects);
+            let operatorList = [];
+            response.data.objects.forEach(function (item, index, arr) {
+              const operator = {
+                'value' : item.name,
+                'id' : item.id
+              };
+              operatorList.push(operator);
+            });
+            that.operatorList = operatorList;
           } else {
             that.$message.success("加载数据失败~");
           }

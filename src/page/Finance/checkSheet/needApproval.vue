@@ -5,7 +5,9 @@
       <div class="borders">
         <div class="search">
           <span class="search_style">团期计划：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
-          <span class="search_style">报账人：</span> <el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>
+          <span class="search_style">报账人：</span>
+          <!--<el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>-->
+          <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
           <span class="search_style">发起时间：</span>
           <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time"></el-date-picker>
           <div class="date-line"></div>
@@ -26,9 +28,7 @@
             <el-table-column prop="product_name" label="产品名称" align="center"></el-table-column>
             <el-table-column prop="create_uid" label="申请人" width="120" align="center"></el-table-column>
             <el-table-column prop="created_at" label="申请时间" width="180" align="center"></el-table-column>
-            <el-table-column prop="info" label="审批意见" width="250" align="center">
-              <span>审批意见</span>
-            </el-table-column>
+            <el-table-column prop="mark" label="审批意见" width="250" align="center"></el-table-column>
             <el-table-column prop="opinion" label="操作" align="center" width="100">
               <template slot-scope="scope">
                 <el-button @click="approve(scope.row)" type="text" size="small" class="table_details">审批</el-button>
@@ -70,6 +70,8 @@
         productName: '',
         startTime: '',
         endTime: '',
+        reimbursementPerID: '',
+        operatorList: [],
 
         activeName: 'first',
 
@@ -92,6 +94,22 @@
           return ''
         }
       },
+      //        操作人员
+      querySearchOper(queryString, cb){
+        const operatorList = this.operatorList;
+        var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter1(queryString) {
+        return (operatorList) => {
+          return (operatorList.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      handleSelectOper(item){
+        console.log(item);
+        this.reimbursementPerID = item.id;
+      },
       searchFun(){
         this.loadData();
       },
@@ -105,15 +123,16 @@
       },
       handleClick(tab, event) {
 //        console.log(tab, event);
+        this.loadData();
       },
       handleSizeChange(val) {
         this.pageSize = val;
         this.currentPage = 1;
-        this.reimList()
+        this.loadData()
       },
       handleCurrentChange(val) {
         this.currentPage = val;
-        this.reimList()
+        this.loadData()
       },
       approve(res){
         this.info = res;
@@ -121,28 +140,103 @@
       },
       closeFun(){
         this.dialogFormVisible = false;
+        this.loadData()
       },
       loadData(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/listpage", {
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/listpage", {
           "pageIndex": this.pageIndex,
           "pageSize": this.pageSize,
           "product_name": this.productName,
           "tour_no": this.plan,
           "start_time": this.startTime,
           "end_time": this.endTime,
-          "create_account": this.reimbursementPer,
-          "bill_status": '4'
+          "create_account": this.reimbursementPerID,
+          "bill_status": '5'
         }, ).then(function(response) {
 //            console.log(response);
           if (response.data.code == '200') {
-            console.log(response);
+            console.log('需要审批',response);
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
+            that.$parent.$parent.$parent.number = response.data.data.list.length;
             that.tableData.forEach(function (item, index, arr) {
               item.created_at = formatDate(new Date(item.created_at*1000));
               item.created_at = item.created_at.split(" ")[0];
+
+              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                "id": item.create_uid
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }).then(function(response) {
+
+                if (response.data.isSuccess) {
+                  item.create_uid = response.data.object.name
+                } else {
+                  that.$message.success("加载数据失败~");
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
             })
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+      loadOper(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+          "object": {
+            "id": 0,
+            "createTime": '2019-08-23T03:03:10.386Z',
+            "isDeleted": 0,
+            "code": "",
+            "mobile": "",
+            "name": "",
+            "email": "",
+            "userCode": "",
+            "passWord": "",
+            "iDcard": "",
+            "tourGuide": "",
+            "sex": 0,
+            "userType": 0,
+            "userState": 0,
+            "orgID": 0,
+            "orgName": "",
+            "user_Position": [
+              {
+                "id": 0,
+                "userID": 0,
+                "positionID": 0,
+                "positionName": "",
+                "isDefault": 0,
+                "orgID": 0,
+                "orgName": ""
+              }
+            ]
+          }
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(function(response) {
+
+          if (response.data.isSuccess) {
+//            console.log('操作人员列表',response.data.objects);
+            let operatorList = [];
+            response.data.objects.forEach(function (item, index, arr) {
+              const operator = {
+                'value' : item.name,
+                'id' : item.id
+              };
+              operatorList.push(operator);
+            });
+            that.operatorList = operatorList;
           } else {
             that.$message.success("加载数据失败~");
           }
@@ -153,6 +247,7 @@
     },
     created(){
       this.loadData();
+      this.loadOper();
     }
   }
 </script>

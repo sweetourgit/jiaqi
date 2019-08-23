@@ -349,20 +349,35 @@ export default {
       this.$print(this.$refs.print)
     },
     loadData(){
+//      if(this.info == ''){
+//        return;
+//      }
       const that = this;
-//      console.log("info", this.info);
-      this.billReporting = this.$parent.tableData;
-      that.billTotalNumber = 0;
-      that.billTotalReceivables = 0;
-      this.billReporting.forEach(function (item, index, arr) {
-        that.billTotalNumber += parseInt(item.people_num);
-        that.billTotalReceivables += parseFloat(item.income);
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/recinfo", {
+        "id": this.$parent.param
+      }, ).then(function(response) {
+        console.log("认款信息",response);
+        if (response.data.code == '200') {
+          console.log(response);
+          that.billReporting = response.data.data;
+          that.billTotalNumber = 0;
+          that.billTotalReceivables = 0;
+          that.billReporting.forEach(function (item, index, arr) {
+            that.billTotalNumber += parseInt(item.people_num);
+            that.billTotalReceivables += parseFloat(item.income);
+          });
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
       });
+
 //      console.log('this.$parent.param',this.$parent.param);
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/costinfo", {
         "id": this.$parent.param
       }, ).then(function(response) {
-//        console.log("成本信息",response);
+        console.log("成本信息",response);
         if (response.data.code == '200') {
 //          console.log(response);
           that.costDetails = response.data.data.listInfo;
@@ -371,14 +386,11 @@ export default {
           that.costPaymented = response.data.data.paid_cost_total;
 
         } else {
-          that.$message.success("加载数据失败~");
+          that.$message.success("加载数据失败377~");
         }
       }).catch(function(error) {
         console.log(error);
       });
-    },
-    getHigh(){
-
     }
 
   },

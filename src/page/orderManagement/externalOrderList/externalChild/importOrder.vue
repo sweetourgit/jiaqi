@@ -2,7 +2,7 @@
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
     <el-dialog title="导入外部订单" :visible="dialogFormVisible2" width=50% @close="closeAdd">
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+      <el-form :model="ruleForm" ref="ruleForm">
         <div style="height: 420px;">
           <el-form-item label="平台" prop="platform" label-width="120px" style="float:left;">
             <el-select style="float: left;" class="inputWidth" v-model="ruleForm.type" placeholder="请选择类型">
@@ -90,15 +90,23 @@ export default {
       }else if(that.ruleForm.type == 2){
         file_platform = '';
       }
+//      console.log(this.ruleForm.type);
+//      console.log(file_platform);
+//      console.log(this.fileList2[0].response.data.url);
+//      console.log(sessionStorage.getItem('id'));
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/add", {
         "source_id": this.ruleForm.type,
         "file_platform": file_platform,
         "file_pft": this.fileList2[0].response.data.url,
         "create_uid": sessionStorage.getItem('id')
       }, ).then(function(response) {
+        that.ruleForm.type = '';
+        that.fileList = '';
+        that.fileList2 = '';
+        that.$emit('close2', 'success');
         console.log(response);
         if (response.data.code == '200') {
-          this.$message({
+          that.$message({
             type: 'success',
             message: '提交成功!'
           });

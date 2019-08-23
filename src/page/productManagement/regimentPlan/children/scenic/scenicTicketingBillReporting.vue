@@ -21,8 +21,8 @@
           <div class="button">
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
             <el-button class="el-button" type="primary" @click="toPreview">预览报账单</el-button>
-            <el-button class="el-button" type="primary" @click="submitForm">保 存</el-button>
-            <el-button class="el-button" type="primary" @click="delInfo">提交报账单</el-button>
+            <!--<el-button class="el-button" type="primary" @click="submitForm">保 存</el-button>-->
+            <el-button class="el-button" type="primary" @click="delInfo" v-if="statusBtn != 7">提交报账单</el-button>
           </div>
         </el-col>
       </el-row>
@@ -132,7 +132,7 @@
             </el-table-column>
             <el-table-column prop="income" label="金额" align="center">
             </el-table-column>
-            <el-table-column prop="option" label="操作" align="center" width="220">
+            <el-table-column prop="option" label="操作" align="center" width="220" v-if="statusBtn != 7">
               <template slot-scope="scope">
                 <!--<el-button @click="toUpddateIncome(scope.row)" type="primary" size="small" class="table_details">更改人数</el-button>-->
                 <el-button @click="toUpddateSource(scope.row)" type="primary" size="small" class="table_details">设置收入来源</el-button>
@@ -141,14 +141,14 @@
           </el-table>
         </div>
       </div>
-      <el-dialog title="提示" :visible.sync="saveDialogVisible" width="30%">
-        <span><i class="el-icon-info"></i>是否保存后退出</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="saveDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="saveDialogVisible = false">直接退出</el-button>
-          <el-button type="primary" @click="saveExit">保存退出</el-button>
-        </span>
-      </el-dialog>
+      <!--<el-dialog title="提示" :visible.sync="saveDialogVisible" width="30%">-->
+        <!--<span><i class="el-icon-info"></i>是否保存后退出</span>-->
+        <!--<span slot="footer" class="dialog-footer">-->
+          <!--<el-button @click="saveDialogVisible = false">取 消</el-button>-->
+          <!--<el-button type="primary" @click="saveDialogVisible = false">直接退出</el-button>-->
+          <!--<el-button type="primary" @click="saveExit">保存退出</el-button>-->
+        <!--</span>-->
+      <!--</el-dialog>-->
       <GetOrder :dialogFormVisible="dialogFormVisible" @close="close2" :info="info"></GetOrder>
       <ToUpddateSource :dialogFormVisible="dialogFormVisible2" @close="close2" :info="updateSource"></ToUpddateSource>
       <ToUpddateIncome :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpddateIncome>
@@ -204,7 +204,6 @@ export default {
       dialogFormVisible2: false,
       dialogFormVisible3: false,
       dialogFormVisible4: false,
-      saveDialogVisible: false,
       tableData: [],
       updateSource: ''
     }
@@ -242,7 +241,38 @@ export default {
     },
 
     delInfo() {
-      this.saveDialogVisible = true
+      const that = this;
+      this.$confirm('是否提交此报账单?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/savebill", {
+          "tour_no": this.msg.tour_no,
+          "bill_status": '5',
+          "mark": '',
+          "create_uid": sessionStorage.getItem('id'),
+          "org_id": '1'//this.msg.org_id
+        }, ).then(function(response) {
+          console.log(response);
+          if (response.data.code == '200') {
+            that.$message({
+              type: 'success',
+              message: '提交成功'
+            });
+          } else {
+            that.$message.warning(response.data.message);
+          }
+        }).catch(function(error) {
+          console.log(error);
+          that.$message.warning("提交失败~");
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消提交'
+        });
+      });
     },
     toUpddateSource(row) {
       this.updateSource = row.rec_id;
@@ -252,6 +282,7 @@ export default {
       this.dialogFormVisible3 = true;
     },
     toPreview() {
+//      this.info = this.param;
       this.dialogFormVisible4 = true;
     },
     getOrder(row) {
@@ -263,6 +294,7 @@ export default {
       this.dialogFormVisible3 = false;
       this.dialogFormVisible4 = false;
       this.loadData();
+      this.updateSource = '';
     },
     //获取id
     clickBanle(row, event, column) {
@@ -334,7 +366,7 @@ export default {
           that.tableData.forEach(function (item, index, arr) {
             that.totalMoney += parseFloat(item.income);
             that.number += parseInt(item.people_num);
-          })
+          });
         } else {
           that.$message.success("加载数据失败~");
         }
@@ -344,7 +376,7 @@ export default {
     }
   },
   created() {
-    console.log(this.$route.params);
+    console.log('params',this.$route.params);
     if(this.$route.params.id){
       this.param = this.$route.params.id;
       this.statusBtn = this.$route.params.bill_status;

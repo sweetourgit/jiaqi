@@ -42,6 +42,8 @@ import externalOrderList from '@/page/orderManagement/externalOrderList/external
 import canRecognition from '@/page/orderManagement/externalOrderList/canRecognition'
 import noRecognition from '@/page/orderManagement/externalOrderList/noRecognition'
 import noCost from '@/page/orderManagement/externalOrderList/noCost'
+import recognitionMsg from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionMsg'
+import recognitionDo from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionDo'
 import importHistory from '@/page/orderManagement/externalOrderList/importHistory'
 import loanManagement from '@/page/Finance/loanManagement/loanManagement'
 import advancePayment from '@/page/Finance/advancePayment/advancePayment'
@@ -424,6 +426,22 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/recognitionMsg',
+      component: recognitionMsg,
+      name: '订单管理/外部订单/认收款信息',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, /*{
+      path: '/recognitionDo',
+      component: recognitionDo,
+      name: '订单管理/外部订单/认收款信息/认收款',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },*/ {
       path: '/sharedInventory',
       component: sharedInventory,
       name: '共享库存',

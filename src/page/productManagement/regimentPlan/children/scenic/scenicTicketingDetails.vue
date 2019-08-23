@@ -385,6 +385,22 @@ export default {
           response.data.data.basic_info.begin_at = formatDate(new Date(response.data.data.basic_info.begin_at *1000));
           response.data.data.basic_info.end_at = formatDate(new Date(response.data.data.basic_info.end_at*1000));
           that.baseInfo = response.data.data;
+          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            "id": that.baseInfo.basic_info.create_uid
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(function(response) {
+
+            if (response.data.isSuccess) {
+              that.baseInfo.basic_info.create_uid = response.data.object.name
+            } else {
+              that.$message.success("加载数据失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
         } else {
           that.$message.success("加载数据失败~");
         }

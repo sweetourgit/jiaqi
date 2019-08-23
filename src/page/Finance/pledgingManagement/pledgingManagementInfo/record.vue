@@ -138,7 +138,7 @@ export default {
         "pageIndex": this.pageIndex,
         "pageSize": this.pageSize,
         "tour_no": this.$parent.$parent.$parent.activeForm.tour,
-        "create_account": this.$parent.$parent.$parent.activeForm.user,
+        "create_uid": this.$parent.$parent.$parent.activeForm.userID,
         "bill_status": "",
         "limit": "0"
       }, ).then(function(response) {
@@ -150,6 +150,23 @@ export default {
             item.begin_at = formatDate(new Date(item.begin_at*1000));
             item.end_at = formatDate(new Date(item.end_at*1000));
             item.created_at = formatDate(new Date(item.created_at*1000));
+
+            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              "id": item.create_uid
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              }
+            }).then(function(response) {
+
+              if (response.data.isSuccess) {
+                item.create_uid = response.data.object.name
+              } else {
+                that.$message.success("加载数据失败~");
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
           })
         } else {
           that.$message.success("加载数据失败~");

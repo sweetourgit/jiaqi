@@ -73,7 +73,7 @@
             <div class="table_trip" style="width: 95%;">
               <el-table ref="multipleTable" :data="tableData" border style="width: 100%" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
                 <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
-                <el-table-column prop="id" label="订单ID" align="center" width="80%">
+                <el-table-column prop="order_sn" label="订单ID" align="center">
                 </el-table-column>
                 <el-table-column prop="product_name" label="产品名称" align="center">
                 </el-table-column>
@@ -462,6 +462,7 @@ export default {
       this.isHandleOrder = "";
       this.platform = "";
       this.user = "";
+      this.loadDataOne();
     },
 //    数据加载 订单
     loadDataOne(){

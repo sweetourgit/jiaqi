@@ -64,8 +64,8 @@
       <el-button type="primary" @click="importOrder" plain>导入订单</el-button>
       <el-button type="primary" :disabled="reable" @click="delOrder" plain>删除订单</el-button>
       <el-button type="primary" @click="importHistory" plain>导入历史</el-button>
-      <el-button type="primary" :disabled="reable" @click="relation" plain>关联</el-button>
-      <el-button type="primary" :disabled="reable" @click="unbinding" plain>解绑</el-button>
+      <el-button type="primary" :disabled="reable" @click="relation" plain>关联报账团期</el-button>
+      <el-button type="primary" :disabled="reable" @click="unbinding" plain>解绑报账团期</el-button>
     </div>
     <div class="tableDv">
       <div class="table_trip" style="width: 88%;">
@@ -134,18 +134,20 @@
     </div>
     <Relation :dialogFormVisible="dialogFormVisible" @close="close"></Relation>
     <ImportOrder :dialogFormVisible2="dialogFormVisible2" @close2="close2"></ImportOrder>
-
+    <importStatus :dialogFormVisible3="dialogFormVisible3" @close3="close3"></importStatus>
   </div>
 </template>
 <script type="text/javascript">
   import Relation from '@/page/orderManagement/externalOrderList/externalChild/relation'//关联弹窗
   import ImportOrder from '@/page/orderManagement/externalOrderList/externalChild/importOrder'//导入订单弹窗
+  import importStatus from '@/page/orderManagement/externalOrderList/importOrderInfo/importStatus'//导入状态弹窗
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "externalOrderList",
     components: {
       Relation,
       ImportOrder,
+      importStatus
     },
     data() {
       return {
@@ -173,6 +175,7 @@
         transmit: false,
         dialogFormVisible: false,
         dialogFormVisible2: false,
+        dialogFormVisible3: false,
 
 //      表格数据
         total: 0, //总条数
@@ -212,12 +215,24 @@
         this.transmit = !this.transmit;
         this.pid = ''
       },
+//      导入订单
       importOrder() {
         this.dialogFormVisible2 = true
       },
-      close2() {
-        this.dialogFormVisible2 = false
+      close2(str) {
+        this.dialogFormVisible2 = false;
+        if(str == 'success'){
+          this.showStatus();
+        }
       },
+//      订单状态
+      showStatus(){
+        this.dialogFormVisible3 = true
+      },
+      close3() {
+        this.dialogFormVisible3 = false
+      },
+//      删除
       delOrder() {
         console.log(this.multipleSelection);
         this.$confirm('是否删除此外部订单?', '提示', {

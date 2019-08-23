@@ -87,7 +87,7 @@ export default {
       console.log(row);
     },
     close() {
-      this.$router.push({ path: "/externalOrderList" });
+      this.$router.push({ path: "/externalOrderList/canRecognition" });
     },
     close2() {
       this.dialogFormVisible = false;

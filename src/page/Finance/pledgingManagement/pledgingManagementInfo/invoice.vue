@@ -185,7 +185,7 @@ export default {
         "status": "3",
         "approval_comments": this.explain
       }, ).then(function(response) {
-//        console.log(response);
+        console.log('shenhe通过',response);
         if (response.data.code == '200') {
 //        console.log(response);
           that.$message.success("审核通过~");

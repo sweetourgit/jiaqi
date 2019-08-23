@@ -48,7 +48,11 @@ export default {
     // 计算属性的 getter
   },
   watch: {
-
+    info: {
+      handler: function () {
+        this.loadData();
+      }
+    }
   },
   methods: {
     closeAdd() {
@@ -62,10 +66,11 @@ export default {
             "id": this.info,
             "distributor": this.ruleForm.distributor,
             "handler": this.ruleForm.source,
-            "text": this.ruleForm.text
+            "remark": this.ruleForm.text
           }, ).then(function(response) {
+//            console.log('收入来源',response);
             if (response.data.code == '200') {
-              console.log(response);
+              console.log('收入来源',response);
               that.ruleForm = {
                 source: '',
                 distributor: '',
@@ -87,7 +92,30 @@ export default {
           return false;
         }
       });
+    },
+    loadData(){
+      if(this.info == ""){
+          return;
+      }
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/recognitioninfo", {
+        "id": this.info,
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+//          console.log('收入来源',response);
+          that.ruleForm = {
+            source: response.data.data.handler,
+            distributor: response.data.data.distributor,
+            text: response.data.data.remark
+          };
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     }
+
   },
   created() {},
   mounted() {}

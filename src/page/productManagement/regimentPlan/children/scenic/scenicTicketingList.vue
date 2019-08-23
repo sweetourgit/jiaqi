@@ -9,7 +9,8 @@
       <el-date-picker v-model="activeForm.createTime" class="input" style="width: 30%;" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
       </el-date-picker><br /><br />
       <span class="search-title">操作人员:</span>
-      <el-input v-model="activeForm.user" class="input"></el-input>
+      <!--<el-input v-model="activeForm.user" class="input"></el-input>-->
+      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
       <span class="search-title">报账状态:</span>
       <el-select v-model="activeForm.status" placeholder="请选择" style="width:200px;margin-left:40px;">
         <el-option key="" label="全部" value=""></el-option>
@@ -112,10 +113,12 @@ export default {
         tour: '',
         createTime: '',
         user: '',
+        userID: '',
         status: '',
         startTime: '',
         endTime: ''
       },
+      operatorList: [],
       reable: true,
       info: '',
       dialogFormVisible: false,
@@ -223,6 +226,22 @@ export default {
         });
       });
     },
+//    操作人员匹配
+    querySearchOper(queryString, cb){
+      const operatorList = this.operatorList;
+      var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter1(queryString) {
+      return (operatorList) => {
+        return (operatorList.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    handleSelectOper(item){
+      console.log(item);
+      this.activeForm.userID = item.id;
+    },
     //搜索
     searchHand() {
 //      console.log(this.activeForm.createTime);
@@ -239,10 +258,12 @@ export default {
         tour: '',
         createTime: '',
         user: '',
+        userID: '',
         status: '',
         startTime: '',
         endTime: ''
-      }
+      };
+      this.loadData();
     },
 //    数据加载
     loadData(){
@@ -255,7 +276,7 @@ export default {
         "tour_no": this.activeForm.tour,
         "start_time": this.activeForm.startTime,
         "end_time": this.activeForm.endTime,
-        "create_account": this.activeForm.user,
+        "create_uid": this.activeForm.userID,
         "bill_status": this.activeForm.status
       }, ).then(function(response) {
           console.log(response);
@@ -270,7 +291,79 @@ export default {
             item.end_at = item.end_at.split(" ")[0];
             item.created_at = formatDate(new Date(item.created_at*1000));
             item.created_at = item.created_at.split(" ")[0];
+            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              "id": item.create_uid
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              }
+            }).then(function(response) {
+
+              if (response.data.isSuccess) {
+                item.create_uid = response.data.object.name
+              } else {
+                that.$message.success("加载数据失败~");
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
           })
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+    loadUser(){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+        "object": {
+          "id": 0,
+          "createTime": '2019-08-23T03:03:10.386Z',
+          "isDeleted": 0,
+          "code": "",
+          "mobile": "",
+          "name": "",
+          "email": "",
+          "userCode": "",
+          "passWord": "",
+          "iDcard": "",
+          "tourGuide": "",
+          "sex": 0,
+          "userType": 0,
+          "userState": 0,
+          "orgID": 0,
+          "orgName": "",
+          "user_Position": [
+            {
+              "id": 0,
+              "userID": 0,
+              "positionID": 0,
+              "positionName": "",
+              "isDefault": 0,
+              "orgID": 0,
+              "orgName": ""
+            }
+          ]
+        }
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+
+        if (response.data.isSuccess) {
+//            console.log('操作人员列表',response.data.objects);
+          let operatorList = [];
+          response.data.objects.forEach(function (item, index, arr) {
+            const operator = {
+              'value' : item.name,
+              'id' : item.id
+            };
+            operatorList.push(operator);
+          });
+          that.operatorList = operatorList;
         } else {
           that.$message.success("加载数据失败~");
         }
@@ -281,6 +374,7 @@ export default {
   },
   created() {
     this.loadData();
+    this.loadUser();
   }
 
 }
