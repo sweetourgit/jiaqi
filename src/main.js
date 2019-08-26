@@ -31,7 +31,7 @@ Vue.config.productionTip = false
 
  //import '!style-loader!css-loader!less-loader!./style/libs/iconfont/iconfont.css'
 //http request 请求拦截器
-axios.interceptors.request.use(
+axios.interceptors.request.use(//不用获取token的时候可以整段去掉
   config => {
     const token = localStorage.getItem('token')
     if(token) {  // 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token

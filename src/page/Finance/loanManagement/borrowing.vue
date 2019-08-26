@@ -6,26 +6,33 @@
 			<div style="width:1100px;">
 				<div class="fl">
 					<span class="emptyPlan">团期计划</span>
-					<el-input v-model="empty" class="empty" clearable placeholder="请输入团期计划"></el-input>
+					<el-input v-model="groupCode_01" class="empty" clearable placeholder="请输入团期计划"></el-input>
 				</div>
 				<div class="fl">
 					<span class="emptyPlan">申请人</span>
-					<el-input v-model="people" class="empty" clearable placeholder="请输入申请人"></el-input>
+					<el-input v-model="createUser" class="empty" clearable placeholder="请输入申请人"></el-input>
 				</div>
 				<div class="fl">
 					<span class="emptyPlan">发起时间</span>
-					<el-date-picker v-model="planTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
+					<el-date-picker v-model="beginTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
 					<span class="time">——</span>
-					<el-date-picker v-model="planData" type="date" class="planTime" placeholder="日期"></el-date-picker>
+					<el-date-picker v-model="endTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
 				</div>
 			</div>
 			<div style="width:1100px;clear:both;">
 				<div style=" float:left">
 			       <span class="emptyPlan">类型</span>
-				   <el-cascader :options="settlement" v-model="settlement_01"  class="empty" clearable placeholder="请输入类型"></el-cascader>
+				   <el-select v-model="checkType" placeholder="请输入类型" class="empty">
+	                 <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlement" :key="item.value" />
+	               </el-select>
+
+
 				</div>
+
+
+
 				<div style="float:right; margin: 0 10px 0 0;">
-					<el-button type="primary">搜索</el-button>
+					<el-button @click="search()" type="primary">搜索</el-button>
 					<el-button @click="emptyButton()" type="primary">重置</el-button>
 				</div>
 			</div>
@@ -63,7 +70,7 @@
 	      </el-table-column>
 	    </el-table>
 	    <!--分页-->
-	    <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+	    <el-pagination v-if="pageshow" class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
 	</div>
 	<!--申请无收入借款弹窗-->
 	    <el-dialog title="借款申请" :visible.sync="noIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>  
@@ -325,20 +332,20 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	},
     data(){
       return {
-      	
+      	groupCode_01:'',
+      	createUser:'',
+      	beginTime:'',
+      	endTime:'',
+      	checkType:'',
       	 //表头切换
-         empty:'',
-         people:'',
-         planTime:'',
-         planData:'',
          settlement:[{
-	          value: '审批中',
+	          value: '0',
 	          label: '审批中'
 	         }, {
-	          value: '通过',
+	          value: '1',
 	          label: '通过'
 	         }, {
-	          value: '驳回',
+	          value: '2',
 	          label: '驳回'
 	         }],
 	     settlement_01:'',
@@ -438,33 +445,33 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           tablePayment:[],
           //无收入借款弹窗中预付款明细查看弹窗
           dialogFormVisible_paymenrt:false,
-          tableApprove:[{
+          tableApprove:[/*{
           	times:' 2019-1-14 19:00:00',
 			people:'洋洋',
 			result:'通过',
 			opinion:'不同意'
-          }],
+          }*/],
           ////无收入借款弹窗中无收入借款明细弹窗
           tableIncome:[],
           //无收入借款弹窗中预付款明细查看弹窗
           dialogFormVisible_Income:false,
-          tableIncomeCheck:[{
+          tableIncomeCheck:[/*{
           	times:' 2019-1-14 19:00:00',
 			people:'洋洋1',
 			result:'通过',
 			opinion:'不同意'
-          }],
+          }*/],
           //无收入借款弹窗中收入明细表格
           tableEarning:[],
 		   //查看无收入借款弹窗
 		   checkIncomeShow:false,
 		   //查看无收入借款审批过程
-		   tableCourse:[{
+		   tableCourse:[/*{
 		   	people:'1',
 		   	result:'通过',
 		   	opinion:'同意',
 		   	times:'2019-04-25'
-		   }],
+		   }*/],
 		    tour_name_pre: '',
 		    product_name_pre:'',
 		    planID:'',
@@ -476,6 +483,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 		    status:"",
 		    SelectAccount:false,//选择账户弹窗
 		    tableSelect:[],//选择弹窗表格
+		    pageshow:true,
 		   
 
 
@@ -488,10 +496,11 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	  },
 	  //重置
 	  emptyButton(){
-	  	this.empty = '';
-	  	this.people = '';
-	  	this.planTime = '';
-	  	this.planData = '';
+	  	this.groupCode_01 = '';
+	  	this.createUser = '';
+	  	this.beginTime = '';
+	  	this.endTime = '';
+	  	this.checkType = '';
 	  }, 
 	  //表格表头颜色
 	  getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -679,8 +688,10 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
             "object": {
 	          "groupCode": this.plan_stage, //团号
 	          "title": this.plan_name, //产品名称
-	          "beginDate": this.plan_data ? formatDate(this.plan_data, 'yyyyMMdd') : 0, //搜索用开始日期
-	          "endDate": this.plan_data01 ? formatDate(this.plan_data01, 'yyyyMMdd') : 0, //搜索用结束日期
+	          // "beginDate": this.plan_data ? formatDate(this.plan_data, 'yyyyMMdd') : 0, //搜索用开始日期
+	          // "endDate": this.plan_data01 ? formatDate(this.plan_data01, 'yyyyMMdd') : 0, //搜索用结束日期
+	          "beginDate": this.plan_data ? formatDate(this.plan_data) : 0, //搜索用开始日期
+	          "endDate": this.plan_data01 ? formatDate(this.plan_data01) : 0, //搜索用结束日期
 	        }
           },)
           .then(res => {
@@ -832,10 +843,24 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       	this.checkIncomeShow = false;
       },
       //查询列表
-      pageList() {
+      pageList(groupCode_01=this.groupCode_01,createUser=this.createUser,beginTime=this.beginTime,endTime=this.endTime,checkType=this.checkType) {   
+      	/*if(beginTime){//时间节点裁剪，裁剪到年月日
+          let y=beginTime.getFullYear();
+          let m=(beginTime.getMonth()+1)>9?beginTime.getMonth()+1:'0'+(beginTime.getMonth()+1);
+          let d=beginTime.getDate()>9?beginTime.getDate():'0'+beginTime.getDate();
+          beginTime=''+ y + m + d
+        }else{
+          beginTime=0
+        } */  	
       	let objectRequest = {}
       	objectRequest.paymentType = 1;
       	objectRequest.checkType = -1;
+      	if (this.groupCode_01) { objectRequest.groupCode = this.groupCode_01; }
+      	if (this.createUser) { objectRequest.createUser = this.createUser; }
+      	if (this.beginTime) { objectRequest.beginTime = this.beginTime; }
+      	if (this.endTime) { objectRequest.endTime = this.endTime; }
+      	if (this.checkType) { objectRequest.checkType = this.checkType;}else{objectRequest.checkType='-1'}
+      	//if (this.checkTypeEX) { objectRequest.checkTypeEX = this.checkTypeEX; }
         var that = this
         this.$http.post(
           this.GLOBAL.serverSrc + "/finance/payment/api/page",
@@ -854,26 +879,10 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
             console.log(obj)
           })
       },
-      /*getLabel(){//获取一条信息
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
-           "id":this.multipleSelection[0].id
-          }).then(res => {
-              if(res.data.isSuccess == true){
-                 let data = res.data.object;
-                 this.ruleForm.name=data.name;
-				 this.ruleForm.plan=data.plan;
-				 this.ruleForm.supplier=data.supplier;
-				 this.ruleForm.planType=data.planType;
-				 this.ruleForm.planAmount=data.planAmount;
-			   	 this.ruleForm.abstract=data.abstract;
-				 this.ruleForm.account=data.account;
-				 this.ruleForm.accountBank=data.accountBank;
-				 this.ruleForm.accountOpenName=data.accountOpenName;
-				 this.ruleForm.payment=data.payment;
-				 this.tour_id = obj.data.object.planID
-              }
-        }) 
-      },*/
+      //搜索
+      search(){
+        this.pageList()
+      },
       //申请无收入借款
       ensureIncome(){
       	this.$refs.ruleForm.validate((valid) => {
@@ -951,10 +960,10 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	        }
 	      })
 	      .then(res =>{
-	        this.payment_01 =  res.data.objects;
-	      }).catch(function(err){
+	        //this.payment_01 =  res.data.objects;
+	      })/*.catch(function(err){
 	        console.log(err);
-	      })
+	      })*/
 	    
       },
       //借款类型
@@ -970,10 +979,10 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	        }
 	      })
 	      .then(res =>{
-	        this.borrowingType =  res.data.objects;
-	      }).catch(function(err){
+	        //this.borrowingType =  res.data.objects;
+	      })/*.catch(function(err){
 	        console.log(err);
-	      })
+	      })*/
 	    
       },
       //供应商类型
