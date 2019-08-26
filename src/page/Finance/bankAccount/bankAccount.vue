@@ -43,7 +43,7 @@
     <el-dialog width='500px' top='10vh' title="收款账号" :visible.sync="dialogSupplierVisible" :show-close="false">
       <el-form ref="Form" :model="handleForm" :rules="rules" label-width="100px">
         <el-form-item label="科目值:" prop="subject">
-          <span style="margin-left: 15px;" v-model="handleForm.subject">{{handleForm.subject}}</span>
+          <span style="margin-left: 15px;">{{handleForm.subject}}</span>
         </el-form-item>
         <el-form-item label="账户名称" prop="title">
           <el-input class="item_input" v-model="handleForm.title" clearable></el-input>
@@ -196,15 +196,15 @@ export default {
          "id":this.multipleSelection[0].id
         }).then(res => {
             if(res.data.isSuccess == true){
-               this.handleForm=res.data.object;
+               this.Form.handleForm.subject=res.data.object.subject;
                let data = res.data.object;
-               this.handleForm.subject=data.subject;
-               this.handleForm.title = data.title;
-               this.handleForm.cardNum = data.cardNum;
-               this.handleForm.openingBank = data.openingBank;
-               this.handleForm.openingName = data.openingName;
-               this.handleForm.cardType = data.cardType;
-               this.handleForm.ratio = data.ratio;
+               //this.handleForm.subject=data.subject;
+               this.Form.handleForm.title = data.title;
+               this.Form.handleForm.cardNum = data.cardNum;
+               this.Form.handleForm.openingBank = data.openingBank;
+               this.Form.handleForm.openingName = data.openingName;
+               this.Form.handleForm.cardType = data.cardType;
+               this.Form.handleForm.ratio = data.ratio;
             }
       })  
     },
