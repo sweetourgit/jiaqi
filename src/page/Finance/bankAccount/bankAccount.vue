@@ -43,7 +43,7 @@
     <el-dialog width='500px' top='10vh' title="收款账号" :visible.sync="dialogSupplierVisible" :show-close="false">
       <el-form ref="Form" :model="handleForm" :rules="rules" label-width="100px">
         <el-form-item label="科目值:" prop="subject">
-          <span style="margin-left: 15px;">{{handleForm.subject}}</span>
+          <span style="margin-left: 15px;" v-model="handleForm.subject">{{handleForm.subject}}</span>
         </el-form-item>
         <el-form-item label="账户名称" prop="title">
           <el-input class="item_input" v-model="handleForm.title" clearable></el-input>
@@ -196,6 +196,7 @@ export default {
          "id":this.multipleSelection[0].id
         }).then(res => {
             if(res.data.isSuccess == true){
+               this.handleForm=res.data.object;
                let data = res.data.object;
                this.handleForm.subject=data.subject;
                this.handleForm.title = data.title;
@@ -205,7 +206,7 @@ export default {
                this.handleForm.cardType = data.cardType;
                this.handleForm.ratio = data.ratio;
             }
-      }) 
+      })  
     },
     rowClass({row, rowIndex}){  //选中行样式改变
      for(var i=0;i<this.multipleSelection.length;i++){
