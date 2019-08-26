@@ -147,6 +147,7 @@
           this.productName = '';
           this.startTime = '';
           this.endTime = '';
+          this.reimbursementPerID = '';
           this.reimList();
         },
         handleClick(tab, event) {

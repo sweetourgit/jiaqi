@@ -119,6 +119,7 @@
         this.productName = '';
         this.startTime = '';
         this.endTime = '';
+        this.reimbursementPerID = '';
         this.loadData();
       },
       handleClick(tab, event) {
