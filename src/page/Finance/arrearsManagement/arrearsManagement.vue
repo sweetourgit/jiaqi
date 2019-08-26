@@ -68,6 +68,7 @@
         <!-- <detailsForm v-on:closeButton="dialogFormVisible = false" :currentRow="currentRow"></detailsForm> -->
         <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :searchHandList="searchHand"></AdvanceInfo>
         <el-dialog width='1200px' top='10vh' title="无收入借款详情" :visible.sync="ischeckLoanManagement" :show-close="false">
+          <el-button style="position:absolute; top:8px; right:15px;" @click="closeCheck()">取消</el-button>
 	        <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
         </el-dialog>
 
@@ -332,7 +333,11 @@ export default {
     // 供应商欠款重置
     handeleReset() {
       this.supplier = '';
-    }
+    },
+    //关闭无收入窗口弹窗
+    closeCheck(){
+      this.ischeckLoanManagement = false;
+    },
   }
 }
 </script>
