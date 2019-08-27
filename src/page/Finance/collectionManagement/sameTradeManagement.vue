@@ -602,7 +602,6 @@ export default {
     .bright2 {
       width: 70%;
     }
- .el-date-editor.el-input, .el-date-editor.el-input__inner{width:135px;}
  /*搜索框*/
   .empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; float:left; overflow: hidden;}
   .fl{float:left; margin: 20px 0 20px 0;}
@@ -610,6 +609,7 @@ export default {
   .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
   .time{margin: 0 0 0 10px;}
   .el-date-editor.el-input, .el-date-editor.el-input__inner{width:135px;}
+  .el-input{position:relative; display: inline-block; font-size:14px;}
   /*基本信息*/
   .basictable{margin:0 0 0 25px;}
   .basictd{width:400px; padding:15px 0 0 0;}
