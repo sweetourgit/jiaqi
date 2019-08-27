@@ -484,7 +484,7 @@
                   parentID: this.countryPopup.parentID,
                   isLeaf: Number(this.countryPopup.isLeaf),
                   initial: this.countryPopup.initial,
-                  createTime: "2018-09-11T07:32:14.737Z",
+                  // createTime: "2018-09-11",
                   earth: '-1'
                 }
               },{
