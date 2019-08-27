@@ -7,6 +7,9 @@
       <el-tab-pane label="直客" name="second">
         <StraightGuestManagement></StraightGuestManagement>
       </el-tab-pane>
+      <el-tab-pane label="外部订单收款" name="fourth">
+        <externalOrder></externalOrder>
+      </el-tab-pane>
       <el-tab-pane label="需要您审批" name="third">
         <PendingApprovalManagement></PendingApprovalManagement>
       </el-tab-pane>
@@ -17,12 +20,14 @@
 import StraightGuestManagement from '@/page/Finance/collectionManagement/straightGuestManagement'
 import SameTradeManagement from '@/page/Finance/collectionManagement/sameTradeManagement'
 import PendingApprovalManagement from '@/page/Finance/collectionManagement/pendingApprovalManagement'
+import externalOrder from '@/page/Finance/collectionManagement/externalOrder/externalOrderManagement.vue'
 export default {
   name: "collectionManagement",
   components: {
     SameTradeManagement,
     StraightGuestManagement,
-    PendingApprovalManagement
+    PendingApprovalManagement,
+    externalOrder
   },
   data() {
     return {
@@ -40,7 +45,7 @@ export default {
         this.getStraightGuestManagement();
       }else{
         this.pageList();
-      }     
+      }
       this.clickTab = tab.label;
     },
     //直客查询列表

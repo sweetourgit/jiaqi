@@ -43,7 +43,7 @@ import canRecognition from '@/page/orderManagement/externalOrderList/canRecognit
 import noRecognition from '@/page/orderManagement/externalOrderList/noRecognition'
 import noCost from '@/page/orderManagement/externalOrderList/noCost'
 import recognitionMsg from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionMsg'
-import recognitionDo from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionDo'
+// import recognitionDo from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionDo'
 import importHistory from '@/page/orderManagement/externalOrderList/importHistory'
 import loanManagement from '@/page/Finance/loanManagement/loanManagement'
 import advancePayment from '@/page/Finance/advancePayment/advancePayment'
@@ -561,8 +561,7 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    },
-    {
+    }, {
       path: '*',
       redirect: '/userList'
     }

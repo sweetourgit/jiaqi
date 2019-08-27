@@ -10,9 +10,9 @@
             <!--<el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>-->
             <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
             <span class="search_style">发起时间：</span>
-            <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time"></el-date-picker>
+            <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
             <div class="date-line"></div>
-            <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time"></el-date-picker>
+            <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
             <div style="margin-top: 20px;"></div>
             <span class="search_style">产品名称：</span> <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
             <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
@@ -83,6 +83,7 @@
       },
       data() {
         return {
+          disabled: false,
 //        报账单需要审批数量
           number: 0,
 //        搜索字段

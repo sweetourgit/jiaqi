@@ -1,67 +1,76 @@
 <template>
-  <div class="all" id="needApprovalAll">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <!--报销-->
-      <div class="borders">
-        <div class="search">
-          <span class="search_style">团期计划：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
-          <span class="search_style">报账人：</span>
-          <!--<el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>-->
-          <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
-          <span class="search_style">发起时间：</span>
-          <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
-          <div class="date-line"></div>
-          <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
-          <div style="margin-top: 20px;"></div>
-          <span class="search_style">产品名称：</span> <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
-          <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
-          <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
-        </div>
-        <div class="table_style">
-          <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
-            <el-table-column prop="tour_no" label="团期计划" width="180" align="center"></el-table-column>
-            <el-table-column prop="bill_status" label="状态" width="120" align="center">
-              <template slot-scope="scope">
-                <div style="color: #7F7F7F">报账中</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="product_name" label="产品名称" align="center"></el-table-column>
-            <el-table-column prop="create_uid" label="申请人" width="120" align="center"></el-table-column>
-            <el-table-column prop="created_at" label="申请时间" width="180" align="center"></el-table-column>
-            <el-table-column prop="mark" label="审批意见" width="250" align="center"></el-table-column>
-            <el-table-column prop="opinion" label="操作" align="center" width="100">
-              <template slot-scope="scope">
-                <el-button @click="approve(scope.row)" type="text" size="small" class="table_details">审批</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="block">
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size= pageSize
-            layout="total, sizes, prev, pager, next, jumper"
-            :total=pageCount
-            background>
-          </el-pagination>
-        </div>
+  <div class="all" id="trade">
+    <div class="borders">
+      <div class="search">
+        <span class="search_style">团期计划：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
+        <span class="search_style">申请人：</span>
+        <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入申请人" @select="handleSelectOper"></el-autocomplete>
+        <span class="search_style">收款时间：</span>
+        <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
+        <div class="date-line"></div>
+        <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
+        <div style="margin-top: 20px;"></div>
+        <span class="search_style">状态</span>
+        <el-select v-model="status" placeholder="请选择" style="width:200px;">
+          <el-option key="" label="全部" value=""></el-option>
+          <el-option key="1" label="审核中" value="1"></el-option>
+          <el-option key="2" label="通过" value="2"></el-option>
+          <el-option key="3" label="驳回" value="3"></el-option>
+        </el-select>
+        <span class="search_style">订单：</span> <el-input v-model="productName" placeholder="请输入" class="search_input"></el-input>
+        <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
+        <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
       </div>
-      <!--报销end-->
-    </el-tabs>
-    <checkSheetPreview :dialogFormVisible="dialogFormVisible" @close="closeFun" :info="info"></checkSheetPreview>
+      <div class="search" style="background-color: transparent;padding: 0;">
+        <el-button type="primary" @click="addFun">添加</el-button>
+      </div>
+      <div class="table_style">
+        <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
+          <el-table-column prop="tour_no" label="收款单号" align="center"></el-table-column>
+          <el-table-column prop="bill_status" label="状态" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.bill_status=='5'" style="color: #7F7F7F" >报账中</div>
+              <div v-if="scope.row.bill_status=='6'" style="color: #FF4A3D" >报账驳回</div>
+              <div v-if="scope.row.bill_status=='7'" style="color: #33D174" >已报账</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="product_name" label="收款时间" align="center"></el-table-column>
+          <el-table-column prop="create_uid" label="团期计划" width="120" align="center"></el-table-column>
+          <el-table-column prop="created_at" label="订单号" align="center"></el-table-column>
+          <el-table-column prop="mark" label="同业社名称" align="center"></el-table-column>
+          <el-table-column prop="create_uid" label="收款金额" align="center"></el-table-column>
+          <el-table-column prop="created_at" label="申请人" align="center"></el-table-column>
+          <el-table-column prop="mark" label="审批意见" align="center"></el-table-column>
+          <el-table-column prop="opinion" label="操作" align="center" width="100">
+            <template slot-scope="scope">
+              <el-button @click="approve(scope.row)" type="text" size="small" class="table_details">审批</el-button>
+              <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="block">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size= pageSize
+          layout="total, sizes, prev, pager, next, jumper"
+          :total=pageCount
+          background>
+        </el-pagination>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import checkSheetPreview from '@/page/Finance/checkSheet/checkSheetPreview';
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
-    name: "needApproval",
+    name: "tradeList",
     components:{
-      checkSheetPreview
+
     },
     data() {
       return {
@@ -72,19 +81,16 @@
         productName: '',
         startTime: '',
         endTime: '',
+        status: '',
         reimbursementPerID: '',
         operatorList: [],
-
-        activeName: 'first',
 
         pageSize: 10,
         currentPage: 1,
         pageCount: 3,
 
-        dialogFormVisible: false,
-        info: '',
         //待审批table
-        tableData: []
+        tableData: [{},{}]
       };
     },
     methods: {
@@ -124,9 +130,11 @@
         this.reimbursementPerID = '';
         this.loadData();
       },
-      handleClick(tab, event) {
-//        console.log(tab, event);
-        this.loadData();
+      addFun(){
+        this.$router.push({ path: "/tradeAdd" });
+      },
+      detail(row){
+        this.$router.push({ path: "/tradeDetail" });
       },
       handleSizeChange(val) {
         this.pageSize = val;
@@ -135,15 +143,7 @@
       },
       handleCurrentChange(val) {
         this.currentPage = val;
-        this.loadData()
-      },
-      approve(res){
-        this.info = res;
-        this.dialogFormVisible = true;
-      },
-      closeFun(){
-        this.dialogFormVisible = false;
-        this.loadData()
+        this.loadData();
       },
       loadData(){
         const that = this;
@@ -249,48 +249,55 @@
       }
     },
     created(){
-      this.loadData();
+//      this.loadData();
       this.loadOper();
     }
   }
 </script>
 
-<style>
-  #needApprovalAll .el-tabs__header{
+<style scoped>
+  #trade .el-tabs__header{
     margin-top: -14px!important;
   }
-  #needApprovalAll .borders{
+  #trade .borders{
     overflow: hidden;
-    border: 1px solid #E6E6E6;
+    /*border: 1px solid #E6E6E6;*/
     margin-bottom: 30px;
   }
-  #needApprovalAll .search{
+  #trade .search{
+    width: 1500px;
+    margin-left: 20px;
+    margin-top: 20px;
     float: left;
-    margin-top: 30px;
+    background-color: #f7f7f7;
+    padding: 20px 10px;
+    box-sizing: border-box;
   }
-  #needApprovalAll .date-line {
+  #trade .date-line {
     width: 10px;
     border-bottom: 1px solid #e6e6e6;
     display: inline-block;
     margin: 0 3px 3px 0
   }
-  #needApprovalAll .search_style{
+  #trade .search_style{
     /*float: left;*/
     margin-top: 10px;
     margin-left: 20px;
-    font-size: 14px
+    font-size: 14px;
+    display: inline-block;
+    width: 80px;
   }
-  #needApprovalAll .search_input{
+  #trade .search_input{
     /*float: left;*/
     width: 200px
   }
-  #needApprovalAll .table_style{
+  #trade .table_style{
     width: 1500px;
     margin-left: 20px;
     margin-top: 20px;
     float: left;
   }
-  #needApprovalAll .block{
+  #trade .block{
     float: left;
     margin-left: 600px;
     margin-top: 70px;
