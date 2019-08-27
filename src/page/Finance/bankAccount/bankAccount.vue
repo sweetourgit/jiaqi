@@ -191,22 +191,22 @@ export default {
       },200)
     },*/
     handleEdit(row){
-      this.dialogSupplierVisible = true;
+      console.log(this.multipleSelection[0].id)
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
          "id":this.multipleSelection[0].id
         }).then(res => {
             if(res.data.isSuccess == true){
-               this.Form.handleForm.subject=res.data.object.subject;
                let data = res.data.object;
-               //this.handleForm.subject=data.subject;
-               this.Form.handleForm.title = data.title;
-               this.Form.handleForm.cardNum = data.cardNum;
-               this.Form.handleForm.openingBank = data.openingBank;
-               this.Form.handleForm.openingName = data.openingName;
-               this.Form.handleForm.cardType = data.cardType;
-               this.Form.handleForm.ratio = data.ratio;
+               this.handleForm.subject=data.subject;
+               this.handleForm.title = data.title;
+               this.handleForm.cardNum = data.cardNum;
+               this.handleForm.openingBank = data.openingBank;
+               this.handleForm.openingName = data.openingName;
+               this.handleForm.cardType = data.cardType;
+               this.handleForm.ratio = data.ratio;
             }
-      })  
+      }) 
+      this.dialogSupplierVisible = true; 
     },
     rowClass({row, rowIndex}){  //选中行样式改变
      for(var i=0;i<this.multipleSelection.length;i++){
