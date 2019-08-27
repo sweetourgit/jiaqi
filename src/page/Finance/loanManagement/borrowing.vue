@@ -25,18 +25,12 @@
 				   <el-select v-model="checkType" placeholder="请输入类型" class="empty">
 	                 <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlement" :key="item.value" />
 	               </el-select>
-
-
 				</div>
-
-
-
 				<div style="float:right; margin: 0 10px 0 0;">
 					<el-button @click="search()" type="primary">搜索</el-button>
 					<el-button @click="emptyButton()" type="primary">重置</el-button>
 				</div>
 			</div>
-			
 		</div>
 		<div class="primary">
 			<el-button plain @click="noIncome()" style="margin:30px 0 0 0;">申请</el-button>
@@ -312,7 +306,7 @@
 	       <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
 	       <el-table-column label="操作" align="center">
 	       	  <template slot-scope="scope">
-		        <el-button type="text" size="small" class="table_details">选择</el-button>
+		        <el-button type="text" size="small" @click="addAccount()" class="table_details">选择</el-button>
 		      </template>
 	       </el-table-column>
 	    </el-table>
@@ -1141,6 +1135,22 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 	      closeAccount(){
 	      	this.SelectAccount = false;
 	      },
+	      addAccount(){
+	      	var that = this
+	        this.$http.post(
+	          this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",
+	          {
+	            "paymentID": this.paymentID,
+  				"accountID": this.tableSelect[0].id
+	          },)
+	          .then(function (obj) {
+	            console.log(obj.data.objects)
+	          })
+	          .catch(function (obj) {
+	            console.log(obj)
+	          })
+	          this.SelectAccount = false
+	      },
 	      //选择账户表格查询
 	      selectList(){
 	        var that = this
@@ -1218,5 +1228,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 
 	.basicTitle{font-size: 14pt; line-height: 40px; margin: 0 0 20px 0;}
 	.close{position: absolute; top: 15px; right: 15px; font-size: 20pt; cursor:pointer;}
+
+	.el-date-editor.el-input, .el-date-editor.el-input__inner{width:135px;}
 
 </style>

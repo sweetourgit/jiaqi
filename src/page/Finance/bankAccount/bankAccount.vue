@@ -13,7 +13,7 @@
     <!-- <el-button class="button" type="primary" :disabled="isRow" @click="handleEdit">编辑</el-button> -->
     <!-- <el-table :data="dataList" class="table-class" border highlight-current-row :header-cell-style="getRowClass" ref="multipleTable"selection-change="changeFun"> -->
     <el-table :data="dataList" ref="multipleTable" class="table-class" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
-      <el-table-column prop="subject" label="科目值" align="center" width="140"></el-table-column>
+      <el-table-column prop="subject" label="科目值" align="center" width="100"></el-table-column>
       <el-table-column label="类型" align="center" width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.cardType===1">收款</span>
@@ -22,12 +22,12 @@
           <span v-if="scope.row.cardType===4">应付</span>
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="账号名称" width="180" align="center"></el-table-column>
+      <el-table-column prop="title" label="账号名称" width="120" align="center"></el-table-column>
       <el-table-column prop="cardNum" label="卡号" min-width="200" align="center"></el-table-column>
-      <el-table-column prop="openingBank" label="开户行" width="140" align="center"></el-table-column>
-      <el-table-column prop="openingName" label="开户人" width="140" align="center"></el-table-column>
-      <el-table-column prop="ratio" label="手续费比率" width="140" align="center"></el-table-column>
-      <el-table-column label="操作" width="140" align="center">
+      <el-table-column prop="openingBank" label="开户行" width="120" align="center"></el-table-column>
+      <el-table-column prop="openingName" label="开户人" width="120" align="center"></el-table-column>
+      <el-table-column prop="ratio" label="手续费比率" width="100" align="center"></el-table-column>
+      <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
           <el-button @click="handleEdit(scope.row)" type="text" size="small" class="table_details">编辑</el-button>
         </template>
@@ -178,18 +178,6 @@ export default {
       })
     },
     // 编辑弹窗
-    /*handleEdit(row) {
-      setTimeout(v => {
-        this.handleForm.subject = this.currentRow.subject;
-        this.handleForm.title = this.currentRow.title;
-        this.handleForm.cardNum = this.currentRow.cardNum;
-        this.handleForm.openingBank = this.currentRow.openingBank;
-        this.handleForm.openingName = this.currentRow.openingName;
-        this.handleForm.cardType = this.currentRow.cardType;
-        this.handleForm.ratio = this.currentRow.ratio;
-        this.dialogSupplierVisible = true;
-      },200)
-    },*/
     handleEdit(row){
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
          "id":row.id
@@ -222,11 +210,34 @@ export default {
     },
     // 保存
     handleSave() {
-      this.$refs['Form'].validate(valid => {
-        if(valid) {
-          
-        }
-      })
+      var that = this
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/finance/collectionaccount/api/save",
+          {
+            "object": {
+              "id": this.multipleSelection[0].id,
+              "cardType": this.handleForm.cardType,
+              "subject": this.handleForm.subject,
+              "title": this.handleForm.title,
+              "cardNum": this.handleForm.cardNum,
+              "openingBank": this.handleForm.openingBank,
+              "openingName": this.handleForm.openingName,
+              "ratio": this.handleForm.ratio,
+            }
+          },
+        )
+        .then(res => {
+          if(res.data.isSuccess == true){                
+            this.getData();
+            this.dialogSupplierVisible = false
+            //this.$refs[formName].resetFields();
+          }else{
+            this.$message.success(res.data.result.message);
+          }
+        })
+        .catch(function (obj) {
+          console.log(obj)
+        })
     },
     /*// 表格选中
     handleChange(val) {
@@ -266,7 +277,7 @@ export default {
 .table-class {
   text-align: center;
   margin-top: 20px;
-  width: 1200px;
+  width: 1000px;
 }
 .item_input {
   width: 250px;
@@ -278,6 +289,7 @@ export default {
 .pages {
   width: 1000px;
   margin-top: 50px;
+  text-align: right;
 }
 .page {
   float: right;

@@ -55,14 +55,17 @@
       <el-table-column prop="orgName" label="所属部门" width="200"align="center"></el-table-column>
       <el-table-column label="操作" width="159" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-          <div class="table_line">|</div>
-          <el-button type="text" class="table_details" size="small">编辑</el-button>
-          <div class="table_line">|</div>
-          <el-button type="text" class="table_editor" size="small">删除</el-button>
+          <span class="cursor" @click="handleClick(scope.row.id)">详情</span>
+          <span>|</span>
+          <span class="cursor">编辑</span>
+          <!-- <span>|</span>
+          <span class="cursor">删除</span>  -->
         </template>
+         
       </el-table-column>
     </el-table>
+    <el-pagination class="pagination" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+     </el-pagination>
     <!--添加弹窗-->
     <el-dialog :title="title" :visible.sync="supplierShow" width="1100px" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'> 
       <div class="addButton">
@@ -439,6 +442,11 @@
           }],
         tableDataBank:[],//账户信息表格
         title:"",//标题
+        //分页
+        currentPage: 1,
+        pagesize: 10, // 设定默认分页每页显示数
+        pageIndex: 1, // 设定当前页数
+        total: 0,
       }
     },
     methods:{
@@ -634,6 +642,16 @@
       confirmSupplier(){
 
       },
+      //分页
+      handleSizeChange(page) {
+        this.currentPage = 1;
+        this.pagesize = page;
+        this.supplierPage();
+      },
+      handleCurrentChange(currentPage) {
+        this.currentPage = currentPage;
+        this.supplierPage();
+      },
       //查询表格
       supplierPage(){
         var that = this
@@ -642,11 +660,13 @@
           {
             "object": {
               "isDeleted": 0,
+              "supplierType": -1,
+              "UserState":-1
             },
             "pageSize":this.pagesize,
             "pageIndex": this.currentPage,
             "isGetAll": true,
-            "id": 0
+            "id": 0,
           },)
           .then(function (obj) {
             that.total = obj.data.total
@@ -709,6 +729,7 @@
 
   /*表格样式*/
   .tableData{width:1140px; margin:20px 0 0 0;}
+  .cursor{cursor: pointer}
   /*添加弹窗样式*/
   .addButton{position:absolute; top:8px; right:10px;}
   .basic{font-size:12pt;}
@@ -717,5 +738,7 @@
   .balk_details{float:left; margin:0 0 0 50px; color:#000;}
   .table_line{float:left; margin:3px 10px 0 10px;}
   .table_editor{float:left;}
+  /*分页*/
+  .pagination{text-align:right;margin:30px 0 50px 0}
 
 </style>
