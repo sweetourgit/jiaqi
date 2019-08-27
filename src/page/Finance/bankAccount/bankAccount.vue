@@ -191,9 +191,8 @@ export default {
       },200)
     },*/
     handleEdit(row){
-      console.log(this.multipleSelection[0].id)
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
-         "id":this.multipleSelection[0].id
+         "id":row.id
         }).then(res => {
             if(res.data.isSuccess == true){
                let data = res.data.object;
