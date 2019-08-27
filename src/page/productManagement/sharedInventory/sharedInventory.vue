@@ -532,7 +532,7 @@ export default {
     },
     /* 库存删除 */
     handDelete(){
-      if(this.planningInfo.length == 0){
+      if(this.planningInfo.length == 0){  
         this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorydelete', {
           "id":this.addStocks.id,
         }).then(res => {
@@ -804,6 +804,6 @@ body {
     line-height: 15px;
 }
 .isAverage>>>.el-input__inner {
-    color: red;
+    color: red !important;
   }
 </style>

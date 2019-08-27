@@ -656,6 +656,7 @@
             "packageID": id
           }
         }).then(res => {
+          console.log(res)
           this.days.forEach(item => {
             let str = this.formatDates(
               item.day.getFullYear(),
@@ -2161,6 +2162,6 @@
     margin-right: 3px;
   }
   .isAverage>>>.el-input__inner {
-    color: red;
+    color: red !important;
   }
 </style>
