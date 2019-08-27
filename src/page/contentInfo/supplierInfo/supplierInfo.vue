@@ -1,42 +1,48 @@
 <template>
   <div class="supplierList">
     <!--搜索栏-->
-    <el-form :model="ruleForm" label-width="120px">
-      <div style="width:1140px; overflow:hidden">
-        <el-form-item label="供应商名称" prop="supplierName" style="float:left;">
-          <el-input class="name_input" v-model="ruleForm.supplierName"placeholder="请输入供应商名称"></el-input>
-        </el-form-item>
-        <el-form-item label="ID" prop="supplierCard" style="float:left; margin:0 90px 0 90px;">
-          <el-input class="name_input" v-model="ruleForm.supplierCard"></el-input>
-        </el-form-item>
-        <el-form-item label="结算方式" prop="settlement" style="float:left;">
-          <el-select v-model="ruleForm.settlement" placeholder="请选择结算方式" class="name_input">
-            <el-option v-for="item in settlementType" :key="item.value":label="item.label":value="item.value"></el-option>
+    <div class="plan">
+      <div style="width:1140px;">
+        <div class="fl">
+          <span class="emptyPlan">供应商名称</span>
+          <el-input v-model="supplierName" class="empty" clearable placeholder="请输入团期计划"></el-input>
+        </div>
+        <div class="fl" style="margin:0 90px 0 90px;">
+          <span class="emptyPlan">ID</span>
+          <el-input v-model="supplierCard" class="empty" clearable placeholder="请输入申请人"></el-input>
+        </div>
+        <div class="fl">
+          <span class="emptyPlan">结算方式</span>
+          <el-select v-model="settlement" placeholder="请输入类型" class="empty">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlementType" :key="item.value" />
           </el-select>
-        </el-form-item>
+        </div>
       </div>
-      <div style="width:1140px; overflow:hidden">
-        <el-form-item label="状态" prop="condition" style="float:left;">
-          <el-select v-model="ruleForm.condition" placeholder="请选择结算方式" class="name_input">
-            <el-option v-for="item in condition" :key="item.value":label="item.label":value="item.value"></el-option>
+      <div style="width:1140px;">
+        <div class="fl">
+          <span class="emptyPlan">状态</span>
+          <el-select v-model="condition" placeholder="请输入类型" class="empty">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of conditionType" :key="item.value" />
           </el-select>
-        </el-form-item>
-        <el-form-item label="类别" prop="category" style="float:left; margin:0 90px 0 90px;">
-           <el-select v-model="ruleForm.category" placeholder="请选择结算方式" class="name_input">
-            <el-option v-for="item in borrowingType" :key="item.value":label="item.label":value="item.value"></el-option>
-           </el-select>
-        </el-form-item>
-        <el-form-item label="可见区域" prop="visibleArea" style="float:left;">
-          <el-select v-model="ruleForm.visibleArea" placeholder="请选择结算方式" class="name_input">
-            <el-option v-for="item in visibleType" :key="item.value":label="item.label":value="item.value"></el-option>
-           </el-select>
-        </el-form-item>
+        </div>
+        <div class="fl" style="margin:0 90px 0 90px;">
+          <span class="emptyPlan">类别</span>
+          <el-select v-model="category" placeholder="请输入类型" class="empty">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of borrowingType" :key="item.value" />
+          </el-select>
+        </div>
+        <div class="fl">
+          <span class="emptyPlan">可见区域</span>
+          <el-select v-model="visibleArea" placeholder="请输入类型" class="empty">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of visibleType" :key="item.value" />
+          </el-select>
+        </div>
       </div>
       <div style="float:right; margin:0 0 30px 0;">
-        <el-button type="primary">搜索</el-button>
+        <el-button type="primary" @click="searchButton()">搜索</el-button>
         <el-button type="primary" plain @click="reset()">重置</el-button>
       </div>
-    </el-form>
+    </div>
     <!--添加按钮-->
     <div style="clear:both;"><el-button type="primary" @click="addSupplier">添加</el-button></div>
     <!--表格-->
@@ -58,10 +64,7 @@
           <span class="cursor" @click="handleClick(scope.row.id)">详情</span>
           <span>|</span>
           <span class="cursor">编辑</span>
-          <!-- <span>|</span>
-          <span class="cursor">删除</span>  -->
         </template>
-         
       </el-table-column>
     </el-table>
     <el-pagination class="pagination" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
@@ -86,7 +89,7 @@
           </el-form-item>
           <el-form-item label="状态" prop="supplierState">
             <el-select v-model="ruleForm.supplierState" placeholder="请选择">
-              <el-option v-for="item in condition" :key="item.value":label="item.label":value="item.value"></el-option>
+              <el-option v-for="item in conditionType" :key="item.value":label="item.label":value="item.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="线路" prop="routeType">
@@ -196,14 +199,33 @@
   export default {
     data(){
       return{
-        ruleForm:{
+        supplierName:'',//搜索框供应商名称
+        supplierCard:'',//搜索框ID
+        settlement:'',//搜索框结算名称
+        condition:'',//搜索框状态
+        category:'',//搜索框类别
+        visibleArea:'',//搜索框可见区域
+        /*ruleForm:{
           supplierName:'',//搜索框供应商名称
           supplierCard:'',//搜索框ID
           settlement:'',//搜索框结算名称
           condition:'',//搜索框状态
           category:'',//搜索框类别
           visibleArea:'',//搜索框可见区域
+        },*/
+        ruleForm:{
+
         },
+        conditionType:[{//状态
+          value:'正常',
+          label:'正常'
+        },{
+          value:'停用',
+          label:'停用'
+        },{
+          value:'待审核',
+          label:'待审核'
+        }],
         ruleForm_01:{
           accountName:'',
           openingBank:'',
@@ -460,12 +482,12 @@
       },
       //搜索框重置
       reset(){
-        this.ruleForm.supplierName = "",//搜索框供应商名称
-        this.ruleForm.supplierCard = "",//搜索框ID
-        this.ruleForm.settlement = "",//搜索框结算名称
-        this.ruleForm.condition = "",//搜索框状态
-        this.ruleForm.category = "",//搜索框类别
-        this.ruleForm.visibleArea = ""//搜索框可见区域
+        this.supplierName = "",//搜索框供应商名称
+        this.supplierCard = "",//搜索框ID
+        this.settlement = "",//搜索框结算名称
+        this.condition = "",//搜索框状态
+        this.category = "",//搜索框类别
+        this.visibleArea = ""//搜索框可见区域
       },
       //结算方式
       settlemen(){
@@ -549,82 +571,6 @@
       addLabelTheme(formName){//添加一条供应商
          this.$refs[formName].validate((valid) => {
           if (valid) {
-            var _this = this;
-            this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierinsert",
-              {
-                object: {
-                  "id": 0,
-                  "createTime": 0,
-                  "code": "string",
-                  "isDeleted": 0,
-                  "userState": this.ruleForm.supplierState,
-                  "name": this.ruleForm.name,
-                  "types": [
-                    {
-                      "id": 0,
-                      "supplierType": 0,
-                      "supplierID": 0
-                    }
-                  ],
-                  "productDirection": "string",
-                  "isMonthly": 1,
-                  "isAgree": 0,
-                  "companyArea": 1,
-                  "productArea": 1,
-                  "leader": "string",
-                  "phone": "string",
-                  "legalPerson": "string",
-                  "handPerson": "string",
-                  "handPhone": "string",
-                  "billName": "string",
-                  "taxNumber": "string",
-                  "expireTime": "2019-08-23T02:26:22.429Z",
-                  "memo": "string",
-                  "banks": [
-                    {
-                      "id": 0,
-                      "createTime": 0,
-                      "code": "string",
-                      "isDeleted": 0,
-                      "cardNumber": "string",
-                      "bankName": "string",
-                      "cardName": "string",
-                      "memo": "string",
-                      "supplierID": 0
-                    }
-                  ],
-                  "files": [
-                    {
-                      "id": 0,
-                      "createTime": 0,
-                      "code": "string",
-                      "isDeleted": 0,
-                      "url": "string",
-                      "supplierID": 0,
-                      "name": "string"
-                    }
-                  ],
-                  "createUser": "string",
-                  "businessID": "string",
-                  "orgs": [
-                    {
-                      "id": 0,
-                      "supplierID": 0,
-                      "orgID": 0,
-                      "orgName": "string"
-                    }
-                  ]
-                }
-              })
-              .then(res => {
-                if(res.data.isSuccess == true){
-                   this.pageList();
-                   this.dialogFormVisible = false
-                   this.$refs[formName].resetFields();
-                }else{
-                   this.$message.success("添加失败");
-                }
-            })
           } else {
             return false;
           }
@@ -652,16 +598,27 @@
         this.currentPage = currentPage;
         this.supplierPage();
       },
+      //搜索
+      searchButton(){
+        this.supplierPage();
+      },
       //查询表格
-      supplierPage(){
+      supplierPage(supplierName=this.supplierName,supplierCard=this.supplierCard,settlement=this.settlement,condition=this.condition,category=this.category,visibleArea=this.visibleArea){
         var that = this
         this.$http.post(
           this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage",
           {
             "object": {
               "isDeleted": 0,
+              "name":supplierName,
+              "id":supplierCard == '' ? 0 : supplierCard,
+              "isMonthly":settlement == '' ? 0 : settlement,
+              "supplierType": category == '' ? -1 : category,
+              "UserState":condition == '' ? -1 : condition,
+              "companyArea":visibleArea == '' ? 1 : visibleArea
+              /*"isDeleted": 0,
               "supplierType": -1,
-              "UserState":-1
+              "UserState":-1,*/
             },
             "pageSize":this.pagesize,
             "pageIndex": this.currentPage,
@@ -726,6 +683,11 @@
   .supplierList{width:1140px;}
   /*搜索框样式*/
   .name_input{width:200px;}
+  .empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; }
+  .fl{float:left; margin: 0 0 20px 0;}
+  .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
+  .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
+  .time{margin: 0 0 0 10px;}
 
   /*表格样式*/
   .tableData{width:1140px; margin:20px 0 0 0;}

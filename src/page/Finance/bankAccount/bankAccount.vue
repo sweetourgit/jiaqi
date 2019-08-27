@@ -14,7 +14,7 @@
     <!-- <el-table :data="dataList" class="table-class" border highlight-current-row :header-cell-style="getRowClass" ref="multipleTable"selection-change="changeFun"> -->
     <el-table :data="dataList" ref="multipleTable" class="table-class" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
       <el-table-column prop="subject" label="科目值" align="center" width="100"></el-table-column>
-      <el-table-column label="类型" align="center" width="100">
+      <el-table-column label="类型" prop="cardType" align="center" width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.cardType===1">收款</span>
           <span v-if="scope.row.cardType===2">付款</span>
@@ -87,14 +87,13 @@ export default {
       //tableHeight:{padding: '0', height: '40px'},
       //tableHead:{color: '#555555'},
       subject: '', // 搜索科目值
-      cardType:0,//搜索状态
+      cardType:'',//搜索状态
       currentPage: 1,      // 默认开始页数
       pagesize:10,         // 每页的数据条数
       total: 100,          // 分页总条数
       dialogSupplierVisible: false,
       currentRow: '',   // 表格选中的值
       isRow: true,
-
       dataList: [],
       handleForm: {
         id: '',
@@ -169,7 +168,7 @@ export default {
         "pageSize": this.pagesize,
         "object": {
           "subject":subject,
-          "cardType":cardType,
+          "cardType":cardType == '' ? 0 : cardType,
         }
       }).then(res => {
         console.log(res)

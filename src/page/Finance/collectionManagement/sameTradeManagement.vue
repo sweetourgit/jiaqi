@@ -15,7 +15,7 @@
                 <el-input v-model="accepter" class="empty" clearable placeholder="请输入申请人"></el-input>
               </div>
               <div class="fl">
-                <span class="emptyPlan">收款时间</span>
+                <span class="emptyPlan">发起时间</span>
                 <el-date-picker v-model="startTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
                 <span class="time">——</span>
                 <el-date-picker v-model="endTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
@@ -24,7 +24,9 @@
             <div style="width:1100px;clear:both;">
               <div style=" float:left">
                    <span class="emptyPlan">类型</span>
-                 <el-cascader :options="settlement" v-model="settlement_01"  class="empty" clearable placeholder="请输入类型"></el-cascader>
+                   <el-select v-model="settlement_01" placeholder="请输入类型" class="empty">
+                     <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlement" :key="item.value" />
+                   </el-select>
               </div>
               <div style="float:right; margin: 0 10px 0 0;">
                 <el-button @click="searchHand()" type="primary">搜索</el-button>

@@ -564,7 +564,9 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       this.tableData2 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
         "object": {
-          name: queryString3
+          name: queryString3,
+          UserState:-1,
+    	  SupplierType:-1,
         }
       }).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
