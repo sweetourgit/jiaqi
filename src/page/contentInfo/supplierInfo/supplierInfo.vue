@@ -561,20 +561,15 @@
           console.log(err);
         })
       },
-      saveModule(formName){ //判断显示编辑或者添加弹窗
+      saveModule(){ //判断显示编辑或者添加弹窗
          if(this.title == "添加供应商"){
-            this.addLabelTheme(formName);
+            this.addLabelTheme();
          }else{
-            this.editLabelTheme(formName);
+            this.editLabelTheme();
          }
       },
-      addLabelTheme(formName){//添加一条供应商
-         this.$refs[formName].validate((valid) => {
-          if (valid) {
-          } else {
-            return false;
-          }
-        });
+      addLabelTheme(){//添加一条供应商
+         
       },
       //添加供应商按钮
       addSupplier(){
@@ -688,6 +683,7 @@
   .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
   .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
   .time{margin: 0 0 0 10px;}
+  .plan{font-size:14px;}
 
   /*表格样式*/
   .tableData{width:1140px; margin:20px 0 0 0;}

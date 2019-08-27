@@ -94,7 +94,7 @@
 			 </el-form-item>
 			 <el-form-item label="借款类型" prop="planType">
 			    <el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
-				  <el-option v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+				  <el-option :disabled="ruleForm.supplier != ''" v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
 			 </el-form-item>
 			 <el-form-item label="借款金额" prop="planAmount" style="clear:both;">
@@ -572,7 +572,8 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
         for (let i = 0; i < res.data.objects.length; i++) {
           this.tableData2.push({
             "value": res.data.objects[i].name,
-            "id": res.data.objects[i].id
+            "id": res.data.objects[i].id,
+            "supplierType": res.data.objects[i].supplierType
           })
           this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
         }
@@ -589,6 +590,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
     },
     departure(item){
       console.log(item)
+      this.ruleForm.planType = item.supplierType
       /*this.productPos = item.id;
       this.originPlace = item.value;*/
       this.productPos = item.id;
@@ -715,10 +717,14 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
         }
       },
       routerHandle4() { //团期计划
-	      this.ruleForm.plan = this.tour_name_pre
-	      this.ruleForm.plan_01 = this.product_name_pre
-	      this.getPaymentdetails(this.planID)
-	      this.dialogFormVisible_plan = false
+	      this.ruleForm.plan = this.tour_name_pre;
+	      this.ruleForm.plan_01 = this.product_name_pre;
+	      this.getPaymentdetails(this.planID);
+	      this.dialogFormVisible_plan = false;
+	      this.plan_stage = '';
+	      this.plan_name = '';
+	      this.plan_data = '';
+	      this.tablePlan = ''
 	    },
       getPaymentdetails(val) {
       var that = this
