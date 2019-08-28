@@ -58,7 +58,8 @@
       </el-table-column>
       <el-table-column prop="supplierTypeEX" label="类型" width="150"align="center"></el-table-column>
       <el-table-column prop="isMonthlyEX" label="结算方式" width="150"align="center"></el-table-column>
-      <el-table-column prop="orgName" label="所属部门" width="200"align="center"></el-table-column>
+      <!-- <el-table-column prop="orgName" label="所属部门" width="200"align="center"></el-table-column> -->
+      <el-table-column prop="companyArea" label="所属部门" width="200"align="center"></el-table-column>
       <el-table-column label="操作" width="159" align="center">
         <template slot-scope="scope">
           <span class="cursor" @click="handleClick(scope.row.id)">详情</span>
@@ -73,10 +74,10 @@
     <el-dialog :title="title" :visible.sync="supplierShow" width="1100px" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'> 
       <div class="addButton">
         <el-button @click="closeSupplier()">取消</el-button>
-        <el-button @click="saveModule('ruleForm')" type="primary">确定</el-button>
+        <el-button @click="saveModule('rformA')" type="primary">确定</el-button>
       </div>
       <div class="basic">基本信息</div>
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" style="overflow:hidden; margin:20px 0 0 0;">
+      <el-form :model="ruleForm" :rules="rules" ref="rformA" label-width="120px" style="overflow:hidden; margin:20px 0 0 0;">
         <div style="float:left;">
           <el-form-item label="供应商名称" prop="name">
             <el-input class="name_input" v-model="ruleForm.name"></el-input>
@@ -448,18 +449,78 @@
          }
       },
       addLabelTheme(formName){//添加一条供应商
-         this.$refs[formName].validate((valid) => {
+         /*this.$refs[formName].validate((valid) => {
           if (valid) {
             var _this = this;
             this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierinsert",
               {
-                object: {
+                "object": {
                   "id": 0,
+                  "createTime": 0,
+                  "code": "string",
+                  "isDeleted": 0,
+                  "userState": this.ruleForm.supplierState,
+                  "name": this.ruleForm.name,
+                  "types": [
+                    {
+                      "id": 0,
+                      "supplierType": 0,
+                      "supplierID": 0
+                    }
+                  ],
+                  "productDirection": "string",
+                  "isMonthly": 1,
+                  "isAgree": 0,
+                  "companyArea": 1,
+                  "productArea": 1,
+                  "leader": "string",
+                  "phone": "string",
+                  "legalPerson": "string",
+                  "handPerson": "string",
+                  "handPhone": "string",
+                  "billName": "string",
+                  "taxNumber": "string",
+                  "expireTime": "2019-08-28T06:03:18.101Z",
+                  "memo": "string",
+                  "banks": [
+                    {
+                      "id": 0,
+                      "createTime": 0,
+                      "code": "string",
+                      "isDeleted": 0,
+                      "cardNumber": "string",
+                      "bankName": "string",
+                      "cardName": "string",
+                      "memo": "string",
+                      "supplierID": 0
+                    }
+                  ],
+                  "files": [
+                    {
+                      "id": 0,
+                      "createTime": 0,
+                      "code": "string",
+                      "isDeleted": 0,
+                      "url": "string",
+                      "supplierID": 0,
+                      "name": "string"
+                    }
+                  ],
+                  "createUser": "string",
+                  "businessID": "string",
+                  "orgs": [
+                    {
+                      "id": 0,
+                      "supplierID": 0,
+                      "orgID": 0,
+                      "orgName": "string"
+                    }
+                  ]
                 }
               })
               .then(res => {
                 if(res.data.isSuccess == true){
-                   //this.pageList();
+                   this.supplierPage();
                    this.supplierShow = false
                    this.$refs[formName].resetFields();
                 }else{
@@ -469,7 +530,7 @@
           } else {
             return false;
           }
-        });
+        });*/
       },
       //申请
       confirmSupplier(){
