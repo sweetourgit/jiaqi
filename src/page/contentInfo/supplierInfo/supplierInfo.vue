@@ -108,7 +108,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="使用部门" prop="userDepartment">
-            <el-cascader :options="branch" v-model="ruleForm.userDepartment" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>
+            <el-cascader  v-model="ruleForm.userDepartment" :props="props" clearable></el-cascader>
           </el-form-item>
           <el-form-item label="产品主要方向" prop="orientation">
             <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
@@ -155,21 +155,21 @@
         </div>
       </el-form>
       <div class="basic" style="margin:15px 0 0 0;">账户信息</div>
-      <el-form :model="ruleForm_01" :rules="rules" ref="ruleForm" label-width="120px" style="overflow:hidden; margin:20px 0 0 0;">
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" style="overflow:hidden; margin:20px 0 0 0;">
         <div style="float:left;">
           <el-form-item label="汇款户名" prop="accountName">
-            <el-input class="name_input" v-model="ruleForm_01.accountName"></el-input>
+            <el-input class="name_input" v-model="ruleForm.accountName"></el-input>
           </el-form-item>
           <el-form-item label="开户行" prop="openingBank">
-            <el-input class="name_input" v-model="ruleForm_01.openingBank"></el-input>
+            <el-input class="name_input" v-model="ruleForm.openingBank"></el-input>
           </el-form-item>
         </div>
         <div style="float:right; margin:0 200px 0 0; overflow:hidden;">
           <el-form-item label="账号" prop="account">
-            <el-input class="name_input" v-model="ruleForm_01.account"></el-input>
+            <el-input class="name_input" v-model="ruleForm.account"></el-input>
           </el-form-item>
           <el-form-item label="备注" prop="note">
-            <el-input class="name_input" v-model="ruleForm_01.note"></el-input>
+            <el-input class="name_input" v-model="ruleForm.note"></el-input>
           </el-form-item>
         </div>
       </el-form>
@@ -196,9 +196,39 @@
 </template>
 
 <script>
+  let id = 0;
   export default {
     data(){
       return{
+        aaa: 1,
+props: {
+  lazy: true,
+  _this: this,
+  multiple: true, checkStrictly: true,
+  lazyLoad(node, resolve) {
+    const { level } = node;
+    let nId = 204;
+    if (level > 0) {
+      nId = node.value;
+    }
+    console.log(nId);
+    this._this.$http
+    .post(this._this.GLOBAL.serverSrc + "/org/api/deptlist", {
+      object: {
+        ParentID: nId
+      }
+    })
+    .then(res => {
+    let data = res.data.objects.map(v => {
+      return {
+        label: v.orgName,
+        value: v.id
+      };
+    });
+    resolve(data);
+    });
+  }
+},
         supplierName:'',//搜索框供应商名称
         supplierCard:'',//搜索框ID
         settlement:'',//搜索框结算名称
@@ -214,7 +244,29 @@
           visibleArea:'',//搜索框可见区域
         },*/
         ruleForm:{
-
+          name:'',
+          visible:'',
+          supplierState:'',
+          routeType:'',
+          supplierType:'',
+          supplierWay:'',
+          userDepartment:'',
+          orientation:'',
+          expireData:'',
+          supplierUpload:'',
+          legalPerson:'',
+          pactNumber:'',
+          handlers:'',
+          handlersPhone:'',
+          principal:'',
+          principalPhone:'',
+          operator:'',
+          agreement:'',
+          remark:'',
+          accountName:'',
+          openingBank:'',
+          account:'',
+          note:''
         },
         conditionType:[{//状态
           value:'正常',
@@ -454,6 +506,7 @@
             label: '组件交互文档'
           }]
         }],
+
         fileList: [],//添加供应商上传附件
         agreement:[{//供应商协议
           value:'是',
@@ -561,14 +614,44 @@
           console.log(err);
         })
       },
-      saveModule(){ //判断显示编辑或者添加弹窗
+      /*ccc(){
+        props: {
+          lazy: true,
+          _this: this,
+          lazyLoad(node, resolve) {
+          const { level } = node;
+          let nId = 204;
+          if (level > 0) {
+            nId = node.value;
+          }
+          console.log(nId);
+          this._this.$http
+          .post(this._this.GLOBAL.serverSrc + "/org/api/deptlist", {
+            object: {
+              ParentID: nId
+            }
+          })
+          .then(res => {
+          let data = res.data.objects.map(v => {
+            return {
+              label: v.orgName,
+              value: v.id
+            };
+          });
+          resolve(data);
+          });
+          // }, 100);
+          }
+}
+      },*/
+      saveModule(formName){ //判断显示编辑或者添加弹窗
          if(this.title == "添加供应商"){
-            this.addLabelTheme();
+            this.addLabelTheme(formName);
          }else{
-            this.editLabelTheme();
+            this.editLabelTheme(formName);
          }
       },
-      addLabelTheme(){//添加一条供应商
+      addLabelTheme(formName){//添加一条供应商
          
       },
       //添加供应商按钮
@@ -630,19 +713,19 @@
       },
       //清空表单
       emptyForm(){
-        this.ruleForm_01.accountName = "",
-        this.ruleForm_01.openingBank = "",
-        this.ruleForm_01.account = "",
-        this.ruleForm_01.note = ""
+        this.ruleForm.accountName = "",
+        this.ruleForm.openingBank = "",
+        this.ruleForm.account = "",
+        this.ruleForm.note = ""
       },
       //添加账户
       addEmty(index, row){
-        if(this.ruleForm_01.accountName != '' && this.ruleForm_01.openingBank != '' && this.ruleForm_01.account != '' && this.ruleForm_01.note != ''){
+        if(this.ruleForm.accountName != '' && this.ruleForm.openingBank != '' && this.ruleForm.account != '' && this.ruleForm.note != ''){
           this.tableDataBank.push({
-              "cardName" : this.ruleForm_01.accountName,
-              "bankName" : this.ruleForm_01.openingBank,
-              "cardNumber" : this.ruleForm_01.account,
-              "memo" : this.ruleForm_01.note
+              "cardName" : this.ruleForm.accountName,
+              "bankName" : this.ruleForm.openingBank,
+              "cardNumber" : this.ruleForm.account,
+              "memo" : this.ruleForm.note
           });
           this.emptyForm();
         }
@@ -658,6 +741,10 @@
       deleteEmty(index, rows){
         rows.splice(index, 1);
       },
+
+
+      
+      
       
     },
     
@@ -669,7 +756,10 @@
       this.settlemen();//结算方式
       this.visible();//可见区域
       this.trails();//线路
+      this.ccc();
     },
+
+
  
   }
 </script>

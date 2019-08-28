@@ -58,8 +58,8 @@
 	      <el-table-column label="操作" width="180" align="center">
 	      	<template slot-scope="scope">
 	          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-	          <span v-if="scope.row.checkTypeEX=='通过'">|</span>
-	          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过'" type="text" size="small" class="table_details">付款账户</el-button>
+	          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0">|</span>
+	          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0" type="text" size="small" class="table_details">付款账户</el-button>
 	        </template>
 	      </el-table-column>
 	    </el-table>
