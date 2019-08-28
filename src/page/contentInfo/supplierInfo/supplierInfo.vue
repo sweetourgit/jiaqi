@@ -449,7 +449,7 @@
          }
       },
       addLabelTheme(formName){//添加一条供应商
-         /*this.$refs[formName].validate((valid) => {
+         this.$refs[formName].validate((valid) => {
           if (valid) {
             var _this = this;
             this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierinsert",
@@ -457,7 +457,6 @@
                 "object": {
                   "id": 0,
                   "createTime": 0,
-                  "code": "string",
                   "isDeleted": 0,
                   "userState": this.ruleForm.supplierState,
                   "name": this.ruleForm.name,
@@ -468,20 +467,20 @@
                       "supplierID": 0
                     }
                   ],
-                  "productDirection": "string",
-                  "isMonthly": 1,
-                  "isAgree": 0,
-                  "companyArea": 1,
-                  "productArea": 1,
-                  "leader": "string",
-                  "phone": "string",
-                  "legalPerson": "string",
-                  "handPerson": "string",
-                  "handPhone": "string",
-                  "billName": "string",
-                  "taxNumber": "string",
-                  "expireTime": "2019-08-28T06:03:18.101Z",
-                  "memo": "string",
+                  "productDirection": this.ruleForm.orientation,
+                  "isMonthly": this.ruleForm.supplierWay,
+                  "isAgree": this.ruleForm.agreement,
+                  "companyArea": this.ruleForm.visible,
+                  "productArea": this.ruleForm.routeType,
+                  "leader": this.ruleForm.principal,
+                  "phone": this.ruleForm.principalPhone,
+                  "legalPerson": this.ruleForm.legalPerson,
+                  "handPerson": this.ruleForm.handlers,
+                  "handPhone": this.ruleForm.handlersPhone,
+                  "billName": this.ruleForm.operator,
+                  "taxNumber": this.ruleForm.pactNumber,
+                  "expireTime": "2019-08-28",
+                  "memo": this.ruleForm.remark,
                   "banks": [
                     {
                       "id": 0,
@@ -506,16 +505,6 @@
                       "name": "string"
                     }
                   ],
-                  "createUser": "string",
-                  "businessID": "string",
-                  "orgs": [
-                    {
-                      "id": 0,
-                      "supplierID": 0,
-                      "orgID": 0,
-                      "orgName": "string"
-                    }
-                  ]
                 }
               })
               .then(res => {
@@ -530,7 +519,7 @@
           } else {
             return false;
           }
-        });*/
+        });
       },
       //申请
       confirmSupplier(){
