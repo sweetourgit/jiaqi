@@ -85,9 +85,6 @@
             <!-- <el-select v-model="ruleForm.visible" placeholder="请选择">
               <el-option v-for="item in visibleType" :key="item.value":label="item.label":value="item.value"></el-option>
             </el-select> -->
-            <!-- <el-select v-model="ruleForm.visible" placeholder="请选择" multiple :props="{multiple: true, checkStrictly: true}">
-              <el-option v-for="item in visibleType" :key="item.value":label="item.label":value="item.value"></el-option>
-            </el-select> -->
             <el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>
           </el-form-item>
           <el-form-item label="状态" prop="supplierState">
@@ -238,14 +235,6 @@
         condition:'',//搜索框状态
         category:'',//搜索框类别
         visibleArea:'',//搜索框可见区域
-        /*ruleForm:{
-          supplierName:'',//搜索框供应商名称
-          supplierCard:'',//搜索框ID
-          settlement:'',//搜索框结算名称
-          condition:'',//搜索框状态
-          category:'',//搜索框类别
-          visibleArea:'',//搜索框可见区域
-        },*/
         ruleForm:{
           name:'',
           visible:'',
@@ -443,6 +432,14 @@
           console.log(err);
         })
       },
+      //添加供应商按钮
+      addSupplier(){
+        this.title="添加供应商";
+        this.supplierShow = true;
+      },
+      closeSupplier(){
+        this.supplierShow = false;
+      },
       saveModule(formName){ //判断显示编辑或者添加弹窗
          if(this.title == "添加供应商"){
             this.addLabelTheme(formName);
@@ -451,15 +448,28 @@
          }
       },
       addLabelTheme(formName){//添加一条供应商
-         
-      },
-      //添加供应商按钮
-      addSupplier(){
-        this.title="添加供应商";
-        this.supplierShow = true;
-      },
-      closeSupplier(){
-        this.supplierShow = false;
+         this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var _this = this;
+            this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierinsert",
+              {
+                object: {
+                  "id": 0,
+                }
+              })
+              .then(res => {
+                if(res.data.isSuccess == true){
+                   //this.pageList();
+                   this.supplierShow = false
+                   this.$refs[formName].resetFields();
+                }else{
+                   this.$message.success("添加失败");
+                }
+            })
+          } else {
+            return false;
+          }
+        });
       },
       //申请
       confirmSupplier(){

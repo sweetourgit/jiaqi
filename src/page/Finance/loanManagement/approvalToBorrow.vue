@@ -304,7 +304,6 @@
       pageList(){
         var that = this
         var arr = []
-        
         //workflowCode获取FlowModel传递
         this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=FlowModel')
         .then(obj => {
