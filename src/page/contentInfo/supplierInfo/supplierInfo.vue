@@ -82,9 +82,13 @@
             <el-input class="name_input" v-model="ruleForm.name"></el-input>
           </el-form-item>
           <el-form-item label="公司可见性" prop="visible">
-            <el-select v-model="ruleForm.visible" placeholder="请选择">
+            <!-- <el-select v-model="ruleForm.visible" placeholder="请选择">
               <el-option v-for="item in visibleType" :key="item.value":label="item.label":value="item.value"></el-option>
-            </el-select>
+            </el-select> -->
+            <!-- <el-select v-model="ruleForm.visible" placeholder="请选择" multiple :props="{multiple: true, checkStrictly: true}">
+              <el-option v-for="item in visibleType" :key="item.value":label="item.label":value="item.value"></el-option>
+            </el-select> -->
+            <el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>
           </el-form-item>
           <el-form-item label="状态" prop="supplierState">
             <el-select v-model="ruleForm.supplierState" placeholder="请选择">
@@ -106,9 +110,9 @@
               <el-option v-for="item in settlementType" :key="item.value":label="item.label":value="item.value"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="使用部门" prop="userDepartment">
-            <el-cascader :disabled="ruleForm.visible != ''" :load="lazyLoad" v-model="ruleForm.userDepartment" :props="props" clearable></el-cascader>
-          </el-form-item>
+          <!-- <el-form-item label="使用部门" prop="userDepartment">
+            <el-cascader v-model="ruleForm.userDepartment" :props="props" clearable></el-cascader>
+          </el-form-item> -->
           <el-form-item label="产品主要方向" prop="orientation">
             <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
           </el-form-item>
@@ -204,6 +208,29 @@
           lazy: true,
           _this: this,
           multiple: true, checkStrictly: true,
+          lazyLoad(node, resolve) {
+            const { level } = node;
+            let nId = 204;
+            if (level > 0) {
+              nId = node.value;
+            }
+            console.log(nId);
+            this._this.$http
+            .post(this._this.GLOBAL.serverSrc + "/org/api/deptlist", {
+              object: {
+                ParentID: nId
+              }
+            })
+            .then(res => {
+            let data = res.data.objects.map(v => {
+              return {
+                label: v.orgName,
+                value: v.id,
+              };
+            });
+            resolve(data);
+            });
+          }
         },
         supplierName:'',//搜索框供应商名称
         supplierCard:'',//搜索框ID
@@ -361,7 +388,7 @@
         })
       },
       //可见区域
-      visible(){
+      /*visible(){
         this.visibleType = [];
         this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=CompanyArea')
         .then(res => {
@@ -376,6 +403,26 @@
           //this.borrowingType =  res.data.objects;
         }).catch(function(err){
           console.log(err);
+        })
+      },*/
+      visible(node, resolve){
+        this.visibleType = [];
+        let nId = 204;
+        this.$http.post(this.GLOBAL.serverSrc + '/org/api/deptlist', {
+          "object": {
+            "ParentID": nId,
+            "isDeleted": 0
+          },
+        })
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.visibleType.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].orgName
+            })
+          }
+        }).then(res =>{
+          //this.visibleType =  res.data.objects;
         })
       },
       //线路
@@ -395,30 +442,6 @@
         }).catch(function(err){
           console.log(err);
         })
-      },
-      //使用部门
-      lazyLoad(node, resolve) {
-        const { level } = node;
-        let nId = 204;
-        if (level > 0) {
-          nId = node.value;
-        }
-        console.log(nId);
-        this._this.$http
-        .post(this._this.GLOBAL.serverSrc + "/org/api/deptlist", {
-          object: {
-            ParentID: nId
-          }
-        })
-        .then(res => {
-        let data = res.data.objects.map(v => {
-          return {
-            label: v.orgName,
-            value: v.id,
-          };
-        });
-        resolve(data);
-        });
       },
       saveModule(formName){ //判断显示编辑或者添加弹窗
          if(this.title == "添加供应商"){

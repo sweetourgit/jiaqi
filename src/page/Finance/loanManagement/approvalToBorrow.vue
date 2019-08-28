@@ -311,7 +311,7 @@
           console.log(obj)
           this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
                 //"userCode": sessionStorage.getItem('userCode'),
-                "userCode": "rbop01",
+                "userCode": sessionStorage.getItem('userCode'),
                 "startTime": this.startTime?this.startTime:"1970-07-23T01:30:54.452Z",
                 "endTime": this.endTime?this.endTime:new Date(),
                 "startIndex": this.currentPage,  //页码
