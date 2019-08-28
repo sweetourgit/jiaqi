@@ -107,7 +107,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="使用部门" prop="userDepartment">
-            <el-cascader :disabled="ruleForm.visible != ''" v-model="ruleForm.userDepartment" :props="props" clearable></el-cascader>
+            <el-cascader :disabled="ruleForm.visible != ''" :load="lazyLoad" v-model="ruleForm.userDepartment" :props="props" clearable></el-cascader>
           </el-form-item>
           <el-form-item label="产品主要方向" prop="orientation">
             <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
@@ -204,29 +204,6 @@
           lazy: true,
           _this: this,
           multiple: true, checkStrictly: true,
-          lazyLoad(node, resolve) {
-            const { level } = node;
-            let nId = 204;
-            if (level > 0) {
-              nId = node.value;
-            }
-            console.log(nId);
-            this._this.$http
-            .post(this._this.GLOBAL.serverSrc + "/org/api/deptlist", {
-              object: {
-                ParentID: nId
-              }
-            })
-            .then(res => {
-            let data = res.data.objects.map(v => {
-              return {
-                label: v.orgName,
-                value: v.id,
-              };
-            });
-            resolve(data);
-            });
-          }
         },
         supplierName:'',//搜索框供应商名称
         supplierCard:'',//搜索框ID
@@ -418,6 +395,30 @@
         }).catch(function(err){
           console.log(err);
         })
+      },
+      //使用部门
+      lazyLoad(node, resolve) {
+        const { level } = node;
+        let nId = 204;
+        if (level > 0) {
+          nId = node.value;
+        }
+        console.log(nId);
+        this._this.$http
+        .post(this._this.GLOBAL.serverSrc + "/org/api/deptlist", {
+          object: {
+            ParentID: nId
+          }
+        })
+        .then(res => {
+        let data = res.data.objects.map(v => {
+          return {
+            label: v.orgName,
+            value: v.id,
+          };
+        });
+        resolve(data);
+        });
       },
       saveModule(formName){ //判断显示编辑或者添加弹窗
          if(this.title == "添加供应商"){
