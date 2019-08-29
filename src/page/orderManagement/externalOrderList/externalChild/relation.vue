@@ -89,7 +89,8 @@ export default {
         "order_sn": order_sn,
         "tour_no": this.ruleForm.tour,
         "product_name": this.ruleForm.title,
-        "create_uid": sessionStorage.getItem('id')
+        "create_uid": sessionStorage.getItem('id'),
+        "org_id": sessionStorage.getItem('orgID')
       }).then(res => {
         console.log(res);
         if (res.data.code == 200) {

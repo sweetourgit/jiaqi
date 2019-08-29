@@ -33,8 +33,9 @@
               <!--<el-option value="仅erp上线">仅erp上线</el-option>-->
               <!--<el-option value="下线">下线</el-option>-->
             <!--</el-select>-->
-            <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
             <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
+            <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
+
           </div>
         </div>
         <el-button type="primary" @click="routerHandle" style="display: block">添加产品</el-button>
@@ -246,7 +247,8 @@
           "id": this.productID,
           "product_name": this.productName,
           "destination_id": this.destinationID,
-          "create_uid": this.operatorID
+          "create_uid": this.operatorID,
+          "org_id": sessionStorage.getItem('orgID')
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log(response);

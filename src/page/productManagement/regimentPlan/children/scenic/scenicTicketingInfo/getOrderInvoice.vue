@@ -241,7 +241,8 @@ export default {
         "address": this.ruleForm.address,
         "bank": this.ruleForm.bank,
         "file": files,
-        "order_list": orderList
+        "order_list": orderList,
+        "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
         alert(JSON.stringify(response));
         if (response.data.code == '200') {

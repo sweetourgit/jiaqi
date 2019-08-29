@@ -256,7 +256,8 @@
           ticketPerson: '',
           ticketPhone: '',
           distributors: ''
-        }
+        };
+        this.loadData();
       },
       handleSizeChange(val) {
         this.pageSize = val;
@@ -309,7 +310,9 @@
           "contact_name": this.activeForm.ticketPerson,
           "contact_phone": this.activeForm.ticketPhone,
           "distributor": this.activeForm.distributors,
-          "pay_type": this.activeForm.typePay
+          "pay_type": this.activeForm.typePay,
+          "import_status": 1,
+          "org_id": sessionStorage.getItem('orgID')
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {

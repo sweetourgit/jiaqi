@@ -175,7 +175,8 @@ export default {
         "id": this.info.id,
         "tour_no": this.$parent.param,
         "create_uid": sessionStorage.getItem("id"),
-        "order_list": orderList
+        "order_list": orderList,
+        "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
         console.log(response.data);
         if (response.data.code == '200') {

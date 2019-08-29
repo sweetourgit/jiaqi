@@ -147,6 +147,7 @@ export default {
             "product_name": this.ruleForm.productNamel, //基本信息产品名称,
             "create_uid": sessionStorage.getItem('id'),
             "destinations": object,
+            "org_id": sessionStorage.getItem('orgID')
           }, ).then(function(response) {
             if (response.data.code == '200') {
               _this.$message.success("添加成功");

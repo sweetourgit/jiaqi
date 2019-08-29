@@ -145,7 +145,8 @@ export default {
               "product_name": this.ruleForm.title,
               "begin_at": this.ruleForm.startTime,
               "end_at": this.ruleForm.endTime,
-              "create_uid": sessionStorage.getItem('id')
+              "create_uid": sessionStorage.getItem('id'),
+              "org_id": sessionStorage.getItem('orgID')
             }, {
               emulateJSON: true
             }).then(res => {
@@ -182,7 +183,8 @@ export default {
         "product_name": "",
         "destination_id": 0,
         "create_account": "",
-        "limit": 0
+        "limit": 0,
+        "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
         if (response.data.code == '200') {
           const productList = response.data.data.list;

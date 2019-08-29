@@ -4,19 +4,28 @@
     <el-dialog title="查看" :visible="dialogFormVisible" width=90% @close="closeAdd">
       <div class="table_trip" style="width: 100%;">
         <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="true" :header-cell-style="getRowClass">
-          <el-table-column prop="oid" label="订单ID" align="center" >
+          <el-table-column prop="order_sn" label="订单ID" align="center" >
           </el-table-column>
-          <el-table-column prop="title" label="分销商" align="center">
+          <el-table-column prop="distributor" label="分销商" align="center">
           </el-table-column>
-          <el-table-column prop="type" label="产品名称" align="center">
+          <el-table-column prop="product_name" label="产品名称" align="center">
           </el-table-column>
-          <el-table-column prop="time" label="下单时间" align="center">
+          <el-table-column prop="sale_at" label="下单时间" align="center">
           </el-table-column>
           <el-table-column prop="money" label="费用" align="center">
+            <template slot-scope="scope">
+              <p style="margin: 0;">收入：{{scope.row.income}}</p>
+              <p style="margin: 0;">单票成本：{{scope.row.single_cost}}</p>
+              <p style="margin: 0;">总成本：{{scope.row.cost}}</p>
+            </template>
           </el-table-column>
-          <el-table-column prop="number" label="数量" align="center">
+          <el-table-column prop="quantity" label="数量" align="center">
           </el-table-column>
           <el-table-column prop="customer" label="客人信息" align="center">
+            <template slot-scope="scope">
+              <span>取票人:{{scope.row.contact_name}}</span><br>
+              <span>手机:{{scope.row.contact_phone}}</span>
+            </template>
           </el-table-column>
         </el-table>
         <el-button type="primary" @click="matchBtn" round style="display: block;margin: 18px auto;float: none;">匹配</el-button>
@@ -53,12 +62,13 @@
   </div>
 </template>
 <script type="text/javascript">
+  import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "recognitionSee",
     components: {},
     props: {
       dialogFormVisible: false,
-      infoId: '',
+      orderID: '',
     },
     data() {
       return {
@@ -73,11 +83,11 @@
       // 计算属性的 getter
     },
     watch: {
-//      infoId: {
-//        handler:function(){
-//          this.loadData()
-//        }
-//      }
+      orderID: {
+        handler:function(){
+          this.loadData()
+        }
+      }
     },
     methods: {
       // 表格头部背景颜色
@@ -97,22 +107,30 @@
 
       },
       loadData(){
-        console.log(this.infoId);
+        console.log(this.orderID);
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/importlist", {
-          "pageIndex": this.pageIndex,
-          "pageSize": this.pageSize,
-          "start_time": this.activeForm.startTime,
-          "end_time": this.activeForm.endTime,
-          "create_account": this.activeForm.user
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recorderinfo", {
+          "order_sn": this.orderID
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log(response);
-            that.tableData = response.data.data.list;
-            that.total = response.data.data.total - 0;
-            that.tableData.forEach(function (item, index, arr) {
-              item.import_at = formatDate(new Date(item.import_at*1000));
-            })
+            response.data.data.sale_at = formatDate(new Date(response.data.data.sale_at*1000));
+            that.tableData.push(response.data.data);
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+
+
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recorderinfo", {
+          "order_sn": this.orderID
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log(response);
+            response.data.data.sale_at = formatDate(new Date(response.data.data.sale_at*1000));
+            that.tableData.push(response.data.data);
           } else {
             that.$message.success("加载数据失败~");
           }

@@ -139,7 +139,8 @@ export default {
         "pageSize": this.pageSize,
         "start_time": this.activeForm.startTime,
         "end_time": this.activeForm.endTime,
-        "create_account": this.activeForm.user
+        "create_account": this.activeForm.user,
+        "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
         if (response.data.code == '200') {
           console.log(response);

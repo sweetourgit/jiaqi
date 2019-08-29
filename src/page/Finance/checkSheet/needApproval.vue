@@ -14,8 +14,9 @@
           <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
           <div style="margin-top: 20px;"></div>
           <span class="search_style">产品名称：</span> <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
-          <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
           <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
+          <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
+
         </div>
         <div class="table_style">
           <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">

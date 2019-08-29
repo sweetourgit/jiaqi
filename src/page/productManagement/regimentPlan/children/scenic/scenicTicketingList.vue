@@ -277,7 +277,8 @@ export default {
         "start_time": this.activeForm.startTime,
         "end_time": this.activeForm.endTime,
         "create_uid": this.activeForm.userID,
-        "bill_status": this.activeForm.status
+        "bill_status": this.activeForm.status,
+        "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
           console.log(response);
         if (response.data.code == '200') {

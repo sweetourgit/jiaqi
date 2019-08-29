@@ -241,16 +241,16 @@
 //        console.log(this.multipleSelection);
 //        console.log(this.multipleSelection.length);
 //        console.log(this.multipleSelection[0]);
-        let arr = [];
+        let orderStr = '';
         for(let i = 0; i < this.multipleSelection.length; i++){
-          arr.push(this.multipleSelection[i]);
+          orderStr += this.multipleSelection[i].order_sn + ',';
         }
+        orderStr = orderStr.substr(0,orderStr.length-1);
 //        console.log(arr);
         this.$router.push({
           path: "/recognitionMsg",
           name: '订单管理/外部订单/认收款信息',
-          params: this.multipleSelection,
-          query: arr
+          params: {'ids': orderStr}
         });
       },
       close() {
@@ -336,7 +336,8 @@
           ticketPerson: '',
           ticketPhone: '',
           distributors: ''
-        }
+        };
+        this.loadData();
       },
       handleSizeChange(val) {
         this.pageSize = val;
@@ -389,7 +390,9 @@
           "contact_name": this.activeForm.ticketPerson,
           "contact_phone": this.activeForm.ticketPhone,
           "distributor": this.activeForm.distributors,
-          "pay_type": this.activeForm.typePay
+          "pay_type": this.activeForm.typePay,
+          "import_status": 2,
+          "org_id": sessionStorage.getItem('orgID')
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {

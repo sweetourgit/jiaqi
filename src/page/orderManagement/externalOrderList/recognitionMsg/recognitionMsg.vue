@@ -47,30 +47,23 @@
           </el-table-column>
           <el-table-column prop="import_at" label="导入时间" align="center">
           </el-table-column>
-          <el-table-column prop="is_relate_pro" label="关联产品" align="center">
+          <el-table-column prop="bill_status" label="匹配/未匹配" align="center">
             <template slot-scope="scope">
-              <p v-if="scope.row.is_relate_pro == 1">未关联产品</p>
-              <p v-if="scope.row.is_relate_pro == 2">{{scope.row.relate_pro_name}}</p>
-            </template>
-          </el-table-column>
-          <el-table-column prop="bill_status" label="报账状态" align="center">
-            <template slot-scope="scope">
-              <p v-if="scope.row.bill_status == 1">未报账</p>
-              <p v-if="scope.row.bill_status == 2">报账中</p>
-              <p v-if="scope.row.bill_status == 3">已报账</p>
+              <p v-if="scope.row.is_match == 1">未匹配</p>
+              <p v-if="scope.row.is_match == 2">已匹配</p>
             </template>
           </el-table-column>
           <el-table-column prop="option" label="操作" align="center">
             <template slot-scope="scope">
-              <el-button type="text" @click="showBtn">查看</el-button>
-              <el-button type="text" @click="undoBtn">撤销</el-button>
-              <el-button type="text" @click="recognitionBtn(scope.row)">认收款</el-button>
+              <el-button type="text" @click="showBtn(scope.row)" v-if="scope.row.is_match == 2">查看</el-button>
+              <el-button type="text" @click="undoBtn(scope.row)" v-if="scope.row.is_match == 2">撤销</el-button>
+              <el-button type="text" @click="recognitionBtn(scope.row)" v-if="scope.row.is_match == 1">认收款</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
-    <recognitionSee :dialogFormVisible="dialogFormVisible" @close="close"></recognitionSee>
+    <recognitionSee :dialogFormVisible="dialogFormVisible" @close="close" :orderID="orderID"></recognitionSee>
     <recognitionDo :dialogFormVisible2="dialogFormVisible2" @close="close" :info="info"></recognitionDo>
   </div>
 </template>
@@ -92,6 +85,7 @@
         dialogFormVisible: false,
         dialogFormVisible2: false,
         info: '',
+        orderID: '',
 
         tableData: [],
         multipleSelection: [],
@@ -126,7 +120,8 @@
         this.pid = ''
       },
 //      查看
-      showBtn(){
+      showBtn(row){
+        this.orderID = row.order_sn;
         this.dialogFormVisible = true;
       },
       close(){
@@ -134,15 +129,27 @@
         this.dialogFormVisible2 = false;
       },
 //      撤销
-      undoBtn(){
+      undoBtn(row){
+        const that = this;
         this.$confirm('是否撤销该笔认款?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '撤销成功!'
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/revokerec", {
+            "order_sn": row.order_sn
+          }, ).then(function(response) {
+            if (response.data.code == '200') {
+              console.log(response);
+              that.$message({
+                type: 'success',
+                message: '撤销成功!'
+              });
+            } else {
+              that.$message.success("加载数据失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
           });
         }).catch(() => {
           this.$message({
@@ -153,14 +160,35 @@
       },
 //      认收款
       recognitionBtn(row){
-        this.info = row;
+        this.info = row.order_sn;
         this.dialogFormVisible2 = true;
-      }
+      },
+
+      loadData(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/reclist", {
+          "order_sn": this.$route.params.ids
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log(response);
+            that.tableData = response.data.data;
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
     },
     created(){
-//      console.log(this.$route.params);
-//      console.log(this.$route.query);
-      this.tableData = this.$route.query;
+      console.log(this.$route.params);
+      console.log(this.$route.query);
+      if(this.$route.params.ids){
+        this.loadData();
+      }else{
+        this.cancalBtn();
+      }
+
     }
   }
 

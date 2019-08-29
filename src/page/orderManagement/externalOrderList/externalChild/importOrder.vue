@@ -11,12 +11,12 @@
             </el-select>
           </el-form-item>
           <br /><br />
-          <el-form-item label="平台订单" prop="platformOrder" label-width="120px" style="float:left;" v-if="ruleForm.type != 2">
+          <el-form-item label="平台订单" prop="platformOrder" label-width="120px" style="float:left;" v-if="ruleForm.type == 1">
             <el-upload ref="upload" class="upload-demo" :action="UploadUrl()" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :limit="1" :on-exceed="handleExceed" :file-list="fileList" accept="">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item><br />
-          <el-form-item label="票付通订单" prop="ticketOrder" label-width="120px" style="float:left;margin-top: 20px;">
+          <el-form-item label="票付通订单" prop="ticketOrder" label-width="120px" style="float:left;margin-top: 20px;" v-if="ruleForm.type == 2">
             <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :on-success="handleSuccess2" :on-error="handleError2" :on-remove="handleRemove2" :before-remove="beforeRemove2" :limit="1" :on-exceed="handleExceed2" :file-list="fileList2">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       ruleForm: {
-        type: '',
+        type: '1',
       },
       typeList: [{
           label: '飞猪',
@@ -80,36 +80,40 @@ export default {
         that.$message.warning("平台订单不能为空");
         return;
       }
-      if(this.fileList2.length == 0){
+      if(this.ruleForm.type == 2 && this.fileList2.length == 0){
         that.$message.warning("票付通订单不能为空");
         return;
       }
-      let file_platform;
+      let file_platform, file_pft;
       if(that.ruleForm.type == 1){
         file_platform = this.fileList[0].response.data.url;
+        file_pft = ''
       }else if(that.ruleForm.type == 2){
         file_platform = '';
+        file_pft = this.fileList2[0].response.data.url
       }
-//      console.log(this.ruleForm.type);
-//      console.log(file_platform);
+      console.log(this.ruleForm.type);
+      console.log(file_pft);
+      console.log(file_platform);
 //      console.log(this.fileList2[0].response.data.url);
-//      console.log(sessionStorage.getItem('id'));
+      console.log(sessionStorage.getItem('id'));
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/add", {
         "source_id": this.ruleForm.type,
         "file_platform": file_platform,
-        "file_pft": this.fileList2[0].response.data.url,
-        "create_uid": sessionStorage.getItem('id')
+        "file_pft": file_pft,
+        "create_uid": sessionStorage.getItem('id'),
+        "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
-        that.ruleForm.type = '';
-        that.fileList = '';
-        that.fileList2 = '';
-        that.$emit('close2', 'success');
+        that.fileList = [];
+        that.fileList2 = [];
         console.log(response);
         if (response.data.code == '200') {
+          that.ruleForm.type = '';
           that.$message({
             type: 'success',
             message: '提交成功!'
           });
+          that.$emit('close2', 'success');
         } else {
           that.$message({
             type: "warning",

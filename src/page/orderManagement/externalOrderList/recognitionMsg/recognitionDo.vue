@@ -114,18 +114,7 @@
           num1: '',
           num2: ''
         },
-        tableData: [{
-          "order_sn": '311123',
-          "distributor": '美团',
-          "product_name": '丹东百瀑峡门票（成人票）',
-          "sale_at": '2019-08-21',
-          "income": '345.00',
-          "single_cost": '22.00',
-          "cost": '220.00',
-          "quantity": '10',
-          "contact_name": '阳阳',
-          "contact_phone": '13212344321'
-        }],
+        tableData: [],
         multipleSelection: [],
         currentRow: true,
         navData: [{
@@ -153,6 +142,7 @@
       info: {
         handler: function () {
           console.log('this.info',this.info);
+          this.loadData();
         }
       }
     },
@@ -181,6 +171,22 @@
       },
       closeAdd() {
         this.$emit('close', false);
+      },
+      loadData(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recorderinfo", {
+          "order_sn": this.info
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log(response);
+            response.data.data.sale_at = formatDate(new Date(response.data.data.sale_at*1000));
+            that.tableData.push(response.data.data);
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       }
     },
     created(){
