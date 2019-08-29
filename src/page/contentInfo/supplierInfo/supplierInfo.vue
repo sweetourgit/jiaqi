@@ -58,8 +58,7 @@
       </el-table-column>
       <el-table-column prop="supplierTypeEX" label="类型" width="150"align="center"></el-table-column>
       <el-table-column prop="isMonthlyEX" label="结算方式" width="150"align="center"></el-table-column>
-      <!-- <el-table-column prop="orgName" label="所属部门" width="200"align="center"></el-table-column> -->
-      <el-table-column prop="companyArea" label="所属部门" width="200"align="center"></el-table-column>
+      <el-table-column prop="orgName" label="所属部门" width="200"align="center"></el-table-column>
       <el-table-column label="操作" width="159" align="center">
         <template slot-scope="scope">
           <span class="cursor" @click="handleClick(scope.row.id)">详情</span>
@@ -83,10 +82,10 @@
             <el-input class="name_input" v-model="ruleForm.name"></el-input>
           </el-form-item>
           <el-form-item label="公司可见性" prop="visible">
-            <!-- <el-select v-model="ruleForm.visible" placeholder="请选择">
+            <el-select v-model="ruleForm.visible" placeholder="请选择">
               <el-option v-for="item in visibleType" :key="item.value":label="item.label":value="item.value"></el-option>
-            </el-select> -->
-            <el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>
+            </el-select>
+            <!-- <el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader> -->
           </el-form-item>
           <el-form-item label="状态" prop="supplierState">
             <el-select v-model="ruleForm.supplierState" placeholder="请选择">
@@ -108,9 +107,9 @@
               <el-option v-for="item in settlementType" :key="item.value":label="item.label":value="item.value"></el-option>
             </el-select>
           </el-form-item>
-          <!-- <el-form-item label="使用部门" prop="userDepartment">
+          <el-form-item label="使用部门" prop="userDepartment">
             <el-cascader v-model="ruleForm.userDepartment" :props="props" clearable></el-cascader>
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item label="产品主要方向" prop="orientation">
             <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
           </el-form-item>
@@ -262,13 +261,13 @@
           note:''
         },
         conditionType:[{//状态
-          value:'正常',
+          value:'1',
           label:'正常'
         },{
-          value:'停用',
+          value:'2',
           label:'停用'
         },{
-          value:'待审核',
+          value:'0',
           label:'待审核'
         }],
         ruleForm_01:{
@@ -305,13 +304,12 @@
         tableData:[],//表格
         supplierShow:false,//添加弹窗
         branch: [],//使用部门选择器
-
         fileList: [],//添加供应商上传附件
         agreement:[{//供应商协议
-          value:'是',
+          value:'1',
           label:'是'
           },{
-            value:'否',
+            value:'2',
             label:'否'
           }],
         tableDataBank:[],//账户信息表格
@@ -378,7 +376,7 @@
         })
       },
       //可见区域
-      /*visible(){
+      visible(){
         this.visibleType = [];
         this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=CompanyArea')
         .then(res => {
@@ -394,8 +392,8 @@
         }).catch(function(err){
           console.log(err);
         })
-      },*/
-      visible(node, resolve){
+      },
+      /*visible(node, resolve){
         this.visibleType = [];
         let nId = 204;
         this.$http.post(this.GLOBAL.serverSrc + '/org/api/deptlist', {
@@ -414,7 +412,7 @@
         }).then(res =>{
           //this.visibleType =  res.data.objects;
         })
-      },
+      },*/
       //线路
       trails(){
         this.pathType = [];
@@ -449,6 +447,12 @@
          }
       },
       addLabelTheme(formName){//添加一条供应商
+        let types = [];
+        types.push({
+          "id": 0,
+          "supplierType": this.ruleForm.supplierType,
+          "supplierID": 0
+        })
          this.$refs[formName].validate((valid) => {
           if (valid) {
             var _this = this;
@@ -460,13 +464,7 @@
                   "isDeleted": 0,
                   "userState": this.ruleForm.supplierState,
                   "name": this.ruleForm.name,
-                  "types": [
-                    {
-                      "id": 0,
-                      "supplierType": 0,
-                      "supplierID": 0
-                    }
-                  ],
+                  "types":types,
                   "productDirection": this.ruleForm.orientation,
                   "isMonthly": this.ruleForm.supplierWay,
                   "isAgree": this.ruleForm.agreement,
@@ -481,30 +479,8 @@
                   "taxNumber": this.ruleForm.pactNumber,
                   "expireTime": "2019-08-28",
                   "memo": this.ruleForm.remark,
-                  "banks": [
-                    {
-                      "id": 0,
-                      "createTime": 0,
-                      "code": "string",
-                      "isDeleted": 0,
-                      "cardNumber": "string",
-                      "bankName": "string",
-                      "cardName": "string",
-                      "memo": "string",
-                      "supplierID": 0
-                    }
-                  ],
-                  "files": [
-                    {
-                      "id": 0,
-                      "createTime": 0,
-                      "code": "string",
-                      "isDeleted": 0,
-                      "url": "string",
-                      "supplierID": 0,
-                      "name": "string"
-                    }
-                  ],
+                  "banks": [],
+                  "files": [],
                 }
               })
               .then(res => {

@@ -61,6 +61,7 @@ import checkSheet from '@/page/Finance/checkSheet/checkSheet'
 import packageTour from '@/page/productManagement/productList/tab/packageTour'
 import scenicOrTicketList from '@/page/productManagement/productList/tab/scenicOrTicketList'
 import listInfoEdit from '@/page/productManagement/listInfoScenic/listInfoEdit'
+import balanceOrder from '@/page/Finance/balanceOrder/balanceOrder'
 Vue.use(Router);
 
 export default new Router({
@@ -535,6 +536,14 @@ export default new Router({
       meta: {
         keepAlive: true,
         auth: true
+      }
+    },{
+      path: '/balanceOrder',
+      component: balanceOrder,
+      name: '欠款订单管理',
+      meta:{
+        keepAlive:true,
+        auth:true
       }
     },
     {

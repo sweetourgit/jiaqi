@@ -187,6 +187,10 @@
                 value: '财务认款管理',
                 router:'/pledgingManagement'
               },
+              {
+                value: '欠款订单管理',
+                router:'/balanceOrder'
+              },
             ],
           }
         ],
