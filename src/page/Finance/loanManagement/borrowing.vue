@@ -45,7 +45,7 @@
 	          <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
 	        </template>
 	      </el-table-column>
-	      <el-table-column prop="beginTime" label="发起时间" width="210" align="center"></el-table-column>
+	      <el-table-column prop="beginTime" label="发起时间" :formatter='dateFormat' width="210" align="center"></el-table-column>
 	      <el-table-column prop="groupCode" label="团期计划" width="240" align="center"></el-table-column>
 	      <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
 	      <el-table-column prop="supplierTypeEX" label="类型" width="80" align="center"></el-table-column>
@@ -63,6 +63,7 @@
 	        </template>
 	      </el-table-column>
 	    </el-table>
+
 	    <!--分页-->
 	    <el-pagination v-if="pageshow" class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
 	</div>
@@ -319,6 +320,7 @@
 
 <script>
 import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
+import moment from 'moment'
   export default {
   	name: "borrowing",
 	components: {
@@ -396,7 +398,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           name: [{ required: true, message: '请输入借款人名字', trigger: 'blur' }],
           //plan: [{ required: true, message: '请输入团期计划', trigger: 'blur' }],
           plan_01: [{ required: true, message: '请输入团期计划', trigger: 'blur' }],
-          supplier:[{ required: true, message: '请输入供应商名称', trigger: 'blur' }],
+          supplier:[{ required: true, message: '请输入供应商名称', trigger: 'change' }],
           planType:[{ required: true, message: '请选择借款类型', trigger: 'change' }],
           planAmount:[{ required: true, message: '请输入借款金额', trigger: 'blur' },
           			  { pattern: /^[+]{0,1}(\d+)$/, message: '借款金额需为正整数' }],
@@ -484,9 +486,18 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       }
     },
     methods: {
+	  moment,
 	  handleClick(tab, event) {//表头点击切换
 	  	//this.tableData='';
     	console.log(tab, event);
+	  },
+	  // 起始时间格式转换
+	  dateFormat: function(row, column) {
+	  	let date = row[column.property];
+	  	if(date == undefined) {
+	  		return '';
+	  	}
+	  	return moment(date).format('YYYY-MM-DD')
 	  },
 	  //重置
 	  emptyButton(){
@@ -859,7 +870,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       	objectRequest.checkType = -1;
       	if (this.groupCode_01) { objectRequest.groupCode = this.groupCode_01; }
       	if (this.createUser) { objectRequest.createUser = this.createUser; }
-      	if (this.beginTime) { objectRequest.beginTime = this.beginTime; }
+      	if (this.beginTime) { objectRequest.beginTime = this.beginTime; }  
       	if (this.endTime) { objectRequest.endTime = this.endTime; }
       	if (this.checkType) { objectRequest.checkType = this.checkType;}else{objectRequest.checkType='-1'}
       	//if (this.checkTypeEX) { objectRequest.checkTypeEX = this.checkTypeEX; }
@@ -875,7 +886,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           .then(function (obj) {
             that.total = obj.data.total
             that.tableData = obj.data.objects
-            console.log(obj.data.objects)
+            //console.log(obj.data.objects,'起始时间')
           })
           .catch(function (obj) {
             console.log(obj)

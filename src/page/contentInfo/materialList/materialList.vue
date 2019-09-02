@@ -330,7 +330,7 @@
       },
       //获取景点类型
       albumtypeget(){
-        this.$http.post('http://192.168.1.186:3024' + '/album/api/albumtypeget').then(res => {
+        this.$http.post('http://192.168.2.65:3024' + '/album/api/albumtypeget').then(res => {
             if(res.data.isSuccess == true){
                this.albumtype=res.data.objects
             }
@@ -348,7 +348,7 @@
       albumInsert(formName){
         this.$refs[formName].validate((valid) => {
           if(valid){
-            this.$http.post('http://192.168.1.186:3024' + '/album/api/insert',{
+            this.$http.post('http://192.168.2.65:3024' + '/album/api/insert',{
               "object": {
                 "id": 0,
                 "name": this.picForm.name,
@@ -466,7 +466,7 @@
       },
       //相册list
       albumPage(pageIndex=this.pageIndex,pageSize=this.pageSize,areaID=0,name=""){
-        this.$http.post('http://192.168.1.186:3024' + '/album/api/page',{
+        this.$http.post('http://192.168.2.65:3024' + '/album/api/page',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object": {
@@ -488,7 +488,7 @@
       },
       //获取一个相册信息
       getAlbum(id){       
-        this.$http.post('http://192.168.1.186:3024' + '/album/api/get',{
+        this.$http.post('http://192.168.2.65:3024' + '/album/api/get',{
             "id": id,
           }).then(res => {
             if(res.data.isSuccess == true){
@@ -520,7 +520,7 @@
             this.albumNameEmpty=true;
             return false;
           }         
-          this.$http.post('http://192.168.1.186:3024' + '/album/api/save',{
+          this.$http.post('http://192.168.2.65:3024' + '/album/api/save',{
              "object":this.albumInfo
           }).then(res => {
             if(res.data.isSuccess == true){
@@ -587,7 +587,7 @@
       getPicture(index){
         this.picDisabled=true;
         this.savPicBut="修改属性";
-        this.$http.post('http://192.168.1.186:3024' + '/picture/api/get',{
+        this.$http.post('http://192.168.2.65:3024' + '/picture/api/get',{
              id:this.albumInfo.pictures[index].id
           }).then(res => {
             if(res.data.isSuccess == true){
@@ -608,7 +608,7 @@
            type: "warning"
         })
         .then(() => {
-              this.$http.post('http://192.168.1.186:3024' + '/picture/api/delete',{
+              this.$http.post('http://192.168.2.65:3024' + '/picture/api/delete',{
                     "id": this.pictInfo.id
                   }).then(res => {
                       if(res.data.isSuccess == true){
@@ -642,7 +642,7 @@
                   "pictureID": this.pictInfo.id
               });
           } 
-          this.$http.post('http://192.168.1.186:3024' + '/picture/api/save',{
+          this.$http.post('http://192.168.2.65:3024' + '/picture/api/save',{
              "object":this.pictInfo
           }).then(res => {
             if(res.data.isSuccess == true){
@@ -661,7 +661,7 @@
       },
       //获取公司
       getCompany(){
-        this.$http.post('http://192.168.1.186:3024' + '/picture/api/companyget')
+        this.$http.post('http://192.168.2.65:3024' + '/picture/api/companyget')
         .then(res => {
             this.insertCheCompany=[];
             this.companyList=res.data.objects;
@@ -744,7 +744,7 @@
            pictureList.push(picture);
         }
 
-        this.$http.post('http://192.168.1.186:3024' + '/picture/api/insertlist',{
+        this.$http.post('http://192.168.2.65:3024' + '/picture/api/insertlist',{
             "object":{"pictures":pictureList}
           }).then(res => {
              if(res.data.isSuccess == true){

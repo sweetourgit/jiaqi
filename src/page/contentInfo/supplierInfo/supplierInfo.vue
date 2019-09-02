@@ -82,7 +82,7 @@
             <el-input class="name_input" v-model="ruleForm.name"></el-input>
           </el-form-item>
           <el-form-item label="公司可见性" prop="visible">
-            <el-select v-model="ruleForm.visible" placeholder="请选择">
+            <el-select v-model="ruleForm.visible" placeholder="请选择" @change="companyList">
               <el-option v-for="item in visibleType" :key="item.value":label="item.label":value="item.value"></el-option>
             </el-select>
             <!-- <el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader> -->
@@ -108,7 +108,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="使用部门" prop="userDepartment">
-            <el-cascader v-model="ruleForm.userDepartment" :props="props" clearable></el-cascader>
+            <el-cascader v-model="ruleForm.userDepartment" :options="options" :props="{ multiple: true }" clearable></el-cascader>
           </el-form-item>
           <el-form-item label="产品主要方向" prop="orientation">
             <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
@@ -200,16 +200,17 @@
   export default {
     data(){
       return{
-        aaa: 1,
-        props: {
+        aaa: 1, 
+        props:{},     
+        /*props: {
           lazy: true,
           _this: this,
           multiple: true, checkStrictly: true,
           lazyLoad(node, resolve) {
             const { level } = node;
-            let nId = 204;
+            let nId =204;
             if (level > 0) {
-              nId = node.value;
+               nId = node.value;              
             }
             console.log(nId);
             this._this.$http
@@ -228,7 +229,7 @@
             resolve(data);
             });
           }
-        },
+        },*/
         supplierName:'',//搜索框供应商名称
         supplierCard:'',//搜索框ID
         settlement:'',//搜索框结算名称
@@ -319,6 +320,7 @@
         pagesize: 10, // 设定默认分页每页显示数
         pageIndex: 1, // 设定当前页数
         total: 0,
+        options:[],
       }
     },
     methods:{
@@ -347,7 +349,7 @@
           for (let i = 0; i < res.data.objects.length; i++) {
             this.settlementType.push({
               "value": res.data.objects[i].id,
-              "label": res.data.objects[i].name
+              "label": res.data.objects[i].name,
             })
           }
         })
@@ -393,6 +395,45 @@
           console.log(err);
         })
       },
+      companyList(){
+        this.userDeparType = [];
+        let sid = this.ruleForm.visible
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/companyarealist', {
+            "id":sid
+        })
+        .then(res => {
+          console.log(res)
+        }) 
+        this.aaaa();
+      },
+      aaaa(node, resolve){
+        this.options = [];
+        this.$http.post(this.GLOBAL.serverSrc + '/org/api/deptlist', {
+            "object": {
+              "ParentID": 210,
+              "isDeleted": 0
+            },
+        }).then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.options.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].orgName,
+              //"children":[res.data.objects[i].id,res.data.objects[i].orgName]
+            })
+          }
+
+          console.log(this.options)
+          
+         
+            /*let data = res.data.objects.map(v => {
+              return {
+                label: v.orgName,
+                value: v.id,
+              };         
+          })*/
+        //resolve(data);
+        });
+      },
       /*visible(node, resolve){
         this.visibleType = [];
         let nId = 204;
@@ -413,6 +454,7 @@
           //this.visibleType =  res.data.objects;
         })
       },*/
+
       //线路
       trails(){
         this.pathType = [];
@@ -591,6 +633,7 @@
       this.settlemen();//结算方式
       this.visible();//可见区域
       this.trails();//线路
+      //this.companyList();
     },
   }
 </script>

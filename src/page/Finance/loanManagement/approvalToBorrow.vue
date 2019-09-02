@@ -191,6 +191,12 @@
                </el-form>
           </div>
         </el-dialog>
+        <!--通过、驳回弹框-->
+        <el-dialog title="详情" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close='false'>
+          <div class="transit" @click="closeTransit()">×</div>
+          
+          123
+        </el-dialog>
       </div>
 </template>
 
@@ -252,7 +258,8 @@
            multipleSelection: [],
            pid:'',
            arr1:[],
-           guid:''
+           guid:'',
+           transitShow:false,//通过驳回弹窗
       }
     },
     methods: {
@@ -360,6 +367,12 @@
         },
         //通过
         through(){
+          this.transitShow = true;
+        },
+        closeTransit(){
+          this.transitShow = false;
+        },
+        transit(){
           var that = this;
           this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/SubmitWorkAssignmentsForJQ',
           {
@@ -567,4 +580,7 @@
   .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}
   .associatedItems{float:left; margin: 0 0 0 10px;}
   .associatedMoney{float:left; margin: 0 0 0 30px;}
+
+  /*通过驳回弹窗*/
+  .transit{position: absolute; top: 15px; right: 15px; font-size:20pt;cursor:pointer; }
 </style>
