@@ -56,7 +56,7 @@
       <!-- 区域列表END -->
 
       <!-- 添加区域弹框 -->
-      <el-dialog class="add_country_popup" custom-class="city_list" :title="countryPopup.select == '中国' ? '添加省份' : '添加城市'" :visible.sync="addState" width="600px">
+      <el-dialog class="add_country_popup" custom-class="city_list" title="添加" :visible.sync="addState" width="600px">
         <el-form :model="countryPopup" status-icon :rules="countryRules" ref="countryPopup">
           <el-form-item label="所属地区:" :label-width="formLabelWidth">
             <span class="country_span">{{countryPopup.select}}</span>
@@ -469,6 +469,7 @@
                   console.log(err)
                 })
             } else if (formName == 'editCountryPopup') {
+
               this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforsave', {
                 object: {
                   id: this.editCountryPopup.id,
