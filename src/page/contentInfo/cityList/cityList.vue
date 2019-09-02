@@ -5,7 +5,8 @@
       </div>
       <div class="search">
         <span class="keyword">输入关键字:</span>
-        <el-autocomplete class="inputBox" clearable placeholder="请输入关键字" :fetch-suggestions="querySearch" @select="handleSelect" suffix-icon="el-icon-search" v-model="input" :trigger-on-focus="false"></el-autocomplete>
+        <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入关键字" :fetch-suggestions="querySearch" @select="handleSelect" suffix-icon="el-icon-search" v-model="input" :trigger-on-focus="false"></el-autocomplete> -->
+        <el-input class="inputBox" v-model="input" placeholder="请输入关键字" clearable suffix-icon="el-icon-search"></el-input>
         <el-button class="searchButton" type="primary" icon="el-icon-search" @click="searchClick"></el-button>
       </div>
       <!-- 区域列表 -->
@@ -55,13 +56,19 @@
       <!-- 区域列表END -->
 
       <!-- 添加区域弹框 -->
-      <el-dialog class="add_country_popup" custom-class="city_list" title="添加国家" :visible.sync="addState" width="600px">
+      <el-dialog class="add_country_popup" custom-class="city_list" :title="countryPopup.select == '中国' ? '添加省份' : '添加城市'" :visible.sync="addState" width="600px">
         <el-form :model="countryPopup" status-icon :rules="countryRules" ref="countryPopup">
           <el-form-item label="所属地区:" :label-width="formLabelWidth">
             <span class="country_span">{{countryPopup.select}}</span>
           </el-form-item>
           <el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">
             <el-input class="country_input" v-model="countryPopup.countryName" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName">
+            <el-input class="country_input" v-model="countryPopup.spareName" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="url:" :label-width="formLabelWidth" prop="url">
+            <el-input class="country_input" v-model="countryPopup.url" clearable></el-input>
           </el-form-item>
           <el-form-item label="末级区域:" :label-width="formLabelWidth">
             <el-radio-group class="virtualDepartment" v-model="countryPopup.isLeaf">
@@ -86,7 +93,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button class="Determine" @click="addState = false">取 消</el-button>
+          <el-button class="Determine" @click="countryClose">取 消</el-button>
           <el-button class="Determine" type="primary" @click="countryForm('countryPopup')">确 定</el-button>
         </div>
       </el-dialog>
@@ -103,6 +110,12 @@
           </el-form-item>
           <el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">
             <el-input class="country_input" v-model="editCountryPopup.countryName" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName">
+            <el-input class="country_input" v-model="editCountryPopup.spareName" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="url:" :label-width="formLabelWidth" prop="url">
+            <el-input class="country_input" v-model="editCountryPopup.url" clearable></el-input>
           </el-form-item>
           <el-form-item label="末级区域:" :label-width="formLabelWidth">
             <el-radio-group class="virtualDepartment" v-model="editCountryPopup.isLeaf">
@@ -166,6 +179,8 @@
           select: '',
           parentID: '',
           isLeaf: '2',
+          spareName: '',
+          url: ''
         },
         // 编辑区域数据
         editCountryPopup: {
@@ -178,7 +193,9 @@
           code: '',
           select: '',
           isLeaf: '',
-          parentID: ''
+          parentID: '',
+          spareName: '',
+          url: ''
         },
         // 添加区域正则判断
         countryRules: {
@@ -187,7 +204,7 @@
             { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
-            {pattern: /^[a-zA-Z]+$/, message: '请输入字母,不能有空格'}
+            {pattern: /^[a-z]+$/, message: '请输入小字母,不能有空格'}
           ],
           initials: [
             {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
@@ -200,7 +217,7 @@
             { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
-            {pattern: /^[a-zA-Z]+$/, message: '请输入字母,不能有空格'}
+            {pattern: /^[a-z]+$/, message: '请输入小字母,不能有空格'}
           ],
           initials: [
             {pattern: /^[A-Z]+$/, message: '请输入大写字母,不能有空格'}
@@ -215,7 +232,8 @@
         addState: false, // 添加国家弹框
         formLabelWidth: '160px', // 弹窗item宽度
         editState: false, // 编辑国家弹框
-        clickId: ''
+        clickId: '',
+        isSearch: false // 判断是否搜索
       }
     },
     methods: {
@@ -228,10 +246,6 @@
           this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",{
               "object": {
                 "parentID": -1,
-              }
-            },{
-              headers:{
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
               }
             }).then(obj => {
               for (let i = 0; i < obj.data.objects.length; i++) {
@@ -266,13 +280,7 @@
             "object": {
               "parentID": id,
             }
-          },
-          {
-            headers:{
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        ).then(res => {
+          }).then(res => {
           this.lists = []
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.objects.length; i++) {
@@ -307,13 +315,15 @@
         });
       },
       // 单击tree节点
-      treeClick(data,node){
+      treeClick(data,name){
         // this.tableData = [];
+        this.isSearch = false;
         this.geography = 1
         this.data = data
         this.countryPopup.select = data.name
         this.countryPopup.parentID = data.id
         this.editCountryPopup.parentID = data.id
+        this.editCountryPopup.select = data.name
         if (data.Hierarchy == 0) {
           // 所属地区
           this.theContinent = data.id
@@ -322,10 +332,6 @@
         this.tableData = [];
           this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforget',{
             id: data.id
-          },{
-          headers:{
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
           }).then(res => {
             this.tableData.push({
               id: res.data.object.id,
@@ -351,115 +357,47 @@
               this.currentPage = 1
             }
           this.clickId = data.id
-          this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforpage',{
-            "object": {
-                "parentID": data.id,
-              },
-            pageIndex: this.currentPage,
-            pageSize:this.pagesize,
-          },{
-            headers:{
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-              }
-          }).then(res => {
-            if (res.data.isSuccess == false) {
-              this.tableData = [];
-              if (this.currentPage != 1) {
-                this.currentPage = 1
-                this.treeClick(data)
-              }
-            } else {
-              this.tableData = res.data.objects
-              this.total = res.data.total
-              this.geography = 1
-              this.tableData.forEach((item, i) => {
-                  item.id = res.data.objects[i].id,
-                  item.country = res.data.objects[i].areaName,
-                  item.continent = res.data.objects[i].earth,
-                  item.englishName = res.data.objects[i].englishName,
-                  item.pinyin = res.data.objects[i].chineseFull,
-                  item.initials = res.data.objects[i].firstChar,
-                  item.code = res.data.objects[i].areaCode,
-                  item.value = res.data.objects[i].areaName,
-                  item.isLeaf = res.data.objects[i].isLeaf,
-                  item.initial = res.data.objects[i].initial,
-                  item.parentID = res.data.objects[i].parentID
-              })
-              // for (let i = 0; i < res.data.objects.length; i++) {
-              //   this.tableData.push({
-              //     id: res.data.objects[i].id,
-              //     country: res.data.objects[i].areaName,
-              //     continent: res.data.objects[i].earth,
-              //     englishName: res.data.objects[i].englishName,
-              //     pinyin: res.data.objects[i].chineseFull,
-              //     initials: res.data.objects[i].firstChar,
-              //     code: res.data.objects[i].areaCode,
-              //     value: res.data.objects[i].areaName,
-              //     isLeaf: res.data.objects[i].isLeaf,
-              //     initial: res.data.objects[i].initial,
-              //     parentID: res.data.objects[i].parentID
-              //   })
-              // }
-            }
-          }).catch(err => {
-            console.log(err)
-          })
+          this.initData(data.id)
         }
       },
-      // 搜索方法
-      querySearch(queryString, cb) {
-        this.vague = []
-        this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+      initData(id, name) {
+        this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforpage',{
           "object": {
-            areaName: queryString
+            "parentID": id,
+            "areaName": name
+          },
+          pageIndex: this.currentPage,
+          pageSize:this.pagesize,
+        }).then(res => {
+          if (res.data.isSuccess == false) {
+            this.tableData = [];
+            if (this.currentPage != 1) {
+              this.currentPage = 1
+              this.treeClick(data)
+            }
+          } else {
+            this.tableData = res.data.objects
+            this.total = res.data.total
+            this.geography = 1
+            this.tableData.forEach((item, i) => {
+                item.id = res.data.objects[i].id,
+                item.country = res.data.objects[i].areaName,
+                item.continent = res.data.objects[i].earth,
+                item.englishName = res.data.objects[i].englishName,
+                item.pinyin = res.data.objects[i].chineseFull,
+                item.initials = res.data.objects[i].firstChar,
+                item.code = res.data.objects[i].areaCode,
+                item.value = res.data.objects[i].areaName,
+                item.isLeaf = res.data.objects[i].isLeaf,
+                item.initial = res.data.objects[i].initial,
+                item.parentID = res.data.objects[i].parentID
+            })
           }
-        },{
-          headers:{
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }).then(res => {
-            for (let i = 0; i < res.data.objects.length; i++) {
-              this.vague.push({
-                "id" : res.data.objects[i].id,
-                "value" : res.data.objects[i].areaName
-              })
-            }
-            var results = queryString ? this.vague.filter(this.createFilter(queryString)) : [];
-            cb(results)
-          }).catch(err => {
-            console.log(err);
-          })
-      },
-      // 搜索方法
-      createFilter(queryString){
-        return (restaurant) => {
-          return (restaurant.value);
-        }
-      },
-      handleSelect(item) {
-        this.searchInput = item;
+        })
       },
       searchClick() {
-        this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforget', {
-          id: this.searchInput.id
-        }).then(res => {
-          this.tableData = [];
-          this.tableData.push({
-            id: res.data.object.id,
-            country: res.data.object.areaName,
-            continent: res.data.object.earth,
-            englishName: res.data.object.englishName,
-            pinyin: res.data.object.chineseFull,
-            initials: res.data.object.firstChar,
-            code: res.data.object.areaCode,
-            value: res.data.object.areaName,
-            isLeaf: res.data.object.isLeaf,
-            initial: res.data.object.initial,
-          })
-          this.geography = 1
-          this.currentPage = 1
-          this.total = 1
-        })
+        this.initData(0, this.input);
+        this.isSearch = true;
       },
       // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -468,6 +406,25 @@
           } else {
             return ''
           }
+      },
+      // 取消
+      countryClose() {
+        let select = this.countryPopup.select;
+        this.countryPopup = {
+          countryName: '',
+          englishName: '',
+          pinyin: '',
+          initials: '',
+          initial: '',
+          code: '',
+          select: select,
+          parentID: '',
+          isLeaf: '2',
+          spareName: '',
+          url: ''
+        };
+        this.addState = false;
+
       },
       // 添加 编辑 地区保存成功
       countryForm(formName) {
@@ -485,35 +442,17 @@
                   isLeaf: Number(this.countryPopup.isLeaf),
                   initial: this.countryPopup.initial,
                   // createTime: "2018-09-11",
-                  earth: '-1'
+                  earth: '-1',
+                  markName: this.countryPopup.spareName,
+                  url: this.countryPopup.url
                 }
-              },{
-                headers:{
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                  }
-                }).then(res => {
+              }).then(res => {
                   if (res.data.isSuccess == false) {
                     this.$message.error('该名称以存在');
                   } else {
                     this.treeClick(this.data);
                     this.addState = false;
                     this.$message.success('添加成功！');
-
-
-                    // let arr = {}
-                    // arr.id = -2;
-                    // arr.Hierarchy = this.data.Hierarchy + 1;
-                    // arr.isLeaf = Number(this.countryPopup.isLeaf);
-                    // arr.key = this.tableData.length;
-                    // if (arr.isLeaf == 1) {
-                    //   arr.leaf = true
-                    // } else {
-                    //   arr.leaf = false
-                    // }
-                    // arr.name = this.countryPopup.countryName;
-                    // this.$refs.refTree.append(arr, this.data)
-
-
 
                     this.getSon(
                       this.node.key,
@@ -542,27 +481,29 @@
                   initial: this.editCountryPopup.initial,
                   parentID: this.editCountryPopup.parentID,
                   earth: '-1',
+                  markName: this.editCountryPopup.spareName,
+                  url: this.editCountryPopup.url
                 }
-              },{
-                headers:{
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                  }
-                }).then(res => {
+              }).then(res => {
+                if(!this.isSearch) {
                   this.treeClick(this.data)
-                  this.editState = false;
-                  this.$message.success('修改成功！');
-                  this.getSon(
-                    this.node.key,
-                    this.node.label,
-                    this.node.id,
-                    this.node.isLeaf,
-                    this.resolve,
-                    this.level
-                  );
-                  // this.$refs['editCountryPopup'].resetFields()
-                }).catch(err => {
-                  console.log(err)
-                })
+                } else {
+                  this.initData(0, this.input)
+                }
+                this.editState = false;
+                this.$message.success('修改成功！');
+                this.getSon(
+                  this.node.key,
+                  this.node.label,
+                  this.node.id,
+                  this.node.isLeaf,
+                  this.resolve,
+                  this.level
+                );
+                // this.$refs['editCountryPopup'].resetFields()
+              }).catch(err => {
+                console.log(err)
+              })
             }
           }
         })
@@ -578,7 +519,7 @@
       // 编辑国家
       handleEdit(key, data){
         this.editState = true;
-        this.countryPopup.parentID = data.parentID
+        this.editCountryPopup.parentID = data.parentID
         this.editCountryPopup.id = data.id;
         this.editCountryPopup.code = data.code;
         this.editCountryPopup.countryName = data.country;
@@ -586,35 +527,31 @@
         this.editCountryPopup.initials = data.initials;
         this.editCountryPopup.initial = data.initial;
         this.editCountryPopup.pinyin = data.pinyin;
-        this.editCountryPopup.select = this.theContinent;
+        // this.editCountryPopup.select = this.theContinent;
         this.editCountryPopup.isLeaf = String(data.isLeaf);
+        this.editCountryPopup.spareName = data.markName;
+        this.editCountryPopup.url = data.url;
+
       },
       // 删除国家
       handleDelete(key, data){
-        this.$confirm('是否删除该国家', '信息', {
+        this.$confirm('是否删除' + data.areaName, '信息', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           customClass: 'delete_country',
           confirmButtonClass: 'delete_country_determine',
           cancelButtonClass: 'delete_country_determine1'
         }).then(() => {
-          if (data.isLeaf == 0) {
+          // 为2非末级
+          if (data.isLeaf == 2) {
             this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforlist',{
               object: {
                 parentID: data.id
               }
-            },{
-              headers:{
-                  'Authorization': 'Bearer ' + localStorage.getItem('token')
-                }
             }).then(res => {
               if (res.data.isSuccess == false) {
                 this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainfordelete',{
                   id: data.id
-                },{
-                  headers:{
-                      'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
                 }).then(res => {
                   this.tableData.splice(key, 1)
                   this.$refs.refTree.remove(data)
@@ -639,10 +576,6 @@
           } else {
             this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainfordelete',{
               id: data.id
-            },{
-              headers:{
-                  'Authorization': 'Bearer ' + localStorage.getItem('token')
-                }
             }).then(res => {
               this.tableData.splice(key, 1)
               this.$refs.refTree.remove(data)
@@ -673,12 +606,16 @@
       pagesizes(page) {
         this.currentPage = 1;
         this.pagesize = page;
-        this.treeClick(this.data)
+        if(!this.isSearch) {
+         this.treeClick(this.data)
+        }
       },
       // 分页当前页的改变
       handleCurrentChange(currentPage) {
         this.currentPage = currentPage;
-        this.treeClick(this.data)
+        if(!this.isSearch) {
+         this.treeClick(this.data)
+        }
       },
     }
   }
