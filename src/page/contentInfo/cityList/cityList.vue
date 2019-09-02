@@ -14,9 +14,9 @@
       <template v-if="data.isLeaf == 2">
         <el-button class="add_country" type="primary" @click="addState = true">添加</el-button>
       </template>
-        <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 70%;">
-          <el-table-column :key="Math.random()" prop="id" label="ID" align="center" width="60%"></el-table-column>
-          <el-table-column :key="Math.random()" label="名称" align="center">
+        <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 1130px;">
+          <el-table-column prop="id" label="ID" align="center" width="60px"></el-table-column>
+          <el-table-column label="名称" align="center">
             <template slot-scope="scope">
               <template v-if="scope.row.isLeaf == 2">
                 <el-tooltip placement="right" effect="light">
@@ -29,13 +29,13 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column :key="Math.random()" prop="continent" label="所属大洲" align="center" width="80%"></el-table-column>
-          <el-table-column :key="Math.random()" prop="englishName" label="英文名" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="pinyin" label="中文全拼" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="initials" label="首字母" align="center" width="70%"></el-table-column>
-          <el-table-column :key="Math.random()" prop="initial" label="首拼" align="center"></el-table-column>
-          <el-table-column :key="Math.random()" prop="code" label="代码" align="center" width="80%"></el-table-column>
-          <el-table-column :key="Math.random()" label="操作" align="center" width="230%">
+          <el-table-column prop="continent" label="所属大洲" align="center" width="80px"></el-table-column>
+          <el-table-column prop="englishName" label="英文名" align="center"></el-table-column>
+          <el-table-column prop="pinyin" label="中文全拼" align="center"></el-table-column>
+          <el-table-column prop="initials" label="首字母" align="center" width="70px"></el-table-column>
+          <el-table-column prop="initial" label="首拼" align="center"></el-table-column>
+          <el-table-column prop="code" label="代码" align="center" width="80px"></el-table-column>
+          <el-table-column label="操作" align="center" width="230pxs">
           <template slot-scope="scope">
             <div class="table_button_left">
               <el-button class="table_button" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
