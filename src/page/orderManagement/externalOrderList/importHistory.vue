@@ -5,7 +5,8 @@
     </div>
     <div class="demo-input-suffix">
       <span class="search-title" style="margin-right: 40px;">导入人:</span>
-      <el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>
+      <!--<el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>-->
+      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
       <span class="search-title">导入时间:</span>
       <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数"></el-date-picker>
       <div class="date-line"></div>
@@ -64,6 +65,7 @@ export default {
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       activeForm: {
         user: '',
+        userID: '',
         startTime: '',
         endTime: '',
       },
@@ -73,6 +75,8 @@ export default {
       infoId: '',
       transmit: false,
       dialogFormVisible: false,
+
+      operatorList: []
     }
   },
   computed: {
@@ -107,14 +111,28 @@ export default {
     },
     delOrder(row) {
       console.log(row['id']);
+      const that = this;
       this.$confirm('是否需要一键删除所有订单?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/delall", {
+          "import_id": row['id']
+        }, ).then(function(response) {
+          console.log('删除',response);
+          if (response.data.code == '200') {
+            console.log(response);
+            that.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            that.loadData();
+          } else {
+            that.$message.warning(response.data.message);
+          }
+        }).catch(function(error) {
+          console.log(error);
         });
       }).catch(() => {
         this.$message({
@@ -122,6 +140,21 @@ export default {
           message: '已取消删除'
         });
       });
+    },
+    querySearchOper(queryString, cb){
+      const operatorList = this.operatorList;
+      var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter1(queryString) {
+      return (operatorList) => {
+        return (operatorList.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    handleSelectOper(item){
+      console.log(item);
+      this.activeForm.userID = item.id;
     },
     //搜索
     searchHand() {
@@ -138,9 +171,11 @@ export default {
     resetHand() {
       this.activeForm = {
         user: '',
+        userID: '',
         startTime: '',
         endTime: '',
-      }
+      };
+      this.loadData();
     },
     loadData(){
       const that = this;
@@ -149,14 +184,31 @@ export default {
         "pageSize": this.pageSize,
         "start_time": this.activeForm.startTime,
         "end_time": this.activeForm.endTime,
-        "create_account": this.activeForm.user
+        "create_uid": this.activeForm.userID,
+        "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
         if (response.data.code == '200') {
-          console.log(response);
+          console.log('导入历史',response);
           that.tableData = response.data.data.list;
           that.total = response.data.data.total - 0;
           that.tableData.forEach(function (item, index, arr) {
             item.import_at = formatDate(new Date(item.import_at*1000));
+            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              "id": item.create_uid
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              }
+            }).then(function(response) {
+
+              if (response.data.isSuccess) {
+                item.create_uid = response.data.object.name
+              } else {
+                that.$message.success("加载数据失败~");
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
           })
         } else {
           that.$message.success("加载数据失败~");
@@ -164,10 +216,67 @@ export default {
       }).catch(function(error) {ao
         console.log(error);
       });
+    },
+    loadOper(){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+        "object": {
+          "id": 0,
+          "createTime": '2019-08-23T03:03:10.386Z',
+          "isDeleted": 0,
+          "code": "",
+          "mobile": "",
+          "name": "",
+          "email": "",
+          "userCode": "",
+          "passWord": "",
+          "iDcard": "",
+          "tourGuide": "",
+          "sex": 0,
+          "userType": 0,
+          "userState": 0,
+          "orgID": 0,
+          "orgName": "",
+          "user_Position": [
+            {
+              "id": 0,
+              "userID": 0,
+              "positionID": 0,
+              "positionName": "",
+              "isDefault": 0,
+              "orgID": 0,
+              "orgName": ""
+            }
+          ]
+        }
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+
+        if (response.data.isSuccess) {
+//            console.log('操作人员列表',response.data.objects);
+          let operatorList = [];
+          response.data.objects.forEach(function (item, index, arr) {
+            const operator = {
+              'value' : item.name,
+              'id' : item.id
+            };
+            operatorList.push(operator);
+          });
+          that.operatorList = operatorList;
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     }
   },
   created() {
     this.loadData();
+    this.loadOper();
   }
 
 }

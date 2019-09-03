@@ -12,12 +12,12 @@
           </el-form-item>
           <br /><br />
           <el-form-item label="平台订单" prop="platformOrder" label-width="120px" style="float:left;" v-if="ruleForm.type == 1">
-            <el-upload ref="upload" class="upload-demo" :action="UploadUrl()" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :limit="1" :on-exceed="handleExceed" :file-list="fileList" accept="">
+            <el-upload ref="upload" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :limit="1" :on-exceed="handleExceed" :file-list="fileList" accept="">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item><br />
           <el-form-item label="票付通订单" prop="ticketOrder" label-width="120px" style="float:left;margin-top: 20px;" v-if="ruleForm.type == 2">
-            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :on-success="handleSuccess2" :on-error="handleError2" :on-remove="handleRemove2" :before-remove="beforeRemove2" :limit="1" :on-exceed="handleExceed2" :file-list="fileList2">
+            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess2" :on-error="handleError2" :on-remove="handleRemove2" :before-remove="beforeRemove2" :limit="1" :on-exceed="handleExceed2" :file-list="fileList2">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item>
@@ -63,6 +63,11 @@ export default {
   },
   computed: {
     // 计算属性的 getter
+    headers(){
+      return {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    }
   },
   methods: {
     closeAdd() {
@@ -97,6 +102,12 @@ export default {
       console.log(file_platform);
 //      console.log(this.fileList2[0].response.data.url);
       console.log(sessionStorage.getItem('id'));
+      const loading = this.$loading({
+        lock: true,
+        text: '文件导入中，请稍后...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/add", {
         "source_id": this.ruleForm.type,
         "file_platform": file_platform,
@@ -113,6 +124,7 @@ export default {
             type: 'success',
             message: '提交成功!'
           });
+          loading.close();
           that.$emit('close2', 'success');
         } else {
           that.$message({

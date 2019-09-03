@@ -433,7 +433,7 @@ export default {
       }, ).then(function(response) {
         if (response.data.code == '200') {
           console.log(response);
-          if(response.data.data == that.param){
+          if(response.data.data.tour_no == that.param){
             that.$message({
               type: 'success',
               message: '认款申请成功'

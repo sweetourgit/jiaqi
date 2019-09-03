@@ -113,6 +113,41 @@
       },
       submitBtn(){
         //...
+        const that = this;
+        let orderStr = '';
+        let isMatch = true;
+        this.tableData.forEach(function (item, index, arr) {
+          if(item.is_match == 2){
+            orderStr += item.order_sn + ',';
+          }else {
+            isMatch = false;
+            that.$message.warning("存在未匹配订单~");
+            return;
+          }
+        });
+        orderStr = orderStr.substr(0, orderStr.length - 1);
+        console.log(orderStr);
+        orderStr = orderStr.toString();
+        console.log(orderStr);
+        if(isMatch){
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/confirmrec", {
+            "order_sn": orderStr
+          }, ).then(function(response) {
+            if (response.data.code == '200') {
+              console.log('提交认款批量',response);
+              that.$message({
+                type: 'success',
+                message: '提交成功!'
+              });
+              that.cancalBtn()
+            } else {
+              that.$message.success("失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }
+
       },
       handleClick() {
         this.reable = true;
@@ -127,6 +162,7 @@
       close(){
         this.dialogFormVisible = false;
         this.dialogFormVisible2 = false;
+        this.loadData();
       },
 //      撤销
       undoBtn(row){
@@ -140,11 +176,12 @@
             "order_sn": row.order_sn
           }, ).then(function(response) {
             if (response.data.code == '200') {
-              console.log(response);
+              console.log('撤销',response);
               that.$message({
                 type: 'success',
                 message: '撤销成功!'
               });
+              that.loadData();
             } else {
               that.$message.success("加载数据失败~");
             }
@@ -172,8 +209,16 @@
           if (response.data.code == '200') {
             console.log(response);
             that.tableData = response.data.data;
+            that.tableData.forEach(function (item, index, arr) {
+              item.sale_at = formatDate(new Date(item.sale_at*1000));
+              item.sale_at = item.sale_at.split(" ")[0];
+              item.check_at = formatDate(new Date(item.check_at*1000));
+              item.check_at = item.check_at.split(" ")[0];
+              item.import_at = formatDate(new Date(item.import_at*1000));
+              item.import_at = item.import_at.split(" ")[0];
+            })
           } else {
-            that.$message.success("加载数据失败~");
+            that.$message.success("加载数据失败230~");
           }
         }).catch(function(error) {
           console.log(error);
@@ -184,6 +229,7 @@
       console.log(this.$route.params);
       console.log(this.$route.query);
       if(this.$route.params.ids){
+
         this.loadData();
       }else{
         this.cancalBtn();

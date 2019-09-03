@@ -30,8 +30,8 @@
         </el-table>
       </div>
       <div class="bottom">
-        <ul class="leftNav">
-          <li v-for="(item, index) in navData" :data-val="item.id" @click="clickNavHandle(item, index)" :class="{'active':activeIndex==index}">{{item.name}}</li>
+        <ul class="leftNav" style="max-height: 700px;overflow-y: auto;overflow-x: hidden;">
+          <li v-for="(item, index) in navData" :data-val="item.id" @click="clickNavHandle(item, index)" :class="{'active':activeIndex==index}">{{item.explain}}</li>
         </ul>
         <div class="table_trip" style="width: 76%;">
           <div class="topTitle">
@@ -53,32 +53,35 @@
             <el-input v-model="activeForm.num2" class="inputShort" placeholder="最大金额"></el-input>
             <span class="search-title"></span>
             <div class="button_select">
-              <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
               <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
+              <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
             </div>
           </div>
-          <el-table ref="multipleTable" :data="tableData" border style="width: 100%;margin-top: 20px;" :header-cell-style="getRowClass">
-            <el-table-column prop="order_sn" label="订单ID" align="center">
-            </el-table-column>
-            <el-table-column prop="distributor" label="分销商" align="center">
-            </el-table-column>
-            <el-table-column prop="product_name" label="产品名称" align="center">
-            </el-table-column>
-            <el-table-column prop="sale_at" label=" 下单时间" align="center">
-            </el-table-column>
-            <el-table-column prop="" label="费用" align="center" width="160">
+          <el-table ref="multipleTable" :data="tableDataMX" border style="width: 100%;margin-top: 20px;" height="650" :header-cell-style="getRowClass">
+            <el-table-column prop="" label="" align="center" width="40">
               <template slot-scope="scope">
-                <span>收入:{{scope.row.income}}</span><br>
-                <span>单票成本:{{scope.row.single_cost}}</span><br>
-                <span>总成本:{{scope.row.cost}}</span>
+                <p v-if="tableData[0].sale_at.split(' ')[0] == scope.row.rece_at && tableData[0].income == scope.row.rece_money" style="color: red;">建议匹配</p>
               </template>
             </el-table-column>
-            <el-table-column prop="quantity" label="数量" align="center" width="50">
+            <el-table-column prop="rece_at" label="入账时间" align="center">
             </el-table-column>
-            <el-table-column prop="" label="客人信息" align="center" width="145">
+            <el-table-column prop="order_sn" label="订单编号" align="center">
+            </el-table-column>
+            <el-table-column prop="guest_name" label="客人名称" align="center">
+            </el-table-column>
+            <el-table-column prop="product_name" label="产品" align="center">
+            </el-table-column>
+            <el-table-column prop="rece_money" label="结算金额" align="center">
+            </el-table-column>
+            <el-table-column prop="tour_no" label="团号" align="center">
+            </el-table-column>
+            <el-table-column prop="divide_connect_no" label="粉联号" align="center">
+            </el-table-column>
+            <el-table-column prop="invoice_no" label="发票号" align="center">
+            </el-table-column>
+            <el-table-column prop="money" label="操作" align="center">
               <template slot-scope="scope">
-                <span>取票人:{{scope.row.contact_name}}</span><br>
-                <span>手机:{{scope.row.contact_phone}}</span>
+                <el-button size="small" type="text" style="color: red;" @click="doSubmit(scope.row)">认收款</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -117,22 +120,12 @@
         tableData: [],
         multipleSelection: [],
         currentRow: true,
-        navData: [{
-          id: '123',
-          name: '2019年快钱对账明细(7.31-8.1)'
-        },{
-          id: '124',
-          name: '2019年快钱对账明细(7.31-8.1)'
-        },{
-          id: '125',
-          name: '2019年快钱对账明细(7.31-8.1)'
-        },{
-          id: '126',
-          name: '2019年快钱对账明细(7.31-8.1)'
-        }],
+        navData: [],
+        tableDataMX: [],
         activeIndex: 0,
-        date: '2019.8.21-2019.8.24',
-        distributor: '美团'
+        date: '',
+        distributor: '',
+        item: ''
       }
     },
     computed: {
@@ -142,7 +135,12 @@
       info: {
         handler: function () {
           console.log('this.info',this.info);
-          this.loadData();
+          if(this.info == ''){
+            this.closeAdd();
+          }else{
+            this.loadData();
+          }
+
         }
       }
     },
@@ -168,6 +166,9 @@
       },
       clickNavHandle(item, index){
         this.activeIndex = index;
+//        console.log(item);
+        this.item = item;
+        this.getReceiptDetail();
       },
       closeAdd() {
         this.$emit('close', false);
@@ -180,6 +181,7 @@
           if (response.data.code == '200') {
             console.log(response);
             response.data.data.sale_at = formatDate(new Date(response.data.data.sale_at*1000));
+            that.tableData = [];
             that.tableData.push(response.data.data);
           } else {
             that.$message.success("加载数据失败~");
@@ -187,7 +189,83 @@
         }).catch(function(error) {
           console.log(error);
         });
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/receiptlist", {
+          "limit": 0
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log(response);
+            that.navData = response.data.data;
+            that.item = that.navData[0];
+            that.activeIndex = 0;
+            that.getReceiptDetail();
+          } else {
+            that.$message.warning("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+      searchHand(){
+        this.getReceiptDetail();
+      },
+      resetHand(){
+        this.activeForm = {
+          title: '',
+          oid: '',
+          enterTime: '',
+          name: '',
+          num1: '',
+          num2: ''
+        };
+        this.getReceiptDetail();
+      },
+      getReceiptDetail(){
+        const that = this;
+        this.date = formatDate(new Date(this.item.rece_start*1000))+'--'+formatDate(new Date(this.item.rece_end*1000));
+        this.distributor = this.item.distributor;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/receiptdetail", {
+          "rec_id": this.item.id,
+          "product_name": this.activeForm.title,
+          "plat_order_sn": this.activeForm.oid,
+          "rece_at": this.activeForm.enterTime,
+          "guest_name": this.activeForm.name,
+          "min_rece_money": this.activeForm.num1,
+          "max_rece_money": this.activeForm.num2
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log('明细信息',response);
+            that.tableDataMX = response.data.data;
+            if(that.tableDataMX.length == 0){
+              that.tableDataMX.forEach(function (item, index, arr) {
+                item.rece_at = formatDate(new Date(item.rece_at*1000));
+                item.rece_at = item.rece_at.split(" ")[0];
+              })
+            }
+          } else {
+            that.$message.warning("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+      doSubmit(row){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/submitrec", {
+          "order_sn": this.tableData[0].order_sn,
+          "rec_detail_id": row.id
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log('提交认款',response);
+            that.$message.success("认款成功~");
+            that.closeAdd();
+          } else {
+            that.$message.warning("认款失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       }
+
     },
     created(){
 //      console.log(this.$route.params);

@@ -138,6 +138,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/addreceiptcode", {
         "tour_no": this.$parent.param,
         "create_uid": sessionStorage.getItem("id"),
+        "org_id": sessionStorage.getItem('orgID'),
         "order_list": orderList
       }, ).then(function(response) {
         if (response.data.code == '200') {

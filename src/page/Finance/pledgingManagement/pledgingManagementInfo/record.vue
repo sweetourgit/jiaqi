@@ -148,8 +148,11 @@ export default {
           that.total = response.data.data.total - 0;
           that.tableData.forEach(function (item, index, arr) {
             item.begin_at = formatDate(new Date(item.begin_at*1000));
+            item.begin_at = item.begin_at.split(" ")[0];
             item.end_at = formatDate(new Date(item.end_at*1000));
+            item.end_at = item.end_at.split(" ")[0];
             item.created_at = formatDate(new Date(item.created_at*1000));
+            item.created_at = item.created_at.split(" ")[0];
 
             that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
               "id": item.create_uid

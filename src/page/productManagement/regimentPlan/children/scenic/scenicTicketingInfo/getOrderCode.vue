@@ -178,7 +178,7 @@ export default {
         "order_list": orderList,
         "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
-        console.log(response.data);
+        console.log(response);
         if (response.data.code == '200') {
           console.log(response.data);
           if(response.data.data.list){

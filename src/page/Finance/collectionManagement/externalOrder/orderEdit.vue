@@ -19,10 +19,12 @@
             <el-date-picker v-model="ruleForm.creditTime" type="date" placeholder="请选择日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
           </el-form-item>
           <el-form-item label="分销商：" prop="distributor" label-width="140px">
-            <el-radio v-model="ruleForm.distributor" label="美团(团购直连)">美团(团购直连)</el-radio>
-            <el-radio v-model="ruleForm.distributor" label="马蜂窝自由行">马蜂窝自由行</el-radio>
-            <el-radio v-model="ruleForm.distributor" label="去哪">去哪</el-radio>
-            <el-radio v-model="ruleForm.distributor" label="无">无</el-radio>
+            <el-radio-group v-model="ruleForm.distributor">
+              <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
+              <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
+              <el-radio label="去哪儿">去哪儿</el-radio>
+              <el-radio label="无">无</el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item label="收款账户：" prop="payAccount" label-width="140px">
             <el-input v-model="ruleForm.payAccount" placeholder="请选择" class="baseIn" :readonly="readOnly"></el-input>
@@ -38,14 +40,15 @@
             <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
             <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
           </el-form-item>
-          <el-form-item label="附件：" label-width="140px">
-            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :limit="1" :file-list="fileList">
+          <el-form-item label="附件：" label-width="140px" v-if="info == ''">
+            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :limit="1" :file-list="fileList">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item>
         </div>
         <p class="stepTitle">收款明细</p>
-        <div class="stepDv" style="margin-bottom: 50px;">
+        <!--添加-->
+        <div class="stepDv" style="margin-bottom: 50px;" v-if="info == ''">
           <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
           <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
             <el-table-column prop="1" label="入账时间" align="center">
@@ -66,7 +69,34 @@
             </el-table-column>
             <el-table-column prop="money" label="操作" align="center">
               <template slot-scope="scope">
-                <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope.row)">删除</el-button>
+                <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <!--编辑-->
+        <div class="stepDv" style="margin-bottom: 50px;" v-if="info != ''">
+          <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
+          <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
+            <el-table-column prop="rece_at" label="入账时间" align="center">
+            </el-table-column>
+            <el-table-column prop="order_sn" label="订单编号" align="center">
+            </el-table-column>
+            <el-table-column prop="guest_name" label="客人名称" align="center">
+            </el-table-column>
+            <el-table-column prop="product_name" label="产品" align="center">
+            </el-table-column>
+            <el-table-column prop="rece_money" label="结算金额" align="center">
+            </el-table-column>
+            <el-table-column prop="tour_no" label="团号" align="center">
+            </el-table-column>
+            <el-table-column prop="divide_connect_no" label="粉联号" align="center">
+            </el-table-column>
+            <el-table-column prop="invoice_no" label="发票号" align="center">
+            </el-table-column>
+            <el-table-column prop="money" label="操作" align="center">
+              <template slot-scope="scope">
+                <el-button size="small" type="text" style="color: red;" @click="deleteBtnEdit(scope)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -116,6 +146,7 @@
         readOnly: true,
 //       基本信息
         rece_code: '',
+        rece_codeEdit: '',
         ruleForm: {
           creditTime: '',
           payAccount: '',
@@ -154,12 +185,27 @@
     },
     computed: {
       // 计算属性的 getter
+      headers(){
+          return {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+      }
     },
     watch: {
       info: {
         handler:function(){
           console.log(this.info);
-//          this.loadData();
+          if(this.info != ''){
+            this.loadData();
+          }
+        }
+      },
+      dialogFormVisible: {
+        handler: function () {
+//          alert(this.dialogFormVisible);
+          if(this.dialogFormVisible){
+            this.getCode()
+          }
         }
       }
     },
@@ -184,26 +230,42 @@
           type: "warning"
         }).then(() => {
           this.$message.success("已取消添加");
+          this.ruleForm = {
+            creditTime: '',
+            payAccount: '',
+            payAccountID: '',
+            mark: '',
+            distributor: '无',
+            payMoney: '',
+            startTime: '',
+            endTime: ''
+          };
+          this.fileList = [];
+          this.deleteStr = '';
+          this.tableDataQK = [];
+          this.totalItem = '0';
+          this.totalMoney = '';
+          this.startTime = '';
+          this.endTime = '';
           this.closeAdd();
         }).catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
+
         });
       },
       submitBtnTJ(formName){
+
         const that = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
 //            alert(this.totalMoney != '');
             if(this.totalMoney == '' && this.startTime == ''){
-              alert("均为空");
+//              alert("均为空");
               that.subFun();
+
             }else if(this.totalMoney != '' && this.startTime != ''){
-              alert("均不为空");
+//              alert("均不为空");
               if(this.ruleForm.payMoney != this.totalMoney) {
-                alert('金额不等');
+//                alert('金额不等');
                 this.$confirm("收款金额和全部收款明细结算金额总计不符是否继续添加?", "提示", {
                   confirmButtonText: "添加",
                   cancelButtonText: "取消",
@@ -227,12 +289,14 @@
                     }).catch(() => {
 
                     });
+                  }else{
+                    that.subFun();
                   }
                 }).catch(() => {
 
                 });
               }else{
-                alert('金额相等');
+//                alert('金额相等');
                 let start = this.ruleForm.startTime, end = this.ruleForm.endTime;
                 const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
                 if (!reg.test(start)) {
@@ -260,32 +324,53 @@
         });
       },
       subFun(){
-        alert("执行");
+//        alert("执行");
 //        console.log(this.fileList);
         let fileUrl = '';
         if(this.fileList.length != 0){
           fileUrl = this.fileList[0].response.data.file_url;
         }
-        console.log(this.ruleForm.creditTime);
-        console.log(this.ruleForm.startTime+"--"+this.ruleForm.endTime);
-        const creditTime = formatDate(this.ruleForm.creditTime);
+//        console.log(this.ruleForm.creditTime);
+//        console.log(this.ruleForm.startTime+"--"+this.ruleForm.endTime);
+//        const creditTime = formatDate(this.ruleForm.creditTime);
         const that = this;
+//        alert(this.rece_code);
+//        alert(this.ruleForm.distributor);
+        this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+//        alert(this.deleteStr);
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/addrece", {
-          "rece_code": this.rece_code,
-          "explain": this.ruleForm.mark,
-          "receivables_at": this.ruleForm.creditTime,
-          "distributor": this.ruleForm.distributor,
-          "account_id": this.ruleForm.payAccountID,
-          "rece_money": this.ruleForm.payMoney,
-          "rece_start": this.ruleForm.startTime,
-          "rece_end": this.ruleForm.endTime,
-          "file": fileUrl,
-          "org_id": sessionStorage.getItem('orgID'),
-          "create_uid": sessionStorage.getItem('id'),
-          "del_order": this.deleteStr
+          "rece_code":this.rece_code,
+          "explain":this.ruleForm.mark,
+          "receivables_at":this.ruleForm.creditTime,
+          "distributor":this.ruleForm.distributor,
+          "account_id":this.ruleForm.payAccountID,
+          "rece_money":this.ruleForm.payMoney,
+          "rece_start":this.ruleForm.startTime,
+          "rece_end":this.ruleForm.endTime,
+          "file":fileUrl,
+          "org_id":sessionStorage.getItem('orgID'),
+          "create_uid":sessionStorage.getItem('id'),
+          "del_order":this.deleteStr
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {
+            that.ruleForm = {
+              creditTime: '',
+              payAccount: '',
+              payAccountID: '',
+              mark: '',
+              distributor: '无',
+              payMoney: '',
+              startTime: '',
+              endTime: ''
+            };
+            that.fileList = [];
+            that.deleteStr = '';
+            that.tableDataQK = [];
+            that.totalItem = '0';
+            that.totalMoney = '';
+            that.startTime = '';
+            that.endTime = '';
             that.$message({
               type: 'success',
               message: '添加成功!'
@@ -300,6 +385,7 @@
       },
 //      修改
       cancelBtnXG(){
+
         this.$confirm("是否取消本次编辑?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -308,15 +394,131 @@
           this.$message.success("已取消编辑");
           this.closeAdd();
         }).catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
+
         });
       },
-      submitBtnXG(){
+      submitBtnXG(formName){
+        const that = this;
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+//            alert(this.totalMoney != '');
+            if(this.totalMoney == '' && this.startTime == ''){
+//              alert("均为空");
+              that.subFunXG();
 
+            }else if(this.totalMoney != '' && this.startTime != ''){
+//              alert("均不为空");
+              if(this.ruleForm.payMoney != this.totalMoney) {
+//                alert('金额不等');
+                this.$confirm("收款金额和全部收款明细结算金额总计不符是否继续添加?", "提示", {
+                  confirmButtonText: "添加",
+                  cancelButtonText: "取消",
+                  type: "warning"
+                }).then(() => {
+                  let start = this.ruleForm.startTime, end = this.ruleForm.endTime;
+                  const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
+                  if (!reg.test(start)) {
+                    start = formatDate(this.ruleForm.startTime);
+                  }
+                  if (!reg.test(end)) {
+                    end = formatDate(this.ruleForm.endTime);
+                  }
+                  if (start != this.startTime || end != this.endTime) {
+                    this.$confirm("款项入账时间段和全部收款明细入账时间区间不符，是否继续添加?", "提示", {
+                      confirmButtonText: "添加",
+                      cancelButtonText: "取消",
+                      type: "warning"
+                    }).then(() => {
+                      that.subFunXG();
+                    }).catch(() => {
+
+                    });
+                  }else{
+                    that.subFunXG();
+                  }
+                }).catch(() => {
+
+                });
+              }else{
+//                alert('金额相等');
+                let start = this.ruleForm.startTime, end = this.ruleForm.endTime;
+                const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
+                if (!reg.test(start)) {
+                  start = formatDate(this.ruleForm.startTime);
+                }
+                if (!reg.test(end)) {
+                  end = formatDate(this.ruleForm.endTime);
+                }
+                if (start != this.startTime || end != this.endTime) {
+                  this.$confirm("款项入账时间段和全部收款明细入账时间区间不符，是否继续添加?", "提示", {
+                    confirmButtonText: "添加",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                  }).then(() => {
+                    that.subFunXG();
+                  }).catch(() => {
+
+                  });
+                }else{
+                  that.subFunXG();
+                }
+              }
+            }
+          }
+        });
       },
+      subFunXG(){
+//        alert("执行");
+//        console.log(this.fileList);
+        const that = this;
+        this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+//        alert(this.deleteStr);
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/updrece", {
+          "id": this.info,
+          "rece_code": this.rece_codeEdit,
+          "explain": this.ruleForm.mark,
+          "receivables_at": this.ruleForm.creditTime,
+          "distributor": this.ruleForm.distributor,
+          "account_id": this.ruleForm.payAccountID,
+          "rece_money": this.ruleForm.payMoney,
+          "rece_start": this.ruleForm.startTime,
+          "rece_end": this.ruleForm.endTime,
+          "org_id": sessionStorage.getItem('orgID'),
+          "create_uid": sessionStorage.getItem('id'),
+          "detailed_id": this.deleteStr
+        }, ).then(function(response) {
+          console.log(response);
+          if (response.data.code == '200') {
+            that.ruleForm = {
+              creditTime: '',
+              payAccount: '',
+              payAccountID: '',
+              mark: '',
+              distributor: '无',
+              payMoney: '',
+              startTime: '',
+              endTime: ''
+            };
+            that.fileList = [];
+            that.deleteStr = '';
+            that.tableDataQK = [];
+            that.totalItem = '0';
+            that.totalMoney = '';
+            that.startTime = '';
+            that.endTime = '';
+            that.$message({
+              type: 'success',
+              message: '修改成功!'
+            });
+            that.closeAdd();
+          } else {
+//                that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+
 //      选择收款账户
       chooseFun(){
         const that = this;
@@ -392,37 +594,47 @@
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
 //      明细删除
-      deleteBtn(row){
+      deleteBtn(scope){
         const that = this;
-        alert(row[0]);
         this.$confirm("是否删除此明细?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
+          console.log(scope.row[2]+'======'+scope.$index);
+          that.tableDataQK.splice(scope.$index,1);
+          that.deleteStr += scope.row[2] + ',';
+          console.log(that.deleteStr);
+        }).catch(() => {
+
+        });
+      },
+      deleteBtnEdit(scope){
+        const that = this;
+        this.$confirm("是否删除此明细?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+//          console.log(scope.row[2]+'======'+scope.$index);
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/deldetails", {
-            "id": row[0]
+            "id": scope.row.id
           }, ).then(function(response) {
             console.log(response);
             if (response.data.code == '200') {
-              that.deleteStr += row[0] + ',';
-              that.$message({
-                type: 'success',
-                message: '删除成功!'
-              });
+              that.$message.success("删除成功~");
+              that.tableDataQK.splice(scope.$index,1);
+              that.deleteStr += scope.row.id + ',';
+              console.log(that.deleteStr);
             } else {
-              that.$message.success("加载数据失败~");
+              that.$message.success("失败~");
             }
           }).catch(function(error) {
             console.log(error);
           });
-          this.$message.success("已删除");
 
         }).catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
+
         });
       },
       getCode(){
@@ -440,10 +652,72 @@
         }).catch(function(obj) {
           console.log(obj)
         });
+      },
+      loadData(){
+        console.log(this.info);
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/receive", {
+          "id": this.info
+        }, ).then(function(response) {
+          console.log(response);
+          if (response.data.code == '200') {
+            that.rece_codeEdit = response.data.data.rece_code;
+            response.data.data.receivables_at = formatDate(new Date(response.data.data.receivables_at*1000));
+            response.data.data.rece_start = formatDate(new Date(response.data.data.rece_start*1000));
+            response.data.data.rece_end = formatDate(new Date(response.data.data.rece_end*1000));
+            that.ruleForm = {
+              creditTime: response.data.data.receivables_at,
+              payAccount: response.data.data.account_id,
+              payAccountID: response.data.data.account_id,
+              mark: response.data.data.explain,
+              distributor: response.data.data.distributor,
+              payMoney: response.data.data.rece_money,
+              startTime: response.data.data.rece_start,
+              endTime: response.data.data.rece_end
+            };
+            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
+              {
+                "id": response.data.data.account_id
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+              }).then(function (obj) {
+//                that.tableDataZH = obj.data.objects;
+                console.log('账户查询',obj);
+                if(obj.data.isSuccess){
+                  that.ruleForm.payAccount = obj.data.object.title;
+                }
+              }).catch(function (obj) {
+                console.log(obj)
+              });
+            if(response.data.data.file != ''){
+              that.fileList.push(response.data.data.file);
+              that.tableDataQK = response.data.data.list;
+              that.totalItem = response.data.data.list.length;
+              that.totalMoney = response.data.data.rece_money;
+              that.startTime = response.data.data.rece_start;
+              that.endTime = response.data.data.rece_end;
+              that.tableDataQK.forEach(function (item, index, arr) {
+                item.rece_at = formatDate(new Date(item.rece_at*1000));
+              })
+            }else{
+              that.tableDataQK = '';
+              that.totalItem = '';
+              that.totalMoney = '';
+              that.startTime = '';
+              that.endTime = '';
+            }
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       }
     },
     created() {
-      this.getCode();
+
     },
     mounted() {
 

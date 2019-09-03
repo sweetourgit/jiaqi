@@ -67,9 +67,9 @@
     </div>
     <div class="tableDv">
       <div class="table_trip" style="width: 88%;">
-        <el-table ref="multipleTable" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
+        <el-table ref="multipleTable" v-loading="loading" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
-          <el-table-column prop="order_sn" label="订单ID" align="center">
+          <el-table-column prop="plat_order_sn" label="订单ID" align="center">
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
           </el-table-column>
@@ -175,6 +175,7 @@
         pageIndex: 1, // 设定当前页数
         pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
         tableData: [],
+        loading: true,
         multipleSelection: [],
         currentRow: true,
 
@@ -211,7 +212,10 @@
         this.dialogFormVisible2 = true
       },
       close2() {
-        this.dialogFormVisible2 = false
+        this.dialogFormVisible2 = false;
+//        if(str == 'success'){
+//          this.showStatus();
+//        }
       },
       delOrder() {
         console.log(this.multipleSelection);
@@ -220,10 +224,46 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          let deleteStr = '';
+          let num = 0;
+          this.multipleSelection.forEach(function (item, index, arr) {
+//            console.log(item.bill_status);
+            if(item.bill_status == 3 || item.bill_status == 4 || item.bill_status == 5 || item.bill_status == 7){
+              deleteStr += item.plat_order_sn + ',';
+            }
           });
+          if(num == 0){
+            let strD = '';
+            this.multipleSelection.forEach(function (item, index, arr) {
+//            console.log(item.bill_status);
+              strD += item.plat_order_sn + ',';
+            });
+            strD = strD.substr(0, strD.length - 1);
+            const that = this;
+            console.log(strD);
+            this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/nocostdel", {
+              "plat_order_sn": strD
+            }, ).then(function(response) {
+              console.log('删除',response);
+              if (response.data.code == '200') {
+                console.log(response);
+                that.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                that.loading = true;
+                that.loadData();
+              } else {
+                that.$message.warning("失败~");
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
+          }else{
+            deleteStr = deleteStr.substr(0,deleteStr.length-1);
+            this.$message.warning(deleteStr + "订单不是未认款状态，不可删除");
+          }
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -237,9 +277,11 @@
       },
       //搜索
       searchHand() {
+        this.loading = true;
         this.loadData();
       },
       resetHand() {
+        this.loading = true;
         this.activeForm = {
           title: '',
           oid: '',
@@ -260,11 +302,13 @@
         this.loadData();
       },
       handleSizeChange(val) {
+        this.loading = true;
         this.pageSize = val;
         this.loadData();
       },
 
       handleCurrentChange(val) {
+        this.loading = true;
         this.pageIndex = val;
         this.loadData();
       },
@@ -319,7 +363,7 @@
             console.log(response);
             that.tableData = response.data.data.list;
             that.total = response.data.data.total - 0;
-
+            that.loading = false;
             that.tableData.forEach(function (item, index, arr) {
 //            console.log(v,k,arr);
 //            console.log(item.sale_at);

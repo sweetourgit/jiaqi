@@ -36,7 +36,7 @@
           <el-row>
             <el-col>
               <el-form-item label="凭证:" prop="voucher" label-width="120px">
-                <el-upload class="upload-demo" :action="UploadUrl()" :on-success="handleSuccess" :on-error="handleError" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :limit="2" :file-list="fileList" accept="bmp,jpg,jpeg,png">
+                <el-upload class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :limit="2" :file-list="fileList" accept="bmp,jpg,jpeg,png">
                   <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
               </el-form-item>
@@ -113,6 +113,11 @@ export default {
   },
   computed: {
     // 计算属性的 getter
+    headers(){
+      return {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    }
   },
   watch: {
     info: {
@@ -207,6 +212,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/addinvoice", {
         "tour_no": this.$parent.param,
         "create_uid": sessionStorage.getItem("id"),
+        "org_id": sessionStorage.getItem('orgID'),
         "title": this.ruleForm.title,
         "pay_taxes_no": this.ruleForm.number,
         "phone": this.ruleForm.phone,

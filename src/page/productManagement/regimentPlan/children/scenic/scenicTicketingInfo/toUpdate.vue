@@ -100,15 +100,16 @@ export default {
               "create_uid": sessionStorage.getItem('id'),
               "cost_type": costArr
             }, ).then(function(response) {
+              console.log(response);
               if (response.data.code == '200') {
-                console.log(response);
+
                 that.$message({
                   type: 'success',
                   message: '修改成功!'
                 });
                 that.$emit('close', false);
               } else {
-                that.$message.success("加载数据失败~");
+                that.$message.warning("修改数据失败~");
               }
             }).catch(function(error) {
               console.log(error);

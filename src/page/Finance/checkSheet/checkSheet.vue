@@ -64,7 +64,7 @@
 
       <!--需要你审批-->
       <el-tab-pane :label="'需要您审批 ('+number+')'" name="second">
-        <NeedApproval></NeedApproval>
+        <NeedApproval ref="needApproval"></NeedApproval>
       </el-tab-pane>
       <!--审批end-->
     </el-tabs>
@@ -230,7 +230,9 @@
         },
         closeFun() {
           this.dialogFormVisible = false;
-          this.reimList()
+          this.reimList();
+//          alert(this.$refs.needApproval.pageSize);
+          this.$refs.needApproval.loadData();
         },
         loadOper(){
           const that = this;

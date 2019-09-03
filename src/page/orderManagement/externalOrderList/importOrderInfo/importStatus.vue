@@ -3,7 +3,7 @@
     <!--申请预付款-->
     <el-dialog title="导入状态" :visible="dialogFormVisible3" width=90% @close="closeAdd">
       <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-bottom: 30px;">
-        <el-tab-pane label="可认款报账" name="success">
+        <el-tab-pane label="成功导入订单" name="success">
           <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="true" :header-cell-style="getRowClass">
             <el-table-column prop="oid" label="订单ID" align="center" >
             </el-table-column>
@@ -32,7 +32,7 @@
             </el-table-column>
           </el-table>
         </el-tab-pane>
-        <el-tab-pane label="未认收款" name="error">
+        <el-tab-pane label="未成功订单" name="error">
           <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="true" :header-cell-style="getRowClass">
             <el-table-column prop="oid" label="订单ID" align="center" >
             </el-table-column>

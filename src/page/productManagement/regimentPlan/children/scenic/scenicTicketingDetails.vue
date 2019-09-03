@@ -291,7 +291,8 @@ export default {
       });
     },
     closeAdd() {
-      this.$router.push({ path: "/regimentPlan/scenicTicketingList" });
+//      this.$router.push({ path: "/regimentPlan/scenicTicketingList" });
+      this.$router.go(-1);
     },
     toUpdate() {
       this.dialogFormVisible2 = true;
