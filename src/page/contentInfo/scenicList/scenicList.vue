@@ -220,6 +220,8 @@ import AddScenic from './components/Addscenic'
         this.name = '';
         this.pagesize = 10;
         this.currentPage = 1;
+        this.areaNames = '';
+        this.names = '';
         this.initData();
       },
       // 搜索按钮

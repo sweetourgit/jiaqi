@@ -12,6 +12,7 @@
       <el-input class="form-input" v-model="form.englishName" clearable placeholder="请输入英文名称"></el-input>
     </el-form-item>
     <el-form-item class="form-item" prop="areaId" :label-width='formLabelWidth'  label="所属地区:">
+      <span style="margin-left: -80px;" class="redStar">*</span>
       <el-autocomplete class="form-input" clearable placeholder="请输入地区名称" :fetch-suggestions="querySearch" @blur="handleBlur" @select="handleSelect" v-model="form.areaId.value" :trigger-on-focus="false"></el-autocomplete>
     </el-form-item>
     <el-form-item class="form-item" prop="tags" :label-width='formLabelWidth' label="标签:">
@@ -336,6 +337,9 @@ export default {
     if (this.handleEditDate != '') {
       this.templateEmpty();
       this.changeData();
+      if (this.$refs['form'] != undefined) {
+        this.$refs['form'].resetFields();
+      }
     } else {
       this.templateEmpty();
       if (this.$refs['form'] != undefined) {
@@ -348,6 +352,9 @@ export default {
       if (this.handleEditDate != '') {
         this.templateEmpty();
         this.changeData();
+        if (this.$refs['form'] != undefined) {
+          this.$refs['form'].resetFields();
+        }
       } else {
         this.templateEmpty();
         if (this.$refs['form'] != undefined) {
@@ -964,7 +971,7 @@ export default {
   }
 }
 .destination-input1 {
-  height: 40px;
+  // height: 40px;
   min-width: 300px;
   float: left;
   padding-bottom:-0.5px;
@@ -975,7 +982,7 @@ export default {
   }
 }
 .destination-input2 {
-  height: 40px;
+  // height: 40px;
   min-width: 300px;
   float: left;
   padding-bottom:-0.5px;
