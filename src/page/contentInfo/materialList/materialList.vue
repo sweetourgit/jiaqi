@@ -179,7 +179,7 @@
                 :limit="12"
                 drag
                 :file-list="fileList"
-                action="http://192.168.2.25:3024/upload/api/picture"
+                action="http://192.168.2.65:3009/upload/api/picture"
                 multiple
                 list-type="picture"
                 :on-error="handleError"
@@ -244,7 +244,7 @@
   export default {
     data() {        
       return {       
-        picSrc:'http://192.168.2.65:3024/upload',
+        picSrc:'http://192.168.2.65:3009/upload',
         //左侧菜单
         list:[],
         lists: [], //子级

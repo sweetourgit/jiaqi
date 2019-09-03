@@ -11,6 +11,7 @@
         <!--清空-->
         <div style="float:left">
           <el-input placeholder="搜索标签名称" v-model="empty" class="empty" clearable></el-input>
+          <el-button class="primary" @click="search()" type="primary">搜索</el-button>
           <el-button class="primary" @click="emptyButton()" type="primary">重置</el-button>
         </div>
         <!--编辑删除主题-->
@@ -45,10 +46,11 @@
       </div>
       <div class="labelName">
         <div style="float:left; line-height:40px; margin:0 10px 0 70px;">集合名称：</div>
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="float:left;">
+        <el-form :model="ruleForm" :rules="rules" ref="rformA" style="float:left;">
           <el-form-item prop="highlightWords">
             <el-input style="width:180px;" maxlength=10 v-model="ruleForm.highlightWords" placeholder="10个字以内"></el-input>
             <span class="span1">{{ruleForm.highlightWords.length}}/10字</span>
+            <div style="text-align:left; color:red;line-height:25px;" v-if="this.ruleForm.highlightWords =='' && a !=false">不能为空</div>
           </el-form-item>
         </el-form>
       </div>
@@ -127,7 +129,7 @@
   export default {
     data() {  
        return {
-        
+        a:false,
         editableTabsValue: '0',
         editableTabs: [],
         tabIndex: 0,
@@ -153,10 +155,10 @@
           highlightWords01:'',
         },
         rules:{
-          highlightWords:[
+          /*highlightWords:[
             { required: true, message: '不能为空', trigger: 'blur' },
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
-          ],
+          ],*/
           highlightWords01:[
             { required: true, message: '不能为空', trigger: 'blur' },
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
@@ -273,12 +275,20 @@
       },
       //添加主题弹窗关闭、确定添加
       gatherClose(){
+        this.a = false;
         this.gatherShow = false;
         this.ruleForm.highlightWords='';
       },
       addGather() {
-        this.handleTabsEdit(this.tabIndex, "add");
-        this.addTheme();
+        this.a = true;
+        if(this.ruleForm.highlightWords!=''){
+          this.handleTabsEdit(this.tabIndex, "add");
+          this.addTheme();
+        }else{
+          return ''
+        }
+        // this.handleTabsEdit(this.tabIndex, "add");
+        // this.addTheme();
         //this.ruleForm.highlightWords='';
       },
       //删除主题弹窗关闭、确定删除
@@ -369,12 +379,12 @@
               _this.$message.error("修改失败,该标签已存在");
             }
             else{
-              _this.$message({
+              that.$message({
                 type:"success",
                 message:"修改成功"
               })
-              _this.editGatherShow = false;
-              _this.pageList();
+              that.editGatherShow = false;
+              that.pageList();
             }  
             })
             .catch(function (obj) {
@@ -552,8 +562,11 @@
             console.log(obj)
           })
       },
+      search(){
+        this.themeList();
+      },
       //产品列表显示
-      themeList() {
+      themeList(empty=this.empty) {
         this.cycleId();
         var that = this
         this.$http.post(
@@ -564,7 +577,7 @@
             "total": 0,
             "object": {
               "id": 0,
-              "labelName": "",
+              "labelName": empty,
               "tagType": this.sid,
               "createTime": 0,
               "code": "string",
@@ -628,7 +641,7 @@
 .gatherClose{float:right; margin: 0 20px 0 0; font-size: 16pt; cursor:pointer; }
 .labelName{width: 400px; margin-left:auto; margin-right:auto; margin: 50px 0 0 0; text-align: center; }
 .el-form>>>.el-form-item{margin-bottom:0px;}
-.judge { padding: 30px 0 0 0; clear: both; text-align: center;}
+.judge { padding: 15px 0 0 0; clear: both; text-align: center;}
 .judgeDelete { padding: 70px 0 0 0; clear: both; text-align: center;}
 /**/
 .actionButton .el-button{width:80px;padding: 0;line-height: 35px}
