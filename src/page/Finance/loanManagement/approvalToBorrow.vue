@@ -192,10 +192,13 @@
           </div>
         </el-dialog>
         <!--通过、驳回弹框-->
-        <el-dialog title="详情" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close='false'>
+        <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close='false'>
           <div class="transit" @click="closeTransit()">×</div>
-          
-          123
+          <textarea rows="8" v-model="commentText" style="overflow: hidden; width:99%;margin:0 0 20px 0;"></textarea>
+          <div style="float:right; margin:0 0 30px 0;">
+            <el-button @click="closeTransit()">取消</el-button>
+            <el-button @click="confirm()" type="primary">确定</el-button>
+          </div>
         </el-dialog>
       </div>
 </template>
@@ -260,6 +263,8 @@
            arr1:[],
            guid:'',
            transitShow:false,//通过驳回弹窗
+           title:"",
+           commentText:'',
       }
     },
     methods: {
@@ -329,7 +334,6 @@
              obj.data.forEach(v=>{
               arr.push(v.jq_ID)
               that.arr1.push(v.workItemID)
-
              })
 
              this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid',
@@ -367,32 +371,48 @@
         },
         //通过
         through(){
+          this.title="审批通过";
+          this.transitShow = true;
+        },
+        rejected(){
+          this.title="审批驳回";
           this.transitShow = true;
         },
         closeTransit(){
           this.transitShow = false;
         },
-        transit(){
+        confirm(formName){
+          if(this.title == "审批通过"){
+            this.transit(formName);
+         }else{
+            this.rejected_01(formName);
+         }
+        },
+        transit(formName){
           var that = this;
           this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/SubmitWorkAssignmentsForJQ',
           {
-            "userCode": "rbop01",
+            //"userCode": "rbop01",
+            "userCode":sessionStorage.getItem('userCode'),
             "workItemID": this.arr1[0],
-            "commentText": "1"
+            "commentText": this.commentText
           }).then(res =>{
+              that.transitShow = false;
               that.detailstShow = false;
               //that.repeal();
           })
         },
         //驳回
-        rejected(){
+        rejected_01(formName){
           var that = this;
           this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/RejectionOfWorkTasksForJQ',
           {
-            "userCode": "rbop01",
+            //"userCode": "rbop01",
+            "userCode":sessionStorage.getItem('userCode'),
             "workItemID": this.arr1[0],
-            "commentText": "1"
+            "commentText": this.commentText
           }).then(res =>{
+              that.transitShow = false;
               that.detailstShow = false;
               that.rejectedSuccess();
               //that.repeal();
@@ -583,4 +603,5 @@
 
   /*通过驳回弹窗*/
   .transit{position: absolute; top: 15px; right: 15px; font-size:20pt;cursor:pointer; }
+  .el-dialog__wrapper>>>.el-dialog{overflow: hidden !important;}
 </style>

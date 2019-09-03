@@ -5,36 +5,36 @@
       <div style="width:1140px;">
         <div class="fl">
           <span class="emptyPlan">供应商名称</span>
-          <el-input v-model="supplierName" class="empty" clearable placeholder="请输入团期计划"></el-input>
+          <el-input v-model="supplierName" class="empty" clearable placeholder="请输入团期计划"clearable></el-input>
         </div>
         <div class="fl" style="margin:0 90px 0 90px;">
           <span class="emptyPlan">ID</span>
-          <el-input v-model="supplierCard" class="empty" clearable placeholder="请输入申请人"></el-input>
+          <el-input v-model="supplierCard" class="empty" clearable placeholder="请输入申请人"clearable></el-input>
         </div>
         <div class="fl">
           <span class="emptyPlan">结算方式</span>
-          <el-select v-model="settlement" placeholder="请输入类型" class="empty">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlementType" :key="item.value" />
+          <el-select v-model="settlement" placeholder="请输入类型" class="empty"clearable>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlementType" :key="item.value"/>
           </el-select>
         </div>
       </div>
       <div style="width:1140px;">
         <div class="fl">
           <span class="emptyPlan">状态</span>
-          <el-select v-model="condition" placeholder="请输入类型" class="empty">
+          <el-select v-model="condition" placeholder="请输入类型" class="empty"clearable>
             <el-option :label="item.label" :value="item.value" v-for="(item,index) of conditionType" :key="item.value" />
           </el-select>
         </div>
         <div class="fl" style="margin:0 90px 0 90px;">
           <span class="emptyPlan">类别</span>
-          <el-select v-model="category" placeholder="请输入类型" class="empty">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) of borrowingType" :key="item.value" />
+          <el-select v-model="category" placeholder="请输入类型" class="empty"clearable>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of borrowingType" :key="item.value"/>
           </el-select>
         </div>
         <div class="fl">
           <span class="emptyPlan">可见区域</span>
-          <el-select v-model="visibleArea" placeholder="请输入类型" class="empty">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) of visibleType" :key="item.value" />
+          <el-select v-model="visibleArea" placeholder="请输入类型" class="empty"clearable>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of visibleType" :key="item.value"/>
           </el-select>
         </div>
       </div>
