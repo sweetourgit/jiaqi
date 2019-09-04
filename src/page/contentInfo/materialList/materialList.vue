@@ -67,8 +67,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="目的地:" prop="destination" :label-width="formLabelWidth">
-          <el-button plain @click="leftTree1 = leftTree1 == true?false:true" class="w270">{{picForm.destination}}</el-button>
+          <el-button plain @click="leftTree1 = leftTree1 == true?false:true" style="width: 270px;" :class="isDest">{{picForm.destination}}</el-button>
         </el-form-item>
+          <span v-show="isDest == 'destint'" style="float: left;color: #F56C6C; margin: -20px 0 0 100px;">请选择目的地</span>
+
         <!--添加相册目的地-->
         <div class="left-tree1" v-if="leftTree1">
              <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
@@ -244,6 +246,7 @@
   export default {
     data() {        
       return {       
+        isDest: '',
         picSrc:'http://192.168.2.65:3009/upload',
         //左侧菜单
         list:[],
@@ -343,31 +346,39 @@
         this.$refs["picForm"].resetFields();
         this.addAlbum = false;
         this.leftTree1=false; 
+        this.isDest = '';
         },
       // 相册添加成功
       albumInsert(formName){
+        if(this.picForm.destinationId == 0) {
+          this.isDest = 'destint'
+        } else {
+          this.isDest = 'destints'
+        }
         this.$refs[formName].validate((valid) => {
           if(valid){
-            this.$http.post('http://192.168.2.65:3024' + '/album/api/insert',{
-              "object": {
-                "id": 0,
-                "name": this.picForm.name,
-                "areaID": this.picForm.destinationId,
-                "albumType": this.picForm.type,
-                "createUser": sessionStorage.getItem('id')
-              }
-            }).then(res => {
-              if(res.data.isSuccess == true){
-                  this.addAlbum = false;
-                  this.$refs[formName].resetFields();
-                  this.$message({
-                  message: '添加相册成功',
-                  type: 'success'
-                  });
+            if(this.isDest != 'destint') {
+              this.$http.post('http://192.168.2.65:3024' + '/album/api/insert',{
+                "object": {
+                  "id": 0,
+                  "name": this.picForm.name,
+                  "areaID": this.picForm.destinationId,
+                  "albumType": this.picForm.type,
+                  "createUser": sessionStorage.getItem('id')
                 }
-              }).catch(err => {
-                console.log(err)
-            })           
+              }).then(res => {
+                if(res.data.isSuccess == true){
+                    this.addAlbum = false;
+                    this.$refs[formName].resetFields();
+                    this.$message({
+                    message: '添加相册成功',
+                    type: 'success'
+                    });
+                  }
+                }).catch(err => {
+                  console.log(err)
+              })     
+            }      
           }
         })
       },
@@ -445,6 +456,8 @@
               //添加相册tree
               this.picForm.destination=data.name;
               this.picForm.destinationId=data.id;
+              // 选中后赋值样式
+              this.isDest = 'destints';
               this.leftTree1=false;             
           }else if(this.getAlbumForm == true){
              //修改相册tree
@@ -853,7 +866,14 @@ width: 25%;
 height: 100%;
 opacity: 0.4;
 }
-.gallery-thumbs .swiper-slide-thumb-active {
-opacity: 1;
+.destint {
+  border: solid 1px #F56C6C;
 }
+.destints {
+  border: solid 1px #67C23A;
+}
+.gallery-thumbs .swiper-slide-thumb-active {
+  opacity: 1;
+}
+
 </style>
