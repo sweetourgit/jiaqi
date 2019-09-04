@@ -881,7 +881,7 @@ import moment from 'moment'
             "pageSize":this.pagesize,
             "pageIndex":this.currentPage,
             "total": 0,
-            "object": objectRequest, 
+            "object": objectRequest,
           },)
           .then(function (obj) {
             that.total = obj.data.total

@@ -46,7 +46,7 @@
       </div>
       <div class="labelName">
         <div style="float:left; line-height:40px; margin:0 10px 0 70px;">集合名称：</div>
-        <el-form :model="ruleForm" :rules="rules" ref="rformA" style="float:left;">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="float:left;">
           <el-form-item prop="highlightWords">
             <el-input style="width:180px;" maxlength=10 v-model="ruleForm.highlightWords" placeholder="10个字以内"></el-input>
             <span class="span1">{{ruleForm.highlightWords.length}}/10字</span>
@@ -285,7 +285,7 @@
           this.handleTabsEdit(this.tabIndex, "add");
           this.addTheme();
         }else{
-          return ''
+          return 
         }
         // this.handleTabsEdit(this.tabIndex, "add");
         // this.addTheme();
@@ -361,7 +361,8 @@
       },
       //修改主题方法
       editTheme(){
-        var that = this
+        if(this.ruleForm_01.highlightWords01 != ''){
+          var that = this
           this.$http.post(
             this.GLOBAL.serverSrc + "/universal/labletype/api/save",
             {
@@ -375,8 +376,11 @@
             },
           )
           .then(function (response) {
-            if(response.data.isSuccess == false){
-              _this.$message.error("修改失败,该标签已存在");
+            // if(response.data.isSuccess == false){
+            //   that.$message.error("修改失败,该标签已存在");
+            // }
+            if(this.ruleForm_01.highlightWords01 == this.editableTabs.typeName ){
+              that.$message.error("修改失败,该标签已存在");
             }
             else{
               that.$message({
@@ -390,6 +394,7 @@
             .catch(function (obj) {
               console.log(obj)
             })
+        }
       },
       //关闭编辑主题弹窗
       editGatherClose(){
