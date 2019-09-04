@@ -174,6 +174,7 @@
         editGatherShow:false,//编辑主题弹窗
         clickTab:'',//点击切换获取当前值
         sid:'',
+        typeName:'',
        };   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         
@@ -361,7 +362,19 @@
       },
       //修改主题方法
       editTheme(){
+        // for(var i =0; i<this.editableTabs.length; i++){
+        //   if(i== this.editableTabsValue){
+        //     this.typeName = this.editableTabs[i].typeName
+        //     if(this.ruleForm_01.highlightWords01 == this.typeName){
+        //       this.$message.error("修改失败,该标签已存在");
+        //     }
+        //   }
+        // }
+        //let i = this.editableTabsValue
+        // if(this.ruleForm_01.highlightWords01 != '' && this.ruleForm_01.highlightWords01 == this.editableTabs[i].typeName)
         if(this.ruleForm_01.highlightWords01 != ''){
+          this.$message.error("修改失败,该标签已存在");
+        }else{
           var that = this
           this.$http.post(
             this.GLOBAL.serverSrc + "/universal/labletype/api/save",
@@ -375,14 +388,10 @@
               }
             },
           )
-          .then(function (response) {
-            // if(response.data.isSuccess == false){
-            //   that.$message.error("修改失败,该标签已存在");
-            // }
-            if(this.ruleForm_01.highlightWords01 == this.editableTabs.typeName ){
+          .then(res => {
+            if(res.data.isSuccess == false){
               that.$message.error("修改失败,该标签已存在");
-            }
-            else{
+            }else{
               that.$message({
                 type:"success",
                 message:"修改成功"
@@ -391,10 +400,10 @@
               that.pageList();
             }  
             })
-            .catch(function (obj) {
-              console.log(obj)
+            .catch(res => {
+              console.log(res)
             })
-        }
+       }
       },
       //关闭编辑主题弹窗
       editGatherClose(){
@@ -596,7 +605,7 @@
           //  that.editableTabsValue = that.editableTabs.length
           })
           .catch(function (obj) {
-            console.log(obj)
+            //console.log(obj)
           })
       },
     }
