@@ -92,7 +92,7 @@
         <div class="gatherClose" @click="deleteGatherClose()">×</div>
       </div>
       <div style="line-height:40px; text-align:center;margin:50px 0 0 0;">是否删除该集合</div>
-      <!-- <div style="line-height:40px; text-align:center;" v-if="this.tableData != []">当前集合存在有标签,不能删除集合</div> -->
+      <div style="line-height:40px; text-align:center;" v-if="this.tableData.length != 0">当前集合存在有标签,不能删除集合</div>
       <div class="judgeDelete">
         <el-button @click="deleteGatherClose()">取消</el-button>
         <el-button @click="deleteGather(ensure)" type="primary">确定</el-button>
@@ -303,21 +303,12 @@
         this.deleteGatherShow = false;
       },
       deleteGather(ensure){
-        // this.handleTabsEdit(this.tabIndex, "remove");
-        // this.deleteTheme();
-        //var tableData = []
-        console.log(this.tableData)
         if(this.tableData.length == 0){
           this.handleTabsEdit(this.tabIndex, "remove");
           this.deleteTheme();
         }else{
           return 
         }
-        // var tableData = {};
-        // if(JSON.stringify(tableData) == "{}"){
-        //   this.handleTabsEdit(this.tabIndex, "remove");
-        //   this.deleteTheme();
-        //  }
       },
       deleteGatherTheme(){
         this.deleteGatherShow = true;
@@ -434,13 +425,16 @@
       },
       //循环主题ID
       cycleId(){
-        console.log("cycleId")
-        for(var i =0; i<this.editableTabs.length; i++){
-          if(i== this.editableTabsValue){
-            this.clickTab = this.editableTabs[i].typeName;
-            this.sid = this.editableTabs[i].id;            
-          }
-        }
+        // console.log("cycleId")
+        // for(var i =0; i<this.editableTabs.length; i++){
+        //   if(i== this.editableTabsValue){
+        //     this.clickTab = this.editableTabs[i].typeName;
+        //     this.sid = this.editableTabs[i].id;            
+        //   }
+        // }
+        let i = this.editableTabs.length;
+        this.clickTab = this.editableTabs[i].typeName;
+        this.sid = this.editableTabs[i].id;
       },
       //添加、编辑列表弹窗
       saveModule(formName){ //判断显示编辑或者添加弹窗
@@ -611,7 +605,8 @@
           },)
           .then(function (obj) {
             that.total = obj.data.total
-            that.tableData = obj.data.objects
+            //that.tableData = obj.data.objects
+            that.tableData = obj.data.objects == null ? [] : obj.data.objects 
             that.tabIndex = that.tableData.length
           //  that.editableTabsValue = that.editableTabs.length
           })

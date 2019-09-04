@@ -480,7 +480,7 @@ import moment from 'moment'
 		    SelectAccount:false,//选择账户弹窗
 		    tableSelect:[],//选择弹窗表格
 		    pageshow:true,
-		   
+		    pid:''
 
 
       }
@@ -847,11 +847,32 @@ import moment from 'moment'
       //查看无收入借款弹窗
       checkIncome(row){
       	this.checkIncomeShow = true;
-      	console.log(row)
+      	this.pid = row.paymentID;
       	this.status = row.checkTypeEX;
       	this.ruleForm = row;
-      	//this.getLabel();
+      	this.getLabel();
       },
+      //获取一条详情
+	    getLabel(){
+	      console.log(this.tableData)
+	      this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
+	          "id":this.pid
+	      }).then(res => {
+	        if(res.data.isSuccess == true){
+	            this.guid = res.data.object.guid
+	           this.fundamental=res.data.object;
+	           this.tour_id = res.data.object.planID;
+	           this.getTourByPlanId(res.data.object.planID);
+	           this.getPaymentdetails(res.data.object.planID);
+	           /*res.data.object.files.forEach(function(v, k, arr) {
+	                that.fileList.push({
+	                  "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
+	                  "name": arr[k]['name'],
+	                });
+	              })*/
+	        }
+	     })
+	    },
       CloseCheckIncomeShow(){
       	this.checkIncomeShow = false;
       },
