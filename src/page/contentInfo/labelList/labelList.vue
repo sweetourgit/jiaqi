@@ -91,6 +91,8 @@
         <div class="gatherTitle">删除集合</div>
         <div class="gatherClose" @click="deleteGatherClose()">×</div>
       </div>
+      <div style="line-height:40px; text-align:center;margin:50px 0 0 0;">是否删除该集合</div>
+      <!-- <div style="line-height:40px; text-align:center;" v-if="this.tableData != []">当前集合存在有标签,不能删除集合</div> -->
       <div class="judgeDelete">
         <el-button @click="deleteGatherClose()">取消</el-button>
         <el-button @click="deleteGather(ensure)" type="primary">确定</el-button>
@@ -282,6 +284,10 @@
       },
       addGather() {
         this.a = true;
+        if(this.editableTabs.filter(v => this.ruleForm.highlightWords == v.typeName).length != 0) {
+          this.$message.error("添加失败,该标签已存在");
+          return;
+        }
         if(this.ruleForm.highlightWords!=''){
           this.handleTabsEdit(this.tabIndex, "add");
           this.addTheme();
@@ -297,8 +303,21 @@
         this.deleteGatherShow = false;
       },
       deleteGather(ensure){
-        this.handleTabsEdit(this.tabIndex, "remove");
-        this.deleteTheme();
+        // this.handleTabsEdit(this.tabIndex, "remove");
+        // this.deleteTheme();
+        //var tableData = []
+        console.log(this.tableData)
+        if(this.tableData.length == 0){
+          this.handleTabsEdit(this.tabIndex, "remove");
+          this.deleteTheme();
+        }else{
+          return 
+        }
+        // var tableData = {};
+        // if(JSON.stringify(tableData) == "{}"){
+        //   this.handleTabsEdit(this.tabIndex, "remove");
+        //   this.deleteTheme();
+        //  }
       },
       deleteGatherTheme(){
         this.deleteGatherShow = true;
@@ -362,19 +381,11 @@
       },
       //修改主题方法
       editTheme(){
-        // for(var i =0; i<this.editableTabs.length; i++){
-        //   if(i== this.editableTabsValue){
-        //     this.typeName = this.editableTabs[i].typeName
-        //     if(this.ruleForm_01.highlightWords01 == this.typeName){
-        //       this.$message.error("修改失败,该标签已存在");
-        //     }
-        //   }
-        // }
-        //let i = this.editableTabsValue
-        // if(this.ruleForm_01.highlightWords01 != '' && this.ruleForm_01.highlightWords01 == this.editableTabs[i].typeName)
-        if(this.ruleForm_01.highlightWords01 != ''){
+        if(this.editableTabs.filter(v => this.ruleForm_01.highlightWords01 == v.typeName).length != 0) {
           this.$message.error("修改失败,该标签已存在");
-        }else{
+          return;
+          }
+        if(this.ruleForm_01.highlightWords01 != ''){
           var that = this
           this.$http.post(
             this.GLOBAL.serverSrc + "/universal/labletype/api/save",
@@ -656,7 +667,7 @@
 .labelName{width: 400px; margin-left:auto; margin-right:auto; margin: 50px 0 0 0; text-align: center; }
 .el-form>>>.el-form-item{margin-bottom:0px;}
 .judge { padding: 15px 0 0 0; clear: both; text-align: center;}
-.judgeDelete { padding: 70px 0 0 0; clear: both; text-align: center;}
+.judgeDelete { padding: 20px 0 0 0; clear: both; text-align: center;}
 /**/
 .actionButton .el-button{width:80px;padding: 0;line-height: 35px}
 .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}
