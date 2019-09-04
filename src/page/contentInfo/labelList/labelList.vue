@@ -21,7 +21,8 @@
         </div>
         <div class="actionButton">
           <el-button @click="addLabel()">添加标签</el-button>
-          <el-button @click="editLabel()" :disabled="forbidden">编辑标签</el-button>
+          <!-- <el-button @click="editLabel()" :disabled="forbidden">编辑标签</el-button> -->
+          <el-button disabled>编辑标签</el-button>
           <el-button disabled>转移集合</el-button>
           <el-button @click="deleteLabel()" :disabled="forbidden">删除标签</el-button>
         </div>
@@ -177,6 +178,7 @@
         clickTab:'',//点击切换获取当前值
         sid:'',
         typeName:'',
+        labelName:'',
        };   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         
@@ -425,7 +427,7 @@
       },
       //循环主题ID
       cycleId(){
-        // console.log("cycleId")
+        console.log("cycleId")
         // for(var i =0; i<this.editableTabs.length; i++){
         //   if(i== this.editableTabsValue){
         //     this.clickTab = this.editableTabs[i].typeName;
@@ -464,6 +466,10 @@
         }) 
       },
       addLabelTheme(formName){//添加一条列表
+        if(this.tableData.filter(v => this.rformA.labelList == v.labelName).length != 0) {
+          this.$message.error("添加失败,该标签名称已存在");
+          return;
+        }
          this.$refs[formName].validate((valid) => {
           if (valid) {
             var _this = this;
@@ -493,7 +499,12 @@
         });
       },
       editLabelTheme(formName){//编辑一条列表
-        var that = this
+        if(this.tableData.filter(v => this.rformA.labelList == v.labelName).length != 0) {
+          this.$message.error("编辑失败,该标签名称已存在");
+          return;
+        }
+        if(this.rformA.labelList != ''){
+          var that = this
           this.$http.post(
             this.GLOBAL.serverSrc + "/universal/olabel/api/olabelsave",
             {
@@ -516,9 +527,10 @@
               this.$message.success(res.data.result.message);
          }
           })
-            .catch(function (obj) {
-              console.log(obj)
-            })
+        .catch(function (obj) {
+          console.log(obj)
+        })
+        }
       },
       deleteLabel(){ //删除Module
         this.$confirm("确认删除?", "提示", {

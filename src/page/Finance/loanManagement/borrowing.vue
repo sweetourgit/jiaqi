@@ -862,7 +862,7 @@ import moment from 'moment'
 	            this.guid = res.data.object.guid
 	           this.fundamental=res.data.object;
 	           this.tour_id = res.data.object.planID;
-	           this.getTourByPlanId(res.data.object.planID);
+	           //this.getTourByPlanId(res.data.object.planID);
 	           this.getPaymentdetails(res.data.object.planID);
 	           /*res.data.object.files.forEach(function(v, k, arr) {
 	                that.fileList.push({
