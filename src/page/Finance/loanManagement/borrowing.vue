@@ -36,36 +36,37 @@
 			<el-button plain @click="noIncome()" style="margin:30px 0 0 0;">申请</el-button>
 			<!-- <el-button plain @click="checkIncome()" :disabled="forbidden">查看借款</el-button> -->
 		</div>
-		<el-table :data="tableData"  class="labelTable" ref="multipleTable" :header-cell-style="getRowClass" border :row-style="rowClass" @row-click="clickRow">
-	      <el-table-column prop="paymentID" label="借款单号" width="120" align="center"></el-table-column>
-	      <el-table-column prop="checkTypeEX" label="状态" width="80" align="center">
-	      	<template slot-scope="scope">
-	          <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
-	          <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
-	          <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
-	        </template>
-	      </el-table-column>
-	      <el-table-column prop="beginTime" label="发起时间" :formatter='dateFormat' width="210" align="center"></el-table-column>
-	      <el-table-column prop="groupCode" label="团期计划" width="240" align="center"></el-table-column>
-	      <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
-	      <el-table-column prop="supplierTypeEX" label="类型" width="80" align="center"></el-table-column>
-	      <el-table-column prop="price" label="借款金额" width="120" align="center"></el-table-column>
-	      <el-table-column prop="expensePrice" label="已核销金额" width="120" align="center"></el-table-column>
-	      <!-- <el-table-column prop="collectionPrice" label="已付款金额" width="120" align="center"></el-table-column>
-	      <el-table-column prop="orgName" label="申请组织" width="150" align="center"></el-table-column> -->
-	      <el-table-column prop="createUser" label="申请人" width="100" align="center"></el-table-column>
-	      <el-table-column prop="approvalOpinion" label="审批意见" width="180" align="center"></el-table-column>
-	      <el-table-column label="操作" width="180" align="center">
-	      	<template slot-scope="scope">
-	          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-	          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0">|</span>
-	          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0" type="text" size="small" class="table_details">付款账户</el-button>
-	        </template>
-	      </el-table-column>
-	    </el-table>
-
-	    <!--分页-->
-	    <el-pagination v-if="pageshow" class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+		<div style="width:1301px; overflow:hidden">
+			<el-table :data="tableData"  class="labelTable" ref="multipleTable" :header-cell-style="getRowClass" border :row-style="rowClass" @row-click="clickRow">
+		      <el-table-column prop="paymentID" label="借款单号" width="120" align="center"></el-table-column>
+		      <el-table-column prop="checkTypeEX" label="状态" width="80" align="center">
+		      	<template slot-scope="scope">
+		          <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
+		          <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
+		          <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
+		        </template>
+		      </el-table-column>
+		      <el-table-column prop="beginTime" label="发起时间" :formatter='dateFormat' width="150" align="center"></el-table-column>
+		      <el-table-column prop="groupCode" label="团期计划" width="210" align="center"></el-table-column>
+		      <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
+		      <el-table-column prop="supplierTypeEX" label="类型" width="100" align="center"></el-table-column>
+		      <el-table-column prop="price" label="借款金额" width="100" align="center"></el-table-column>
+		      <el-table-column prop="expensePrice" label="已核销金额" width="100" align="center"></el-table-column>
+		      <!-- <el-table-column prop="collectionPrice" label="已付款金额" width="120" align="center"></el-table-column>
+		      <el-table-column prop="orgName" label="申请组织" width="150" align="center"></el-table-column> -->
+		      <el-table-column prop="createUser" label="申请人" width="80" align="center"></el-table-column>
+		      <el-table-column prop="approvalOpinion" label="审批意见" width="100" align="center"></el-table-column>
+		      <el-table-column label="操作" width="80" align="center">
+		      	<template slot-scope="scope">
+		          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+		          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0">|</span>
+		          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0" type="text" size="small" class="table_details">付款账户</el-button>
+		        </template>
+		      </el-table-column>
+		    </el-table>
+		    <!--分页-->
+		    <el-pagination v-if="pageshow" class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+	    </div>
 	</div>
 	<!--申请无收入借款弹窗-->
 	    <el-dialog title="借款申请" :visible.sync="noIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>  
@@ -81,7 +82,7 @@
 	      	 			 </el-form-item> -->
 			 <el-form-item label="团期计划" prop="plan" style="float:left;">
 			    <el-input class="name_input" @blur="tour_check" v-model="ruleForm.plan" placeholder="请输入团期计划"></el-input>
-			    <el-input style="width:300px;" disabled v-model="ruleForm.plan_01" placeholder=" 通过输入团期计划，自动补充产品名
+			    <el-input style="width:300px;" disabled v-model="ruleForm.plan_01" placeholder="通过输入团期计划,自动补充产品名
 称"></el-input>
 			    <el-button class="name_button" @click="IncomePlan()">选择</el-button>
 			 </el-form-item>
@@ -1233,7 +1234,7 @@ import moment from 'moment'
 	/*重置*/
 	.primary{clear: both;overflow: hidden;margin: 0 0 20px 30px;}
 	/*表格*/
-	.labelTable{margin: 0 30px 20px 30px; text-align: center;max-width: 1581px;}
+	.labelTable{margin: 0 30px 20px 30px; text-align: center;max-width: 1271px;}
 	.multipleTable{margin: 0 30px 20px 30px; text-align: center;width: 1161px;}
 	/*分页*/
 	.pageList{float:right; margin: 0 30px 20px 0;}
