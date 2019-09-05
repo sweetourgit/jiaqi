@@ -9,52 +9,11 @@
       <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数" :picker-options="startDatePicker"></el-date-picker>
       <div class="date-line"></div>
       <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数" :picker-options="endDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">报账状态:</span>
-      <el-select v-model="activeForm.status" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="0" label="未报账" value="1"></el-option>
-        <el-option key="1" label="报账中" value="2"></el-option>
-        <el-option key="2" label="已报账" value="3"></el-option>
-      </el-select>
-      <span class="search-title">是否关联产品:</span>
-      <el-select v-model="activeForm.proRelation" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="是" value="2"></el-option>
-        <el-option key="2" label="否" value="1"></el-option>
-      </el-select>
       <span class="search-title">导入时间:</span>
       <el-date-picker v-model="activeForm.importStartTime" type="date" placeholder="开始天数" :picker-options="importStartDatePicker"></el-date-picker>
       <div class="date-line"></div>
-      <el-date-picker v-model="activeForm.importEndTime" type="date" placeholder="结束天数" :picker-options="importEndDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">关联团期:</span>
-      <el-input v-model="activeForm.tour" class="input"></el-input>
-      <span class="search-title">类别:</span>
-      <el-select v-model="activeForm.type" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="0" label="门票" value="门票"></el-option>
-        <el-option key="1" label="酒店" value="酒店"></el-option>
-      </el-select>
-      <span class="search-title">验证时间:</span>
-      <el-date-picker v-model="activeForm.validationStartTime" type="date" placeholder="开始天数" :picker-options="validationStartDatePicker"></el-date-picker>
-      <div class="date-line"></div>
-      <el-date-picker v-model="activeForm.validationEndTime" type="date" placeholder="结束天数" :picker-options="validationEndDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">取票人:</span>
-      <el-input v-model="activeForm.ticketPerson" class="input"></el-input>
-      <span class="search-title">取票人手机:</span>
-      <el-input v-model="activeForm.ticketPhone" class="input"></el-input>
-      <span class="search-title">分销商:</span>
-      <el-input v-model="activeForm.distributors" class="input" style="width: 485px;"></el-input><br /><br />
-      <span class="search-title">卖出支付方式:</span>
-      <el-select v-model="activeForm.typePay" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="产品自销" value="1"></el-option>
-        <el-option key="2" label="授信支付" value="2"></el-option>
-        <el-option key="3" label="微信支付" value="3"></el-option>
-        <el-option key="4" label="易宝云企付" value="4"></el-option>
-        <el-option key="5" label="余额支付" value="5"></el-option>
-        <el-option key="6" label="支付宝" value="6"></el-option>
-        <el-option key="7" label="自采" value="7"></el-option>
-      </el-select>
+      <el-date-picker v-model="activeForm.importEndTime" type="date" placeholder="结束天数" :picker-options="importEndDatePicker"></el-date-picker>
+
       <div class="button_select">
         <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
@@ -72,6 +31,10 @@
           <el-table-column prop="plat_order_sn" label="订单ID" align="center">
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.distributor">{{scope.row.distributor}}</span>
+              <span v-else>飞猪</span>
+            </template>
           </el-table-column>
           <el-table-column prop="product_name" label="产品名称" align="center">
           </el-table-column>
@@ -81,17 +44,19 @@
           </el-table-column>
           <el-table-column prop="" label="费用" align="center" width="160">
             <template slot-scope="scope">
-              <span>收入:{{scope.row.income}}</span><br>
-              <span>单票成本:{{scope.row.single_cost}}</span><br>
-              <span>总成本:{{scope.row.cost}}</span>
+              <div v-if="scope.row.income">
+                <span>收入:{{scope.row.income}}</span><br>
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="quantity" label="数量" align="center" width="50">
           </el-table-column>
           <el-table-column prop="" label="客人信息" align="center" width="145">
             <template slot-scope="scope">
-              <span>取票人:{{scope.row.contact_name}}</span><br>
-              <span>手机:{{scope.row.contact_phone}}</span>
+              <div v-if="scope.row.contact_name">
+                <span>取票人:{{scope.row.contact_name}}</span><br>
+                <span>手机:{{scope.row.contact_phone}}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="check_at" label="验证时间" align="center">
@@ -117,9 +82,7 @@
           </el-table-column>
           <el-table-column prop="bill_status" label="报账状态" align="center">
             <template slot-scope="scope">
-              <p v-if="scope.row.bill_status == 1">未报账</p>
-              <p v-if="scope.row.bill_status == 2">报账中</p>
-              <p v-if="scope.row.bill_status == 3">已报账</p>
+              <span>{{bill_status[scope.row.bill_status]}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -169,6 +132,16 @@
         dialogFormVisible: false,
         dialogFormVisible2: false,
 
+        bill_status: {
+          1: '未认款',
+          2: '认款申请',
+          3: '认款待修改',
+          4: '认款通过',
+          5: '报账中',
+          6: '报账驳回',
+          7: '已报账'
+        },
+
 //      表格数据
         total: 0, //总条数
         currentPage4: 1,
@@ -182,9 +155,7 @@
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
         importStartDatePicker: this.beginDate1(),
-        importEndDatePicker: this.processDate1(),
-        validationStartDatePicker: this.beginDate2(),
-        validationEndDatePicker: this.processDate2()
+        importEndDatePicker: this.processDate1()
       }
     },
     computed: {
@@ -343,20 +314,20 @@
           "order_sn": this.activeForm.oid,
           "sale_at_begin": this.activeForm.startTime,
           "sale_at_end": this.activeForm.endTime,
-          "bill_status": this.activeForm.status,
-          "is_relate_pro": this.activeForm.proRelation,
+          "bill_status": '',
+          "is_relate_pro": '',
           "import_at_begin": this.activeForm.importStartTime,
           "import_at_end": this.activeForm.importEndTime,
-          "tour_no": this.activeForm.tour,
-          "order_type": this.activeForm.type,
-          "check_at_begin": this.activeForm.validationStartTime,
-          "check_at_end": this.activeForm.validationEndTime,
-          "contact_name": this.activeForm.ticketPerson,
-          "contact_phone": this.activeForm.ticketPhone,
-          "distributor": this.activeForm.distributors,
-          "pay_type": this.activeForm.typePay,
+          "tour_no": '',
+          "order_type": '',
+          "check_at_begin": '',
+          "check_at_end": '',
+          "contact_name": '',
+          "contact_phone": '',
+          "distributor": '',
+          "pay_type": '',
           "import_status": 1,
-          "org_id": sessionStorage.getItem('orgID')
+          "org_id": ''
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {
@@ -368,7 +339,11 @@
 //            console.log(v,k,arr);
 //            console.log(item.sale_at);
               item.sale_at = formatDate(new Date(item.sale_at*1000));
-              item.check_at = formatDate(new Date(item.check_at*1000));
+              if(item.check_at == 0){
+                item.check_at = '';
+              }else{
+                item.check_at = formatDate(new Date(item.check_at*1000));
+              }
               item.import_at = formatDate(new Date(item.import_at*1000));
             })
           } else {
@@ -431,32 +406,6 @@
           }
         }
       },
-      beginDate2(){
-//      alert(begin);
-        const that = this;
-        return {
-          disabledDate(time){
-            if (that.activeForm.validationEndTime) {  //如果结束时间不为空，则小于结束时间
-              return new Date(that.activeForm.validationEndTime).getTime() < time.getTime()
-            } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
-            }
-          }
-        }
-      },
-      processDate2(){
-//      alert(process);
-        const that = this;
-        return {
-          disabledDate(time) {
-            if (that.activeForm.validationStartTime) {  //如果开始时间不为空，则结束时间大于开始时间
-              return new Date(that.activeForm.validationStartTime).getTime() > time.getTime()
-            } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
-            }
-          }
-        }
-      }
     }
 
   }

@@ -428,28 +428,41 @@ export default {
     submit(){
       const that = this;
 //      console.log(this.param);
-      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/submitaudit", {
-        "tour_no": this.param
-      }, ).then(function(response) {
-        if (response.data.code == '200') {
-          console.log(response);
-          if(response.data.data.tour_no == that.param){
-            that.$message({
-              type: 'success',
-              message: '认款申请成功'
-            });
-          }else{
-            that.$message({
-              type: 'success',
-              message: response.data.data
-            });
+      if(this.tableData.length == 0){
+        that.$message({
+          type: 'warning',
+          message: '没有绑定订单，不可提交认款！'
+        });
+      }else{
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/submitaudit", {
+          "tour_no": this.param
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log(response);
+            if(response.data.data.tour_no == that.param){
+              that.$message({
+                type: 'success',
+                message: '认款申请成功'
+              });
+            }else{
+              that.$message({
+                type: 'success',
+                message: response.data.data
+              });
+            }
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("认款提交失败~");
+            }
+
           }
-        } else {
-          that.$message.success("认款提交失败~");
-        }
-      }).catch(function(error) {
-        console.log(error);
-      });
+        }).catch(function(error) {
+          console.log(error);
+        });
+      }
+
     },
 //    搜索
     searchHand() {

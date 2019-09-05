@@ -220,6 +220,25 @@
       },
 //      关闭添加/编辑弹窗
       closeAdd(){
+        if(this.info != ''){
+          this.ruleForm = {
+            creditTime: '',
+            payAccount: '',
+            payAccountID: '',
+            mark: '',
+            distributor: '无',
+            payMoney: '',
+            startTime: '',
+            endTime: ''
+          };
+          this.fileList = [];
+          this.deleteStr = '';
+          this.tableDataQK = [];
+          this.totalItem = '0';
+          this.totalMoney = '';
+          this.startTime = '';
+          this.endTime = '';
+        }
         this.$emit('close', false);
       },
 //      添加
@@ -377,7 +396,11 @@
             });
             that.closeAdd();
           } else {
-//                that.$message.success("加载数据失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning('提交失败');
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -512,7 +535,11 @@
             });
             that.closeAdd();
           } else {
-//                that.$message.success("加载数据失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning('提交失败');
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -553,6 +580,7 @@
       handleSuccess(response, file, fileList){
         console.log(file);
         console.log(fileList);
+        console.log('response',response);
         if(response.code == 200){
           this.fileList = fileList;
           this.tableDataQK = file.response.data.list;
@@ -567,10 +595,13 @@
             item[1] = formatDate(new Date(item[1]*1000));
           })
         }else{
-          this.$message.warning(response.data.message);
-          this.fileList = {};
-//        clearFiles();
-          this.$refs.upload.clearFiles();
+          if(response.message){
+            this.$message.warning(response.message);
+          }else{
+            this.$message.warning('文件上传失败');
+          }
+//          this.fileList = {};
+          this.$refs.upload1.clearFiles();
         }
       },
       handleError(err, file, fileList){

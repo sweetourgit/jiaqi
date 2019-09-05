@@ -134,26 +134,26 @@
           </el-col>
         </el-row>
         <template v-for="(bill,index) in billReporting">
-          <el-row>
-            <el-col :span="2" class="content">
+          <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+            <el-col :span="2" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{index + 1}}
             </el-col>
-            <el-col :span="5" class="content">
+            <el-col :span="5" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.handler}}
             </el-col>
-            <el-col :span="5" class="content">
+            <el-col :span="5" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.distributor}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.people_num}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.income}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.serial_sn}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.remark}}
             </el-col>
           </el-row>

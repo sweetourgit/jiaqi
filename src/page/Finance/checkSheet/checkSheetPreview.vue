@@ -504,12 +504,13 @@ export default {
     },
     passSubmit(){
       const that = this;
+      console.log('this.msg.org_id',this.msg.org_id);
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/savebill", {
         "tour_no": this.info.tour_no,
         "bill_status": '7',
         "mark": this.areaIn1,
         "create_uid": sessionStorage.getItem('id'),
-        "org_id": '1'//this.msg.org_id
+        "org_id": this.msg.org_id
       }, ).then(function(response) {
         console.log(response);
         if (response.data.code == '200') {
@@ -534,7 +535,7 @@ export default {
         "bill_status": '6',
         "mark": this.areaIn2,
         "create_uid": sessionStorage.getItem('id'),
-        "org_id": '1'//this.msg.org_id
+        "org_id": this.msg.org_id
       }, ).then(function(response) {
         console.log(response);
         if (response.data.code == '200') {

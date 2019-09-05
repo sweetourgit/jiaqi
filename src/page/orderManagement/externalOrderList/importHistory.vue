@@ -185,7 +185,7 @@ export default {
         "start_time": this.activeForm.startTime,
         "end_time": this.activeForm.endTime,
         "create_uid": this.activeForm.userID,
-        "org_id": sessionStorage.getItem('orgID')
+        "org_id": ''
       }, ).then(function(response) {
         if (response.data.code == '200') {
           console.log('导入历史',response);
