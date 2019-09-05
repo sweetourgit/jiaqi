@@ -338,6 +338,7 @@
                     type:"success",
                     message:"添加成功"
                   })
+                  _this.editableTabsValue = String(_this.editableTabs.length - 1);
                   _this.ruleForm.highlightWords = '';
                   _this.gatherShow = false;
                   _this.pageList();
@@ -365,6 +366,7 @@
               type: "success",
               message: "删除成功!"
             });
+            _this.editableTabsValue = String(_this.editableTabs.length - 2);
             _this.deleteGatherShow = false;
             _this.pageList();
           })
@@ -434,9 +436,11 @@
         //     this.sid = this.editableTabs[i].id;            
         //   }
         // }
-        let i = this.editableTabs.length;
-        this.clickTab = this.editableTabs[i].typeName;
-        this.sid = this.editableTabs[i].id;
+        // let i = this.editableTabs.length;
+        // this.clickTab = this.editableTabs[i].typeName;
+        // this.sid = this.editableTabs[i].id;
+        this.clickTab = this.editableTabs[this.editableTabsValue].typeName;
+        this.sid = this.editableTabs[this.editableTabsValue].id; 
       },
       //添加、编辑列表弹窗
       saveModule(formName){ //判断显示编辑或者添加弹窗
