@@ -26,18 +26,18 @@
       </div>
     </div>
     <!--表格-->
-    <el-table :data="tableData" class="tableData" border style="width: 1100px">
-      <el-table-column prop="ID" label="ID" width="50"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="80"></el-table-column>
-      <el-table-column prop="type" label="用户类型" width="80"></el-table-column>
-      <el-table-column prop="phone" label="手机号" width="120"></el-table-column>
-      <el-table-column prop="mail" label="邮箱" width="180"></el-table-column>
-      <el-table-column prop="sex" label="性别" width="180"></el-table-column>
-      <el-table-column prop="state" label="状态" width="180"></el-table-column>
-      <el-table-column prop="department" label="组织-部门-职务" width="180"></el-table-column>
-      <el-table-column prop="beginTime" label="创建时间" width="180"></el-table-column>
-      <el-table-column prop="alterTime" label="修改时间" width="180"></el-table-column>
-      <el-table-column label="操作" width="180"></el-table-column>
+    <el-table :data="tableData" class="tableData" border>
+      <el-table-column prop="ID" label="ID" width="50" align="center"></el-table-column>
+      <el-table-column prop="name" label="姓名" width="80" align="center"></el-table-column>
+      <el-table-column prop="type" label="用户类型" width="80" align="center"></el-table-column>
+      <el-table-column prop="phone" label="手机号" width="120" align="center"></el-table-column>
+      <el-table-column prop="mail" label="邮箱" width="150" align="center"></el-table-column>
+      <el-table-column prop="sex" label="性别" width="50" align="center"></el-table-column>
+      <el-table-column prop="state" label="状态" width="80" align="center"></el-table-column>
+      <el-table-column prop="department" label="组织-部门-职务" width="180" align="center"></el-table-column>
+      <el-table-column prop="beginTime" label="创建时间" width="150" align="center"></el-table-column>
+      <el-table-column prop="alterTime" label="修改时间" width="150" align="center"></el-table-column>
+      <el-table-column label="操作" width="180" align="center"></el-table-column>
     </el-table>
   </div>
 </template>
@@ -101,11 +101,12 @@
 </script>
 
 <style scoped>
+.border_size{width: 1200px; overflow: hidden;}
 /*搜索栏*/
 .search{width:1100px; overflow:hidden;margin:0 0 30px 0;}
 .fl{float:left;margin: 0 20px 0 0;}
 .empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; }
 /*表格*/
-.tableData{width: 1100px; margin: 50px 0 0 0;overflow: hidden;}
+.tableData{width: 100%; margin: 50px 0 0 0;overflow: hidden;}
 </style>
 

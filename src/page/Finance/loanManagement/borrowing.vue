@@ -859,7 +859,7 @@ import moment from 'moment'
 	          "id":this.pid
 	      }).then(res => {
 	        if(res.data.isSuccess == true){
-	            this.guid = res.data.object.guid
+	           this.guid = res.data.object.guid
 	           this.fundamental=res.data.object;
 	           this.tour_id = res.data.object.planID;
 	           //this.getTourByPlanId(res.data.object.planID);
@@ -969,7 +969,7 @@ import moment from 'moment'
 	        jQ_ID: result.guid,
 	        jQ_Type: result.flowModel,
 	        workflowCode: result.flowModelName,
-	        userCode: sessionStorage.getItem('account'), //未指定呢
+	        userCode: sessionStorage.getItem('userCode'), //未指定呢
 	      }).then(res => {
 	        let result = JSON.parse(res.data);
 	        if (result.code == '0') {

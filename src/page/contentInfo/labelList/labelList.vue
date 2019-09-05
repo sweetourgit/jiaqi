@@ -141,6 +141,7 @@
         tableData: [],
         multipleSelection: [],
         forbidden:true,
+        forbidden1:true,
         //分页
         currentPage: 1,
         total:0,
@@ -250,11 +251,11 @@
         }else{
           this.forbidden=true;
         };
-        /*if(this.multipleSelection.length>0){
+        if(this.multipleSelection.length>0){//删除多选
           this.forbidden1=false;
         }else{
           this.forbidden1=true;
-        }*/
+        }
         //event.cancelBubble = true;//row-click和selection-change耦合事件
       },
       clickRow(row){    //选中行复选框勾选

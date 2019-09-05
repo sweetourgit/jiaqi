@@ -83,10 +83,10 @@
        </table>
        <div style="margin:20px 0 0 25px; font-size:14pt;">审核结果</div>
        <el-table :data="tableCourse" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-         <el-table-column prop="people" label="审批人" align="center"></el-table-column>
-         <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
-         <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
-         <el-table-column prop="times" label="审批时间" align="center"></el-table-column>
+         <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
+         <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
+         <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
+         <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
        </el-table>
        <div style="margin:20px 0 0 25px; font-size:14pt;">相关信息</div>
 
@@ -352,7 +352,18 @@
       CloseCheckIncomeShow(){
       	this.checkIncomeShow = false;
       },
-      
+      auditResult(result) {
+        var that =this
+          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ', {
+            jQ_ID: result,
+            jQ_Type: 1,
+          }).then(obj => {
+            // var json = JSON.parse(obj.data);
+            // console.log(json);
+            that.tableCourse = obj.data.extend.instanceLogInfo;
+          }).catch(obj => {
+          })
+        },
       //获取一条信息
       getLabel(){
         this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
@@ -363,6 +374,7 @@
              this.tour_id = res.data.object.planID;
              this.getTourByPlanId(res.data.object.planID);
              this.getPaymentdetails(res.data.object.planID);
+             this.auditResult(res.data.object.guid);
              /*res.data.object.files.forEach(function(v, k, arr) {
                   that.fileList.push({
                     "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],

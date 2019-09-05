@@ -38,14 +38,13 @@
           <!--分页-->
           <!-- <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination> -->
         </div>
-        <el-dialog title="详情" :visible.sync="detailstShow" width="80%" custom-class="city_list" :show-close='false'>
+        <!-- <el-dialog title="详情" :visible.sync="detailstShow" width="80%" custom-class="city_list" :show-close='false'>
           <div style="position:absolute; top:8px; right:10px;">
             <el-button @click="closeDetailstShow()">取消</el-button>
             <el-button @click="through()" type="danger" plain>通过</el-button>
             <el-button @click="rejected()" type="danger" plain>驳回</el-button>
           </div>
           <div class="loanManagement">
-              <!--查看无收入借款弹窗-->
                <div style="margin:10px 0 0 25px; font-size:14pt;">基本信息</div>
                <table class="basictable">
                  <tr>
@@ -126,10 +125,10 @@
                </table>
                <div style="margin:20px 0 0 25px; font-size:14pt;">审核结果</div>
                <el-table :data="tableCourse" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-                 <el-table-column prop="people" label="审批人" align="center"></el-table-column>
-                 <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
-                 <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
-                 <el-table-column prop="times" label="审批时间" align="center"></el-table-column>
+                 <el-table-column prop="ActivityName" label="审批人" align="center"></el-table-column>
+                 <el-table-column prop="ApprovalName" label="审批结果" align="center"></el-table-column>
+                 <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
+                 <el-table-column prop="UsedTime" label="审批时间" align="center"></el-table-column>
                </el-table>
                <div style="margin:20px 0 0 25px; font-size:14pt;">相关信息</div>
 
@@ -180,7 +179,7 @@
                    <el-table-column prop="number" label="人数" align="center"></el-table-column>
                    <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
                    <el-table-column prop="paid" label="已收金额" align="center"></el-table-column>
-                   <!-- <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column> -->
+                    <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column>
                    <el-table-column label="欠款金额" align="center">
                     <template slot-scope="scope">{{scope.row.payable-scope.row.paid}}</template>
                    </el-table-column>
@@ -190,7 +189,19 @@
                 
                </el-form>
           </div>
+        </el-dialog> -->
+        <el-dialog title="借款申请详情" :visible.sync="detailstShow" width="1100px" custom-class="city_list" :show-close='false'>
+          <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
+            <div style="position:absolute; top:8px; right:10px;">
+              <!-- <el-button @click="CloseCheckIncomeShow()">取消</el-button>
+              <el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button> -->
+              <el-button @click="closeDetailstShow()">取消</el-button>
+              <el-button @click="through()" type="danger" plain>通过</el-button>
+              <el-button @click="rejected()" type="danger" plain>驳回</el-button>
+            </div>
+          <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
         </el-dialog>
+
         <!--通过、驳回弹框-->
         <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close='false'>
           <div class="transit" @click="closeTransit()">×</div>
@@ -207,10 +218,16 @@
 
 
 <script>
-
+import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
   export default {
+  name: "approvalToBorrow",
+  components: {
+    checkLoanManagement,
+  },
     data(){
       return {
+        paymentID:0,
+        groupCode:'',
         //表头切换
         empty_01:'',
         people_01:'',
@@ -251,12 +268,7 @@
           //查看无收入借款弹窗
           checkIncomeShow:false,
           //查看无收入借款审批过程
-           tableCourse:[{
-            people:'1',
-            result:'通过',
-            opinion:'同意',
-            times:'2019-04-25'
-           }],
+           tableCourse:[],
            tour_id:0,
            multipleSelection: [],
            pid:'',
@@ -335,7 +347,6 @@
               arr.push(v.jq_ID)
               that.arr1.push(v.workItemID)
              })
-
              this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid',
               {
                 "guid": arr
@@ -344,10 +355,29 @@
                 that.total = obj.data.total;
                 that.tableData = obj.data.objects;
               })
+          // .then(obj =>{
+          //   this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ',
+          //     {
+          //       "jQ_ID": "974fdbc7-2f1d-4e9c-8bf1-e910e3d4ac01",
+          //       "jQ_Type":1
+          //     }).then(obj =>{
+          //       that.tableCourse = obj.data.objects;
+          //     })
+          // })
              console.log(arr)
           })
-      
         })
+        },
+        //审核结果
+        auditResult(result) {
+          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ', {
+            jQ_ID: result,
+            jQ_Type: 1,
+          }).then(obj => {
+            that.tableCourse = obj.data.objects;
+          }).catch(obj => {
+            console.log(obj);
+          })
         },
         //删除
         repeal(){
@@ -436,22 +466,25 @@
           this.pid = row.paymentID;
           this.detailstShow = true;
           this.getLabel();
+          
         },
         closeDetailstShow(){
           this.detailstShow = false;
         },
         //获取一条详情
         getLabel(){
+
           console.log(this.tableData)
           this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
               "id":this.pid
           }).then(res => {
             if(res.data.isSuccess == true){
-                this.guid = res.data.object.guid
+               this.guid = res.data.object.guid
                this.fundamental=res.data.object;
                this.tour_id = res.data.object.planID;
                this.getTourByPlanId(res.data.object.planID);
                this.getPaymentdetails(res.data.object.planID);
+               this.auditResult(res.data.object.guid);
                /*res.data.object.files.forEach(function(v, k, arr) {
                     that.fileList.push({
                       "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
@@ -460,6 +493,7 @@
                   })*/
             }
          })
+
         },
         getTourByPlanId(val) {
           var that = this
@@ -544,6 +578,9 @@
     mounted(){
       this.pageList();
     },
+    created(){
+      
+    }
   }
 </script>
 <style scoped>

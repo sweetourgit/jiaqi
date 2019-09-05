@@ -81,7 +81,6 @@ export default new Router({
     },{
       path: '/userList1',
       component: userList1,
-      name: '用户列表',
       meta: {
         keepAlive: true,
         auth: true
