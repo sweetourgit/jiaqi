@@ -68,7 +68,11 @@ export default {
             that.$refs.receivables.loadData();
             that.$refs.invoice.loadData();
           } else {
-            that.$message.success("驳回失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("驳回失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -119,7 +123,11 @@ export default {
               message: '审核提交成功!'
             });
           } else {
-            that.$message.success("审核提交失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("审核提交失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);

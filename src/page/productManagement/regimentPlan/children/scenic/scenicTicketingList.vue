@@ -10,7 +10,7 @@
       </el-date-picker><br /><br />
       <span class="search-title">操作人员:</span>
       <!--<el-input v-model="activeForm.user" class="input"></el-input>-->
-      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
+      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
       <span class="search-title">报账状态:</span>
       <el-select v-model="activeForm.status" placeholder="请选择" style="width:200px;margin-left:40px;">
         <el-option key="" label="全部" value=""></el-option>
@@ -242,6 +242,24 @@ export default {
       console.log(item);
       this.activeForm.userID = item.id;
     },
+    blurHand(){
+      const that = this;
+      let ida = '';
+      if(that.activeForm.user == ''){
+        that.activeForm.userID = '';
+      }else{
+        this.operatorList.forEach(function (item, index, arr) {
+          if(that.activeForm.user == item.value){
+            ida = item.id;
+          }
+        });
+        if(ida){
+          that.activeForm.userID = ida;
+        }else{
+          that.activeForm.userID = '';
+        }
+      }
+    },
     //搜索
     searchHand() {
 //      console.log(this.activeForm.createTime);
@@ -278,7 +296,7 @@ export default {
         "end_time": this.activeForm.endTime,
         "create_uid": this.activeForm.userID,
         "bill_status": this.activeForm.status,
-        "org_id": sessionStorage.getItem('orgID')
+        "org_id": ''
       }, ).then(function(response) {
           console.log(response);
         if (response.data.code == '200') {

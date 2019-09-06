@@ -9,41 +9,35 @@
       <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数" :picker-options="startDatePicker"></el-date-picker>
       <div class="date-line"></div>
       <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数" :picker-options="endDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">报账状态:</span>
-      <el-select v-model="activeForm.status" placeholder="请选择" style="width:200px">
+      <!--<span class="search-title">报账状态:</span>-->
+      <!--<el-select v-model="activeForm.status" placeholder="请选择" style="width:200px">-->
+        <!--<el-option key="" label="全部" value=""></el-option>-->
+        <!--<el-option key="0" label="未报账" value="1"></el-option>-->
+        <!--<el-option key="1" label="报账中" value="2"></el-option>-->
+        <!--<el-option key="2" label="已报账" value="3"></el-option>-->
+      <!--</el-select>-->
+      <!--<span class="search-title">是否关联产品:</span>-->
+      <!--<el-select v-model="activeForm.proRelation" placeholder="请选择" style="width:200px">-->
+        <!--<el-option key="" label="全部" value=""></el-option>-->
+        <!--<el-option key="1" label="是" value="2"></el-option>-->
+        <!--<el-option key="2" label="否" value="1"></el-option>-->
+      <!--</el-select>-->
+      <span class="search-title">取票人:</span>
+      <el-input v-model="activeForm.ticketPerson" class="input"></el-input>
+      <span class="search-title">类别:</span>
+      <el-select v-model="activeForm.type" placeholder="请选择" style="width:200px">
         <el-option key="" label="全部" value=""></el-option>
-        <el-option key="0" label="未报账" value="1"></el-option>
-        <el-option key="1" label="报账中" value="2"></el-option>
-        <el-option key="2" label="已报账" value="3"></el-option>
-      </el-select>
-      <span class="search-title">是否关联产品:</span>
-      <el-select v-model="activeForm.proRelation" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="是" value="2"></el-option>
-        <el-option key="2" label="否" value="1"></el-option>
+        <el-option key="1" label="门票" value="1"></el-option>
+        <el-option key="2" label="线路" value="2"></el-option>
+        <el-option key="3" label="酒店" value="3"></el-option>
+        <el-option key="4" label="套餐" value="4"></el-option>
       </el-select>
       <span class="search-title">导入时间:</span>
       <el-date-picker v-model="activeForm.importStartTime" type="date" placeholder="开始天数" :picker-options="importStartDatePicker"></el-date-picker>
       <div class="date-line"></div>
       <el-date-picker v-model="activeForm.importEndTime" type="date" placeholder="结束天数" :picker-options="importEndDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">关联团期:</span>
-      <el-input v-model="activeForm.tour" class="input"></el-input>
-      <span class="search-title">类别:</span>
-      <el-select v-model="activeForm.type" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="0" label="门票" value="门票"></el-option>
-        <el-option key="1" label="酒店" value="酒店"></el-option>
-      </el-select>
-      <span class="search-title">验证时间:</span>
-      <el-date-picker v-model="activeForm.validationStartTime" type="date" placeholder="开始天数" :picker-options="validationStartDatePicker"></el-date-picker>
-      <div class="date-line"></div>
-      <el-date-picker v-model="activeForm.validationEndTime" type="date" placeholder="结束天数" :picker-options="validationEndDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">取票人:</span>
-      <el-input v-model="activeForm.ticketPerson" class="input"></el-input>
-      <span class="search-title">取票人手机:</span>
-      <el-input v-model="activeForm.ticketPhone" class="input"></el-input>
-      <span class="search-title">分销商:</span>
-      <el-input v-model="activeForm.distributors" class="input" style="width: 485px;"></el-input><br /><br />
+      <!--<span class="search-title">关联团期:</span>-->
+      <!--<el-input v-model="activeForm.tour" class="input"></el-input>-->
       <span class="search-title">卖出支付方式:</span>
       <el-select v-model="activeForm.typePay" placeholder="请选择" style="width:200px">
         <el-option key="" label="全部" value=""></el-option>
@@ -55,6 +49,16 @@
         <el-option key="6" label="支付宝" value="6"></el-option>
         <el-option key="7" label="自采" value="7"></el-option>
       </el-select>
+      <span class="search-title">取票人手机:</span>
+      <el-input v-model="activeForm.ticketPhone" class="input"></el-input>
+      <span class="search-title">验证时间:</span>
+      <el-date-picker v-model="activeForm.validationStartTime" type="date" placeholder="开始天数" :picker-options="validationStartDatePicker"></el-date-picker>
+      <div class="date-line"></div>
+      <el-date-picker v-model="activeForm.validationEndTime" type="date" placeholder="结束天数" :picker-options="validationEndDatePicker"></el-date-picker><br /><br />
+
+      <span class="search-title">分销商:</span>
+      <el-input v-model="activeForm.distributors" class="input"></el-input>
+
       <div class="button_select">
         <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
@@ -118,9 +122,7 @@
           </el-table-column>
           <el-table-column prop="bill_status" label="报账状态" align="center">
             <template slot-scope="scope">
-              <p v-if="scope.row.bill_status == 1">未报账</p>
-              <p v-if="scope.row.bill_status == 2">报账中</p>
-              <p v-if="scope.row.bill_status == 3">已报账</p>
+              <span>{{bill_status[scope.row.bill_status]}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -179,6 +181,16 @@
         loading: true,
         multipleSelection: [],
         currentRow: true,
+
+        bill_status: {
+          1: '未认款',
+          2: '认款申请',
+          3: '认款待修改',
+          4: '认款通过',
+          5: '报账中',
+          6: '报账驳回',
+          7: '已报账'
+        },
 
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
@@ -421,11 +433,11 @@
           "order_sn": this.activeForm.oid,
           "sale_at_begin": this.activeForm.startTime,
           "sale_at_end": this.activeForm.endTime,
-          "bill_status": this.activeForm.status,
-          "is_relate_pro": this.activeForm.proRelation,
+          "bill_status": '',
+          "is_relate_pro": '',
           "import_at_begin": this.activeForm.importStartTime,
           "import_at_end": this.activeForm.importEndTime,
-          "tour_no": this.activeForm.tour,
+          "tour_no": '',
           "order_type": this.activeForm.type,
           "check_at_begin": this.activeForm.validationStartTime,
           "check_at_end": this.activeForm.validationEndTime,
@@ -434,7 +446,7 @@
           "distributor": this.activeForm.distributors,
           "pay_type": this.activeForm.typePay,
           "import_status": 2,
-          "org_id": sessionStorage.getItem('orgID')
+          "org_id": ''
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {

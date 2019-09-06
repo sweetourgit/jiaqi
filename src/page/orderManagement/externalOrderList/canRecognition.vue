@@ -31,8 +31,10 @@
       <span class="search-title">类别:</span>
       <el-select v-model="activeForm.type" placeholder="请选择" style="width:200px">
         <el-option key="" label="全部" value=""></el-option>
-        <el-option key="0" label="门票" value="门票"></el-option>
-        <el-option key="1" label="酒店" value="酒店"></el-option>
+        <el-option key="1" label="门票" value="1"></el-option>
+        <el-option key="2" label="线路" value="2"></el-option>
+        <el-option key="3" label="酒店" value="3"></el-option>
+        <el-option key="4" label="套餐" value="4"></el-option>
       </el-select>
       <span class="search-title">验证时间:</span>
       <el-date-picker v-model="activeForm.validationStartTime" type="date" placeholder="开始天数" :picker-options="validationStartDatePicker"></el-date-picker>
@@ -68,7 +70,7 @@
       <el-button type="primary" :disabled="reable" @click="unbinding" plain>解绑报账团期</el-button>
     </div>
     <div class="tableDv">
-      <div class="table_trip" style="width: 88%;">
+      <div class="table_trip" style="width: 90%;">
         <el-table ref="multipleTable" v-loading="loading" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="order_sn" label="订单ID" align="center">
@@ -119,9 +121,13 @@
           </el-table-column>
           <el-table-column prop="bill_status" label="报账状态" align="center">
             <template slot-scope="scope">
-              <p v-if="scope.row.bill_status == 1">未报账</p>
-              <p v-if="scope.row.bill_status == 2">报账中</p>
-              <p v-if="scope.row.bill_status == 3">已报账</p>
+              <span>{{bill_status[scope.row.bill_status]}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="bill_status" label="认收款信息" align="center">
+            <template slot-scope="scope">
+              <el-button type="text" @click="showBtn(scope.row)">查看</el-button>
+              <el-button type="text" @click="undoBtn(scope.row)">撤销</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -135,19 +141,23 @@
     <Relation :dialogFormVisible="dialogFormVisible" @close="close"></Relation>
     <ImportOrder :dialogFormVisible2="dialogFormVisible2" @close2="close2"></ImportOrder>
     <importStatus :dialogFormVisible3="dialogFormVisible3" @close3="close3"></importStatus>
+    <recognitionSee :dialogFormVisible4="dialogFormVisible4" @close="close4" :orderID="orderID"></recognitionSee>
   </div>
 </template>
 <script type="text/javascript">
   import Relation from '@/page/orderManagement/externalOrderList/externalChild/relation'//关联弹窗
   import ImportOrder from '@/page/orderManagement/externalOrderList/externalChild/importOrder'//导入订单弹窗
   import importStatus from '@/page/orderManagement/externalOrderList/importOrderInfo/importStatus'//导入状态弹窗
+  import recognitionSee from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionSee'//查看认款信息弹窗
+
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "externalOrderList",
     components: {
       Relation,
       ImportOrder,
-      importStatus
+      importStatus,
+      recognitionSee
     },
     data() {
       return {
@@ -176,6 +186,7 @@
         dialogFormVisible: false,
         dialogFormVisible2: false,
         dialogFormVisible3: false,
+        dialogFormVisible4: false,
 
 //      表格数据
         total: 0, //总条数
@@ -186,6 +197,18 @@
         loading: true,
         multipleSelection: [],
         currentRow: true,
+
+        orderID: '',
+
+        bill_status: {
+          1: '未认款',
+          2: '认款申请',
+          3: '认款待修改',
+          4: '认款通过',
+          5: '报账中',
+          6: '报账驳回',
+          7: '已报账'
+        },
 
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
@@ -372,6 +395,53 @@
           this.$message.warning(orderS + "订单不是已关联或未报账状态，不可解绑");
         }
       },
+      //查看
+      showBtn(row){
+//        alert(row.order_sn);
+        this.orderID = row.order_sn;
+        this.dialogFormVisible4 = true;
+      },
+      close4(){
+        this.dialogFormVisible4 = false;
+      },
+      //撤销
+      undoBtn(row){
+//        alert(row.order_sn);
+        const that = this;
+        this.$confirm('是否撤销该笔认款?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/revokerec", {
+            "order_sn": row.order_sn
+          }, ).then(function(response) {
+            console.log('撤销',response);
+            if (response.data.code == '200') {
+              that.$message({
+                type: 'success',
+                message: '撤销成功!'
+              });
+              that.loading = true;
+              that.loadData();
+            } else {
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning("失败~");
+              }
+
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消撤销'
+          });
+        });
+      },
       //搜索
       searchHand() {
         this.loading = true;
@@ -453,7 +523,7 @@
           "distributor": this.activeForm.distributors,
           "pay_type": this.activeForm.typePay,
           "import_status": 3,
-          "org_id": sessionStorage.getItem('orgID')
+          "org_id": ''
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {

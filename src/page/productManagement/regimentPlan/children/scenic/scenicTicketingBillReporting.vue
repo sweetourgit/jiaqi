@@ -319,6 +319,7 @@ export default {
           if (response.data.code == '200') {
           console.log("基本信息",response);
           let billTime = '', startTime = '', endTime = '';
+          const dataList = response.data.data;
           if(response.data.data.bill_at){
             billTime = formatDate(new Date(response.data.data.bill_at*1000));
           }else{
@@ -329,24 +330,41 @@ export default {
             endTime = formatDate(new Date(response.data.data.back_at*1000)).split(" ")[0];
           }
 
-          that.msg = {
-            tour_no: response.data.data.tour_no,
-            op_id: response.data.data.op_id,
-            billTime: billTime,
-            team_num: response.data.data.team_num,
-            days: response.data.data.days,
-            total_income: response.data.data.total_income,
-            total_cost: response.data.data.total_cost,
-            gross_profit: response.data.data.gross_profit,
-            gross_rate: response.data.data.gross_rate,
-            product_name: response.data.data.product_name,
-            startTime: startTime,
-            endTime: endTime,
-            reduce_num: response.data.data.reduce_num,
-            guide: response.data.data.guide,
-            associations: response.data.data.associations,
-            org_id: response.data.data.org_id
-          };
+          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            "id": response.data.data.op_id
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(function(response) {
+
+            if (response.data.isSuccess) {
+              that.msg = {
+                tour_no: dataList.tour_no,
+                op_id: response.data.object.name,
+                billTime: billTime,
+                team_num: dataList.team_num,
+                days: dataList.days,
+                total_income: dataList.total_income,
+                total_cost: dataList.total_cost,
+                gross_profit: dataList.gross_profit,
+                gross_rate: dataList.gross_rate,
+                product_name: dataList.product_name,
+                startTime: startTime,
+                endTime: endTime,
+                reduce_num: dataList.reduce_num,
+                guide: dataList.guide,
+                associations: dataList.associations,
+                org_id: dataList.org_id
+              };
+            } else {
+              that.$message.success("加载数据失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+
+
         } else {
           that.$message.success("加载数据失败~");
         }

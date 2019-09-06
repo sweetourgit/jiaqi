@@ -5,7 +5,7 @@
       <el-input v-model="activeForm.tour" class="input" placeholder="请输入"></el-input>
       <span class="search-title">操作人：</span>
       <!--<el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>-->
-      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
+      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
       <div class="button_select">
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
         <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
@@ -77,6 +77,24 @@ export default {
     },
     close() {
       this.dialogFormVisible = false;
+    },
+    blurHand(){
+      const that = this;
+      let ida = '';
+      if(that.activeForm.user == ''){
+        that.activeForm.userID = '';
+      }else{
+        this.operatorList.forEach(function (item, index, arr) {
+          if(that.activeForm.user == item.value){
+            ida = item.id;
+          }
+        });
+        if(ida){
+          that.activeForm.userID = ida;
+        }else{
+          that.activeForm.userID = '';
+        }
+      }
     },
     //搜索
     searchHand() {

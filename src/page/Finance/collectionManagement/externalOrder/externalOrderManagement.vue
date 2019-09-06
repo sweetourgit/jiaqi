@@ -4,7 +4,7 @@
       <div class="search">
         <span class="search_style">分销商：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
         <span class="search_style">申请人：</span>
-        <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入申请人" @select="handleSelectOper"></el-autocomplete>
+        <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入申请人" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
         <span class="search_style">收款时间：</span>
         <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
         <div class="date-line"></div>
@@ -32,7 +32,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="explain" label="收款明细说明" align="center"></el-table-column>
-          <el-table-column prop="created_at" label="收款时间" width="120" align="center"></el-table-column>
+          <el-table-column prop="receivables_at" label="收款时间" width="120" align="center"></el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center"></el-table-column>
           <el-table-column prop="rece_start" label="款项入账时段" align="center" width="200">
             <template slot-scope="scope">
@@ -142,6 +142,24 @@
         console.log(item);
         this.reimbursementPerID = item.id;
       },
+      blurHand(){
+        const that = this;
+        let ida = '';
+        if(that.reimbursementPer == ''){
+          that.reimbursementPerID = '';
+        }else{
+          this.operatorList.forEach(function (item, index, arr) {
+            if(that.reimbursementPer == item.value){
+              ida = item.id;
+            }
+          });
+          if(ida){
+            that.reimbursementPerID = ida;
+          }else{
+            that.reimbursementPerID = '';
+          }
+        }
+      },
       searchFun(){
         this.loadData();
       },
@@ -159,7 +177,7 @@
         this.dialogFormVisible = true;
       },
       detail(row){
-        this.info = row;
+        this.info = row.id;
         this.dialogFormVisible1 = true;
       },
       editOrder(row){
@@ -181,7 +199,11 @@
               that.$message.success("删除成功~");
               that.loadData();
             } else {
-              that.$message.success("失败~");
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning('失败~');
+              }
             }
           }).catch(function(error) {
             console.log(error);
@@ -219,12 +241,12 @@
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
             that.tableData.forEach(function (item, index, arr) {
-              item.created_at = formatDate(new Date(item.created_at*1000));
-              item.created_at = item.created_at.split(" ")[0];
+              item.receivables_at = formatDate(new Date(item.receivables_at*1000));
+              item.receivables_at = item.receivables_at.split(" ")[0];
               item.rece_start = formatDate(new Date(item.rece_start*1000));
-              item.rece_start = item.created_at.split(" ")[0];
+              item.rece_start = item.rece_start.split(" ")[0];
               item.rece_end = formatDate(new Date(item.rece_end*1000));
-              item.rece_end = item.created_at.split(" ")[0];
+              item.rece_end = item.rece_end.split(" ")[0];
               that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
                 "id": item.create_uid
               },{

@@ -63,7 +63,7 @@
         </el-table>
       </div>
     </div>
-    <recognitionSee :dialogFormVisible="dialogFormVisible" @close="close" :orderID="orderID"></recognitionSee>
+    <recognitionSee :dialogFormVisible4="dialogFormVisible4" @close="close" :orderID="orderID"></recognitionSee>
     <recognitionDo :dialogFormVisible2="dialogFormVisible2" @close="close" :info="info"></recognitionDo>
   </div>
 </template>
@@ -82,7 +82,7 @@
       return {
         pid: '',
         transmit: false,
-        dialogFormVisible: false,
+        dialogFormVisible4: false,
         dialogFormVisible2: false,
         info: '',
         orderID: '',
@@ -157,11 +157,13 @@
 //      查看
       showBtn(row){
         this.orderID = row.order_sn;
-        this.dialogFormVisible = true;
+        this.dialogFormVisible4 = true;
       },
       close(){
-        this.dialogFormVisible = false;
+        this.dialogFormVisible4 = false;
         this.dialogFormVisible2 = false;
+        this.orderID = '';
+        this.info = '';
         this.loadData();
       },
 //      撤销
@@ -183,7 +185,11 @@
               });
               that.loadData();
             } else {
-              that.$message.success("加载数据失败~");
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning("失败~");
+              }
             }
           }).catch(function(error) {
             console.log(error);

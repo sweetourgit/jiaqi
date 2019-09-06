@@ -20,7 +20,7 @@
         <el-col :span="8">
           <div class="button">
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
-            <el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 1 || (statusBtn == 3 && approved != 1)">修 改</el-button>
+            <el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 4 || statusBtn == 6">修 改</el-button>
             <el-button class="el-button" type="primary" @click="pledging" v-if="statusBtn == 1 || statusBtn == 3">认 款</el-button>
             <el-button class="el-button" type="danger" @click="delInfo" v-if="statusBtn == 1 || (statusBtn == 3 && approved != 1)">删 除</el-button>
           </div>
@@ -384,7 +384,9 @@ export default {
           console.log(response);
           response.data.data.basic_info.created_at = formatDate(new Date(response.data.data.basic_info.created_at*1000));
           response.data.data.basic_info.begin_at = formatDate(new Date(response.data.data.basic_info.begin_at *1000));
+          response.data.data.basic_info.begin_at = response.data.data.basic_info.begin_at.split(' ')[0];
           response.data.data.basic_info.end_at = formatDate(new Date(response.data.data.basic_info.end_at*1000));
+          response.data.data.basic_info.end_at = response.data.data.basic_info.end_at.split(' ')[0];
           that.baseInfo = response.data.data;
           that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
             "id": that.baseInfo.basic_info.create_uid

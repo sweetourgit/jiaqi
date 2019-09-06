@@ -222,7 +222,7 @@
             <template slot-scope="scope">
               <el-input :maxlength="10"  v-model="ccc[scope.$index].codePrefix" :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'" @blur="fucking" ></el-input>
               <span >-</span>
-              <span >{{</span>
+              <span v-text="'{{'"></span>
               <span >日期</span>
 
               <span >}}</span>
@@ -1251,6 +1251,8 @@
         this.value = '';
         this.productPrefix = '';
         this.productBehind = '';
+        this.originPlace = '';
+        this.originMod = '';
       },
       handleDelete(){
         this.$confirm('此操作将删除该跟团游信息', '提示', {
@@ -1423,6 +1425,7 @@
       //搜索
       searchHand(){
         this.pageNum = 1;
+        console.log(this.originMod)
 
         if (!this.productTitle){
           this.productTitle = ""
@@ -1434,12 +1437,13 @@
         }else{
           this.pageNum = 1;
         }
-        if (!this.productPos){
+
+        if (!this.productPos || !this.originPlace){
           this.productPos = 0
         }else{
           this.pageNum = 1;
         }
-        if (!this.productMod){
+        if (!this.productMod || !this.originMod){
           this.productMod = 0
         }else{
           this.pageNum = 1;
@@ -1453,20 +1457,15 @@
             "pageSize": this.pagesize,
             "total": 0,
             "object": {
-              "id": 0,
+              "id": that.productId == '' ? 0 : that.productId,
               "title": that.productTitle,
               "createUser": that.productUser,
-              "minPrice": 0,
-              "maxPrice": 0,
+              "minPrice": that.productPrefix == '' ? 0 : that.productPrefix,
+              "maxPrice": that.productBehind == '' ? 0 : that.productBehind,
               "podID": that.productPos,
               "destinationID": that.productMod
             }
           },
-          {
-            headers:{
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
         )
           .then(function (obj) {
             that.total = obj.data.total;
@@ -1519,11 +1518,7 @@
         console.log(row);
       },
       handleSizeChange(val) {
-        if(this.productId == ''){
-          this.productId = 0;
-        }else{
-          this.pageNum = 1;
-        }
+    
         if (!this.productTitle){
           this.productTitle = ""
         }else{
@@ -1544,16 +1539,7 @@
         }else{
           this.pageNum = 1;
         }
-        if (!this.productPrefix){
-          this.productPrefix = 0
-        }else{
-          this.pageNum = 1;
-        }
-        if (!this.productBehind){
-          this.productBehind = 0
-        }else{
-          this.pageNum = 1;
-        }
+
         this.pagesize = val
         var that = this
         this.$http.post(
@@ -1563,11 +1549,11 @@
             "pageSize": val,
             "total": 0,
             "object": {
-              "id": that.productId,
+              "id": that.productId == '' ? 0 : that.productId,
               "title": that.productTitle,
               "createUser": that.productUser,
-              "minPrice": that.productPrefix,
-              "maxPrice": that.productBehind,
+              "minPrice": that.productPrefix == '' ? 0 : that.productPrefix,
+              "maxPrice": that.productBehind == '' ? 0 : that.productBehind,
               "podID": that.productPos,
               "destinationID": that.productMod
             }
@@ -1597,11 +1583,7 @@
           })
       },
       handleCurrentChange(val) {
-        if(this.productId == ''){
-          this.productId = 0;
-        }else{
-          this.pageNum = 1;
-        }
+
         if (!this.productTitle){
           this.productTitle = ""
         }else{
@@ -1622,16 +1604,7 @@
         }else{
           this.pageNum = 1;
         }
-        if (!this.productPrefix){
-          this.productPrefix = 0
-        }else{
-          this.pageNum = 1;
-        }
-        if (!this.productBehind){
-          this.productBehind = 0
-        }else{
-          this.pageNum = 1;
-        }
+
         this.pageNum = val;
         var that = this
         this.$http.post(
@@ -1641,11 +1614,11 @@
             "pageSize": this.pagesize,
             "total": 0,
             "object": {
-              "id": that.productId,
+              "id": that.productId == '' ? 0 : that.productId,
               "title": that.productTitle,
               "createUser": that.productUser,
-              "minPrice": that.productPrefix,
-              "maxPrice": that.productBehind,
+              "minPrice": that.productPrefix == '' ? 0 : that.productPrefix,
+              "maxPrice": that.productBehind == '' ? 0 : that.productBehind,
               "podID": that.productPos,
               "destinationID": that.productMod
             }
@@ -1814,164 +1787,6 @@
           }
         }
       },
-      //添加属性值功能
-      addInput(b,key){
-        this.aa = true;
-        this.di++;
-        // console.log(b);
-        // console.log(b.value);
-        // console.log(key);
-        // console.log(this.di);
-
-        // 向指定的属性数组中添加属性值
-        this.addtable[this.addtable.length-1].allprice[key].value.push({
-          di:key,
-          price:'',
-          pp : false,
-          forbidden:false,
-        })
-        for(var ol =0;ol<b.value.length;ol++){
-          b.value[ol].forbidden = false;
-          console.log(key);
-          console.log(ol);
-          console.log("--------------")
-          // document.getElementById('vv'+key+ol).style.border = 'solid 1px #b3d8ff'
-          // document.getElementById('vv'+key+ol).style.color = '#409EFF'
-          // document.getElementById('vv'+key+ol).style.background = '#ecf5ff'
-          // console.log(23);
-
-        };
-        console.log(this.sku);
-
-      },
-      // 确认属性值
-      gain(){
-        for(var kl = 0;kl<this.addtable[this.addtable.length-1].allprice.length-1;kl++){
-          // console.log(this.addtable[this.addtable.length-1].allprice[kl].value);
-          if(this.addtable[this.addtable.length-1].allprice[kl].value.length == 0){
-            this.abc = true
-          }
-        }
-        if(this.abc){
-          this.$message({
-            showClose: true,
-            message: '请为每个属性至少添加一个属性值',
-            type: 'error'
-          });
-        } else {
-          // 属性输入框和删除按钮
-          this.aa = false;
-          // 属性确定之后的按钮
-          this.bb = true;
-          this.qq = false;
-          this.again = true;
-          this.pp = false;
-          this.close = true;
-          this.addsku = true;
-          // 属性按钮被禁用
-          this.xianshi = true;
-          // for(var ok = 0;ok<this.buttonList.length;ok++){
-          //   this.buttonList[ok].forbidden = true;
-          //   document.getElementById('kk'+ok).style.border = 'dashed 1px #c2c2c2'
-          //   document.getElementById('kk'+ok).style.color = '#c0c4cc'
-          //   document.getElementById('kk'+ok).style.background = '#fff'
-          // }
-          for(var lo = 0;lo<this.arr.length;lo++){
-            document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
-          }
-        }
-
-        this.abc = false
-      },
-      // 重新设计属性值
-      back(){
-        this.aa = true;
-        this.bb = false;
-        this.qq = true;
-        this.again = false;
-        this.pp = true;
-        this.close = false;
-        this.addsku = false;
-        console.log(this.sku);
-        this.sku[this.sku.length-1].price.splice(0,this.sku[this.sku.length-1].price.length);
-        for(var op = 0;op<this.addtable[this.addtable.length-1].allprice.length-1;op++){
-          for(var ll = 0;ll<this.addtable[this.addtable.length-1].allprice[op].value.length;ll++){
-            this.addtable[this.addtable.length-1].allprice[op].value[ll].forbidden = false;
-            this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false;
-            document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'
-            document.getElementById('vv'+op+ll).style.color = '#409EFF'
-            document.getElementById('vv'+op+ll).style.background = '#ecf5ff'
-          }
-        }
-        console.log(this.sku);
-
-        // 属性恢复使用
-        if(this.addtable[this.addtable.length-1].allprice.length < 4){
-          for(var ok = 0;ok<this.buttonList.length;ok++){
-            this.buttonList[ok].forbidden = false;
-            document.getElementById('kk'+ok).style.border = 'solid 1px #dcdfe6'
-            document.getElementById('kk'+ok).style.color = '#606266'
-          }
-          for(var lo = 0;lo<this.arr.length;lo++){
-            document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
-          }
-        }else if(this.addtable[this.addtable.length-1].allprice.length == 4){
-          // 全部禁用,并且禁用样式
-          for(var ok = 0;ok<this.buttonList.length;ok++){
-            this.buttonList[ok].forbidden = true;
-            document.getElementById('kk'+ok).style.border = 'solid 1px #c2c2c2'
-            document.getElementById('kk'+ok).style.color = '#c0c4cc'
-            document.getElementById('kk'+ok).style.background = '#fff'
-          }
-          // 选中的不禁用,并且选中样式
-          for(var lo = 0;lo<this.arr.length;lo++){
-            this.buttonList[this.arr[lo].id].forbidden =false;
-            document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
-          }
-        }
-      },
-      // 属性值按钮按下
-      choice(e,key,kk,lp){
-        // 当这个按钮还处于未被按下的情况下,按下
-        if(kk.value[key].pp == false){
-          // 先禁用所有的属性值按钮
-          for(var ui = 0;ui<kk.value.length;ui++){
-            kk.value[ui].forbidden = true;
-          }
-          this.lm = this.addtable[this.addtable.length-1].allprice[lp].value[key].di;
-          document.getElementById('vv'+lp+key).style.border = 'solid 1px #409eff'
-          document.getElementById('vv'+lp+key).style.color = '#fff'
-          document.getElementById('vv'+lp+key).style.background = '#409eff'
-          // 再解禁选中的按钮
-          kk.value[key].forbidden = false;
-          // 让选中的按钮处于按下的状态
-          kk.value[key].pp = true;
-          // 给这个按钮选中样式
-          // 将这个按钮的相关的值添加到sku这个数组中
-          this.sku[this.sku.length-1].price.push({
-            ID:kk.id,
-            zhi:kk.value[key].price,
-            name:kk.property,
-          })
-          console.log(this.sku[this.sku.length-1].price)
-          console.log(lp);
-        }else if(kk.value[key].pp == true){
-          for(var ui = 0;ui<kk.value.length;ui++){
-            kk.value[ui].forbidden = false;
-          }
-          kk.value[key].pp = false;
-          console.log(this.sku[this.sku.length-1].price);
-          console.log(key)
-          this.sku[this.sku.length-1].price.splice(lp,1);
-          document.getElementById('vv'+lp+key).style.border = 'solid 1px #b3d8ff'
-          document.getElementById('vv'+lp+key).style.color = '#409EFF'
-          document.getElementById('vv'+lp+key).style.background = '#ecf5ff'
-        }
-
-      },
       qqq(){
         console.log(this.ccc)
         for(var i = 0; i < this.ccc.length;i++ ){
@@ -1988,101 +1803,51 @@
         }
         this.merchandise = data;
       },
-      // 生成sku
-      skuadd(){
-        console.log(this.addtable[this.addtable.length-1].allprice)
-        if(this.sku[this.sku.length-1].price.length<this.addtable[this.addtable.length-1].allprice.length-1){
-          this.$message({
-            showClose: true,
-            message: '请为每一个属性选择要添加的属性值',
-            type: 'error'
-          });
-        }else{
-          // 获取点击按钮后的数据
-          for(var op = 0;op<this.addtable[this.addtable.length-1].allprice.length-1;op++){
-            for(var ll = 0;ll<this.addtable[this.addtable.length-1].allprice[op].value.length;ll++){
-              this.addtable[this.addtable.length-1].allprice[op].value[ll].forbidden = false;
-              this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false;
-              document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'
-              document.getElementById('vv'+op+ll).style.color = '#409EFF'
-              document.getElementById('vv'+op+ll).style.background = '#ecf5ff'
-            }
-          }
-          this.skuList = true;
-          var bbb = [];
-          for(var i = 0;i<this.sku[this.sku.length-1].price.length;i++){
-            bbb[i] = this.sku[this.sku.length-1].price[i]
-          }
-          this.sku[this.sku.length-1].price.splice(0,this.sku[this.sku.length-1].price.length);
-          var ooo = [];
-          for(var k = 0;k<bbb.length;k++){
-            ooo.push(
-              bbb[k].name + ':' + bbb[k].zhi
-              // 这个地方遍历出来的数据没有换行,这个问题有些难,先放一放
-            )
-          }
-          var ppp = ooo.toString()
-          // sku的id编号
-          this.skuid ++;
-          this.ccc.push({
-            id:this.skuid,
-            ddd:ppp,
-            type:false,
-          })
-          console.log(this.ccc);
-          if(this.ccc.length > 0){
-            this.accretion = true;
-          }
-        }
-      },
 
-      // 删除属性值
-      shanchu(index,key){
-        this.addtable[this.addtable.length-1].allprice[key].value.splice(index,1);
-      },
+
       // 添加增值
-      appreciation(){
-        this.accretionBall = true;
-      },
+      // appreciation(){
+      //   this.accretionBall = true;
+      // },
       // 保存增值
-      save(formName){
-        this.$refs[formName].validate((valid) =>{
-          if (valid){
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            });
-            console.log(this.ruleForm);
-            this.accretionBall = false;
-            this.AddpriceId++;
-            this.Addprice.push({
-              id:this.Addprice.length+1,
-              name:this.ruleForm.name,
-              priceSelect:this.ruleForm.priceSelect,
-              explain:this.ruleForm.explain,
-              type:false,
-            })
-            this.accretionTable = true;
-            console.log(this.Addprice);
-            // 清空输入框的数据
-            this.ruleForm.name = '';
-            this.ruleForm.priceSelect = '';
-            this.ruleForm.explain = '';
-            // this.$refs[formName].resetFields();
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
+      // save(formName){
+      //   this.$refs[formName].validate((valid) =>{
+      //     if (valid){
+      //       this.$message({
+      //         message: '添加成功',
+      //         type: 'success'
+      //       });
+      //       console.log(this.ruleForm);
+      //       this.accretionBall = false;
+      //       this.AddpriceId++;
+      //       this.Addprice.push({
+      //         id:this.Addprice.length+1,
+      //         name:this.ruleForm.name,
+      //         priceSelect:this.ruleForm.priceSelect,
+      //         explain:this.ruleForm.explain,
+      //         type:false,
+      //       })
+      //       this.accretionTable = true;
+      //       console.log(this.Addprice);
+      //       // 清空输入框的数据
+      //       this.ruleForm.name = '';
+      //       this.ruleForm.priceSelect = '';
+      //       this.ruleForm.explain = '';
+      //       // this.$refs[formName].resetFields();
+      //     } else {
+      //       console.log('error submit!!');
+      //       return false;
+      //     }
+      //   });
+      // },
       // 删除sku
-      delSku(a){
-        this.ccc.splice(a,1);
-      },
+      // delSku(a){
+      //   this.ccc.splice(a,1);
+      // },
       // 删除增值服务
-      delPrice(b){
-        this.Addprice.splice(b,1);
-      },
+      // delPrice(b){
+      //   this.Addprice.splice(b,1);
+      // },
       // sku上线
       online(index){
         console.log(index);

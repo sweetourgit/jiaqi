@@ -10,7 +10,7 @@
       <el-button type="info" round size="mini" style="margin-left: 4%;">审核中</el-button>
       <div class="stepDv">
         <p class="inputLabel"><span>ID：</span>{{baseInfo.ID}}</p>
-        <p class="inputLabel"><span>申请人：</span>{{baseInfo.applicant}}</p>
+        <p class="inputLabel"><span>申请人：</span>{{applicant}}</p>
         <p class="inputLabel"><span>创建时间：</span>{{baseInfo.creatTime}}</p>
         <p class="inputLabel"><span>收款明细说明：</span>{{baseInfo.mark}}</p>
         <p class="inputLabel"><span>收款账户：</span>{{baseInfo.payAccount}}</p>
@@ -122,7 +122,7 @@
 
         baseInfo: {
           ID: '',
-          applicant: '',
+//          applicant: '',
           creatTime: '',
           creditTime: '',
           mark: '',
@@ -134,6 +134,7 @@
           endTime: '',
           toCollection: ''
         },
+        applicant: '',
         fileList: [],
         tableDataSK: [],
         totalItem: '',
@@ -184,7 +185,35 @@
       },
 //      删除
       deleteDo(){
-
+        this.$confirm("是否删除该笔收款?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          const that = this;
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/delrece", {
+            "id": this.info
+          }, ).then(function(response) {
+            console.log(response);
+            if (response.data.code == '200') {
+              that.$message.success("删除成功~");
+              that.close();
+            } else {
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning('失败~');
+              }
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }).catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
       },
 //
       editBtn(){
@@ -245,7 +274,6 @@
             response.data.data.rece_end = formatDate(new Date(response.data.data.rece_end*1000));
             that.baseInfo = {
               ID: response.data.data.id,
-              applicant: response.data.data.create_uid,
               creatTime: response.data.data.created_at,
               creditTime: response.data.data.receivables_at,
               payAccount: response.data.data.account_id,
@@ -257,6 +285,23 @@
               endTime: response.data.data.rece_end,
               toCollection: '无数据',
             };
+            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              "id": response.data.data.create_uid
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              }
+            }).then(function(response) {
+              console.log('名字',response.data.object.name);
+              if (response.data.isSuccess) {
+                that.applicant = response.data.object.name;
+              } else {
+                that.$message.success("失败~");
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
+
             if(response.data.data.file != ''){
               that.fileList = [];
               that.fileList.push({

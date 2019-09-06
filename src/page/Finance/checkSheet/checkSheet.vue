@@ -8,7 +8,7 @@
             <span class="search_style">团期计划：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
             <span class="search_style">报账人：</span>
             <!--<el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>-->
-            <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
+            <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
             <span class="search_style">发起时间：</span>
             <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
             <div class="date-line"></div>
@@ -139,6 +139,24 @@
         handleSelectOper(item){
           console.log(item);
           this.reimbursementPerID = item.id;
+        },
+        blurHand(){
+          const that = this;
+          let ida = '';
+          if(that.reimbursementPer == ''){
+            that.reimbursementPerID = '';
+          }else{
+            this.operatorList.forEach(function (item, index, arr) {
+              if(that.reimbursementPer == item.value){
+                ida = item.id;
+              }
+            });
+            if(ida){
+              that.reimbursementPerID = ida;
+            }else{
+              that.reimbursementPerID = '';
+            }
+          }
         },
         searchFun(){
           this.reimList();

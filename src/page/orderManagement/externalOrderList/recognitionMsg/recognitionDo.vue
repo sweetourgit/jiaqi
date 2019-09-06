@@ -235,7 +235,7 @@
           if (response.data.code == '200') {
             console.log('明细信息',response);
             that.tableDataMX = response.data.data;
-            if(that.tableDataMX.length == 0){
+            if(that.tableDataMX.length != 0){
               that.tableDataMX.forEach(function (item, index, arr) {
                 item.rece_at = formatDate(new Date(item.rece_at*1000));
                 item.rece_at = item.rece_at.split(" ")[0];
@@ -249,17 +249,24 @@
         });
       },
       doSubmit(row){
+        console.log(row);
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/submitrec", {
           "order_sn": this.tableData[0].order_sn,
-          "rec_detail_id": row.id
+          "rec_detail_id": row.id,
+          "create_uid": sessionStorage.getItem('id')
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log('提交认款',response);
             that.$message.success("认款成功~");
             that.closeAdd();
           } else {
-            that.$message.warning("认款失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("认款失败~");
+            }
+
           }
         }).catch(function(error) {
           console.log(error);

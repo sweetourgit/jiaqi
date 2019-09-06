@@ -248,7 +248,7 @@
           "product_name": this.productName,
           "destination_id": this.destinationID,
           "create_uid": this.operatorID,
-          "org_id": sessionStorage.getItem('orgID')
+          "org_id": ''
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log(response);

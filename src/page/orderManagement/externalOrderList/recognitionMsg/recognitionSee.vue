@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
-    <el-dialog title="查看" :visible="dialogFormVisible" width=90% @close="closeAdd">
+    <el-dialog title="查看" :visible="dialogFormVisible4" width=90% @close="closeAdd">
       <div class="table_trip" style="width: 100%;">
         <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="true" :header-cell-style="getRowClass">
           <el-table-column prop="order_sn" label="订单ID" align="center" >
@@ -67,7 +67,7 @@
     name: "recognitionSee",
     components: {},
     props: {
-      dialogFormVisible: false,
+      dialogFormVisible4: false,
       orderID: '',
     },
     data() {
@@ -85,7 +85,9 @@
     watch: {
       orderID: {
         handler:function(){
-          this.loadData()
+          if(this.orderID != ''){
+            this.loadData()
+          }
         }
       }
     },
@@ -107,7 +109,7 @@
 
       },
       loadData(){
-        console.log(this.orderID);
+//        alert(this.orderID);
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recorderinfo", {
           "order_sn": this.orderID

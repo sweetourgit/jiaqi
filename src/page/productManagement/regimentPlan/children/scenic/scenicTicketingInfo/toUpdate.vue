@@ -109,7 +109,7 @@ export default {
                 });
                 that.$emit('close', false);
               } else {
-                that.$message.warning("修改数据失败~");
+                that.$message.warning(response.data.message);
               }
             }).catch(function(error) {
               console.log(error);
