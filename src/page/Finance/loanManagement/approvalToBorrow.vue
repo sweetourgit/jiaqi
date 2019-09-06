@@ -446,7 +446,12 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
               that.detailstShow = false;
               that.rejectedSuccess();
               //that.repeal();
-            
+          })
+          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/EndProcess',
+          {
+            //"userCode": "rbop01",
+            "jq_id":this.guid,
+            "jQ_Type": 1
           })
         },
         //驳回成功通过guid将checktype修改成2
@@ -461,6 +466,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
               }
           })
         },
+
         //详情弹窗
         checkIncome(row){
           this.pid = row.paymentID;

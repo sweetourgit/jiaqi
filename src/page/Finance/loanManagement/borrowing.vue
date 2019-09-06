@@ -8,24 +8,24 @@
 					<span class="emptyPlan">团期计划</span>
 					<el-input v-model="groupCode_01" class="empty" clearable placeholder="请输入团期计划"></el-input>
 				</div>
-				<div class="fl">
+				<!-- <div class="fl">
 					<span class="emptyPlan">申请人</span>
 					<el-input v-model="createUser" class="empty" clearable placeholder="请输入申请人"></el-input>
-				</div>
+				</div> -->
 				<div class="fl">
 					<span class="emptyPlan">发起时间</span>
-					<el-date-picker v-model="beginTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
+					<el-date-picker v-model="createTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
 					<span class="time">——</span>
 					<el-date-picker v-model="endTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
 				</div>
-			</div>
-			<div style="width:1100px;clear:both;">
-				<div style=" float:left">
+				<div class="fl">
 			       <span class="emptyPlan">类型</span>
 				   <el-select v-model="checkType" placeholder="请输入类型" class="empty">
 	                 <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlement" :key="item.value" />
 	               </el-select>
 				</div>
+			</div>
+			<div style="width:1100px;clear:both;">
 				<div style="float:right; margin: 0 10px 0 0;">
 					<el-button @click="search()" type="primary">搜索</el-button>
 					<el-button @click="emptyButton()" type="primary">重置</el-button>
@@ -36,7 +36,7 @@
 			<el-button plain @click="noIncome()" style="margin:30px 0 0 0;">申请</el-button>
 			<!-- <el-button plain @click="checkIncome()" :disabled="forbidden">查看借款</el-button> -->
 		</div>
-		<div style="width:1301px; overflow:hidden">
+		<div style="max-width:1300px;padding:0 50px 0 0;">
 			<el-table :data="tableData"  class="labelTable" ref="multipleTable" :header-cell-style="getRowClass" border :row-style="rowClass" @row-click="clickRow">
 		      <el-table-column prop="paymentID" label="借款单号" width="120" align="center"></el-table-column>
 		      <el-table-column prop="checkTypeEX" label="状态" width="80" align="center">
@@ -46,7 +46,7 @@
 		          <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
 		        </template>
 		      </el-table-column>
-		      <el-table-column prop="beginTime" label="发起时间" :formatter='dateFormat' width="150" align="center"></el-table-column>
+		      <el-table-column prop="createTime" label="发起时间" :formatter='dateFormat' width="150" align="center"></el-table-column>
 		      <el-table-column prop="groupCode" label="团期计划" width="210" align="center"></el-table-column>
 		      <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
 		      <el-table-column prop="supplierTypeEX" label="类型" width="100" align="center"></el-table-column>
@@ -76,10 +76,6 @@
 	      </div>
 	      <div class="basicTitle">基本信息</div>
 	      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-	      	 <!-- <el-form-item label="借款人" prop="name">
-	      	 			    <el-input class="name_input" v-model="ruleForm.name"></el-input>
-	      	 			    <el-button class="name_button" @click="IncomeName()">选择</el-button>
-	      	 			 </el-form-item> -->
 			 <el-form-item label="团期计划" prop="plan" style="float:left;">
 			    <el-input class="name_input" @blur="tour_check" v-model="ruleForm.plan" placeholder="请输入团期计划"></el-input>
 			    <el-input style="width:300px;" disabled v-model="ruleForm.plan_01" placeholder="通过输入团期计划,自动补充产品名
@@ -95,8 +91,11 @@
 			    <el-autocomplete class="name_input" v-model="ruleForm.supplier" :fetch-suggestions="querySearch3"placeholder="请输入供应商名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
 			 </el-form-item>
 			 <el-form-item label="借款类型" prop="planType">
-			    <el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
+			    <!-- <el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
 				  <el-option :disabled="ruleForm.supplier != ''" v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+				</el-select> -->
+				<el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
+				  <el-option v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
 			 </el-form-item>
 			 <el-form-item label="借款金额" prop="planAmount" style="clear:both;">
@@ -290,7 +289,6 @@
       </el-dialog>
       <!--查看无收入借款弹窗-->
 	  <el-dialog title="借款申请详情" :visible.sync="checkIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>
-	    <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
       	<div style="position:absolute; top:8px; right:10px;">
       		<el-button @click="CloseCheckIncomeShow()">取消</el-button>
       		<el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button>
@@ -331,7 +329,7 @@ import moment from 'moment'
       return {
       	groupCode_01:'',
       	createUser:'',
-      	beginTime:'',
+      	createTime:'',
       	endTime:'',
       	checkType:'',
       	 //表头切换
@@ -504,7 +502,7 @@ import moment from 'moment'
 	  emptyButton(){
 	  	this.groupCode_01 = '';
 	  	this.createUser = '';
-	  	this.beginTime = '';
+	  	this.createTime = '';
 	  	this.endTime = '';
 	  	this.checkType = '';
 	  }, 
@@ -602,7 +600,7 @@ import moment from 'moment'
     },
     departure(item){
       console.log(item)
-      this.ruleForm.planType = item.supplierType
+      //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
       /*this.productPos = item.id;
       this.originPlace = item.value;*/
       this.productPos = item.id;
@@ -619,9 +617,9 @@ import moment from 'moment'
       this.pageList();
     },
       //无收入借款弹窗
-      noIncome(){//点击显示弹窗
+      noIncome(formName){//点击显示弹窗
       	this.noIncomeShow =true;
-      	//this.$refs["ruleForm"].resetFields();
+      	this.$refs["ruleForm"].resetFields();
       	this.clearPlan();
       },
       CloseNoIncomeShow(){//点击关闭弹窗
@@ -655,6 +653,11 @@ import moment from 'moment'
       	this.ruleForm.accountBank = '';
       	//this.accessory = '';
       	this.tour_id = 0;
+      	this.tableMoney = [];
+      	this.tableIncome = [];
+      	this.tablePayment = [];
+      	this.tableEarning = [];
+
 
       },
       //无收入借款中借款人弹窗
@@ -878,7 +881,7 @@ import moment from 'moment'
       	this.checkIncomeShow = false;
       },
       //查询列表
-      pageList(groupCode_01=this.groupCode_01,createUser=this.createUser,beginTime=this.beginTime,endTime=this.endTime,checkType=this.checkType) {   
+      pageList(groupCode_01=this.groupCode_01,createUser=this.createUser,createTime=this.createTime,endTime=this.endTime,checkType=this.checkType) {   
       	/*if(beginTime){//时间节点裁剪，裁剪到年月日
           let y=beginTime.getFullYear();
           let m=(beginTime.getMonth()+1)>9?beginTime.getMonth()+1:'0'+(beginTime.getMonth()+1);
@@ -892,7 +895,7 @@ import moment from 'moment'
       	objectRequest.checkType = -1;
       	if (this.groupCode_01) { objectRequest.groupCode = this.groupCode_01; }
       	if (this.createUser) { objectRequest.createUser = this.createUser; }
-      	if (this.beginTime) { objectRequest.beginTime = this.beginTime; }  
+      	if (this.createTime) { objectRequest.createTime = this.createTime; }  
       	if (this.endTime) { objectRequest.endTime = this.endTime; }
       	if (this.checkType) { objectRequest.checkType = this.checkType;}else{objectRequest.checkType='-1'}
       	//if (this.checkTypeEX) { objectRequest.checkTypeEX = this.checkTypeEX; }
@@ -1004,7 +1007,7 @@ import moment from 'moment'
       //借款类型
       themeList(){
       	this.borrowingType = [];
-	      this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=SupplierType')
+	      this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=PaymentType')
 	      .then(res => {
 	        for (let i = 0; i < res.data.objects.length; i++) {
 	          this.borrowingType.push({
@@ -1214,6 +1217,7 @@ import moment from 'moment'
 
     mounted(){
       this.pageList();
+      this.planList();
     },
     created(){
       this.themeList();
@@ -1234,7 +1238,7 @@ import moment from 'moment'
 	/*重置*/
 	.primary{clear: both;overflow: hidden;margin: 0 0 20px 30px;}
 	/*表格*/
-	.labelTable{margin: 0 30px 20px 30px; text-align: center;max-width: 1271px;}
+	.labelTable{margin: 0 30px 20px 30px; text-align: center;width: 1271px;}
 	.multipleTable{margin: 0 30px 20px 30px; text-align: center;width: 1161px;}
 	/*分页*/
 	.pageList{float:right; margin: 0 30px 20px 0;}
