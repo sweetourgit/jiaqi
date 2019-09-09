@@ -10,7 +10,7 @@
              <div>
                <div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
                <div class="checkType" v-if="fundamental.checkType=='2'" style="background: #ff0000" >驳回</div>
-               <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500" >通过</div>
+               <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500">通过</div>
              </div>
           </td>
          </tr>
@@ -25,7 +25,7 @@
            </td>
            <td class="basictd">
              <span class="basicspan_01">创建时间:</span>
-             <span class="basicspan_02">{{fundamental.createTime}}</span>
+             <span class="basicspan_02">{{fundamental.createTime | formatDate}}</span>
            </td>
          </tr>
          <tr>
@@ -75,9 +75,9 @@
              <span class="basicspan_01">附件:</span>
              <span class="basicspan_02">{{fundamental.files}}</span>
            </td>
-           <td class="basictd">
+           <td class="basictd" v-if="fundamental.checkType=='1'">
              <span class="basicspan_01">支付账户:</span>
-             <span class="basicspan_02"></span>
+             <span class="basicspan_02">{{fundamental.title}}</span>
            </td>
          </tr>
        </table>
@@ -102,8 +102,14 @@
 	    <div style="margin:0 0 0 25px;">无收入借款明细</div>
         <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-           <el-table-column prop="checkType" label="审批状态" align="center"></el-table-column>
-           <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
+           <el-table-column prop="checkType" label="审批状态" align="center">
+             <template slot-scope="scope">
+              <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
+              <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
+              <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+            </template>
+           </el-table-column>
+           <el-table-column prop="supplierType" label="借款类型" align="center"></el-table-column>
            <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
            <el-table-column prop="price" label="金额" align="center"></el-table-column>
            <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
@@ -117,8 +123,14 @@
         <div style="margin:0 0 0 25px;">预付款明细</div>
         <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-           <el-table-column prop="checkType" label="审批状态" align="center"></el-table-column>
-           <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
+           <el-table-column prop="checkType" label="审批状态" align="center">
+             <template slot-scope="scope">
+              <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
+              <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
+              <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+            </template>
+           </el-table-column>
+           <el-table-column prop="supplierType" label="借款类型" align="center"></el-table-column>
            <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
            <el-table-column prop="price" label="金额" align="center"></el-table-column>
            <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
@@ -153,17 +165,15 @@
 
 
 <script>
-
+import moment from 'moment'
   export default {
     props: {
      paymentID:0,
-     groupCode:''
-
-
+     groupCode:'',
+     title:'',
     },
     data(){
-      return {
-      	
+      return {	
       	 //表头切换
          empty:'',
          people:'',
@@ -293,8 +303,16 @@
 
       }
     },
+    filters: {
+      formatDate: function (value) {
+        return moment(value).format('YYYY-MM-DD')
+      }
+    },
     methods: {
-	  
+    
+    // submit() {
+    //     console.log(moment(this.createTime).format('YYYY-MM-DD'))
+    // },
 	  //表格表头颜色
 	  getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -371,9 +389,13 @@
         }).then(res => {
           if(res.data.isSuccess == true){
              this.fundamental=res.data.object;
-             this.tour_id = res.data.object.planID;
-             this.getTourByPlanId(res.data.object.planID);
-             this.getPaymentdetails(res.data.object.planID);
+             //this.tour_id = res.data.object.planID;
+             if(res.data.object.planID>0){
+               this.getPaymentdetails(res.data.object.planID);
+             }
+             else{
+              this.bbb();
+             }
              this.auditResult(res.data.object.guid);
              /*res.data.object.files.forEach(function(v, k, arr) {
                   that.fileList.push({
@@ -414,9 +436,58 @@
 
               }
         }) .catch(err => {});
-      },*/
-	    getTourByPlanId(val) {
-        var that = this
+      },*/	
+    bbb(){//无收入没有订单号根据登录人员查询无收入借款明细
+      var that = this
+      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+        "object": {
+          "paymentType": 1,
+          "createUser": sessionStorage.getItem('userCode'),
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableIncome = res.data.objects
+          that.tableIncome.forEach(function (v,k,arr) {
+              if(arr[k]['checkType'] == 0){
+                arr[k]['checkType'] = '审批中'
+              }else if(arr[k]['checkType'] == 1) {
+                arr[k]['checkType'] = '通过'
+              }else if(arr[k]['checkType'] == 2) {
+                arr[k]['checkType'] = '驳回'
+              }
+              if(arr[k]['supplierType'] == 1){
+                arr[k]['supplierType'] = '地接'
+              }else if(arr[k]['supplierType'] == 2) {
+                arr[k]['supplierType'] = '机票（本公司）'
+              }else if(arr[k]['supplierType'] == 3) {
+                arr[k]['supplierType'] = '机票（非本公司）'
+              }else if(arr[k]['supplierType'] == 4) {
+                arr[k]['supplierType'] = '小费'
+              }else if(arr[k]['supplierType'] == 5) {
+                arr[k]['supplierType'] = '地接（其他）'
+              }else if(arr[k]['supplierType'] == 6) {
+                arr[k]['supplierType'] = '火车票'
+              }else if(arr[k]['supplierType'] == 7) {
+                arr[k]['supplierType'] = '汽车票'
+              }else if(arr[k]['supplierType'] == 8) {
+                arr[k]['supplierType'] = '船票'
+              }else if(arr[k]['supplierType'] == 9) {
+                arr[k]['supplierType'] = '其他'
+              }else if(arr[k]['supplierType'] == 10) {
+                arr[k]['supplierType'] = '机票押金'
+              }else if(arr[k]['supplierType'] == 11) {
+                arr[k]['supplierType'] = '火车票押金'
+              }
+              
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },    
+    getPaymentdetails(val) {
+      var that = this
+      //相关信息
         that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
           "object": {
             planID: val, //团期计划ID
@@ -429,9 +500,6 @@
         }).catch(err => {
           console.log(err)
         })
-    },
-    getPaymentdetails(val) {
-      var that = this
       //预付付款明细
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
         "object": {
@@ -441,6 +509,38 @@
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tablePayment = res.data.objects
+          that.tablePayment.forEach(function (v,k,arr) {
+              if(arr[k]['checkType'] == 0){
+                arr[k]['checkType'] = '审批中'
+              }else if(arr[k]['checkType'] == 1) {
+                arr[k]['checkType'] = '通过'
+              }else if(arr[k]['checkType'] == 2) {
+                arr[k]['checkType'] = '驳回'
+              }
+              if(arr[k]['supplierType'] == 1){
+                arr[k]['supplierType'] = '地接'
+              }else if(arr[k]['supplierType'] == 2) {
+                arr[k]['supplierType'] = '机票（本公司）'
+              }else if(arr[k]['supplierType'] == 3) {
+                arr[k]['supplierType'] = '机票（非本公司）'
+              }else if(arr[k]['supplierType'] == 4) {
+                arr[k]['supplierType'] = '小费'
+              }else if(arr[k]['supplierType'] == 5) {
+                arr[k]['supplierType'] = '地接（其他）'
+              }else if(arr[k]['supplierType'] == 6) {
+                arr[k]['supplierType'] = '火车票'
+              }else if(arr[k]['supplierType'] == 7) {
+                arr[k]['supplierType'] = '汽车票'
+              }else if(arr[k]['supplierType'] == 8) {
+                arr[k]['supplierType'] = '船票'
+              }else if(arr[k]['supplierType'] == 9) {
+                arr[k]['supplierType'] = '其他'
+              }else if(arr[k]['supplierType'] == 10) {
+                arr[k]['supplierType'] = '机票押金'
+              }else if(arr[k]['supplierType'] == 11) {
+                arr[k]['supplierType'] = '火车票押金'
+              }
+          })
         }
       }).catch(err => {
         console.log(err)
@@ -454,15 +554,47 @@
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableIncome = res.data.objects
+          that.tableIncome.forEach(function (v,k,arr) {
+              if(arr[k]['checkType'] == 0){
+                arr[k]['checkType'] = '审批中'
+              }else if(arr[k]['checkType'] == 1) {
+                arr[k]['checkType'] = '通过'
+              }else if(arr[k]['checkType'] == 2) {
+                arr[k]['checkType'] = '驳回'
+              }
+              if(arr[k]['supplierType'] == 1){
+                arr[k]['supplierType'] = '地接'
+              }else if(arr[k]['supplierType'] == 2) {
+                arr[k]['supplierType'] = '机票（本公司）'
+              }else if(arr[k]['supplierType'] == 3) {
+                arr[k]['supplierType'] = '机票（非本公司）'
+              }else if(arr[k]['supplierType'] == 4) {
+                arr[k]['supplierType'] = '小费'
+              }else if(arr[k]['supplierType'] == 5) {
+                arr[k]['supplierType'] = '地接（其他）'
+              }else if(arr[k]['supplierType'] == 6) {
+                arr[k]['supplierType'] = '火车票'
+              }else if(arr[k]['supplierType'] == 7) {
+                arr[k]['supplierType'] = '汽车票'
+              }else if(arr[k]['supplierType'] == 8) {
+                arr[k]['supplierType'] = '船票'
+              }else if(arr[k]['supplierType'] == 9) {
+                arr[k]['supplierType'] = '其他'
+              }else if(arr[k]['supplierType'] == 10) {
+                arr[k]['supplierType'] = '机票押金'
+              }else if(arr[k]['supplierType'] == 11) {
+                arr[k]['supplierType'] = '火车票押金'
+              }
+          })
         }
       }).catch(err => {
         console.log(err)
       })
       //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
       that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
-        "object": {
-          "id": val,
-        }
+      
+          "id": val
+        
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableMoney = []

@@ -23,7 +23,7 @@
         <div style="width:1130px;">
           <el-table :data="tableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border @row-click="clickBanle">
             <el-table-column prop="paymentID" label="借款单号" width="100" align="center"></el-table-column>
-            <el-table-column prop="beginTime" label="发起时间" width="180" align="center"></el-table-column>
+            <el-table-column prop="createTime":formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
             <el-table-column prop="groupCode" label="团期计划" width="219" align="center"></el-table-column>
             <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
             <el-table-column prop="supplierTypeEX" label="类型" width="80" align="center"></el-table-column>
@@ -219,6 +219,7 @@
 
 <script>
 import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
+import moment from 'moment'
   export default {
   name: "approvalToBorrow",
   components: {
@@ -280,6 +281,14 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
       }
     },
     methods: {
+      // 起始时间格式转换
+      dateFormat: function(row, column) {
+        let date = row[column.property];
+        if(date == undefined) {
+          return '';
+        }
+        return moment(date).format('YYYY-MM-DD')
+      },
       //重置
       emptyButton_01(){
         this.empty_01 = '';
@@ -429,6 +438,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           }).then(res =>{
               that.transitShow = false;
               that.detailstShow = false;
+              that.pageList();
               //that.repeal();
           })
         },
@@ -445,6 +455,7 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
               that.transitShow = false;
               that.detailstShow = false;
               that.rejectedSuccess();
+              that.pageList();
               //that.repeal();
           })
           this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/EndProcess',
@@ -478,29 +489,29 @@ import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
           this.detailstShow = false;
         },
         //获取一条详情
-        getLabel(){
+        // getLabel(){
 
-          console.log(this.tableData)
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
-              "id":this.pid
-          }).then(res => {
-            if(res.data.isSuccess == true){
-               this.guid = res.data.object.guid
-               this.fundamental=res.data.object;
-               this.tour_id = res.data.object.planID;
-               this.getTourByPlanId(res.data.object.planID);
-               this.getPaymentdetails(res.data.object.planID);
-               this.auditResult(res.data.object.guid);
-               /*res.data.object.files.forEach(function(v, k, arr) {
-                    that.fileList.push({
-                      "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
-                      "name": arr[k]['name'],
-                    });
-                  })*/
-            }
-         })
+        //   console.log(this.tableData)
+        //   this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
+        //       "id":this.pid
+        //   }).then(res => {
+        //     if(res.data.isSuccess == true){
+        //        this.guid = res.data.object.guid
+        //        this.fundamental=res.data.object;
+        //        this.tour_id = res.data.object.planID;
+        //        this.getTourByPlanId(res.data.object.planID);
+        //        this.getPaymentdetails(res.data.object.planID);
+        //        this.auditResult(res.data.object.guid);
+        //        /*res.data.object.files.forEach(function(v, k, arr) {
+        //             that.fileList.push({
+        //               "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
+        //               "name": arr[k]['name'],
+        //             });
+        //           })*/
+        //     }
+        //  })
 
-        },
+        // },
         getTourByPlanId(val) {
           var that = this
           that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {

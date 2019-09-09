@@ -328,7 +328,6 @@ import moment from 'moment'
     data(){
       return {
       	groupCode_01:'',
-      	createUser:'',
       	createTime:'',
       	endTime:'',
       	checkType:'',
@@ -501,7 +500,6 @@ import moment from 'moment'
 	  //重置
 	  emptyButton(){
 	  	this.groupCode_01 = '';
-	  	this.createUser = '';
 	  	this.createTime = '';
 	  	this.endTime = '';
 	  	this.checkType = '';
@@ -619,7 +617,7 @@ import moment from 'moment'
       //无收入借款弹窗
       noIncome(formName){//点击显示弹窗
       	this.noIncomeShow =true;
-      	this.$refs["ruleForm"].resetFields();
+      	//this.$refs["ruleForm"].resetFields();
       	this.clearPlan();
       },
       CloseNoIncomeShow(){//点击关闭弹窗
@@ -630,7 +628,7 @@ import moment from 'moment'
         }).then(res => {
              this.$message.success("借款申请已取消");
              this.noIncomeShow =false;
-  		     this.$refs["ruleForm"].resetFields();
+  		     //this.$refs["ruleForm"].resetFields();
   		     this.clearPlan();
            })
         .catch(() => {
@@ -641,7 +639,7 @@ import moment from 'moment'
         });
       	
       },
-      clearPlan(){//清楚申请无收入借款弹窗内容
+      clearPlan(){//清除申请无收入借款弹窗内容
       	this.ruleForm.plan = '';
       	this.ruleForm.plan_01 = '';
       	this.ruleForm.supplier = '';
@@ -742,57 +740,57 @@ import moment from 'moment'
 	      this.tablePlan = ''
 	    },
       getPaymentdetails(val) {
-      var that = this
-      //预付付款明细
-      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
-        "object": {
-          "paymentType": 2,
-          "planID": val,
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tablePayment = res.data.objects
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-      //无收入借款明细
-      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
-        "object": {
-          "paymentType": 1,
-          "planID": val,
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tableIncome = res.data.objects
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-      //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
-      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {        
-          "id": val,
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tableMoney = []
-          that.tableMoney.push(res.data.object)
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-      //收入明细
-      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderlist', {
-        "object": {
-          "planID": val,
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tableEarning = res.data.objects
-          //that.tableEarning.push(res.data.object)
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+	      var that = this
+	      //预付付款明细
+	      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+	        "object": {
+	          "paymentType": 2,
+	          "planID": val,
+	        }
+	      }).then(res => {
+	        if (res.data.isSuccess == true) {
+	          that.tablePayment = res.data.objects
+	        }
+	      }).catch(err => {
+	        console.log(err)
+	      })
+	      //无收入借款明细
+	      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+	        "object": {
+	          "paymentType": 1,
+	          "planID": val,
+	        }
+	      }).then(res => {
+	        if (res.data.isSuccess == true) {
+	          that.tableIncome = res.data.objects
+	        }
+	      }).catch(err => {
+	        console.log(err)
+	      })
+	      //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
+	      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {        
+	          "id": val,
+	      }).then(res => {
+	        if (res.data.isSuccess == true) {
+	          that.tableMoney = []
+	          that.tableMoney.push(res.data.object)
+	        }
+	      }).catch(err => {
+	        console.log(err)
+	      })
+	      //收入明细
+	      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderlist', {
+	        "object": {
+	          "planID": val,
+	        }
+	      }).then(res => {
+	        if (res.data.isSuccess == true) {
+	          that.tableEarning = res.data.objects
+	          //that.tableEarning.push(res.data.object)
+	        }
+	      }).catch(err => {
+	        console.log(err)
+	      })
     },
 
     tour_check() {
@@ -854,7 +852,8 @@ import moment from 'moment'
       	this.pid = row.paymentID;
       	this.status = row.checkTypeEX;
       	this.ruleForm = row;
-      	this.getLabel();
+      	//this.getLabel();
+      	//this.clearPlan();
       },
       //获取一条详情
 	    getLabel(){
@@ -879,9 +878,10 @@ import moment from 'moment'
 	    },
       CloseCheckIncomeShow(){
       	this.checkIncomeShow = false;
+      	this.clearPlan();
       },
       //查询列表
-      pageList(groupCode_01=this.groupCode_01,createUser=this.createUser,createTime=this.createTime,endTime=this.endTime,checkType=this.checkType) {   
+      pageList(groupCode_01=this.groupCode_01,createTime=this.createTime,endTime=this.endTime,checkType=this.checkType) {   
       	/*if(beginTime){//时间节点裁剪，裁剪到年月日
           let y=beginTime.getFullYear();
           let m=(beginTime.getMonth()+1)>9?beginTime.getMonth()+1:'0'+(beginTime.getMonth()+1);
@@ -894,7 +894,6 @@ import moment from 'moment'
       	objectRequest.paymentType = 1;
       	objectRequest.checkType = -1;
       	if (this.groupCode_01) { objectRequest.groupCode = this.groupCode_01; }
-      	if (this.createUser) { objectRequest.createUser = this.createUser; }
       	if (this.createTime) { objectRequest.createTime = this.createTime; }  
       	if (this.endTime) { objectRequest.endTime = this.endTime; }
       	if (this.checkType) { objectRequest.checkType = this.checkType;}else{objectRequest.checkType='-1'}
@@ -955,9 +954,10 @@ import moment from 'moment'
               .then(res => {
                 if(res.data.isSuccess == true){
                    this.pageList();
+                   this.clearPlan();
                    //this.sendBPM(res.data.object)
                    this.noIncomeShow = false;
-                   this.$refs["ruleForm"].resetFields();
+                   //this.$refs["ruleForm"].resetFields();
                    //this.$refs[formName].resetFields();
                 }else{
                    this.$message.success("添加失败");
