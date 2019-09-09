@@ -66,6 +66,10 @@
             <el-table-column prop="rece_at" label="入账时间" align="center">
             </el-table-column>
             <el-table-column prop="order_sn" label="订单编号" align="center">
+              <template slot-scope="scope">
+                <span v-if="scope.row.order_sn">{{scope.row.order_sn}}</span>
+                <span v-else>{{scope.row.plat_order_sn}}</span>
+              </template>
             </el-table-column>
             <el-table-column prop="guest_name" label="客人名称" align="center">
             </el-table-column>
@@ -155,9 +159,6 @@
         } else {
           return ''
         }
-      },
-      submitBtn(){
-        //...
       },
       handleClick() {
         this.reable = true;

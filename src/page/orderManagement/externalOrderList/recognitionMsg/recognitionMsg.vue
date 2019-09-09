@@ -121,14 +121,9 @@
             orderStr += item.order_sn + ',';
           }else {
             isMatch = false;
-            that.$message.warning("存在未匹配订单~");
-            return;
           }
         });
         orderStr = orderStr.substr(0, orderStr.length - 1);
-        console.log(orderStr);
-        orderStr = orderStr.toString();
-        console.log(orderStr);
         if(isMatch){
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/confirmrec", {
             "order_sn": orderStr
@@ -141,11 +136,17 @@
               });
               that.cancalBtn()
             } else {
-              that.$message.success("失败~");
+              if(response.data.message){
+                that.$message.success(response.data.message);
+              }else{
+                that.$message.success("失败~");
+              }
             }
           }).catch(function(error) {
             console.log(error);
           });
+        }else{
+          that.$message.warning("存在未匹配订单~");
         }
 
       },
@@ -224,7 +225,7 @@
               item.import_at = item.import_at.split(" ")[0];
             })
           } else {
-            that.$message.success("加载数据失败230~");
+            that.$message.success("加载数据失败~");
           }
         }).catch(function(error) {
           console.log(error);

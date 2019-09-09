@@ -109,7 +109,12 @@ export default {
                 });
                 that.$emit('close', false);
               } else {
-                that.$message.warning(response.data.message);
+                if(response.data.message){
+                  that.$message.warning(response.data.message);
+                }else{
+                  that.$message.warning('修改失败');
+                }
+
               }
             }).catch(function(error) {
               console.log(error);

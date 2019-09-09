@@ -521,7 +521,12 @@ export default {
           that.dialogVisiblePass = false;
           that.closeAdd();
         } else {
-          that.$message.warning(response.data.message);
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning('提交失败');
+          }
+
         }
       }).catch(function(error) {
         console.log(error);
@@ -546,7 +551,11 @@ export default {
           that.dialogVisibleReject = false;
           that.closeAdd();
         } else {
-          that.$message.warning(response.data.message);
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning('提交失败');
+          }
         }
       }).catch(function(error) {
         console.log(error);

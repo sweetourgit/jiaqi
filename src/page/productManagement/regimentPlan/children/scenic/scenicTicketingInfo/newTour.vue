@@ -130,10 +130,18 @@ export default {
                 this.info = '';
               } else {
                 console.log(res.data.message);
-                that.$message({
-                  type: 'warning',
-                  message: res.data.message
-                });
+                if(res.data.message){
+                  that.$message({
+                    type: 'warning',
+                    message: res.data.message
+                  });
+                }else{
+                  that.$message({
+                    type: 'warning',
+                    message: '更新失败'
+                  });
+                }
+
               }
             }).catch(err => {
               console.log(err)
@@ -159,12 +167,17 @@ export default {
                 that.closeAdd();
 //                that.$emit('loadData');
               } else {
-                console.log('有错误!');
-                console.log(res.data.message);
-                that.$message({
-                  type: 'warning',
-                  message: res.data.message
-                });
+                if(res.data.message){
+                  that.$message({
+                    type: 'warning',
+                    message: res.data.message
+                  });
+                }else{
+                  that.$message({
+                    type: 'warning',
+                    message: '创建失败'
+                  });
+                }
               }
             }).catch(err => {
               console.log(err)

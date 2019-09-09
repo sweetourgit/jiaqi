@@ -213,7 +213,11 @@ export default {
               message: '已删除'
             });
           } else {
-            that.$message.success("删除失败~");
+            if(response.data.message){
+              that.$message.success(response.data.message);
+            }else{
+              that.$message.success("删除失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);

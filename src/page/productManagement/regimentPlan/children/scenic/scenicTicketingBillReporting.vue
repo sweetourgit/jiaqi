@@ -252,7 +252,7 @@ export default {
           "bill_status": '5',
           "mark": '',
           "create_uid": sessionStorage.getItem('id'),
-          "org_id": '1'//this.msg.org_id
+          "org_id": this.msg.org_id
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {
@@ -261,7 +261,11 @@ export default {
               message: '提交成功'
             });
           } else {
-            that.$message.warning(response.data.message);
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning('提交失败');
+            }
           }
         }).catch(function(error) {
           console.log(error);

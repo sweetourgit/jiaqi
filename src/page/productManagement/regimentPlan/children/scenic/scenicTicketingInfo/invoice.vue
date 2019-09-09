@@ -238,7 +238,12 @@ export default {
           that.fileList = '';
           that.$emit('close', false);
         } else {
-          that.$message.success("保存失败~");
+          if(response.data.message){
+            that.$message.success(response.data.message);
+          }else {
+            that.$message.success("保存失败~");
+          }
+
         }
       }).catch(function(error) {
         console.log(error);

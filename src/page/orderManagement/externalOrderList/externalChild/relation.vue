@@ -101,10 +101,19 @@ export default {
           });
           that.closeAdd();
         }else{
-          this.$message({
-            type: 'warning',
-            message: res.data.message
-          });
+          if(res.data.message){
+            this.$message({
+              type: 'warning',
+              message: res.data.message
+            });
+          }else{
+            this.$message({
+              type: 'warning',
+              message: '提交失败'
+            });
+          }
+
+
         }
       }).catch(err => {
         console.log(err)

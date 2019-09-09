@@ -386,7 +386,7 @@ export default {
           that.costPaymented = response.data.data.paid_cost_total;
 
         } else {
-          that.$message.success("加载数据失败377~");
+          that.$message.success("加载数据失败~");
         }
       }).catch(function(error) {
         console.log(error);

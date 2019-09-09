@@ -258,7 +258,7 @@
                 if (response.data.isSuccess) {
                   item.create_uid = response.data.object.name
                 } else {
-                  that.$message.success("加载数据失败~");
+                  that.$message.success("获取录入人失败~");
                 }
               }).catch(function(error) {
                 console.log(error);

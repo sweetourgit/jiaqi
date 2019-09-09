@@ -81,7 +81,12 @@ export default {
                 message: '提交成功!'
               });
             } else {
-              that.$message.success("提交数据失败~");
+              if(response.data.message){
+                that.$message.success(response.data.message);
+              }else{
+                that.$message.success("提交数据失败~");
+              }
+
             }
           }).catch(function(error) {
             console.log(error);

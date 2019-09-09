@@ -84,7 +84,11 @@ export default {
               message: '驳回成功!'
             });
           } else {
-            that.$message.success("驳回失败~");
+            if(response.data.message){
+              that.$message.success(response.data.message);
+            }else{
+              that.$message.success("驳回失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);

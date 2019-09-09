@@ -119,7 +119,7 @@ export default {
   },
   data() {
     return {
-      totalMoney: '222.00',
+      totalMoney: '0',
       currentRow: true,
       approvalStatus: '',
       ruleForm: {
@@ -150,7 +150,9 @@ export default {
   watch: {
     pid: {
       handler:function(){
-        this.loadData()
+        if(this.pid != ''){
+          this.loadData()
+        }
       }
     }
   },
@@ -185,7 +187,11 @@ export default {
             that.$message.success("已撤销~");
             that.closeAdd();
           } else {
-            that.$message.success("撤销失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("撤销失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -217,7 +223,11 @@ export default {
           that.closeAdd();
           that.content = '';
         } else {
-          that.$message.success("驳回失败~");
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("驳回失败~");
+          }
         }
       }).catch(function(error) {
         console.log(error);
@@ -244,7 +254,11 @@ export default {
           that.closeAdd();
           that.explain = '';
         } else {
-          that.$message.success("审核失败~");
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("审核失败~");
+          }
         }
       }).catch(function(error) {
         console.log(error);
@@ -288,7 +302,7 @@ export default {
           that.totalMoney = total;
 //          that.approvalStatus = false;
         } else {
-//          that.$message.success("加载数据失败~");
+          that.$message.warning("加载数据失败~");
         }
       }).catch(function(error) {
         console.log(error);

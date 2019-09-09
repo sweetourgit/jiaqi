@@ -168,16 +168,18 @@ export default {
                   type: 'success',
                   message: '删除成功!'
                 });
-                that.loading = true;
                 that.loadData();
               } else {
-                that.$message.warning("失败~");
+                if(response.data.message){
+                  that.$message.warning(response.data.message);
+                }else{
+                  that.$message.warning("失败~");
+                }
               }
             }).catch(function(error) {
               console.log(error);
             })
           }
-
         }else{
           this.$message.warning("该订单不是未认款状态，不可删除");
         }
@@ -187,19 +189,6 @@ export default {
           type: 'info',
           message: '已取消删除'
         });
-      });
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
-          });
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
       });
     },
     handleSizeChange(val) {

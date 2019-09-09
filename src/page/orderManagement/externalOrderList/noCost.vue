@@ -77,12 +77,13 @@
           <el-table-column prop="is_relate_pro" label="关联产品" align="center">
             <template slot-scope="scope">
               <p v-if="scope.row.is_relate_pro == 1">未关联产品</p>
-              <p v-if="scope.row.is_relate_pro == 2">{{scope.row.relate_pro_name}}</p>
+              <p v-if="scope.row.is_relate_pro == 2">产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
             </template>
           </el-table-column>
           <el-table-column prop="bill_status" label="报账状态" align="center">
             <template slot-scope="scope">
-              <span>{{bill_status[scope.row.bill_status]}}</span>
+              <!--<span>{{bill_status[scope.row.bill_status]}}</span>-->
+              <span>未认收款</span>
             </template>
           </el-table-column>
         </el-table>
@@ -225,7 +226,11 @@
                 that.loading = true;
                 that.loadData();
               } else {
-                that.$message.warning("失败~");
+                if(response.data.message){
+                  that.$message.warning(response.data.message);
+                }else{
+                  that.$message.warning("失败~");
+                }
               }
             }).catch(function(error) {
               console.log(error);

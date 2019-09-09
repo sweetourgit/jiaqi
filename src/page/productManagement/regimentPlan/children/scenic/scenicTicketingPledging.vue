@@ -291,7 +291,11 @@ export default {
             that.loadDatabyNum(1);
             that.loadDatabyNum(2);
           } else {
-            that.$message.success("加载数据失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning('解绑失败~');
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -337,14 +341,18 @@ export default {
               that.loadDatabyNum(1);
               that.loadDatabyNum(2);
             }else{
-              that.$message({
-                type: 'success',
-                message: response.data.data
-              });
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning('删除失败~');
+              }
             }
-
           } else {
-            that.$message.success("删除失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning('删除失败~');
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -486,7 +494,7 @@ export default {
         "order_sn": this.oid,
         "product_name": this.title,
         "unprocessedOrders": this.isHandleOrder,
-        "source_id": this.platform,
+        "distributor": this.platform,
         "contact_name": this.user,
         "limit": 0
       }, ).then(function(response) {
