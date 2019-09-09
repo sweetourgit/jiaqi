@@ -20,13 +20,13 @@
             部门
           </el-col>
           <el-col :span="3" class="content">
-            {{msg.org_id}}
+            {{org_name}}
           </el-col>
           <el-col :span="2" class="title">
             操作人
           </el-col>
           <el-col :span="3" class="content">
-            {{msg.op_id}}
+            {{create_uid}}
           </el-col>
           <el-col :span="2" class="title">
             导陪
@@ -377,6 +377,8 @@ export default {
       areaIn1: '',
       areaIn2: '',
       msg:{},
+      create_uid: '',
+      org_name: '',
       billReporting: [],
       billTotalNumber: 0,
       billTotalReceivables: 0,
@@ -432,6 +434,38 @@ export default {
             startTime = formatDate(new Date(response.data.data.start_at*1000)).split(" ")[0];
             endTime = formatDate(new Date(response.data.data.back_at*1000)).split(" ")[0];
           }
+          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            "id": response.data.data.op_id
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(function(response) {
+
+            if (response.data.isSuccess) {
+              that.create_uid = response.data.object.name
+            } else {
+              that.$message.success("加载数据失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+          that.$http.post(that.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+            "id": response.data.data.op_id
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(function(response) {
+
+            if (response.data.isSuccess) {
+              that.org_name = response.data.objects[0].name
+            } else {
+              that.$message.success("加载数据失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
           that.msg = {
             tour_no: response.data.data.tour_no,
             op_id: response.data.data.op_id,
@@ -526,7 +560,6 @@ export default {
           }else{
             that.$message.warning('提交失败');
           }
-
         }
       }).catch(function(error) {
         console.log(error);

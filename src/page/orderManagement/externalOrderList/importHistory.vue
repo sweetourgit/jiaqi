@@ -166,7 +166,7 @@ export default {
       const that = this;
       let ida = '';
       if(that.activeForm.user == ''){
-        that.reimbursementPerID = '';
+        that.activeForm.userID = '';
       }else{
         this.operatorList.forEach(function (item, index, arr) {
           if(that.activeForm.user == item.value){
