@@ -80,7 +80,7 @@
       <el-row>
         <el-col :span="8">
           <div class="info">
-            <p>毛利率：</p>{{baseInfo.basic_order_info.gross_rate || ""}}
+            <p>毛利率：</p>{{baseInfo.basic_order_info.gross_rate + '%' || ""}}
           </div>
         </el-col>
         <el-col :span="8">
@@ -109,7 +109,7 @@
           <el-tab-pane label="订单" name="order">
             <div class="table_trip" style="width: 88%;">
               <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
-                <el-table-column prop="id" label="订单ID" align="center" width="80%">
+                <el-table-column prop="order_sn" label="订单ID" align="center">
                 </el-table-column>
                 <el-table-column prop="product_name" label="产品名称" align="center">
                 </el-table-column>
@@ -315,7 +315,11 @@ export default {
             });
             that.closeAdd();
           } else {
-            that.$message.success("删除失败~");
+            if(response.data.message){
+              that.$message.success(response.data.message);
+            }else{
+              that.$message.success("删除失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -351,7 +355,11 @@ export default {
             that.loadDatabyNum(1);
             that.loadDatabyNum(2);
           } else {
-            that.$message.success("加载数据失败~");
+            if(response.data.message){
+              that.$message.success(response.data.message);
+            }else{
+              that.$message.success("加载数据失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);

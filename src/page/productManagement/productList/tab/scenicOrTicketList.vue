@@ -9,7 +9,7 @@
             <span class="search_style">产品名称：</span> <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
             <span class="search_style">操作人员：</span>
             <!--<el-input v-model="operator" placeholder="请输入内容" class="search_input"></el-input>-->
-            <el-autocomplete class="search_input" v-model="operator" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
+            <el-autocomplete class="search_input" v-model="operator" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
             <!--<span class="search_style">价格：</span>-->
             <!--<el-input v-model="priceLow" class="search_input"></el-input>-->
             <!--<div class="date-line"></div>-->
@@ -168,6 +168,24 @@
       createFilter(queryString5) {
         return (restaurant) => {
           return (restaurant.value);
+        }
+      },
+      blurHand(){
+        const that = this;
+        let ida = '';
+        if(that.operator == ''){
+          that.operatorID = '';
+        }else{
+          this.operatorList.forEach(function (item, index, arr) {
+            if(that.operator == item.value){
+              ida = item.id;
+            }
+          });
+          if(ida){
+            that.operatorID = ida;
+          }else{
+            that.operatorID = '';
+          }
         }
       },
       searchFun(){

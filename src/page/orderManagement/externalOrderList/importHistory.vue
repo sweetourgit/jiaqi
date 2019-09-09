@@ -5,8 +5,7 @@
     </div>
     <div class="demo-input-suffix">
       <span class="search-title" style="margin-right: 40px;">导入人:</span>
-      <!--<el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>-->
-      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
+      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
       <span class="search-title">导入时间:</span>
       <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数"></el-date-picker>
       <div class="date-line"></div>
@@ -18,7 +17,7 @@
       </div>
     </div>
     <div class="table_trip" style="width: 100%;">
-      <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
+      <el-table ref="singleTable" :data="tableData" v-loading="loading" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
         <el-table-column prop="create_uid" label="导入人" align="center" width="80%">
         </el-table-column>
         <el-table-column prop="source_name" label="导入平台" align="center">
@@ -76,7 +75,9 @@ export default {
       transmit: false,
       dialogFormVisible: false,
 
-      operatorList: []
+      operatorList: [],
+
+      loading: true
     }
   },
   computed: {
@@ -129,7 +130,12 @@ export default {
             });
             that.loadData();
           } else {
-            that.$message.warning(response.data.message);
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning('删除失败');
+            }
+
           }
         }).catch(function(error) {
           console.log(error);
@@ -156,16 +162,37 @@ export default {
       console.log(item);
       this.activeForm.userID = item.id;
     },
+    blurHand(){
+      const that = this;
+      let ida = '';
+      if(that.activeForm.user == ''){
+        that.activeForm.userID = '';
+      }else{
+        this.operatorList.forEach(function (item, index, arr) {
+          if(that.activeForm.user == item.value){
+            ida = item.id;
+          }
+        });
+        if(ida){
+          that.activeForm.userID = ida;
+        }else{
+          that.activeForm.userID = '';
+        }
+      }
+    },
     //搜索
     searchHand() {
+      this.loading = true;
       this.loadData();
     },
     handleSizeChange(val) {
       this.pageSize = val;
+      this.loading = true;
       this.loadData();
     },
     handleCurrentChange(val) {
       this.pageIndex =val;
+      this.loading = true;
       this.loadData();
     },
     resetHand() {
@@ -175,6 +202,7 @@ export default {
         startTime: '',
         endTime: '',
       };
+      this.loading = true;
       this.loadData();
     },
     loadData(){
@@ -209,7 +237,8 @@ export default {
             }).catch(function(error) {
               console.log(error);
             });
-          })
+          });
+          that.loading = false;
         } else {
           that.$message.success("加载数据失败~");
         }

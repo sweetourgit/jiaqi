@@ -14,7 +14,7 @@
             操作人
           </el-col>
           <el-col :span="3" class="content">
-            {{info.op_id}}
+            {{info.op_name}}
           </el-col>
           <el-col :span="2" class="title">
             导陪
@@ -337,6 +337,12 @@ export default {
   watch: {
     info: {
       handler: function () {
+//        console.log(this.info);
+        if(this.info.op_id == ''){
+          this.getOrgName(sessionStorage.getItem('id'));
+        }else{
+          this.getOrgName(this.info.op_id);
+        }
         this.loadData();
       }
     }
@@ -386,13 +392,31 @@ export default {
           that.costPaymented = response.data.data.paid_cost_total;
 
         } else {
-          that.$message.success("加载数据失败377~");
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+    getOrgName(ID){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+        "id": ID
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+//        console.log(ID,'组织名称',response);
+        if (response.data.isSuccess) {
+          that.info.org_id = response.data.objects[0].name
+        } else {
+          this.$message.success("加载数据失败~");
         }
       }).catch(function(error) {
         console.log(error);
       });
     }
-
   },
   created() {
 

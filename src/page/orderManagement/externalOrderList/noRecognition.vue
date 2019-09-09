@@ -9,19 +9,6 @@
       <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数" :picker-options="startDatePicker"></el-date-picker>
       <div class="date-line"></div>
       <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数" :picker-options="endDatePicker"></el-date-picker><br /><br />
-      <!--<span class="search-title">报账状态:</span>-->
-      <!--<el-select v-model="activeForm.status" placeholder="请选择" style="width:200px">-->
-        <!--<el-option key="" label="全部" value=""></el-option>-->
-        <!--<el-option key="0" label="未报账" value="1"></el-option>-->
-        <!--<el-option key="1" label="报账中" value="2"></el-option>-->
-        <!--<el-option key="2" label="已报账" value="3"></el-option>-->
-      <!--</el-select>-->
-      <!--<span class="search-title">是否关联产品:</span>-->
-      <!--<el-select v-model="activeForm.proRelation" placeholder="请选择" style="width:200px">-->
-        <!--<el-option key="" label="全部" value=""></el-option>-->
-        <!--<el-option key="1" label="是" value="2"></el-option>-->
-        <!--<el-option key="2" label="否" value="1"></el-option>-->
-      <!--</el-select>-->
       <span class="search-title">取票人:</span>
       <el-input v-model="activeForm.ticketPerson" class="input"></el-input>
       <span class="search-title">类别:</span>
@@ -36,8 +23,6 @@
       <el-date-picker v-model="activeForm.importStartTime" type="date" placeholder="开始天数" :picker-options="importStartDatePicker"></el-date-picker>
       <div class="date-line"></div>
       <el-date-picker v-model="activeForm.importEndTime" type="date" placeholder="结束天数" :picker-options="importEndDatePicker"></el-date-picker><br /><br />
-      <!--<span class="search-title">关联团期:</span>-->
-      <!--<el-input v-model="activeForm.tour" class="input"></el-input>-->
       <span class="search-title">卖出支付方式:</span>
       <el-select v-model="activeForm.typePay" placeholder="请选择" style="width:200px">
         <el-option key="" label="全部" value=""></el-option>
@@ -117,12 +102,13 @@
           <el-table-column prop="is_relate_pro" label="关联产品" align="center">
             <template slot-scope="scope">
               <p v-if="scope.row.is_relate_pro == 1">未关联产品</p>
-              <p v-if="scope.row.is_relate_pro == 2">{{scope.row.relate_pro_name}}</p>
+              <p v-if="scope.row.is_relate_pro == 2">产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
             </template>
           </el-table-column>
           <el-table-column prop="bill_status" label="报账状态" align="center">
             <template slot-scope="scope">
-              <span>{{bill_status[scope.row.bill_status]}}</span>
+              <!--<span>{{bill_status[scope.row.bill_status]}}</span>-->
+              <span>未认收款</span>
             </template>
           </el-table-column>
         </el-table>
@@ -265,7 +251,11 @@
                 });
                 that.loadData();
               } else {
-                that.$message.warning("失败~");
+                if(response.data.message){
+                  that.$message.warning(response.data.message);
+                }else{
+                  that.$message.warning("失败~");
+                }
               }
             }).catch(function(error) {
               console.log(error);
@@ -346,10 +336,14 @@
                 });
                 this.loadData();
               }else{
-                this.$message({
-                  type: 'warning',
-                  message: res.data.message
-                });
+                if(res.data.message){
+                  this.$message({
+                    type: 'warning',
+                    message: res.data.message
+                  });
+                }else{
+                  this.$message.warning('解绑失败');
+                }
               }
             }).catch(err => {
               console.log(err)

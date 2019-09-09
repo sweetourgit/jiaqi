@@ -34,7 +34,7 @@
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>操作人：</p> {{msg.op_id}}
+            <p>操作人：</p> {{msg.op_name}}
           </div>
         </el-col>
         <el-col :span="8">
@@ -107,7 +107,8 @@
       <div class="totalMoney"><i class="el-icon-info"></i>&nbsp;&nbsp;总计：{{totalMoney}}元 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;人数：{{number}}</div>
       <div class="footer">
         <div class="table_trip" style="width: 95%;">
-          <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass" :cell-style="cellStyle">
+          <!--:cell-style="cellStyle"  某行样式改变-->
+          <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
             <el-table-column prop="serial_sn" label="收款编码/发票" align="center">
             </el-table-column>
             <el-table-column prop="handler" label="收入来源" align="center">
@@ -124,11 +125,11 @@
               </template>
             </el-table-column>
             <el-table-column prop="people_num" label="人数" align="center" style="color:red">
-              <template slot-scope="scope" slot="header">
-                <el-tooltip effect="light" content="订单可能在不同的收款编码(或发票)。人数会重复增加，需要请修改警示框内的人数" placement="top" >
-                 <span>人数<i class="el-icon-warning" style="color: red;margin-left: 6px;"></i></span>
-                </el-tooltip>
-              </template>
+              <!--<template slot-scope="scope" slot="header">-->
+                <!--<el-tooltip effect="light" content="订单可能在不同的收款编码(或发票)。人数会重复增加，需要请修改警示框内的人数" placement="top" >-->
+                 <!--<span>人数<i class="el-icon-warning" style="color: red;margin-left: 6px;"></i></span>-->
+                <!--</el-tooltip>-->
+              <!--</template>-->
             </el-table-column>
             <el-table-column prop="income" label="金额" align="center">
             </el-table-column>
@@ -177,6 +178,7 @@ export default {
       msg: {
         tour_no: '',
         op_id: '',
+        op_name: '',
         billTime: '',
         team_num: '',
         days: '',
@@ -252,7 +254,7 @@ export default {
           "bill_status": '5',
           "mark": '',
           "create_uid": sessionStorage.getItem('id'),
-          "org_id": '1'//this.msg.org_id
+          "org_id": sessionStorage.getItem('orgID')
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {
@@ -261,7 +263,11 @@ export default {
               message: '提交成功'
             });
           } else {
-            that.$message.warning(response.data.message);
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning('提交失败');
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -341,7 +347,8 @@ export default {
             if (response.data.isSuccess) {
               that.msg = {
                 tour_no: dataList.tour_no,
-                op_id: response.data.object.name,
+                op_id: dataList.op_id,
+                op_name: response.data.object.name,
                 billTime: billTime,
                 team_num: dataList.team_num,
                 days: dataList.days,

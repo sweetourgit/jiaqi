@@ -48,7 +48,7 @@
           </el-table-column>
           <el-table-column prop="" label="操作" align="center">
             <template slot-scope="scope">
-              <el-button size="small" type="text" @click="detailBtn(scope.row)" v-if="scope.row.order_sn != ''">绑定订单详情</el-button>
+              <el-button size="small" type="text" @click="detailBtn(scope.row)" v-if="scope.row.order_sn != '' && scope.row.import_status == 3">绑定订单详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -92,6 +92,10 @@
             <el-table-column prop="created_at" label="导入时间" align="center">
             </el-table-column>
             <el-table-column prop="tour_no" label="关联产品" align="center">
+              <template slot-scope="scope">
+                <span>产品名称:{{scope.row.pro_product_name}}</span><br>
+                <span>团期计划:{{scope.row.tour_no}}</span>
+              </template>
             </el-table-column>
             <el-table-column prop="create_uid" label="操作人" align="center" width="100">
             </el-table-column>
@@ -100,7 +104,7 @@
 
         <div class="footer" style="text-align: right;">
           <el-button class="el-button" type="warning" @click="close">取 消</el-button>
-          <el-button class="el-button" type="primary" @click="">确 认</el-button>
+          <!--<el-button class="el-button" type="primary" @click="">确 认</el-button>-->
         </div>
       </el-dialog>
     </el-dialog>
@@ -243,7 +247,7 @@
               if (response.data.isSuccess) {
                 that.tableDataDD[0].create_uid = response.data.object.name
               } else {
-                that.$message.success("加载数据失败~");
+                that.$message.success("获取申请人失败~");
               }
             }).catch(function(error) {
               console.log(error);
@@ -308,9 +312,13 @@
                 name: response.data.data.file.split('/')[6]
               });
               that.tableDataSK = response.data.data.list;
+              that.tableDataSK.forEach(function (item, index, arr) {
+                item.rece_at = formatDate(new Date(item.rece_at*1000));
+                item.rece_at = item.rece_at.split(" ")[0];
+              });
               that.totalItem = response.data.data.list.length;
               that.totalMoney = response.data.data.rece_money;
-              that.startTime = response.data.data.rece_start,
+              that.startTime = response.data.data.rece_start;
               that.endTime = response.data.data.rece_end
             }else{
               that.tableDataQK = '';

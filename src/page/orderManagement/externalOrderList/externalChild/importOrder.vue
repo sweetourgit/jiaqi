@@ -127,10 +127,18 @@ export default {
           loading.close();
           that.$emit('close2', 'success');
         } else {
-          that.$message({
-            type: "warning",
-            message: response.data.message
-          });
+          if(response.data.message){
+            that.$message({
+              type: "warning",
+              message: response.data.message
+            });
+          }else{
+            that.$message({
+              type: "warning",
+              message: '提交失败'
+            });
+          }
+
         }
       }).catch(function(error) {
         console.log(error);

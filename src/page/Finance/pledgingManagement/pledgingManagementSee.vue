@@ -4,17 +4,17 @@
       <div class="button_select">
         <el-button type="primary" @click="cancel()" size="medium" plain>取消</el-button>
         <!--<el-button type="primary" @click="save()" size="medium">保存</el-button>-->
-        <el-button type="primary" @click="reject()" size="medium" plain v-if="billStatus == 3 || billStatus == 4 || billStatus == 5">一键驳回</el-button>
-        <el-button type="primary" @click="submit()" size="medium" v-if="billStatus == 3 || billStatus == 4 || billStatus == 5">审核提交</el-button>
+        <el-button type="primary" @click="reject()" size="medium" plain v-if="billStatus == 2 || billStatus == 3">一键驳回</el-button>
+        <el-button type="primary" @click="submit()" size="medium" v-if="billStatus == 2">审核提交</el-button>
       </div>
     </div>
     <StartNumber :dialogFormVisible="dialogFormVisible" @close="close" :frameTitle1="frameTitle1" :frameTitle2="frameTitle2"></StartNumber>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="收款编码" name="one">
-        <Receivables></Receivables>
+        <Receivables ref="receivables"></Receivables>
       </el-tab-pane>
       <el-tab-pane label="发票" name="two">
-        <Invoice></Invoice>
+        <Invoice ref="invoice"></Invoice>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -49,21 +49,21 @@ export default {
   watch: {},
   methods: {
     selection(reable, pid) {
-      this.reable = reable
-      this.pid = pid
+      this.reable = reable;
+      this.pid = pid;
     },
     handleClick() {
-      this.reable = true
-      this.transmit = !this.transmit
+      this.reable = true;
+      this.transmit = !this.transmit;
       this.pid = ''
     },
     startNumber(title, name) {
-      this.frameTitle1 = title
-      this.frameTitle2 = name
-      this.dialogFormVisible = true
+      this.frameTitle1 = title;
+      this.frameTitle2 = name;
+      this.dialogFormVisible = true;
     },
     close() {
-      this.dialogFormVisible = false
+      this.dialogFormVisible = false;
     },
     reject() {
       const that = this;
@@ -83,8 +83,14 @@ export default {
               type: 'success',
               message: '驳回成功!'
             });
+            that.$refs.receivables.loadData();
+            that.$refs.invoice.loadData();
           } else {
-            that.$message.success("驳回失败~");
+            if(response.data.message){
+              that.$message.success(response.data.message);
+            }else{
+              that.$message.success("驳回失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);

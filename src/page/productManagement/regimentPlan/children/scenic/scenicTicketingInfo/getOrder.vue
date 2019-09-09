@@ -31,7 +31,7 @@
         </el-table>
       </div>
       <div class="footer">
-        <el-button @click="submitForm" type="primary" size="small" class="table_details">确定</el-button>
+        <!--<el-button @click="submitForm" type="primary" size="small" class="table_details">确定</el-button>-->
         <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
       </div>
     </el-dialog>

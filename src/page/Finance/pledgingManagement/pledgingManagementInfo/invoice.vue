@@ -134,7 +134,11 @@ export default {
             that.dialogVisible = false;
             that.loadData();
           } else {
-            that.$message.success("撤销失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("撤销失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -166,7 +170,11 @@ export default {
           that.loadData();
           that.content = '';
         } else {
-          that.$message.success("驳回失败~");
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("驳回失败~");
+          }
         }
       }).catch(function(error) {
         console.log(error);
@@ -193,7 +201,11 @@ export default {
           that.loadData();
           that.explain = '';
         } else {
-          that.$message.success("审核失败~");
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("审核失败~");
+          }
         }
       }).catch(function(error) {
         console.log(error);
@@ -247,7 +259,7 @@ export default {
             }
           })
         } else {
-          that.$message.success("加载数据失败11~");
+          that.$message.success("加载数据失败~");
         }
       }).catch(function(error) {
         console.log(error);

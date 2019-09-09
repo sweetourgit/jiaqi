@@ -169,13 +169,6 @@ export default {
         if(item.approval_money){
           num++;
         }
-//        if(parseFloat(item.approval_money) > parseFloat(item.proce_amount)){
-//          that.$message({
-//            type: 'warning',
-//            message: item.id + '订单，申请金额大于未处理金额'
-//          });
-//          canSave = false;
-//        }
       });
       if(num == 0){
         that.$message({
@@ -267,7 +260,11 @@ export default {
           that.fileList = '';
           that.$emit('close', false);
         } else {
-          that.$message.success("保存失败~");
+          if(response.data.message){
+            that.$message.success(response.data.message);
+          }else{
+            that.$message.success("保存失败~");
+          }
         }
       }).catch(function(error) {
         console.log(error);

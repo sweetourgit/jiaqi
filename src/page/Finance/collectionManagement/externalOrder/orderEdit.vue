@@ -343,18 +343,11 @@
         });
       },
       subFun(){
-//        alert("执行");
-//        console.log(this.fileList);
         let fileUrl = '';
         if(this.fileList.length != 0){
           fileUrl = this.fileList[0].response.data.file_url;
         }
-//        console.log(this.ruleForm.creditTime);
-//        console.log(this.ruleForm.startTime+"--"+this.ruleForm.endTime);
-//        const creditTime = formatDate(this.ruleForm.creditTime);
         const that = this;
-//        alert(this.rece_code);
-//        alert(this.ruleForm.distributor);
         this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
 //        alert(this.deleteStr);
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/addrece", {
@@ -491,8 +484,6 @@
         });
       },
       subFunXG(){
-//        alert("执行");
-//        console.log(this.fileList);
         const that = this;
         this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
 //        alert(this.deleteStr);
@@ -558,8 +549,12 @@
             },
           },)
           .then(function (obj) {
-            that.tableDataZH = obj.data.objects;
-            console.log(obj)
+            console.log(obj);
+            if(obj.data.isSuccess){
+              that.tableDataZH = obj.data.objects;
+            }else{
+              that.$message.warning("加载账户信息失败");
+            }
           })
           .catch(function (obj) {
             console.log(obj)
@@ -658,7 +653,12 @@
               that.deleteStr += scope.row.id + ',';
               console.log(that.deleteStr);
             } else {
-              that.$message.success("失败~");
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning("失败~");
+              }
+
             }
           }).catch(function(error) {
             console.log(error);
@@ -707,21 +707,21 @@
               endTime: response.data.data.rece_end
             };
             that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
-              {
-                "id": response.data.data.account_id
-              },{
-                headers: {
-                  'Authorization': 'Bearer ' + localStorage.getItem('token')
-                }
-              }).then(function (obj) {
+            {
+              "id": response.data.data.account_id
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+              }
+            }).then(function (obj) {
 //                that.tableDataZH = obj.data.objects;
-                console.log('账户查询',obj);
-                if(obj.data.isSuccess){
-                  that.ruleForm.payAccount = obj.data.object.title;
-                }
-              }).catch(function (obj) {
-                console.log(obj)
-              });
+              console.log('账户查询',obj);
+              if(obj.data.isSuccess){
+                that.ruleForm.payAccount = obj.data.object.title;
+              }
+            }).catch(function (obj) {
+              console.log(obj)
+            });
             if(response.data.data.file != ''){
               that.fileList.push(response.data.data.file);
               that.tableDataQK = response.data.data.list;
@@ -731,6 +731,7 @@
               that.endTime = response.data.data.rece_end;
               that.tableDataQK.forEach(function (item, index, arr) {
                 item.rece_at = formatDate(new Date(item.rece_at*1000));
+                item.rece_at = item.rece_at.split(" ")[0];
               })
             }else{
               that.tableDataQK = '';

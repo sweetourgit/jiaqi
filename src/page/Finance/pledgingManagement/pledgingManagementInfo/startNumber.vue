@@ -67,7 +67,11 @@ export default {
               that.$message.success("添加成功！");
               that.$emit('close', false);
             } else {
-              that.$message.warning("不可重复添加同一码值~");
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning("添加失败~");
+              }
             }
           }).catch(function(error) {
             console.log(error);
