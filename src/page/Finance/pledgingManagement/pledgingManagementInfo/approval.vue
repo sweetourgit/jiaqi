@@ -97,7 +97,9 @@ export default {
       this.$router.push({
         path: "/pledgingManagementApproval",
         name: "财务管理   / 财务认款管理   / 审批",
-        params: row
+        query: {
+          tour_no: row.tour_no
+        }
       });
     },
     //获取id

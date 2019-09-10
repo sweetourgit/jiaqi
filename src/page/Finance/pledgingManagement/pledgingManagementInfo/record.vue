@@ -98,14 +98,19 @@ export default {
       this.$router.push({
         path: "/pledgingManagementApproval",
         name: "财务管理   / 财务认款管理   / 审批",
-        params: row
+        query: {
+          tour_no: row.tour_no
+        }
       });
     },
     seeList(row) {
       this.$router.push({
         path: "/pledgingManagementSee",
         name: "财务管理   / 财务认款管理   / 查看",
-        params: row
+        query: {
+          tour_no: row.tour_no,
+          bill_status: row.bill_status
+        }
       });
     },
     //获取id

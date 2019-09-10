@@ -1,19 +1,19 @@
 <template>
   <div class="vivo" style="position:relative;">
     <!--报账单-->
-    <el-dialog title="沈阳甜程国际旅行社有限公司旅游团队报账单" :visible="dialogFormVisible" width=70% @close="closeAdd" style="font-size: 20px; font-weight: 700;">
+    <el-dialog :title="topTitle" :visible="dialogFormVisible" width=50% @close="closeAdd" style="font-size: 20px; font-weight: 700;">
       <div class="operation" v-if="info.bill_status == 5">
         <el-button @click="goDetail" type="primary" size="small" class="table_details">团期详情</el-button>
         <el-button @click="dialogVisiblePass = true" type="success" size="small" class="table_details">通过</el-button>
         <el-button @click="dialogVisibleReject = true" type="warning" size="small" class="table_details">驳回</el-button>
         <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
       </div>
-      <div class="operation" v-if="info.checkType == 7">
+      <div class="operation" v-if="info.bill_status == 7">
         <el-button @click="print" type="success" size="small" class="table_details">打印</el-button>
         <el-button @click="goDetail" type="primary" size="small" class="table_details">团期详情</el-button>
         <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
       </div>
-      <p class="dateP">报账日期：<span>2019年3月19日</span></p>
+      <p class="dateP">报账日期：<span>{{topData}}</span></p>
       <section ref="print" class="print">
         <el-row>
           <el-col :span="2" class="title">
@@ -146,26 +146,26 @@
           </el-col>
         </el-row>
         <template v-for="(bill,index) in billReporting">
-          <el-row>
-            <el-col :span="2" class="content">
+          <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+            <el-col :span="2" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{index + 1}}
             </el-col>
-            <el-col :span="5" class="content">
+            <el-col :span="5" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.handler}}
             </el-col>
-            <el-col :span="5" class="content">
+            <el-col :span="5" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.distributor}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.people_num}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.income}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.serial_sn}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.remark}}
             </el-col>
           </el-row>
@@ -220,28 +220,28 @@
         </el-row>
         <template v-for="(cost,index) in costDetails">
           <el-row :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
               {{index + 1}}
             </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
               {{cost.cost_type}}
             </el-col>
-            <el-col :span="4" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+            <el-col :span="4" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
               {{cost.supplier}}
             </el-col>
-            <el-col :span="2" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+            <el-col :span="2" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
               {{cost.people_num}}
             </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
               {{cost.cost}}
             </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
               {{cost.paid_cost}}
             </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
               {{cost.settle_cost}}
             </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
+            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
               {{cost.remarks}}
             </el-col>
           </el-row>
@@ -372,6 +372,8 @@ export default {
   },
   data() {
     return {
+      topTitle: '',
+      topData: '',
       dialogVisiblePass: false,
       dialogVisibleReject: false,
       areaIn1: '',
@@ -404,7 +406,16 @@ export default {
   watch: {
     info: {
       handler:function(){
-        this.loadData()
+        if(this.info != ''){
+          this.loadData();
+          if(this.info.bill_status != 7){
+            this.topData = formatDate(new Date()).split(" ")[0];
+          }
+          this.getTitleName(this.info.create_uid);
+
+        }else{
+          this.closeAdd();
+        }
       }
     }
   },
@@ -427,6 +438,7 @@ export default {
           let billTime = '', startTime = '', endTime = '';
           if(response.data.data.bill_at){
             billTime = formatDate(new Date(response.data.data.bill_at*1000));
+            that.topData = billTime.split(" ")[0];
           }else{
             billTime = '';
           }
@@ -519,8 +531,8 @@ export default {
 //          console.log(response);
           that.costDetails = response.data.data.listInfo;
           that.costTotalNumber = response.data.data.quantity_total;
-          that.costTotalCost = response.data.data.cost_total;
-          that.costPaymented = response.data.data.paid_cost_total;
+          that.costTotalCost = response.data.data.cost_total.toFixed(2);
+          that.costPaymented = response.data.data.paid_cost_total.toFixed(2);
 
         } else {
           that.$message.success("加载数据失败~");
@@ -533,7 +545,12 @@ export default {
       this.$router.push({
         path: "/scenicTicketingDetails",
         name: "产品管理  /团期计划  /详情",
-        params: this.info
+        query: {
+          id: row.id,
+          bill_status: row.bill_status,
+          tour_no: row.tour_no,
+          approved: row.approved
+        }
       });
     },
     passSubmit(){
@@ -593,6 +610,24 @@ export default {
       }).catch(function(error) {
         console.log(error);
         that.$message.warning("提交失败~");
+      });
+    },
+    //    待定======================================================================================================================================
+    getTitleName(){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userinfo", {}, {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+//        console.log('公司信息',response);
+        if (response.status == 200) {
+          that.topTitle = response.data.topName + '旅游团队报账单';
+        } else {
+          this.$message.warning("加载旅行社名称失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
       });
     }
   },

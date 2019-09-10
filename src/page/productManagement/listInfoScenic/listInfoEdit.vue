@@ -56,10 +56,13 @@
     },
     mounted() {
 //      console.log(this.$route.params);
-      this.ruleForm.id = this.$route.params.id;
-      this.ruleForm.productName = this.$route.params.product_name;
-//      this.ruleForm.destinations = this.$route.params.destinations;
-      this.dynamicTags = this.$route.params.destinations;
+      if(this.$route.query.id){
+        this.ruleForm.id = this.$route.query.id;
+        this.ruleForm.productName = this.$route.query.product_name;
+        this.dynamicTags = JSON.parse(this.$route.query.destinations);
+      }else{
+        this.cancel();
+      }
     },
     created() {
 

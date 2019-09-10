@@ -91,7 +91,7 @@ export default {
         if(parseFloat(item.money) > parseFloat(item.proce_amount)){
           that.$message({
             type: 'warning',
-            message: item.id + '订单，申请金额大于未处理金额'
+            message: item.order_sn + '订单，申请金额大于未处理金额'
           });
           canSave = false;
         }

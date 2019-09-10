@@ -159,11 +159,11 @@ export default {
     }
   },
   created() {
-    console.log(this.$route.params);
-    this.paramTour = this.$route.params.tour_no;
-    if(this.$route.params.tour_no){
-      this.paramTour = this.$route.params.tour_no;
-      this.billStatus = this.$route.params.bill_status;
+//    console.log(this.$route.params);
+//    this.paramTour = this.$route.params.tour_no;
+    if(this.$route.query.tour_no){
+      this.paramTour = this.$route.query.tour_no;
+      this.billStatus = this.$route.query.bill_status;
     }else{
       this.cancel();
     }

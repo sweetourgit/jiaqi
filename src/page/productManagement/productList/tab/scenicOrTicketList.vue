@@ -221,7 +221,11 @@
         this.$router.push({
           path: "/listInfoEdit",
           name: '编辑景区/票务',
-          params: res
+          query: {
+            id: res.id,
+            product_name: res.product_name,
+            destinations: JSON.stringify(res.destinations)
+          }
         });
       },
       deleteRow(res){

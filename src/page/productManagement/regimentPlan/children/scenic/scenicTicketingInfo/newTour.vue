@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
-    <el-dialog title="新建报账团号" :visible="dialogFormVisible" width="600px" @close="closeAdd">
+    <el-dialog :title="topTitle" :visible="dialogFormVisible" width="600px" @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div style="height: 300px;">
           <el-form-item label="报账团期" prop="tour" label-width="120px" style="float:left;">
@@ -11,11 +11,11 @@
           <el-form-item label="产品名称" prop="title" label-width="120px" style="float:left;">
             <el-autocomplete class="inputWidth" v-model="ruleForm.title" :fetch-suggestions="querySearch" placeholder="请输入产品名称" @select="handleSelect"></el-autocomplete>
           </el-form-item>
-          <el-form-item label="开始时间" prop="startTime" label-width="120px" style="float:left;">
-            <el-date-picker v-model="ruleForm.startTime" type="date" class="inputWidth" placeholder="开始时间" :picker-options="startDatePicker"></el-date-picker>
+          <el-form-item label="出发时间" prop="startTime" label-width="120px" style="float:left;">
+            <el-date-picker v-model="ruleForm.startTime" type="date" class="inputWidth" placeholder="出发时间" :picker-options="startDatePicker"></el-date-picker>
           </el-form-item>
-          <el-form-item label="结束时间" prop="endTime" label-width="120px" style="float:left;">
-            <el-date-picker v-model="ruleForm.endTime" type="date" class="inputWidth" placeholder="结束时间" :picker-options="endDatePicker"></el-date-picker>
+          <el-form-item label="返回时间" prop="endTime" label-width="120px" style="float:left;">
+            <el-date-picker v-model="ruleForm.endTime" type="date" class="inputWidth" placeholder="返回时间" :picker-options="endDatePicker"></el-date-picker>
           </el-form-item>
           <div class="footer">
             <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
@@ -36,6 +36,7 @@ export default {
   },
   data() {
     return {
+      topTitle: '新增报账团号',
       ruleForm: {
         tour: '',
         title: '',
@@ -61,7 +62,10 @@ export default {
   watch: {
     info: {
       handler:function(){
-        this.loadData()
+        if(this.info != ''){
+          this.loadData();
+          this.topTitle = '修改报账团号'
+        }
       }
     }
   },
@@ -89,6 +93,7 @@ export default {
       this.ruleForm.startTime = '';
       this.ruleForm.endTime = '';
       this.$emit('close', false);
+      this.topTitle = '新增报账团号';
     },
     querySearch(queryString, cb) {
       var productList = this.productList;

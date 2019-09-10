@@ -23,6 +23,8 @@
             <el-button class="el-button" type="primary" @click="toPreview">预览报账单</el-button>
             <!--<el-button class="el-button" type="primary" @click="submitForm">保 存</el-button>-->
             <el-button class="el-button" type="primary" @click="delInfo" v-if="statusBtn != 7">提交报账单</el-button>
+            <el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 4 || statusBtn == 6">修 改</el-button>
+
           </div>
         </el-col>
       </el-row>
@@ -34,7 +36,7 @@
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>操作人：</p> {{msg.op_name}}
+            <p>操作人：</p> {{orgName}} -- {{msg.op_name}}
           </div>
         </el-col>
         <el-col :span="8">
@@ -84,7 +86,26 @@
           </div>
         </el-col>
         <el-col :span="8">
-          <div class="info"></div>
+          <div class="info">
+            <p>出发日期：</p>{{msg.startTime}}
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="info">
+            <p>返回日期：</p>{{msg.endTime}}
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <div class="info">
+            <p>导陪：</p>{{msg.guide}}
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="info">
+            <p>接团社：</p>{{msg.associations}}
+          </div>
         </el-col>
         <el-col :span="8">
           <div class="info"></div>
@@ -151,8 +172,9 @@
         <!--</span>-->
       <!--</el-dialog>-->
       <GetOrder :dialogFormVisible="dialogFormVisible" @close="close2" :info="info"></GetOrder>
+      <ToUpdate :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpdate>
       <ToUpddateSource :dialogFormVisible="dialogFormVisible2" @close="close2" :info="updateSource"></ToUpddateSource>
-      <ToUpddateIncome :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpddateIncome>
+      <!--<ToUpddateIncome :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpddateIncome>-->
       <ToPreview :dialogFormVisible="dialogFormVisible4" @close="close2" :info="msg"></ToPreview>
     </div>
   </div>
@@ -160,7 +182,8 @@
 <script type="text/javascript">
 import GetOrder from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrder'
 import ToUpddateSource from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateSource'
-import ToUpddateIncome from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateIncome'
+import ToUpdate from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpdate'
+//import ToUpddateIncome from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateIncome'
 import ToPreview from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toPreview'
 import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
@@ -168,13 +191,15 @@ export default {
   components: {
     GetOrder,
     ToUpddateSource,
-    ToUpddateIncome,
-    ToPreview
+//    ToUpddateIncome,
+    ToPreview,
+    ToUpdate
   },
   data() {
     return {
       param: '',
       statusBtn: '',
+      paramTour: '',
       msg: {
         tour_no: '',
         op_id: '',
@@ -194,7 +219,7 @@ export default {
         associations: '',
         org_id: ''
       },
-
+      orgName: '',
       activeName: '1',
       currentRow: true,
       pid: '',
@@ -284,15 +309,18 @@ export default {
       this.updateSource = row.rec_id;
       this.dialogFormVisible2 = true;
     },
-    toUpddateIncome(row) {
-      this.dialogFormVisible3 = true;
-    },
+//    toUpddateIncome(row) {
+//      this.dialogFormVisible3 = true;
+//    },
     toPreview() {
 //      this.info = this.param;
       this.dialogFormVisible4 = true;
     },
     getOrder(row) {
       this.dialogFormVisible = true;
+    },
+    toUpdate() {
+      this.dialogFormVisible3 = true;
     },
     close2() {
       this.dialogFormVisible = false;
@@ -335,7 +363,7 @@ export default {
             startTime = formatDate(new Date(response.data.data.start_at*1000)).split(" ")[0];
             endTime = formatDate(new Date(response.data.data.back_at*1000)).split(" ")[0];
           }
-
+          that.getOrgName(dataList.op_id);
           that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
             "id": response.data.data.op_id
           },{
@@ -392,8 +420,28 @@ export default {
             that.totalMoney += parseFloat(item.income);
             that.number += parseInt(item.people_num);
           });
+          that.totalMoney = that.totalMoney.toFixed(2);
         } else {
           that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+    getOrgName(ID){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+        "id": ID
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+//        console.log(ID,'组织名称',response);
+        if (response.data.isSuccess) {
+          that.orgName = response.data.objects[0].name
+        } else {
+          this.$message.success("加载数据失败~");
         }
       }).catch(function(error) {
         console.log(error);
@@ -401,10 +449,11 @@ export default {
     }
   },
   created() {
-    console.log('params',this.$route.params);
-    if(this.$route.params.id){
-      this.param = this.$route.params.id;
-      this.statusBtn = this.$route.params.bill_status;
+//    console.log('query',this.$route.query);
+    if(this.$route.query.id){
+      this.param = this.$route.query.id;
+      this.statusBtn = this.$route.query.bill_status;
+      this.paramTour = this.$route.query.tour_no;
       this.loadData();
     }else{
       this.closeAdd();

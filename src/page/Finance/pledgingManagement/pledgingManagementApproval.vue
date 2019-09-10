@@ -142,9 +142,9 @@ export default {
   },
   created() {
 //    alert(JSON.stringify(this.$route.params));
-    this.paramTour = this.$route.params.tour_no;
-    if(this.$route.params.tour_no){
-      this.paramTour = this.$route.params.tour_no;
+//    this.paramTour = this.$route.params.tour_no;
+    if(this.$route.query.tour_no){
+      this.paramTour = this.$route.query.tour_no;
     }else{
       this.cancel();
     }

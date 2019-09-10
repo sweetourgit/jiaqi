@@ -152,7 +152,11 @@ export default {
       this.$router.push({
         path: "/scenicTicketingBillReporting",
         name: '产品管理  /团期计划  /报账单',
-        params: row
+        query: {
+          id: row.id,
+          bill_status: row.bill_status,
+          tour_no: row.tour_no
+        }
       });
     },
     //认款
@@ -160,7 +164,9 @@ export default {
       this.$router.push({
         path: '/scenicTicketingPledging',
         name: '产品管理  /团期计划  /认款',
-        params: row
+        query: {
+          tour_no: row.tour_no
+        }
       });
     },
     //详情
@@ -168,7 +174,12 @@ export default {
       this.$router.push({
         path: "/scenicTicketingDetails",
         name: "产品管理  /团期计划  /详情",
-        params: row
+        query: {
+          id: row.id,
+          bill_status: row.bill_status,
+          tour_no: row.tour_no,
+          approved: row.approved
+        }
       });
     },
     close() {
