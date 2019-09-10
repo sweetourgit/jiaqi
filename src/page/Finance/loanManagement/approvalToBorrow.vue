@@ -482,7 +482,7 @@ import moment from 'moment'
         checkIncome(row){
           this.pid = row.paymentID;
           this.detailstShow = true;
-          this.getLabel();
+          //this.getLabel();
           
         },
         closeDetailstShow(){

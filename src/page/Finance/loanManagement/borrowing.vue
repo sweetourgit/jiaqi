@@ -69,7 +69,7 @@
 	    </div>
 	</div>
 	<!--申请无收入借款弹窗-->
-	    <el-dialog title="借款申请" :visible.sync="noIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>  
+	    <el-dialog title="借款申请" :visible.sync="noIncomeShow" width="1100px" custom-class="city_list" @close="cancel"> 
 	      <div style="position:absolute; top:8px; right:10px;">
 	      	<el-button @click="CloseNoIncomeShow()">取消</el-button>
 	      	<el-button type="primary"@click="ensureIncome()">申请</el-button>
@@ -588,7 +588,7 @@ import moment from 'moment'
         var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
         cb(results)
       }).catch(err => {
-        console.log(err);
+        //console.log(err);
       })
     },
     createFilter(queryString1){
@@ -615,10 +615,17 @@ import moment from 'moment'
       this.pageList();
     },
       //无收入借款弹窗
-      noIncome(formName){//点击显示弹窗
+      noIncome(){//点击显示弹窗
       	this.noIncomeShow =true;
-      	//this.$refs["ruleForm"].resetFields();
-      	this.clearPlan();
+       //this.clearPlan();
+      },
+      cancel(){
+        this.noIncomeShow = false;
+        this.$refs["ruleForm"].resetFields();4
+        this.tableMoney = [];
+      	this.tableIncome = [];
+      	this.tablePayment = [];
+      	this.tableEarning = [];
       },
       CloseNoIncomeShow(){//点击关闭弹窗
       	this.$confirm("去否取消本次借款申请?", "提示", {
@@ -628,7 +635,7 @@ import moment from 'moment'
         }).then(res => {
              this.$message.success("借款申请已取消");
              this.noIncomeShow =false;
-  		     //this.$refs["ruleForm"].resetFields();
+  		     this.$refs["ruleForm"].resetFields();
   		     this.clearPlan();
            })
         .catch(() => {
@@ -852,6 +859,7 @@ import moment from 'moment'
       	this.pid = row.paymentID;
       	this.status = row.checkTypeEX;
       	this.ruleForm = row;
+      	//this.$refs["ruleForm"].resetFields();
       	//this.getLabel();
       	//this.clearPlan();
       },
@@ -878,6 +886,7 @@ import moment from 'moment'
 	    },
       CloseCheckIncomeShow(){
       	this.checkIncomeShow = false;
+      	this.$refs['ruleForm'].resetFields();
       	this.clearPlan();
       },
       //查询列表

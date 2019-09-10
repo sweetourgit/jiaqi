@@ -3,7 +3,6 @@
       <!--查看无收入借款弹窗-->
 	     <div style="margin:10px 0 0 25px; font-size:14pt;">基本信息</div>
        <!-- <div class="checkType">审核中</div> -->
-       
        <table class="basictable">
          <tr>
           <td>
