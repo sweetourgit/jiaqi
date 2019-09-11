@@ -23,6 +23,7 @@
               <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
               <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
               <el-radio label="去哪儿">去哪儿</el-radio>
+              <el-radio label="票付通余额">票付通余额</el-radio>
               <el-radio label="无">无</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -61,11 +62,13 @@
             </el-table-column>
             <el-table-column prop="5" label="结算金额" align="center">
             </el-table-column>
-            <el-table-column prop="6" label="团号" align="center">
+            <el-table-column prop="6" label="手续费" align="center">
             </el-table-column>
-            <el-table-column prop="7" label="粉联号" align="center">
+            <el-table-column prop="8" label="团号" align="center">
             </el-table-column>
-            <el-table-column prop="8" label="发票号" align="center">
+            <el-table-column prop="9" label="粉联号" align="center">
+            </el-table-column>
+            <el-table-column prop="10" label="发票号" align="center">
             </el-table-column>
             <el-table-column prop="money" label="操作" align="center">
               <template slot-scope="scope">
@@ -87,6 +90,8 @@
             <el-table-column prop="product_name" label="产品" align="center">
             </el-table-column>
             <el-table-column prop="rece_money" label="结算金额" align="center">
+            </el-table-column>
+            <el-table-column prop="charge" label="手续费" align="center">
             </el-table-column>
             <el-table-column prop="tour_no" label="团号" align="center">
             </el-table-column>
@@ -195,7 +200,7 @@
       info: {
         handler:function(){
           console.log(this.info);
-          if(this.info != ''){
+          if(this.info != '' && this.dialogFormVisible){
             this.loadData();
           }
         }

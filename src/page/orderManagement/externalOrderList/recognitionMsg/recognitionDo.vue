@@ -77,6 +77,8 @@
             </el-table-column>
             <el-table-column prop="rece_money" label="结算金额" align="center">
             </el-table-column>
+            <el-table-column prop="charge" label="结算金额" align="center">
+            </el-table-column>
             <el-table-column prop="tour_no" label="团号" align="center">
             </el-table-column>
             <el-table-column prop="divide_connect_no" label="粉联号" align="center">

@@ -127,17 +127,17 @@ export default {
     },
     //保存
     addsave(formName) {
-      var object = []
+      let object = [];
       this.dynamicTags.forEach(function(v, k, arr) {
         object.push({
           "destination_id": arr[k]['destinationID'],
           "destination_name": arr[k]['destination']
         });
-      })
+      });
       this.$refs[formName].validate((valid) => {
 
         if (this.dynamicTags.length <= 0) {
-          this.errorNull = true
+          this.errorNull = true;
           return false;
         }
 

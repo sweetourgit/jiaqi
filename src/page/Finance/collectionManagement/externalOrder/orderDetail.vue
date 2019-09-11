@@ -40,6 +40,8 @@
           </el-table-column>
           <el-table-column prop="rece_money" label="结算金额" align="center">
           </el-table-column>
+          <el-table-column prop="charge" label="手续费" align="center">
+          </el-table-column>
           <el-table-column prop="tour_no" label="团号" align="center">
           </el-table-column>
           <el-table-column prop="divide_connect_no" label="粉联号" align="center">
@@ -168,7 +170,7 @@
       info: {
         handler:function(){
           console.log(this.info);
-          if(this.info != ''){
+          if(this.info != '' && this.dialogFormVisible1){
             this.loadData();
           }
         }

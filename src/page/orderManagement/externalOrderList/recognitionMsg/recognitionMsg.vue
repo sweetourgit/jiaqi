@@ -211,7 +211,7 @@
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/reclist", {
-          "order_sn": this.$route.params.ids
+          "order_sn": this.$route.query.ids
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log(response);
@@ -233,10 +233,9 @@
       },
     },
     created(){
-      console.log(this.$route.params);
-      console.log(this.$route.query);
-      if(this.$route.params.ids){
-
+//      console.log(this.$route.params);
+//      console.log(this.$route.query);
+      if(this.$route.query.ids){
         this.loadData();
       }else{
         this.cancalBtn();

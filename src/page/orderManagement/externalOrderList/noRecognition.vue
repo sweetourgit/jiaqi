@@ -212,6 +212,7 @@
       },
       close2() {
         this.dialogFormVisible2 = false;
+        this.loadData();
 //        if(str == 'success'){
 //          this.showStatus();
 //        }
@@ -290,7 +291,7 @@
         this.$router.push({
           path: "/recognitionMsg",
           name: '订单管理/外部订单/认收款信息',
-          params: {'ids': orderStr}
+          query: {'ids': orderStr}
         });
       },
       close() {

@@ -136,7 +136,7 @@
       },
       //保存
       addsave(formName) {
-        var object = [];
+        let object = [];
         this.dynamicTags.forEach(function(v, k, arr) {
           object.push({
             "destination_id": arr[k]['destination_id'],

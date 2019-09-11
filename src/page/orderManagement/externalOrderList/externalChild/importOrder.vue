@@ -41,12 +41,9 @@ export default {
   data() {
     return {
       ruleForm: {
-        type: '1',
+        type: '2',
       },
       typeList: [{
-          label: '飞猪',
-          value: '1',
-        }, {
           label: '票付通',
           value: '2',
         }
@@ -127,6 +124,7 @@ export default {
           loading.close();
           that.$emit('close2', 'success');
         } else {
+          loading.close();
           if(response.data.message){
             that.$message({
               type: "warning",
