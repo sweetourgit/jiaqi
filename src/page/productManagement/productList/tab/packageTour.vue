@@ -283,7 +283,7 @@
         <el-dialog
           title="成本"
           :visible.sync="basicbutton"
-          width="30%"
+          width="50%"
           append-to-body>
           <div>
             <el-button  type="primary" @click="addcost">添加</el-button>
@@ -296,26 +296,12 @@
             <div style="margin-top: 10px;float: left;margin-left: 30px;">人均结算价({{count}})</div>
           </div>
           <div style="margin-top: 100px">
-            <el-table
-              ref="multipleTable12"
-              :data="tableData12"
-              tooltip-effect="dark"
-              style="width: 100%"
-              @selection-change="handleSelectionChange"
-              @select="changselet"
-            >
-              <el-table-column
-                type="selection"
-                width="55">
-              </el-table-column>
-              <el-table-column
-                label="序号"
-                width="120">
+            <el-table ref="multipleTable12":data="tableData12"tooltip-effect="dark"style="width: 100%"@selection-change="handleSelectionChange"@select="changselet">
+              <el-table-column type="selection" width="55"></el-table-column>
+              <el-table-column label="序号" width="120">
                 <template slot-scope="scope">{{ scope.row.id }}</template>
               </el-table-column>
-              <el-table-column
-                prop="supplierTypeEX"
-                label="成本类型"
+              <el-table-column prop="supplierTypeEX" label="成本类型"
                 width="120">
               </el-table-column>
               <el-table-column
@@ -334,35 +320,23 @@
 
         </el-dialog>
         <!--添加-->
-        <el-dialog
-          title="提示"
-          :visible.sync="cost"
-          width="30%"
-          append-to-body
-        >
+        <el-dialog title="提示" :visible.sync="cost" width="40%" append-to-body>
           <el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="供应商" prop="region">
+            <!-- <el-form-item label="供应商" prop="region">
               <el-select v-model="ruleForm1.region" placeholder="请选择" @change="changys">
-                <el-option
-                  v-for="item in options2"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
+                <el-option v-for="item in options2":key="item.value":label="item.label":value="item.value"></el-option>
               </el-select>
+            </el-form-item> -->
+            <el-form-item label="供应商" prop="region">
+              <el-autocomplete v-model="ruleForm1.region" :fetch-suggestions="querySearch5"placeholder="请输入供应商" :trigger-on-focus="false"@select="departure" style="width: 200px"></el-autocomplete>
             </el-form-item>
             <el-form-item label="成本类型" prop="costType">
-              <el-select v-model="ruleForm1.costType" placeholder="请选择">
-                <el-option
-                  v-for="item in options3"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
+              <el-select v-model="ruleForm1.costType" placeholder="请选择" style="width: 200px">
+                <el-option v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
-            </el-form-item>
-            <el-form-item label="金额" prop="name" style="width: 320px">
-              <el-input v-model="ruleForm1.name"></el-input>
+             </el-form-item>
+            <el-form-item label="金额" prop="name">
+              <el-input v-model="ruleForm1.name" style="width: 200px"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button v-if="this.chengben.length == 0" type="primary" @click="submitForm1('ruleForm1')">添加</el-button>
@@ -423,33 +397,13 @@
           value: '选项5',
           label: '北京烤鸭'
         }],
-        options3: [{
-          value: '选项1',
-          label: '金糕'
-        }, {
-          value: '选项2',
-          label: '皮奶'
-        }, {
-          value: '选项3',
-          label: '仔煎'
-        }, {
-          value: '选项4',
-          label: '须面'
-        }, {
-          value: '选项5',
-          label: '京烤鸭'
-        }],
+        options3: [],//成本类型
         value2: '',
         rules1: {
-          name: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
-          ],
-          region: [
-            { required: true, message: '请选择活动区1域', trigger: 'change' }
-          ],
-          costType:[
-            { required: true, message: '请选择活动区1域', trigger: 'change' }
-          ]
+          name: [{ required: true, message: '请输入金额', trigger: 'change' }, 
+                 {pattern: /^[+]{0,1}(\d+)$/, message: '金额需为正整数' }],
+          region: [{ required: true, message: '请选择供应商名称', trigger: 'change' }],
+          costType:[{ required: true, message: '请选择成本类型', trigger: 'change' }],
         },
         cost:false,
         tableData12: [{
@@ -872,10 +826,63 @@
         abc: false,
         array1:'',
         team:'',
-        chengben:[]
+        chengben:[],
+        supplier_id:0,
+
       }
     },
     methods: {
+      //供应商模糊查询
+      querySearch5(queryString3, cb) {
+        this.tableData2 = []
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
+          "object": {
+            name: queryString3,
+            UserState:-1,
+          SupplierType:-1,
+          }
+        }).then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.tableData2.push({
+              "value": res.data.objects[i].name,
+              "id": res.data.objects[i].id,
+              "supplierType": res.data.objects[i].supplierType
+            })
+            this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+          }
+          var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
+          cb(results)
+        }).catch(err => {
+          //console.log(err);
+        })
+      },
+      createFilter(queryString1){
+        return (restaurant) => {
+          return (restaurant.value);
+        }
+      },
+      departure(item){
+        console.log(item)
+        // this.productPos = item.id;
+        // this.originPlace = item.value;
+      },
+      //成本类型
+      themeList(){
+        this.borrowingType = [];
+        this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=SupplierType')
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.borrowingType.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].name
+            })
+          }
+        })
+        .then(res =>{
+          //this.borrowingType =  res.data.objects;
+        })
+      
+      },
       handleClick(tab, event) {
 //          console.log(tab, event);
       },
@@ -964,9 +971,12 @@
                 "code": "string",
                 "createUser": "string",
                 "packageID": this.team,
-                "supplierID": this.ruleForm1.supplierID,
-                "name": this.ruleForm1.region1,
-                "supplierType": this.ruleForm1.supplierTypeEX,
+                //"supplierID": this.ruleForm1.supplierID,
+                "supplierID":this.supplier_id,
+                //"name": this.ruleForm1.region1,
+                "name":this.ruleForm1.region,
+                //"supplierType": this.ruleForm1.supplierTypeEX,
+                "suppliertype":this.ruleForm1.costType,
                 "money": this.ruleForm1.name
               }
             }).then(res => {
@@ -976,6 +986,30 @@
                 }
               }).then(res => {
                 this.tableData12 = res.data.objects
+                this.tableData12.forEach(function (v,k,arr) {
+                  if(arr[k]['suppliertype'] == 0){
+                    arr[k]['suppliertype'] = '船票'
+                  }else if(arr[k]['suppliertype'] == 1) {
+                    arr[k]['suppliertype'] = '地接社'
+                  }else if(arr[k]['suppliertype'] == 2) {
+                    arr[k]['suppliertype'] = '机票'
+                  }else if(arr[k]['suppliertype'] == 3) {
+                    arr[k]['suppliertype'] = '拼票'
+                  }else if(arr[k]['suppliertype'] == 4) {
+                    arr[k]['suppliertype'] = '酒店'
+                  }else if(arr[k]['suppliertype'] == 5) {
+                    arr[k]['suppliertype'] = '签证'
+                  }else if(arr[k]['suppliertype'] == 6) {
+                    arr[k]['suppliertype'] = '合作拼团社'
+                  }else if(arr[k]['suppliertype'] == 7) {
+                    arr[k]['suppliertype'] = '游轮'
+                  }else if(arr[k]['suppliertype'] == 8) {
+                    arr[k]['suppliertype'] = '火车票'
+                  }else if(arr[k]['suppliertype'] == 9) {
+                    arr[k]['suppliertype'] = '汽车票'
+                  }
+              
+                })
               })
               this.cost = false
             })
@@ -990,14 +1024,18 @@
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/save', {
               "object": {
+                // "supplierID": this.ruleForm1.supplierID,
+                // "name": this.ruleForm1.region1,
+                // "supplierType": this.ruleForm1.supplierTypeEX,
+                // "money": this.ruleForm1.name
                 "id": this.chengben[0].id,
                 "createTime": 0,
                 "code": "string",
                 "createUser": "string",
                 "packageID": this.team,
-                "supplierID": this.ruleForm1.supplierID,
-                "name": this.ruleForm1.region1,
-                "supplierType": this.ruleForm1.supplierTypeEX,
+                "supplierID":this.supplier_id,
+                "name":this.ruleForm1.region,
+                "suppliertype":this.ruleForm1.supplierType,
                 "money": this.ruleForm1.name
 
               }
@@ -1008,6 +1046,30 @@
                 }
               }).then(res => {
                 this.tableData12 = res.data.objects
+                this.tableData12.forEach(function (v,k,arr) {
+                  if(arr[k]['suppliertype'] == 0){
+                    arr[k]['suppliertype'] = '船票'
+                  }else if(arr[k]['suppliertype'] == 1) {
+                    arr[k]['suppliertype'] = '地接社'
+                  }else if(arr[k]['suppliertype'] == 2) {
+                    arr[k]['suppliertype'] = '机票'
+                  }else if(arr[k]['suppliertype'] == 3) {
+                    arr[k]['suppliertype'] = '拼票'
+                  }else if(arr[k]['suppliertype'] == 4) {
+                    arr[k]['suppliertype'] = '酒店'
+                  }else if(arr[k]['suppliertype'] == 5) {
+                    arr[k]['suppliertype'] = '签证'
+                  }else if(arr[k]['suppliertype'] == 6) {
+                    arr[k]['suppliertype'] = '合作拼团社'
+                  }else if(arr[k]['suppliertype'] == 7) {
+                    arr[k]['suppliertype'] = '游轮'
+                  }else if(arr[k]['suppliertype'] == 8) {
+                    arr[k]['suppliertype'] = '火车票'
+                  }else if(arr[k]['suppliertype'] == 9) {
+                    arr[k]['suppliertype'] = '汽车票'
+                  }
+              
+                })
               })
               this.cost = false
             })
@@ -1044,17 +1106,17 @@
 
           })
 
-        this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
-        }).then(res => {
+        // this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
+        // }).then(res => {
 
-          for (var i = 0; i<res.data.objects.length;i++){
-            arry.push(res.data.objects[i])
-            arry[i].label = arry[i].name
-            arry[i].value = arry[i].id
-          }
-          this.options3 = arry
+        //   for (var i = 0; i<res.data.objects.length;i++){
+        //     arry.push(res.data.objects[i])
+        //     arry[i].label = arry[i].name
+        //     arry[i].value = arry[i].id
+        //   }
+        //   this.options3 = arry
 
-        })
+        // })
         /* console.log(this.chengben[0].id)*/
         this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/get', {
           "id": this.chengben[0].id
@@ -1072,15 +1134,56 @@
           this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/delete', {
             "id": this.chengben[i].id
           }).then(res => {
-
           })
         }
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        });
-        this.basicbutton = false
-        this.chengben = []
+        this.$confirm("确认删除?", "提示", {
+           confirmButtonText: "确定",
+           cancelButtonText: "取消",
+           type: "warning"
+        }).then(res => {
+          if(res.data.isSuccess == true){
+             this.$message.success("删除成功");
+             this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/list', {
+                "object": {
+                  "packageID": this.team,
+                }
+              }).then(res => {
+                this.tableData12 = res.data.objects
+                this.tableData12.forEach(function (v,k,arr) {
+                  if(arr[k]['suppliertype'] == 0){
+                    arr[k]['suppliertype'] = '船票'
+                  }else if(arr[k]['suppliertype'] == 1) {
+                    arr[k]['suppliertype'] = '地接社'
+                  }else if(arr[k]['suppliertype'] == 2) {
+                    arr[k]['suppliertype'] = '机票'
+                  }else if(arr[k]['suppliertype'] == 3) {
+                    arr[k]['suppliertype'] = '拼票'
+                  }else if(arr[k]['suppliertype'] == 4) {
+                    arr[k]['suppliertype'] = '酒店'
+                  }else if(arr[k]['suppliertype'] == 5) {
+                    arr[k]['suppliertype'] = '签证'
+                  }else if(arr[k]['suppliertype'] == 6) {
+                    arr[k]['suppliertype'] = '合作拼团社'
+                  }else if(arr[k]['suppliertype'] == 7) {
+                    arr[k]['suppliertype'] = '游轮'
+                  }else if(arr[k]['suppliertype'] == 8) {
+                    arr[k]['suppliertype'] = '火车票'
+                  }else if(arr[k]['suppliertype'] == 9) {
+                    arr[k]['suppliertype'] = '汽车票'
+                  }
+              
+                })
+              })
+             //this.basicbutton = false
+             //this.chengben = []
+            }
+         })
+        // this.$message({
+        //   message: '删除成功',
+        //   type: 'success'
+        // });
+        // this.basicbutton = false
+        // this.chengben = []
       },
       addcost(){
         console.log(this.chengben)
@@ -1108,17 +1211,17 @@
 
           })
 
-        this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
-        }).then(res => {
+        // this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
+        // }).then(res => {
 
-          for (var i = 0; i<res.data.objects.length;i++){
-            arry.push(res.data.objects[i])
-            arry[i].label = arry[i].name
-            arry[i].value = arry[i].id
-          }
-          this.options3 = arry
+        //   for (var i = 0; i<res.data.objects.length;i++){
+        //     arry.push(res.data.objects[i])
+        //     arry[i].label = arry[i].name
+        //     arry[i].value = arry[i].id
+        //   }
+        //   this.options3 = arry
 
-        })
+        // })
 
         this.cost = true
       },
@@ -1136,6 +1239,30 @@
           }
         }).then(res => {
           this.tableData12 = res.data.objects
+          this.tableData12.forEach(function (v,k,arr) {
+            if(arr[k]['suppliertype'] == 0){
+              arr[k]['suppliertype'] = '船票'
+            }else if(arr[k]['suppliertype'] == 1) {
+              arr[k]['suppliertype'] = '地接社'
+            }else if(arr[k]['suppliertype'] == 2) {
+              arr[k]['suppliertype'] = '机票'
+            }else if(arr[k]['suppliertype'] == 3) {
+              arr[k]['suppliertype'] = '拼票'
+            }else if(arr[k]['suppliertype'] == 4) {
+              arr[k]['suppliertype'] = '酒店'
+            }else if(arr[k]['suppliertype'] == 5) {
+              arr[k]['suppliertype'] = '签证'
+            }else if(arr[k]['suppliertype'] == 6) {
+              arr[k]['suppliertype'] = '合作拼团社'
+            }else if(arr[k]['suppliertype'] == 7) {
+              arr[k]['suppliertype'] = '游轮'
+            }else if(arr[k]['suppliertype'] == 8) {
+              arr[k]['suppliertype'] = '火车票'
+            }else if(arr[k]['suppliertype'] == 9) {
+              arr[k]['suppliertype'] = '汽车票'
+            }
+        
+          })
         })
         this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
           "id": this.team
@@ -1877,6 +2004,7 @@
 
     },
     created(){
+      this.themeList();
       //产品列表
       var that = this
       this.pageNum = 1;
@@ -1955,6 +2083,7 @@
           console.log(obj)
         })
     },
+    
 
   }
 </script>

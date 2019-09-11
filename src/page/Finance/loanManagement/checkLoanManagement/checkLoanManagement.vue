@@ -155,7 +155,6 @@
            <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
            <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
         </el-table>
-        
 	     </el-form>
   </div>
 </template>
