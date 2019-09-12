@@ -247,7 +247,11 @@
                 message: '已删除'
               });
             } else {
-              that.$message.success("删除失败~");
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning("删除失败~");
+              }
             }
           }).catch(function(error) {
             console.log(error);

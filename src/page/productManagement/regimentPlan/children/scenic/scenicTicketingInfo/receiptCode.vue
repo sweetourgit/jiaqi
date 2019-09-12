@@ -13,7 +13,7 @@
           </el-table-column>
           <el-table-column prop="cost" label="成本" align="center">
           </el-table-column>
-          <el-table-column prop="income" label="income" align="center">
+          <el-table-column prop="income" label="收入" align="center">
           </el-table-column>
           <el-table-column prop="guestInformation" label="客人信息" align="center">
             <template slot-scope="scope">

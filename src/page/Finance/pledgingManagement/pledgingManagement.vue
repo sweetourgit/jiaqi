@@ -77,6 +77,7 @@ export default {
     },
     close() {
       this.dialogFormVisible = false;
+      this.loadData();
     },
     blurHand(){
       const that = this;

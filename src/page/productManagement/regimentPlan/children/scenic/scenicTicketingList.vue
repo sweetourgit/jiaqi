@@ -94,7 +94,7 @@
         </el-pagination>
       </div>
     </div>
-    <NewTour :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></NewTour>
+    <NewTour :dialogFormVisible="dialogFormVisible" @close="close" :info="info" ref="newTour"></NewTour>
   </div>
 </template>
 <script type="text/javascript">
@@ -141,8 +141,10 @@ export default {
     createNew(row) {
 //      console.log(row);
       if(row.id){
+        this.$refs.newTour.topTitle = '修改报账团号';
         this.info = row;
       }else{
+        this.$refs.newTour.topTitle = '新增报账团号';
         this.info = '';
       }
       this.dialogFormVisible = true;

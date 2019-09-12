@@ -64,7 +64,6 @@ export default {
       handler:function(){
         if(this.info != ''){
           this.loadData();
-          this.topTitle = '修改报账团号'
         }
       }
     }
@@ -93,7 +92,6 @@ export default {
       this.ruleForm.startTime = '';
       this.ruleForm.endTime = '';
       this.$emit('close', false);
-      this.topTitle = '新增报账团号';
     },
     querySearch(queryString, cb) {
       var productList = this.productList;
