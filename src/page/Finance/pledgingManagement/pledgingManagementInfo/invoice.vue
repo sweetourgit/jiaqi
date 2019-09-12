@@ -247,6 +247,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/receiptlist", {
         "tour_no": this.$parent.$parent.$parent.paramTour,
         "apply_type": 2,
+        "is_temp": 1,
         "limit": 0
       }, ).then(function(response) {
         if (response.data.code == '200') {

@@ -233,7 +233,8 @@ export default {
 //      alert(id);
       const that = this;
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/recognitioninfo", {
-        "id": this.$parent.pid
+        "id": this.$parent.pid,
+        "is_temp": 1
       }, ).then(function(response) {
         if (response.data.code == '200') {
           console.log(response);
