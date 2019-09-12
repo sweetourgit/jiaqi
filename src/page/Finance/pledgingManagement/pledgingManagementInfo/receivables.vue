@@ -16,9 +16,9 @@
         <el-table-column prop="option" label="操作" align="center">
           <template slot-scope="scope">
             <el-button @click="details(scope.row)" size="small" class="table_details">详情</el-button>
-            <el-button @click="revoke(scope.row)" type="danger" size="small" class="table_details" v-if="scope.row.approval_status != 1">撤销</el-button>
-            <el-button @click="adopt(scope.row)" type="success" size="small" class="table_details" v-if="scope.row.approval_status == 1">通过</el-button>
-            <el-button @click="reject(scope.row)" type="warning" size="small" class="table_details" v-if="scope.row.approval_status == 1">驳回</el-button>
+            <el-button @click="revoke(scope.row)" type="danger" size="small" class="table_details" v-if="scope.row.approval_status != 1 && noReimbursement">撤销</el-button>
+            <el-button @click="adopt(scope.row)" type="success" size="small" class="table_details" v-if="scope.row.approval_status == 1 && noReimbursement">通过</el-button>
+            <el-button @click="reject(scope.row)" type="warning" size="small" class="table_details" v-if="scope.row.approval_status == 1 && noReimbursement">驳回</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -86,7 +86,8 @@ export default {
         1: '审批中',
         2: '驳回',
         3: '通过',
-      }
+      },
+      noReimbursement: true
     }
   },
   watch: {
@@ -248,6 +249,9 @@ export default {
   },
   created() {
     this.loadData();
+    if(this.$route.query.bill_status == 5 || this.$route.query.bill_status == 6 || this.$route.query.bill_status == 7){
+      this.noReimbursement = false;
+    }
   }
 }
 

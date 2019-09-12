@@ -66,6 +66,15 @@ export default {
       }
     }
   },
+  watch: {
+    dialogFormVisible2: {
+      handler:function(){
+        if(this.dialogFormVisible2){
+          this.ruleForm.type = '2';
+        }
+      }
+    }
+  },
   methods: {
     closeAdd() {
       this.ruleForm.tour = '';

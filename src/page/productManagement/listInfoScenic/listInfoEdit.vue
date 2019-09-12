@@ -7,7 +7,7 @@
       </div>
       <div>
         <!--产品名称-->
-        <el-form-item label="产品名称" prop="productNamel" label-width="120px">
+        <el-form-item label="产品名称" prop="productName" label-width="120px">
           <el-input v-model="ruleForm.productName" class="productName" placeholder="请输入正确产品名称" maxlength="30" show-word-limit></el-input>
         </el-form-item>
         <!-- 目的地 -->

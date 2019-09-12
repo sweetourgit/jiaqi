@@ -9,7 +9,7 @@
           </el-form-item>
           <br /><br />
           <el-form-item label="产品名称" prop="title" label-width="120px" style="float:left;">
-            <el-autocomplete class="inputWidth" v-model="ruleForm.title" :fetch-suggestions="querySearch" placeholder="请输入产品名称" @select="handleSelect"></el-autocomplete>
+            <el-autocomplete class="inputWidth" v-model="ruleForm.title" :fetch-suggestions="querySearch" placeholder="请输入产品名称" @select="handleSelect" @blur="handleBlur"></el-autocomplete>
           </el-form-item>
           <el-form-item label="出发时间" prop="startTime" label-width="120px" style="float:left;">
             <el-date-picker v-model="ruleForm.startTime" type="date" class="inputWidth" placeholder="出发时间" :picker-options="startDatePicker"></el-date-picker>
@@ -45,7 +45,7 @@ export default {
       },
       rules: {
         tour: [{ required: true, message: '报账团期不能为空!', trigger: 'blur' }],
-        title: [{ required: true, message: '产品名称不能为空!', trigger: 'blur' }],
+        title: [{ required: true, message: '产品名称不能为空!', trigger: 'change' }],
         startTime: [{ required: true, message: '开始时间不能为空!', trigger: 'change' }],
         endTime: [{ required: true, message: '结束时间不能为空!', trigger: 'change' }],
       },
@@ -109,85 +109,117 @@ export default {
     handleSelect(item) {
 //      console.log(item);
       this.productChose = item;
+      this.ruleForm.title = item.value;
+    },
+    handleBlur(){
+      const that = this;
+      let ida = '';
+      if(that.ruleForm.title == ''){
+        that.productChose = '';
+      }else{
+        this.productList.forEach(function (item, index, arr) {
+          if(that.ruleForm.title == item.value){
+            ida = item;
+          }
+        });
+        if(ida){
+          that.productChose = ida;
+        }else{
+          that.productChose = '';
+        }
+      }
     },
     submitForm(formName) {
       var that = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if(this.info.id){
-            this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/groupplan/group-plan/upd', {
-              "id": this.info.id,
-              "tour_no": this.ruleForm.tour,
-              "product_id": this.productChose.id,
-              "product_name": this.ruleForm.title,
-              "begin_at": this.ruleForm.startTime,
-              "end_at": this.ruleForm.endTime
-            }, {
-              emulateJSON: true
-            }).then(res => {
-//              console.log(res.data);
-              if (res.data.code == 200) {
-                that.$message({
-                  type: 'success',
-                  message: '更新成功!'
-                });
-                that.closeAdd();
-                this.info = '';
-              } else {
-                console.log(res.data.message);
-                if(res.data.message){
-                  that.$message({
-                    type: 'warning',
-                    message: res.data.message
-                  });
-                }else{
-                  that.$message({
-                    type: 'warning',
-                    message: '更新失败'
-                  });
-                }
-
-              }
-            }).catch(err => {
-              console.log(err)
-            })
+          if(this.productChose == '' && that.ruleForm.title == ''){
+            that.$message({
+              type: 'warning',
+              message: '产品ID不能为空'
+            });
+          }else if(this.productChose == '' && that.ruleForm.title != ''){
+            that.$message({
+              type: 'warning',
+              message: '产品名称不存在'
+            });
           }else{
-            this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/groupplan/group-plan/add', {
-              "tour_no": this.ruleForm.tour,
-              "product_id": this.productChose.id,
-              "product_name": this.ruleForm.title,
-              "begin_at": this.ruleForm.startTime,
-              "end_at": this.ruleForm.endTime,
-              "create_uid": sessionStorage.getItem('id'),
-              "org_id": sessionStorage.getItem('orgID')
-            }, {
-              emulateJSON: true
-            }).then(res => {
-              console.log(res.data);
-              if (res.data.code == 200) {
-                that.$message({
-                  type: 'success',
-                  message: '创建成功!'
-                });
-                that.closeAdd();
-//                that.$emit('loadData');
-              } else {
-                if(res.data.message){
+            if(this.info.id){
+              this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/groupplan/group-plan/upd', {
+                "id": this.info.id,
+                "tour_no": this.ruleForm.tour,
+                "product_id": this.productChose.id,
+                "product_name": this.ruleForm.title,
+                "begin_at": this.ruleForm.startTime,
+                "end_at": this.ruleForm.endTime
+              }, {
+                emulateJSON: true
+              }).then(res => {
+//              console.log(res.data);
+                if (res.data.code == 200) {
                   that.$message({
-                    type: 'warning',
-                    message: res.data.message
+                    type: 'success',
+                    message: '更新成功!'
                   });
-                }else{
-                  that.$message({
-                    type: 'warning',
-                    message: '创建失败'
-                  });
+                  that.closeAdd();
+                  this.info = '';
+                } else {
+                  console.log(res.data.message);
+                  if(res.data.message){
+                    that.$message({
+                      type: 'warning',
+                      message: res.data.message
+                    });
+                  }else{
+                    that.$message({
+                      type: 'warning',
+                      message: '更新失败'
+                    });
+                  }
+
                 }
-              }
-            }).catch(err => {
-              console.log(err)
-            })
+              }).catch(err => {
+                console.log(err)
+              })
+            }else{
+              this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/groupplan/group-plan/add', {
+                "tour_no": this.ruleForm.tour,
+                "product_id": this.productChose.id,
+                "product_name": this.ruleForm.title,
+                "begin_at": this.ruleForm.startTime,
+                "end_at": this.ruleForm.endTime,
+                "create_uid": sessionStorage.getItem('id'),
+                "org_id": sessionStorage.getItem('orgID')
+              }, {
+                emulateJSON: true
+              }).then(res => {
+                console.log(res.data);
+                if (res.data.code == 200) {
+                  that.$message({
+                    type: 'success',
+                    message: '创建成功!'
+                  });
+                  that.closeAdd();
+//                that.$emit('loadData');
+                } else {
+                  if(res.data.message){
+                    that.$message({
+                      type: 'warning',
+                      message: res.data.message
+                    });
+                  }else{
+                    that.$message({
+                      type: 'warning',
+                      message: '创建失败'
+                    });
+                  }
+                }
+              }).catch(err => {
+                console.log(err)
+              })
+            }
           }
+
         } else {
           console.log('error submit!!');
           return false;
