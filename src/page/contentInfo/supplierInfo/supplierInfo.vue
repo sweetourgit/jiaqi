@@ -344,7 +344,7 @@
       //结算方式
       settlemen(){
         this.settlementType = [];
-        this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=IsMonthly')
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=IsMonthly')
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.settlementType.push({
@@ -362,7 +362,7 @@
       //供应商类别
       themeList(){
         this.borrowingType = [];
-        this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=SupplierType')
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=SupplierType')
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.borrowingType.push({
@@ -380,7 +380,7 @@
       //可见区域
       visible(){
         this.visibleType = [];
-        this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=CompanyArea')
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=CompanyArea')
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.visibleType.push({
@@ -458,7 +458,7 @@
       //线路
       trails(){
         this.pathType = [];
-        this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=ProductArea')
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=ProductArea')
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.pathType.push({

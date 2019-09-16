@@ -146,7 +146,7 @@
       return {       
         isTypes: false, // 是否是轮播图
         checkList: [],
-        picSrc:'http://192.168.1.186:3009/upload',
+        picSrc:'http://192.168.2.65:3009/upload',
         //左侧菜单
         list:[],
         lists: [], //子级

@@ -338,7 +338,7 @@ import moment from 'moment'
         var that = this
         var arr = []
         //workflowCode获取FlowModel传递
-        this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=FlowModel')
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')
         .then(obj => {
           console.log(obj)
           this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{

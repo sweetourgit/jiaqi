@@ -1016,7 +1016,7 @@ import moment from 'moment'
       //借款类型
       themeList(){
       	this.borrowingType = [];
-	      this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=PaymentType')
+	      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=PaymentType')
 	      .then(res => {
 	        for (let i = 0; i < res.data.objects.length; i++) {
 	          this.borrowingType.push({
