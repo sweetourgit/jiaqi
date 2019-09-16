@@ -113,6 +113,7 @@
                 </el-table-column>
                 <el-table-column prop="approval_status" label="审批状态" align="center">
                   <template slot-scope="scope">
+                    <span v-if="scope.row.approval_status == 1">{{status[scope.row.approval_status]}}</span>
                     <span v-if="scope.row.approval_status == 2" style="color: red;">{{status[scope.row.approval_status]}}</span>
                     <span v-if="scope.row.approval_status == 3" style="color: green;">{{status[scope.row.approval_status]}}</span>
                   </template>
@@ -153,6 +154,7 @@
                 </el-table-column>
                 <el-table-column prop="approval_status" label="审批状态" align="center">
                   <template slot-scope="scope">
+                    <span v-if="scope.row.approval_status == 1">{{status[scope.row.approval_status]}}</span>
                     <span v-if="scope.row.approval_status == 2" style="color: red;">{{status[scope.row.approval_status]}}</span>
                     <span v-if="scope.row.approval_status == 3" style="color: green;">{{status[scope.row.approval_status]}}</span>
                   </template>

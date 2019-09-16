@@ -23,7 +23,8 @@
               <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
               <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
               <el-radio label="去哪儿">去哪儿</el-radio>
-              <el-radio label="票付通余额">票付通余额</el-radio>
+              <!--待添加，新需求-->
+              <!--<el-radio label="票付通余额">票付通余额</el-radio>-->
               <el-radio label="无">无</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -586,11 +587,11 @@
           this.tableDataQK = file.response.data.list;
           this.totalItem = file.response.data.list.length;
           this.totalMoney = file.response.data.money;
-          this.ruleForm.payMoney = file.response.data.money;
+//          this.ruleForm.payMoney = file.response.data.money;
           this.startTime = formatDate(new Date(file.response.data.start*1000));
           this.endTime = formatDate(new Date(file.response.data.end*1000));
-          this.ruleForm.startTime = formatDate(new Date(file.response.data.start*1000));
-          this.ruleForm.endTime = formatDate(new Date(file.response.data.end*1000));
+//          this.ruleForm.startTime = formatDate(new Date(file.response.data.start*1000));
+//          this.ruleForm.endTime = formatDate(new Date(file.response.data.end*1000));
           this.tableDataQK.forEach(function (item, index, arr) {
             item[1] = formatDate(new Date(item[1]*1000));
           })
@@ -635,6 +636,28 @@
           console.log(scope.row[2]+'======'+scope.$index);
           that.tableDataQK.splice(scope.$index,1);
           that.deleteStr += scope.row[2] + ',';
+          let num = parseInt(that.totalItem);
+          num--;
+          that.totalItem = num;
+//          console.log(num);
+          let totalMoney = that.totalMoney;
+          totalMoney = parseFloat(totalMoney) - parseFloat(scope.row[5]);
+          that.totalMoney = totalMoney.toFixed(2);
+//          console.log(parseFloat(totalMoney),parseFloat(scope.row[5]),parseFloat(totalMoney)-parseFloat(scope.row[5]));
+          let start = that.tableDataQK[0][1];
+          let end = that.tableDataQK[0][1];
+          that.tableDataQK.forEach(function (item, index, arr) {
+            if(new Date(Date.parse(start)) > new Date(Date.parse(item[1]))){
+              start = item[1];
+            }
+            if(new Date(Date.parse(end)) < new Date(Date.parse(item[1]))){
+              end = item[1];
+            }
+          });
+//          console.log(totalMoney.toFixed(2),start,end);
+          that.totalMoney = totalMoney.toFixed(2);
+          that.startTime = start;
+          that.endTime = end;
           console.log(that.deleteStr);
         }).catch(() => {
 
@@ -656,6 +679,28 @@
               that.$message.success("删除成功~");
               that.tableDataQK.splice(scope.$index,1);
               that.deleteStr += scope.row.id + ',';
+              let num = parseInt(that.totalItem);
+              num--;
+              that.totalItem = num;
+//          console.log(num);
+              let totalMoney = that.totalMoney;
+              totalMoney = parseFloat(totalMoney) - parseFloat(scope.row[rece_money]);
+              that.totalMoney = totalMoney.toFixed(2);
+//          console.log(parseFloat(totalMoney),parseFloat(scope.row[5]),parseFloat(totalMoney)-parseFloat(scope.row[5]));
+              let start = that.tableDataQK[0][1];
+              let end = that.tableDataQK[0][1];
+              that.tableDataQK.forEach(function (item, index, arr) {
+                if(new Date(Date.parse(start)) > new Date(Date.parse(item[1]))){
+                  start = item[1];
+                }
+                if(new Date(Date.parse(end)) < new Date(Date.parse(item[1]))){
+                  end = item[1];
+                }
+              });
+//          console.log(totalMoney.toFixed(2),start,end);
+              that.totalMoney = totalMoney.toFixed(2);
+              that.startTime = start;
+              that.endTime = end;
               console.log(that.deleteStr);
             } else {
               if(response.data.message){
