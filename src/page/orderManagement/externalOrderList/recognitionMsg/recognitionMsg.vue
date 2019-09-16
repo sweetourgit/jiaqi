@@ -207,7 +207,16 @@
         this.info = row.order_sn;
         this.dialogFormVisible2 = true;
       },
-
+      initData(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recmatch", {
+          "order_sn": this.$route.query.ids
+        }, ).then(function(response) {
+          that.loadData();
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/reclist", {
@@ -236,7 +245,8 @@
 //      console.log(this.$route.params);
 //      console.log(this.$route.query);
       if(this.$route.query.ids){
-        this.loadData();
+        this.initData();
+        
       }else{
         this.cancalBtn();
       }
