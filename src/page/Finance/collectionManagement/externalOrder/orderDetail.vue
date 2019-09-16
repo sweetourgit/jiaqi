@@ -289,7 +289,7 @@
               payMoney: response.data.data.rece_money,
               startTime: response.data.data.rece_start,
               endTime: response.data.data.rece_end,
-              toCollection: '无数据',
+              toCollection: response.data.data.money_wait,
             };
             that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
               "id": response.data.data.create_uid

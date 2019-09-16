@@ -45,7 +45,7 @@
             <template slot-scope="scope">
               <el-button @click="editOrder(scope.row)" type="text" size="small" class="table_details" style="color: #13ce66">编辑</el-button>
               <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-              <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" style="color: red">删除</el-button>
+              <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" style="color: red" v-if="scope.row.approved != 1">删除</el-button>
             </template>
           </el-table-column>
         </el-table>

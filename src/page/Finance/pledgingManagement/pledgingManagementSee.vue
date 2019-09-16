@@ -140,9 +140,15 @@ export default {
               type: 'success',
               message: '审核提交成功!'
             });
+            that.cancel();
           } else {
             if(response.data.message){
-              that.$message.warning(response.data.message);
+              if(response.data.message == '该认款无任何修改,请勿重复提交!'){
+                that.$message.warning(response.data.message);
+                that.cancel();
+              }else{
+                that.$message.warning(response.data.message);
+              }
             }else{
               that.$message.warning("审核提交失败~");
             }
