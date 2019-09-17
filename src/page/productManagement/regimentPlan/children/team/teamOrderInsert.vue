@@ -340,7 +340,9 @@ export default {
     variable:function(){      
         if(this.dialogType==1){
           console.log()
-          this.teampreview(this.planId);       
+          setTimeout(() =>{
+              this.teampreview(this.planId); 
+          },200);     
           this.dialogFormOrder=true;   
           this.enrolNums=false;
           this.ruleForm.remark = '';
@@ -383,7 +385,19 @@ export default {
             }
         }
      },
+     teampreview(ID){  //团期计划订单信息预览
+      console.log(ID)
+       this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/teampreview',{
+            "id": ID
+        }).then(res => {
+          if(res.data.isSuccess == true){
+             this.teampreviewData=res.data.object;
+             this.teamEnrolls(this.planId);        
+          }
+       })
+     },
      teamEnrolls(ID){  //获取报名类型列表数据
+      console.log(ID)
        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/enrolls',{
             "id": ID
         }).then(res => {
@@ -407,16 +421,7 @@ export default {
           }
        })
      },
-     teampreview(ID){  //团期计划订单信息预览
-       this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/teampreview',{
-            "id": ID
-        }).then(res => {
-          if(res.data.isSuccess == true){
-             this.teampreviewData=res.data.object;
-             this.teamEnrolls(this.planId);        
-          }
-       })
-     },
+     
      peoNum(index,enrollID,enrollName){   //填写报名人数
         let arrLength;//报名人数
         let preLength;//记录上一次报名人数

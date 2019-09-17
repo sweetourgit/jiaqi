@@ -190,6 +190,27 @@
       },
 //      关闭弹窗
       closeAdd(){
+        this.baseInfo = {
+          ID: '',
+          creatTime: '',
+          creditTime: '',
+          mark: '',
+          payAccount: '',
+          payAccountID: '',
+          distributor: '',
+          payMoney: '',
+          startTime: '',
+          endTime: '',
+          toCollection: '',
+          approved: '',
+          status_rece: ''
+        };
+        this.totalItem = '';
+        this.totalMoney = '';
+        this.startTime = '';
+        this.endTime = '';
+        this.fileList = [];
+        this.tableDataSK = [];
         this.$emit('close', false);
       },
 //      删除

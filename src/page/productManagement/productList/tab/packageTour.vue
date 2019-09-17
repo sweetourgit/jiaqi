@@ -869,7 +869,7 @@
       //成本类型
       themeList(){
         this.borrowingType = [];
-        this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=SupplierType')
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=SupplierType')
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.borrowingType.push({

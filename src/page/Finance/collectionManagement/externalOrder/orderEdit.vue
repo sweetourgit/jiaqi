@@ -38,13 +38,13 @@
               <el-button type="primary" @click="chooseDDFun" style="margin-left: 10px">选择</el-button>
             </el-form-item>
             <el-form-item label="收款金额：" prop="payMoney" label-width="140px">
-              <el-input v-model="ruleForm.payMoney" placeholder="请输入" class="baseIn"></el-input>
+              <el-input v-model="ruleForm.payMoney" placeholder="请输入" class="baseIn" disabled></el-input>
               <p style="margin: 0;color: #999;line-height: 22px;">收款金额可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
-              <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
+              <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled" disabled></el-date-picker>
               <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
-              <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
+              <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" disabled></el-date-picker>
               <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="附件：" label-width="140px" v-if="info == ''">
@@ -52,8 +52,39 @@
                 <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
             </el-form-item>
+
+            <p class="stepTitle">绑定订单</p>
+            <!--添加-->
+            <div class="stepDv" style="margin-bottom: 50px;">
+              <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
+              <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+                <el-table-column prop="1" label="入账时间" align="center">
+                </el-table-column>
+                <el-table-column prop="2" label="订单编号" align="center">
+                </el-table-column>
+                <el-table-column prop="3" label="客人名称" align="center">
+                </el-table-column>
+                <el-table-column prop="4" label="产品" align="center">
+                </el-table-column>
+                <el-table-column prop="5" label="结算金额" align="center">
+                </el-table-column>
+                <el-table-column prop="6" label="手续费" align="center">
+                </el-table-column>
+                <el-table-column prop="8" label="团号" align="center">
+                </el-table-column>
+                <el-table-column prop="9" label="粉联号" align="center">
+                </el-table-column>
+                <el-table-column prop="10" label="发票号" align="center">
+                </el-table-column>
+                <el-table-column prop="money" label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
           </div>
-          <!--其他-->
+          <!--分销商为：其他-->
           <div v-if="!PFTYE">
             <el-form-item label="收款金额：" prop="payMoney" label-width="140px">
               <el-input v-model="ruleForm.payMoney" placeholder="请输入" class="baseIn"></el-input>
@@ -70,67 +101,70 @@
                 <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
             </el-form-item>
+
+            <p class="stepTitle">收款明细</p>
+            <!--添加-->
+            <div class="stepDv" style="margin-bottom: 50px;" v-if="info == ''">
+              <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
+              <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+                <el-table-column prop="1" label="入账时间" align="center">
+                </el-table-column>
+                <el-table-column prop="2" label="订单编号" align="center">
+                </el-table-column>
+                <el-table-column prop="3" label="客人名称" align="center">
+                </el-table-column>
+                <el-table-column prop="4" label="产品" align="center">
+                </el-table-column>
+                <el-table-column prop="5" label="结算金额" align="center">
+                </el-table-column>
+                <el-table-column prop="6" label="手续费" align="center">
+                </el-table-column>
+                <el-table-column prop="8" label="团号" align="center">
+                </el-table-column>
+                <el-table-column prop="9" label="粉联号" align="center">
+                </el-table-column>
+                <el-table-column prop="10" label="发票号" align="center">
+                </el-table-column>
+                <el-table-column prop="money" label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <!--编辑-->
+            <div class="stepDv" style="margin-bottom: 50px;" v-if="info != ''">
+              <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
+              <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+                <el-table-column prop="rece_at" label="入账时间" align="center">
+                </el-table-column>
+                <el-table-column prop="order_sn" label="订单编号" align="center">
+                </el-table-column>
+                <el-table-column prop="guest_name" label="客人名称" align="center">
+                </el-table-column>
+                <el-table-column prop="product_name" label="产品" align="center">
+                </el-table-column>
+                <el-table-column prop="rece_money" label="结算金额" align="center">
+                </el-table-column>
+                <el-table-column prop="charge" label="手续费" align="center">
+                </el-table-column>
+                <el-table-column prop="tour_no" label="团号" align="center">
+                </el-table-column>
+                <el-table-column prop="divide_connect_no" label="粉联号" align="center">
+                </el-table-column>
+                <el-table-column prop="invoice_no" label="发票号" align="center">
+                </el-table-column>
+                <el-table-column prop="money" label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button size="small" type="text" style="color: red;" @click="deleteBtnEdit(scope)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
           </div>
         </div>
-        <p class="stepTitle">收款明细</p>
-        <!--添加-->
-        <div class="stepDv" style="margin-bottom: 50px;" v-if="info == ''">
-          <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-          <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
-            <el-table-column prop="1" label="入账时间" align="center">
-            </el-table-column>
-            <el-table-column prop="2" label="订单编号" align="center">
-            </el-table-column>
-            <el-table-column prop="3" label="客人名称" align="center">
-            </el-table-column>
-            <el-table-column prop="4" label="产品" align="center">
-            </el-table-column>
-            <el-table-column prop="5" label="结算金额" align="center">
-            </el-table-column>
-            <el-table-column prop="6" label="手续费" align="center">
-            </el-table-column>
-            <el-table-column prop="8" label="团号" align="center">
-            </el-table-column>
-            <el-table-column prop="9" label="粉联号" align="center">
-            </el-table-column>
-            <el-table-column prop="10" label="发票号" align="center">
-            </el-table-column>
-            <el-table-column prop="money" label="操作" align="center">
-              <template slot-scope="scope">
-                <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <!--编辑-->
-        <div class="stepDv" style="margin-bottom: 50px;" v-if="info != ''">
-          <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-          <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
-            <el-table-column prop="rece_at" label="入账时间" align="center">
-            </el-table-column>
-            <el-table-column prop="order_sn" label="订单编号" align="center">
-            </el-table-column>
-            <el-table-column prop="guest_name" label="客人名称" align="center">
-            </el-table-column>
-            <el-table-column prop="product_name" label="产品" align="center">
-            </el-table-column>
-            <el-table-column prop="rece_money" label="结算金额" align="center">
-            </el-table-column>
-            <el-table-column prop="charge" label="手续费" align="center">
-            </el-table-column>
-            <el-table-column prop="tour_no" label="团号" align="center">
-            </el-table-column>
-            <el-table-column prop="divide_connect_no" label="粉联号" align="center">
-            </el-table-column>
-            <el-table-column prop="invoice_no" label="发票号" align="center">
-            </el-table-column>
-            <el-table-column prop="money" label="操作" align="center">
-              <template slot-scope="scope">
-                <el-button size="small" type="text" style="color: red;" @click="deleteBtnEdit(scope)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+
+
         <!--选择收款账户-->
         <el-dialog title="选择账户" :visible="dialogFormVisible1" width=60% @close="close" append-to-body>
           <div class="table_trip" style="width: 100%;">
@@ -161,28 +195,39 @@
 
         <el-dialog title="关联订单" :visible="dialogFormVisible2" width=60% @close="close" append-to-body>
           <div class="table_trip" style="width: 100%;">
-            <el-table ref="singleTable" :data="tableDataGLDD" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass">
-              <el-table-column prop="cardType" label="类型" align="center" >
+            <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
+            <el-table ref="multipleTable" :data="tableDataGLDD" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass">
+              <el-table-column prop="id" label="" fixed type="selection"></el-table-column>
+              <el-table-column prop="order_sn" label="订单ID" align="center" >
               </el-table-column>
-              <el-table-column prop="title" label="账号名称" align="center">
+              <el-table-column prop="title" label="分销商" align="center">
               </el-table-column>
-              <el-table-column prop="cardNum" label="卡号" align="center" width="70%">
+              <el-table-column prop="cardNum" label="产品名称" align="center">
               </el-table-column>
-              <el-table-column prop="openingBank" label="开户行" align="center">
+              <el-table-column prop="openingBank" label="下单时间" align="center">
               </el-table-column>
-              <el-table-column prop="openingName" label="开户人" align="center">
+              <el-table-column prop="openingName" label="费用" align="center">
               </el-table-column>
-              <el-table-column prop="option" label="操作" align="center" width="100">
-                <template slot-scope="scope">
-                  <el-button @click="chooseBtn(scope.row)" type="danger" size="small" class="table_details">选择</el-button>
-                </template>
+              <el-table-column prop="openingName" label="数量" align="center">
+              </el-table-column>
+              <el-table-column prop="openingName" label="客人信息" align="center">
+              </el-table-column>
+              <el-table-column prop="openingName" label="验证时间" align="center">
+              </el-table-column>
+              <el-table-column prop="openingName" label="卖出支付方式" align="center">
+              </el-table-column>
+              <el-table-column prop="openingName" label="导入时间" align="center">
+              </el-table-column>
+              <el-table-column prop="openingName" label="关联产品" align="center">
+              </el-table-column>
+              <el-table-column prop="openingName" label="操作人" align="center">
               </el-table-column>
             </el-table>
           </div>
 
           <div class="footer" style="text-align: right;">
             <el-button class="el-button" type="warning" @click="close">取 消</el-button>
-            <!--<el-button class="el-button" type="primary" @click="">确 认</el-button>-->
+            <el-button class="el-button" type="primary" @click="saveBtn">保 存</el-button>
           </div>
         </el-dialog>
 
@@ -308,7 +353,6 @@
         this.$emit('close', false);
       },
       radioChange(val){
-//        console.log(val);
         if(val == '票付通余额'){
           this.PFTYE = true;
         }else{
@@ -317,7 +361,15 @@
       },
 //      票付通余额，关联订单
       chooseDDFun(){
-
+        let orderStr = '';
+        if(this.tableDataGLDD.length > 0){
+          this.tableDataGLDD.forEach(function (item, index, arr) {
+            orderStr += item.order_sn + ','
+          });
+          orderStr = orderStr.substr(0, orderStr.length - 1);
+        }
+        this.getListRece(orderStr);
+        this.dialogFormVisible2 = true;
       },
 //      添加
       cancelBtnTJ(){
@@ -640,6 +692,7 @@
       },
       close(){
         this.dialogFormVisible1 = false;
+        this.dialogFormVisible2 = false;
       },
       chooseBtn(row){
         this.ruleForm.payAccount = row.title;
@@ -862,6 +915,22 @@
               that.startTime = '';
               that.endTime = '';
             }
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+      getListRece(orderStr){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/receive", {
+          "order_sn": orderStr,
+          "type": 1
+        }, ).then(function(response) {
+          console.log('关联订单',response);
+          if (response.data.code == '200') {
+
           } else {
             that.$message.success("加载数据失败~");
           }
