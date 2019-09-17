@@ -36,7 +36,7 @@
           <el-row>
             <el-col>
               <el-form-item label="凭证:" prop="voucher" label-width="120px">
-                <el-upload class="upload-demo" :action="UploadUrl()" :on-success="handleSuccess" :on-error="handleError" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :limit="2" :file-list="fileList" accept="bmp,jpg,jpeg,png">
+                <el-upload class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :limit="2" :file-list="fileList" accept="bmp,jpg,jpeg,png">
                   <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
               </el-form-item>
@@ -113,6 +113,11 @@ export default {
   },
   computed: {
     // 计算属性的 getter
+    headers(){
+      return {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    }
   },
   watch: {
     info: {
@@ -148,7 +153,7 @@ export default {
         if(parseFloat(item.money) > parseFloat(item.proce_amount)){
           that.$message({
             type: 'warning',
-            message: item.id + '订单，申请金额大于未处理金额'
+            message: item.order_sn + '订单，申请金额大于未处理金额'
           });
           canSave = false;
         }
@@ -173,13 +178,15 @@ export default {
         });
 //        console.log(this.fileList);
         const files = [];
-        this.fileList.forEach(function (item, index, arr) {
-          let itemFile = {
-            "url": item.response.data.url,
-            "name": item.response.data.name
-          };
-          files.push(itemFile)
-        });
+        if(this.fileList.length != 0){
+          this.fileList.forEach(function (item, index, arr) {
+            let itemFile = {
+              "url": item.response.data.url,
+              "name": item.response.data.name
+            };
+            files.push(itemFile)
+          });
+        }
         this.$refs[ruleForm].validate((valid) => {
           if (valid) {
             if(num == this.tableData.length){
@@ -207,6 +214,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/addinvoice", {
         "tour_no": this.$parent.param,
         "create_uid": sessionStorage.getItem("id"),
+        "org_id": sessionStorage.getItem('orgID'),
         "title": this.ruleForm.title,
         "pay_taxes_no": this.ruleForm.number,
         "phone": this.ruleForm.phone,
@@ -229,10 +237,15 @@ export default {
             voucher: '',
           };
           that.totalMoney = 0;
-          that.fileList = '';
+          that.fileList = [];
           that.$emit('close', false);
         } else {
-          that.$message.success("保存失败~");
+          if(response.data.message){
+            that.$message.success(response.data.message);
+          }else {
+            that.$message.success("保存失败~");
+          }
+
         }
       }).catch(function(error) {
         console.log(error);

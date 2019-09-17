@@ -127,22 +127,22 @@ export default {
     },
     //保存
     addsave(formName) {
-      var object = []
+      let object = [];
       this.dynamicTags.forEach(function(v, k, arr) {
         object.push({
           "destination_id": arr[k]['destinationID'],
           "destination_name": arr[k]['destination']
         });
-      })
+      });
       this.$refs[formName].validate((valid) => {
 
         if (this.dynamicTags.length <= 0) {
-          this.errorNull = true
+          this.errorNull = true;
           return false;
         }
 
         if (valid) {
-          var _this = this;
+          var that = this;
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/product/product/add", {
             "product_name": this.ruleForm.productNamel, //基本信息产品名称,
             "create_uid": sessionStorage.getItem('id'),
@@ -150,10 +150,10 @@ export default {
             "org_id": sessionStorage.getItem('orgID')
           }, ).then(function(response) {
             if (response.data.code == '200') {
-              _this.$message.success("添加成功");
-              _this.$router.push({ path: "productList/scenicOrTicketList" });
+              that.$message.success("添加成功");
+              that.$router.push({ path: "productList/scenicOrTicketList" });
             } else {
-              _this.$message.success("添加失败");
+              that.$message.warning(response.data.message);
             }
           }).catch(function(error) {
             console.log(error);

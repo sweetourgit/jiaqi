@@ -9,7 +9,7 @@
             <span class="search_style">产品名称：</span> <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
             <span class="search_style">操作人员：</span>
             <!--<el-input v-model="operator" placeholder="请输入内容" class="search_input"></el-input>-->
-            <el-autocomplete class="search_input" v-model="operator" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
+            <el-autocomplete class="search_input" v-model="operator" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
             <!--<span class="search_style">价格：</span>-->
             <!--<el-input v-model="priceLow" class="search_input"></el-input>-->
             <!--<div class="date-line"></div>-->
@@ -170,6 +170,24 @@
           return (restaurant.value);
         }
       },
+      blurHand(){
+        const that = this;
+        let ida = '';
+        if(that.operator == ''){
+          that.operatorID = '';
+        }else{
+          this.operatorList.forEach(function (item, index, arr) {
+            if(that.operator == item.value){
+              ida = item.id;
+            }
+          });
+          if(ida){
+            that.operatorID = ida;
+          }else{
+            that.operatorID = '';
+          }
+        }
+      },
       searchFun(){
         if(this.destination == ''){
           this.destinationID = '';
@@ -203,7 +221,11 @@
         this.$router.push({
           path: "/listInfoEdit",
           name: '编辑景区/票务',
-          params: res
+          query: {
+            id: res.id,
+            product_name: res.product_name,
+            destinations: JSON.stringify(res.destinations)
+          }
         });
       },
       deleteRow(res){
@@ -225,7 +247,11 @@
                 message: '已删除'
               });
             } else {
-              that.$message.success("删除失败~");
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning("删除失败~");
+              }
             }
           }).catch(function(error) {
             console.log(error);
@@ -248,7 +274,7 @@
           "product_name": this.productName,
           "destination_id": this.destinationID,
           "create_uid": this.operatorID,
-          "org_id": sessionStorage.getItem('orgID')
+          "org_id": ''
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log(response);

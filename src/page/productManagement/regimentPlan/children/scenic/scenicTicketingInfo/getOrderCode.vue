@@ -178,7 +178,7 @@ export default {
         "order_list": orderList,
         "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
-        console.log(response.data);
+        console.log(response);
         if (response.data.code == '200') {
           console.log(response.data);
           if(response.data.data.list){
@@ -188,13 +188,18 @@ export default {
             });
           }else{
             that.$message({
-              type: 'success',
+              type: 'warning',
               message: response.data.data
             });
           }
           that.$emit('close', false);
         } else {
-          that.$message.success("保存失败~");
+          if(response.data.message){
+            that.$message.success(response.data.message);
+          }else{
+            that.$message.success("保存失败~");
+          }
+
         }
       }).catch(function(error) {
         console.log(error);

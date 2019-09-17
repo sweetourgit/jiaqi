@@ -7,7 +7,7 @@
       </div>
       <div>
         <!--产品名称-->
-        <el-form-item label="产品名称" prop="productNamel" label-width="120px">
+        <el-form-item label="产品名称" prop="productName" label-width="120px">
           <el-input v-model="ruleForm.productName" class="productName" placeholder="请输入正确产品名称" maxlength="30" show-word-limit></el-input>
         </el-form-item>
         <!-- 目的地 -->
@@ -56,10 +56,13 @@
     },
     mounted() {
 //      console.log(this.$route.params);
-      this.ruleForm.id = this.$route.params.id;
-      this.ruleForm.productName = this.$route.params.product_name;
-//      this.ruleForm.destinations = this.$route.params.destinations;
-      this.dynamicTags = this.$route.params.destinations;
+      if(this.$route.query.id){
+        this.ruleForm.id = this.$route.query.id;
+        this.ruleForm.productName = this.$route.query.product_name;
+        this.dynamicTags = JSON.parse(this.$route.query.destinations);
+      }else{
+        this.cancel();
+      }
     },
     created() {
 
@@ -133,7 +136,7 @@
       },
       //保存
       addsave(formName) {
-        var object = [];
+        let object = [];
         this.dynamicTags.forEach(function(v, k, arr) {
           object.push({
             "destination_id": arr[k]['destination_id'],

@@ -32,9 +32,9 @@
         <el-table-column prop="option" label="操作" align="center" width="300">
           <template slot-scope="scope">
             <el-button @click="details(scope.row)" size="small" class="table_details">详情</el-button>
-            <el-button @click="revoke(scope.row)" type="danger" size="small" class="table_details" v-if="scope.row.approval_status != 1">撤销</el-button>
-            <el-button @click="adopt(scope.row)" type="success" size="small" class="table_details" v-if="scope.row.approval_status == 1">通过</el-button>
-            <el-button @click="reject(scope.row)" type="warning" size="small" class="table_details" v-if="scope.row.approval_status == 1">驳回</el-button>
+            <el-button @click="revoke(scope.row)" type="danger" size="small" class="table_details" v-if="scope.row.approval_status != 1 && noReimbursement">撤销</el-button>
+            <el-button @click="adopt(scope.row)" type="success" size="small" class="table_details" v-if="scope.row.approval_status == 1 && noReimbursement">通过</el-button>
+            <el-button @click="reject(scope.row)" type="warning" size="small" class="table_details" v-if="scope.row.approval_status == 1 && noReimbursement">驳回</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -101,6 +101,7 @@ export default {
         2: '驳回',
         3: '通过',
       },
+      noReimbursement: true
     }
   },
   watch: {
@@ -134,7 +135,11 @@ export default {
             that.dialogVisible = false;
             that.loadData();
           } else {
-            that.$message.success("撤销失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("撤销失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -166,7 +171,11 @@ export default {
           that.loadData();
           that.content = '';
         } else {
-          that.$message.success("驳回失败~");
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("驳回失败~");
+          }
         }
       }).catch(function(error) {
         console.log(error);
@@ -193,7 +202,11 @@ export default {
           that.loadData();
           that.explain = '';
         } else {
-          that.$message.success("审核失败~");
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("审核失败~");
+          }
         }
       }).catch(function(error) {
         console.log(error);
@@ -234,6 +247,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/receiptlist", {
         "tour_no": this.$parent.$parent.$parent.paramTour,
         "apply_type": 2,
+        "is_temp": 1,
         "limit": 0
       }, ).then(function(response) {
         if (response.data.code == '200') {
@@ -247,7 +261,7 @@ export default {
             }
           })
         } else {
-          that.$message.success("加载数据失败11~");
+          that.$message.success("加载数据失败~");
         }
       }).catch(function(error) {
         console.log(error);
@@ -257,6 +271,10 @@ export default {
   created() {
 //    this.$emit('getNumber', 12)
     this.loadData();
+//    alert(this.$route.query.bill_status);
+    if(this.$route.query.bill_status == 5 || this.$route.query.bill_status == 6 || this.$route.query.bill_status == 7){
+      this.noReimbursement = false;
+    }
   }
 }
 

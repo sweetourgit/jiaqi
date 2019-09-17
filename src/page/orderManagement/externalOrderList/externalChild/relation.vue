@@ -9,7 +9,7 @@
             <el-input v-model="ruleForm.title" :disabled="true" class="inputWidth" style="margin-top: 5px" placeholder="自动显示产品名称"></el-input>
           </el-form-item>
           <div class="footer">
-            <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+            <el-button class="el-button" type="primary" @click="submitForm('ruleForm')" :disabled="ruleForm.title == '' || ruleForm.title == undefined">确 定</el-button>
             <el-button class="el-button" type="danger" @click="closeAdd">取 消</el-button>
           </div>
         </div>
@@ -48,6 +48,7 @@ export default {
       this.$emit('close', false);
     },
     tour_check() {
+      console.log('执行！');
       const that = this;
       if (this.ruleForm.tour != '') {
         this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/groupplan/group-plan/getproname', {
@@ -101,10 +102,19 @@ export default {
           });
           that.closeAdd();
         }else{
-          this.$message({
-            type: 'warning',
-            message: res.data.message
-          });
+          if(res.data.message){
+            this.$message({
+              type: 'warning',
+              message: res.data.message
+            });
+          }else{
+            this.$message({
+              type: 'warning',
+              message: '提交失败'
+            });
+          }
+
+
         }
       }).catch(err => {
         console.log(err)

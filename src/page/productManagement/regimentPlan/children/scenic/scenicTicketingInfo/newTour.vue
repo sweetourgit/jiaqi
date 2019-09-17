@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
-    <el-dialog title="新建报账团号" :visible="dialogFormVisible" width="600px" @close="closeAdd">
+    <el-dialog :title="topTitle" :visible="dialogFormVisible" width="600px" @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div style="height: 300px;">
           <el-form-item label="报账团期" prop="tour" label-width="120px" style="float:left;">
@@ -9,13 +9,13 @@
           </el-form-item>
           <br /><br />
           <el-form-item label="产品名称" prop="title" label-width="120px" style="float:left;">
-            <el-autocomplete class="inputWidth" v-model="ruleForm.title" :fetch-suggestions="querySearch" placeholder="请输入产品名称" @select="handleSelect"></el-autocomplete>
+            <el-autocomplete class="inputWidth" v-model="ruleForm.title" :fetch-suggestions="querySearch" placeholder="请输入产品名称" @select="handleSelect" @blur="handleBlur"></el-autocomplete>
           </el-form-item>
-          <el-form-item label="开始时间" prop="startTime" label-width="120px" style="float:left;">
-            <el-date-picker v-model="ruleForm.startTime" type="date" class="inputWidth" placeholder="开始时间" :picker-options="startDatePicker"></el-date-picker>
+          <el-form-item label="出发时间" prop="startTime" label-width="120px" style="float:left;">
+            <el-date-picker v-model="ruleForm.startTime" type="date" class="inputWidth" placeholder="出发时间" :picker-options="startDatePicker"></el-date-picker>
           </el-form-item>
-          <el-form-item label="结束时间" prop="endTime" label-width="120px" style="float:left;">
-            <el-date-picker v-model="ruleForm.endTime" type="date" class="inputWidth" placeholder="结束时间" :picker-options="endDatePicker"></el-date-picker>
+          <el-form-item label="返回时间" prop="endTime" label-width="120px" style="float:left;">
+            <el-date-picker v-model="ruleForm.endTime" type="date" class="inputWidth" placeholder="返回时间" :picker-options="endDatePicker"></el-date-picker>
           </el-form-item>
           <div class="footer">
             <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
@@ -36,6 +36,7 @@ export default {
   },
   data() {
     return {
+      topTitle: '新增报账团号',
       ruleForm: {
         tour: '',
         title: '',
@@ -44,7 +45,7 @@ export default {
       },
       rules: {
         tour: [{ required: true, message: '报账团期不能为空!', trigger: 'blur' }],
-        title: [{ required: true, message: '产品名称不能为空!', trigger: 'blur' }],
+        title: [{ required: true, message: '产品名称不能为空!', trigger: 'change' }],
         startTime: [{ required: true, message: '开始时间不能为空!', trigger: 'change' }],
         endTime: [{ required: true, message: '结束时间不能为空!', trigger: 'change' }],
       },
@@ -61,7 +62,9 @@ export default {
   watch: {
     info: {
       handler:function(){
-        this.loadData()
+        if(this.info != ''){
+          this.loadData();
+        }
       }
     }
   },
@@ -104,72 +107,117 @@ export default {
     handleSelect(item) {
 //      console.log(item);
       this.productChose = item;
+      this.ruleForm.title = item.value;
+    },
+    handleBlur(){
+      const that = this;
+      let ida = '';
+      if(that.ruleForm.title == ''){
+        that.productChose = '';
+      }else{
+        this.productList.forEach(function (item, index, arr) {
+          if(that.ruleForm.title == item.value){
+            ida = item;
+          }
+        });
+        if(ida){
+          that.productChose = ida;
+        }else{
+          that.productChose = '';
+        }
+      }
     },
     submitForm(formName) {
       var that = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if(this.info.id){
-            this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/groupplan/group-plan/upd', {
-              "id": this.info.id,
-              "tour_no": this.ruleForm.tour,
-              "product_id": this.productChose.id,
-              "product_name": this.ruleForm.title,
-              "begin_at": this.ruleForm.startTime,
-              "end_at": this.ruleForm.endTime
-            }, {
-              emulateJSON: true
-            }).then(res => {
-//              console.log(res.data);
-              if (res.data.code == 200) {
-                that.$message({
-                  type: 'success',
-                  message: '更新成功!'
-                });
-                that.closeAdd();
-                this.info = '';
-              } else {
-                console.log(res.data.message);
-                that.$message({
-                  type: 'warning',
-                  message: res.data.message
-                });
-              }
-            }).catch(err => {
-              console.log(err)
-            })
+          if(this.productChose == '' && that.ruleForm.title == ''){
+            that.$message({
+              type: 'warning',
+              message: '产品ID不能为空'
+            });
+          }else if(this.productChose == '' && that.ruleForm.title != ''){
+            that.$message({
+              type: 'warning',
+              message: '产品名称不存在'
+            });
           }else{
-            this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/groupplan/group-plan/add', {
-              "tour_no": this.ruleForm.tour,
-              "product_id": this.productChose.id,
-              "product_name": this.ruleForm.title,
-              "begin_at": this.ruleForm.startTime,
-              "end_at": this.ruleForm.endTime,
-              "create_uid": sessionStorage.getItem('id'),
-              "org_id": sessionStorage.getItem('orgID')
-            }, {
-              emulateJSON: true
-            }).then(res => {
-              console.log(res.data);
-              if (res.data.code == 200) {
-                that.$message({
-                  type: 'success',
-                  message: '创建成功!'
-                });
-                that.closeAdd();
+            if(this.info.id){
+              this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/groupplan/group-plan/upd', {
+                "id": this.info.id,
+                "tour_no": this.ruleForm.tour,
+                "product_id": this.productChose.id,
+                "product_name": this.ruleForm.title,
+                "begin_at": this.ruleForm.startTime,
+                "end_at": this.ruleForm.endTime
+              }, {
+                emulateJSON: true
+              }).then(res => {
+//              console.log(res.data);
+                if (res.data.code == 200) {
+                  that.$message({
+                    type: 'success',
+                    message: '更新成功!'
+                  });
+                  that.closeAdd();
+                  this.info = '';
+                } else {
+                  console.log(res.data.message);
+                  if(res.data.message){
+                    that.$message({
+                      type: 'warning',
+                      message: res.data.message
+                    });
+                  }else{
+                    that.$message({
+                      type: 'warning',
+                      message: '更新失败'
+                    });
+                  }
+
+                }
+              }).catch(err => {
+                console.log(err)
+              })
+            }else{
+              this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/groupplan/group-plan/add', {
+                "tour_no": this.ruleForm.tour,
+                "product_id": this.productChose.id,
+                "product_name": this.ruleForm.title,
+                "begin_at": this.ruleForm.startTime,
+                "end_at": this.ruleForm.endTime,
+                "create_uid": sessionStorage.getItem('id'),
+                "org_id": sessionStorage.getItem('orgID')
+              }, {
+                emulateJSON: true
+              }).then(res => {
+                console.log(res.data);
+                if (res.data.code == 200) {
+                  that.$message({
+                    type: 'success',
+                    message: '创建成功!'
+                  });
+                  that.closeAdd();
 //                that.$emit('loadData');
-              } else {
-                console.log('有错误!');
-                console.log(res.data.message);
-                that.$message({
-                  type: 'warning',
-                  message: res.data.message
-                });
-              }
-            }).catch(err => {
-              console.log(err)
-            })
+                } else {
+                  if(res.data.message){
+                    that.$message({
+                      type: 'warning',
+                      message: res.data.message
+                    });
+                  }else{
+                    that.$message({
+                      type: 'warning',
+                      message: '创建失败'
+                    });
+                  }
+                }
+              }).catch(err => {
+                console.log(err)
+              })
+            }
           }
+
         } else {
           console.log('error submit!!');
           return false;

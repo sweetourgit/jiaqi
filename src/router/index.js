@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import userList from '@/page/account/userList/userList'
+import userList1 from '@/page/account/userList/userList1'//临时文件
 import organList from '@/page/account/organList/organList'
 import role from '@/page/account/role/role'
 import perList from '@/page/account/perList/perList'
@@ -73,6 +74,13 @@ export default new Router({
       path: '/userList',
       component: userList,
       name: '用户列表',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
+      path: '/userList1',
+      component: userList1,
       meta: {
         keepAlive: true,
         auth: true

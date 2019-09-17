@@ -43,7 +43,7 @@
           <el-row>
             <el-col>
               <el-form-item label="凭证:" prop="voucher" label-width="120px">
-                <el-upload class="upload-demo" :disabled="approvalStatus" :action="UploadUrl()" :on-success="handleSuccess" :on-error="handleError" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :file-list="fileList">
+                <el-upload class="upload-demo" :disabled="approvalStatus" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :file-list="fileList">
                   <el-button size="small" type="primary" :disabled="approvalStatus">点击上传</el-button>
                 </el-upload>
               </el-form-item>
@@ -121,6 +121,11 @@ export default {
   },
   computed: {
     // 计算属性的 getter
+    headers(){
+      return {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    }
   },
   watch: {
     info: {
@@ -164,13 +169,6 @@ export default {
         if(item.approval_money){
           num++;
         }
-//        if(parseFloat(item.approval_money) > parseFloat(item.proce_amount)){
-//          that.$message({
-//            type: 'warning',
-//            message: item.id + '订单，申请金额大于未处理金额'
-//          });
-//          canSave = false;
-//        }
       });
       if(num == 0){
         that.$message({
@@ -244,11 +242,11 @@ export default {
         "order_list": orderList,
         "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
-        alert(JSON.stringify(response));
+//        alert(JSON.stringify(response));
         if (response.data.code == '200') {
           that.$message({
             type: 'success',
-            message: response.data.data
+            message: '修改成功！'
           });
           that.ruleForm = {
             title: '',
@@ -262,7 +260,11 @@ export default {
           that.fileList = '';
           that.$emit('close', false);
         } else {
-          that.$message.success("保存失败~");
+          if(response.data.message){
+            that.$message.success(response.data.message);
+          }else{
+            that.$message.success("保存失败~");
+          }
         }
       }).catch(function(error) {
         console.log(error);

@@ -7,7 +7,7 @@
           <span class="search_style">团期计划：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
           <span class="search_style">报账人：</span>
           <!--<el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>-->
-          <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
+          <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
           <span class="search_style">发起时间：</span>
           <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
           <div class="date-line"></div>
@@ -27,7 +27,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="product_name" label="产品名称" align="center"></el-table-column>
-            <el-table-column prop="create_uid" label="申请人" width="120" align="center"></el-table-column>
+            <el-table-column prop="id" label="申请人" width="120" align="center"></el-table-column>
             <el-table-column prop="created_at" label="申请时间" width="180" align="center"></el-table-column>
             <el-table-column prop="mark" label="审批意见" width="250" align="center"></el-table-column>
             <el-table-column prop="opinion" label="操作" align="center" width="100">
@@ -113,6 +113,24 @@
         console.log(item);
         this.reimbursementPerID = item.id;
       },
+      blurHand(){
+        const that = this;
+        let ida = '';
+        if(that.reimbursementPer == ''){
+          that.reimbursementPerID = '';
+        }else{
+          this.operatorList.forEach(function (item, index, arr) {
+            if(that.reimbursementPer == item.value){
+              ida = item.id;
+            }
+          });
+          if(ida){
+            that.reimbursementPerID = ida;
+          }else{
+            that.reimbursementPerID = '';
+          }
+        }
+      },
       searchFun(){
         this.loadData();
       },
@@ -177,9 +195,9 @@
               }).then(function(response) {
 
                 if (response.data.isSuccess) {
-                  item.create_uid = response.data.object.name
+                  item.id = response.data.object.name
                 } else {
-                  that.$message.success("加载数据失败~");
+                  that.$message.warning("获取申请人失败");
                 }
               }).catch(function(error) {
                 console.log(error);

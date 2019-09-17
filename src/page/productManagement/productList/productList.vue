@@ -24,8 +24,21 @@
         }
       }
     },
+    watch: {
+      $route: {
+        handler: function(val, oldVal){
+          if (val.path == "/productList/scenicOrTicketList"){
+            this.activeName = "2"
+          }else if(val.path == "/productList/packageTour"){
+            this.activeName = "1"
+          }
+        },
+        // 深度观察监听
+        deep: true
+      }
+    },
     created() {
-      if (this.$route.path == "/productList/scenicOrTicketList") {
+      if (this.$route.path == "/productList/scenicOrTicketList"){
         this.activeName = "2"
       }else if(this.$route.path == "/productList/packageTour"){
         this.activeName = "1"

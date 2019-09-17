@@ -9,52 +9,11 @@
       <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数" :picker-options="startDatePicker"></el-date-picker>
       <div class="date-line"></div>
       <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数" :picker-options="endDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">报账状态:</span>
-      <el-select v-model="activeForm.status" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="0" label="未报账" value="1"></el-option>
-        <el-option key="1" label="报账中" value="2"></el-option>
-        <el-option key="2" label="已报账" value="3"></el-option>
-      </el-select>
-      <span class="search-title">是否关联产品:</span>
-      <el-select v-model="activeForm.proRelation" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="是" value="2"></el-option>
-        <el-option key="2" label="否" value="1"></el-option>
-      </el-select>
       <span class="search-title">导入时间:</span>
       <el-date-picker v-model="activeForm.importStartTime" type="date" placeholder="开始天数" :picker-options="importStartDatePicker"></el-date-picker>
       <div class="date-line"></div>
-      <el-date-picker v-model="activeForm.importEndTime" type="date" placeholder="结束天数" :picker-options="importEndDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">关联团期:</span>
-      <el-input v-model="activeForm.tour" class="input"></el-input>
-      <span class="search-title">类别:</span>
-      <el-select v-model="activeForm.type" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="0" label="门票" value="门票"></el-option>
-        <el-option key="1" label="酒店" value="酒店"></el-option>
-      </el-select>
-      <span class="search-title">验证时间:</span>
-      <el-date-picker v-model="activeForm.validationStartTime" type="date" placeholder="开始天数" :picker-options="validationStartDatePicker"></el-date-picker>
-      <div class="date-line"></div>
-      <el-date-picker v-model="activeForm.validationEndTime" type="date" placeholder="结束天数" :picker-options="validationEndDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">取票人:</span>
-      <el-input v-model="activeForm.ticketPerson" class="input"></el-input>
-      <span class="search-title">取票人手机:</span>
-      <el-input v-model="activeForm.ticketPhone" class="input"></el-input>
-      <span class="search-title">分销商:</span>
-      <el-input v-model="activeForm.distributors" class="input" style="width: 485px;"></el-input><br /><br />
-      <span class="search-title">卖出支付方式:</span>
-      <el-select v-model="activeForm.typePay" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="产品自销" value="1"></el-option>
-        <el-option key="2" label="授信支付" value="2"></el-option>
-        <el-option key="3" label="微信支付" value="3"></el-option>
-        <el-option key="4" label="易宝云企付" value="4"></el-option>
-        <el-option key="5" label="余额支付" value="5"></el-option>
-        <el-option key="6" label="支付宝" value="6"></el-option>
-        <el-option key="7" label="自采" value="7"></el-option>
-      </el-select>
+      <el-date-picker v-model="activeForm.importEndTime" type="date" placeholder="结束天数" :picker-options="importEndDatePicker"></el-date-picker>
+
       <div class="button_select">
         <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
@@ -67,11 +26,15 @@
     </div>
     <div class="tableDv">
       <div class="table_trip" style="width: 88%;">
-        <el-table ref="multipleTable" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
+        <el-table ref="multipleTable" v-loading="loading" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
-          <el-table-column prop="order_sn" label="订单ID" align="center">
+          <el-table-column prop="plat_order_sn" label="订单ID" align="center">
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.distributor">{{scope.row.distributor}}</span>
+              <span v-else>飞猪</span>
+            </template>
           </el-table-column>
           <el-table-column prop="product_name" label="产品名称" align="center">
           </el-table-column>
@@ -81,17 +44,19 @@
           </el-table-column>
           <el-table-column prop="" label="费用" align="center" width="160">
             <template slot-scope="scope">
-              <span>收入:{{scope.row.income}}</span><br>
-              <span>单票成本:{{scope.row.single_cost}}</span><br>
-              <span>总成本:{{scope.row.cost}}</span>
+              <div v-if="scope.row.income">
+                <span>收入:{{scope.row.income}}</span><br>
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="quantity" label="数量" align="center" width="50">
           </el-table-column>
           <el-table-column prop="" label="客人信息" align="center" width="145">
             <template slot-scope="scope">
-              <span>取票人:{{scope.row.contact_name}}</span><br>
-              <span>手机:{{scope.row.contact_phone}}</span>
+              <div v-if="scope.row.contact_name">
+                <span>取票人:{{scope.row.contact_name}}</span><br>
+                <span>手机:{{scope.row.contact_phone}}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="check_at" label="验证时间" align="center">
@@ -112,14 +77,13 @@
           <el-table-column prop="is_relate_pro" label="关联产品" align="center">
             <template slot-scope="scope">
               <p v-if="scope.row.is_relate_pro == 1">未关联产品</p>
-              <p v-if="scope.row.is_relate_pro == 2">{{scope.row.relate_pro_name}}</p>
+              <p v-if="scope.row.is_relate_pro == 2">产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
             </template>
           </el-table-column>
           <el-table-column prop="bill_status" label="报账状态" align="center">
             <template slot-scope="scope">
-              <p v-if="scope.row.bill_status == 1">未报账</p>
-              <p v-if="scope.row.bill_status == 2">报账中</p>
-              <p v-if="scope.row.bill_status == 3">已报账</p>
+              <!--<span>{{bill_status[scope.row.bill_status]}}</span>-->
+              <span>未认收款</span>
             </template>
           </el-table-column>
         </el-table>
@@ -169,21 +133,30 @@
         dialogFormVisible: false,
         dialogFormVisible2: false,
 
+        bill_status: {
+          1: '未认款',
+          2: '认款申请',
+          3: '认款待修改',
+          4: '认款通过',
+          5: '报账中',
+          6: '报账驳回',
+          7: '已报账'
+        },
+
 //      表格数据
         total: 0, //总条数
         currentPage4: 1,
         pageIndex: 1, // 设定当前页数
         pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
         tableData: [],
+        loading: true,
         multipleSelection: [],
         currentRow: true,
 
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
         importStartDatePicker: this.beginDate1(),
-        importEndDatePicker: this.processDate1(),
-        validationStartDatePicker: this.beginDate2(),
-        validationEndDatePicker: this.processDate2()
+        importEndDatePicker: this.processDate1()
       }
     },
     computed: {
@@ -211,7 +184,10 @@
         this.dialogFormVisible2 = true
       },
       close2() {
-        this.dialogFormVisible2 = false
+        this.dialogFormVisible2 = false;
+//        if(str == 'success'){
+//          this.showStatus();
+//        }
       },
       delOrder() {
         console.log(this.multipleSelection);
@@ -220,10 +196,50 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          let deleteStr = '';
+          let num = 0;
+          this.multipleSelection.forEach(function (item, index, arr) {
+//            console.log(item.bill_status);
+            if(item.bill_status == 3 || item.bill_status == 4 || item.bill_status == 5 || item.bill_status == 7){
+              deleteStr += item.plat_order_sn + ',';
+            }
           });
+          if(num == 0){
+            let strD = '';
+            this.multipleSelection.forEach(function (item, index, arr) {
+//            console.log(item.bill_status);
+              strD += item.plat_order_sn + ',';
+            });
+            strD = strD.substr(0, strD.length - 1);
+            const that = this;
+            console.log(strD);
+            this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/nocostdel", {
+              "plat_order_sn": strD
+            }, ).then(function(response) {
+              console.log('删除',response);
+              if (response.data.code == '200') {
+                console.log(response);
+                that.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                that.loading = true;
+                that.loadData();
+              } else {
+                if(response.data.message){
+                  that.$message.warning(response.data.message);
+                }else{
+                  that.$message.warning("失败~");
+                }
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
+          }else{
+            deleteStr = deleteStr.substr(0,deleteStr.length-1);
+            this.$message.warning(deleteStr + "订单不是未认款状态，不可删除");
+          }
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -237,9 +253,11 @@
       },
       //搜索
       searchHand() {
+        this.loading = true;
         this.loadData();
       },
       resetHand() {
+        this.loading = true;
         this.activeForm = {
           title: '',
           oid: '',
@@ -260,11 +278,13 @@
         this.loadData();
       },
       handleSizeChange(val) {
+        this.loading = true;
         this.pageSize = val;
         this.loadData();
       },
 
       handleCurrentChange(val) {
+        this.loading = true;
         this.pageIndex = val;
         this.loadData();
       },
@@ -299,32 +319,36 @@
           "order_sn": this.activeForm.oid,
           "sale_at_begin": this.activeForm.startTime,
           "sale_at_end": this.activeForm.endTime,
-          "bill_status": this.activeForm.status,
-          "is_relate_pro": this.activeForm.proRelation,
+          "bill_status": '',
+          "is_relate_pro": '',
           "import_at_begin": this.activeForm.importStartTime,
           "import_at_end": this.activeForm.importEndTime,
-          "tour_no": this.activeForm.tour,
-          "order_type": this.activeForm.type,
-          "check_at_begin": this.activeForm.validationStartTime,
-          "check_at_end": this.activeForm.validationEndTime,
-          "contact_name": this.activeForm.ticketPerson,
-          "contact_phone": this.activeForm.ticketPhone,
-          "distributor": this.activeForm.distributors,
-          "pay_type": this.activeForm.typePay,
+          "tour_no": '',
+          "order_type": '',
+          "check_at_begin": '',
+          "check_at_end": '',
+          "contact_name": '',
+          "contact_phone": '',
+          "distributor": '',
+          "pay_type": '',
           "import_status": 1,
-          "org_id": sessionStorage.getItem('orgID')
+          "org_id": ''
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {
             console.log(response);
             that.tableData = response.data.data.list;
             that.total = response.data.data.total - 0;
-
+            that.loading = false;
             that.tableData.forEach(function (item, index, arr) {
 //            console.log(v,k,arr);
 //            console.log(item.sale_at);
               item.sale_at = formatDate(new Date(item.sale_at*1000));
-              item.check_at = formatDate(new Date(item.check_at*1000));
+              if(item.check_at == 0){
+                item.check_at = '';
+              }else{
+                item.check_at = formatDate(new Date(item.check_at*1000));
+              }
               item.import_at = formatDate(new Date(item.import_at*1000));
             })
           } else {
@@ -387,32 +411,6 @@
           }
         }
       },
-      beginDate2(){
-//      alert(begin);
-        const that = this;
-        return {
-          disabledDate(time){
-            if (that.activeForm.validationEndTime) {  //如果结束时间不为空，则小于结束时间
-              return new Date(that.activeForm.validationEndTime).getTime() < time.getTime()
-            } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
-            }
-          }
-        }
-      },
-      processDate2(){
-//      alert(process);
-        const that = this;
-        return {
-          disabledDate(time) {
-            if (that.activeForm.validationStartTime) {  //如果开始时间不为空，则结束时间大于开始时间
-              return new Date(that.activeForm.validationStartTime).getTime() > time.getTime()
-            } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
-            }
-          }
-        }
-      }
     }
 
   }

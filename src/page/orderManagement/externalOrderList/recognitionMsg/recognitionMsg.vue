@@ -63,7 +63,7 @@
         </el-table>
       </div>
     </div>
-    <recognitionSee :dialogFormVisible="dialogFormVisible" @close="close" :orderID="orderID"></recognitionSee>
+    <recognitionSee :dialogFormVisible4="dialogFormVisible4" @close="close" :orderID="orderID"></recognitionSee>
     <recognitionDo :dialogFormVisible2="dialogFormVisible2" @close="close" :info="info"></recognitionDo>
   </div>
 </template>
@@ -82,7 +82,7 @@
       return {
         pid: '',
         transmit: false,
-        dialogFormVisible: false,
+        dialogFormVisible4: false,
         dialogFormVisible2: false,
         info: '',
         orderID: '',
@@ -113,6 +113,42 @@
       },
       submitBtn(){
         //...
+        const that = this;
+        let orderStr = '';
+        let isMatch = true;
+        this.tableData.forEach(function (item, index, arr) {
+          if(item.is_match == 2){
+            orderStr += item.order_sn + ',';
+          }else {
+            isMatch = false;
+          }
+        });
+        orderStr = orderStr.substr(0, orderStr.length - 1);
+        if(isMatch){
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/confirmrec", {
+            "order_sn": orderStr
+          }, ).then(function(response) {
+            if (response.data.code == '200') {
+              console.log('提交认款批量',response);
+              that.$message({
+                type: 'success',
+                message: '提交成功!'
+              });
+              that.cancalBtn()
+            } else {
+              if(response.data.message){
+                that.$message.success(response.data.message);
+              }else{
+                that.$message.success("失败~");
+              }
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }else{
+          that.$message.warning("存在未匹配订单~");
+        }
+
       },
       handleClick() {
         this.reable = true;
@@ -122,11 +158,14 @@
 //      查看
       showBtn(row){
         this.orderID = row.order_sn;
-        this.dialogFormVisible = true;
+        this.dialogFormVisible4 = true;
       },
       close(){
-        this.dialogFormVisible = false;
+        this.dialogFormVisible4 = false;
         this.dialogFormVisible2 = false;
+        this.orderID = '';
+        this.info = '';
+        this.loadData();
       },
 //      撤销
       undoBtn(row){
@@ -140,13 +179,18 @@
             "order_sn": row.order_sn
           }, ).then(function(response) {
             if (response.data.code == '200') {
-              console.log(response);
+              console.log('撤销',response);
               that.$message({
                 type: 'success',
                 message: '撤销成功!'
               });
+              that.loadData();
             } else {
-              that.$message.success("加载数据失败~");
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning("失败~");
+              }
             }
           }).catch(function(error) {
             console.log(error);
@@ -163,15 +207,32 @@
         this.info = row.order_sn;
         this.dialogFormVisible2 = true;
       },
-
+      initData(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recmatch", {
+          "order_sn": this.$route.query.ids
+        }, ).then(function(response) {
+          that.loadData();
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/reclist", {
-          "order_sn": this.$route.params.ids
+          "order_sn": this.$route.query.ids
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log(response);
             that.tableData = response.data.data;
+            that.tableData.forEach(function (item, index, arr) {
+              item.sale_at = formatDate(new Date(item.sale_at*1000));
+              item.sale_at = item.sale_at.split(" ")[0];
+              item.check_at = formatDate(new Date(item.check_at*1000));
+              item.check_at = item.check_at.split(" ")[0];
+              item.import_at = formatDate(new Date(item.import_at*1000));
+              item.import_at = item.import_at.split(" ")[0];
+            })
           } else {
             that.$message.success("加载数据失败~");
           }
@@ -181,10 +242,11 @@
       },
     },
     created(){
-      console.log(this.$route.params);
-      console.log(this.$route.query);
-      if(this.$route.params.ids){
-        this.loadData();
+//      console.log(this.$route.params);
+//      console.log(this.$route.query);
+      if(this.$route.query.ids){
+        this.initData();
+        
       }else{
         this.cancalBtn();
       }

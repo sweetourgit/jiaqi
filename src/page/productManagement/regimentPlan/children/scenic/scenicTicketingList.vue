@@ -10,7 +10,7 @@
       </el-date-picker><br /><br />
       <span class="search-title">操作人员:</span>
       <!--<el-input v-model="activeForm.user" class="input"></el-input>-->
-      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper"></el-autocomplete>
+      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
       <span class="search-title">报账状态:</span>
       <el-select v-model="activeForm.status" placeholder="请选择" style="width:200px;margin-left:40px;">
         <el-option key="" label="全部" value=""></el-option>
@@ -94,7 +94,7 @@
         </el-pagination>
       </div>
     </div>
-    <NewTour :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></NewTour>
+    <NewTour :dialogFormVisible="dialogFormVisible" @close="close" :info="info" ref="newTour"></NewTour>
   </div>
 </template>
 <script type="text/javascript">
@@ -141,8 +141,10 @@ export default {
     createNew(row) {
 //      console.log(row);
       if(row.id){
+        this.$refs.newTour.topTitle = '修改报账团号';
         this.info = row;
       }else{
+        this.$refs.newTour.topTitle = '新增报账团号';
         this.info = '';
       }
       this.dialogFormVisible = true;
@@ -152,7 +154,11 @@ export default {
       this.$router.push({
         path: "/scenicTicketingBillReporting",
         name: '产品管理  /团期计划  /报账单',
-        params: row
+        query: {
+          id: row.id,
+          bill_status: row.bill_status,
+          tour_no: row.tour_no
+        }
       });
     },
     //认款
@@ -160,7 +166,9 @@ export default {
       this.$router.push({
         path: '/scenicTicketingPledging',
         name: '产品管理  /团期计划  /认款',
-        params: row
+        query: {
+          tour_no: row.tour_no
+        }
       });
     },
     //详情
@@ -168,7 +176,12 @@ export default {
       this.$router.push({
         path: "/scenicTicketingDetails",
         name: "产品管理  /团期计划  /详情",
-        params: row
+        query: {
+          id: row.id,
+          bill_status: row.bill_status,
+          tour_no: row.tour_no,
+          approved: row.approved
+        }
       });
     },
     close() {
@@ -213,7 +226,11 @@ export default {
               message: '已删除'
             });
           } else {
-            that.$message.success("删除失败~");
+            if(response.data.message){
+              that.$message.success(response.data.message);
+            }else{
+              that.$message.success("删除失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -241,6 +258,24 @@ export default {
     handleSelectOper(item){
       console.log(item);
       this.activeForm.userID = item.id;
+    },
+    blurHand(){
+      const that = this;
+      let ida = '';
+      if(that.activeForm.user == ''){
+        that.activeForm.userID = '';
+      }else{
+        this.operatorList.forEach(function (item, index, arr) {
+          if(that.activeForm.user == item.value){
+            ida = item.id;
+          }
+        });
+        if(ida){
+          that.activeForm.userID = ida;
+        }else{
+          that.activeForm.userID = '';
+        }
+      }
     },
     //搜索
     searchHand() {
@@ -278,7 +313,7 @@ export default {
         "end_time": this.activeForm.endTime,
         "create_uid": this.activeForm.userID,
         "bill_status": this.activeForm.status,
-        "org_id": sessionStorage.getItem('orgID')
+        "org_id": ''
       }, ).then(function(response) {
           console.log(response);
         if (response.data.code == '200') {

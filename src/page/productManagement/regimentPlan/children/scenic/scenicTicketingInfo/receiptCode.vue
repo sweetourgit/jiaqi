@@ -13,7 +13,7 @@
           </el-table-column>
           <el-table-column prop="cost" label="成本" align="center">
           </el-table-column>
-          <el-table-column prop="income" label="income" align="center">
+          <el-table-column prop="income" label="收入" align="center">
           </el-table-column>
           <el-table-column prop="guestInformation" label="客人信息" align="center">
             <template slot-scope="scope">
@@ -91,7 +91,7 @@ export default {
         if(parseFloat(item.money) > parseFloat(item.proce_amount)){
           that.$message({
             type: 'warning',
-            message: item.id + '订单，申请金额大于未处理金额'
+            message: item.order_sn + '订单，申请金额大于未处理金额'
           });
           canSave = false;
         }
@@ -138,6 +138,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/addreceiptcode", {
         "tour_no": this.$parent.param,
         "create_uid": sessionStorage.getItem("id"),
+        "org_id": sessionStorage.getItem('orgID'),
         "order_list": orderList
       }, ).then(function(response) {
         if (response.data.code == '200') {
@@ -148,7 +149,12 @@ export default {
           that.totalMoney = 0;
           that.$emit('close', false);
         } else {
-          that.$message.success("保存失败~");
+          if(response.data.message){
+            that.$message.success(response.data.message);
+          }else {
+            that.$message.success("保存失败~");
+          }
+
         }
       }).catch(function(error) {
         console.log(error);

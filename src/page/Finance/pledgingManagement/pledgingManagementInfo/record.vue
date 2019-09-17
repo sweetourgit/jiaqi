@@ -98,14 +98,19 @@ export default {
       this.$router.push({
         path: "/pledgingManagementApproval",
         name: "财务管理   / 财务认款管理   / 审批",
-        params: row
+        query: {
+          tour_no: row.tour_no
+        }
       });
     },
     seeList(row) {
       this.$router.push({
         path: "/pledgingManagementSee",
         name: "财务管理   / 财务认款管理   / 查看",
-        params: row
+        query: {
+          tour_no: row.tour_no,
+          bill_status: row.bill_status
+        }
       });
     },
     //获取id
@@ -148,8 +153,11 @@ export default {
           that.total = response.data.data.total - 0;
           that.tableData.forEach(function (item, index, arr) {
             item.begin_at = formatDate(new Date(item.begin_at*1000));
+            item.begin_at = item.begin_at.split(" ")[0];
             item.end_at = formatDate(new Date(item.end_at*1000));
+            item.end_at = item.end_at.split(" ")[0];
             item.created_at = formatDate(new Date(item.created_at*1000));
+            item.created_at = item.created_at.split(" ")[0];
 
             that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
               "id": item.create_uid

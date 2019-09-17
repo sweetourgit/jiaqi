@@ -24,6 +24,19 @@ export default {
       }
     }
   },
+  watch: {
+    $route: {
+      handler: function(val, oldVal){
+        if (val.path == "/regimentPlan/scenicTicketingList"){
+          this.activeName = "2"
+        }else if(val.path == "/regimentPlan/teamPlanList"){
+          this.activeName = "1"
+        }
+      },
+      // 深度观察监听
+      deep: true
+    }
+  },
   created() {
     if (this.$route.path == "/regimentPlan/scenicTicketingList") {
       this.activeName = "2"

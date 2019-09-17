@@ -8,24 +8,24 @@
 					<span class="emptyPlan">团期计划</span>
 					<el-input v-model="groupCode_01" class="empty" clearable placeholder="请输入团期计划"></el-input>
 				</div>
-				<div class="fl">
+				<!-- <div class="fl">
 					<span class="emptyPlan">申请人</span>
 					<el-input v-model="createUser" class="empty" clearable placeholder="请输入申请人"></el-input>
-				</div>
+				</div> -->
 				<div class="fl">
 					<span class="emptyPlan">发起时间</span>
-					<el-date-picker v-model="beginTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
+					<el-date-picker v-model="createTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
 					<span class="time">——</span>
 					<el-date-picker v-model="endTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
 				</div>
-			</div>
-			<div style="width:1100px;clear:both;">
-				<div style=" float:left">
+				<div class="fl">
 			       <span class="emptyPlan">类型</span>
 				   <el-select v-model="checkType" placeholder="请输入类型" class="empty">
 	                 <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlement" :key="item.value" />
 	               </el-select>
 				</div>
+			</div>
+			<div style="width:1100px;clear:both;">
 				<div style="float:right; margin: 0 10px 0 0;">
 					<el-button @click="search()" type="primary">搜索</el-button>
 					<el-button @click="emptyButton()" type="primary">重置</el-button>
@@ -36,52 +36,49 @@
 			<el-button plain @click="noIncome()" style="margin:30px 0 0 0;">申请</el-button>
 			<!-- <el-button plain @click="checkIncome()" :disabled="forbidden">查看借款</el-button> -->
 		</div>
-		<el-table :data="tableData"  class="labelTable" ref="multipleTable" :header-cell-style="getRowClass" border :row-style="rowClass" @row-click="clickRow">
-	      <el-table-column prop="paymentID" label="借款单号" width="120" align="center"></el-table-column>
-	      <el-table-column prop="checkTypeEX" label="状态" width="80" align="center">
-	      	<template slot-scope="scope">
-	          <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
-	          <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
-	          <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
-	        </template>
-	      </el-table-column>
-	      <el-table-column prop="beginTime" label="发起时间" :formatter='dateFormat' width="210" align="center"></el-table-column>
-	      <el-table-column prop="groupCode" label="团期计划" width="240" align="center"></el-table-column>
-	      <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
-	      <el-table-column prop="supplierTypeEX" label="类型" width="80" align="center"></el-table-column>
-	      <el-table-column prop="price" label="借款金额" width="120" align="center"></el-table-column>
-	      <el-table-column prop="expensePrice" label="已核销金额" width="120" align="center"></el-table-column>
-	      <!-- <el-table-column prop="collectionPrice" label="已付款金额" width="120" align="center"></el-table-column>
-	      <el-table-column prop="orgName" label="申请组织" width="150" align="center"></el-table-column> -->
-	      <el-table-column prop="createUser" label="申请人" width="100" align="center"></el-table-column>
-	      <el-table-column prop="approvalOpinion" label="审批意见" width="180" align="center"></el-table-column>
-	      <el-table-column label="操作" width="180" align="center">
-	      	<template slot-scope="scope">
-	          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-	          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0">|</span>
-	          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0" type="text" size="small" class="table_details">付款账户</el-button>
-	        </template>
-	      </el-table-column>
-	    </el-table>
-
-	    <!--分页-->
-	    <el-pagination v-if="pageshow" class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+		<div style="max-width:1300px;padding:0 50px 0 0;">
+			<el-table :data="tableData"  class="labelTable" ref="multipleTable" :header-cell-style="getRowClass" border :row-style="rowClass" @row-click="clickRow">
+		      <el-table-column prop="paymentID" label="借款单号" width="120" align="center"></el-table-column>
+		      <el-table-column prop="checkTypeEX" label="状态" width="80" align="center">
+		      	<template slot-scope="scope">
+		          <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
+		          <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
+		          <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
+		        </template>
+		      </el-table-column>
+		      <el-table-column prop="createTime" label="发起时间" :formatter='dateFormat' width="150" align="center"></el-table-column>
+		      <el-table-column prop="groupCode" label="团期计划" width="210" align="center"></el-table-column>
+		      <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
+		      <el-table-column prop="supplierTypeEX" label="类型" width="100" align="center"></el-table-column>
+		      <el-table-column prop="price" label="借款金额" width="100" align="center"></el-table-column>
+		      <el-table-column prop="expensePrice" label="已核销金额" width="100" align="center"></el-table-column>
+		      <!-- <el-table-column prop="collectionPrice" label="已付款金额" width="120" align="center"></el-table-column>
+		      <el-table-column prop="orgName" label="申请组织" width="150" align="center"></el-table-column> -->
+		      <el-table-column prop="createUser" label="申请人" width="80" align="center"></el-table-column>
+		      <el-table-column prop="approvalOpinion" label="审批意见" width="100" align="center"></el-table-column>
+		      <el-table-column label="操作" width="80" align="center">
+		      	<template slot-scope="scope">
+		          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+		          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0">|</span>
+		          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0" type="text" size="small" class="table_details">付款账户</el-button>
+		        </template>
+		      </el-table-column>
+		    </el-table>
+		    <!--分页-->
+		    <el-pagination v-if="pageshow" class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+	    </div>
 	</div>
 	<!--申请无收入借款弹窗-->
-	    <el-dialog title="借款申请" :visible.sync="noIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>  
+	    <el-dialog title="借款申请" :visible.sync="noIncomeShow" width="1100px" custom-class="city_list" @close="cancel"> 
 	      <div style="position:absolute; top:8px; right:10px;">
 	      	<el-button @click="CloseNoIncomeShow()">取消</el-button>
 	      	<el-button type="primary"@click="ensureIncome()">申请</el-button>
 	      </div>
 	      <div class="basicTitle">基本信息</div>
 	      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-	      	 <!-- <el-form-item label="借款人" prop="name">
-	      	 			    <el-input class="name_input" v-model="ruleForm.name"></el-input>
-	      	 			    <el-button class="name_button" @click="IncomeName()">选择</el-button>
-	      	 			 </el-form-item> -->
 			 <el-form-item label="团期计划" prop="plan" style="float:left;">
 			    <el-input class="name_input" @blur="tour_check" v-model="ruleForm.plan" placeholder="请输入团期计划"></el-input>
-			    <el-input style="width:300px;" disabled v-model="ruleForm.plan_01" placeholder=" 通过输入团期计划，自动补充产品名
+			    <el-input style="width:300px;" disabled v-model="ruleForm.plan_01" placeholder="通过输入团期计划,自动补充产品名
 称"></el-input>
 			    <el-button class="name_button" @click="IncomePlan()">选择</el-button>
 			 </el-form-item>
@@ -94,8 +91,11 @@
 			    <el-autocomplete class="name_input" v-model="ruleForm.supplier" :fetch-suggestions="querySearch3"placeholder="请输入供应商名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
 			 </el-form-item>
 			 <el-form-item label="借款类型" prop="planType">
-			    <el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
+			    <!-- <el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
 				  <el-option :disabled="ruleForm.supplier != ''" v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+				</el-select> -->
+				<el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
+				  <el-option v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
 			 </el-form-item>
 			 <el-form-item label="借款金额" prop="planAmount" style="clear:both;">
@@ -289,7 +289,6 @@
       </el-dialog>
       <!--查看无收入借款弹窗-->
 	  <el-dialog title="借款申请详情" :visible.sync="checkIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>
-	    <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
       	<div style="position:absolute; top:8px; right:10px;">
       		<el-button @click="CloseCheckIncomeShow()">取消</el-button>
       		<el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button>
@@ -329,8 +328,7 @@ import moment from 'moment'
     data(){
       return {
       	groupCode_01:'',
-      	createUser:'',
-      	beginTime:'',
+      	createTime:'',
       	endTime:'',
       	checkType:'',
       	 //表头切换
@@ -480,7 +478,7 @@ import moment from 'moment'
 		    SelectAccount:false,//选择账户弹窗
 		    tableSelect:[],//选择弹窗表格
 		    pageshow:true,
-		   
+		    pid:''
 
 
       }
@@ -502,8 +500,7 @@ import moment from 'moment'
 	  //重置
 	  emptyButton(){
 	  	this.groupCode_01 = '';
-	  	this.createUser = '';
-	  	this.beginTime = '';
+	  	this.createTime = '';
 	  	this.endTime = '';
 	  	this.checkType = '';
 	  }, 
@@ -591,7 +588,7 @@ import moment from 'moment'
         var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
         cb(results)
       }).catch(err => {
-        console.log(err);
+        //console.log(err);
       })
     },
     createFilter(queryString1){
@@ -601,7 +598,7 @@ import moment from 'moment'
     },
     departure(item){
       console.log(item)
-      this.ruleForm.planType = item.supplierType
+      //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
       /*this.productPos = item.id;
       this.originPlace = item.value;*/
       this.productPos = item.id;
@@ -620,8 +617,15 @@ import moment from 'moment'
       //无收入借款弹窗
       noIncome(){//点击显示弹窗
       	this.noIncomeShow =true;
-      	//this.$refs["ruleForm"].resetFields();
-      	this.clearPlan();
+       //this.clearPlan();
+      },
+      cancel(){
+        this.noIncomeShow = false;
+        this.$refs["ruleForm"].resetFields();4
+        this.tableMoney = [];
+      	this.tableIncome = [];
+      	this.tablePayment = [];
+      	this.tableEarning = [];
       },
       CloseNoIncomeShow(){//点击关闭弹窗
       	this.$confirm("去否取消本次借款申请?", "提示", {
@@ -642,7 +646,7 @@ import moment from 'moment'
         });
       	
       },
-      clearPlan(){//清楚申请无收入借款弹窗内容
+      clearPlan(){//清除申请无收入借款弹窗内容
       	this.ruleForm.plan = '';
       	this.ruleForm.plan_01 = '';
       	this.ruleForm.supplier = '';
@@ -654,6 +658,11 @@ import moment from 'moment'
       	this.ruleForm.accountBank = '';
       	//this.accessory = '';
       	this.tour_id = 0;
+      	this.tableMoney = [];
+      	this.tableIncome = [];
+      	this.tablePayment = [];
+      	this.tableEarning = [];
+
 
       },
       //无收入借款中借款人弹窗
@@ -738,57 +747,57 @@ import moment from 'moment'
 	      this.tablePlan = ''
 	    },
       getPaymentdetails(val) {
-      var that = this
-      //预付付款明细
-      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
-        "object": {
-          "paymentType": 2,
-          "planID": val,
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tablePayment = res.data.objects
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-      //无收入借款明细
-      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
-        "object": {
-          "paymentType": 1,
-          "planID": val,
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tableIncome = res.data.objects
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-      //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
-      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {        
-          "id": val,
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tableMoney = []
-          that.tableMoney.push(res.data.object)
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-      //收入明细
-      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderlist', {
-        "object": {
-          "planID": val,
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tableEarning = res.data.objects
-          //that.tableEarning.push(res.data.object)
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+	      var that = this
+	      //预付付款明细
+	      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+	        "object": {
+	          "paymentType": 2,
+	          "planID": val,
+	        }
+	      }).then(res => {
+	        if (res.data.isSuccess == true) {
+	          that.tablePayment = res.data.objects
+	        }
+	      }).catch(err => {
+	        console.log(err)
+	      })
+	      //无收入借款明细
+	      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+	        "object": {
+	          "paymentType": 1,
+	          "planID": val,
+	        }
+	      }).then(res => {
+	        if (res.data.isSuccess == true) {
+	          that.tableIncome = res.data.objects
+	        }
+	      }).catch(err => {
+	        console.log(err)
+	      })
+	      //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
+	      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {        
+	          "id": val,
+	      }).then(res => {
+	        if (res.data.isSuccess == true) {
+	          that.tableMoney = []
+	          that.tableMoney.push(res.data.object)
+	        }
+	      }).catch(err => {
+	        console.log(err)
+	      })
+	      //收入明细
+	      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderlist', {
+	        "object": {
+	          "planID": val,
+	        }
+	      }).then(res => {
+	        if (res.data.isSuccess == true) {
+	          that.tableEarning = res.data.objects
+	          //that.tableEarning.push(res.data.object)
+	        }
+	      }).catch(err => {
+	        console.log(err)
+	      })
     },
 
     tour_check() {
@@ -847,16 +856,41 @@ import moment from 'moment'
       //查看无收入借款弹窗
       checkIncome(row){
       	this.checkIncomeShow = true;
-      	console.log(row)
+      	this.pid = row.paymentID;
       	this.status = row.checkTypeEX;
       	this.ruleForm = row;
+      	//this.$refs["ruleForm"].resetFields();
       	//this.getLabel();
+      	//this.clearPlan();
       },
+      //获取一条详情
+	    getLabel(){
+	      console.log(this.tableData)
+	      this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
+	          "id":this.pid
+	      }).then(res => {
+	        if(res.data.isSuccess == true){
+	           this.guid = res.data.object.guid
+	           this.fundamental=res.data.object;
+	           this.tour_id = res.data.object.planID;
+	           //this.getTourByPlanId(res.data.object.planID);
+	           this.getPaymentdetails(res.data.object.planID);
+	           /*res.data.object.files.forEach(function(v, k, arr) {
+	                that.fileList.push({
+	                  "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
+	                  "name": arr[k]['name'],
+	                });
+	              })*/
+	        }
+	     })
+	    },
       CloseCheckIncomeShow(){
       	this.checkIncomeShow = false;
+      	this.$refs['ruleForm'].resetFields();
+      	this.clearPlan();
       },
       //查询列表
-      pageList(groupCode_01=this.groupCode_01,createUser=this.createUser,beginTime=this.beginTime,endTime=this.endTime,checkType=this.checkType) {   
+      pageList(groupCode_01=this.groupCode_01,createTime=this.createTime,endTime=this.endTime,checkType=this.checkType) {   
       	/*if(beginTime){//时间节点裁剪，裁剪到年月日
           let y=beginTime.getFullYear();
           let m=(beginTime.getMonth()+1)>9?beginTime.getMonth()+1:'0'+(beginTime.getMonth()+1);
@@ -869,8 +903,7 @@ import moment from 'moment'
       	objectRequest.paymentType = 1;
       	objectRequest.checkType = -1;
       	if (this.groupCode_01) { objectRequest.groupCode = this.groupCode_01; }
-      	if (this.createUser) { objectRequest.createUser = this.createUser; }
-      	if (this.beginTime) { objectRequest.beginTime = this.beginTime; }  
+      	if (this.createTime) { objectRequest.createTime = this.createTime; }  
       	if (this.endTime) { objectRequest.endTime = this.endTime; }
       	if (this.checkType) { objectRequest.checkType = this.checkType;}else{objectRequest.checkType='-1'}
       	//if (this.checkTypeEX) { objectRequest.checkTypeEX = this.checkTypeEX; }
@@ -930,9 +963,10 @@ import moment from 'moment'
               .then(res => {
                 if(res.data.isSuccess == true){
                    this.pageList();
+                   this.clearPlan();
                    //this.sendBPM(res.data.object)
                    this.noIncomeShow = false;
-                   this.$refs["ruleForm"].resetFields();
+                   //this.$refs["ruleForm"].resetFields();
                    //this.$refs[formName].resetFields();
                 }else{
                    this.$message.success("添加失败");
@@ -948,7 +982,7 @@ import moment from 'moment'
 	        jQ_ID: result.guid,
 	        jQ_Type: result.flowModel,
 	        workflowCode: result.flowModelName,
-	        userCode: sessionStorage.getItem('account'), //未指定呢
+	        userCode: sessionStorage.getItem('userCode'), //未指定呢
 	      }).then(res => {
 	        let result = JSON.parse(res.data);
 	        if (result.code == '0') {
@@ -982,7 +1016,7 @@ import moment from 'moment'
       //借款类型
       themeList(){
       	this.borrowingType = [];
-	      this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=SupplierType')
+	      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=PaymentType')
 	      .then(res => {
 	        for (let i = 0; i < res.data.objects.length; i++) {
 	          this.borrowingType.push({
@@ -1192,6 +1226,7 @@ import moment from 'moment'
 
     mounted(){
       this.pageList();
+      this.planList();
     },
     created(){
       this.themeList();
@@ -1212,7 +1247,7 @@ import moment from 'moment'
 	/*重置*/
 	.primary{clear: both;overflow: hidden;margin: 0 0 20px 30px;}
 	/*表格*/
-	.labelTable{margin: 0 30px 20px 30px; text-align: center;max-width: 1581px;}
+	.labelTable{margin: 0 30px 20px 30px; text-align: center;width: 1271px;}
 	.multipleTable{margin: 0 30px 20px 30px; text-align: center;width: 1161px;}
 	/*分页*/
 	.pageList{float:right; margin: 0 30px 20px 0;}

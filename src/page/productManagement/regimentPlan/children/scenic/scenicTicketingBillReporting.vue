@@ -23,6 +23,8 @@
             <el-button class="el-button" type="primary" @click="toPreview">预览报账单</el-button>
             <!--<el-button class="el-button" type="primary" @click="submitForm">保 存</el-button>-->
             <el-button class="el-button" type="primary" @click="delInfo" v-if="statusBtn != 7">提交报账单</el-button>
+            <el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 4 || statusBtn == 6">修 改</el-button>
+
           </div>
         </el-col>
       </el-row>
@@ -34,7 +36,7 @@
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>操作人：</p> {{msg.op_id}}
+            <p>操作人：</p> {{orgName}} -- {{msg.op_name}}
           </div>
         </el-col>
         <el-col :span="8">
@@ -84,7 +86,26 @@
           </div>
         </el-col>
         <el-col :span="8">
-          <div class="info"></div>
+          <div class="info">
+            <p>出发日期：</p>{{msg.startTime}}
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="info">
+            <p>返回日期：</p>{{msg.endTime}}
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <div class="info">
+            <p>导陪：</p>{{msg.guide}}
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="info">
+            <p>接团社：</p>{{msg.associations}}
+          </div>
         </el-col>
         <el-col :span="8">
           <div class="info"></div>
@@ -107,7 +128,8 @@
       <div class="totalMoney"><i class="el-icon-info"></i>&nbsp;&nbsp;总计：{{totalMoney}}元 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;人数：{{number}}</div>
       <div class="footer">
         <div class="table_trip" style="width: 95%;">
-          <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass" :cell-style="cellStyle">
+          <!--:cell-style="cellStyle"  某行样式改变-->
+          <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
             <el-table-column prop="serial_sn" label="收款编码/发票" align="center">
             </el-table-column>
             <el-table-column prop="handler" label="收入来源" align="center">
@@ -124,11 +146,11 @@
               </template>
             </el-table-column>
             <el-table-column prop="people_num" label="人数" align="center" style="color:red">
-              <template slot-scope="scope" slot="header">
-                <el-tooltip effect="light" content="订单可能在不同的收款编码(或发票)。人数会重复增加，需要请修改警示框内的人数" placement="top" >
-                 <span>人数<i class="el-icon-warning" style="color: red;margin-left: 6px;"></i></span>
-                </el-tooltip>
-              </template>
+              <!--<template slot-scope="scope" slot="header">-->
+                <!--<el-tooltip effect="light" content="订单可能在不同的收款编码(或发票)。人数会重复增加，需要请修改警示框内的人数" placement="top" >-->
+                 <!--<span>人数<i class="el-icon-warning" style="color: red;margin-left: 6px;"></i></span>-->
+                <!--</el-tooltip>-->
+              <!--</template>-->
             </el-table-column>
             <el-table-column prop="income" label="金额" align="center">
             </el-table-column>
@@ -150,8 +172,9 @@
         <!--</span>-->
       <!--</el-dialog>-->
       <GetOrder :dialogFormVisible="dialogFormVisible" @close="close2" :info="info"></GetOrder>
+      <ToUpdate :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpdate>
       <ToUpddateSource :dialogFormVisible="dialogFormVisible2" @close="close2" :info="updateSource"></ToUpddateSource>
-      <ToUpddateIncome :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpddateIncome>
+      <!--<ToUpddateIncome :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpddateIncome>-->
       <ToPreview :dialogFormVisible="dialogFormVisible4" @close="close2" :info="msg"></ToPreview>
     </div>
   </div>
@@ -159,7 +182,8 @@
 <script type="text/javascript">
 import GetOrder from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrder'
 import ToUpddateSource from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateSource'
-import ToUpddateIncome from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateIncome'
+import ToUpdate from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpdate'
+//import ToUpddateIncome from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateIncome'
 import ToPreview from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toPreview'
 import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
@@ -167,16 +191,19 @@ export default {
   components: {
     GetOrder,
     ToUpddateSource,
-    ToUpddateIncome,
-    ToPreview
+//    ToUpddateIncome,
+    ToPreview,
+    ToUpdate
   },
   data() {
     return {
       param: '',
       statusBtn: '',
+      paramTour: '',
       msg: {
         tour_no: '',
         op_id: '',
+        op_name: '',
         billTime: '',
         team_num: '',
         days: '',
@@ -192,7 +219,7 @@ export default {
         associations: '',
         org_id: ''
       },
-
+      orgName: '',
       activeName: '1',
       currentRow: true,
       pid: '',
@@ -252,7 +279,7 @@ export default {
           "bill_status": '5',
           "mark": '',
           "create_uid": sessionStorage.getItem('id'),
-          "org_id": '1'//this.msg.org_id
+          "org_id": sessionStorage.getItem('orgID')
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {
@@ -261,7 +288,11 @@ export default {
               message: '提交成功'
             });
           } else {
-            that.$message.warning(response.data.message);
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning('提交失败');
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -278,15 +309,18 @@ export default {
       this.updateSource = row.rec_id;
       this.dialogFormVisible2 = true;
     },
-    toUpddateIncome(row) {
-      this.dialogFormVisible3 = true;
-    },
+//    toUpddateIncome(row) {
+//      this.dialogFormVisible3 = true;
+//    },
     toPreview() {
 //      this.info = this.param;
       this.dialogFormVisible4 = true;
     },
     getOrder(row) {
       this.dialogFormVisible = true;
+    },
+    toUpdate() {
+      this.dialogFormVisible3 = true;
     },
     close2() {
       this.dialogFormVisible = false;
@@ -319,6 +353,7 @@ export default {
           if (response.data.code == '200') {
           console.log("基本信息",response);
           let billTime = '', startTime = '', endTime = '';
+          const dataList = response.data.data;
           if(response.data.data.bill_at){
             billTime = formatDate(new Date(response.data.data.bill_at*1000));
           }else{
@@ -328,25 +363,43 @@ export default {
             startTime = formatDate(new Date(response.data.data.start_at*1000)).split(" ")[0];
             endTime = formatDate(new Date(response.data.data.back_at*1000)).split(" ")[0];
           }
+          that.getOrgName(dataList.op_id);
+          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            "id": response.data.data.op_id
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(function(response) {
 
-          that.msg = {
-            tour_no: response.data.data.tour_no,
-            op_id: response.data.data.op_id,
-            billTime: billTime,
-            team_num: response.data.data.team_num,
-            days: response.data.data.days,
-            total_income: response.data.data.total_income,
-            total_cost: response.data.data.total_cost,
-            gross_profit: response.data.data.gross_profit,
-            gross_rate: response.data.data.gross_rate,
-            product_name: response.data.data.product_name,
-            startTime: startTime,
-            endTime: endTime,
-            reduce_num: response.data.data.reduce_num,
-            guide: response.data.data.guide,
-            associations: response.data.data.associations,
-            org_id: response.data.data.org_id
-          };
+            if (response.data.isSuccess) {
+              that.msg = {
+                tour_no: dataList.tour_no,
+                op_id: dataList.op_id,
+                op_name: response.data.object.name,
+                billTime: billTime,
+                team_num: dataList.team_num,
+                days: dataList.days,
+                total_income: dataList.total_income,
+                total_cost: dataList.total_cost,
+                gross_profit: dataList.gross_profit,
+                gross_rate: dataList.gross_rate,
+                product_name: dataList.product_name,
+                startTime: startTime,
+                endTime: endTime,
+                reduce_num: dataList.reduce_num,
+                guide: dataList.guide,
+                associations: dataList.associations,
+                org_id: dataList.org_id
+              };
+            } else {
+              that.$message.success("加载数据失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+
+
         } else {
           that.$message.success("加载数据失败~");
         }
@@ -367,8 +420,28 @@ export default {
             that.totalMoney += parseFloat(item.income);
             that.number += parseInt(item.people_num);
           });
+          that.totalMoney = that.totalMoney.toFixed(2);
         } else {
           that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+    getOrgName(ID){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+        "id": ID
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+//        console.log(ID,'组织名称',response);
+        if (response.data.isSuccess) {
+          that.orgName = response.data.objects[0].name
+        } else {
+          this.$message.success("加载数据失败~");
         }
       }).catch(function(error) {
         console.log(error);
@@ -376,10 +449,11 @@ export default {
     }
   },
   created() {
-    console.log('params',this.$route.params);
-    if(this.$route.params.id){
-      this.param = this.$route.params.id;
-      this.statusBtn = this.$route.params.bill_status;
+//    console.log('query',this.$route.query);
+    if(this.$route.query.id){
+      this.param = this.$route.query.id;
+      this.statusBtn = this.$route.query.bill_status;
+      this.paramTour = this.$route.query.tour_no;
       this.loadData();
     }else{
       this.closeAdd();

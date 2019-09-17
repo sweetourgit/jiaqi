@@ -75,9 +75,9 @@
         </el-table>
       </div>
       <div class="footer">
-        <el-button @click="revoke" type="danger" size="small" class="table_details" v-if="approvalStatus != 1">撤销</el-button>
-        <el-button @click="adopt" type="success" size="small" class="table_details" v-if="approvalStatus == 1">通过</el-button>
-        <el-button @click="reject" type="warning" size="small" class="table_details" v-if="approvalStatus == 1">驳回</el-button>
+        <el-button @click="revoke" type="danger" size="small" class="table_details" v-if="approvalStatus != 1 && noReimbursement">撤销</el-button>
+        <el-button @click="adopt" type="success" size="small" class="table_details" v-if="approvalStatus == 1 && noReimbursement">通过</el-button>
+        <el-button @click="reject" type="warning" size="small" class="table_details" v-if="approvalStatus == 1 && noReimbursement">驳回</el-button>
         <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
       </div>
     </el-dialog>
@@ -119,7 +119,7 @@ export default {
   },
   data() {
     return {
-      totalMoney: '222.00',
+      totalMoney: '0',
       currentRow: true,
       approvalStatus: '',
       ruleForm: {
@@ -142,6 +142,8 @@ export default {
       dialogVisible12: false,
       explain: '',
       content: '',
+
+      noReimbursement: true
     }
   },
   computed: {
@@ -150,7 +152,13 @@ export default {
   watch: {
     pid: {
       handler:function(){
-        this.loadData()
+        if(this.pid != ''){
+          this.loadData();
+          console.log(this.$parent.$route.query.bill_status);
+          if(this.$parent.$route.query.bill_status == 5 || this.$parent.$route.query.bill_status == 6 || this.$parent.$route.query.bill_status == 7){
+            this.noReimbursement = false;
+          }
+        }
       }
     }
   },
@@ -185,7 +193,11 @@ export default {
             that.$message.success("已撤销~");
             that.closeAdd();
           } else {
-            that.$message.success("撤销失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("撤销失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -217,7 +229,11 @@ export default {
           that.closeAdd();
           that.content = '';
         } else {
-          that.$message.success("驳回失败~");
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("驳回失败~");
+          }
         }
       }).catch(function(error) {
         console.log(error);
@@ -244,7 +260,11 @@ export default {
           that.closeAdd();
           that.explain = '';
         } else {
-          that.$message.success("审核失败~");
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("审核失败~");
+          }
         }
       }).catch(function(error) {
         console.log(error);
@@ -267,7 +287,8 @@ export default {
 //      alert(id);
       const that = this;
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/recognitioninfo", {
-        "id": this.$parent.pid
+        "id": this.$parent.pid,
+        "is_temp": 1
       }, ).then(function(response) {
         if (response.data.code == '200') {
           console.log(response);
@@ -288,7 +309,7 @@ export default {
           that.totalMoney = total;
 //          that.approvalStatus = false;
         } else {
-//          that.$message.success("加载数据失败~");
+          that.$message.warning("加载数据失败~");
         }
       }).catch(function(error) {
         console.log(error);

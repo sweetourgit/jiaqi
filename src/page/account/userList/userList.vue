@@ -1,37 +1,21 @@
 <template>
   <div class="border_size">
-
     <div>
       <!--搜索框 -->
       <div class="search">
         <div class="search-first">
-          <el-select v-model="value" placeholder="全部组织">
-            <el-option
-              v-for="item in searchListOne"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
+          <el-select v-model="value" placeholder="全部组织" clearable>
+            <el-option v-for="item in searchListOne" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </div>
         <div class="search-second">
-          <el-select v-model="type" placeholder="名字">
-            <el-option
-              v-for="item in searchListTwo"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
+          <el-select v-model="type" placeholder="名字"clearable>
+            <el-option v-for="item in searchListTwo" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </div>
         <div class="search-third">
-          <el-select v-model="user" placeholder="状态">
-            <el-option
-              v-for="item in searchListThird"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
+          <el-select v-model="user" placeholder="状态"clearable>
+            <el-option v-for="item in searchListThird" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </div>
         <div class="search-input">
@@ -40,8 +24,6 @@
         <div class="button-search">
           <el-button  size="medium" type="primary" icon="el-icon-search" @click="searchSubmit"></el-button>
         </div>
-
-
       </div>
       <!--搜索end-->
       <div class="add-user">
@@ -540,7 +522,6 @@
     height: 70px;
     margin-left:25px;
     padding-top: 20px;
-    padding-left: 157px;
     border-bottom: 1px solid #F3F3F3;
   }
   .search-first{

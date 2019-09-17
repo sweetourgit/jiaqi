@@ -113,7 +113,9 @@
                 </el-table-column>
                 <el-table-column prop="approval_status" label="审批状态" align="center">
                   <template slot-scope="scope">
-                    {{status[scope.row.approval_status]}}
+                    <span v-if="scope.row.approval_status == 1">{{status[scope.row.approval_status]}}</span>
+                    <span v-if="scope.row.approval_status == 2" style="color: red;">{{status[scope.row.approval_status]}}</span>
+                    <span v-if="scope.row.approval_status == 3" style="color: green;">{{status[scope.row.approval_status]}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="approval_comments" label="审批意见" align="center">
@@ -152,7 +154,9 @@
                 </el-table-column>
                 <el-table-column prop="approval_status" label="审批状态" align="center">
                   <template slot-scope="scope">
-                    {{status[scope.row.approval_status]}}
+                    <span v-if="scope.row.approval_status == 1">{{status[scope.row.approval_status]}}</span>
+                    <span v-if="scope.row.approval_status == 2" style="color: red;">{{status[scope.row.approval_status]}}</span>
+                    <span v-if="scope.row.approval_status == 3" style="color: green;">{{status[scope.row.approval_status]}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="approval_comments" label="审批意见" align="center">
@@ -170,14 +174,14 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <el-dialog title="提示" :visible.sync="saveDialogVisible" width="30%">
-        <span><i class="el-icon-info"></i>是否保存后退出</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="saveDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="saveDialogVisible = false">直接退出</el-button>
-          <el-button type="primary" @click="saveExit">保存退出</el-button>
-        </span>
-      </el-dialog>
+      <!--<el-dialog title="提示" :visible.sync="saveDialogVisible" width="30%">-->
+        <!--<span><i class="el-icon-info"></i>是否保存后退出</span>-->
+        <!--<span slot="footer" class="dialog-footer">-->
+          <!--<el-button @click="saveDialogVisible = false">取 消</el-button>-->
+          <!--<el-button type="primary" @click="saveDialogVisible = false">直接退出</el-button>-->
+          <!--<el-button type="primary" @click="saveExit">保存退出</el-button>-->
+        <!--</span>-->
+      <!--</el-dialog>-->
       <GetOrderCode :dialogFormVisible="dialogFormVisible" @close="close2" :info="detailInfo"></GetOrderCode>
       <GetOrderInvoice :dialogFormVisible="dialogFormVisible4" @close="close2" :info="detailInfo"></GetOrderInvoice>
       <ReceiptCode :dialogFormVisible="dialogFormVisible2" @close="close2" :info="info"></ReceiptCode>
@@ -265,42 +269,72 @@ export default {
     },
 //    订单解绑
     unbinding() {
-      console.log(this.multipleSelection);
+//      console.log(this.multipleSelection);
       const that = this;
       let orderStr = '';
+      let orderN = '';
       this.multipleSelection.forEach(function (item, index, arr) {
-        orderStr += item.order_sn + ','
+        orderStr += item.order_sn + ',';
+        if(item.status != 1 || item.receipt_code.length != 0 || item.invoice.length != 0){
+          orderN += item.order_sn + ',';
+        }
       });
-      orderStr = orderStr.slice(0,orderStr.length-1);
-      this.$confirm('是否解绑该订单?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        that.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/unbind", {
-          "order_sn": orderStr
-        }, ).then(function(response) {
+      if(orderN != ''){
+        orderStr = orderStr.slice(0,orderStr.length-1);
+        orderN = orderN.slice(0,orderN.length-1);
+        this.$confirm(orderN + '订单在认款项中，是否解绑?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          that.bindFun(orderStr);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消解绑'
+          });
+        });
+      }else{
+        orderStr = orderStr.slice(0,orderStr.length-1);
+        this.$confirm('是否解绑该订单?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          that.bindFun(orderStr);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消解绑'
+          });
+        });
+      }
+
+    },
+    bindFun(orderStr){
+      const that = this;
+      that.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/unbind", {
+        "order_sn": orderStr
+      }, ).then(function(response) {
+        console.log(response);
+        if (response.data.code == '200') {
           console.log(response);
-          if (response.data.code == '200') {
-            console.log(response);
-            that.$message({
-              type: 'success',
-              message: '解绑成功!'
-            });
-            that.loadDataOne();
-            that.loadDatabyNum(1);
-            that.loadDatabyNum(2);
-          } else {
-            that.$message.success("加载数据失败~");
+          that.$message({
+            type: 'success',
+            message: '解绑成功!'
+          });
+          that.loadDataOne();
+          that.loadDatabyNum(1);
+          that.loadDatabyNum(2);
+        } else {
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning('解绑失败~');
           }
-        }).catch(function(error) {
-          console.log(error);
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消解绑'
-        });
+        }
+      }).catch(function(error) {
+        console.log(error);
       });
     },
 //    收款编码详情
@@ -337,14 +371,18 @@ export default {
               that.loadDatabyNum(1);
               that.loadDatabyNum(2);
             }else{
-              that.$message({
-                type: 'success',
-                message: response.data.data
-              });
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning('删除失败~');
+              }
             }
-
           } else {
-            that.$message.success("删除失败~");
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning('删除失败~');
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -428,28 +466,41 @@ export default {
     submit(){
       const that = this;
 //      console.log(this.param);
-      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/submitaudit", {
-        "tour_no": this.param
-      }, ).then(function(response) {
-        if (response.data.code == '200') {
-          console.log(response);
-          if(response.data.data == that.param){
-            that.$message({
-              type: 'success',
-              message: '认款申请成功'
-            });
-          }else{
-            that.$message({
-              type: 'success',
-              message: response.data.data
-            });
+      if(this.tableData.length == 0){
+        that.$message({
+          type: 'warning',
+          message: '没有绑定订单，不可提交认款！'
+        });
+      }else{
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/submitaudit", {
+          "tour_no": this.param
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log(response);
+            if(response.data.data.tour_no == that.param){
+              that.$message({
+                type: 'success',
+                message: '认款申请成功'
+              });
+            }else{
+              that.$message({
+                type: 'success',
+                message: response.data.data
+              });
+            }
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("认款提交失败~");
+            }
+
           }
-        } else {
-          that.$message.success("认款提交失败~");
-        }
-      }).catch(function(error) {
-        console.log(error);
-      });
+        }).catch(function(error) {
+          console.log(error);
+        });
+      }
+
     },
 //    搜索
     searchHand() {
@@ -473,7 +524,7 @@ export default {
         "order_sn": this.oid,
         "product_name": this.title,
         "unprocessedOrders": this.isHandleOrder,
-        "source_id": this.platform,
+        "distributor": this.platform,
         "contact_name": this.user,
         "limit": 0
       }, ).then(function(response) {
@@ -522,8 +573,8 @@ export default {
     }
   },
   created() {
-    if(this.$route.params.tour_no){
-      this.param = this.$route.params.tour_no;
+    if(this.$route.query.tour_no){
+      this.param = this.$route.query.tour_no;
       this.loadDataOne();
       this.loadDatabyNum(1);
       this.loadDatabyNum(2);

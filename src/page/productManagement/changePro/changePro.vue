@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative">
+  <div class="vivo" style="position:relative" @click="handleList">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
       <div class="btn" style="width:200px;position:absolute;z-index:99;top:0px;left:50%;">
         <el-button plain class="btn-button" @click="cancel()">取消</el-button>
@@ -97,7 +97,7 @@
               <span id="empty" v-show="empty">不能为空</span>
             </el-form-item>
             <!-- 头图 -->
-            <el-form-item label="头图" prop="avatarImages" label-width="120px">
+            <!-- <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative">
               </el-input>
               <el-upload :on-preview="handleImgClick" class="upload-demo uploadimage" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit='1' accept=".jpg,.png,.gif" :on-remove="handleRemove">
@@ -108,7 +108,24 @@
                   上传
                 </el-button>
               </el-upload>
+            </el-form-item> -->
+            <el-form-item label="头图" prop="avatarImages" label-width="120px">
+              <div class="img_upload">
+                <template v-for="(item, index) in ruleForm.avatarImages">
+                  <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
+                  <div class="img_div" :key="index" @click="imgDelete(item)">x</div>
+                </template>
+              </div>
+              <el-button class="img_button" type="info" @click="handleImgUpload">上传</el-button>
+              <div v-show="isImgUrlShow" class="show_div">
+                <img class="show_img" :src="imgUrlShow" alt="">
+              </div>
+              <span v-if="this.ruleForm.avatarImages == '' && a != false" style="position: absolute; top: 30px; left: 10px; font-size: 12px; color: #f56c6c;">头图不能为空</span>
             </el-form-item>
+            <!--头图弹窗-->
+            <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
+              <MaterialList :imgData="imgData" v-on:checkList="checkList" v-on:closeButton="imgUpload = false"></MaterialList>
+            </el-dialog>
             <!-- 视频 -->
             <el-form-item label="视频" prop="video" label-width="120px">
               <el-input v-model="ruleForm.video" disabled style="width:110px;float:left;margin-left:10px;position:relative">
@@ -195,7 +212,6 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="其他信息" name="fourth">
-
           <div class="cost">预订须知</div>
           <div>
             <div class="cost_button">
@@ -231,7 +247,6 @@
               </div>
             </div>
           </div>
-
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -248,6 +263,7 @@
 <script>
   // import BaseInfo from '@/page/productManagement/baseInfo/baseInfo'
   import {VueEditor} from 'vue2-editor'
+  import MaterialList from '@/common/Image'
   export default {
     name: "listInfo",
     components: {
@@ -256,6 +272,7 @@
     },
     data() {
       return {
+        a: false,//头图不能为空
         validaError:[],
         dialogVadi:false,//验证提示弹窗
         qqq:[],
@@ -323,6 +340,11 @@
         items: {
           text: ''
         },
+        //头图上传 ========
+        isImgUrlShow: false,
+        imgUrlShow: '', // 点击查看图片
+        imgUpload: false,     // 上传弹窗
+        imgData: [],
         //去程交通工具切换
         goRoad: [{
           value: '1',
@@ -870,12 +892,12 @@
               that.explain.push(obj.data.object.instructions[t])
             }
             that.notes = []
-            for (let t = 0; t < obj.data.object.instructions.length; t++ ){
-              that.notes.push(obj.data.object.instructions[t])
+            for (let t = 0; t < obj.data.object.others.length; t++ ){
+              that.notes.push(obj.data.object.others[t])
             }
             that.instructions = []
-            for (let t = 0; t < obj.data.object.instructions.length; t++ ){
-              that.notes.push(obj.data.object.instructions[t])
+            for (let t = 0; t < obj.data.object.others.length; t++ ){
+              that.instructions.push(obj.data.object.others[t])
             }
           })
           .catch(function (obj) {
@@ -959,6 +981,7 @@
       },
       //保存
       addsave(formName) {
+        this.a = true
         //基本信息亮点词
         let strengths=[];
         if(this.ruleForm.highlightWords1!=""){
@@ -1240,6 +1263,39 @@
       //日程信息切换
       tabTravel(myindex) {
         this.mynumber = myindex;
+      },
+      // 上传按钮
+      handleImgUpload() {
+        this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
+        this.imgUpload = true;
+      },
+      // 点击删除图片
+      imgDelete(data) {
+        this.ruleForm.avatarImages.splice(this.ruleForm.avatarImages.indexOf(data), 1);
+      },
+      handleList(a) {
+        if (a.target.id != 'showDiv') {
+          this.isImgUrlShow = false;
+          this.isImgUrlShowAvatar = false;
+          this.isImgUrlShowImg = false;
+        }
+      },
+      // 图片添加
+      checkList(data) {
+        this.ruleForm.avatarImages = data.map(v => {
+          return {
+            img_ID: v,
+          }
+        })
+      },
+      // 点击图片查看
+      imgClickShow(data) {
+        this.$http.post('http://192.168.2.65:3024' + '/picture/api/get',{
+            "id": data.img_ID,
+        }).then(res => {
+          this.isImgUrlShow = true;
+          this.imgUrlShow = "http://192.168.2.65:3009/upload" + res.data.object.url;
+        })
       },
       //去程添加经停、删除经停
       stopping(index) {
@@ -2015,5 +2071,16 @@
   .delete_button button:hover{color:#f56c6c; border: 1px solid #f56c6c;}
   .tab_size>>>.el-tabs__item{
     font-size: 25px;
+  }
+  .img_upload {
+    float: left;
+    min-width: 110px;
+    height: 40px;
+    margin-left: 10px;
+    border: solid 1px #E4E7ED;
+    background-color: #f5f7fa;
+  }
+  .img_button {
+    float: left;
   }
 </style>

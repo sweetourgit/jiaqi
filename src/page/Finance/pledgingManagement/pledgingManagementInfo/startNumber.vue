@@ -5,7 +5,7 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div style="height: 220px;">
           <el-form-item :label="frameTitle2" prop="number" label-width="150px" style="float:left;margin-left: -40px;">
-            <el-input v-model="ruleForm.number" class="input" placeholder="请输入"></el-input>
+            <el-input v-model="ruleForm.number" class="input" placeholder="请输入" maxlength="80" show-word-limit></el-input>
           </el-form-item><br /><br />
           <div class="footer">
             <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">修 改</el-button>
@@ -67,7 +67,11 @@ export default {
               that.$message.success("添加成功！");
               that.$emit('close', false);
             } else {
-              that.$message.warning("不可重复添加同意码值~");
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning("添加失败~");
+              }
             }
           }).catch(function(error) {
             console.log(error);

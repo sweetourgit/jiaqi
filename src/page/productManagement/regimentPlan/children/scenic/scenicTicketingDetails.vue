@@ -20,7 +20,7 @@
         <el-col :span="8">
           <div class="button">
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
-            <el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 1 || (statusBtn == 3 && approved != 1)">修 改</el-button>
+            <!--<el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 4 || statusBtn == 6">修 改</el-button>-->
             <el-button class="el-button" type="primary" @click="pledging" v-if="statusBtn == 1 || statusBtn == 3">认 款</el-button>
             <el-button class="el-button" type="danger" @click="delInfo" v-if="statusBtn == 1 || (statusBtn == 3 && approved != 1)">删 除</el-button>
           </div>
@@ -34,7 +34,7 @@
         </el-col>
         <el-col :span="8">
           <div class="info">
-            <p>操作人：</p> {{baseInfo.basic_info.create_uid || ""}}
+            <p>操作人：</p> {{orgName}} -- {{baseInfo.basic_info.create_uid || ""}}
           </div>
         </el-col>
         <el-col :span="8">
@@ -80,7 +80,7 @@
       <el-row>
         <el-col :span="8">
           <div class="info">
-            <p>毛利率：</p>{{baseInfo.basic_order_info.gross_rate || ""}}
+            <p>毛利率：</p>{{baseInfo.basic_order_info.gross_rate + '%' || ""}}
           </div>
         </el-col>
         <el-col :span="8">
@@ -109,7 +109,7 @@
           <el-tab-pane label="订单" name="order">
             <div class="table_trip" style="width: 88%;">
               <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
-                <el-table-column prop="id" label="订单ID" align="center" width="80%">
+                <el-table-column prop="order_sn" label="订单ID" align="center">
                 </el-table-column>
                 <el-table-column prop="product_name" label="产品名称" align="center">
                 </el-table-column>
@@ -216,13 +216,13 @@
 </template>
 <script type="text/javascript">
 import GetOrder from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrder'
-import ToUpdate from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpdate'
+//import ToUpdate from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpdate'
 import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   name: "scenicTicketingDetails",
   components: {
     GetOrder,
-    ToUpdate
+//    ToUpdate
   },
   data() {
     return {
@@ -234,6 +234,7 @@ export default {
         basic_info: {},
         basic_order_info: {}
       },
+      orgName: '',
 //      报账状态
       statusBtn: '',
       approved: '',
@@ -291,12 +292,13 @@ export default {
       });
     },
     closeAdd() {
-      this.$router.push({ path: "/regimentPlan/scenicTicketingList" });
+//      this.$router.push({ path: "/regimentPlan/scenicTicketingList" });
+      this.$router.go(-1);
     },
-    toUpdate() {
-      this.dialogFormVisible2 = true;
-
-    },
+//    toUpdate() {
+//      this.dialogFormVisible2 = true;
+//
+//    },
     delInfo() {
       const that = this;
       this.$confirm('是否删除此团期计划?', '提示', {
@@ -314,7 +316,11 @@ export default {
             });
             that.closeAdd();
           } else {
-            that.$message.success("删除失败~");
+            if(response.data.message){
+              that.$message.success(response.data.message);
+            }else{
+              that.$message.success("删除失败~");
+            }
           }
         }).catch(function(error) {
           console.log(error);
@@ -330,36 +336,60 @@ export default {
     unbinding(row) {
       console.log(row);
       const that = this;
-      this.$confirm('是否解绑此订单?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        that.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/unbind", {
-          "order_sn": row['order_sn']
-        }, ).then(function(response) {
+      if(row.status != 1 || row.receipt_code.length != 0 || row.invoice.length != 0){
+        this.$confirm('此订单在认款项中，是否解绑?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          that.bindFun(row['order_sn']);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消解绑'
+          });
+        });
+      }else{
+        this.$confirm('是否解绑此订单?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          that.bindFun(row['order_sn']);
+        }).catch(() => {
+          that.$message({
+            type: 'info',
+            message: '已取消解绑'
+          });
+        });
+      }
+
+    },
+    bindFun(order){
+      const that = this;
+      that.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/unbind", {
+        "order_sn": order
+      }, ).then(function(response) {
+        console.log(response);
+        if (response.data.code == '200') {
           console.log(response);
-          if (response.data.code == '200') {
-            console.log(response);
-            that.$message({
-              type: 'success',
-              message: '解绑成功!'
-            });
-            that.getBaseInfo();
-            that.getTableData();
-            that.loadDatabyNum(1);
-            that.loadDatabyNum(2);
-          } else {
+          that.$message({
+            type: 'success',
+            message: '解绑成功!'
+          });
+          that.getBaseInfo();
+          that.getTableData();
+          that.loadDatabyNum(1);
+          that.loadDatabyNum(2);
+        } else {
+          if(response.data.message){
+            that.$message.success(response.data.message);
+          }else{
             that.$message.success("加载数据失败~");
           }
-        }).catch(function(error) {
-          console.log(error);
-        });
-      }).catch(() => {
-        that.$message({
-          type: 'info',
-          message: '已取消解绑'
-        });
+        }
+      }).catch(function(error) {
+        console.log(error);
       });
     },
     getOrder(row) {
@@ -383,7 +413,9 @@ export default {
           console.log(response);
           response.data.data.basic_info.created_at = formatDate(new Date(response.data.data.basic_info.created_at*1000));
           response.data.data.basic_info.begin_at = formatDate(new Date(response.data.data.basic_info.begin_at *1000));
+          response.data.data.basic_info.begin_at = response.data.data.basic_info.begin_at.split(' ')[0];
           response.data.data.basic_info.end_at = formatDate(new Date(response.data.data.basic_info.end_at*1000));
+          response.data.data.basic_info.end_at = response.data.data.basic_info.end_at.split(' ')[0];
           that.baseInfo = response.data.data;
           that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
             "id": that.baseInfo.basic_info.create_uid
@@ -401,6 +433,7 @@ export default {
           }).catch(function(error) {
             console.log(error);
           });
+          that.getOrgName(response.data.data.basic_info.create_uid)
         } else {
           that.$message.success("加载数据失败~");
         }
@@ -461,19 +494,42 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
+    },
+    getOrgName(ID){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+        "id": ID
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+//        console.log(ID,'组织名称',response);
+        if (response.data.isSuccess) {
+          that.orgName = response.data.objects[0].name
+        } else {
+          this.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     }
   },
   created() {
 //    console.log(this.$route.params);
-    this.param = this.$route.params.id;
-    this.statusBtn = this.$route.params.bill_status;
-    this.paramTour = this.$route.params.tour_no;
-    this.approved = this.$route.params.approved;
+    if(this.$route.query.id){
+      this.param = this.$route.query.id;
+      this.statusBtn = this.$route.query.bill_status;
+      this.paramTour = this.$route.query.tour_no;
+      this.approved = this.$route.query.approved;
 
-    this.getBaseInfo();
-    this.getTableData();
-    this.loadDatabyNum(1);
-    this.loadDatabyNum(2);
+      this.getBaseInfo();
+      this.getTableData();
+      this.loadDatabyNum(1);
+      this.loadDatabyNum(2);
+    }else{
+      this.closeAdd();
+    }
   },
   mounted() {}
 }

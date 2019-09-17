@@ -222,7 +222,7 @@
             <template slot-scope="scope">
               <el-input :maxlength="10"  v-model="ccc[scope.$index].codePrefix" :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'" @blur="fucking" ></el-input>
               <span >-</span>
-              <span >{{</span>
+              <span v-text="'{{'"></span>
               <span >日期</span>
 
               <span >}}</span>
@@ -283,7 +283,7 @@
         <el-dialog
           title="成本"
           :visible.sync="basicbutton"
-          width="30%"
+          width="50%"
           append-to-body>
           <div>
             <el-button  type="primary" @click="addcost">添加</el-button>
@@ -296,26 +296,12 @@
             <div style="margin-top: 10px;float: left;margin-left: 30px;">人均结算价({{count}})</div>
           </div>
           <div style="margin-top: 100px">
-            <el-table
-              ref="multipleTable12"
-              :data="tableData12"
-              tooltip-effect="dark"
-              style="width: 100%"
-              @selection-change="handleSelectionChange"
-              @select="changselet"
-            >
-              <el-table-column
-                type="selection"
-                width="55">
-              </el-table-column>
-              <el-table-column
-                label="序号"
-                width="120">
+            <el-table ref="multipleTable12":data="tableData12"tooltip-effect="dark"style="width: 100%"@selection-change="handleSelectionChange"@select="changselet">
+              <el-table-column type="selection" width="55"></el-table-column>
+              <el-table-column label="序号" width="120">
                 <template slot-scope="scope">{{ scope.row.id }}</template>
               </el-table-column>
-              <el-table-column
-                prop="supplierTypeEX"
-                label="成本类型"
+              <el-table-column prop="supplierTypeEX" label="成本类型"
                 width="120">
               </el-table-column>
               <el-table-column
@@ -334,35 +320,23 @@
 
         </el-dialog>
         <!--添加-->
-        <el-dialog
-          title="提示"
-          :visible.sync="cost"
-          width="30%"
-          append-to-body
-        >
+        <el-dialog title="提示" :visible.sync="cost" width="40%" append-to-body>
           <el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="供应商" prop="region">
+            <!-- <el-form-item label="供应商" prop="region">
               <el-select v-model="ruleForm1.region" placeholder="请选择" @change="changys">
-                <el-option
-                  v-for="item in options2"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
+                <el-option v-for="item in options2":key="item.value":label="item.label":value="item.value"></el-option>
               </el-select>
+            </el-form-item> -->
+            <el-form-item label="供应商" prop="region">
+              <el-autocomplete v-model="ruleForm1.region" :fetch-suggestions="querySearch5"placeholder="请输入供应商" :trigger-on-focus="false"@select="departure" style="width: 200px"></el-autocomplete>
             </el-form-item>
             <el-form-item label="成本类型" prop="costType">
-              <el-select v-model="ruleForm1.costType" placeholder="请选择">
-                <el-option
-                  v-for="item in options3"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
+              <el-select v-model="ruleForm1.costType" placeholder="请选择" style="width: 200px">
+                <el-option v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
-            </el-form-item>
-            <el-form-item label="金额" prop="name" style="width: 320px">
-              <el-input v-model="ruleForm1.name"></el-input>
+             </el-form-item>
+            <el-form-item label="金额" prop="name">
+              <el-input v-model="ruleForm1.name" style="width: 200px"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button v-if="this.chengben.length == 0" type="primary" @click="submitForm1('ruleForm1')">添加</el-button>
@@ -423,33 +397,13 @@
           value: '选项5',
           label: '北京烤鸭'
         }],
-        options3: [{
-          value: '选项1',
-          label: '金糕'
-        }, {
-          value: '选项2',
-          label: '皮奶'
-        }, {
-          value: '选项3',
-          label: '仔煎'
-        }, {
-          value: '选项4',
-          label: '须面'
-        }, {
-          value: '选项5',
-          label: '京烤鸭'
-        }],
+        options3: [],//成本类型
         value2: '',
         rules1: {
-          name: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
-          ],
-          region: [
-            { required: true, message: '请选择活动区1域', trigger: 'change' }
-          ],
-          costType:[
-            { required: true, message: '请选择活动区1域', trigger: 'change' }
-          ]
+          name: [{ required: true, message: '请输入金额', trigger: 'change' }, 
+                 {pattern: /^[+]{0,1}(\d+)$/, message: '金额需为正整数' }],
+          region: [{ required: true, message: '请选择供应商名称', trigger: 'change' }],
+          costType:[{ required: true, message: '请选择成本类型', trigger: 'change' }],
         },
         cost:false,
         tableData12: [{
@@ -872,10 +826,63 @@
         abc: false,
         array1:'',
         team:'',
-        chengben:[]
+        chengben:[],
+        supplier_id:0,
+
       }
     },
     methods: {
+      //供应商模糊查询
+      querySearch5(queryString3, cb) {
+        this.tableData2 = []
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
+          "object": {
+            name: queryString3,
+            UserState:-1,
+          SupplierType:-1,
+          }
+        }).then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.tableData2.push({
+              "value": res.data.objects[i].name,
+              "id": res.data.objects[i].id,
+              "supplierType": res.data.objects[i].supplierType
+            })
+            this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+          }
+          var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
+          cb(results)
+        }).catch(err => {
+          //console.log(err);
+        })
+      },
+      createFilter(queryString1){
+        return (restaurant) => {
+          return (restaurant.value);
+        }
+      },
+      departure(item){
+        console.log(item)
+        // this.productPos = item.id;
+        // this.originPlace = item.value;
+      },
+      //成本类型
+      themeList(){
+        this.borrowingType = [];
+        this.$http.post('http://192.168.2.65:3017/universal/supplier/api/dictionaryget?enumname=SupplierType')
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.borrowingType.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].name
+            })
+          }
+        })
+        .then(res =>{
+          //this.borrowingType =  res.data.objects;
+        })
+      
+      },
       handleClick(tab, event) {
 //          console.log(tab, event);
       },
@@ -964,9 +971,12 @@
                 "code": "string",
                 "createUser": "string",
                 "packageID": this.team,
-                "supplierID": this.ruleForm1.supplierID,
-                "name": this.ruleForm1.region1,
-                "supplierType": this.ruleForm1.supplierTypeEX,
+                //"supplierID": this.ruleForm1.supplierID,
+                "supplierID":this.supplier_id,
+                //"name": this.ruleForm1.region1,
+                "name":this.ruleForm1.region,
+                //"supplierType": this.ruleForm1.supplierTypeEX,
+                "suppliertype":this.ruleForm1.costType,
                 "money": this.ruleForm1.name
               }
             }).then(res => {
@@ -976,6 +986,30 @@
                 }
               }).then(res => {
                 this.tableData12 = res.data.objects
+                this.tableData12.forEach(function (v,k,arr) {
+                  if(arr[k]['suppliertype'] == 0){
+                    arr[k]['suppliertype'] = '船票'
+                  }else if(arr[k]['suppliertype'] == 1) {
+                    arr[k]['suppliertype'] = '地接社'
+                  }else if(arr[k]['suppliertype'] == 2) {
+                    arr[k]['suppliertype'] = '机票'
+                  }else if(arr[k]['suppliertype'] == 3) {
+                    arr[k]['suppliertype'] = '拼票'
+                  }else if(arr[k]['suppliertype'] == 4) {
+                    arr[k]['suppliertype'] = '酒店'
+                  }else if(arr[k]['suppliertype'] == 5) {
+                    arr[k]['suppliertype'] = '签证'
+                  }else if(arr[k]['suppliertype'] == 6) {
+                    arr[k]['suppliertype'] = '合作拼团社'
+                  }else if(arr[k]['suppliertype'] == 7) {
+                    arr[k]['suppliertype'] = '游轮'
+                  }else if(arr[k]['suppliertype'] == 8) {
+                    arr[k]['suppliertype'] = '火车票'
+                  }else if(arr[k]['suppliertype'] == 9) {
+                    arr[k]['suppliertype'] = '汽车票'
+                  }
+              
+                })
               })
               this.cost = false
             })
@@ -990,14 +1024,18 @@
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/save', {
               "object": {
+                // "supplierID": this.ruleForm1.supplierID,
+                // "name": this.ruleForm1.region1,
+                // "supplierType": this.ruleForm1.supplierTypeEX,
+                // "money": this.ruleForm1.name
                 "id": this.chengben[0].id,
                 "createTime": 0,
                 "code": "string",
                 "createUser": "string",
                 "packageID": this.team,
-                "supplierID": this.ruleForm1.supplierID,
-                "name": this.ruleForm1.region1,
-                "supplierType": this.ruleForm1.supplierTypeEX,
+                "supplierID":this.supplier_id,
+                "name":this.ruleForm1.region,
+                "suppliertype":this.ruleForm1.supplierType,
                 "money": this.ruleForm1.name
 
               }
@@ -1008,6 +1046,30 @@
                 }
               }).then(res => {
                 this.tableData12 = res.data.objects
+                this.tableData12.forEach(function (v,k,arr) {
+                  if(arr[k]['suppliertype'] == 0){
+                    arr[k]['suppliertype'] = '船票'
+                  }else if(arr[k]['suppliertype'] == 1) {
+                    arr[k]['suppliertype'] = '地接社'
+                  }else if(arr[k]['suppliertype'] == 2) {
+                    arr[k]['suppliertype'] = '机票'
+                  }else if(arr[k]['suppliertype'] == 3) {
+                    arr[k]['suppliertype'] = '拼票'
+                  }else if(arr[k]['suppliertype'] == 4) {
+                    arr[k]['suppliertype'] = '酒店'
+                  }else if(arr[k]['suppliertype'] == 5) {
+                    arr[k]['suppliertype'] = '签证'
+                  }else if(arr[k]['suppliertype'] == 6) {
+                    arr[k]['suppliertype'] = '合作拼团社'
+                  }else if(arr[k]['suppliertype'] == 7) {
+                    arr[k]['suppliertype'] = '游轮'
+                  }else if(arr[k]['suppliertype'] == 8) {
+                    arr[k]['suppliertype'] = '火车票'
+                  }else if(arr[k]['suppliertype'] == 9) {
+                    arr[k]['suppliertype'] = '汽车票'
+                  }
+              
+                })
               })
               this.cost = false
             })
@@ -1044,17 +1106,17 @@
 
           })
 
-        this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
-        }).then(res => {
+        // this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
+        // }).then(res => {
 
-          for (var i = 0; i<res.data.objects.length;i++){
-            arry.push(res.data.objects[i])
-            arry[i].label = arry[i].name
-            arry[i].value = arry[i].id
-          }
-          this.options3 = arry
+        //   for (var i = 0; i<res.data.objects.length;i++){
+        //     arry.push(res.data.objects[i])
+        //     arry[i].label = arry[i].name
+        //     arry[i].value = arry[i].id
+        //   }
+        //   this.options3 = arry
 
-        })
+        // })
         /* console.log(this.chengben[0].id)*/
         this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/get', {
           "id": this.chengben[0].id
@@ -1072,15 +1134,56 @@
           this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/delete', {
             "id": this.chengben[i].id
           }).then(res => {
-
           })
         }
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        });
-        this.basicbutton = false
-        this.chengben = []
+        this.$confirm("确认删除?", "提示", {
+           confirmButtonText: "确定",
+           cancelButtonText: "取消",
+           type: "warning"
+        }).then(res => {
+          if(res.data.isSuccess == true){
+             this.$message.success("删除成功");
+             this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/list', {
+                "object": {
+                  "packageID": this.team,
+                }
+              }).then(res => {
+                this.tableData12 = res.data.objects
+                this.tableData12.forEach(function (v,k,arr) {
+                  if(arr[k]['suppliertype'] == 0){
+                    arr[k]['suppliertype'] = '船票'
+                  }else if(arr[k]['suppliertype'] == 1) {
+                    arr[k]['suppliertype'] = '地接社'
+                  }else if(arr[k]['suppliertype'] == 2) {
+                    arr[k]['suppliertype'] = '机票'
+                  }else if(arr[k]['suppliertype'] == 3) {
+                    arr[k]['suppliertype'] = '拼票'
+                  }else if(arr[k]['suppliertype'] == 4) {
+                    arr[k]['suppliertype'] = '酒店'
+                  }else if(arr[k]['suppliertype'] == 5) {
+                    arr[k]['suppliertype'] = '签证'
+                  }else if(arr[k]['suppliertype'] == 6) {
+                    arr[k]['suppliertype'] = '合作拼团社'
+                  }else if(arr[k]['suppliertype'] == 7) {
+                    arr[k]['suppliertype'] = '游轮'
+                  }else if(arr[k]['suppliertype'] == 8) {
+                    arr[k]['suppliertype'] = '火车票'
+                  }else if(arr[k]['suppliertype'] == 9) {
+                    arr[k]['suppliertype'] = '汽车票'
+                  }
+              
+                })
+              })
+             //this.basicbutton = false
+             //this.chengben = []
+            }
+         })
+        // this.$message({
+        //   message: '删除成功',
+        //   type: 'success'
+        // });
+        // this.basicbutton = false
+        // this.chengben = []
       },
       addcost(){
         console.log(this.chengben)
@@ -1108,17 +1211,17 @@
 
           })
 
-        this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
-        }).then(res => {
+        // this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
+        // }).then(res => {
 
-          for (var i = 0; i<res.data.objects.length;i++){
-            arry.push(res.data.objects[i])
-            arry[i].label = arry[i].name
-            arry[i].value = arry[i].id
-          }
-          this.options3 = arry
+        //   for (var i = 0; i<res.data.objects.length;i++){
+        //     arry.push(res.data.objects[i])
+        //     arry[i].label = arry[i].name
+        //     arry[i].value = arry[i].id
+        //   }
+        //   this.options3 = arry
 
-        })
+        // })
 
         this.cost = true
       },
@@ -1136,6 +1239,30 @@
           }
         }).then(res => {
           this.tableData12 = res.data.objects
+          this.tableData12.forEach(function (v,k,arr) {
+            if(arr[k]['suppliertype'] == 0){
+              arr[k]['suppliertype'] = '船票'
+            }else if(arr[k]['suppliertype'] == 1) {
+              arr[k]['suppliertype'] = '地接社'
+            }else if(arr[k]['suppliertype'] == 2) {
+              arr[k]['suppliertype'] = '机票'
+            }else if(arr[k]['suppliertype'] == 3) {
+              arr[k]['suppliertype'] = '拼票'
+            }else if(arr[k]['suppliertype'] == 4) {
+              arr[k]['suppliertype'] = '酒店'
+            }else if(arr[k]['suppliertype'] == 5) {
+              arr[k]['suppliertype'] = '签证'
+            }else if(arr[k]['suppliertype'] == 6) {
+              arr[k]['suppliertype'] = '合作拼团社'
+            }else if(arr[k]['suppliertype'] == 7) {
+              arr[k]['suppliertype'] = '游轮'
+            }else if(arr[k]['suppliertype'] == 8) {
+              arr[k]['suppliertype'] = '火车票'
+            }else if(arr[k]['suppliertype'] == 9) {
+              arr[k]['suppliertype'] = '汽车票'
+            }
+        
+          })
         })
         this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
           "id": this.team
@@ -1251,6 +1378,8 @@
         this.value = '';
         this.productPrefix = '';
         this.productBehind = '';
+        this.originPlace = '';
+        this.originMod = '';
       },
       handleDelete(){
         this.$confirm('此操作将删除该跟团游信息', '提示', {
@@ -1423,6 +1552,7 @@
       //搜索
       searchHand(){
         this.pageNum = 1;
+        console.log(this.originMod)
 
         if (!this.productTitle){
           this.productTitle = ""
@@ -1434,12 +1564,13 @@
         }else{
           this.pageNum = 1;
         }
-        if (!this.productPos){
+
+        if (!this.productPos || !this.originPlace){
           this.productPos = 0
         }else{
           this.pageNum = 1;
         }
-        if (!this.productMod){
+        if (!this.productMod || !this.originMod){
           this.productMod = 0
         }else{
           this.pageNum = 1;
@@ -1453,20 +1584,15 @@
             "pageSize": this.pagesize,
             "total": 0,
             "object": {
-              "id": 0,
+              "id": that.productId == '' ? 0 : that.productId,
               "title": that.productTitle,
               "createUser": that.productUser,
-              "minPrice": 0,
-              "maxPrice": 0,
+              "minPrice": that.productPrefix == '' ? 0 : that.productPrefix,
+              "maxPrice": that.productBehind == '' ? 0 : that.productBehind,
               "podID": that.productPos,
               "destinationID": that.productMod
             }
           },
-          {
-            headers:{
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
         )
           .then(function (obj) {
             that.total = obj.data.total;
@@ -1519,11 +1645,7 @@
         console.log(row);
       },
       handleSizeChange(val) {
-        if(this.productId == ''){
-          this.productId = 0;
-        }else{
-          this.pageNum = 1;
-        }
+    
         if (!this.productTitle){
           this.productTitle = ""
         }else{
@@ -1544,16 +1666,7 @@
         }else{
           this.pageNum = 1;
         }
-        if (!this.productPrefix){
-          this.productPrefix = 0
-        }else{
-          this.pageNum = 1;
-        }
-        if (!this.productBehind){
-          this.productBehind = 0
-        }else{
-          this.pageNum = 1;
-        }
+
         this.pagesize = val
         var that = this
         this.$http.post(
@@ -1563,11 +1676,11 @@
             "pageSize": val,
             "total": 0,
             "object": {
-              "id": that.productId,
+              "id": that.productId == '' ? 0 : that.productId,
               "title": that.productTitle,
               "createUser": that.productUser,
-              "minPrice": that.productPrefix,
-              "maxPrice": that.productBehind,
+              "minPrice": that.productPrefix == '' ? 0 : that.productPrefix,
+              "maxPrice": that.productBehind == '' ? 0 : that.productBehind,
               "podID": that.productPos,
               "destinationID": that.productMod
             }
@@ -1597,11 +1710,7 @@
           })
       },
       handleCurrentChange(val) {
-        if(this.productId == ''){
-          this.productId = 0;
-        }else{
-          this.pageNum = 1;
-        }
+
         if (!this.productTitle){
           this.productTitle = ""
         }else{
@@ -1622,16 +1731,7 @@
         }else{
           this.pageNum = 1;
         }
-        if (!this.productPrefix){
-          this.productPrefix = 0
-        }else{
-          this.pageNum = 1;
-        }
-        if (!this.productBehind){
-          this.productBehind = 0
-        }else{
-          this.pageNum = 1;
-        }
+
         this.pageNum = val;
         var that = this
         this.$http.post(
@@ -1641,11 +1741,11 @@
             "pageSize": this.pagesize,
             "total": 0,
             "object": {
-              "id": that.productId,
+              "id": that.productId == '' ? 0 : that.productId,
               "title": that.productTitle,
               "createUser": that.productUser,
-              "minPrice": that.productPrefix,
-              "maxPrice": that.productBehind,
+              "minPrice": that.productPrefix == '' ? 0 : that.productPrefix,
+              "maxPrice": that.productBehind == '' ? 0 : that.productBehind,
               "podID": that.productPos,
               "destinationID": that.productMod
             }
@@ -1814,164 +1914,6 @@
           }
         }
       },
-      //添加属性值功能
-      addInput(b,key){
-        this.aa = true;
-        this.di++;
-        // console.log(b);
-        // console.log(b.value);
-        // console.log(key);
-        // console.log(this.di);
-
-        // 向指定的属性数组中添加属性值
-        this.addtable[this.addtable.length-1].allprice[key].value.push({
-          di:key,
-          price:'',
-          pp : false,
-          forbidden:false,
-        })
-        for(var ol =0;ol<b.value.length;ol++){
-          b.value[ol].forbidden = false;
-          console.log(key);
-          console.log(ol);
-          console.log("--------------")
-          // document.getElementById('vv'+key+ol).style.border = 'solid 1px #b3d8ff'
-          // document.getElementById('vv'+key+ol).style.color = '#409EFF'
-          // document.getElementById('vv'+key+ol).style.background = '#ecf5ff'
-          // console.log(23);
-
-        };
-        console.log(this.sku);
-
-      },
-      // 确认属性值
-      gain(){
-        for(var kl = 0;kl<this.addtable[this.addtable.length-1].allprice.length-1;kl++){
-          // console.log(this.addtable[this.addtable.length-1].allprice[kl].value);
-          if(this.addtable[this.addtable.length-1].allprice[kl].value.length == 0){
-            this.abc = true
-          }
-        }
-        if(this.abc){
-          this.$message({
-            showClose: true,
-            message: '请为每个属性至少添加一个属性值',
-            type: 'error'
-          });
-        } else {
-          // 属性输入框和删除按钮
-          this.aa = false;
-          // 属性确定之后的按钮
-          this.bb = true;
-          this.qq = false;
-          this.again = true;
-          this.pp = false;
-          this.close = true;
-          this.addsku = true;
-          // 属性按钮被禁用
-          this.xianshi = true;
-          // for(var ok = 0;ok<this.buttonList.length;ok++){
-          //   this.buttonList[ok].forbidden = true;
-          //   document.getElementById('kk'+ok).style.border = 'dashed 1px #c2c2c2'
-          //   document.getElementById('kk'+ok).style.color = '#c0c4cc'
-          //   document.getElementById('kk'+ok).style.background = '#fff'
-          // }
-          for(var lo = 0;lo<this.arr.length;lo++){
-            document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
-          }
-        }
-
-        this.abc = false
-      },
-      // 重新设计属性值
-      back(){
-        this.aa = true;
-        this.bb = false;
-        this.qq = true;
-        this.again = false;
-        this.pp = true;
-        this.close = false;
-        this.addsku = false;
-        console.log(this.sku);
-        this.sku[this.sku.length-1].price.splice(0,this.sku[this.sku.length-1].price.length);
-        for(var op = 0;op<this.addtable[this.addtable.length-1].allprice.length-1;op++){
-          for(var ll = 0;ll<this.addtable[this.addtable.length-1].allprice[op].value.length;ll++){
-            this.addtable[this.addtable.length-1].allprice[op].value[ll].forbidden = false;
-            this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false;
-            document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'
-            document.getElementById('vv'+op+ll).style.color = '#409EFF'
-            document.getElementById('vv'+op+ll).style.background = '#ecf5ff'
-          }
-        }
-        console.log(this.sku);
-
-        // 属性恢复使用
-        if(this.addtable[this.addtable.length-1].allprice.length < 4){
-          for(var ok = 0;ok<this.buttonList.length;ok++){
-            this.buttonList[ok].forbidden = false;
-            document.getElementById('kk'+ok).style.border = 'solid 1px #dcdfe6'
-            document.getElementById('kk'+ok).style.color = '#606266'
-          }
-          for(var lo = 0;lo<this.arr.length;lo++){
-            document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
-          }
-        }else if(this.addtable[this.addtable.length-1].allprice.length == 4){
-          // 全部禁用,并且禁用样式
-          for(var ok = 0;ok<this.buttonList.length;ok++){
-            this.buttonList[ok].forbidden = true;
-            document.getElementById('kk'+ok).style.border = 'solid 1px #c2c2c2'
-            document.getElementById('kk'+ok).style.color = '#c0c4cc'
-            document.getElementById('kk'+ok).style.background = '#fff'
-          }
-          // 选中的不禁用,并且选中样式
-          for(var lo = 0;lo<this.arr.length;lo++){
-            this.buttonList[this.arr[lo].id].forbidden =false;
-            document.getElementById('kk'+this.arr[lo].id).style.border = 'solid 1px #409EFF'
-            document.getElementById('kk'+this.arr[lo].id).style.color= '#409EFF'
-          }
-        }
-      },
-      // 属性值按钮按下
-      choice(e,key,kk,lp){
-        // 当这个按钮还处于未被按下的情况下,按下
-        if(kk.value[key].pp == false){
-          // 先禁用所有的属性值按钮
-          for(var ui = 0;ui<kk.value.length;ui++){
-            kk.value[ui].forbidden = true;
-          }
-          this.lm = this.addtable[this.addtable.length-1].allprice[lp].value[key].di;
-          document.getElementById('vv'+lp+key).style.border = 'solid 1px #409eff'
-          document.getElementById('vv'+lp+key).style.color = '#fff'
-          document.getElementById('vv'+lp+key).style.background = '#409eff'
-          // 再解禁选中的按钮
-          kk.value[key].forbidden = false;
-          // 让选中的按钮处于按下的状态
-          kk.value[key].pp = true;
-          // 给这个按钮选中样式
-          // 将这个按钮的相关的值添加到sku这个数组中
-          this.sku[this.sku.length-1].price.push({
-            ID:kk.id,
-            zhi:kk.value[key].price,
-            name:kk.property,
-          })
-          console.log(this.sku[this.sku.length-1].price)
-          console.log(lp);
-        }else if(kk.value[key].pp == true){
-          for(var ui = 0;ui<kk.value.length;ui++){
-            kk.value[ui].forbidden = false;
-          }
-          kk.value[key].pp = false;
-          console.log(this.sku[this.sku.length-1].price);
-          console.log(key)
-          this.sku[this.sku.length-1].price.splice(lp,1);
-          document.getElementById('vv'+lp+key).style.border = 'solid 1px #b3d8ff'
-          document.getElementById('vv'+lp+key).style.color = '#409EFF'
-          document.getElementById('vv'+lp+key).style.background = '#ecf5ff'
-        }
-
-      },
       qqq(){
         console.log(this.ccc)
         for(var i = 0; i < this.ccc.length;i++ ){
@@ -1988,101 +1930,51 @@
         }
         this.merchandise = data;
       },
-      // 生成sku
-      skuadd(){
-        console.log(this.addtable[this.addtable.length-1].allprice)
-        if(this.sku[this.sku.length-1].price.length<this.addtable[this.addtable.length-1].allprice.length-1){
-          this.$message({
-            showClose: true,
-            message: '请为每一个属性选择要添加的属性值',
-            type: 'error'
-          });
-        }else{
-          // 获取点击按钮后的数据
-          for(var op = 0;op<this.addtable[this.addtable.length-1].allprice.length-1;op++){
-            for(var ll = 0;ll<this.addtable[this.addtable.length-1].allprice[op].value.length;ll++){
-              this.addtable[this.addtable.length-1].allprice[op].value[ll].forbidden = false;
-              this.addtable[this.addtable.length-1].allprice[op].value[ll].pp  = false;
-              document.getElementById('vv'+op+ll).style.border = 'solid 1px #b3d8ff'
-              document.getElementById('vv'+op+ll).style.color = '#409EFF'
-              document.getElementById('vv'+op+ll).style.background = '#ecf5ff'
-            }
-          }
-          this.skuList = true;
-          var bbb = [];
-          for(var i = 0;i<this.sku[this.sku.length-1].price.length;i++){
-            bbb[i] = this.sku[this.sku.length-1].price[i]
-          }
-          this.sku[this.sku.length-1].price.splice(0,this.sku[this.sku.length-1].price.length);
-          var ooo = [];
-          for(var k = 0;k<bbb.length;k++){
-            ooo.push(
-              bbb[k].name + ':' + bbb[k].zhi
-              // 这个地方遍历出来的数据没有换行,这个问题有些难,先放一放
-            )
-          }
-          var ppp = ooo.toString()
-          // sku的id编号
-          this.skuid ++;
-          this.ccc.push({
-            id:this.skuid,
-            ddd:ppp,
-            type:false,
-          })
-          console.log(this.ccc);
-          if(this.ccc.length > 0){
-            this.accretion = true;
-          }
-        }
-      },
 
-      // 删除属性值
-      shanchu(index,key){
-        this.addtable[this.addtable.length-1].allprice[key].value.splice(index,1);
-      },
+
       // 添加增值
-      appreciation(){
-        this.accretionBall = true;
-      },
+      // appreciation(){
+      //   this.accretionBall = true;
+      // },
       // 保存增值
-      save(formName){
-        this.$refs[formName].validate((valid) =>{
-          if (valid){
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            });
-            console.log(this.ruleForm);
-            this.accretionBall = false;
-            this.AddpriceId++;
-            this.Addprice.push({
-              id:this.Addprice.length+1,
-              name:this.ruleForm.name,
-              priceSelect:this.ruleForm.priceSelect,
-              explain:this.ruleForm.explain,
-              type:false,
-            })
-            this.accretionTable = true;
-            console.log(this.Addprice);
-            // 清空输入框的数据
-            this.ruleForm.name = '';
-            this.ruleForm.priceSelect = '';
-            this.ruleForm.explain = '';
-            // this.$refs[formName].resetFields();
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
+      // save(formName){
+      //   this.$refs[formName].validate((valid) =>{
+      //     if (valid){
+      //       this.$message({
+      //         message: '添加成功',
+      //         type: 'success'
+      //       });
+      //       console.log(this.ruleForm);
+      //       this.accretionBall = false;
+      //       this.AddpriceId++;
+      //       this.Addprice.push({
+      //         id:this.Addprice.length+1,
+      //         name:this.ruleForm.name,
+      //         priceSelect:this.ruleForm.priceSelect,
+      //         explain:this.ruleForm.explain,
+      //         type:false,
+      //       })
+      //       this.accretionTable = true;
+      //       console.log(this.Addprice);
+      //       // 清空输入框的数据
+      //       this.ruleForm.name = '';
+      //       this.ruleForm.priceSelect = '';
+      //       this.ruleForm.explain = '';
+      //       // this.$refs[formName].resetFields();
+      //     } else {
+      //       console.log('error submit!!');
+      //       return false;
+      //     }
+      //   });
+      // },
       // 删除sku
-      delSku(a){
-        this.ccc.splice(a,1);
-      },
+      // delSku(a){
+      //   this.ccc.splice(a,1);
+      // },
       // 删除增值服务
-      delPrice(b){
-        this.Addprice.splice(b,1);
-      },
+      // delPrice(b){
+      //   this.Addprice.splice(b,1);
+      // },
       // sku上线
       online(index){
         console.log(index);
@@ -2112,6 +2004,7 @@
 
     },
     created(){
+      this.themeList();
       //产品列表
       var that = this
       this.pageNum = 1;
@@ -2190,6 +2083,7 @@
           console.log(obj)
         })
     },
+    
 
   }
 </script>

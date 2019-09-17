@@ -206,7 +206,12 @@ export default {
       updata: {
         radio: "1",
         lastStage: "2",
-        value: ''
+        value: '',
+        departmentCode: '',
+        sort: '',
+        phone: '',
+        fax: '',
+        note: ''
       },
       updata1: {},
       updataLabelWidth: "90px",
@@ -708,7 +713,13 @@ export default {
     editDepartment1(id) {
       this.updata = {
         radio: "1",
-        lastStage: "2"
+        lastStage: "2",
+        value: '',
+        departmentCode: '',
+        sort: '',
+        phone: '',
+        fax: '',
+        note: ''
       }
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptget",{
         id: id
@@ -739,8 +750,7 @@ export default {
             this.updata.value = res.data.object.orgName
         }
         this.editDepartment = true;
-      }).catch(err => {})
-        console.log(err)
+        }).catch(err => {})
       }).catch(err => {});
     },
     handleCurrentChange(currentPage) {

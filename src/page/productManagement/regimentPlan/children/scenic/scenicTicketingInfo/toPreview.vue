@@ -1,7 +1,12 @@
 <template>
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
+
     <el-dialog title="预览报账单" :visible="dialogFormVisible" width=50% @close="closeAdd">
+      <div style="width: 96%;margin: 0 auto;">
+        <p style="font-size: 16px;text-align: center;font-weight: 700;">{{topTitle}}</p>
+        <p style="text-align: right;font-size: 12px;">报账日期：{{topData}}</p>
+      </div>
       <section ref="print" class="print">
         <el-row>
           <el-col :span="2" class="title">
@@ -14,7 +19,7 @@
             操作人
           </el-col>
           <el-col :span="3" class="content">
-            {{info.op_id}}
+            {{info.op_name}}
           </el-col>
           <el-col :span="2" class="title">
             导陪
@@ -134,26 +139,26 @@
           </el-col>
         </el-row>
         <template v-for="(bill,index) in billReporting">
-          <el-row>
-            <el-col :span="2" class="content">
+          <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+            <el-col :span="2" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{index + 1}}
             </el-col>
-            <el-col :span="5" class="content">
+            <el-col :span="5" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.handler}}
             </el-col>
-            <el-col :span="5" class="content">
+            <el-col :span="5" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.distributor}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.people_num}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.income}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.serial_sn}}
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
               {{bill.remark}}
             </el-col>
           </el-row>
@@ -303,6 +308,7 @@
   </div>
 </template>
 <script type="text/javascript">
+  import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   name: "toUpdate",
   components: {},
@@ -312,6 +318,8 @@ export default {
   },
   data() {
     return {
+      topTitle: '沈阳甜橙国际旅行社旅游团队报账单',
+      topData: '',
       billReporting: [],
       billTotalNumber: 0,
       billTotalReceivables: 0,
@@ -337,7 +345,25 @@ export default {
   watch: {
     info: {
       handler: function () {
-        this.loadData();
+//        console.log(this.info);
+        if(this.info){
+          if(this.info.op_id == ''){
+            this.getOrgName(sessionStorage.getItem('id'));
+            this.getTitleName(sessionStorage.getItem('id'));
+          }else{
+            this.getOrgName(this.info.op_id);
+            this.getTitleName(this.info.op_id);
+          }
+          this.loadData();
+//          console.log('报账时间',this.$parent.msg.billTime);
+          if(this.$parent.msg.billTime){
+            this.topData = this.$parent.msg.billTime.split(" ")[0];
+          }else{
+            this.topData = formatDate(new Date()).split(" ")[0];
+          }
+        }else{
+          this.closeAdd();
+        }
       }
     }
   },
@@ -382,17 +408,53 @@ export default {
 //          console.log(response);
           that.costDetails = response.data.data.listInfo;
           that.costTotalNumber = response.data.data.quantity_total;
-          that.costTotalCost = response.data.data.cost_total;
-          that.costPaymented = response.data.data.paid_cost_total;
+          that.costTotalCost = response.data.data.cost_total.toFixed(2);
+          that.costPaymented = response.data.data.paid_cost_total.toFixed(2);
 
         } else {
-          that.$message.success("加载数据失败377~");
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+    getOrgName(ID){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+        "id": ID
+      },{
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+//        console.log(ID,'组织名称',response);
+        if (response.data.isSuccess) {
+          that.info.org_id = response.data.objects[0].name
+        } else {
+          this.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+//    待定======================================================================================================================================
+    getTitleName(){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userinfo", {}, {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        }
+      }).then(function(response) {
+//        console.log('公司信息',response);
+        if (response.status == 200) {
+          that.topTitle = response.data.topName + '旅游团队报账单';
+        } else {
+          this.$message.warning("加载旅行社名称失败~");
         }
       }).catch(function(error) {
         console.log(error);
       });
     }
-
   },
   created() {
 

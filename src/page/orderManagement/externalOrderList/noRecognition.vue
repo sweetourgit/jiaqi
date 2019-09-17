@@ -9,41 +9,20 @@
       <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数" :picker-options="startDatePicker"></el-date-picker>
       <div class="date-line"></div>
       <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数" :picker-options="endDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">报账状态:</span>
-      <el-select v-model="activeForm.status" placeholder="请选择" style="width:200px">
+      <span class="search-title">取票人:</span>
+      <el-input v-model="activeForm.ticketPerson" class="input"></el-input>
+      <span class="search-title">类别:</span>
+      <el-select v-model="activeForm.type" placeholder="请选择" style="width:200px">
         <el-option key="" label="全部" value=""></el-option>
-        <el-option key="0" label="未报账" value="1"></el-option>
-        <el-option key="1" label="报账中" value="2"></el-option>
-        <el-option key="2" label="已报账" value="3"></el-option>
-      </el-select>
-      <span class="search-title">是否关联产品:</span>
-      <el-select v-model="activeForm.proRelation" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="是" value="2"></el-option>
-        <el-option key="2" label="否" value="1"></el-option>
+        <el-option key="1" label="门票" value="1"></el-option>
+        <el-option key="2" label="线路" value="2"></el-option>
+        <el-option key="3" label="酒店" value="3"></el-option>
+        <el-option key="4" label="套餐" value="4"></el-option>
       </el-select>
       <span class="search-title">导入时间:</span>
       <el-date-picker v-model="activeForm.importStartTime" type="date" placeholder="开始天数" :picker-options="importStartDatePicker"></el-date-picker>
       <div class="date-line"></div>
       <el-date-picker v-model="activeForm.importEndTime" type="date" placeholder="结束天数" :picker-options="importEndDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">关联团期:</span>
-      <el-input v-model="activeForm.tour" class="input"></el-input>
-      <span class="search-title">类别:</span>
-      <el-select v-model="activeForm.type" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="0" label="门票" value="门票"></el-option>
-        <el-option key="1" label="酒店" value="酒店"></el-option>
-      </el-select>
-      <span class="search-title">验证时间:</span>
-      <el-date-picker v-model="activeForm.validationStartTime" type="date" placeholder="开始天数" :picker-options="validationStartDatePicker"></el-date-picker>
-      <div class="date-line"></div>
-      <el-date-picker v-model="activeForm.validationEndTime" type="date" placeholder="结束天数" :picker-options="validationEndDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">取票人:</span>
-      <el-input v-model="activeForm.ticketPerson" class="input"></el-input>
-      <span class="search-title">取票人手机:</span>
-      <el-input v-model="activeForm.ticketPhone" class="input"></el-input>
-      <span class="search-title">分销商:</span>
-      <el-input v-model="activeForm.distributors" class="input" style="width: 485px;"></el-input><br /><br />
       <span class="search-title">卖出支付方式:</span>
       <el-select v-model="activeForm.typePay" placeholder="请选择" style="width:200px">
         <el-option key="" label="全部" value=""></el-option>
@@ -55,6 +34,16 @@
         <el-option key="6" label="支付宝" value="6"></el-option>
         <el-option key="7" label="自采" value="7"></el-option>
       </el-select>
+      <span class="search-title">取票人手机:</span>
+      <el-input v-model="activeForm.ticketPhone" class="input"></el-input>
+      <span class="search-title">验证时间:</span>
+      <el-date-picker v-model="activeForm.validationStartTime" type="date" placeholder="开始天数" :picker-options="validationStartDatePicker"></el-date-picker>
+      <div class="date-line"></div>
+      <el-date-picker v-model="activeForm.validationEndTime" type="date" placeholder="结束天数" :picker-options="validationEndDatePicker"></el-date-picker><br /><br />
+
+      <span class="search-title">分销商:</span>
+      <el-input v-model="activeForm.distributors" class="input"></el-input>
+
       <div class="button_select">
         <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
@@ -68,7 +57,7 @@
     </div>
     <div class="tableDv">
       <div class="table_trip" style="width: 88%;">
-        <el-table ref="multipleTable" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
+        <el-table ref="multipleTable" v-loading="loading" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="order_sn" label="订单ID" align="center">
           </el-table-column>
@@ -113,14 +102,13 @@
           <el-table-column prop="is_relate_pro" label="关联产品" align="center">
             <template slot-scope="scope">
               <p v-if="scope.row.is_relate_pro == 1">未关联产品</p>
-              <p v-if="scope.row.is_relate_pro == 2">{{scope.row.relate_pro_name}}</p>
+              <p v-if="scope.row.is_relate_pro == 2">产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
             </template>
           </el-table-column>
           <el-table-column prop="bill_status" label="报账状态" align="center">
             <template slot-scope="scope">
-              <p v-if="scope.row.bill_status == 1">未报账</p>
-              <p v-if="scope.row.bill_status == 2">报账中</p>
-              <p v-if="scope.row.bill_status == 3">已报账</p>
+              <!--<span>{{bill_status[scope.row.bill_status]}}</span>-->
+              <span>未认收款</span>
             </template>
           </el-table-column>
         </el-table>
@@ -176,8 +164,19 @@
         pageIndex: 1, // 设定当前页数
         pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
         tableData: [],
+        loading: true,
         multipleSelection: [],
         currentRow: true,
+
+        bill_status: {
+          1: '未认款',
+          2: '认款申请',
+          3: '认款待修改',
+          4: '认款通过',
+          5: '报账中',
+          6: '报账驳回',
+          7: '已报账'
+        },
 
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
@@ -212,7 +211,11 @@
         this.dialogFormVisible2 = true
       },
       close2() {
-        this.dialogFormVisible2 = false
+        this.dialogFormVisible2 = false;
+        this.loadData();
+//        if(str == 'success'){
+//          this.showStatus();
+//        }
       },
       delOrder() {
         console.log(this.multipleSelection);
@@ -221,10 +224,48 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          let deleteStr = '';
+          let num = 0;
+          this.multipleSelection.forEach(function (item, index, arr) {
+//            console.log(item.bill_status);
+            if(item.bill_status == 3 || item.bill_status == 4 || item.bill_status == 5 || item.bill_status == 7){
+              deleteStr += item.order_sn + ',';
+            }
           });
+          if(num == 0){
+            let strD = '';
+            this.multipleSelection.forEach(function (item, index, arr) {
+//            console.log(item.bill_status);
+              strD += item.order_sn + ',';
+            });
+            strD = strD.substr(0, strD.length - 1);
+            const that = this;
+            this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/del", {
+              "order_sn": strD
+            }, ).then(function(response) {
+              console.log('删除',response);
+              if (response.data.code == '200') {
+                console.log(response);
+                that.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                that.loadData();
+              } else {
+                if(response.data.message){
+                  that.$message.warning(response.data.message);
+                }else{
+                  that.$message.warning("失败~");
+                }
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
+          }else{
+            deleteStr = deleteStr.substr(0,deleteStr.length-1);
+            this.$message.warning(deleteStr + "订单不是未认款状态，不可删除");
+          }
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -250,7 +291,7 @@
         this.$router.push({
           path: "/recognitionMsg",
           name: '订单管理/外部订单/认收款信息',
-          params: {'ids': orderStr}
+          query: {'ids': orderStr}
         });
       },
       close() {
@@ -296,10 +337,14 @@
                 });
                 this.loadData();
               }else{
-                this.$message({
-                  type: 'warning',
-                  message: res.data.message
-                });
+                if(res.data.message){
+                  this.$message({
+                    type: 'warning',
+                    message: res.data.message
+                  });
+                }else{
+                  this.$message.warning('解绑失败');
+                }
               }
             }).catch(err => {
               console.log(err)
@@ -317,6 +362,7 @@
       },
       //搜索
       searchHand() {
+        this.loading = true;
         this.loadData();
       },
       resetHand() {
@@ -337,14 +383,17 @@
           ticketPhone: '',
           distributors: ''
         };
+        this.loading = true;
         this.loadData();
       },
       handleSizeChange(val) {
+        this.loading = true;
         this.pageSize = val;
         this.loadData();
       },
 
       handleCurrentChange(val) {
+        this.loading = true;
         this.pageIndex = val;
         this.loadData();
       },
@@ -379,11 +428,11 @@
           "order_sn": this.activeForm.oid,
           "sale_at_begin": this.activeForm.startTime,
           "sale_at_end": this.activeForm.endTime,
-          "bill_status": this.activeForm.status,
-          "is_relate_pro": this.activeForm.proRelation,
+          "bill_status": '',
+          "is_relate_pro": '',
           "import_at_begin": this.activeForm.importStartTime,
           "import_at_end": this.activeForm.importEndTime,
-          "tour_no": this.activeForm.tour,
+          "tour_no": '',
           "order_type": this.activeForm.type,
           "check_at_begin": this.activeForm.validationStartTime,
           "check_at_end": this.activeForm.validationEndTime,
@@ -392,14 +441,14 @@
           "distributor": this.activeForm.distributors,
           "pay_type": this.activeForm.typePay,
           "import_status": 2,
-          "org_id": sessionStorage.getItem('orgID')
+          "org_id": ''
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {
             console.log(response);
             that.tableData = response.data.data.list;
             that.total = response.data.data.total - 0;
-
+            that.loading = false;
             that.tableData.forEach(function (item, index, arr) {
 //            console.log(v,k,arr);
 //            console.log(item.sale_at);
