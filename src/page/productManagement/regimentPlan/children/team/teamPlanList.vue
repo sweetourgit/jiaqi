@@ -81,8 +81,10 @@
 <script>
 import teamOrderInsert from './teamOrderInsert';
 export default {
+  name:"teamqueryList",
   components:{
-    "teamOrder-insert":teamOrderInsert,
+    teamOrderInsert,
+    // "teamOrder-insert":teamOrderInsert,
   },
   data() {
     return {

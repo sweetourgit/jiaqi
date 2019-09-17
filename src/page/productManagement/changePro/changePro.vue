@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative" @click="handleList">
+  <div class="vivo" style="position:relative">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
       <div class="btn" style="width:200px;position:absolute;z-index:99;top:0px;left:50%;">
         <el-button plain class="btn-button" @click="cancel()">取消</el-button>
@@ -32,6 +32,7 @@
                 <el-button v-else class="input-new-tag" size="small" @click="showInput3">请输入出发地</el-button>
               </div>
               <span id="isNull" v-show="noNull">不能为空</span>
+              <span v-if="this.dynamicTags3 == '' && a != false" style="color: #f56c6c;font-size: 12px; position: absolute;top:30px;left: 10px;">不能为空</span>
             </el-form-item>
             <!-- 目的地 -->
             <el-form-item label="目的地" ref="destinations" style="clear:both;" label-width="120px">
@@ -45,6 +46,7 @@
                 <el-button v-else class="input-new-tag" size="small" @click="showInput4">请输入目的地</el-button>
               </div>
               <span id="zero" v-show="errorNull">不能为空</span>
+              <span v-if="this.dynamicTags4 == '' && a != false" style="color: #f56c6c;font-size: 12px; position: absolute;top:30px;left: 10px;">不能为空</span>
             </el-form-item>
             <!-- 行程天數 -->
             <div style="overflow:hidden">
@@ -97,7 +99,7 @@
               <span id="empty" v-show="empty">不能为空</span>
             </el-form-item>
             <!-- 头图 -->
-            <!-- <el-form-item label="头图" prop="avatarImages" label-width="120px">
+            <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative">
               </el-input>
               <el-upload :on-preview="handleImgClick" class="upload-demo uploadimage" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit='1' accept=".jpg,.png,.gif" :on-remove="handleRemove">
@@ -108,8 +110,9 @@
                   上传
                 </el-button>
               </el-upload>
-            </el-form-item> -->
-            <el-form-item label="头图" prop="avatarImages" label-width="120px">
+            </el-form-item>
+            <!-- 头图 -->
+            <!-- <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <div class="img_upload">
                 <template v-for="(item, index) in ruleForm.avatarImages">
                   <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
@@ -122,10 +125,13 @@
               </div>
               <span v-if="this.ruleForm.avatarImages == '' && a != false" style="position: absolute; top: 30px; left: 10px; font-size: 12px; color: #f56c6c;">头图不能为空</span>
             </el-form-item>
-            <!--头图弹窗-->
+
+ 
+            
             <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
               <MaterialList :imgData="imgData" v-on:checkList="checkList" v-on:closeButton="imgUpload = false"></MaterialList>
-            </el-dialog>
+            </el-dialog> -->
+
             <!-- 视频 -->
             <el-form-item label="视频" prop="video" label-width="120px">
               <el-input v-model="ruleForm.video" disabled style="width:110px;float:left;margin-left:10px;position:relative">
@@ -145,7 +151,7 @@
                   </div>
                   上传</el-button>
               </el-upload>
-              <input id="fileItem" type="file" multiple style="float:left; margin-left:10px;">
+              <!-- <input id="fileItem" type="file" multiple style="float:left; margin-left:10px;"> -->
             </el-form-item>
             <!-- 出游人群 -->
             <el-form-item label="出游人群" prop="Excursion" label-width="120px">
@@ -251,11 +257,11 @@
       </el-tabs>
     </el-form>
     <el-dialog title="提示信息" :visible.sync="dialogVadi" class="city_list tips" width="400px">
-          <div>
-             <ul v-for="item in validaError">
-               <li>{{item}}</li>
-             </ul>
-          </div>
+        <div>
+           <ul v-for="item in validaError">
+             <li>{{item}}</li>
+           </ul>
+        </div>
      </el-dialog>
   </div>
 </template>
@@ -268,7 +274,8 @@
     name: "listInfo",
     components: {
       // BaseInfo,
-      VueEditor
+      VueEditor,
+      MaterialList
     },
     data() {
       return {
@@ -341,10 +348,11 @@
           text: ''
         },
         //头图上传 ========
-        isImgUrlShow: false,
-        imgUrlShow: '', // 点击查看图片
-        imgUpload: false,     // 上传弹窗
-        imgData: [],
+        // isImgUrlShow: false,
+        // imgUrlShow: '', // 点击查看图片
+        // imgUpload: false,     // 上传弹窗
+        // imgData: [],
+        // avatarImages: [], // 图片
         //去程交通工具切换
         goRoad: [{
           value: '1',
@@ -537,31 +545,36 @@
           schedules: []
         },
         rules: {
-          productNamel: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { min: 0, max: 30, message: '字数超过30汉字限制', trigger: 'blur' },
-            { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
+          productNamel: [{ required: true, message: '产品名称不能为空', trigger: 'blur' },
+                         { min: 0, max: 30, message: '产品名称字数超过30汉字限制', trigger: 'blur' },
+                         { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
           travelType: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          orderConfirmationType: [{ required: true, message: '不能为空', trigger: 'change' }],
+          // avatarImages:[{ required: true, message: '头图不能为空', trigger: 'change' }],
+          orderConfirmationType: [{ required: true, message: '订单确认类型不能为空', trigger: 'change' }],
           advanceRegistrationDays: [{ required: true, message: '提前报名天数不能为空', trigger: 'blur' },
             { pattern: /^[1-9]\d*$/, message: '提前报名天数需为正整数', trigger: 'blur' }],
-          highlightWords1: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords2: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords3: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords4: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          travelDays: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
-          travelNight: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数'}],
-          timeHour: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
-          timeMinute: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
+          highlightWords1: [{ required: true, message: '亮点词不能为空', trigger: 'blur' },
+                            { min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords2: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords3: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords4: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          travelDays: [{ required: true, message: '行程天数不能为空', trigger: 'change' },
+            { pattern: /^[1-9]\d*$/, message: '行程天数需为正整数' },
+             /* { min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' },*/],
+          travelNight: [{ required: true, message: '行程晚数不能为空', trigger: 'change' },
+            { pattern: /^[1-9]\d*$/, message: '行程晚数需为正整数' },
+            /*{ min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' }*/],
+          stopDate:[{required: true, message: '经停时间不能为空', trigger: 'change'}],
+          stopCity:[{required: true, message: '经停城市不能为空', trigger: 'change'}],
+          // timeHour: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
+          //            { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
+          timeMinute: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
+                       { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
           operationLabel: [{ pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/, message: '不能有标点符号' }],
-          highlightWords: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' }],
-          origin: [{ required: true, message: '不能为空', trigger: 'change' }],
-          bourn: [{ required: true, message: '不能为空', trigger: 'change' }],
+          highlightWords: [{ required: true, message: '套餐名不能为空', trigger: 'blur' },
+                           { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' }],
+          origin: [{ required: true, message: '行程出发地不能为空', trigger: 'change' }],
+          bourn: [{ required: true, message: '行程目的地不能为空', trigger: 'change' }],
           hotelAuto: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelChinese: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelEnglish: [{ required: true, message: '不能为空', trigger: 'blur' }],
@@ -571,27 +584,32 @@
           hotelHouse: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelBed: [{ required: true, message: '不能为空', trigger: 'blur' }],
           pod: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          company: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          theNumber: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podCity:[{ required: true, message: '不能为空', trigger: 'blur' }],
-          pod: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podPlace: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podTime: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arriveCity: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arrivePlace: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arriveTime: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          company: [{ required: true, message: '航空公司/邮轮公司不能为空', trigger: 'blur' }],
+          theNumber: [{ required: true, message: '航班号/车次/邮轮号不能为空', trigger: 'blur' }],
+          podCity:[{ required: true, message: '出发城市不能为空', trigger: 'blur' }],
+          podPlace: [{ required: true, message: '出发机场/出发车站/出发码头不能为空', trigger: 'blur' }],
+          podTime: [{ required: true, message: '出发时间不能为空', trigger: 'blur' }],
+          arriveCity: [{ required: true, message: '到达城市不能为空', trigger: 'blur' }],
+          arrivePlace: [{ required: true, message: '到达机场/到达车站/到达码头不能为空', trigger: 'blur' }],
+          arriveTime: [{ required: true, message: '到达时间不能为空', trigger: 'blur' }],
           planeDay: [{ required: true, message: '不能为空', trigger: 'blur' }],
           trafficMode: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          day: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          day: [{ required: true, message: '请选择天数'}],
           typeExt: [{ required: true, message: '不能为空', trigger: 'blur' }],
           time: [{ required: true, message: '不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '不能为空', trigger: 'blur' }],
           details: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          // slideshow:[{ required: true, message: '不能为空', trigger: 'blur' }],
+          //slideshow:[{ validator: areaIdRule}],
           memo: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          details: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          Details: [{ required: true, message: '住宿说明不能为空', trigger: 'blur' }],
           pictureID: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          subject: [{ required: true, message: '不能为空', trigger: 'blur' }]
+          subject: [{ required: true, message: '日程信息主题不能为空', trigger: 'blur' },
+                    { min: 0, max: 20, message: '字数超过20汉字限制', trigger: 'blur' }],
+          mealDetails: [{ required: true, message: '餐饮说明不能为空', trigger: 'blur' }],
+          typeExtPrice: [{ pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '参考价格输入不正确'},
+                        { pattern: /^(\d+|\d+\.\d{1,2})$/, message: '参考价格输入不正确'}
+          ],
+          activeTime: [{ pattern: /^[0-9]+$/, message: '活动时间需为正整数'}],
         },
         //上传图片
         fileList2: [],
@@ -1070,10 +1088,10 @@
           loadPackage: true
 
         }
-        if(this.dynamicTags3.length==0||this.dynamicTags4.length==0){
-           this.errors();
-           return;
-        }
+        // if(this.dynamicTags3.length==0||this.dynamicTags4.length==0){
+        //    this.errors();
+        //    return;
+        // }
         this.$refs[formName].validate((valid) => {
           if(valid){
             var _this = this;
@@ -1087,12 +1105,9 @@
               }else{
                 _this.$message.success("修改失败");
               }
-
-
             }).catch(function(error) {
               console.log(error);
             });
-
           }
           else{
             this.errors();
@@ -1114,6 +1129,8 @@
           }
           if(_this.dynamicTags4.length==0){
              _this.validaError.unshift("基本信息目的地不能为空");
+          }if(_this.ruleForm.avatarImages.length==0){
+             _this.validaError.unshift("头图不能为空");
           }
         },500);
       },
@@ -1265,38 +1282,40 @@
         this.mynumber = myindex;
       },
       // 上传按钮
-      handleImgUpload() {
-        this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
-        this.imgUpload = true;
-      },
-      // 点击删除图片
-      imgDelete(data) {
-        this.ruleForm.avatarImages.splice(this.ruleForm.avatarImages.indexOf(data), 1);
-      },
-      handleList(a) {
-        if (a.target.id != 'showDiv') {
-          this.isImgUrlShow = false;
-          this.isImgUrlShowAvatar = false;
-          this.isImgUrlShowImg = false;
-        }
-      },
-      // 图片添加
-      checkList(data) {
-        this.ruleForm.avatarImages = data.map(v => {
-          return {
-            img_ID: v,
-          }
-        })
-      },
-      // 点击图片查看
-      imgClickShow(data) {
-        this.$http.post('http://192.168.2.65:3024' + '/picture/api/get',{
-            "id": data.img_ID,
-        }).then(res => {
-          this.isImgUrlShow = true;
-          this.imgUrlShow = "http://192.168.2.65:3009/upload" + res.data.object.url;
-        })
-      },
+      // handleList(a) {
+      //   if (a.target.id != 'showDiv') {
+      //     this.isImgUrlShow = false;
+      //     this.isImgUrlShowAvatar = false;
+      //     this.isImgUrlShowImg = false;
+      //   }
+      // },
+      // // 点击图片查看
+      // imgClickShow(data) {
+      //   this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
+      //       "id": data.img_ID,
+      //   }).then(res => {
+      //     this.isImgUrlShow = true;
+      //     this.imgUrlShow = "http://192.168.2.65:3009/upload" + res.data.object.url;
+      //   })
+      // },
+      // // 上传按钮
+      // handleImgUpload() {
+      //   console.log(this.ruleForm.avatarImages)
+      //   this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
+      //   this.imgUpload = true;
+      // },
+      // // 点击删除图片
+      // imgDelete(data) {
+      //   this.ruleForm.avatarImages.splice(this.ruleForm.avatarImages.indexOf(data), 1);
+      // },
+      // // 图片添加
+      // checkList(data) {
+      //   this.ruleForm.avatarImages = data.map(v => {
+      //     return {
+      //       img_ID: v,
+      //     }
+      //   })
+      // },
       //去程添加经停、删除经停
       stopping(index) {
         {
@@ -2082,5 +2101,30 @@
   }
   .img_button {
     float: left;
+  }
+  .img_list {
+    float: left;
+    margin: 5px 0 0 10px;
+    width: 30px;
+    height: 30px;
+    user-select:none;
+  }
+  .img_list:hover {
+    cursor:pointer;
+  }
+  .img_div {
+    float: left;
+    margin: 9px 0 0 0;
+    border: solid 2px #717171;
+    width: 10px;
+    height: 18px;
+    text-align: center;
+    line-height: 16px;
+    font-size: 18px;
+    background: #FFFFFF;
+    user-select:none;
+  }
+  .img_div:hover {
+    cursor:pointer;
   }
 </style>

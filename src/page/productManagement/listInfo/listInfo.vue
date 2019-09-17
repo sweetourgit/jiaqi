@@ -134,7 +134,7 @@
               <span v-if="this.ruleForm.avatarImages == '' && a != false" style="position: absolute; top: 30px; left: 10px; font-size: 12px; color: #f56c6c;">头图不能为空</span>
             </el-form-item>
 
-
+ 
             <!--头图弹窗-->
             <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
               <MaterialList :imgData="imgData" v-on:checkList="checkList" v-on:closeButton="imgUpload = false"></MaterialList>
@@ -2219,8 +2219,10 @@
                   createUser:sessionStorage.getItem('id'),
                   proStat:1,
                   guid:localStorage.getItem("guid"),
-                  crowdID:this.ruleForm.Excursion == '' ? -1 : this.ruleForm.Excursion,//基本信息出游人群
-                  themeID:this.ruleForm.theme == '' ? -1 : this.ruleForm.theme,//基本信息主题
+                  // crowdID:this.ruleForm.Excursion == '' ? -1 : this.ruleForm.Excursion,//基本信息出游人群
+                  // themeID:this.ruleForm.theme == '' ? -1 : this.ruleForm.theme,//基本信息主题
+                  crowdID:this.ruleForm.Excursion == '' ? '请选择' : this.ruleForm.Excursion,//基本信息出游人群
+                  themeID:this.ruleForm.theme == '' ? '请选择' : this.ruleForm.theme,//基本信息主题
                   mark:this.content_01,//基本信息产品概括
 
                   //行程信息接口数据
@@ -3235,7 +3237,7 @@
       },
       // 点击图片查看
       imgClickShow(data) {
-        this.$http.post('http://192.168.2.65:3024' + '/picture/api/get',{
+        this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
             "id": data.img_ID,
         }).then(res => {
           this.isImgUrlShow = true;
@@ -3264,7 +3266,7 @@
       // 轮播图上传=================
       // 点击图片查看
       imgClickShowAvatar(data) {
-        this.$http.post('http://192.168.2.65:3024' + '/picture/api/get',{
+        this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
             "id": data.img_ID,
         }).then(res => {
           this.isImgUrlShowAvatar = true;
@@ -3298,7 +3300,7 @@
 
       // 活动详情景点图片=========
       imgClickShowImg(data) {
-        this.$http.post('http://192.168.2.65:3024' + '/picture/api/get',{
+        this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
             "id": data.img_ID,
         }).then(res => {
           this.isImgUrlShowImg = true;
