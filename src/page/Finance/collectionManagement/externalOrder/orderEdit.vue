@@ -19,7 +19,7 @@
             <el-date-picker v-model="ruleForm.creditTime" type="date" placeholder="请选择日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
           </el-form-item>
           <el-form-item label="分销商：" prop="distributor" label-width="140px">
-            <el-radio-group v-model="ruleForm.distributor">
+            <el-radio-group v-model="ruleForm.distributor" @change="radioChange">
               <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
               <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
               <el-radio label="去哪儿">去哪儿</el-radio>
@@ -32,27 +32,51 @@
             <el-input v-model="ruleForm.payAccount" placeholder="请选择" class="baseIn" :readonly="readOnly"></el-input>
             <el-button type="primary" @click="chooseFun" style="margin-left: 10px">选择</el-button>
           </el-form-item>
-          <el-form-item label="收款金额：" prop="payMoney" label-width="140px">
-            <el-input v-model="ruleForm.payMoney" placeholder="请输入" class="baseIn"></el-input>
-            <p style="margin: 0;color: #999;line-height: 22px;">收款金额可通过附件文档自动生成</p>
-          </el-form-item>
-          <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
-            <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
-            <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
-            <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
-            <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
-          </el-form-item>
-          <el-form-item label="附件：" label-width="140px" v-if="info == ''">
-            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :limit="1" :file-list="fileList">
-              <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
-          </el-form-item>
+          <!--分销商为：票付通余额-->
+          <div v-if="PFTYE">
+            <el-form-item label="关联订单：" prop="payAccount" label-width="140px">
+              <el-button type="primary" @click="chooseDDFun" style="margin-left: 10px">选择</el-button>
+            </el-form-item>
+            <el-form-item label="收款金额：" prop="payMoney" label-width="140px">
+              <el-input v-model="ruleForm.payMoney" placeholder="请输入" class="baseIn"></el-input>
+              <p style="margin: 0;color: #999;line-height: 22px;">收款金额可通过附件文档自动生成</p>
+            </el-form-item>
+            <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
+              <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
+              <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
+              <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
+              <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
+            </el-form-item>
+            <el-form-item label="附件：" label-width="140px" v-if="info == ''">
+              <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :limit="1" :file-list="fileList">
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+            </el-form-item>
+          </div>
+          <!--其他-->
+          <div v-if="!PFTYE">
+            <el-form-item label="收款金额：" prop="payMoney" label-width="140px">
+              <el-input v-model="ruleForm.payMoney" placeholder="请输入" class="baseIn"></el-input>
+              <p style="margin: 0;color: #999;line-height: 22px;">收款金额可通过附件文档自动生成</p>
+            </el-form-item>
+            <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
+              <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
+              <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
+              <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
+              <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
+            </el-form-item>
+            <el-form-item label="附件：" label-width="140px" v-if="info == ''">
+              <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :limit="1" :file-list="fileList">
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+            </el-form-item>
+          </div>
         </div>
         <p class="stepTitle">收款明细</p>
         <!--添加-->
         <div class="stepDv" style="margin-bottom: 50px;" v-if="info == ''">
           <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-          <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
+          <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
             <el-table-column prop="1" label="入账时间" align="center">
             </el-table-column>
             <el-table-column prop="2" label="订单编号" align="center">
@@ -81,7 +105,7 @@
         <!--编辑-->
         <div class="stepDv" style="margin-bottom: 50px;" v-if="info != ''">
           <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-          <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
+          <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
             <el-table-column prop="rece_at" label="入账时间" align="center">
             </el-table-column>
             <el-table-column prop="order_sn" label="订单编号" align="center">
@@ -131,9 +155,37 @@
 
           <div class="footer" style="text-align: right;">
             <el-button class="el-button" type="warning" @click="close">取 消</el-button>
-            <el-button class="el-button" type="primary" @click="">确 认</el-button>
+            <!--<el-button class="el-button" type="primary" @click="">确 认</el-button>-->
           </div>
         </el-dialog>
+
+        <el-dialog title="关联订单" :visible="dialogFormVisible2" width=60% @close="close" append-to-body>
+          <div class="table_trip" style="width: 100%;">
+            <el-table ref="singleTable" :data="tableDataGLDD" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass">
+              <el-table-column prop="cardType" label="类型" align="center" >
+              </el-table-column>
+              <el-table-column prop="title" label="账号名称" align="center">
+              </el-table-column>
+              <el-table-column prop="cardNum" label="卡号" align="center" width="70%">
+              </el-table-column>
+              <el-table-column prop="openingBank" label="开户行" align="center">
+              </el-table-column>
+              <el-table-column prop="openingName" label="开户人" align="center">
+              </el-table-column>
+              <el-table-column prop="option" label="操作" align="center" width="100">
+                <template slot-scope="scope">
+                  <el-button @click="chooseBtn(scope.row)" type="danger" size="small" class="table_details">选择</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+
+          <div class="footer" style="text-align: right;">
+            <el-button class="el-button" type="warning" @click="close">取 消</el-button>
+            <!--<el-button class="el-button" type="primary" @click="">确 认</el-button>-->
+          </div>
+        </el-dialog>
+
       </el-form>
     </el-dialog>
   </div>
@@ -186,7 +238,12 @@
         totalItem: '0',
         totalMoney: '',
         startTime: '',
-        endTime: ''
+        endTime: '',
+
+//        票付通余额
+        PFTYE: false,
+        tableDataGLDD: [],
+        dialogFormVisible2: false
       }
     },
     computed: {
@@ -200,7 +257,7 @@
     watch: {
       info: {
         handler:function(){
-          console.log(this.info);
+//          alert(this.info);
           if(this.info != '' && this.dialogFormVisible){
             this.loadData();
           }
@@ -211,6 +268,9 @@
 //          alert(this.dialogFormVisible);
           if(this.dialogFormVisible){
             this.getCode()
+          }
+          if(this.info != '' && this.dialogFormVisible){
+            this.loadData();
           }
         }
       }
@@ -246,6 +306,18 @@
           this.endTime = '';
         }
         this.$emit('close', false);
+      },
+      radioChange(val){
+//        console.log(val);
+        if(val == '票付通余额'){
+          this.PFTYE = true;
+        }else{
+          this.PFTYE = false;
+        }
+      },
+//      票付通余额，关联订单
+      chooseDDFun(){
+
       },
 //      添加
       cancelBtnTJ(){
@@ -289,7 +361,7 @@
 
             }else if(this.totalMoney != '' && this.startTime != ''){
 //              alert("均不为空");
-              if(this.ruleForm.payMoney != this.totalMoney) {
+              if(parseFloat(this.ruleForm.payMoney).toFixed(2) != parseFloat(this.totalMoney).toFixed(2)) {
 //                alert('金额不等');
                 this.$confirm("收款金额和全部收款明细结算金额总计不符是否继续添加?", "提示", {
                   confirmButtonText: "添加",
@@ -430,7 +502,7 @@
 
             }else if(this.totalMoney != '' && this.startTime != ''){
 //              alert("均不为空");
-              if(this.ruleForm.payMoney != this.totalMoney) {
+              if(parseFloat(this.ruleForm.payMoney).toFixed(2) != parseFloat(this.totalMoney).toFixed(2)) {
 //                alert('金额不等');
                 this.$confirm("收款金额和全部收款明细结算金额总计不符是否继续添加?", "提示", {
                   confirmButtonText: "添加",

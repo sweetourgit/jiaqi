@@ -3,11 +3,12 @@
     <el-dialog :visible="dialogFormVisible1" @close="closeAdd" style="width: 100%">
       <div class="buttonDv" style="float: right;margin-right: 3%;">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
-        <el-button type="primary" @click="deleteDo">删除</el-button>
+        <el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>
         <el-button type="primary" @click="editBtn">修改</el-button>
       </div>
       <p class="stepTitle">基本信息</p>
-      <el-button type="info" round size="mini" style="margin-left: 4%;">审核中</el-button>
+      <el-button type="info" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 1">待认收款</el-button>
+      <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 2">已认完</el-button>
       <div class="stepDv">
         <p class="inputLabel"><span>ID：</span>{{baseInfo.ID}}</p>
         <p class="inputLabel"><span>申请人：</span>{{applicant}}</p>
@@ -29,7 +30,7 @@
       <p class="stepTitle" v-if="showSK">收款明细</p>
       <div class="stepDv" style="margin-bottom: 50px;">
         <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-        <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
+        <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
           <el-table-column prop="rece_at" label="入账时间" align="center">
           </el-table-column>
           <el-table-column prop="order_sn" label="订单编号" align="center">
@@ -138,7 +139,9 @@
           payMoney: '',
           startTime: '',
           endTime: '',
-          toCollection: ''
+          toCollection: '',
+          approved: '',
+          status_rece: ''
         },
         applicant: '',
         fileList: [],
@@ -169,7 +172,7 @@
     watch: {
       info: {
         handler:function(){
-          console.log(this.info);
+//          alert(this.info);
           if(this.info != '' && this.dialogFormVisible1){
             this.loadData();
           }
@@ -290,6 +293,8 @@
               startTime: response.data.data.rece_start,
               endTime: response.data.data.rece_end,
               toCollection: response.data.data.money_wait,
+              approved: response.data.data.approved,
+              status_rece: response.data.data.status_rece
             };
             that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
               "id": response.data.data.create_uid

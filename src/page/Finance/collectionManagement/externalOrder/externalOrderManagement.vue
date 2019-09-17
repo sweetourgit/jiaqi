@@ -118,7 +118,9 @@
       closeAdd(str) {
         if(str == 'success'){
           this.dialogFormVisible = false;
-          this.editOrder(this.info);
+//          this.dialogFormVisible1 = false;
+          const row = {id : this.info};
+          this.editOrder(row);
         }else{
           this.dialogFormVisible = false;
           this.dialogFormVisible1 = false;

@@ -64,7 +64,6 @@
     </div>
     <div class="main">
       <el-button type="primary" @click="importOrder" plain>导入订单</el-button>
-      <el-button type="primary" :disabled="reable" @click="delOrder" plain>删除订单</el-button>
       <el-button type="primary" @click="importHistory" plain>导入历史</el-button>
       <el-button type="primary" :disabled="reable" @click="relation" plain>关联报账团期</el-button>
       <el-button type="primary" :disabled="reable" @click="unbinding" plain>解绑报账团期</el-button>
@@ -256,65 +255,6 @@
       },
       close3() {
         this.dialogFormVisible3 = false
-      },
-//      删除
-      delOrder() {
-        console.log(this.multipleSelection);
-        this.$confirm('是否删除此外部订单?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          let deleteStr = '';
-          let num = 0;
-          this.multipleSelection.forEach(function (item, index, arr) {
-//            console.log(item.bill_status);
-            if(item.bill_status == 3 || item.bill_status == 4 || item.bill_status == 5 || item.bill_status == 7){
-              deleteStr += item.order_sn + ',';
-            }
-          });
-          if(num == 0){
-            let strD = '';
-            this.multipleSelection.forEach(function (item, index, arr) {
-//            console.log(item.bill_status);
-              strD += item.order_sn + ',';
-            });
-            strD = strD.substr(0, strD.length - 1);
-            const that = this;
-            console.log('strD',strD);
-            this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/del", {
-              "order_sn": strD
-            }, ).then(function(response) {
-              console.log('删除',response);
-              if (response.data.code == '200') {
-                console.log(response);
-                that.$message({
-                  type: 'success',
-                  message: '删除成功!'
-                });
-                that.loadData();
-              } else {
-                if(response.data.message){
-                  that.$message.warning(response.data.message);
-                }else{
-                  that.$message.warning("失败~");
-                }
-
-              }
-            }).catch(function(error) {
-              console.log(error);
-            });
-          }else{
-            deleteStr = deleteStr.substr(0,deleteStr.length-1);
-            this.$message.warning(deleteStr + "订单不是未认款状态，不可删除");
-          }
-
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
       },
       //导入历史
       importHistory() {

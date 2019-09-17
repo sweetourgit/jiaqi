@@ -28,6 +28,19 @@
 //        }
       }
     },
+    watch: {
+      $route: {
+        handler: function(val, oldVal){
+          if (val.path == "/externalOrderList/canRecognition"){
+            this.activeName = "canRecognition"
+          }else if(val.path == "/externalOrderList/noRecognition"){
+            this.activeName = "noRecognition"
+          }
+        },
+        // 深度观察监听
+        deep: true
+      }
+    },
     created() {
       if (this.$route.path == "/externalOrderList/noRecognition"){
         this.activeName = "noRecognition"

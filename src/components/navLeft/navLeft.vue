@@ -18,7 +18,8 @@
           <span class="actionName">{{item.name}}</span>
         </template>
         <template v-for="(data,index1) in item.items">
-          <el-menu-item class="suboptions" :index="data.value" :route="{path:data.router}"  :key="index1">{{data.value}}</el-menu-item>
+          <el-menu-item :class="{'is-active': $route.path.split('/')[1] == data.router.split('/')[1], 'suboptions' : true}" :index="data.value" :route="{path:data.router}"  :key="index1">{{data.value}}</el-menu-item>
+          <!--<el-menu-item class="suboptions" :index="data.value" :route="{path:data.router}"  :key="index1">{{data.value}}</el-menu-item>-->
         </template>
       </el-submenu>
     </el-menu>
@@ -117,7 +118,7 @@
               items: [
                 {
                   value: '产品列表',
-                  router:'/productList/packageTour'
+                  router:'/productList/packageTour',
                 },
                 {
                   value: '出行模板',
@@ -147,52 +148,52 @@
                 },
               ],
             },
-          {
-            name: '财务管理',
-            img: 'order.png',
-            items: [
-              {
-                value: '无收入借款管理',
-                router:'/loanManagement'
-              },
-              {
-                value: '预付款管理',
-                router:'/advancePayment'
-              },
-              {
-                value: '收款管理',
-                router:'/collectionManagement'
-              },
-              {
-                value: '报销管理',
-                router:'/reimburseManagement'
-              },
-              {
-                value: '报账单',
-                router:'/checkSheet'
-              },
-              {
-                value: '供应商欠款管理',
-                router:'/arrearsManagement'
-              },
-              {
-                value: '银行账号管理',
-                router:'/bankAccount'
-              },
-              {
-                value: '客商预存款管理',
-                router:'/predepositManagement'
-              },
-              {
-                value: '财务认款管理',
-                router:'/pledgingManagement'
-              },
-              {
-                value: '欠款订单管理',
-                router:'/balanceOrder'
-              },
-            ],
-          }
+            {
+              name: '财务管理',
+              img: 'order.png',
+              items: [
+                {
+                  value: '无收入借款管理',
+                  router:'/loanManagement'
+                },
+                {
+                  value: '预付款管理',
+                  router:'/advancePayment'
+                },
+                {
+                  value: '收款管理',
+                  router:'/collectionManagement'
+                },
+                {
+                  value: '报销管理',
+                  router:'/reimburseManagement'
+                },
+                {
+                  value: '报账单',
+                  router:'/checkSheet'
+                },
+                {
+                  value: '供应商欠款管理',
+                  router:'/arrearsManagement'
+                },
+                {
+                  value: '银行账号管理',
+                  router:'/bankAccount'
+                },
+                {
+                  value: '客商预存款管理',
+                  router:'/predepositManagement'
+                },
+                {
+                  value: '财务认款管理',
+                  router:'/pledgingManagement'
+                },
+                {
+                  value: '欠款订单管理',
+                  router:'/balanceOrder'
+                },
+              ],
+            }
         ],
         isRouter:true,
         menuNumber:[],
@@ -213,7 +214,7 @@
           }
         }
       }
-    },
+    }
   }
 }
 </script>
@@ -253,5 +254,8 @@
   background:#3095FA;
   display:block;
 }
+  .is-active{
+    color: #fff!important;
+  }
 </style>
 
