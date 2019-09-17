@@ -434,6 +434,7 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(res => {
+        console.log(res)
         if (res.data.objects !== "") {
           for (var i = 0; i < res.data.objects.length; i++) {
             this.remove1(res.data.objects[i].id);
@@ -518,6 +519,7 @@ export default {
     },
     // 单击tree节点
     treeClick(a, b, c) {
+      console.log(a)
       this.data = [];
       this.org = a.id;
       this.tableData = [];
@@ -536,6 +538,7 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(response => {
+        console.log(response)
         for (let i = 0; i < response.data.objects.length; i++) {
           if (response.data.objects[i].isDeleted !== 1) {
             _this.tableData.push({
@@ -557,6 +560,8 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(res => {
+        console.log("部门人员")
+        console.log(res)
         for(let i = 0;i<res.data.objects.length;i++){
           if(res.data.objects[i].sex == 1){
             res.data.objects[i].sex = '男'
@@ -651,6 +656,7 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(response => {
+        console.log(response)
         for (let i = 0; i < response.data.objects.length; i++) {
           if (response.data.objects[i].isDeleted !== 1) {
             if (response.data.objects[i].isLeaf == 1) {

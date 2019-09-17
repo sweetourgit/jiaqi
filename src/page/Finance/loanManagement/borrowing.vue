@@ -864,7 +864,7 @@ import moment from 'moment'
           beginTime=''+ y + m + d
         }else{
           beginTime=0
-        } */  	
+        } */
       	let objectRequest = {}
       	objectRequest.paymentType = 1;
       	objectRequest.checkType = -1;
@@ -881,7 +881,7 @@ import moment from 'moment'
             "pageSize":this.pagesize,
             "pageIndex":this.currentPage,
             "total": 0,
-            "object": objectRequest, 
+            "object": objectRequest,
           },)
           .then(function (obj) {
             that.total = obj.data.total

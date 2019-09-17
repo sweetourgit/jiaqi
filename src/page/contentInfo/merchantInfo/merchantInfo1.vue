@@ -205,7 +205,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="销售人员" prop="saler">
-              <el-cascader  v-model = "ruleForm.saler":props="props" style="width: 250px;"></el-cascader>
+              <el-cascader  v-model = "ruleForm.saler" :props="props" style="width: 250px;"></el-cascader>
             </el-form-item>
 
             <el-form-item label="到期时间" prop="dq_time">
