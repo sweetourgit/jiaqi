@@ -58,18 +58,23 @@
                           <div class="describe_way">描述方式</div>
                           <ul class="description">
                             <li v-for="(item,index) in describe" :key="index" :class="{active:index == num}" @click="tab(index)">
-                        <span v-if="index=='0'">
-                          <el-radio  label="0" v-model="matter_radio" checked>{{item}}</el-radio>
-                        </span>
+                              <span v-if="index=='0'">
+                                <el-radio label="0" value="0" v-model="matter_radio" checked>{{item}}</el-radio>
+                              </span>
                               <span v-if="index=='1'">
-                          <el-radio label="1" v-model="matter_radio">{{item}}</el-radio>
-                        </span>
+                                <el-radio label="1" value="1" v-model="matter_radio">{{item}}</el-radio>
+                              </span>
+                              <!-- <el-radio-group v-model="matter_radio" class="travelType">
+                                <el-radio v-if="index=='0'" label="0" value="0">{{item}}</el-radio>
+                                <el-radio v-if="index=='1'" label="1" value="1">{{item}}</el-radio>
+                              </el-radio-group> -->
                             </li>
                           </ul>
+                            
                           <!--描述方式结束-->
                           <div v-for="(itemCon,index) in pattern" :key="index" v-show="index == num">
                             <!--详细说明-->
-                            <div v-if="index ==0" class="traffic_border">
+                            <div v-if="index ==0 || isShowBriefDetail === 1" class="traffic_border">
                               <div>
                                 <div class="traffic_button">去程</div>
                                 <div class="traffic_button">
@@ -702,7 +707,7 @@
                             </div>
                             <!--详细说明结束-->
                             <!--简要说明-->
-                            <div class="traffic_border" v-if="index ==1">
+                            <div class="traffic_border" v-if="index ==1 || isShowBriefDetail === 2"> 
                               <div class="cost_content" style="background: #FFFFFF">
                                 <vue-editor v-model="content"></vue-editor>
                               </div>
@@ -860,25 +865,42 @@
                                 </div>
                                 <div class="aviation">
                                   <!--住宿-->
-                                  <div class="aviation_first">
+                                  <!--<div class="aviation_first">
                                     <div class="aviation_textday"><span>*</span>住宿</div>
                                     <div class="type_radio" style="margin:27px 0 0 0;">
                                       <div>
                                         <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>
                                         <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>
                                         <div class="explain">
-                                          <!--    <div v-show="myradio[index].lable=='0'">
+                                              <div v-show="myradio[index].lable=='0'">
                                       <span v-for="(itemCon,p) in tabContents" style="margin-right:10px">
                                       <el-button @click="baocun(itemCon.id,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
                                       </span>
-                                              </div>-->
+                                              </div>
                                   <el-form-item v-if="myradio[index].lable=='1'" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details">
                                     <el-input class="inputBox" v-model="item.ext_Hotel.Details" type="text" placeholder="住宿说明"></el-input>
                                   </el-form-item>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  </div>-->
+                                  <el-form-item class="aviation_first">
+                                    <div class="aviation_textday"><span>*</span>住宿</div>
+                                    <div class="type_radio">
+                                      <div>
+                                        <!--<span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>-->
+                                        <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>
+                                         <!--<div v-show="myradio[index].lable=='0'">
+                                          <span v-for="(itemCon,p) in tabContents" style="margin-right:10px">
+                                          <el-button @click="baocun(itemCon.id,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
+                                          </span>
+                                         </div>-->
+                                        <el-form-item v-if="myradio[index].lable=='1'" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details">
+                                          <el-input class="inputBox" v-model="item.ext_Hotel.Details" type="text" placeholder="住宿说明"></el-input>
+                                        </el-form-item>
+                                      </div>
+                                    </div>
+                                  </el-form-item>
                                 </div>
                                 <div class="aviation">
                                   <!--餐饮-->
@@ -1216,6 +1238,7 @@
     },
     data() {
       return {
+        isShowBriefDetail: 1, // 1-显示详细说明， 2-显示简要说明
         chuxian:'',
         qqqq: '3',
         schedulesId:'',
@@ -1275,7 +1298,7 @@
         inputVisible1: false,
         inputValue1: '',
         //简要说明
-        content: '',
+        content: '1',
         content1: '<h1>Some initial content111</h1>',
         //切换主题
         editableTabsValue: '1',
@@ -1797,9 +1820,10 @@
             }
 
           }
-        )
-          .then(function (obj) {
 
+        )
+
+          .then(function (obj) {
             console.log(obj.data.object);
             that.ruleForm.travelDays = obj.data.object.day//行程天数
             that.ruleForm.travelNight = obj.data.object.night//行程晚数
@@ -1810,6 +1834,12 @@
             that.ruleForm.bourn = obj.data.object.package[0].destination //行程信息目的地
             that.ruleForm.podID = obj.data.object.package[0].podID //行程信息出发地ID
             that.ruleForm.destinationID = obj.data.object.package[0].destinationID//行程信息目的地ID
+            that.content = String(obj.data.object.package[0].briefMark)//其他说明
+            let keepContentLength = that.content.length
+            if (keepContentLength > 0){
+              that.isShowBriefDetail = 2
+              console.log('that.isShowBriefDetail', that.isShowBriefDetail)
+            }
             that.packLen = obj.data.object.package.length
             for(let j = 0; j < obj.data.object.package.length; j++){
               let newTabName = ++that.tabIndex + '';
@@ -2034,7 +2064,8 @@
             traffic: traff,
             schedules:sche,
             loadPackage: true,
-            briefMark: "string",
+            briefMark:this.content,
+            //briefMark: "string",
             loadPlan: true,
             codePrefix: "LKCO",
             codeSuffix:"US621",
@@ -2112,7 +2143,8 @@
             traffic: traff,
             schedules:sche,
             loadPackage: true,
-            briefMark: "string",
+             briefMark:this.content,
+            //briefMark: "string",
             loadPlan: true,
             codePrefix: "LKCO",
             codeSuffix:"US621",
@@ -2144,7 +2176,6 @@
       },
       //保存套餐信息
       handleSetMeal(formName){
-
         //经停信息转字符串
         let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
         let traff=JSON.parse(traff1);
@@ -2184,7 +2215,8 @@
           createTime:this.formatDate(new Date()),
           traffic: traff,
           loadPackage: true,
-          briefMark: "string",
+           briefMark:this.content,
+          //briefMark: "string",
           loadPlan: true,
           codePrefix: "string",
           codeSuffix: "string"
@@ -2647,6 +2679,12 @@
                 that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
                 that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
                 that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
+                that.content = String(obj.data.object.package[0].briefMark)
+                let keepContentLength = that.content.length
+                  if (keepContentLength > 0){
+                    that.isShowBriefDetail = 2
+                    console.log('that.isShowBriefDetail', that.isShowBriefDetail)
+                  }
                 that.packLen = obj.data.object.package.length
                 that.ruleForm.plane = []
                 that.ruleForm.nackPlane = []
@@ -3146,6 +3184,12 @@
                 that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
                 that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
                 that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
+                that.content = String(obj.data.object.package[0].briefMark)
+                let keepContentLength = that.content.length
+                if (keepContentLength > 0){
+                  that.isShowBriefDetail = 2
+                  console.log('that.isShowBriefDetail', that.isShowBriefDetail)
+                }
                 that.packLen = obj.data.object.package.length
                 that.ruleForm.plane = []
                 that.ruleForm.nackPlane = []
@@ -3392,6 +3436,12 @@
                 that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
                 that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
                 that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
+                that.content = String(obj.data.object.package[0].briefMark)
+                let keepContentLength = that.content.length
+                if (keepContentLength > 0){
+                  that.isShowBriefDetail = 2
+                  console.log('that.isShowBriefDetail', that.isShowBriefDetail)
+                }
                 that.packLen = obj.data.object.package.length
                 that.ruleForm.plane = []
                 that.ruleForm.nackPlane = []

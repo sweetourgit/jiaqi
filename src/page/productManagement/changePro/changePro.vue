@@ -1088,10 +1088,10 @@
           loadPackage: true
 
         }
-        // if(this.dynamicTags3.length==0||this.dynamicTags4.length==0){
-        //    this.errors();
-        //    return;
-        // }
+        if(this.dynamicTags3.length==0||this.dynamicTags4.length==0){
+           this.errors();
+           return;
+        }
         this.$refs[formName].validate((valid) => {
           if(valid){
             var _this = this;

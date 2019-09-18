@@ -31,8 +31,8 @@
                 <el-autocomplete id="ddd" class="input-new-tags" v-model="ruleForm.placeDeparture" v-if="inputVisible3" ref="saveTagInput" :fetch-suggestions="querySearch3" size="small" @keyup.enter.native="handleInputConfirm3" placeholder="请输入出发地" :trigger-on-focus="false" @select="departure" @blur="handleInputConfirm3"></el-autocomplete>
                 <el-button v-else class="input-new-tag" size="small" @click="showInput3">请输入出发地</el-button>
               </div>
-              <span id="isNull" v-show="noNull">不能为空</span>
-              <span v-if="this.dynamicTags3 == '' && a != false" style="color: #f56c6c;font-size: 12px; position: relative;left: -430px;">不能为空</span>
+              <!-- <span id="isNull" v-show="noNull">不能为空</span> -->
+              <span v-if="this.dynamicTags3 == '' && a != false" style="color: #f56c6c;font-size: 12px; position: relative;left: -430px;">出发地不能为空</span>
               <!-- <span v-show="noNull1" style="color: #f56c6c;font-size: 12px; position: relative;left: -430px;">不能为空</span> -->
             </el-form-item>
             <!-- 目的地 -->
@@ -46,9 +46,9 @@
                 </el-autocomplete>
                 <el-button v-else class="input-new-tag" size="small" @click="showInput4">请输入目的地</el-button>
               </div>
-              <span id="zero" v-show="errorNull">不能为空</span>
+              <!-- <span id="zero" v-show="errorNull">不能为空</span> -->
               <!--<span v-show="noNull2" style="color: #f56c6c;font-size: 12px; position: relative;left: -430px;">不能为空</span> -->
-              <span v-if="this.dynamicTags4 == '' && a != false" style="color: #f56c6c;font-size: 12px; position: relative;left: -430px;">不能为空</span>
+              <span v-if="this.dynamicTags4 == '' && a != false" style="color: #f56c6c;font-size: 12px; position: relative;left: -430px;">目的地不能为空</span>
             </el-form-item>
             <!-- 行程天數 -->
             <div style="overflow:hidden">
@@ -1104,6 +1104,7 @@
                                     <el-button @click="baocun(itemCon.id,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
                                     </span>
                                    </div>-->
+                                  <!-- <el-form-item v-if="myradio[index].lable=='1'" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details"> -->
                                   <el-form-item v-if="myradio[index].lable=='1'" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details">
                                     <el-input class="inputBox" v-model="item.ext_Hotel.Details" type="text" placeholder="住宿说明"></el-input>
                                   </el-form-item>
@@ -2124,18 +2125,18 @@
       addsave(formName) {
         this.a = true
         console.log(this.ruleForm.slideshow)
-        this.noNull1 = false
-        this.noNull2 = false
-        if(this.dynamicTags3 == ""){
-         this.noNull1 = true
-        }else{
-          this.noNull1 = false
-        }
-        if(this.dynamicTags4 == ""){
-          this.noNull2 = true
-        }else{
-          this.noNull1 = false
-        }
+        // this.noNull1 = false
+        // this.noNull2 = false
+        // if(this.dynamicTags3 == ""){
+        //  this.noNull1 = true
+        // }else{
+        //   this.noNull1 = false
+        // }
+        // if(this.dynamicTags4 == ""){
+        //   this.noNull2 = true
+        // }else{
+        //   this.noNull1 = false
+        // }
         //基本信息亮点词
         let strengths=[];
         if(this.ruleForm.highlightWords1!=""){
@@ -2216,7 +2217,8 @@
                   advanceDay:this.ruleForm.advanceRegistrationDays,
                   // advanceHour:this.ruleForm.timeHour,
                   // advanceMinute:this.ruleForm.timeMinute,
-                  createUser:sessionStorage.getItem('id'),
+                  //createUser:sessionStorage.getItem('id'),
+                  createUser:sessionStorage.getItem('userCode'),
                   proStat:1,
                   guid:localStorage.getItem("guid"),
                   // crowdID:this.ruleForm.Excursion == '' ? -1 : this.ruleForm.Excursion,//基本信息出游人群

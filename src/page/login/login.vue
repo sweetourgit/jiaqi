@@ -432,7 +432,7 @@
                     }).then(res => {
                       sessionStorage.setItem('id',res.data.id)
                       sessionStorage.setItem('orgID',res.data.orgID)
-                      sessionStorage.setItem('account',this.ruleForm.user)
+                      //sessionStorage.setItem('account',this.ruleForm.user)//刚掉account
                       sessionStorage.setItem('userCode',res.data.userCode)
                       store.save('name',res.data.name)
                       this.$router.push('/userList')
