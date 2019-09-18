@@ -73,24 +73,26 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let flag = true;
-          that.ruleForm.costType.forEach(function (item, index, arr) {
-            if(item.cost_type == ''){
+          console.log('that.ruleForm.costType',that.ruleForm.costType);
+          for(let i = 0; i < that.ruleForm.costType.length; i++){
+//            alert(that.ruleForm.costType[i].cost_type);
+            if(that.ruleForm.costType[i].cost_type == ''){
               that.$message({
                 type: 'warning',
                 message: '成本项目不能为空!'
               });
               flag = false;
             }
-          });
+          }
           if(flag){
             let costArr = [];
-            this.ruleForm.costType.forEach(function (item, index, arr) {
+            for(let i = 0; i < that.ruleForm.costType.length; i++){
               const costItem = {
-                "before_name": that.typeList[index],
-                "after_name": item.cost_type
+                "before_name": that.typeList[i],
+                "after_name": that.ruleForm.costType[i].cost_type
               };
               costArr.push(costItem);
-            });
+            }
 //            alert(JSON.stringify(costArr));
             this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/savetemp", {
               "tour_no": this.$parent.paramTour,

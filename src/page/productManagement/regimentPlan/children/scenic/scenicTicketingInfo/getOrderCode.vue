@@ -45,6 +45,8 @@
           </el-table-column>
           <el-table-column prop="quantity" label="数量" align="center">
           </el-table-column>
+          <el-table-column prop="proce_amount" label="未处理金额" align="center">
+          </el-table-column>
           <el-table-column prop="approval_money" label="申请金额" align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.approval_money" :disabled="approvalStatus" placeholder="申请金额" @blur="addMoney"></el-input>

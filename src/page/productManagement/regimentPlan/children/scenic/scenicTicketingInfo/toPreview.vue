@@ -3,303 +3,305 @@
     <!--申请预付款-->
 
     <el-dialog title="预览报账单" :visible="dialogFormVisible" width=50% @close="closeAdd">
-      <div style="width: 96%;margin: 0 auto;">
-        <p style="font-size: 16px;text-align: center;font-weight: 700;">{{topTitle}}</p>
-        <p style="text-align: right;font-size: 12px;">报账日期：{{topData}}</p>
+      <div ref="print" class="print">
+        <div style="width: 96%;margin: 0 auto;">
+          <p style="font-size: 16px;text-align: center;font-weight: 700;">{{topTitle}}</p>
+          <p style="text-align: right;font-size: 12px;">报账日期：{{topData}}</p>
+        </div>
+        <section>
+          <el-row>
+            <el-col :span="2" class="title">
+              部门
+            </el-col>
+            <el-col :span="3" class="content">
+              {{info.org_id}}
+            </el-col>
+            <el-col :span="2" class="title">
+              操作人
+            </el-col>
+            <el-col :span="3" class="content">
+              {{info.op_name}}
+            </el-col>
+            <el-col :span="2" class="title">
+              导陪
+            </el-col>
+            <el-col :span="3" class="content">
+              {{info.guide}}
+            </el-col>
+            <el-col :span="2" class="title">
+              接团社
+            </el-col>
+            <el-col :span="7" class="content">
+              {{info.associations}}
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="2" class="title">
+              团号
+            </el-col>
+            <el-col :span="8" class="content">
+              {{info.tour_no}}
+            </el-col>
+            <el-col :span="2" class="title">
+              线路名称
+            </el-col>
+            <el-col :span="12" class="content">
+              {{info.product_name}}
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="2" class="title">
+              团队人数
+            </el-col>
+            <el-col :span="3" class="content">
+              {{info.team_num}}
+            </el-col>
+            <el-col :span="2" class="title">
+              减免人数
+            </el-col>
+            <el-col :span="3" class="content">
+              {{info.reduce_num}}
+            </el-col>
+            <el-col :span="2" class="title">
+              出发日期
+            </el-col>
+            <el-col :span="3" class="content">
+              {{info.startTime}}
+            </el-col>
+            <el-col :span="2" class="title">
+              返回日期
+            </el-col>
+            <el-col :span="3" class="content">
+              {{info.endTime}}
+            </el-col>
+            <el-col :span="2" class="title">
+              全程天数
+            </el-col>
+            <el-col :span="2" class="content">
+              {{info.days}}
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24" class="title">
+              团队收入成本结算
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="2" class="title">
+              总收入
+            </el-col>
+            <el-col :span="3" class="content">
+              {{info.total_income}}
+            </el-col>
+            <el-col :span="2" class="title">
+              总支出
+            </el-col>
+            <el-col :span="3" class="content">
+              {{info.total_cost}}
+            </el-col>
+            <el-col :span="2" class="title">
+              毛利额
+            </el-col>
+            <el-col :span="3" class="content">
+              {{info.gross_profit}}
+            </el-col>
+            <el-col :span="2" class="title">
+              毛利率
+            </el-col>
+            <el-col :span="7" class="content">
+              {{info.gross_rate}}
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24" class="content">
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="2" class="title">
+              序号
+            </el-col>
+            <el-col :span="5" class="title">
+              收入
+            </el-col>
+            <el-col :span="5" class="title">
+              经手人
+            </el-col>
+            <el-col :span="3" class="title">
+              人数
+            </el-col>
+            <el-col :span="3" class="title">
+              实收款
+            </el-col>
+            <el-col :span="3" class="title">
+              发票号码
+            </el-col>
+            <el-col :span="3" class="title">
+              备注
+            </el-col>
+          </el-row>
+          <template v-for="(bill,index) in billReporting">
+            <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+              <el-col :span="2" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+                {{index + 1}}
+              </el-col>
+              <el-col :span="5" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+                {{bill.handler}}
+              </el-col>
+              <el-col :span="5" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+                {{bill.distributor}}
+              </el-col>
+              <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+                {{bill.people_num}}
+              </el-col>
+              <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+                {{bill.income}}
+              </el-col>
+              <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+                {{bill.serial_sn}}
+              </el-col>
+              <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+                {{bill.remark}}
+              </el-col>
+            </el-row>
+          </template>
+          <el-row>
+            <el-col :span="12" class="title">
+              合计：
+            </el-col>
+            <el-col :span="3" class="content">
+              {{billTotalNumber}}
+            </el-col>
+            <el-col :span="3" class="content">
+              {{billTotalReceivables}}
+            </el-col>
+            <el-col :span="3" class="content">
+              {{billTotalInvoice}}
+            </el-col>
+            <el-col :span="3" class="content">
+              {{billTotalRmarks}}
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24" class="title">
+              团队成本明细
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="3" class="title">
+              序号
+            </el-col>
+            <el-col :span="3" class="title">
+              成本项目
+            </el-col>
+            <el-col :span="4" class="title">
+              供应商
+            </el-col>
+            <el-col :span="2" class="title">
+              人数
+            </el-col>
+            <el-col :span="3" class="title">
+              成本合计
+            </el-col>
+            <el-col :span="3" class="title">
+              已支付
+            </el-col>
+            <el-col :span="3" class="title">
+              挂账
+            </el-col>
+            <el-col :span="3" class="title">
+              备注
+            </el-col>
+          </el-row>
+          <template v-for="(cost,index) in costDetails">
+            <el-row :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+                {{index + 1}}
+              </el-col>
+              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+                {{cost.cost_type}}
+              </el-col>
+              <el-col :span="4" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+                {{cost.supplier}}
+              </el-col>
+              <el-col :span="2" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+                {{cost.people_num}}
+              </el-col>
+              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+                {{cost.cost}}
+              </el-col>
+              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+                {{cost.paid_cost}}
+              </el-col>
+              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+                {{cost.settle_cost}}
+              </el-col>
+              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+                {{cost.remarks}}
+              </el-col>
+            </el-row>
+          </template>
+          <el-row>
+            <el-col :span="3" class="title">
+              合计
+            </el-col>
+            <el-col :span="6" class="title">
+            </el-col>
+            <el-col :span="3" class="title">
+              {{costTotalNumber}}
+            </el-col>
+            <el-col :span="3" class="title">
+              {{costTotalCost}}
+            </el-col>
+            <el-col :span="3" class="title">
+              {{costPaymented}}
+            </el-col>
+            <el-col :span="3" class="title">
+              <!--挂账-->
+            </el-col>
+            <el-col :span="3" class="title">
+              <!--备注-->
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="3" class="title">
+              审批人
+            </el-col>
+            <el-col :span="3" class="title" style="">
+              <div style="position:relative;z-index: 99;top: 16px;">计调</div>
+            </el-col>
+            <el-col :span="4" class="">
+            </el-col>
+            <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
+              <div style="position:relative;z-index: 99;top: 16px;">财务部</div>
+            </el-col>
+            <el-col :span="4" class="">
+            </el-col>
+            <el-col :span="3" class="title" style="">
+              <div style="position:relative;z-index: 99;top: 16px;">总经理</div>
+            </el-col>
+            <el-col :span="4" class="">
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="3" class="title">
+              签字
+            </el-col>
+            <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
+            </el-col>
+            <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
+            </el-col>
+            <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
+            </el-col>
+            <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
+            </el-col>
+            <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
+            </el-col>
+            <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
+            </el-col>
+          </el-row>
+          <!-- <div class="no-print">不要打印我</div> -->
+        </section>
       </div>
-      <section ref="print" class="print">
-        <el-row>
-          <el-col :span="2" class="title">
-            部门
-          </el-col>
-          <el-col :span="3" class="content">
-            {{info.org_id}}
-          </el-col>
-          <el-col :span="2" class="title">
-            操作人
-          </el-col>
-          <el-col :span="3" class="content">
-            {{info.op_name}}
-          </el-col>
-          <el-col :span="2" class="title">
-            导陪
-          </el-col>
-          <el-col :span="3" class="content">
-            {{info.guide}}
-          </el-col>
-          <el-col :span="2" class="title">
-            接团社
-          </el-col>
-          <el-col :span="7" class="content">
-            {{info.associations}}
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="2" class="title">
-            团号
-          </el-col>
-          <el-col :span="8" class="content">
-            {{info.tour_no}}
-          </el-col>
-          <el-col :span="2" class="title">
-            线路名称
-          </el-col>
-          <el-col :span="12" class="content">
-            {{info.product_name}}
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="2" class="title">
-            团队人数
-          </el-col>
-          <el-col :span="3" class="content">
-            {{info.team_num}}
-          </el-col>
-          <el-col :span="2" class="title">
-            减免人数
-          </el-col>
-          <el-col :span="3" class="content">
-            {{info.reduce_num}}
-          </el-col>
-          <el-col :span="2" class="title">
-            出发日期
-          </el-col>
-          <el-col :span="3" class="content">
-            {{info.startTime}}
-          </el-col>
-          <el-col :span="2" class="title">
-            返回日期
-          </el-col>
-          <el-col :span="3" class="content">
-            {{info.endTime}}
-          </el-col>
-          <el-col :span="2" class="title">
-            全程天数
-          </el-col>
-          <el-col :span="2" class="content">
-            {{info.days}}
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24" class="title">
-            团队收入成本结算
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="2" class="title">
-            总收入
-          </el-col>
-          <el-col :span="3" class="content">
-            {{info.total_income}}
-          </el-col>
-          <el-col :span="2" class="title">
-            总支出
-          </el-col>
-          <el-col :span="3" class="content">
-            {{info.total_cost}}
-          </el-col>
-          <el-col :span="2" class="title">
-            毛利额
-          </el-col>
-          <el-col :span="3" class="content">
-            {{info.gross_profit}}
-          </el-col>
-          <el-col :span="2" class="title">
-            毛利率
-          </el-col>
-          <el-col :span="7" class="content">
-            {{info.gross_rate}}
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24" class="content">
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="2" class="title">
-            序号
-          </el-col>
-          <el-col :span="5" class="title">
-            收入
-          </el-col>
-          <el-col :span="5" class="title">
-            经手人
-          </el-col>
-          <el-col :span="3" class="title">
-            人数
-          </el-col>
-          <el-col :span="3" class="title">
-            实收款
-          </el-col>
-          <el-col :span="3" class="title">
-            发票号码
-          </el-col>
-          <el-col :span="3" class="title">
-            备注
-          </el-col>
-        </el-row>
-        <template v-for="(bill,index) in billReporting">
-          <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
-            <el-col :span="2" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
-              {{index + 1}}
-            </el-col>
-            <el-col :span="5" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
-              {{bill.handler}}
-            </el-col>
-            <el-col :span="5" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
-              {{bill.distributor}}
-            </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
-              {{bill.people_num}}
-            </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
-              {{bill.income}}
-            </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
-              {{bill.serial_sn}}
-            </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
-              {{bill.remark}}
-            </el-col>
-          </el-row>
-        </template>
-        <el-row>
-          <el-col :span="12" class="title">
-            合计：
-          </el-col>
-          <el-col :span="3" class="content">
-            {{billTotalNumber}}
-          </el-col>
-          <el-col :span="3" class="content">
-            {{billTotalReceivables}}
-          </el-col>
-          <el-col :span="3" class="content">
-            {{billTotalInvoice}}
-          </el-col>
-          <el-col :span="3" class="content">
-            {{billTotalRmarks}}
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24" class="title">
-            团队成本明细
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="3" class="title">
-            序号
-          </el-col>
-          <el-col :span="3" class="title">
-            成本项目
-          </el-col>
-          <el-col :span="4" class="title">
-            供应商
-          </el-col>
-          <el-col :span="2" class="title">
-            人数
-          </el-col>
-          <el-col :span="3" class="title">
-            成本合计
-          </el-col>
-          <el-col :span="3" class="title">
-            已支付
-          </el-col>
-          <el-col :span="3" class="title">
-            挂账
-          </el-col>
-          <el-col :span="3" class="title">
-            备注
-          </el-col>
-        </el-row>
-        <template v-for="(cost,index) in costDetails">
-          <el-row :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-              {{index + 1}}
-            </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-              {{cost.cost_type}}
-            </el-col>
-            <el-col :span="4" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-              {{cost.supplier}}
-            </el-col>
-            <el-col :span="2" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-              {{cost.people_num}}
-            </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-              {{cost.cost}}
-            </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-              {{cost.paid_cost}}
-            </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-              {{cost.settle_cost}}
-            </el-col>
-            <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-              {{cost.remarks}}
-            </el-col>
-          </el-row>
-        </template>
-        <el-row>
-          <el-col :span="3" class="title">
-            合计
-          </el-col>
-          <el-col :span="6" class="title">
-          </el-col>
-          <el-col :span="3" class="title">
-            {{costTotalNumber}}
-          </el-col>
-          <el-col :span="3" class="title">
-            {{costTotalCost}}
-          </el-col>
-          <el-col :span="3" class="title">
-            {{costPaymented}}
-          </el-col>
-          <el-col :span="3" class="title">
-            <!--挂账-->
-          </el-col>
-          <el-col :span="3" class="title">
-            <!--备注-->
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="3" class="title">
-            审批人
-          </el-col>
-          <el-col :span="3" class="title" style="">
-            <div style="position:relative;z-index: 99;top: 16px;">计调</div>
-          </el-col>
-          <el-col :span="4" class="">
-          </el-col>
-          <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
-            <div style="position:relative;z-index: 99;top: 16px;">财务部</div>
-          </el-col>
-          <el-col :span="4" class="">
-          </el-col>
-          <el-col :span="3" class="title" style="">
-            <div style="position:relative;z-index: 99;top: 16px;">总经理</div>
-          </el-col>
-          <el-col :span="4" class="">
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="3" class="title">
-            签字
-          </el-col>
-          <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
-          </el-col>
-          <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
-          </el-col>
-          <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
-          </el-col>
-          <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
-          </el-col>
-          <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
-          </el-col>
-          <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
-          </el-col>
-        </el-row>
-        <!-- <div class="no-print">不要打印我</div> -->
-      </section>
       <div class="footer">
         <el-button @click="print" type="primary" size="small" class="table_details">打印</el-button>
         <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
@@ -345,7 +347,7 @@ export default {
   watch: {
     info: {
       handler: function () {
-//        console.log(this.info);
+        console.log(this.info);
         if(this.info){
           if(this.info.op_id == ''){
             this.getOrgName(sessionStorage.getItem('id'));
@@ -431,23 +433,25 @@ export default {
         if (response.data.isSuccess) {
           that.info.org_id = response.data.objects[0].name
         } else {
-          this.$message.success("加载数据失败~");
+          this.$message.warning("加载数据失败~");
         }
       }).catch(function(error) {
         console.log(error);
       });
     },
-//    待定======================================================================================================================================
-    getTitleName(){
+    getTitleName(id){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userinfo", {}, {
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/fullpath", {
+          'id': id
+      }, {
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(function(response) {
 //        console.log('公司信息',response);
         if (response.status == 200) {
-          that.topTitle = response.data.topName + '旅游团队报账单';
+          let dataCom = JSON.parse(response.data.path);
+          that.topTitle = dataCom[dataCom.length - 1].Name + '旅游团队报账单';
         } else {
           this.$message.warning("加载旅行社名称失败~");
         }

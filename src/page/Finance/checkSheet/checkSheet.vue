@@ -30,7 +30,7 @@
                 </template>
               </el-table-column>
               <el-table-column prop="product_name" label="产品名称" align="center"></el-table-column>
-              <el-table-column prop="id" label="申请人" width="120" align="center"></el-table-column>
+              <el-table-column prop="create_uid" label="申请人" width="120" align="center"></el-table-column>
               <el-table-column prop="created_at" label="申请时间" width="180" align="center"></el-table-column>
               <el-table-column prop="mark" label="审批意见" width="250" align="center"></el-table-column>
               <el-table-column prop="opinion" label="操作" align="center" width="100">
@@ -205,6 +205,8 @@
 //                item.begin_at = item.begin_at.split(" ")[0];
 //                item.end_at = formatDate(new Date(item.end_at*1000));
 //                item.end_at = item.end_at.split(" ")[0];
+                item.createName = item.create_uid;
+
                 item.created_at = formatDate(new Date(item.created_at*1000));
                 item.created_at = item.created_at.split(" ")[0];
 
@@ -217,16 +219,16 @@
                 }).then(function(response) {
 
                   if (response.data.isSuccess) {
-                    item.id = response.data.object.name
+                    item.create_uid = response.data.object.name
                   } else {
-                    that.$message.success("加载数据失败~");
+                    that.$message.warning("加载数据失败~");
                   }
                 }).catch(function(error) {
                   console.log(error);
                 });
               })
             } else {
-              that.$message.success("加载数据失败~");
+              that.$message.warning("加载数据失败~");
             }
           }).catch(function(error) {
             console.log(error);

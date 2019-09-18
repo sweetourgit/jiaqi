@@ -54,27 +54,54 @@
             </el-form-item>
 
             <p class="stepTitle">绑定订单</p>
-            <!--添加-->
+            <!--绑定订单table-->
             <div class="stepDv" style="margin-bottom: 50px;">
-              <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-              <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
-                <el-table-column prop="1" label="入账时间" align="center">
+              <el-table ref="singleTable" :data="chooseTable" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+                <el-table-column prop="order_sn" label="订单ID" align="center" >
                 </el-table-column>
-                <el-table-column prop="2" label="订单编号" align="center">
+                <el-table-column prop="distributor" label="分销商" align="center">
                 </el-table-column>
-                <el-table-column prop="3" label="客人名称" align="center">
+                <el-table-column prop="product_name" label="产品名称" align="center">
                 </el-table-column>
-                <el-table-column prop="4" label="产品" align="center">
+                <el-table-column prop="sale_at" label="下单时间" align="center">
                 </el-table-column>
-                <el-table-column prop="5" label="结算金额" align="center">
+                <el-table-column prop="cost" label="费用" align="center">
+                  <template slot-scope="scope">
+                    <span>收入:{{scope.row.income}}</span><br>
+                    <span>单票成本:{{scope.row.single_cost}}</span><br>
+                    <span>总成本:{{scope.row.cost}}</span>
+                  </template>
                 </el-table-column>
-                <el-table-column prop="6" label="手续费" align="center">
+                <el-table-column prop="quantity" label="数量" align="center">
                 </el-table-column>
-                <el-table-column prop="8" label="团号" align="center">
+                <el-table-column prop="" label="客人信息" align="center">
+                  <template slot-scope="scope">
+                    <span>取票人:{{scope.row.contact_name}}</span><br>
+                    <span>手机:{{scope.row.contact_phone}}</span>
+                  </template>
                 </el-table-column>
-                <el-table-column prop="9" label="粉联号" align="center">
+                <el-table-column prop="check_at" label="验证时间" align="center">
                 </el-table-column>
-                <el-table-column prop="10" label="发票号" align="center">
+                <el-table-column prop="pay_type" label="卖出支付方式" align="center">
+                  <template slot-scope="scope">
+                    <p v-if="scope.row.pay_type == 1">产品自销</p>
+                    <p v-if="scope.row.pay_type == 2">授信支付</p>
+                    <p v-if="scope.row.pay_type == 3">微信支付</p>
+                    <p v-if="scope.row.pay_type == 4">易宝云企付</p>
+                    <p v-if="scope.row.pay_type == 5">余额支付</p>
+                    <p v-if="scope.row.pay_type == 6">支付宝</p>
+                    <p v-if="scope.row.pay_type == 7">自采</p>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="import_at" label="导入时间" align="center">
+                </el-table-column>
+                <el-table-column prop="" label="关联产品" align="center">
+                  <template slot-scope="scope">
+                    <p v-if="scope.row.is_relate_pro == 1">未关联产品</p>
+                    <p v-if="scope.row.is_relate_pro == 2">产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="create_uid" label="操作人" align="center">
                 </el-table-column>
                 <el-table-column prop="money" label="操作" align="center">
                   <template slot-scope="scope">
@@ -193,34 +220,56 @@
           </div>
         </el-dialog>
 
-        <el-dialog title="关联订单" :visible="dialogFormVisible2" width=60% @close="close" append-to-body>
+        <el-dialog title="关联订单" :visible="dialogFormVisible2" width=90% @close="close" append-to-body>
           <div class="table_trip" style="width: 100%;">
             <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-            <el-table ref="multipleTable" :data="tableDataGLDD" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass">
+            <el-table ref="multipleTable" :data="tableDataGLDD" border style="width: 100%;margin-bottom: 28px;" height="700" :highlight-current-row="true" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
               <el-table-column prop="id" label="" fixed type="selection"></el-table-column>
               <el-table-column prop="order_sn" label="订单ID" align="center" >
               </el-table-column>
-              <el-table-column prop="title" label="分销商" align="center">
+              <el-table-column prop="distributor" label="分销商" align="center">
               </el-table-column>
-              <el-table-column prop="cardNum" label="产品名称" align="center">
+              <el-table-column prop="product_name" label="产品名称" align="center">
               </el-table-column>
-              <el-table-column prop="openingBank" label="下单时间" align="center">
+              <el-table-column prop="sale_at" label="下单时间" align="center">
               </el-table-column>
-              <el-table-column prop="openingName" label="费用" align="center">
+              <el-table-column prop="cost" label="费用" align="center">
+                <template slot-scope="scope">
+                  <span>收入:{{scope.row.income}}</span><br>
+                  <span>单票成本:{{scope.row.single_cost}}</span><br>
+                  <span>总成本:{{scope.row.cost}}</span>
+                </template>
               </el-table-column>
-              <el-table-column prop="openingName" label="数量" align="center">
+              <el-table-column prop="quantity" label="数量" align="center">
               </el-table-column>
-              <el-table-column prop="openingName" label="客人信息" align="center">
+              <el-table-column prop="" label="客人信息" align="center">
+                <template slot-scope="scope">
+                  <span>取票人:{{scope.row.contact_name}}</span><br>
+                  <span>手机:{{scope.row.contact_phone}}</span>
+                </template>
               </el-table-column>
-              <el-table-column prop="openingName" label="验证时间" align="center">
+              <el-table-column prop="check_at" label="验证时间" align="center">
               </el-table-column>
-              <el-table-column prop="openingName" label="卖出支付方式" align="center">
+              <el-table-column prop="pay_type" label="卖出支付方式" align="center">
+                <template slot-scope="scope">
+                  <p v-if="scope.row.pay_type == 1">产品自销</p>
+                  <p v-if="scope.row.pay_type == 2">授信支付</p>
+                  <p v-if="scope.row.pay_type == 3">微信支付</p>
+                  <p v-if="scope.row.pay_type == 4">易宝云企付</p>
+                  <p v-if="scope.row.pay_type == 5">余额支付</p>
+                  <p v-if="scope.row.pay_type == 6">支付宝</p>
+                  <p v-if="scope.row.pay_type == 7">自采</p>
+                </template>
               </el-table-column>
-              <el-table-column prop="openingName" label="导入时间" align="center">
+              <el-table-column prop="import_at" label="导入时间" align="center">
               </el-table-column>
-              <el-table-column prop="openingName" label="关联产品" align="center">
+              <el-table-column prop="" label="关联产品" align="center">
+                <template slot-scope="scope">
+                  <p v-if="scope.row.is_relate_pro == 1">未关联产品</p>
+                  <p v-if="scope.row.is_relate_pro == 2">产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
+                </template>
               </el-table-column>
-              <el-table-column prop="openingName" label="操作人" align="center">
+              <el-table-column prop="create_uid" label="操作人" align="center">
               </el-table-column>
             </el-table>
           </div>
@@ -288,7 +337,9 @@
 //        票付通余额
         PFTYE: false,
         tableDataGLDD: [],
-        dialogFormVisible2: false
+        dialogFormVisible2: false,
+        multipleSelection: [],
+        chooseTable: []
       }
     },
     computed: {
@@ -370,6 +421,17 @@
         }
         this.getListRece(orderStr);
         this.dialogFormVisible2 = true;
+      },
+      selectionChange(val) {
+        console.log(val);
+        this.multipleSelection = val;
+      },
+      handleRowClick(row, column, event){
+        this.$refs.multipleTable.toggleRowSelection(row);
+      },
+      saveBtn(){
+        this.chooseTable = this.multipleSelection;
+        this.close();
       },
 //      添加
       cancelBtnTJ(){
@@ -854,6 +916,8 @@
           console.log(obj);
           if(obj.data.isSuccess){
             that.rece_code = obj.data.object;
+          }else{
+            that.$message.warning("获取收款编码失败~");
           }
         }).catch(function(obj) {
           console.log(obj)
@@ -897,8 +961,18 @@
             }).catch(function (obj) {
               console.log(obj)
             });
-            if(response.data.data.file != ''){
+            if(response.data.data.file != '' && response.data.data.type == 1){
               that.fileList.push(response.data.data.file);
+              that.tableDataQK = response.data.data.list;
+              that.totalItem = response.data.data.list.length;
+              that.totalMoney = response.data.data.rece_money;
+              that.startTime = response.data.data.rece_start;
+              that.endTime = response.data.data.rece_end;
+              that.tableDataQK.forEach(function (item, index, arr) {
+                item.rece_at = formatDate(new Date(item.rece_at*1000));
+                item.rece_at = item.rece_at.split(" ")[0];
+              })
+            }else if(response.data.data.type == 2 && response.data.data.list.length != 0){
               that.tableDataQK = response.data.data.list;
               that.totalItem = response.data.data.list.length;
               that.totalMoney = response.data.data.rece_money;
@@ -916,7 +990,7 @@
               that.endTime = '';
             }
           } else {
-            that.$message.success("加载数据失败~");
+            that.$message.warning("加载数据失败~");
           }
         }).catch(function(error) {
           console.log(error);
@@ -924,13 +998,13 @@
       },
       getListRece(orderStr){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/receive", {
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/listforrece", {
           "order_sn": orderStr,
           "type": 1
         }, ).then(function(response) {
           console.log('关联订单',response);
           if (response.data.code == '200') {
-
+            that.tableDataGLDD = response.data.data.list;
           } else {
             that.$message.success("加载数据失败~");
           }

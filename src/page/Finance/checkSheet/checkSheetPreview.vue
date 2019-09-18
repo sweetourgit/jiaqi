@@ -406,12 +406,13 @@ export default {
   watch: {
     info: {
       handler:function(){
+//        console.log('info',this.info);
         if(this.info != ''){
           this.loadData();
           if(this.info.bill_status != 7){
             this.topData = formatDate(new Date()).split(" ")[0];
           }
-          this.getTitleName(this.info.create_uid);
+          this.getTitleName(this.info.createName);
 
         }else{
           this.closeAdd();
@@ -427,7 +428,7 @@ export default {
       this.$print(this.$refs.print)
     },
     loadData(){
-      console.log(this.info);
+//      console.log(this.info);
       const that = this;
 //      获取基本信息
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/viewbill", {
@@ -542,14 +543,15 @@ export default {
       });
     },
     goDetail(){
+//      console.log(this.info);
       this.$router.push({
         path: "/scenicTicketingDetails",
         name: "产品管理  /团期计划  /详情",
         query: {
-          id: row.id,
-          bill_status: row.bill_status,
-          tour_no: row.tour_no,
-          approved: row.approved
+          id: this.info.tour_id,
+          bill_status: this.info.bill_status,
+          tour_no: this.info.tour_no,
+          approved: this.info.approved
         }
       });
     },
@@ -612,17 +614,20 @@ export default {
         that.$message.warning("提交失败~");
       });
     },
-    //    待定======================================================================================================================================
-    getTitleName(){
+
+    getTitleName(id){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userinfo", {}, {
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/fullpath", {
+        'id': id
+      }, {
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(function(response) {
 //        console.log('公司信息',response);
         if (response.status == 200) {
-          that.topTitle = response.data.topName + '旅游团队报账单';
+          let dataCom = JSON.parse(response.data.path);
+          that.topTitle = dataCom[dataCom.length - 1].Name + '旅游团队报账单';
         } else {
           this.$message.warning("加载旅行社名称失败~");
         }

@@ -171,16 +171,16 @@
           <!--<el-button type="primary" @click="saveExit">保存退出</el-button>-->
         <!--</span>-->
       <!--</el-dialog>-->
-      <GetOrder :dialogFormVisible="dialogFormVisible" @close="close2" :info="info"></GetOrder>
-      <ToUpdate :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpdate>
+      <!--<GetOrder :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></GetOrder>-->
+      <ToUpdate :dialogFormVisible="dialogFormVisible3" @close="close3" :info="info"></ToUpdate>
       <ToUpddateSource :dialogFormVisible="dialogFormVisible2" @close="close2" :info="updateSource"></ToUpddateSource>
       <!--<ToUpddateIncome :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpddateIncome>-->
-      <ToPreview :dialogFormVisible="dialogFormVisible4" @close="close2" :info="msg"></ToPreview>
+      <ToPreview :dialogFormVisible="dialogFormVisible4" @close="close4" :info="msg"></ToPreview>
     </div>
   </div>
 </template>
 <script type="text/javascript">
-import GetOrder from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrder'
+//import GetOrder from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrder'
 import ToUpddateSource from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateSource'
 import ToUpdate from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpdate'
 //import ToUpddateIncome from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateIncome'
@@ -189,7 +189,7 @@ import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   name: "scenicTicketingBillReporting",
   components: {
-    GetOrder,
+//    GetOrder,
     ToUpddateSource,
 //    ToUpddateIncome,
     ToPreview,
@@ -287,6 +287,7 @@ export default {
               type: 'success',
               message: '提交成功'
             });
+            that.statusBtn = 5;
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
@@ -309,6 +310,11 @@ export default {
       this.updateSource = row.rec_id;
       this.dialogFormVisible2 = true;
     },
+    close2() {
+      this.dialogFormVisible2 = false;
+      this.loadData();
+      this.updateSource = '';
+    },
 //    toUpddateIncome(row) {
 //      this.dialogFormVisible3 = true;
 //    },
@@ -316,19 +322,18 @@ export default {
 //      this.info = this.param;
       this.dialogFormVisible4 = true;
     },
-    getOrder(row) {
-      this.dialogFormVisible = true;
+    close4() {
+      this.dialogFormVisible4 = false;
     },
+//    getOrder(row) {
+//      this.dialogFormVisible = true;
+//    },
     toUpdate() {
       this.dialogFormVisible3 = true;
     },
-    close2() {
-      this.dialogFormVisible = false;
-      this.dialogFormVisible2 = false;
+    close3() {
       this.dialogFormVisible3 = false;
-      this.dialogFormVisible4 = false;
-      this.loadData();
-      this.updateSource = '';
+      this.loadTopData();
     },
     //获取id
     clickBanle(row, event, column) {
@@ -346,11 +351,36 @@ export default {
     },
     loadData(){
       const that = this;
+
+//      获取认款信息
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/recinfo", {
+        "id": this.param
+      }, ).then(function(response) {
+        console.log("认款信息",response);
+        if (response.data.code == '200') {
+          console.log(response);
+          that.tableData = response.data.data;
+          that.totalMoney = 0;
+          that.number = 0;
+          that.tableData.forEach(function (item, index, arr) {
+            that.totalMoney += parseFloat(item.income);
+            that.number += parseInt(item.people_num);
+          });
+          that.totalMoney = that.totalMoney.toFixed(2);
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+    loadTopData(){
+      const that = this;
 //      获取基本信息
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/viewbill", {
         "id": this.param
       }, ).then(function(response) {
-          if (response.data.code == '200') {
+        if (response.data.code == '200') {
           console.log("基本信息",response);
           let billTime = '', startTime = '', endTime = '';
           const dataList = response.data.data;
@@ -406,27 +436,6 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
-//      获取认款信息
-      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/recinfo", {
-        "id": this.param
-      }, ).then(function(response) {
-        console.log("认款信息",response);
-        if (response.data.code == '200') {
-          console.log(response);
-          that.tableData = response.data.data;
-          that.totalMoney = 0;
-          that.number = 0;
-          that.tableData.forEach(function (item, index, arr) {
-            that.totalMoney += parseFloat(item.income);
-            that.number += parseInt(item.people_num);
-          });
-          that.totalMoney = that.totalMoney.toFixed(2);
-        } else {
-          that.$message.success("加载数据失败~");
-        }
-      }).catch(function(error) {
-        console.log(error);
-      });
     },
     getOrgName(ID){
       const that = this;
@@ -455,6 +464,7 @@ export default {
       this.statusBtn = this.$route.query.bill_status;
       this.paramTour = this.$route.query.tour_no;
       this.loadData();
+      this.loadTopData();
     }else{
       this.closeAdd();
     }

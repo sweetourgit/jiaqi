@@ -34,6 +34,9 @@
           <el-table-column prop="rece_at" label="入账时间" align="center">
           </el-table-column>
           <el-table-column prop="order_sn" label="订单编号" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.import_status == 3">{{scope.row.order_sn}}</span>
+            </template>
           </el-table-column>
           <el-table-column prop="guest_name" label="客人名称" align="center">
           </el-table-column>
@@ -347,7 +350,17 @@
               that.totalItem = response.data.data.list.length;
               that.totalMoney = response.data.data.rece_money;
               that.startTime = response.data.data.rece_start;
-              that.endTime = response.data.data.rece_end
+              that.endTime = response.data.data.rece_end;
+            }else if(response.data.data.type == 2){
+              that.tableDataSK = response.data.data.list;
+              that.tableDataSK.forEach(function (item, index, arr) {
+                item.rece_at = formatDate(new Date(item.rece_at*1000));
+                item.rece_at = item.rece_at.split(" ")[0];
+              });
+              that.totalItem = response.data.data.list.length;
+              that.totalMoney = response.data.data.rece_money;
+              that.startTime = response.data.data.rece_start;
+              that.endTime = response.data.data.rece_end;
             }else{
               that.tableDataQK = '';
               that.totalItem = '';
