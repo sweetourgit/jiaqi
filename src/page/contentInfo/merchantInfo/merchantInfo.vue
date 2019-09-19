@@ -114,6 +114,7 @@
       :visible.sync="dialogFormVisible"
       :show-close="false"
       @close="closeDialog"
+      width="1000px"
     >
       <div class="dialog">
         <template v-if="btnindex !== 1">
@@ -122,7 +123,7 @@
             :model="ruleForm"
             :rules="rules"
             ref="ruleForm"
-            label-width="100px"
+            label-width="105px"
             class="demo-ruleForm clearfix"
             :disabled="readonly"
           >
@@ -189,7 +190,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="管理人员 :" prop="administrative">
-                <el-cascader
+                <!-- <el-cascader
                   ref="adminLeader"
                   class="wewe"
                   v-model="ruleForm.administrative"
@@ -197,7 +198,28 @@
                   style="width: 250px"
                   placeholder="请输入"
                   @change="cascaderChangeNode"
-                ></el-cascader>
+                ></el-cascader>-->
+                <el-autocomplete
+                  v-model="ruleForm.administrative"
+                  :fetch-suggestions="querySearchAsync"
+                  placeholder="请输入"
+                  @focus="handleFocusAdminNames"
+                  @select="handleSelectAdminNames"
+                  @blur="handleBlurAdminNames"
+                  :trigger-on-focus="false"
+                  style="width: 250px"
+                ></el-autocomplete>
+                <div style="margin-top: 10px;">
+                  <el-tag
+                    :key="tag.id"
+                    v-for="tag in adminArr"
+                    class="tag"
+                    closable
+                    :disable-transitions="false"
+                    @close="handleAdminClose(tag, adminArr)"
+                    style="margin-botton: 5px;"
+                  >{{tag.value}}</el-tag>
+                </div>
               </el-form-item>
               <el-form-item label="地址 :" prop="address">
                 <el-input
@@ -218,25 +240,14 @@
                 ></el-date-picker>
               </el-form-item>
               <el-form-item label="公司logo :" prop="companyLogo" style="width:360px;">
-                <!-- <el-upload
-                  class="upload-demo"
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  :on-preview="handlePreview"
-                  :on-remove="handleRemove"
-                  :before-remove="beforeRemove"
-                  multiple
-                  :limit="3"
-                  :on-exceed="handleExceed"
-                  :file-list="fileList"
-                  style="width: 250px;"
-                >-->
                 <el-upload
                   class="upload-demo"
                   action="https://jsonplaceholder.typicode.com/posts/"
                   :on-preview="handlePreview"
                   :on-remove="handleRemove"
                   :file-list="fileList2"
-                  list-type="picture"
+                  :limit="1"
+                  style="width: 220px;"
                 >
                   <el-button size="small" type="primary">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -279,16 +290,16 @@
               <div class="rrr" style="float: left;width:490px;">
                 <el-form-item label="经营范围 :" prop="scopeExt">
                   <el-checkbox-group v-model="ruleForm.scopeExt">
-                    <el-checkbox label="出境" name="scopeExt"></el-checkbox>
-                    <el-checkbox label="入境" name="scopeExt"></el-checkbox>
-                    <el-checkbox label="国内" name="scopeExt"></el-checkbox>
-                    <el-checkbox label="赴台游" name="scopeExt"></el-checkbox>
-                    <el-checkbox label="住宿" name="scopeExt"></el-checkbox>
-                    <el-checkbox label="票务" name="scopeExt"></el-checkbox>
-                    <el-checkbox label="邮轮" name="scopeExt"></el-checkbox>
-                    <el-checkbox label="汽车租赁" name="scopeExt"></el-checkbox>
-                    <el-checkbox label="保险" name="scopeExt"></el-checkbox>
-                    <el-checkbox label="其他" name="scopeExt"></el-checkbox>
+                    <el-checkbox label="出境" name="leave"></el-checkbox>
+                    <el-checkbox label="入境" name="enter"></el-checkbox>
+                    <el-checkbox label="国内" name="inland"></el-checkbox>
+                    <el-checkbox label="赴台游" name="taiyou"></el-checkbox>
+                    <el-checkbox label="住宿" name="stay"></el-checkbox>
+                    <el-checkbox label="票务" name="ticket"></el-checkbox>
+                    <el-checkbox label="邮轮" name="shop"></el-checkbox>
+                    <el-checkbox label="汽车租赁" name="car"></el-checkbox>
+                    <el-checkbox label="保险" name="insurance"></el-checkbox>
+                    <el-checkbox label="其他" name="other"></el-checkbox>
                   </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="区域可见 :" prop="orgs">
@@ -302,16 +313,55 @@
                   </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="销售人员 :" prop="salesman">
-                  <el-cascader
+                  <!-- <el-cascader
                     ref="myCascader"
                     class="wewe"
                     v-model="ruleForm.salesman"
                     :props="saleProps"
                     style="width: 250px;margin-bottom: 10px;"
                     placeholder="请输入，可选择多个"
-                  ></el-cascader>
-                  <!-- <el-tag :key="tag" v-for="tag in saleManList" class="tag"  closable :disable-transitions="false" @close="handleClose(tag)"
+                  ></el-cascader>-->
+                  <!-- <el-tag :key="tag" v-for="tag in businessOtherNamesArr" class="tag"  closable :disable-transitions="false" @close="handleClose(tag)"
                   >{{tag}}</el-tag>-->
+                  <el-autocomplete
+                    v-model="ruleForm.salesman"
+                    :fetch-suggestions="querySearchAsync"
+                    placeholder="请输入"
+                    @focus="handleFocusSalesNames"
+                    @select="handleSelectSalesNames"
+                    @blur="handleBlurSalesNames"
+                    :trigger-on-focus="false"
+                    style="width: 250px;margin-bottom: 10px;"
+                  ></el-autocomplete>
+                  <div style="margin-top: 10px;">
+                    <el-tag
+                      :key="tag.id"
+                      v-for="tag in salesArr"
+                      class="tag"
+                      closable
+                      :disable-transitions="false"
+                      @close="handleSalesClose(tag,salesArr)"
+                      style="margin-botton: 5px;"
+                    >{{tag.value}}</el-tag>
+                  </div>
+                </el-form-item>
+                <el-form-item label="商户其他名称 :" prop="otherNames" class="business">
+                  <el-input
+                    v-model="ruleForm.otherNames"
+                    placeholder="请输入，可输入多个"
+                    @keyup.enter.native="handleEnterOtherNames"
+                  ></el-input>
+                  <div style="margin-top: 10px;">
+                    <el-tag
+                      :key="tag"
+                      v-for="tag in businessOtherNamesArr"
+                      class="tag"
+                      closable
+                      :disable-transitions="false"
+                      @close="businessHandleClose(tag)"
+                      style="margin-botton: 5px;"
+                    >{{tag}}</el-tag>
+                  </div>
                 </el-form-item>
               </div>
             </div>
@@ -325,10 +375,10 @@
               <el-table-column prop="state" label="状态" width="80" align="center"></el-table-column>
               <el-table-column prop="phone" label="手机号" width="120" align="center"></el-table-column>
               <el-table-column prop="email" label="邮箱" width="160" align="center"></el-table-column>
-              <el-table-column prop="gender" label="性别" width="50" align="center"></el-table-column>
-              <el-table-column prop="wechat" label="微信" width="120" align="center"></el-table-column>
-              <el-table-column prop="QQ" label="QQ" width="120" align="center"></el-table-column>
-              <el-table-column prop="position" label="职务" width="80" align="center"></el-table-column>
+              <el-table-column prop="sex" label="性别" width="50" align="center"></el-table-column>
+              <el-table-column prop="wx" label="微信" width="120" align="center"></el-table-column>
+              <el-table-column prop="qq" label="qq" width="120" align="center"></el-table-column>
+              <el-table-column prop="peerUserType" label="职务" width="80" align="center"></el-table-column>
               <el-table-column prop="operation" label="操作" width="110" align="center">
                 <template slot-scope="scope">
                   <div
@@ -451,12 +501,12 @@
             <el-table :data="useList" border style="width: 100%;margin-top: 20px;">
               <el-table-column prop="name" label="名称" width="120" align="center"></el-table-column>
               <el-table-column prop="state" label="状态" width="120" align="center"></el-table-column>
-              <el-table-column prop="telphone" label="手机号" width="120" align="center"></el-table-column>
+              <el-table-column prop="phone" label="手机号" width="120" align="center"></el-table-column>
               <el-table-column prop="email" label="邮箱" width="120" align="center"></el-table-column>
-              <el-table-column prop="gender" label="性别" width="80" align="center"></el-table-column>
-              <el-table-column prop="wechat" label="微信" width="120" align="center"></el-table-column>
-              <el-table-column prop="QQ" label="QQ" width="120" align="center"></el-table-column>
-              <el-table-column prop="duty" label="职务" width="120" align="center"></el-table-column>
+              <el-table-column prop="sex" label="性别" width="80" align="center"></el-table-column>
+              <el-table-column prop="wx" label="微信" width="120" align="center"></el-table-column>
+              <el-table-column prop="qq" label="qq" width="120" align="center"></el-table-column>
+              <el-table-column prop="peerUserType" label="职务" width="120" align="center"></el-table-column>
             </el-table>
           </div>
           <!-- 点击详情欠款信息 -->
@@ -508,17 +558,17 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="accountForm.email" placeholder="请输入" style="width：250px;"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="gender">
-          <el-select v-model="accountForm.gender" placeholder="请选择" style="width：250px;">
+        <el-form-item label="性别" prop="sex">
+          <el-select v-model="accountForm.sex" placeholder="请选择" style="width：250px;">
             <el-option label="男" value="1"></el-option>
             <el-option label="女" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="微信" prop="wechat">
-          <el-input v-model="accountForm.wechat" placeholder="请输入" style="width：250px;"></el-input>
+        <el-form-item label="微信" prop="wx">
+          <el-input v-model="accountForm.wx" placeholder="请输入" style="width：250px;"></el-input>
         </el-form-item>
-        <el-form-item label="QQ" prop="QQ">
-          <el-input v-model="accountForm.QQ" placeholder="请输入" style="width：250px;"></el-input>
+        <el-form-item label="qq" prop="qq">
+          <el-input v-model="accountForm.qq" placeholder="请输入" style="width：250px;"></el-input>
         </el-form-item>
         <el-form-item label="状态" prop="state">
           <el-select v-model="accountForm.state" placeholder="请选择" style="width：250px;">
@@ -534,13 +584,13 @@
             show-password
           ></el-input>
         </el-form-item>
-        <el-form-item label="职务" prop="position" style="margin-bottom: 68px;">
+        <el-form-item label="职务" prop="peerUserType" style="margin-bottom: 68px;">
           <el-checkbox-group
-            v-model="accountForm.position"
-            @change="bindCheckBox(accountForm.position)"
+            v-model="accountForm.peerUserType"
+            @change="bindCheckBox(accountForm.peerUserType)"
           >
-            <el-checkbox label="管理员" name="position"></el-checkbox>
-            <el-checkbox label="销售" name="position"></el-checkbox>
+            <el-checkbox label="管理员" name="peerUserType"></el-checkbox>
+            <el-checkbox label="销售" name="peerUserType"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item class="addAccountBtn fr" v-if="isAddAccountBtn !== 2">
@@ -564,31 +614,31 @@ export default {
   name: "merchantInfo",
   data() {
     // 校验商户名字是否具有唯一性
-    let nameValidator = (rule, value, callback) => {
-      let that = this;
-      that.$http
-        .post(that.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
-          object: {}
-        })
-        .then(res => {
-          let data = res.data.objects.map(v => {
-            if (this.btnindex !== 2) {
-              if (value == v.name) {
-                callback("商户姓名不可重复");
-              } else {
-                callback()
-              }
-            } else {
-              callback()
-            }
-          });
-        })
+    // let nameValidator = (rule, value, callback) => {
+    //   let that = this;
+    //   that.$http
+    //     .post(that.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
+    //       object: {}
+    //     })
+    //     .then(res => {
+    //       let data = res.data.objects.forEach(v => {
+    //         if (this.btnindex !== 2) {
+    //           if (value == v.name) {
+    //             callback("商户姓名不可重复");
+    //           } else {
+    //             callback()
+    //           }
+    //         } else {
+    //           callback()
+    //         }
+    //       });
+    //     })
 
-        .catch(res => {
-          console.log(res);
-          callback();
-        });
-    };
+    //     .catch(res => {
+    //       console.log(res);
+    //       callback();
+    //     });
+    // };
     //效验添加账户信息弹窗中微信字段
     let wechatvalidator = (rule, value, callback) => {
       if (/[\u4E00-\u9FA5]/g.test(value)) {
@@ -599,31 +649,36 @@ export default {
     };
     let that = this;
     return {
+      vague: [], //模糊搜索的数组
       cascaderArr: [],
       isAddAccountBtn: 0, //判断账户信息弹窗是从添加按钮进入还是编辑进入
       accountArr: [], //用来接收本地添加账户的字段
       tableRelevanceDeptInfo: [], //点击详情欠款信息
       isAddAccount: false, // 判断添加账户弹窗的出现
       // 销售人员的多选
-      saleProps: {
-        multiple: true,
-        lazy: true,
-        // _this: this,
-        lazyLoad(node, resolve) {
-          that.initSaleCascader(node, resolve);
-        }
-      },
+      // saleProps: {
+      //   multiple: true,
+      //   lazy: true,
+      //   // _this: this,
+      //   lazyLoad(node, resolve) {
+      //     that.initSaleCascader(node, resolve);
+      //   }
+      // },
       // 管理人员的cascader
-      adminProps: {
-        multiple: true,
-        lazy: true,
-        // _this: this,
-        lazyLoad(node, resolve) {
-          that.initAdminCascader(node, resolve);
-        }
-      },
+      // adminProps: {
+      //   multiple: true,
+      //   lazy: true,
+      //   // _this: this,
+      //   lazyLoad(node, resolve) {
+      //     that.initAdminCascader(node, resolve);
+      //   }
+      // },
       scoperangeList: [], //区域可见接口接收
-      // saleManList: [], //销售人员列表
+      businessOtherNamesArr: [], //商户其他名称tag列表
+      adminArr: [], //管理人员tag列表
+      salesArr: [], //销售人员tag列表
+      // adminInputArr: [],
+      // salesInputArr: [],
       fileList: [], //上传图片
       btnindex: 0, //编辑还是详情判断弹窗按钮的字段
       readonly: true, // 点击表单修改然后只读
@@ -637,12 +692,12 @@ export default {
         name: "",
         phone: "",
         email: "",
-        gender: "",
-        wechat: "",
-        QQ: "",
+        sex: "",
+        wx: "",
+        qq: "",
         state: "",
         password: "",
-        position: ["管理人员"]
+        peerUserType: ["管理人员"]
       }, //添加账户信息的对象
       accountFormRules: {
         name: [
@@ -657,10 +712,10 @@ export default {
         email: [
           { type: "email", message: "请输入正确格式的邮箱", trigger: "blur" }
         ],
-        gender: [{ required: true, message: "请选择性别", trigger: "blur" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
         // rules中 正则
-        wechat: [{ validator: wechatvalidator, trigger: "blur" }],
-        QQ: [
+        wx: [{ validator: wechatvalidator, trigger: "blur" }],
+        qq: [
           {
             min: 5,
             max: 11,
@@ -674,7 +729,9 @@ export default {
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 6, max: 30, message: "请输入6-30位密码", trigger: "blur" }
         ],
-        position: [{ required: true, message: "请选择职务", trigger: "blur" }]
+        peerUserType: [
+          { required: true, message: "请选择职务", trigger: "blur" }
+        ]
       },
       ruleForm: {
         name: "", //
@@ -696,14 +753,15 @@ export default {
         bankcardNo: "",
         LocalCompRole: "", //商户角色
         salesman: "", //销售人员
-        administrative: "" //管理人员
+        administrative: "", //管理人员
+        otherNames: "" //商户其他名字
       },
       rules: {
         // expTime: [{ type: "string", message: "请选择日期", trigger: "change" }],
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
-          { max: 40, message: "不要超过40个字符", trigger: "blur" },
-          { validator: nameValidator, trigger: "blur" }
+          { max: 40, message: "不要超过40个字符", trigger: "blur" }
+          // { validator: nameValidator, trigger: "blur" }
         ],
         localCompType: [
           { required: true, message: "请选择类型", trigger: "change" }
@@ -767,7 +825,8 @@ export default {
             trigger: "change"
           }
         ],
-        salesman: [{ required: true, message: "请输入", trigger: "change" }]
+        salesman: [{ required: true, message: "请输入", trigger: "change" }],
+        otherNames: [{ max: 40 }]
       },
       dialogFormVisible: false,
       input: "", //搜索输入框
@@ -797,63 +856,162 @@ export default {
     };
   },
   methods: {
+    // 管理人员的模糊查询
+    querySearchAsync(queryString, cb) {
+      this.vague = [];
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+          object: {
+            name: queryString
+          }
+        })
+        .then(res => {
+          console.log(res);
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.vague.push({
+              uid: res.data.objects[i].id,
+              value: res.data.objects[i].name,
+              userCode: res.data.objects[i].userCode
+            });
+          }
+          let results = queryString
+            ? this.vague.filter(this.createStateFilter(queryString))
+            : [];
+          cb(results);
+        });
+    },
+    createStateFilter(queryString) {
+      return restaurant => {
+        return restaurant.value;
+      };
+    },
+    // 商户其他名字enter触发的事件
+    handleEnterOtherNames() {
+      this.businessOtherNamesArr.push(this.ruleForm.otherNames);
+      this.ruleForm.otherNames = "";
+    },
+    // 管理人员focus触发的事件
+    handleFocusAdminNames() {
+      this.ruleForm.administrative = "";
+    },
+    // 销售人员focus触发的事件
+    handleFocusSalesNames() {
+      this.ruleForm.salesman = "";
+    },
+    // 管理人员select触发的事件
+    handleSelectAdminNames(item) {
+      this.adminArr.push(item);
+      this.handleBlurAdminNames();
+    },
+    // 销售人员select触发的事件
+    handleSelectSalesNames(item) {
+      this.salesArr.push(item);
+      this.handleBlurSalesNames();
+    },
+    // 管理人员blur触发的事
+    handleBlurAdminNames() {
+      let arr = [];
+      for (let i = 0; i < this.adminArr.length; i++) {
+        this.adminArr[i].isDeleted = 0;
+        this.adminArr[i].jqUserType = 1;
+        arr.push(this.adminArr[i].value);
+      }
+      this.ruleForm.administrative = arr.join(",");
+    },
+    // 销售人员blur触发的事件
+    handleBlurSalesNames() {
+      let arr = [];
+      for (let i = 0; i < this.salesArr.length; i++) {
+        this.salesArr[i].isDeleted = 0;
+        this.salesArr[i].jqUserType = 2;
+        arr.push(this.salesArr[i].value);
+      }
+      this.ruleForm.salesman = arr.join(",");
+    },
+    // 管理 销售 tag 删除
+    handleAdminClose(tag, arr) {
+      arr.forEach((v, k, arr) => {
+        if (arr[k].value == tag.value) {
+          arr.splice(k, 1);
+        }
+      });
+      this.arr = arr;
+      this.handleBlurAdminNames();
+    },
+    // 销售 tag 删除
+    handleSalesClose(tag, arr) {
+      arr.forEach((v, k, arr) => {
+        if (arr[k].value == tag.value) {
+          arr.splice(k, 1);
+        }
+      });
+      this.arr = arr;
+      this.handleBlurSalesNames();
+    },
+    // 商户其他人员tag删除
+    businessHandleClose(tag, arr) {
+      this.businessOtherNamesArr.splice(
+        this.businessOtherNamesArr.indexOf(tag),
+        1
+      );
+    },
     //管理人员懒加载方法
-    initAdminCascader(node, resolve) {
-      const { level } = node;
-      let nId = 204;
-      if (level > 0) {
-        nId = node.value;
-      }
-      // let isCascader = this.$refs.adminLeader.getCheckedNodes()[0];
-      // let address
-      // isCascader.hasChildren == false ? address = "/org/api/userlistwithorg" : address = "/org/api/deptlist"
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
-          object: {
-            ParentID: nId
-          }
-        })
-        .then(res => {
-          this.cascaderArr = res.data.objects.map(v => {
-            // let data = res.data.objects.map(v => {
-            return {
-              label: v.orgName,
-              value: v.id,
-              leaf: v.isLeaf < 2
-            };
-          });
-          resolve(this.cascaderArr);
-        });
-    },
+    // initAdminCascader(node, resolve) {
+    //   const { level } = node;
+    //   let nId = 204;
+    //   if (level > 0) {
+    //     nId = node.value;
+    //   }
+    //   // let isCascader = this.$refs.adminLeader.getCheckedNodes()[0];
+    //   // let address
+    //   // isCascader.hasChildren == false ? address = "/org/api/userlistwithorg" : address = "/org/api/deptlist"
+    //   this.$http
+    //     .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+    //       object: {
+    //         ParentID: nId
+    //       }
+    //     })
+    //     .then(res => {
+    //       this.cascaderArr = res.data.objects.forEach(v => {
+    //         // let data = res.data.objects.forEach(v => {
+    //         return {
+    //           label: v.orgName,
+    //           value: v.id,
+    //           leaf: v.isLeaf < 2
+    //         };
+    //       });
+    //       resolve(this.cascaderArr);
+    //     });
+    // },
     // 销售人员懒加在的方法
-    initSaleCascader(node, resolve) {
-      const { level } = node;
-      let nId = 204;
-      if (level > 0) {
-        nId = node.value;
-      }
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
-          object: {
-            ParentID: nId
-          }
-        })
-        .then(res => {
-          // console.log(res);
-          let data = res.data.objects.map(v => {
-            return {
-              label: v.orgName,
-              value: v.id,
-              leaf: v.isLeaf < 2
-            };
-          });
-          resolve(data);
-        });
-    },
+    // initSaleCascader(node, resolve) {
+    //   const { level } = node;
+    //   let nId = 204;
+    //   if (level > 0) {
+    //     nId = node.value;
+    //   }
+    //   this.$http
+    //     .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+    //       object: {
+    //         ParentID: nId
+    //       }
+    //     })
+    //     .then(res => {
+    //       // console.log(res);
+    //       let data = res.data.objects.forEach(v => {
+    //         return {
+    //           label: v.orgName,
+    //           value: v.id,
+    //           leaf: v.isLeaf < 2
+    //         };
+    //       });
+    //       resolve(data);
+    //     });
+    // },
     // 添加账户信息弹窗中职位checkbox 单选切换
     bindCheckBox(value) {
-      this.accountForm.position = [];
-      this.accountForm.position.push(value[1]);
+      this.accountForm.peerUserType = [];
+      this.accountForm.peerUserType.push(value[1]);
     },
     // 删除账户信息按钮
     accountDelete(index, row) {
@@ -878,12 +1036,12 @@ export default {
         name: "",
         phone: "",
         email: "",
-        gender: "",
-        wechat: "",
-        QQ: "",
+        sex: "",
+        wx: "",
+        qq: "",
         state: "",
         password: "",
-        position: []
+        peerUserType: [] //职位
       };
       this.$refs[accountForm].resetFields();
       this.isAddAccount = false;
@@ -895,31 +1053,20 @@ export default {
       // isAddAccountBtn == 1 是第一次添加保存到本地
       // isAddAccountBtn == 2 是此时没有删除按钮 只可编辑 掉接口
       if (this.isAddAccountBtn == 1) {
-        console.log(this.$refs[accountForm]);
         this.$refs[accountForm].validate(valid => {
           if (valid) {
+            this.accountForm.createTime = new Date().getTime();
             this.useList.push(this.accountForm);
             if (this.accountForm.state == 2) {
               this.accountForm.state = "正常";
             } else {
               this.accountForm.state = "停用";
             }
-            if (this.accountForm.gender == 1) {
-              this.accountForm.gender = "男";
+            if (this.accountForm.sex == 1) {
+              this.accountForm.sex = "男";
             } else {
-              this.accountForm.gender = "女";
+              this.accountForm.sex = "女";
             }
-            this.accountForm = {
-              name: "",
-              phone: "",
-              email: "",
-              gender: "",
-              wechat: "",
-              QQ: "",
-              state: "",
-              password: "",
-              position: []
-            };
             this.isAddAccount = false;
             this.$message({
               message: "添加成功",
@@ -937,6 +1084,20 @@ export default {
     addAccount(index) {
       this.isAddAccountBtn = index;
       this.isAddAccount = true;
+      this.accountForm = {
+        name: "",
+        phone: "",
+        email: "",
+        sex: "",
+        wx: "",
+        qq: "",
+        state: "",
+        password: "",
+        peerUserType: [] //职位
+      };
+      // this.$nextTick((accountForm) => {
+      //   this.$refs["addForm"].resetFields();
+      // });
     },
     handlePreview(file) {
       // console.log(file);
@@ -946,34 +1107,34 @@ export default {
     },
 
     //cascader 管理人员选中后判断是否有children从而判断是否是末节点 如果是则请求接口拼接
-    cascaderChangeNode() {
-      let isCascader = this.$refs.adminLeader.getCheckedNodes()[0];
-      // console.log(111111111111)
-      // console.log(isCascader)
-      if (isCascader.hasChildren === false) {
-        //部门人员
-        this.$http
-          .post(
-            this.GLOBAL.serverSrc + "/org/api/userlistwithorg",
-            {
-              id: isCascader.value
-            },
-            {
-              headers: {
-                Authorization: "Bearer " + localStorage.getItem("token")
-              }
-            }
-          )
-          .then(res => {
-            this.cascaderArr.push(res.data.objects);
-            console.log(this.cascaderArr);
-            console.log(res);
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
-      }
-    },
+    // cascaderChangeNode() {
+    //   let isCascader = this.$refs.adminLeader.getCheckedNodes()[0];
+    //   // console.log(111111111111)
+    //   // console.log(isCascader)
+    //   if (isCascader.hasChildren === false) {
+    //     //部门人员
+    //     this.$http
+    //       .post(
+    //         this.GLOBAL.serverSrc + "/org/api/userlistwithorg",
+    //         {
+    //           id: isCascader.value
+    //         },
+    //         {
+    //           headers: {
+    //             Authorization: "Bearer " + localStorage.getItem("token")
+    //           }
+    //         }
+    //       )
+    //       .then(res => {
+    //         this.cascaderArr.push(res.data.objects);
+    //         console.log(this.cascaderArr);
+    //         console.log(res);
+    //       })
+    //       .catch(function(error) {
+    //         console.log(error);
+    //       });
+    //   }
+    // },
     // dialog关闭的回调
     closeDialog() {
       this.btnindex = 0;
@@ -996,22 +1157,17 @@ export default {
     //   if (e === false) {
     //     let arr = this.$refs.myCascader.getCheckedNodes()[0].pathLabels;
     //     let b = arr.join("-");
-    //     this.saleManList.push(b);
-    //     console.log(this.saleManList);
+    //     this.businessOtherNamesArr.push(b);
+    //     console.log(this.businessOtherNamesArr);
     //   }
     // },
-    // tag 删除
-    // handleClose(tag) {
-    //   this.saleManList.splice(this.saleManList.indexOf(tag), 1);
-    // console.log(this.saleManList);
-    // },
+
     // 搜索
     handleSearch() {
       this.pageList();
     },
     //查询列表
     pageList() {
-      console.log(this.statesValue, this.payValue);
       var that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
@@ -1154,7 +1310,7 @@ export default {
     },
     // 编辑
     edit_info(index, row) {
-      // this.saleManList = [];
+      // this.businessOtherNamesArr = [];
       index === 1 ? (this.readonly = true) : (this.readonly = false);
       this.btnindex = index;
       this.tid = row.id;
@@ -1168,15 +1324,8 @@ export default {
         this.$message.error("请添加账户信息");
       } else {
         this.$refs[ruleForm].validate(valid => {
-          console.log("shifouzou validate")
-          console.log(valid);
           if (valid) {
-            this.addMerchan();
-            this.dialogFormVisible = false;
-            this.$message({
-              message: "添加成功",
-              type: "success"
-            });
+            this.addMerchan(ruleForm);
           } else {
             console.log("error submit!!");
             return false;
@@ -1211,6 +1360,9 @@ export default {
       if (this.btnindex !== 1) this.$refs["ruleForm"].resetFields();
       this.dialogFormVisible = false;
       this.btnindex = 0;
+      this.adminArr = [];
+      this.salesArr = [];
+      this.businessOtherNamesArr = [];
     },
     // 修改
     editorForm(ruleForm) {
@@ -1271,7 +1423,41 @@ export default {
         });
     },
     //添加
-    addMerchan() {
+    addMerchan(ruleForm) {
+      //判断商户其他名称是否具有唯一性 并且输个个数不可超过五十个
+      if (this.businessOtherNamesArr.length !== 0) {
+        if (this.businessOtherNamesArr.length > 50) {
+          this.$message.error("商户其他名称不可超过50个");
+          this.dialogFormVisible = true;
+          return;
+        }
+      }
+      if (
+        this.tableData.filter(v => this.ruleForm.otherNames == v.name).length !=
+        0
+      ) {
+        this.$message.error("添加失败,该商户其他名称已存在");
+        this.dialogFormVisible = true;
+        return;
+      }
+      if (
+        new Set(this.businessOtherNamesArr).size !==
+        this.businessOtherNamesArr.length
+      ) {
+        // this.$message.error("该商户其他名称中输入重复名称")
+        this.businessOtherNamesArr = [...new Set(this.businessOtherNamesArr)];
+        // return
+      }
+
+      // 判断商户名称是否是具有唯一性
+      if (
+        this.tableData.filter(v => this.ruleForm.name == v.name).length != 0
+      ) {
+        this.$message.error("添加失败,该商户名称已存在");
+        this.dialogFormVisible = true;
+        return;
+      }
+
       if (this.ruleForm.state == "停用") {
         this.ruleForm.state = 3;
       } else {
@@ -1292,10 +1478,11 @@ export default {
       } else if (this.ruleForm.storeType == "第三方门市") {
         this.ruleForm.storeType = 3;
       }
+      console.log(this.ruleForm.scopeExt)
       // console.log(this.ruleForm.scopeExt);
       this.ruleForm.scopeExt = this.ruleForm.scopeExt.join(",");
       // this.ruleForm.scopeExt = JSON.stringify(this.ruleForm.scopeExt);
-      // console.log(this.ruleForm.scopeExt);
+      console.log(this.ruleForm.scopeExt);
       // console.log(this.ruleForm);
       // this.ruleForm.orgs = this.ruleForm.orgs.join(",");
       /*let name = [];
@@ -1304,18 +1491,46 @@ export default {
           })
           this.ruleForm.scopeExt['name'] = [];
           this.ruleForm.scopeExt.name = name;*/
-      var that = this;
+      let that = this;
+      // 区域
       let orgs = [];
       for (let i = 0; i < this.ruleForm.orgs.length; i++) {
         let org = {};
         org.orgID = this.ruleForm.orgs[i];
         org.isDeleted = 0;
+        org.createTime = new Date().getTime();
         orgs.push(org);
       }
       this.ruleForm.orgs = orgs;
-      console.log(this.ruleForm.salesman);
-      console.log(this.ruleForm.administrative);
 
+      // 添加账户
+      this.useList.forEach((value, index, arr) => {
+        if (arr[index].state == "正常") {
+          arr[index].state = 2;
+        } else {
+          arr[index].state = 3;
+        }
+        if (arr[index].sex == 1) {
+          arr[index].sex = '男';
+        } else {
+          arr[index].sex = '女';
+        }
+        if (arr[index].peerUserType == "管理员") {
+          arr[index].peerUserType = '1';
+        } else {
+          arr[index].peerUserType = '2';
+        }
+      });
+
+      // jqAdminList 管理和销售人员
+      let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
+
+      // localCompAliasList 商户其他名称
+      this.businessOtherNamesArr = this.businessOtherNamesArr.join(",");
+
+      console.log("商户其他名称")
+      console.log(this.businessOtherNamesArr);
+      
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
           object: {
@@ -1341,15 +1556,26 @@ export default {
             localCompRole: this.ruleForm.localCompRole,
             storeType: this.ruleForm.storeType,
             orgs: this.ruleForm.orgs,
-            useList: this.useList
-            // jqAdminList:
+            useList: this.useList,
+            jqAdminList: adminAndSalesArr,
+            localCompAliasList: this.businessOtherNamesArr
           }
         })
         .then(function(obj) {
-          console.log(obj);
+          this.dialogFormVisible = true;
           that.list();
+          this.$message({
+            message: "添加成功",
+            type: "success"
+          });
         })
         .catch(function(obj) {
+          this.$message({
+            message: "添加失败",
+            type: "error"
+          });
+          this.businessOtherNamesArr = this.businessOtherNamesArr.split(',')
+          console.log(this.businessOtherNamesArr)
           console.log(obj);
         });
     },
@@ -1397,7 +1623,9 @@ export default {
       console.log(this.ruleForm);
     },
     clear() {
-      // this.saleManList = [];
+      this.businessOtherNamesArr = [];
+      this.adminArr = [];
+      this.salesArr = [];
       this.ruleForm = {
         name: "", //
         storeType: "无", //门市类型默认是无
@@ -1432,7 +1660,7 @@ export default {
           id: id
         })
         .then(function(obj) {
-          console.log(obj);
+          // console.log(obj);
           that.ruleForm.name = obj.data.object.name;
           that.ruleForm.localCompType = String(obj.data.object.localCompType);
           if (obj.data.object.state == 2) {
@@ -1523,6 +1751,7 @@ export default {
           }
         })
         .then(res => {
+          console.log(res)
           this.scoperangeList = res.data.objects;
         })
         .catch(err => {
@@ -1541,9 +1770,7 @@ export default {
 .addAccountBtn {
   margin-top: -44px;
 }
-/* .el-dialog__body {
-  height: 600px!important;
-} */
+
 .el-dialog .el-input,
 .el-select {
   width: 250px !important;

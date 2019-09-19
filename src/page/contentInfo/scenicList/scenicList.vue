@@ -238,6 +238,7 @@ import AddScenic from './components/Addscenic'
               areaName: queryString
             }
         }).then(res => {
+        console.log(res)
           for (let i = 0; i < res.data.objects.length; i++) {
             this.vague.push({
               "id" : res.data.objects[i].id,
