@@ -155,7 +155,7 @@
                 type: 'success',
                 message: '提交成功!'
               });
-              that.cancalBtn()
+              that.$router.push({ path: "/externalOrderList/noRecognition" });
             } else {
               if(response.data.message){
                 that.$message.success(response.data.message);
