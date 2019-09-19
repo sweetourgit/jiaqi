@@ -62,7 +62,18 @@ export default {
     // 计算属性的 getter
   },
   watch: {
-
+    info: {
+      dialogFormVisible:function(){
+        if(this.dialogFormVisible){
+          this.ruleForm = {
+            days: this.$parent.msg.days,
+            guide: this.$parent.msg.guide,
+            associations: this.$parent.msg.associations
+          };
+          this.loadData();
+        }
+      }
+    }
   },
   methods: {
     closeAdd() {
@@ -129,6 +140,11 @@ export default {
       });
     },
     loadData(){
+      this.ruleForm = {
+        days: this.$parent.msg.days,
+        guide: this.$parent.msg.guide,
+        associations: this.$parent.msg.associations
+      };
       console.log(this.$parent.paramTour);
       const that = this;
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/getcostitem", {
@@ -136,7 +152,12 @@ export default {
       }, ).then(function(response) {
         if (response.data.code == '200') {
           console.log(response);
-          that.ruleForm.costType = response.data.data.listInfo;
+          that.ruleForm = {
+            days: that.$parent.msg.days,
+            guide: that.$parent.msg.guide,
+            associations: that.$parent.msg.associations,
+            costType: response.data.data.listInfo
+          };
           response.data.data.listInfo.forEach(function (item, index, arr) {
             that.typeList.push(item.cost_type);
           })
@@ -146,6 +167,7 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
+
     }
 
   },

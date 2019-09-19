@@ -28,7 +28,7 @@
         <p class="inputLabel"><span>分销商：</span>{{baseInfo.distributor}}</p>
       </div>
       <p class="stepTitle" v-if="showSK">收款明细</p>
-      <div class="stepDv" style="margin-bottom: 50px;">
+      <div class="stepDv" style="margin-bottom: 50px;" v-if="showSK">
         <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
         <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
           <el-table-column prop="rece_at" label="入账时间" align="center">
@@ -45,10 +45,16 @@
           <el-table-column prop="rece_money" label="结算金额" align="center">
           </el-table-column>
           <el-table-column prop="charge" label="手续费" align="center">
+            <template slot-scope="scope">
+              <span>{{scope.row.charge}}</span>
+            </template>
           </el-table-column>
           <el-table-column prop="tour_no" label="团号" align="center">
           </el-table-column>
           <el-table-column prop="divide_connect_no" label="粉联号" align="center">
+            <template slot-scope="scope">
+              <span>{{scope.row.divide_connect_no}}</span>
+            </template>
           </el-table-column>
           <el-table-column prop="invoice_no" label="发票号" align="center">
           </el-table-column>
@@ -56,6 +62,56 @@
             <template slot-scope="scope">
               <el-button size="small" type="text" @click="detailBtn(scope.row)" v-if="scope.row.order_sn != '' && scope.row.import_status == 3">绑定订单详情</el-button>
             </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <p class="stepTitle" v-if="showXQ">订单详情</p>
+      <div class="stepDv" style="margin-bottom: 50px;" v-if="showXQ">
+        <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+          <el-table-column prop="order_sn" label="订单ID" align="center" >
+          </el-table-column>
+          <el-table-column prop="distributor" label="分销商" align="center">
+            <template slot-scope="scope">
+              <span>{{scope.row.distributor}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="product_name" label="产品名称" align="center">
+          </el-table-column>
+          <el-table-column prop="type_name" label="类别" align="center">
+          </el-table-column>
+          <el-table-column prop="sale_at" label="下单时间" align="center" width="100">
+          </el-table-column>
+          <el-table-column prop="option" label="费用" align="center">
+            <template slot-scope="scope">
+              <span>收入:{{scope.row.income}}</span><br>
+              <span>单票成本:{{scope.row.single_cost}}</span><br>
+              <span>总成本:{{scope.row.cost}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="quantity" label="数量" align="center">
+          </el-table-column>
+          <el-table-column prop="money" label="客人信息" align="center">
+            <template slot-scope="scope">
+              <span>取票人:{{scope.row.contact_name}}</span><br>
+              <span>手机:{{scope.row.contact_phone}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="check_at" label="验证时间" align="center" width="100">
+          </el-table-column>
+          <el-table-column prop="pay_type" label="卖出支付方式" align="center" width="100">
+            <template slot-scope="scope">
+              <span>{{scope.row.pay_type_name}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="import_at" label="导入时间" align="center" width="100">
+          </el-table-column>
+          <el-table-column prop="tour_no" label="关联产品" align="center">
+            <template slot-scope="scope">
+              <span>产品名称:{{scope.row.product_name_por}}</span><br>
+              <span>团期计划:{{scope.row.tour_no}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="create_uid" label="操作人" align="center" width="100">
           </el-table-column>
         </el-table>
       </div>
@@ -149,6 +205,7 @@
         applicant: '',
         fileList: [],
         tableDataSK: [],
+        tableDataXQ: [],
         totalItem: '',
         totalMoney: '',
         startTime: '',
@@ -157,6 +214,7 @@
         dialogFormVisible: false,
 
         showSK: true,
+        showXQ: false,
 
         payList: {
           '1': '产品自销',
@@ -214,6 +272,7 @@
         this.endTime = '';
         this.fileList = [];
         this.tableDataSK = [];
+        this.tableDataXQ = [];
         this.$emit('close', false);
       },
 //      删除
@@ -337,34 +396,75 @@
               console.log(error);
             });
 
-            if(response.data.data.file != ''){
+            if(response.data.data.file != '' && response.data.data.type == 1){
               that.fileList = [];
               that.fileList.push({
                 name: response.data.data.file.split('/')[6]
               });
+              that.tableDataXQ = [];
               that.tableDataSK = response.data.data.list;
+              that.totalItem = response.data.data.list.length;
+//              that.totalMoney = response.data.data.rece_money;
+//              that.startTime = response.data.data.rece_start;
+//              that.endTime = response.data.data.rece_end;
+              let start = that.tableDataSK[0].rece_at;
+              let end = that.tableDataSK[0].rece_at;
+              let totalMoney = 0;
               that.tableDataSK.forEach(function (item, index, arr) {
                 item.rece_at = formatDate(new Date(item.rece_at*1000));
                 item.rece_at = item.rece_at.split(" ")[0];
+                if(new Date(Date.parse(start)) > new Date(Date.parse(item.rece_at))){
+                  start = item.rece_at;
+                }
+                if(new Date(Date.parse(end)) < new Date(Date.parse(item.rece_at))){
+                  end = item.rece_at;
+                }
+                totalMoney += parseFloat(item.rece_money);
+//                console.log(totalMoney);
               });
-              that.totalItem = response.data.data.list.length;
-              that.totalMoney = response.data.data.rece_money;
-              that.startTime = response.data.data.rece_start;
-              that.endTime = response.data.data.rece_end;
-            }else if(response.data.data.type == 2){
-              that.tableDataSK = response.data.data.list;
-              that.tableDataSK.forEach(function (item, index, arr) {
-                item.rece_at = formatDate(new Date(item.rece_at*1000));
-                item.rece_at = item.rece_at.split(" ")[0];
+
+              that.totalMoney = totalMoney.toFixed(2);
+              that.startTime = formatDate(new Date(start*1000)).split(" ")[0];
+              that.endTime = formatDate(new Date(end*1000)).split(" ")[0];
+              that.showSK = true;
+              that.showXQ = false;
+            }else if(response.data.data.type == 2 && response.data.data.list.length != 0){
+              that.tableDataSK = [];
+              that.tableDataXQ = response.data.data.list;
+              that.tableDataXQ.forEach(function (item, index, arr) {
+                item.sale_at = formatDate(new Date(item.sale_at*1000));
+                item.check_at = formatDate(new Date(item.check_at*1000));
+                item.import_at = formatDate(new Date(item.import_at*1000));
+                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                  "id": item.create_uid
+                },{
+                  headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                  }
+                }).then(function(response) {
+                  console.log('名字',response.data.object.name);
+                  if (response.data.isSuccess) {
+                    item.create_uid = response.data.object.name;
+                  } else {
+                    that.$message.warning("失败~");
+                  }
+                }).catch(function(error) {
+                  console.log(error);
+                });
               });
-              that.totalItem = response.data.data.list.length;
-              that.totalMoney = response.data.data.rece_money;
-              that.startTime = response.data.data.rece_start;
-              that.endTime = response.data.data.rece_end;
-            }else{
-              that.tableDataQK = '';
               that.totalItem = '';
               that.totalMoney = '';
+              that.startTime = '';
+              that.endTime = '';
+              that.showSK = false;
+              that.showXQ = true;
+            }else{
+              that.tableDataSK = '';
+              that.tableDataXQ = '';
+              that.totalItem = '';
+              that.totalMoney = '';
+              that.showSK = true;
+              that.showXQ = false;
             }
           } else {
             that.$message.success("加载数据失败~");

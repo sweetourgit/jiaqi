@@ -109,7 +109,7 @@
               毛利率
             </el-col>
             <el-col :span="7" class="content">
-              {{info.gross_rate}}
+              {{info.gross_rate}}%
             </el-col>
           </el-row>
           <el-row>
@@ -366,6 +366,14 @@ export default {
         }else{
           this.closeAdd();
         }
+      }
+    },
+    dialogFormVisible: function () {
+//      alert(this.info);
+      if(this.info && this.dialogFormVisible){
+        this.loadData();
+      }else{
+        this.closeAdd();
       }
     }
   },

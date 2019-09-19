@@ -129,7 +129,7 @@
               </el-upload>
             </el-form-item>
 
-            <p class="stepTitle">收款明细</p>
+            <p class="stepTitle" v-if="showSK">收款明细</p>
             <!--添加-->
             <div class="stepDv" style="margin-bottom: 50px;" v-if="info == ''">
               <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
@@ -160,7 +160,7 @@
               </el-table>
             </div>
             <!--编辑-->
-            <div class="stepDv" style="margin-bottom: 50px;" v-if="info != ''">
+            <div class="stepDv" style="margin-bottom: 50px;" v-if="info != '' && showSK">
               <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
               <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
                 <el-table-column prop="rece_at" label="入账时间" align="center">
@@ -174,10 +174,16 @@
                 <el-table-column prop="rece_money" label="结算金额" align="center">
                 </el-table-column>
                 <el-table-column prop="charge" label="手续费" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.charge}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="tour_no" label="团号" align="center">
                 </el-table-column>
                 <el-table-column prop="divide_connect_no" label="粉联号" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.divide_connect_no}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="invoice_no" label="发票号" align="center">
                 </el-table-column>
@@ -185,6 +191,57 @@
                   <template slot-scope="scope">
                     <el-button size="small" type="text" style="color: red;" @click="deleteBtnEdit(scope)">删除</el-button>
                   </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <!--编辑，无明细有订单显示-->
+            <p class="stepTitle" v-if="!showSK">订单详情</p>
+            <div class="stepDv" style="margin-bottom: 50px;" v-if="!showSK">
+              <el-table ref="singleTable" :data="tableDataQK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+                <el-table-column prop="order_sn" label="订单ID" align="center" >
+                </el-table-column>
+                <el-table-column prop="distributor" label="分销商" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.distributor}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="product_name" label="产品名称" align="center">
+                </el-table-column>
+                <el-table-column prop="type_name" label="类别" align="center">
+                </el-table-column>
+                <el-table-column prop="sale_at" label="下单时间" align="center" width="100">
+                </el-table-column>
+                <el-table-column prop="option" label="费用" align="center">
+                  <template slot-scope="scope">
+                    <span>收入:{{scope.row.income}}</span><br>
+                    <span>单票成本:{{scope.row.single_cost}}</span><br>
+                    <span>总成本:{{scope.row.cost}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="quantity" label="数量" align="center">
+                </el-table-column>
+                <el-table-column prop="money" label="客人信息" align="center">
+                  <template slot-scope="scope">
+                    <span>取票人:{{scope.row.contact_name}}</span><br>
+                    <span>手机:{{scope.row.contact_phone}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="check_at" label="验证时间" align="center" width="100">
+                </el-table-column>
+                <el-table-column prop="pay_type" label="卖出支付方式" align="center" width="100">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.pay_type_name}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="import_at" label="导入时间" align="center" width="100">
+                </el-table-column>
+                <el-table-column prop="tour_no" label="关联产品" align="center">
+                  <template slot-scope="scope">
+                    <span>产品名称:{{scope.row.product_name_por}}</span><br>
+                    <span>团期计划:{{scope.row.tour_no}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="create_uid" label="操作人" align="center" width="100">
                 </el-table-column>
               </el-table>
             </div>
@@ -222,8 +279,8 @@
 
         <el-dialog title="关联订单" :visible="dialogFormVisible2" width=90% @close="close" append-to-body>
           <div class="table_trip" style="width: 100%;">
-            <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-            <el-table ref="multipleTable" :data="tableDataGLDD" border style="width: 100%;margin-bottom: 28px;" height="700" :highlight-current-row="true" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
+            <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{PFT_num}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{PFT_money}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{PFT_start}}--{{PFT_end}}</div>
+            <el-table ref="multipleTable" v-loading="loading" :data="tableDataGLDD" border style="width: 100%;margin-bottom: 28px;" height="700" :highlight-current-row="true" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
               <el-table-column prop="id" label="" fixed type="selection"></el-table-column>
               <el-table-column prop="order_sn" label="订单ID" align="center" >
               </el-table-column>
@@ -231,7 +288,7 @@
               </el-table-column>
               <el-table-column prop="product_name" label="产品名称" align="center">
               </el-table-column>
-              <el-table-column prop="sale_at" label="下单时间" align="center">
+              <el-table-column prop="sale_at" label="下单时间" align="center" width="100">
               </el-table-column>
               <el-table-column prop="cost" label="费用" align="center">
                 <template slot-scope="scope">
@@ -248,7 +305,7 @@
                   <span>手机:{{scope.row.contact_phone}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="check_at" label="验证时间" align="center">
+              <el-table-column prop="check_at" label="验证时间" align="center" width="100">
               </el-table-column>
               <el-table-column prop="pay_type" label="卖出支付方式" align="center">
                 <template slot-scope="scope">
@@ -261,7 +318,7 @@
                   <p v-if="scope.row.pay_type == 7">自采</p>
                 </template>
               </el-table-column>
-              <el-table-column prop="import_at" label="导入时间" align="center">
+              <el-table-column prop="import_at" label="导入时间" align="center" width="100">
               </el-table-column>
               <el-table-column prop="" label="关联产品" align="center">
                 <template slot-scope="scope">
@@ -334,12 +391,20 @@
         startTime: '',
         endTime: '',
 
+        showSK: true,
+
 //        票付通余额
         PFTYE: false,
         tableDataGLDD: [],
         dialogFormVisible2: false,
         multipleSelection: [],
-        chooseTable: []
+        chooseTable: [],
+        loading: true,
+
+        PFT_num: 0,
+        PFT_money: 0,
+        PFT_start: '',
+        PFT_end: ''
       }
     },
     computed: {
@@ -423,8 +488,26 @@
         this.dialogFormVisible2 = true;
       },
       selectionChange(val) {
-        console.log(val);
+        const that = this;
+//        console.log(val);
         this.multipleSelection = val;
+        let start = this.multipleSelection[0].sale_at;
+        let end = this.multipleSelection[0].sale_at;
+        let totalMoney = 0;
+        this.multipleSelection.forEach(function (item, index, arr) {
+          if(new Date(Date.parse(start)) > new Date(Date.parse(item.sale_at))){
+            start = item.sale_at;
+          }
+          if(new Date(Date.parse(end)) < new Date(Date.parse(item.sale_at))){
+            end = item.sale_at;
+          }
+          totalMoney += parseFloat(item.income);
+//                console.log(totalMoney);
+        });
+        that.PFT_num = this.multipleSelection.length;
+        that.PFT_money = totalMoney.toFixed(2);
+        that.PFT_start = formatDate(new Date(start*1000)).split(" ")[0];
+        that.PFT_end = formatDate(new Date(end*1000)).split(" ")[0];
       },
       handleRowClick(row, column, event){
         this.$refs.multipleTable.toggleRowSelection(row);
@@ -870,19 +953,20 @@
               num--;
               that.totalItem = num;
 //          console.log(num);
-              let totalMoney = that.totalMoney;
-              totalMoney = parseFloat(totalMoney) - parseFloat(scope.row[rece_money]);
+              let totalMoney = 0;
+//             totalMoney = parseFloat(totalMoney) - parseFloat(scope.row[rece_money]);
               that.totalMoney = totalMoney.toFixed(2);
 //          console.log(parseFloat(totalMoney),parseFloat(scope.row[5]),parseFloat(totalMoney)-parseFloat(scope.row[5]));
-              let start = that.tableDataQK[0][1];
-              let end = that.tableDataQK[0][1];
+              let start = that.tableDataQK[0].rece_at;
+              let end = that.tableDataQK[0].rece_at;
               that.tableDataQK.forEach(function (item, index, arr) {
-                if(new Date(Date.parse(start)) > new Date(Date.parse(item[1]))){
-                  start = item[1];
+                if(new Date(Date.parse(start)) > new Date(Date.parse(item.rece_at))){
+                  start = item.rece_at;
                 }
-                if(new Date(Date.parse(end)) < new Date(Date.parse(item[1]))){
-                  end = item[1];
+                if(new Date(Date.parse(end)) < new Date(Date.parse(item.rece_at))){
+                  end = item.rece_at;
                 }
+                totalMoney += parseFloat(item.rece_money);
               });
 //          console.log(totalMoney.toFixed(2),start,end);
               that.totalMoney = totalMoney.toFixed(2);
@@ -924,7 +1008,7 @@
         });
       },
       loadData(){
-        console.log(this.info);
+//        console.log(this.info);
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/receive", {
           "id": this.info
@@ -965,13 +1049,28 @@
               that.fileList.push(response.data.data.file);
               that.tableDataQK = response.data.data.list;
               that.totalItem = response.data.data.list.length;
-              that.totalMoney = response.data.data.rece_money;
-              that.startTime = response.data.data.rece_start;
-              that.endTime = response.data.data.rece_end;
+//              that.totalMoney = response.data.data.rece_money;
+//              that.startTime = response.data.data.rece_start;
+//              that.endTime = response.data.data.rece_end;
+              let start = that.tableDataQK[0].rece_at;
+              let end = that.tableDataQK[0].rece_at;
+              let totalMoney = 0;
               that.tableDataQK.forEach(function (item, index, arr) {
                 item.rece_at = formatDate(new Date(item.rece_at*1000));
                 item.rece_at = item.rece_at.split(" ")[0];
-              })
+                if(new Date(Date.parse(start)) > new Date(Date.parse(item.rece_at))){
+                  start = item.rece_at;
+                }
+                if(new Date(Date.parse(end)) < new Date(Date.parse(item.rece_at))){
+                  end = item.rece_at;
+                }
+                totalMoney += parseFloat(item.rece_money);
+//                console.log(totalMoney);
+              });
+              that.totalMoney = totalMoney.toFixed(2);
+              that.startTime = formatDate(new Date(start*1000)).split(" ")[0];
+              that.endTime = formatDate(new Date(end*1000)).split(" ")[0];
+              that.showSK = true;
             }else if(response.data.data.type == 2 && response.data.data.list.length != 0){
               that.tableDataQK = response.data.data.list;
               that.totalItem = response.data.data.list.length;
@@ -979,15 +1078,34 @@
               that.startTime = response.data.data.rece_start;
               that.endTime = response.data.data.rece_end;
               that.tableDataQK.forEach(function (item, index, arr) {
-                item.rece_at = formatDate(new Date(item.rece_at*1000));
-                item.rece_at = item.rece_at.split(" ")[0];
-              })
+                item.sale_at = formatDate(new Date(item.sale_at*1000));
+                item.check_at = formatDate(new Date(item.check_at*1000));
+                item.import_at = formatDate(new Date(item.import_at*1000));
+                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                  "id": item.create_uid
+                },{
+                  headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                  }
+                }).then(function(response) {
+                  console.log('名字',response.data.object.name);
+                  if (response.data.isSuccess) {
+                    item.create_uid = response.data.object.name;
+                  } else {
+                    that.$message.warning("失败~");
+                  }
+                }).catch(function(error) {
+                  console.log(error);
+                });
+              });
+              that.showSK = false;
             }else{
               that.tableDataQK = '';
               that.totalItem = '';
               that.totalMoney = '';
               that.startTime = '';
               that.endTime = '';
+              that.showSK = true;
             }
           } else {
             that.$message.warning("加载数据失败~");
@@ -1005,8 +1123,15 @@
           console.log('关联订单',response);
           if (response.data.code == '200') {
             that.tableDataGLDD = response.data.data.list;
+            that.tableDataGLDD.forEach(function (item, index, arr) {
+              item.check_at = formatDate(new Date(item.check_at*1000));
+              item.import_at = formatDate(new Date(item.import_at*1000));
+              item.sale_at = formatDate(new Date(item.sale_at*1000));
+            });
+            that.loading = false;
           } else {
-            that.$message.success("加载数据失败~");
+            that.$message.warning("加载数据失败~");
+            that.loading = false;
           }
         }).catch(function(error) {
           console.log(error);

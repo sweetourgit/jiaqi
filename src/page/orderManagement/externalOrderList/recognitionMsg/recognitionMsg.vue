@@ -109,7 +109,28 @@
         }
       },
       cancalBtn(){
-        this.$router.push({ path: "/externalOrderList/noRecognition" });
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/canclerec", {
+          "order_sn": this.$route.query.ids
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log('取消认款',response);
+            that.$message({
+              type: 'success',
+              message: '取消成功!'
+            });
+            that.$router.push({ path: "/externalOrderList/noRecognition" });
+          } else {
+            if(response.data.message){
+              that.$message.success(response.data.message);
+            }else{
+              that.$message.success("失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+
       },
       submitBtn(){
         //...
@@ -246,7 +267,7 @@
 //      console.log(this.$route.query);
       if(this.$route.query.ids){
         this.initData();
-        
+
       }else{
         this.cancalBtn();
       }
