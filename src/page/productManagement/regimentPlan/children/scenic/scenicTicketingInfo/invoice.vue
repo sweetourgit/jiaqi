@@ -36,7 +36,7 @@
           <el-row>
             <el-col>
               <el-form-item label="凭证:" prop="voucher" label-width="120px">
-                <el-upload class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :limit="2" :file-list="fileList" accept="bmp,jpg,jpeg,png">
+                <el-upload class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :on-exceed="handleExceed" :file-list="fileList" accept="bmp,jpg,jpeg,png">
                   <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
               </el-form-item>
@@ -241,9 +241,9 @@ export default {
           that.$emit('close', false);
         } else {
           if(response.data.message){
-            that.$message.success(response.data.message);
+            that.$message.warning(response.data.message);
           }else {
-            that.$message.success("保存失败~");
+            that.$message.warning("保存失败~");
           }
 
         }

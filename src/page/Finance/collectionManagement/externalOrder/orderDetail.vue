@@ -107,8 +107,8 @@
           </el-table-column>
           <el-table-column prop="tour_no" label="关联产品" align="center">
             <template slot-scope="scope">
-              <span>产品名称:{{scope.row.product_name_por}}</span><br>
-              <span>团期计划:{{scope.row.tour_no}}</span>
+              <p v-if="scope.row.tour_no == ''">未关联产品</p>
+              <p v-else>产品名称：{{scope.row.product_name_por}}<br>团期计划：{{scope.row.tour_no}}</p>
             </template>
           </el-table-column>
           <el-table-column prop="create_uid" label="操作人" align="center" width="100">

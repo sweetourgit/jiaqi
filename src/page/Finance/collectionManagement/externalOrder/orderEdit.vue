@@ -38,13 +38,13 @@
               <el-button type="primary" @click="chooseDDFun" style="margin-left: 10px">选择</el-button>
             </el-form-item>
             <el-form-item label="收款金额：" prop="payMoney" label-width="140px">
-              <el-input v-model="ruleForm.payMoney" placeholder="请输入" class="baseIn" disabled></el-input>
+              <el-input v-model="pftForm.payMoney" placeholder="请输入" class="baseIn" disabled></el-input>
               <p style="margin: 0;color: #999;line-height: 22px;">收款金额可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
-              <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled" disabled></el-date-picker>
+              <el-date-picker v-model="pftForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled" disabled></el-date-picker>
               <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
-              <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" disabled></el-date-picker>
+              <el-date-picker v-model="pftForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" disabled></el-date-picker>
               <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="附件：" label-width="140px" v-if="info == ''">
@@ -94,6 +94,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="import_at" label="导入时间" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.import_at}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="" label="关联产品" align="center">
                   <template slot-scope="scope">
@@ -105,7 +108,7 @@
                 </el-table-column>
                 <el-table-column prop="money" label="操作" align="center">
                   <template slot-scope="scope">
-                    <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope)">删除</el-button>
+                    <el-button size="small" type="text" style="color: red;" @click="deleteBtnGL(scope)">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -237,8 +240,8 @@
                 </el-table-column>
                 <el-table-column prop="tour_no" label="关联产品" align="center">
                   <template slot-scope="scope">
-                    <span>产品名称:{{scope.row.product_name_por}}</span><br>
-                    <span>团期计划:{{scope.row.tour_no}}</span>
+                    <p v-if="scope.row.tour_no == ''">未关联产品</p>
+                    <p v-else>产品名称：{{scope.row.product_name_por}}<br>团期计划：{{scope.row.tour_no}}</p>
                   </template>
                 </el-table-column>
                 <el-table-column prop="create_uid" label="操作人" align="center" width="100">
@@ -329,6 +332,20 @@
               <el-table-column prop="create_uid" label="操作人" align="center">
               </el-table-column>
             </el-table>
+
+            <div class="block">
+              <el-pagination
+                @size-change="handleSizeChangeGL"
+                @current-change="handleCurrentChangeGL"
+                :current-page.sync="currentPageGL"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size= pageSizeGL
+                layout="total, sizes, prev, pager, next, jumper"
+                :total=pageCountGL
+                background>
+              </el-pagination>
+            </div>
+
           </div>
 
           <div class="footer" style="text-align: right;">
@@ -400,6 +417,14 @@
         multipleSelection: [],
         chooseTable: [],
         loading: true,
+        pageSizeGL: 10,
+        pageCountGL: 0,
+        currentPageGL: 1,
+        pftForm: {
+          payMoney: '',
+          startTime: '',
+          endTime: ''
+        },
 
         PFT_num: 0,
         PFT_money: 0,
@@ -478,8 +503,8 @@
 //      票付通余额，关联订单
       chooseDDFun(){
         let orderStr = '';
-        if(this.tableDataGLDD.length > 0){
-          this.tableDataGLDD.forEach(function (item, index, arr) {
+        if(this.chooseTable.length > 0){
+          this.chooseTable.forEach(function (item, index, arr) {
             orderStr += item.order_sn + ','
           });
           orderStr = orderStr.substr(0, orderStr.length - 1);
@@ -491,30 +516,77 @@
         const that = this;
 //        console.log(val);
         this.multipleSelection = val;
-        let start = this.multipleSelection[0].sale_at;
-        let end = this.multipleSelection[0].sale_at;
-        let totalMoney = 0;
-        this.multipleSelection.forEach(function (item, index, arr) {
-          if(new Date(Date.parse(start)) > new Date(Date.parse(item.sale_at))){
-            start = item.sale_at;
-          }
-          if(new Date(Date.parse(end)) < new Date(Date.parse(item.sale_at))){
-            end = item.sale_at;
-          }
-          totalMoney += parseFloat(item.income);
+        if(this.multipleSelection.length != 0){
+          let start = this.multipleSelection[0].sale_at;
+          let end = this.multipleSelection[0].sale_at;
+          let totalMoney = 0;
+          this.multipleSelection.forEach(function (item, index, arr) {
+            if(new Date(Date.parse(start)) > new Date(Date.parse(item.sale_at))){
+              start = item.sale_at;
+            }
+            if(new Date(Date.parse(end)) < new Date(Date.parse(item.sale_at))){
+              end = item.sale_at;
+            }
+            totalMoney += parseFloat(item.income);
 //                console.log(totalMoney);
-        });
-        that.PFT_num = this.multipleSelection.length;
-        that.PFT_money = totalMoney.toFixed(2);
-        that.PFT_start = formatDate(new Date(start*1000)).split(" ")[0];
-        that.PFT_end = formatDate(new Date(end*1000)).split(" ")[0];
+          });
+          that.PFT_num = this.multipleSelection.length;
+          that.PFT_money = totalMoney.toFixed(2);
+          that.PFT_start = formatDate(new Date(Date.parse(start))).split(" ")[0];
+          that.PFT_end = formatDate(new Date(Date.parse(end))).split(" ")[0];
+        }
       },
       handleRowClick(row, column, event){
+//        console.log(this.$refs.multipleTable.selection);
         this.$refs.multipleTable.toggleRowSelection(row);
       },
       saveBtn(){
-        this.chooseTable = this.multipleSelection;
+        let table = this.chooseTable;
+        this.chooseTable = table.concat(this.multipleSelection);
+        if(this.chooseTable.length != 0){
+          let start = this.chooseTable[0].sale_at;
+          let end = this.chooseTable[0].sale_at;
+          let totalMoney = 0;
+          this.chooseTable.forEach(function (item, index, arr) {
+            if(new Date(Date.parse(start)) > new Date(Date.parse(item.sale_at))){
+              start = item.sale_at;
+            }
+            if(new Date(Date.parse(end)) < new Date(Date.parse(item.sale_at))){
+              end = item.sale_at;
+            }
+            totalMoney += parseFloat(item.income);
+//                console.log(totalMoney);
+          });
+          this.pftForm = {
+            payMoney: totalMoney.toFixed(2),
+            startTime: formatDate(new Date(Date.parse(start))).split(" ")[0],
+            endTime: formatDate(new Date(Date.parse(end))).split(" ")[0]
+          };
+        }
         this.close();
+      },
+      deleteBtnGL(scope){
+        this.chooseTable.splice(scope.$index,1);
+        if(this.chooseTable.length != 0){
+          let start = this.chooseTable[0].sale_at;
+          let end = this.chooseTable[0].sale_at;
+          let totalMoney = 0;
+          this.chooseTable.forEach(function (item, index, arr) {
+            if(new Date(Date.parse(start)) > new Date(Date.parse(item.sale_at))){
+              start = item.sale_at;
+            }
+            if(new Date(Date.parse(end)) < new Date(Date.parse(item.sale_at))){
+              end = item.sale_at;
+            }
+            totalMoney += parseFloat(item.income);
+//                console.log(totalMoney);
+          });
+          this.pftForm = {
+            payMoney: totalMoney.toFixed(2),
+            startTime: formatDate(new Date(Date.parse(start))).split(" ")[0],
+            endTime: formatDate(new Date(Date.parse(end))).split(" ")[0]
+          };
+        }
       },
 //      添加
       cancelBtnTJ(){
@@ -838,6 +910,7 @@
       close(){
         this.dialogFormVisible1 = false;
         this.dialogFormVisible2 = false;
+        this.loading = true;
       },
       chooseBtn(row){
         this.ruleForm.payAccount = row.title;
@@ -1117,16 +1190,35 @@
       getListRece(orderStr){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/listforrece", {
+          "pageIndex": this.currentPageGL,
+          "pageSize": this.pageSizeGL,
           "order_sn": orderStr,
           "type": 1
         }, ).then(function(response) {
           console.log('关联订单',response);
           if (response.data.code == '200') {
             that.tableDataGLDD = response.data.data.list;
+            that.pageCountGL = parseInt(response.data.data.total);
             that.tableDataGLDD.forEach(function (item, index, arr) {
               item.check_at = formatDate(new Date(item.check_at*1000));
               item.import_at = formatDate(new Date(item.import_at*1000));
               item.sale_at = formatDate(new Date(item.sale_at*1000));
+              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                "id": item.create_uid
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }).then(function(response) {
+
+                if (response.data.isSuccess) {
+                  item.create_uid = response.data.object.name
+                } else {
+                  that.$message.warning("加载数据失败~");
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
             });
             that.loading = false;
           } else {
@@ -1136,6 +1228,15 @@
         }).catch(function(error) {
           console.log(error);
         });
+      },
+      handleSizeChangeGL(val){
+        this.pageSizeGL = val;
+        this.currentPageGL = 1;
+        this.getListRece();
+      },
+      handleCurrentChangeGL(val){
+        this.currentPageGL = val;
+        this.getListRece();
       }
     },
     created() {
@@ -1192,5 +1293,11 @@
     line-height: 30px;
     box-sizing: border-box;
     padding: 0 10px;
+  }
+  .block{
+    /*float: left;*/
+    margin-left: 600px;
+    margin-top: 70px;
+    margin-bottom: 30px;
   }
 </style>

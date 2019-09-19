@@ -311,11 +311,13 @@ export default {
           };
           that.fileList = response.data.data.file;
           that.tableData = response.data.data.order_list;
-          if(response.data.data.approval_status == 1){
-            that.approvalStatus = true;
+          if(response.data.data.approval_status == 1 && response.data.data.bill_status == 1){
+            that.approvalStatus = false;
           }else if(response.data.data.approval_status == 2){
             that.approvalStatus = false;
           }else if(response.data.data.approval_status == 3){
+            that.approvalStatus = true;
+          }else{
             that.approvalStatus = true;
           }
           let total = 0;

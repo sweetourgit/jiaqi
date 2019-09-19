@@ -219,7 +219,10 @@ export default {
           console.log(response);
           that.receiptCode = response.data.data.rec_sn;
 //          that.approval = response.data.data.approval_status;
-          if(response.data.data.approval_status == 1){
+          if(response.data.data.approval_status == 1 && response.data.data.bill_status == 1){
+            that.approval = '未审批';
+            that.approvalStatus = false;
+          }else if(response.data.data.approval_status == 1){
             that.approval = '审批中';
             that.approvalStatus = true;
           }else if(response.data.data.approval_status == 2){
