@@ -114,6 +114,7 @@
       :visible.sync="dialogFormVisible"
       :show-close="false"
       @close="closeDialog"
+      :close-on-click-modal="false"
       width="1000px"
     >
       <div class="dialog">
@@ -176,9 +177,9 @@
 
               <el-form-item label="商户角色 :" prop="LocalCompRole">
                 <el-select v-model="ruleForm.LocalCompRole" placeholder="请选择" style="width: 250px;">
-                  <el-option label="旅游组团社" value="1"></el-option>
-                  <el-option label="独立旅行社" value="2"></el-option>
-                  <el-option label="个人/独立旅游顾问" value="3"></el-option>
+                  <el-option label="旅游组团社" value="0"></el-option>
+                  <el-option label="独立旅行社" value="1"></el-option>
+                  <el-option label="个人/独立旅游顾问" value="2"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="门市类型 :" prop="storeType" class="placaBlockhahahah">
@@ -353,14 +354,14 @@
                   ></el-input>
                   <div style="margin-top: 10px;">
                     <el-tag
-                      :key="tag"
-                      v-for="tag in businessOtherNamesArr"
+                      :key="index"
+                      v-for="(tag,index) in businessOtherNamesArr"
                       class="tag"
                       closable
                       :disable-transitions="false"
                       @close="businessHandleClose(tag)"
                       style="margin-botton: 5px;"
-                    >{{tag}}</el-tag>
+                    >{{tag.name}}</el-tag>
                   </div>
                 </el-form-item>
               </div>
@@ -402,7 +403,7 @@
             <tr class="dialogTableTr">
               <td class="dialogTableTd">
                 <label>ID：</label>
-                <span></span>
+                <span>{{businewwInfPageId}}</span>
               </td>
               <td class="dialogTableTd">
                 <label>状态：</label>
@@ -545,6 +546,7 @@
       :visible.sync="isAddAccount"
       :show-close="false"
       class="addAccount"
+      :close-on-click-modal="false"
       width="500px"
     >
       <h3>手机号和邮箱可作为用户名进行登录</h3>
@@ -613,32 +615,6 @@ import state from "../../../store/state";
 export default {
   name: "merchantInfo",
   data() {
-    // 校验商户名字是否具有唯一性
-    // let nameValidator = (rule, value, callback) => {
-    //   let that = this;
-    //   that.$http
-    //     .post(that.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
-    //       object: {}
-    //     })
-    //     .then(res => {
-    //       let data = res.data.objects.forEach(v => {
-    //         if (this.btnindex !== 2) {
-    //           if (value == v.name) {
-    //             callback("商户姓名不可重复");
-    //           } else {
-    //             callback()
-    //           }
-    //         } else {
-    //           callback()
-    //         }
-    //       });
-    //     })
-
-    //     .catch(res => {
-    //       console.log(res);
-    //       callback();
-    //     });
-    // };
     //效验添加账户信息弹窗中微信字段
     let wechatvalidator = (rule, value, callback) => {
       if (/[\u4E00-\u9FA5]/g.test(value)) {
@@ -649,36 +625,17 @@ export default {
     };
     let that = this;
     return {
+      businewwInfPageId: "", //商户信息详情页的ID
       vague: [], //模糊搜索的数组
       cascaderArr: [],
       isAddAccountBtn: 0, //判断账户信息弹窗是从添加按钮进入还是编辑进入
       accountArr: [], //用来接收本地添加账户的字段
       tableRelevanceDeptInfo: [], //点击详情欠款信息
       isAddAccount: false, // 判断添加账户弹窗的出现
-      // 销售人员的多选
-      // saleProps: {
-      //   multiple: true,
-      //   lazy: true,
-      //   // _this: this,
-      //   lazyLoad(node, resolve) {
-      //     that.initSaleCascader(node, resolve);
-      //   }
-      // },
-      // 管理人员的cascader
-      // adminProps: {
-      //   multiple: true,
-      //   lazy: true,
-      //   // _this: this,
-      //   lazyLoad(node, resolve) {
-      //     that.initAdminCascader(node, resolve);
-      //   }
-      // },
       scoperangeList: [], //区域可见接口接收
       businessOtherNamesArr: [], //商户其他名称tag列表
       adminArr: [], //管理人员tag列表
       salesArr: [], //销售人员tag列表
-      // adminInputArr: [],
-      // salesInputArr: [],
       fileList: [], //上传图片
       btnindex: 0, //编辑还是详情判断弹窗按钮的字段
       readonly: true, // 点击表单修改然后只读
@@ -866,7 +823,6 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
           for (let i = 0; i < res.data.objects.length; i++) {
             this.vague.push({
               uid: res.data.objects[i].id,
@@ -887,8 +843,16 @@ export default {
     },
     // 商户其他名字enter触发的事件
     handleEnterOtherNames() {
-      this.businessOtherNamesArr.push(this.ruleForm.otherNames);
+      let otherNamesObj = {};
+      // otherNamesObj["nq"] = 1
+      // otherNamesObj["n"] = 2
+      // otherNamesObj["na"] = 3
+
+      otherNamesObj["name"] = this.ruleForm.otherNames;
+      console.log(otherNamesObj);
+      this.businessOtherNamesArr.push(otherNamesObj);
       this.ruleForm.otherNames = "";
+      console.log(this.businessOtherNamesArr);
     },
     // 管理人员focus触发的事件
     handleFocusAdminNames() {
@@ -900,8 +864,10 @@ export default {
     },
     // 管理人员select触发的事件
     handleSelectAdminNames(item) {
+      console.log(item);
       this.adminArr.push(item);
       this.handleBlurAdminNames();
+      console.log(this.adminArr);
     },
     // 销售人员select触发的事件
     handleSelectSalesNames(item) {
@@ -1232,8 +1198,8 @@ export default {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
           that.tableData.forEach(function(v, k, arr) {
-            arr[k]["department"] = "XXX";
-            arr[k]["manager"] = "阳阳";
+            // arr[k]["department"] = "XXX";
+            // arr[k]["manager"] = "阳阳";
             if (arr[k]["state"] == 2) {
               arr[k]["state"] = "正常";
             } else {
@@ -1458,17 +1424,20 @@ export default {
         return;
       }
 
+      // 状态
       if (this.ruleForm.state == "停用") {
         this.ruleForm.state = 3;
       } else {
         this.ruleForm.state = 2;
       }
+      // 结算方式
       if (this.ruleForm.settlementType == "非月结") {
         this.ruleForm.settlementType = 2;
         this.ruleForm.quota = 0;
       } else {
         this.ruleForm.settlementType = 1;
       }
+      // 门市类型
       if (this.ruleForm.storeType == "无") {
         this.ruleForm.storeType = 0;
       } else if (this.ruleForm.storeType == "大运通自营") {
@@ -1478,12 +1447,9 @@ export default {
       } else if (this.ruleForm.storeType == "第三方门市") {
         this.ruleForm.storeType = 3;
       }
-      console.log(this.ruleForm.scopeExt)
-      // console.log(this.ruleForm.scopeExt);
-      this.ruleForm.scopeExt = this.ruleForm.scopeExt.join(",");
-      // this.ruleForm.scopeExt = JSON.stringify(this.ruleForm.scopeExt);
-      console.log(this.ruleForm.scopeExt);
-      // console.log(this.ruleForm);
+      // 经营范围
+      let scopeExt = this.ruleForm.scopeExt.join(",");
+      console.log(scopeExt);
       // this.ruleForm.orgs = this.ruleForm.orgs.join(",");
       /*let name = [];
           this.ruleForm.scopeExt.forEach(item => {
@@ -1491,8 +1457,7 @@ export default {
           })
           this.ruleForm.scopeExt['name'] = [];
           this.ruleForm.scopeExt.name = name;*/
-      let that = this;
-      // 区域
+      // 区域可见
       let orgs = [];
       for (let i = 0; i < this.ruleForm.orgs.length; i++) {
         let org = {};
@@ -1502,7 +1467,7 @@ export default {
         orgs.push(org);
       }
       this.ruleForm.orgs = orgs;
-
+      // console.log(this.ruleForm.orgs)
       // 添加账户
       this.useList.forEach((value, index, arr) => {
         if (arr[index].state == "正常") {
@@ -1510,31 +1475,37 @@ export default {
         } else {
           arr[index].state = 3;
         }
-        if (arr[index].sex == 1) {
-          arr[index].sex = '男';
+        if (arr[index].sex == "男") {
+          arr[index].sex = 1;
         } else {
-          arr[index].sex = '女';
+          arr[index].sex = 2;
         }
         if (arr[index].peerUserType == "管理员") {
-          arr[index].peerUserType = '1';
+          arr[index].peerUserType = 1;
         } else {
-          arr[index].peerUserType = '2';
+          arr[index].peerUserType = 2;
         }
       });
 
       // jqAdminList 管理和销售人员
       let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
+      adminAndSalesArr = adminAndSalesArr.map(item => {
+        return {
+          name: item.value,
+          userCode: item.userCode,
+          uid: item.uid,
+          jqUserType: item.jqUserType,
+          isDeleted: item.isDeleted
+        };
+      });
 
       // localCompAliasList 商户其他名称
-      this.businessOtherNamesArr = this.businessOtherNamesArr.join(",");
-
-      console.log("商户其他名称")
-      console.log(this.businessOtherNamesArr);
-      
+      // console.log(this.businessOtherNamesArr)
+      // let businessOtherNamesArr = this.businessOtherNamesArr.join(",");
+      // console.log(businessOtherNamesArr)
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
           object: {
-            // this.ruleForm,
             isDeleted: 0,
             code: null,
             name: this.ruleForm.name,
@@ -1544,7 +1515,7 @@ export default {
             expTime: this.ruleForm.expTime,
             settlementType: this.ruleForm.settlementType,
             quota: this.ruleForm.quota,
-            scopeExt: this.ruleForm.scopeExt,
+            scopeExt: scopeExt,
             linker: this.ruleForm.linker,
             phone: this.ruleForm.phone,
             publicName: this.ruleForm.publicName,
@@ -1561,21 +1532,19 @@ export default {
             localCompAliasList: this.businessOtherNamesArr
           }
         })
-        .then(function(obj) {
-          this.dialogFormVisible = true;
-          that.list();
+        .then(obj => {
+          this.dialogFormVisible = false;
+          this.list();
           this.$message({
             message: "添加成功",
             type: "success"
           });
         })
-        .catch(function(obj) {
+        .catch(obj => {
           this.$message({
             message: "添加失败",
             type: "error"
           });
-          this.businessOtherNamesArr = this.businessOtherNamesArr.split(',')
-          console.log(this.businessOtherNamesArr)
           console.log(obj);
         });
     },
@@ -1620,12 +1589,12 @@ export default {
         .catch(function(obj) {
           console.log(obj);
         });
-      console.log(this.ruleForm);
     },
     clear() {
       this.businessOtherNamesArr = [];
       this.adminArr = [];
       this.salesArr = [];
+      this.useList = [];
       this.ruleForm = {
         name: "", //
         storeType: "无", //门市类型默认是无
@@ -1654,52 +1623,120 @@ export default {
     },
     //获取一条信心
     getOneMess(id) {
-      var that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
           id: id
         })
-        .then(function(obj) {
-          // console.log(obj);
-          that.ruleForm.name = obj.data.object.name;
-          that.ruleForm.localCompType = String(obj.data.object.localCompType);
-          if (obj.data.object.state == 2) {
-            that.ruleForm.state = "正常";
+        .then(obj => {
+          console.log(obj);
+          const { object } = obj.data;
+          const {
+            jqAdminList,
+            localCompAliasList,
+            orgs,
+            useList
+          } = obj.data.object;
+          this.ruleForm.name = object.name;
+          // this.ruleForm.localCompType = String(object.localCompType);
+          // 商户信息详情页的ID
+          this.businewwInfPageId = object.id;
+          this.useList = useList;
+          // 状态
+          if (object.state == 2) {
+            this.ruleForm.state = "正常";
           } else {
-            that.ruleForm.state = "停用";
+            this.ruleForm.state = "停用";
           }
-          // if (that.btnindex == 2) {
-          // console.log(1);
+          // 类别
+          if (object.localCompType == 0) {
+            this.ruleForm.localCompType = "门店";
+          } else if (object.localCompType == 1) {
+            this.ruleForm.localCompType = "同业";
+          } else {
+            this.ruleForm.localCompType = "翻盘门店";
+          }
+          // 商户角色
+          if (object.localCompRole == 0) {
+            this.ruleForm.localCompRole = "旅游组团社";
+          } else if (object.localCompRole == 1) {
+            this.ruleForm.localCompRole = "独立旅行社";
+          } else {
+            this.ruleForm.localCompRole = "个人/独立旅游顾问";
+          }
+          // 门市类型
+          if (object.storeType == 0) {
+            this.ruleForm.storeType = "无";
+          } else if (object.storeType == 1) {
+            this.ruleForm.storeType = "大运通自营";
+          } else if (object.storeType == 2) {
+            this.ruleForm.storeType = "加盟门市";
+          } else {
+            this.ruleForm.storeType = "第三方门市";
+          }
+
+          // 经营范围
+          this.ruleForm.scopeExt = object.scopeExt;
+
+          // 管理人员 和 销售
+          jqAdminList.forEach((val, idx, arr) => {
+            if (arr[idx].jqUserType == 1) {
+              this.adminArr.push(arr[idx]);
+            } else if (arr[idx].jqUserType == 2) {
+              this.salesArr.push(arr[idx]);
+            }
+          });
+          let adminArr = [],
+            salesArr = [];
+          this.adminArr.forEach((val, idx, arr) => {
+            adminArr.push(this.adminArr[idx].name);
+          });
+          this.salesArr.forEach((val, idx, arr) => {
+            salesArr.push(this.salesArr[idx].name);
+          });
+          this.ruleForm.administrative = adminArr.join(",");
+          this.ruleForm.salesman = salesArr.join(",");
+
+          // 区域可见
+          for (let i = 0; i < orgs.length; i++) {
+            for (let j = 0; j < this.scoperangeList.length; j++) {
+              if (orgs[i].orgID == this.scoperangeList[j].id) {
+                this.ruleForm.orgs.push(this.scoperangeList[j].orgName)
+              }
+            }
+          }
+          this.ruleForm.orgs = this.ruleForm.orgs.join(',')
+          // console.log(this.ruleForm.orgs)
+
           let year = "";
           let month = "";
           let day = "";
           let pin = "";
-          year = String(obj.data.object.expTime).substring(0, 4);
-          month = String(obj.data.object.expTime).substring(4, 6);
-          day = String(obj.data.object.expTime).substring(6, 8);
+          year = String(object.expTime).substring(0, 4);
+          month = String(object.expTime).substring(4, 6);
+          day = String(object.expTime).substring(6, 8);
           pin = year + "-" + month + "-" + day;
-          that.ruleForm.expTime = pin;
-          // that.ruleForm.expTime = new Date(pin);
-          // console.log(that.ruleForm.expTime);
+          this.ruleForm.expTime = pin;
+          // this.ruleForm.expTime = new Date(pin);
+          // console.log(this.ruleForm.expTime);
           // }
-          if (obj.data.object.settlementType == 2) {
-            that.ruleForm.settlementType = "非月结";
+          if (object.settlementType == 2) {
+            this.ruleForm.settlementType = "非月结";
           } else {
-            that.ruleForm.settlementType = "月结";
+            this.ruleForm.settlementType = "月结";
           }
-          that.ruleForm.quota = obj.data.object.quota;
+          this.ruleForm.quota = object.quota;
           //todo    部门和人员 预留
-          that.ruleForm.department = "1";
-          that.ruleForm.people = "2";
-          that.ruleForm.scopeExt = obj.data.object.scopeExt.split(",");
-          that.ruleForm.address = obj.data.object.address;
-          that.ruleForm.linker = obj.data.object.linker;
-          that.ruleForm.phone = obj.data.object.phone;
-          that.ruleForm.publicName = obj.data.object.publicName;
-          that.ruleForm.bankName = obj.data.object.bankName;
-          that.ruleForm.bankcardNo = obj.data.object.bankcardNo;
+          this.ruleForm.department = "1";
+          this.ruleForm.people = "2";
+          // this.ruleForm.scopeExt = object.scopeExt.split(",");
+          this.ruleForm.address = object.address;
+          this.ruleForm.linker = object.linker;
+          this.ruleForm.phone = object.phone;
+          this.ruleForm.publicName = object.publicName;
+          this.ruleForm.bankName = object.bankName;
+          this.ruleForm.bankcardNo = object.bankcardNo;
         })
-        .catch(function(obj) {
+        .catch(obj => {
           console.log(obj);
         });
     },
@@ -1751,7 +1788,7 @@ export default {
           }
         })
         .then(res => {
-          console.log(res)
+          // console.log(res)
           this.scoperangeList = res.data.objects;
         })
         .catch(err => {
