@@ -306,11 +306,15 @@
       font-size: 16px;
       padding: 10px;
       cursor: pointer;
+      box-sizing: border-box;
     }
     li.active{
       /*color: #ffffff;*/
       background-color: #f7f7f7;
     }
+  }
+  .leftNav::-webkit-scrollbar {
+    display: none;
   }
   .searchDv{
     width: 100%;

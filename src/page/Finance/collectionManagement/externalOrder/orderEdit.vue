@@ -48,7 +48,7 @@
               <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="附件：" label-width="140px" v-if="info == ''">
-              <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :limit="1" :file-list="fileList">
+              <el-upload ref="upload2" class="upload-demo" :action="UploadUrl2()" :headers="headers" :on-success="handleSuccess2" :on-error="handleError2" :on-remove="handleRemove2" :before-remove="beforeRemove2" :on-exceed="handleExceed2" :file-list="pft_list">
                 <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
             </el-form-item>
@@ -182,6 +182,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="tour_no" label="团号" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.tour_no}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="divide_connect_no" label="粉联号" align="center">
                   <template slot-scope="scope">
@@ -192,6 +195,7 @@
                 </el-table-column>
                 <el-table-column prop="money" label="操作" align="center">
                   <template slot-scope="scope">
+                    <el-button size="small" type="text" style="color: green;" @click="detailEdit(scope)">编辑</el-button>
                     <el-button size="small" type="text" style="color: red;" @click="deleteBtnEdit(scope)">删除</el-button>
                   </template>
                 </el-table-column>
@@ -354,6 +358,42 @@
           </div>
         </el-dialog>
 
+        <el-dialog title="修改收款明细" :visible="dialogFormVisible3" width=30% @close="close" append-to-body>
+          <el-form :model="detailForm" :rules="detailRules" ref="ruleFormMX">
+            <div>
+              <el-form-item label="入账时间" prop="enterTime" label-width="120px">
+                <el-date-picker v-model="detailForm.enterTime" type="date" placeholder="请选择日期" class="start-time inputWidth" :editable="disabled"></el-date-picker>
+              </el-form-item>
+              <el-form-item label="订单号" prop="orderNum" label-width="120px">
+                <el-input v-model="detailForm.orderNum" class="inputWidth" placeholder="请输入订单号"></el-input>
+              </el-form-item>
+              <el-form-item label="客人名称" prop="guestName" label-width="120px">
+                <el-input v-model="detailForm.guestName" class="inputWidth" placeholder="请输入客人名称"></el-input>
+              </el-form-item>
+              <el-form-item label="产品" prop="product" label-width="120px">
+                <el-input v-model="detailForm.product" class="inputWidth" placeholder="请输入产品名称"></el-input>
+              </el-form-item>
+              <el-form-item label="结算金额" prop="money" label-width="120px">
+                <el-input v-model="detailForm.money" class="inputWidth" placeholder="请输入结算金额" :disabled="!detailForm.canEdit"></el-input>
+              </el-form-item>
+              <el-form-item label="团号" prop="tour_no" label-width="120px">
+                <el-input v-model="detailForm.tour_no" class="inputWidth" placeholder="请输入团号"></el-input>
+              </el-form-item>
+              <el-form-item label="粉联号" prop="divide_connect_no" label-width="120px">
+                <el-input v-model="detailForm.divide_connect_no" class="inputWidth" placeholder="请输入粉联号"></el-input>
+              </el-form-item>
+              <el-form-item label="发票号" prop="invoice_no" label-width="120px">
+                <el-input v-model="detailForm.invoice_no" class="inputWidth" placeholder="请输入发票号"></el-input>
+              </el-form-item>
+            </div>
+          </el-form>
+
+          <div class="footer" style="text-align: right;">
+            <el-button class="el-button" type="warning" @click="close">取 消</el-button>
+            <el-button class="el-button" type="primary" @click="detailSave">保 存</el-button>
+          </div>
+        </el-dialog>
+
       </el-form>
     </el-dialog>
   </div>
@@ -407,6 +447,29 @@
         totalMoney: '',
         startTime: '',
         endTime: '',
+        dialogFormVisible3: false,
+        detailForm: {
+          enterTime: '',
+          orderNum: '',
+          guestName: '',
+          product: '',
+          money: '',
+          tour_no: '',
+          divide_connect_no: '',
+          invoice_no: '',
+          canEdit: true,
+          id: '',
+          indexDetail: ''
+        },
+        detailRules:{
+          enterTime: [{ required: true, message: '入账时间不能为空', trigger: 'blur' }],
+          orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
+          product: [{ required: true, message: '产品不能为空', trigger: 'blur' }],
+          money: [
+            { required: true, message: '结算金额不能为空', trigger: 'blur' },
+            { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
+          ]
+        },
 
         showSK: true,
 
@@ -425,6 +488,7 @@
           startTime: '',
           endTime: ''
         },
+        pft_list: [],
 
         PFT_num: 0,
         PFT_money: 0,
@@ -472,7 +536,7 @@
       },
 //      关闭添加/编辑弹窗
       closeAdd(){
-        if(this.info != ''){
+//        if(this.info != ''){
           this.ruleForm = {
             creditTime: '',
             payAccount: '',
@@ -490,7 +554,27 @@
           this.totalMoney = '';
           this.startTime = '';
           this.endTime = '';
-        }
+          this.PFTYE = false;
+          this.tableDataGLDD = [];
+          this.dialogFormVisible2 = false;
+          this.multipleSelection = [];
+          this.chooseTable = [];
+          this.loading = true;
+          this.pageSizeGL = 10;
+          this.pageCountGL = 0;
+          this.currentPageGL = 1;
+          this.pftForm = {
+            payMoney: '',
+            startTime: '',
+            endTime: ''
+          };
+          this.pft_list = [];
+
+          this.PFT_num = 0;
+          this.PFT_money = 0;
+          this.PFT_start = '';
+          this.PFT_end = '';
+//        }
         this.$emit('close', false);
       },
       radioChange(val){
@@ -596,23 +680,6 @@
           type: "warning"
         }).then(() => {
           this.$message.success("已取消添加");
-          this.ruleForm = {
-            creditTime: '',
-            payAccount: '',
-            payAccountID: '',
-            mark: '',
-            distributor: '无',
-            payMoney: '',
-            startTime: '',
-            endTime: ''
-          };
-          this.fileList = [];
-          this.deleteStr = '';
-          this.tableDataQK = [];
-          this.totalItem = '0';
-          this.totalMoney = '';
-          this.startTime = '';
-          this.endTime = '';
           this.closeAdd();
         }).catch(() => {
 
@@ -833,6 +900,7 @@
       subFunXG(){
         const that = this;
         this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+        this.$refs.ruleFormMX.resetFields();
 //        alert(this.deleteStr);
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/updrece", {
           "id": this.info,
@@ -910,6 +978,7 @@
       close(){
         this.dialogFormVisible1 = false;
         this.dialogFormVisible2 = false;
+        this.dialogFormVisible3 = false;
         this.loading = true;
       },
       chooseBtn(row){
@@ -966,6 +1035,57 @@
         this.$message.warning(`平台订单只支持一个附件上传！`);
       },
       beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
+      },
+//      上传票付通余额凭证
+      UploadUrl2(){
+        return this.GLOBAL.serverSrcPhp + '/api/v1/receivables/receivables/fzfilesfiles';
+      },
+      handleSuccess2(response, file, fileList){
+        console.log(file);
+        console.log(fileList);
+        console.log('response',response);
+        if(response.code == 200){
+          this.pft_list = fileList;
+//          this.tableDataQK = file.response.data.list;
+//          this.totalItem = file.response.data.list.length;
+//          this.totalMoney = file.response.data.money;
+////          this.ruleForm.payMoney = file.response.data.money;
+//          this.startTime = formatDate(new Date(file.response.data.start*1000));
+//          this.endTime = formatDate(new Date(file.response.data.end*1000));
+////          this.ruleForm.startTime = formatDate(new Date(file.response.data.start*1000));
+////          this.ruleForm.endTime = formatDate(new Date(file.response.data.end*1000));
+//          this.tableDataQK.forEach(function (item, index, arr) {
+//            item[1] = formatDate(new Date(item[1]*1000));
+//          })
+        }else{
+          if(response.message){
+            this.$message.warning(response.message);
+          }else{
+            this.$message.warning('文件上传失败');
+          }
+//          this.fileList = {};
+          this.$refs.upload2.clearFiles();
+        }
+      },
+      handleError2(err, file, fileList){
+        this.$message.warning(`文件上传失败，请重新上传！`);
+      },
+      handleRemove2(file, fileList) {
+        console.log(file, fileList);
+//        this.tableDataQK = [];
+//        this.totalItem = '';
+//        this.totalMoney = '';
+//        this.ruleForm.payMoney = '';
+//        this.startTime = '';
+//        this.endTime = '';
+//        this.ruleForm.startTime = '';
+//        this.ruleForm.endTime = '';
+      },
+      handleExceed2(files, fileList) {
+        this.$message.warning(`平台订单只支持一个附件上传！`);
+      },
+      beforeRemove2(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
 //      明细删除
@@ -1062,6 +1182,126 @@
 
         });
       },
+//      明细编辑
+      detailEdit(scope){
+        let flag = true;
+        if(scope.row.bill_status == 1){
+          flag = true;
+        }else{
+          flag = false;
+        }
+        this.detailForm = {
+          enterTime: scope.row.rece_at,
+          orderNum: scope.row.order_sn,
+          guestName: scope.row.guest_name,
+          product: scope.row.product_name,
+          money: scope.row.rece_money,
+          tour_no: scope.row.tour_no,
+          divide_connect_no: scope.row.divide_connect_no,
+          invoice_no: scope.row.invoice_no,
+          canEdit: flag,
+          id: scope.row.id,
+          indexDetail: scope.$index
+        };
+        this.dialogFormVisible3 = true;
+      },
+      detailSave(){
+//        alert(this.detailForm.money != this.tableDataQK[this.detailForm.indexDetail].rece_money);
+        if(parseFloat(this.detailForm.money).toFixed(2) != parseFloat(this.tableDataQK[this.detailForm.indexDetail].rece_money).toFixed(2)){
+          this.$confirm("结算金额同时修改关联订单的收入，是否修改", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            this.saveFun();
+          }).catch(() => {
+
+          });
+        }else{
+          this.saveFun();
+        }
+
+
+      },
+      saveFun(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/upddetailed", {
+          "id": this.detailForm.id,
+          "plat_order_sn": this.detailForm.orderNum,
+          "product_name": this.detailForm.product,
+          "rece_money": this.detailForm.money,
+          "rece_at": this.detailForm.enterTime,
+          "guest_name": this.detailForm.guestName,
+          "tour_no": this.detailForm.tour_no,
+          "divide_connect_no": this.detailForm.divide_connect_no,
+          "invoice_no": this.detailForm.invoice_no
+        }, ).then(function(response) {
+//          console.log(response);
+          if (response.data.code == '200') {
+//            console.log('that.detailForm.enterTime', that.detailForm.enterTime);
+
+            if(that.detailForm.enterTime.toString().split('-')[1]){
+              that.tableDataQK[that.detailForm.indexDetail].rece_at = that.detailForm.enterTime;
+            }else{
+              that.tableDataQK[that.detailForm.indexDetail].rece_at = formatDate(that.detailForm.enterTime).split(" ")[0];
+            }
+
+            that.tableDataQK[that.detailForm.indexDetail].order_sn = that.detailForm.orderNum;
+            that.tableDataQK[that.detailForm.indexDetail].guest_name = that.detailForm.guestName;
+            that.tableDataQK[that.detailForm.indexDetail].product_name = that.detailForm.product;
+            that.tableDataQK[that.detailForm.indexDetail].rece_money = that.detailForm.money;
+            that.tableDataQK[that.detailForm.indexDetail].tour_no = that.detailForm.tour_no;
+            that.tableDataQK[that.detailForm.indexDetail].divide_connect_no = that.detailForm.divide_connect_no;
+            that.tableDataQK[that.detailForm.indexDetail].invoice_no = that.detailForm.invoice_no;
+            that.detailForm = {
+              enterTime: '',
+              orderNum: '',
+              guestName: '',
+              product: '',
+              money: '',
+              tour_no: '',
+              divide_connect_no: '',
+              invoice_no: '',
+              canEdit: true,
+              id: '',
+              indexDetail: ''
+            };
+
+            let start = that.tableDataQK[0].rece_at;
+            let end = that.tableDataQK[0].rece_at;
+            let totalMoney = 0;
+            that.tableDataQK.forEach(function (item, index, arr) {
+              if(new Date(Date.parse(start)) > new Date(Date.parse(item.rece_at))){
+                start = item.rece_at;
+              }
+              if(new Date(Date.parse(end)) < new Date(Date.parse(item.rece_at))){
+                end = item.rece_at;
+              }
+              totalMoney += parseFloat(item.rece_money);
+//              console.log(totalMoney);
+            });
+
+            that.totalMoney = totalMoney.toFixed(2);
+            that.startTime = start;
+            that.endTime = end;
+
+            that.$message({
+              type: 'success',
+              message: '修改成功!'
+            });
+            that.close();
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning('提交失败');
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+
       getCode(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrc + "/ong/api/receivable/get", {},
@@ -1102,6 +1342,7 @@
               startTime: response.data.data.rece_start,
               endTime: response.data.data.rece_end
             };
+//            if(that.ruleForm.distributor == '')
             that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
             {
               "id": response.data.data.account_id
@@ -1122,11 +1363,9 @@
               that.fileList.push(response.data.data.file);
               that.tableDataQK = response.data.data.list;
               that.totalItem = response.data.data.list.length;
-//              that.totalMoney = response.data.data.rece_money;
-//              that.startTime = response.data.data.rece_start;
-//              that.endTime = response.data.data.rece_end;
-              let start = that.tableDataQK[0].rece_at;
-              let end = that.tableDataQK[0].rece_at;
+
+              let start = formatDate(new Date(that.tableDataQK[0].rece_at*1000)).split(" ")[0];
+              let end = formatDate(new Date(that.tableDataQK[0].rece_at*1000)).split(" ")[0];
               let totalMoney = 0;
               that.tableDataQK.forEach(function (item, index, arr) {
                 item.rece_at = formatDate(new Date(item.rece_at*1000));
@@ -1138,11 +1377,12 @@
                   end = item.rece_at;
                 }
                 totalMoney += parseFloat(item.rece_money);
-//                console.log(totalMoney);
+                console.log(totalMoney);
               });
+
               that.totalMoney = totalMoney.toFixed(2);
-              that.startTime = formatDate(new Date(start*1000)).split(" ")[0];
-              that.endTime = formatDate(new Date(end*1000)).split(" ")[0];
+              that.startTime = start;
+              that.endTime = end;
               that.showSK = true;
             }else if(response.data.data.type == 2 && response.data.data.list.length != 0){
               that.tableDataQK = response.data.data.list;
@@ -1299,5 +1539,8 @@
     margin-left: 600px;
     margin-top: 70px;
     margin-bottom: 30px;
+  }
+  .inputWidth{
+    width: 80%!important;
   }
 </style>

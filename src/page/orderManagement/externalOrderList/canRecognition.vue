@@ -12,9 +12,13 @@
       <span class="search-title">报账状态:</span>
       <el-select v-model="activeForm.status" placeholder="请选择" style="width:200px">
         <el-option key="" label="全部" value=""></el-option>
-        <el-option key="0" label="未报账" value="1"></el-option>
-        <el-option key="1" label="报账中" value="2"></el-option>
-        <el-option key="2" label="已报账" value="3"></el-option>
+        <el-option key="1" label="未认款" value="1"></el-option>
+        <el-option key="2" label="认款申请" value="2"></el-option>
+        <el-option key="3" label="认款待修改" value="3"></el-option>
+        <el-option key="4" label="认款通过" value="4"></el-option>
+        <el-option key="5" label="报账中" value="5"></el-option>
+        <el-option key="6" label="报账驳回" value="6"></el-option>
+        <el-option key="7" label="已报账" value="7"></el-option>
       </el-select>
       <span class="search-title">是否关联产品:</span>
       <el-select v-model="activeForm.proRelation" placeholder="请选择" style="width:200px">

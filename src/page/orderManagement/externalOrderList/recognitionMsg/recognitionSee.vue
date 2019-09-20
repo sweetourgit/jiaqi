@@ -72,9 +72,9 @@
     },
     data() {
       return {
-        instructions: '2019年快钱对账明细(7.31-8.1)',
-        data: '2019-8-1 到 2019-8-1',
-        distributors: '无',
+        instructions: '',
+        data: '',
+        distributors: '',
         tableData: [],
         tableData1: []
       }
@@ -119,6 +119,7 @@
             response.data.data.sale_at = formatDate(new Date(response.data.data.sale_at*1000));
             that.tableData = [];
             that.tableData.push(response.data.data);
+            that.distributors = response.data.data.distributor;
           } else {
             that.$message.success("加载数据失败~");
           }
