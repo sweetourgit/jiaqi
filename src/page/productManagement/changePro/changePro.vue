@@ -99,7 +99,7 @@
               <span id="empty" v-show="empty">不能为空</span>
             </el-form-item>
             <!-- 头图 -->
-            <el-form-item label="头图" prop="avatarImages" label-width="120px">
+            <!-- <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative">
               </el-input>
               <el-upload :on-preview="handleImgClick" class="upload-demo uploadimage" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit='1' accept=".jpg,.png,.gif" :on-remove="handleRemove">
@@ -110,9 +110,9 @@
                   上传
                 </el-button>
               </el-upload>
-            </el-form-item>
+            </el-form-item> -->
             <!-- 头图 -->
-            <!-- <el-form-item label="头图" prop="avatarImages" label-width="120px">
+            <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <div class="img_upload">
                 <template v-for="(item, index) in ruleForm.avatarImages">
                   <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
@@ -125,12 +125,10 @@
               </div>
               <span v-if="this.ruleForm.avatarImages == '' && a != false" style="position: absolute; top: 30px; left: 10px; font-size: 12px; color: #f56c6c;">头图不能为空</span>
             </el-form-item>
-
- 
-            
+            <!--头图弹窗-->           
             <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
               <MaterialList :imgData="imgData" v-on:checkList="checkList" v-on:closeButton="imgUpload = false"></MaterialList>
-            </el-dialog> -->
+            </el-dialog>
 
             <!-- 视频 -->
             <el-form-item label="视频" prop="video" label-width="120px">
@@ -271,7 +269,7 @@
   import {VueEditor} from 'vue2-editor'
   import MaterialList from '@/common/Image'
   export default {
-    name: "listInfo",
+    name: "changePro",
     components: {
       // BaseInfo,
       VueEditor,
@@ -348,11 +346,11 @@
           text: ''
         },
         //头图上传 ========
-        // isImgUrlShow: false,
-        // imgUrlShow: '', // 点击查看图片
-        // imgUpload: false,     // 上传弹窗
-        // imgData: [],
-        // avatarImages: [], // 图片
+        isImgUrlShow: false,
+        imgUrlShow: '', // 点击查看图片
+        imgUpload: false,     // 上传弹窗
+        imgData: [],
+        avatarImages: [], // 图片
         //去程交通工具切换
         goRoad: [{
           value: '1',
@@ -467,7 +465,7 @@
           highlightWords2: '',
           highlightWords3: '',
           highlightWords4: '',
-          avatarImages: '',
+          //avatarImages: '',
           slideshow: '',
           hotelAuto: '',
           hotelChinese: '',
@@ -833,7 +831,7 @@
               that.ruleForm.highlightWords4 = obj.data.object.strengths[3].strength    //亮点词
             }
             that.dynamicTags2 = obj.data.object.label  //TODO 运营标签暂时不好使
-            that.ruleForm.avatarImages = obj.data.object.pictureID //TODO 基本信息头图不好使
+            //that.ruleForm.avatarImages = obj.data.object.pictureID //TODO 基本信息头图不好使
             that.ruleForm.video = obj.data.object.vedioID    //TODO 基本信息视频不好使
             that.ruleForm.slideshow = "" //TODO 基本信息轮播不好使obj.data.object.pepeatpic
             that.ruleForm.Excursion = obj.data.object.crowdID,//基本信息出游人群
@@ -1281,41 +1279,42 @@
       tabTravel(myindex) {
         this.mynumber = myindex;
       },
+      //上传按钮
+      handleList(a) {
+        if (a.target.id != 'showDiv') {
+          this.isImgUrlShow = false;
+          this.isImgUrlShowAvatar = false;
+          this.isImgUrlShowImg = false;
+        }
+      },
+      // 点击图片查看
+      imgClickShow(data) {
+        this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
+            "id": data.img_ID,
+        }).then(res => {
+          this.isImgUrlShow = true;
+          this.imgUrlShow = "http://192.168.2.65:3009/upload" + res.data.object.url;
+        })
+      },
       // 上传按钮
-      // handleList(a) {
-      //   if (a.target.id != 'showDiv') {
-      //     this.isImgUrlShow = false;
-      //     this.isImgUrlShowAvatar = false;
-      //     this.isImgUrlShowImg = false;
-      //   }
-      // },
-      // // 点击图片查看
-      // imgClickShow(data) {
-      //   this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
-      //       "id": data.img_ID,
-      //   }).then(res => {
-      //     this.isImgUrlShow = true;
-      //     this.imgUrlShow = "http://192.168.2.65:3009/upload" + res.data.object.url;
-      //   })
-      // },
-      // // 上传按钮
-      // handleImgUpload() {
-      //   console.log(this.ruleForm.avatarImages)
-      //   this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
-      //   this.imgUpload = true;
-      // },
-      // // 点击删除图片
-      // imgDelete(data) {
-      //   this.ruleForm.avatarImages.splice(this.ruleForm.avatarImages.indexOf(data), 1);
-      // },
-      // // 图片添加
-      // checkList(data) {
-      //   this.ruleForm.avatarImages = data.map(v => {
-      //     return {
-      //       img_ID: v,
-      //     }
-      //   })
-      // },
+      handleImgUpload(data){
+        console.log(this.ruleForm.avatarImages)
+        console.log(this.imgData)
+        this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
+        this.imgUpload = true;
+      },
+      // 点击删除图片
+      imgDelete(data) {
+        this.ruleForm.avatarImages.splice(this.ruleForm.avatarImages.indexOf(data), 1);
+      },
+      // 图片添加
+      checkList(data) {
+        this.ruleForm.avatarImages = data.map(v => {
+          return {
+            img_ID: v,
+          }
+        })
+      },
       //去程添加经停、删除经停
       stopping(index) {
         {

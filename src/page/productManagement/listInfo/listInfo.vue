@@ -3262,6 +3262,7 @@
       },
       // 上传按钮
       handleImgUpload() {
+        console.log(this.ruleForm.avatarImages)
         this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
         this.imgUpload = true;
       },
