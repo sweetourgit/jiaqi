@@ -84,76 +84,27 @@
       </div>
 
       <div class="table_trip" style="margin-left: 50px; width: 92%;">
-        <el-table
-          :data="tableData"
-          border
-          style="width: 100%"
-          :highlight-current-row="true"
-          @row-click="clickBanle"
-        >
-          <el-table-column
-            prop="id"
-            label="产品编号"
-            align="center"
-            width="80%"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="type"
-            label="类型"
-            width="150%"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="产品名称"
-            align="center"
-          >
+        <el-table :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle">
+          <el-table-column prop="id" label="产品编号" align="center" width="80%"></el-table-column>
+          <el-table-column prop="type" label="类型" width="150%" align="center"></el-table-column>
+          <el-table-column prop="name" label="产品名称" align="center">
             <!-- <template slot-scope="scope">
                 <el-button type="text" >{{tableData[scope.$index].name}}</el-button>
             </template> -->
           </el-table-column>
-          <el-table-column
-            prop="mu_address"
-            label="目的地"
-            align="center"
-            width="120%"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="options"
-            label="操作人"
-            align="center"
-            width="100%"
-          >
-          </el-table-column>
-          <el-table-column
-            label="状态"
-            align="center"
-            width="110%"
-          >
+          <el-table-column prop="mu_address" label="目的地" align="center" width="120%"></el-table-column>
+          <el-table-column prop="options" label="操作人" align="center" width="100%"></el-table-column>
+          <el-table-column label="状态" align="center" width="110%">
             <template slot-scope="scope">
               <el-button type="success"  size="mini">已上架</el-button>
             </template>
           </el-table-column>
-          <el-table-column
-            cell-style
-            prop="opers"
-            label="推送平台"
-            align="center"
-            width="110%">
+          <el-table-column cell-style prop="opers" label="推送平台" align="center" width="110%">
             <template slot-scope="scope">
               <div style="color: #f5a142" >{{tableData[scope.$index].opers}}</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="price"
-            label="价格"
-            align="center"
-            width="80%"
-          >
-          </el-table-column>
+          <el-table-column prop="price" label="价格" align="center" width="80%" ></el-table-column>
         </el-table>
 
       </div>
@@ -220,14 +171,14 @@
             align="center"
             label="前缀-团号-后缀">
             <template slot-scope="scope">
-              <el-input :maxlength="10"  v-model="ccc[scope.$index].codePrefix" :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'" @blur="fucking" ></el-input>
+              <el-input :maxlength="10"  v-model="ccc[scope.$index].codePrefix" :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'" @change="fucking" ></el-input>
               <span >-</span>
               <span v-text="'{{'"></span>
               <span >日期</span>
 
               <span >}}</span>
               <span >-</span>
-              <el-input :maxlength="10"  v-model="ccc[scope.$index].codeSuffix"  :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'" @blur="fucking"></el-input>
+              <el-input :maxlength="10"  v-model="ccc[scope.$index].codeSuffix"  :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'" @change="fucking"></el-input>
 
             </template>
           </el-table-column>
@@ -320,7 +271,7 @@
 
         </el-dialog>
         <!--添加-->
-        <el-dialog title="提示" :visible.sync="cost" width="40%" append-to-body>
+        <el-dialog title="提示" :visible.sync="cost" width="40%" append-to-body @close="cancel()">
           <el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="100px" class="demo-ruleForm">
             <!-- <el-form-item label="供应商" prop="region">
               <el-select v-model="ruleForm1.region" placeholder="请选择" @change="changys">
@@ -1011,13 +962,24 @@
               
                 })
               })
-              this.cost = false
+              this.cost = false;
+              this.chongzhi();
+              this.$refs.ruleForm1.resetFields();
             })
           } else {
             console.log('error submit!!');
             return false;
           }
         });
+      },
+      chongzhi(){
+        this.ruleForm1.region = '';
+        this.ruleForm1.costType = '';
+        this.ruleForm1.name = '';
+      },
+      cancel(){
+        this.chongzhi();
+        this.$refs.ruleForm1.resetFields();
       },
       submitForm2(formName) {
         this.$refs[formName].validate((valid) => {
@@ -1071,7 +1033,9 @@
               
                 })
               })
-              this.cost = false
+              this.cost = false;
+              this.chongzhi();
+              this.$refs.ruleForm1.resetFields();
             })
           } else {
             console.log(123123)
@@ -1202,7 +1166,8 @@
             "id": 0
           },)
           .then(function (obj) {
-            for (var j = 0; j<obj.data.objects.length;j++){
+            console.log(obj.data.object)
+            for (var j = 0; j<obj.data.objects.length; j++){
               arry1.push(obj.data.objects[j])
               arry1[j].label = arry1[j].name
               arry1[j].value = "|"+ arry1[j].id+"+"+arry1[j].name +"-"+ arry1[j].types[0].supplierTypeEX +"*"+ arry1[j].types[0]. supplierType

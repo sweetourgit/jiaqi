@@ -2,17 +2,17 @@
   <div>
       <div class="demo-input-suffix">
          <span class="search-title">产品名称</span>
-         <el-input placeholder="请输入" v-model="title" class="group-no"></el-input>
+         <el-input placeholder="请输入" v-model="title" class="group-no" @blur="productName()"></el-input>
          <span class="search-title">报账团号</span>
-         <el-input placeholder="请输入" v-model="groupCode" class="group-no"></el-input>
+         <el-input placeholder="请输入" v-model="groupCode" class="group-no" @blur="groupNo()"></el-input>
          <span class="search-title">出行日期</span>
-         <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期"  end-placeholder="结束日期" align="right" class="group-no">
+         <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期"  end-placeholder="结束日期" align="right" class="group-no" @change="dateline()">
          </el-date-picker>
          <br/>
          <span class="search-title">操作人员</span>
-         <el-input placeholder="请输入" v-model="op" class="group-no"></el-input>
+         <el-input placeholder="请输入" v-model="op" class="group-no" @blur="operation()"></el-input>
          <span class="search-title">报账状态</span>
-         <el-select v-model="financeState" placeholder="请选择"  class="group-no" style="width:185px">
+         <el-select v-model="financeState" placeholder="请选择"  class="group-no" style="width:185px" @blur="condition()">
              <el-option v-for="item in financeType" :key="item.value" :label="item.label" :value="item.value"></el-option>
          </el-select>
 
@@ -147,6 +147,31 @@ export default {
     this.teamQueryList();
   },
   methods: {
+    productName(){
+      if(this.title == ''){
+        this.teamQueryList();
+      }
+    },
+    groupNo(){
+      if(this.groupCode == ''){
+        this.teamQueryList();
+      }
+    },
+    dateline(){
+      if(this.date == ''){
+        this.teamQueryList();
+      }
+    },
+    operation(){
+      if(this.op == ''){
+        this.teamQueryList();
+      }
+    },
+    condition(){
+      if(this.financeState == ''){
+        this.teamQueryList();
+      }
+    },
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
@@ -181,7 +206,7 @@ export default {
         this.teamQueryList(val,this.pageSize);
       },
       //计划list
-      teamQueryList(pageIndex=this.pageIndex,pageSize=this.pageSize,title=this.title,groupCode=this.groupCode,startDate=this.date[0],endDate=this.date[1],op=this.op){
+      teamQueryList(pageIndex=this.pageIndex,pageSize=this.pageSize,title=this.title,groupCode=this.groupCode,startDate=this.date==null?0:this.date[0],endDate=this.date==null?0:this.date[1],op=this.op){
         if(startDate){
           let y=startDate.getFullYear();
           let m=(startDate.getMonth()+1)>9?startDate.getMonth()+1:'0'+(startDate.getMonth()+1);
@@ -250,8 +275,9 @@ export default {
           this.dialogType=i;          
       },
       search(){
-        this.pageIndex = 1;
-        this.pageshow = false;
+        //this.pageIndex = 1;
+        //this.pageshow = false;
+        console.log(this.date)
         this.teamQueryList()
         this.$nextTick(() => {
             this.pageshow = true;

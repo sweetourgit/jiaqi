@@ -9,7 +9,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <!-- 行程信息 -->
         <el-tab-pane label="行程信息" name="second">
-          {{chuxian}}
+          <!-- {{chuxian}} -->
           <!-- <TripInfo :inputravelDays="travelDays"></TripInfo> -->
           <div class="tripInfo">
             <!-- <div class="btn">
@@ -1541,31 +1541,36 @@
           schedules: []
         },
         rules: {
-          productNamel: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { min: 0, max: 30, message: '字数超过30汉字限制', trigger: 'blur' },
-            { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
+          productNamel: [{ required: true, message: '产品名称不能为空', trigger: 'blur' },
+                         { min: 0, max: 30, message: '产品名称字数超过30汉字限制', trigger: 'blur' },
+                         { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
           travelType: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          orderConfirmationType: [{ required: true, message: '不能为空', trigger: 'change' }],
-          advanceRegistrationDays: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
-          highlightWords1: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords2: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords3: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords4: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          travelDays: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
-          travelNight: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数'}],
-          timeHour: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
-          timeMinute: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
+          // avatarImages:[{ required: true, message: '头图不能为空', trigger: 'change' }],
+          orderConfirmationType: [{ required: true, message: '订单确认类型不能为空', trigger: 'change' }],
+          advanceRegistrationDays: [{ required: true, message: '提前报名天数不能为空', trigger: 'blur' },
+            { pattern: /^[1-9]\d*$/, message: '提前报名天数需为正整数', trigger: 'blur' }],
+          highlightWords1: [{ required: true, message: '亮点词不能为空', trigger: 'blur' },
+                            { min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords2: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords3: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords4: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          travelDays: [{ required: true, message: '行程天数不能为空', trigger: 'change' },
+            { pattern: /^[1-9]\d*$/, message: '行程天数需为正整数' },
+             /* { min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' },*/],
+          travelNight: [{ required: true, message: '行程晚数不能为空', trigger: 'change' },
+            { pattern: /^[1-9]\d*$/, message: '行程晚数需为正整数' },
+            /*{ min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' }*/],
+          stopDate:[{required: true, message: '经停时间不能为空', trigger: 'change'}],
+          stopCity:[{required: true, message: '经停城市不能为空', trigger: 'change'}],
+          // timeHour: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
+          //            { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
+          timeMinute: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
+                       { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
           operationLabel: [{ pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/, message: '不能有标点符号' }],
-          highlightWords: [{ required: true, message: '不能为空'},
-            { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' }],
-          origin: [{ required: true, message: '不能为空', trigger: 'change' }],
-          bourn: [{ required: true, message: '不能为空', trigger: 'change' }],
+          highlightWords: [{ required: true, message: '套餐名不能为空', trigger: 'blur' },
+                           { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' }],
+          origin: [{ required: true, message: '行程出发地不能为空', trigger: 'change' }],
+          bourn: [{ required: true, message: '行程目的地不能为空', trigger: 'change' }],
           hotelAuto: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelChinese: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelEnglish: [{ required: true, message: '不能为空', trigger: 'blur' }],
@@ -1575,34 +1580,32 @@
           hotelHouse: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelBed: [{ required: true, message: '不能为空', trigger: 'blur' }],
           pod: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          company: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          theNumber: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podCity:[{ required: true, message: '不能为空', trigger: 'blur' }],
-          pod: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podPlace: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podTime: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arriveCity: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arrivePlace: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arriveTime: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          company: [{ required: true, message: '航空公司/邮轮公司不能为空', trigger: 'blur' }],
+          theNumber: [{ required: true, message: '航班号/车次/邮轮号不能为空', trigger: 'blur' }],
+          podCity:[{ required: true, message: '出发城市不能为空', trigger: 'blur' }],
+          podPlace: [{ required: true, message: '出发机场/出发车站/出发码头不能为空', trigger: 'blur' }],
+          podTime: [{ required: true, message: '出发时间不能为空', trigger: 'blur' }],
+          arriveCity: [{ required: true, message: '到达城市不能为空', trigger: 'blur' }],
+          arrivePlace: [{ required: true, message: '到达机场/到达车站/到达码头不能为空', trigger: 'blur' }],
+          arriveTime: [{ required: true, message: '到达时间不能为空', trigger: 'blur' }],
           planeDay: [{ required: true, message: '不能为空', trigger: 'blur' }],
           trafficMode: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          day: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          day: [{ required: true, message: '请选择天数'}],
           typeExt: [{ required: true, message: '不能为空', trigger: 'blur' }],
           time: [{ required: true, message: '不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '不能为空', trigger: 'blur' }],
           details: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          // slideshow:[{ required: true, message: '不能为空', trigger: 'blur' }],
+          //slideshow:[{ validator: areaIdRule}],
           memo: [{ required: true, message: '不能为空', trigger: 'blur' }],
           Details: [{ required: true, message: '住宿说明不能为空', trigger: 'blur' }],
-          picture: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          subject: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          pictureID: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          subject: [{ required: true, message: '日程信息主题不能为空', trigger: 'blur' },
+                    { min: 0, max: 20, message: '字数超过20汉字限制', trigger: 'blur' }],
           mealDetails: [{ required: true, message: '餐饮说明不能为空', trigger: 'blur' }],
           typeExtPrice: [{ pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '参考价格输入不正确'},
-                        { pattern: /^(\d+|\d+\.\d{1,2})$/, message: '参考价格输入不正确'}],
+                        { pattern: /^(\d+|\d+\.\d{1,2})$/, message: '参考价格输入不正确'}
+          ],
           activeTime: [{ pattern: /^[0-9]+$/, message: '活动时间需为正整数'}],
-          stopDate: [{ required: true, message: '经停时间不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '经停时间需为正整数' }],
-          stopCity: [{ required: true, message: '经停城市不能为空', trigger: 'blur' }],
         },
         //上传图片
         fileList2: [],
@@ -1785,8 +1788,10 @@
                   createTime: this.formatDate(new Date())
                 }],
                 }],
-                ext_Hotel: [
-                  {IsHotel:0,Details:""}
+                ext_Hotel: [{
+                  Details:''
+                }
+                  // {IsHotel:0,Details:""}
                 ]
               });
               this.myradio.push({'lable':'1'});   //保存行程里面酒店信息单选值
@@ -2011,6 +2016,7 @@
       },
       //保存
       addsave(formName) {
+        console.log(object)
         if(this.changeIndex < this.packLen){
           this.changeAction = "update";
         }
@@ -2067,8 +2073,10 @@
             briefMark:this.content,
             //briefMark: "string",
             loadPlan: true,
-            codePrefix: "LKCO",
-            codeSuffix:"US621",
+            codePrefix: "",
+            codeSuffix:"",
+            // codePrefix: "LKCO",
+            // codeSuffix:"US621",
           }
           this.$refs[formName].validate((valid) => {
             if(valid){
@@ -2079,6 +2087,7 @@
               ).then(function(response) {
                 if(response.data.isSuccess==true){
                   _this.$message.success("添加成功");
+                  _this.$router.push({path: "/productList/packageTour"});
                 }else{
                   _this.$message.success("添加失败");
                 }
@@ -2089,7 +2098,6 @@
           })
         }
         else {
-
           //修改套餐
           //经停信息转字符串
           let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
@@ -2150,7 +2158,7 @@
             codeSuffix:"US621",
 
           }
-          this.chuxian = object
+          //this.chuxian = object
           console.log(object)
           this.$refs[formName].validate((valid) => {
             if(valid){
@@ -2161,6 +2169,7 @@
               ).then(function(response) {
                 if(response.data.isSuccess==true){
                   _this.$message.success("修改成功");
+                  _this.$router.push({path: "/productList/packageTour"});
                 }else{
                   _this.$message.success("修改失败");
                 }
@@ -2169,7 +2178,6 @@
               });
             }
           })
-
         }
 
 
@@ -2241,6 +2249,7 @@
       },
       //修改日程信息
       handleNote(formName){
+        console.log(object)
         //行程餐食信息转字符串
         let sche1=JSON.stringify(this.ruleForm.schedules);
         let sche=JSON.parse(sche1);

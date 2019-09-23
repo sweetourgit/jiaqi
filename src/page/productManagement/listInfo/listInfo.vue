@@ -1104,8 +1104,10 @@
                                     <el-button @click="baocun(itemCon.id,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
                                     </span>
                                    </div>-->
-                                  <!-- <el-form-item v-if="myradio[index].lable=='1'" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details"> -->
-                                  <el-form-item v-if="myradio[index].lable=='1'" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details">
+                                  <!-- <el-form-item v-if="myradio[index].lable=='1'" :key="p" :prop="'schedules.'+index+'.ext_Hotel.Detail'" :rules="rules.Details">
+                                    <el-input class="inputBox" v-model="item.ext_Hotel.Details" type="text" placeholder="住宿说明"></el-input>
+                                  </el-form-item> -->
+                                  <el-form-item v-if="myradio[index].lable=='1'" :key="p" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details">
                                     <el-input class="inputBox" v-model="item.ext_Hotel.Details" type="text" placeholder="住宿说明"></el-input>
                                   </el-form-item>
                                 </div>
@@ -1394,9 +1396,11 @@
     },
     data() {
       var areaIdRule = (rule, value, callback) => {
+        console.log(value.length)
         if(value.length == 0 || value.length < 3 || value.length > 6) {
           this.isInfo = true;
-          return callback(new Error('请选择3-6张图片'));
+          callback();
+          //return callback(new Error('请选择3-6张图片'));
         } else {
           this.isInfo = false;
           callback();
@@ -1730,7 +1734,7 @@
           details: [{ required: true, message: '不能为空', trigger: 'blur' }],
           slideshow:[{ validator: areaIdRule}],
           memo: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          Details: [{ required: true, message: '住宿说明不能为空', trigger: 'blur' }],
+          Details: [{ required: true, message: '住宿说明不能为空', trigger: 'change' }],
           pictureID: [{ required: true, message: '不能为空', trigger: 'blur' }],
           subject: [{ required: true, message: '日程信息主题不能为空', trigger: 'blur' },
                     { min: 0, max: 20, message: '字数超过20汉字限制', trigger: 'blur' }],
@@ -1889,6 +1893,7 @@
         resolve: '', // 获取tree子级方法
         level: '', // 层级数据
         list_a:[],//tree数组
+        p:'',
       }
     },
    watch:{ //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
@@ -2213,7 +2218,7 @@
                   pictureID:0,//基本信息头图?
                   vedioID:0,//基本信息视频?
 
-                  pepeatpic:"",//基本信息轮播图?
+                  pepeatpic:'',//基本信息轮播图?
                   advanceDay:this.ruleForm.advanceRegistrationDays,
                   // advanceHour:this.ruleForm.timeHour,
                   // advanceMinute:this.ruleForm.timeMinute,
@@ -2405,7 +2410,12 @@
           ext_Stopover: []
         })
       },
-      trafficClear(index){//去程切换交通方式清空 
+      trafficClear(index,ruleForm){//去程切换交通方式清空 
+        console.log(this.ruleForm.plane)
+        if(this.$refs.ruleForm.plane!== undefined){
+          this.$refs.ruleForm.plane.resetFields();
+        }
+        
         this.ruleForm.plane[index].pod = '';
         this.ruleForm.plane[index].company = '';
         this.ruleForm.plane[index].theNumber = '';
@@ -3132,11 +3142,15 @@
     },
     // 出发地
     handleClose3(tag3) {
-      if(tag3.id==this.ruleForm.origin.id){
-         this.ruleForm.origin=[];
+      console.log(tag3.podID)
+      console.log(this.ruleForm.origin)
+      if(tag3.podID==this.ruleForm.origin){
+         //this.ruleForm.origin=[];
+         this.ruleForm.origin='';
       }
       this.dynamicTags3.splice(this.dynamicTags3.indexOf(tag3), 1);
     },
+
     showInput3() {
       this.inputVisible3 = true;
       this.$nextTick(_ => {
@@ -3177,8 +3191,8 @@
     },
     // 目的地
     handleClose4(tag4) {
-      if(tag4.id==this.ruleForm.bourn.id){
-         this.ruleForm.bourn=[];
+      if(tag4.destinationID==this.ruleForm.bourn){
+         this.ruleForm.bourn='';
       }
       this.dynamicTags4.splice(this.dynamicTags4.indexOf(tag4), 1);
     },
@@ -3283,6 +3297,11 @@
       // 点击删除图片
       imgDeleteAvatar(data) {
         this.ruleForm.slideshow.splice(this.ruleForm.slideshow.indexOf(data), 1);
+        if(this.ruleForm.slideshow.length >= 3 && this.ruleForm.slideshow.length <= 6){
+          this.isInfo = false;
+        }else{
+          this.isInfo = true;
+        }
       },
       // 图片添加
       checkListAvatar(data) {
