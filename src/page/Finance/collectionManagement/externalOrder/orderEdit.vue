@@ -18,13 +18,23 @@
           <el-form-item label="收款时间：" prop="creditTime" label-width="140px">
             <el-date-picker v-model="ruleForm.creditTime" type="date" placeholder="请选择日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
           </el-form-item>
-          <el-form-item label="分销商：" prop="distributor" label-width="140px">
+          <el-form-item label="分销商：" prop="distributor" label-width="140px" v-if="info != ''">
+            <el-radio-group v-model="ruleForm.distributor" @change="radioChange" :disabled="isPFT">
+              <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
+              <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
+              <el-radio label="去哪儿">去哪儿</el-radio>
+              <!--待添加，新需求-->
+              <el-radio label="票付通余额" :disabled="!isPFT">票付通余额</el-radio>
+              <el-radio label="无">无</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="分销商：" prop="distributor" label-width="140px" v-if="info == ''">
             <el-radio-group v-model="ruleForm.distributor" @change="radioChange">
               <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
               <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
               <el-radio label="去哪儿">去哪儿</el-radio>
               <!--待添加，新需求-->
-              <!--<el-radio label="票付通余额">票付通余额</el-radio>-->
+              <el-radio label="票付通余额">票付通余额</el-radio>
               <el-radio label="无">无</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -47,7 +57,7 @@
               <el-date-picker v-model="pftForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" disabled></el-date-picker>
               <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
             </el-form-item>
-            <el-form-item label="附件：" label-width="140px" v-if="info == ''">
+            <el-form-item label="附件：" label-width="140px">
               <el-upload ref="upload2" class="upload-demo" :action="UploadUrl2()" :headers="headers" :on-success="handleSuccess2" :on-error="handleError2" :on-remove="handleRemove2" :before-remove="beforeRemove2" :on-exceed="handleExceed2" :file-list="pft_list">
                 <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
@@ -73,6 +83,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="quantity" label="数量" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.quantity}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="" label="客人信息" align="center">
                   <template slot-scope="scope">
@@ -81,6 +94,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="check_at" label="验证时间" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.check_at}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="pay_type" label="卖出支付方式" align="center">
                   <template slot-scope="scope">
@@ -105,10 +121,14 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="create_uid" label="操作人" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.create_uid}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="money" label="操作" align="center">
                   <template slot-scope="scope">
-                    <el-button size="small" type="text" style="color: red;" @click="deleteBtnGL(scope)">删除</el-button>
+                    <el-button size="small" type="text" style="color: red;" @click="deleteBtnGL(scope)" v-if="info == ''">删除</el-button>
+                    <el-button size="small" type="text" style="color: red;" @click="deleteBtnGLEdit(scope)" v-if="info != ''">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -175,6 +195,9 @@
                 <el-table-column prop="product_name" label="产品" align="center">
                 </el-table-column>
                 <el-table-column prop="rece_money" label="结算金额" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.rece_money}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="charge" label="手续费" align="center">
                   <template slot-scope="scope">
@@ -217,6 +240,9 @@
                 <el-table-column prop="type_name" label="类别" align="center">
                 </el-table-column>
                 <el-table-column prop="sale_at" label="下单时间" align="center" width="100">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.sale_at}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="option" label="费用" align="center">
                   <template slot-scope="scope">
@@ -226,6 +252,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="quantity" label="数量" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.quantity}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="money" label="客人信息" align="center">
                   <template slot-scope="scope">
@@ -234,6 +263,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="check_at" label="验证时间" align="center" width="100">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.check_at}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="pay_type" label="卖出支付方式" align="center" width="100">
                   <template slot-scope="scope">
@@ -241,6 +273,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="import_at" label="导入时间" align="center" width="100">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.import_at}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="tour_no" label="关联产品" align="center">
                   <template slot-scope="scope">
@@ -358,43 +393,43 @@
           </div>
         </el-dialog>
 
-        <el-dialog title="修改收款明细" :visible="dialogFormVisible3" width=30% @close="close" append-to-body>
-          <el-form :model="detailForm" :rules="detailRules" ref="ruleFormMX">
-            <div>
-              <el-form-item label="入账时间" prop="enterTime" label-width="120px">
-                <el-date-picker v-model="detailForm.enterTime" type="date" placeholder="请选择日期" class="start-time inputWidth" :editable="disabled"></el-date-picker>
-              </el-form-item>
-              <el-form-item label="订单号" prop="orderNum" label-width="120px">
-                <el-input v-model="detailForm.orderNum" class="inputWidth" placeholder="请输入订单号"></el-input>
-              </el-form-item>
-              <el-form-item label="客人名称" prop="guestName" label-width="120px">
-                <el-input v-model="detailForm.guestName" class="inputWidth" placeholder="请输入客人名称"></el-input>
-              </el-form-item>
-              <el-form-item label="产品" prop="product" label-width="120px">
-                <el-input v-model="detailForm.product" class="inputWidth" placeholder="请输入产品名称"></el-input>
-              </el-form-item>
-              <el-form-item label="结算金额" prop="money" label-width="120px">
-                <el-input v-model="detailForm.money" class="inputWidth" placeholder="请输入结算金额" :disabled="!detailForm.canEdit"></el-input>
-              </el-form-item>
-              <el-form-item label="团号" prop="tour_no" label-width="120px">
-                <el-input v-model="detailForm.tour_no" class="inputWidth" placeholder="请输入团号"></el-input>
-              </el-form-item>
-              <el-form-item label="粉联号" prop="divide_connect_no" label-width="120px">
-                <el-input v-model="detailForm.divide_connect_no" class="inputWidth" placeholder="请输入粉联号"></el-input>
-              </el-form-item>
-              <el-form-item label="发票号" prop="invoice_no" label-width="120px">
-                <el-input v-model="detailForm.invoice_no" class="inputWidth" placeholder="请输入发票号"></el-input>
-              </el-form-item>
-            </div>
-          </el-form>
-
-          <div class="footer" style="text-align: right;">
-            <el-button class="el-button" type="warning" @click="close">取 消</el-button>
-            <el-button class="el-button" type="primary" @click="detailSave">保 存</el-button>
-          </div>
-        </el-dialog>
-
       </el-form>
+
+      <el-dialog title="修改收款明细" :visible="dialogFormVisible3" width=30% @close="close" append-to-body>
+        <el-form :model="detailForm" :rules="detailRules" ref="ruleFormMX">
+          <div>
+            <el-form-item label="入账时间" prop="enterTime" label-width="120px">
+              <el-date-picker v-model="detailForm.enterTime" type="date" placeholder="请选择日期" class="start-time inputWidth" :editable="disabled"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="订单号" prop="orderNum" label-width="120px">
+              <el-input v-model="detailForm.orderNum" class="inputWidth" placeholder="请输入订单号"></el-input>
+            </el-form-item>
+            <el-form-item label="客人名称" prop="guestName" label-width="120px">
+              <el-input v-model="detailForm.guestName" class="inputWidth" placeholder="请输入客人名称"></el-input>
+            </el-form-item>
+            <el-form-item label="产品" prop="product" label-width="120px">
+              <el-input v-model="detailForm.product" class="inputWidth" placeholder="请输入产品名称"></el-input>
+            </el-form-item>
+            <el-form-item label="结算金额" prop="money" label-width="120px">
+              <el-input v-model="detailForm.money" class="inputWidth" placeholder="请输入结算金额" :disabled="!detailForm.canEdit"></el-input>
+            </el-form-item>
+            <el-form-item label="团号" prop="tour_no" label-width="120px">
+              <el-input v-model="detailForm.tour_no" class="inputWidth" placeholder="请输入团号"></el-input>
+            </el-form-item>
+            <el-form-item label="粉联号" prop="divide_connect_no" label-width="120px">
+              <el-input v-model="detailForm.divide_connect_no" class="inputWidth" placeholder="请输入粉联号"></el-input>
+            </el-form-item>
+            <el-form-item label="发票号" prop="invoice_no" label-width="120px">
+              <el-input v-model="detailForm.invoice_no" class="inputWidth" placeholder="请输入发票号"></el-input>
+            </el-form-item>
+          </div>
+        </el-form>
+
+        <div class="footer" style="text-align: right;">
+          <el-button class="el-button" type="warning" @click="close">取 消</el-button>
+          <el-button class="el-button" type="primary" @click="detailSave">保 存</el-button>
+        </div>
+      </el-dialog>
     </el-dialog>
   </div>
 </template>
@@ -426,13 +461,7 @@
         rules:{
           creditTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
           payAccount: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
-          mark: [{ required: true, message: '收款详细说明不能为空', trigger: 'blur' }],
-          payMoney: [
-            { required: true, message: '收款金额不能为空', trigger: 'blur' },
-            { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
-          ],
-          startTime: [{ required: true, message: '款项入账时间段不能为空', trigger: 'blur' }],
-          endTime: [{ required: true, message: '款项入账时间段不能为空', trigger: 'blur' }],
+          mark: [{ required: true, message: '收款详细说明不能为空', trigger: 'blur' }]
         },
         fileList: [],
 
@@ -489,6 +518,7 @@
           endTime: ''
         },
         pft_list: [],
+        isPFT: false,
 
         PFT_num: 0,
         PFT_money: 0,
@@ -625,7 +655,10 @@
         this.$refs.multipleTable.toggleRowSelection(row);
       },
       saveBtn(){
-        let table = this.chooseTable;
+        let table = [];
+        if(this.chooseTable != ''){
+          table = this.chooseTable;
+        }
         this.chooseTable = table.concat(this.multipleSelection);
         if(this.chooseTable.length != 0){
           let start = this.chooseTable[0].sale_at;
@@ -671,6 +704,58 @@
             endTime: formatDate(new Date(Date.parse(end))).split(" ")[0]
           };
         }
+      },
+      deleteBtnGLEdit(scope){
+//        alert(scope.row.id);
+        const that = this;
+//        console.log(scope.row);
+        if(scope.row.id){
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/deldetails", {
+            "id": scope.row.id
+          }).then(function(response) {
+            console.log('删除',response);
+            if(response.data.code == 200){
+              that.chooseTable.splice(scope.$index,1);
+              if(that.chooseTable.length != 0){
+                let start = that.chooseTable[0].sale_at;
+                let end = that.chooseTable[0].sale_at;
+                let totalMoney = 0;
+                that.chooseTable.forEach(function (item, index, arr) {
+                  if(new Date(Date.parse(start)) > new Date(Date.parse(item.sale_at))){
+                    start = item.sale_at;
+                  }
+                  if(new Date(Date.parse(end)) < new Date(Date.parse(item.sale_at))){
+                    end = item.sale_at;
+                  }
+                  totalMoney += parseFloat(item.income);
+//                console.log(totalMoney);
+                });
+                that.pftForm = {
+                  payMoney: totalMoney.toFixed(2),
+                  startTime: formatDate(new Date(Date.parse(start))).split(" ")[0],
+                  endTime: formatDate(new Date(Date.parse(end))).split(" ")[0]
+                };
+              }else{
+                that.pftForm = {
+                  payMoney: 0,
+                  startTime: '',
+                  endTime: ''
+                };
+              }
+            }else{
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning('提交失败');
+              }
+            }
+          }).catch(function(obj) {
+            console.log(obj)
+          });
+        }else{
+          this.deleteBtnGL(scope);
+        }
+
       },
 //      添加
       cancelBtnTJ(){
@@ -757,61 +842,134 @@
         });
       },
       subFun(){
-        let fileUrl = '';
-        if(this.fileList.length != 0){
-          fileUrl = this.fileList[0].response.data.file_url;
-        }
         const that = this;
+        let fileArr = [],money = '',startTime = '',endTime = '', flag = true;
+        if(this.PFTYE){
+          if(this.pft_list.length != 0){
+            this.pft_list.forEach(function (item, index, arr) {
+//              console.log(item);
+              let file = {
+                name: item.name,
+                url: item.response.data.url
+              };
+              fileArr.push(file);
+            });
+          }
+          if(this.chooseTable.length == 0){
+            that.$message.warning('关联订单不能为空');
+            flag = false;
+            return;
+          }
+          if(this.pftForm.payMoney == ''){
+            that.$message.warning('收款金额不能为空');
+            flag = false;
+            return;
+          }else{
+            money = this.pftForm.payMoney;
+          }
+          if(this.pftForm.startTime == ''){
+            that.$message.warning('款项入账时间段不能为空');
+            flag = false;
+            return;
+          }else{
+            startTime = this.pftForm.startTime;
+          }
+          if(this.pftForm.endTime == ''){
+            that.$message.warning('款项入账时间段不能为空');
+            flag = false;
+            return;
+          }else{
+            endTime = this.pftForm.endTime;
+          }
+        }else{
+          if(this.fileList.length != 0){
+            fileArr.push({
+              name: this.fileList[0].name,
+              url: this.fileList[0].response.data.file_url
+            });
+          }
+          if(this.ruleForm.payMoney == ''){
+            that.$message.warning('收款金额不能为空');
+            flag = false;
+            return;
+          }else{
+            money = this.ruleForm.payMoney;
+          }
+          if(this.ruleForm.startTime == ''){
+            that.$message.warning('款项入账时间段不能为空');
+            flag = false;
+            return;
+          }else{
+            startTime = this.ruleForm.startTime;
+          }
+          if(this.ruleForm.endTime == ''){
+            that.$message.warning('款项入账时间段不能为空');
+            flag = false;
+            return;
+          }else{
+            endTime = this.ruleForm.endTime;
+          }
+        }
+        let getOrder = '';
+        this.chooseTable.forEach(function (item, index, arr) {
+          getOrder += item.order_sn + ',';
+//          alert(getOrder);
+        });
+        getOrder = getOrder.substr(0, getOrder.length - 1);
+//        alert(getOrder);
         this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
 //        alert(this.deleteStr);
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/addrece", {
-          "rece_code":this.rece_code,
-          "explain":this.ruleForm.mark,
-          "receivables_at":this.ruleForm.creditTime,
-          "distributor":this.ruleForm.distributor,
-          "account_id":this.ruleForm.payAccountID,
-          "rece_money":this.ruleForm.payMoney,
-          "rece_start":this.ruleForm.startTime,
-          "rece_end":this.ruleForm.endTime,
-          "file":fileUrl,
-          "org_id":sessionStorage.getItem('orgID'),
-          "create_uid":sessionStorage.getItem('id'),
-          "del_order":this.deleteStr
-        }, ).then(function(response) {
-          console.log(response);
-          if (response.data.code == '200') {
-            that.ruleForm = {
-              creditTime: '',
-              payAccount: '',
-              payAccountID: '',
-              mark: '',
-              distributor: '无',
-              payMoney: '',
-              startTime: '',
-              endTime: ''
-            };
-            that.fileList = [];
-            that.deleteStr = '';
-            that.tableDataQK = [];
-            that.totalItem = '0';
-            that.totalMoney = '';
-            that.startTime = '';
-            that.endTime = '';
-            that.$message({
-              type: 'success',
-              message: '添加成功!'
-            });
-            that.closeAdd();
-          } else {
-            if(response.data.message){
-              that.$message.warning(response.data.message);
-            }else{
-              that.$message.warning('提交失败');
+        if(flag){
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/addrece", {
+            "rece_code":this.rece_code,
+            "explain":this.ruleForm.mark,
+            "receivables_at":this.ruleForm.creditTime,
+            "distributor":this.ruleForm.distributor,
+            "account_id":this.ruleForm.payAccountID,
+            "rece_money":money,
+            "rece_start":startTime,
+            "rece_end":endTime,
+            "file":fileArr,
+            "org_id":sessionStorage.getItem('orgID'),
+            "create_uid":sessionStorage.getItem('id'),
+            "del_order":this.deleteStr,
+            "get_order":getOrder
+          }, ).then(function(response) {
+            console.log(response);
+            if (response.data.code == '200') {
+              that.ruleForm = {
+                creditTime: '',
+                payAccount: '',
+                payAccountID: '',
+                mark: '',
+                distributor: '无',
+                payMoney: '',
+                startTime: '',
+                endTime: ''
+              };
+              that.fileList = [];
+              that.deleteStr = '';
+              that.tableDataQK = [];
+              that.totalItem = '0';
+              that.totalMoney = '';
+              that.startTime = '';
+              that.endTime = '';
+              that.$message({
+                type: 'success',
+                message: '添加成功!'
+              });
+              that.closeAdd();
+            } else {
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning('提交失败');
+              }
             }
-          }
-        }).catch(function(error) {
-          console.log(error);
-        });
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }
       },
 //      修改
       cancelBtnXG(){
@@ -899,57 +1057,137 @@
       },
       subFunXG(){
         const that = this;
-        this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
-        this.$refs.ruleFormMX.resetFields();
-//        alert(this.deleteStr);
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/updrece", {
-          "id": this.info,
-          "rece_code": this.rece_codeEdit,
-          "explain": this.ruleForm.mark,
-          "receivables_at": this.ruleForm.creditTime,
-          "distributor": this.ruleForm.distributor,
-          "account_id": this.ruleForm.payAccountID,
-          "rece_money": this.ruleForm.payMoney,
-          "rece_start": this.ruleForm.startTime,
-          "rece_end": this.ruleForm.endTime,
-          "org_id": sessionStorage.getItem('orgID'),
-          "create_uid": sessionStorage.getItem('id'),
-          "detailed_id": this.deleteStr
-        }, ).then(function(response) {
-          console.log(response);
-          if (response.data.code == '200') {
-            that.ruleForm = {
-              creditTime: '',
-              payAccount: '',
-              payAccountID: '',
-              mark: '',
-              distributor: '无',
-              payMoney: '',
-              startTime: '',
-              endTime: ''
-            };
-            that.fileList = [];
-            that.deleteStr = '';
-            that.tableDataQK = [];
-            that.totalItem = '0';
-            that.totalMoney = '';
-            that.startTime = '';
-            that.endTime = '';
-            that.$message({
-              type: 'success',
-              message: '修改成功!'
+        let fileArr = [],money = '',startTime = '',endTime = '',file = '',flag = true;
+        if(this.PFTYE){
+          if(this.pft_list.length != 0){
+            this.pft_list.forEach(function (item, index, arr) {
+              console.log(item);
+              if(item.response){
+                file = {
+                  name: item.name,
+                  url: item.response.data.url
+                };
+              }else{
+                file = {
+                  name: item.name,
+                  url: item.url
+                };
+              }
+              fileArr.push(file);
             });
-            that.closeAdd();
-          } else {
-            if(response.data.message){
-              that.$message.warning(response.data.message);
-            }else{
-              that.$message.warning('提交失败');
-            }
           }
-        }).catch(function(error) {
-          console.log(error);
-        });
+          if(this.chooseTable.length == 0){
+            that.$message.warning('关联订单不能为空');
+            flag = false;
+            return;
+          }
+          if(this.pftForm.payMoney == ''){
+            that.$message.warning('收款金额不能为空');
+            flag = false;
+            return;
+          }else{
+            money = this.pftForm.payMoney;
+          }
+          if(this.pftForm.startTime == ''){
+            that.$message.warning('款项入账时间段不能为空');
+            flag = false;
+            return;
+          }else{
+            startTime = this.pftForm.startTime;
+          }
+          if(this.pftForm.endTime == ''){
+            that.$message.warning('款项入账时间段不能为空');
+            flag = false;
+            return;
+          }else{
+            endTime = this.pftForm.endTime;
+          }
+        }else{
+          if(this.ruleForm.payMoney == ''){
+            that.$message.warning('收款金额不能为空');
+            flag = false;
+            return;
+          }else{
+            money = this.ruleForm.payMoney;
+          }
+          if(this.ruleForm.startTime == ''){
+            that.$message.warning('款项入账时间段不能为空');
+            flag = false;
+            return;
+          }else{
+            startTime = this.ruleForm.startTime;
+          }
+          if(this.ruleForm.endTime == ''){
+            that.$message.warning('款项入账时间段不能为空');
+            flag = false;
+            return;
+          }else{
+            endTime = this.ruleForm.endTime;
+          }
+        }
+//        alert(getOrder);
+        if(flag){
+          let getOrder = '';
+          this.chooseTable.forEach(function (item, index, arr) {
+            if(item.id){
+
+            }else{
+              getOrder += item.order_sn + ',';
+            }
+          });
+          getOrder = getOrder.substr(0, getOrder.length - 1);
+          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/updrece", {
+            "id": this.info,
+            "rece_code": this.rece_codeEdit,
+            "explain": this.ruleForm.mark,
+            "receivables_at": this.ruleForm.creditTime,
+            "distributor": this.ruleForm.distributor,
+            "account_id": this.ruleForm.payAccountID,
+            "rece_money":money,
+            "rece_start":startTime,
+            "rece_end":endTime,
+            "file":fileArr,
+            "org_id": sessionStorage.getItem('orgID'),
+            "create_uid": sessionStorage.getItem('id'),
+            "detailed_id": this.deleteStr,
+            "get_order": getOrder
+          }, ).then(function(response) {
+            console.log(response);
+            if (response.data.code == '200') {
+              that.ruleForm = {
+                creditTime: '',
+                payAccount: '',
+                payAccountID: '',
+                mark: '',
+                distributor: '无',
+                payMoney: '',
+                startTime: '',
+                endTime: ''
+              };
+              that.fileList = [];
+              that.deleteStr = '';
+              that.tableDataQK = [];
+              that.totalItem = '0';
+              that.totalMoney = '';
+              that.startTime = '';
+              that.endTime = '';
+              that.$message({
+                type: 'success',
+                message: '修改成功!'
+              });
+              that.closeAdd();
+            } else {
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning('提交失败');
+              }
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }
       },
 
 //      选择收款账户
@@ -1342,7 +1580,129 @@
               startTime: response.data.data.rece_start,
               endTime: response.data.data.rece_end
             };
-//            if(that.ruleForm.distributor == '')
+            if(that.ruleForm.distributor == '票付通余额'){
+//              console.log('票付通余额');
+              that.isPFT = true;
+              that.PFTYE = true;
+              if(response.data.data.list != ''){
+                that.chooseTable = response.data.data.list;
+//                console.log(that.chooseTable);
+                let start = formatDate(new Date(that.chooseTable[0].sale_at*1000)).split(" ")[0];
+                let end = formatDate(new Date(that.chooseTable[0].sale_at*1000)).split(" ")[0];
+                let totalMoney = 0;
+                that.chooseTable.forEach(function (item, index, arr) {
+                  item.sale_at = formatDate(new Date(item.sale_at*1000));
+//                  item.sale_at = item.sale_at.split(" ")[0];
+                  item.check_at = formatDate(new Date(item.check_at*1000));
+//                  item.check_at = item.check_at.split(" ")[0];
+                  item.import_at = formatDate(new Date(item.import_at*1000));
+//                  item.import_at = item.import_at.split(" ")[0];
+                  if(new Date(Date.parse(start)) > new Date(Date.parse(item.sale_at))){
+                    start = item.sale_at;
+                  }
+                  if(new Date(Date.parse(end)) < new Date(Date.parse(item.sale_at))){
+                    end = item.sale_at;
+                  }
+                  totalMoney += parseFloat(item.income);
+//                console.log(totalMoney);
+                  that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                    "id": item.create_uid
+                  },{
+                    headers: {
+                      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                    }
+                  }).then(function(response) {
+
+                    if (response.data.isSuccess) {
+                      item.create_uid = response.data.object.name
+                    } else {
+                      that.$message.warning("加载数据失败~");
+                    }
+                  }).catch(function(error) {
+                    console.log(error);
+                  });
+                });
+                that.pftForm = {
+                  payMoney: totalMoney.toFixed(2),
+                  startTime: start,
+                  endTime: end
+                };
+              }else{
+                that.chooseTable = [];
+                that.pftForm = {
+                  payMoney: 0,
+                  startTime: '',
+                  endTime: ''
+                };
+              }
+              that.pft_list = response.data.data.file;
+
+            }else{
+              that.isPFT = false;
+              that.PFTYE = false;
+              if(response.data.data.file != '' && response.data.data.type == 1){
+                that.fileList = response.data.data.file;
+                that.tableDataQK = response.data.data.list;
+                that.totalItem = response.data.data.list.length;
+
+                let start = formatDate(new Date(that.tableDataQK[0].rece_at*1000)).split(" ")[0];
+                let end = formatDate(new Date(that.tableDataQK[0].rece_at*1000)).split(" ")[0];
+                let totalMoney = 0;
+                that.tableDataQK.forEach(function (item, index, arr) {
+                  item.rece_at = formatDate(new Date(item.rece_at*1000));
+                  item.rece_at = item.rece_at.split(" ")[0];
+                  if(new Date(Date.parse(start)) > new Date(Date.parse(item.rece_at))){
+                    start = item.rece_at;
+                  }
+                  if(new Date(Date.parse(end)) < new Date(Date.parse(item.rece_at))){
+                    end = item.rece_at;
+                  }
+                  totalMoney += parseFloat(item.rece_money);
+                  console.log(totalMoney);
+                });
+
+                that.totalMoney = totalMoney.toFixed(2);
+                that.startTime = start;
+                that.endTime = end;
+                that.showSK = true;
+              }else if(response.data.data.type == 2 && response.data.data.list.length != 0){
+                that.tableDataQK = response.data.data.list;
+                that.totalItem = response.data.data.list.length;
+                that.totalMoney = response.data.data.rece_money;
+                that.startTime = response.data.data.rece_start;
+                that.endTime = response.data.data.rece_end;
+                that.tableDataQK.forEach(function (item, index, arr) {
+                  item.sale_at = formatDate(new Date(item.sale_at*1000));
+//                  console.log(item.check_at);
+                  item.check_at = formatDate(new Date(item.check_at*1000));
+                  item.import_at = formatDate(new Date(item.import_at*1000));
+                  that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                    "id": item.create_uid
+                  },{
+                    headers: {
+                      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                    }
+                  }).then(function(response) {
+                    console.log('名字',response.data.object.name);
+                    if (response.data.isSuccess) {
+                      item.create_uid = response.data.object.name;
+                    } else {
+                      that.$message.warning("失败~");
+                    }
+                  }).catch(function(error) {
+                    console.log(error);
+                  });
+                });
+                that.showSK = false;
+              }else{
+                that.tableDataQK = '';
+                that.totalItem = '';
+                that.totalMoney = '';
+                that.startTime = '';
+                that.endTime = '';
+                that.showSK = true;
+              }
+            }
             that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
             {
               "id": response.data.data.account_id
@@ -1359,67 +1719,7 @@
             }).catch(function (obj) {
               console.log(obj)
             });
-            if(response.data.data.file != '' && response.data.data.type == 1){
-              that.fileList.push(response.data.data.file);
-              that.tableDataQK = response.data.data.list;
-              that.totalItem = response.data.data.list.length;
 
-              let start = formatDate(new Date(that.tableDataQK[0].rece_at*1000)).split(" ")[0];
-              let end = formatDate(new Date(that.tableDataQK[0].rece_at*1000)).split(" ")[0];
-              let totalMoney = 0;
-              that.tableDataQK.forEach(function (item, index, arr) {
-                item.rece_at = formatDate(new Date(item.rece_at*1000));
-                item.rece_at = item.rece_at.split(" ")[0];
-                if(new Date(Date.parse(start)) > new Date(Date.parse(item.rece_at))){
-                  start = item.rece_at;
-                }
-                if(new Date(Date.parse(end)) < new Date(Date.parse(item.rece_at))){
-                  end = item.rece_at;
-                }
-                totalMoney += parseFloat(item.rece_money);
-                console.log(totalMoney);
-              });
-
-              that.totalMoney = totalMoney.toFixed(2);
-              that.startTime = start;
-              that.endTime = end;
-              that.showSK = true;
-            }else if(response.data.data.type == 2 && response.data.data.list.length != 0){
-              that.tableDataQK = response.data.data.list;
-              that.totalItem = response.data.data.list.length;
-              that.totalMoney = response.data.data.rece_money;
-              that.startTime = response.data.data.rece_start;
-              that.endTime = response.data.data.rece_end;
-              that.tableDataQK.forEach(function (item, index, arr) {
-                item.sale_at = formatDate(new Date(item.sale_at*1000));
-                item.check_at = formatDate(new Date(item.check_at*1000));
-                item.import_at = formatDate(new Date(item.import_at*1000));
-                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
-                  "id": item.create_uid
-                },{
-                  headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                  }
-                }).then(function(response) {
-                  console.log('名字',response.data.object.name);
-                  if (response.data.isSuccess) {
-                    item.create_uid = response.data.object.name;
-                  } else {
-                    that.$message.warning("失败~");
-                  }
-                }).catch(function(error) {
-                  console.log(error);
-                });
-              });
-              that.showSK = false;
-            }else{
-              that.tableDataQK = '';
-              that.totalItem = '';
-              that.totalMoney = '';
-              that.startTime = '';
-              that.endTime = '';
-              that.showSK = true;
-            }
           } else {
             that.$message.warning("加载数据失败~");
           }

@@ -46,12 +46,12 @@
             </el-table-column>
             <el-table-column prop="rece_money" label="结算金额" align="center">
             </el-table-column>
-            <el-table-column prop="tour_no" label="团号" align="center">
-            </el-table-column>
-            <el-table-column prop="divide_connect_no" label="粉联号" align="center">
-            </el-table-column>
-            <el-table-column prop="invoice_no" label="发票号" align="center">
-            </el-table-column>
+            <!--<el-table-column prop="tour_no" label="团号" align="center">-->
+            <!--</el-table-column>-->
+            <!--<el-table-column prop="divide_connect_no" label="粉联号" align="center">-->
+            <!--</el-table-column>-->
+            <!--<el-table-column prop="invoice_no" label="发票号" align="center">-->
+            <!--</el-table-column>-->
           </el-table>
         </div>
       </div>
@@ -119,7 +119,6 @@
             response.data.data.sale_at = formatDate(new Date(response.data.data.sale_at*1000));
             that.tableData = [];
             that.tableData.push(response.data.data);
-            that.distributors = response.data.data.distributor;
           } else {
             that.$message.success("加载数据失败~");
           }
@@ -135,6 +134,7 @@
             response.data.data.rece_at = formatDate(new Date(response.data.data.rece_at*1000));
             that.instructions = response.data.data.explain;
             that.data = formatDate(new Date(response.data.data.rece_start*1000)).split(" ")[0] + '--' + formatDate(new Date(response.data.data.rece_end*1000)).split(" ")[0];
+            that.distributors = response.data.data.rec_distributor;
             that.tableData1 = [];
             that.tableData1.push(response.data.data);
           } else {

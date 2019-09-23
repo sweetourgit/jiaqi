@@ -397,18 +397,18 @@
             });
 
             if(response.data.data.file != '' && response.data.data.type == 1){
-              that.fileList = [];
-              that.fileList.push({
-                name: response.data.data.file.split('/')[6]
-              });
+              that.fileList = response.data.data.file;
               that.tableDataXQ = [];
               that.tableDataSK = response.data.data.list;
               that.totalItem = response.data.data.list.length;
 //              that.totalMoney = response.data.data.rece_money;
 //              that.startTime = response.data.data.rece_start;
 //              that.endTime = response.data.data.rece_end;
-              let start = that.tableDataSK[0].rece_at;
-              let end = that.tableDataSK[0].rece_at;
+//              let start = that.tableDataSK[0].rece_at;
+//              let end = that.tableDataSK[0].rece_at;
+//              let totalMoney = 0;
+              let start = formatDate(new Date(that.tableDataSK[0].rece_at*1000)).split(" ")[0];
+              let end = formatDate(new Date(that.tableDataSK[0].rece_at*1000)).split(" ")[0];
               let totalMoney = 0;
               that.tableDataSK.forEach(function (item, index, arr) {
                 item.rece_at = formatDate(new Date(item.rece_at*1000));
@@ -419,13 +419,14 @@
                 if(new Date(Date.parse(end)) < new Date(Date.parse(item.rece_at))){
                   end = item.rece_at;
                 }
+
                 totalMoney += parseFloat(item.rece_money);
 //                console.log(totalMoney);
               });
 
               that.totalMoney = totalMoney.toFixed(2);
-              that.startTime = formatDate(new Date(start*1000)).split(" ")[0];
-              that.endTime = formatDate(new Date(end*1000)).split(" ")[0];
+              that.startTime = start;
+              that.endTime = end;
               that.showSK = true;
               that.showXQ = false;
             }else if(response.data.data.type == 2 && response.data.data.list.length != 0){

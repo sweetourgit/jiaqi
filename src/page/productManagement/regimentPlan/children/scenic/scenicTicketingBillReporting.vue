@@ -409,7 +409,7 @@ export default {
                 op_name: response.data.object.name,
                 billTime: billTime,
                 team_num: dataList.team_num,
-                days: dataList.days,
+                days: dataList.days||'1',
                 total_income: dataList.total_income,
                 total_cost: dataList.total_cost,
                 gross_profit: dataList.gross_profit,

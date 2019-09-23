@@ -86,7 +86,7 @@
               全程天数
             </el-col>
             <el-col :span="2" class="content">
-              {{msg.days}}
+              {{msg.days||'1'}}
             </el-col>
           </el-row>
           <el-row>
