@@ -1218,6 +1218,14 @@
               </div>
             </div>
             <!--酒店弹窗结束-->
+            <!--切换套餐后弹窗提示-->
+            <el-dialog title="保存提示" :visible.sync="switchShow" class="city_list" width="500px" @close="cancelSwitch()">
+              <div class="switchTitle">信息已经进行修改，是否需要保存？</div>
+              <div class="switchButton">
+                <el-button @click="noSave()">不保存</el-button>
+                <el-button type="primary">保存</el-button>
+              </div>
+            </el-dialog>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -1718,7 +1726,8 @@
         dynamicTags4: [],
         inputVisible4: false,
         inputVal4: '',
-        errorNull: ''
+        errorNull: '',
+        switchShow:false,
       }
     },
     watch:{ //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
@@ -3049,510 +3058,521 @@
       handledelete(name){
 
       },
+      // handlePoint01(){
+      //   var aaa = this.qqqq;
+      //   if(this.changeIndex >= this.packLen){
+      //     this.$confirm('信息已经进行修改, 是否需要保存?', '提示', {
+      //       confirmButtonText: '确定',
+      //       cancelButtonText: '取消',
+      //       type: 'warning'
+      //     })
+      //   .then(() => {
+      //       this.qqqq = this.editableTabsValue;
+      //       // this.editableTabsValue = this.editableTabsValue;
+      //       // console.log(this.editableTabsValue)
+
+      //       // console.log(this.editableTabsValue = String(parseInt(this.editableTabsValue)+1))
+      //       if(targetName.label == 'New Tab') {
+      //         this.$message({
+      //           type: 'success',
+      //           message: '删除成功!'
+      //         });
+      //         // that.ruleForm = []
+      //         that.ruleForm = {
+      //     mudidi:"",
+      //     chufadi:"",
+      //     productNamel: '',
+      //     destinations:'',
+      //     travelType: '1',
+      //     placeDeparture: '',
+      //     travelDays: '',
+      //     travelNight: '',
+      //     orderConfirmationType:'',
+      //     operationLabel: '',
+      //     Excursion: '',
+      //     excurList: '',
+      //     advanceRegistrationDays: '',
+      //     timeHour: '',
+      //     timeMinute: '',
+      //     highlightWords1: '',
+      //     highlightWords2: '',
+      //     highlightWords3: '',
+      //     highlightWords4: '',
+      //     avatarImages: '',
+      //     slideshow: '',
+      //     hotelAuto: '',
+      //     hotelChinese: '',
+      //     hotelEnglish: '',
+      //     hotelAddress: '',
+      //     hotelStar: '',
+      //     hotelDay: '',
+      //     hotelHouse: '',
+      //     hotelBed: '',
+      //     pod: '',
+      //     company: '',
+      //     theNumber: '',
+      //     pod: '',
+      //     podPlace: '',
+      //     podTime: '',
+      //     arriveCity: '',
+      //     arrivePlace: '',
+      //     arriveTime: '',
+      //     planeDay: '',
+      //     trafficMode: '1',
+      //     day: '',
+      //     typeExt: '',
+      //     time: '',
+      //     name: '',
+      //     details: '',
+      //     memo: '',
+      //     picture: '',
+      //     highlightWords: '',
+      //     theme: '',
+      //     subject:'',
+      //     origin:'',
+      //     podID:'',
+      //     destinationID:'',
+      //     bourn:'',
+      //     //交通工具
+      //     //去程
+      //     plane: [{
+      //       pod: '',
+      //       id: 0,
+      //       goOrBack:1,
+      //       company: '',
+      //       theNumber: '',
+      //       podCity: '',
+      //       podPlace: '',
+      //       podTime: '',
+      //       arriveCity: '',
+      //       arrivePlace: '',
+      //       arriveTime: '',
+      //       planeDay: '',
+      //       trafficMode: '1',
+      //       day: '1',
+      //       ext_Stopover: [],
+      //       www:['2']
+      //     }],
+      //     //返程
+      //     nackPlane: [{
+      //       pod: '',  //套餐id
+      //       id: 0,
+      //       goOrBack:2,   //1去程 2返程
+      //       company: '',  //航空公司
+      //       theNumber: '',   //航班号
+      //       podCity: '',           //出发城市
+      //       podPlace: '',   //出发机场
+      //       podTime: '',    //出发时间
+      //       arriveCity: '',    //到达城市
+      //       arrivePlace: '',     //到达机场
+      //       arriveTime: '',      //到达时间
+      //       planeDay: '',       //到达天数
+      //       trafficMode: '1',  //出行方式
+      //       day: '1',      //第几天
+      //       ext_Stopover: [],
+      //       www: ['2']
+      //     }],
+      //     //行程信息大表
+      //     schedules: []
+      //   }
+      //       } else {
+      //       this.$message({
+      //         type: 'success',
+      //         message: '删除成功!'
+      //       });
+      //       this.changeIndex = targetName.index
+      //       var that = this
+      //       this.$http.post(
+      //         this.GLOBAL.serverSrc + "/team/api/teaminfoget",
+      //         {
+      //           "object": {
+      //             "id": this.$route.query.id,
+      //             "loadPackage": true
+      //           }
+
+      //         }
+      //       )
+      //         .then(function (obj) {
+      //           console.log(obj.data.object);
+      //           that.ruleForm.travelDays = obj.data.object.day//行程天数
+      //           that.ruleForm.travelNight = obj.data.object.night//行程晚数
+      //           that.dynamicTags3 = obj.data.object.pods//出发地
+      //           that.dynamicTags4 = obj.data.object.destinations//目的地
+      //           that.ruleForm.highlightWords = obj.data.object.package[that.changeIndex].name //行程信息套餐名
+      //           that.ruleForm.origin = obj.data.object.package[that.changeIndex].pod //行程信息出发地
+      //           that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
+      //           that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
+      //           that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
+      //           that.content = String(obj.data.object.package[0].briefMark)
+      //           let keepContentLength = that.content.length
+      //           if (keepContentLength > 0){
+      //             that.isShowBriefDetail = 2
+      //             console.log('that.isShowBriefDetail', that.isShowBriefDetail)
+      //           }
+      //           that.packLen = obj.data.object.package.length
+      //           that.ruleForm.plane = []
+      //           that.ruleForm.nackPlane = []
+      //           for (var i =0; i < obj.data.object.package[that.changeIndex].traffic.length; i++ ){
+      //             let arr = [];
+      //             if(obj.data.object.package[that.changeIndex].traffic[i].goOrBack == 1){
+      //               obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
+      //               that.ruleForm.plane.push(obj.data.object.package[that.changeIndex].traffic[i]);
+      //               arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
+      //               that.ruleForm.plane[i].www = arr;
+      //             }else{
+      //               obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
+      //               arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
+      //               obj.data.object.package[that.changeIndex].traffic[i].www = arr;
+      //               that.ruleForm.nackPlane.push(obj.data.object.package[that.changeIndex].traffic[i]);
+
+      //             }
+
+      //           }
+
+      //           //日程信息
+      //           for (let j = 0; j < obj.data.object.package[that.changeIndex].schedules.length; j++) {
+      //             setTimeout(arr => {
+      //               that.ruleForm.schedules[j].subject =  obj.data.object.package[that.changeIndex].schedules[j].subject //主题
+      //               /* that.ruleForm.schedules[j].ext_Hotel.Details =  obj.data.object.package[0].schedules[j].info //主题*/
+      //               that.content_02 =  obj.data.object.package[that.changeIndex].schedules[j].info //详情
+      //               //早餐
+      //               if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "0"){
+      //                 that.ruleForm.schedules[j].ext_Meals[0].Myself = "0"
+      //               }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "1"){
+      //                 that.ruleForm.schedules[j].ext_Meals[0].Myself = "1"
+      //                 that.ruleForm.schedules[j].ext_Meals[0].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Detail
+      //               }
+      //               //午餐
+      //               if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "0"){
+      //                 that.ruleForm.schedules[j].ext_Meals[1].Myself = "0"
+      //               }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "1"){
+      //                 that.ruleForm.schedules[j].ext_Meals[1].Myself = "1"
+      //                 that.ruleForm.schedules[j].ext_Meals[1].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Detail
+      //               }
+      //               // 晚餐
+      //               if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "0"){
+      //                 that.ruleForm.schedules[j].ext_Meals[2].Myself = "0"
+      //               }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "1"){
+      //                 that.ruleForm.schedules[j].ext_Meals[2].Myself = "1"
+      //                 that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Detail
+      //               }
+      //               that.ruleForm.schedules[j].activitys = []
+      //           for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {
+      //             that.ruleForm.schedules[j].activitys.push({
+      //                 activityType:obj.data.object.package[0].schedules[j].activitys[k].activityType + '',
+      //                 info:[{
+      //                   typeExt: '',
+      //                   time: 0,
+      //                   name: '',
+      //                   details: '',
+      //                   memo: '',
+      //                   picture: [],
+      //                   createTime: that.formatDate(new Date())
+      //                 },{
+      //                   typeExt: '',
+      //                   time: 0,
+      //                   name: '',
+      //                   details: '',
+      //                   memo: '',
+      //                   picture: [],
+      //                   createTime: that.formatDate(new Date())
+      //                 },{
+      //                   typeExt: '',
+      //                   time: 0,
+      //                   name: '',
+      //                   details: '',
+      //                   memo: '',
+      //                   picture: [],
+      //                   createTime: that.formatDate(new Date())
+      //                 }],
+      //             })
+      //             let acti=obj.data.object.package[0].schedules[j].activitys[k];
+      //             let info=that.ruleForm.schedules[j].activitys[k].info[obj.data.object.package[0].schedules[j].activitys[k].activityType-1];info.typeExt=acti.typeExt;
+      //             info.time=acti.time;
+      //             info.name=acti.name;
+      //             info.details=acti.details;
+      //             info.memo=acti.memo;
+      //             info.picture=JSON.parse(acti.picture)==null?[]:JSON.parse(acti.picture);
+      //             info.createTime=that.formatDate(new Date());
+      //           }
+      //               console.log( )
+      //             }, 100)
+      //           }
+      //           that.mealID  =  obj.data.object.package[that.changeIndex].id //模板id
+      //           that.ruleForm.productNamel = obj.data.object.title; //产品名称
+      //           that.ruleForm.travelType = String(obj.data.object.isForeign); //出游类型
+
+      //           that.explain = []
+      //           for (let t = 0; t < obj.data.object.instructions.length; t++ ){
+      //             that.explain.push(obj.data.object.instructions[t])
+      //           }
+
+
+      //           // that.editableTabs.splice(parseInt(that.editableTabsValue)-3, 1);
+
+
+      //         })
+      //         .catch(function (obj) {
+      //           console.log(obj)
+      //         })
+
+
+      //       }
+
+
+      //     }).catch(() => {
+      //       this.$message({
+      //         type: 'info',
+      //         message: '已取消'
+      //       });
+      //       this.editableTabsValue = aaa
+      //       this.qqqq = aaa;
+      //     });
+
+      //   }else{
+      //     if(targetName.label == 'New Tab') {
+      //     this.ruleForm = {
+      //     mudidi:"",
+      //     chufadi:"",
+      //     productNamel: '',
+      //     destinations:'',
+      //     travelType: '1',
+      //     placeDeparture: '',
+      //     travelDays: '',
+      //     travelNight: '',
+      //     orderConfirmationType:'',
+      //     operationLabel: '',
+      //     Excursion: '',
+      //     excurList: '',
+      //     advanceRegistrationDays: '',
+      //     timeHour: '',
+      //     timeMinute: '',
+      //     highlightWords1: '',
+      //     highlightWords2: '',
+      //     highlightWords3: '',
+      //     highlightWords4: '',
+      //     avatarImages: '',
+      //     slideshow: '',
+      //     hotelAuto: '',
+      //     hotelChinese: '',
+      //     hotelEnglish: '',
+      //     hotelAddress: '',
+      //     hotelStar: '',
+      //     hotelDay: '',
+      //     hotelHouse: '',
+      //     hotelBed: '',
+      //     pod: '',
+      //     company: '',
+      //     theNumber: '',
+      //     pod: '',
+      //     podPlace: '',
+      //     podTime: '',
+      //     arriveCity: '',
+      //     arrivePlace: '',
+      //     arriveTime: '',
+      //     planeDay: '',
+      //     trafficMode: '1',
+      //     day: '',
+      //     typeExt: '',
+      //     time: '',
+      //     name: '',
+      //     details: '',
+      //     memo: '',
+      //     picture: '',
+      //     highlightWords: '',
+      //     theme: '',
+      //     subject:'',
+      //     origin:'',
+      //     podID:'',
+      //     destinationID:'',
+      //     bourn:'',
+      //     //交通工具
+      //     //去程
+      //     plane: [{
+      //       pod: '',
+      //       id: 0,
+      //       goOrBack:1,
+      //       company: '',
+      //       theNumber: '',
+      //       podCity: '',
+      //       podPlace: '',
+      //       podTime: '',
+      //       arriveCity: '',
+      //       arrivePlace: '',
+      //       arriveTime: '',
+      //       planeDay: '',
+      //       trafficMode: '1',
+      //       day: '1',
+      //       ext_Stopover: [],
+      //       www:['2']
+      //     }],
+      //     //返程
+      //     nackPlane: [{
+      //       pod: '',  //套餐id
+      //       id: 0,
+      //       goOrBack:2,   //1去程 2返程
+      //       company: '',  //航空公司
+      //       theNumber: '',   //航班号
+      //       podCity: '',           //出发城市
+      //       podPlace: '',   //出发机场
+      //       podTime: '',    //出发时间
+      //       arriveCity: '',    //到达城市
+      //       arrivePlace: '',     //到达机场
+      //       arriveTime: '',      //到达时间
+      //       planeDay: '',       //到达天数
+      //       trafficMode: '1',  //出行方式
+      //       day: '1',      //第几天
+      //       ext_Stopover: [],
+      //       www: ['2']
+      //     }],
+      //     //行程信息大表
+      //     schedules: []
+      //   }
+      //     } else {
+
+
+      //     this.changeIndex = targetName.index
+      //       var that = this
+      //       this.$http.post(
+      //         this.GLOBAL.serverSrc + "/team/api/teaminfoget",
+      //         {
+      //           "object": {
+      //             "id": this.$route.query.id,
+      //             "loadPackage": true
+      //           }
+
+      //         }
+      //       )
+      //         .then(function (obj) {
+
+      //           console.log(obj.data.object);
+      //           that.ruleForm.travelDays = obj.data.object.day//行程天数
+      //           that.ruleForm.travelNight = obj.data.object.night//行程晚数
+      //           that.dynamicTags3 = obj.data.object.pods//出发地
+      //           that.dynamicTags4 = obj.data.object.destinations//目的地
+      //           that.ruleForm.highlightWords = obj.data.object.package[that.changeIndex].name //行程信息套餐名
+      //           that.ruleForm.origin = obj.data.object.package[that.changeIndex].pod //行程信息出发地
+      //           that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
+      //           that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
+      //           that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
+      //           that.content = String(obj.data.object.package[0].briefMark)
+      //           let keepContentLength = that.content.length
+      //           if (keepContentLength > 0){
+      //             that.isShowBriefDetail = 2
+      //             console.log('that.isShowBriefDetail', that.isShowBriefDetail)
+      //           }
+      //           that.packLen = obj.data.object.package.length
+      //           that.ruleForm.plane = []
+      //           that.ruleForm.nackPlane = []
+      //           for (var i =0; i < obj.data.object.package[that.changeIndex].traffic.length; i++ ){
+      //             let arr = [];
+      //             if(obj.data.object.package[that.changeIndex].traffic[i].goOrBack == 1){
+      //               obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
+      //               that.ruleForm.plane.push(obj.data.object.package[that.changeIndex].traffic[i]);
+      //               arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
+      //               that.ruleForm.plane[i].www = arr;
+      //             }else{
+      //               obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
+      //               arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
+      //               obj.data.object.package[that.changeIndex].traffic[i].www = arr;
+      //               that.ruleForm.nackPlane.push(obj.data.object.package[that.changeIndex].traffic[i]);
+
+      //             }
+
+      //           }
+
+      //           //日程信息
+      //           for (let j = 0; j < obj.data.object.package[that.changeIndex].schedules.length; j++) {
+      //             setTimeout(arr => {
+      //               that.ruleForm.schedules[j].subject =  obj.data.object.package[that.changeIndex].schedules[j].subject //主题
+      //               /* that.ruleForm.schedules[j].ext_Hotel.Details =  obj.data.object.package[0].schedules[j].info //主题*/
+      //               that.content_02 =  obj.data.object.package[that.changeIndex].schedules[j].info //详情
+      //               //早餐
+      //               if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "0"){
+      //                 that.ruleForm.schedules[j].ext_Meals[0].Myself = "0"
+      //               }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "1"){
+      //                 that.ruleForm.schedules[j].ext_Meals[0].Myself = "1"
+      //                 that.ruleForm.schedules[j].ext_Meals[0].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Detail
+      //               }
+      //               //午餐
+      //               if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "0"){
+      //                 that.ruleForm.schedules[j].ext_Meals[1].Myself = "0"
+      //               }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "1"){
+      //                 that.ruleForm.schedules[j].ext_Meals[1].Myself = "1"
+      //                 that.ruleForm.schedules[j].ext_Meals[1].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Detail
+      //               }
+      //               // 晚餐
+      //               if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "0"){
+      //                 that.ruleForm.schedules[j].ext_Meals[2].Myself = "0"
+      //               }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "1"){
+      //                 that.ruleForm.schedules[j].ext_Meals[2].Myself = "1"
+      //                 that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Detail
+      //               }
+      //               that.ruleForm.schedules[j].activitys = []
+      //           for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {
+      //             that.ruleForm.schedules[j].activitys.push({
+      //                 activityType:obj.data.object.package[0].schedules[j].activitys[k].activityType + '',
+      //                 info:[{
+      //                   typeExt: '',
+      //                   time: 0,
+      //                   name: '',
+      //                   details: '',
+      //                   memo: '',
+      //                   picture: [],
+      //                   createTime: that.formatDate(new Date())
+      //                 },{
+      //                   typeExt: '',
+      //                   time: 0,
+      //                   name: '',
+      //                   details: '',
+      //                   memo: '',
+      //                   picture: [],
+      //                   createTime: that.formatDate(new Date())
+      //                 },{
+      //                   typeExt: '',
+      //                   time: 0,
+      //                   name: '',
+      //                   details: '',
+      //                   memo: '',
+      //                   picture: [],
+      //                   createTime: that.formatDate(new Date())
+      //                 }],
+      //             })
+      //             let acti=obj.data.object.package[0].schedules[j].activitys[k];
+      //             let info=that.ruleForm.schedules[j].activitys[k].info[obj.data.object.package[0].schedules[j].activitys[k].activityType-1];info.typeExt=acti.typeExt;
+      //             info.time=acti.time;
+      //             info.name=acti.name;
+      //             info.details=acti.details;
+      //             info.memo=acti.memo;
+      //             info.picture=JSON.parse(acti.picture)==null?[]:JSON.parse(acti.picture);
+      //             info.createTime=that.formatDate(new Date());
+      //           }
+      //               console.log( )
+      //             }, 100)
+      //           }
+      //           that.mealID  =  obj.data.object.package[that.changeIndex].id //模板id
+      //           that.ruleForm.productNamel = obj.data.object.title; //产品名称
+      //           that.ruleForm.travelType = String(obj.data.object.isForeign); //出游类型
+
+      //           that.explain = []
+      //           for (let t = 0; t < obj.data.object.instructions.length; t++ ){
+      //             that.explain.push(obj.data.object.instructions[t])
+      //           }
+      //         })
+
+      //     }
+
+      //   }
+      // },
+      noSave(){
+        this.switchShow = false;
+
+      },
       handlePoint(targetName){
-        var aaa = this.qqqq;
-        if(this.changeIndex >= this.packLen){
-          this.$confirm('信息已经进行修改, 是否需要保存?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.qqqq = this.editableTabsValue;
-            // this.editableTabsValue = this.editableTabsValue;
-            // console.log(this.editableTabsValue)
-
-            // console.log(this.editableTabsValue = String(parseInt(this.editableTabsValue)+1))
-            if(targetName.label == 'New Tab') {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              });
-              // that.ruleForm = []
-              that.ruleForm = {
-          mudidi:"",
-          chufadi:"",
-          productNamel: '',
-          destinations:'',
-          travelType: '1',
-          placeDeparture: '',
-          travelDays: '',
-          travelNight: '',
-          orderConfirmationType:'',
-          operationLabel: '',
-          Excursion: '',
-          excurList: '',
-          advanceRegistrationDays: '',
-          timeHour: '',
-          timeMinute: '',
-          highlightWords1: '',
-          highlightWords2: '',
-          highlightWords3: '',
-          highlightWords4: '',
-          avatarImages: '',
-          slideshow: '',
-          hotelAuto: '',
-          hotelChinese: '',
-          hotelEnglish: '',
-          hotelAddress: '',
-          hotelStar: '',
-          hotelDay: '',
-          hotelHouse: '',
-          hotelBed: '',
-          pod: '',
-          company: '',
-          theNumber: '',
-          pod: '',
-          podPlace: '',
-          podTime: '',
-          arriveCity: '',
-          arrivePlace: '',
-          arriveTime: '',
-          planeDay: '',
-          trafficMode: '1',
-          day: '',
-          typeExt: '',
-          time: '',
-          name: '',
-          details: '',
-          memo: '',
-          picture: '',
-          highlightWords: '',
-          theme: '',
-          subject:'',
-          origin:'',
-          podID:'',
-          destinationID:'',
-          bourn:'',
-          //交通工具
-          //去程
-          plane: [{
-            pod: '',
-            id: 0,
-            goOrBack:1,
-            company: '',
-            theNumber: '',
-            podCity: '',
-            podPlace: '',
-            podTime: '',
-            arriveCity: '',
-            arrivePlace: '',
-            arriveTime: '',
-            planeDay: '',
-            trafficMode: '1',
-            day: '1',
-            ext_Stopover: [],
-            www:['2']
-          }],
-          //返程
-          nackPlane: [{
-            pod: '',  //套餐id
-            id: 0,
-            goOrBack:2,   //1去程 2返程
-            company: '',  //航空公司
-            theNumber: '',   //航班号
-            podCity: '',           //出发城市
-            podPlace: '',   //出发机场
-            podTime: '',    //出发时间
-            arriveCity: '',    //到达城市
-            arrivePlace: '',     //到达机场
-            arriveTime: '',      //到达时间
-            planeDay: '',       //到达天数
-            trafficMode: '1',  //出行方式
-            day: '1',      //第几天
-            ext_Stopover: [],
-            www: ['2']
-          }],
-          //行程信息大表
-          schedules: []
-        }
-            } else {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
-            this.changeIndex = targetName.index
-            var that = this
-            this.$http.post(
-              this.GLOBAL.serverSrc + "/team/api/teaminfoget",
-              {
-                "object": {
-                  "id": this.$route.query.id,
-                  "loadPackage": true
-                }
-
-              }
-            )
-              .then(function (obj) {
-                console.log(obj.data.object);
-                that.ruleForm.travelDays = obj.data.object.day//行程天数
-                that.ruleForm.travelNight = obj.data.object.night//行程晚数
-                that.dynamicTags3 = obj.data.object.pods//出发地
-                that.dynamicTags4 = obj.data.object.destinations//目的地
-                that.ruleForm.highlightWords = obj.data.object.package[that.changeIndex].name //行程信息套餐名
-                that.ruleForm.origin = obj.data.object.package[that.changeIndex].pod //行程信息出发地
-                that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
-                that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
-                that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
-                that.content = String(obj.data.object.package[0].briefMark)
-                let keepContentLength = that.content.length
-                if (keepContentLength > 0){
-                  that.isShowBriefDetail = 2
-                  console.log('that.isShowBriefDetail', that.isShowBriefDetail)
-                }
-                that.packLen = obj.data.object.package.length
-                that.ruleForm.plane = []
-                that.ruleForm.nackPlane = []
-                for (var i =0; i < obj.data.object.package[that.changeIndex].traffic.length; i++ ){
-                  let arr = [];
-                  if(obj.data.object.package[that.changeIndex].traffic[i].goOrBack == 1){
-                    obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
-                    that.ruleForm.plane.push(obj.data.object.package[that.changeIndex].traffic[i]);
-                    arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
-                    that.ruleForm.plane[i].www = arr;
-                  }else{
-                    obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
-                    arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
-                    obj.data.object.package[that.changeIndex].traffic[i].www = arr;
-                    that.ruleForm.nackPlane.push(obj.data.object.package[that.changeIndex].traffic[i]);
-
-                  }
-
-                }
-
-                //日程信息
-                for (let j = 0; j < obj.data.object.package[that.changeIndex].schedules.length; j++) {
-                  setTimeout(arr => {
-                    that.ruleForm.schedules[j].subject =  obj.data.object.package[that.changeIndex].schedules[j].subject //主题
-                    /* that.ruleForm.schedules[j].ext_Hotel.Details =  obj.data.object.package[0].schedules[j].info //主题*/
-                    that.content_02 =  obj.data.object.package[that.changeIndex].schedules[j].info //详情
-                    //早餐
-                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "0"){
-                      that.ruleForm.schedules[j].ext_Meals[0].Myself = "0"
-                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "1"){
-                      that.ruleForm.schedules[j].ext_Meals[0].Myself = "1"
-                      that.ruleForm.schedules[j].ext_Meals[0].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Detail
-                    }
-                    //午餐
-                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "0"){
-                      that.ruleForm.schedules[j].ext_Meals[1].Myself = "0"
-                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "1"){
-                      that.ruleForm.schedules[j].ext_Meals[1].Myself = "1"
-                      that.ruleForm.schedules[j].ext_Meals[1].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Detail
-                    }
-                    // 晚餐
-                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "0"){
-                      that.ruleForm.schedules[j].ext_Meals[2].Myself = "0"
-                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "1"){
-                      that.ruleForm.schedules[j].ext_Meals[2].Myself = "1"
-                      that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Detail
-                    }
-                    that.ruleForm.schedules[j].activitys = []
-                for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {
-                  that.ruleForm.schedules[j].activitys.push({
-                      activityType:obj.data.object.package[0].schedules[j].activitys[k].activityType + '',
-                      info:[{
-                        typeExt: '',
-                        time: 0,
-                        name: '',
-                        details: '',
-                        memo: '',
-                        picture: [],
-                        createTime: that.formatDate(new Date())
-                      },{
-                        typeExt: '',
-                        time: 0,
-                        name: '',
-                        details: '',
-                        memo: '',
-                        picture: [],
-                        createTime: that.formatDate(new Date())
-                      },{
-                        typeExt: '',
-                        time: 0,
-                        name: '',
-                        details: '',
-                        memo: '',
-                        picture: [],
-                        createTime: that.formatDate(new Date())
-                      }],
-                  })
-                  let acti=obj.data.object.package[0].schedules[j].activitys[k];
-                  let info=that.ruleForm.schedules[j].activitys[k].info[obj.data.object.package[0].schedules[j].activitys[k].activityType-1];info.typeExt=acti.typeExt;
-                  info.time=acti.time;
-                  info.name=acti.name;
-                  info.details=acti.details;
-                  info.memo=acti.memo;
-                  info.picture=JSON.parse(acti.picture)==null?[]:JSON.parse(acti.picture);
-                  info.createTime=that.formatDate(new Date());
-                }
-                    console.log( )
-                  }, 100)
-                }
-                that.mealID  =  obj.data.object.package[that.changeIndex].id //模板id
-                that.ruleForm.productNamel = obj.data.object.title; //产品名称
-                that.ruleForm.travelType = String(obj.data.object.isForeign); //出游类型
-
-                that.explain = []
-                for (let t = 0; t < obj.data.object.instructions.length; t++ ){
-                  that.explain.push(obj.data.object.instructions[t])
-                }
-
-
-                // that.editableTabs.splice(parseInt(that.editableTabsValue)-3, 1);
-
-
-              })
-              .catch(function (obj) {
-                console.log(obj)
-              })
-
-
-            }
-
-
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消'
-            });
-            this.editableTabsValue = aaa
-            this.qqqq = aaa;
-          });
-
-        }else{
-          if(targetName.label == 'New Tab') {
-          this.ruleForm = {
-          mudidi:"",
-          chufadi:"",
-          productNamel: '',
-          destinations:'',
-          travelType: '1',
-          placeDeparture: '',
-          travelDays: '',
-          travelNight: '',
-          orderConfirmationType:'',
-          operationLabel: '',
-          Excursion: '',
-          excurList: '',
-          advanceRegistrationDays: '',
-          timeHour: '',
-          timeMinute: '',
-          highlightWords1: '',
-          highlightWords2: '',
-          highlightWords3: '',
-          highlightWords4: '',
-          avatarImages: '',
-          slideshow: '',
-          hotelAuto: '',
-          hotelChinese: '',
-          hotelEnglish: '',
-          hotelAddress: '',
-          hotelStar: '',
-          hotelDay: '',
-          hotelHouse: '',
-          hotelBed: '',
-          pod: '',
-          company: '',
-          theNumber: '',
-          pod: '',
-          podPlace: '',
-          podTime: '',
-          arriveCity: '',
-          arrivePlace: '',
-          arriveTime: '',
-          planeDay: '',
-          trafficMode: '1',
-          day: '',
-          typeExt: '',
-          time: '',
-          name: '',
-          details: '',
-          memo: '',
-          picture: '',
-          highlightWords: '',
-          theme: '',
-          subject:'',
-          origin:'',
-          podID:'',
-          destinationID:'',
-          bourn:'',
-          //交通工具
-          //去程
-          plane: [{
-            pod: '',
-            id: 0,
-            goOrBack:1,
-            company: '',
-            theNumber: '',
-            podCity: '',
-            podPlace: '',
-            podTime: '',
-            arriveCity: '',
-            arrivePlace: '',
-            arriveTime: '',
-            planeDay: '',
-            trafficMode: '1',
-            day: '1',
-            ext_Stopover: [],
-            www:['2']
-          }],
-          //返程
-          nackPlane: [{
-            pod: '',  //套餐id
-            id: 0,
-            goOrBack:2,   //1去程 2返程
-            company: '',  //航空公司
-            theNumber: '',   //航班号
-            podCity: '',           //出发城市
-            podPlace: '',   //出发机场
-            podTime: '',    //出发时间
-            arriveCity: '',    //到达城市
-            arrivePlace: '',     //到达机场
-            arriveTime: '',      //到达时间
-            planeDay: '',       //到达天数
-            trafficMode: '1',  //出行方式
-            day: '1',      //第几天
-            ext_Stopover: [],
-            www: ['2']
-          }],
-          //行程信息大表
-          schedules: []
-        }
-          } else {
-
-
-          this.changeIndex = targetName.index
-            var that = this
-            this.$http.post(
-              this.GLOBAL.serverSrc + "/team/api/teaminfoget",
-              {
-                "object": {
-                  "id": this.$route.query.id,
-                  "loadPackage": true
-                }
-
-              }
-            )
-              .then(function (obj) {
-
-                console.log(obj.data.object);
-                that.ruleForm.travelDays = obj.data.object.day//行程天数
-                that.ruleForm.travelNight = obj.data.object.night//行程晚数
-                that.dynamicTags3 = obj.data.object.pods//出发地
-                that.dynamicTags4 = obj.data.object.destinations//目的地
-                that.ruleForm.highlightWords = obj.data.object.package[that.changeIndex].name //行程信息套餐名
-                that.ruleForm.origin = obj.data.object.package[that.changeIndex].pod //行程信息出发地
-                that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
-                that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
-                that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
-                that.content = String(obj.data.object.package[0].briefMark)
-                let keepContentLength = that.content.length
-                if (keepContentLength > 0){
-                  that.isShowBriefDetail = 2
-                  console.log('that.isShowBriefDetail', that.isShowBriefDetail)
-                }
-                that.packLen = obj.data.object.package.length
-                that.ruleForm.plane = []
-                that.ruleForm.nackPlane = []
-                for (var i =0; i < obj.data.object.package[that.changeIndex].traffic.length; i++ ){
-                  let arr = [];
-                  if(obj.data.object.package[that.changeIndex].traffic[i].goOrBack == 1){
-                    obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
-                    that.ruleForm.plane.push(obj.data.object.package[that.changeIndex].traffic[i]);
-                    arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
-                    that.ruleForm.plane[i].www = arr;
-                  }else{
-                    obj.data.object.package[that.changeIndex].traffic[i].ext_Stopover = [];//TODO 经停
-                    arr.push(String(obj.data.object.package[that.changeIndex].traffic[i].trafficMode));
-                    obj.data.object.package[that.changeIndex].traffic[i].www = arr;
-                    that.ruleForm.nackPlane.push(obj.data.object.package[that.changeIndex].traffic[i]);
-
-                  }
-
-                }
-
-                //日程信息
-                for (let j = 0; j < obj.data.object.package[that.changeIndex].schedules.length; j++) {
-                  setTimeout(arr => {
-                    that.ruleForm.schedules[j].subject =  obj.data.object.package[that.changeIndex].schedules[j].subject //主题
-                    /* that.ruleForm.schedules[j].ext_Hotel.Details =  obj.data.object.package[0].schedules[j].info //主题*/
-                    that.content_02 =  obj.data.object.package[that.changeIndex].schedules[j].info //详情
-                    //早餐
-                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "0"){
-                      that.ruleForm.schedules[j].ext_Meals[0].Myself = "0"
-                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].label == "早餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Myself == "1"){
-                      that.ruleForm.schedules[j].ext_Meals[0].Myself = "1"
-                      that.ruleForm.schedules[j].ext_Meals[0].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[0].Detail
-                    }
-                    //午餐
-                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "0"){
-                      that.ruleForm.schedules[j].ext_Meals[1].Myself = "0"
-                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].label == "午餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[1].Myself == "1"){
-                      that.ruleForm.schedules[j].ext_Meals[1].Myself = "1"
-                      that.ruleForm.schedules[j].ext_Meals[1].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Detail
-                    }
-                    // 晚餐
-                    if( JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐" && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "0"){
-                      that.ruleForm.schedules[j].ext_Meals[2].Myself = "0"
-                    }else if(JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].label == "晚餐"  && JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Myself == "1"){
-                      that.ruleForm.schedules[j].ext_Meals[2].Myself = "1"
-                      that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[that.changeIndex].schedules[j].ext_Meals)[2].Detail
-                    }
-                    that.ruleForm.schedules[j].activitys = []
-                for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {
-                  that.ruleForm.schedules[j].activitys.push({
-                      activityType:obj.data.object.package[0].schedules[j].activitys[k].activityType + '',
-                      info:[{
-                        typeExt: '',
-                        time: 0,
-                        name: '',
-                        details: '',
-                        memo: '',
-                        picture: [],
-                        createTime: that.formatDate(new Date())
-                      },{
-                        typeExt: '',
-                        time: 0,
-                        name: '',
-                        details: '',
-                        memo: '',
-                        picture: [],
-                        createTime: that.formatDate(new Date())
-                      },{
-                        typeExt: '',
-                        time: 0,
-                        name: '',
-                        details: '',
-                        memo: '',
-                        picture: [],
-                        createTime: that.formatDate(new Date())
-                      }],
-                  })
-                  let acti=obj.data.object.package[0].schedules[j].activitys[k];
-                  let info=that.ruleForm.schedules[j].activitys[k].info[obj.data.object.package[0].schedules[j].activitys[k].activityType-1];info.typeExt=acti.typeExt;
-                  info.time=acti.time;
-                  info.name=acti.name;
-                  info.details=acti.details;
-                  info.memo=acti.memo;
-                  info.picture=JSON.parse(acti.picture)==null?[]:JSON.parse(acti.picture);
-                  info.createTime=that.formatDate(new Date());
-                }
-                    console.log( )
-                  }, 100)
-                }
-                that.mealID  =  obj.data.object.package[that.changeIndex].id //模板id
-                that.ruleForm.productNamel = obj.data.object.title; //产品名称
-                that.ruleForm.travelType = String(obj.data.object.isForeign); //出游类型
-
-                that.explain = []
-                for (let t = 0; t < obj.data.object.instructions.length; t++ ){
-                  that.explain.push(obj.data.object.instructions[t])
-                }
-              })
-
-          }
-
-        }
+        this.switchShow = true;
+      },
+      cancelSwitch(){
+        this.switchShow = false;
       },
       querySearch(queryString, cb) {
         var restaurants = this.restaurants;
@@ -4151,4 +4171,7 @@
     border: solid 1px #E4E7ED;
     background-color: #f5f7fa;
   }
+  /*套餐切换弹窗样式*/
+  .switchTitle{line-height: 50px; font-size:13pt;}
+  .switchButton{margin: 15px 0 0 0;}
 </style>
