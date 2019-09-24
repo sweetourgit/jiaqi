@@ -35,7 +35,7 @@
         </ul>
         <div class="table_trip" style="width: 76%;">
           <div class="topTitle">
-            <p>新款入账时间：{{date}}</p>
+            <p>款项入账时间：{{date}}</p>
             <p>分销商：{{distributor}}</p>
           </div>
           <div class="searchDv">

@@ -52,9 +52,9 @@
               <p style="margin: 0;color: #999;line-height: 22px;">收款金额可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
-              <el-date-picker v-model="pftForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled" disabled></el-date-picker>
+              <el-date-picker v-model="pftForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled" disabled :picker-options="startDatePicker"></el-date-picker>
               <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
-              <el-date-picker v-model="pftForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" disabled></el-date-picker>
+              <el-date-picker v-model="pftForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" disabled :picker-options="endDatePicker"></el-date-picker>
               <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="附件：" label-width="140px">
@@ -141,9 +141,9 @@
               <p style="margin: 0;color: #999;line-height: 22px;">收款金额可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
-              <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
+              <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled" :picker-options="importStartDatePicker"></el-date-picker>
               <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
-              <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
+              <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" :picker-options="importEndDatePicker"></el-date-picker>
               <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="附件：" label-width="140px" v-if="info == ''">
@@ -166,8 +166,14 @@
                 <el-table-column prop="4" label="产品" align="center">
                 </el-table-column>
                 <el-table-column prop="5" label="结算金额" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row[5]}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="6" label="手续费" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row[6]}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="8" label="团号" align="center">
                 </el-table-column>
@@ -289,7 +295,6 @@
             </div>
           </div>
         </div>
-
 
         <!--选择收款账户-->
         <el-dialog title="选择账户" :visible="dialogFormVisible1" width=60% @close="close" append-to-body>
@@ -523,7 +528,13 @@
         PFT_num: 0,
         PFT_money: 0,
         PFT_start: '',
-        PFT_end: ''
+        PFT_end: '',
+
+//        时间限制
+        startDatePicker: this.beginDate(),
+        endDatePicker: this.processDate(),
+        importStartDatePicker: this.beginDate1(),
+        importEndDatePicker: this.processDate1(),
       }
     },
     computed: {
@@ -535,14 +546,14 @@
       }
     },
     watch: {
-      info: {
-        handler:function(){
-//          alert(this.info);
-          if(this.info != '' && this.dialogFormVisible){
-            this.loadData();
-          }
-        }
-      },
+//      info: {
+//        handler:function(){
+////          alert(this.info);
+//          if(this.info != '' && this.dialogFormVisible){
+//            this.loadData();
+//          }
+//        }
+//      },
       dialogFormVisible: {
         handler: function () {
 //          alert(this.dialogFormVisible);
@@ -882,11 +893,13 @@
             endTime = this.pftForm.endTime;
           }
         }else{
-          if(this.fileList.length != 0){
+          if(this.fileList.length != 0 && this.tableDataQK != []){
             fileArr.push({
               name: this.fileList[0].name,
               url: this.fileList[0].response.data.file_url
             });
+          }else{
+            fileArr = [];
           }
           if(this.ruleForm.payMoney == ''){
             that.$message.warning('收款金额不能为空');
@@ -989,10 +1002,49 @@
         const that = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-//            alert(this.totalMoney != '');
-            if(this.totalMoney == '' && this.startTime == ''){
-//              alert("均为空");
-              that.subFunXG();
+            if(!this.showSK){
+//              alert("无明细修改");
+              let Stime = '', Etime = '';
+              if(this.ruleForm.startTime.toString().split('-')[1]){
+                Stime = this.ruleForm.startTime;
+              }else{
+                Stime = formatDate(this.ruleForm.startTime).split(" ")[0];
+              }
+              if(this.ruleForm.endTime.toString().split('-')[1]){
+                Etime = this.ruleForm.endTime;
+              }else{
+                Etime = formatDate(this.ruleForm.endTime).split(" ")[0];
+              }
+              if(this.tableDataQK.length > 0){
+                if(new Date(Date.parse(Stime)) > new Date(Date.parse(this.tableDataQK[0].sale_at)) || new Date(Date.parse(Etime)) < new Date(Date.parse(this.tableDataQK[0].sale_at))){
+                  this.$confirm("收款入账时间设置错误，无法修改", "提示", {
+                    confirmButtonText: "好的",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                  }).then(() => {
+
+                  }).catch(() => {
+
+                  });
+                }else{
+                  if(parseFloat(this.ruleForm.payMoney) < parseFloat(this.tableDataQK[0].income)){
+                    this.$confirm("收款金额小于收入金额，无法修改", "提示", {
+                      confirmButtonText: "好的",
+                      cancelButtonText: "取消",
+                      type: "warning"
+                    }).then(() => {
+
+                    }).catch(() => {
+
+                    });
+                  }else{
+                    that.subFunXG();
+                  }
+
+                }
+              }else{
+                that.subFunXG();
+              }
 
             }else if(this.totalMoney != '' && this.startTime != ''){
 //              alert("均不为空");
@@ -1224,6 +1276,7 @@
         this.ruleForm.payAccountID = row.id;
         this.close();
       },
+
 //      上传凭证
       UploadUrl(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/receivables/receivables/files';
@@ -1268,6 +1321,7 @@
         this.endTime = '';
         this.ruleForm.startTime = '';
         this.ruleForm.endTime = '';
+        this.fileList = [];
       },
       handleExceed(files, fileList) {
         this.$message.warning(`平台订单只支持一个附件上传！`);
@@ -1422,22 +1476,23 @@
       },
 //      明细编辑
       detailEdit(scope){
-        let flag = true;
-        if(scope.row.bill_status == 1){
-          flag = true;
+//        console.log(scope.row);
+        let flagEdit;
+        if(scope.row.reco_status == 1){
+          flagEdit = false;
         }else{
-          flag = false;
+          flagEdit = true;
         }
         this.detailForm = {
           enterTime: scope.row.rece_at,
-          orderNum: scope.row.order_sn,
+          orderNum: scope.row.plat_order_sn,
           guestName: scope.row.guest_name,
           product: scope.row.product_name,
           money: scope.row.rece_money,
           tour_no: scope.row.tour_no,
           divide_connect_no: scope.row.divide_connect_no,
           invoice_no: scope.row.invoice_no,
-          canEdit: flag,
+          canEdit: flagEdit,
           id: scope.row.id,
           indexDetail: scope.$index
         };
@@ -1445,7 +1500,7 @@
       },
       detailSave(){
 //        alert(this.detailForm.money != this.tableDataQK[this.detailForm.indexDetail].rece_money);
-        if(parseFloat(this.detailForm.money).toFixed(2) != parseFloat(this.tableDataQK[this.detailForm.indexDetail].rece_money).toFixed(2)){
+        if(parseFloat(this.detailForm.money).toFixed(2) != parseFloat(this.tableDataQK[this.detailForm.indexDetail].rece_money).toFixed(2) && this.tableDataQK[this.detailForm.indexDetail].order_sn != ''){
           this.$confirm("结算金额同时修改关联订单的收入，是否修改", "提示", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
@@ -1484,7 +1539,7 @@
               that.tableDataQK[that.detailForm.indexDetail].rece_at = formatDate(that.detailForm.enterTime).split(" ")[0];
             }
 
-            that.tableDataQK[that.detailForm.indexDetail].order_sn = that.detailForm.orderNum;
+//            that.tableDataQK[that.detailForm.indexDetail].order_sn = that.detailForm.orderNum;
             that.tableDataQK[that.detailForm.indexDetail].guest_name = that.detailForm.guestName;
             that.tableDataQK[that.detailForm.indexDetail].product_name = that.detailForm.product;
             that.tableDataQK[that.detailForm.indexDetail].rece_money = that.detailForm.money;
@@ -1658,7 +1713,7 @@
                     end = item.rece_at;
                   }
                   totalMoney += parseFloat(item.rece_money);
-                  console.log(totalMoney);
+//                  console.log(totalMoney);
                 });
 
                 that.totalMoney = totalMoney.toFixed(2);
@@ -1695,12 +1750,12 @@
                 });
                 that.showSK = false;
               }else{
-                that.tableDataQK = '';
+                that.tableDataQK = [];
                 that.totalItem = '';
                 that.totalMoney = '';
                 that.startTime = '';
                 that.endTime = '';
-                that.showSK = true;
+                that.showSK = false;
               }
             }
             that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
@@ -1777,7 +1832,61 @@
       handleCurrentChangeGL(val){
         this.currentPageGL = val;
         this.getListRece();
-      }
+      },
+
+//     时间限制
+      beginDate(){
+//      alert(begin);
+        const that = this;
+        return {
+          disabledDate(time){
+            if (that.pftForm.endTime) {  //如果结束时间不为空，则小于结束时间
+              return new Date(that.pftForm.endTime).getTime() < time.getTime()
+            } else {
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+            }
+          }
+        }
+      },
+      processDate(){
+//      alert(process);
+        const that = this;
+        return {
+          disabledDate(time) {
+            if (that.pftForm.startTime) {  //如果开始时间不为空，则结束时间大于开始时间
+              return new Date(that.pftForm.startTime).getTime() > time.getTime()
+            } else {
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+            }
+          }
+        }
+      },
+      beginDate1(){
+//      alert(begin);
+        const that = this;
+        return {
+          disabledDate(time){
+            if (that.ruleForm.endTime) {  //如果结束时间不为空，则小于结束时间
+              return new Date(that.ruleForm.endTime).getTime() < time.getTime()
+            } else {
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+            }
+          }
+        }
+      },
+      processDate1(){
+//      alert(process);
+        const that = this;
+        return {
+          disabledDate(time) {
+            if (that.ruleForm.startTime) {  //如果开始时间不为空，则结束时间大于开始时间
+              return new Date(that.ruleForm.startTime).getTime() > time.getTime()
+            } else {
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+            }
+          }
+        }
+      },
     },
     created() {
 
