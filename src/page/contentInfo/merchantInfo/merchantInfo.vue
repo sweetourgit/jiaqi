@@ -234,8 +234,17 @@
                   placeholder="请选择"
                   value-format="yyyyMMdd"
                   format="yyyy-MM-dd"
-                  @focus="dataPicker()"
+                  @focus="dataPickerFocus()"
+                  @blur="dataPickerBlur()"
                 ></el-date-picker>
+                <!-- <el-date-picker
+                  type="date"
+                  v-model="ruleForm.expTime"
+                  style="width: 250px;"
+                  placeholder="请选择"
+                  @focus="dataPickerFocus()"
+                  @blur="dataPickerBlur()"
+                ></el-date-picker> -->
               </el-form-item>
               <el-form-item label="公司logo :" prop="companyLogo" style="width:360px;">
                 <el-upload
@@ -616,7 +625,8 @@
 </template>
 
 <script>
-import state from "../../../store/state";
+import state from "../../../store/state"
+import moment from "moment"
 
 export default {
   name: "merchantInfo",
@@ -721,7 +731,7 @@ export default {
         otherNames: "" //商户其他名字
       },
       rules: {
-        // expTime: [{ type: "string", message: "请选择日期", trigger: "change" }],
+        expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
           { max: 40, message: "不要超过40个字符", trigger: "blur" }
@@ -820,11 +830,17 @@ export default {
     };
   },
   methods: {
-    dataPicker () {
+    moment,
+    dataPickerBlur() {
+      console.log(this.ruleForm.expTime);
       if (this.btnindex == 2) {
-        this.ruleForm.expTime = new Date(this.ruleForm.expTime)
+        this.ruleForm.expTime = new Date(this.ruleForm.expTime);
+        // console.log(this.ruleForm.expTime);
       }
+    },
 
+    dataPickerFocus() {
+      console.log(this.ruleForm.expTime);
     },
     // 管理人员的模糊查询
     querySearchAsync(queryString, cb) {
@@ -859,7 +875,19 @@ export default {
       let otherNamesObj = {};
       otherNamesObj["name"] = this.ruleForm.otherNames;
       if (otherNamesObj.name !== undefined && otherNamesObj.name !== "") {
-        this.businessOtherNamesArr.push(otherNamesObj);
+        if (this.businessOtherNamesArr.length == 0) {
+          this.businessOtherNamesArr.push(otherNamesObj);
+        } else {
+          if (
+            JSON.stringify(this.businessOtherNamesArr).indexOf(
+              JSON.stringify(otherNamesObj)
+            ) == -1
+          ) {
+            this.businessOtherNamesArr.push(otherNamesObj);
+          } else {
+            this.$message.error("该商户名称已存在");
+          }
+        }
       }
       this.ruleForm.otherNames = "";
     },
@@ -1081,20 +1109,25 @@ export default {
             } else {
               this.accountForm.peerUserType = 2;
             }
-             this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-          pageIndex: 1,
-          pageSize: 10,
-          object: {
-            name: that.input,
-            state: that.statesValue,
-            settlementType: that.payValue
-            // 1月结 2非月结
-            // 2正常 3停用
-            // jqUserType 1 管理员  2 销售
-          }
-        })
-        .then((obj) => {}).catch(()=>{})
+            this.$http
+              .post(
+                this.GLOBAL.serverSrc +
+                  "/universal/localcomp/api/PeerUserUpdate",
+                {
+                  pageIndex: 1,
+                  pageSize: 10,
+                  object: {
+                    name: that.input,
+                    state: that.statesValue,
+                    settlementType: that.payValue
+                    // 1月结 2非月结
+                    // 2正常 3停用
+                    // jqUserType 1 管理员  2 销售
+                  }
+                }
+              )
+              .then(obj => {})
+              .catch(() => {});
             this.isAddAccount = false;
             this.$message({
               message: "账户添加成功",
@@ -1398,8 +1431,8 @@ export default {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
           this.editMerchan();
-          this.tid = 0;
-          this.dialogFormVisible = false;
+          // this.tid = 0;
+          // this.dialogFormVisible = false;
         } else {
           console.log("error submit!!");
           // console.log(this.ruleForm);
@@ -1460,22 +1493,23 @@ export default {
           return;
         }
       }
-      if (
-        this.tableData.filter(v => this.ruleForm.otherNames == v.name).length !=
-        0
-      ) {
-        this.$message.error("添加失败,该商户其他名称已存在");
-        this.dialogFormVisible = true;
-        return;
-      }
-      if (
-        new Set(this.businessOtherNamesArr).size !==
-        this.businessOtherNamesArr.length
-      ) {
-        // this.$message.error("该商户其他名称中输入重复名称")
-        this.businessOtherNamesArr = [...new Set(this.businessOtherNamesArr)];
-        // return
-      }
+      // if (
+      //   this.tableData.filter(v => this.ruleForm.otherNames == v.name).length !=
+      //   0
+      // ) {
+      //   this.$message.error("添加失败,该商户其他名称已存在");
+      //   this.dialogFormVisible = true;
+      //   return;
+      // }
+
+      // 商户角色
+          // if (this.ruleForm.localCompRole = "旅游组团社") {
+          //   this.ruleForm.localCompRole = 0;
+          // } else if (this.ruleForm.localCompRole = "独立旅行社") {
+          //   this.ruleForm.localCompRole = 1;
+          // } else {
+          //   this.ruleForm.localCompRole = 2;
+          // }
 
       // 判断商户名称是否是具有唯一性
       if (
@@ -1484,6 +1518,143 @@ export default {
         this.$message.error("添加失败,该商户名称已存在");
         this.dialogFormVisible = true;
         return;
+      }
+
+      // 状态
+      if (this.ruleForm.state == "停用") {
+        this.ruleForm.state = 3;
+      } else {
+        this.ruleForm.state = 2;
+      }
+
+      // 结算方式
+      if (this.ruleForm.settlementType == "非月结") {
+        this.ruleForm.settlementType = 2;
+        this.ruleForm.quota = 0;
+      } else {
+        this.ruleForm.settlementType = 1;
+      }
+
+      // 门市类型
+      if (this.ruleForm.storeType == "无") {
+        this.ruleForm.storeType = 0;
+      } else if (this.ruleForm.storeType == "大运通自营") {
+        this.ruleForm.storeType = 1;
+      } else if (this.ruleForm.storeType == "加盟门市") {
+        this.ruleForm.storeType = 2;
+      } else if (this.ruleForm.storeType == "第三方门市") {
+        this.ruleForm.storeType = 3;
+      }
+
+      // 经营范围
+      let scopeExt = this.ruleForm.scopeExt.join(",");
+
+      // 区域可见
+      console.log(this.ruleForm.orgs)
+      let orgs = [];
+      for (let i = 0; i < this.ruleForm.orgs.length; i++) {
+        let org = {};
+        org.orgID = this.ruleForm.orgs[i];
+        org.isDeleted = 0;
+        org.createTime = new Date().getTime();
+        orgs.push(org);
+      }
+      this.ruleForm.orgs = orgs;
+      console.log(this.ruleForm.orgs)
+      // 添加账户
+
+      // jqAdminList 管理和销售人员
+      let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
+      adminAndSalesArr = adminAndSalesArr.map(item => {
+        return {
+          name: item.value,
+          userCode: item.userCode,
+          uid: item.uid,
+          jqUserType: item.jqUserType,
+          isDeleted: item.isDeleted
+        };
+      });
+
+      // useList
+      this.useList.forEach((val, idx, arr) => {
+        if (arr[idx].peerUserType == "管理员") {
+          arr[idx].peerUserType = 1;
+        } else {
+          arr[idx].peerUserType = 2;
+        }
+        if (arr[idx].sex == "男") {
+          arr[idx].sex = 1;
+        } else {
+          arr[idx].sex = 2;
+        }
+        if (arr[idx].state == "正常") {
+          arr[idx].state = 2;
+        } else {
+          arr[idx].state = 3;
+        }
+      });
+      // localCompAliasList 商户其他名称
+      // console.log(this.businessOtherNamesArr)
+      // let businessOtherNamesArr = this.businessOtherNamesArr.join(",");
+      // console.log(businessOtherNamesArr)
+      // console.log(this.ruleForm.expTime)
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
+          object: {
+            isDeleted: 0,
+            code: null,
+            name: this.ruleForm.name,
+            // localCompType: this.ruleForm.localCompType,
+            localCompType: 1,
+            address: this.ruleForm.address,
+            state: this.ruleForm.state,
+            expTime: this.ruleForm.expTime,
+            settlementType: this.ruleForm.settlementType,
+            quota: this.ruleForm.quota,
+            scopeExt: scopeExt,
+            linker: this.ruleForm.linker,
+            phone: this.ruleForm.phone,
+            publicName: this.ruleForm.publicName,
+            bankName: this.ruleForm.bankName,
+            bankcardNo: this.ruleForm.bankcardNo,
+            balance: this.ruleForm.balance,
+            arrears: this.ruleForm.arrears,
+            imgUrl: this.ruleForm.imgUrl,
+            // localCompRole: this.ruleForm.localCompRole,
+            localCompRole: 1,
+            storeType: this.ruleForm.storeType,
+            orgs: this.ruleForm.orgs,
+            useList: this.useList,
+            jqAdminList: adminAndSalesArr,
+            localCompAliasList: this.businessOtherNamesArr
+          }
+        })
+        .then(obj => {
+          console.log(obj)
+          this.dialogFormVisible = false;
+          this.list();
+          this.$message({
+            message: "添加成功",
+            type: "success"
+          });
+        })
+        .catch(obj => {
+          this.$message({
+            message: "添加失败",
+            type: "error"
+          });
+          console.log(obj);
+        });
+    },
+    //修改
+    editMerchan() {
+      //判断商户其他名称是否具有唯一性 并且输个个数不可超过五十个
+      if (this.businessOtherNamesArr.length !== 0) {
+        if (this.businessOtherNamesArr.length > 50) {
+          this.$message.error("商户其他名称不可超过50个");
+          this.dialogFormVisible = true;
+          return;
+        }
       }
 
       // 状态
@@ -1540,89 +1711,20 @@ export default {
         };
       });
 
-      // useList
-      this.useList.forEach((val, idx, arr) => {
-        if (arr[idx].peerUserType == "管理员") {
-          arr[idx].peerUserType = 1;
-        } else {
-          arr[idx].peerUserType = 2;
-        }
-        if (arr[idx].sex == "男") {
-          arr[idx].sex = 1;
-        } else {
-          arr[idx].sex = 2;
-        }
-        if (arr[idx].state == "正常") {
-          arr[idx].state = 2;
-        } else {
-          arr[idx].state = 3;
-        }
-      });
-      // localCompAliasList 商户其他名称
-      // console.log(this.businessOtherNamesArr)
-      // let businessOtherNamesArr = this.businessOtherNamesArr.join(",");
-      // console.log(businessOtherNamesArr)
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
-          object: {
-            isDeleted: 0,
-            code: null,
-            name: this.ruleForm.name,
-            localCompType: this.ruleForm.localCompType,
-            address: this.ruleForm.address,
-            state: this.ruleForm.state,
-            expTime: this.ruleForm.expTime,
-            settlementType: this.ruleForm.settlementType,
-            quota: this.ruleForm.quota,
-            scopeExt: scopeExt,
-            linker: this.ruleForm.linker,
-            phone: this.ruleForm.phone,
-            publicName: this.ruleForm.publicName,
-            bankName: this.ruleForm.bankName,
-            bankcardNo: this.ruleForm.bankcardNo,
-            balance: this.ruleForm.balance,
-            arrears: this.ruleForm.arrears,
-            imgUrl: this.ruleForm.imgUrl,
-            localCompRole: this.ruleForm.localCompRole,
-            storeType: this.ruleForm.storeType,
-            orgs: this.ruleForm.orgs,
-            useList: this.useList,
-            jqAdminList: adminAndSalesArr,
-            localCompAliasList: this.businessOtherNamesArr
-          }
-        })
-        .then(obj => {
-          this.dialogFormVisible = false;
-          this.list();
-          this.$message({
-            message: "添加成功",
-            type: "success"
-          });
-        })
-        .catch(obj => {
-          this.$message({
-            message: "添加失败",
-            type: "error"
-          });
-          console.log(obj);
-        });
-    },
-    //修改
-    editMerchan () {
-      if (this.ruleForm.state == "停用") {
-        this.ruleForm.state = 3;
-      } else {
-        this.ruleForm.state = 2;
-      }
-      if (this.ruleForm.settlementType == "非月结") {
-        this.ruleForm.settlementType = 2;
-      } else {
-        this.ruleForm.settlementType = 1;
-      }
-      if (this.ruleForm.settlementType == 0) {
-        this.ruleForm.quota = 0;
-      }
-      this.ruleForm.scopeExt = this.ruleForm.scopeExt.join(",");
+      // if (this.ruleForm.state == "停用") {
+      //   this.ruleForm.state = 3;
+      // } else {
+      //   this.ruleForm.state = 2;
+      // }
+      // if (this.ruleForm.settlementType == "非月结") {
+      //   this.ruleForm.settlementType = 2;
+      // } else {
+      //   this.ruleForm.settlementType = 1;
+      // }
+      // if (this.ruleForm.settlementType == 0) {
+      //   this.ruleForm.quota = 0;
+      // }
+      // this.ruleForm.scopeExt = this.ruleForm.scopeExt.join(",");
       console.log(this.ruleForm.expTime);
       if (this.ruleForm.expTime.length > 0) {
         let year = "";
@@ -1637,13 +1739,41 @@ export default {
       }
       console.log(this.ruleForm.expTime);
       this.ruleForm.id = this.tid;
-      var that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/save", {
-          object: this.ruleForm
+          object: {
+            id: this.ruleForm.id,
+            isDeleted: 0,
+            code: null,
+            name: this.ruleForm.name,
+            // localCompType: this.ruleForm.localCompType,
+            localCompType: 1,
+            address: this.ruleForm.address,
+            state: this.ruleForm.state,
+            expTime: this.ruleForm.expTime,
+            settlementType: this.ruleForm.settlementType,
+            quota: this.ruleForm.quota,
+            scopeExt: scopeExt,
+            linker: this.ruleForm.linker,
+            phone: this.ruleForm.phone,
+            publicName: this.ruleForm.publicName,
+            bankName: this.ruleForm.bankName,
+            bankcardNo: this.ruleForm.bankcardNo,
+            balance: this.ruleForm.balance,
+            arrears: this.ruleForm.arrears,
+            imgUrl: this.ruleForm.imgUrl,
+            // localCompRole: this.ruleForm.localCompRole,
+            localCompRole: 1,
+            storeType: this.ruleForm.storeType,
+            orgs: this.ruleForm.orgs,
+            jqAdminList: adminAndSalesArr,
+            localCompAliasList: this.businessOtherNamesArr
+          }
         })
-        .then(function(obj) {
-          that.list();
+        .then((obj) => {
+          this.dialogFormVisible = false
+          this.list();
+          this.$message.success("修改成功")
         })
         .catch(function(obj) {
           console.log(obj);
@@ -1794,19 +1924,25 @@ export default {
               if (orgs[i].orgID == this.scoperangeList[j].id) {
                 areaDetails.push(this.scoperangeList[j].orgName);
                 // this.scoperangeList[j].checked = true;
-                areaEdit.push(orgs[i].orgID)
+                areaEdit.push(orgs[i].orgID);
               }
             }
           }
 
           if (this.btnindex == 1) {
-            this.ruleForm.orgs = areaDetails.join(",")
+            this.ruleForm.orgs = areaDetails.join(",");
           } else {
-            this.ruleForm.orgs = areaEdit
+            this.ruleForm.orgs = areaEdit;
           }
 
           // 商户其他名称
-          this.businessOtherNamesArr = localCompAliasList
+          let businessNamesArr = [];
+          localCompAliasList.forEach((val, idx, arr) => {
+            businessNamesArr.push({
+              name: arr[idx].name
+            });
+          });
+          this.businessOtherNamesArr = businessNamesArr;
 
           let year = "";
           let month = "";
