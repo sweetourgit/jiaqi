@@ -32,7 +32,7 @@ import sharedInventory from '@/page/productManagement/sharedInventory/sharedInve
 import changePro from '@/page/productManagement/changePro/changePro'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
 import blacklist from '@/page/contentInfo/blacklist/blacklist'
-import workFlowList from '@/page/contentInfo/workFlowList/workFlowList'//工作流接口查询管理t
+import workFlowList from '@/page/contentInfo/workFlowList/workFlowList'//工作流接口查询管理test
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 import merchantInfo1 from '@/page/contentInfo/merchantInfo/merchantInfo1'
 import controlList from '@/page/contentInfo/priManagement/controlList'
