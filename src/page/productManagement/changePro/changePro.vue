@@ -139,18 +139,29 @@
               </el-upload>
             </el-form-item>
             <!-- 轮播图 -->
-            <el-form-item label="轮播图" prop="slideshow" label-width="120px">
-              <el-input v-model="ruleForm.slideshow" disabled class="banner" placeholder="3-6张图片">
-              </el-input>
-              <el-upload :on-preview="slideshowClick" style="float:left;" method="post" action="http://192.168.1.168:6012/universal/supplier/api/upload" list-type="picture" :limit='6' accept=".jpg,.png,.gif" :on-remove="handleRemove2" :multiple="true">
-                <el-button type="info">
-                  <div v-show="isSlideshow" class="upload_div">
-                    <img class="upload_img" :src="this.slideshowUrl" alt="">
-                  </div>
-                  上传</el-button>
-              </el-upload>
-              <!-- <input id="fileItem" type="file" multiple style="float:left; margin-left:10px;"> -->
+            <el-form-item label="轮播图" ref="slideshow" prop="slideshow" label-width="120px">
+              <span class="redStar">*</span>
+              <!-- <div class="img_upload_slideshow" :style="isInfo ? 'border: solid 1px #f56c6c;' : ''"> -->
+              <div class="img_upload_slideshow">
+                <template v-for="(item, index) in ruleForm.slideshow">
+                  <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShowAvatar(item)">
+                  <div class="img_div" :key="index" @click="imgDeleteAvatar(item)">x</div>
+                </template>
+              </div>
+              <el-button class="img_button" type="info" @click="handleImgUploadAvatar">上传</el-button>
+              <div v-show="isImgUrlShowAvatar" class="show_div">
+                <img class="show_img" :src="imgUrlShowAvatar" alt="">
+              </div>
+              <span v-if="isInfo" style="position: absolute; top: 30px; left: 10px; font-size: 12px; color: #f56c6c;">请选择3-6张图片</span>
+              <!-- <span v-if="this.ruleForm.slideshow == '' && a != false " style="position: absolute; top: 30px; left: 10px; font-size: 12px; color: #f56c6c;">请选择3-6张图片</span> -->
             </el-form-item>
+
+
+            <!--轮播图弹窗-->
+            <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUploadAvatar" custom-class="city_list">
+              <MaterialList :imgData="imgDataAvatar" :isType="true" v-on:isInfo="isInfoAvatar" v-on:checkList="checkListAvatar" v-on:closeButton="imgUploadAvatar = false"></MaterialList>
+            </el-dialog>
+
             <!-- 出游人群 -->
             <el-form-item label="出游人群" prop="Excursion" label-width="120px">
               <el-select v-model="ruleForm.Excursion" placeholder="请选择" class="Excursion-select">
@@ -276,6 +287,17 @@
       MaterialList
     },
     data() {
+      var areaIdRule = (rule, value, callback) => {
+        console.log(value.length)
+        if(value.length == 0 || value.length < 3 || value.length > 6) {
+          this.isInfo = true;
+          callback();
+          //return callback(new Error('请选择3-6张图片'));
+        } else {
+          this.isInfo = false;
+          callback();
+        }
+      };
       return {
         a: false,//头图不能为空
         validaError:[],
@@ -351,6 +373,13 @@
         imgUpload: false,     // 上传弹窗
         imgData: [],
         avatarImages: [], // 图片
+        // 轮播图上传 =======
+        isImgUrlShowAvatar: false,
+        imgUrlShowAvatar: '', // 点击查看图片
+        imgUploadAvatar: false,     // 上传弹窗
+        imgDataAvatar: [],
+        isInfo: false, // 验证
+        // 轮播图END =======
         //去程交通工具切换
         goRoad: [{
           value: '1',
@@ -465,8 +494,8 @@
           highlightWords2: '',
           highlightWords3: '',
           highlightWords4: '',
-          //avatarImages: '',
-          slideshow: '',
+          avatarImages: [],
+          slideshow: [],
           hotelAuto: '',
           hotelChinese: '',
           hotelEnglish: '',
@@ -833,7 +862,7 @@
             that.dynamicTags2 = obj.data.object.label  //TODO 运营标签暂时不好使
             //that.ruleForm.avatarImages = obj.data.object.pictureID //TODO 基本信息头图不好使
             that.ruleForm.video = obj.data.object.vedioID    //TODO 基本信息视频不好使
-            that.ruleForm.slideshow = "" //TODO 基本信息轮播不好使obj.data.object.pepeatpic
+            //that.ruleForm.slideshow = "" //TODO 基本信息轮播不好使obj.data.object.pepeatpic
             that.ruleForm.Excursion = obj.data.object.crowdID,//基本信息出游人群
             that.ruleForm.theme  =obj.data.object.themeID,//基本信息主题
             that.content_01 = obj.data.object.mark,
@@ -1315,6 +1344,45 @@
           }
         })
       },
+      // 轮播图上传=================
+      // 点击图片查看
+      imgClickShowAvatar(data) {
+        this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
+            "id": data.img_ID,
+        }).then(res => {
+          this.isImgUrlShowAvatar = true;
+          this.imgUrlShowAvatar = "http://192.168.2.65:3009/upload" + res.data.object.url;
+        })
+      },
+      // 上传按钮
+      handleImgUploadAvatar() {
+        this.imgDataAvatar = this.ruleForm.slideshow.map(v => v.img_ID);
+        this.imgUploadAvatar = true;
+      },
+      // 点击删除图片
+      imgDeleteAvatar(data) {
+        this.ruleForm.slideshow.splice(this.ruleForm.slideshow.indexOf(data), 1);
+        if(this.ruleForm.slideshow.length >= 3 && this.ruleForm.slideshow.length <= 6){
+          this.isInfo = false;
+        }else{
+          this.isInfo = true;
+        }
+      },
+      // 图片添加
+      checkListAvatar(data) {
+        this.ruleForm.slideshow = data.map(v => {
+          return {
+            img_ID: v,
+          }
+        })
+      },
+      isInfoAvatar(data) {
+        this.isInfo = data;
+        if(!data) {
+          this.$refs.slideshow.clearValidate();
+        }
+      },
+      // 轮播图上传END=========
       //去程添加经停、删除经停
       stopping(index) {
         {
@@ -2125,5 +2193,13 @@
   }
   .img_div:hover {
     cursor:pointer;
+  }
+  .img_upload_slideshow {
+    float: left;
+    min-width: 540px;
+    height: 38px;
+    margin-left: 10px;
+    border: solid 1px #E4E7ED;
+    background-color: #f5f7fa;
   }
 </style>

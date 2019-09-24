@@ -379,9 +379,9 @@
                               <!--返程-->
                               <div style="clear:both;">
                                 <div class="traffic_button">返程</div>
-                                <div class="traffic_button">
+                                <!-- <div class="traffic_button">
                                   <el-button @click="addRTransit" type="primary">添加中转</el-button>
-                                </div>
+                                </div> -->
                               </div>
                               <div class="plane" v-for="(item, index) in ruleForm.nackPlane" :key="item.index">
                                 <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
@@ -483,7 +483,7 @@
                                           </el-input>
                                         </el-form-item>
                                         <div class="minutes">分钟</div>
-                                        <div class="delete" @click="deleteItem(p,index)">删除</div>
+                                        <div class="delete" @click="reDeleteItem(p,index)">删除</div>
                                       </div>
                                     </div>
 
@@ -2343,7 +2343,7 @@
         this.ruleForm.plane[index].ext_Stopover.splice(p, 1)
       },
       deletePanel(index) {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        this.$confirm('是否删除该交通信息?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -3052,7 +3052,7 @@
       handlePoint(targetName){
         var aaa = this.qqqq;
         if(this.changeIndex >= this.packLen){
-          this.$confirm('套餐未保存切换将丢失数据, 是否继续?', '提示', {
+          this.$confirm('信息已经进行修改, 是否需要保存?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'

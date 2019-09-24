@@ -3262,6 +3262,7 @@
       },
       // 上传按钮
       handleImgUpload() {
+        console.log(this.ruleForm)
         console.log(this.ruleForm.avatarImages)
         this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
         this.imgUpload = true;
@@ -3292,6 +3293,7 @@
       },
       // 上传按钮
       handleImgUploadAvatar() {
+        console.log(this.ruleForm.slideshow)
         this.imgDataAvatar = this.ruleForm.slideshow.map(v => v.img_ID);
         this.imgUploadAvatar = true;
       },
