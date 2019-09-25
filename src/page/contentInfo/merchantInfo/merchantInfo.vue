@@ -155,7 +155,7 @@
                   <el-option label="个人/独立旅游顾问" value="2" key="2"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="门市类型 :" prop="storeType" class="placaBlockhahahah">
+              <el-form-item label="门市类型 :" prop="storeType">
                 <el-select v-model="ruleForm.storeType" placeholder="请选择" style="width: 250px;">
                   <el-option key="0" label="无" value="0"></el-option>
                   <el-option key="1" label="大运通自营" value="1"></el-option>

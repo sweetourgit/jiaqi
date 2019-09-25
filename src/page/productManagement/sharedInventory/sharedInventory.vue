@@ -5,7 +5,7 @@
     <div class="month">
         <ul class="date">
             <!--点击会触发pickpre函数，重新刷新当前日期 @click -->
-            <li class="arrow" @click="pickPre(currentYear,currentMonth)"><</li>
+            <li class="arrow" @click="pickPre(currentYear,currentMonth)"> < </li>
             <li class="year-month" >
                {{currentYear}}-{{currentMonth}}月
             </li>
