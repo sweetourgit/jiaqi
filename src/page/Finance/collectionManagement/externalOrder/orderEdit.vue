@@ -70,6 +70,9 @@
                 <el-table-column prop="order_sn" label="订单ID" align="center" >
                 </el-table-column>
                 <el-table-column prop="distributor" label="分销商" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.distributor}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="product_name" label="产品名称" align="center">
                 </el-table-column>
@@ -196,7 +199,7 @@
                 </el-table-column>
                 <el-table-column prop="order_sn" label="订单编号" align="center">
                   <template slot-scope="scope">
-                    <span v-if="scope.row.import_status == 3">{{scope.row.order_sn}}</span>
+                    <span>{{scope.row.plat_order_sn}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="guest_name" label="客人名称" align="center">
@@ -327,7 +330,7 @@
           </div>
         </el-dialog>
 
-        <el-dialog title="关联订单" :visible="dialogFormVisible2" width=90% @close="close" append-to-body>
+        <el-dialog title="关联订单" :visible="dialogFormVisible2" width=90% @close="close" append-to-body id="GLDDTable">
           <div class="table_trip" style="width: 100%;">
             <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{PFT_num}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{PFT_money}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{PFT_start}}--{{PFT_end}}</div>
             <el-table ref="multipleTable" v-loading="loading" :data="tableDataGLDD" border style="width: 100%;margin-bottom: 28px;" height="700" :highlight-current-row="true" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
@@ -380,7 +383,7 @@
               </el-table-column>
             </el-table>
 
-            <div class="block">
+            <div class="block" style="text-align: center;">
               <el-pagination
                 @size-change="handleSizeChangeGL"
                 @current-change="handleCurrentChangeGL"
@@ -1547,7 +1550,7 @@
               that.tableDataQK[that.detailForm.indexDetail].rece_at = formatDate(that.detailForm.enterTime).split(" ")[0];
             }
 
-//            that.tableDataQK[that.detailForm.indexDetail].order_sn = that.detailForm.orderNum;
+            that.tableDataQK[that.detailForm.indexDetail].plat_order_sn = that.detailForm.orderNum;
             that.tableDataQK[that.detailForm.indexDetail].guest_name = that.detailForm.guestName;
             that.tableDataQK[that.detailForm.indexDetail].product_name = that.detailForm.product;
             that.tableDataQK[that.detailForm.indexDetail].rece_money = that.detailForm.money;
@@ -1833,11 +1836,13 @@
         });
       },
       handleSizeChangeGL(val){
+        this.loading = true;
         this.pageSizeGL = val;
         this.currentPageGL = 1;
         this.getListRece();
       },
       handleCurrentChangeGL(val){
+        this.loading = true;
         this.currentPageGL = val;
         this.getListRece();
       },
@@ -1906,7 +1911,7 @@
 
 </script>
 <style lang="scss">
-  .el-table__fixed-body-wrapper{
+  #GLDDTable .el-table__fixed-body-wrapper{
     top: 48px!important;
   }
   #tradeAdd .el-dialog{
@@ -1945,7 +1950,7 @@
   #tradeAdd .el-upload-list__item{
     margin-top: 10px !important;
   }
-  .lineTitle{
+  #tradeAdd .lineTitle{
     width: 96%;
     margin: 10px auto;
     background-color: #E6F3FC;
@@ -1954,13 +1959,13 @@
     box-sizing: border-box;
     padding: 0 10px;
   }
-  .block{
+  #tradeAdd .block{
     /*float: left;*/
     margin-left: 600px;
     margin-top: 70px;
     margin-bottom: 30px;
   }
-  .inputWidth{
+  #tradeAdd .inputWidth{
     width: 80%!important;
   }
 </style>

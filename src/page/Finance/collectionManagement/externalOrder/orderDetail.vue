@@ -41,7 +41,7 @@
           </el-table-column>
           <el-table-column prop="order_sn" label="订单编号" align="center">
             <template slot-scope="scope">
-              <span v-if="scope.row.import_status == 3">{{scope.row.order_sn}}</span>
+              <span>{{scope.row.plat_order_sn}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="guest_name" label="客人名称" align="center">
