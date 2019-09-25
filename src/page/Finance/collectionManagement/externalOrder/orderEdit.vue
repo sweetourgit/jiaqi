@@ -1484,7 +1484,7 @@
       },
 //      明细编辑
       detailEdit(scope){
-//        console.log(scope.row);
+//        alert(scope.row.reco_status);
         let flagEdit;
         if(scope.row.reco_status == 1){
           flagEdit = false;

@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
-    分销商预存款
+    商户预存款
 
   </div>
 </template>

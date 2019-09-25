@@ -37,7 +37,7 @@
           <div class="topTitle">
             <p>款项入账时间：{{date}}</p>
             <p>分销商：{{distributor}}</p>
-            <p v-if="!hasAttachment">待认款：{{tableDataMX[0].rece_money}}</p>
+            <p v-if="!hasAttachment">待认收款：{{tableDataMX[0].rece_money}}</p>
           </div>
           <div style="text-align: right" v-if="!hasAttachment">
             <el-button @click="doSubmit(tableDataMX[0])" type="primary">认收款</el-button>

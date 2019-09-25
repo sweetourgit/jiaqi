@@ -114,7 +114,7 @@
           <el-table-column prop="tour_no" label="关联产品" align="center">
             <template slot-scope="scope">
               <p v-if="scope.row.tour_no == ''">未关联产品</p>
-              <p v-else>产品名称：{{scope.row.product_name_por}}<br>团期计划：{{scope.row.tour_no}}</p>
+              <p v-else>产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
             </template>
           </el-table-column>
           <el-table-column prop="create_uid" label="操作人" align="center" width="100">
@@ -407,6 +407,9 @@
 
             if(response.data.data.file != '' && response.data.data.type == 1){
               that.fileList = response.data.data.file;
+              for(let i = 0; i < that.fileList.length; i++){
+                that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
+              }
               that.tableDataXQ = [];
               that.tableDataSK = response.data.data.list;
               that.totalItem = response.data.data.list.length;
