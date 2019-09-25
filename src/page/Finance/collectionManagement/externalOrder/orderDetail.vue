@@ -19,12 +19,18 @@
         <p class="inputLabel"><span>收款时间：</span>{{baseInfo.creditTime}}</p>
         <p class="inputLabel"><span>款项入账时间：</span>{{baseInfo.startTime}}--{{baseInfo.endTime}}</p>
         <p class="inputLabel"><span>待认收款：</span>{{baseInfo.toCollection}}</p>
-        <p class="inputLabel">
-          <span>附件：</span>
-          <el-upload ref="upload1" class="upload-demo" action="" :file-list="fileList" :disabled="disabled">
-            <el-button size="small" type="primary" :disabled="disabled">点击上传</el-button>
-          </el-upload>
-        </p>
+        <div class="inputLabel">
+          <span style="vertical-align: top;">附件：</span>
+          <!--<el-upload ref="upload1" class="upload-demo" action="" :file-list="fileList" :disabled="disabled">-->
+            <!--<el-button size="small" type="primary" :disabled="disabled">点击上传</el-button>-->
+          <!--</el-upload>-->
+
+          <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
+            <li v-for="item in fileList">
+              <a :href="item.url" target="_blank">{{item.name}}</a>
+            </li>
+          </ul>
+        </div>
         <p class="inputLabel"><span>分销商：</span>{{baseInfo.distributor}}</p>
       </div>
       <p class="stepTitle" v-if="showSK">收款明细</p>
@@ -393,7 +399,7 @@
               if (response.data.isSuccess) {
                 that.applicant = response.data.object.name;
               } else {
-                that.$message.success("失败~");
+                that.$message.warning("失败~");
               }
             }).catch(function(error) {
               console.log(error);
@@ -433,6 +439,12 @@
               that.showSK = true;
               that.showXQ = false;
             }else if(response.data.data.type == 2 && response.data.data.list.length != 0){
+              if(response.data.data.distributor == '票付通余额'){
+                that.fileList = response.data.data.file;
+                for(let i = 0; i < that.fileList.length; i++){
+                  that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
+                }
+              }
               that.tableDataSK = [];
               that.tableDataXQ = response.data.data.list;
               that.tableDataXQ.forEach(function (item, index, arr) {
@@ -470,6 +482,22 @@
               that.showSK = true;
               that.showXQ = false;
             }
+            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
+              {
+                "id": response.data.data.account_id
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+              }).then(function (obj) {
+//                that.tableDataZH = obj.data.objects;
+              console.log('账户查询',obj);
+              if(obj.data.isSuccess){
+                that.baseInfo.payAccount = obj.data.object.title;
+              }
+            }).catch(function (obj) {
+              console.log(obj)
+            });
           } else {
             that.$message.success("加载数据失败~");
           }

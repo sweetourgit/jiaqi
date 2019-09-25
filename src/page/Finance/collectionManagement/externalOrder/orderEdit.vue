@@ -195,6 +195,9 @@
                 <el-table-column prop="rece_at" label="入账时间" align="center">
                 </el-table-column>
                 <el-table-column prop="order_sn" label="订单编号" align="center">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.import_status == 3">{{scope.row.order_sn}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="guest_name" label="客人名称" align="center">
                 </el-table-column>
@@ -1002,33 +1005,25 @@
         const that = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            if(!this.showSK){
-//              alert("无明细修改");
-              let Stime = '', Etime = '';
-              if(this.ruleForm.startTime.toString().split('-')[1]){
-                Stime = this.ruleForm.startTime;
-              }else{
-                Stime = formatDate(this.ruleForm.startTime).split(" ")[0];
-              }
-              if(this.ruleForm.endTime.toString().split('-')[1]){
-                Etime = this.ruleForm.endTime;
-              }else{
-                Etime = formatDate(this.ruleForm.endTime).split(" ")[0];
-              }
-              if(this.tableDataQK.length > 0){
-                if(new Date(Date.parse(Stime)) > new Date(Date.parse(this.tableDataQK[0].sale_at)) || new Date(Date.parse(Etime)) < new Date(Date.parse(this.tableDataQK[0].sale_at))){
-                  this.$confirm("收款入账时间设置错误，无法修改", "提示", {
-                    confirmButtonText: "好的",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                  }).then(() => {
-
-                  }).catch(() => {
-
-                  });
+            if(this.PFTYE){
+              that.subFunXG();
+            }else{
+              if(!this.showSK){
+                alert("无明细修改");
+                let Stime = '', Etime = '';
+                if(this.ruleForm.startTime.toString().split('-')[1]){
+                  Stime = this.ruleForm.startTime;
                 }else{
-                  if(parseFloat(this.ruleForm.payMoney) < parseFloat(this.tableDataQK[0].income)){
-                    this.$confirm("收款金额小于收入金额，无法修改", "提示", {
+                  Stime = formatDate(this.ruleForm.startTime).split(" ")[0];
+                }
+                if(this.ruleForm.endTime.toString().split('-')[1]){
+                  Etime = this.ruleForm.endTime;
+                }else{
+                  Etime = formatDate(this.ruleForm.endTime).split(" ")[0];
+                }
+                if(this.tableDataQK.length > 0){
+                  if(new Date(Date.parse(Stime)) > new Date(Date.parse(this.tableDataQK[0].sale_at)) || new Date(Date.parse(Etime)) < new Date(Date.parse(this.tableDataQK[0].sale_at))){
+                    this.$confirm("收款入账时间设置错误，无法修改", "提示", {
                       confirmButtonText: "好的",
                       cancelButtonText: "取消",
                       type: "warning"
@@ -1038,23 +1033,60 @@
 
                     });
                   }else{
-                    that.subFunXG();
+                    if(parseFloat(this.ruleForm.payMoney) < parseFloat(this.tableDataQK[0].income)){
+                      this.$confirm("收款金额小于收入金额，无法修改", "提示", {
+                        confirmButtonText: "好的",
+                        cancelButtonText: "取消",
+                        type: "warning"
+                      }).then(() => {
+
+                      }).catch(() => {
+
+                      });
+                    }else{
+                      that.subFunXG();
+                    }
+
                   }
-
+                }else{
+                  that.subFunXG();
                 }
-              }else{
-                that.subFunXG();
-              }
 
-            }else if(this.totalMoney != '' && this.startTime != ''){
+              }else if(this.totalMoney != '' && this.startTime != ''){
 //              alert("均不为空");
-              if(parseFloat(this.ruleForm.payMoney).toFixed(2) != parseFloat(this.totalMoney).toFixed(2)) {
+                if(parseFloat(this.ruleForm.payMoney).toFixed(2) != parseFloat(this.totalMoney).toFixed(2)) {
 //                alert('金额不等');
-                this.$confirm("收款金额和全部收款明细结算金额总计不符是否继续添加?", "提示", {
-                  confirmButtonText: "添加",
-                  cancelButtonText: "取消",
-                  type: "warning"
-                }).then(() => {
+                  this.$confirm("收款金额和全部收款明细结算金额总计不符是否继续添加?", "提示", {
+                    confirmButtonText: "添加",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                  }).then(() => {
+                    let start = this.ruleForm.startTime, end = this.ruleForm.endTime;
+                    const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
+                    if (!reg.test(start)) {
+                      start = formatDate(this.ruleForm.startTime);
+                    }
+                    if (!reg.test(end)) {
+                      end = formatDate(this.ruleForm.endTime);
+                    }
+                    if (start != this.startTime || end != this.endTime) {
+                      this.$confirm("款项入账时间段和全部收款明细入账时间区间不符，是否继续添加?", "提示", {
+                        confirmButtonText: "添加",
+                        cancelButtonText: "取消",
+                        type: "warning"
+                      }).then(() => {
+                        that.subFunXG();
+                      }).catch(() => {
+
+                      });
+                    }else{
+                      that.subFunXG();
+                    }
+                  }).catch(() => {
+
+                  });
+                }else{
+//                alert('金额相等');
                   let start = this.ruleForm.startTime, end = this.ruleForm.endTime;
                   const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
                   if (!reg.test(start)) {
@@ -1076,34 +1108,10 @@
                   }else{
                     that.subFunXG();
                   }
-                }).catch(() => {
-
-                });
-              }else{
-//                alert('金额相等');
-                let start = this.ruleForm.startTime, end = this.ruleForm.endTime;
-                const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
-                if (!reg.test(start)) {
-                  start = formatDate(this.ruleForm.startTime);
-                }
-                if (!reg.test(end)) {
-                  end = formatDate(this.ruleForm.endTime);
-                }
-                if (start != this.startTime || end != this.endTime) {
-                  this.$confirm("款项入账时间段和全部收款明细入账时间区间不符，是否继续添加?", "提示", {
-                    confirmButtonText: "添加",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                  }).then(() => {
-                    that.subFunXG();
-                  }).catch(() => {
-
-                  });
-                }else{
-                  that.subFunXG();
                 }
               }
             }
+
           }
         });
       },
@@ -1898,6 +1906,9 @@
 
 </script>
 <style lang="scss">
+  .el-table__fixed-body-wrapper{
+    top: 48px!important;
+  }
   #tradeAdd .el-dialog{
     width: 90%;
   }
