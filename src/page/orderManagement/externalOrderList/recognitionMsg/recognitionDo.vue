@@ -37,8 +37,12 @@
           <div class="topTitle">
             <p>款项入账时间：{{date}}</p>
             <p>分销商：{{distributor}}</p>
+            <p v-if="!hasAttachment">待认款：{{tableDataMX[0].rece_money}}</p>
           </div>
-          <div class="searchDv">
+          <div style="text-align: right" v-if="!hasAttachment">
+            <el-button @click="doSubmit(tableDataMX[0])" type="primary">认收款</el-button>
+          </div>
+          <div class="searchDv" v-if="hasAttachment">
             <span class="search-title">产品名称:</span>
             <el-input v-model="activeForm.title" class="input"></el-input>
             <span class="search-title">订单ID:</span>
@@ -57,7 +61,7 @@
               <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
             </div>
           </div>
-          <el-table ref="multipleTable" :data="tableDataMX" border style="width: 100%;margin-top: 20px;" height="650" :header-cell-style="getRowClass">
+          <el-table ref="multipleTable" :data="tableDataMX" border style="width: 100%;margin-top: 20px;" height="650" :header-cell-style="getRowClass" v-if="hasAttachment">
             <el-table-column prop="" label="" align="center" width="40">
               <template slot-scope="scope">
                 <p v-if="tableData[0].sale_at.split(' ')[0] == scope.row.rece_at && tableData[0].income == scope.row.rece_money" style="color: red;">建议匹配</p>
@@ -131,7 +135,8 @@
         activeIndex: 0,
         date: '',
         distributor: '',
-        item: ''
+        item: '',
+        hasAttachment: true
       }
     },
     computed: {
@@ -237,7 +242,8 @@
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log('明细信息',response);
-            that.tableDataMX = response.data.data;
+            that.tableDataMX = response.data.data.info;
+            that.hasAttachment = response.data.data.flag;
             if(that.tableDataMX.length != 0){
               that.tableDataMX.forEach(function (item, index, arr) {
                 item.rece_at = formatDate(new Date(item.rece_at*1000));
