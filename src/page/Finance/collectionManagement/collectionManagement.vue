@@ -10,6 +10,9 @@
       <el-tab-pane label="外部订单收款" name="fourth">
         <externalOrder></externalOrder>
       </el-tab-pane>
+      <el-tab-pane label="商户预存款" name="six">
+        <merchantPrestore></merchantPrestore>
+      </el-tab-pane>
       <el-tab-pane label="分销商收款" name="five">
         <distributorsInfo></distributorsInfo>
       </el-tab-pane>
@@ -25,6 +28,7 @@ import SameTradeManagement from '@/page/Finance/collectionManagement/sameTradeMa
 import PendingApprovalManagement from '@/page/Finance/collectionManagement/pendingApprovalManagement'
 import externalOrder from '@/page/Finance/collectionManagement/externalOrder/externalOrderManagement.vue'
 import distributorsInfo from '@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo.vue'
+import merchantPrestore from '@/page/Finance/collectionManagement/merchantPrestore/merchantPrestore.vue'
 export default {
   name: "collectionManagement",
   components: {
@@ -32,7 +36,8 @@ export default {
     StraightGuestManagement,
     PendingApprovalManagement,
     externalOrder,
-    distributorsInfo
+    distributorsInfo,
+    merchantPrestore
   },
   data() {
     return {
