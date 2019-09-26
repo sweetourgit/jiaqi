@@ -7,7 +7,7 @@
       </div>
       {{changeobj}}
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <!-- 行程信息 -->
+        <!-- 行程信息begin -->
         <el-tab-pane label="行程信息" name="second">
           <!-- {{chuxian}} -->
           <!-- <TripInfo :inputravelDays="travelDays"></TripInfo> -->
