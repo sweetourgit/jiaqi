@@ -1,5 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
+    <!--认收款信息-->
     <div class="main" style="width: 88%;text-align: right;">
       <el-button type="primary" @click="cancalBtn" plain>取消</el-button>
       <el-button type="primary"  @click="submitBtn">确认</el-button>
@@ -68,9 +69,9 @@
   </div>
 </template>
 <script type="text/javascript">
-  import recognitionSee from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionSee'
-  import recognitionDo from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionDo'
-  import {formatDate} from '@/js/libs/publicMethod.js'
+  import recognitionSee from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionSee'// 查看匹配信息
+  import recognitionDo from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionDo'// 认收款
+  import {formatDate} from '@/js/libs/publicMethod.js' //时间转化
 
   export default {
     name: "externalOrderList",
@@ -80,25 +81,18 @@
     },
     data() {
       return {
-        pid: '',
-        transmit: false,
-        dialogFormVisible4: false,
-        dialogFormVisible2: false,
-        info: '',
-        orderID: '',
+        dialogFormVisible4: false,// 查看匹配信息显示隐藏
+        dialogFormVisible2: false,// 认收款操作显示隐藏
+        info: '',// 认收款操作数据传递
+        orderID: '',// 查看匹配信息数据传递
 
-        tableData: [],
-        multipleSelection: [],
-        currentRow: true,
+        tableData: [],// 认收款table
       }
     },
     computed: {
       // 计算属性的 getter
     },
     watch: {},
-    created(){
-      this.loadData();
-    },
     methods: {
       // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -108,6 +102,7 @@
           return ''
         }
       },
+//      取消按钮事件
       cancalBtn(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/canclerec", {
@@ -132,6 +127,7 @@
         });
 
       },
+//      确认按钮事件
       submitBtn(){
         //...
         const that = this;
@@ -171,16 +167,12 @@
         }
 
       },
-      handleClick() {
-        this.reable = true;
-        this.transmit = !this.transmit;
-        this.pid = ''
-      },
 //      查看
       showBtn(row){
         this.orderID = row.order_sn;
         this.dialogFormVisible4 = true;
       },
+//      关闭弹窗
       close(){
         this.dialogFormVisible4 = false;
         this.dialogFormVisible2 = false;
@@ -228,6 +220,7 @@
         this.info = row.order_sn;
         this.dialogFormVisible2 = true;
       },
+//      认收款自动匹配
       initData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recmatch", {
@@ -238,6 +231,7 @@
           console.log(error);
         });
       },
+//      加载table数据
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/reclist", {
@@ -263,13 +257,10 @@
       },
     },
     created(){
-//      console.log(this.$route.params);
-//      console.log(this.$route.query);
       if(this.$route.query.ids){
         this.initData();
-
       }else{
-        this.cancalBtn();
+        this.$router.push({ path: "/externalOrderList/noRecognition" });
       }
 
     }

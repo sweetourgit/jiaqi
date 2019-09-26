@@ -33,7 +33,6 @@
               <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
               <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
               <el-radio label="去哪儿">去哪儿</el-radio>
-              <!--待添加，新需求-->
               <el-radio label="票付通余额">票付通余额</el-radio>
               <el-radio label="无">无</el-radio>
             </el-radio-group>
@@ -137,6 +136,7 @@
               </el-table>
             </div>
           </div>
+
           <!--分销商为：其他-->
           <div v-if="!PFTYE">
             <el-form-item label="收款金额：" prop="payMoney" label-width="140px">
@@ -300,6 +300,7 @@
               </el-table>
             </div>
           </div>
+
         </div>
 
         <!--选择收款账户-->
@@ -329,7 +330,7 @@
             <!--<el-button class="el-button" type="primary" @click="">确 认</el-button>-->
           </div>
         </el-dialog>
-
+        <!--票付通余额，关联订单-->
         <el-dialog title="关联订单" :visible="dialogFormVisible2" width=90% @close="close" append-to-body id="GLDDTable">
           <div class="table_trip" style="width: 100%;">
             <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{PFT_num}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{PFT_money}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{PFT_start}}--{{PFT_end}}</div>
@@ -405,7 +406,7 @@
         </el-dialog>
 
       </el-form>
-
+      <!--有附件上传时，收款明细编辑-->
       <el-dialog title="修改收款明细" :visible="dialogFormVisible3" width=30% @close="close" append-to-body id="edit_detail">
         <el-form :model="detailForm" :rules="detailRules" ref="ruleFormMX">
           <div>

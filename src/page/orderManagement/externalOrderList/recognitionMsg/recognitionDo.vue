@@ -1,7 +1,9 @@
 <template>
   <div class="vivo" style="position:relative">
+    <!--认收款-->
     <el-dialog title="认收款" :visible="dialogFormVisible2" width=90% @close="closeAdd">
       <div class="tableDv">
+        <!--订单信息-->
       <div class="table_trip" style="width: 100%;">
         <el-table ref="multipleTable" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass">
           <el-table-column prop="order_sn" label="订单ID" align="center">
@@ -29,10 +31,17 @@
           </el-table-column>
         </el-table>
       </div>
+        <!--订单信息  end-->
+
+        <!--匹配信息-->
       <div class="bottom">
+        <!--收款列表-->
         <ul class="leftNav" style="max-height: 700px;overflow-y: auto;overflow-x: hidden;">
           <li v-for="(item, index) in navData" :data-val="item.id" @click="clickNavHandle(item, index)" :class="{'active':activeIndex==index}">{{item.explain}}</li>
         </ul>
+        <!--收款列表  end-->
+
+        <!--收款明细-->
         <div class="table_trip" style="width: 76%;">
           <div class="topTitle">
             <p>款项入账时间：{{date}}</p>
@@ -96,7 +105,9 @@
             </el-table-column>
           </el-table>
         </div>
+        <!--收款明细  end-->
       </div>
+        <!--匹配信息  end-->
     </div>
       <div class="footer">
         <el-button class="el-button" type="warning" @click="closeAdd">取 消</el-button>
@@ -117,8 +128,6 @@
     },
     data() {
       return {
-        pid: '',
-        transmit: false,
         activeForm: {
           title: '',
           oid: '',
@@ -126,17 +135,15 @@
           name: '',
           num1: '',
           num2: ''
-        },
-        tableData: [],
-        multipleSelection: [],
-        currentRow: true,
-        navData: [],
-        tableDataMX: [],
-        activeIndex: 0,
-        date: '',
-        distributor: '',
-        item: '',
-        hasAttachment: true
+        },// 收款明细查询筛选项
+        tableData: [],// 订单信息table
+        navData: [],// 左侧收款明细列表
+        tableDataMX: [],// 收款明细列表
+        activeIndex: 0,// 当前收款明细列表index
+        date: '',// 款项入账时间
+        distributor: '',// 分销商
+        item: '',// 收款列表选中项信息
+        hasAttachment: true// 是否有收款明细
       }
     },
     computed: {
@@ -167,20 +174,18 @@
           return ''
         }
       },
-      handleClick() {
-        this.reable = true;
-        this.transmit = !this.transmit;
-        this.pid = ''
-      },
+//      收款明细侧边栏点击事件
       clickNavHandle(item, index){
         this.activeIndex = index;
 //        console.log(item);
         this.item = item;
         this.getReceiptDetail();
       },
+//      关闭此弹窗
       closeAdd() {
         this.$emit('close', false);
       },
+//      加载基础数据
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recorderinfo", {
@@ -213,9 +218,11 @@
           console.log(error);
         });
       },
+//      搜索
       searchHand(){
         this.getReceiptDetail();
       },
+//      重置
       resetHand(){
         this.activeForm = {
           title: '',
@@ -227,6 +234,7 @@
         };
         this.getReceiptDetail();
       },
+//      获取收款明细
       getReceiptDetail(){
         const that = this;
         this.date = formatDate(new Date(this.item.rece_start*1000))+'--'+formatDate(new Date(this.item.rece_end*1000));
@@ -257,6 +265,7 @@
           console.log(error);
         });
       },
+//      提交认款
       doSubmit(row){
         console.log(row);
         const that = this;
@@ -284,9 +293,7 @@
 
     },
     created(){
-//      console.log(this.$route.params);
-//      console.log(this.$route.query);
-//      this.tableData = this.$route.query;
+
     }
   }
 

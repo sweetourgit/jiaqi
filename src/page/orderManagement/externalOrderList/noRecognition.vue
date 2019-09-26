@@ -398,7 +398,7 @@
         this.loadData();
       },
       selectInit(row, index){
-        if(row.bill_status == 0){
+        if(row.bill_status == 0 || row.pay_type == 5){
           return false  //不可勾选
         }else{
           return true  //可勾选
@@ -414,7 +414,7 @@
         console.log(this.multipleSelection);
       },
       handleRowClick(row, column, event){
-        if(row.accountingStatus != '已报账'){
+        if(row.accountingStatus != '已报账' && row.pay_type != 5){
           this.$refs.multipleTable.toggleRowSelection(row);
         }
       },

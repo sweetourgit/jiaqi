@@ -131,7 +131,7 @@
           <el-table-column prop="bill_status" label="认收款信息" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="showBtn(scope.row)">查看</el-button>
-              <el-button type="text" @click="undoBtn(scope.row)">撤销</el-button>
+              <el-button type="text" @click="undoBtn(scope.row)" v-if="scope.row.pay_type != 5">撤销</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -183,22 +183,20 @@
           ticketPerson: '',
           ticketPhone: '',
           distributors: ''
-        },
-        reable: true,
-        pid: '',
-        transmit: false,
+        },// 筛选项
+        reable: true,// 按钮是否可点击
         dialogFormVisible: false,
         dialogFormVisible2: false,
         dialogFormVisible3: false,
         dialogFormVisible4: false,
 
 //      表格数据
-        total: 0, //总条数
+        total: 0, // 总条数
         currentPage4: 1,
         pageIndex: 1, // 设定当前页数
         pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
         tableData: [],
-        loading: true,
+        loading: true,// table加载的loading
         multipleSelection: [],
         currentRow: true,
 
@@ -212,8 +210,9 @@
           5: '报账中',
           6: '报账驳回',
           7: '已报账'
-        },
+        },// 报账状态
 
+//        时间限制，开始时间不能大于结束时间
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
         importStartDatePicker: this.beginDate1(),
@@ -238,11 +237,6 @@
           return ''
         }
       },
-      handleClick() {
-        this.reable = true;
-        this.transmit = !this.transmit;
-        this.pid = ''
-      },
 //      导入订单
       importOrder() {
         this.dialogFormVisible2 = true
@@ -253,7 +247,7 @@
 //          this.showStatus();
 //        }
       },
-//      订单状态
+//      订单状态（暂无，需求暂时不需要）
       showStatus(){
         this.dialogFormVisible3 = true
       },
