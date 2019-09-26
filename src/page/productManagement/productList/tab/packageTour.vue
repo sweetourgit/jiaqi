@@ -1966,7 +1966,7 @@ export default {
             if (that.ccc[i].value == 0) {
               that.ccc[i].value = "";
             }
-            console.log("库存按钮出现",that.ccc)
+            // console.log("库存按钮出现",that.ccc)
           }
           // console.log(obj.data);
         })
