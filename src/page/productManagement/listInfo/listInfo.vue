@@ -292,9 +292,10 @@
                           </div>
                         </div>
                         <!--去程-->
+
                         <div class="plane" v-for="(item, index) in ruleForm.plane" :key="item.index">
                           <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
-                            <el-cascader style="width: 105px;" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0];trafficClear(index)}" placeholder="飞机"></el-cascader>
+                            <el-cascader style="width: 105px;" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0];trafficClear(index, ruleForm)}" placeholder="飞机"></el-cascader>
                             <span class="plane_text"><span>*</span>第</span>
                             <el-form-item class="plane_day" :prop="'plane.'+index+'.day'" :rules="rules.day">
                               <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
@@ -2410,11 +2411,21 @@
           ext_Stopover: []
         })
       },
-      trafficClear(index,ruleForm){//去程切换交通方式清空 
-        console.log(this.ruleForm.plane)
-        if(this.$refs.ruleForm.plane!== undefined){
-          this.$refs.ruleForm.plane.resetFields();
-        }
+      trafficClear(index,formName){//去程切换交通方式清空 
+        // this.$refs.ruleForm.plane[index].pod.resetFields();
+        // this.$refs.ruleForm.plane[index].company.resetFields();
+        // this.$refs.ruleForm.plane[index].theNumber.resetFields();
+        // this.$refs.ruleForm.plane[index].podCity.resetFields();
+        // this.$refs.ruleForm.plane[index].podPlace.resetFields();
+        // this.$refs.ruleForm.plane[index].podTime.resetFields();
+        // this.$refs.ruleForm.plane[index].arriveCity.resetFields();
+        // this.$refs.ruleForm.plane[index].arrivePlace.resetFields();
+        // this.$refs.ruleForm.plane[index].arriveTime.resetFields();
+        // this.$refs.ruleForm.plane[index].planeDay.resetFields();
+        // this.$refs.ruleForm.plane[index].day.resetFields();
+        // if(this.$refs.ruleForm.plane!== undefined){
+          // this.$refs.ruleForm.plane.resetFields();
+        // }
         
         this.ruleForm.plane[index].pod = '';
         this.ruleForm.plane[index].company = '';
