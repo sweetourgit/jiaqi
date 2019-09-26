@@ -799,9 +799,13 @@ export default {
     moment,
     dataPickerFocus() {
       if (this.btnindex == 2) {
-        this.ruleForm.expTime = moment(this.ruleForm.expTime).format(
-          "YYYYMMDD"
-        );
+        if (this.ruleForm.expTime.toString().length !== 8) {
+          this.ruleForm.expTime = "";
+        } else {
+          this.ruleForm.expTime = moment(this.ruleForm.expTime).format(
+            "YYYYMMDD"
+          );
+        }
       }
     },
     // 管理人员的模糊查询
@@ -1143,7 +1147,6 @@ export default {
       this.list();
     },
     handleSizeChange(val) {
-      console.log("handleSizeChange",val)
       this.pagesize = val;
       var that = this;
       this.$http
@@ -1453,7 +1456,6 @@ export default {
         this.AbouQuota = 0;
       }
 
-      console.log(this.businessOtherNamesArr);
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
           object: {
@@ -1487,7 +1489,6 @@ export default {
           }
         })
         .then(obj => {
-          console.log("添加", obj);
           this.dialogFormVisible = false;
           this.list();
           this.$message({
@@ -1691,7 +1692,6 @@ export default {
           id: id
         })
         .then(obj => {
-          console.log(obj)
           const { object } = obj.data;
           const {
             jqAdminList,
@@ -1828,7 +1828,6 @@ export default {
             pin = year + "-" + month + "-" + day;
             this.ruleForm.expTime = pin;
             this.ruleForm.expTime = new Date(pin);
-            // console.log("到期时间转换后",this.ruleForm.expTime)
           }
           if (object.settlementType == 2) {
             this.ruleForm.settlementType = "非月结";
@@ -1933,12 +1932,11 @@ export default {
     overflow-x: hidden!important;
 } */
 .el-pagination {
-  margin-right: 300px!important;
+  margin-right: 300px !important;
 }
 .addAccountBtn {
   margin-top: -44px;
 }
-
 
 .el-dialog .el-input,
 .el-select {
