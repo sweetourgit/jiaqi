@@ -406,7 +406,7 @@
 
       </el-form>
 
-      <el-dialog title="修改收款明细" :visible="dialogFormVisible3" width=30% @close="close" append-to-body>
+      <el-dialog title="修改收款明细" :visible="dialogFormVisible3" width=30% @close="close" append-to-body id="edit_detail">
         <el-form :model="detailForm" :rules="detailRules" ref="ruleFormMX">
           <div>
             <el-form-item label="入账时间" prop="enterTime" label-width="120px">
@@ -1965,7 +1965,7 @@
     margin-top: 70px;
     margin-bottom: 30px;
   }
-  #tradeAdd .inputWidth{
+  #edit_detail .inputWidth{
     width: 80%!important;
   }
 </style>
