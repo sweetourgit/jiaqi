@@ -55,8 +55,8 @@
         @row-click="handleClick"
       >
         <el-table-column prop="id" label="ID" width="50" align="center"></el-table-column>
-        <el-table-column prop="name" label="商户名字" width="180" align="center"></el-table-column>
-        <el-table-column prop="state" label="状态" align="center">
+        <el-table-column prop="name" label="商户名字" width="280" align="center"></el-table-column>
+        <el-table-column prop="state" label="状态" align="center" width="110">
           <template slot-scope="scope">
             <template v-if="scope.row.state == '停用'">
               <div style="color: red">{{scope.row.state}}</div>
@@ -66,19 +66,22 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column prop="localCompType" label="类别" align="center"></el-table-column>
-        <el-table-column prop="settlementType" label="结算方式" width="100" align="center"></el-table-column>
-        <el-table-column prop="linker" label="联系人" align="center"></el-table-column>
-        <el-table-column prop="quota" label="额度" width="100" align="center"></el-table-column>
-        <el-table-column prop="arrears" label="剩余额度" width="120" align="center"></el-table-column>
-        <el-table-column prop="balance" label="总欠款" width="120" align="center"></el-table-column>
-        <el-table-column prop="operation" label="操作" width="150" align="center">
-          <template slot-scope="scope">
+        <el-table-column prop="localCompType" label="类别" align="center" width="110"></el-table-column>
+        <el-table-column prop="settlementType" label="结算方式" width="120" align="center"></el-table-column>
+        <el-table-column prop="linker" label="联系人" align="center" width="120"></el-table-column>
+        <el-table-column prop="quota" label="额度" width="130" align="center"></el-table-column>
+        <el-table-column prop="arrears" label="剩余额度" width="130" align="center"></el-table-column>
+        <el-table-column prop="balance" label="总欠款" width="130" align="center"></el-table-column>
+        <el-table-column prop="operation" label="操作" width="160" align="center">
+          <template slot-scope="scope" style="cursor:pointer;">
             <div
-              style="color: #f5a142;float: left;margin-left: 30px"
+              style="color: #f5a142;float:left;margin-left:30px;cursor:pointer;"
               @click="edit_info(1,scope.row.id)"
             >详情 |</div>
-            <div style="color: #f5a142;float: left;" @click="edit_info(2,scope.row.id)">编辑</div>
+            <div
+              style="color: #f5a142;float: left;cursor:pointer;"
+              @click="edit_info(2,scope.row.id)"
+            >编辑</div>
           </template>
         </el-table-column>
       </el-table>
@@ -92,6 +95,7 @@
         :current-page.sync="currentPage4"
         :page-sizes="[5, 10, 50, 100]"
         :page-size="10"
+        background
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
@@ -104,7 +108,7 @@
       :show-close="false"
       @close="closeDialog"
       :close-on-click-modal="false"
-      width="1000px"
+      width="1100px"
     >
       <div class="dialog">
         <template v-if="btnindex !== 1">
@@ -325,13 +329,13 @@
             <h3>账户信息</h3>
             <el-button type="primary" @click="addAccount(1)">添加</el-button>
             <el-table :data="useList" border style="width: 100%;margin-top: 20px;">
-              <el-table-column prop="name" label="名称" width="80" align="center"></el-table-column>
+              <el-table-column prop="name" label="名称" width="150" align="center"></el-table-column>
               <el-table-column prop="state" label="状态" width="80" align="center"></el-table-column>
-              <el-table-column prop="phone" label="手机号" width="120" align="center"></el-table-column>
-              <el-table-column prop="email" label="邮箱" width="160" align="center"></el-table-column>
+              <el-table-column prop="phone" label="手机号" width="140" align="center"></el-table-column>
+              <el-table-column prop="email" label="邮箱" width="170" align="center"></el-table-column>
               <el-table-column prop="sex" label="性别" width="50" align="center"></el-table-column>
-              <el-table-column prop="wx" label="微信" width="120" align="center"></el-table-column>
-              <el-table-column prop="qq" label="qq" width="120" align="center"></el-table-column>
+              <el-table-column prop="wx" label="微信" width="140" align="center"></el-table-column>
+              <el-table-column prop="qq" label="qq" width="140" align="center"></el-table-column>
               <el-table-column prop="peerUserType" label="职务" width="80" align="center"></el-table-column>
               <el-table-column prop="operation" label="操作" width="110" align="center">
                 <template slot-scope="scope">
@@ -349,7 +353,7 @@
             </el-table>
           </div>
         </template>
-        <!-- 点击页面的添加按钮或者列表的编辑出现的dialog是table -->
+        <!-- 点击页面的详情出现的dialog是table -->
         <div class="dialogTable" v-if="btnindex == 1">
           <!-- 点击详情基本信息 -->
           <table style="width: 100%;">
@@ -453,13 +457,13 @@
             <h3>账户信息</h3>
             <el-button type="primary" v-if="btnindex !== 1">添加</el-button>
             <el-table :data="useList" border style="width: 100%;margin-top: 20px;">
-              <el-table-column prop="name" label="名称" width="120" align="center"></el-table-column>
+              <el-table-column prop="name" label="名称" width="158" align="center"></el-table-column>
               <el-table-column prop="state" label="状态" width="120" align="center"></el-table-column>
-              <el-table-column prop="phone" label="手机号" width="120" align="center"></el-table-column>
-              <el-table-column prop="email" label="邮箱" width="120" align="center"></el-table-column>
+              <el-table-column prop="phone" label="手机号" width="130" align="center"></el-table-column>
+              <el-table-column prop="email" label="邮箱" width="170" align="center"></el-table-column>
               <el-table-column prop="sex" label="性别" width="80" align="center"></el-table-column>
-              <el-table-column prop="wx" label="微信" width="120" align="center"></el-table-column>
-              <el-table-column prop="qq" label="qq" width="120" align="center"></el-table-column>
+              <el-table-column prop="wx" label="微信" width="140" align="center"></el-table-column>
+              <el-table-column prop="qq" label="qq" width="140" align="center"></el-table-column>
               <el-table-column prop="peerUserType" label="职务" width="120" align="center"></el-table-column>
             </el-table>
           </div>
@@ -623,7 +627,7 @@ export default {
       tid: 0,
       pagesize: 10,
       total: 1,
-      currentPage4: 4,
+      currentPage4: 1,
       accountForm: {
         name: "",
         phone: "",
@@ -1033,8 +1037,8 @@ export default {
                       }
                     )
                     .then(obj => {
-                      this.isAddAccount = false
-                      this.getOneMess(this.tid)
+                      this.isAddAccount = false;
+                      this.getOneMess(this.tid);
                     })
                     .catch(err => {
                       console.log(err);
@@ -1139,6 +1143,7 @@ export default {
       this.list();
     },
     handleSizeChange(val) {
+      console.log("handleSizeChange",val)
       this.pagesize = val;
       var that = this;
       this.$http
@@ -1354,9 +1359,9 @@ export default {
       // }
 
       // 商户角色
-      if (this.ruleForm.localCompRole = "旅游组团社") {
+      if ((this.ruleForm.localCompRole = "旅游组团社")) {
         this.ruleForm.localCompRole = 0;
-      } else if (this.ruleForm.localCompRole = "独立旅行社") {
+      } else if ((this.ruleForm.localCompRole = "独立旅行社")) {
         this.ruleForm.localCompRole = 1;
       } else {
         this.ruleForm.localCompRole = 2;
@@ -1447,7 +1452,8 @@ export default {
       if (this.AbouQuota == null) {
         this.AbouQuota = 0;
       }
-      console.log(this.AbouQuota)
+
+      console.log(this.businessOtherNamesArr);
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
           object: {
@@ -1476,11 +1482,12 @@ export default {
             orgs: this.ruleForm.orgs,
             useList: this.useList,
             jqAdminList: adminAndSalesArr,
-            localCompAliasList: this.businessOtherNamesArr,
+            localCompAliasList: this.businessOtherNamesArr, //商户其他名称
             abouQuota: this.AbouQuota //周边授信额度
           }
         })
         .then(obj => {
+          console.log("添加", obj);
           this.dialogFormVisible = false;
           this.list();
           this.$message({
@@ -1538,7 +1545,7 @@ export default {
 
       // 区域可见
       let orgs = [];
-      
+
       for (let i = 0; i < this.ruleForm.orgs.length; i++) {
         let org = {};
         org.orgID = this.ruleForm.orgs[i];
@@ -1553,7 +1560,7 @@ export default {
       let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
       adminAndSalesArr = adminAndSalesArr.map(item => {
         return {
-          name: item.value,
+          name: item.name,
           userCode: item.userCode,
           uid: item.uid,
           jqUserType: item.jqUserType,
@@ -1561,7 +1568,6 @@ export default {
         };
       });
 
-      
       // if (this.ruleForm.state == "停用") {
       //   this.ruleForm.state = 3;
       // } else {
@@ -1588,8 +1594,7 @@ export default {
       //   pin = year + month + day;
       //   this.ruleForm.expTime = pin;
       // }
-      this.ruleForm.expTime = moment(this.ruleForm.expTime).format('YYYYMMDD')
-      
+      this.ruleForm.expTime = moment(this.ruleForm.expTime).format("YYYYMMDD");
       this.ruleForm.id = this.tid;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/save", {
@@ -1686,6 +1691,7 @@ export default {
           id: id
         })
         .then(obj => {
+          console.log(obj)
           const { object } = obj.data;
           const {
             jqAdminList,
@@ -1731,7 +1737,7 @@ export default {
           }
           // 商户角色
           if (object.localCompRole == 0) {
-            this.ruleForm.localCompRole = "旅游组团社"; 
+            this.ruleForm.localCompRole = "旅游组团社";
           } else if (object.localCompRole == 1) {
             this.ruleForm.localCompRole = "独立旅行社";
           } else {
@@ -1822,6 +1828,7 @@ export default {
             pin = year + "-" + month + "-" + day;
             this.ruleForm.expTime = pin;
             this.ruleForm.expTime = new Date(pin);
+            // console.log("到期时间转换后",this.ruleForm.expTime)
           }
           if (object.settlementType == 2) {
             this.ruleForm.settlementType = "非月结";
@@ -1833,7 +1840,7 @@ export default {
           this.ruleForm.department = "1";
           this.ruleForm.people = "2";
           // this.ruleForm.scopeExt = object.scopeExt.split(",");
-          this.ruleForm.quota = object.quota
+          this.ruleForm.quota = object.quota;
           this.ruleForm.address = object.address;
           this.ruleForm.linker = object.linker;
           this.ruleForm.phone = object.phone;
@@ -1841,10 +1848,7 @@ export default {
           this.ruleForm.bankName = object.bankName;
           this.ruleForm.bankcardNo = object.bankcardNo;
           this.AbouDeposit = this.toDecimal2(object.abouDeposit);
-          console.log(object.abouQuota)
           this.AbouQuota = this.toDecimal2(object.abouQuota);
-          console.log("houtai fanhui ")
-          console.log(this.AbouQuota)
           this.AbouBalance = this.toDecimal2(object.abouBalance);
         })
         .catch(obj => {
@@ -1925,9 +1929,16 @@ export default {
 </script>
 
 <style scoped>
+/* .el-table--scrollable-x .el-table__body-wrapper {
+    overflow-x: hidden!important;
+} */
+.el-pagination {
+  margin-right: 300px!important;
+}
 .addAccountBtn {
   margin-top: -44px;
 }
+
 
 .el-dialog .el-input,
 .el-select {
@@ -1985,7 +1996,7 @@ export default {
   float: left;
 }
 .accountInfo {
-  width: 922px;
+  width: 100%;
   margin-top: 30px;
 }
 .dialog {
