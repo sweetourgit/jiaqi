@@ -1447,7 +1447,7 @@ export default {
       if (this.AbouQuota == null) {
         this.AbouQuota = 0;
       }
-     
+      console.log(this.AbouQuota)
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
           object: {
@@ -1619,7 +1619,8 @@ export default {
             storeType: this.ruleForm.storeType,
             orgs: this.ruleForm.orgs,
             jqAdminList: adminAndSalesArr,
-            localCompAliasList: this.businessOtherNamesArr
+            localCompAliasList: this.businessOtherNamesArr,
+            abouQuota: this.AbouQuota //周边授信额度
           }
         })
         .then(obj => {
@@ -1840,7 +1841,10 @@ export default {
           this.ruleForm.bankName = object.bankName;
           this.ruleForm.bankcardNo = object.bankcardNo;
           this.AbouDeposit = this.toDecimal2(object.abouDeposit);
+          console.log(object.abouQuota)
           this.AbouQuota = this.toDecimal2(object.abouQuota);
+          console.log("houtai fanhui ")
+          console.log(this.AbouQuota)
           this.AbouBalance = this.toDecimal2(object.abouBalance);
         })
         .catch(obj => {
