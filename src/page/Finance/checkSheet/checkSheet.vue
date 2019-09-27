@@ -20,7 +20,7 @@
 
           </div>
           <div class="table_style">
-            <el-table :data="tableData" border :header-cell-style="getRowClass" style="width: 100%;">
+            <el-table :data="tableData" border :header-cell-style="getRowClass">
               <el-table-column prop="tour_no" label="团期计划" width="180" align="center"></el-table-column>
               <el-table-column prop="" label="状态" width="120" align="center">
                 <template slot-scope="scope">
@@ -346,7 +346,7 @@
     width: 200px
   }
   .table_style{
-    width: 1500px;
+    width: 90%;
     margin-left: 20px;
     margin-top: 20px;
     float: left;

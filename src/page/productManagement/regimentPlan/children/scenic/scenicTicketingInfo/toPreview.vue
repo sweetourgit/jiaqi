@@ -369,7 +369,6 @@ export default {
       }
     },
     dialogFormVisible: function () {
-//      alert(this.info);
       if(this.info && this.dialogFormVisible){
         this.loadData();
       }else{

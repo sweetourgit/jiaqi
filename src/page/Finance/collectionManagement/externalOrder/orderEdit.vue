@@ -1013,7 +1013,7 @@
               that.subFunXG();
             }else{
               if(!this.showSK){
-                alert("无明细修改");
+//                alert("无明细修改");
                 let Stime = '', Etime = '';
                 if(this.ruleForm.startTime.toString().split('-')[1]){
                   Stime = this.ruleForm.startTime;

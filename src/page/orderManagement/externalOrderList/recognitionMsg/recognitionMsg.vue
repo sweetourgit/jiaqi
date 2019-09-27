@@ -7,6 +7,9 @@
     </div>
     <div class="tableDv">
       <div class="table_trip" style="width: 88%;">
+        <el-select v-model="selectType" placeholder="请选择" style="width:200px;margin-bottom: 20px;" @change="selectTypeFunction">
+          <el-option :key="item.value" :label="item.text" :value="item.value" v-for="item in classList"></el-option>
+        </el-select>
         <el-table ref="multipleTable" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass">
           <el-table-column prop="order_sn" label="订单ID" align="center">
           </el-table-column>
@@ -48,7 +51,7 @@
           </el-table-column>
           <el-table-column prop="import_at" label="导入时间" align="center">
           </el-table-column>
-          <el-table-column prop="bill_status" label="匹配/未匹配" align="center">
+          <el-table-column prop="is_match" label="匹配/未匹配" align="center">
             <template slot-scope="scope">
               <p v-if="scope.row.is_match == 1">未匹配</p>
               <p v-if="scope.row.is_match == 2">已匹配</p>
@@ -86,7 +89,15 @@
         info: '',// 认收款操作数据传递
         orderID: '',// 查看匹配信息数据传递
 
-        tableData: [],// 认收款table
+        tableData: [],// 认收款table（筛选数据，显示用）
+        tableDataCopy: [],// 认收款table（全部数据，筛选用）
+
+        classList: [
+          {text: '全部', value: ''},
+          {text: '已匹配', value: '2'},
+          {text: '未匹配', value: '1'},
+        ],// 筛选项option
+        selectType: ''// 筛选项value
       }
     },
     computed: {
@@ -101,6 +112,21 @@
         } else {
           return ''
         }
+      },
+//      筛选function
+      selectTypeFunction() {
+        const data = this.tableDataCopy;
+        let tableD = [];
+        if(this.selectType){
+          for(let i = 0; i < data.length; i++){
+            if(data[i].is_match == this.selectType){
+              tableD.push(data[i]);
+            }
+          }
+        }else{
+          tableD = data;
+        }
+        this.tableData = tableD;
       },
 //      取消按钮事件
       cancalBtn(){
@@ -240,6 +266,7 @@
           if (response.data.code == '200') {
             console.log(response);
             that.tableData = response.data.data;
+            that.tableDataCopy = response.data.data;
             that.tableData.forEach(function (item, index, arr) {
               item.sale_at = formatDate(new Date(item.sale_at*1000));
               item.sale_at = item.sale_at.split(" ")[0];
@@ -257,6 +284,7 @@
       },
     },
     created(){
+//        加载数据
       if(this.$route.query.ids){
         this.initData();
       }else{

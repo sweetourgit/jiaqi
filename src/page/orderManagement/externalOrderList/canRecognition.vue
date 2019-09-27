@@ -1,6 +1,6 @@
 <template>
-  <div class="vivo" style="position:relative">
-    <div class="demo-input-suffix ">
+  <div class="vivo" style="position:relative;">
+    <div class="demo-input-suffix">
       <span class="search-title">产品名称:</span>
       <el-input v-model="activeForm.title" class="input"></el-input>
       <span class="search-title">订单ID:</span>
@@ -248,12 +248,12 @@
 //        }
       },
 //      订单状态（暂无，需求暂时不需要）
-      showStatus(){
-        this.dialogFormVisible3 = true
-      },
-      close3() {
-        this.dialogFormVisible3 = false
-      },
+//      showStatus(){
+//        this.dialogFormVisible3 = true
+//      },
+//      close3() {
+//        this.dialogFormVisible3 = false
+//      },
       //导入历史
       importHistory() {
         this.$router.push({ path: "/importHistory" });
@@ -550,7 +550,7 @@
             if (that.activeForm.validationEndTime) {  //如果结束时间不为空，则小于结束时间
               return new Date(that.activeForm.validationEndTime).getTime() < time.getTime()
             } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天shi
             }
           }
         }
@@ -579,7 +579,8 @@
       width: auto;
       background-color: #F7F7F7;
       padding: 20px;
-      min-width: 1350px;
+      /*min-width: 1350px;*/
+      overflow-x: auto;
 
       .search-title {
         font-size: 14px;
@@ -597,10 +598,6 @@
 
       .el-input__inner {
         width: 10%;
-      }
-
-      .demo-input-suffix {
-        width: 900px
       }
 
       .date-line {
@@ -642,8 +639,8 @@
     }
     .tableDv{
       width: 100%;
-      overflow: hidden;
-      position: relative;
+      /*overflow: hidden;*/
+      /*position: relative;*/
       margin-bottom: 40px;
     }
   }
