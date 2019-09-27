@@ -6,6 +6,7 @@
         <!--<el-button type="primary" @click="save()" size="medium" plain>保存</el-button>-->
         <el-button type="primary" @click="reject()" size="medium" plain>一键驳回</el-button>
         <el-button type="primary" @click="submit()" size="medium">审批提交</el-button>
+        <el-button type="primary" @click="toHistory()" size="medium">审批历史</el-button>
       </div>
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -46,6 +47,12 @@ export default {
     },
     close() {
       this.dialogFormVisible = false
+    },
+    toHistory(){
+      this.$router.push({
+        path: "/pledgingHistory",
+        name: "财务管理   / 财务认款管理   / 审批历史"
+      });
     },
     reject() {
       const that = this;

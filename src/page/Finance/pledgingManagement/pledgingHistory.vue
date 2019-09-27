@@ -1,6 +1,9 @@
 <template>
   <div class="vivo" style="position:relative">
-    审批历史
+    <div>
+      
+      <el-button type="primary" @click="cancel()" size="medium" plain>取消</el-button>
+    </div>
 
   </div>
 </template>
@@ -12,6 +15,9 @@
       }
     },
     methods: {
+      cancel(){
+        this.$router.go(-1);
+      }
     },
     created() {
     }
