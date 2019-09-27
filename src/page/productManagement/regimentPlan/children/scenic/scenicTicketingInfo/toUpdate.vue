@@ -62,16 +62,9 @@ export default {
     // 计算属性的 getter
   },
   watch: {
-    info: {
-      dialogFormVisible:function(){
-        if(this.dialogFormVisible){
-          this.ruleForm = {
-            days: this.$parent.msg.days,
-            guide: this.$parent.msg.guide,
-            associations: this.$parent.msg.associations
-          };
-          this.loadData();
-        }
+    dialogFormVisible:function(){
+      if(this.dialogFormVisible){
+        this.loadData();
       }
     }
   },
@@ -98,6 +91,7 @@ export default {
           if(flag){
             let costArr = [];
             for(let i = 0; i < that.ruleForm.costType.length; i++){
+
               const costItem = {
                 "before_name": that.typeList[i],
                 "after_name": that.ruleForm.costType[i].cost_type
@@ -158,7 +152,9 @@ export default {
             associations: that.$parent.msg.associations,
             costType: response.data.data.listInfo
           };
+          that.typeList = [];
           response.data.data.listInfo.forEach(function (item, index, arr) {
+//            alert(item.cost_type);
             that.typeList.push(item.cost_type);
           })
         } else {

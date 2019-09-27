@@ -71,27 +71,30 @@ export default {
 //            console.log('收入来源',response);
             if (response.data.code == '200') {
               console.log('收入来源',response);
+
+              that.$message({
+                type: 'success',
+                message: '提交成功!'
+              });
+              that.$emit('close', that.ruleForm.source);
               that.ruleForm = {
                 source: '',
                 distributor: '',
                 text: ''
               };
-              that.$message({
-                type: 'success',
-                message: '提交成功!'
-              });
             } else {
               if(response.data.message){
                 that.$message.success(response.data.message);
               }else{
                 that.$message.success("提交数据失败~");
               }
-
+              that.$emit('close', false);
             }
           }).catch(function(error) {
             console.log(error);
+//            that.$emit('close', false);
           });
-          this.$emit('close', false);
+
         } else {
           console.log('error submit!!');
           return false;
