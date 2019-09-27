@@ -56,6 +56,7 @@ import bankAccount from '@/page/Finance/bankAccount/bankAccount'
 import pledgingManagement from '@/page/Finance/pledgingManagement/pledgingManagement'
 import pledgingManagementApproval from '@/page/Finance/pledgingManagement/pledgingManagementApproval'
 import pledgingManagementSee from '@/page/Finance/pledgingManagement/pledgingManagementSee'
+import pledgingHistory from '@/page/Finance/pledgingManagement/pledgingHistory'
 import enrollTypeA from '@/page/contentInfo/enrollType/enrollTypeA'
 import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
 import checkSheet from '@/page/Finance/checkSheet/checkSheet'
@@ -575,6 +576,14 @@ export default new Router({
       path: '/pledgingManagementSee',
       component: pledgingManagementSee,
       name: '财务管理   / 财务认款管理   / 查看',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/pledgingHistory',
+      component: pledgingHistory,
+      name: '财务管理   / 财务认款管理   / 审批历史',
       meta: {
         keepAlive: true,
         auth: true
