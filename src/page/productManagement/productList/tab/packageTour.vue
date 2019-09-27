@@ -194,7 +194,7 @@
       <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
         <el-radio-group v-model="isCollapse" @change="qqq">
           <el-radio-button class="group" :label="true">库存</el-radio-button>
-          <el-radio-button :label="false" >价格</el-radio-button>
+          <el-radio-button :label="false">价格</el-radio-button>
         </el-radio-group>
       </div>
 
@@ -227,7 +227,6 @@
               <span>-</span>
               <span v-text="'{{'"></span>
               <span>日期</span>
-
               <span>}}</span>
               <span>-</span>
               <el-input
@@ -309,22 +308,22 @@
             <div style="margin-top: 10px;float: left;margin-left: 30px;">人均结算价({{count}})</div>
           </div>
           <div style="margin-top: 100px">
-            <el-table
-              ref="multipleTable12"
-              :data="tableData12"
-              tooltip-effect="dark"
-              style="width: 100%"
-              @selection-change="handleSelectionChange"
-              @select="changselet"
-            >
-              <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column label="序号" width="120">
-                <template slot-scope="scope">{{ scope.row.id }}</template>
-              </el-table-column>
-              <el-table-column prop="supplierTypeEX" label="成本类型" width="120"></el-table-column>
-              <el-table-column prop="name" label="供应商" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="money" label="金额" show-overflow-tooltip></el-table-column>
-            </el-table>
+              <el-table
+                ref="multipleTable12"
+                :data="tableData12"
+                tooltip-effect="dark"
+                style="width: 100%"
+                @selection-change="handleSelectionChange"
+                @select="changselet"
+              >
+                <el-table-column type="selection" width="55"></el-table-column>
+                <el-table-column label="序号" width="120">
+                  <template slot-scope="scope">{{ scope.row.id }}</template>
+                </el-table-column>
+                <el-table-column prop="supplierTypeEX" label="成本类型" width="120"></el-table-column>
+                <el-table-column prop="name" label="供应商" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="money" label="金额" show-overflow-tooltip></el-table-column>
+              </el-table>
           </div>
         </el-dialog>
         <!--添加-->
@@ -892,7 +891,7 @@ export default {
   },
   methods: {
     // merchandise 弹窗出现时判断团号和成本是否已填写如果已填写则价格按钮可点击  否则禁用
-    merchandiseDialogOpen () {
+    merchandiseDialogOpen() {
       // for (let i = 1)
     },
     //供应商模糊查询
@@ -1246,7 +1245,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
-        console.log(res)
+        console.log(res);
         if (res.data.isSuccess == true) {
           this.$message.success("删除成功");
           this.$http
@@ -1348,6 +1347,9 @@ export default {
       this.multipleSelection = val;
     },
     basicPrice(id, rate) {
+      console.log("成本")
+      console.log(id)
+      console.log(rate)
       this.basicbutton = true;
       this.team = id;
       this.lilv = rate;
@@ -1396,7 +1398,7 @@ export default {
           this.count = res.data.average;
         });
     },
-    
+
     fucking() {
       // for (let i = 0; i < this.ccc.length; i++) {
       //   if (this.ccc[i].codePrefix == this.ccc[i].codeSuffix) {
@@ -1516,7 +1518,7 @@ export default {
       this.originMod = "";
     },
     handleDelete() {
-      console.log(this.pid)
+      console.log(this.pid);
       this.$confirm("此操作将删除该跟团游信息", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -1614,7 +1616,8 @@ export default {
     },
     // 团期/库存弹窗的保存按钮
     BandSave() {
-      console.log("保存时的cost",this.tableData12);
+      console.log("保存时的cost", this.tableData12);
+      console.log(this.ccc)
       for (let i = 0; i < this.ccc.length; i++) {
         this.$http
           .post(
@@ -1626,7 +1629,7 @@ export default {
                 uptoDay: Number(this.ccc[i].uptoDay),
                 // templateID: this.ccc[i].value,
                 codePrefix: this.ccc[i].codePrefix,
-                codeSuffix: this.ccc[i].codeSuffix,
+                codeSuffix: this.ccc[i].codeSuffix
                 // cost: this.tableData12
               }
             },
@@ -1636,11 +1639,11 @@ export default {
               }
             }
           )
-          .then((obj) => {
-            console.log("保存按钮",obj);
+          .then(obj => {
+            console.log("保存按钮", obj);
           })
-          .catch((obj) => {
-            console.log("error",obj)
+          .catch(obj => {
+            console.log("error", obj);
             console.log("error");
           });
       }
@@ -1894,7 +1897,7 @@ export default {
           }
         )
         .then(function(obj) {
-          console.log("团期库存按钮",obj)
+          console.log("团期库存按钮", obj);
           for (let i = 0; i < obj.data.objects.length; i++) {
             /* console.log(obj.data.objects[0].id)*/
 
@@ -1912,7 +1915,7 @@ export default {
             if (that.ccc[i].value == 0) {
               that.ccc[i].value = "";
             }
-            // console.log("库存按钮出现",that.ccc)
+            console.log("库存按钮出现", that.ccc);
           }
           // console.log(obj.data);
         })
