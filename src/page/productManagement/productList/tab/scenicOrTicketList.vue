@@ -403,7 +403,7 @@
     width: 300px;
   }
   #scenicOrTicketList .table_style{
-    width: 1500px;
+    width: 90%;
     margin-left: 20px;
     margin-top: 20px;
     float: left;

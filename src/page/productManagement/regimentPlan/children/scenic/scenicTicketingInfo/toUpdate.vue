@@ -49,10 +49,10 @@ export default {
         days: [{ required: true, message: '天数不能为空!', trigger: 'blur' },
           { pattern: /^[0-9]+$/, message: '天数必须是正整数!' }
         ],
-        guide: [{ required: true, message: '导陪不能为空!', trigger: 'blur' }
-        ],
-        associations: [{ required: true, message: '接团社不能为空!', trigger: 'blur' }
-        ],
+//        guide: [{ required: true, message: '导陪不能为空!', trigger: 'blur' }
+//        ],
+//        associations: [{ required: true, message: '接团社不能为空!', trigger: 'blur' }
+//        ],
         costType: [{ required: true, message: '成本项目不能为空!', trigger: 'blur' }
         ]
       },

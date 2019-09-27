@@ -1,6 +1,6 @@
 <template>
-  <div class="vivo" style="position:relative">
-    <div class="demo-input-suffix ">
+  <div class="vivo" style="position:relative;">
+    <div class="demo-input-suffix">
       <span class="search-title">产品名称:</span>
       <el-input v-model="activeForm.title" class="input"></el-input>
       <span class="search-title">订单ID:</span>
