@@ -295,7 +295,7 @@
 
                         <div class="plane" v-for="(item, index) in ruleForm.plane" :key="item.index">
                           <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
-                            <el-cascader style="width: 105px;" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0];trafficClear(index, ruleForm)}" placeholder="飞机"></el-cascader>
+                            <el-cascader style="width: 105px;" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0];trafficClear(index)}" placeholder="飞机"></el-cascader>
                             <span class="plane_text"><span>*</span>第</span>
                             <el-form-item class="plane_day" :prop="'plane.'+index+'.day'" :rules="rules.day">
                               <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
@@ -2129,6 +2129,16 @@
       },
       //保存
       addsave(formName) {
+        // let packet = [];
+        // packet:[{//预订须知
+        //   "title": this.note.title,
+        //   "content": this.note.content,
+        //   "menuType": 2
+        //  },{//使用说明
+        //   "title": "string",
+        //   "content": "string",
+        //   "menuType": 3
+        //  }]
         this.a = true
         console.log(this.ruleForm.slideshow)
         // this.noNull1 = false
@@ -2185,9 +2195,9 @@
               sche[i].activitys[j].pictureID=JSON.stringify(this.ruleForm.schedules[i].activitys[j].info[sche[i].activitys[j].activityType-1]);//图片格式转换，目前只取一张，待接口调整后修改
             }
           }
-      for(var i =0;i < this.instructions.length; i++){
-			   this.notes.push(this.instructions[i]);
-      }
+      // for(var i =0;i < this.instructions.length; i++){
+			   // this.notes.push(this.instructions[i]);
+      // }
 
        let pod='';
        for(let i=0;i<this.dynamicTags3.length;i++){
@@ -2201,6 +2211,7 @@
            destination=this.dynamicTags4[i].destination
          }
        }
+    
         //行程信息
         var object={
                   //基本信息接口数据
@@ -2411,20 +2422,18 @@
           ext_Stopover: []
         })
       },
-      trafficClear(index,formName){//去程切换交通方式清空 
-        // this.$refs.ruleForm.plane[index].pod.resetFields();
-        // this.$refs.ruleForm.plane[index].company.resetFields();
-        // this.$refs.ruleForm.plane[index].theNumber.resetFields();
-        // this.$refs.ruleForm.plane[index].podCity.resetFields();
-        // this.$refs.ruleForm.plane[index].podPlace.resetFields();
-        // this.$refs.ruleForm.plane[index].podTime.resetFields();
-        // this.$refs.ruleForm.plane[index].arriveCity.resetFields();
-        // this.$refs.ruleForm.plane[index].arrivePlace.resetFields();
-        // this.$refs.ruleForm.plane[index].arriveTime.resetFields();
-        // this.$refs.ruleForm.plane[index].planeDay.resetFields();
-        // this.$refs.ruleForm.plane[index].day.resetFields();
-        // if(this.$refs.ruleForm.plane!== undefined){
-          // this.$refs.ruleForm.plane.resetFields();
+      trafficClear(index,ruleForm){//去程切换交通方式清空 
+        
+        //this.$refs[ruleForm].clearValidate('plane.0.company');
+        //this.$refs.plane.resetFields('company');
+        console.log(123)
+        //this.$refs.ruleForm.resetFields();
+        
+        //this.$refs.ruleForm.plane[index].pod.resetFields();
+        
+        // if(this.$refs.ruleForm.plane){
+        //   console.log(123)
+        //   this.$refs.ruleForm.plane.resetFields();
         // }
         
         this.ruleForm.plane[index].pod = '';
@@ -2438,6 +2447,18 @@
         this.ruleForm.plane[index].arriveTime = '';
         this.ruleForm.plane[index].planeDay = '';
         this.ruleForm.plane[index].day = '';
+        // this.$nextTick(()=>{
+        //   this.$refs.ruleForm.plane.resetFields('company');
+        //   this.$refs.ruleForm.plane.resetFields('theNumber');
+        //   this.$refs.ruleForm.plane.resetFields('podCity');
+        //   this.$refs.ruleForm.plane.resetFields('podPlace');
+        //   this.$refs.ruleForm.plane.resetFields('podTime');
+        //   this.$refs.ruleForm.plane.resetFields('arriveCity');
+        //   this.$refs.ruleForm.plane.resetFields('arrivePlace');
+        //   this.$refs.ruleForm.plane.resetFields('arriveTime');
+        //   this.$refs.ruleForm.plane.resetFields('planeDay');
+        //   this.$refs.ruleForm.plane.resetFields('day');
+        // })
       },
       clearBle(index){
           this.ruleForm.plane[index].company = '';
