@@ -553,7 +553,8 @@
       width: auto;
       background-color: #F7F7F7;
       padding: 20px;
-      min-width: 1350px;
+      /*min-width: 1350px;*/
+      overflow-x: auto;
 
       .search-title {
         font-size: 14px;
@@ -571,10 +572,6 @@
 
       .el-input__inner {
         width: 10%;
-      }
-
-      .demo-input-suffix {
-        width: 900px
       }
 
       .date-line {
@@ -616,8 +613,8 @@
     }
     .tableDv{
       width: 100%;
-      overflow: hidden;
-      position: relative;
+      /*overflow: hidden;*/
+      /*position: relative;*/
       margin-bottom: 40px;
     }
   }
