@@ -602,13 +602,15 @@ export default {
     };
     let that = this;
     return {
+      otherNamesObj: {}, //添加商户其他名称enter接收
+      // isBusinessTrue: false, //添加商户其他名称是判断issuccess false则此名字已存在
       // orgsAddArr: [], //添加商户信息是存储区域可见的数组
       AbouArrears: null, //周边欠款
       AbouBalance: null, //周边剩余授信额度
       AbouDeposit: null, //周边预存款
       AbouQuota: null, //周边授信额度
       // editAdmin: [], //点击编辑页的admin 用来接收修改之前的
-      businewwInfPageId: "", //商户信息详情页的ID
+      businewwInfPageId: "", //商户信息详情页的ID 同时也是商户其他名称添加接口的localCompID
       vague: [], //模糊搜索的数组
       cascaderArr: [],
       isAddAccountBtn: 0, //判断账户信息弹窗是从添加按钮进入还是编辑进入
@@ -836,26 +838,80 @@ export default {
         return restaurant.value;
       };
     },
+    // 商户其他名称添加请求
+    adminOtherAxios() {
+      this.$http
+        .post(
+          this.GLOBAL.serverSrc +
+            "/universal/localcomp/api/localcompaliasinsert",
+          {
+            object: {
+              name: this.ruleForm.otherNames,
+              localCompID: this.businewwInfPageId
+            }
+          }
+        )
+        .then(obj => {
+          if (obj.data.isSuccess == true) {
+            this.businessOtherNamesArr.push(this.otherNamesObj);
+          } else {
+            this.$message.error("该商户其他名称已存在")
+          }
+          // console.log(this.isBusinessTrue);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     // 商户其他名字enter触发的事件
     handleEnterOtherNames() {
-      let otherNamesObj = {};
-      otherNamesObj["name"] = this.ruleForm.otherNames;
-      if (otherNamesObj.name !== undefined && otherNamesObj.name !== "") {
+      this.otherNamesObj = {};
+      this.otherNamesObj["name"] = this.ruleForm.otherNames;
+      if (this.otherNamesObj.name !== undefined && this.otherNamesObj.name !== "") {
         if (this.businessOtherNamesArr.length == 0) {
-          this.businessOtherNamesArr.push(otherNamesObj);
+          this.adminOtherAxios();
+          // console.log(this.isBusinessTrue);
+          // if (this.isBusinessTrue == true) {
+          //   this.businessOtherNamesArr.push(otherNamesObj);
+          // } else {
+          //   this.$message.error("该商户其他名称已存在");
+          // }
         } else {
           if (
             JSON.stringify(this.businessOtherNamesArr).indexOf(
-              JSON.stringify(otherNamesObj)
+              JSON.stringify(this.otherNamesObj)
             ) == -1
           ) {
-            this.businessOtherNamesArr.push(otherNamesObj);
+            this.adminOtherAxios();
+            // console.log(this.isBusinessTrue);
+            // if (this.isBusinessTrue == true) {
+            //   this.businessOtherNamesArr.push(otherNamesObj);
+            // } else {
+            //   this.$message.error("该商户其他名称已存在");
+            // }
           } else {
-            this.$message.error("该商户名称已存在");
+            this.$message.error("该商户其他名称已存在");
           }
         }
       }
       this.ruleForm.otherNames = "";
+    },
+    // 商户其他人员tag删除
+    businessHandleClose(tag) {
+      this.$http
+        .post(
+          this.GLOBAL.serverSrc +
+            "/universal/localcomp/api/localcompaliasdelete",
+          {
+            id: tag.id
+          }
+        )
+        .then(obj => {
+          this.getOneMess(this.tid);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     // 管理人员focus触发的事件
     handleFocusAdminNames() {
@@ -915,13 +971,7 @@ export default {
       this.salesArr = arr;
       this.handleBlurSalesNames();
     },
-    // 商户其他人员tag删除
-    businessHandleClose(tag) {
-      this.businessOtherNamesArr.splice(
-        this.businessOtherNamesArr.indexOf(tag),
-        1
-      );
-    },
+
     // 删除账户信息按钮
     accountDelete(index, row) {
       this.useList.splice(index, 1);
@@ -1808,7 +1858,8 @@ export default {
           let businessNamesArr = [];
           localCompAliasList.forEach((val, idx, arr) => {
             businessNamesArr.push({
-              name: arr[idx].name
+              name: arr[idx].name,
+              id: arr[idx].id
             });
           });
           this.businessOtherNamesArr = businessNamesArr;

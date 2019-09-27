@@ -169,6 +169,7 @@
           :current-page.sync="currentPage4"
           :page-sizes="[5, 10, 50, 100]"
           :page-size="10"
+          background
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
         ></el-pagination>
@@ -188,11 +189,12 @@
       :show-close="false"
       append-to-body
       width="77%"
+      @open="merchandiseDialogOpen"
     >
       <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
         <el-radio-group v-model="isCollapse" @change="qqq">
           <el-radio-button class="group" :label="true">库存</el-radio-button>
-          <el-radio-button :label="false" :disabled="isUsePrice">价格</el-radio-button>
+          <el-radio-button :label="false" >价格</el-radio-button>
         </el-radio-group>
       </div>
 
@@ -889,6 +891,10 @@ export default {
     };
   },
   methods: {
+    // merchandise 弹窗出现时判断团号和成本是否已填写如果已填写则价格按钮可点击  否则禁用
+    merchandiseDialogOpen () {
+      // for (let i = 1)
+    },
     //供应商模糊查询
     querySearch5(queryString3, cb) {
       this.tableData2 = [];
@@ -968,6 +974,7 @@ export default {
         .then(res => {
           this.ccc = [];
           var that = this;
+          // console.log(this.pid)
           this.$http
             .post(
               this.GLOBAL.serverSrc + "/team/api/teampackagelist",
@@ -1239,6 +1246,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
+        console.log(res)
         if (res.data.isSuccess == true) {
           this.$message.success("删除成功");
           this.$http
@@ -1285,37 +1293,41 @@ export default {
       // this.chengben = []
     },
     addcost() {
-      console.log(this.chengben);
-      var arry = [];
-      var arry1 = [];
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage", {
-          object: {
-            isDeleted: 0
-          },
-          pageSize: 1000,
-          pageIndex: 1,
-          isGetAll: true,
-          id: 0
-        })
-        .then(function(obj) {
-          console.log(obj.data.object);
-          for (var j = 0; j < obj.data.objects.length; j++) {
-            arry1.push(obj.data.objects[j]);
-            arry1[j].label = arry1[j].name;
-            arry1[j].value =
-              "|" +
-              arry1[j].id +
-              "+" +
-              arry1[j].name +
-              "-" +
-              arry1[j].types[0].supplierTypeEX +
-              "*" +
-              arry1[j].types[0].supplierType;
-          }
-          that.options2 = arry1;
-        });
+      // console.log(this.chengben);
+      // var arry = [];
+      // var arry1 = [];
+      // var that = this;
+      // this.$http
+      //   .post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage", {
+      //     object: {
+      //       isDeleted: 0
+      //     },
+      //     pageSize: 1000,
+      //     pageIndex: 1,
+      //     isGetAll: true,
+      //     id: 0
+      //   })
+      //   .then(function(obj) {
+      //     console.log("addcost",obj);
+      //     // console.log(obj.data.object)
+      //     // if (obj.data.object == undefined) {
+      //       for (var j = 0; j < obj.data.objects.length; j++) {
+      //       arry1.push(obj.data.objects[j]);
+      //       arry1[j].label = arry1[j].name;
+      //       arry1[j].value =
+      //         "|" +
+      //         arry1[j].id +
+      //         "+" +
+      //         arry1[j].name +
+      //         "-" +
+      //         arry1[j].types[0].supplierTypeEX +
+      //         "*" +
+      //         arry1[j].types[0].supplierType;
+      //     }
+      //     that.options2 = arry1;
+      //     // console.log("options2",that.options2)
+      //     // }
+      //   });
 
       // this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
       // }).then(res => {
@@ -1330,6 +1342,7 @@ export default {
       // })
 
       this.cost = true;
+      // console.log("this.cost",this.cost)
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -1503,6 +1516,7 @@ export default {
       this.originMod = "";
     },
     handleDelete() {
+      console.log(this.pid)
       this.$confirm("此操作将删除该跟团游信息", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -1598,21 +1612,22 @@ export default {
 
          })*/
     },
+    // 团期/库存弹窗的保存按钮
     BandSave() {
-      // console.log("保存",this.ccc);
+      console.log("保存时的cost",this.tableData12);
       for (let i = 0; i < this.ccc.length; i++) {
-        var that = this;
         this.$http
           .post(
             this.GLOBAL.serverSrc + "/team/package/saveshort",
             {
               object: {
-                id: that.ccc[i].id,
+                id: this.ccc[i].id,
                 loadPlan: true,
-                uptoDay: that.ccc[i].uptoDay,
-                // templateID: that.ccc[i].value,
-                codePrefix: that.ccc[i].codePrefix,
-                codeSuffix: that.ccc[i].codeSuffix
+                uptoDay: Number(this.ccc[i].uptoDay),
+                // templateID: this.ccc[i].value,
+                codePrefix: this.ccc[i].codePrefix,
+                codeSuffix: this.ccc[i].codeSuffix,
+                // cost: this.tableData12
               }
             },
             {
@@ -1621,10 +1636,11 @@ export default {
               }
             }
           )
-          .then(function(obj) {
-            console.log(obj);
+          .then((obj) => {
+            console.log("保存按钮",obj);
           })
-          .catch(function(obj) {
+          .catch((obj) => {
+            console.log("error",obj)
             console.log("error");
           });
       }
@@ -1859,7 +1875,7 @@ export default {
           console.log(obj);
         });
     },
-    // 库存按钮出现
+    // 团期/库存按钮 获取dialog数据
     groupStage() {
       this.ccc = [];
       var that = this;
@@ -1878,6 +1894,7 @@ export default {
           }
         )
         .then(function(obj) {
+          console.log("团期库存按钮",obj)
           for (let i = 0; i < obj.data.objects.length; i++) {
             /* console.log(obj.data.objects[0].id)*/
 
@@ -2138,7 +2155,7 @@ export default {
         }
       )
       .then(function(obj) {
-        console.log("teamsearch", obj);
+        // console.log("产品列表", obj);
         that.total = obj.data.total;
         that.tableData = obj.data.objects;
         that.tableData.forEach(function(v, k, arr) {

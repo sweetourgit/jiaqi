@@ -45,7 +45,7 @@
             <el-table-column prop="product_name" label="产品名称" width="220" align="center"></el-table-column>
             <el-table-column prop="dest_name" label="目的地" align="center">
               <template slot-scope="scope">
-                  <span v-for="item in scope.row.destinations" style="margin-right: 10px">{{ item.destination_name }}</span>
+                  <span v-for="(item,index) in scope.row.destinations" :key="index" style="margin-right: 10px">{{ item.destination_name }}</span>
               </template>
             </el-table-column>
             <!--<el-table-column prop="accpter" label="价格" width="120" align="center"></el-table-column>-->
