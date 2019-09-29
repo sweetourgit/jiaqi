@@ -51,7 +51,10 @@ export default {
     toHistory(){
       this.$router.push({
         path: "/pledgingHistory",
-        name: "财务管理   / 财务认款管理   / 审批历史"
+        name: "财务管理   / 财务认款管理   / 审批历史",
+        query: {
+          tour_no: this.paramTour
+        }
       });
     },
     reject() {

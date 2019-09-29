@@ -10,11 +10,16 @@
             <el-timeline-item
               v-for="(activity, index) in activities"
               :key="index"
-              :timestamp="activity.timestamp"
+              :hide-timestamp="timestampHide"
               :size="size"
               placement="top">
-              <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
-                <el-table-column prop="rec_sn" label="收款编码" align="center">
+              <p class="titleP">第{{index + 1}}次审批</p>
+              <p>{{activity.info}}</p>
+              <el-table ref="singleTable" :data="activity.info" border style="width: 100%">
+                <el-table-column prop="id" label="收款编码" align="center">
+                  <template slot-scope="scope">
+                    {{scope.row}}
+                  </template>
                 </el-table-column>
                 <el-table-column prop="status" label="审批状态" align="center">
                   <template slot-scope="scope">
@@ -42,10 +47,10 @@
             <el-timeline-item
               v-for="(activity, index) in activities1"
               :key="index"
-              :timestamp="activity.timestamp"
               :size="size"
+              :hide-timestamp="timestampHide"
               placement="top">
-              <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
+              <el-table ref="singleTable" :data="activity.info" border style="width: 100%">
                 <el-table-column prop="rec_sn" label="发票" align="center">
                 </el-table-column>
                 <el-table-column prop="invoiceInfo" label="发票信息" align="center">
@@ -114,15 +119,52 @@
           content: '创建成功',
           timestamp: '2018-04-11'
         }],
-        size: 'large'
+        size: 'large',
+        timestampHide: true
       }
     },
     methods: {
       cancel(){
         this.$router.go(-1);
+      },
+      loadData(apply_type){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/recognition/recognition/receiptlist", {
+          "tour_no": this.$route.query.tour_no,
+          "apply_type": apply_type
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log(response);
+            if(apply_type == 1){
+//              that.activities = response.data.data.list;
+//              that.activities.forEach(function (item, index, arr) {
+//                item.
+//              })
+            }else if(apply_type == 2){
+//              that.activities1 = response.data.data.list;
+            }
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("数据加载失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       }
+
     },
     created() {
+      if(this.$route.query.tour_no){
+//        加载收款编码
+        this.loadData(1);
+//        加载发票
+        this.loadData(2);
+      }else{
+        this.cancel();
+      }
     }
   }
 
@@ -141,6 +183,10 @@
       .el-timeline-item__content{
         font-size: 20px;
       }
+    }
+    .titleP{
+      font-size: 18px;
+      font-weight: 700;
     }
   }
 </style>

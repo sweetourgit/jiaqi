@@ -5,7 +5,7 @@
       <div class="tableDv">
         <!--订单信息-->
       <div class="table_trip" style="width: 100%;">
-        <el-table ref="multipleTable" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass">
+        <el-table ref="multipleTable1" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass">
           <el-table-column prop="order_sn" label="订单ID" align="center">
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
@@ -237,6 +237,8 @@
 //      获取收款明细
       getReceiptDetail(){
         const that = this;
+        console.log(this.$refs.multipleTable);
+//        console.log(this.$refs.multipleTable1);
         this.date = formatDate(new Date(this.item.rece_start*1000))+'--'+formatDate(new Date(this.item.rece_end*1000));
         this.distributor = this.item.distributor;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/receiptdetail", {
@@ -258,6 +260,8 @@
                 item.rece_at = item.rece_at.split(" ")[0];
               })
             }
+            console.log(that.$refs.multipleTable);
+//            that.$refs.multipleTableMX.scrollTop = 200;
           } else {
             that.$message.warning("加载数据失败~");
           }
