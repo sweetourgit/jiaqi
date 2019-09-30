@@ -191,7 +191,7 @@
       <div class="totalMoney"><i class="el-icon-info"></i>总计：{{totalMoney1}}元 </div>
       <div class="table_trip">
         <el-table ref="singleTable" :data="tableData1" border style="width: 95%;margin: 0 30px 28px;" :header-cell-style="getRowClass">
-          <el-table-column prop="order_sn" label="订单ID" align="center" width="80%">
+          <el-table-column prop="order_sn" label="订单ID" align="center">
           </el-table-column>
           <el-table-column prop="product_name" label="产品名称" align="center">
           </el-table-column>
@@ -230,10 +230,10 @@
     data() {
       return {
         activeName: 'one',
-        activities: [],
-        activities1: [],
-        size: 'large',
-        timestampHide: true,
+        activities: [],//收款编码列表数据
+        activities1: [],//发票列表数据
+        size: 'large',//时间轴size
+        timestampHide: true,//是否隐藏时间
 //        收款编码详情数据
         dialogFormVisible: false,
         receiptCode: '',
@@ -265,9 +265,11 @@
           return ''
         }
       },
+//      返回上一页
       cancel(){
         this.$router.go(-1);
       },
+//      获取收款编号详情
       detailsRece(id){
         const that = this;
         that.dialogFormVisible = true;
@@ -275,17 +277,15 @@
           "id": id
         }, ).then(function(response) {
           if (response.data.code == '200') {
-//            console.log('详情',response);
+            console.log('详情',response);
             if(response.data.data.approval_status == 1){
               that.approval = '审批中';
-              that.approvalStatus = 1;
             }else if(response.data.data.approval_status == 2){
               that.approval = '驳回';
-              that.approvalStatus == 2;
             }else if(response.data.data.approval_status == 3){
               that.approval = '通过';
-              that.approvalStatus = 3;
             }
+            that.receiptCode = response.data.data.rec_sn;
             that.approvalOpinions = response.data.data.approval_comments;
             that.tableData = response.data.data.order_list;
             let total = 0;
@@ -305,6 +305,7 @@
           console.log(error);
         });
       },
+//      获取发票详情
       detailsInvo(id){
         const that = this;
         that.dialogFormVisible1 = true;
@@ -340,10 +341,12 @@
           console.log(error);
         });
       },
+//      关闭弹窗
       close(){
         this.dialogFormVisible = false;
         this.dialogFormVisible1 = false;
       },
+//      加载数据
       loadData(apply_type){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/recognition/recognition/receiptlist", {
