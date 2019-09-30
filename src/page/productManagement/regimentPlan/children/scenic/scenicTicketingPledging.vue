@@ -482,6 +482,7 @@ export default {
                 type: 'success',
                 message: '认款申请成功'
               });
+              that.closeAdd();
             }else{
               that.$message({
                 type: 'success',

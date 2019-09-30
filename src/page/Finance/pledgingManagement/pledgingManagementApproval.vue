@@ -132,6 +132,7 @@ export default {
               type: 'success',
               message: '审核提交成功!'
             });
+            that.cancel();
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
