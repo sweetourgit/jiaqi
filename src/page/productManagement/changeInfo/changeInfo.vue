@@ -1856,7 +1856,7 @@
         )
 
           .then(function (obj) {
-            console.log(obj.data.object);
+            console.log(obj.data.object.package);
             that.ruleForm.travelDays = obj.data.object.day//行程天数
             that.ruleForm.travelNight = obj.data.object.night//行程晚数
             that.dynamicTags3 = obj.data.object.pods//出发地
@@ -1890,7 +1890,7 @@
               if(obj.data.object.package[0].traffic[i].goOrBack == 1){
                 obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
                 obj.data.object.package[0].traffic[i].arrDay = [];
-                for(let k = 0; k < obj.data.object.package[0].traffic[i].day; k++) {
+                for(let k = 0; k < obj.data.object.day; k++) {
                   obj.data.object.package[0].traffic[i].arrDay.push({
                     value: k+1,
                     lable: k+1
@@ -1903,7 +1903,7 @@
                 obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
                 obj.data.object.package[0].traffic[i].arrDay = [];
 
-                for(let k = 0; k < obj.data.object.package[0].traffic[i].day; k++) {
+                for(let k = 0; k < obj.data.object.day; k++) {
                   obj.data.object.package[0].traffic[i].arrDay.push({
                     value: k+1,
                     lable: k+1

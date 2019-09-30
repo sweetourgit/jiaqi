@@ -292,7 +292,6 @@
                           </div>
                         </div>
                         <!--去程-->
-
                         <div class="plane" v-for="(item, index) in ruleForm.plane" :key="item.index">
                           <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
                             <el-cascader style="width: 105px;" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0];trafficClear(index)}" placeholder="飞机"></el-cascader>
@@ -1417,11 +1416,13 @@
       tabIndex: 2,
         notes:[{
           title:'',
-          content:''
+          content:'',
+          menutype:2
         }],
         instructions:[{
           title:'',
-          content:''
+          content:'',
+          menutype:3
         }],
         explain:[{
           title:'费用包含',
@@ -2058,16 +2059,19 @@
         }
       },
       getUEContent0(){
-        this.notes.push({
+        this.notes.push({ 
           title: '',
-          content:''
+          content:'',
+          menuType:2
         });
       },
       getUEContent1(){
         this.instructions.push({
           title: '',
-          content:''
+          content:'',
+          menuType:3
         });
+        console.log('this.instructions', this.instructions)
       },
       //删除预订须知
       deleteNotice(index){
@@ -2129,16 +2133,8 @@
       },
       //保存
       addsave(formName) {
-        // let packet = [];
-        // packet:[{//预订须知
-        //   "title": this.note.title,
-        //   "content": this.note.content,
-        //   "menuType": 2
-        //  },{//使用说明
-        //   "title": "string",
-        //   "content": "string",
-        //   "menuType": 3
-        //  }]
+        let resArr = [...this.notes, ...this.instructions]
+        console.log(resArr)
         this.a = true
         console.log(this.ruleForm.slideshow)
         // this.noNull1 = false
@@ -2172,12 +2168,13 @@
         for(var i=0;i<this.dynamicTags2.length;i++){
             dynamicTagsc.push({"label":this.dynamicTags2[i]})
         };*/
-         //经停信息转字符串
+                 //经停信息转字符串
          let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
          let traff=JSON.parse(traff1);
          for(var i=0;i<traff.length;i++){
             traff[i].ext_Stopover=JSON.stringify(traff[i].ext_Stopover);
          }
+         
          //行程餐食信息转字符串
          let sche1=JSON.stringify(this.ruleForm.schedules);
          let sche=JSON.parse(sche1);
@@ -2211,7 +2208,7 @@
            destination=this.dynamicTags4[i].destination
          }
        }
-    
+      
         //行程信息
         var object={
                   //基本信息接口数据
@@ -2261,7 +2258,7 @@
                     }
                   ],
                   instructions:this.explain.concat(this.domains), //费用说明
-                  others:this.notes,
+                  others:this.notes.concat(this.instructions),//预订须知和使用说明[...this.notes, ...this.instructions]ES6新方法
                   loadPackage: true
                 }
               //  console.log(this.ruleForm.theme)
@@ -2423,7 +2420,7 @@
         })
       },
       trafficClear(index,ruleForm){//去程切换交通方式清空 
-        
+        console.log(this.ruleForm.schedules)
         //this.$refs[ruleForm].clearValidate('plane.0.company');
         //this.$refs.plane.resetFields('company');
         console.log(123)
