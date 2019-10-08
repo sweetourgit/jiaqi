@@ -1116,7 +1116,7 @@
                           </div>
                           <div class="aviation">
                             <!--餐饮-->
-                            <div class="food_text">餐饮</div>
+                            <div class="food_text"><span class="keypoint">*</span>餐饮</div>
                           </div>
                           <!--餐饮循环-->
                           <div class="aviation" style="margin-top:-100px;" v-for="(it,p) in item.ext_Meals" :key="p">
@@ -3635,4 +3635,5 @@
     border: solid 1px #E4E7ED;
     background-color: #f5f7fa;
   }
+  .keypoint{color: red;margin: 0 5px 0 0;}
 </style>
