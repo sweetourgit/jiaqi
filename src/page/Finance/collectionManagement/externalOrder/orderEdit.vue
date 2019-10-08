@@ -1282,6 +1282,10 @@
         this.dialogFormVisible2 = false;
         this.dialogFormVisible3 = false;
         this.loading = true;
+        this.PFT_num = 0;
+        this.PFT_money = 0;
+        this.PFT_start = '';
+        this.PFT_end = '';
       },
       chooseBtn(row){
         this.ruleForm.payAccount = row.title;
