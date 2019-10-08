@@ -65,7 +65,7 @@
                     </p>
                   </template>
                 </el-table-column>
-                <el-table-column prop="status" label="审批状态" align="center">
+                <el-table-column prop="approval_status" label="审批状态" align="center">
                   <template slot-scope="scope">
                     <span v-if="scope.row.approval_status == 1">审批中</span>
                     <span v-if="scope.row.approval_status == 2" style="color: red;">驳回</span>
