@@ -1622,6 +1622,7 @@
             that.$message.warning("获取收款编码失败~");
           }
         }).catch(function(obj) {
+          that.$message.warning("获取收款编码失败~");
           console.log(obj)
         });
       },

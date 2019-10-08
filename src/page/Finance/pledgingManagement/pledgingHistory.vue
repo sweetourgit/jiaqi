@@ -88,7 +88,7 @@
       </el-tabs>
     </div>
 
-    <el-dialog title="收款编码详情" :visible="dialogFormVisible" width=90% @close="close" append-to-body id="dialogRece">
+    <el-dialog title="收款编码详情" :visible="dialogFormVisible" width=90% @close="close" id="dialogRece">
       <div class="table_trip" style="width: 100%;">
         <div class="approval">
           <el-row>
