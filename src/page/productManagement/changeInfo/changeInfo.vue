@@ -6,7 +6,7 @@
         <el-button plain class="btn-button" @click="cancel()">取消</el-button>
         <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">保存</el-button>
       </div>
-      {{changeobj}}
+      <!-- {{changeobj}} -->
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <!-- 行程信息 -->
         <el-tab-pane label="行程信息" name="second">
