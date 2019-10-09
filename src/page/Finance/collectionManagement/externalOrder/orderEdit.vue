@@ -815,7 +815,7 @@
                   if (!reg.test(end)) {
                     end = formatDate(this.ruleForm.endTime);
                   }
-                  if (start != this.startTime || end != this.endTime) {
+                  if (start.split(' ')[0] != this.startTime || end.split(' ')[0] != this.endTime) {
                     this.$confirm("款项入账时间段和全部收款明细入账时间区间不符，是否继续添加?", "提示", {
                       confirmButtonText: "添加",
                       cancelButtonText: "取消",
@@ -841,7 +841,7 @@
                 if (!reg.test(end)) {
                   end = formatDate(this.ruleForm.endTime);
                 }
-                if (start != this.startTime || end != this.endTime) {
+                if (start.split(' ')[0] != this.startTime || end.split(' ')[0] != this.endTime) {
                   this.$confirm("款项入账时间段和全部收款明细入账时间区间不符，是否继续添加?", "提示", {
                     confirmButtonText: "添加",
                     cancelButtonText: "取消",
@@ -1073,7 +1073,8 @@
                     if (!reg.test(end)) {
                       end = formatDate(this.ruleForm.endTime);
                     }
-                    if (start != this.startTime || end != this.endTime) {
+
+                    if (start.split(' ')[0] != this.startTime || end.split(' ')[0] != this.endTime) {
                       this.$confirm("款项入账时间段和全部收款明细入账时间区间不符，是否继续添加?", "提示", {
                         confirmButtonText: "添加",
                         cancelButtonText: "取消",
@@ -1099,7 +1100,9 @@
                   if (!reg.test(end)) {
                     end = formatDate(this.ruleForm.endTime);
                   }
-                  if (start != this.startTime || end != this.endTime) {
+
+//                  alert(start.split(' ')[0] == this.startTime && end.split(' ')[0] == this.endTime);
+                  if (start.split(' ')[0] != this.startTime || end.split(' ')[0] != this.endTime) {
                     this.$confirm("款项入账时间段和全部收款明细入账时间区间不符，是否继续添加?", "提示", {
                       confirmButtonText: "添加",
                       cancelButtonText: "取消",
@@ -1306,11 +1309,14 @@
           this.tableDataQK = file.response.data.list;
           this.totalItem = file.response.data.list.length;
           this.totalMoney = file.response.data.money;
-//          this.ruleForm.payMoney = file.response.data.money;
+          this.ruleForm.payMoney = file.response.data.money;
+          this.ruleForm.mark = file.response.data.title;
           this.startTime = formatDate(new Date(file.response.data.start*1000));
+          this.startTime = this.startTime.split(' ')[0];
           this.endTime = formatDate(new Date(file.response.data.end*1000));
-//          this.ruleForm.startTime = formatDate(new Date(file.response.data.start*1000));
-//          this.ruleForm.endTime = formatDate(new Date(file.response.data.end*1000));
+          this.endTime = this.endTime.split(' ')[0];
+          this.ruleForm.startTime = formatDate(new Date(file.response.data.start*1000));
+          this.ruleForm.endTime = formatDate(new Date(file.response.data.end*1000));
           this.tableDataQK.forEach(function (item, index, arr) {
             item[1] = formatDate(new Date(item[1]*1000));
           })

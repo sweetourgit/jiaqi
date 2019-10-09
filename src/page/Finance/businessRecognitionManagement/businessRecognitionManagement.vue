@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
-    商户预存款
+    业务认款管理
 
   </div>
 </template>
