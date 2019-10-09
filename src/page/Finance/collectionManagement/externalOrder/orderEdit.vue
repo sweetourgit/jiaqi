@@ -565,7 +565,7 @@
       dialogFormVisible: {
         handler: function () {
 //          alert(this.dialogFormVisible);
-          if(this.dialogFormVisible){
+          if(this.dialogFormVisible && this.info == ''){
             this.getCode()
           }
           if(this.info != '' && this.dialogFormVisible){
@@ -939,7 +939,7 @@
         getOrder = getOrder.substr(0, getOrder.length - 1);
 //        alert(getOrder);
         this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
-        alert(this.deleteStr);
+//        alert(this.deleteStr);
         if(flag){
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/addrece", {
             "rece_code":this.rece_code,
