@@ -5,22 +5,22 @@
       <div class="approval">
         <el-row>
           <el-col :span="2.5">
-            <div class="grid-content bg-purple">收款编码：</div>
+            <div class="grid-content ">收款编码：</div>
           </el-col>
           <el-col :span="4">
-            <div class="grid-content bg-purple">{{receiptCode}}</div>
+            <div class="grid-content ">{{receiptCode}}</div>
           </el-col>
           <el-col :span="2.5">
-            <div class="grid-content bg-purple">审批：</div>
+            <div class="grid-content ">审批：</div>
           </el-col>
           <el-col :span="6">
-            <div class="grid-content bg-purple">{{approval}}</div>
+            <div class="grid-content ">{{approval}}</div>
           </el-col>
           <el-col :span="2.5">
-            <div class="grid-content bg-purple">审批意见：</div>
+            <div class="grid-content ">审批意见：</div>
           </el-col>
           <el-col :span="4">
-            <div class="grid-content bg-purple">{{approvalOpinions}}</div>
+            <div class="grid-content ">{{approvalOpinions}}</div>
           </el-col>
         </el-row>
       </div>

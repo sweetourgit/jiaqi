@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "antd": "^3.6.4",
+    "moment": "^2.24.0",
     "array-includes": "^3.0.3",
     "axios": "^0.18.0",
     "element-ui": "^2.9.1",
@@ -32,6 +33,7 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "moment": "^2.24.0",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",

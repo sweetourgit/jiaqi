@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative">
+  <div class="vivo">
     <el-tabs v-model="activeName" @tab-click="handleClick">
      <el-tab-pane label="同业" name="first">
         <SameTradeManagement></SameTradeManagement>
@@ -10,7 +10,7 @@
       <el-tab-pane label="外部订单收款" name="fourth">
         <externalOrder></externalOrder>
       </el-tab-pane>
-      <el-tab-pane label="分销商收款" name="five">
+      <el-tab-pane label="内部收款" name="five">
         <distributorsInfo></distributorsInfo>
       </el-tab-pane>
       <el-tab-pane label="需要您审批" name="third">
@@ -36,7 +36,7 @@ export default {
   },
   data() {
     return {
-      activeName: 'first',
+      activeName: 'first', // 当前tab选项卡默认状态
       clickTab:'',//点击切换获取当前值
     }
   },
@@ -120,18 +120,20 @@ export default {
         .then(function (obj) {
           that.total = obj.data.total
           that.tableData = obj.data.objects
-          console.log(obj.data.objects)
         })
         .catch(function (obj) {
-          console.log(obj)
         })
     },
   },
   created() {
     this.pageList();
+    this.activeName = this.$route.params.tabStatus
   }
 }
 
 </script>
 <style lang="scss" scoped>
+  .vivo{
+    position: relative;
+  }
 </style>
