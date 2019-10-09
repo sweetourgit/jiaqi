@@ -9,7 +9,7 @@
     <!-- 基本信息 -->
     <el-divider content-position="left">基本信息</el-divider>
     <div class="item-content">
-      <div class="distributor-status status-bg">通过</div>
+      <el-tag type="success" class="distributor-status">通过</el-tag>
     </div>
     <!-- 第一行 -->
     <el-row type="flex" class="row-bg" justify="space-around">
@@ -211,16 +211,7 @@
       margin-bottom: 20px;
     }
     .distributor-status{
-      display: inline;
-      padding: 0 5px;
       margin-left: 60px;
-      height: 15px;
-      line-height: 15px;
-      text-align: center;
-      color: #fff;
-    }
-    .status-bg{
-      background: red;
     }
     .el-divider__text{
       font-size: 17px;

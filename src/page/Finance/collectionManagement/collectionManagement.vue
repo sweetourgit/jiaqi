@@ -127,7 +127,9 @@ export default {
   },
   created() {
     this.pageList();
-    this.activeName = this.$route.params.tabStatus
+    if(this.$route.params.tabStatus){
+      this.activeName = this.$route.params.tabStatus
+    }
   }
 }
 
