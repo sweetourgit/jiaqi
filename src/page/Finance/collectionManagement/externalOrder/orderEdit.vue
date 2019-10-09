@@ -186,7 +186,8 @@
                 </el-table-column>
                 <el-table-column prop="money" label="操作" align="center">
                   <template slot-scope="scope">
-                    <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope)">删除</el-button>
+                    <p v-if="scope.row[0] == '已删除'">已删除</p>
+                    <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope)" v-else>删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -504,8 +505,8 @@
         },
         detailRules:{
           enterTime: [{ required: true, message: '入账时间不能为空', trigger: 'blur' }],
-          orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
-          product: [{ required: true, message: '产品不能为空', trigger: 'blur' }],
+//          orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
+//          product: [{ required: true, message: '产品不能为空', trigger: 'blur' }],
           money: [
             { required: true, message: '结算金额不能为空', trigger: 'blur' },
             { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
@@ -938,7 +939,7 @@
         getOrder = getOrder.substr(0, getOrder.length - 1);
 //        alert(getOrder);
         this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
-//        alert(this.deleteStr);
+        alert(this.deleteStr);
         if(flag){
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/addrece", {
             "rece_code":this.rece_code,
@@ -1411,8 +1412,9 @@
           type: "warning"
         }).then(() => {
           console.log(scope.row[2]+'======'+scope.$index);
-          that.tableDataQK.splice(scope.$index,1);
-          that.deleteStr += scope.row[2] + ',';
+//          that.tableDataQK.splice(scope.$index,1);
+          this.$set(that.tableDataQK[scope.$index],'0','已删除');
+          that.deleteStr += scope.$index + ',';
           let num = parseInt(that.totalItem);
           num--;
           that.totalItem = num;
@@ -1424,18 +1426,20 @@
           let start = that.tableDataQK[0][1];
           let end = that.tableDataQK[0][1];
           that.tableDataQK.forEach(function (item, index, arr) {
-            if(new Date(Date.parse(start)) > new Date(Date.parse(item[1]))){
-              start = item[1];
-            }
-            if(new Date(Date.parse(end)) < new Date(Date.parse(item[1]))){
-              end = item[1];
+            if(item[0] != '已删除'){
+              if(new Date(Date.parse(start)) > new Date(Date.parse(item[1]))){
+                start = item[1];
+              }
+              if(new Date(Date.parse(end)) < new Date(Date.parse(item[1]))){
+                end = item[1];
+              }
             }
           });
 //          console.log(totalMoney.toFixed(2),start,end);
           that.totalMoney = totalMoney.toFixed(2);
-          that.startTime = start;
-          that.endTime = end;
-          console.log(that.deleteStr);
+          that.startTime = start.split(' ')[0];
+          that.endTime = end.split(' ')[0];
+//          console.log(that.deleteStr);
         }).catch(() => {
 
         });
