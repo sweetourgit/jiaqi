@@ -16,7 +16,7 @@
             <el-input v-model="ruleForm.mark" placeholder="请输入" class="baseIn" maxlength="80" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="收款时间：" prop="creditTime" label-width="140px">
-            <el-date-picker v-model="ruleForm.creditTime" type="date" placeholder="请选择日期" class="start-time baseIn" :editable="disabled"></el-date-picker>
+            <el-date-picker v-model="ruleForm.creditTime" type="date" placeholder="请选择日期" class="start-time baseIn"></el-date-picker>
           </el-form-item>
           <el-form-item label="分销商：" prop="distributor" label-width="140px" v-if="info != ''">
             <el-radio-group v-model="ruleForm.distributor" @change="radioChange" :disabled="isPFT">
@@ -51,9 +51,9 @@
               <p style="margin: 0;color: #999;line-height: 22px;">收款金额可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
-              <el-date-picker v-model="pftForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled" disabled :picker-options="startDatePicker"></el-date-picker>
+              <el-date-picker v-model="pftForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :picker-options="startDatePicker"></el-date-picker>
               <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
-              <el-date-picker v-model="pftForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" disabled :picker-options="endDatePicker"></el-date-picker>
+              <el-date-picker v-model="pftForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :picker-options="endDatePicker"></el-date-picker>
               <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
             </el-form-item>
             <el-form-item label="附件：" label-width="140px">
@@ -938,10 +938,27 @@
         });
         getOrder = getOrder.substr(0, getOrder.length - 1);
 //        alert(getOrder);
-        this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+
 //        alert(this.deleteStr);
-        if(flag){
-          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/addrece", {
+        let data;
+        if(this.deleteStr == ''){
+          data = {
+            "rece_code":this.rece_code,
+            "explain":this.ruleForm.mark,
+            "receivables_at":this.ruleForm.creditTime,
+            "distributor":this.ruleForm.distributor,
+            "account_id":this.ruleForm.payAccountID,
+            "rece_money":money,
+            "rece_start":startTime,
+            "rece_end":endTime,
+            "file":fileArr,
+            "org_id":sessionStorage.getItem('orgID'),
+            "create_uid":sessionStorage.getItem('id'),
+            "get_order":getOrder
+          }
+        }else{
+          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          data = {
             "rece_code":this.rece_code,
             "explain":this.ruleForm.mark,
             "receivables_at":this.ruleForm.creditTime,
@@ -955,7 +972,10 @@
             "create_uid":sessionStorage.getItem('id'),
             "del_order":this.deleteStr,
             "get_order":getOrder
-          }, ).then(function(response) {
+          }
+        }
+        if(flag){
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/addrece", data, ).then(function(response) {
             console.log(response);
             if (response.data.code == '200') {
               that.ruleForm = {

@@ -10,15 +10,15 @@
       <el-button type="info" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 1">待认收款</el-button>
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 2">已认完</el-button>
       <div class="stepDv">
-        <p class="inputLabel"><span>收款单号：</span>{{baseInfo.ID}}</p>
-        <p class="inputLabel"><span>申请人：</span>{{applicant}}</p>
-        <p class="inputLabel"><span>申请时间：</span>{{baseInfo.creatTime}}</p>
-        <p class="inputLabel"><span>收款时间：</span>{{baseInfo.creditTime}}</p>
-        <p class="inputLabel"><span>收款账户：</span>{{baseInfo.payAccount}}</p>
-        <p class="inputLabel"><span>收款金额：</span>{{baseInfo.payMoney}}</p>
-        <p class="inputLabel"><span>剩余认款金额：</span>{{baseInfo.payMoney}}</p>
-        <p class="inputLabel"><span>摘要：</span>{{baseInfo.payMoney}}</p>
-        <p class="inputLabel"><span>款项说明：</span>{{baseInfo.mark}}</p>
+        <p class="inputLabel"><span>收款单号：</span>{{baseInfo.rece_code}}</p>
+        <p class="inputLabel"><span>申请人：</span>{{baseInfo.create_uid}}</p>
+        <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
+        <p class="inputLabel"><span>收款时间：</span>{{baseInfo.receivables_at}}</p>
+        <p class="inputLabel"><span>收款账户：</span>{{baseInfo.account}}</p>
+        <p class="inputLabel"><span>收款金额：</span>{{baseInfo.rece_money}}</p>
+        <p class="inputLabel"><span>剩余认款金额：</span>{{baseInfo.remain_money}}</p>
+        <p class="inputLabel"><span>摘要：</span>{{baseInfo.remark}}</p>
+        <p class="inputLabel"><span>款项说明：</span>{{baseInfo.explain}}</p>
 
         <div class="inputLabel">
           <span style="vertical-align: top;">凭证：</span>
@@ -74,34 +74,24 @@
         disabled: true,
 
         baseInfo: {
-          ID: '',
-//          applicant: '',
-          creatTime: '',
-          creditTime: '',
-          mark: '',
-          payAccount: '',
-          payAccountID: '',
-          distributor: '',
-          payMoney: '',
-          startTime: '',
-          endTime: '',
-          toCollection: '',
-          approved: '',
-          status_rece: ''
+          status_rece: '',
+          rece_code: '',
+          create_uid: '',
+          created_at: '',
+          receivables_at: '',
+          account_id: '',
+          account: '',
+          rece_money: '',
+          remain_money: '',
+          remark: '',
+          explain: ''
         },
-        applicant: '',
-        fileList: [],
-        tableDataSK: [],
-        tableDataXQ: [],
-        totalItem: '',
-        totalMoney: '',
-        startTime: '',
-        endTime: '',
-        tableDataDD: [],
-        dialogFormVisible: false,
 
-        showSK: true,
-        showXQ: false,
+        recognitionInfo: {
+
+        },
+
+        fileList: [],
 
         payList: {
           '1': '产品自销',
@@ -139,27 +129,19 @@
 //      关闭弹窗
       closeAdd(){
         this.baseInfo = {
-          ID: '',
-          creatTime: '',
-          creditTime: '',
-          mark: '',
-          payAccount: '',
-          payAccountID: '',
-          distributor: '',
-          payMoney: '',
-          startTime: '',
-          endTime: '',
-          toCollection: '',
-          approved: '',
-          status_rece: ''
+          status_rece: '',
+          rece_code: '',
+          create_uid: '',
+          created_at: '',
+          receivables_at: '',
+          account_id: '',
+          account: '',
+          rece_money: '',
+          remain_money: '',
+          remark: '',
+          explain: ''
         };
-        this.totalItem = '';
-        this.totalMoney = '';
-        this.startTime = '';
-        this.endTime = '';
-        this.fileList = [];
-        this.tableDataSK = [];
-        this.tableDataXQ = [];
+
         this.$emit('close', false);
       },
 //      删除
@@ -241,31 +223,28 @@
       },
       loadData(){
         const that = this;
+        // 获取基本信息
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewbasic", {
           "id": this.info
         }, ).then(function(response) {
           console.log('详情',response);
           if (response.data.code == '200') {
-            that.rece_codeEdit = response.data.data.rece_code;
             response.data.data.created_at = formatDate(new Date(response.data.data.created_at*1000));
             response.data.data.receivables_at = formatDate(new Date(response.data.data.receivables_at*1000));
-            response.data.data.rece_start = formatDate(new Date(response.data.data.rece_start*1000));
-            response.data.data.rece_end = formatDate(new Date(response.data.data.rece_end*1000));
             that.baseInfo = {
-              ID: response.data.data.id,
-              creatTime: response.data.data.created_at,
-              creditTime: response.data.data.receivables_at,
-              payAccount: response.data.data.account_id,
-              payAccountID: response.data.data.account_id,
-              mark: response.data.data.explain,
-              distributor: response.data.data.distributor,
-              payMoney: response.data.data.rece_money,
-              startTime: response.data.data.rece_start,
-              endTime: response.data.data.rece_end,
-              toCollection: response.data.data.money_wait,
-              approved: response.data.data.approved,
-              status_rece: response.data.data.status_rece
+              status_rece: response.data.data.status_rece,
+              rece_code: response.data.data.rece_code,
+              create_uid: response.data.data.create_uid,
+              created_at: response.data.data.created_at,
+              receivables_at: response.data.data.receivables_at,
+              account_id: response.data.data.account_id,
+              account: response.data.data.account_id,
+              rece_money: response.data.data.rece_money,
+              remain_money: response.data.data.rece_money,
+              remark: response.data.data.remark,
+              explain: response.data.data.explain
             };
+            // 根据ID获取人名
             that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
               "id": response.data.data.create_uid
             },{
@@ -275,94 +254,14 @@
             }).then(function(response) {
               console.log('名字',response.data.object.name);
               if (response.data.isSuccess) {
-                that.applicant = response.data.object.name;
+                that.baseInfo.create_uid = response.data.object.name;
               } else {
                 that.$message.warning("失败~");
               }
             }).catch(function(error) {
               console.log(error);
             });
-
-            if(response.data.data.file != '' && response.data.data.type == 1){
-              that.fileList = response.data.data.file;
-              for(let i = 0; i < that.fileList.length; i++){
-                that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
-              }
-              that.tableDataXQ = [];
-              that.tableDataSK = response.data.data.list;
-              that.totalItem = response.data.data.list.length;
-//              that.totalMoney = response.data.data.rece_money;
-//              that.startTime = response.data.data.rece_start;
-//              that.endTime = response.data.data.rece_end;
-//              let start = that.tableDataSK[0].rece_at;
-//              let end = that.tableDataSK[0].rece_at;
-//              let totalMoney = 0;
-              let start = formatDate(new Date(that.tableDataSK[0].rece_at*1000)).split(" ")[0];
-              let end = formatDate(new Date(that.tableDataSK[0].rece_at*1000)).split(" ")[0];
-              let totalMoney = 0;
-              that.tableDataSK.forEach(function (item, index, arr) {
-                item.rece_at = formatDate(new Date(item.rece_at*1000));
-                item.rece_at = item.rece_at.split(" ")[0];
-                if(new Date(Date.parse(start)) > new Date(Date.parse(item.rece_at))){
-                  start = item.rece_at;
-                }
-                if(new Date(Date.parse(end)) < new Date(Date.parse(item.rece_at))){
-                  end = item.rece_at;
-                }
-
-                totalMoney += parseFloat(item.rece_money);
-//                console.log(totalMoney);
-              });
-
-              that.totalMoney = totalMoney.toFixed(2);
-              that.startTime = start;
-              that.endTime = end;
-              that.showSK = true;
-              that.showXQ = false;
-            }else if(response.data.data.type == 2 && response.data.data.list.length != 0){
-              if(response.data.data.distributor == '票付通余额'){
-                that.fileList = response.data.data.file;
-                for(let i = 0; i < that.fileList.length; i++){
-                  that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
-                }
-              }
-              that.tableDataSK = [];
-              that.tableDataXQ = response.data.data.list;
-              that.tableDataXQ.forEach(function (item, index, arr) {
-                item.sale_at = formatDate(new Date(item.sale_at*1000));
-                item.check_at = formatDate(new Date(item.check_at*1000));
-                item.import_at = formatDate(new Date(item.import_at*1000));
-                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
-                  "id": item.create_uid
-                },{
-                  headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                  }
-                }).then(function(response) {
-                  console.log('名字',response.data.object.name);
-                  if (response.data.isSuccess) {
-                    item.create_uid = response.data.object.name;
-                  } else {
-                    that.$message.warning("失败~");
-                  }
-                }).catch(function(error) {
-                  console.log(error);
-                });
-              });
-              that.totalItem = '';
-              that.totalMoney = '';
-              that.startTime = '';
-              that.endTime = '';
-              that.showSK = false;
-              that.showXQ = true;
-            }else{
-              that.tableDataSK = '';
-              that.tableDataXQ = '';
-              that.totalItem = '';
-              that.totalMoney = '';
-              that.showSK = true;
-              that.showXQ = false;
-            }
+            // 根据账户ID获取账户名称
             that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
               {
                 "id": response.data.data.account_id
@@ -374,11 +273,44 @@
 //                that.tableDataZH = obj.data.objects;
               console.log('账户查询',obj);
               if(obj.data.isSuccess){
-                that.baseInfo.payAccount = obj.data.object.title;
+                that.baseInfo.account = obj.data.object.title;
               }
             }).catch(function (obj) {
               console.log(obj)
             });
+            // 凭证
+            that.fileList = response.data.data.file;
+            for(let i = 0; i < that.fileList.length; i++){
+              that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
+            }
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+
+        // 获取认款信息
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewrec", {
+          "id": this.info
+        }, ).then(function(response) {
+          console.log('详情',response);
+          if (response.data.code == '200') {
+
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+
+        // 获取认款订单
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewrecorder", {
+          "id": this.info
+        }, ).then(function(response) {
+          console.log('详情',response);
+          if (response.data.code == '200') {
+
           } else {
             that.$message.success("加载数据失败~");
           }

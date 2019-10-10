@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative">
+  <div class="vivo" style="position:relative" id="collection_add">
     <!--申请预付款-->
     <el-dialog title="添加待认款收款" :visible="dialogFormVisible" width="70%" @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
@@ -138,14 +138,18 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             let fileArr = [];
-            if(this.fileList.length != 0){
-              fileArr.push({
-                name: this.fileList[0].name,
-                url: this.fileList[0].response.data.file_url
-              });
+            console.log(that.fileList);
+            if(that.fileList.length != 0){
+              that.fileList.forEach(function (item, index, arr) {
+                fileArr.push({
+                  name: item.name,
+                  url: item.response.data.url
+                });
+              })
             }else{
               fileArr = [];
             }
+            console.log(fileArr);
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/predeposit/predeposit/addpredeposit', {
               "rece_code": that.rece_code,
               "receivables_at": that.ruleForm.collectionTime,
@@ -221,12 +225,12 @@
       },
 //      上传凭证function
       UploadUrl(){
-        return this.GLOBAL.serverSrcPhp + '/api/v1/order/external-order/files';
+        return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
       },
       handleSuccess(response, file, fileList){
-        console.log(file);
-        console.log(fileList);
-        console.log('response',response);
+//        console.log(file);
+//        console.log(fileList);
+//        console.log('response',response);
         if(response.code == 200){
           this.fileList = fileList;
         }else{
@@ -235,14 +239,14 @@
           }else{
             this.$message.warning('文件上传失败');
           }
-          this.fileList = fileList;
-          console.log(fileList);
-          this.fileList = fileList.splice(-1, 1);
-          for(let i = 0; i < fileList.length; i++){
+//          this.fileList = fileList;
+//          console.log(fileList);
+//          this.fileList = fileList.splice(-1, 1);
+//          for(let i = 0; i < fileList.length; i++){
+//            console.log(i);
+//          }
 
-          }
-
-          console.log(this.fileList);
+//          console.log(this.fileList);
 //          this.fileList = {};
 //          this.$refs.upload1.clearFiles();
         }
@@ -290,8 +294,8 @@
   }
 
 </script>
-<style lang="scss" scoped>
-  .footer {
+<style lang="scss">
+  #collection_add .footer {
     position: relative;
     width: 100%;
     height: 50px;
@@ -303,9 +307,12 @@
       margin: 0 10px;
     }
   }
-  .inputWidth {
+  #collection_add .inputWidth {
     min-width: 400px;
     width: 60%;
+  }
+  #collection_add .el-upload-list__item{
+    margin-top: 10px;
   }
 
 </style>

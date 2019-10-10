@@ -181,10 +181,11 @@
           "explain": this.plan,
           "create_uid": this.reimbursementPerID,
           "apply_start": this.startTime,
-          "apply_end": this.endTime
+          "apply_end": this.endTime,
+          "create_type": '1'
         }, ).then(function(response) {
           if (response.data.code == '200') {
-            console.log('认收款列表',response);
+            console.log('手动列表',response);
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
             that.tableData.forEach(function (item, index, arr) {
