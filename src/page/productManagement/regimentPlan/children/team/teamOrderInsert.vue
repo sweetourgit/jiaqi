@@ -545,6 +545,7 @@ export default {
                   "refundStatus": 0,  //退款状态
                   "occupyStatus": this.ruleForm.type,  //占位状态
                   "payable": this.ruleForm.totalPrice, //应付款
+                  "platform": 1,//1是erp，2是同业
                   "favourable": [      //优惠
                     {
                       "id": 0,
