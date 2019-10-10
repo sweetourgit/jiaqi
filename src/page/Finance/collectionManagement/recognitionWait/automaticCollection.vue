@@ -1,68 +1,66 @@
 <template>
-  <div class="all" id="needApprovalAll">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <!--报销-->
-      <div class="borders">
-        <div class="search">
-          <span class="search_style">团期计划：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
-          <span class="search_style">报账人：</span>
-          <!--<el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>-->
-          <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
-          <span class="search_style">发起时间：</span>
-          <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
-          <div class="date-line"></div>
-          <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
-          <div style="margin-top: 20px;"></div>
-          <span class="search_style">产品名称：</span> <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
+  <div id="trade">
+    <div class="borders">
+      <div class="search">
+        <span class="search_style">款项说明：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
+        <span class="search_style">申请人：</span>
+        <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入申请人" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
+        <span class="search_style">申请日期：</span>
+        <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
+        <div class="date-line"></div>
+        <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
+
+        <div style="margin-top: 20px;">
           <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
           <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
-
-        </div>
-        <div class="table_style">
-          <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
-            <el-table-column prop="tour_no" label="团期计划" width="180" align="center"></el-table-column>
-            <el-table-column prop="bill_status" label="状态" width="120" align="center">
-              <template slot-scope="scope">
-                <div style="color: #7F7F7F">报账中</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="product_name" label="产品名称" align="center"></el-table-column>
-            <el-table-column prop="id" label="申请人" width="120" align="center"></el-table-column>
-            <el-table-column prop="created_at" label="申请时间" width="180" align="center"></el-table-column>
-            <el-table-column prop="mark" label="审批意见" width="250" align="center"></el-table-column>
-            <el-table-column prop="opinion" label="操作" align="center" width="100">
-              <template slot-scope="scope">
-                <el-button @click="approve(scope.row)" type="text" size="small" class="table_details">审批</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="block">
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size= pageSize
-            layout="total, sizes, prev, pager, next, jumper"
-            :total=pageCount
-            background>
-          </el-pagination>
         </div>
       </div>
-      <!--报销end-->
-    </el-tabs>
-    <checkSheetPreview :dialogFormVisible="dialogFormVisible" @close="closeFun" :info="info"></checkSheetPreview>
+      <div class="table_style">
+        <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
+          <el-table-column prop="rece_code" label="收款单号" align="center"></el-table-column>
+          <el-table-column prop="status" label="状态" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.status_rece=='1'" style="color: #7F7F7F" >待认收款</div>
+              <div v-if="scope.row.status_rece=='2'" style="color: #FF4A3D" >已认完</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="explain" label="款项说明" align="center"></el-table-column>
+          <el-table-column prop="rece_money" label="收款金额" align="center"></el-table-column>
+          <el-table-column prop="rece_money" label="剩余确认金额" align="center"></el-table-column>
+          <el-table-column prop="receivables_at" label="收款时间" width="120" align="center"></el-table-column>
+          <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
+          <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
+          <el-table-column prop="opinion" label="操作" align="center" width="150">
+            <template slot-scope="scope">
+              <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="block">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size= pageSize
+          layout="total, sizes, prev, pager, next, jumper"
+          :total=pageCount
+          background>
+        </el-pagination>
+      </div>
+      <collectionDetail :dialogFormVisible1="dialogFormVisible1" :info="info" @close="closeAdd"></collectionDetail>
+    </div>
   </div>
 </template>
 
 <script>
-  import checkSheetPreview from '@/page/Finance/checkSheet/checkSheetPreview';
+  import collectionDetail from '@/page/Finance/collectionManagement/recognitionWait/collectionDetail.vue'
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
-    name: "needApproval",
+    name: "tradeList",
     components:{
-      checkSheetPreview
+      collectionDetail
     },
     data() {
       return {
@@ -70,22 +68,24 @@
 
         plan: '',
         reimbursementPer: '',
-        productName: '',
         startTime: '',
         endTime: '',
         reimbursementPerID: '',
         operatorList: [],
 
-        activeName: 'first',
-
         pageSize: 10,
         currentPage: 1,
-        pageCount: 3,
+        pageCount: 2,
+
+        //待审批table
+        tableData: [{}],
 
         dialogFormVisible: false,
+        dialogFormVisible1: false,
         info: '',
-        //待审批table
-        tableData: []
+
+        startDatePicker: this.beginDate(),
+        endDatePicker: this.processDate()
       };
     },
     methods: {
@@ -97,7 +97,7 @@
           return ''
         }
       },
-      //        操作人员
+      // 操作人员
       querySearchOper(queryString, cb){
         const operatorList = this.operatorList;
         var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
@@ -131,20 +131,27 @@
           }
         }
       },
+
+      detail(row){
+        this.info = row.id;
+        this.dialogFormVisible1 = true;
+      },
+      closeAdd() {
+        this.dialogFormVisible = false;
+        this.dialogFormVisible1 = false;
+        this.info = '';
+        this.loadData();
+      },
+
       searchFun(){
         this.loadData();
       },
       resetFun(){
         this.plan = '';
         this.reimbursementPer = '';
-        this.productName = '';
         this.startTime = '';
         this.endTime = '';
         this.reimbursementPerID = '';
-        this.loadData();
-      },
-      handleClick(tab, event) {
-//        console.log(tab, event);
         this.loadData();
       },
       handleSizeChange(val) {
@@ -154,38 +161,27 @@
       },
       handleCurrentChange(val) {
         this.currentPage = val;
-        this.loadData()
+        this.loadData();
       },
-      approve(res){
-        this.info = res;
-        this.dialogFormVisible = true;
-      },
-      closeFun(){
-        this.dialogFormVisible = false;
-        this.loadData()
-      },
+
       loadData(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/listpage", {
-          "pageIndex": this.pageIndex,
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/listpage", {
+          "pageIndex": this.currentPage,
           "pageSize": this.pageSize,
-          "product_name": this.productName,
-          "tour_no": this.plan,
-          "start_time": this.startTime,
-          "end_time": this.endTime,
-          "create_account": this.reimbursementPerID,
-          "bill_status": '5'
+          "explain": this.plan,
+          "create_uid": this.reimbursementPerID,
+          "apply_start": this.startTime,
+          "apply_end": this.endTime
         }, ).then(function(response) {
-//            console.log(response);
           if (response.data.code == '200') {
-            console.log('需要审批',response);
+            console.log('认收款列表',response);
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
-            that.$parent.$parent.$parent.number = response.data.data.list.length;
             that.tableData.forEach(function (item, index, arr) {
+              item.receivables_at = formatDate(new Date(item.receivables_at*1000));
+              item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));
-              item.created_at = item.created_at.split(" ")[0];
-
               that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
                 "id": item.create_uid
               },{
@@ -195,9 +191,9 @@
               }).then(function(response) {
 
                 if (response.data.isSuccess) {
-                  item.id = response.data.object.name
+                  item.create_uid = response.data.object.name
                 } else {
-                  that.$message.warning("获取申请人失败");
+                  that.$message.success("获取录入人失败~");
                 }
               }).catch(function(error) {
                 console.log(error);
@@ -265,7 +261,34 @@
         }).catch(function(error) {
           console.log(error);
         });
-      }
+      },
+
+      beginDate(){
+//      alert(begin);
+        const that = this;
+        return {
+          disabledDate(time){
+            if (that.endTime) {  //如果结束时间不为空，则小于结束时间
+              return new Date(that.endTime).getTime() < time.getTime()
+            } else {
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+            }
+          }
+        }
+      },
+      processDate(){
+//      alert(process);
+        const that = this;
+        return {
+          disabledDate(time) {
+            if (that.startTime) {  //如果开始时间不为空，则结束时间大于开始时间
+              return new Date(that.startTime).getTime() > time.getTime()
+            } else {
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+            }
+          }
+        }
+      },
     },
     created(){
       this.loadData();
@@ -274,42 +297,51 @@
   }
 </script>
 
-<style>
-  #needApprovalAll .el-tabs__header{
+<style scoped>
+  #trade .el-tabs__header{
     margin-top: -14px!important;
   }
-  #needApprovalAll .borders{
+  #trade .borders{
     overflow: hidden;
-    border: 1px solid #E6E6E6;
+    /*border: 1px solid #E6E6E6;*/
     margin-bottom: 30px;
   }
-  #needApprovalAll .search{
+  #trade .search{
+    width: 96%;
+    min-width: 1079px;
+    margin-left: 20px;
+    margin-top: 20px;
     float: left;
-    margin-top: 30px;
+    background-color: #f7f7f7;
+    padding: 20px 10px;
+    box-sizing: border-box;
   }
-  #needApprovalAll .date-line {
+  #trade .date-line {
     width: 10px;
     border-bottom: 1px solid #e6e6e6;
     display: inline-block;
     margin: 0 3px 3px 0
   }
-  #needApprovalAll .search_style{
+  #trade .search_style{
     /*float: left;*/
     margin-top: 10px;
     margin-left: 20px;
-    font-size: 14px
+    font-size: 14px;
+    display: inline-block;
+    width: 80px;
   }
-  #needApprovalAll .search_input{
+  #trade .search_input{
     /*float: left;*/
     width: 200px
   }
-  #needApprovalAll .table_style{
-    width: 90%;
+  #trade .table_style{
+    width: 96%;
+    min-width: 1079px;
     margin-left: 20px;
     margin-top: 20px;
     float: left;
   }
-  #needApprovalAll .block{
+  #trade .block{
     float: left;
     margin-left: 600px;
     margin-top: 70px;

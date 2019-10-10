@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
-    <!--申请预付款-->
+    <!--匹配信息查看-->
     <el-dialog title="查看" :visible="dialogFormVisible4" width=90% @close="closeAdd">
       <div class="table_trip" style="width: 100%;">
         <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="true" :header-cell-style="getRowClass">
@@ -28,7 +28,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button type="primary" @click="matchBtn" round style="display: block;margin: 18px auto;float: none;">匹配</el-button>
+        <el-button type="primary" round style="display: block;margin: 18px auto;float: none;">匹配</el-button>
         <div class="backgroundDv">
           <div class="titleDv" style="width: 90%;margin: 10px auto;">
             <p class="textP">收款明细说明：{{instructions}}</p>
@@ -46,6 +46,7 @@
             </el-table-column>
             <el-table-column prop="rece_money" label="结算金额" align="center">
             </el-table-column>
+            <!--暂时注释，不现实-->
             <!--<el-table-column prop="tour_no" label="团号" align="center">-->
             <!--</el-table-column>-->
             <!--<el-table-column prop="divide_connect_no" label="粉联号" align="center">-->
@@ -72,20 +73,21 @@
     },
     data() {
       return {
-        instructions: '',
-        data: '',
-        distributors: '',
-        tableData: [],
-        tableData1: []
+        instructions: '', // 收款明细说明
+        data: '', // 入账时间
+        distributors: '', // 分销商
+        tableData: [], // 订单数据
+        tableData1: [] // 匹配数据
       }
     },
     computed: {
       // 计算属性的 getter
     },
     watch: {
-      orderID: {
+//        监听弹出层显示隐藏，弹出层显示&&orderID不为空时加载数据
+      dialogFormVisible4: {
         handler:function(){
-          if(this.orderID != ''){
+          if(this.orderID != '' && this.dialogFormVisible4){
             this.loadData()
           }
         }
@@ -100,14 +102,11 @@
           return ''
         }
       },
-      //获取id
-      clickBanle(row, event, column) {},
+//      关闭弹出层
       closeAdd() {
         this.$emit('close', false);
       },
-      matchBtn(){
-
-      },
+//      加载页面数据
       loadData(){
 //        alert(this.orderID);
         const that = this;

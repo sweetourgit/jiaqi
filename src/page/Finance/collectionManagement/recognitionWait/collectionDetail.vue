@@ -3,26 +3,27 @@
     <el-dialog :visible="dialogFormVisible1" @close="closeAdd" style="width: 100%">
       <div class="buttonDv" style="float: right;margin-right: 3%;">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
-        <el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>
-        <el-button type="primary" @click="editBtn">修改</el-button>
+        <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
+        <el-button type="primary" @click="editBtn">撤销</el-button>
       </div>
       <p class="stepTitle">基本信息</p>
       <el-button type="info" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 1">待认收款</el-button>
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 2">已认完</el-button>
       <div class="stepDv">
-        <p class="inputLabel"><span>ID：</span>{{baseInfo.ID}}</p>
+        <p class="inputLabel"><span>收款单号：</span>{{baseInfo.ID}}</p>
         <p class="inputLabel"><span>申请人：</span>{{applicant}}</p>
-        <p class="inputLabel"><span>创建时间：</span>{{baseInfo.creatTime}}</p>
-        <p class="inputLabel"><span>收款明细说明：</span>{{baseInfo.mark}}</p>
+        <p class="inputLabel"><span>申请时间：</span>{{baseInfo.creatTime}}</p>
+        <p class="inputLabel"><span>收款时间：</span>{{baseInfo.creditTime}}</p>
         <p class="inputLabel"><span>收款账户：</span>{{baseInfo.payAccount}}</p>
         <p class="inputLabel"><span>收款金额：</span>{{baseInfo.payMoney}}</p>
-        <p class="inputLabel"><span>收款时间：</span>{{baseInfo.creditTime}}</p>
-        <p class="inputLabel"><span>款项入账时间：</span>{{baseInfo.startTime}}--{{baseInfo.endTime}}</p>
-        <p class="inputLabel"><span>待认收款：</span>{{baseInfo.toCollection}}</p>
+        <p class="inputLabel"><span>剩余认款金额：</span>{{baseInfo.payMoney}}</p>
+        <p class="inputLabel"><span>摘要：</span>{{baseInfo.payMoney}}</p>
+        <p class="inputLabel"><span>款项说明：</span>{{baseInfo.mark}}</p>
+
         <div class="inputLabel">
-          <span style="vertical-align: top;">附件：</span>
+          <span style="vertical-align: top;">凭证：</span>
           <!--<el-upload ref="upload1" class="upload-demo" action="" :file-list="fileList" :disabled="disabled">-->
-            <!--<el-button size="small" type="primary" :disabled="disabled">点击上传</el-button>-->
+          <!--<el-button size="small" type="primary" :disabled="disabled">点击上传</el-button>-->
           <!--</el-upload>-->
 
           <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
@@ -31,153 +32,30 @@
             </li>
           </ul>
         </div>
-        <p class="inputLabel"><span>分销商：</span>{{baseInfo.distributor}}</p>
       </div>
-      <p class="stepTitle" v-if="showSK">收款明细</p>
-      <div class="stepDv" style="margin-bottom: 50px;" v-if="showSK">
-        <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-        <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
-          <el-table-column prop="rece_at" label="入账时间" align="center">
-          </el-table-column>
-          <el-table-column prop="order_sn" label="订单编号" align="center">
-            <template slot-scope="scope">
-              <span>{{scope.row.plat_order_sn}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="guest_name" label="客人名称" align="center">
-          </el-table-column>
-          <el-table-column prop="product_name" label="产品" align="center">
-          </el-table-column>
-          <el-table-column prop="rece_money" label="结算金额" align="center">
-          </el-table-column>
-          <el-table-column prop="charge" label="手续费" align="center">
-            <template slot-scope="scope">
-              <span>{{scope.row.charge}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="tour_no" label="团号" align="center">
-          </el-table-column>
-          <el-table-column prop="divide_connect_no" label="粉联号" align="center">
-            <template slot-scope="scope">
-              <span>{{scope.row.divide_connect_no}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="invoice_no" label="发票号" align="center">
-          </el-table-column>
-          <el-table-column prop="" label="操作" align="center">
-            <template slot-scope="scope">
-              <el-button size="small" type="text" @click="detailBtn(scope.row)" v-if="scope.row.order_sn != '' && scope.row.import_status == 3">绑定订单详情</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+      <p class="stepTitle">认款信息</p>
+      <div class="stepDv">
+        <p class="inputLabel"><span>认款方式：</span>{{baseInfo.ID}}</p>
+        <p class="inputLabel"><span>认款人：</span>{{applicant}}</p>
+        <p class="inputLabel"><span>认款时间：</span>{{baseInfo.creatTime}}</p>
+        <p class="inputLabel"><span>分销商：</span>{{baseInfo.creditTime}}</p>
       </div>
-      <p class="stepTitle" v-if="showXQ">订单详情</p>
-      <div class="stepDv" style="margin-bottom: 50px;" v-if="showXQ">
-        <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+      <p class="stepTitle">认款订单</p>
+      <div class="stepDv" style="margin-bottom: 50px;">
+        <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
           <el-table-column prop="order_sn" label="订单ID" align="center" >
-          </el-table-column>
-          <el-table-column prop="distributor" label="分销商" align="center">
-            <template slot-scope="scope">
-              <span>{{scope.row.distributor}}</span>
-            </template>
           </el-table-column>
           <el-table-column prop="product_name" label="产品名称" align="center">
           </el-table-column>
-          <el-table-column prop="type_name" label="类别" align="center">
-          </el-table-column>
-          <el-table-column prop="sale_at" label="下单时间" align="center" width="100">
-          </el-table-column>
-          <el-table-column prop="option" label="费用" align="center">
-            <template slot-scope="scope">
-              <span>收入:{{scope.row.income}}</span><br>
-              <span>单票成本:{{scope.row.single_cost}}</span><br>
-              <span>总成本:{{scope.row.cost}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="quantity" label="数量" align="center">
-          </el-table-column>
-          <el-table-column prop="money" label="客人信息" align="center">
-            <template slot-scope="scope">
-              <span>取票人:{{scope.row.contact_name}}</span><br>
-              <span>手机:{{scope.row.contact_phone}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="check_at" label="验证时间" align="center" width="100">
-          </el-table-column>
-          <el-table-column prop="pay_type" label="卖出支付方式" align="center" width="100">
-            <template slot-scope="scope">
-              <span>{{scope.row.pay_type_name}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="import_at" label="导入时间" align="center" width="100">
-          </el-table-column>
-          <el-table-column prop="tour_no" label="关联产品" align="center">
-            <template slot-scope="scope">
-              <p v-if="scope.row.tour_no == ''">未关联产品</p>
-              <p v-else>产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
-            </template>
-          </el-table-column>
-          <el-table-column prop="create_uid" label="操作人" align="center" width="100">
+          <el-table-column prop="cost" label="订单费用" align="center">
+            <!--<template slot-scope="scope">-->
+              <!--<span>收入:{{scope.row.income}}</span><br>-->
+              <!--<span>单票成本:{{scope.row.single_cost}}</span><br>-->
+              <!--<span>总成本:{{scope.row.cost}}</span>-->
+            <!--</template>-->
           </el-table-column>
         </el-table>
       </div>
-      <!--绑定订单详情-->
-      <el-dialog title="绑定订单详情" :visible="dialogFormVisible" width=90% @close="close" append-to-body>
-        <div class="table_trip" style="width: 100%;">
-          <el-table ref="singleTable" :data="tableDataDD" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass">
-            <el-table-column prop="order_sn" label="订单ID" align="center" >
-            </el-table-column>
-            <el-table-column prop="distributor" label="分销商" align="center">
-            </el-table-column>
-            <el-table-column prop="product_name" label="产品名称" align="center">
-            </el-table-column>
-            <el-table-column prop="type_name" label="类别" align="center">
-            </el-table-column>
-            <el-table-column prop="sale_at" label="下单时间" align="center">
-            </el-table-column>
-            <el-table-column prop="option" label="费用" align="center" width="100">
-              <template slot-scope="scope">
-                <span>收入:{{scope.row.income}}</span><br>
-                <span>单票成本:{{scope.row.single_cost}}</span><br>
-                <span>总成本:{{scope.row.cost}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="quantity" label="数量" align="center">
-            </el-table-column>
-            <el-table-column prop="money" label="客人信息" align="center">
-              <template slot-scope="scope">
-                <span>取票人:{{scope.row.contact_name}}</span><br>
-                <span>手机:{{scope.row.contact_phone}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="check_at" label="验证时间" align="center" width="100">
-            </el-table-column>
-            <el-table-column prop="pay_type" label="卖出支付方式" align="center" width="100">
-              <template slot-scope="scope">
-                <span>{{payList[scope.row.pay_type]}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="created_at" label="导入时间" align="center">
-            </el-table-column>
-            <el-table-column prop="tour_no" label="关联产品" align="center">
-              <template slot-scope="scope">
-                <div v-if="scope.row.tour_no">
-                  <span>产品名称:{{scope.row.pro_product_name}}</span><br>
-                  <span>团期计划:{{scope.row.tour_no}}</span>
-                </div>
-                <div v-else>未关联产品</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="create_uid" label="操作人" align="center" width="100">
-            </el-table-column>
-          </el-table>
-        </div>
-
-        <div class="footer" style="text-align: right;">
-          <el-button class="el-button" type="warning" @click="close">取 消</el-button>
-          <!--<el-button class="el-button" type="primary" @click="">确 认</el-button>-->
-        </div>
-      </el-dialog>
     </el-dialog>
   </div>
 </template>
@@ -363,7 +241,7 @@
       },
       loadData(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/receive", {
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewbasic", {
           "id": this.info
         }, ).then(function(response) {
           console.log('详情',response);

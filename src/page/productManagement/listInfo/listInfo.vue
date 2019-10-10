@@ -1116,7 +1116,7 @@
                           </div>
                           <div class="aviation">
                             <!--餐饮-->
-                            <div class="food_text">餐饮</div>
+                            <div class="food_text"><span class="keypoint">*</span>餐饮</div>
                           </div>
                           <!--餐饮循环-->
                           <div class="aviation" style="margin-top:-100px;" v-for="(it,p) in item.ext_Meals" :key="p">
@@ -1416,11 +1416,13 @@
       tabIndex: 2,
         notes:[{
           title:'',
-          content:''
+          content:'',
+          menutype:2
         }],
         instructions:[{
           title:'',
-          content:''
+          content:'',
+          menutype:3
         }],
         explain:[{
           title:'费用包含',
@@ -2057,16 +2059,19 @@
         }
       },
       getUEContent0(){
-        this.notes.push({
+        this.notes.push({ 
           title: '',
-          content:''
+          content:'',
+          menuType:2
         });
       },
       getUEContent1(){
         this.instructions.push({
           title: '',
-          content:''
+          content:'',
+          menuType:3
         });
+        console.log('this.instructions', this.instructions)
       },
       //删除预订须知
       deleteNotice(index){
@@ -2128,6 +2133,8 @@
       },
       //保存
       addsave(formName) {
+        let resArr = [...this.notes, ...this.instructions]
+        console.log(resArr)
         this.a = true
         console.log(this.ruleForm.slideshow)
         // this.noNull1 = false
@@ -2161,12 +2168,13 @@
         for(var i=0;i<this.dynamicTags2.length;i++){
             dynamicTagsc.push({"label":this.dynamicTags2[i]})
         };*/
-         //经停信息转字符串
+                 //经停信息转字符串
          let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
          let traff=JSON.parse(traff1);
          for(var i=0;i<traff.length;i++){
             traff[i].ext_Stopover=JSON.stringify(traff[i].ext_Stopover);
          }
+         
          //行程餐食信息转字符串
          let sche1=JSON.stringify(this.ruleForm.schedules);
          let sche=JSON.parse(sche1);
@@ -2184,9 +2192,9 @@
               sche[i].activitys[j].pictureID=JSON.stringify(this.ruleForm.schedules[i].activitys[j].info[sche[i].activitys[j].activityType-1]);//图片格式转换，目前只取一张，待接口调整后修改
             }
           }
-      for(var i =0;i < this.instructions.length; i++){
-			   this.notes.push(this.instructions[i]);
-      }
+      // for(var i =0;i < this.instructions.length; i++){
+			   // this.notes.push(this.instructions[i]);
+      // }
 
        let pod='';
        for(let i=0;i<this.dynamicTags3.length;i++){
@@ -2200,6 +2208,7 @@
            destination=this.dynamicTags4[i].destination
          }
        }
+      
         //行程信息
         var object={
                   //基本信息接口数据
@@ -2249,7 +2258,7 @@
                     }
                   ],
                   instructions:this.explain.concat(this.domains), //费用说明
-                  others:this.notes,
+                  others:this.notes.concat(this.instructions),//预订须知和使用说明[...this.notes, ...this.instructions]ES6新方法
                   loadPackage: true
                 }
               //  console.log(this.ruleForm.theme)
@@ -2411,10 +2420,18 @@
         })
       },
       trafficClear(index,ruleForm){//去程切换交通方式清空 
-        console.log(this.ruleForm.plane)
-        if(this.$refs.ruleForm.plane!== undefined){
-          this.$refs.ruleForm.plane.resetFields();
-        }
+        console.log(this.ruleForm.schedules)
+        //this.$refs[ruleForm].clearValidate('plane.0.company');
+        //this.$refs.plane.resetFields('company');
+        console.log(123)
+        //this.$refs.ruleForm.resetFields();
+        
+        //this.$refs.ruleForm.plane[index].pod.resetFields();
+        
+        // if(this.$refs.ruleForm.plane){
+        //   console.log(123)
+        //   this.$refs.ruleForm.plane.resetFields();
+        // }
         
         this.ruleForm.plane[index].pod = '';
         this.ruleForm.plane[index].company = '';
@@ -2427,6 +2444,18 @@
         this.ruleForm.plane[index].arriveTime = '';
         this.ruleForm.plane[index].planeDay = '';
         this.ruleForm.plane[index].day = '';
+        // this.$nextTick(()=>{
+        //   this.$refs.ruleForm.plane.resetFields('company');
+        //   this.$refs.ruleForm.plane.resetFields('theNumber');
+        //   this.$refs.ruleForm.plane.resetFields('podCity');
+        //   this.$refs.ruleForm.plane.resetFields('podPlace');
+        //   this.$refs.ruleForm.plane.resetFields('podTime');
+        //   this.$refs.ruleForm.plane.resetFields('arriveCity');
+        //   this.$refs.ruleForm.plane.resetFields('arrivePlace');
+        //   this.$refs.ruleForm.plane.resetFields('arriveTime');
+        //   this.$refs.ruleForm.plane.resetFields('planeDay');
+        //   this.$refs.ruleForm.plane.resetFields('day');
+        // })
       },
       clearBle(index){
           this.ruleForm.plane[index].company = '';
@@ -3606,4 +3635,5 @@
     border: solid 1px #E4E7ED;
     background-color: #f5f7fa;
   }
+  .keypoint{color: red;margin: 0 5px 0 0;}
 </style>

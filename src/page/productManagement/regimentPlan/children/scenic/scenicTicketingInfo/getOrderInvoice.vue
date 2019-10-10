@@ -190,21 +190,24 @@ export default {
         });
         console.log(this.fileList);
         const files = [];
-        this.fileList.forEach(function (item, index, arr) {
-          let itemFile;
-          if(item.url){
-            itemFile = {
-              "url": item.url,
-              "name": item.name
-            };
-          }else{
-            itemFile = {
-              "url": item.response.data.url,
-              "name": item.response.data.name
-            };
-          }
-          files.push(itemFile);
-        });
+        if(this.fileList.length != 0){
+          this.fileList.forEach(function (item, index, arr) {
+            let itemFile;
+            if(item.url){
+              itemFile = {
+                "url": item.url,
+                "name": item.name
+              };
+            }else{
+              itemFile = {
+                "url": item.response.data.url,
+                "name": item.response.data.name
+              };
+            }
+            files.push(itemFile);
+          });
+        }
+
         this.$refs[ruleForm].validate((valid) => {
           if (valid) {
             if(num == this.tableData.length){

@@ -1,9 +1,11 @@
 <template>
   <div class="vivo" style="position:relative">
+    <!--认收款-->
     <el-dialog title="认收款" :visible="dialogFormVisible2" width=90% @close="closeAdd">
       <div class="tableDv">
+        <!--订单信息-->
       <div class="table_trip" style="width: 100%;">
-        <el-table ref="multipleTable" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass">
+        <el-table ref="multipleTable1" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass">
           <el-table-column prop="order_sn" label="订单ID" align="center">
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
@@ -29,16 +31,27 @@
           </el-table-column>
         </el-table>
       </div>
+        <!--订单信息  end-->
+
+        <!--匹配信息-->
       <div class="bottom">
+        <!--收款列表-->
         <ul class="leftNav" style="max-height: 700px;overflow-y: auto;overflow-x: hidden;">
           <li v-for="(item, index) in navData" :data-val="item.id" @click="clickNavHandle(item, index)" :class="{'active':activeIndex==index}">{{item.explain}}</li>
         </ul>
+        <!--收款列表  end-->
+
+        <!--收款明细-->
         <div class="table_trip" style="width: 76%;">
           <div class="topTitle">
-            <p>新款入账时间：{{date}}</p>
+            <p>款项入账时间：{{date}}</p>
             <p>分销商：{{distributor}}</p>
+            <p v-if="!hasAttachment">待认收款：{{tableDataMX[0].rece_money}}</p>
           </div>
-          <div class="searchDv">
+          <div style="text-align: right" v-if="!hasAttachment">
+            <el-button @click="doSubmit(tableDataMX[0])" type="primary">认收款</el-button>
+          </div>
+          <div class="searchDv" v-if="hasAttachment">
             <span class="search-title">产品名称:</span>
             <el-input v-model="activeForm.title" class="input"></el-input>
             <span class="search-title">订单ID:</span>
@@ -57,7 +70,7 @@
               <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
             </div>
           </div>
-          <el-table ref="multipleTable" :data="tableDataMX" border style="width: 100%;margin-top: 20px;" height="650" :header-cell-style="getRowClass">
+          <el-table ref="multipleTable" :data="tableDataMX" border style="width: 100%;margin-top: 20px;" height="650" :header-cell-style="getRowClass" v-if="hasAttachment">
             <el-table-column prop="" label="" align="center" width="40">
               <template slot-scope="scope">
                 <p v-if="tableData[0].sale_at.split(' ')[0] == scope.row.rece_at && tableData[0].income == scope.row.rece_money" style="color: red;">建议匹配</p>
@@ -92,7 +105,9 @@
             </el-table-column>
           </el-table>
         </div>
+        <!--收款明细  end-->
       </div>
+        <!--匹配信息  end-->
     </div>
       <div class="footer">
         <el-button class="el-button" type="warning" @click="closeAdd">取 消</el-button>
@@ -113,8 +128,6 @@
     },
     data() {
       return {
-        pid: '',
-        transmit: false,
         activeForm: {
           title: '',
           oid: '',
@@ -122,16 +135,15 @@
           name: '',
           num1: '',
           num2: ''
-        },
-        tableData: [],
-        multipleSelection: [],
-        currentRow: true,
-        navData: [],
-        tableDataMX: [],
-        activeIndex: 0,
-        date: '',
-        distributor: '',
-        item: ''
+        },// 收款明细查询筛选项
+        tableData: [],// 订单信息table
+        navData: [],// 左侧收款明细列表
+        tableDataMX: [],// 收款明细列表
+        activeIndex: 0,// 当前收款明细列表index
+        date: '',// 款项入账时间
+        distributor: '',// 分销商
+        item: '',// 收款列表选中项信息
+        hasAttachment: true// 是否有收款明细
       }
     },
     computed: {
@@ -162,20 +174,18 @@
           return ''
         }
       },
-      handleClick() {
-        this.reable = true;
-        this.transmit = !this.transmit;
-        this.pid = ''
-      },
+//      收款明细侧边栏点击事件
       clickNavHandle(item, index){
         this.activeIndex = index;
 //        console.log(item);
         this.item = item;
         this.getReceiptDetail();
       },
+//      关闭此弹窗
       closeAdd() {
         this.$emit('close', false);
       },
+//      加载基础数据
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recorderinfo", {
@@ -208,9 +218,11 @@
           console.log(error);
         });
       },
+//      搜索
       searchHand(){
         this.getReceiptDetail();
       },
+//      重置
       resetHand(){
         this.activeForm = {
           title: '',
@@ -222,8 +234,11 @@
         };
         this.getReceiptDetail();
       },
+//      获取收款明细
       getReceiptDetail(){
         const that = this;
+        console.log(this.$refs.multipleTable);
+//        console.log(this.$refs.multipleTable1);
         this.date = formatDate(new Date(this.item.rece_start*1000))+'--'+formatDate(new Date(this.item.rece_end*1000));
         this.distributor = this.item.distributor;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/receiptdetail", {
@@ -237,13 +252,16 @@
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log('明细信息',response);
-            that.tableDataMX = response.data.data;
+            that.tableDataMX = response.data.data.info;
+            that.hasAttachment = response.data.data.flag;
             if(that.tableDataMX.length != 0){
               that.tableDataMX.forEach(function (item, index, arr) {
                 item.rece_at = formatDate(new Date(item.rece_at*1000));
                 item.rece_at = item.rece_at.split(" ")[0];
               })
             }
+            console.log(that.$refs.multipleTable);
+//            that.$refs.multipleTableMX.scrollTop = 200;
           } else {
             that.$message.warning("加载数据失败~");
           }
@@ -251,6 +269,7 @@
           console.log(error);
         });
       },
+//      提交认款
       doSubmit(row){
         console.log(row);
         const that = this;
@@ -278,9 +297,7 @@
 
     },
     created(){
-//      console.log(this.$route.params);
-//      console.log(this.$route.query);
-//      this.tableData = this.$route.query;
+
     }
   }
 
