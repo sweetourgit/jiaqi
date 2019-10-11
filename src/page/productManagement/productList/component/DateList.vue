@@ -16,7 +16,7 @@
       <div class="month">
         <ul class="date">
           <!--点击会触发pickpre函数，重新刷新当前日期 @click(vue v-on:click缩写) -->
-          <li class="arrow" @click="pickPre(currentYear,currentMonth)"><</li>
+          <li class="arrow" @click="pickPre(currentYear,currentMonth)" v-text="'<'"></li>
           <li class="year-month" >
             {{currentYear}}-{{currentMonth}}月
           </li>
@@ -85,11 +85,13 @@
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
                 <!--  -->
-                  <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index" v-if="index<=2">
+                  <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index" >
+                    <template v-if="index<=2">
                     <p class='old'>{{data.name}}</p>
                     <p>销售价：{{data.salePrice}}</p>
                     <p>同业价：{{data.traderPrice}}</p>
                     <!-- <p>已售/库存：0/0</p> -->
+                    </template>
                   </div>
               </div>
               <!--显示剩余多少数量-->
