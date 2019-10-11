@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative" id="tradeDetail">
-    <el-dialog :visible="dialogFormVisible1" @close="closeAdd" style="width: 100%">
+    <el-dialog :visible="dialogFormVisible2" @close="closeAdd" style="width: 100%">
       <div class="buttonDv" style="float: right;margin-right: 3%;">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
@@ -35,10 +35,10 @@
       </div>
       <p class="stepTitle">认款信息</p>
       <div class="stepDv">
-        <p class="inputLabel"><span>认款方式：</span>{{baseInfo.ID}}</p>
-        <p class="inputLabel"><span>认款人：</span>{{}}</p>
-        <p class="inputLabel"><span>认款时间：</span>{{baseInfo.creatTime}}</p>
-        <p class="inputLabel"><span>分销商：</span>{{baseInfo.creditTime}}</p>
+        <p class="inputLabel"><span>认款方式：</span>{{recognitionInfo.type}}</p>
+        <p class="inputLabel"><span>认款人：</span>{{recognitionInfo.person}}</p>
+        <p class="inputLabel"><span>认款时间：</span>{{recognitionInfo.time}}</p>
+        <p class="inputLabel"><span>分销商：</span>{{recognitionInfo.distributor}}</p>
       </div>
       <p class="stepTitle">认款订单</p>
       <div class="stepDv" style="margin-bottom: 50px;">
@@ -49,9 +49,9 @@
           </el-table-column>
           <el-table-column prop="cost" label="订单费用" align="center">
             <!--<template slot-scope="scope">-->
-              <!--<span>收入:{{scope.row.income}}</span><br>-->
-              <!--<span>单票成本:{{scope.row.single_cost}}</span><br>-->
-              <!--<span>总成本:{{scope.row.cost}}</span>-->
+            <!--<span>收入:{{scope.row.income}}</span><br>-->
+            <!--<span>单票成本:{{scope.row.single_cost}}</span><br>-->
+            <!--<span>总成本:{{scope.row.cost}}</span>-->
             <!--</template>-->
           </el-table-column>
         </el-table>
@@ -66,7 +66,7 @@
     components: {
     },
     props: {
-      dialogFormVisible1: false,
+      dialogFormVisible2: false,
       info: ''
     },
     data() {
@@ -86,21 +86,20 @@
           remark: '',
           explain: ''
         },
-
         recognitionInfo: {
-
+          type: '',
+          person: '',
+          time: '',
+          distributor: ''
         },
 
         fileList: [],
+
         tableDataXQ: [],
-        payList: {
-          '1': '产品自销',
-          '2': '授信支付',
-          '3': '微信',
-          '4': '易宝云企付',
-          '5': '余额支付',
-          '6': '支付宝',
-          '7': '自采'
+
+        typeList: {
+          '1': '分销商预存款',
+          '2': '票付通余额支付'
         }
       }
     },
@@ -111,7 +110,7 @@
       info: {
         handler:function(){
 //          alert(this.info);
-          if(this.info != '' && this.dialogFormVisible1){
+          if(this.info != '' && this.dialogFormVisible2){
             this.loadData();
           }
         }
@@ -227,7 +226,7 @@
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewbasic", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('详情',response);
+//          console.log('获取基本信息',response);
           if (response.data.code == '200') {
             response.data.data.created_at = formatDate(new Date(response.data.data.created_at*1000));
             response.data.data.receivables_at = formatDate(new Date(response.data.data.receivables_at*1000));
@@ -284,7 +283,7 @@
               that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
             }
           } else {
-            that.$message.success("加载数据失败~");
+            that.$message.warning("加载数据失败~");
           }
         }).catch(function(error) {
           console.log(error);
@@ -294,11 +293,47 @@
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewrec", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('详情',response);
+//          console.log('获取认款信息',response);
           if (response.data.code == '200') {
-
+            response.data.data.created_at = formatDate(new Date(response.data.data.created_at*1000));
+            that.recognitionInfo = {
+              type: that.typeList[response.data.data.rec_type],
+              person: response.data.data.create_uid,
+              time: response.data.data.created_at,
+              distributor: response.data.data.distributor_code
+            };
+            // 根据分销商ID获取名称
+            that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+              "id": response.data.data.distributor_code
+            }).then(function(obj) {
+//              console.log('获取分销商',obj);
+              if(obj.data.isSuccess){
+                that.recognitionInfo.distributor = obj.data.object.name;
+              }else{
+                that.$message.warning("加载数据失败~");
+              }
+            }).catch(function(obj) {
+              console.log(obj);
+            });
+            // 根据ID获取人名
+            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              "id": response.data.data.create_uid
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              }
+            }).then(function(response) {
+//              console.log('名字',response.data.object.name);
+              if (response.data.isSuccess) {
+                that.recognitionInfo.person = response.data.object.name;
+              } else {
+                that.$message.warning("失败~");
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
           } else {
-            that.$message.success("加载数据失败~");
+            that.$message.warning("加载数据失败~");
           }
         }).catch(function(error) {
           console.log(error);
@@ -308,7 +343,7 @@
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewrecorder", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('详情',response);
+          console.log('获取认款订单',response);
           if (response.data.code == '200') {
 
           } else {

@@ -131,6 +131,7 @@
           abstract: ''
         };
         this.rece_code = '';
+        this.fileList = [];
         this.$emit('close', false);
       },
       submitForm(formName) {
