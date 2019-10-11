@@ -1037,17 +1037,19 @@
 //                alert("无明细修改");
                 let Stime = '', Etime = '';
                 if(this.ruleForm.startTime.toString().split('-')[1]){
-                  Stime = this.ruleForm.startTime;
+                  Stime = this.ruleForm.startTime.split(" ")[0];
                 }else{
                   Stime = formatDate(this.ruleForm.startTime).split(" ")[0];
                 }
                 if(this.ruleForm.endTime.toString().split('-')[1]){
-                  Etime = this.ruleForm.endTime;
+                  Etime = this.ruleForm.endTime.split(" ")[0];
                 }else{
                   Etime = formatDate(this.ruleForm.endTime).split(" ")[0];
                 }
                 if(this.tableDataQK.length > 0){
-                  if(new Date(Date.parse(Stime)) > new Date(Date.parse(this.tableDataQK[0].sale_at.split(" ")[0])) || new Date(Date.parse(Etime)) < new Date(Date.parse(this.tableDataQK[0].sale_at.split(" ")[0]))){
+                  let sale_at = this.tableDataQK[0].sale_at.split(" ")[0];
+
+                  if(new Date(Date.parse(Stime)) > new Date(Date.parse(sale_at)) || new Date(Date.parse(Etime)) < new Date(Date.parse(sale_at))){
                     this.$confirm("收款入账时间设置错误，无法修改", "提示", {
                       confirmButtonText: "好的",
                       cancelButtonText: "取消",
