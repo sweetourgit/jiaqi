@@ -1,10 +1,10 @@
 <template>
-  <div class="all" id="externalOrderManagement">
+  <div class="all" id="manualCol">
     <div class="borders">
       <div class="search">
         <el-row>
           <el-col :span="7">
-            <span class="search_style">分销商：</span>
+            <span class="search_style">款项说明：</span>
             <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
           </el-col>
           <el-col :span="7">
@@ -12,27 +12,17 @@
             <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入申请人" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
           </el-col>
           <el-col :span="9">
-            <span class="search_style">收款时间：</span>
-            <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
+            <span class="search_style">申请日期：</span>
+            <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
             <div class="date-line"></div>
-            <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="7">
-            <span class="search_style">状态</span>
-            <el-select v-model="status" placeholder="请选择" class="search_input">
-              <el-option key="" label="全部" value=""></el-option>
-              <el-option key="1" label="待认收款" value="1"></el-option>
-              <el-option key="2" label="已认完" value="2"></el-option>
-            </el-select>
-          </el-col>
-          <el-col :span="9" :offset="7" class="buttonCol">
-            <el-button type="primary" @click="resetFun" plain>重置</el-button>
-            <el-button type="primary" @click="searchFun">搜索</el-button>
+            <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
           </el-col>
         </el-row>
 
+        <div class="buttonDv">
+          <el-button type="primary" @click="resetFun" plain>重置</el-button>
+          <el-button type="primary" @click="searchFun">搜索</el-button>
+        </div>
       </div>
       <div class="search" style="background-color: transparent;padding: 0;">
         <el-button type="primary" @click="addFun">添加</el-button>
@@ -46,21 +36,15 @@
               <div v-if="scope.row.status_rece=='2'" style="color: #FF4A3D" >已认完</div>
             </template>
           </el-table-column>
-          <el-table-column prop="explain" label="收款明细说明" align="center"></el-table-column>
-          <el-table-column prop="receivables_at" label="收款时间" width="120" align="center"></el-table-column>
-          <el-table-column prop="distributor" label="分销商" align="center"></el-table-column>
-          <el-table-column prop="rece_start" label="款项入账时段" align="center" width="200">
-            <template slot-scope="scope">
-              <p>{{scope.row.rece_start}}--{{scope.row.rece_end}}</p>
-            </template>
-          </el-table-column>
+          <el-table-column prop="explain" label="款项说明" align="center"></el-table-column>
           <el-table-column prop="rece_money" label="收款金额" align="center"></el-table-column>
-          <el-table-column prop="create_uid" label="录入人" align="center"></el-table-column>
+          <el-table-column prop="rece_money" label="剩余确认金额" align="center"></el-table-column>
+          <el-table-column prop="receivables_at" label="收款时间" width="120" align="center"></el-table-column>
+          <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
+          <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
           <el-table-column prop="opinion" label="操作" align="center" width="150">
             <template slot-scope="scope">
-              <el-button @click="editOrder(scope.row)" type="text" size="small" class="table_details" style="color: #13ce66">编辑</el-button>
               <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-              <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" style="color: red" v-if="scope.row.approved != 1">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -77,21 +61,21 @@
           background>
         </el-pagination>
       </div>
-      <orderEdit :dialogFormVisible="dialogFormVisible" :info="info" @close="closeAdd"></orderEdit>
-      <orderDetail :dialogFormVisible1="dialogFormVisible1" :info="info" @close="closeAdd"></orderDetail>
+      <collectionAdd :dialogFormVisible="dialogFormVisible" :info="info" @close="closeAdd"></collectionAdd>
+      <collectionDetail :dialogFormVisible1="dialogFormVisible1" :info="info" @close="closeAdd"></collectionDetail>
     </div>
   </div>
 </template>
 
 <script>
-  import orderEdit from '@/page/Finance/collectionManagement/externalOrder/orderEdit.vue'
-  import orderDetail from '@/page/Finance/collectionManagement/externalOrder/orderDetail.vue'
+  import collectionAdd from '@/page/Finance/collectionManagement/recognitionWait/collectionAdd.vue'
+  import collectionDetail from '@/page/Finance/collectionManagement/recognitionWait/collectionDetail.vue'
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "tradeList",
     components:{
-      orderEdit,
-      orderDetail
+      collectionAdd,
+      collectionDetail
     },
     data() {
       return {
@@ -99,10 +83,8 @@
 
         plan: '',
         reimbursementPer: '',
-        productName: '',
         startTime: '',
         endTime: '',
-        status: '',
         reimbursementPerID: '',
         operatorList: [],
 
@@ -130,20 +112,7 @@
           return ''
         }
       },
-      closeAdd(str) {
-        if(str == 'success'){
-          this.dialogFormVisible = false;
-//          this.dialogFormVisible1 = false;
-          const row = {id : this.info};
-          this.editOrder(row);
-        }else{
-          this.dialogFormVisible = false;
-          this.dialogFormVisible1 = false;
-          this.info = '';
-          this.loadData();
-        }
-      },
-      //        操作人员
+      // 操作人员
       querySearchOper(queryString, cb){
         const operatorList = this.operatorList;
         var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
@@ -177,19 +146,7 @@
           }
         }
       },
-      searchFun(){
-        this.loadData();
-      },
-      resetFun(){
-        this.plan = '';
-        this.reimbursementPer = '';
-        this.productName = '';
-        this.startTime = '';
-        this.endTime = '';
-        this.reimbursementPerID = '';
-        this.status = '';
-        this.loadData();
-      },
+
       addFun(){
         this.dialogFormVisible = true;
       },
@@ -197,40 +154,23 @@
         this.info = row.id;
         this.dialogFormVisible1 = true;
       },
-      editOrder(row){
-        this.info = row.id;
-        this.dialogFormVisible = true;
+      closeAdd() {
+        this.dialogFormVisible = false;
+        this.dialogFormVisible1 = false;
+        this.info = '';
+        this.loadData();
       },
-      deleteFun(row){
-        this.$confirm("是否删除该笔收款?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-          const that = this;
-          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/delrece", {
-            "id": row.id
-          }, ).then(function(response) {
-            console.log(response);
-            if (response.data.code == '200') {
-              that.$message.success("删除成功~");
-              that.loadData();
-            } else {
-              if(response.data.message){
-                that.$message.warning(response.data.message);
-              }else{
-                that.$message.warning('失败~');
-              }
-            }
-          }).catch(function(error) {
-            console.log(error);
-          });
-        }).catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
-        });
+
+      searchFun(){
+        this.loadData();
+      },
+      resetFun(){
+        this.plan = '';
+        this.reimbursementPer = '';
+        this.startTime = '';
+        this.endTime = '';
+        this.reimbursementPerID = '';
+        this.loadData();
       },
       handleSizeChange(val) {
         this.pageSize = val;
@@ -241,29 +181,27 @@
         this.currentPage = val;
         this.loadData();
       },
+
       loadData(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/listpage", {
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/listpage", {
           "pageIndex": this.currentPage,
           "pageSize": this.pageSize,
-          "distributor": this.plan,
+          "explain": this.plan,
           "create_uid": this.reimbursementPerID,
-          "rece_start": this.startTime,
-          "rece_end": this.endTime,
-          "status_rece": this.status,
-          "limit": 0
+          "apply_start": this.startTime,
+          "apply_end": this.endTime,
+          "create_type": '1'
         }, ).then(function(response) {
           if (response.data.code == '200') {
-            console.log('外部订单认款',response);
+            console.log('手动列表',response);
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
             that.tableData.forEach(function (item, index, arr) {
               item.receivables_at = formatDate(new Date(item.receivables_at*1000));
               item.receivables_at = item.receivables_at.split(" ")[0];
-              item.rece_start = formatDate(new Date(item.rece_start*1000));
-              item.rece_start = item.rece_start.split(" ")[0];
-              item.rece_end = formatDate(new Date(item.rece_end*1000));
-              item.rece_end = item.rece_end.split(" ")[0];
+              item.created_at = formatDate(new Date(item.created_at*1000));
+//              item.created_at = item.created_at.split(" ")[0];
               that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
                 "id": item.create_uid
               },{
@@ -344,6 +282,7 @@
           console.log(error);
         });
       },
+
       beginDate(){
 //      alert(begin);
         const that = this;
@@ -379,7 +318,7 @@
 </script>
 
 <style lang="scss" scoped>
-  #externalOrderManagement .borders{
+  #manualCol .borders{
     overflow: hidden;
     /*border: 1px solid #E6E6E6;*/
     margin-bottom: 30px;
@@ -413,7 +352,7 @@
         display: inline-block;
         margin: 0 3px 3px 0
       }
-      .buttonCol button{
+      .buttonDv button{
         float: right;
         margin-right: 20px;
       }

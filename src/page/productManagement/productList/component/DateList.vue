@@ -112,7 +112,7 @@
       <!-- 表单 -->
       <el-form :model="Rform" :rules="RformRuler" ref="Rform">
         <el-form-item label="报名类型:">
-          <el-select v-model="Rform.region" filterable placeholder="请选择" style="width:180px">
+          <el-select v-model="Rform.region" filterable placeholder="请选择" style="width:180px;margin:0 0 0 33px;">
             <el-option
               v-for="(item, index) in typeSelect"
               :label="item.name"
@@ -123,7 +123,7 @@
           <el-button size="mini" type="primary" @click="AddType">添加</el-button>
         </el-form-item>
         <el-form-item ref="resource" label="库存类型:" prop="resource">
-          <el-radio-group v-model="Rform.resource" @change="xuanze('2')">
+          <el-radio-group v-model="Rform.resource" @change="xuanze('2')" style="margin:0 0 0 22px;">
             <el-radio :disabled="forbidden" label="1">共享</el-radio>
             <el-radio  label="2">非共享</el-radio>
           </el-radio-group>
@@ -141,12 +141,12 @@
         </template>
         <!-- 非共享库存 -->
         <el-form-item label="总库存:" v-show='Rform.resource == "2"' prop="sumNum" style="margin-top:-15px;" >
-          <el-input v-model="Rform.sumNum" style="width:200px;" ></el-input>
+          <el-input v-model="Rform.sumNum" style="width:200px; margin:0 0 0 33px;" ></el-input>
         </el-form-item>
-        <el-form-item label="订单保留:" style="margin-top:20px">
-          <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:180px">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+        <el-form-item label="订单预留时长:" style="margin-top:20px">
+          <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:200px">
+            <el-option label="0-1" value="shanghai"></el-option>
+            <el-option label="1-2" value="beijing"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -832,15 +832,25 @@
           })
         }
         // 查到非共享库存后执行修改计划
-        this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/save', {
+        this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorysave', {
           "object": {
-            "id": this.Rform.id,
-            "inventoryID": inventoryID,
-            "packageID": this.ccc[0],
-            "planEnroll": planEnroll,
-            "date": this.Rform.date,
-            "groupCode": this.msgFather[0].codePrefix + '-' + list.data.person.date + '-' + this.msgFather[0].codeSuffix,
+            "name": '',
+            "count": this.Rform.sumNum,
+            "share": 2,
+            "date": this.Rform.date
           }
+        })
+        .then(resSave =>{
+          this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/save', {
+            "object": {
+              "id": this.Rform.id,
+              "inventoryID": inventoryID,
+              "packageID": this.ccc[0],
+              "planEnroll": planEnroll,
+              "date": this.Rform.date,
+              "groupCode": this.msgFather[0].codePrefix + '-' + list.data.person.date + '-' + this.msgFather[0].codeSuffix,
+            }
+          })
         }).then(resSave => {
           let planEnrolls = [];
           planEnroll.forEach(delid => {
@@ -1707,7 +1717,7 @@
       delect(item, index) {
         let _n = this.n[0];
         if (item.isModify) {
-          if (_n.data.person.planEnroll.length <= 1) {
+          if (_n.data.person.planEnroll.length <= 0) {
             console.log('剩一个类型时');
             // 删除最后一个类型时删除该计划
             this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/delete', {
@@ -1765,8 +1775,70 @@
             this.days[_n.index].data.person.share = '';
           }
         }
-        // this.arr.splice(index,1);
       },
+      // delect(item, index) {
+      //   let _n = this.n[0];
+      //   if (item.isModify) {
+      //     if (_n.data.person.planEnroll.length <= 1) {
+      //       console.log('剩一个类型时');
+      //       // 删除最后一个类型时删除该计划
+      //       this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/delete', {
+      //           "id": this.Rform.id
+      //       }).then(res => {
+      //         console.log(res);
+      //       })
+      //     } else {
+      //       this.arr.splice(index,1);
+      //       let planEnroll = [];
+      //       this.arr.forEach(data => {
+      //         let quotaPrice = '';
+      //         // 判断是否填写配额
+      //         if (data.quotaPrice == '') {
+      //           quotaPrice = 0;
+      //         } else {
+      //           quotaPrice = data.quotaPrice;
+      //         }
+      //         planEnroll.push({
+      //           'enrollID': data.id,
+      //           'enrollName': data.name,
+      //           'price_01': data.salePrice,
+      //           'price_02': data.traderPrice,
+      //           'quota': quotaPrice
+      //         })
+      //       })
+      //       // 有两个及以上的值删除调用修改接口
+      //       this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/save', {
+      //         "object": {
+      //           "id": this.Rform.id,
+      //           "inventoryID": _n.data.person.inventoryID,
+      //           "packageID": this.ccc[0],
+      //           "date": this.Rform.date,
+      //           "planEnroll": planEnroll
+      //         }
+      //       }).then(res => {
+      //         this.days[_n.index].data.person.planEnroll.splice(index,1);
+      //         let n = [];
+      //         n = this.days[_n.index];
+      //         this.n = [];
+      //         this.n.push(n);
+      //         this.$message.success('删除成功');
+      //       }).catch(err => {
+      //         console.log('删除(修改)计划失败');
+      //       })
+      //     }
+      //   } else {
+      //     this.arr.splice(index,1);
+      //     this.days[_n.index].data.person.planEnroll.splice(index,1);
+      //     let n = [];
+      //     n = this.days[_n.index]
+      //     this.n = [];
+      //     this.n.push(n);
+      //     if (_n.data.person.planEnroll.length <= 1) {
+      //       this.days[_n.index].data.person.share = '';
+      //     }
+      //   }
+      //   // this.arr.splice(index,1);
+      // },
       // 添加配额
       AddQuotas(index){
         this.arr[index].quota = true;
@@ -2130,7 +2202,7 @@
     margin-top: 35px;
     margin-left: 35px;
     /* right: -360px; */
-    width: 339px;
+    width: 360px;
   }
   .clearfix{
     width:310px;

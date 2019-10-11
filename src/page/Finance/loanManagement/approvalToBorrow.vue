@@ -1,5 +1,5 @@
 <template>
-  <div class="loanBorder">
+  <div class="distributor-content">
         <div class="plan">
           <!-- <div class="fl">
             <span class="emptyPlan">团期计划</span>
@@ -12,7 +12,7 @@
           <div class="fl">
             <span class="emptyPlan">发起时间</span>
             <el-date-picker v-model="planTime_01" type="date" class="planTime" placeholder="开始天数"></el-date-picker>
-            <span class="time">——</span>
+            <span class="time">-</span>
             <el-date-picker v-model="planData_01" type="date" class="planTime" placeholder="结束天数"></el-date-picker>
           </div>
         </div>
@@ -186,7 +186,7 @@
                    <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
                    <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
                 </el-table>
-                
+
                </el-form>
           </div>
         </el-dialog> -->
@@ -214,9 +214,6 @@
       </div>
 </template>
 
-
-
-
 <script>
 import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 import moment from 'moment'
@@ -228,56 +225,45 @@ import moment from 'moment'
     data(){
       return {
         paymentID:0,
-        groupCode:'',
-        //表头切换
+        groupCode:'', //表头切换
         empty_01:'',
         people_01:'',
         planTime_01:'',
-        planData_01:'',
-        //借款表格
-        tableData:[],
-        //分页
+        planData_01:'', //借款表格
+        tableData:[], //分页
         currentPage: 1,
         total:0,
         pagesize:10,
-        detailstShow:false,//查看详情弹窗
-        fundamental:{},//查看详情基本信息数组
-        //无收入借款金额表格
-          tableMoney:[],
-          //无收入借款弹窗预付款明细表格
-          tablePayment:[],
-          //无收入借款弹窗中预付款明细查看弹窗
-          dialogFormVisible_paymenrt:false,
-          tableApprove:[{
-            times:' 2019-1-14 19:00:00',
-            people:'洋洋',
-            result:'通过',
-            opinion:'不同意'
-          }],
-          ////无收入借款弹窗中无收入借款明细弹窗
-          tableIncome:[],
-          //无收入借款弹窗中预付款明细查看弹窗
-          dialogFormVisible_Income:false,
-          tableIncomeCheck:[{
-            times:' 2019-1-14 19:00:00',
-            people:'洋洋1',
-            result:'通过',
-            opinion:'不同意'
-          }],
-          //无收入借款弹窗中收入明细表格
-          tableEarning:[],
-          //查看无收入借款弹窗
-          checkIncomeShow:false,
-          //查看无收入借款审批过程
-           tableCourse:[],
-           tour_id:0,
-           multipleSelection: [],
-           pid:'',
-           arr1:[],
-           guid:'',
-           transitShow:false,//通过驳回弹窗
-           title:"",
-           commentText:'',
+        detailstShow:false,// 查看详情弹窗
+        fundamental:{}, // 查看详情基本信息数组
+        tableMoney:[], // 无收入借款金额表格
+        tablePayment:[], // 无收入借款弹窗预付款明细表格
+        dialogFormVisible_paymenrt:false, // 无收入借款弹窗中预付款明细查看弹窗
+        tableApprove:[{
+          times:' 2019-1-14 19:00:00',
+          people:'洋洋',
+          result:'通过',
+          opinion:'不同意'
+        }],
+        tableIncome:[], //无收入借款弹窗中无收入借款明细弹窗
+        dialogFormVisible_Income:false, // 无收入借款弹窗中预付款明细查看弹窗
+        tableIncomeCheck:[{
+          times:' 2019-1-14 19:00:00',
+          people:'洋洋1',
+          result:'通过',
+          opinion:'不同意'
+        }],
+        tableEarning:[], // 无收入借款弹窗中收入明细表格
+        checkIncomeShow:false, // 查看无收入借款弹窗
+         tableCourse:[], // 查看无收入借款审批过程
+         tour_id:0,
+         multipleSelection: [],
+         pid:'',
+         arr1:[],
+         guid:'',
+         transitShow:false, // 通过驳回弹窗
+         title:"",
+         commentText:'',
       }
     },
     methods: {
@@ -289,13 +275,13 @@ import moment from 'moment'
         }
         return moment(date).format('YYYY-MM-DD')
       },
-      //重置
+      // 重置
       emptyButton_01(){
         this.empty_01 = '';
         this.people_01 = '';
         this.planTime_01 = '';
         this.planData_01 = '';
-      }, 
+      },
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
@@ -303,7 +289,7 @@ import moment from 'moment'
           return ''
         }
       },
-      //分页
+      // 分页
       handleSizeChange(page) {
         this.currentPage = 1;
         this.pagesize = page;
@@ -313,14 +299,13 @@ import moment from 'moment'
         this.currentPage = currentPage;
         this.pageList();
       },
-      
-      //启动工作流
+      // 启动工作流
       sendBPM(result) {
         this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
           jQ_ID: result.guid,
           jQ_Type: result.flowModel,
           workflowCode: result.flowModelName,
-          userCode: sessionStorage.getItem('account'), //未指定呢
+          userCode: sessionStorage.getItem('account'), // 未指定呢
         }).then(res => {
           let result = JSON.parse(res.data);
           if (result.code == '0') {
@@ -333,12 +318,11 @@ import moment from 'moment'
           console.log(err);
         })
       },
-      //请求工作流接口获取未完成的任务
+      // 请求工作流接口获取未完成的任务
       pageList(){
         var that = this
         var arr = []
-        //workflowCode获取FlowModel传递
-        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递
         .then(obj => {
           console.log(obj)
           this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
@@ -346,8 +330,8 @@ import moment from 'moment'
                 "userCode": sessionStorage.getItem('userCode'),
                 "startTime": this.startTime?this.startTime:"1970-07-23T01:30:54.452Z",
                 "endTime": this.endTime?this.endTime:new Date(),
-                "startIndex": this.currentPage,  //页码
-                "endIndex": this.pagesize ,  //每页条数
+                "startIndex": this.currentPage,  // 页码
+                "endIndex": this.pagesize ,  // 每页条数
                 "workflowCode": obj.data.objects[0].name
               }
           )
@@ -377,7 +361,7 @@ import moment from 'moment'
           })
         })
         },
-        //审核结果
+        // 审核结果
         auditResult(result) {
           this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ', {
             jQ_ID: result,
@@ -388,7 +372,7 @@ import moment from 'moment'
             console.log(obj);
           })
         },
-        //删除
+        // 删除
         repeal(){
           this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
             {
@@ -408,7 +392,7 @@ import moment from 'moment'
             console.log(res)
           });
         },
-        //通过
+        // 通过
         through(){
           this.title="审批通过";
           this.transitShow = true;
@@ -442,7 +426,7 @@ import moment from 'moment'
               //that.repeal();
           })
         },
-        //驳回
+        // 驳回
         rejected_01(formName){
           var that = this;
           this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/RejectionOfWorkTasksForJQ',
@@ -465,30 +449,30 @@ import moment from 'moment'
             "jQ_Type": 1
           })
         },
-        //驳回成功通过guid将checktype修改成2
+        // 驳回成功通过guid将checktype修改成2
         rejectedSuccess(){
           this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',
           {
             /*"guid": this.guid,
             "checkType": 2*/
-             "object": {               
+             "object": {
                 "guid": this.guid,
                 "checkType": 2
               }
           })
         },
 
-        //详情弹窗
+        // 详情弹窗
         checkIncome(row){
           this.pid = row.paymentID;
           this.detailstShow = true;
-          //this.getLabel();
-          
+          // this.getLabel();
+
         },
         closeDetailstShow(){
           this.detailstShow = false;
         },
-        //获取一条详情
+        // 获取一条详情
         // getLabel(){
 
         //   console.log(this.tableData)
@@ -596,15 +580,18 @@ import moment from 'moment'
       this.pageList();
     },
     created(){
-      
+
     }
   }
 </script>
 <style scoped>
-	.loanManagement{text-align: center; font-family: '微软雅黑'; font-size: 11pt;overflow: hidden; text-align: left; margin: -15px 0 100px 0;}
-  .loanBorder{border-left:1px solid #e6e6e6;border-right:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6; margin:0 0 20px 0; overflow: hidden; clear: both;}
+  .distributor-content {
+    width: 99%;
+    margin: 25px auto;
+    height: auto;
+    border: 1px solid #e6e6e6;
+  }
   /*搜索框*/
-  .empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; }
   .fl{float:left; margin: 20px 0 20px 0;}
   .emptyPlan{margin: 0 0 0 30px; }
   .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}

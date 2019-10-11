@@ -65,6 +65,8 @@ import scenicOrTicketList from '@/page/productManagement/productList/tab/scenicO
 import listInfoEdit from '@/page/productManagement/listInfoScenic/listInfoEdit'
 import balanceOrder from '@/page/Finance/balanceOrder/balanceOrder'
 import distributorsInfo from'@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo'
+import gatheringDel from'@/page/Finance/collectionManagement/distributorsInfo/gatheringDel'
+import businessRecognitionManagement from'@/page/Finance/businessRecognitionManagement/businessRecognitionManagement.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -512,7 +514,17 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    },{
+    },
+    {
+      path: '/gatheringDel',
+      component: gatheringDel,
+      name: ' 收款管理/详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path:'distributorsInfo',
       component:distributorsInfo,
       name:'分销商收款',
@@ -592,6 +604,14 @@ export default new Router({
       path: '/checkSheet',
       component: checkSheet,
       name: '报账单',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/businessRecognitionManagement',
+      component: businessRecognitionManagement,
+      name: '业务待认款管理',
       meta: {
         keepAlive: true,
         auth: true

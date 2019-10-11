@@ -42,7 +42,7 @@
                  <el-option  key="2" label="驳回" value="2"></el-option>
                </el-select>
               </div>
-              
+
               <div style="float:right; margin: 0 10px 0 0;">
                 <el-button @click="searchHand()" type="primary">搜索</el-button>
                 <el-button @click="resetHand()" type="primary">重置</el-button>
@@ -492,7 +492,6 @@ export default {
           })
         })
         .catch(function(obj) {
-          console.log(obj)
         })
     },
     getDept() { //通过用户ID,获取部门名称
@@ -510,7 +509,6 @@ export default {
           that.dept = obj.data.isSuccess == true ? obj.data.objects[0].name : ''
         })
         .catch(function(obj) {
-          console.log(obj)
         })
     },
     //获取一条信息
@@ -527,8 +525,6 @@ export default {
            this.fundamental=res.data.object;
            this.tableInvoice = res.data.object.invoiceTable;
            this.tour_id = res.data.object.planID;
-           console.log(res.data.object.orderNumber)
-           console.log(this.tableData[0].orderNumber)
            if(this.tableData[0].orderNumber == res.data.object.orderNumber){
             this.$http.post(
               this.GLOBAL.serverSrc + "/finance/collection/api/getnumber", {
@@ -538,7 +534,7 @@ export default {
             )
             .then(res => {
               //that.collectedMoney = res.data.isSuccess == true ? res.data.object.price : 0
-              that.collectedMoney =  res.data.object.price 
+              that.collectedMoney =  res.data.object.price
             })
             .catch(function(res) {
               console.log(res)
@@ -549,14 +545,12 @@ export default {
               }
             )
             .then(res => {
-               console.log(res)
                res.data.object.collectedMoney = that.collectedMoney
                res.data.object.uncollectedMoney = res.data.object.payable - res.data.object.collectedMoney
                //res.data.object.collectedMoney = that.examineMoney
                that.tableAssociated.push(res.data.object)
             })
             .catch(function(res) {
-              console.log(res)
             })
            }
         }
