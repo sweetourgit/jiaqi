@@ -364,9 +364,6 @@
 </script>
 
 <style scoped>
-  #trade .el-tabs__header{
-    margin-top: -14px!important;
-  }
   #trade .borders{
     overflow: hidden;
     /*border: 1px solid #E6E6E6;*/
@@ -376,7 +373,7 @@
     width: 96%;
     min-width: 1079px;
     margin-left: 20px;
-    margin-top: 20px;
+    margin-top: 25px;
     float: left;
     background-color: #f7f7f7;
     padding: 20px 10px;

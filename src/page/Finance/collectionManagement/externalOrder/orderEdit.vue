@@ -1047,7 +1047,7 @@
                   Etime = formatDate(this.ruleForm.endTime).split(" ")[0];
                 }
                 if(this.tableDataQK.length > 0){
-                  if(new Date(Date.parse(Stime)) > new Date(Date.parse(this.tableDataQK[0].sale_at)) || new Date(Date.parse(Etime)) < new Date(Date.parse(this.tableDataQK[0].sale_at))){
+                  if(new Date(Date.parse(Stime)) > new Date(Date.parse(this.tableDataQK[0].sale_at.split(" ")[0])) || new Date(Date.parse(Etime)) < new Date(Date.parse(this.tableDataQK[0].sale_at.split(" ")[0]))){
                     this.$confirm("收款入账时间设置错误，无法修改", "提示", {
                       confirmButtonText: "好的",
                       cancelButtonText: "取消",
@@ -1653,7 +1653,12 @@
           if(obj.data.isSuccess){
             that.rece_code = obj.data.object;
           }else{
-            that.$message.warning("获取收款编码失败~");
+            if(obj.data.result.message){
+              that.$message.warning(obj.data.result.message);
+            }else{
+              that.$message.warning("获取收款编码失败~");
+            }
+
           }
         }).catch(function(obj) {
           that.$message.warning("获取收款编码失败~");
