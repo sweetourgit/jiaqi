@@ -1,0 +1,13 @@
+# 日志
+
+## 10.09
+1. src/router/index.js 注释掉了关于proList的40行和241行
+2. 修改 productManagement/changePro 中其他信息tab页的bug，注:新other必须有`menuType`属性，才会保存
+3. Schedule日程，修改 productManagement/changeInfo ， 
+
+## 10.10
+1. changepro下的修改添加功能中的出游人群和主题两个字段改成必填
+2. 熟悉代码和业务
+
+## 10.11
+1. 学习和约定代码规范

@@ -1680,6 +1680,9 @@
         schedules: []
         },
         rules: {
+          Excursion: [{required: true, message: '出游人群不能为空', trigger: 'change'}],
+          theme: [{required: true, message: '主题不能为空', trigger: 'change'}],
+
           productNamel: [{ required: true, message: '产品名称不能为空', trigger: 'blur' },
                          { min: 0, max: 30, message: '产品名称字数超过30汉字限制', trigger: 'blur' },
                          { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
