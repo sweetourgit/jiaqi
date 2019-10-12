@@ -2,9 +2,10 @@
 .traffic-tab-pane{
   header{
     font-size: 14px;
-    padding: 10px 0 20px 0;
+    padding: 15px 0 30px 0;
     .label{
       padding:0 10px;
+      border-left: 3px solid #F38F00;
     }
   }
   main{
@@ -36,9 +37,9 @@
       </el-radio-group>
     </header>
     <main>
-      <div v-if="vm.description=== '1'" class="detail-ground">
+      <div v-if="vm.descriptionState=== 'detail'" class="detail-ground">
         <component 
-          v-for="(item, i) in proto" 
+          v-for="(item, i) in traffics" 
           ref="children"
           :key="item.goOrBack+ '.'+ i"
           :rank="i"
@@ -54,7 +55,7 @@
           </div>
         </component>
       </div>
-      <div v-else class="easy-ground">
+      <div v-if="vm.descriptionState=== 'easy'" class="easy-ground">
         <el-col :span="18">
           <vue-editor v-model="vm.content"></vue-editor>
         </el-col>
@@ -93,32 +94,87 @@ export default {
     briefMark: [String],
   },
 
+  mounted(){
+    this.init();
+  },
+
   data(){
     return {
       vm: {
         //1：详细说明 2：简要说明
         description: "1",
-        content: this.briefMark
+        descriptionState: 'detail',
+        content: this.briefMark+ ""
       },
-      submitForm: {
-
-      }
+      traffics: []
     }
   },
 
   methods: {
+    /**
+     * @description: 初始化
+     */
+    init(type){
+      if(!type || type=== 'detail'){
+        this.traffics.splice(0);
+        this.traffics.push(...this.$deepCopy(this.proto));
+      }
+      console.log(this.briefMark);
+      (!type || type=== 'easy') && (this.vm.content= this.briefMark);
+    },
+    /**
+     * @description: 切换说明类型
+     */
     changeDescription(label){
-      console.log(this.$refs.children)
-      //if(label=== '2') return this.vm.description= "1";
+      if(label=== '2'){
+        let hasChange= this.checkHasChange('detail');
+        if(!hasChange) return this.vm.descriptionState= "easy";
+        this.$confirm('详细说明中有未保存修改，切换后将取消修改，是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.init("detail");
+          this.vm.descriptionState= "easy"; 
+        }).catch(() => {
+          this.vm.description= "1";         
+        });
+      }
+      if(label=== '1'){
+        let hasChange= this.checkHasChange('easy');
+        if(!hasChange) return this.vm.descriptionState= "detail";
+        if(hasChange) this.$confirm('简要说明中有未保存修改，切换后将取消修改，是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.init("easy");
+          this.vm.descriptionState= "detail"; 
+        }).catch(() => {
+          this.vm.description= "2";         
+        });
+      }
     },
 
     /**
      * @description: 检查是否有数据变动
      */
-    checkHasChange(){
+    checkHasChange(param){
+      let type= param || this.vm.descriptionState;
+      return this[`${type}CheckHasChange`]();
+    },
+    detailCheckHasChange(){
       let bol= false;
-      //检查简要说明
-      bol= this.vm.content=== this.briefMark;
+      let children= this.$refs.children;
+      children.forEach(child => {
+        !bol && (bol= child.checkHasChange());
+      })
+      console.log(`traffic-tab-pane checkHasChange: ${bol}`)
+      return bol;
+    },
+    easyCheckHasChange(){
+      let bol= !(this.vm.content=== this.briefMark);
+      console.log(`traffic-tab-pane checkHasChange: ${bol}`)
       return bol;
     }
   }

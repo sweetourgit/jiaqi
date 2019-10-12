@@ -17,7 +17,6 @@
   <div class="plane-form">
     <slot></slot>
     <main>
-      <div>{{ proto }}</div>
       <el-form
         label-width="120px" 
         ref="submitForm"
@@ -40,7 +39,7 @@
 
           <el-col style="width: 150px;">
             <el-form-item label="第" label-width="50px" prop="day">
-              <el-select v-model="submitForm.day" placeholder="第几天" size="small" :disabled="goOrBackSign">
+              <el-select v-model="submitForm.day" placeholder="第几天" size="small" :disabled="!!goOrBackSign">
                 <el-option
                   v-for="item in PROVIDE_DAY"
                   :key="item"
@@ -62,11 +61,11 @@
               <el-autocomplete
                 class="inline-input"
                 size="small"
-                v-model="state2"
-                :fetch-suggestions="querySearch"
+                v-model="vm.flightNo"
+                :fetch-suggestions="getFlightAction"
                 placeholder="输入航班号"
                 :trigger-on-focus="false"
-                @select="handleSelect"
+                @select="selectFilght"
               ></el-autocomplete>
             </el-form-item>
           </el-col>
@@ -128,12 +127,15 @@
         </el-row>
 
       </el-form>
-      
+
+      <ext-stopover
+        ref="extStopoverRef"
+        :proto="submitForm.ext_Stopover"
+      ></ext-stopover>
     </main>
 
     <footer>
-      <div>{{ PROVIDE_DAY }}</div>
-      <el-button type="primary" size="small">添加经停</el-button>
+      <el-button type="primary" size="small" @click="addExtStopover">添加经停</el-button>
       <el-button v-if="!goOrBackSign" type="info" size="small">删除中转</el-button>
     </footer>  
   </div>  
@@ -141,10 +143,15 @@
 
 <script>
 import { TRAFFIC_MODE_OPTIONS, GO_OR_BACK_SIGN } from '../../../dictionary'
+import extStopover from './ext-stopover.vue'
 
 export default {
   name: 'plane-form',
-  
+
+  components: {
+    extStopover,
+  },
+
   inject: ['PROVIDE_DAY'],
 
   props: {
@@ -175,6 +182,10 @@ export default {
 
   data(){
     return Object.assign({
+      vm: {
+        flightNo: '',
+        
+      },
       submitForm: {},
       rules: {
         trafficMode: [{ required: true, trigger: 'blur' }],
@@ -214,9 +225,75 @@ export default {
      */
     checkHasChange(){
       let bol= false;
-      bol= this.$checkLooseEqual(this.submitForm, this.checkProto);
+      bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
+      !bol && (bol= this.$refs.extStopoverRef.checkHasChange());
+      console.log(`plane-form checkHasChange: ${bol}`)
       return bol;
-    }
+    },
+    
+    /**
+     * @description: 添加经停
+     * @TODO 公共
+     */
+    addExtStopover(){
+      this.$refs.extStopoverRef.addExtStopover()
+    },
+    
+    /**
+     * @description: id模糊搜索航班信息
+     */
+    getFlightAction(queryString, cb){
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/flight/api/get",
+        {
+          id: queryString,
+        }
+      ).then(res => {
+        let { isSuccess, object }= res.data;
+        if(!object) throw '未找到对应航班';
+        // 字段对应不上，转接一下
+        this.flightOptions= [object];
+        cb([{ value: object.id+ '' }]);
+      }).catch(err => {
+        let errMsg;
+        if(err && err.status=== 400) errMsg= '自动填充请输入数字id，不得包含其他类型字符';
+        if(err && err.status=== 500) errMsg= '500';
+        cb();
+        return errMsg? 
+          this.$message.error(errMsg): this.$message.info(err);
+      })
+    },
+
+    /**
+     * @description: 字段不同，转接一下
+     * @TODO 到达城市用reachingCity，到达机场arrivalAirport，呵呵
+     */
+    flightAdapter(flight){
+      let { 
+        number, departureTime, departureAirport, 
+        departureCity, company, arrivalTime, arrivalAirport,
+        reachingCity
+      }= flight;
+      return {
+        arriveCity: reachingCity,
+        arrivePlace: arrivalAirport,
+        arriveTime: arrivalTime,
+        company: company,
+        ext_Stopover: "[]",
+        podCity: departureCity,
+        podPlace: departureAirport,
+        podTime: departureTime,
+        theNumber: number
+      }
+    },
+    
+    /**
+     * @description: 
+     */
+    selectFilght(flight){
+      let hit= this.flightOptions.find(el => el.id== flight.value);
+      Object.assign(this.submitForm, this.flightAdapter(hit));
+    },
   }
 }
 </script>

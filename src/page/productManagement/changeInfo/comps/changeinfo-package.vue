@@ -18,7 +18,7 @@
         <el-row>
 
           <el-col :span="6">
-            <el-form-item label="套餐名：" prop="name">
+            <el-form-item label="套餐名：" label-width="90px" prop="name">
               <el-input
                 style="width: 100%;"
                 v-model="submitForm.name"
@@ -99,7 +99,7 @@ export default {
   watch: {
     proto: {
       handler(nval){
-        this.initSubmitForm()
+        this.init()
       },
       immediate: true
     }
@@ -127,7 +127,7 @@ export default {
     /**
      * @description: 初始化submitForm，并保存基础信息快照
      */
-    initSubmitForm(){
+    init(){
       Object.keys(this.submitForm).forEach(attr => this.submitForm[attr]= this.proto[attr]);
       //用于比较是否发生改变的对象
       this.checkProto= this.$deepCopy(this.submitForm);
@@ -167,9 +167,10 @@ export default {
     checkHasChange(){
       let bol= false;
       //检查基础信息
-      bol= this.$checkLooseEqual(this.submitForm, this.checkProto);
+      bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
       //检查交通信息，如果基础信息中存在变动，则中断接下来的检查，提高性能，这递归大对象伤不起啊
       !bol && (bol= this.$refs.traffic.checkHasChange());
+      console.log(`changeinfo-package checkHasChange: ${bol}`)
       return bol;
     }
   }

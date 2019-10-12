@@ -32,6 +32,7 @@
           :name="item.name"
         >
           <changeinfo-package
+            ref="packageRef"
             v-if="vm.currentPackage=== item.name"
             :proto="item"
             :pods="pods"
@@ -162,6 +163,7 @@ export default {
      * @description: 保存按钮触发的事件，先判断是保存还是新增
      */
     addOrSave(){
+      console.log(this.$refs.packageRef[0].checkHasChange())
       let isSave= this.isSave();
       if(!isSave) return this.addAction();
       return this.saveAction(); 
@@ -171,7 +173,7 @@ export default {
       return current.id=== 0 || !!current.id;
     },
     saveAction(){
-      if(!this.checkHasChange()) return this.$message.info('数据未变动');
+      //if(!this.checkHasChange()) return this.$message.info('数据未变动');
     }
   }
 }
