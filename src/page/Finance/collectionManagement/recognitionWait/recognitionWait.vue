@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
-    <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
+    <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick" class="card_style">
       <el-tab-pane label="手动生成" name="first">
         <manualCollection ref="manualCollection"></manualCollection>
       </el-tab-pane>
@@ -39,4 +39,7 @@
 
 </script>
 <style lang="scss" scoped>
+  .card_style{
+    margin: 25px auto;
+  }
 </style>

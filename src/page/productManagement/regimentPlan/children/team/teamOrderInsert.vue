@@ -386,13 +386,12 @@ export default {
         }
      },
      teampreview(ID){  //团期计划订单信息预览
-      console.log(ID)
        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/teampreview',{
             "id": ID
         }).then(res => {
           if(res.data.isSuccess == true){
              this.teampreviewData=res.data.object;
-             this.teamEnrolls(this.planId);        
+             this.teamEnrolls(this.planId);       
           }
        })
      },
@@ -589,7 +588,7 @@ export default {
                  this.$message.error('下单失败');
                  this.ifOrderInsert=true;
               }
-            }) 
+            })
           } else {
             console.log('error submit!!');
             this.ifOrderInsert=true;
@@ -597,7 +596,7 @@ export default {
           }
         });
       },
-      //启动工作流 
+      //启动工作流
       startUpWorkFlowForJQ(OrderID,FlowModel,FlowModelName,Usercode){
         this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ',{
             "jQ_ID": OrderID,

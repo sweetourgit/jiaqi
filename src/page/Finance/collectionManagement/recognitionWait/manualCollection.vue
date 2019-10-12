@@ -1,18 +1,27 @@
 <template>
-  <div class="all" id="trade">
+  <div class="all" id="manualCol">
     <div class="borders">
       <div class="search">
-        <span class="search_style">款项说明：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
-        <span class="search_style">申请人：</span>
-        <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入申请人" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
-        <span class="search_style">申请日期：</span>
-        <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
-        <div class="date-line"></div>
-        <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
+        <el-row>
+          <el-col :span="7">
+            <span class="search_style">款项说明：</span>
+            <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
+          </el-col>
+          <el-col :span="7">
+            <span class="search_style">申请人：</span>
+            <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入申请人" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
+          </el-col>
+          <el-col :span="9">
+            <span class="search_style">申请日期：</span>
+            <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
+            <div class="date-line"></div>
+            <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
+          </el-col>
+        </el-row>
 
-        <div style="margin-top: 20px;">
-          <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
-          <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
+        <div class="buttonDv">
+          <el-button type="primary" @click="resetFun" plain>重置</el-button>
+          <el-button type="primary" @click="searchFun">搜索</el-button>
         </div>
       </div>
       <div class="search" style="background-color: transparent;padding: 0;">
@@ -308,54 +317,58 @@
   }
 </script>
 
-<style scoped>
-  #trade .el-tabs__header{
-    margin-top: -14px!important;
-  }
-  #trade .borders{
+<style lang="scss" scoped>
+  #manualCol .borders{
     overflow: hidden;
     /*border: 1px solid #E6E6E6;*/
     margin-bottom: 30px;
-  }
-  #trade .search{
-    width: 96%;
-    min-width: 1079px;
-    margin-left: 20px;
-    margin-top: 20px;
-    float: left;
-    background-color: #f7f7f7;
-    padding: 20px 10px;
-    box-sizing: border-box;
-  }
-  #trade .date-line {
-    width: 10px;
-    border-bottom: 1px solid #e6e6e6;
-    display: inline-block;
-    margin: 0 3px 3px 0
-  }
-  #trade .search_style{
-    /*float: left;*/
-    margin-top: 10px;
-    margin-left: 20px;
-    font-size: 14px;
-    display: inline-block;
-    width: 80px;
-  }
-  #trade .search_input{
-    /*float: left;*/
-    width: 200px
-  }
-  #trade .table_style{
-    width: 96%;
-    min-width: 1079px;
-    margin-left: 20px;
-    margin-top: 20px;
-    float: left;
-  }
-  #trade .block{
-    float: left;
-    margin-left: 600px;
-    margin-top: 70px;
-    margin-bottom: 30px;
+    .search{
+      width: 96%;
+      min-width: 1079px;
+      margin-left: 20px;
+      margin-top: 25px;
+      float: left;
+      background-color: #f7f7f7;
+      padding: 20px 10px;
+      box-sizing: border-box;
+      .el-row{
+        margin-bottom: 20px;
+      }
+      .search_style{
+        /*float: left;*/
+        margin-top: 10px;
+        margin-left: 20px;
+        font-size: 14px;
+        display: inline-block;
+        width: 80px;
+      }
+      .search_input{
+        /*float: left;*/
+        width: 65%;
+      }
+      .date-line {
+        width: 10px;
+        border-bottom: 1px solid #e6e6e6;
+        display: inline-block;
+        margin: 0 3px 3px 0
+      }
+      .buttonDv button{
+        float: right;
+        margin-right: 20px;
+      }
+    }
+    .table_style{
+      width: 96%;
+      min-width: 1079px;
+      margin-left: 20px;
+      margin-top: 20px;
+      float: left;
+    }
+    .block{
+      float: left;
+      margin-left: 600px;
+      margin-top: 70px;
+      margin-bottom: 30px;
+    }
   }
 </style>

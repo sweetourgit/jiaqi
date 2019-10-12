@@ -121,7 +121,7 @@
               序号
             </el-col>
             <el-col :span="5" class="title">
-              收入
+              收入来源
             </el-col>
             <el-col :span="5" class="title">
               经手人
