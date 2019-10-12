@@ -56,7 +56,7 @@
     <!-- 表格 -->
     <el-table :data="internalTableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" :stripe="true" id="table-content">
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
-      <el-table-column prop="checkType" label="状态" width="80" align="center">
+      <el-table-column prop="checkType" label="状态" align="center">
         <template slot-scope="scope">
           <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F" >审批中</div>
           <div v-else="scope.row.checkType=='1'" style="color: #FF4A3D" >通过</div>
@@ -86,6 +86,7 @@
     <!-- 表格 END -->
   </div>
 </template>
+
 <script type="text/javascript">
 import moment from 'moment'
 
@@ -94,12 +95,12 @@ export default {
     return {
       internalTableData: null, // 表格数据
       ruleForm: {
-        createUser: '',
-        distributor: '',
-        moneyExplain: '',
-        checkType: '',
-        dateStart: '',
-        dateEnd: '',
+        createUser: '', // 申请人
+        distributor: '', // 经销商
+        moneyExplain: '', // 价钱
+        checkType: '', // 状态
+        dateStart: '', // 开始时间
+        dateEnd: '', // 结束时间
       }
     }
   },
@@ -155,18 +156,16 @@ export default {
             'checkType': _this.ruleForm.checkType ? _this.ruleForm.checkType : -1,
             "collectionType": 5,
           }
-
         }, {
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
         }
       )
-        .then(function(obj) {
-          _this.internalTableData = obj.data.objects;
-        })
-        .catch(function(obj) {
-        })
+      .then(function(obj) {
+        _this.internalTableData = obj.data.objects;
+      })
+      .catch(function(obj) {})
     },
     // 表格数据
     getDataInside () {
@@ -200,6 +199,8 @@ export default {
     height: auto;
     border: 1px solid #e6e6e6;
     #form-content{
+      background: #f7f7f7;
+      padding: 20px 10px;
       margin: 20px 10px;
       .el-select{
         width: 100% !important;

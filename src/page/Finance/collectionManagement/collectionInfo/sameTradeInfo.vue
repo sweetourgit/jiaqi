@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative">
+  <div class="content">
     <el-dialog :title="title" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" width=1100px :show-close="false" custom-class="city_list" class="addReceivables" @close="closeAdd">
       <div v-if="this.find == 1 || this.find == 2" class="sh_style">审核中</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
@@ -11,38 +11,39 @@
           <el-button v-if="this.find == 2" type="primary" @click="adoptForm('ruleForm')">通过</el-button>
           <el-button v-if="this.find == 2" type="danger" @click="boSubmit('ruleForm')">驳回</el-button>
         </div>
-        <div style="margin:10px 0 20px 25px; font-size:14pt;">基本信息</div>
+        <!-- 表单基本信息 -->
+        <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
+        <!-- 表单校验 -->
         <el-form-item label="收款时间" prop="collectionTime" label-width="120px">
-          <el-date-picker v-model="ruleForm.collectionTime" style="width:200px;" type="date" placeholder="收款时间" :disabled="change"></el-date-picker>
+          <el-date-picker v-model="ruleForm.collectionTime" type="date" placeholder="收款时间" :disabled="change"></el-date-picker>
         </el-form-item>
         <el-form-item label="同业社名称" prop="sameTrade" label-width="120px">
-          <el-autocomplete style="width:200px;" v-model="ruleForm.sameTrade" :fetch-suggestions="querySearch3"placeholder="请输入同业社名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
+          <el-autocomplete v-model="ruleForm.sameTrade" :fetch-suggestions="querySearch3"placeholder="请输入同业社名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
         </el-form-item>
         <el-form-item label="收款账户" prop="collectionNumber" label-width="120px">
-          <el-input style="width:200px;" v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
+          <el-input v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
           <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
         <el-form-item label="收款金额" prop="money" label-width="120px">
-          <el-input v-model="ruleForm.money" style="width:200px;" placeholder="收款金额" :disabled="change"></el-input>
+          <el-input v-model="ruleForm.money" placeholder="收款金额" :disabled="change"></el-input>
         </el-form-item>
         <el-form-item label="摘要" prop="abstract" label-width="120px">
-          <el-input v-model="ruleForm.abstract" style="width:600px;" placeholder="摘要" :disabled="change"></el-input>
+          <el-input v-model="ruleForm.abstract" placeholder="摘要" :disabled="change"></el-input>
         </el-form-item>
-        <el-form-item label="凭证" label-width="120px">
+        <el-form-item label="凭证" prop="voucher" label-width="120px">
           <el-upload class="upload-demo" name="files" ref="upload" :limit="12" multiple :action="this.upload_url" :disabled="change" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview" list-type="picture">
             <el-button size="small" type="primary">上传文件</el-button>
           </el-upload>
         </el-form-item>
-        <el-form-item label=""  prop="isInvoice">
-          <div style="font-size:14pt; float:left; margin:0 20px 0 30px;">开发票</div>
+        <el-form-item label="是否选择发票"  prop="isInvoice" label-width="120px">
           <el-radio-group v-model="ruleForm.isInvoice" :disabled="change" @change="isInvoice">
             <el-radio label="1">是</el-radio>
             <el-radio label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <!-- 发票信息 -->
         <el-form-item label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible2">
         <el-button style="margin: 5px 0 10px 0;" type="primary"@click="handleEdit()">添加</el-button>
+          <!-- 发票 -->
           <el-table :data="ruleForm.invoiceList" border style="width: 100%;">
             <el-table-column label="发票类型" width="120" align="center">
               <template slot-scope="scope">
@@ -113,9 +114,12 @@
               </template>
             </el-table-column>
           </el-table>
+          <!-- 发票 END -->
         </el-form-item>
+        <!-- 表单校验 END -->
+        <!-- 表单基本信息 END -->
         <!-- 关联欠款 -->
-        <div style="margin:30px 0 20px 25px; font-size:14pt;">关联欠款</div>
+        <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
         <div class="associated">
           <div class="associatedIcon"><i class="el-icon-warning"></i></div>
           <div class="associatedItems">已关联<span style="margin:0 5px; font-weight: bold;">1</span>项</div>
@@ -174,7 +178,7 @@
         </div>
       </div>
     </el-dialog>
-    <!--协办弹窗-->
+    <!-- 协办弹窗 -->
     <el-dialog style="text-align: left" title="选择协办人:" :visible.sync="dialogFormVisible1" width="50%">
       <div style="text-align: center">
         <div style="width: 100%">
@@ -184,37 +188,36 @@
           </div>
           <div class="table_trip" style=" width: 100%;">
             <el-table :data="tableData3" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-              <el-table-column prop="id" label="ID" align="center" width="100%">
-              </el-table-column>
-              <el-table-column prop="name" label="姓名" width="120%" align="center">
-              </el-table-column>
-              <el-table-column prop="org" label="组织" align="center">
-              </el-table-column>
-              </el-table-column>
+              <el-table-column prop="id" label="ID" align="center" width="100%"></el-table-column>
+              <el-table-column prop="name" label="姓名" width="120%" align="center"></el-table-column>
+              <el-table-column prop="org" label="组织" align="center"></el-table-column>
             </el-table>
           </div>
-          <!--分页-->
+          <!-- 分页 -->
           <div class="block" style="margin-top: 30px;text-align:center;">
             <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="5" layout="total, sizes, prev, pager, next, jumper" :total=total>
             </el-pagination>
           </div>
-          <!--分页-->
+          <!-- 分页 END -->
         </div>
       </div>
+      <!-- 协办弹窗按钮 -->
       <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible1 = false">取 消</el-button>
-          <el-button type="primary" @click="routerHandle2()">确 定</el-button>
-        </span>
+        <el-button @click="dialogFormVisible1 = false">取 消</el-button>
+        <el-button type="primary" @click="routerHandle2()">确 定</el-button>
+      </span>
+      <!-- 协办弹窗按钮 END -->
     </el-dialog>
-    <!--驳回意见弹窗end-->
-    <!--驳回意见弹窗-->
+    <!-- 协办弹窗 END -->
+    <!-- 驳回意见弹窗 -->
     <el-dialog title="请填写审批意见" :visible.sync="dialogFormVisible2" width="30%">
       <textarea style="width: 90%; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
       <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="rejectHandle2()">确 定</el-button>
       </span>
     </el-dialog>
-    <!--驳回意见弹窗end-->
+    <!-- 驳回意见弹窗 END -->
+    <!-- 放大图片 -->
     <el-dialog style="text-align: left" title="放大图片:" :visible="dialogVisible" width="50%">
       <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
       <div>
@@ -222,7 +225,8 @@
         <span>{{imgBigName}}</span>
       </div>
     </el-dialog>
-    <!--收款账户选择弹窗-->
+    <!-- 放大图片 EDN -->
+    <!-- 收款账户选择弹窗 -->
     <el-dialog title="选择账户" :visible.sync="accountShow" width="70%" custom-class="city_list">
       <div style="overflow:hidden;">
         <el-table :data="accountTable" border style="width: 100%" :header-cell-style="getRowClass" @row-click="clickPlan">
@@ -244,8 +248,10 @@
         </div>
       </div>
     </el-dialog>
+    <!-- 收款账户选择弹窗 END -->
   </div>
 </template>
+
 <script type="text/javascript">
 export default {
   name: "sameTradeInfo",
@@ -272,11 +278,12 @@ export default {
       dialogFormVisible1: false,
       dialogFormVisible2: false,
       ruleForm: {
+        collectionTime: '', // 收款时间
         createTime: '',
-        collectionAccount: '',
-        sameTrade: '',
-        money: '',
-        abstract: '',
+        collectionAccount: '', // 收款账户
+        sameTrade: '', // 同业社
+        money: '',  // 收款金额
+        abstract: '', // 摘要
         isInvoice: '0',
         collectionNumber:'',
         invoiceList: [{
@@ -294,6 +301,7 @@ export default {
 
       },
       rules: {
+        collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         createTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         //collectionAccount: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
         sameTrade: [{ required: true, message: '同业社不能为空', trigger: 'change' }],
@@ -376,7 +384,7 @@ export default {
       }],
 
       fileList: [],
-      accountShow:false,//选择账户弹窗
+      accountShow:false, // 选择账户弹窗
       accountTable:[{
         accountType:'收款',
         accountID:'洋洋',
@@ -384,11 +392,11 @@ export default {
         openingBank:'123.00',
         accountHolder:'阳阳',
       }],
-      tableData2:[],//同业社名称模糊查询
-      supplier_id:0,//同业社名称ID
-      accountShow:false,//选择账户弹窗
+      tableData2:[], // 同业社名称模糊查询
+      supplier_id:0, // 同业社名称ID
+      accountShow:false, // 选择账户弹窗
       tour_name_pre:'',
-      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',//上传凭证
+      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture', // 上传凭证
       planID:'',
 
     }
@@ -411,8 +419,7 @@ export default {
         return ''
       }
     },
-    
-    //获取id
+    // 获取id
     clickBanle(row, event, column) {
       this.user_id = row['id'];
       this.user_name = row['name'];
@@ -476,7 +483,7 @@ export default {
         }
       });
     },*/
-    //撤销申请
+    // 撤销申请
     chanelSubmit() {
       this.$confirm('是否撤销该条收款, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -494,15 +501,16 @@ export default {
           message: '已取消撤销'
         });
       });
-    }, //转办
+    },
+    // 转办
     Transfer() {
       this.dialogFormVisible1 = true
     },
-    //驳回
+    // 驳回
     boSubmit() {
       this.dialogFormVisible2 = true
     },
-    //通过确认按钮
+    // 通过确认按钮
     adoptForm() {
       this.$confirm('是否通过该条收款, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -521,7 +529,7 @@ export default {
         });
       });
     },
-    //转办确认按钮
+    // 转办确认按钮
     routerHandle2() {
       this.$confirm('是否转办该条收款, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -541,7 +549,7 @@ export default {
       });
       this.dialogFormVisible1 = false
     },
-    //驳回确定按钮
+    // 驳回确定按钮
     rejectHandle2() {
       this.$confirm('是否驳回该条收款, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -561,7 +569,8 @@ export default {
       });
       this.dialogFormVisible2 = false
     },
-    downloadIamge(imgsrc, name) { //下载图片地址和图片名
+    // 下载图片地址和图片名
+    downloadIamge(imgsrc, name) {
       var image = new Image();
       // 解决跨域 Canvas 污染问题
       image.setAttribute("crossOrigin", "anonymous");
@@ -587,7 +596,7 @@ export default {
     handleRemove(file, fileList) {
       this.fileList = fileList
     },
-    //文件上传
+    // 文件上传
     handleChange(file, fileList) {
       this.fileList = fileList.slice(-3);
     },
@@ -603,48 +612,45 @@ export default {
       this.pageNum = 1;
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/org/api/userpage", {
-            "pageIndex": this.pageNum,
-            "pageSize": this.pageSize,
-            "total": 0,
-            "object": {
-              "isDeleted": 0,
-              "value": '',
-              "type": 3,
-              "user": '',
-              "input": this.apply_user_input,
-            },
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
+        this.GLOBAL.serverSrc + "/org/api/userpage", {
+          "pageIndex": this.pageNum,
+          "pageSize": this.pageSize,
+          "total": 0,
+          "object": {
+            "isDeleted": 0,
+            "value": '',
+            "type": 3,
+            "user": '',
+            "input": this.apply_user_input,
+          },
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData3 = obj.data.objects;
-          that.tableData3.forEach(function(v, k, arr) {
-            arr[k]['org'] = '吉林大运通-财务部-会计'
-            if (arr[k]['sex'] == 1) {
-              arr[k]['sex'] = '男'
-            } else {
-              arr[k]['sex'] = '女'
-            }
-            if (arr[k]['userState'] == 0) {
-              arr[k]['status'] = '未选择'
-            } else if (arr[k]['userState'] == 1) {
-              arr[k]['status'] = '等待审核'
-            } else if (arr[k]['userState'] == 2) {
-              arr[k]['status'] = '正常'
-            } else {
-              arr[k]['status'] = '停用'
-            }
-          })
+        }
+      )
+      .then(function(obj) {
+        that.total = obj.data.total;
+        that.tableData3 = obj.data.objects;
+        that.tableData3.forEach(function(v, k, arr) {
+          arr[k]['org'] = '吉林大运通-财务部-会计'
+          if (arr[k]['sex'] == 1) {
+            arr[k]['sex'] = '男'
+          } else {
+            arr[k]['sex'] = '女'
+          }
+          if (arr[k]['userState'] == 0) {
+            arr[k]['status'] = '未选择'
+          } else if (arr[k]['userState'] == 1) {
+            arr[k]['status'] = '等待审核'
+          } else if (arr[k]['userState'] == 2) {
+            arr[k]['status'] = '正常'
+          } else {
+            arr[k]['status'] = '停用'
+          }
         })
-        .catch(function(obj) {
-          console.log(obj)
-        })
-
+      })
+      .catch(function(obj) {})
     },
     handleSizeChange2(val) {
       this.pagesize = val
@@ -689,9 +695,7 @@ export default {
             }
           })
         })
-        .catch(function(obj) {
-          console.log(obj)
-        })
+        .catch(function(obj) {})
     },
     handleCurrentChange2(val) {
       this.pageNum = val;
@@ -736,9 +740,7 @@ export default {
             }
           })
         })
-        .catch(function(obj) {
-          console.log(obj)
-        })
+        .catch(function(obj) {})
     },
     //同业社名称模糊查询
     querySearch3(queryString3, cb) {
@@ -757,9 +759,7 @@ export default {
         }
         var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
         cb(results)
-      }).catch(err => {
-        console.log(err);
-      })
+      }).catch(err => {})
     },
     createFilter(queryString1){
       return (restaurant) => {
@@ -767,7 +767,6 @@ export default {
       }
     },
     departure(item){
-      console.log(item)
       this.productPos = item.id;
       this.originPlace = item.value;
     },
@@ -784,11 +783,8 @@ export default {
           },)
           .then(function (obj) {
             that.accountTable = obj.data.objects
-            console.log(obj.data.objects)
           })
-          .catch(function (obj) {
-            console.log(obj)
-          })
+          .catch(function (obj) {})
     },
     accountClose(){
       this.accountShow = false;
@@ -814,7 +810,7 @@ export default {
       this.fileList = []
     },
     handleSuccess(res, file, fileList) {
-      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
+      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
         this.time = fileList.length;
         if (this.fileList.length == 0) {
@@ -853,7 +849,7 @@ export default {
           }
           let objectRequest = {}
           objectRequest = {
-            collectionTime: formatDate(this.ruleForm.collectionTime, 'yyyy-MM-dd'), //收款时间
+            collectionTime: formatDate(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间
             groupCode: this.ruleForm.groupCode, //团号
             planID: this.ruleForm.planID, //团期计划的ID
             orderID: this.ruleForm.orderID, //订单ID
@@ -903,45 +899,47 @@ export default {
 
   }
 }
-
 </script>
+
 <style lang="scss" scoped>
-.sh_style {
-  background: #eaeaea;
-  position: absolute;
-  width: 50px;
-  height: 23px;
-  text-align: center;
-  line-height: 26px;
-  top: 20px;
-  left: 140px;
-}
+  .content{
+    position: relative;
+    .el-divider__text{
+      font-size: 17px !important
+    }
+    .title-margin{
+      margin-bottom: 30px;
+    }
+    .title-margin-t{
+      margin-top: 45px;
+    }
+    .invoice{
+      margin-left: 30px;
+    }
+  }
+  .sh_style {
+    background: #eaeaea;
+    position: absolute;
+    width: 50px;
+    height: 23px;
+    text-align: center;
+    line-height: 26px;
+    top: 20px;
+    left: 140px;
+  }
 
-.bright {
-  width: 220px;
-}
-.collection{background:#eaeaea; color:#a4a4a4;}
-.bright2 {
-  width: 70%;
-}
+  .collection{background:#eaeaea; color:#a4a4a4;}
 
-.button_select {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  text-align: left;
-  /*margin-left: 50px;*/
-}
+  .button_select {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
 
-.el-input {
-  width: auto
-}
-
-.search_input {
-  float: left;
-  width: 200px
-}
-.accountButton{float:right; margin:20px 0 0 0; overflow: hidden;}
-/*关联欠款*/
+  .el-input {
+    width: auto
+  }
+  .accountButton{float:right; margin:20px 0 0 0; overflow: hidden;}
   .associated{ line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc;width: 1030px; margin: 0 0 0 25px; border-radius: 5px;overflow: hidden; }
   .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}
   .associatedItems{float:left; margin: 0 0 0 10px;}

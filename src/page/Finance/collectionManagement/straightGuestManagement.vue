@@ -1,102 +1,99 @@
 <template>
-  <div class="all" style="position:relative">
-    <el-tabs v-model="activeName">
-      <div class="borders" style="margin-bottom:100px;">
-        <div>
-          <!-- <div class="search">
-            <span class="search_style">团期计划：</span>
-            <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
-            <span class="search_style">申请人：</span>
-            <el-input v-model="accepter" placeholder="请输入内容" class="search_input"></el-input>
-            <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
-            <div class="date-line"></div>
-            <el-date-picker v-model="endTime" type="date" placeholder="终止日期" class="start-time"></el-date-picker>
-          </div>
-          <div class="reform">
-            <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
-            <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
-          </div> -->
-          <div class="plan">
-            <div style="width:1100px;">
-              <div class="fl">
-                <span class="emptyPlan">订单</span>
-                <el-input v-model="plan" class="empty" clearable placeholder="请输入团期计划"></el-input>
-              </div>
-              <div class="fl">
-                <span class="emptyPlan">申请人</span>
-                <el-input v-model="accepter" class="empty" clearable placeholder="请输入申请人"></el-input>
-              </div>
-              <div class="fl">
-                <span class="emptyPlan">收款时间</span>
-                <el-date-picker v-model="startTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
-                <span class="time">——</span>
-                <el-date-picker v-model="endTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
-              </div>
-            </div>
-            <div style="width:1100px;clear:both;">
-              <div style=" float:left">
-               <span class="emptyPlan">类型</span>
-               <el-select v-model="settlement_01" placeholder="请选择"  class="empty">
-                 <el-option  key="0" label="审批中" value="0"></el-option>
-                 <el-option  key="1" label="通过" value="1"></el-option>
-                 <el-option  key="2" label="驳回" value="2"></el-option>
-               </el-select>
-              </div>
-
-              <div style="float:right; margin: 0 10px 0 0;">
-                <el-button @click="searchHand()" type="primary">搜索</el-button>
-                <el-button @click="resetHand()" type="primary">重置</el-button>
-              </div>
-            </div>
-          </div>
-          <div class="reform">
-            <el-button type="primary" @click="dialogchange" plain>添加</el-button>
-            <!-- <el-button type="primary" @click=dialogFind plain :disabled="reable">查看详情</el-button> -->
-          </div>
-        </div>
-        <div class="table_style">
-          <el-table :data="tableData" border style="width:72%;" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-            <el-table-column prop="id" label="收款单号" align="center">
-            </el-table-column>
-            <el-table-column prop="checkTypeStatus" label="状态" align="center">
-              <template slot-scope="scope">
-                <div v-if="scope.row.checkTypeStatus=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeStatus}}</div>
-                <div v-if="scope.row.checkTypeStatus=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeStatus}}</div>
-                <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174" >{{scope.row.checkTypeStatus}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="collectionTime" label="收款时间" align="center">
-            </el-table-column>
-            <el-table-column prop="groupCode" label="团期计划" align="center">
-            </el-table-column>
-            <el-table-column prop="orderNumber" label="订单号" align="center">
-            </el-table-column>
-            <!-- <el-table-column prop="collectionNumber" label="收款账户" align="center">
-            </el-table-column> -->
-            <el-table-column prop="price" label="收款金额" align="center">
-            </el-table-column>
-            <!-- <el-table-column prop="dept" label="申请组织" align="center">
-            </el-table-column> -->
-            <el-table-column prop="createUser" label="申请人" align="center">
-            </el-table-column>
-            <!-- <el-table-column prop="createTime" label="申请时间" align="center">
-            </el-table-column> -->
-            <!-- <el-table-column prop="" label="审批意见" align="center">
-            </el-table-column> -->
-            <el-table-column label="操作" width="100" align="center">
-              <template slot-scope="scope">
-                <el-button @click="dialogFind(scope.row.id)" type="text" size="small" class="table_details">详情</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total background>
-            </el-pagination>
-          </div>
-        </div>
-        <StraightGuestInfo :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid" :change="change" :org="org" @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList" @close="closeAdd" :dept="dept"></StraightGuestInfo>
+  <div class="distributor-content">
+    <!-- 搜索表单 -->
+    <el-form :model="ruleForm" ref="ruleForm" label-width="80px" id="form-content">
+      <el-row type="flex" class="row-bg">
+        <el-col :span="8">
+          <el-form-item label="申请人:" prop="createUser">
+            <el-input v-model="ruleForm.createUser" placeholder="请输入申请人"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="收款时间:" prop="dateStart">
+            <el-col :span="11">
+              <el-form-item prop="dateStart">
+                <el-date-picker type="date" placeholder="收款时间" v-model="ruleForm.dateStart" style="width: 100%;"></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col class="line" :span="2">-</el-col>
+            <el-col :span="11">
+              <el-form-item prop="dateEnd">
+                <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.dateEnd" style="width: 100%;"></el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="状态:" class="status-length" prop="checkType">
+            <el-select v-model="ruleForm.checkType" placeholder="请选择状态">
+              <el-option label="驳回" value="2"></el-option>
+              <el-option label="通过" value="1"></el-option>
+              <el-option label="审批中" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row type="flex">
+        <el-col :span="8">
+          <el-form-item label="订单:" prop="distributor">
+            <el-input v-model="ruleForm.distributor" placeholder="请输入订单"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item>
+            <el-button @click="searchHandInside()" type="primary">搜索</el-button>
+            <el-button @click="emptyButtonInside('ruleForm')" type="primary">重置</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+    <!-- 搜索表单 END -->
+    <!-- 添加按钮 -->
+    <div class="reform">
+      <el-button type="primary" @click="dialogchange" class="add-style">添加</el-button>
+    </div>
+    <!-- 添加按钮 END -->
+    <div class="table_style">
+      <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" id="table-content">
+        <el-table-column prop="id" label="收款单号" align="center">
+        </el-table-column>
+        <el-table-column prop="checkTypeStatus" label="状态" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.checkTypeStatus=='审批中'" style="color: #7F7F7F">{{scope.row.checkTypeStatus}}</div>
+            <div v-if="scope.row.checkTypeStatus=='驳回'" style="color: #FF4A3D">{{scope.row.checkTypeStatus}}</div>
+            <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174">{{scope.row.checkTypeStatus}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="collectionTime" label="收款时间" align="center">
+        </el-table-column>
+        <el-table-column prop="groupCode" label="团期计划" align="center">
+        </el-table-column>
+        <el-table-column prop="orderNumber" label="订单号" align="center">
+        </el-table-column>
+        <!-- <el-table-column prop="collectionNumber" label="收款账户" align="center">
+        </el-table-column> -->
+        <el-table-column prop="price" label="收款金额" align="center">
+        </el-table-column>
+        <!-- <el-table-column prop="dept" label="申请组织" align="center">
+        </el-table-column> -->
+        <el-table-column prop="createUser" label="申请人" align="center">
+        </el-table-column>
+        <!-- <el-table-column prop="createTime" label="申请时间" align="center">
+        </el-table-column> -->
+        <!-- <el-table-column prop="" label="审批意见" align="center">
+        </el-table-column> -->
+        <el-table-column label="操作" width="100" align="center">
+          <template slot-scope="scope">
+            <el-button @click="dialogFind(scope.row.id)" type="text" size="small" class="table_details">详情</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total background>
+        </el-pagination>
       </div>
-    </el-tabs>
+    </div>
+    <StraightGuestInfo :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid" :change="change" :org="org" @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList" @close="closeAdd" :dept="dept"></StraightGuestInfo>
     <!--查看详情-->
     <el-dialog title="详情" :visible.sync="detailstShow" width="80%" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'>
       <div style="position:absolute; top:8px; right:10px;">
@@ -219,6 +216,14 @@ export default {
   },
   data() {
     return {
+      ruleForm: {
+        createUser: '',
+        distributor: '',
+        moneyExplain: '',
+        checkType: '',
+        dateStart: '',
+        dateEnd: '',
+      },
       activeName: 'first',
       activeName2: 'three',
       plan: '',
@@ -604,77 +609,32 @@ export default {
     this.getDept()
   }
 }
-
 </script>
+
 <style lang="scss" scoped>
-.all {
-  margin-bottom: 100px;
-
-  .borders {
-    border: 0px solid #E6E6E6;
-
-    .sh_style {
-      background: #eaeaea;
-      position: absolute;
-      width: 50px;
-      height: 23px;
-      text-align: center;
-      line-height: 26px;
-      top: 20px;
-      left: 116px;
-    }
-
-    .search {
-
-      .search_input {
-        float: left;
-        width: 200px
+  .distributor-content {
+    width: 99%;
+    margin: 25px auto;
+    height: auto;
+    border: 1px solid #e6e6e6;
+    #form-content{
+      background: #f7f7f7;
+      padding: 20px 10px;
+      margin: 20px 10px;
+      .el-select{
+        width: 100% !important;
       }
-
-      .search_style {
-        float: left;
-        margin-top: 10px;
-        margin-left: 20px;
-        font-size: 14px
+      .line{
+        text-align: center;
       }
-
-      .date-line {
-        width: 10px;
-        border-bottom: 1px solid #e6e6e6;
-        display: inline-block;
-        margin: 0 3px 3px 0
-      }
-
-      .start-time {
-        margin-left: 25px
-      }
-
     }
-
-    .reform {
-      float: left;
-      width: 1550px;
-      margin-left: 20px;
-      margin-top: 20px;
+    .add-style{
+      margin-left: 1%;
+      margin-top: 30px;
     }
-
-    .table_style {
-      width: 1500px;
-      margin-left: 20px;
-      margin-top: 20px;
-      float: left;
+    #table-content{
+      width: 98%;
+      margin: 10px auto 20px;
     }
-
-
-
   }
-}
-/*搜索框*/
-  .empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; }
-  .fl{float:left; margin: 20px 0 20px 0;}
-  .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
-  .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
-  .time{margin: 0 0 0 10px;}
-  .basicspan_01{width:80px;float:left; text-align:left;}
-  .basicspan_02{margin:0 0 0 10px;float:left}
 </style>
