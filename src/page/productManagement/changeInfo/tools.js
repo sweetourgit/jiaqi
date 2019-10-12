@@ -7,6 +7,9 @@ Vue.prototype.$deepCopy= function(obj){
   return JSON.parse(JSON.stringify(obj))
 }
 
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
+}
 /**
  * @description: 比较两个对象是否宽松相等(不同指针，相同属性)
  */
@@ -20,13 +23,13 @@ Vue.prototype.$checkLooseEqual= function (a, b) {
       var isArrayB = Array.isArray(b);
       if (isArrayA && isArrayB) {
         return a.length === b.length && a.every(function (e, i) {
-          return looseEqual(e, b[i])
+          return Vue.prototype.$checkLooseEqual(e, b[i])
         })
       } else if (!isArrayA && !isArrayB) {
         var keysA = Object.keys(a);
         var keysB = Object.keys(b);
         return keysA.length === keysB.length && keysA.every(function (key) {
-          return looseEqual(a[key], b[key])
+          return Vue.prototype.$checkLooseEqual(a[key], b[key])
         })
       } else {
         /* istanbul ignore next */

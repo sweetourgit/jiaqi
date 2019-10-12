@@ -28,7 +28,6 @@
 
 <template>
   <div class="traffic-tab-pane">
-    <div>{{ proto }}</div>
     <header>
       <span class="label">描述方式：</span>
       <el-radio-group v-model="vm.description" @change="changeDescription">
@@ -40,14 +39,15 @@
       <div v-if="vm.description=== '1'" class="detail-ground">
         <component 
           v-for="(item, i) in proto" 
-          :key="item.id"
-          :proto="item"
+          ref="children"
+          :key="item.goOrBack+ '.'+ i"
           :rank="i"
+          :proto="item"
           :is="'child'+ item.trafficMode"
         >
           <div class="title" v-if="i=== 0">
             <span style="margin-right: 20px;">去程</span>
-            <el-button type="success" size="small" @click="$emit('add-traffic', proto)">添加中转</el-button>
+            <el-button type="primary" size="small" @click="$emit('add-traffic', proto)">添加中转</el-button>
           </div>
           <div class="title" v-if="i=== proto.length- 1">
             <span>返程</span>
@@ -55,7 +55,7 @@
         </component>
       </div>
       <div v-else class="easy-ground">
-        <el-col :span="12">
+        <el-col :span="18">
           <vue-editor v-model="vm.content"></vue-editor>
         </el-col>
       </div>
@@ -72,7 +72,7 @@ import busForm from './comps/bus-form'
 import shipForm from './comps/ship-form'
 import trainForm from './comps/train-form'
 // 常量
-import { DEFALUT_TRAFFIC_MODE } from '../../dictionary'
+import { DEFALUT_TRAFFIC_MODE, TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK } from '../../dictionary'
 
 export default {
   components: {
@@ -80,15 +80,13 @@ export default {
     VueEditor
   },
 
-  inject: ['PROVIDE_DAY'],
-
   props: {
     proto: {
       type: Array,
       default(){
         return [
-          { trafficMode: DEFALUT_TRAFFIC_MODE },
-          { trafficMode: DEFALUT_TRAFFIC_MODE }
+          TEAM_TRAFFIC_DTO_GO,
+          TEAM_TRAFFIC_DTO_BACK
         ]
       }
     },
@@ -110,6 +108,7 @@ export default {
 
   methods: {
     changeDescription(label){
+      console.log(this.$refs.children)
       //if(label=== '2') return this.vm.description= "1";
     },
 

@@ -1,8 +1,10 @@
 <style lang="scss" scoped>
 .changeinfo[ground="changeinfo"]{
+  padding-bottom: 80px;
   header{
     display: flex;
     justify-content: space-between;
+    width: 80%;
     padding-bottom: 10px;
     margin-bottom: 10px;
   }
@@ -11,10 +13,9 @@
 
 <template>
   <div class="changeinfo" ground="changeinfo">
-
     <header>
       <div>
-        <el-button type="success" size="small" @click="addTab">新增套餐</el-button>
+        <el-button type="primary" size="small" @click="addTab">新增套餐</el-button>
       </div>
       <div>
         <el-button type="primary" size="small" @click="addOrSave">保存</el-button>
@@ -54,7 +55,7 @@ export default {
   },
 
   provide: {
-    PROVIDE_DAY: 3,
+    PROVIDE_DAY: 0,
   },
 
   data() {

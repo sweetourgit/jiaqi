@@ -14,6 +14,9 @@
 ## 交通信息
 ### 详细说明组件
 1. trafficMode区分四种形态
+2. 是否在创建时默认就给了两条traffic
+3. 交通信息动态渲染组件需要绑定特殊key，否则会导致组件混淆，特殊key为`item.goOrBack+ '.'+ i`
+4. 通过computed.goOrBackSign判断是去程1，回程2，还是中转0
 
 ## 酒店信息
 

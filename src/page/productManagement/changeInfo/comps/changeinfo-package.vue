@@ -76,7 +76,7 @@
 // 组件
 import trafficTabPane from './comps/traffic-tab-pane'
 // 常量
-import { DEFALUT_TRAFFIC_MODE } from '../dictionary'
+import { DEFALUT_TRAFFIC_MODE, TEAM_TRAFFIC_DTO_GO } from '../dictionary'
 
 export default {
   components: {
@@ -153,13 +153,12 @@ export default {
     
     /**
      * @description: 添加一个中转traffic
-     * @param {Array} defaultTraffics: 默认对象或生成的对象 
+     * @param {Array} defaultTraffics: 默认对象或生成的对象
+     * @TODO 添加后滚动条定位到新添加的元素上 
      */
     emitAddTraffic(defaultTraffics){
       let traffics= defaultTraffics;
-      traffics.splice(traffics.length- 1, 0, {
-        trafficMode: DEFALUT_TRAFFIC_MODE
-      })
+      traffics.splice(traffics.length- 1, 0, TEAM_TRAFFIC_DTO_GO)
     },
 
     /**
