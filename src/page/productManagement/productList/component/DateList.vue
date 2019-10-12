@@ -10,7 +10,7 @@
     <div id="calendar" >
       <div style="margin-bottom: 10px;">
         <span>结算参考</span>
-        <span style="margin-left: 5px;color: red;">{{average}}</span>
+        <span style="margin-left: 5px;color: red;">{{average | numFilter}}</span>
       </div>
       <!-- 年份 月份 -->
       <div class="month">
@@ -270,6 +270,14 @@
         typeSelect: [], // 报名类型选择
         signUptypeSelect:[] // 共享库存数据
       };
+    },
+    // 结算参考保留小数点后两位
+    filters: {
+      numFilter (value) {
+        // 截取当前数据到小数点后两位
+        let realVal = parseFloat(value).toFixed(2)
+        return realVal
+      }
     },
     watch: {
       msgFather() {

@@ -231,6 +231,7 @@ export default {
               "groupCode": groupCode,
               "startDate": startDate,
               "endDate": endDate,
+              //"op":sessionStorage.getItem('userName')
               "op":op,
              }
           }).then(res => {

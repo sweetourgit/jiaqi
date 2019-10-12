@@ -569,7 +569,7 @@ export default {
                   "orderChannel": this.ruleForm.orderRadio,
                   "orgID": sessionStorage.getItem('orgID'),
                   "userID": sessionStorage.getItem('id'),
-                  "mark": JSON.stringify([{"OrderCode":"","Mark":this.ruleForm.remark,"CreateTime":formatDate(new Date())}]),
+                  "remark": JSON.stringify([{"OrderCode":"","Mark":this.ruleForm.remark,"CreateTime":formatDate(new Date())}]),
                   "guest":guest,
                   "number": number
                 }

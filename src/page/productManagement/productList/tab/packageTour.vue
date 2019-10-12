@@ -198,7 +198,7 @@
           <div style="margin-top: 30px">
             <div style="float: left; margin-top: 10px">毛利率：</div>
             <div style="float: left;margin-left: 10px">
-              <el-input v-model="lilv" placeholder="利率" style="width: 70px" @blur="changinpt"></el-input>%
+              <el-input v-model="lilv" placeholder="利率" style="width: 70px" @change="changinpt"></el-input>%
             </div>
             <div style="margin-top: 10px;float: left;margin-left: 30px;">人均结算价({{count | numFilter}})</div>
           </div>
@@ -834,34 +834,26 @@ export default {
       this.chengben = selection;
     },
     changinpt() {
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/saverate", {
-          object: {
-            id: this.team,
-            rate: this.lilv
-          }
+      this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/saverate", {
+        object: {
+          id: this.team,
+          rate: this.lilv
+        }
+      }).then(res =>{
+        this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
+          id: this.team
         })
         .then(res => {
+          this.count = res.data.average;
           this.ccc = [];
           var that = this;
-          // console.log(this.pid)
-          this.$http
-            .post(
-              this.GLOBAL.serverSrc + "/team/api/teampackagelist",
-              {
+          this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagelist",{
                 object: {
                   teamID: this.pid
                 }
-              },
-              {
-                headers: {
-                  Authorization: "Bearer " + localStorage.getItem("token")
-                }
-              }
-            )
+              })
             .then(function(obj) {
               for (let i = 0; i < obj.data.objects.length; i++) {
-                /* console.log(obj.data.objects[0].id)*/
                 that.ccc.push({
                   id: obj.data.objects[i].id,
                   ddd: obj.data.objects[i].name,
@@ -883,6 +875,7 @@ export default {
               console.log(obj);
             });
         });
+      })
     },
     changys(res) {
       console.log(res);
@@ -913,26 +906,29 @@ export default {
     submitForm1(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/team/cost/api/insert", {
-              object: {
-                id: 0,
-                createTime: 0,
-                code: "string",
-                createUser: "string",
-                packageID: this.team,
-                //"supplierID": this.ruleForm1.supplierID,
-                supplierID: this.supplier_id,
-                //"name": this.ruleForm1.region1,
-                name: this.ruleForm1.region,
-                //"supplierType": this.ruleForm1.supplierTypeEX,
-                suppliertype: this.ruleForm1.costType,
-                money: this.ruleForm1.name
-              }
-            })
-            .then(res => {
-              this.$http
-                .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
+          this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/insert", {
+            object: {
+              id: 0,
+              createTime: 0,
+              code: "string",
+              createUser: "string",
+              packageID: this.team,
+              //"supplierID": this.ruleForm1.supplierID,
+              supplierID: this.supplier_id,
+              //"name": this.ruleForm1.region1,
+              name: this.ruleForm1.region,
+              //"supplierType": this.ruleForm1.supplierTypeEX,
+              suppliertype: this.ruleForm1.costType,
+              money: this.ruleForm1.name
+            }
+          }).then(res => {
+              this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
+                id: this.team
+              })
+              .then(res => {
+                this.count = res.data.average;
+              });
+              this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
                   object: {
                     packageID: this.team
                   }
@@ -985,8 +981,7 @@ export default {
     submitForm2(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/team/cost/api/save", {
+          this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/save", {
               object: {
                 // "supplierID": this.ruleForm1.supplierID,
                 // "name": this.ruleForm1.region1,
@@ -1004,8 +999,13 @@ export default {
               }
             })
             .then(res => {
-              this.$http
-                .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
+              this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
+                id: this.team
+              })
+              .then(res => {
+                this.count = res.data.average;
+              });
+              this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
                   object: {
                     packageID: this.team
                   }
@@ -1049,35 +1049,36 @@ export default {
       this.$refs[formName].resetFields();
     },
     editorcb() {
-      var arry = [];
-      var arry1 = [];
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage", {
-          object: {
-            isDeleted: 0
-          },
-          pageSize: 1000,
-          pageIndex: 1,
-          isGetAll: true,
-          id: 0
-        })
-        .then(function(obj) {
-          for (var j = 0; j < obj.data.objects.length; j++) {
-            arry1.push(obj.data.objects[j]);
-            arry1[j].label = arry1[j].name;
-            arry1[j].value =
-              "|" +
-              arry1[j].id +
-              "+" +
-              arry1[j].name +
-              "-" +
-              arry1[j].types[0].supplierTypeEX +
-              "*" +
-              arry1[j].types[0].supplierType;
-          }
-          that.options2 = arry1;
-        });
+      this.chongzhi();
+      // var arry = [];
+      // var arry1 = [];
+      // var that = this;
+      // this.$http
+      //   .post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage", {
+      //     object: {
+      //       isDeleted: 0
+      //     },
+      //     pageSize: 1000,
+      //     pageIndex: 1,
+      //     isGetAll: true,
+      //     id: 0
+      //   })
+      //   .then(function(obj) {
+      //     for (var j = 0; j < obj.data.objects.length; j++) {
+      //       arry1.push(obj.data.objects[j]);
+      //       arry1[j].label = arry1[j].name;
+      //       arry1[j].value =
+      //         "|" +
+      //         arry1[j].id +
+      //         "+" +
+      //         arry1[j].name +
+      //         "-" +
+      //         arry1[j].types[0].supplierTypeEX +
+      //         "*" +
+      //         arry1[j].types[0].supplierType;
+      //     }
+      //     that.options2 = arry1;
+      //   });
 
       // this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
       // }).then(res => {
@@ -1155,65 +1156,6 @@ export default {
         }
       });
     },
-    // delcb() {
-    //   for (var i = 0; i < this.chengben.length; i++) {
-    //     this.$http
-    //       .post(this.GLOBAL.serverSrc + "/team/cost/api/delete", {
-    //         id: this.chengben[i].id
-    //       })
-    //       .then(res => {});
-    //   }
-    //   this.$confirm("确认删除?", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     type: "warning"
-    //   }).then(res => {
-    //     console.log(res);
-    //     if (res.data.isSuccess == true) {
-    //       this.$message.success("删除成功");
-    //       this.$http
-    //         .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
-    //           object: {
-    //             packageID: this.team
-    //           }
-    //         })
-    //         .then(res => {
-    //           this.tableData12 = res.data.objects;
-    //           this.tableData12.forEach(function(v, k, arr) {
-    //             if (arr[k]["suppliertype"] == 0) {
-    //               arr[k]["suppliertype"] = "船票";
-    //             } else if (arr[k]["suppliertype"] == 1) {
-    //               arr[k]["suppliertype"] = "地接社";
-    //             } else if (arr[k]["suppliertype"] == 2) {
-    //               arr[k]["suppliertype"] = "机票";
-    //             } else if (arr[k]["suppliertype"] == 3) {
-    //               arr[k]["suppliertype"] = "拼票";
-    //             } else if (arr[k]["suppliertype"] == 4) {
-    //               arr[k]["suppliertype"] = "酒店";
-    //             } else if (arr[k]["suppliertype"] == 5) {
-    //               arr[k]["suppliertype"] = "签证";
-    //             } else if (arr[k]["suppliertype"] == 6) {
-    //               arr[k]["suppliertype"] = "合作拼团社";
-    //             } else if (arr[k]["suppliertype"] == 7) {
-    //               arr[k]["suppliertype"] = "游轮";
-    //             } else if (arr[k]["suppliertype"] == 8) {
-    //               arr[k]["suppliertype"] = "火车票";
-    //             } else if (arr[k]["suppliertype"] == 9) {
-    //               arr[k]["suppliertype"] = "汽车票";
-    //             }
-    //           });
-    //         });
-    //       //this.basicbutton = false
-    //       //this.chengben = []
-    //     }
-    //   });
-    //   // this.$message({
-    //   //   message: '删除成功',
-    //   //   type: 'success'
-    //   // });
-    //   // this.basicbutton = false
-    //   // this.chengben = []
-    // },
     addcost() {
       // console.log(this.chengben);
       // var arry = [];
@@ -1262,7 +1204,7 @@ export default {
       //   this.options3 = arry
 
       // })
-
+      this.chongzhi();
       this.cost = true;
       // console.log("this.cost",this.cost)
     },
@@ -1275,22 +1217,15 @@ export default {
         }
     },
     basicPrice(id, rate) {
-      console.log("成本")
-      console.log(id)
-      console.log(rate)
       this.basicbutton = true;
       this.team = id;
       this.lilv = rate;
-      // console.log(rate);
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
+      this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
           object: {
             packageID: this.team
           }
         })
-        .then(res => {
-          // console.log(res);
-          // 成本为空null时报错  所以判断
+        .then(res => {// 成本为空null时报错  所以判断
           if (res.data.objects !== null) {
             this.tableData12 = res.data.objects;
             this.tableData12.forEach(function(v, k, arr) {
@@ -1318,8 +1253,7 @@ export default {
             });
           }
         });
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
+      this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
           id: this.team
         })
         .then(res => {
