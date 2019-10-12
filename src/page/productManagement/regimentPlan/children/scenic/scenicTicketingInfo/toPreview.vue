@@ -121,7 +121,7 @@
               序号
             </el-col>
             <el-col :span="5" class="title">
-              收入
+              收入来源
             </el-col>
             <el-col :span="5" class="title">
               经手人
@@ -190,12 +190,12 @@
             <el-col :span="3" class="title">
               序号
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="4" class="title">
               成本项目
             </el-col>
-            <el-col :span="4" class="title">
-              供应商
-            </el-col>
+            <!--<el-col :span="4" class="title">-->
+              <!--供应商-->
+            <!--</el-col>-->
             <el-col :span="2" class="title">
               人数
             </el-col>
@@ -208,34 +208,35 @@
             <el-col :span="3" class="title">
               挂账
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="6" class="title">
               备注
             </el-col>
           </el-row>
           <template v-for="(cost,index) in costDetails">
-            <el-row :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+            <el-row :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
+              <el-col :span="3" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{index + 1}}
               </el-col>
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              <el-col :span="4" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.cost_type}}
               </el-col>
-              <el-col :span="4" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
-                {{cost.supplier}}
-              </el-col>
-              <el-col :span="2" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              <!--现需求，不显示供应商，高度以备注字段判断-->
+              <!--<el-col :span="4" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">-->
+                <!--{{cost.supplier}}-->
+              <!--</el-col>-->
+              <el-col :span="2" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.people_num}}
               </el-col>
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              <el-col :span="3" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.cost}}
               </el-col>
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              <el-col :span="3" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.paid_cost}}
               </el-col>
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              <el-col :span="3" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.settle_cost}}
               </el-col>
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/10)*33+'px'}">
+              <el-col :span="6" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.remarks}}
               </el-col>
             </el-row>
@@ -244,9 +245,9 @@
             <el-col :span="3" class="title">
               合计
             </el-col>
-            <el-col :span="6" class="title">
+            <el-col :span="4" class="title">
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="2" class="title">
               {{costTotalNumber}}
             </el-col>
             <el-col :span="3" class="title">
@@ -258,7 +259,7 @@
             <el-col :span="3" class="title">
               <!--挂账-->
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="6" class="title">
               <!--备注-->
             </el-col>
           </el-row>
@@ -369,7 +370,6 @@ export default {
       }
     },
     dialogFormVisible: function () {
-//      alert(this.info);
       if(this.info && this.dialogFormVisible){
         this.loadData();
       }else{

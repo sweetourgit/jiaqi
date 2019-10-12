@@ -313,11 +313,13 @@
         tabIndex: 2,
         notes:[{
           title:'',
-          content:''
+          content:'',
+          menutype:2
         }],
         instructions:[{
           title:'',
-          content:''
+          content:'',
+          menutype:3
         }],
         explain:[{
           title:'费用包含',
@@ -938,11 +940,15 @@
             }
             that.notes = []
             for (let t = 0; t < obj.data.object.others.length; t++ ){
-              that.notes.push(obj.data.object.others[t])
+              if(obj.data.object.others[t].menuType === 2){
+                that.notes.push(obj.data.object.others[t])
+              }
             }
             that.instructions = []
             for (let t = 0; t < obj.data.object.others.length; t++ ){
-              that.instructions.push(obj.data.object.others[t])
+              if(obj.data.object.others[t].menuType === 3){
+                that.instructions.push(obj.data.object.others[t])
+              }
             }
           })
           .catch(function (obj) {
@@ -963,13 +969,15 @@
       getUEContent0(){
         this.notes.push({
           title: '',
-          content:''
+          content:'',
+          menutype:2
         });
       },
       getUEContent1(){
         this.instructions.push({
           title: '',
-          content:''
+          content:'',
+          menutype:3
         });
       },
       //删除预订须知
@@ -1109,7 +1117,7 @@
             }
           ],*/
           instructions:this.explain.concat(this.domains), //费用说明
-          others:this.notes,
+          others:this.notes.concat(this.instructions),
           /*instructions1:this.notes, //预订须知,预留接口无字段？
           instructions2:this.instructions, //使用说明,预留接口无字段？*/
           loadPackage: true
@@ -1284,6 +1292,7 @@
         this.$router.push({path: "/productList/packageTour"});
       },
       handleClick(tab, event) {
+        this.ruleForm.nackPlane[0].day = this.ruleForm.travelDays
         if(event.target.getAttribute('id')=='tab-second'){
           //this.goDate.length = this.ruleForm.travelDays;
           this.goDate=[];

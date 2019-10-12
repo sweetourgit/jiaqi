@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative">
+  <div class="vivo">
     <el-tabs v-model="activeName" @tab-click="handleClick">
      <el-tab-pane label="同业" name="first">
         <SameTradeManagement></SameTradeManagement>
@@ -10,8 +10,11 @@
       <el-tab-pane label="外部订单收款" name="fourth">
         <externalOrder></externalOrder>
       </el-tab-pane>
-      <el-tab-pane label="分销商收款" name="five">
+      <el-tab-pane label="内部收款" name="five">
         <distributorsInfo></distributorsInfo>
+      </el-tab-pane>
+      <el-tab-pane label="待认款收款" name="six">
+        <recognitionWait></recognitionWait>
       </el-tab-pane>
       <el-tab-pane label="需要您审批" name="third">
         <PendingApprovalManagement></PendingApprovalManagement>
@@ -25,6 +28,7 @@ import SameTradeManagement from '@/page/Finance/collectionManagement/sameTradeMa
 import PendingApprovalManagement from '@/page/Finance/collectionManagement/pendingApprovalManagement'
 import externalOrder from '@/page/Finance/collectionManagement/externalOrder/externalOrderManagement.vue'
 import distributorsInfo from '@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo.vue'
+import recognitionWait from '@/page/Finance/collectionManagement/recognitionWait/recognitionWait.vue'
 export default {
   name: "collectionManagement",
   components: {
@@ -32,20 +36,19 @@ export default {
     StraightGuestManagement,
     PendingApprovalManagement,
     externalOrder,
-    distributorsInfo
+    distributorsInfo,
+    recognitionWait
   },
   data() {
     return {
-      activeName: 'first',
-      clickTab:'',//点击切换获取当前值
+      activeName: 'first', // 当前tab选项卡默认状态
+      clickTab:'' // 点击切换获取当前值
     }
   },
-  computed: {
-    // 计算属性的 getter
-  },
+  computed: {},
   methods: {
-    //获取当前项的标题
-    handleClick(tab, event) {//点击切换获取当前值
+    // 获取当前项的标题
+    handleClick(tab, event) {// 点击切换获取当前值
       if(tab.label == "直客"){
         this.getStraightGuestManagement();
       }else{
@@ -53,57 +56,55 @@ export default {
       }
       this.clickTab = tab.label;
     },
-    //直客查询列表
+    // 直客查询列表
     getStraightGuestManagement() {
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/collection/api/page", {
-            "pageIndex": 1,
-            "pageSize": that.pageSize,
-            "object": {
-              "id": 0,
-              "checkType": this.settlement_01?this.settlement_01:-1,
-              "collectionTime": "2019-05-16",
-              "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd') : "2000-05-16",
-              "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd') : "2099-05-16",
-              "groupCode": this.plan ? this.plan : '',
-              "planID": 0,
-              "orderID": 0,
-              "orderNumber": "",
-              "collectionNumber": "",
-              "price": 0,
-              "dept": 0,
-              "createUser": this.accepter ? this.accepter : '',
-              "createTime": "2019-05-16 01:02:40",
-              "code": "",
-              "serialNumber": "",
-              "abstract": "",
-              "isDeleted": 0,
-              "collectionType":1,//直客1.同业2
-              "localCompID":0,//直客0,同业变成同业社id
-            }
-
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
+        this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+          "pageIndex": 1,
+          "pageSize": that.pageSize,
+          "object": {
+            "id": 0,
+            "checkType": this.settlement_01?this.settlement_01:-1,
+            "collectionTime": "2019-05-16",
+            "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd') : "2000-05-16",
+            "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd') : "2099-05-16",
+            "groupCode": this.plan ? this.plan : '',
+            "planID": 0,
+            "orderID": 0,
+            "orderNumber": "",
+            "collectionNumber": "",
+            "price": 0,
+            "dept": 0,
+            "createUser": this.accepter ? this.accepter : '',
+            "createTime": "2019-05-16 01:02:40",
+            "code": "",
+            "serialNumber": "",
+            "abstract": "",
+            "isDeleted": 0,
+            "collectionType":1,//直客1.同业2
+            "localCompID":0,//直客0,同业变成同业社id
           }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
-            arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
-            arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
-            arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
-          })
+
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+      .then(function(obj) {
+        that.total = obj.data.total;
+        that.tableData = obj.data.objects;
+        that.tableData.forEach(function(v, k, arr) {
+          arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
+          arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
+          arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
+          arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
         })
-        .catch(function(obj) {
-          console.log(obj)
-        })
+      })
+      .catch(function(obj) {})
     },
-    //同业查询列表
+    // 同业查询列表
     pageList() {
       var that = this
       this.$http.post(
@@ -115,23 +116,26 @@ export default {
           "object": {
             "collectionType":2,//直客1.同业2
             "localCompID":this.sid,//直客0,同业变成同业社id
-          },
-        },)
+          }
+        })
         .then(function (obj) {
           that.total = obj.data.total
           that.tableData = obj.data.objects
-          console.log(obj.data.objects)
         })
-        .catch(function (obj) {
-          console.log(obj)
-        })
-    },
+        .catch(function (obj) {})
+    }
   },
   created() {
     this.pageList();
+    if(this.$route.params.tabStatus){
+      this.activeName = this.$route.params.tabStatus
+    }
   }
 }
 
 </script>
 <style lang="scss" scoped>
+  .vivo{
+    position: relative;
+  }
 </style>

@@ -32,7 +32,7 @@ import sharedInventory from '@/page/productManagement/sharedInventory/sharedInve
 import changePro from '@/page/productManagement/changePro/changePro'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
 import blacklist from '@/page/contentInfo/blacklist/blacklist'
-import workFlowList from '@/page/contentInfo/workFlowList/workFlowList'//工作流接口查询管理t
+import workFlowList from '@/page/contentInfo/workFlowList/workFlowList'//工作流接口查询管理test
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 import merchantInfo1 from '@/page/contentInfo/merchantInfo/merchantInfo1'
 import controlList from '@/page/contentInfo/priManagement/controlList'
@@ -56,6 +56,7 @@ import bankAccount from '@/page/Finance/bankAccount/bankAccount'
 import pledgingManagement from '@/page/Finance/pledgingManagement/pledgingManagement'
 import pledgingManagementApproval from '@/page/Finance/pledgingManagement/pledgingManagementApproval'
 import pledgingManagementSee from '@/page/Finance/pledgingManagement/pledgingManagementSee'
+import pledgingHistory from '@/page/Finance/pledgingManagement/pledgingHistory'
 import enrollTypeA from '@/page/contentInfo/enrollType/enrollTypeA'
 import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
 import checkSheet from '@/page/Finance/checkSheet/checkSheet'
@@ -64,6 +65,8 @@ import scenicOrTicketList from '@/page/productManagement/productList/tab/scenicO
 import listInfoEdit from '@/page/productManagement/listInfoScenic/listInfoEdit'
 import balanceOrder from '@/page/Finance/balanceOrder/balanceOrder'
 import distributorsInfo from'@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo'
+import gatheringDel from'@/page/Finance/collectionManagement/distributorsInfo/gatheringDel'
+import businessRecognitionManagement from'@/page/Finance/businessRecognitionManagement/businessRecognitionManagement.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -511,7 +514,17 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    },{
+    },
+    {
+      path: '/gatheringDel',
+      component: gatheringDel,
+      name: ' 收款管理/详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path:'distributorsInfo',
       component:distributorsInfo,
       name:'分销商收款',
@@ -580,9 +593,25 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/pledgingHistory',
+      component: pledgingHistory,
+      name: '财务管理   / 财务认款管理   / 审批历史',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '/checkSheet',
       component: checkSheet,
       name: '报账单',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/businessRecognitionManagement',
+      component: businessRecognitionManagement,
+      name: '业务待认款管理',
       meta: {
         keepAlive: true,
         auth: true

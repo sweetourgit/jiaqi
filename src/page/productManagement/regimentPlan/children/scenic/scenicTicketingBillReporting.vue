@@ -310,10 +310,19 @@ export default {
       this.updateSource = row.rec_id;
       this.dialogFormVisible2 = true;
     },
-    close2() {
+//    手动添加收入来源（为解决loadData因性能加载不出来的问题）
+    close2(str) {
+      const that = this;
       this.dialogFormVisible2 = false;
-      this.loadData();
-      this.updateSource = '';
+      if(str){
+        this.tableData.forEach(function (item, index, arr) {
+          if(item.rec_id == that.updateSource){
+            item.handler = str;
+          }
+        });
+        this.loadData();
+        this.updateSource = '';
+      }
     },
 //    toUpddateIncome(row) {
 //      this.dialogFormVisible3 = true;

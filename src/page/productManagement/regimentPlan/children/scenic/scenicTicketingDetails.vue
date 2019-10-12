@@ -20,7 +20,6 @@
         <el-col :span="8">
           <div class="button">
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
-            <!--<el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 4 || statusBtn == 6">修 改</el-button>-->
             <el-button class="el-button" type="primary" @click="pledging" v-if="statusBtn == 1 || statusBtn == 3">认 款</el-button>
             <el-button class="el-button" type="danger" @click="delInfo" v-if="statusBtn == 1 || (statusBtn == 3 && approved != 1)">删 除</el-button>
           </div>
@@ -209,20 +208,17 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <ToUpdate :dialogFormVisible="dialogFormVisible2" @close="close2" :info="info"></ToUpdate>
       <GetOrder :dialogFormVisible="dialogFormVisible" @close="close2" :info="info"></GetOrder>
     </div>
   </div>
 </template>
 <script type="text/javascript">
 import GetOrder from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrder'
-//import ToUpdate from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpdate'
 import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   name: "scenicTicketingDetails",
   components: {
     GetOrder,
-//    ToUpdate
   },
   data() {
     return {
@@ -288,17 +284,13 @@ export default {
       this.$router.push({
         path: "/scenicTicketingPledging",
         name: "产品管理  /团期计划  /认款",
-        params: this.$route.params
+        query: this.$route.query
       });
     },
     closeAdd() {
 //      this.$router.push({ path: "/regimentPlan/scenicTicketingList" });
       this.$router.go(-1);
     },
-//    toUpdate() {
-//      this.dialogFormVisible2 = true;
-//
-//    },
     delInfo() {
       const that = this;
       this.$confirm('是否删除此团期计划?', '提示', {
@@ -409,6 +401,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/viewgroup", {
         "id": this.param,
       }, ).then(function(response) {
+        console.log('详情',response);
         if (response.data.code == '200') {
           console.log(response);
           response.data.data.basic_info.created_at = formatDate(new Date(response.data.data.basic_info.created_at*1000));

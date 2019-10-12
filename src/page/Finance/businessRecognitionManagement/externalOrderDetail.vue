@@ -22,7 +22,7 @@
         <div class="inputLabel">
           <span style="vertical-align: top;">附件：</span>
           <!--<el-upload ref="upload1" class="upload-demo" action="" :file-list="fileList" :disabled="disabled">-->
-            <!--<el-button size="small" type="primary" :disabled="disabled">点击上传</el-button>-->
+          <!--<el-button size="small" type="primary" :disabled="disabled">点击上传</el-button>-->
           <!--</el-upload>-->
 
           <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">

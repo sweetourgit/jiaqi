@@ -1,84 +1,94 @@
 <template>
-  <div class="all" style="position:relative">
-    <el-tabs v-model="activeName">
-      <div class="borders" style="margin-bottom:100px;">
-        <div>
-          <!--搜索框-->
-          <div class="plan">
-            <div style="width:1100px;">
-              <div class="fl">
-                <span class="emptyPlan">团期计划</span>
-                <el-input v-model="plan" class="empty" clearable placeholder="请输入团期计划"></el-input>
-              </div>
-              <div class="fl">
-                <span class="emptyPlan">申请人</span>
-                <el-input v-model="accepter" class="empty" clearable placeholder="请输入申请人"></el-input>
-              </div>
-              <div class="fl">
-                <span class="emptyPlan">发起时间</span>
-                <el-date-picker v-model="startTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
-                <span class="time">——</span>
-                <el-date-picker v-model="endTime" type="date" class="planTime" placeholder="日期"></el-date-picker>
-              </div>
-            </div>
-            <div style="width:1100px;clear:both;">
-              <div style=" float:left">
-                   <span class="emptyPlan">类型</span>
-                   <el-select v-model="settlement_01" placeholder="请输入类型" class="empty">
-                     <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlement" :key="item.value" />
-                   </el-select>
-              </div>
-              <div style="float:right; margin: 0 10px 0 0;">
-                <el-button @click="searchHand()" type="primary">搜索</el-button>
-                <el-button @click="emptyButton()" type="primary">重置</el-button>
-              </div>
-            </div>
-          </div>
-          <div class="reform">
-            <el-button type="primary" @click="dialogchange" plain>添加</el-button>
-            <!-- <el-button type="primary" @click=dialogFind plain :disabled="reable">查看详情</el-button> -->
-          </div>
-        </div>
-        <div class="table_style">
-          <el-table :data="tableData" border style="width:100%;" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-            <el-table-column prop="id" label="收款单号" align="center">
-            </el-table-column>
-            <el-table-column prop="checkTypeStatus" label="状态" width="80" align="center">
-              <template slot-scope="scope">
-                <div v-if="scope.row.checkTypeStatus=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeStatus}}</div>
-                <div v-if="scope.row.checkTypeStatus=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeStatus}}</div>
-                <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174" >{{scope.row.checkTypeStatus}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="collectionTime" label="收款时间" align="center">
-            </el-table-column>
-            <el-table-column prop="groupCode" label="团期计划" align="center">
-            </el-table-column>
-            <el-table-column prop="orderNumber" label="订单号" align="center">
-            </el-table-column>
-            <el-table-column prop="localCompName" label="同业社名称" align="center">
-            </el-table-column>
-            <el-table-column prop="price" label="收款金额" align="center">
-            </el-table-column>
-            <el-table-column prop="createUser" label="申请人" align="center">
-            </el-table-column>
-            <el-table-column prop="" label="审批意见" align="center">
-            </el-table-column>
-            <el-table-column label="操作" width="100" align="center">
-              <template slot-scope="scope">
-                <el-button @click="dialogFind(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total background>
-            </el-pagination>
-          </div>
-        </div>
-        <SameTradeInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></SameTradeInfo>
+  <div class="distributor-content">
+    <!-- 搜索表单 -->
+    <el-form :model="ruleForm" ref="ruleForm" label-width="80px" id="form-content">
+      <el-row type="flex">
+        <el-col :span="8">
+          <el-form-item label="团期计划:" prop="plan">
+            <el-input v-model="ruleForm.plan" placeholder="请输入团期计划"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="申请人:" prop="proposer">
+            <el-input v-model="ruleForm.proposer" placeholder="请输入申请人"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="状态:" class="status-length" prop="checkType">
+            <el-select v-model="ruleForm.checkType" placeholder="请选择状态">
+              <el-option label="驳回" value="2"></el-option>
+              <el-option label="通过" value="1"></el-option>
+              <el-option label="审批中" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row type="flex">
+        <el-col :span="8">
+          <el-form-item label="订单:" prop="order">
+            <el-input v-model="ruleForm.order " placeholder="请输入订单"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="收款时间:">
+            <el-col :span="11">
+              <el-form-item prop="dateStart">
+                <el-date-picker type="date" placeholder="收款时间" v-model="ruleForm.dateStart" style="width: 100%;"></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col class="line" :span="2">-</el-col>
+            <el-col :span="11">
+              <el-form-item prop="dateEnd">
+                <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.dateEnd" style="width: 100%;"></el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item>
+            <el-button @click="searchHandInside()" type="primary">搜索</el-button>
+            <el-button @click="emptyButtonInside('ruleForm')" type="primary">重置</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+    <!-- 搜索表单 END -->
+    <!-- 添加 -->
+      <div class="reform">
+        <el-button type="primary" @click="addSameGathering" class="add-style">添加</el-button>
       </div>
-    </el-tabs>
-    <!--查看详情-->
+    <!-- 添加 END -->
+    <div>
+      <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" id="table-content">
+        <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
+        <el-table-column prop="checkTypeStatus" label="状态" width="80" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.checkTypeStatus=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeStatus}}</div>
+            <div v-if="scope.row.checkTypeStatus=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeStatus}}</div>
+            <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174" >{{scope.row.checkTypeStatus}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="collectionTime" label="收款时间" align="center"></el-table-column>
+        <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+        <el-table-column prop="orderNumber" label="订单号" align="center"></el-table-column>
+        <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
+        <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
+        <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+        <el-table-column prop="" label="审批意见" align="center"></el-table-column>
+        <el-table-column label="操作" width="100" align="center">
+          <template slot-scope="scope">
+            <el-button @click="dialogFind(scope.row)" type="text" size="small">详情</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 翻页 -->
+      <div class="block">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total background></el-pagination>
+      </div>
+      <!-- 翻页 END -->
+    </div>
+    <SameTradeInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></SameTradeInfo>
+    <!-- 查看详情 -->
     <el-dialog title="详情" :visible.sync="detailstShow" width="80%" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'>
       <div style="position:absolute; top:8px; right:10px;">
         <el-button @click="closeDetailstShow()">取消</el-button>
@@ -185,6 +195,7 @@
         </el-table>
       </div>
     </el-dialog>
+    <!-- 查看详情 END -->
   </div>
 </template>
 <script type="text/javascript">
@@ -192,45 +203,36 @@ import SameTradeInfo from '@/page/Finance/collectionManagement/collectionInfo/sa
 export default {
   name: "sameTradeManagement",
   components: {
-    SameTradeInfo,
+    SameTradeInfo
   },
   data() {
     return {
-      activeName: 'first',
-      activeName2: 'three',
-      plan: '',
-      accepter: '',
-      startTime: '',
-      endTime: '',
-      settlement_01:'',
-      settlement:[{
-        value: '审批中',
-        label: '审批中'
-       }, {
-        value: '通过',
-        label: '通过'
-       }, {
-        value: '驳回',
-        label: '驳回'
-       }],
+      ruleForm: {
+        proposer: '', // 申请人
+        plan: '', // 团期计划
+        order: '', // 订单
+        checkType: '', // 状态
+        dateStart: '', // 收款开始时间
+        dateEnd: '', // 收款结束时间
+      },
       reable: true,
       currentPage: 1,
       total: 0,
-      pageSize: 10,
-      pageNum: 1,
-      tableData: [],
+      pageSize: 10, // 当前页item数量
+      pageNum: 1, // 当前第几页
+      tableData: [], // 收款管理表格
       find: 0,
       change: false,
       dialogFormVisible: false,
-      detailstShow:false,//查看详情弹窗
-      fundamental:{},//查看详情基本信息数组
-      tableAudit:[{//审核结果表格
+      detailstShow:false, // 查看详情弹窗（是否显示）
+      fundamental:{}, // 查看详情基本信息数组
+      tableAudit:[{ // 审核结果表格
         auditTime: '2019-01-14 18:00:00',
         auditPeople:'洋洋',
         auditResult:'通过',
         auditIdea:''
       }],
-      tableInvoice:[{//发票表格
+      tableInvoice:[{ // 发票表格
         invoiceType:'纸质发票',
         invoiceUnit:'个人',
         invoiceNumber:'1234566',
@@ -242,7 +244,7 @@ export default {
         invoiceAddress:'和平区',
         invoicePhone:'15785452546',
       }],
-      tableAssociated:[{//发票关联表格
+      tableAssociated:[{ // 发票关联表格
         productID:'123',
         productPlan:'泰国游',
         planID:'1234556',
@@ -256,244 +258,98 @@ export default {
       sid:0,
     }
   },
+  mounted(){
+    this.getTableData();
+  },
   computed: {
-    // 计算属性的 getter
   },
   methods: {
-    //重置
-    emptyButton(){
-      this.plan = '';
-      this.accepter = '';
-      this.startTime = '';
-      this.endTime = '';
-      this.settlement_01 = '';
+    // 重置
+    emptyButtonInside () {
+      this.$refs['ruleForm'].resetFields()
+    },
+    // 表单搜索
+    searchHandInside () {
+      let _this = this
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+          "pageIndex": 1,
+          "pageSize": this.pageSize,
+          "object": {
+            "startTime": _this.ruleForm.dateStart ? moment(_this.ruleForm.dateStart, 'YYYY-MM-DD HH:mm:ss') : "2000-01-01",
+            "endTime":  _this.ruleForm.dateEnd ? moment(_this.ruleForm.dateEnd, 'YYYY-MM-DD HH:mm:ss') : "2019-09-26",
+            'CreateUser': _this.ruleForm.proposer ? _this.ruleForm.proposer : "",
+            'planID': _this.ruleForm.plan ? _this.ruleForm.plan : "",
+            'orderID': _this.ruleForm.order ? _this.ruleForm.order : "",
+            'checkType': _this.ruleForm.checkType ? _this.ruleForm.checkType : -1,
+            "collectionType": 2,
+          }
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+      .then(function(obj) {
+        _this.tableData = obj.data.objects;
+      })
+      .catch(function(obj) {
+      })
     },
     closeAdd() {
       this.dialogFormVisible = false;
     },
+    // pageSize 改变时会触发
     handleSizeChange(val) {
       this.pagesize = val
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-            "pageIndex": 1,
-            "pageSize": val,
-            "total": 0,
-            "object": {
-              "id": 0,
-              "title": '',
-              "createUser": '',
-              "minPrice": 0,
-              "maxPrice": 0,
-              "podID": 0,
-              "destinationID": 0
-            }
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
+        this.GLOBAL.serverSrc + "/team/api/teamsearch", {
+          "pageIndex": 1,
+          "pageSize": val,
+          "total": 0,
+          "object": {
+            "id": 0,
+            "title": '',
+            "createUser": '',
+            "minPrice": 0,
+            "maxPrice": 0,
+            "podID": 0,
+            "destinationID": 0
           }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['number'] = arr[k]['id']
-            arr[k]['status'] = "状态"
-            arr[k]['createTime'] = '2016-05-03-收款时间'
-            arr[k]['plan'] = '团期计划'
-            arr[k]['orderNum'] = '订单号'
-            arr[k]['sameTrade'] = '同业社名称'
-            arr[k]['collectionAccount'] = "收款账户"
-            arr[k]['money'] = "金额"
-            arr[k]['orinaze'] = '申请组织:国内部'
-            arr[k]['accpter'] = 'tester申请人'
-            arr[k]['opinion'] = '同意'
-            arr[k]['applyTime'] = '2016-05-03-申请时间'
-          })
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+      .then(function(obj) {
+        that.total = obj.data.total;
+        that.tableData = obj.data.objects;
+        that.tableData.forEach(function(v, k, arr) {
+          arr[k]['number'] = arr[k]['id']
+          arr[k]['status'] = "状态"
+          arr[k]['createTime'] = '2016-05-03-收款时间'
+          arr[k]['plan'] = '团期计划'
+          arr[k]['orderNum'] = '订单号'
+          arr[k]['sameTrade'] = '同业社名称'
+          arr[k]['collectionAccount'] = "收款账户"
+          arr[k]['money'] = "金额"
+          arr[k]['orinaze'] = '申请组织:国内部'
+          arr[k]['accpter'] = 'tester申请人'
+          arr[k]['opinion'] = '同意'
+          arr[k]['applyTime'] = '2016-05-03-申请时间'
         })
-        .catch(function(obj) {
-          console.log(obj)
-        })
+      })
+      .catch(function(obj) {})
     },
+    // currentPage 改变时会触发
     handleCurrentChange(val) {
       this.pageNum = val;
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-            "pageIndex": val,
-            "pageSize": this.pageSize,
-            "total": 0,
-            "object": {
-              "id": 0,
-              "title": '',
-              "createUser": '',
-              "minPrice": 0,
-              "maxPrice": 0,
-              "podID": 0,
-              "destinationID": 0
-            }
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['number'] = arr[k]['id']
-            arr[k]['status'] = "状态"
-            arr[k]['createTime'] = '2016-05-03-收款时间'
-            arr[k]['plan'] = '团期计划'
-            arr[k]['orderNum'] = '订单号'
-            arr[k]['sameTrade'] = '同业社名称'
-            arr[k]['collectionAccount'] = "收款账户"
-            arr[k]['money'] = "金额"
-            arr[k]['orinaze'] = '申请组织:国内部'
-            arr[k]['accpter'] = 'tester申请人'
-            arr[k]['opinion'] = '同意'
-            arr[k]['applyTime'] = '2016-05-03-申请时间'
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
-    },
-    //查询详情
-    dialogFind() {
-      //this.find = 1;
-      //this.change = true
-      this.detailstShow = true;
-    },
-    closeDetailstShow(){//取消关闭查看详情弹窗
-      this.detailstShow = false;
-    },
-    //获取一条信息查看详情
-    getLabel(){
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
-            "id":this.paymentID
-        }).then(res => {
-          if(res.data.isSuccess == true){
-             this.fundamental=res.data.object;
-             this.tour_id = res.data.object.planID;
-             this.getTourByPlanId(res.data.object.planID);
-             this.getPaymentdetails(res.data.object.planID);
-             /*res.data.object.files.forEach(function(v, k, arr) {
-                  that.fileList.push({
-                    "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
-                    "name": arr[k]['name'],
-                  });
-                })*/
-          }
-       })
-      },
-    //添加收款
-    dialogchange() {
-      this.find = 0;
-      this.change = false
-      this.dialogFormVisible = true;
-    },
-    //重置搜索条件
-    resetHand() {
-
-    },
-    //搜索按钮
-    searchHand() {
-
-    },
-    //获取id
-    clickBanle(row, event, column) {
-      this.pid = row['id'];
-      this.reable = false;
-
-    },
-    getRowClass({ row, column, rowIndex, columnIndex }) {
-      if (rowIndex == 0) {
-        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
-      } else {
-        return ''
-      }
-    },
-    //查询列表
-      /*pageList() {
-        var that = this
-        this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/collection/api/page",
-          {
-            "pageSize":this.pagesize,
-            "pageIndex":this.currentPage,
-            "total": 0,
-            "object": {
-              "collectionType":2,//直客1.同业2
-              "localCompID":this.sid,//直客0,同业变成同业社id
-              //"localCompName":this.localCompName
-            },
-          },)
-          .then(function (obj) {
-            that.total = obj.data.total
-            that.tableData = obj.data.objects
-            console.log(obj.data.objects)
-          })
-          .catch(function (obj) {
-            console.log(obj)
-          })
-      },*/
-      pageList(){
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/collection/api/page", {
-            "pageIndex": 1,
-            "pageSize": that.pageSize,
-            "object": {
-              "id": 0,
-              "checkType": this.settlement_01?this.settlement_01:-1,
-              "collectionTime": "2019-05-16",
-              "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd') : "2000-05-16",
-              "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd') : "2099-05-16",
-              "groupCode": this.plan ? this.plan : '',
-              "planID": 0,
-              "orderID": 0,
-              "orderNumber": "",
-              "collectionNumber": "",
-              "price": 0,
-              "dept": 0,
-              "createUser": this.accepter ? this.accepter : '',
-              "createTime": "2019-05-16 01:02:40",
-              "code": "",
-              "serialNumber": "",
-              "abstract": "",
-              "isDeleted": 0,
-              "collectionType":2,//直客1.同业2
-              "localCompID":this.sid,//直客0,同业变成同业社id
-              //"localCompName":""
-            }
-
-          }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
-            arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
-            arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
-            arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
-    
-      },
-
-  },
-  /*created() {
-    var that = this
-    this.$http.post(
         this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-          "pageIndex": 1,
+          "pageIndex": val,
           "pageSize": this.pageSize,
           "total": 0,
           "object": {
@@ -516,7 +372,7 @@ export default {
         that.tableData = obj.data.objects;
         that.tableData.forEach(function(v, k, arr) {
           arr[k]['number'] = arr[k]['id']
-          arr[k]['status'] = "审批中"
+          arr[k]['status'] = "状态"
           arr[k]['createTime'] = '2016-05-03-收款时间'
           arr[k]['plan'] = '团期计划'
           arr[k]['orderNum'] = '订单号'
@@ -529,89 +385,130 @@ export default {
           arr[k]['applyTime'] = '2016-05-03-申请时间'
         })
       })
-      .catch(function(obj) {
-        console.log(obj)
+      .catch(function(obj) {})
+    },
+    // 查询详情
+    dialogFind() {
+      //this.find = 1;
+      //this.change = true
+      this.detailstShow = true;
+    },
+    // 取消关闭查看详情弹窗
+    closeDetailstShow(){
+      this.detailstShow = false;
+    },
+    // 获取一条信息查看详情
+    getLabel(){
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
+          "id":this.paymentID
+      }).then(res => {
+        if(res.data.isSuccess == true){
+           this.fundamental=res.data.object;
+           this.tour_id = res.data.object.planID;
+           this.getTourByPlanId(res.data.object.planID);
+           this.getPaymentdetails(res.data.object.planID);
+        }
+     })
+    },
+    // 添加申请同业收款
+    addSameGathering () {
+      this.find = 0;
+      this.change = false
+      this.dialogFormVisible = true;
+    },
+    // 获取id
+    clickBanle(row, event, column) {
+      this.pid = row['id'];
+      this.reable = false;
+    },
+    // 为所有表头单元格设置一样的 Style
+    getRowClass ({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+      } else {
+        return ''
+      }
+    },
+    // 渲染列表数据
+    getTableData () {
+      let _this = this
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+          "pageIndex": 1,
+          "pageSize": 10,
+          "object": {
+            "id": 0,
+            "checkType": this.settlement_01 ? this.settlement_01 : -1,
+            "collectionTime": "2019-05-16",
+            "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd') : "2000-05-16",
+            "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd') : "2099-05-16",
+            "groupCode": this.plan ? this.plan : '',
+            "planID": 0,
+            "orderID": 0,
+            "orderNumber": "",
+            "collectionNumber": "",
+            "price": 0,
+            "dept": 0,
+            "createUser": this.accepter ? this.accepter : '',
+            "createTime": "2019-05-16 01:02:40",
+            "code": "",
+            "serialNumber": "",
+            "abstract": "",
+            "isDeleted": 0,
+            "collectionType":2, // 直客1.同业2
+            "localCompID":this.sid, // 直客0,同业变成同业社id
+            //"localCompName":""
+          }
+        }
+      )
+      .then(function(obj) {
+        _this.total = obj.data.total;
+        _this.tableData = obj.data.objects;
+        _this.tableData.forEach(function(v, k, arr) {
+          arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
+          arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
+          arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
+          arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
+        })
       })
-  },*/
-  mounted(){
-    this.pageList();
-  },
+      .catch(function(obj) {})
+    }
+  }
 }
-
 </script>
-<style>
-.all {margin-bottom: 100px;}
 
-  .borders {
-    border: 0px solid #E6E6E6;}
-
-    .sh_style {
-      background: #eaeaea;
-      position: absolute;
-      width: 50px;
-      height: 23px;
-      text-align: center;
-      line-height: 26px;
-      top: 20px;
-      left: 116px;
-    }
-
-    .search {
-
-      .search_input {
-        float: left;
-        width: 200px
+<style lang="scss" scoped>
+  .distributor-content {
+    width: 99%;
+    margin: 25px auto;
+    height: auto;
+    border: 1px solid #e6e6e6;
+    #form-content{
+      background: #f7f7f7;
+      padding: 20px 10px;
+      margin: 20px 10px;
+      .el-select{
+        width: 100% !important;
       }
-
-      .search_style {
-        float: left;
-        margin-top: 10px;
-        margin-left: 20px;
-        font-size: 14px
+      .line{
+        text-align: center;
       }
-
-      .date-line {
-        width: 10px;
-        border-bottom: 1px solid #e6e6e6;
-        display: inline-block;
-        margin: 0 3px 3px 0
-      }
-
-      .start-time {
-        margin-left: 25px
-      }
-
     }
-
-    .reform {
-      float: left;
-      width: 1550px;
-      margin-left: 20px;
-      margin-top: 20px;
+    .add-style{
+      margin-left: 1%;
+      margin-top: 30px;
     }
-
-    .table_style {
-      width: 1100px;
-      margin-left: 20px;
-      margin-top: 20px;
-      float: left;
+    #table-content{
+      width: 98%;
+      margin: 10px auto 20px;
     }
-
-    .bright {
-      width: 220px;
+    .block {
+      margin-top: 30px;
+      margin-left:-30%;
+      text-align:center;
     }
+  }
 
-    .bright2 {
-      width: 70%;
-    }
- /*搜索框*/
-  .empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; float:left; overflow: hidden;}
-  .fl{float:left; margin: 20px 0 20px 0;}
-  .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
-  .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
-  .time{margin: 0 0 0 10px;}
-  .el-date-editor.el-input, .el-date-editor.el-input__inner{width:135px;}
-  .el-input{position:relative; display: inline-block; font-size:14px;}
   /*基本信息*/
   .basictable{margin:0 0 0 25px;}
   .basictd{width:400px; padding:15px 0 0 0;}

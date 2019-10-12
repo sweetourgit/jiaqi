@@ -1,26 +1,32 @@
 <template>
-  <div class="all" style="position:relative; width:1205px;">
+  <div class="distributor-content">
      <el-tabs :tab-position="tabPosition" class="tabsPosition" v-model="activeName">
+       <!-- 直客模块 -->
        <el-tab-pane :label="examine + '('+total+')'" name="first">
-         <el-table :data="tableData" border style="width: 1100px; margin:0 0 0 10px;" :header-cell-style="getRowClass">
-          <el-table-column prop="date" label="收款单号" width="100" align="center"></el-table-column>
-          <el-table-column prop="date" label="状态" width="80" align="center"></el-table-column>
-          <el-table-column prop="date" label="收款时间" width="150" align="center"></el-table-column>
-          <el-table-column prop="date" label="团期计划" width="239" align="center"></el-table-column>
-          <el-table-column prop="date" label="订单号" width="150" align="center"></el-table-column>
-          <el-table-column prop="date" label="收款金额" width="100" align="center"></el-table-column>
-          <el-table-column prop="date" label="申请人" width="100" align="center"></el-table-column>
-          <el-table-column prop="date" label="审批意见" width="100" align="center"></el-table-column>
-          <el-table-column label="操作" width="80" align="center">
+         <!-- 直客表格 -->
+         <el-table :data="tableData" border :header-cell-style="getRowClass" id="table-content">
+          <el-table-column prop="date" label="收款单号" align="center"></el-table-column>
+          <el-table-column prop="date" label="状态" align="center"></el-table-column>
+          <el-table-column prop="date" label="收款时间" align="center"></el-table-column>
+          <el-table-column prop="date" label="团期计划" align="center"></el-table-column>
+          <el-table-column prop="date" label="订单号" align="center"></el-table-column>
+          <el-table-column prop="date" label="收款金额" align="center"></el-table-column>
+          <el-table-column prop="date" label="申请人" align="center"></el-table-column>
+          <el-table-column prop="date" label="审批意见" align="center"></el-table-column>
+          <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="dialogFind(scope.row)" size="small" class="table_details">详情</el-button>
             </template>
           </el-table-column>
          </el-table>
          <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+         <!-- 直客表格 END -->
        </el-tab-pane>
+       <!-- 直客模块 END -->
+       <!-- 同业模块 -->
        <el-tab-pane label="同业(2)" name="second">
-         <el-table :data="tableData" border style="width: 1100px; margin:0 0 0 10px;" :header-cell-style="getRowClass">
+         <!-- 同业表格 -->
+         <el-table :data="tableData" border :header-cell-style="getRowClass" id="table-content-together">
           <el-table-column prop="date" label="收款单号" align="center"></el-table-column>
           <el-table-column prop="date" label="状态" align="center"></el-table-column>
           <el-table-column prop="date" label="收款时间" align="center"></el-table-column>
@@ -37,7 +43,8 @@
           </el-table-column>
          </el-table>
          <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
-         <!--同业审批弹窗-->
+         <!-- 同业表格 END -->
+         <!-- 同业审批弹窗 -->
          <el-dialog width="80%" :title="title" :visible.sync="customerApproval" style="margin:-80px 0 0 0;" append-to-body custom-class="city_list" >
             <div style="position:absolute; top:8px; right:10px;">
               <el-button @click="closeApprove()">取消</el-button>
@@ -101,6 +108,7 @@
                  </td>
                </tr>
               </table>
+              <!-- 弹窗-审核结果 -->
               <div style="margin:30px 0 20px 25px; font-size:14pt;">审核结果</div>
               <el-table :data="tableAudit" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
                  <el-table-column prop="auditTime" label="审批时间" align="center"></el-table-column>
@@ -108,6 +116,8 @@
                  <el-table-column prop="auditResult" label="审批结果" align="center"></el-table-column>
                  <el-table-column prop="auditIdea" label="审批意见" align="center"></el-table-column>
               </el-table>
+              <!-- 弹窗-审核结果 END -->
+              <!-- 弹窗-发票表格 -->
               <div style="margin:30px 0 20px 25px; font-size:14pt;">发票</div>
               <el-table :data="tableInvoice" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
                  <el-table-column prop="invoiceType" label="发票类型" align="center"></el-table-column>
@@ -121,6 +131,8 @@
                  <el-table-column prop="invoiceAddress" label="地址" align="center"></el-table-column>
                  <el-table-column prop="invoicePhone" label="手机号" align="center"></el-table-column>
               </el-table>
+              <!-- 弹窗-发票表格 END -->
+              <!-- 弹窗-关联欠款表格 -->
               <div style="margin:30px 0 20px 25px; font-size:14pt;">关联欠款</div>
               <div class="associated" v-if="activeName == 'second'">
                 <div class="associatedIcon"><i class="el-icon-warning"></i></div>
@@ -138,11 +150,13 @@
                  <el-table-column prop="auditMoney" label="待审核金额" align="center"></el-table-column>
                  <el-table-column prop="collectionMoney" label="本次收款金额" align="center"></el-table-column>
               </el-table>
+              <!-- 弹窗-关联欠款表格 END -->
           </div>
          </el-dialog>
+         <!-- 同业审批弹窗 END -->
        </el-tab-pane>
+       <!-- 同业模块 END -->
      </el-tabs>
-     
   </div>
 </template>
 <script type="text/javascript">
@@ -200,7 +214,7 @@ export default {
     }
   },
   computed: {
-    
+
   },
   methods: {
     //表格表头颜色
@@ -243,18 +257,29 @@ export default {
     closeApprove(){
       this.customerApproval = false;//审批弹窗取消
     },
-    
-    
+
+
   },
   created() {
-    
+
   }
 }
-
 </script>
-<style>
-.tabsPosition{margin: 30px 0 0 0;}
-.pageList{float:right; margin: 30px 0 20px 0;}
+
+<style lang="scss" scoped>
+  .distributor-content {
+    width: 99%;
+    margin: 25px auto;
+    height: auto;
+    border: 1px solid #e6e6e6;
+    .tabsPosition{
+      margin: 20px 0;
+    }
+    #table-content, #table-content-together {
+      width: 98%;
+      margin: 0 auto 20px;
+    }
+  }
 /*关联欠款*/
   .associated{ line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc;width: 90%; margin: 0 0 0 25px; border-radius: 5px;overflow: hidden; }
   .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}

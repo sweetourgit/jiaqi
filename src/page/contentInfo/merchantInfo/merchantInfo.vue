@@ -55,8 +55,8 @@
         @row-click="handleClick"
       >
         <el-table-column prop="id" label="ID" width="50" align="center"></el-table-column>
-        <el-table-column prop="name" label="商户名字" width="180" align="center"></el-table-column>
-        <el-table-column prop="state" label="状态" align="center">
+        <el-table-column prop="name" label="商户名字" width="280" align="center"></el-table-column>
+        <el-table-column prop="state" label="状态" align="center" width="110">
           <template slot-scope="scope">
             <template v-if="scope.row.state == '停用'">
               <div style="color: red">{{scope.row.state}}</div>
@@ -66,32 +66,24 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column prop="localCompType" label="类别" align="center"></el-table-column>
-        <el-table-column prop="settlementType" label="结算方式" width="100" align="center"></el-table-column>
-        <el-table-column prop="linker" label="联系人" align="center"></el-table-column>
-        <el-table-column prop="quota" label="额度" width="100" align="center"></el-table-column>
-        <el-table-column prop="arrears" label="剩余额度" width="120" align="center"></el-table-column>
-        <el-table-column prop="balance" label="总欠款" width="120" align="center"></el-table-column>
-        <el-table-column prop="operation" label="操作" width="150" align="center">
-          <template slot-scope="scope">
+        <el-table-column prop="localCompType" label="类别" align="center" width="110"></el-table-column>
+        <el-table-column prop="settlementType" label="结算方式" width="120" align="center"></el-table-column>
+        <el-table-column prop="linker" label="联系人" align="center" width="120"></el-table-column>
+        <el-table-column prop="quota" label="额度" width="130" align="center"></el-table-column>
+        <el-table-column prop="arrears" label="剩余额度" width="130" align="center"></el-table-column>
+        <el-table-column prop="balance" label="总欠款" width="130" align="center"></el-table-column>
+        <el-table-column prop="operation" label="操作" width="160" align="center">
+          <template slot-scope="scope" style="cursor:pointer;">
             <div
-              style="color: #f5a142;float: left;margin-left: 30px"
+              style="color: #f5a142;float:left;margin-left:30px;cursor:pointer;"
               @click="edit_info(1,scope.row.id)"
             >详情 |</div>
-            <div style="color: #f5a142;float: left;" @click="edit_info(2,scope.row.id)">编辑</div>
+            <div
+              style="color: #f5a142;float: left;cursor:pointer;"
+              @click="edit_info(2,scope.row.id)"
+            >编辑</div>
           </template>
         </el-table-column>
-
-        <!-- <el-table-column prop="localCompType" label="商户类型" align="center"></el-table-column>
-        <el-table-column prop="name" label="商品名称" width="180" align="center"></el-table-column>
-        <el-table-column prop="linker" label="联系人" align="center"></el-table-column>
-        <el-table-column prop="phone" label="电话" width="120" align="center"></el-table-column>
-        <el-table-column prop="department" label="所属部门" align="center"></el-table-column>
-        <el-table-column prop="manager" label="区域经理" width="150" align="center"></el-table-column>
-        <el-table-column prop="settlementType" label="结算方式" width="100" align="center"></el-table-column>
-        <el-table-column prop="quota" label="额度" width="100" align="center"></el-table-column>
-        <el-table-column prop="arrears" label="剩余额度" width="120" align="center"></el-table-column>
-        <el-table-column prop="balance" label="总欠款" width="120" align="center"></el-table-column>-->
       </el-table>
     </div>
     <!--end-->
@@ -103,6 +95,7 @@
         :current-page.sync="currentPage4"
         :page-sizes="[5, 10, 50, 100]"
         :page-size="10"
+        background
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
@@ -115,7 +108,7 @@
       :show-close="false"
       @close="closeDialog"
       :close-on-click-modal="false"
-      width="1000px"
+      width="1100px"
     >
       <div class="dialog">
         <template v-if="btnindex !== 1">
@@ -144,23 +137,7 @@
                   <el-option key="2" label="正常" value="2"></el-option>
                   <el-option key="3" label="停用" value="3"></el-option>
                 </el-select>
-                <!-- <el-radio-group v-model="ruleForm.state">
-                  <el-radio label="停用"></el-radio>
-                  <el-radio label="正常"></el-radio>
-                </el-radio-group>-->
               </el-form-item>
-              <!-- <el-form-item label="活动时间" required>
-                <el-form-item prop="expTime">
-                  <el-date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    value-format="yyyyMMdd"
-                    format="yyyy-MM-dd"
-                    v-model="ruleForm.expTime"
-                    style="width: 250px;"
-                  ></el-date-picker>
-                </el-form-item>
-              </el-form-item>-->
               <el-form-item label="结算方式 :" prop="settlementType">
                 <el-select
                   v-model="ruleForm.settlementType"
@@ -175,14 +152,14 @@
                 <el-input v-model="ruleForm.quota" style="width: 250px;" placeholder="请输入额度"></el-input>
               </el-form-item>
 
-              <el-form-item label="商户角色 :" prop="LocalCompRole">
-                <el-select v-model="ruleForm.LocalCompRole" placeholder="请选择" style="width: 250px;">
+              <el-form-item label="商户角色 :" prop="localCompRole">
+                <el-select v-model="ruleForm.localCompRole" placeholder="请选择" style="width: 250px;">
                   <el-option label="旅游组团社" value="0" key="0"></el-option>
                   <el-option label="独立旅行社" value="1" key="1"></el-option>
                   <el-option label="个人/独立旅游顾问" value="2" key="2"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="门市类型 :" prop="storeType" class="placaBlockhahahah">
+              <el-form-item label="门市类型 :" prop="storeType">
                 <el-select v-model="ruleForm.storeType" placeholder="请选择" style="width: 250px;">
                   <el-option key="0" label="无" value="0"></el-option>
                   <el-option key="1" label="大运通自营" value="1"></el-option>
@@ -235,16 +212,7 @@
                   value-format="yyyyMMdd"
                   format="yyyy-MM-dd"
                   @focus="dataPickerFocus()"
-                  @blur="dataPickerBlur()"
                 ></el-date-picker>
-                <!-- <el-date-picker
-                  type="date"
-                  v-model="ruleForm.expTime"
-                  style="width: 250px;"
-                  placeholder="请选择"
-                  @focus="dataPickerFocus()"
-                  @blur="dataPickerBlur()"
-                ></el-date-picker> -->
               </el-form-item>
               <el-form-item label="公司logo :" prop="companyLogo" style="width:360px;">
                 <el-upload
@@ -260,23 +228,6 @@
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
               </el-form-item>
-              <!-- <el-form-item v-if="ruleForm.settlementType == '月结'" label="额度" prop="quota">
-                <el-input v-model="ruleForm.quota" style="width: 250px;"></el-input>
-              </el-form-item>
-              <el-form-item label="部们-管理" prop="department">
-                <el-select v-model="ruleForm.department" placeholder="请选择部门" style="width: 250px;">
-                  <el-option label="门店" value="1"></el-option>
-                  <el-option label="同业" value="2"></el-option>
-                  <el-option label="翻盘门店" value="3"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item prop="people">
-                <el-select v-model="ruleForm.people" placeholder="请选择人员" style="width: 250px;">
-                  <el-option label="门店" value="0"></el-option>
-                  <el-option label="同业" value="1"></el-option>
-                  <el-option label="翻盘门店" value="2"></el-option>
-                </el-select>
-              </el-form-item>-->
             </div>
             <div class="ty" style="float: left; margin-left: 60px">
               <el-form-item label="联系人姓名 :" prop="linker">
@@ -320,16 +271,6 @@
                   </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="销售人员 :" prop="salesman">
-                  <!-- <el-cascader
-                    ref="myCascader"
-                    class="wewe"
-                    v-model="ruleForm.salesman"
-                    :props="saleProps"
-                    style="width: 250px;margin-bottom: 10px;"
-                    placeholder="请输入，可选择多个"
-                  ></el-cascader>-->
-                  <!-- <el-tag :key="tag" v-for="tag in businessOtherNamesArr" class="tag"  closable :disable-transitions="false" @close="handleClose(tag)"
-                  >{{tag}}</el-tag>-->
                   <el-autocomplete
                     v-model="ruleForm.salesman"
                     :fetch-suggestions="querySearchAsync"
@@ -378,18 +319,23 @@
               </div>
             </div>
           </el-form>
+          <div class="rimInf">
+            <h3>周边信息</h3>
+            <label style="margin-right: 10px;">周边授信额度:</label>
+            <el-input v-model.number="AbouQuota" placeholder="请输入"></el-input>
+          </div>
           <!-- 账户信息 -->
           <div class="accountInfo">
             <h3>账户信息</h3>
             <el-button type="primary" @click="addAccount(1)">添加</el-button>
             <el-table :data="useList" border style="width: 100%;margin-top: 20px;">
-              <el-table-column prop="name" label="名称" width="80" align="center"></el-table-column>
+              <el-table-column prop="name" label="名称" width="150" align="center"></el-table-column>
               <el-table-column prop="state" label="状态" width="80" align="center"></el-table-column>
-              <el-table-column prop="phone" label="手机号" width="120" align="center"></el-table-column>
-              <el-table-column prop="email" label="邮箱" width="160" align="center"></el-table-column>
+              <el-table-column prop="phone" label="手机号" width="140" align="center"></el-table-column>
+              <el-table-column prop="email" label="邮箱" width="170" align="center"></el-table-column>
               <el-table-column prop="sex" label="性别" width="50" align="center"></el-table-column>
-              <el-table-column prop="wx" label="微信" width="120" align="center"></el-table-column>
-              <el-table-column prop="qq" label="qq" width="120" align="center"></el-table-column>
+              <el-table-column prop="wx" label="微信" width="140" align="center"></el-table-column>
+              <el-table-column prop="qq" label="qq" width="140" align="center"></el-table-column>
               <el-table-column prop="peerUserType" label="职务" width="80" align="center"></el-table-column>
               <el-table-column prop="operation" label="操作" width="110" align="center">
                 <template slot-scope="scope">
@@ -407,7 +353,7 @@
             </el-table>
           </div>
         </template>
-        <!-- 点击页面的添加按钮或者列表的编辑出现的dialog是table -->
+        <!-- 点击页面的详情出现的dialog是table -->
         <div class="dialogTable" v-if="btnindex == 1">
           <!-- 点击详情基本信息 -->
           <table style="width: 100%;">
@@ -442,7 +388,7 @@
             <tr class="dialogTableTr">
               <td class="dialogTableTd">
                 <label>商户角色：</label>
-                <span>{{ruleForm.LocalCompRole}}</span>
+                <span>{{ruleForm.localCompRole}}</span>
               </td>
               <td class="dialogTableTd">
                 <label>到期日期：</label>
@@ -511,15 +457,37 @@
             <h3>账户信息</h3>
             <el-button type="primary" v-if="btnindex !== 1">添加</el-button>
             <el-table :data="useList" border style="width: 100%;margin-top: 20px;">
-              <el-table-column prop="name" label="名称" width="120" align="center"></el-table-column>
+              <el-table-column prop="name" label="名称" width="158" align="center"></el-table-column>
               <el-table-column prop="state" label="状态" width="120" align="center"></el-table-column>
-              <el-table-column prop="phone" label="手机号" width="120" align="center"></el-table-column>
-              <el-table-column prop="email" label="邮箱" width="120" align="center"></el-table-column>
+              <el-table-column prop="phone" label="手机号" width="130" align="center"></el-table-column>
+              <el-table-column prop="email" label="邮箱" width="170" align="center"></el-table-column>
               <el-table-column prop="sex" label="性别" width="80" align="center"></el-table-column>
-              <el-table-column prop="wx" label="微信" width="120" align="center"></el-table-column>
-              <el-table-column prop="qq" label="qq" width="120" align="center"></el-table-column>
+              <el-table-column prop="wx" label="微信" width="140" align="center"></el-table-column>
+              <el-table-column prop="qq" label="qq" width="140" align="center"></el-table-column>
               <el-table-column prop="peerUserType" label="职务" width="120" align="center"></el-table-column>
             </el-table>
+          </div>
+          <!-- 周边信息 -->
+          <div class="rimInfDetails">
+            <h3>周边信息</h3>
+            <div>
+              <table style="width: 100%;">
+                <tr class="dialogTableTr">
+                  <td class="dialogTableTd">
+                    <label>周边授信额度：</label>
+                    <span>{{AbouQuota}}</span>
+                  </td>
+                  <td class="dialogTableTd">
+                    <label>周边剩余授信额度：</label>
+                    <span>{{AbouBalance}}</span>
+                  </td>
+                  <td class="dialogTableTd">
+                    <label>周边预存款：</label>
+                    <span>{{AbouDeposit}}</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
           <!-- 点击详情欠款信息 -->
           <div class="relevanceDept">
@@ -598,13 +566,6 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="职务" prop="peerUserType" style="margin-bottom: 68px;">
-          <!-- <el-checkbox-group
-            v-model="accountForm.peerUserType"
-            @change="bindCheckBox(accountForm.peerUserType)"
-          >
-            <el-checkbox label="管理员" name="peerUserType"></el-checkbox>
-            <el-checkbox label="销售" name="peerUserType"></el-checkbox>
-          </el-checkbox-group>-->
           <el-radio-group v-model="accountForm.peerUserType">
             <el-radio :label="1">管理员</el-radio>
             <el-radio :label="2">销售</el-radio>
@@ -625,8 +586,8 @@
 </template>
 
 <script>
-import state from "../../../store/state"
-import moment from "moment"
+import state from "../../../store/state";
+import moment from "moment";
 
 export default {
   name: "merchantInfo",
@@ -641,8 +602,15 @@ export default {
     };
     let that = this;
     return {
+      otherNamesObj: {}, //添加商户其他名称enter接收
+      // isBusinessTrue: false, //添加商户其他名称是判断issuccess false则此名字已存在
+      // orgsAddArr: [], //添加商户信息是存储区域可见的数组
+      AbouArrears: null, //周边欠款
+      AbouBalance: null, //周边剩余授信额度
+      AbouDeposit: null, //周边预存款
+      AbouQuota: null, //周边授信额度
       // editAdmin: [], //点击编辑页的admin 用来接收修改之前的
-      businewwInfPageId: "", //商户信息详情页的ID
+      businewwInfPageId: "", //商户信息详情页的ID 同时也是商户其他名称添加接口的localCompID
       vague: [], //模糊搜索的数组
       cascaderArr: [],
       isAddAccountBtn: 0, //判断账户信息弹窗是从添加按钮进入还是编辑进入
@@ -661,7 +629,7 @@ export default {
       tid: 0,
       pagesize: 10,
       total: 1,
-      currentPage4: 4,
+      currentPage4: 1,
       accountForm: {
         name: "",
         phone: "",
@@ -670,7 +638,7 @@ export default {
         wx: "",
         qq: "",
         state: "",
-        password: "",
+        passWord: "",
         peerUserType: [1]
       }, //添加账户信息的对象
       accountFormRules: {
@@ -699,7 +667,7 @@ export default {
           }
         ],
         state: [{ required: true, message: "请选择状态", trigger: "blur" }],
-        password: [
+        passWord: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 6, max: 30, message: "请输入6-30位密码", trigger: "blur" }
         ],
@@ -725,7 +693,7 @@ export default {
         publicName: "",
         bankName: "",
         bankcardNo: "",
-        LocalCompRole: "", //商户角色
+        localCompRole: "", //商户角色
         salesman: "", //销售人员
         administrative: "", //管理人员
         otherNames: "" //商户其他名字
@@ -744,7 +712,7 @@ export default {
         settlementType: [
           { required: true, message: "请选择结算方式", trigger: "change" }
         ],
-        LocalCompRole: [
+        localCompRole: [
           { required: true, message: "请选择商户角色", trigger: "change" }
         ],
         storeType: [
@@ -831,16 +799,16 @@ export default {
   },
   methods: {
     moment,
-    dataPickerBlur() {
-      console.log(this.ruleForm.expTime);
-      if (this.btnindex == 2) {
-        this.ruleForm.expTime = new Date(this.ruleForm.expTime);
-        // console.log(this.ruleForm.expTime);
-      }
-    },
-
     dataPickerFocus() {
-      console.log(this.ruleForm.expTime);
+      if (this.btnindex == 2) {
+        if (this.ruleForm.expTime.toString().length !== 8) {
+          this.ruleForm.expTime = "";
+        } else {
+          this.ruleForm.expTime = moment(this.ruleForm.expTime).format(
+            "YYYYMMDD"
+          );
+        }
+      }
     },
     // 管理人员的模糊查询
     querySearchAsync(queryString, cb) {
@@ -870,26 +838,80 @@ export default {
         return restaurant.value;
       };
     },
+    // 商户其他名称添加请求
+    adminOtherAxios() {
+      this.$http
+        .post(
+          this.GLOBAL.serverSrc +
+            "/universal/localcomp/api/localcompaliasinsert",
+          {
+            object: {
+              name: this.ruleForm.otherNames,
+              localCompID: this.businewwInfPageId
+            }
+          }
+        )
+        .then(obj => {
+          if (obj.data.isSuccess == true) {
+            this.businessOtherNamesArr.push(this.otherNamesObj);
+          } else {
+            this.$message.error("该商户其他名称已存在")
+          }
+          // console.log(this.isBusinessTrue);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     // 商户其他名字enter触发的事件
     handleEnterOtherNames() {
-      let otherNamesObj = {};
-      otherNamesObj["name"] = this.ruleForm.otherNames;
-      if (otherNamesObj.name !== undefined && otherNamesObj.name !== "") {
+      this.otherNamesObj = {};
+      this.otherNamesObj["name"] = this.ruleForm.otherNames;
+      if (this.otherNamesObj.name !== undefined && this.otherNamesObj.name !== "") {
         if (this.businessOtherNamesArr.length == 0) {
-          this.businessOtherNamesArr.push(otherNamesObj);
+          this.adminOtherAxios();
+          // console.log(this.isBusinessTrue);
+          // if (this.isBusinessTrue == true) {
+          //   this.businessOtherNamesArr.push(otherNamesObj);
+          // } else {
+          //   this.$message.error("该商户其他名称已存在");
+          // }
         } else {
           if (
             JSON.stringify(this.businessOtherNamesArr).indexOf(
-              JSON.stringify(otherNamesObj)
+              JSON.stringify(this.otherNamesObj)
             ) == -1
           ) {
-            this.businessOtherNamesArr.push(otherNamesObj);
+            this.adminOtherAxios();
+            // console.log(this.isBusinessTrue);
+            // if (this.isBusinessTrue == true) {
+            //   this.businessOtherNamesArr.push(otherNamesObj);
+            // } else {
+            //   this.$message.error("该商户其他名称已存在");
+            // }
           } else {
-            this.$message.error("该商户名称已存在");
+            this.$message.error("该商户其他名称已存在");
           }
         }
       }
       this.ruleForm.otherNames = "";
+    },
+    // 商户其他人员tag删除
+    businessHandleClose(tag) {
+      this.$http
+        .post(
+          this.GLOBAL.serverSrc +
+            "/universal/localcomp/api/localcompaliasdelete",
+          {
+            id: tag.id
+          }
+        )
+        .then(obj => {
+          this.getOneMess(this.tid);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     // 管理人员focus触发的事件
     handleFocusAdminNames() {
@@ -949,79 +971,13 @@ export default {
       this.salesArr = arr;
       this.handleBlurSalesNames();
     },
-    // 商户其他人员tag删除
-    businessHandleClose(tag) {
-      this.businessOtherNamesArr.splice(
-        this.businessOtherNamesArr.indexOf(tag),
-        1
-      );
-    },
-    //管理人员懒加载方法
-    // initAdminCascader(node, resolve) {
-    //   const { level } = node;
-    //   let nId = 204;
-    //   if (level > 0) {
-    //     nId = node.value;
-    //   }
-    //   // let isCascader = this.$refs.adminLeader.getCheckedNodes()[0];
-    //   // let address
-    //   // isCascader.hasChildren == false ? address = "/org/api/userlistwithorg" : address = "/org/api/deptlist"
-    //   this.$http
-    //     .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
-    //       object: {
-    //         ParentID: nId
-    //       }
-    //     })
-    //     .then(res => {
-    //       this.cascaderArr = res.data.objects.forEach(v => {
-    //         // let data = res.data.objects.forEach(v => {
-    //         return {
-    //           label: v.orgName,
-    //           value: v.id,
-    //           leaf: v.isLeaf < 2
-    //         };
-    //       });
-    //       resolve(this.cascaderArr);
-    //     });
-    // },
-    // 销售人员懒加在的方法
-    // initSaleCascader(node, resolve) {
-    //   const { level } = node;
-    //   let nId = 204;
-    //   if (level > 0) {
-    //     nId = node.value;
-    //   }
-    //   this.$http
-    //     .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
-    //       object: {
-    //         ParentID: nId
-    //       }
-    //     })
-    //     .then(res => {
-    //       // console.log(res);
-    //       let data = res.data.objects.forEach(v => {
-    //         return {
-    //           label: v.orgName,
-    //           value: v.id,
-    //           leaf: v.isLeaf < 2
-    //         };
-    //       });
-    //       resolve(data);
-    //     });
-    // },
-    // 添加账户信息弹窗中职位checkbox 单选切换
-    // bindCheckBox(value) {
-    //   this.accountForm.peerUserType = [];
-    //   this.accountForm.peerUserType.push(value[1]);
-    // },
+
     // 删除账户信息按钮
     accountDelete(index, row) {
-      // console.log(index,row)
       this.useList.splice(index, 1);
     },
     //编辑账户信息按钮
     accountEdit(idx, index, row) {
-      console.log(index, row);
       if (row.peerUserType == "销售") {
         row.peerUserType = 2;
       } else {
@@ -1046,7 +1002,7 @@ export default {
         wx: "",
         qq: "",
         state: "",
-        password: "",
+        passWord: "",
         peerUserType: [] //职位
       };
       this.$refs[accountForm].resetFields();
@@ -1089,7 +1045,6 @@ export default {
           }
         });
       } else if (this.isAddAccountBtn == 2) {
-        console.log("调修改的接口");
         this.$refs[accountForm].validate(valid => {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
@@ -1109,30 +1064,44 @@ export default {
             } else {
               this.accountForm.peerUserType = 2;
             }
+
+            // 修改验证手机号和邮箱的接口的接口
             this.$http
               .post(
                 this.GLOBAL.serverSrc +
-                  "/universal/localcomp/api/PeerUserUpdate",
+                  "/universal/localcomp/api/isexistpeeruser",
                 {
-                  pageIndex: 1,
-                  pageSize: 10,
-                  object: {
-                    name: that.input,
-                    state: that.statesValue,
-                    settlementType: that.payValue
-                    // 1月结 2非月结
-                    // 2正常 3停用
-                    // jqUserType 1 管理员  2 销售
-                  }
+                  phone: this.accountForm.phone,
+                  email: this.accountForm.email,
+                  id: this.accountForm.id
                 }
               )
-              .then(obj => {})
-              .catch(() => {});
-            this.isAddAccount = false;
-            this.$message({
-              message: "账户添加成功",
-              type: "success"
-            });
+              .then(obj => {
+                const { isSuccess } = obj.data;
+                if (isSuccess == false) {
+                  this.$message.error("该手机号，邮箱已注册过");
+                } else {
+                  // 修改的接口
+                  this.$http
+                    .post(
+                      this.GLOBAL.serverSrc +
+                        "/universal/localcomp/api/PeerUserUpdate",
+                      {
+                        object: this.accountForm
+                      }
+                    )
+                    .then(obj => {
+                      this.isAddAccount = false;
+                      this.getOneMess(this.tid);
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              });
           } else {
             console.log("error submit!!");
             return false;
@@ -1152,7 +1121,7 @@ export default {
         wx: "",
         qq: "",
         state: "",
-        password: "",
+        passWord: "",
         peerUserType: [] //职位
       };
       // this.$nextTick((accountForm) => {
@@ -1166,61 +1135,10 @@ export default {
       // console.log(file, fileList);
     },
 
-    //cascader 管理人员选中后判断是否有children从而判断是否是末节点 如果是则请求接口拼接
-    // cascaderChangeNode() {
-    //   let isCascader = this.$refs.adminLeader.getCheckedNodes()[0];
-    //   // console.log(111111111111)
-    //   // console.log(isCascader)
-    //   if (isCascader.hasChildren === false) {
-    //     //部门人员
-    //     this.$http
-    //       .post(
-    //         this.GLOBAL.serverSrc + "/org/api/userlistwithorg",
-    //         {
-    //           id: isCascader.value
-    //         },
-    //         {
-    //           headers: {
-    //             Authorization: "Bearer " + localStorage.getItem("token")
-    //           }
-    //         }
-    //       )
-    //       .then(res => {
-    //         this.cascaderArr.push(res.data.objects);
-    //         console.log(this.cascaderArr);
-    //         console.log(res);
-    //       })
-    //       .catch(function(error) {
-    //         console.log(error);
-    //       });
-    //   }
-    // },
     // dialog关闭的回调
     closeDialog() {
       this.btnindex = 0;
     },
-    // getTime(val) {
-    //   const d = new Date(val);
-    //   console.log(val)
-    //   console.log(d)
-    //   this.ruleForm.expTime =
-    //     d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-    //     console.log(this.ruleForm.expTime)
-    // },
-    //销售人员联动下拉框消失时触发事件
-    // cascader(e, val) {
-    //   // console.log("cascader");
-    //   // console.log(e);
-    //   // console.log(val);
-    //   // console.log(this.$refs.myCascader.getCheckedNodes()[0].pathLabels);
-    //   console.log(this.ruleForm.salesman);
-    //   if (e === false) {
-    //     let arr = this.$refs.myCascader.getCheckedNodes()[0].pathLabels;
-    //     let b = arr.join("-");
-    //     this.businessOtherNamesArr.push(b);
-    //     console.log(this.businessOtherNamesArr);
-    //   }
-    // },
 
     // 搜索
     handleSearch() {
@@ -1312,7 +1230,6 @@ export default {
               arr[k]["settlementType"] = "月结";
             }
           });
-          console.log(obj.data.total);
         })
         .catch(function(obj) {
           console.log(obj);
@@ -1351,12 +1268,10 @@ export default {
               arr[k]["settlementType"] = "月结";
             }
           });
-          // console.log(obj.data.total);
         })
         .catch(function(obj) {
           console.log(obj);
         });
-      // console.log(`当前页: ${val}`);
     },
     add_info() {
       this.tid = 0;
@@ -1367,7 +1282,6 @@ export default {
     // 详情弹窗上的点击编辑
     editBtn(index) {
       this.edit_info(2, this.tid);
-      console.log(this.tid);
     },
     // 编辑和详情  详情为1 编辑为2
     edit_info(index, row) {
@@ -1414,7 +1328,7 @@ export default {
         publicName: "",
         bankName: "",
         bankcardNo: "",
-        LocalCompRole: "", //商户角色
+        localCompRole: "", //商户角色
         salesman: "", //销售人员
         administrative: "" //管理人员
       };
@@ -1424,18 +1338,15 @@ export default {
       this.adminArr = [];
       this.salesArr = [];
       this.businessOtherNamesArr = [];
+      // this.orgsAddArr = []
     },
     // 修改
     editorForm(ruleForm) {
-      // console.log(ruleForm);
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
           this.editMerchan();
-          // this.tid = 0;
-          // this.dialogFormVisible = false;
         } else {
           console.log("error submit!!");
-          // console.log(this.ruleForm);
           return false;
         }
       });
@@ -1453,7 +1364,6 @@ export default {
           }
         })
         .then(function(obj) {
-          // console.log(obj);
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
           that.tableData.forEach(function(v, k, arr) {
@@ -1477,7 +1387,6 @@ export default {
               arr[k]["settlementType"] = "月结";
             }
           });
-          // console.log(obj.data.total);
         })
         .catch(function(obj) {
           console.log(obj);
@@ -1503,13 +1412,13 @@ export default {
       // }
 
       // 商户角色
-          // if (this.ruleForm.localCompRole = "旅游组团社") {
-          //   this.ruleForm.localCompRole = 0;
-          // } else if (this.ruleForm.localCompRole = "独立旅行社") {
-          //   this.ruleForm.localCompRole = 1;
-          // } else {
-          //   this.ruleForm.localCompRole = 2;
-          // }
+      if ((this.ruleForm.localCompRole = "旅游组团社")) {
+        this.ruleForm.localCompRole = 0;
+      } else if ((this.ruleForm.localCompRole = "独立旅行社")) {
+        this.ruleForm.localCompRole = 1;
+      } else {
+        this.ruleForm.localCompRole = 2;
+      }
 
       // 判断商户名称是否是具有唯一性
       if (
@@ -1550,7 +1459,6 @@ export default {
       let scopeExt = this.ruleForm.scopeExt.join(",");
 
       // 区域可见
-      console.log(this.ruleForm.orgs)
       let orgs = [];
       for (let i = 0; i < this.ruleForm.orgs.length; i++) {
         let org = {};
@@ -1560,7 +1468,6 @@ export default {
         orgs.push(org);
       }
       this.ruleForm.orgs = orgs;
-      console.log(this.ruleForm.orgs)
       // 添加账户
 
       // jqAdminList 管理和销售人员
@@ -1593,11 +1500,12 @@ export default {
           arr[idx].state = 3;
         }
       });
-      // localCompAliasList 商户其他名称
-      // console.log(this.businessOtherNamesArr)
-      // let businessOtherNamesArr = this.businessOtherNamesArr.join(",");
-      // console.log(businessOtherNamesArr)
-      // console.log(this.ruleForm.expTime)
+
+      // 周边授信额度
+      if (this.AbouQuota == null) {
+        this.AbouQuota = 0;
+      }
+
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
           object: {
@@ -1626,11 +1534,11 @@ export default {
             orgs: this.ruleForm.orgs,
             useList: this.useList,
             jqAdminList: adminAndSalesArr,
-            localCompAliasList: this.businessOtherNamesArr
+            localCompAliasList: this.businessOtherNamesArr, //商户其他名称
+            abouQuota: this.AbouQuota //周边授信额度
           }
         })
         .then(obj => {
-          console.log(obj)
           this.dialogFormVisible = false;
           this.list();
           this.$message({
@@ -1688,6 +1596,7 @@ export default {
 
       // 区域可见
       let orgs = [];
+
       for (let i = 0; i < this.ruleForm.orgs.length; i++) {
         let org = {};
         org.orgID = this.ruleForm.orgs[i];
@@ -1696,14 +1605,13 @@ export default {
         orgs.push(org);
       }
       this.ruleForm.orgs = orgs;
-      // console.log(this.ruleForm.orgs)
       // 添加账户
 
       // jqAdminList 管理和销售人员
       let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
       adminAndSalesArr = adminAndSalesArr.map(item => {
         return {
-          name: item.value,
+          name: item.name,
           userCode: item.userCode,
           uid: item.uid,
           jqUserType: item.jqUserType,
@@ -1725,19 +1633,19 @@ export default {
       //   this.ruleForm.quota = 0;
       // }
       // this.ruleForm.scopeExt = this.ruleForm.scopeExt.join(",");
-      console.log(this.ruleForm.expTime);
-      if (this.ruleForm.expTime.length > 0) {
-        let year = "";
-        let month = "";
-        let day = "";
-        let pin = "";
-        year = this.ruleForm.expTime.substring(0, 4);
-        month = this.ruleForm.expTime.substring(5, 7);
-        day = this.ruleForm.expTime.substring(8, 10);
-        pin = year + month + day;
-        this.ruleForm.expTime = pin;
-      }
-      console.log(this.ruleForm.expTime);
+      // console.log(this.ruleForm.expTime);
+      // if (this.ruleForm.expTime.length > 0) {
+      //   let year = "";
+      //   let month = "";
+      //   let day = "";
+      //   let pin = "";
+      //   year = this.ruleForm.expTime.substring(0, 4);
+      //   month = this.ruleForm.expTime.substring(5, 7);
+      //   day = this.ruleForm.expTime.substring(8, 10);
+      //   pin = year + month + day;
+      //   this.ruleForm.expTime = pin;
+      // }
+      this.ruleForm.expTime = moment(this.ruleForm.expTime).format("YYYYMMDD");
       this.ruleForm.id = this.tid;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/save", {
@@ -1767,20 +1675,23 @@ export default {
             storeType: this.ruleForm.storeType,
             orgs: this.ruleForm.orgs,
             jqAdminList: adminAndSalesArr,
-            localCompAliasList: this.businessOtherNamesArr
+            localCompAliasList: this.businessOtherNamesArr,
+            abouQuota: this.AbouQuota //周边授信额度
           }
         })
-        .then((obj) => {
-          this.dialogFormVisible = false
+        .then(obj => {
+          this.dialogFormVisible = false;
           this.list();
-          this.$message.success("修改成功")
+          this.$message.success("修改成功");
         })
         .catch(function(obj) {
           console.log(obj);
         });
     },
     clear() {
+      // this.orgsAddArr = [];
       this.businessOtherNamesArr = [];
+      this.AbouQuota = null;
       this.adminArr = [];
       this.salesArr = [];
       this.useList = [];
@@ -1802,13 +1713,27 @@ export default {
         publicName: "",
         bankName: "",
         bankcardNo: "",
-        LocalCompRole: "", //商户角色
+        localCompRole: "", //商户角色
         salesman: "", //销售人员
         administrative: ""
       };
       if (this.$refs["ruleForm"] !== undefined) {
         this.$refs["ruleForm"].resetFields();
       }
+    },
+    //周边信息 整数转浮点数
+    toDecimal2(x) {
+      let f = Math.round(x * 100) / 100;
+      var s = f.toString();
+      var rs = s.indexOf(".");
+      if (rs < 0) {
+        rs = s.length;
+        s += ".";
+      }
+      while (s.length <= rs + 2) {
+        s += "0";
+      }
+      return s;
     },
     //获取一条信心
     getOneMess(id) {
@@ -1817,7 +1742,6 @@ export default {
           id: id
         })
         .then(obj => {
-          console.log(obj);
           const { object } = obj.data;
           const {
             jqAdminList,
@@ -1885,7 +1809,6 @@ export default {
             this.ruleForm.scopeExt = object.scopeExt;
           } else {
             this.ruleForm.scopeExt = object.scopeExt.split(",");
-            // console.log(this.ruleForm.scopeExt)
           }
 
           // 管理人员 和 销售
@@ -1901,10 +1824,8 @@ export default {
             salesArr = [];
           // 从商户详情页点击编辑进入编辑页然后管理人员与销售人员去重
           if (this.btnindex == 2) {
-            // console.log(this.adminArr);
             this.adminArr = this.removalData(this.adminArr);
             this.salesArr = this.removalData(this.salesArr);
-            // console.log(this.adminArr);
           }
           this.adminArr.forEach((val, idx, arr) => {
             adminArr.push(this.adminArr[idx].name);
@@ -1920,10 +1841,8 @@ export default {
             areaEdit = [];
           for (let i = 0; i < orgs.length; i++) {
             for (let j = 0; j < this.scoperangeList.length; j++) {
-              // this.scoperangeList[j].checked = false;
               if (orgs[i].orgID == this.scoperangeList[j].id) {
                 areaDetails.push(this.scoperangeList[j].orgName);
-                // this.scoperangeList[j].checked = true;
                 areaEdit.push(orgs[i].orgID);
               }
             }
@@ -1939,23 +1858,28 @@ export default {
           let businessNamesArr = [];
           localCompAliasList.forEach((val, idx, arr) => {
             businessNamesArr.push({
-              name: arr[idx].name
+              name: arr[idx].name,
+              id: arr[idx].id
             });
           });
           this.businessOtherNamesArr = businessNamesArr;
 
-          let year = "";
-          let month = "";
-          let day = "";
-          let pin = "";
-          year = String(object.expTime).substring(0, 4);
-          month = String(object.expTime).substring(4, 6);
-          day = String(object.expTime).substring(6, 8);
-          pin = year + "-" + month + "-" + day;
-          this.ruleForm.expTime = pin;
-          // this.ruleForm.expTime = new Date(pin);
-          // console.log(this.ruleForm.expTime);
-          // }
+          if (this.btnindex == 1) {
+            this.ruleForm.expTime = moment(object.expTime.toString()).format(
+              "YYYY-MM-DD"
+            );
+          } else {
+            let year = "";
+            let month = "";
+            let day = "";
+            let pin = "";
+            year = String(object.expTime).substring(0, 4);
+            month = String(object.expTime).substring(4, 6);
+            day = String(object.expTime).substring(6, 8);
+            pin = year + "-" + month + "-" + day;
+            this.ruleForm.expTime = pin;
+            this.ruleForm.expTime = new Date(pin);
+          }
           if (object.settlementType == 2) {
             this.ruleForm.settlementType = "非月结";
           } else {
@@ -1966,12 +1890,16 @@ export default {
           this.ruleForm.department = "1";
           this.ruleForm.people = "2";
           // this.ruleForm.scopeExt = object.scopeExt.split(",");
+          this.ruleForm.quota = object.quota;
           this.ruleForm.address = object.address;
           this.ruleForm.linker = object.linker;
           this.ruleForm.phone = object.phone;
           this.ruleForm.publicName = object.publicName;
           this.ruleForm.bankName = object.bankName;
           this.ruleForm.bankcardNo = object.bankcardNo;
+          this.AbouDeposit = this.toDecimal2(object.abouDeposit);
+          this.AbouQuota = this.toDecimal2(object.abouQuota);
+          this.AbouBalance = this.toDecimal2(object.abouBalance);
         })
         .catch(obj => {
           console.log(obj);
@@ -2051,6 +1979,12 @@ export default {
 </script>
 
 <style scoped>
+/* .el-table--scrollable-x .el-table__body-wrapper {
+    overflow-x: hidden!important;
+} */
+.el-pagination {
+  margin-right: 300px !important;
+}
 .addAccountBtn {
   margin-top: -44px;
 }
@@ -2111,7 +2045,7 @@ export default {
   float: left;
 }
 .accountInfo {
-  width: 922px;
+  width: 100%;
   margin-top: 30px;
 }
 .dialog {

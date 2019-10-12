@@ -1,11 +1,12 @@
 <template>
+<!--11-->
   <div class="vivo" style="position:relative">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
       <div class="btn" style="width:200px;position:absolute;z-index:99;top:0px;left:50%;">
         <el-button plain class="btn-button" @click="cancel()">取消</el-button>
         <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">保存</el-button>
       </div>
-      {{changeobj}}
+      <!-- {{changeobj}} -->
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <!-- 行程信息begin -->
         <el-tab-pane label="行程信息" name="second">
@@ -57,24 +58,21 @@
                           <!--描述方式-->
                           <div class="describe_way">描述方式</div>
                           <ul class="description">
-                            <li v-for="(item,index) in describe" :key="index" :class="{active:index == num}" @click="tab(index)">
+                            <li v-for="(item,index) in describe" :key="index" :class="{active:index == num}" @click="tab(index)" @change="changeTab(index)">
                               <span v-if="index=='0'">
-                                <el-radio label="0" value="0" v-model="matter_radio" checked>{{item}}</el-radio>
+                                <el-radio  label="0" v-model="matter_radio" checked>{{item}}</el-radio>
                               </span>
                               <span v-if="index=='1'">
-                                <el-radio label="1" value="1" v-model="matter_radio">{{item}}</el-radio>
+                                <el-radio label="1" v-model="matter_radio">{{item}}</el-radio>
                               </span>
-                              <!-- <el-radio-group v-model="matter_radio" class="travelType">
-                                <el-radio v-if="index=='0'" label="0" value="0">{{item}}</el-radio>
-                                <el-radio v-if="index=='1'" label="1" value="1">{{item}}</el-radio>
-                              </el-radio-group> -->
                             </li>
                           </ul>
                             
                           <!--描述方式结束-->
                           <div v-for="(itemCon,index) in pattern" :key="index" v-show="index == num">
                             <!--详细说明-->
-                            <div v-if="index ==0 || isShowBriefDetail === 1" class="traffic_border">
+                            <!-- <div v-if="index ==0 || isShowBriefDetail === 1" class="traffic_border"> -->
+                            <div v-if="index ==0" class="traffic_border">
                               <div>
                                 <div class="traffic_button">去程</div>
                                 <div class="traffic_button">
@@ -160,9 +158,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
 
                                     <!--添加经停-->
                                     <div closable>
@@ -248,9 +246,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <!--第三行结束-->
@@ -295,9 +293,9 @@
                                     <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <div class="stop">
@@ -366,9 +364,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <div class="addTab" v-show="deleteTransit">
@@ -467,9 +465,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                     <!--添加经停-->
                                     <div closable>
                                       <div class="transit_border" v-show="Returnline"></div>
@@ -552,9 +550,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <!--第三行结束-->
@@ -619,9 +617,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <!--第三行结束-->
@@ -694,9 +692,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <div class="addTab" v-show="deleteTransit">
@@ -707,7 +705,8 @@
                             </div>
                             <!--详细说明结束-->
                             <!--简要说明-->
-                            <div class="traffic_border" v-if="index ==1 || isShowBriefDetail === 2"> 
+                            <!-- <div class="traffic_border" v-if="index ==1 || isShowBriefDetail === 2">  -->
+                            <div class="traffic_border" v-if="index ==1"> 
                               <div class="cost_content" style="background: #FFFFFF">
                                 <vue-editor v-model="content"></vue-editor>
                               </div>
@@ -904,7 +903,7 @@
                                 </div>
                                 <div class="aviation">
                                   <!--餐饮-->
-                                  <div class="food_text">餐饮</div>
+                                  <div class="food_text"><span class="focusOn">*</span>餐饮</div>
                                 </div>
                                 <!--餐饮循环-->
                                 <div class="aviation" style="margin-top:-100px;" v-for="(it,p) in item.ext_Meals" :key="p">
@@ -1238,6 +1237,15 @@
         </el-tab-pane>
       </el-tabs>
     </el-form>
+    <!--验证提示弹窗-->
+     <el-dialog title="提示信息" :visible.sync="dialogVadi" class="city_list tips" width="400px">
+          <div>
+             <ul v-for="item in validaError">
+               <li>{{item}}</li>
+             </ul>
+          </div>
+     </el-dialog>
+
   </div>
 </template>
 
@@ -1848,7 +1856,7 @@
         )
 
           .then(function (obj) {
-            console.log(obj.data.object);
+            console.log(obj.data.object.package);
             that.ruleForm.travelDays = obj.data.object.day//行程天数
             that.ruleForm.travelNight = obj.data.object.night//行程晚数
             that.dynamicTags3 = obj.data.object.pods//出发地
@@ -1859,6 +1867,7 @@
             that.ruleForm.podID = obj.data.object.package[0].podID //行程信息出发地ID
             that.ruleForm.destinationID = obj.data.object.package[0].destinationID//行程信息目的地ID
             that.content = String(obj.data.object.package[0].briefMark)//其他说明
+            //that.ext_Stopover = JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
             let keepContentLength = that.content.length
             if (keepContentLength > 0){
               that.isShowBriefDetail = 2
@@ -1881,7 +1890,7 @@
               if(obj.data.object.package[0].traffic[i].goOrBack == 1){
                 obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
                 obj.data.object.package[0].traffic[i].arrDay = [];
-                for(let k = 0; k < obj.data.object.package[0].traffic[i].day; k++) {
+                for(let k = 0; k < obj.data.object.day; k++) {
                   obj.data.object.package[0].traffic[i].arrDay.push({
                     value: k+1,
                     lable: k+1
@@ -1894,7 +1903,7 @@
                 obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
                 obj.data.object.package[0].traffic[i].arrDay = [];
 
-                for(let k = 0; k < obj.data.object.package[0].traffic[i].day; k++) {
+                for(let k = 0; k < obj.data.object.day; k++) {
                   obj.data.object.package[0].traffic[i].arrDay.push({
                     value: k+1,
                     lable: k+1
@@ -2196,7 +2205,9 @@
                 console.log(error);
               });
             }else{
-            this.errors();
+
+              this.errors();
+
             }
           })
         }
@@ -2870,7 +2881,7 @@
 
       },
       tab(index) {
-        this.num = index;
+        //this.num = index;
       },
       tab1(index) {
         this.num1 = index;
@@ -3161,10 +3172,11 @@
           highlightWords: '',
           theme: '',
           subject:'',
-          origin:'',
-          podID:'',
-          destinationID:'',
-          bourn:'',
+          // origin:'',
+          // podID:'',
+          // destinationID:'',
+          // bourn:'',
+
           //交通工具
           //去程
           plane: [{
@@ -3210,7 +3222,7 @@
             } else {
             this.$message({
               type: 'success',
-              message: '删除成功!'
+              message: '切换成功!'
             });
             this.changeIndex = targetName.index
             var that = this
@@ -3414,10 +3426,10 @@
           highlightWords: '',
           theme: '',
           subject:'',
-          origin:'',
-          podID:'',
-          destinationID:'',
-          bourn:'',
+          // origin:'',
+          // podID:'',
+          // destinationID:'',
+          // bourn:'',
           //交通工具
           //去程
           plane: [{
@@ -3954,7 +3966,61 @@
       },
       handleadd() {
         this.qqqq = String(this.editableTabs.length + 2);
-      }
+      },
+      changeTab(data) {
+        this.$confirm('切换之后会清空交通信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          console.log('dz', this.ruleForm)
+          this.num = data;
+          //去程
+          this.ruleForm.plane = [{
+            pod: '',
+            id: 0,
+            goOrBack:1,
+            company: '',
+            theNumber: '',
+            podCity: '',
+            podPlace: '',
+            podTime: '',
+            arriveCity: '',
+            arrivePlace: '',
+            arriveTime: '',
+            planeDay: '',
+            trafficMode: '1',
+            day: '1',
+            ext_Stopover: []
+          }];
+          //返程
+          this.ruleForm.nackPlane = [{
+            pod: '',  //套餐id
+            id: 0,
+            goOrBack:2,   //1去程 2返程
+            company: '',  //航空公司
+            theNumber: '',   //航班号
+            podCity: '',           //出发城市
+            podPlace: '',   //出发机场
+            podTime: '',    //出发时间
+            arriveCity: '',    //到达城市
+            arrivePlace: '',     //到达机场
+            arriveTime: '',      //到达时间
+            planeDay: '',       //到达天数
+            trafficMode: '1',  //出行方式
+            // day:'1',
+            day: this.ruleForm.travelDays,      //第几天
+            ext_Stopover: []
+          }];
+        }).catch(() => {
+          if(data == 0) {
+            this.matter_radio = '1';
+          } else if(data == 1) {
+            this.matter_radio = '0';
+          }
+        });
+      },
+
     }
   }
 </script>
@@ -3995,12 +4061,12 @@
   .textarea { float: left; width: 60%; }
   .date { padding: 20px 0 0 30px; font-size: 18px; font-weight: bold; clear: both; }
   .radio_input { float: left; margin: 10px 0 0 0; }
-  .food_text { width: 85px; text-align: right; margin: 0 15px 0 0; line-height: 40px; }
+  .food_text { width: 85px; text-align: right; margin: 0 15px 0 0; line-height: 40px;}
   .food_radio { margin: 0 0 0 100px; float: left; }
   .repast { float: left; width: 60px; }
   .state { margin: 0 0 0 20px; }
   .text_input { padding: 0 0 20px 0; overflow: hidden; width: 100%; }
-  .type_radio { float: left; }
+  .type_radio { float: left; margin: 15px 0 0 0; }
   ul { padding: 0px; margin: 10px 0 0 0; margin: 0 0 0 0; }
   ul .type_list { float: left; list-style-type: none; margin: 0 10px 0 0; text-align: left; }
   .tabCon { clear: both; padding: 20px 0 0 0; }
@@ -4206,9 +4272,13 @@
   /*套餐切换弹窗样式*/
   .switchTitle{line-height: 50px; font-size:13pt;}
   .switchButton{margin: 15px 0 0 0;}
+
+
+  .focusOn{color:red; margin:0 5px 0 0;}
+
   /*验证提示弹窗*/
   .tips ul{text-align: left;margin:-20px 0 30px 10px;line-height: 25px;padding: 0;}
   .tips ul li{margin: 10px 0 10px 50px;height: 20px;}
 
-  
+
 </style>

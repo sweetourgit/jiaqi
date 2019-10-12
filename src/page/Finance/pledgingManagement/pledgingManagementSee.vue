@@ -6,6 +6,7 @@
         <!--<el-button type="primary" @click="save()" size="medium">保存</el-button>-->
         <el-button type="primary" @click="reject()" size="medium" plain v-if="billStatus == 2 || billStatus == 3">一键驳回</el-button>
         <el-button type="primary" @click="submit()" size="medium" v-if="billStatus == 2 || billStatus == 3 || billStatus == 4">审核提交</el-button>
+        <el-button type="primary" @click="toHistory()" size="medium">审批历史</el-button>
       </div>
     </div>
     <StartNumber :dialogFormVisible="dialogFormVisible" @close="close" :frameTitle1="frameTitle1" :frameTitle2="frameTitle2"></StartNumber>
@@ -48,6 +49,15 @@ export default {
   },
   watch: {},
   methods: {
+    toHistory(){
+      this.$router.push({
+        path: "/pledgingHistory",
+        name: "财务管理   / 财务认款管理   / 审批历史",
+        query: {
+          tour_no: this.paramTour
+        }
+      });
+    },
     selection(reable, pid) {
       this.reable = reable;
       this.pid = pid;
