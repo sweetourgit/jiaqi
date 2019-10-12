@@ -1939,9 +1939,7 @@
           this.n = [];
           this.rightTable = false;
           this.$message.success('添加成功');
-          //this.$emit("merchandises", false);
-          console.log(1)
-          //this.$router.push({path: "/productList/packageTour"});
+          this.$emit("merchandises", false);
         }
       },
       // 点击套餐Sku
