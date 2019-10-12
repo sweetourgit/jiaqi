@@ -381,13 +381,12 @@
 <style lang="scss" scoped>
   #externalOrderManagement .borders{
     overflow: hidden;
-    /*border: 1px solid #E6E6E6;*/
-    margin-bottom: 30px;
+    border: 1px solid #E6E6E6;
+    margin: 25px auto 30px;
     .search{
       width: 96%;
       min-width: 1079px;
-      margin-left: 20px;
-      margin-top: 25px;
+      margin: 20px 2%;
       float: left;
       background-color: #f7f7f7;
       padding: 20px 10px;

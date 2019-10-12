@@ -1,35 +1,46 @@
 <template>
   <div class="vivo" style="position:relative" id="collection_add">
     <!--申请预付款-->
-    <el-dialog title="添加待认款收款" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="closeAdd">
+    <el-dialog title="批量添加待认款收款" :visible="dialogFormVisible2" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="buttonDv">
           <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
           <el-button class="el-button" type="danger" @click="closeAdd">取 消</el-button>
         </div>
         <div>
-          <el-form-item label="收款时间：" prop="collectionTime" label-width="140px">
-            <el-date-picker v-model="ruleForm.collectionTime" type="date" class="inputWidth" placeholder="收款时间"></el-date-picker>
-          </el-form-item>
-          <el-form-item label="款项说明：" prop="explain" label-width="140px">
-            <el-input v-model="ruleForm.explain" class="inputWidth" placeholder="请输入款项说明"></el-input>
-          </el-form-item>
-          <el-form-item label="收款账户：" prop="payAccount" label-width="140px">
-            <el-input v-model="ruleForm.payAccount" placeholder="请选择" class="inputWidth" :readonly="readOnly"></el-input>
-            <el-button type="primary" @click="chooseFun" style="margin-left: 10px">选择</el-button>
-          </el-form-item>
-          <el-form-item label="收款金额：" prop="money" label-width="140px">
-            <el-input v-model="ruleForm.money" class="inputWidth" placeholder="请输入收款金额"></el-input>
-          </el-form-item>
-          <el-form-item label="摘要：" prop="abstract" label-width="140px">
-            <el-input v-model="ruleForm.abstract" class="inputWidth" placeholder="请输入摘要"></el-input>
-          </el-form-item>
-          <el-form-item label="凭证：" label-width="140px">
-            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="fileList">
-              <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
-          </el-form-item>
-
+          <!--<p class="stepTitle">基本信息</p>-->
+          <el-divider content-position="left">基本信息</el-divider>
+          <div class="stepDv">
+            <el-form-item label="收款明细说明：" prop="explain" label-width="140px">
+              <el-input v-model="ruleForm.explain" class="inputWidth" placeholder="请输入款项说明"></el-input>
+            </el-form-item>
+            <el-form-item label="收款账户：" prop="payAccount" label-width="140px">
+              <el-input v-model="ruleForm.payAccount" placeholder="请选择" class="inputWidth" :readonly="readOnly"></el-input>
+              <el-button type="primary" @click="chooseFun" style="margin-left: 10px">选择</el-button>
+            </el-form-item>
+            <el-form-item label="批量导入：" label-width="140px">
+              <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" limit="1" :on-exceed="handleExceed" :file-list="fileList">
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+            </el-form-item>
+          </div>
+          <!--<p class="stepTitle">认款订单</p>-->
+          <el-divider content-position="left">认款订单</el-divider>
+          <div class="stepDv">
+            <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
+              <el-table-column prop="order_sn" label="订单ID" align="center" >
+              </el-table-column>
+              <el-table-column prop="product_name" label="产品名称" align="center">
+              </el-table-column>
+              <el-table-column prop="cost" label="订单费用" align="center">
+                <!--<template slot-scope="scope">-->
+                <!--<span>收入:{{scope.row.income}}</span><br>-->
+                <!--<span>单票成本:{{scope.row.single_cost}}</span><br>-->
+                <!--<span>总成本:{{scope.row.cost}}</span>-->
+                <!--</template>-->
+              </el-table-column>
+            </el-table>
+          </div>
         </div>
       </el-form>
       <!--选择收款账户-->
@@ -64,36 +75,31 @@
 </template>
 <script type="text/javascript">
   export default {
-    name: "newTour",
+    name: "collection_add",
     components: {},
     props: {
-      dialogFormVisible: false,
+      dialogFormVisible2: false,
       info: ''
     },
     data() {
       return {
         readOnly: true,
         ruleForm: {
-          collectionTime: '',
           explain: '',
           payAccount: '',
           payAccountID: '',
-          money: '',
-          abstract: ''
         },
         rece_code: '',
         rules: {
           explain: [{ required: true, message: '款项说明不能为空!', trigger: 'blur' }],
-          money: [{ required: true, message: '收款金额不能为空!', trigger: 'blur' }],
-          abstract: [{ required: true, message: '摘要不能为空!', trigger: 'blur' }],
           payAccount: [{ required: true, message: '收款账户不能为空!', trigger: 'change' }],
-          collectionTime: [{ required: true, message: '收款时间不能为空!', trigger: 'change' }],
         },
 
         dialogFormVisible1: false,
-        tableDataZH: [],
+        tableDataXQ: [],
 
-        fileList: []
+        fileList: [],
+        tableDataZH: []
       }
     },
     computed: {
@@ -105,9 +111,9 @@
       }
     },
     watch: {
-      dialogFormVisible: {
+      dialogFormVisible2: {
         handler: function () {
-          if(this.dialogFormVisible){
+          if(this.dialogFormVisible2){
             this.getCode()
           }
         }
@@ -124,12 +130,9 @@
       },
       closeAdd() {
         this.ruleForm = {
-          collectionTime: '',
           explain: '',
           payAccount: '',
           payAccountID: '',
-          money: '',
-          abstract: ''
         };
         this.rece_code = '';
         this.fileList = [];
@@ -297,15 +300,22 @@
 
 </script>
 <style lang="scss">
+  #collection_add .buttonDv {
+    position: absolute;
+    top: 8px;
+    right: 3%;
+  }
   #collection_add .inputWidth {
     min-width: 400px;
     width: 60%;
   }
-  #collection_add .el-upload-list__item{
+  #collection_add .el-upload-list__item {
     margin-top: 10px;
   }
-  #collection_add .el-divider__text, #collection_add .el-link{
-    font-size: 16px;
+  #collection_add .stepDv{
+    background-color: #f7f7f7;
+    margin-bottom: 50px;
+    padding: 20px;
   }
 
 </style>

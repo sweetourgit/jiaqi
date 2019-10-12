@@ -36,14 +36,29 @@
       <div class="stepDv">
         <div class="selectDv">
           <span>认款方式：</span>
-          <el-select v-model="rec_type" placeholder="请选择">
+          <el-select v-model="rec_type" placeholder="请选择" @change="typeChange">
             <el-option key="1" label="分销商预存款" value="1"></el-option>
-            <!--<el-option key="2" label="票付通余额支付" value="2"></el-option>-->
+            <el-option key="2" label="订单收款" value="2"></el-option>
           </el-select>
         </div>
         <div class="selectDv" v-if="rec_type == '1'">
           <span>分销商：</span>
           <el-autocomplete class="search_input" v-model="distributor" :fetch-suggestions="querySearchD" placeholder="请输入操作人员" @select="handleSelectD" @blur="blurHand"></el-autocomplete>
+        </div>
+        <div class="selectDv" v-if="rec_type == '2'">
+          <el-radio-group v-model="distributorType">
+            <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
+            <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
+            <el-radio label="去哪儿">去哪儿</el-radio>
+            <el-radio label="票付通余额">票付通余额</el-radio>
+            <el-radio label="无">无</el-radio>
+          </el-radio-group>
+          <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
+            <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled" :picker-options="importStartDatePicker"></el-date-picker>
+            <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
+            <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" :picker-options="importEndDatePicker"></el-date-picker>
+            <p style="margin: 0;color: #999;line-height: 22px;">该笔款所包含的所有订单，所有订单下单的时间区间</p>
+          </el-form-item>
         </div>
       </div>
     </el-dialog>
@@ -78,7 +93,8 @@
 
         fileList: [],// 凭证列表
 
-        rec_type: '1',// 认款方式
+        rec_type: '',// 认款方式
+        distributorType: '',
 
         distributor: '',// 选择的分销商
         distributorID: '',// 选择的分销商ID
@@ -108,6 +124,10 @@
         } else {
           return ''
         }
+      },
+      typeChange(value){
+        console.log(value);
+        this.rec_type = value;
       },
       // 关闭弹窗
       closeAdd(){

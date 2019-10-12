@@ -25,7 +25,8 @@
         </div>
       </div>
       <div class="search" style="background-color: transparent;padding: 0;">
-        <el-button type="primary" @click="addFun">添加</el-button>
+        <el-button type="primary" @click="addFun" plain>添加</el-button>
+        <el-button type="primary" @click="batchAddFun">批量添加</el-button>
       </div>
       <div class="table_style">
         <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
@@ -61,21 +62,24 @@
           background>
         </el-pagination>
       </div>
-      <collectionAdd :dialogFormVisible="dialogFormVisible" :info="info" @close="closeAdd"></collectionAdd>
+      <collectionAdd :dialogFormVisible="dialogFormVisible" @close="closeAdd"></collectionAdd>
       <collectionDetail :dialogFormVisible1="dialogFormVisible1" :info="info" @close="closeAdd"></collectionDetail>
+      <collectionAddBatch  :dialogFormVisible2="dialogFormVisible2" @close="closeAdd"></collectionAddBatch>
     </div>
   </div>
 </template>
 
 <script>
   import collectionAdd from '@/page/Finance/collectionManagement/recognitionWait/collectionAdd.vue'
+  import collectionAddBatch from '@/page/Finance/collectionManagement/recognitionWait/collectionAddBatch.vue'
   import collectionDetail from '@/page/Finance/collectionManagement/recognitionWait/collectionDetail.vue'
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "tradeList",
     components:{
       collectionAdd,
-      collectionDetail
+      collectionDetail,
+      collectionAddBatch
     },
     data() {
       return {
@@ -97,6 +101,7 @@
 
         dialogFormVisible: false,
         dialogFormVisible1: false,
+        dialogFormVisible2: false,
         info: '',
 
         startDatePicker: this.beginDate(),
@@ -148,7 +153,12 @@
       },
 
       addFun(){
+        this.info = '';
         this.dialogFormVisible = true;
+      },
+      batchAddFun(){
+        this.info = '';
+        this.dialogFormVisible2 = true;
       },
       detail(row){
         this.info = row.id;
@@ -157,6 +167,7 @@
       closeAdd() {
         this.dialogFormVisible = false;
         this.dialogFormVisible1 = false;
+        this.dialogFormVisible2 = false;
         this.info = '';
         this.loadData();
       },
@@ -345,6 +356,9 @@
       .search_input{
         /*float: left;*/
         width: 65%;
+      }
+      .start-time{
+        width: 32.5%;
       }
       .date-line {
         width: 10px;

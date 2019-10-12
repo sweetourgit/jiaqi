@@ -563,14 +563,6 @@
       }
     },
     watch: {
-//      info: {
-//        handler:function(){
-////          alert(this.info);
-//          if(this.info != '' && this.dialogFormVisible){
-//            this.loadData();
-//          }
-//        }
-//      },
       dialogFormVisible: {
         handler: function () {
 //          alert(this.dialogFormVisible);
@@ -873,6 +865,7 @@
       subFun(){
         const that = this;
         let fileArr = [],money = '',startTime = '',endTime = '', flag = true;
+        const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
         if(this.PFTYE){
           if(this.pft_list.length != 0){
             this.pft_list.forEach(function (item, index, arr) {
@@ -901,14 +894,23 @@
             flag = false;
             return;
           }else{
-            startTime = this.pftForm.startTime;
+            if (!reg.test(this.pftForm.startTime)) {
+              startTime = formatDate(this.pftForm.startTime);
+            }else{
+              startTime = this.pftForm.startTime;
+            }
           }
           if(this.pftForm.endTime == ''){
             that.$message.warning('款项入账时间段不能为空');
             flag = false;
             return;
           }else{
-            endTime = this.pftForm.endTime;
+            if (!reg.test(this.pftForm.endTime)) {
+              endTime = formatDate(this.pftForm.endTime);
+            }else{
+              endTime = this.pftForm.endTime;
+            }
+//            endTime = this.pftForm.endTime;
           }
         }else{
           if(this.fileList.length != 0 && this.tableDataQK != []){
@@ -931,14 +933,24 @@
             flag = false;
             return;
           }else{
-            startTime = this.ruleForm.startTime;
+            if (!reg.test(this.ruleForm.startTime)) {
+              startTime = formatDate(this.ruleForm.startTime);
+            }else{
+              startTime = this.ruleForm.startTime;
+            }
+//            startTime = this.ruleForm.startTime;
           }
           if(this.ruleForm.endTime == ''){
             that.$message.warning('款项入账时间段不能为空');
             flag = false;
             return;
           }else{
-            endTime = this.ruleForm.endTime;
+            if (!reg.test(this.ruleForm.endTime)) {
+              endTime = formatDate(this.ruleForm.endTime);
+            }else{
+              endTime = this.ruleForm.endTime;
+            }
+//            endTime = this.ruleForm.endTime;
           }
         }
         let getOrder = '';
@@ -948,8 +960,12 @@
         });
         getOrder = getOrder.substr(0, getOrder.length - 1);
 //        alert(getOrder);
-
-//        alert(this.deleteStr);
+        if (!reg.test(this.ruleForm.creditTime)) {
+          this.ruleForm.creditTime = formatDate(this.ruleForm.creditTime);
+        }
+//        alert(this.ruleForm.creditTime);
+//        alert(startTime);
+//        alert(endTime);
         let data;
         if(this.deleteStr == ''){
           data = {
@@ -1157,6 +1173,7 @@
       },
       subFunXG(){
         const that = this;
+        const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
         let fileArr = [],money = '',startTime = '',endTime = '',file = '',flag = true;
         if(this.PFTYE){
           if(this.pft_list.length != 0){
@@ -1193,14 +1210,24 @@
             flag = false;
             return;
           }else{
-            startTime = this.pftForm.startTime;
+//            startTime = this.pftForm.startTime;
+            if (!reg.test(this.pftForm.startTime)) {
+              startTime = formatDate(this.pftForm.startTime);
+            }else{
+              startTime = this.pftForm.startTime;
+            }
           }
           if(this.pftForm.endTime == ''){
             that.$message.warning('款项入账时间段不能为空');
             flag = false;
             return;
           }else{
-            endTime = this.pftForm.endTime;
+            if (!reg.test(this.pftForm.endTime)) {
+              endTime = formatDate(this.pftForm.endTime);
+            }else{
+              endTime = this.pftForm.endTime;
+            }
+//            endTime = this.pftForm.endTime;
           }
         }else{
           if(this.ruleForm.payMoney == ''){
@@ -1215,14 +1242,24 @@
             flag = false;
             return;
           }else{
-            startTime = this.ruleForm.startTime;
+//            startTime = this.ruleForm.startTime;
+            if (!reg.test(this.ruleForm.startTime)) {
+              startTime = formatDate(this.ruleForm.startTime);
+            }else{
+              startTime = this.ruleForm.startTime;
+            }
           }
           if(this.ruleForm.endTime == ''){
             that.$message.warning('款项入账时间段不能为空');
             flag = false;
             return;
           }else{
-            endTime = this.ruleForm.endTime;
+//            endTime = this.ruleForm.endTime;
+            if (!reg.test(this.ruleForm.endTime)) {
+              endTime = formatDate(this.ruleForm.endTime);
+            }else{
+              endTime = this.ruleForm.endTime;
+            }
           }
         }
 //        alert(getOrder);
@@ -1235,6 +1272,9 @@
               getOrder += item.order_sn + ',';
             }
           });
+          if (!reg.test(this.ruleForm.creditTime)) {
+            this.ruleForm.creditTime = formatDate(this.ruleForm.creditTime);
+          }
           getOrder = getOrder.substr(0, getOrder.length - 1);
           this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/updrece", {

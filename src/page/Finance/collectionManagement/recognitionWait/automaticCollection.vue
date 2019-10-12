@@ -336,6 +336,9 @@
         /*float: left;*/
         width: 65%;
       }
+      .start-time{
+        width: 32.5%;
+      }
       .date-line {
         width: 10px;
         border-bottom: 1px solid #e6e6e6;
