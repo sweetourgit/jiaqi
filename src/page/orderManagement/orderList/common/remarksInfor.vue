@@ -23,10 +23,10 @@
               :autosize="{ minRows: 3, maxRows: 6}"
               class="remark"
               placeholder="请输入内容"
-              v-model="item.Mark"
+              v-model="item.content"
               :disabled="true"
             ></el-input>
-            <div class="time">{{item.CreateTime}}</div>
+            <div class="time">{{getTimeChange(item.createTime)}}</div>
           </el-form-item>
         </div>
         <el-form-item label="填写备注" prop="Mark">
@@ -118,8 +118,8 @@ export default {
           // console.log(res)
           console.log("备注获取的数据",res)
           if (res.data.isSuccess == true) {
-            this.orderget = res.data.object;
-            // this.markForms = res.data.object.comments
+            // this.orderget = res.data.objects;
+            this.markForms = res.data.objects
             //   ? JSON.parse(res.data.object.remark)
             //   : [];
             //  console.log("orderGet的this.markForms",this.markForms)
@@ -157,9 +157,11 @@ export default {
           //   });
 
             this.$http
-            .post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
+            .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
               object: {
-                remark:""
+                orderCode: this.orderCode,
+                content: this.markFormAdd.Mark,
+                createTime: moment().format('YYYY-DD-MM hh:mm:ss').toString()
               }
             })
             .then(res => {
@@ -177,10 +179,10 @@ export default {
       });
     },
     // 接收备注时间格式的转换   
-    // getTimeChange (str) {
-    //   let time = str.replace('T',' ')
-    //   return time
-    // }
+    getTimeChange (str) {
+      let time = str.replace('T',' ')
+      return time
+    }
   }
 };
 </script>

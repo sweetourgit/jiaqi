@@ -216,7 +216,8 @@
             <td valign="top">{{item.contactName}}</td>
             <div class="tableCenter">
               <td class="tr">数量</td>
-              <td valign="top">{{item.number}}</td>
+              <td valign="top">{{item.enrollDetail}}</td>
+              <!-- <td valign="top">{{item.number}}</td> -->
             </div>
             <td class="tr">其他费用</td>
             <td valign="top">{{item.otherTitle}} (<span>{{toDecimal2(item.otherPrice)}}</span>) </td>
@@ -428,7 +429,7 @@ export default {
           }
         })
         .then(res => {
-          console.log("出发地目的地", res);
+          // console.log("出发地目的地", res);
           let tableData = [];
           for (let i = 0; i < res.data.objects.length; i++) {
             tableData.push({
@@ -558,7 +559,7 @@ export default {
       //   this.orderStatus = 11
       // }
       // console.log(orderStatus,refundStatus)
-          // this.orderpage = [];
+          this.orderpage = [];
       let object = {orderCode: orderCode,
             // teamID: teamID ? teamID : 0,
             // groupCode: groupCode,
@@ -581,7 +582,6 @@ export default {
         object.beginDate = moment(beginDate).format('YYYY-MM-DD')
         object.endDate = moment(endDate).format('YYYY-MM-DD')
       }
-      console.log(object.beginDate, object.endDate);
       this.$http
         .post(this.GLOBAL.serverSrc + "/order/all/api/orderpage", {
           pageIndex: pageIndex,
@@ -590,7 +590,7 @@ export default {
         })
         .then(res => {
           console.log("判断是否是 页面初始", res);
-          this.orderpage = [];
+          // this.orderpage = [];
        
           this.total = res.data.total;
           if (res.data.isSuccess == true) {
