@@ -197,7 +197,8 @@ export default {
   props: {
     orderId: 0,
     variable: 0,
-    dialogType: 0
+    dialogType: 0,
+    orderCode:""
   },
   data() {
     return {
@@ -520,10 +521,12 @@ export default {
     },
     //游客信息保存
     subInfo(formName) {
+      // console.log("subinfo是否走")
       this.$refs[formName].validate(valid => {
         if (valid) {
           let guest = JSON.parse(JSON.stringify(this.conForm));
           console.log(guest.bornDate);
+          console.log(this.salePrice[this.tourType],'this.salePrice[this.tourType]')
           guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
           guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
           if (this.ruleForm.price == 1) {

@@ -625,7 +625,6 @@ export default {
               guestAll.push(this.tour[i][j]);
             }
           }
-
           let guest = [];
           for (let i = 0; i < guestAll.length; i++) {
             if (guestAll[i].cnName != "点击填写") {
@@ -701,7 +700,7 @@ export default {
                     CreateTime: formatDate(new Date())
                   }
                 ]),
-                guest: guest,
+                guests: guest,
                 number: number,
                 enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
               }
@@ -739,7 +738,6 @@ export default {
     },
     // 下单弹窗 的提交按钮成功后  需再把备注信息存到/orderquery/get/api/InserOrderComment
     addComment(orderCode) {
-      console.log(moment().format("YYYY-DD-MM hh:mm:ss"));
       this.$http
         .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
           object: {
@@ -752,7 +750,7 @@ export default {
         })
 
         .then(res => {
-          console.log(res);
+
         })
         .catch(err => {
           console.log(err);
@@ -801,6 +799,8 @@ export default {
           let guest = JSON.parse(JSON.stringify(this.conForm));
           guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
           guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
+          // guest.enrollNum = this.
+          // guest.createTime = this.createTime
           if (this.ruleForm.price == 1) {
             guest.singlePrice = this.salePrice[this.tourType].price_01; //填充价格
           } else {
