@@ -145,6 +145,7 @@ export default {
   },
   created(){
     this.teamQueryList();
+    this.loadOper();
   },
   methods: {
     productName(){
@@ -237,10 +238,22 @@ export default {
           }).then(res => {
             this.teamqueryList=[];
             this.total=res.data.total;
+            this.teamqueryList.forEach(function (item, index, arr){
+              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                "userCode": item.op
+              }).then(function(response) {
+                if (response.data.isSuccess) {
+                  item.op = response.data.object.name
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
+            })
             if(res.data.isSuccess == true){
-               this.teamqueryList=res.data.objects;              
+               this.teamqueryList=res.data.objects;            
             }
-          }).catch(err => {
+          })
+          .catch(err => {
             console.log(err)
           })
       },
@@ -310,7 +323,62 @@ export default {
             })
           })
       },
+      loadOper(){
+          const that = this;
+          this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+            "object": {
+              "id": 0,
+              "createTime": '2019-08-23T03:03:10.386Z',
+              "isDeleted": 0,
+              "code": "",
+              "mobile": "",
+              "name": "",
+              "email": "",
+              "userCode": "",
+              "passWord": "",
+              "iDcard": "",
+              "tourGuide": "",
+              "sex": 0,
+              "userType": 0,
+              "userState": 0,
+              "orgID": 0,
+              "orgName": "",
+              "user_Position": [
+                {
+                  "id": 0,
+                  "userID": 0,
+                  "positionID": 0,
+                  "positionName": "",
+                  "isDefault": 0,
+                  "orgID": 0,
+                  "orgName": ""
+                }
+              ]
+            }
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(function(response) {
 
+            if (response.data.isSuccess) {
+//            console.log('操作人员列表',response.data.objects);
+              let operatorList = [];
+              response.data.objects.forEach(function (item, index, arr) {
+                const operator = {
+                  'value' : item.name,
+                  'id' : item.id
+                };
+                operatorList.push(operator);
+              });
+              that.operatorList = operatorList;
+            } else {
+              that.$message.success("加载数据失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }
 
 
 
