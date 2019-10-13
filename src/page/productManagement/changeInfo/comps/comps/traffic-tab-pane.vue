@@ -41,16 +41,18 @@
         <component 
           v-for="(item, i) in traffics" 
           ref="children"
-          :key="item.goOrBack+ '.'+ i"
+          :key="item.goOrBack+ '-'+ i"
           :rank="i"
           :proto="item"
           :is="'child'+ item.trafficMode"
+          @remove-traffic="removeTrafficEmit(i)"
+          @change-traffic-mode="changeTrafficModeEmit"
         >
           <div class="title" v-if="i=== 0">
             <span style="margin-right: 20px;">去程</span>
-            <el-button type="primary" size="small" @click="$emit('add-traffic', proto)">添加中转</el-button>
+            <el-button type="primary" size="small" @click="addTraffic">添加中转</el-button>
           </div>
-          <div class="title" v-if="i=== proto.length- 1">
+          <div class="title" v-if="i=== traffics.length- 1">
             <span>返程</span>
           </div>
         </component>
@@ -65,6 +67,10 @@
 </template>
 
 <script>
+/**
+ * @description: 交通（中转）组件
+ */
+
 // 第三方组件
 import { VueEditor } from 'vue2-editor'
 // 组件
@@ -119,7 +125,6 @@ export default {
         this.traffics.splice(0);
         this.traffics.push(...this.$deepCopy(this.proto));
       }
-      console.log(this.briefMark);
       (!type || type=== 'easy') && (this.vm.content= this.briefMark);
     },
     /**
@@ -157,21 +162,58 @@ export default {
     },
 
     /**
+     * @description: 添加删除交通（中转）信息
+     */
+    addTraffic(){
+      this.traffics.splice(
+        this.traffics.length- 1, 0, TEAM_TRAFFIC_DTO_GO);
+    },
+    removeTrafficEmit(index){
+      this.traffics.splice(index, 1);
+    },
+
+    /**
+     * @description: 更换出行方式需要判断是否与原始数据中的出行方式一样，一样则以原始数据填充
+     * @bug 新增加一个中转，由中转飞机改为中转火车，再改回中转飞机，会将返程数据赋值给这个对象 
+     */
+    changeTrafficModeEmit(payload){
+      console.log(123)
+      let { index, trafficMode, goOrBackSign }= payload;
+      // 只有返程会自动定位到最后一个
+      index= goOrBackSign=== 2? 
+        (this.proto.length- 1): index;
+      // 默认数据，先切换组件形态
+      this.traffics[index]= goOrBackSign=== 2?
+        TEAM_TRAFFIC_DTO_BACK: TEAM_TRAFFIC_DTO_GO;
+      this.traffics[index].trafficMode= trafficMode;
+      // 如果是初始数据中的出行方式，则填充初始数据
+      if(this.proto[index] 
+        && this.traffics[index].trafficMode=== this.proto[index].trafficMode
+          && trafficMode=== this.proto[index].trafficMode){
+        Object.assign(this.traffics[index], this.$deepCopy(this.proto[index]));
+      }
+      this.$forceUpdate(); 
+    },
+
+    /**
      * @description: 检查是否有数据变动
      */
     checkHasChange(param){
       let type= param || this.vm.descriptionState;
       return this[`${type}CheckHasChange`]();
     },
+    //详情状态下检查
     detailCheckHasChange(){
       let bol= false;
       let children= this.$refs.children;
       children.forEach(child => {
         !bol && (bol= child.checkHasChange());
       })
+      !bol && (bol= !this.$checkLooseEqual(this.traffics, this.proto));
       console.log(`traffic-tab-pane checkHasChange: ${bol}`)
       return bol;
     },
+    //简易状态下检查
     easyCheckHasChange(){
       let bol= !(this.vm.content=== this.briefMark);
       console.log(`traffic-tab-pane checkHasChange: ${bol}`)

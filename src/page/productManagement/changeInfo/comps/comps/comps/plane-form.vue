@@ -26,11 +26,13 @@
         <el-row>
           <el-col style="width: 150px; padding-left: 30px;">
             <el-form-item label-width="0" prop="trafficMode">
-              <el-select v-model="submitForm.trafficMode" placeholder="出行方式" style="width: 100%;" size="small">
+              <el-select v-model="submitForm.trafficMode" placeholder="出行方式" style="width: 100%;" size="small"
+               @change="changeTrafficMode"  
+              >
                 <el-option
                   v-for="item in TRAFFIC_MODE_OPTIONS"
                   :key="item.value"
-                  :label="item.label"
+                  :label="(goOrBackSign?'':'中转')+ item.label"
                   :value="item.value">
                 </el-option>
               </el-select>
@@ -63,7 +65,7 @@
                 size="small"
                 v-model="vm.flightNo"
                 :fetch-suggestions="getFlightAction"
-                placeholder="输入航班号"
+                placeholder="输入航班ID"
                 :trigger-on-focus="false"
                 @select="selectFilght"
               ></el-autocomplete>
@@ -120,8 +122,15 @@
             </el-form-item>
           </el-col>
           <el-col style="width: 150px;">
-            <el-form-item label-width="50px" prop="trafficMode">
-              <el-input v-model="submitForm.trafficMode" placeholder="最大" style="width: 100%;" size="small"></el-input>
+            <el-form-item label-width="50px" prop="arriveDay">
+              <el-select v-model="submitForm.arriveDay" placeholder="到达时间" size="small">
+                <el-option
+                  v-for="item in ARRIVE_DAY_OPTIONS"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>   
             </el-form-item>
           </el-col>
         </el-row>
@@ -135,109 +144,52 @@
     </main>
 
     <footer>
-      <el-button type="primary" size="small" @click="addExtStopover">添加经停</el-button>
-      <el-button v-if="!goOrBackSign" type="info" size="small">删除中转</el-button>
+      <el-button type="primary" size="small" 
+        @click="addExtStopover"
+      >添加经停</el-button>
+      <el-button v-if="!goOrBackSign" type="info" size="small"
+        @click="$emit('remove-traffic')"
+      >删除中转</el-button>
     </footer>  
   </div>  
 </template>
 
 <script>
-import { TRAFFIC_MODE_OPTIONS, GO_OR_BACK_SIGN } from '../../../dictionary'
-import extStopover from './ext-stopover.vue'
+// 混入
+import TrafficFormMixin from './TrafficFormMixin'
+import ErrorHandlerMixin from './ErrorHandlerMixin'
+// 字典
+import { TRAFFIC_MODE_OPTIONS, ARRIVE_DAY_OPTIONS, GO_OR_BACK_SIGN } from '../../../dictionary'
 
 export default {
   name: 'plane-form',
 
-  components: {
-    extStopover,
-  },
-
-  inject: ['PROVIDE_DAY'],
-
-  props: {
-    proto: {
-      type: Object
-    },
-    /**
-     * @description: 0是去程，返程goOrBack是2，除此之外的都是中转
-     */
-    rank: [Number]
-  },
-
-  mounted(){
-    //初始化
-    this.init();
-  },
-
-  computed:{
-    goOrBackSign(){
-      // 去程
-      if(this.rank=== 0) return GO_OR_BACK_SIGN.GO;
-      // 返程
-      if(this.submitForm.goOrBack=== 2) return GO_OR_BACK_SIGN.BACK;
-      // 中转
-      return GO_OR_BACK_SIGN.CENTER;
-    }
-  },
+  mixins:[TrafficFormMixin, ErrorHandlerMixin],
 
   data(){
     return Object.assign({
       vm: {
         flightNo: '',
-        
       },
       submitForm: {},
       rules: {
         trafficMode: [{ required: true, trigger: 'blur' }],
-        company: [{ required: true, message: '航空公司不能为空', trigger: 'blur' }],
-        theNumber: [{ required: true, message: '航班号不能为空', trigger: 'blur' }],
-        podCity:[{ required: true, message: '出发城市不能为空', trigger: 'blur' }],
-        podPlace: [{ required: true, message: '出发机场不能为空', trigger: 'blur' }],
-        podTime: [{ required: true, message: '出发时间不能为空', trigger: 'blur' }],
-        arriveCity: [{ required: true, message: '到达城市不能为空', trigger: 'blur' }],
-        arrivePlace: [{ required: true, message: '到达机场不能为空', trigger: 'blur' }],
-        arriveTime: [{ required: true, message: '到达时间不能为空', trigger: 'blur' }],
-        planeDay: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        trafficMode: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        day: [{ required: true, message: '请选择天数'}],
+        company: [{ validator: this.simpleValidator, message: '航空公司不能为空', trigger: 'blur' }],
+        theNumber: [{ validator: this.simpleValidator, message: '航班号不能为空', trigger: 'blur' }],
+        podCity:[{ validator: this.simpleValidator, message: '出发城市不能为空', trigger: 'blur' }],
+        podPlace: [{ validator: this.simpleValidator, message: '出发机场不能为空', trigger: 'blur' }],
+        podTime: [{ validator: this.simpleValidator, message: '出发时间不能为空', trigger: 'blur' }],
+        arriveCity: [{ validator: this.simpleValidator, message: '到达城市不能为空', trigger: 'blur' }],
+        arrivePlace: [{ validator: this.simpleValidator, message: '到达机场不能为空', trigger: 'blur' }],
+        arriveTime: [{ validator: this.simpleValidator, message: '到达时间不能为空', trigger: 'blur' }],
+        planeDay: [{ validator: this.simpleValidator, message: '不能为空', trigger: 'blur' }],
+        trafficMode: [{ validator: this.simpleValidator, message: '不能为空', trigger: 'blur' }],
+        day: [{ validator: this.simpleValidator, message: '请选择天数', trigger: 'blur'}],
       }
-    }, { TRAFFIC_MODE_OPTIONS })
+    }, { TRAFFIC_MODE_OPTIONS, ARRIVE_DAY_OPTIONS })
   },
 
   methods: {
-    /**
-     * @description: 初始化
-     * @TODO 公共 
-     */
-    init(){
-      this.submitForm= this.$deepCopy(this.proto);
-      this.checkProto= this.$deepCopy(this.proto);
-      // 给返程一个day默认值
-      if(this.goOrBackSign=== GO_OR_BACK_SIGN.BACK){
-        this.submitForm.day= this.PROVIDE_DAY;
-        this.checkProto.day= this.PROVIDE_DAY;
-      }
-    },
-
-    /**
-     * @description: 检查是否有数据变动
-     * @TODO 公共
-     */
-    checkHasChange(){
-      let bol= false;
-      bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
-      !bol && (bol= this.$refs.extStopoverRef.checkHasChange());
-      console.log(`plane-form checkHasChange: ${bol}`)
-      return bol;
-    },
-    
-    /**
-     * @description: 添加经停
-     * @TODO 公共
-     */
-    addExtStopover(){
-      this.$refs.extStopoverRef.addExtStopover()
-    },
     
     /**
      * @description: id模糊搜索航班信息
@@ -268,12 +220,13 @@ export default {
      * @description: 字段不同，转接一下
      * @TODO 到达城市用reachingCity，到达机场arrivalAirport，呵呵
      */
-    flightAdapter(flight){
+    flightAttrAdapter(flight){
       let { 
-        number, departureTime, departureAirport, 
-        departureCity, company, arrivalTime, arrivalAirport,
-        reachingCity
+        number, company,
+        departureTime, departureAirport, departureCity,
+        arrivalTime, arrivalAirport, reachingCity
       }= flight;
+
       return {
         arriveCity: reachingCity,
         arrivePlace: arrivalAirport,
@@ -288,11 +241,11 @@ export default {
     },
     
     /**
-     * @description: 
+     * @description: 航班id查询后，以查询到的航班信息填充表单
      */
     selectFilght(flight){
       let hit= this.flightOptions.find(el => el.id== flight.value);
-      Object.assign(this.submitForm, this.flightAdapter(hit));
+      Object.assign(this.submitForm, this.flightAttrAdapter(hit));
     },
   }
 }

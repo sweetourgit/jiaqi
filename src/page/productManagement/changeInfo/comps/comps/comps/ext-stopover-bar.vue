@@ -43,12 +43,16 @@
 /**
  * @description: 经停组件
  */
+import ErrorHandlerMixin from './ErrorHandlerMixin'
+
 export default {
   props: {
     proto: {
       type: Object
     }
   },
+  
+  mixins:[ErrorHandlerMixin],
 
   mounted(){
     this.init();
@@ -61,13 +65,20 @@ export default {
         stopDate: ''
       },
       rules: {
-        stopCity: [{ required: true, message: '经停城市不能为空', trigger: 'blur' }],
-        stopDate: [{ required: true, message: '经停时间不能为空', trigger: 'blur' }],
+        stopCity: [{ 
+          validator: this.simpleValidator, 
+          message: '经停城市不能为空', trigger: 'blur' 
+        }],
+        stopDate: [{ 
+          validator: this.simpleValidator,
+          message: '经停时间不能为空', trigger: 'blur' 
+        }],
       },
     }
   },
 
   methods: {
+
     /**
      * @description: 初始化
      */
@@ -84,6 +95,22 @@ export default {
       let bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
       console.log(`ext-stopover-bar checkHasChange: ${bol}`)
       return bol;
+    },
+
+    /**
+     * @description: 统一验证
+     */
+    validate(){
+      this.$refs.submitForm.validate((valid) => {
+        return valid;
+      })
+    },
+
+    /**
+     * @description: 单纯获取数据
+     */
+    getFormData(){
+      return this.submitForm;
     }
   }
 }

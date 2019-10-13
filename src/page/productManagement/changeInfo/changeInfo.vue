@@ -57,6 +57,7 @@ export default {
 
   provide: {
     PROVIDE_DAY: 0,
+    ERROR_QUEUE: []
   },
 
   data() {

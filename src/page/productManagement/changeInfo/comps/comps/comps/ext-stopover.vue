@@ -1,5 +1,5 @@
 <template>
-  <div class="ext-stopover">
+  <div class="ext-stopover" @click="getFormData">
     <ext-stopover-bar
       ref="children"
       v-for="(bar, i) in bars"
@@ -27,8 +27,10 @@ export default {
   },
 
   watch:{
+    // 初始化在这里进行
     proto(nval){
       this.vm.inited= true;
+      this.vm.hasChanged= false;
       this.bars.push(...JSON.parse(nval));
     }
   },
@@ -37,6 +39,7 @@ export default {
     return {
       vm: {
         inited: false,
+        hasChanged: false
       },
       bars: [],
       rules: {},
@@ -44,15 +47,19 @@ export default {
   },
 
   methods: {
+    /**
+     * @description: 添加和删除动作就默认数据已经发生改变
+     */
     addExtStopover(){
+      this.vm.hasChanged= true;
       this.bars.push({
         timestamp: Date.now(),
         stopCity: '',
         stopDate: ''
       })
     },
-
     removeStopover(index){
+      this.vm.hasChanged= true;
       this.bars.splice(index, 1);
     },
 
@@ -60,12 +67,21 @@ export default {
      * @description: 检查是否有数据变动
      */
     checkHasChange(){
-      let bol= false;
+      let bol= this.vm.hasChanged;
       let children= this.$refs.children || [];
       children.forEach(child => {
         !bol && (bol= child.checkHasChange());
       })
       return bol;
+    },
+
+    /**
+     * @description: 得到数据
+     */
+    getFormData(){
+      let children= this.$refs.children;
+      if(!children) return "[]";
+      return JSON.stringify(children.map(el => el.getFormData()));
     }
   },
 }

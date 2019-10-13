@@ -62,7 +62,6 @@
             ref="traffic"
             :proto="proto.traffic"
             :brief-mark="proto.briefMark"
-            @add-traffic="emitAddTraffic"
           ></traffic-tab-pane>
         </el-tab-pane>
         <!-- <el-tab-pane label="酒店信息" name="second">酒店信息</el-tab-pane> -->
@@ -149,16 +148,6 @@ export default {
     destinationIDValidator(rule, value, callback){
       if(value) return callback();
       return callback(new Error('目的地不能为空'));
-    },
-    
-    /**
-     * @description: 添加一个中转traffic
-     * @param {Array} defaultTraffics: 默认对象或生成的对象
-     * @TODO 添加后滚动条定位到新添加的元素上 
-     */
-    emitAddTraffic(defaultTraffics){
-      let traffics= defaultTraffics;
-      traffics.splice(traffics.length- 1, 0, TEAM_TRAFFIC_DTO_GO)
     },
 
     /**

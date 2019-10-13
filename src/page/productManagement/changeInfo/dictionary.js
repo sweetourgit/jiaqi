@@ -1,7 +1,11 @@
-// 默认交通方式
+/**
+ * @description: 默认交通方式
+ */
 export const DEFALUT_TRAFFIC_MODE= 1
 
-// 交通方式
+/**
+ * @description: 交通方式options
+ */
 export const TRAFFIC_MODE_OPTIONS= [{
   value: 1,
   label: '飞机'
@@ -16,18 +20,54 @@ export const TRAFFIC_MODE_OPTIONS= [{
   label: '轮船',
 }]
 
+/**
+ * @description: 到达时间options
+ */
+export const ARRIVE_DAY_OPTIONS= [{
+  value: -2,
+  label: '前天'
+},{
+  value: -1,
+  label: '昨天',
+}, {
+  value: 0,
+  label: '当日',
+},{
+  value: 1,
+  label: '明天',
+}, {
+  value: 2,
+  label: '后天',
+}, {
+  value: 3,
+  label: '第三天',
+}, {
+  value: 4,
+  label: '第四天',
+}, {
+  value: 5,
+  label: '第五天',
+}, {
+  value: 6,
+  label: '第六天',
+}, ]
+
+/**
+ * @description: 去程返程 center中转
+ */
+// 标记
 export const GO_OR_BACK_SIGN= {
   GO: 1,
   BACK: 2,
   CENTER: 0
 }
-
 // TeamTrafficDTO
 const TEAM_TRAFFIC_DTO= {
   // id
   // packageID
   trafficMode: DEFALUT_TRAFFIC_MODE,
   day: 1,
+  arriveDay: "",
   arriveCity: "",
   arrivePlace: "",
   arriveTime: "",
