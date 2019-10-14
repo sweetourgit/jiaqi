@@ -16,12 +16,12 @@
       <el-row>
         <el-col style="width: 330px;">
           <el-form-item label="经停城市：" label-width="120px" prop="stopCity">
-            <el-input v-model="submitForm.stopCity" placeholder="航空公司" style="width: 100%;" size="small"></el-input>
+            <el-input v-model="submitForm.stopCity" placeholder="经停城市" style="width: 100%;" size="small"></el-input>
           </el-form-item>
         </el-col>
         <el-col style="width: 280px;">
           <el-form-item label="经停时间：" label-width="140px" prop="stopDate">
-            <el-input v-model="submitForm.stopDate" placeholder="航班号" style="width: 100%;" size="small"></el-input>
+            <el-input v-model="submitForm.stopDate" placeholder="经停时间" style="width: 100%;" size="small"></el-input>
           </el-form-item>
         </el-col>
         <el-col style="width: 50px;">
@@ -43,7 +43,7 @@
 /**
  * @description: 经停组件
  */
-import ErrorHandlerMixin from './ErrorHandlerMixin'
+import ErrorHandlerMixin from './mixins/ErrorHandlerMixin'
 
 export default {
   props: {
@@ -83,8 +83,6 @@ export default {
      * @description: 初始化
      */
     init(){
-      //用于比较是否发生改变的对象
-      this.checkProto= this.$deepCopy(this.proto);
       Object.keys(this.proto).forEach(attr => this.submitForm[attr]= this.proto[attr]);
     },
 
@@ -92,7 +90,7 @@ export default {
      * @description: 检查是否有数据变动
      */
     checkHasChange(){
-      let bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
+      let bol= !this.$checkLooseEqual(this.submitForm, this.proto);
       console.log(`ext-stopover-bar checkHasChange: ${bol}`)
       return bol;
     },

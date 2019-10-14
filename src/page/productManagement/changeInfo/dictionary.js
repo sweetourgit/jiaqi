@@ -62,12 +62,13 @@ export const GO_OR_BACK_SIGN= {
   CENTER: 0
 }
 // TeamTrafficDTO
+// TODO: TEAM_TRAFFIC_DTO抽成能get实例的类，省的用deepCopy了
 const TEAM_TRAFFIC_DTO= {
   // id
   // packageID
   trafficMode: DEFALUT_TRAFFIC_MODE,
   day: 1,
-  arriveDay: "",
+  arriveDay: 0,
   arriveCity: "",
   arrivePlace: "",
   arriveTime: "",

@@ -74,8 +74,6 @@
 <script>
 // 组件
 import trafficTabPane from './comps/traffic-tab-pane'
-// 常量
-import { DEFALUT_TRAFFIC_MODE, TEAM_TRAFFIC_DTO_GO } from '../dictionary'
 
 export default {
   components: {
@@ -124,10 +122,14 @@ export default {
 
   methods: {
     /**
-     * @description: 初始化submitForm，并保存基础信息快照
+     * @description: 初始化submitForm，剥离交通信息，日程信息，保存基础信息快照 
      */
     init(){
-      Object.keys(this.submitForm).forEach(attr => this.submitForm[attr]= this.proto[attr]);
+      Object.keys(this.proto).forEach(attr => {
+        attr!== 'schedules' 
+          && attr!== 'traffic'
+            && (this.submitForm[attr]= this.proto[attr]);
+      });
       //用于比较是否发生改变的对象
       this.checkProto= this.$deepCopy(this.submitForm);
     },
@@ -161,7 +163,21 @@ export default {
       !bol && (bol= this.$refs.traffic.checkHasChange());
       console.log(`changeinfo-package checkHasChange: ${bol}`)
       return bol;
-    }
+    },
+
+    /**
+     * @description: 获取数据
+     */
+    getData(){
+      let hasChange= this.checkHasChange();
+      if(!hasChange) return this.$message.info('无数据变动');
+      let { traffic, briefMark }= this.$refs.traffic.getData();
+      //let schedules= this.$refs.schedules.getData();
+      let data= this.$deepCopy(this.submitForm);
+      data.traffic= traffic;
+      data.briefMark= briefMark;
+      return data;
+    },
   }
 }
 </script>

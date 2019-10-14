@@ -76,13 +76,13 @@
 
         <el-row>
           <el-col style="width: 330px;">
-            <el-form-item label="航空公司：" label-width="120px" prop="company">
-              <el-input v-model="submitForm.company" placeholder="航空公司" style="width: 100%;" size="small"></el-input>
+            <el-form-item :label="text.theNumber+ '：'" label-width="120px" prop="theNumber">
+              <el-input v-model="submitForm.theNumber" :placeholder="text.theNumber" style="width: 100%;" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col style="width: 330px;">
-            <el-form-item label="航班号：" label-width="140px" prop="theNumber">
-              <el-input v-model="submitForm.theNumber" placeholder="航班号" style="width: 100%;" size="small"></el-input>
+            <el-form-item :label="text.company+ '：'" label-width="140px" prop="company">
+              <el-input v-model="submitForm.company" :placeholder="text.company" style="width: 100%;" size="small"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -94,8 +94,8 @@
             </el-form-item>
           </el-col>
           <el-col style="width: 330px;">
-            <el-form-item label="出发机场：" label-width="140px" prop="podPlace">
-              <el-input v-model="submitForm.podPlace" placeholder="出发机场" style="width: 100%;" size="small"></el-input>
+            <el-form-item :label="text.podPlace+ '：'" label-width="140px" prop="podPlace">
+              <el-input v-model="submitForm.podPlace" :placeholder="text.podPlace" style="width: 100%;" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col style="width: 310px;">
@@ -112,8 +112,8 @@
             </el-form-item>
           </el-col>
           <el-col style="width: 330px;">
-            <el-form-item label="到达机场：" label-width="140px" prop="arrivePlace">
-              <el-input v-model="submitForm.arrivePlace" placeholder="到达机场" style="width: 100%;" size="small"></el-input>
+            <el-form-item :label="text.arrivePlace+ '：'" label-width="140px" prop="arrivePlace">
+              <el-input v-model="submitForm.arrivePlace" :placeholder="text.arrivePlace" style="width: 100%;" size="small"></el-input>
             </el-form-item>
           </el-col>
           <el-col style="width: 310px;">
@@ -156,10 +156,9 @@
 
 <script>
 // 混入
-import TrafficFormMixin from './TrafficFormMixin'
-import ErrorHandlerMixin from './ErrorHandlerMixin'
+import TrafficFormMixin from './mixins/TrafficFormMixin'
+import ErrorHandlerMixin from './mixins/ErrorHandlerMixin'
 // 字典
-import { TRAFFIC_MODE_OPTIONS, ARRIVE_DAY_OPTIONS, GO_OR_BACK_SIGN } from '../../../dictionary'
 
 export default {
   name: 'plane-form',
@@ -167,26 +166,17 @@ export default {
   mixins:[TrafficFormMixin, ErrorHandlerMixin],
 
   data(){
-    return Object.assign({
+    return {
       vm: {
         flightNo: '',
       },
-      submitForm: {},
-      rules: {
-        trafficMode: [{ required: true, trigger: 'blur' }],
-        company: [{ validator: this.simpleValidator, message: '航空公司不能为空', trigger: 'blur' }],
-        theNumber: [{ validator: this.simpleValidator, message: '航班号不能为空', trigger: 'blur' }],
-        podCity:[{ validator: this.simpleValidator, message: '出发城市不能为空', trigger: 'blur' }],
-        podPlace: [{ validator: this.simpleValidator, message: '出发机场不能为空', trigger: 'blur' }],
-        podTime: [{ validator: this.simpleValidator, message: '出发时间不能为空', trigger: 'blur' }],
-        arriveCity: [{ validator: this.simpleValidator, message: '到达城市不能为空', trigger: 'blur' }],
-        arrivePlace: [{ validator: this.simpleValidator, message: '到达机场不能为空', trigger: 'blur' }],
-        arriveTime: [{ validator: this.simpleValidator, message: '到达时间不能为空', trigger: 'blur' }],
-        planeDay: [{ validator: this.simpleValidator, message: '不能为空', trigger: 'blur' }],
-        trafficMode: [{ validator: this.simpleValidator, message: '不能为空', trigger: 'blur' }],
-        day: [{ validator: this.simpleValidator, message: '请选择天数', trigger: 'blur'}],
+      text: {
+        company: '航空公司', 
+        theNumber: '航班号', 
+        podPlace: '出发机场', 
+        arrivePlace: '到达机场'
       }
-    }, { TRAFFIC_MODE_OPTIONS, ARRIVE_DAY_OPTIONS })
+    }
   },
 
   methods: {

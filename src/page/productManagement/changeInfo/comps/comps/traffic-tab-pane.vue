@@ -79,7 +79,7 @@ import busForm from './comps/bus-form'
 import shipForm from './comps/ship-form'
 import trainForm from './comps/train-form'
 // 常量
-import { DEFALUT_TRAFFIC_MODE, TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK } from '../../dictionary'
+import { DEFALUT_TRAFFIC_MODE, TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, GO_OR_BACK_SIGN } from '../../dictionary'
 
 export default {
   components: {
@@ -102,6 +102,11 @@ export default {
 
   mounted(){
     this.init();
+    //如果有简要说明，自动切换
+    if(this.vm.content){
+      this.vm.description= "2";
+      this.vm.descriptionState= "easy";
+    }
   },
 
   data(){
@@ -127,6 +132,7 @@ export default {
       }
       (!type || type=== 'easy') && (this.vm.content= this.briefMark);
     },
+
     /**
      * @description: 切换说明类型
      */
@@ -166,7 +172,7 @@ export default {
      */
     addTraffic(){
       this.traffics.splice(
-        this.traffics.length- 1, 0, TEAM_TRAFFIC_DTO_GO);
+        this.traffics.length- 1, 0, this.$deepCopy(TEAM_TRAFFIC_DTO_GO));
     },
     removeTrafficEmit(index){
       this.traffics.splice(index, 1);
@@ -174,25 +180,30 @@ export default {
 
     /**
      * @description: 更换出行方式需要判断是否与原始数据中的出行方式一样，一样则以原始数据填充
-     * @bug 新增加一个中转，由中转飞机改为中转火车，再改回中转飞机，会将返程数据赋值给这个对象 
+     * @bug 1.新增加一个中转，由中转飞机改为中转火车，再改回中转飞机，这个对象的数据与返程数据会混淆
      */
     changeTrafficModeEmit(payload){
-      console.log(123)
       let { index, trafficMode, goOrBackSign }= payload;
       // 只有返程会自动定位到最后一个
-      index= goOrBackSign=== 2? 
+      index= goOrBackSign=== GO_OR_BACK_SIGN.BACK? 
         (this.proto.length- 1): index;
       // 默认数据，先切换组件形态
-      this.traffics[index]= goOrBackSign=== 2?
-        TEAM_TRAFFIC_DTO_BACK: TEAM_TRAFFIC_DTO_GO;
+      this.traffics.splice(index, 1,
+        this.$deepCopy(
+          goOrBackSign=== GO_OR_BACK_SIGN.BACK?
+            TEAM_TRAFFIC_DTO_BACK: TEAM_TRAFFIC_DTO_GO)
+      );
       this.traffics[index].trafficMode= trafficMode;
+      // 解决bug 1，如果切换方式的实例不是返程，但是它的下标却与原始数据中返程下标一致，也不重置数据
+      let notRestore= 
+        goOrBackSign!== GO_OR_BACK_SIGN.BACK && (index=== this.proto.length-1);
       // 如果是初始数据中的出行方式，则填充初始数据
-      if(this.proto[index] 
-        && this.traffics[index].trafficMode=== this.proto[index].trafficMode
-          && trafficMode=== this.proto[index].trafficMode){
+      if(!notRestore && this.proto[index] 
+        && this.proto[index].trafficMode===trafficMode){
         Object.assign(this.traffics[index], this.$deepCopy(this.proto[index]));
       }
-      this.$forceUpdate(); 
+      this.vm.descriptionState= false;
+      this.$nextTick(() => this.vm.descriptionState= "detail");
     },
 
     /**
@@ -210,15 +221,25 @@ export default {
         !bol && (bol= child.checkHasChange());
       })
       !bol && (bol= !this.$checkLooseEqual(this.traffics, this.proto));
-      console.log(`traffic-tab-pane checkHasChange: ${bol}`)
+      console.log(`traffic-tab-pane detail checkHasChange: ${bol}`)
       return bol;
     },
     //简易状态下检查
     easyCheckHasChange(){
       let bol= !(this.vm.content=== this.briefMark);
-      console.log(`traffic-tab-pane checkHasChange: ${bol}`)
+      console.log(`traffic-tab-pane easy checkHasChange: ${bol}`)
       return bol;
-    }
+    },
+
+    /**
+     * @description: 获取数据
+     */
+    getData(){
+      let children= this.$refs.children;
+      let traffic= children.map(child => child.getData());
+      let briefMark= this.vm.content;
+      return { traffic, briefMark };
+    },
   }
 }
 </script>

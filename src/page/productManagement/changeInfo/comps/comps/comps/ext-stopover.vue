@@ -1,5 +1,5 @@
 <template>
-  <div class="ext-stopover" @click="getFormData">
+  <div class="ext-stopover">
     <ext-stopover-bar
       ref="children"
       v-for="(bar, i) in bars"
@@ -13,7 +13,7 @@
 
 <script>
 /**
- * @description: 逻辑组件，处理经停的逻辑 
+ * @description: 处理经停整体的逻辑 
  */
 import extStopoverBar from './ext-stopover-bar'
 
@@ -78,10 +78,10 @@ export default {
     /**
      * @description: 得到数据
      */
-    getFormData(){
+    getData(){
       let children= this.$refs.children;
       if(!children) return "[]";
-      return JSON.stringify(children.map(el => el.getFormData()));
+      return JSON.stringify(children.map(el => el.getData()));
     }
   },
 }

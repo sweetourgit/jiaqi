@@ -56,7 +56,9 @@ export default {
   },
 
   provide: {
+    // 行程总天数
     PROVIDE_DAY: 0,
+    // 校验错误收集队列
     ERROR_QUEUE: []
   },
 
@@ -175,6 +177,7 @@ export default {
     },
     saveAction(){
       //if(!this.checkHasChange()) return this.$message.info('数据未变动');
+      console.log(this.$refs.packageRef[0].getData())
     }
   }
 }
