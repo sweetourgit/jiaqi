@@ -144,9 +144,12 @@
           <el-input v-model="Rform.sumNum" style="width:200px; margin:0 0 0 33px;" ></el-input>
         </el-form-item>
         <el-form-item label="订单预留时长:" style="margin-top:20px">
-          <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:200px">
+          <!-- <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:200px">
             <el-option label="0-1" value="shanghai"></el-option>
             <el-option label="1-2" value="beijing"></el-option>
+          </el-select> -->
+          <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:200px">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of excurList" :key="item.value"/>
           </el-select>
         </el-form-item>
       </el-form>
@@ -270,7 +273,80 @@
         //   type:false,
         // }],
         typeSelect: [], // 报名类型选择
-        signUptypeSelect:[] // 共享库存数据
+        signUptypeSelect:[], // 共享库存数据
+        excurList:[{
+          value: '1',
+          label: '1小时'
+        }, {
+          value: '2',
+          label: '2小时',
+        }, {
+          value: '3',
+          label: '3小时',
+        }, {
+          value: '4',
+          label: '4小时',
+        }, {
+          value: '5',
+          label: '5小时',
+        }, {
+          value: '6',
+          label: '6小时',
+        }, {
+          value: '7',
+          label: '7小时',
+        }, {
+          value: '8',
+          label: '8小时',
+        }, {
+          value: '9',
+          label: '9小时',
+        }, {
+          value: '10',
+          label: '10小时',
+        }, {
+          value: '11',
+          label: '11小时',
+        }, {
+          value: '12',
+          label: '12小时',
+        }, {
+          value: '13',
+          label: '13小时',
+        }, {
+          value: '14',
+          label: '14小时',
+        }, {
+          value: '15',
+          label: '15小时',
+        }, {
+          value: '16',
+          label: '16小时',
+        }, {
+          value: '17',
+          label: '17小时',
+        }, {
+          value: '18',
+          label: '18小时',
+        }, {
+          value: '19',
+          label: '19小时',
+        }, {
+          value: '20',
+          label: '20小时',
+        }, {
+          value: '21',
+          label: '21小时',
+        }, {
+          value: '22',
+          label: '22小时',
+        }, {
+          value: '23',
+          label: '23小时',
+        }, {
+          value: '24',
+          label: '24小时',
+        }]
       };
     },
     // 结算参考保留小数点后两位
@@ -965,6 +1041,7 @@
                           "date": this.Rform.date
                         }
                       }).then(res => {
+
                         // 添加完成后传入添加后的id
                         this.saveQuota(this.n[0], data, res.data.id);
                       }).catch(err => {

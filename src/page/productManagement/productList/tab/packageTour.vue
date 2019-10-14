@@ -1979,7 +1979,7 @@ export default {
     clickBanle(row, event, column) {
       this.pid = row["id"];
       this.reable = false;
-    }
+    },
   },
   created() {
     this.themeList();
