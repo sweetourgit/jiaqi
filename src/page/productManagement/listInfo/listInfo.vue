@@ -2220,7 +2220,7 @@
                   confirmType:this.ruleForm.orderConfirmationType,//基本信息订单确认类型
                   strengths:strengths,//基本信息亮点词
                   label:this.dynamicTags2,//基本信息运营标签
-                  pictureID:'',//基本信息头图?
+                  pictureID:0,//基本信息头图?
                   vedioID:0,//基本信息视频?
 
                   pepeatpic:'',//基本信息轮播图?
