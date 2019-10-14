@@ -46,6 +46,7 @@
           <el-autocomplete class="search_input" v-model="distributor" :fetch-suggestions="querySearchD" placeholder="请输入操作人员" @select="handleSelectD" @blur="blurHand"></el-autocomplete>
         </div>
         <div class="selectDv" v-if="rec_type == '2'">
+          <span>分销商：</span>
           <el-radio-group v-model="distributorType">
             <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
             <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
@@ -53,12 +54,12 @@
             <el-radio label="票付通余额">票付通余额</el-radio>
             <el-radio label="无">无</el-radio>
           </el-radio-group>
-          <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
-            <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled" :picker-options="importStartDatePicker"></el-date-picker>
-            <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
-            <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" :picker-options="importEndDatePicker"></el-date-picker>
-            <p style="margin: 0;color: #999;line-height: 22px;">该笔款所包含的所有订单，所有订单下单的时间区间</p>
-          </el-form-item>
+          <br><br>
+          <span>款项入账时间段：</span>
+          <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time baseIn" :picker-options="startDatePicker"></el-date-picker>
+          <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
+          <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time baseIn" :picker-options="endDatePicker"></el-date-picker>
+          <p style="margin: 0;color: #999;line-height: 22px;">该笔款所包含的所有订单，所有订单下单的时间区间</p>
         </div>
       </div>
     </el-dialog>
@@ -99,6 +100,12 @@
         distributor: '',// 选择的分销商
         distributorID: '',// 选择的分销商ID
         distributorList: [],// 分销商列表
+
+        startTime: '',
+        endTime: '',
+
+        startDatePicker: this.beginDate(),
+        endDatePicker: this.processDate(),
 
       }
     },
@@ -308,7 +315,34 @@
         }).catch(function(obj) {
           console.log(obj);
         });
-      }
+      },
+      // 时间限制
+      beginDate(){
+//      alert(begin);
+        const that = this;
+        return {
+          disabledDate(time){
+            if (that.endTime) {  //如果结束时间不为空，则小于结束时间
+              return new Date(that.endTime).getTime() < time.getTime()
+            } else {
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+            }
+          }
+        }
+      },
+      processDate(){
+//      alert(process);
+        const that = this;
+        return {
+          disabledDate(time) {
+            if (that.startTime) {  //如果开始时间不为空，则结束时间大于开始时间
+              return new Date(that.startTime).getTime() > time.getTime()
+            } else {
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+            }
+          }
+        }
+      },
     },
     created() {
 
