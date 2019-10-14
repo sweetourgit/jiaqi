@@ -53,7 +53,7 @@
             <!-- 行程天數 -->
             <div style="overflow:hidden">
               <el-form-item style="width:300px; float:left;" label='行程天数' prop="travelDays" label-width="120px">
-                <el-input style="width:105px;margin-left:-25px;" v-model="ruleForm.travelDays" placeholder="请输入天数" ref="travelDays"></el-input>
+                <el-input :max="20" style="width:105px;margin-left:-25px;" v-model="ruleForm.travelDays" placeholder="请输入天数" ref="travelDays"></el-input>
                 <span class="travelDays-span" style="margin-left:10px;color: #333;">天</span>
               </el-form-item>
               <el-form-item class="number-day" style="float:left; margin-left:-25px;" prop="travelNight">
@@ -1686,8 +1686,8 @@
           highlightWords3: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
           highlightWords4: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
           travelDays: [{ required: true, message: '行程天数不能为空', trigger: 'change' },
-            { pattern: /^[1-9]\d*$/, message: '行程天数需为正整数' },
-             { min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' },],
+            { pattern: /^[1-9]\d*$/, message: '行程天数需为正整数' },],
+             // { min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' },
           travelNight: [{ required: true, message: '行程晚数不能为空', trigger: 'change' },
             { pattern: /^[1-9]\d*$/, message: '行程晚数需为正整数' },
             { min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' }],
@@ -2257,32 +2257,53 @@
                   others:this.notes.concat(this.instructions),//预订须知和使用说明[...this.notes, ...this.instructions]ES6新方法
                   loadPackage: true
                 }
+                this.$refs[formName].validate((valid) => {
+                  if(valid){
+                      var _this = this;
+                      if(this.isInfo == false && this.isInfoImg == false){
+                        this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
+                            object: object
+                        }).then(function(response) {
+                              if(response.data.isSuccess==true){
+                                _this.$message.success("添加成功");
+                                _this.$router.push({path: "/productList/packageTour"});
+                              }else{
+                                 _this.$message.success("添加失败");
+                              }
+                          }).catch(function(error) {
+                            console.log(error);
+                          });
+
+                      }else{
+                        this.errors();
+                      }
+                      }
+                })
               //  console.log(this.ruleForm.theme)
                // console.log(this.ruleForm.Excursion)
                // console.log(JSON.stringify(object))
-        this.$refs[formName].validate((valid) => {
-        // this.$refs['form'].clearValidate('openingHours');
+        // this.$refs[formName].validate((valid) => {
+        // // this.$refs['form'].clearValidate('openingHours');
 
-          if(valid){
-              var _this = this;
-              this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
-                object: object
-              },
-              ).then(function(response) {
-                  if(response.data.isSuccess==true){
-                    _this.$message.success("添加成功");
-                    _this.$router.push({path: "/productList/packageTour"});
-                  }else{
-                     _this.$message.success("添加失败");
-                  }
-              }).catch(function(error) {
-                console.log(error);
-              });
+        //   if(valid){
+        //       var _this = this;
+        //       this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
+        //         object: object
+        //       }).then(function(response) {
+        //           if(response.data.isSuccess==true){
+        //             _this.$message.success("添加成功");
+        //             _this.$router.push({path: "/productList/packageTour"});
+        //           }else{
+        //              _this.$message.success("添加失败");
+        //           }
+        //       }).catch(function(error) {
+        //         console.log(error);
+        //       });
 
-          }else{
-            this.errors();
-          }
-        })
+        //   }else{
+        //     this.errors();
+        //   }
+        // })
       },
       errors(){
         this.dialogVadi = true;
@@ -2303,6 +2324,10 @@
              _this.validaError.unshift("头图不能为空");
           }if(_this.ruleForm.slideshow.length==0){
              _this.validaError.unshift("轮播图不能为空");
+          }if(_this.isInfoImg == true){
+             _this.validaError.unshift("头图请选择1张图片");
+          }if(_this.isInfo==true){
+             _this.validaError.unshift("轮播图请选择3-6张图片");
           }
         },500);
       },
