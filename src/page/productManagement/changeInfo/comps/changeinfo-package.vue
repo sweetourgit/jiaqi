@@ -65,7 +65,12 @@
           ></traffic-tab-pane>
         </el-tab-pane>
         <!-- <el-tab-pane label="酒店信息" name="second">酒店信息</el-tab-pane> -->
-        <el-tab-pane label="日程信息" name="schedules">日程信息</el-tab-pane>
+        <el-tab-pane label="日程信息" name="schedules">
+          <schedules-tab-pane
+            ref="schedules"
+            :proto="proto.schedules"
+          ></schedules-tab-pane>
+        </el-tab-pane>
       </el-tabs>
     </main>
   </div>
@@ -73,11 +78,13 @@
 
 <script>
 // 组件
-import trafficTabPane from './comps/traffic-tab-pane'
+import trafficTabPane from './traffic-tab-pane'
+import schedulesTabPane from './schedules-tab-pane'
 
 export default {
   components: {
-    trafficTabPane
+    trafficTabPane,
+    schedulesTabPane
   },
 
   props: {
