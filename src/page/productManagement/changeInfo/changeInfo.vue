@@ -52,7 +52,11 @@
 
 <script>
 import './tools'
-import { getTeamScheduleDTO, TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, } from './dictionary'
+import { 
+  getTeamScheduleDTO, 
+  TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, 
+  CODE_PREFIX, CODE_SUFFIX
+} from './dictionary'
 import changeinfoPackage from './comps/changeinfo-package'
 
 export default {
@@ -117,17 +121,18 @@ export default {
       let newTabName= this.getNewPackageName();
       TEAM_TRAFFIC_DTO_BACK.day= this._provided.PROVIDE_DAY;
       this.packages.push({
+        //id: this.proto.id,
         teamID:this.$route.query.id,
         loadPackage: true,
         loadPlan: true,
 
         name: newTabName,
-
-        podID: null,
-        destinationID: null,
+        
         pod: null,
+        podID: null,
         destination: null,
-        createTime: null,
+        destinationID: null,
+        createTime: new Date().toISOString(),
         traffic: [
           TEAM_TRAFFIC_DTO_GO,
           TEAM_TRAFFIC_DTO_BACK
@@ -136,8 +141,8 @@ export default {
           this._provided.PROVIDE_DAY
         ),
         briefMark: '',
-        codePrefix: "",
-        codeSuffix:"",
+        codePrefix: CODE_PREFIX,
+        codeSuffix: CODE_SUFFIX
       });
       this.vm.currentPackage= null;
       this.$nextTick(() => {
@@ -217,6 +222,7 @@ export default {
         this.pods.push(...pods);
         this.destinations.push(...destinations);
         this._provided.PROVIDE_DAY= day;
+        this.proto= object;
         //tab默认指向首页
         if(this.packages.length=== 0) return;
         this.vm.currentPackage= this.packages[0].name;

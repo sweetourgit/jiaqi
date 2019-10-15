@@ -1,11 +1,11 @@
-/**
- * @description: 默认交通方式
- */
+// 不只奥是啥东西
+export const CODE_PREFIX= "LKCO";
+export const CODE_SUFFIX= "US621";
+
+// 默认交通方式
 export const DEFALUT_TRAFFIC_MODE= 1
 
-/**
- * @description: 交通方式options
- */
+// 交通方式options
 export const TRAFFIC_MODE_OPTIONS= [{
   value: 1,
   label: '飞机'
@@ -20,9 +20,7 @@ export const TRAFFIC_MODE_OPTIONS= [{
   label: '轮船',
 }]
 
-/**
- * @description: 到达时间options
- */
+// 到达时间options
 export const ARRIVE_DAY_OPTIONS= [{
   value: -2,
   label: '前天'

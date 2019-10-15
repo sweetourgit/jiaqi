@@ -31,7 +31,9 @@
 
           <el-col :span="6">
             <el-form-item label="出发地：" prop="podID">
-              <el-select v-model="submitForm.podID" placeholder="出发地" style="width: 100%;">
+              <el-select v-model="submitForm.podID" placeholder="出发地" style="width: 100%;"
+                @change="podChange"
+              >
                 <el-option
                   v-for="item in pods"
                   :key="item.podID"
@@ -41,7 +43,9 @@
               </el-select>
             </el-form-item>
             <el-form-item label="目的地：" prop="destinationID">
-              <el-select v-model="submitForm.destinationID" placeholder="目的地" style="width: 100%;">
+              <el-select v-model="submitForm.destinationID" placeholder="目的地" style="width: 100%;"
+                @change="destinationChange"
+              >
                 <el-option
                   v-for="item in destinations"
                   :key="item.destinationID"
@@ -52,6 +56,11 @@
             </el-form-item>
           </el-col>
           
+        </el-row>
+
+        <el-row v-show="false">
+          <el-input v-model="submitForm.pod"></el-input>
+          <el-input v-model="submitForm.destination"></el-input>
         </el-row>
       </el-form>
     </header>
@@ -116,7 +125,9 @@ export default {
       },
       submitForm: {
         name: null,
+        pod: '',
         podID: null,
+        destination: '',
         destinationID: null
       },
       rules: {
@@ -197,6 +208,18 @@ export default {
       bol && (bol= this.$refs.schedules.validate());
       return bol;
     },
+
+    /**
+     * @description: 下拉选择联动赋值
+     */
+    podChange(nval){
+      let hit= this.pods.find(el => el.podID=== nval);
+      this.submitForm.pod= hit.pod;
+    },
+    destinationChange(nval){
+      let hit= this.destinations.find(el => el.destinationID=== nval);
+      this.submitForm.destination= hit.destination;
+    }
   }
 }
 </script>
