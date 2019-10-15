@@ -2273,11 +2273,12 @@
                           }).catch(function(error) {
                             console.log(error);
                           });
-
                       }else{
+                        this.errors_01();
+                      }
+                    }else{
                         this.errors();
-                      }
-                      }
+                    }
                 })
               //  console.log(this.ruleForm.theme)
                // console.log(this.ruleForm.Excursion)
@@ -2305,6 +2306,23 @@
         //   }
         // })
       },
+      errors_01(){
+        this.dialogVadi = true;
+        let _this=this;
+        setTimeout(function(){
+          const validaError1=[];
+          var errors = $(".el-form-item__error");
+          for(var i=0;i<errors.length;i++){
+            validaError1.push(errors.eq(i).html().trim());
+          }
+          _this.validaError=[...new Set(validaError1)];
+          if(_this.isInfo == true){
+             _this.validaError.unshift("轮播图请选择3-6张图片");
+          }if(_this.isInfoImg==true){
+             _this.validaError.unshift("头图请选择1张图片");
+          }
+        },500);
+      },
       errors(){
         this.dialogVadi = true;
         let _this=this;
@@ -2324,11 +2342,12 @@
              _this.validaError.unshift("头图不能为空");
           }if(_this.ruleForm.slideshow.length==0){
              _this.validaError.unshift("轮播图不能为空");
-          }if(_this.isInfoImg == true){
-             _this.validaError.unshift("头图请选择1张图片");
-          }if(_this.isInfo==true){
-             _this.validaError.unshift("轮播图请选择3-6张图片");
           }
+          // if(_this.isInfo == true){
+          //    _this.validaError.unshift("轮播图请选择3-6张图片");
+          // }if(_this.isInfoImg==true){
+          //    _this.validaError.unshift("头图请选择1张图片");
+          // }
         },500);
       },
       // 取消
