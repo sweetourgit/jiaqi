@@ -154,7 +154,7 @@
           <el-table-column align="center" width="180" label="清位时间">
             <template slot-scope="scope">
               <span style="margin-right:5px">前</span>
-              <el-input :maxlength="3" v-model="ccc[scope.$index].uptoDay" style="width:60px"></el-input>
+              <el-input :maxlength="3" v-model="ccc[scope.$index].uptoDay"@change="fucking" style="width:60px"></el-input>
               <span style="margin-left:10px">天</span>
               <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">时</span> -->
               <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">分</span> -->
@@ -163,12 +163,7 @@
           <!-- <el-table-column align="center" width="180" label="出行模板">
             <template slot-scope="scope">
               <el-select v-model="ccc[scope.$index].value" placeholder="请选择">
-                <el-option
-                  v-for="item in type"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+                <el-option v-for="item in type" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
           </template>-->
           <!-- </el-table-column> -->
@@ -180,8 +175,8 @@
               <template v-else>
                 <el-button size="mini" type="primary" @click="offline(scope.$index)" :disabled="isUseLine">下线</el-button>
               </template>
-              <el-button :disabled="isUsePrice" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
-              <el-button size="mini" type="primary"@click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)">成本</el-button>
+              <el-button :disabled="isUsePrice"size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
+              <el-button size="mini" type="primary" @click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)">成本</el-button>
 
               <!-- <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button> -->
             </template>
@@ -749,7 +744,8 @@ export default {
       array1: "",
       team: "",
       chengben: [],
-      supplier_id: 0
+      supplier_id: 0,
+      team_01:0,
     };
   },
   //人均结算价保留小数点后两位
@@ -1210,11 +1206,11 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      if(this.multipleSelection.length == 1){
+      if(this.multipleSelection.length === 1){
            this.forbidden_a=false;
-        }else{
-           this.forbidden_a=true;
-        }
+      }else{
+         this.forbidden_a=true;
+      }
     },
     basicPrice(id, rate) {
       this.basicbutton = true;
@@ -1263,12 +1259,28 @@ export default {
 
     fucking() {
       for (let i = 0; i < this.ccc.length; i++) {
-        if (this.ccc[i].codePrefix == this.ccc[i].codeSuffix) {
+        if (this.ccc[i].codePrefix === '' && this.ccc[i].codeSuffix === '') {
+          this.isInfo = true;
+          this.$message.error("错了哦，团号不能为空");
+          break;
+        } else if(this.ccc[i].codePrefix == this.ccc[i].codeSuffix){
           this.isInfo = true;
           this.$message.error("错了哦，团号不能重复");
           break;
-        } else {
+        }else {
           this.isInfo = false;
+        }
+      }
+    },
+    //控制价格按钮显示
+    changeFun(val){
+      //this.multipleSelection = val;
+      for(let i = 0; i < this.ccc.length; i++){
+        console.log(this.tableData12)
+        if(this.ccc[i].codePrefix !=='' && this.ccc[i].codeSuffix !=='' && this.ccc[i].uptoDay !=='' && this.tableData12.length>0){
+          this.isUsePrice = false;
+        }else{
+          this.isUsePrice = true;
         }
       }
     },
@@ -1436,11 +1448,18 @@ export default {
       this.codePrefix = this.ccc[item].codePrefix;
       this.codeSuffix = this.ccc[item].codeSuffix;
 
-      if (this.codePrefix == "" || this.codeSuffix == "") {
-        this.$message.error("错了哦，团号不能为空");
-      } else {
+      if(this.codePrefix === this.codeSuffix){
+        this.$message.error("错了哦，团号不能重复");
+        this.isCollapse = true;
+      }else{
         this.isCollapse = false;
       }
+
+      // if (this.codePrefix == "" || this.codeSuffix == "") {
+      //   this.$message.error("错了哦，团号不能为空");
+      // } else {
+      //   this.isCollapse = false;
+      // }
     },
     //库存修改
     inventorysave() {
@@ -1751,13 +1770,7 @@ export default {
             object: {
               teamID: this.pid
             }
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token")
-            }
-          }
-        )
+          })
         .then(function(obj) {
           console.log("团期库存按钮", obj);
           for (let i = 0; i < obj.data.objects.length; i++) {
@@ -1901,6 +1914,9 @@ export default {
         if (this.ccc[i].codeSuffix == "" || this.ccc[i].codePrefix == "") {
           this.isCollapse = true;
           this.$message.error("错了哦，团号不能为空");
+        } else if (this.ccc[i].codeSuffix === this.ccc[i].codePrefix) {
+          this.isCollapse = true;
+          this.$message.error("错了哦，团号不能重复");
         }
       }
     },
