@@ -94,7 +94,6 @@ export default {
       let hasChange= true;
       let packages= this.$refs.packageRef;
       if(!packages || packages.length=== 0) hasChange= false;
-      console.log(hasChange)
       let current;
       if(hasChange){
         current= packages.find(el => el.$el.dataset.name=== this.vm.currentPackage);
@@ -121,7 +120,6 @@ export default {
       let newTabName= this.getNewPackageName();
       TEAM_TRAFFIC_DTO_BACK.day= this._provided.PROVIDE_DAY;
       this.packages.push({
-        //id: this.proto.id,
         teamID:this.$route.query.id,
         loadPackage: true,
         loadPlan: true,
@@ -146,7 +144,6 @@ export default {
       });
       this.vm.currentPackage= null;
       this.$nextTick(() => {
-        console.log(this.vm.currentPackage, newTabName)
         this.vm.currentPackage= newTabName;
       })
     },
@@ -282,17 +279,22 @@ export default {
       });
     },
     removeTabAction(id, index){
+      let successFunc= () => {
+        this.packages.splice(index, 1);
+        this.$message.success('删除成功');
+        this.$nextTick(() => {
+          let current= this.packages.length && this.packages[this.packages.length- 1];
+          if(!current) return;
+          this.vm.currentPackage= current.name;
+        })
+      }
       // 删除的是尚未存入数据库的
       if(!id) {
-        this.packages.splice(index, 1);
-        return this.$message.success('删除成功');
+        return successFunc();
       }
       this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagedelete", {
         id
-      }).then(() => {
-        this.packages.splice(index, 1);
-        return this.$message.success('删除成功');
-      })
+      }).then(successFunc);
     },
 
     showValidateError(){
