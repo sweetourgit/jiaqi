@@ -6,7 +6,7 @@
   <div class="ext-meals">
     <el-col>
       <span style="margin-right: 10px;">{{ label }}</span>
-      <el-radio-group v-model="submitForm.Myself">
+      <el-radio-group v-model="submitForm.Myself" @change="change">
         <el-radio :label="1">自理</el-radio>
         <el-radio :label="0">详细说明</el-radio>
       </el-radio-group>
@@ -33,6 +33,10 @@ export default {
     label: [String]
   },
 
+  mounted(){
+    this.init();
+  },
+
   data(){
     return {
       submitForm: {
@@ -44,12 +48,12 @@ export default {
 
   methods: {
     init(){
-      this.checkProto= this.$deepCopy(proto);
-      this.submitForm= this.$deepCopy(proto);
+      this.checkProto= this.$deepCopy(this.proto);
+      this.submitForm= this.$deepCopy(this.proto);
     },
 
     validate(){
-      if(this.submitForm.Detail) return true;
+      if(this.submitForm.Myself || this.submitForm.Detail) return true;
       return false;
     },
 
@@ -59,7 +63,7 @@ export default {
     },
 
     getData(){
-      return this.$copy(this.submitForm)
+      return this.$deepCopy(this.submitForm)
     }
   }
 

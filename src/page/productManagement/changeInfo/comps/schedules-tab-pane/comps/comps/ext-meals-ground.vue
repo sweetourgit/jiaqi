@@ -71,7 +71,7 @@ export default {
     },
 
     emitChangeValidate(){
-      this.$emit('input', JSON.stringify(this.checkProto));
+      this.$emit('input', this.getData());
       this.$emit('change-validate');
     }
   }

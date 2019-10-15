@@ -65,11 +65,13 @@ export default {
         stopDate: ''
       },
       rules: {
-        stopCity: [{ 
+        stopCity: [{
+          required: true, 
           validator: this.simpleValidator, 
           message: '经停城市不能为空', trigger: 'blur' 
         }],
-        stopDate: [{ 
+        stopDate: [{
+          required: true, 
           validator: this.simpleValidator,
           message: '经停时间不能为空', trigger: 'blur' 
         }],
@@ -107,7 +109,7 @@ export default {
     /**
      * @description: 单纯获取数据
      */
-    getFormData(){
+    getData(){
       return this.submitForm;
     }
   }

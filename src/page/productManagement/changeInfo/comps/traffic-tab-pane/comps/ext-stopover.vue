@@ -29,6 +29,7 @@ export default {
   watch:{
     // 初始化在这里进行
     proto(nval){
+      if(this.vm.inited) return;
       this.vm.inited= true;
       this.vm.hasChanged= false;
       this.bars.push(...JSON.parse(nval));

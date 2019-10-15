@@ -258,7 +258,7 @@ export default {
           this.$message.success("添加成功");
           this.$router.push({path: "/productList/packageTour"});
         }else{
-          _this.$message.error("添加失败");
+          this.$message.error("添加失败");
         }
       }).catch(function(error) {
         console.log(error);
@@ -272,7 +272,7 @@ export default {
           this.$message.success("修改成功");
           this.$router.push({path: "/productList/packageTour"});
         }else{
-          _this.$message.error("添加失败");
+          this.$message.error("添加失败");
         }
       }).catch(function(error) {
         console.log(error);

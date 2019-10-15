@@ -9,7 +9,7 @@
     }
   }
   main{
-    width: 80%;
+    width: 100%;
     .detail-ground{
       padding: 10px;
       border-radius: 4px;

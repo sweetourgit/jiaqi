@@ -92,7 +92,6 @@ export default {
   methods: {
     // 初始化
     init(){
-      console.log(this.proto)
       this.schedules.push(...this.$deepCopy(this.proto))
     },
 

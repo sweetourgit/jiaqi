@@ -62,9 +62,9 @@ const TrafficFormMixin= {
     init(){
       this.submitForm= this.$deepCopy(this.proto);
       // 返程需要给day默认值
-      if(this.goOrBackSign=== GO_OR_BACK_SIGN.BACK){
-        this.submitForm.day= this.PROVIDE_DAY;
-      }
+      // if(this.goOrBackSign=== GO_OR_BACK_SIGN.BACK){
+      //   this.submitForm.day= this.PROVIDE_DAY;
+      // }
     },
 
     /**
@@ -80,7 +80,6 @@ const TrafficFormMixin= {
     checkHasChange(){
       let bol= false;
       bol= !this.$checkLooseEqual(this.submitForm, this.proto);
-      console.log(this.submitForm, this.proto);
       !bol && (bol= this.$refs.extStopoverRef.checkHasChange());
       console.log(`traffic-form checkHasChange: ${bol}`)
       return bol;
