@@ -223,7 +223,7 @@
             <td valign="top">{{item.otherTitle}} (<span>{{toDecimal2(item.otherPrice)}}</span>) </td>
           </tr>
           <tr>
-            <td class="tr">优惠</td>
+            <td class="tr">整体优惠</td>
             <td valign="top">{{toDecimal2(item.entiretyFav)}}</td>
             <div class="tableCenter">
               <td class="tr">销售</td>
@@ -236,7 +236,7 @@
             <!-- <td class="tr">优惠活动</td>
             <td valign="top">{{item.favTitle}}</td> -->
             <td class="tr">支付方式</td>
-              <td>微信支付</td>
+              <td></td>
             <div class="tableCenter">
               <td class="tr">操作</td>
               <td valign="top">{{item.op}}</td>
@@ -307,7 +307,7 @@
         :variable="variable"
         :dialogType="dialogType"
         :orderCode="orderCode"
-        @orderPage="orderPage"
+       
       ></process-manage>
       <remarks-infor :orderId="orderId" :variable="variable" :dialogType="dialogType" :orderCode="orderCode"></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
@@ -527,6 +527,7 @@ export default {
       contact = this.contact, //订单联系人
       podID = this.podID //出发地
     ) {
+      // console.log(pageIndex,pageSize,orderCode,name,groupCode,beginDate,endDate,saler,localCompName,orderStatus,refundStatus,destinationID,contact,podID)
       if (beginDate) {
         let y = beginDate.getFullYear();
         let m =
@@ -590,7 +591,7 @@ export default {
           object: object
         })
         .then(res => {
-          console.log("判断是否是 页面初始", res);
+          // console.log("判断是否是 页面初始", res);
           // this.orderpage = [];
        
           this.total = res.data.total;
@@ -777,7 +778,7 @@ export default {
     },
     operation(orderId, i, orderCode) {
       this.orderId = orderId;
-      console.log(orderId,orderCode)
+      // console.log(orderId,orderCode)
       this.variable++;
       this.dialogType = i;
       this.orderCode = orderCode

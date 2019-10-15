@@ -334,9 +334,10 @@ export default {
             ).Tel;
 
             this.dialogFormProcess = true;
-
-            this.teamEnrolls(res.data.object.planID);
             this.teampreview(res.data.object.planID);
+            // setTimeout(() => {
+            //   this.teamEnrolls(res.data.object.planID);
+            // },500)
           }
         })
         .catch(err => {
@@ -437,14 +438,17 @@ export default {
       }
     },
     changeQuota() {
+      console.log(1)
       //余位变化方法
       this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
+      // console.log('//余位变化方法', this.salePrice)
       let salePriceType = {};
-      //实时减少相关余位信息，提示库存不足
+      // 实时减少相关余位信息，提示库存不足
       for (let i = 0; i < this.salePrice.length; i++) {
-        this.salePrice[i].quota =
-          parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
+        // this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
+        this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
         salePriceType = this.salePrice[i];
+        // console.log(salePriceType)
         if (salePriceType.quota < 0) {
           //判断是否显示库存不足
           this.quota[i] = true;
@@ -459,6 +463,8 @@ export default {
       let preLength; //记录上一次报名人数
       preLength = this.preLength[index]; //获取上一次报名人数
       arrLength = this.enrolNum[index]; //获取当前报名人数
+      // console.log(preLength,'获取上一次报名人数')
+      // console.log(arrLength,'获取当前报名人数')
       this.preLength[index] = this.enrolNum[index]; //记录上一次报名人数为当前报名人数
       var len;
       if (arrLength > preLength) {
@@ -525,8 +531,8 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let guest = JSON.parse(JSON.stringify(this.conForm));
-          console.log(guest.bornDate);
-          console.log(this.salePrice[this.tourType],'this.salePrice[this.tourType]')
+          // console.log(guest.bornDate);
+          // console.log(this.salePrice[this.tourType],'this.salePrice[this.tourType]')
           guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
           guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
           if (this.ruleForm.price == 1) {
@@ -548,29 +554,32 @@ export default {
       }, 500);
     },
     teamEnrolls(planId) {
+      // console.log(planId)
       //获取报名类型列表数据
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/enrolls", {
           id: planId
         })
         .then(res => {
-          console.log("获取报名列表数据", res)
+          console.log('teamEnrolls',res)
           if (res.data.isSuccess == true) {
-            this.preLength = [];
-            this.enrolNum = [];
-            this.quota = [];
-            this.tour = [];
+            this.preLength = []; //记录上一次报名人数[1,3]形式
+            this.enrolNum = []; //报名人数[1,3]形式
+            this.quota = []; //余位信息负数红色提示
+            this.tour = []; //总游客信息,二维数组
             let data = res.data.objects;
+            // console.log(data)
             for (let i = 0; i < data.length; i++) {
               this.quota.push(false);
               this.tour.push([]);
             }
+            // console.log(this.quota,"this.quota")
             //出游人信息转换格式,二维数组，通过类型分类,便于页面分类型显示出游人
-            var guest = this.orderget.guest;
+            var guest = this.orderget.guests;
+            // console.log('guest' , guest)
             var j = 0;
             //  if (this.orderget.guest !== undefined) {
             for (let i = 0; i < guest.length; i++) {
-              console.log("guest", guest);
               if (guest[i].credTOV == 0) {
                 guest[i].credTOV = ""; //转为空字符，日历日期显示当前月份
               }
@@ -579,13 +588,15 @@ export default {
               } else {
                 this.tour[j].push(guest[i]);
               }
-            // }
-             }
+            }
+            //  }
+            // console.log('this.tourt',this.tour)
             //设置报名人数
             for (let i = 0; i < this.tour.length; i++) {
               this.preLength.push(this.tour[i].length);
               this.enrolNum.push(this.tour[i].length);
             }
+            // console.log(this.teampreviewData.remaining,'this.teampreviewData.remaining')
             for (let i = 0; i < data.length; i++) {
               if (
                 data[i].quota == 0 ||
@@ -600,6 +611,12 @@ export default {
             }
             this.salePrice = data;
             this.salePriceNum = data;
+            for(let i = 0; i < this.salePriceNum.length; i++) {
+              this.salePriceNum[i].quota =  parseInt(this.salePriceNum[i].quota) + parseInt(this.preLength[i]);
+            }
+            console.log(this.salePriceNum)
+            // console.log(this.salePrice,'enrollssalePrice')
+            // console.log(this.salePriceNum,'enrollssalePriceNum')
           }
         });
     },
@@ -611,7 +628,9 @@ export default {
         })
         .then(res => {
           if (res.data.isSuccess == true) {
+            console.log(res,'团期计划订单信息预览teampreviewData')
             this.teampreviewData = res.data.object;
+            this.teamEnrolls(planId);
           }
         });
     },
@@ -694,19 +713,22 @@ export default {
             guest[i].credTOV = new Date(guest[i].credTOV).getTime();
           }
 
-          obj.guest = guest;
+          obj.guests = guest;
           this.$http
             .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
               object: obj
             })
             .then(res => {
+              console.log('保存',res)
               if (res.data.isSuccess == true) {
                 this.$message({
                   message: "更改成功",
                   type: "success"
                 });
-                this.$emit("orderPage");
+                this.$parent.orderPage();
+                // this.$emit("orderPage");
                 this.cancle();
+                // this.processManage(this.orderId);
               }
             });
         }
