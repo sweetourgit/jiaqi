@@ -86,3 +86,36 @@ export const TEAM_TRAFFIC_DTO_GO= Object.assign({
 export const TEAM_TRAFFIC_DTO_BACK= Object.assign({
   goOrBack: GO_OR_BACK_SIGN.BACK
 }, TEAM_TRAFFIC_DTO)
+
+// 根据日程id获取活动
+export const getActivityDTO= function(scheduleID){
+  return {
+    scheduleID,
+    activityType: 0,
+    time: '',
+    name: '',
+    details: '',
+    typeExt: '',
+    picture: '[]',
+    memo: '',
+    code: '',
+    createTime: ''
+  }
+}
+
+export const getTeamScheduleDTO= function(days){
+  let result= [];
+  for(let i= 1; i<= days; i++){
+    result.push({
+      day: i,
+      subject: '',
+      info: '',
+      ext_Hotel: '{"IsHotel":0,"Details":""}',
+      ext_Meals: '[{"Myself":0,"Detail":""},{"Myself":0,"Detail":""},{"Myself":0,"Detail":""}]',
+      activitys: [],
+      createTime: new Date().toISOString(),
+      code: "" 
+    })
+  }
+  return result;
+}

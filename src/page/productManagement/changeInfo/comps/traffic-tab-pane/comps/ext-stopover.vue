@@ -75,6 +75,15 @@ export default {
       return bol;
     },
 
+    validate(){
+      let bol= true
+      let children= this.$refs.children || [];
+      children.forEach(child => {
+        bol && (bol= child.validate());
+      })
+      return bol;
+    },
+
     /**
      * @description: 得到数据
      */

@@ -1,4 +1,4 @@
-# 重写changeInfo，为了不修改router里的公用文件，故讲就代码转存changeInf
+# 重写changeInfo，为了不修改router里的公用文件，故讲就代码转存changeInf, 2700行
 
 # 业务结构
 跟团游包含基本信息、行程信息、费用说明、其他信息四块  

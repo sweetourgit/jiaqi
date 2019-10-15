@@ -80,8 +80,16 @@ const TrafficFormMixin= {
     checkHasChange(){
       let bol= false;
       bol= !this.$checkLooseEqual(this.submitForm, this.proto);
+      console.log(this.submitForm, this.proto);
       !bol && (bol= this.$refs.extStopoverRef.checkHasChange());
       console.log(`traffic-form checkHasChange: ${bol}`)
+      return bol;
+    },
+
+    validate(){
+      let bol= true;
+      this.$refs.submitForm.validate(validate => bol= validate);
+      bol && (bol= this.$refs.extStopoverRef.validate());
       return bol;
     },
     

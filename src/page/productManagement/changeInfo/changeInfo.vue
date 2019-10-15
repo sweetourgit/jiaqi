@@ -15,7 +15,7 @@
   <div class="changeinfo" ground="changeinfo">
     <header>
       <div>
-        <el-button type="primary" size="small" @click="addTab">新增套餐</el-button>
+        <el-button type="primary" size="small" @click="preAddTab">新增套餐</el-button>
       </div>
       <div>
         <el-button type="primary" size="small" @click="addOrSave">保存</el-button>
@@ -24,7 +24,10 @@
     </header>
     
     <main>
-      <el-tabs v-model="vm.currentPackage" type="card" closable @tab-remove="removeTab">
+      <el-tabs v-model="vm.currentPackage" type="card" closable 
+        :before-leave="changeTab"
+        @tab-remove="removeTab"
+      >
         <el-tab-pane
           v-for="item in packages"
           :key="item.name"
@@ -34,6 +37,7 @@
           <changeinfo-package
             ref="packageRef"
             v-if="vm.currentPackage=== item.name"
+            :data-name="item.name"
             :proto="item"
             :pods="pods"
             :destinations="destinations"
@@ -48,6 +52,7 @@
 
 <script>
 import './tools'
+import { getTeamScheduleDTO, TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, } from './dictionary'
 import changeinfoPackage from './comps/changeinfo-package'
 
 export default {
@@ -81,42 +86,101 @@ export default {
     /**
      * @description: 添加Tab
      */
+    preAddTab(){
+      let hasChange= true;
+      let packages= this.$refs.packageRef;
+      if(!packages || packages.length=== 0) hasChange= false;
+      console.log(hasChange)
+      let current;
+      if(hasChange){
+        current= packages.find(el => el.$el.dataset.name=== this.vm.currentPackage);
+        hasChange= current.checkHasChange();
+      }
+      if(hasChange){
+        this.$confirm('当前套餐中有未保存更改，离开当前套餐将导致更改丢失, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(this.addTab).catch(() => {
+          //this.addOrSave()         
+        });
+      } else {
+        this.addTab();
+      }
+    },
+
+    /**
+     * @description: TEAM_TRAFFIC_DTO_BACK会默认给一个天数最大值
+     * 目前有两个地方 TrafficFormMixin和这里
+     */
     addTab(){
       let newTabName= this.getNewPackageName();
+      TEAM_TRAFFIC_DTO_BACK.day= this._provided.PROVIDE_DAY;
       this.packages.push({
-        name: newTabName
+        teamID:this.$route.query.id,
+        loadPackage: true,
+        loadPlan: true,
+
+        name: newTabName,
+
+        podID: null,
+        destinationID: null,
+        pod: null,
+        destination: null,
+        createTime: null,
+        traffic: [
+          TEAM_TRAFFIC_DTO_GO,
+          TEAM_TRAFFIC_DTO_BACK
+        ],
+        schedules: getTeamScheduleDTO(
+          this._provided.PROVIDE_DAY
+        ),
+        briefMark: '',
+        codePrefix: "",
+        codeSuffix:"",
       });
-      this.vm.currentPackage = newTabName;
+      this.vm.currentPackage= null;
+      this.$nextTick(() => {
+        console.log(this.vm.currentPackage, newTabName)
+        this.vm.currentPackage= newTabName;
+      })
     },
 
     /**
      * @description: 移除Tab
      */
-    removeTab(targetName, action) {
-      if (action === 'add') {
-        let newTabName= this.getNewPackageName();
-        this.packages.push({
-          name: newTabName
+    removeTab(name) {
+      let index= this.packages.findIndex(el => el.name=== name);
+      let id= this.packages[index].id;
+      this.$confirm(`确定要删除[${name}]套餐吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.removeTabAction(id, index);
+      }).catch(() => {
+        this.$message.error('删除失败');        
+      });
+    },
+
+    changeTab(activeName, oldActiveName){
+      let packages= this.$refs.packageRef;
+      if(!packages || packages.length=== 0) return;
+      let current= packages.find(el => el.$el.dataset.name=== oldActiveName);
+      let hasChange= current.checkHasChange();
+      if(!hasChange) return true;
+      return new Promise((res, rej) => {
+        this.$confirm(`信息已经修改，是否需要保存?`, '保存提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          rej();
+          this.addOrSave();
+        }).catch(() => {
+          res();      
         });
-        this.vm.currentPackage = newTabName;
-      }
-      if (action === 'remove') {
-        let tabs = this.packages;
-        let activeName = this.vm.currentPackage;
-        if (activeName === targetName) {
-          tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
-              let nextTab = tabs[index + 1] || tabs[index - 1];
-              if (nextTab) {
-                activeName = nextTab.name;
-              }
-            }
-          });
-        }
-        
-        this.vm.currentPackage = activeName;
-        this.packages = tabs.filter(tab => tab.name !== targetName);
-      }
+      })
     },
 
     /**
@@ -166,19 +230,79 @@ export default {
      * @description: 保存按钮触发的事件，先判断是保存还是新增
      */
     addOrSave(){
-      console.log(this.$refs.packageRef[0].checkHasChange())
+      let packages= this.$refs.packageRef;
+      if(!packages || packages.length=== 0) return;
+      let current= packages.find(el => el.$el.dataset.name=== this.vm.currentPackage);
+      let hasChange= current.checkHasChange();
+      if(!hasChange) return this.$message.info('信息无变动');
+      let validate= current.validate();
+      if(!validate) return this.showValidateError();
+      let object= current.getData();
+
       let isSave= this.isSave();
-      if(!isSave) return this.addAction();
-      return this.saveAction(); 
+      if(!isSave) return this.addAction(object);
+      return this.saveAction(object); 
     },
     isSave(){
       let current= this.packages.find(el => el.name=== this.vm.currentPackage);
       return current.id=== 0 || !!current.id;
     },
-    saveAction(){
-      //if(!this.checkHasChange()) return this.$message.info('数据未变动');
-      console.log(this.$refs.packageRef[0].getData())
-    }
+    addAction(object){
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/team/api/teampackageinsert", { object },
+      ).then(res => {
+        if(res.data.isSuccess==true){
+          this.$message.success("添加成功");
+          this.$router.push({path: "/productList/packageTour"});
+        }else{
+          _this.$message.error("添加失败");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+    saveAction(object){
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/team/api/teampackagesave", { object },
+      ).then(res => {
+        if(res.data.isSuccess==true){
+          this.$message.success("修改成功");
+          this.$router.push({path: "/productList/packageTour"});
+        }else{
+          _this.$message.error("添加失败");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+    removeTabAction(id, index){
+      // 删除的是尚未存入数据库的
+      if(!id) {
+        this.packages.splice(index, 1);
+        return this.$message.success('删除成功');
+      }
+      this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagedelete", {
+        id
+      }).then(() => {
+        this.packages.splice(index, 1);
+        return this.$message.success('删除成功');
+      })
+    },
+
+    showValidateError(){
+      let ERROR_QUEUE= this._provided.ERROR_QUEUE;
+      const h = this.$createElement;
+      let errors= ERROR_QUEUE[0] && ERROR_QUEUE[0].msgs.map(error => h('div', null, error))
+      this.$msgbox({
+        title: '表单验证结果',
+        message: h('p', null, errors),
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).finally(() => {
+        ERROR_QUEUE.splice(0);
+      })
+    },
   }
 }
 </script>

@@ -101,12 +101,12 @@ export default {
   },
 
   mounted(){
-    this.init();
     //如果有简要说明，自动切换
     if(this.vm.content){
       this.vm.description= "2";
       this.vm.descriptionState= "easy";
     }
+    this.init();
   },
 
   data(){
@@ -216,7 +216,7 @@ export default {
     //详情状态下检查
     detailCheckHasChange(){
       let bol= false;
-      let children= this.$refs.children;
+      let children= this.$refs.children || [];
       children.forEach(child => {
         !bol && (bol= child.checkHasChange());
       })
@@ -236,9 +236,30 @@ export default {
      */
     getData(){
       let children= this.$refs.children;
-      let traffic= children.map(child => child.getData());
-      let briefMark= this.vm.content;
+      // 如果是简单状态，先传回原始数据
+      let traffic= 
+        this.vm.descriptionState=== 'detail'?
+          children.map(child => child.getData()): this.$deepCopy(this.proto);
+      let briefMark= 
+        this.vm.descriptionState=== 'detail'?
+          this.briefMark: this.vm.content; 
       return { traffic, briefMark };
+    },
+
+    validate(){
+      return this.vm.descriptionState=== 'detail'?
+        this.detailValidate(): this.easyValidate();
+    },
+    easyValidate(){
+      return !!this.vm.content;
+    },
+    detailValidate(){
+      let bol= true;
+      let children= this.$refs.children;
+      children.forEach(child => {
+        bol && (bol= child.validate());
+      })
+      return bol;
     },
   }
 }

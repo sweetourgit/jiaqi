@@ -168,6 +168,7 @@ export default {
       bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
       //检查交通信息，如果基础信息中存在变动，则中断接下来的检查，提高性能，这递归大对象伤不起啊
       !bol && (bol= this.$refs.traffic.checkHasChange());
+      !bol && (bol= this.$refs.schedules.checkHasChange());
       console.log(`changeinfo-package checkHasChange: ${bol}`)
       return bol;
     },
@@ -179,11 +180,22 @@ export default {
       let hasChange= this.checkHasChange();
       if(!hasChange) return this.$message.info('无数据变动');
       let { traffic, briefMark }= this.$refs.traffic.getData();
-      //let schedules= this.$refs.schedules.getData();
+      let schedules= this.$refs.schedules.getData();
       let data= this.$deepCopy(this.submitForm);
       data.traffic= traffic;
       data.briefMark= briefMark;
+      data.schedules= schedules;
       return data;
+    },
+
+    validate(){
+      let bol= true;
+      this.$refs.submitForm.validate(validate => {
+        bol= validate;
+      });
+      bol && (bol= this.$refs.traffic.validate());
+      bol && (bol= this.$refs.schedules.validate());
+      return bol;
     },
   }
 }

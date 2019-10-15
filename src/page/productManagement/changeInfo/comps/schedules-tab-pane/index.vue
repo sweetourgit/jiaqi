@@ -42,6 +42,7 @@
     <div class="ground">
       <main>
         <schedule-form
+          ref="children"
           v-for="(item, i) in schedules"
           v-show="vm.currentDay== i+ 1"
           :key="i"
@@ -91,6 +92,7 @@ export default {
   methods: {
     // 初始化
     init(){
+      console.log(this.proto)
       this.schedules.push(...this.$deepCopy(this.proto))
     },
 
@@ -101,7 +103,30 @@ export default {
       this.vm.currentDay= parseInt(day);
     },
 
+    //详情状态下检查
+    checkHasChange(){
+      let bol= false;
+      let children= this.$refs.children;
+      children.forEach(child => {
+        !bol && (bol= child.checkHasChange());
+      })
+      console.log(`schedules-tab-pane checkHasChange: ${bol}`)
+      return bol;
+    },
 
+    validate(){
+      let bol= true;
+      let children= this.$refs.children;
+      children.forEach(child => {
+        bol && (bol= child.validate());
+      })
+      return bol;
+    },
+
+    getData(){
+      let children= this.$refs.children;
+      return children.map(child => child.getData());
+    }
   }
 }
 </script>

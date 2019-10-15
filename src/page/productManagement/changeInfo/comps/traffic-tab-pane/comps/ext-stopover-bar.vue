@@ -99,9 +99,9 @@ export default {
      * @description: 统一验证
      */
     validate(){
-      this.$refs.submitForm.validate((valid) => {
-        return valid;
-      })
+      let bol= true;
+      this.$refs.submitForm.validate((valid) => bol= valid);
+      return bol;
     },
 
     /**
