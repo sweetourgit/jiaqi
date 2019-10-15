@@ -113,6 +113,7 @@
             </el-form-item> -->
             <!-- 头图 -->
             <el-form-item label="头图" prop="avatarImages" label-width="120px">
+              <span class="redStar">*</span>
               <div class="img_upload">
                 <template v-for="(item, index) in ruleForm.avatarImages">
                   <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">

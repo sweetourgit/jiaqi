@@ -141,20 +141,20 @@
           <el-table-column align="center" label="前缀-团号-后缀">
             <template slot-scope="scope">
               <el-input :maxlength="10"v-model="ccc[scope.$index].codePrefix"
-                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking"></el-input>
+                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
               <span>-</span>
               <span v-text="'{{'"></span>
               <span>日期</span>
               <span>}}</span>
               <span>-</span>
               <el-input :maxlength="10" v-model="ccc[scope.$index].codeSuffix"
-                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking"></el-input>
+                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
             </template>
           </el-table-column>
           <el-table-column align="center" width="180" label="清位时间">
             <template slot-scope="scope">
               <span style="margin-right:5px">前</span>
-              <el-input :maxlength="3" v-model="ccc[scope.$index].uptoDay"@change="fucking" style="width:60px"></el-input>
+              <el-input :maxlength="3" v-model="ccc[scope.$index].uptoDay"@change="fucking" style="width:60px" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
               <span style="margin-left:10px">天</span>
               <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">时</span> -->
               <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">分</span> -->
@@ -175,8 +175,9 @@
               <template v-else>
                 <el-button size="mini" type="primary" @click="offline(scope.$index)" :disabled="isUseLine">下线</el-button>
               </template>
-              <el-button :disabled="isUsePrice"size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
-              <el-button size="mini" type="primary" @click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)">成本</el-button>
+              <el-button :disabled="isUsePrice" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
+              <!-- <el-button :disabled="scope.codePrefix ==''|| scope.codeSuffix ==''|| scope.uptoDay =='' || JSON.stringify(scope.costs) == '[]'" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button> -->
+              <el-button size="mini" type="primary" @click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate, true)">成本</el-button>
 
               <!-- <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button> -->
             </template>
@@ -281,7 +282,8 @@ export default {
       rules1: {
         name: [
           { required: true, message: "请输入金额", trigger: "change" },
-          { pattern:  /^\d+.?\d{0,2}$/, message: "金额后只保留小数点后两位" }
+          { pattern:  /^\d+.?\d{0,2}$/, message: "金额后只保留小数点后两位" },
+          //{ replace:/[^\d]/g,message: "金额只能输入数字",trigger: "blur"}
         ],
         region: [
           { required: true, message: "请选择供应商名称", trigger: "change" }
@@ -1212,8 +1214,10 @@ export default {
          this.forbidden_a=true;
       }
     },
-    basicPrice(id, rate) {
-      this.basicbutton = true;
+    basicPrice(id, rate, ShowBase) {
+      if (ShowBase) {
+        this.basicbutton = true;  
+      }
       this.team = id;
       this.lilv = rate;
       this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
@@ -1273,7 +1277,9 @@ export default {
       }
     },
     //控制价格按钮显示
-    changeFun(val){
+    changeFun(id, rate, ifShowBase){
+      // basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)
+      this.basicPrice(id, rate, ifShowBase)
       //this.multipleSelection = val;
       for(let i = 0; i < this.ccc.length; i++){
         console.log(this.tableData12)
@@ -1448,18 +1454,21 @@ export default {
       this.codePrefix = this.ccc[item].codePrefix;
       this.codeSuffix = this.ccc[item].codeSuffix;
 
-      if(this.codePrefix === this.codeSuffix){
-        this.$message.error("错了哦，团号不能重复");
+      // if(this.codePrefix === this.codeSuffix){
+      //   this.$message.error("错了哦，团号不能重复");
+      //   this.isCollapse = true;
+      // }else{
+      //   this.isCollapse = false;
+      // }
+
+      if (this.codePrefix == "" || this.codeSuffix == "") {
+        this.$message.error("错了哦，团号不能为空");
+      } else if(this.codePrefix === this.codeSuffix) {
+         this.$message.error("错了哦，团号不能重复");
         this.isCollapse = true;
       }else{
         this.isCollapse = false;
       }
-
-      // if (this.codePrefix == "" || this.codeSuffix == "") {
-      //   this.$message.error("错了哦，团号不能为空");
-      // } else {
-      //   this.isCollapse = false;
-      // }
     },
     //库存修改
     inventorysave() {
