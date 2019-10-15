@@ -13,12 +13,7 @@
           <div style="text-align: center">
             <span>产品类型：</span>
             <el-select v-model="about" placeholder="请选择">
-              <el-option
-                v-for="item in options1"
-                :key="item.value1"
-                :label="item.label"
-                :value="item.value1"
-              ></el-option>
+              <el-option v-for="item in options1" :key="item.value1" :label="item.label" :value="item.value1"></el-option>
             </el-select>
           </div>
           <span slot="footer" class="dialog-footer">
@@ -27,86 +22,46 @@
           </span>
         </el-dialog>
       </div>
+      <!--搜索框内容-->
       <div style="width: 1200px; height: 223px; margin-left: 20px">
         <div class="select_two">
           <div class="id">
             ID
-            <el-input
-              v-model="productId"
-              style="width: 205px;margin-left: 20px;"
-              placeholder="请输入内容"
-            ></el-input>
+            <el-input v-model="productId" style="width: 205px;margin-left: 20px;"placeholder="请输入内容"></el-input>
           </div>
           <div class="product">
             商品名称
-            <el-input
-              v-model="productTitle"
-              style="width: 500px; margin-left: 10px;"
-              placeholder="请输入内容"
-            ></el-input>
+            <el-input v-model="productTitle" style="width: 500px; margin-left: 10px;" placeholder="请输入内容"></el-input>
           </div>
         </div>
         <div class="select_two">
           <div class="address">
             出发地
             <!-- <el-input v-model="productPos" style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input> -->
-            <el-autocomplete
-              class="inline-input"
-              style="width: 205px;margin-left: 20px;"
-              v-model="originPlace"
-              :fetch-suggestions="querySearch3"
-              placeholder="请输入内容"
-              :trigger-on-focus="false"
-              @select="departure"
-            ></el-autocomplete>
+            <el-autocomplete class="inline-input" style="width: 205px;margin-left: 20px;"v-model="originPlace":fetch-suggestions="querySearch3" placeholder="请输入内容" :trigger-on-focus="false"@select="departure"></el-autocomplete>
           </div>
           <div class="name">
             目的地
             <!-- <el-input   v-model="productMod" style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input> -->
-            <el-autocomplete
-              class="inline-input"
-              style="width: 205px;margin-left: 10px;"
-              v-model="originMod"
-              :fetch-suggestions="querySearch4"
-              placeholder="请输入内容"
-              :trigger-on-focus="false"
-              @select="departure1"
-            ></el-autocomplete>
+            <el-autocomplete class="inline-input" style="width: 205px;margin-left: 10px;" v-model="originMod" :fetch-suggestions="querySearch4" placeholder="请输入内容" :trigger-on-focus="false" @select="departure1"></el-autocomplete>
           </div>
           <div class="options">
             产品操作人
-            <el-input
-              v-model="productUser"
-              style="width: 150px; margin-left: 10px;"
-              placeholder="请输入内容"
-            ></el-input>
+            <el-input v-model="productUser" style="width: 150px; margin-left: 10px;" placeholder="请输入内容"></el-input>
           </div>
         </div>
         <div class="select_two">
           <div class="options11">
             状态
             <el-select style="width: 205px;margin-left: 20px;" v-model="value" placeholder="请选择">
-              <el-option
-                v-for="item in typeList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
+              <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </div>
           <div class="prices">
             价格
-            <el-input
-              v-model="productPrefix"
-              style="width: 104px; margin-left: 20px;"
-              placeholder="请输入内容"
-            ></el-input>
+            <el-input v-model="productPrefix" style="width: 104px; margin-left: 20px;" placeholder="请输入内容"></el-input>
             <span style="margin-left: 10px">——</span>
-            <el-input
-              v-model="productBehind"
-              style="width: 104px; margin-left: 20px;"
-              placeholder="请输入内容"
-            ></el-input>
+            <el-input v-model="productBehind" style="width: 104px; margin-left: 20px;" placeholder="请输入内容"></el-input>
           </div>
         </div>
 
@@ -117,9 +72,7 @@
       </div>
     </div>
     <el-button type="primary" @click="routerHandle" style="margin-top: 10px;margin-left: 50px;">添加产品</el-button>
-    <div
-      style="border: 1px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 50px; width: 62.5%"
-    >
+    <div style="border: 1px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 50px; width: 62.5%">
       <div class="button_select">
         <el-button @click="handDb" plain :disabled="reable">编辑</el-button>
         <el-button plain :disabled="reable">复制</el-button>
@@ -131,13 +84,7 @@
       </div>
 
       <div class="table_trip" style="margin-left: 50px; width: 92%;">
-        <el-table
-          :data="tableData"
-          border
-          style="width: 100%"
-          :highlight-current-row="true"
-          @row-click="clickBanle"
-        >
+        <el-table :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle">
           <el-table-column prop="id" label="产品编号" align="center" width="80%"></el-table-column>
           <el-table-column prop="type" label="类型" width="150%" align="center"></el-table-column>
           <el-table-column prop="name" label="产品名称" align="center">
@@ -163,16 +110,7 @@
 
       <!--分页-->
       <div class="block" style="margin-top: 30px;">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage4"
-          :page-sizes="[5, 10, 50, 100]"
-          :page-size="10"
-          background
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-        ></el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" background layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
       </div>
       <!--分页-->
     </div>
@@ -182,59 +120,35 @@
     <!--margin-bottom: 20px;">-->
     <!--<el-button type="primary"  @click="dialogVisible = true" >添加产品</el-button>-->
     <!--</div>-->
-    <el-dialog
-      :close-on-click-modal="false"
-      class="merchandise"
-      :visible.sync="merchandise"
-      :show-close="false"
-      append-to-body
-      width="77%"
-      @open="merchandiseDialogOpen"
-    >
+    <el-dialog :close-on-click-modal="false" class="merchandise" :visible.sync="merchandise" :show-close="false" append-to-body
+      width="77%" @open="merchandiseDialogOpen">
       <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
         <el-radio-group v-model="isCollapse" @change="qqq">
           <el-radio-button class="group" :label="true">库存</el-radio-button>
           <el-radio-button :label="false">价格</el-radio-button>
         </el-radio-group>
       </div>
-
       <!-- 库存 -->
       <div v-if="isCollapse==true">
         <div class="ButtonCls">
           <el-button @click="BandCancel">取消</el-button>
           <el-button type="primary" @click="BandSave">保存</el-button>
         </div>
-
         <!-- sku -->
-
-        <el-table
-          v-show="skuList"
-          :data="ccc"
-          border
-          style="width: 1340px;margin:30px auto;"
-          :header-cell-style="getRowClass"
-        >
+        <el-table v-show="skuList" :data="ccc" border style="width: 1340px;margin:30px auto;" :header-cell-style="getRowClass">
           <el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
           <el-table-column prop="ddd" label="名称" width="180" align="center"></el-table-column>
           <el-table-column align="center" label="前缀-团号-后缀">
             <template slot-scope="scope">
-              <el-input
-                :maxlength="10"
-                v-model="ccc[scope.$index].codePrefix"
-                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"
-                @change="fucking"
-              ></el-input>
+              <el-input :maxlength="10"v-model="ccc[scope.$index].codePrefix"
+                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking"></el-input>
               <span>-</span>
               <span v-text="'{{'"></span>
               <span>日期</span>
               <span>}}</span>
               <span>-</span>
-              <el-input
-                :maxlength="10"
-                v-model="ccc[scope.$index].codeSuffix"
-                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"
-                @change="fucking"
-              ></el-input>
+              <el-input :maxlength="10" v-model="ccc[scope.$index].codeSuffix"
+                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking"></el-input>
             </template>
           </el-table-column>
           <el-table-column align="center" width="180" label="清位时间">
@@ -261,114 +175,68 @@
           <el-table-column prop="name" align="center" label="操作" width="300">
             <template slot-scope="scope">
               <template v-if="ccc[scope.$index].type == false">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  @click="online(scope.$index)"
-                  :disabled="isUseLine"
-                >上线</el-button>
+                <el-button size="mini" type="primary" @click="online(scope.$index)" :disabled="isUseLine">上线</el-button>
               </template>
               <template v-else>
-                <el-button
-                  size="mini"
-                  type="primary"
-                  @click="offline(scope.$index)"
-                  :disabled="isUseLine"
-                >下线</el-button>
+                <el-button size="mini" type="primary" @click="offline(scope.$index)" :disabled="isUseLine">下线</el-button>
               </template>
-              <el-button
-                :disabled="isUsePrice"
-                size="mini"
-                type="primary"
-                @click="bandlePrice(scope.$index)"
-              >价格</el-button>
-              <el-button
-                size="mini"
-                type="primary"
-                @click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)"
-              >成本</el-button>
+              <el-button :disabled="isUsePrice" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
+              <el-button size="mini" type="primary"@click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)">成本</el-button>
 
               <!-- <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button> -->
             </template>
           </el-table-column>
         </el-table>
 
-        <!--成本-->
+        <!--成本弹窗-->
         <el-dialog title="成本" :visible.sync="basicbutton" width="50%" append-to-body>
           <div>
             <el-button type="primary" @click="addcost">添加</el-button>
-            <el-button type="primary" @click="editorcb">编辑</el-button>
-            <el-button type="danger" @click="delcb">删除</el-button>
+            <el-button type="primary" :disabled="forbidden_a" @click="editorcb">编辑</el-button>
+            <el-button type="danger" :disabled="forbidden_a" @click="delcb">删除</el-button>
           </div>
           <div style="margin-top: 30px">
             <div style="float: left; margin-top: 10px">毛利率：</div>
             <div style="float: left;margin-left: 10px">
-              <el-input v-model="lilv" placeholder="利率" style="width: 70px" @blur="changinpt"></el-input>%
+              <el-input v-model="lilv" placeholder="利率" style="width: 70px" @change="changinpt"></el-input>%
             </div>
-            <div style="margin-top: 10px;float: left;margin-left: 30px;">人均结算价({{count}})</div>
+            <div style="margin-top: 10px;float: left;margin-left: 30px;">人均结算价({{count | numFilter}})</div>
           </div>
           <div style="margin-top: 100px">
-              <el-table
-                ref="multipleTable12"
-                :data="tableData12"
-                tooltip-effect="dark"
-                style="width: 100%"
-                @selection-change="handleSelectionChange"
-                @select="changselet"
-              >
-                <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column label="序号" width="120">
+              <el-table ref="multipleTable12" :data="tableData12" tooltip-effect="dark" style="width: 600px"
+                @selection-change="handleSelectionChange" @select="changselet" border>
+                <el-table-column type="selection" width="50" align="center"></el-table-column>
+                <el-table-column label="序号" width="100" align="center">
                   <template slot-scope="scope">{{ scope.row.id }}</template>
                 </el-table-column>
-                <el-table-column prop="supplierTypeEX" label="成本类型" width="120"></el-table-column>
-                <el-table-column prop="name" label="供应商" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="money" label="金额" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="supplierTypeEX" label="成本类型" width="120" align="center"></el-table-column>
+                <el-table-column prop="name" label="供应商" width="180" align="center" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="money" label="金额" width="149" align="center" show-overflow-tooltip></el-table-column>
               </el-table>
           </div>
         </el-dialog>
-        <!--添加-->
+        <!--添加成本列表弹窗-->
         <el-dialog title="提示" :visible.sync="cost" width="40%" append-to-body @close="cancel()">
-          <el-form
-            :model="ruleForm1"
-            :rules="rules1"
-            ref="ruleForm1"
-            label-width="100px"
-            class="demo-ruleForm"
-          >
+          <el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="100px" class="demo-ruleForm">
             <!-- <el-form-item label="供应商" prop="region">
               <el-select v-model="ruleForm1.region" placeholder="请选择" @change="changys">
                 <el-option v-for="item in options2":key="item.value":label="item.label":value="item.value"></el-option>
               </el-select>
             </el-form-item>-->
             <el-form-item label="供应商" prop="region">
-              <el-autocomplete
-                v-model="ruleForm1.region"
-                :fetch-suggestions="querySearch5"
-                placeholder="请输入供应商"
-                :trigger-on-focus="false"
-                @select="departure"
-                style="width: 200px"
-              ></el-autocomplete>
+              <el-autocomplete v-model="ruleForm1.region" :fetch-suggestions="querySearch5" placeholder="请输入供应商"
+                :trigger-on-focus="false" @select="departure" style="width: 200px"></el-autocomplete>
             </el-form-item>
             <el-form-item label="成本类型" prop="costType">
               <el-select v-model="ruleForm1.costType" placeholder="请选择" style="width: 200px">
-                <el-option
-                  v-for="item in borrowingType"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+                <el-option v-for="item in borrowingType" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="金额" prop="name">
               <el-input v-model="ruleForm1.name" style="width: 200px"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button
-                v-if="this.chengben.length == 0"
-                type="primary"
-                @click="submitForm1('ruleForm1')"
-              >添加</el-button>
+              <el-button v-if="this.chengben.length == 0" type="primary" @click="submitForm1('ruleForm1')">添加</el-button>
               <el-button v-else type="primary" @click="submitForm2('ruleForm1')">修改</el-button>
               <el-button @click="resetForm1('ruleForm1')">重置</el-button>
             </el-form-item>
@@ -377,13 +245,7 @@
       </div>
       <!-- 价格 -->
       <div v-else style="overflow:hidden;margin-top: 60px;">
-        <DateList
-          v-on:merchandises="headCall"
-          :msg-father="ccc"
-          :piapia="piaid"
-          :codePrefix="codePrefix"
-          :codeSuffix="codeSuffix"
-        />
+        <DateList v-on:merchandises="headCall" :msg-father="ccc" :piapia="piaid" :codePrefix="codePrefix" :codeSuffix="codeSuffix"/>
       </div>
     </el-dialog>
   </div>
@@ -400,6 +262,7 @@ export default {
   },
   data() {
     return {
+      forbidden_a:true, 
       isUsePrice: true, // 判断价格按钮是否可点击 (团号 成本三个都填完才为true)
       isUseLine: true, // 判断上线按钮是否可点击 (价格添加完毕后才可以点击上线按钮)
       activeName: "first",
@@ -423,7 +286,7 @@ export default {
       rules1: {
         name: [
           { required: true, message: "请输入金额", trigger: "change" },
-          { pattern: /^[+]{0,1}(\d+)$/, message: "金额需为正整数" }
+          { pattern:  /^\d+.?\d{0,2}$/, message: "金额后只保留小数点后两位" }
         ],
         region: [
           { required: true, message: "请选择供应商名称", trigger: "change" }
@@ -889,6 +752,14 @@ export default {
       supplier_id: 0
     };
   },
+  //人均结算价保留小数点后两位
+  filters: {
+    numFilter (value) {
+      // 截取当前数据到小数点后两位
+      let realVal = parseFloat(value).toFixed(2)
+      return realVal
+    }
+  },
   methods: {
     // merchandise 弹窗出现时判断团号和成本是否已填写如果已填写则价格按钮可点击  否则禁用
     merchandiseDialogOpen() {
@@ -963,34 +834,26 @@ export default {
       this.chengben = selection;
     },
     changinpt() {
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/saverate", {
-          object: {
-            id: this.team,
-            rate: this.lilv
-          }
+      this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/saverate", {
+        object: {
+          id: this.team,
+          rate: this.lilv
+        }
+      }).then(res =>{
+        this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
+          id: this.team
         })
         .then(res => {
+          this.count = res.data.average;
           this.ccc = [];
           var that = this;
-          // console.log(this.pid)
-          this.$http
-            .post(
-              this.GLOBAL.serverSrc + "/team/api/teampackagelist",
-              {
+          this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagelist",{
                 object: {
                   teamID: this.pid
                 }
-              },
-              {
-                headers: {
-                  Authorization: "Bearer " + localStorage.getItem("token")
-                }
-              }
-            )
+              })
             .then(function(obj) {
               for (let i = 0; i < obj.data.objects.length; i++) {
-                /* console.log(obj.data.objects[0].id)*/
                 that.ccc.push({
                   id: obj.data.objects[i].id,
                   ddd: obj.data.objects[i].name,
@@ -1012,6 +875,7 @@ export default {
               console.log(obj);
             });
         });
+      })
     },
     changys(res) {
       console.log(res);
@@ -1042,26 +906,29 @@ export default {
     submitForm1(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/team/cost/api/insert", {
-              object: {
-                id: 0,
-                createTime: 0,
-                code: "string",
-                createUser: "string",
-                packageID: this.team,
-                //"supplierID": this.ruleForm1.supplierID,
-                supplierID: this.supplier_id,
-                //"name": this.ruleForm1.region1,
-                name: this.ruleForm1.region,
-                //"supplierType": this.ruleForm1.supplierTypeEX,
-                suppliertype: this.ruleForm1.costType,
-                money: this.ruleForm1.name
-              }
-            })
-            .then(res => {
-              this.$http
-                .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
+          this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/insert", {
+            object: {
+              id: 0,
+              createTime: 0,
+              code: "string",
+              createUser: "string",
+              packageID: this.team,
+              //"supplierID": this.ruleForm1.supplierID,
+              supplierID: this.supplier_id,
+              //"name": this.ruleForm1.region1,
+              name: this.ruleForm1.region,
+              //"supplierType": this.ruleForm1.supplierTypeEX,
+              suppliertype: this.ruleForm1.costType,
+              money: this.ruleForm1.name
+            }
+          }).then(res => {
+              this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
+                id: this.team
+              })
+              .then(res => {
+                this.count = res.data.average;
+              });
+              this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
                   object: {
                     packageID: this.team
                   }
@@ -1114,8 +981,7 @@ export default {
     submitForm2(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/team/cost/api/save", {
+          this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/save", {
               object: {
                 // "supplierID": this.ruleForm1.supplierID,
                 // "name": this.ruleForm1.region1,
@@ -1133,8 +999,13 @@ export default {
               }
             })
             .then(res => {
-              this.$http
-                .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
+              this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
+                id: this.team
+              })
+              .then(res => {
+                this.count = res.data.average;
+              });
+              this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
                   object: {
                     packageID: this.team
                   }
@@ -1178,35 +1049,36 @@ export default {
       this.$refs[formName].resetFields();
     },
     editorcb() {
-      var arry = [];
-      var arry1 = [];
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage", {
-          object: {
-            isDeleted: 0
-          },
-          pageSize: 1000,
-          pageIndex: 1,
-          isGetAll: true,
-          id: 0
-        })
-        .then(function(obj) {
-          for (var j = 0; j < obj.data.objects.length; j++) {
-            arry1.push(obj.data.objects[j]);
-            arry1[j].label = arry1[j].name;
-            arry1[j].value =
-              "|" +
-              arry1[j].id +
-              "+" +
-              arry1[j].name +
-              "-" +
-              arry1[j].types[0].supplierTypeEX +
-              "*" +
-              arry1[j].types[0].supplierType;
-          }
-          that.options2 = arry1;
-        });
+      this.chongzhi();
+      // var arry = [];
+      // var arry1 = [];
+      // var that = this;
+      // this.$http
+      //   .post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage", {
+      //     object: {
+      //       isDeleted: 0
+      //     },
+      //     pageSize: 1000,
+      //     pageIndex: 1,
+      //     isGetAll: true,
+      //     id: 0
+      //   })
+      //   .then(function(obj) {
+      //     for (var j = 0; j < obj.data.objects.length; j++) {
+      //       arry1.push(obj.data.objects[j]);
+      //       arry1[j].label = arry1[j].name;
+      //       arry1[j].value =
+      //         "|" +
+      //         arry1[j].id +
+      //         "+" +
+      //         arry1[j].name +
+      //         "-" +
+      //         arry1[j].types[0].supplierTypeEX +
+      //         "*" +
+      //         arry1[j].types[0].supplierType;
+      //     }
+      //     that.options2 = arry1;
+      //   });
 
       // this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
       // }).then(res => {
@@ -1233,19 +1105,18 @@ export default {
         });
     },
     delcb() {
-      for (var i = 0; i < this.chengben.length; i++) {
-        this.$http
-          .post(this.GLOBAL.serverSrc + "/team/cost/api/delete", {
-            id: this.chengben[i].id
-          })
-          .then(res => {});
-      }
       this.$confirm("确认删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
-        console.log(res);
+        for (var i = 0; i < this.chengben.length; i++) {
+          this.$http
+            .post(this.GLOBAL.serverSrc + "/team/cost/api/delete", {
+              id: this.chengben[i].id
+            })
+            .then(res => {
+              
         if (res.data.isSuccess == true) {
           this.$message.success("删除成功");
           this.$http
@@ -1280,16 +1151,10 @@ export default {
                 }
               });
             });
-          //this.basicbutton = false
-          //this.chengben = []
+        }
+            });
         }
       });
-      // this.$message({
-      //   message: '删除成功',
-      //   type: 'success'
-      // });
-      // this.basicbutton = false
-      // this.chengben = []
     },
     addcost() {
       // console.log(this.chengben);
@@ -1339,30 +1204,28 @@ export default {
       //   this.options3 = arry
 
       // })
-
+      this.chongzhi();
       this.cost = true;
       // console.log("this.cost",this.cost)
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+      if(this.multipleSelection.length == 1){
+           this.forbidden_a=false;
+        }else{
+           this.forbidden_a=true;
+        }
     },
     basicPrice(id, rate) {
-      console.log("成本")
-      console.log(id)
-      console.log(rate)
       this.basicbutton = true;
       this.team = id;
       this.lilv = rate;
-      // console.log(rate);
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
+      this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
           object: {
             packageID: this.team
           }
         })
-        .then(res => {
-          // console.log(res);
-          // 成本为空null时报错  所以判断
+        .then(res => {// 成本为空null时报错  所以判断
           if (res.data.objects !== null) {
             this.tableData12 = res.data.objects;
             this.tableData12.forEach(function(v, k, arr) {
@@ -1390,8 +1253,7 @@ export default {
             });
           }
         });
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
+      this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
           id: this.team
         })
         .then(res => {
@@ -1400,15 +1262,15 @@ export default {
     },
 
     fucking() {
-      // for (let i = 0; i < this.ccc.length; i++) {
-      //   if (this.ccc[i].codePrefix == this.ccc[i].codeSuffix) {
-      //     this.isInfo = true;
-      //     this.$message.error("错了哦，团号不能重复");
-      //     break;
-      //   } else {
-      //     this.isInfo = false;
-      //   }
-      // }
+      for (let i = 0; i < this.ccc.length; i++) {
+        if (this.ccc[i].codePrefix == this.ccc[i].codeSuffix) {
+          this.isInfo = true;
+          this.$message.error("错了哦，团号不能重复");
+          break;
+        } else {
+          this.isInfo = false;
+        }
+      }
     },
     //出发地
     querySearch3(queryString1, cb) {
@@ -2034,13 +1896,13 @@ export default {
       }
     },
     qqq() {
-      // console.log(this.ccc);
-      // for (var i = 0; i < this.ccc.length; i++) {
-      //   if (this.ccc[i].codeSuffix == "" || this.ccc[i].codePrefix == "") {
-      //     this.isCollapse = true;
-      //     this.$message.error("错了哦，团号不能为空");
-      //   }
-      // }
+      console.log(this.ccc);
+      for (var i = 0; i < this.ccc.length; i++) {
+        if (this.ccc[i].codeSuffix == "" || this.ccc[i].codePrefix == "") {
+          this.isCollapse = true;
+          this.$message.error("错了哦，团号不能为空");
+        }
+      }
     },
     headCall(data) {
       console.log(this.merchandise);
@@ -2117,7 +1979,7 @@ export default {
     clickBanle(row, event, column) {
       this.pid = row["id"];
       this.reable = false;
-    }
+    },
   },
   created() {
     this.themeList();

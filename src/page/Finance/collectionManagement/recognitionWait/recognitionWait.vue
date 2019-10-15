@@ -1,11 +1,11 @@
 <template>
   <div class="vivo" style="position:relative">
-    <el-tabs type="border-card">
-      <el-tab-pane label="手动生成">
-        <manualCollection></manualCollection>
+    <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick" class="card_style">
+      <el-tab-pane label="手动生成" name="first">
+        <manualCollection ref="manualCollection"></manualCollection>
       </el-tab-pane>
-      <el-tab-pane label="自动生成">
-        <automaticCollection></automaticCollection>
+      <el-tab-pane label="自动生成" name="second">
+        <automaticCollection ref="automaticCollection"></automaticCollection>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -20,10 +20,18 @@
     },
     data() {
       return {
-
+        activeName: 'first'
       }
     },
     methods: {
+      handleClick(tab, event) {
+//        console.log(tab, event);
+        if(tab.name == 'first'){
+          this.$refs.manualCollection.loadData();
+        }else if(tab.name == 'second'){
+          this.$refs.automaticCollection.loadData();
+        }
+      },
     },
     created() {
     }
@@ -31,4 +39,7 @@
 
 </script>
 <style lang="scss" scoped>
+  .card_style{
+    margin: 25px auto;
+  }
 </style>
