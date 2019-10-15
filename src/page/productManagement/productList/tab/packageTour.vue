@@ -199,7 +199,7 @@
             <div style="margin-top: 10px;float: left;margin-left: 30px;">人均结算价({{count | numFilter}})</div>
           </div>
           <div style="margin-top: 100px">
-              <el-table ref="multipleTable12" :data="tableData12" tooltip-effect="dark" style="width: 600px"
+              <el-table ref="multipleTable12" :data="tableData12" style="width: 600px"
                 @selection-change="handleSelectionChange" @select="changselet" border>
                 <el-table-column type="selection" width="50" align="center"></el-table-column>
                 <el-table-column label="序号" width="100" align="center">
@@ -229,7 +229,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="金额" prop="name">
-              <el-input v-model="ruleForm1.name" style="width: 200px"></el-input>
+              <el-input type="tel" v-model="ruleForm1.name" style="width: 200px"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button v-if="this.chengben.length == 0" type="primary" @click="submitForm1('ruleForm1')">添加</el-button>
@@ -283,7 +283,7 @@ export default {
         name: [
           { required: true, message: "请输入金额", trigger: "change" },
           { pattern:  /^\d+.?\d{0,2}$/, message: "金额后只保留小数点后两位" },
-          //{ replace:/[^\d]/g,message: "金额只能输入数字",trigger: "blur"}
+          { type:'number',message: "金额只能输入数字",trigger: "blur"}
         ],
         region: [
           { required: true, message: "请选择供应商名称", trigger: "change" }

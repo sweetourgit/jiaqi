@@ -53,7 +53,14 @@
             <!-- 行程天數 -->
             <div style="overflow:hidden">
               <el-form-item style="width:300px; float:left;" label='行程天数' prop="travelDays" label-width="120px">
-                <el-input :max="20" style="width:105px;margin-left:-25px;" v-model="ruleForm.travelDays" placeholder="请输入天数" ref="travelDays"></el-input>
+                <el-input 
+                  @blur="testVal()"
+                  style="width:105px;margin-left:-25px;" 
+                  v-model="ruleForm.travelDays" 
+                  placeholder="请输入天数" 
+                  ref="travelDays"
+                >
+                </el-input>
                 <span class="travelDays-span" style="margin-left:10px;color: #333;">天</span>
               </el-form-item>
               <el-form-item class="number-day" style="float:left; margin-left:-25px;" prop="travelNight">
@@ -1586,7 +1593,7 @@
           destinations:'',
           travelType: '1',
           placeDeparture: '',
-          travelDays: '',
+          travelDays: null,
           travelNight: '',
           orderConfirmationType:'',
           operationLabel: '',
@@ -1988,6 +1995,12 @@
       this.itemList();
     },
     methods: {
+      testVal(){
+        console.log(this.ruleForm.travelDays > 20)
+        if(this.ruleForm.travelDays > 20) {
+          this.ruleForm.travelDays = '1'
+        }
+      },
       /*获取子集的方法*/
       getSon(key, label, id, isLeaf, resolve, level){
         this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",
