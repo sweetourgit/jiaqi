@@ -239,10 +239,11 @@ export default {
       // 如果是简单状态，先传回原始数据
       let traffic= 
         this.vm.descriptionState=== 'detail'?
-          children.map(child => child.getData()): this.$deepCopy(this.proto);
+          children.map(child => child.getData()): 
+            [TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK];
       let briefMark= 
         this.vm.descriptionState=== 'detail'?
-          this.briefMark: this.vm.content; 
+          "": this.vm.content; 
       return { traffic, briefMark };
     },
 
