@@ -172,7 +172,7 @@
               <el-button @click="delect(item, index)"  type="danger" size="mini">删除</el-button>
             </div>
           </div>
-          <div class="divform">
+          <div class="divform"> 
             <el-form ref="form" :model="item" :rules="formRuler"  label-width="80px">
               <el-form-item label="销售价" prop="salePrice">
                 <el-input v-if="Rform.resource == 1" :class="isAverage = item.salePrice < shareAverage && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
@@ -866,7 +866,8 @@
       saveQuota(list, data, inventoryID, row, sumId) {
         let planEnroll = [];
         let cost = false;
-        let isSave = true; // 是否编辑判断
+        let isSave = true; 
+        // 是否编辑判断
         if (list.data.person.planEnroll.length != 0 ) {
           list.data.person.planEnroll.forEach(item => {
             let quotaPrice = '';
@@ -1001,17 +1002,18 @@
             if (this.Rform.sumNum != '') {
               this.$refs['form'][index].validate(valid => {
                 if (valid) {
-
-
                   if(data.salePrice < this.average) {
                     this.$confirm('当前销售价低于共享库存的结算参考, 是否继续保存', '提示', {
                       confirmButtonText: '确定',
                       cancelButtonText: '取消',
                       type: 'warning'
                     }).then(() => {
+                      console.log('当前销售价低于共享库存的结算参考, 是否继续保存')
                       if (this.Rform.sumId) {
+                        console.log(this.Rform.sumId)
                         this.saveQuota(this.n[0], data, this.Rform.sumId);
                       } else {
+                        console.log('添加非共享库存')
                         // 添加非共享库存
                         this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', {
                           "object": {
@@ -1147,6 +1149,14 @@
         this.n.forEach(item => {
           // 第一次添加时
           if (this.days[item.index].data.person.planEnroll == undefined) {
+            // 设置销售价同业价 
+            // sessionStorage.setItem("salePrice", data.salePrice);
+            // sessionStorage.setItem("traderPrice", data.traderPrice);
+            // sessionStorage.setItem("proName", data.name);
+            // 取值
+            // let getSalePrice = sessionStorage.getItem("salePrice")
+            // let getTraderPrice = sessionStorage.getItem("traderPrice")
+            // let getProName = sessionStorage.getItem("proName")
             let planEnroll = [];
             let cost = false;
             planEnroll.push({

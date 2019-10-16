@@ -223,7 +223,7 @@
             <td valign="top">{{item.otherTitle}} (<span>{{toDecimal2(item.otherPrice)}}</span>) </td>
           </tr>
           <tr>
-            <td class="tr">优惠</td>
+            <td class="tr">整体优惠</td>
             <td valign="top">{{toDecimal2(item.entiretyFav)}}</td>
             <div class="tableCenter">
               <td class="tr">销售</td>
@@ -236,7 +236,7 @@
             <!-- <td class="tr">优惠活动</td>
             <td valign="top">{{item.favTitle}}</td> -->
             <td class="tr">支付方式</td>
-              <td>微信支付</td>
+              <td></td>
             <div class="tableCenter">
               <td class="tr">操作</td>
               <td valign="top">{{item.op}}</td>
@@ -282,7 +282,7 @@
         <div class="but-row">
           <span class="dotFather">
             <span class="dot"></span>
-            <span>{{item.occupyStatus}}</span>
+            <span>{{item.orderStatus}}</span>
           </span>
           <!--  -->
           <span v-if="item.occupyStatus !== '确认占位'">
@@ -307,7 +307,7 @@
         :variable="variable"
         :dialogType="dialogType"
         :orderCode="orderCode"
-        @orderPage="orderPage"
+       
       ></process-manage>
       <remarks-infor :orderId="orderId" :variable="variable" :dialogType="dialogType" :orderCode="orderCode"></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
@@ -525,6 +525,7 @@ export default {
       refundStatus = this.refundStatus,
       destinationID = this.destinationID, //目的地
       contact = this.contact, //订单联系人
+      pod = this.pod,
       podID = this.podID //出发地
     ) {
       if (beginDate) {
@@ -612,20 +613,42 @@ export default {
     receiveDataJudgeShow() {
         this.orderpage.forEach(item => {
           //占位状态
-          if (item.occupyStatus == 1) {
-            item.occupyStatus = "确认占位";
-          } else if (item.occupyStatus == 2) {
-            item.occupyStatus = "预订占位";
-          } else {
-            item.occupyStatus = "预订不占";
-          }
+          // if (item.occupyStatus == 1) {
+          //   item.occupyStatus = "确认占位";
+          // } else if (item.occupyStatus == 2) {
+          //   item.occupyStatus = "预订占位";
+          // } else {
+          //   item.occupyStatus = "预订不占";
+          // }
+          // 订单状态
+          if (item.orderStatus == 1) {
+            item.orderStatus = "补充资料";
+          } else if (item.orderStatus == 2) {
+            item.orderStatus = "电子合同";
+          } else if (item.orderStatus == 3) {
+            item.orderStatus = "待出行";
+          } else if (item.orderStatus == 4) {
+            item.orderStatus = "出行中";
+          } else if (item.orderStatus == 5) {
+            item.orderStatus = "待评价";
+          } else if (item.orderStatus == 6) {
+            item.orderStatus = "订单完成";
+          } else if (item.orderStatus == 7) {
+            item.orderStatus = "未确认";
+          } else if (item.orderStatus == 8) {
+            item.orderStatus = "签署合同";
+          } else if (item.orderStatus == 9) {
+            item.orderStatus = "作废订单";
+          } else if (item.orderStatus == 10) {
+            item.orderStatus = "确认订单"
+          } 
           //订单来源
           if (item.orderChannel == 1) {
-            item.orderChannel = "线上直客";
+            item.orderChannel = "同业";
           } else if (item.orderChannel == 2) {
-            item.orderChannel = "线下直客";
+            item.orderChannel = "门店";
           } else {
-            item.orderChannel = "同业系统";
+            item.orderChannel = "总部";
           }
           //产品类型
           // if (item.productType == 1) {
@@ -777,7 +800,7 @@ export default {
     },
     operation(orderId, i, orderCode) {
       this.orderId = orderId;
-      console.log(orderId,orderCode)
+      // console.log(orderId,orderCode)
       this.variable++;
       this.dialogType = i;
       this.orderCode = orderCode

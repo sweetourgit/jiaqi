@@ -690,7 +690,7 @@ export default {
                   this.ruleForm.type == 1
                     ? 0
                     : new Date().getTime() / 1000 + 24 * 60 * 60,
-                orderChannel: this.ruleForm.orderRadio,
+                orderChannel: Number(this.ruleForm.orderRadio),
                 orgID: sessionStorage.getItem("orgID"),
                 userID: sessionStorage.getItem("id"),
                 remark: JSON.stringify([
@@ -744,7 +744,7 @@ export default {
             orderCode: orderCode,
             content: this.ruleForm.remark,
             createTime: moment()
-              .format("YYYY-DD-MM hh:mm:ss")
+              .format("YYYY-MM-DD hh:mm:ss")
               .toString()
           }
         })
