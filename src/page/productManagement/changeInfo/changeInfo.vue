@@ -15,7 +15,7 @@
   <div class="changeinfo" ground="changeinfo">
     <header>
       <div>
-        <el-button type="primary" size="small" @click="preAddTab">新增套餐</el-button>
+        <el-button type="primary" size="small" @click="addTab">新增套餐</el-button>
       </div>
       <div>
         <el-button type="primary" size="small" @click="addOrSave">保存</el-button>
@@ -82,44 +82,51 @@ export default {
     }
   },
 
-  created(){
+  mounted(){
     this.teaminfogetAction();
   },
 
   methods: {
-    /**
-     * @description: 添加Tab
-     */
-    preAddTab(){
-      let hasChange= true;
-      let packages= this.$refs.packageRef;
-      if(!packages || packages.length=== 0) hasChange= false;
-      let current;
-      if(hasChange){
-        current= packages.find(el => el.$el.dataset.name=== this.vm.currentPackage);
-        hasChange= current.checkHasChange();
-      }
-      if(hasChange){
-        this.$confirm('当前套餐中有未保存更改，离开当前套餐将导致更改丢失, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(this.addTab).catch(() => {
-          //this.addOrSave()         
-        });
-      } else {
-        this.addTab();
-      }
-    },
 
     /**
      * @description: TEAM_TRAFFIC_DTO_BACK会默认给一个天数最大值
      * 目前有两个地方 TrafficFormMixin和这里
+     * this.newTab
      */
     addTab(){
+      let current= this.getCurrentRef();
+      let hasChange= current.checkHasChange();
+      let newTab= this.getNewTab();
+      // 有变动则缓存后返回
+      if(hasChange){
+        this.newTab= newTab;
+        return this.$confirm(`当前套餐信息存在修改，是否保存?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          return this.addOrSave();
+        }).catch(() => {
+          let newTabName= newTab.name;
+          this.packages.push(newTab);
+          this.$nextTick(() => {
+            this.vm.currentPackage= newTabName;
+          })       
+        });
+        return;
+      }
+      let newTabName= newTab.name;
+      this.packages.push(newTab);
+      this.$nextTick(() => {
+        this.vm.currentPackage= newTabName;
+      })
+    },
+
+    // 获取新tab实例
+    getNewTab(){
       let newTabName= this.getNewPackageName();
       TEAM_TRAFFIC_DTO_BACK.day= this._provided.PROVIDE_DAY;
-      this.packages.push({
+      return {
         teamID:this.$route.query.id,
         loadPackage: true,
         loadPlan: true,
@@ -141,11 +148,7 @@ export default {
         briefMark: '',
         codePrefix: CODE_PREFIX,
         codeSuffix: CODE_SUFFIX
-      });
-      this.vm.currentPackage= null;
-      this.$nextTick(() => {
-        this.vm.currentPackage= newTabName;
-      })
+      };
     },
 
     /**
@@ -166,23 +169,28 @@ export default {
     },
 
     changeTab(activeName, oldActiveName){
-      let packages= this.$refs.packageRef;
-      if(!packages || packages.length=== 0) return;
-      let current= packages.find(el => el.$el.dataset.name=== oldActiveName);
-      let hasChange= current.checkHasChange();
-      if(!hasChange) return true;
-      return new Promise((res, rej) => {
-        this.$confirm(`信息已经修改，是否需要保存?`, '保存提示', {
+      if(!activeName) return false;
+      return this.asyncCheckHasChange(activeName, oldActiveName).catch(() => {
+        return this.$confirm(`当前套餐信息存在修改，是否保存?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          rej();
-          this.addOrSave();
+          return this.changeTabAfterAction();
         }).catch(() => {
-          res();      
-        });
+          return Promise.resolve();       
+        }); 
       })
+    },
+    changeTabAfterAction(){
+      // return new Promise((res, rej) => rej)
+      return new Promise((res, rej) => {
+        let current= this.getCurrentRef();
+        let object= current.getData();
+        let isSave= this.isSave();
+        if(!isSave) return res(this.addAction(object));
+        return res(this.saveAction(object));
+      }) 
     },
 
     /**
@@ -202,30 +210,44 @@ export default {
      * @description: 获取初始化信息
      */
     teaminfogetAction(){
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teaminfoget",
-        {
-          "object": {
-            "id": this.$route.query.id,
-            "loadPackage": true
+      return new Promise((resolve, reject) => {
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/team/api/teaminfoget",
+          {
+            "object": {
+              "id": this.$route.query.id,
+              "loadPackage": true
+            }
           }
-        }
-      ).then(res => {
-        let { isSuccess, object }= res.data;
-        let { pods, destinations, day }= object;
-        if(!isSuccess) return Promise.reject('初始化失败');
-        this.packages.splice(0);
-        this.packages.push(...object.package);
-        this.pods.push(...pods);
-        this.destinations.push(...destinations);
-        this._provided.PROVIDE_DAY= day;
-        this.proto= object;
-        //tab默认指向首页
-        if(this.packages.length=== 0) return;
-        this.vm.currentPackage= this.packages[0].name;
-      }).catch(err => {
-        //TODO: 错误日志
-        this.$message.error(err);
+        ).then(res => {
+          let { isSuccess, object }= res.data;
+          let { pods, destinations, day }= object;
+          if(!isSuccess) return Promise.reject('初始化失败');
+          this.packages.splice(0);
+          this.pods.splice(0);
+          this.destinations.splice(0);
+          this.packages.push(...object.package);
+          this.pods.push(...pods);
+          this.destinations.push(...destinations);
+          this._provided.PROVIDE_DAY= day;
+          this.proto= object;
+          // tab默认指向首页
+          if(this.packages.length=== 0) return Promise.resolve();
+          // 如果有缓存的新tab
+          if(this.newTab && this.newTab.name){
+            this.packages.push(this.newTab);
+            this.$nextTick(() => {
+              this.vm.currentPackage= this.newTab.name;
+              this.newTab= null;
+            })
+            return;
+          }
+          this.vm.currentPackage= this.newTab || this.packages[0].name;
+          return Promise.resolve();
+        }).catch(err => {
+          // TODO: 错误日志
+          this.$message.error(err);
+        })
       })
     },
 
@@ -233,9 +255,7 @@ export default {
      * @description: 保存按钮触发的事件，先判断是保存还是新增
      */
     addOrSave(){
-      let packages= this.$refs.packageRef;
-      if(!packages || packages.length=== 0) return;
-      let current= packages.find(el => el.$el.dataset.name=== this.vm.currentPackage);
+      let current= this.getCurrentRef();
       let hasChange= current.checkHasChange();
       if(!hasChange) return this.$message.info('信息无变动');
       let validate= current.validate();
@@ -250,34 +270,46 @@ export default {
       let current= this.packages.find(el => el.name=== this.vm.currentPackage);
       return current.id=== 0 || !!current.id;
     },
+    getCurrentRef(){
+      let packages= this.$refs.packageRef;
+      if(!packages || packages.length=== 0) return;
+      let current= packages.find(el => el.$el.dataset.name=== this.vm.currentPackage);
+      !current && console.warn('getCurrentRef get none');
+      return current;
+    },
     addAction(object){
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teampackageinsert", { object },
-      ).then(res => {
-        if(res.data.isSuccess==true){
-          this.$message.success("添加成功");
-          this.$router.push({path: "/productList/packageTour"});
-        }else{
-          this.$message.error("添加失败");
-        }
-      }).catch(function(error) {
-        console.log(error);
-      });
+      return new Promise((resolve, reject) => {
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/team/api/teampackageinsert", { object },
+        ).then(res => {
+          if(res.data.isSuccess==true){
+            this.$message.success("添加成功");
+          }else{
+            this.$message.error("添加失败");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      })
     },
     saveAction(object){
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teampackagesave", { object },
-      ).then(res => {
-        if(res.data.isSuccess==true){
-          this.$message.success("修改成功");
-          this.$router.push({path: "/productList/packageTour"});
-        }else{
-          this.$message.error("添加失败");
-        }
-      }).catch(function(error) {
-        console.log(error);
+      return new Promise((resolve, reject) => {
+        this.$http.post(
+          this.GLOBAL.serverSrc + "/team/api/teampackagesave", { object },
+        ).then(res => {
+          if(res.data.isSuccess==true){
+            this.$message.success("修改成功");
+            this.vm.currentPackage= null;
+            resolve(this.teaminfogetAction());
+          }else{
+            this.$message.error("添加失败");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       });
     },
+
     removeTabAction(id, index){
       let successFunc= () => {
         this.packages.splice(index, 1);
@@ -295,6 +327,15 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagedelete", {
         id
       }).then(successFunc);
+    },
+
+    asyncCheckHasChange(activeName, oldActiveName){
+      let packages= this.$refs.packageRef;
+      if(!packages) return Promise.resolve();
+      let current= packages.find(el => el.$el.dataset.name=== oldActiveName);
+      if(!current) return Promise.resolve();
+      let hasChange= current.checkHasChange();
+      return hasChange? Promise.reject(): Promise.resolve();
     },
 
     showValidateError(){

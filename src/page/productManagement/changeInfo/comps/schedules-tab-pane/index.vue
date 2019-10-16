@@ -92,6 +92,7 @@ export default {
   methods: {
     // 初始化
     init(){
+      this.schedules.splice(0);
       this.schedules.push(...this.$deepCopy(this.proto))
     },
 

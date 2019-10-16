@@ -95,7 +95,7 @@ export default {
           TEAM_TRAFFIC_DTO_GO,
           TEAM_TRAFFIC_DTO_BACK
         ]
-      }
+      },
     },
     briefMark: [String],
   },
@@ -251,7 +251,8 @@ export default {
         this.detailValidate(): this.easyValidate();
     },
     easyValidate(){
-      return !!this.vm.content;
+      //return !!this.vm.content;
+      return true;
     },
     detailValidate(){
       let bol= true;

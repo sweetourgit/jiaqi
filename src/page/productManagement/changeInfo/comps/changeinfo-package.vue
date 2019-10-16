@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import { TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK } from '../dictionary'
 // 组件
 import trafficTabPane from './traffic-tab-pane'
 import schedulesTabPane from './schedules-tab-pane'
@@ -193,7 +194,10 @@ export default {
       let { traffic, briefMark }= this.$refs.traffic.getData();
       let schedules= this.$refs.schedules.getData();
       let data= this.$deepCopy(this.submitForm);
-      data.traffic= traffic;
+      // 保存互斥，简要则清空详细，详细则清空简要
+      data.traffic= briefMark? [
+        TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK
+      ]: traffic;
       data.briefMark= briefMark;
       data.schedules= schedules;
       return data;
