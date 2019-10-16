@@ -100,7 +100,11 @@
           </el-col>
           <el-col style="width: 310px;">
             <el-form-item label="出发时间：" label-width="120px" prop="podTime">
-              <el-input v-model="submitForm.podTime" placeholder="出发时间" style="width: 100%;" size="small"></el-input>
+              <el-time-picker style="width: 100%;" size="small" placeholder="出发时间"
+                v-model="submitForm.podTime"
+                value-format="HH:mm:ss"
+              >
+              </el-time-picker>
             </el-form-item>
           </el-col>
         </el-row>
@@ -118,7 +122,11 @@
           </el-col>
           <el-col style="width: 310px;">
             <el-form-item label="到达时间：" label-width="120px" prop="arriveTime">
-              <el-input v-model="submitForm.arriveTime" placeholder="到达时间" style="width: 100%;" size="small"></el-input>
+              <el-time-picker style="width: 100%;" size="small" placeholder="出发时间"
+                v-model="submitForm.arriveTime"
+                value-format="HH:mm:ss"
+              >
+              </el-time-picker>
             </el-form-item>
           </el-col>
           <el-col style="width: 150px;">
