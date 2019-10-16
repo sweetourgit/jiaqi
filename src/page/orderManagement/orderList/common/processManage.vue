@@ -26,6 +26,15 @@
           <span class="sta-title">{{statusEnd}}</span>
         </span>
       </div>
+      <!-- switch 更改价格(直客价和同业价) beign-->
+      <p>使用{{priceChange}}价格</p>
+      <el-switch
+        v-model="isPricechange"
+        active-color="#409eff"
+        inactive-color="#dcdfe6"
+        @change="priceChangeEvent(isPricechange)">
+      </el-switch>
+      <!-- switch 更改价格(直客价和同业价) end-->
       <!--报名人数-->
       <el-form :model="ruleForm" ref="ruleForm" class="demo-ruleForm cb" :rules="rules">
         <div>
@@ -64,7 +73,7 @@
               @input="compPrice(2,index)"
             ></el-input>
           </el-form-item>
-          <el-form-item class="otherCost-mark">
+          <el-form-item class="otherCost-mark" v-if="index == 0">
             <el-input v-model="item.mark" placeholder="请输入摘要" class="input1"></el-input>
           </el-form-item>
         </div>
@@ -213,9 +222,11 @@ export default {
         //流程管理
         contactName: "",
         contactPhone: "",
-        price: "1", //价格类型
+        price: "1", //价格类型  1直客 2同业
         favourable: []
       },
+      priceChange: '直客',//同业价格好还是直客价格
+      isPricechange: true, //true为直客   false为同业价格
       //游客信息
       quota: [], //余位信息负数红色提示
       enrolNum: [], //报名人数[1,3]形式
@@ -438,7 +449,6 @@ export default {
       }
     },
     changeQuota() {
-      console.log(1)
       //余位变化方法
       this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
       // console.log('//余位变化方法', this.salePrice)
@@ -546,6 +556,7 @@ export default {
         }
       });
     },
+
     //游客信息取消
     cancelInfo(formName) {
       this.dialogFormTour = false;
@@ -553,6 +564,7 @@ export default {
         this.$refs[formName].resetFields();
       }, 500);
     },
+
     teamEnrolls(planId) {
       // console.log(planId)
       //获取报名类型列表数据
@@ -614,7 +626,7 @@ export default {
             for(let i = 0; i < this.salePriceNum.length; i++) {
               this.salePriceNum[i].quota =  parseInt(this.salePriceNum[i].quota) + parseInt(this.preLength[i]);
             }
-            console.log(this.salePriceNum)
+            // console.log(this.salePriceNum)
             // console.log(this.salePrice,'enrollssalePrice')
             // console.log(this.salePriceNum,'enrollssalePriceNum')
           }
@@ -634,21 +646,46 @@ export default {
           }
         });
     },
+
+     // switch 开关监听价格显示事件 true为直客价格 false为同业价格  price_01是直客价格 price_01是同业价格
+    priceChangeEvent(val) {
+      if(val == true) {
+        this.priceChange = "直客"
+        this.ruleForm.price = "1"
+        console.log()
+        this.compPrice()
+      } else {
+        this.priceChange = "同业"
+        this.ruleForm.price = "2"
+        this.compPrice()
+      }
+    },
+
     compPrice(type, index) {
       //计算总价
       if (type == 2) {
+        // 其他费用和优惠 随时监听 然后总价变化
         if (
-          typeof this.ruleForm.favourable[index].price !== "number" &&
-          this.ruleForm.favourable[index].price != ""
+          typeof this.ruleForm.favourable[index].price == "number" &&
+          this.ruleForm.favourable[index].price == ""
         ) {
           return;
         }
+        // 原先的 没看懂 留着
+        // if (
+        //   typeof this.ruleForm.favourable[index].price !== "number" &&
+        //   this.ruleForm.favourable[index].price != ""
+        // ) {
+        //   return;
+        // }
+        // 原先结束
       }
       this.orderget.payable = 0;
       for (let i = 0; i < this.enrolNum.length; i++) {
+        // console.log(this.salePrice[i].price_01)
         this.orderget.payable +=
           this.enrolNum[i] *
-          (this.ruleForm.price == 1
+          (this.ruleForm.price == 2
             ? this.salePrice[i].price_01
             : this.salePrice[i].price_02);
       }

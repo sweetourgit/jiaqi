@@ -282,7 +282,7 @@
         <div class="but-row">
           <span class="dotFather">
             <span class="dot"></span>
-            <span>{{item.occupyStatus}}</span>
+            <span>{{item.orderStatus}}</span>
           </span>
           <!--  -->
           <span v-if="item.occupyStatus !== '确认占位'">
@@ -525,9 +525,9 @@ export default {
       refundStatus = this.refundStatus,
       destinationID = this.destinationID, //目的地
       contact = this.contact, //订单联系人
+      pod = this.pod,
       podID = this.podID //出发地
     ) {
-      // console.log(pageIndex,pageSize,orderCode,name,groupCode,beginDate,endDate,saler,localCompName,orderStatus,refundStatus,destinationID,contact,podID)
       if (beginDate) {
         let y = beginDate.getFullYear();
         let m =
@@ -591,7 +591,7 @@ export default {
           object: object
         })
         .then(res => {
-          // console.log("判断是否是 页面初始", res);
+          console.log("判断是否是 页面初始", res);
           // this.orderpage = [];
        
           this.total = res.data.total;
@@ -613,20 +613,28 @@ export default {
     receiveDataJudgeShow() {
         this.orderpage.forEach(item => {
           //占位状态
-          if (item.occupyStatus == 1) {
-            item.occupyStatus = "确认占位";
-          } else if (item.occupyStatus == 2) {
-            item.occupyStatus = "预订占位";
-          } else {
-            item.occupyStatus = "预订不占";
-          }
+          // if (item.occupyStatus == 1) {
+          //   item.occupyStatus = "确认占位";
+          // } else if (item.occupyStatus == 2) {
+          //   item.occupyStatus = "预订占位";
+          // } else {
+          //   item.occupyStatus = "预订不占";
+          // }
+          // 订单状态
+          // if (item.occupyStatus == 1) {
+          //   item.occupyStatus = "确认占位";
+          // } else if (item.occupyStatus == 2) {
+          //   item.occupyStatus = "预订占位";
+          // } else {
+          //   item.occupyStatus = "预订不占";
+          // }
           //订单来源
           if (item.orderChannel == 1) {
-            item.orderChannel = "线上直客";
+            item.orderChannel = "同业";
           } else if (item.orderChannel == 2) {
-            item.orderChannel = "线下直客";
+            item.orderChannel = "门店";
           } else {
-            item.orderChannel = "同业系统";
+            item.orderChannel = "总部";
           }
           //产品类型
           // if (item.productType == 1) {
