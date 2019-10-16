@@ -744,7 +744,7 @@ export default {
             orderCode: orderCode,
             content: this.ruleForm.remark,
             createTime: moment()
-              .format("YYYY-DD-MM hh:mm:ss")
+              .format("YYYY-MM-DD hh:mm:ss")
               .toString()
           }
         })
