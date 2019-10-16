@@ -3,8 +3,9 @@
     <el-dialog :visible="dialogFormVisible1" @close="closeAdd" style="width: 100%">
       <div class="buttonDv" style="float: right;margin-right: 3%;">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
-        <el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>
-        <el-button type="primary" @click="editBtn">修改</el-button>
+        <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
+        <!--<el-button type="primary" @click="editBtn">修改</el-button>-->
+        <el-button type="primary" @click="editBtn">撤销</el-button>
       </div>
       <p class="stepTitle">基本信息</p>
       <el-button type="info" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 1">待认收款</el-button>

@@ -5,7 +5,7 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="buttonDv">
           <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
-          <el-button class="el-button" type="danger" @click="closeAdd">取 消</el-button>
+          <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
         </div>
         <div>
           <!--<p class="stepTitle">基本信息</p>-->
@@ -19,7 +19,7 @@
               <el-button type="primary" @click="chooseFun" style="margin-left: 10px">选择</el-button>
             </el-form-item>
             <el-form-item label="批量导入：" label-width="140px">
-              <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" limit="1" :on-exceed="handleExceed" :file-list="fileList">
+              <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :limit="1" :on-exceed="handleExceed" :file-list="fileList">
                 <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
             </el-form-item>
@@ -27,17 +27,16 @@
           <!--<p class="stepTitle">认款订单</p>-->
           <el-divider content-position="left">认款订单</el-divider>
           <div class="stepDv">
-            <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
-              <el-table-column prop="order_sn" label="订单ID" align="center" >
+            <el-table ref="singleTable" :data="tableDataDD" border style="width: 96%;margin: 0 auto;" height="700" :header-cell-style="getRowClass">
+              <el-table-column prop="receivables_at" label="收款时间" align="center" >
               </el-table-column>
-              <el-table-column prop="product_name" label="产品名称" align="center">
+              <el-table-column prop="rece_money" label="收款金额" align="center">
               </el-table-column>
-              <el-table-column prop="cost" label="订单费用" align="center">
-                <!--<template slot-scope="scope">-->
-                <!--<span>收入:{{scope.row.income}}</span><br>-->
-                <!--<span>单票成本:{{scope.row.single_cost}}</span><br>-->
-                <!--<span>总成本:{{scope.row.cost}}</span>-->
-                <!--</template>-->
+              <el-table-column prop="option" label="操作" align="center">
+                <template slot-scope="scope">
+                  <p v-if="scope.row.key == '已删除'">已删除</p>
+                  <el-button class="el-button" type="text" @click="deleteFun(scope)" v-else>删除</el-button>
+                </template>
               </el-table-column>
             </el-table>
           </div>
@@ -74,6 +73,7 @@
   </div>
 </template>
 <script type="text/javascript">
+  import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "collection_add",
     components: {},
@@ -89,14 +89,15 @@
           payAccount: '',
           payAccountID: '',
         },
-        rece_code: '',
+        rece_code: [],
         rules: {
           explain: [{ required: true, message: '款项说明不能为空!', trigger: 'blur' }],
           payAccount: [{ required: true, message: '收款账户不能为空!', trigger: 'change' }],
         },
 
         dialogFormVisible1: false,
-        tableDataXQ: [],
+        tableDataDD: [],
+        deleteStr: '',
 
         fileList: [],
         tableDataZH: []
@@ -138,64 +139,124 @@
         this.fileList = [];
         this.$emit('close', false);
       },
+      cancalBtn(){
+        if(this.ruleForm.explain != '' || this.ruleForm.payAccount != '' || this.fileList.length != 0){
+          this.$confirm("是否取消本次添加?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            this.$message.success("已取消添加");
+            this.closeAdd();
+          }).catch(() => {
+
+          });
+        }else{
+          this.closeAdd();
+        }
+      },
+      deleteFun(scope){
+        console.log(scope);
+        const that = this;
+        this.$confirm("是否删除此收款?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          that.deleteStr += scope.row.key + ',';
+          that.$set(this.tableDataDD[scope.$index],'key','已删除');
+        }).catch(() => {
+
+        });
+
+      },
       submitForm(formName) {
         const that = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            let fileArr = [];
-            console.log(that.fileList);
-            if(that.fileList.length != 0){
-              that.fileList.forEach(function (item, index, arr) {
-                fileArr.push({
-                  name: item.name,
-                  url: item.response.data.url
-                });
-              })
-            }else{
-              fileArr = [];
-            }
-            console.log(fileArr);
-            this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/predeposit/predeposit/addpredeposit', {
-              "rece_code": that.rece_code,
-              "receivables_at": that.ruleForm.collectionTime,
-              "explain": that.ruleForm.explain,
-              "account_id": that.ruleForm.payAccountID,
-              "rece_money": that.ruleForm.money,
-              "remark": that.ruleForm.abstract,
-              "file": fileArr,
-              "create_uid": sessionStorage.getItem('id'),
-              "org_id": sessionStorage.getItem('orgID')
-            }).then(res => {
-              console.log(res.data);
-              if (res.data.code == 200) {
-                that.$message({
-                  type: 'success',
-                  message: '创建成功!'
-                });
-                that.closeAdd();
-//                that.$emit('loadData');
-              } else {
-                if(res.data.message){
-                  that.$message({
-                    type: 'warning',
-                    message: res.data.message
-                  });
-                }else{
-                  that.$message({
-                    type: 'warning',
-                    message: '创建失败'
-                  });
-                }
-              }
-            }).catch(err => {
-              console.log(err)
-            })
 
+            let code_arr = [];
+            let codeNum = 0;
+            that.tableDataDD.forEach(function (item, index, arr) {
+              if(item.key !== '已删除'){
+                codeNum++;
+                that.getCode().then(res => {
+//                  console.log(res);
+                  if(res){
+                    code_arr.push(res);
+                    that.canSubmit(code_arr, codeNum);
+                  }
+                });
+              }
+            });
           } else {
             console.log('error submit!!');
             return false;
           }
         });
+      },
+      canSubmit(arr, num){
+        const that = this;
+        if(arr.length === num){
+          that.rece_code = arr;
+          let fileArr = [];
+//          console.log(that.fileList);
+          if(that.fileList.length != 0){
+            that.fileList.forEach(function (item, index, arr) {
+              fileArr.push({
+                name: item.name,
+                url: item.response.data.file_url
+              });
+            })
+          }else{
+            fileArr = [];
+          }
+          that.deleteStr = that.deleteStr.substr(0, that.deleteStr.length - 1);
+          let data;
+          if(that.deleteStr == ''){
+            data = {
+              "rece_code": that.rece_code,
+              "explain": that.ruleForm.explain,
+              "account_id": that.ruleForm.payAccountID,
+              "file": fileArr,
+              "create_uid": sessionStorage.getItem('id'),
+              "org_id": sessionStorage.getItem('orgID')
+            }
+          }else{
+            data = {
+              "rece_code": that.rece_code,
+              "explain": that.ruleForm.explain,
+              "account_id": that.ruleForm.payAccountID,
+              "file": fileArr,
+              "del_rec": that.deleteStr,
+              "create_uid": sessionStorage.getItem('id'),
+              "org_id": sessionStorage.getItem('orgID')
+            }
+          }
+          this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/predeposit/predeposit/batchaddrec', data).then(res => {
+            if (res.data.code == 200) {
+              that.$message({
+                type: 'success',
+                message: '创建成功!'
+              });
+              that.closeAdd();
+            } else {
+              if(res.data.message){
+                that.$message({
+                  type: 'warning',
+                  message: res.data.message
+                });
+              }else{
+                that.$message({
+                  type: 'warning',
+                  message: '创建失败'
+                });
+              }
+            }
+          }).catch(err => {
+            console.log(err)
+          })
+        }
       },
 //      选择账户function
       chooseFun(){
@@ -230,7 +291,7 @@
       },
 //      上传凭证function
       UploadUrl(){
-        return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
+        return this.GLOBAL.serverSrcPhp + '/api/v1/predeposit/predeposit/files';
       },
       handleSuccess(response, file, fileList){
 //        console.log(file);
@@ -238,22 +299,18 @@
 //        console.log('response',response);
         if(response.code == 200){
           this.fileList = fileList;
+          this.tableDataDD = response.data.list;
+          this.tableDataDD.forEach(function (item, index, arr) {
+            item.receivables_at = formatDate(new Date(item.receivables_at*1000)).split(" ")[0];
+          })
         }else{
           if(response.message){
             this.$message.warning(response.message);
           }else{
             this.$message.warning('文件上传失败');
           }
-//          this.fileList = fileList;
-//          console.log(fileList);
-//          this.fileList = fileList.splice(-1, 1);
-//          for(let i = 0; i < fileList.length; i++){
-//            console.log(i);
-//          }
-
-//          console.log(this.fileList);
 //          this.fileList = {};
-//          this.$refs.upload1.clearFiles();
+          this.$refs.upload1.clearFiles();
         }
       },
       handleError(err, file, fileList){
@@ -261,7 +318,8 @@
       },
       handleRemove(file, fileList) {
         console.log(file, fileList);
-        this.fileList = fileList;
+        this.fileList = [];
+        this.tableDataDD = [];
       },
       handleExceed(files, fileList) {
         this.$message.warning(`平台订单只支持一个附件上传！`);
@@ -272,21 +330,23 @@
 //      获取收款编码
       getCode(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/ong/api/receivable/get", {},
+        return this.$http.post(this.GLOBAL.serverSrc + "/ong/api/receivable/get", {},
           {
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')
             }
           }).then(function(obj) {
-          console.log(obj);
+//          console.log(obj);
           if(obj.data.isSuccess){
-            that.rece_code = obj.data.object;
+            return obj.data.object;
           }else{
             that.$message.warning("获取收款编码失败~");
+            return false;
           }
         }).catch(function(obj) {
           that.$message.warning("获取收款编码失败~");
-          console.log(obj)
+          return false;
+          console.log(obj);
         });
       },
     },
