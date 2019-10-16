@@ -2,6 +2,9 @@
 export const CODE_PREFIX= "LKCO";
 export const CODE_SUFFIX= "US621";
 
+// 列表页地址
+export const PRODUCT_LIST_PAGE= '/productList/packageTour';
+
 // 默认交通方式
 export const DEFALUT_TRAFFIC_MODE= 1
 

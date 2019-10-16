@@ -19,7 +19,7 @@
       </div>
       <div>
         <el-button type="primary" size="small" @click="addOrSave">保存</el-button>
-        <el-button type="info" size="small">取消</el-button>
+        <el-button type="info" size="small" @click="leavePage">取消</el-button>
       </div>
     </header>
     
@@ -55,7 +55,8 @@ import './tools'
 import { 
   getTeamScheduleDTO, 
   TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, 
-  CODE_PREFIX, CODE_SUFFIX
+  CODE_PREFIX, CODE_SUFFIX,
+  PRODUCT_LIST_PAGE
 } from './dictionary'
 import changeinfoPackage from './comps/changeinfo-package'
 
@@ -87,6 +88,18 @@ export default {
   },
 
   methods: {
+    leavePage(){
+      let current= this.getCurrentRef();
+      let hasChange= current.checkHasChange();
+      if(hasChange) return this.$confirm(`当前套餐信息有修改未保存，是否仍要离开?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$router.push(PRODUCT_LIST_PAGE);
+      });
+      this.$router.push(PRODUCT_LIST_PAGE);
+    },
 
     /**
      * @description: TEAM_TRAFFIC_DTO_BACK会默认给一个天数最大值
