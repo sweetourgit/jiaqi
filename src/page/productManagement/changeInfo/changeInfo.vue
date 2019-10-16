@@ -120,8 +120,12 @@ export default {
         }).then(() => {
           return this.addOrSave();
         }).catch(() => {
+          // 放弃修改不加这句，会两次弹窗，这里直接关闭当前项，不走校验逻辑 
+          this.vm.currentPackage= null;
+          
           let newTabName= newTab.name;
           this.packages.push(newTab);
+          this.newTab= null;
           this.$nextTick(() => {
             this.vm.currentPackage= newTabName;
           })       
@@ -205,6 +209,14 @@ export default {
         return res(this.saveAction(object));
       }) 
     },
+    asyncCheckHasChange(activeName, oldActiveName){
+      let packages= this.$refs.packageRef;
+      if(!packages) return Promise.resolve();
+      let current= packages.find(el => el.$el.dataset.name=== oldActiveName);
+      if(!current) return Promise.resolve();
+      let hasChange= current.checkHasChange();
+      return hasChange? Promise.reject(): Promise.resolve();
+    },
 
     /**
      * @description: 新增套餐时，生成不重复的新套餐的名字
@@ -217,6 +229,14 @@ export default {
         hit= this.packages.find(el => el.name=== ('未命名套餐'+ num));
       } while (hit && num<= 100);
       return '未命名套餐'+ num;
+    },
+    // 添加num是1， 修改num是2
+    checkPackageNameRepeat(newPackage, num){
+      // 默认名称肯定不会重复
+      let name= newPackage.name;
+      let arr= this.packages.filter(el => el.name=== name);
+      console.log(arr)
+      return arr.length>= num;
     },
 
     /**
@@ -292,6 +312,9 @@ export default {
     },
     addAction(object){
       return new Promise((resolve, reject) => {
+        if(this.checkPackageNameRepeat(object, 1)) return reject(
+          this.$message.error('新增套餐失败，套餐名重复')
+        );
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teampackageinsert", { object },
         ).then(res => {
@@ -307,10 +330,13 @@ export default {
     },
     saveAction(object){
       return new Promise((resolve, reject) => {
+        if(this.checkPackageNameRepeat(object, 2)) return reject(
+          this.$message.error('保存套餐失败，套餐名重复')
+        );
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teampackagesave", { object },
         ).then(res => {
-          if(res.data.isSuccess==true){
+          if(res.data.isSuccess== true){
             this.$message.success("修改成功");
             this.vm.currentPackage= null;
             resolve(this.teaminfogetAction());
@@ -340,15 +366,6 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagedelete", {
         id
       }).then(successFunc);
-    },
-
-    asyncCheckHasChange(activeName, oldActiveName){
-      let packages= this.$refs.packageRef;
-      if(!packages) return Promise.resolve();
-      let current= packages.find(el => el.$el.dataset.name=== oldActiveName);
-      if(!current) return Promise.resolve();
-      let hasChange= current.checkHasChange();
-      return hasChange? Promise.reject(): Promise.resolve();
     },
 
     showValidateError(){
