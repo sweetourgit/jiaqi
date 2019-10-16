@@ -128,6 +128,7 @@
 
             <!-- 头图 -->
             <el-form-item label="头图" ref="avatarImages" prop="avatarImages" label-width="120px">
+              <span class="redStar_01">*</span>
               <div class="img_upload">
                 <template v-for="(item, index) in ruleForm.avatarImages">
                   <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
@@ -2469,7 +2470,8 @@
           arriveTime: '',      //到达时间
           planeDay: '',       //到达天数
           trafficMode: '1',  //出行方式
-          day: '2',     //第几天
+          day:this.ruleForm.travelDays === '1' ? '1' : '2',
+          //day: '2',     //第几天
           // day: '',     //第几天
           ext_Stopover: []
         })
@@ -3587,6 +3589,7 @@
   .operation_Label{ width:120px; float: left; margin-left: 5px; height: 36px; line-height: 30px; padding-top: 2px;margin-top:1px; margin-bottom:1px; }
   #isNull,#zero,#empty{ position: relative; float: left; top:30px; left:-550px ; color: #f56c6c; font-size: 12px;}
   .redStar{ color: #f56c6c; float: left; margin-left:-64px;}
+  .redStar_01{ color: #f56c6c; float: left; margin-left:-50px;}
   .number-day>>>.el-form-item__error{ left:0px; }
   .err_span>>>.el-form-item__error{ left:-85px; }
   .lable_input{ width:200px; float: left; margin-left: 5px; height: 34px; line-height: 30px; padding-top: 1px;margin-top:1px; margin-bottom:0px; padding-bottom: 2px }
