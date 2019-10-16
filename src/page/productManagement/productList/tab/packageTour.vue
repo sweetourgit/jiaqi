@@ -104,7 +104,8 @@
               <div style="color: #f5a142">{{tableData[scope.$index].opers}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="price" label="价格" align="center" width="80%"></el-table-column>
+          <el-table-column prop="refPrice" label="价格" align="center" width="80%"></el-table-column>
+          <!-- <el-table-column prop="price" label="价格" align="center" width="80%"></el-table-column> -->
         </el-table>
       </div>
 
@@ -229,7 +230,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="金额" prop="name">
-              <el-input type="tel" v-model="ruleForm1.name" style="width: 200px"></el-input>
+              <el-input v-model="ruleForm1.name" style="width: 200px"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button v-if="this.chengben.length == 0" type="primary" @click="submitForm1('ruleForm1')">添加</el-button>
@@ -283,7 +284,7 @@ export default {
         name: [
           { required: true, message: "请输入金额", trigger: "change" },
           { pattern:  /^\d+.?\d{0,2}$/, message: "金额后只保留小数点后两位" },
-          { type:'number',message: "金额只能输入数字",trigger: "blur"}
+          //{ type:'number',message: "金额只能输入数字",trigger: "blur"}
         ],
         region: [
           { required: true, message: "请选择供应商名称", trigger: "change" }
@@ -1599,7 +1600,8 @@ export default {
             arr[k]["options"] = obj.data.objects[k].createUser;
             arr[k]["status"] = "1";
             arr[k]["opers"] = "飞猪 携程";
-            arr[k]["price"] = obj.data.objects[k].refPrice;
+            arr[k]["refPrice"] = obj.data.objects[k].refPrice;
+            //arr[k]["price"] = obj.data.objects[k].refPrice;
           });
         })
         .catch(function(obj) {
