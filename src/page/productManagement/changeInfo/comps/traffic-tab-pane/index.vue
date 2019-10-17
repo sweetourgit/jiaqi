@@ -187,6 +187,11 @@ export default {
       // 只有返程会自动定位到最后一个
       index= goOrBackSign=== GO_OR_BACK_SIGN.BACK? 
         (this.proto.length- 1): index;
+      // bug: 当切换交通方式的时候，会重置其他表单的数据
+      let newTraffics= this.getData().traffic;
+      this.traffics.splice(0);
+      this.traffics.push(...newTraffics);
+
       // 默认数据，先切换组件形态
       this.traffics.splice(index, 1,
         this.$deepCopy(
@@ -240,7 +245,7 @@ export default {
       let traffic= 
         this.vm.descriptionState=== 'detail'?
           children.map(child => child.getData()): 
-            [TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK];
+            this.$deepCopy([TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK]);
       let briefMark= 
         this.vm.descriptionState=== 'detail'?
           "": this.vm.content; 

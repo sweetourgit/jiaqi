@@ -122,7 +122,7 @@ export default {
      */
     addTab(){
       let current= this.getCurrentRef();
-      let hasChange= current.checkHasChange();
+      let hasChange= current && current.checkHasChange();
       let newTab= this.getNewTab();
       // 有变动则缓存后返回
       if(hasChange){
@@ -312,7 +312,7 @@ export default {
     },
     getCurrentRef(){
       let packages= this.$refs.packageRef;
-      if(!packages || packages.length=== 0) return;
+      if(!packages || packages.length=== 0) return null;
       let current= packages.find(el => el.$el.dataset.name=== this.vm.currentPackage);
       !current && console.warn('getCurrentRef get none');
       return current;
