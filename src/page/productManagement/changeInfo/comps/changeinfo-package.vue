@@ -87,6 +87,7 @@
 
 <script>
 import { TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK } from '../dictionary'
+import ErrorHandlerMixin from './traffic-tab-pane/comps/mixins/ErrorHandlerMixin'
 // 组件
 import trafficTabPane from './traffic-tab-pane'
 import schedulesTabPane from './schedules-tab-pane'
@@ -97,6 +98,8 @@ export default {
     schedulesTabPane
   },
 
+  mixins: [ErrorHandlerMixin],
+
   props: {
     //package
     proto: {
@@ -106,6 +109,9 @@ export default {
       type: Array
     },
     destinations: {
+      type: Array
+    },
+    nameChecker: {
       type: Array
     }
   },
@@ -133,8 +139,8 @@ export default {
       },
       rules: {
         name: [{ required: true, validator: this.nameValidator, trigger: 'blur' }],
-        podID: [{ required: true, validator: this.podIDValidator, trigger: 'blur' }],
-        destinationID: [{ required: true, validator: this.destinationIDValidator, trigger: 'blur' }]
+        podID: [{ required: true, validator: this.simpleValidator, message: '出发地不能为空', trigger: 'blur' }],
+        destinationID: [{ required: true, validator: this.simpleValidator, message: '目的地不能为空', trigger: 'blur' }]
       }
     }
   },
@@ -159,16 +165,10 @@ export default {
      * @TODO 如果没有其他操作貌似可以合并成一个方法
      */
     nameValidator(rule, value, callback){
-      if(value) return callback();
-      return callback(new Error('套餐名不能为空'));
-    },
-    podIDValidator(rule, value, callback){
-      if(value) return callback();
-      return callback(new Error('出发地不能为空'));
-    }, 
-    destinationIDValidator(rule, value, callback){
-      if(value) return callback();
-      return callback(new Error('目的地不能为空'));
+      if(!value) return callback(this.makeErrorQueueMsg('套餐名不能为空'));
+      console.log(this.nameChecker, value)
+      if(this.nameChecker.includes(value)) return callback(this.makeErrorQueueMsg('套餐名已存在'));
+      return callback();
     },
 
     /**

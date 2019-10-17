@@ -41,6 +41,7 @@
             :proto="item"
             :pods="pods"
             :destinations="destinations"
+            :name-checker="vm.nameChecker"
           >
           </changeinfo-package> 
         </el-tab-pane>
@@ -72,19 +73,32 @@ export default {
     ERROR_QUEUE: []
   },
 
+  mounted(){
+    this.teaminfogetAction();
+  },
+
+  watch: {
+    // 根据packages变化改变nameChecker数组
+    'vm.currentPackage': function(){
+      let name= this.vm.currentPackage;
+      this.vm.nameChecker.splice(0);  
+      let arr= this.packages.forEach(el => {
+        el.name!== name && this.vm.nameChecker.push(el.name);
+      });
+    },
+  },
+
   data() {
     return {
       vm: {
         currentPackage: null,
+        // 除当前套餐外其余套餐的名字
+        nameChecker: []
       },
       pods: [],
       destinations: [],
       packages: [],
     }
-  },
-
-  mounted(){
-    this.teaminfogetAction();
   },
 
   methods: {
@@ -134,6 +148,7 @@ export default {
       }
       let newTabName= newTab.name;
       this.packages.push(newTab);
+      this.newTab= null;
       this.$nextTick(() => {
         this.vm.currentPackage= newTabName;
       })
@@ -187,28 +202,27 @@ export default {
 
     changeTab(activeName, oldActiveName){
       if(!activeName) return false;
-      return this.asyncCheckHasChange(activeName, oldActiveName).catch(() => {
-        return this.$confirm(`当前套餐信息存在修改，是否保存?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          return this.changeTabAfterAction();
-        }).catch(() => {
-          return Promise.resolve();       
-        }); 
+      return new Promise((res, rej) => {
+        this.asyncCheckHasChange(activeName, oldActiveName).then(() => {
+          return res();
+        })
+        .catch(() => {
+          this.$confirm(`当前套餐信息存在修改，是否保存?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            // this.changeTabAfterAction();
+            this.newTab= activeName;
+            this.addOrSave();
+            return rej();
+          }).catch(() => {
+            return res();       
+          }); 
+        })
       })
     },
-    changeTabAfterAction(){
-      // return new Promise((res, rej) => rej)
-      return new Promise((res, rej) => {
-        let current= this.getCurrentRef();
-        let object= current.getData();
-        let isSave= this.isSave();
-        if(!isSave) return res(this.addAction(object));
-        return res(this.saveAction(object));
-      }) 
-    },
+
     asyncCheckHasChange(activeName, oldActiveName){
       let packages= this.$refs.packageRef;
       if(!packages) return Promise.resolve();
@@ -229,14 +243,6 @@ export default {
         hit= this.packages.find(el => el.name=== ('未命名套餐'+ num));
       } while (hit && num<= 100);
       return '未命名套餐'+ num;
-    },
-    // 添加num是1， 修改num是2
-    checkPackageNameRepeat(newPackage, num){
-      // 默认名称肯定不会重复
-      let name= newPackage.name;
-      let arr= this.packages.filter(el => el.name=== name);
-      console.log(arr)
-      return arr.length>= num;
     },
 
     /**
@@ -276,6 +282,7 @@ export default {
             return;
           }
           this.vm.currentPackage= this.newTab || this.packages[0].name;
+          this.newTab= null;
           return Promise.resolve();
         }).catch(err => {
           // TODO: 错误日志
@@ -312,14 +319,13 @@ export default {
     },
     addAction(object){
       return new Promise((resolve, reject) => {
-        if(this.checkPackageNameRepeat(object, 1)) return reject(
-          this.$message.error('新增套餐失败，套餐名重复')
-        );
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teampackageinsert", { object },
         ).then(res => {
           if(res.data.isSuccess==true){
             this.$message.success("添加成功");
+            this.vm.currentPackage= null;
+            resolve(this.teaminfogetAction());
           }else{
             this.$message.error("添加失败");
           }
@@ -330,9 +336,6 @@ export default {
     },
     saveAction(object){
       return new Promise((resolve, reject) => {
-        if(this.checkPackageNameRepeat(object, 2)) return reject(
-          this.$message.error('保存套餐失败，套餐名重复')
-        );
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teampackagesave", { object },
         ).then(res => {
