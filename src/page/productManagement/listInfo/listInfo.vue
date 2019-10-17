@@ -77,22 +77,24 @@
             </el-form-item>
             <!-- 亮点词1 -->
             <el-form-item label="亮点词" prop="highlightWords1" label-width="120px">
-              <el-input maxlength=8 v-model="ruleForm.highlightWords1" class="bright" placeholder="8个字以内"></el-input>
+              <span class="redStar">*</span>
+              <el-input maxlength=8 v-model="ruleForm.highlightWords1" class="bright" placeholder="8个字以内" @blur="highlightWords()"></el-input>
               <span class="bright-number">{{ruleForm.highlightWords1.length}}/8字</span>
+              <div class="cognate" v-show="cognateShow">亮点词不能为空</div>
             </el-form-item>
             <!-- 亮点词2 -->
             <el-form-item prop="highlightWords2" class="bright_b" label-width="120px" style="float:left;">
-              <el-input maxlength=8 v-model="ruleForm.highlightWords2" class="lightspot" placeholder="8个字以内"></el-input>
+              <el-input maxlength=8 v-model="ruleForm.highlightWords2" class="lightspot" placeholder="8个字以内" @blur="highlightWords()"></el-input>
               <span class="lightspot-span">{{ruleForm.highlightWords2.length}}/8字</span>
             </el-form-item>
             <!-- 亮点词3 -->
             <el-form-item prop="highlightWords3" style="clear:both;" label-width="120px">
-              <el-input maxlength=8 v-model="ruleForm.highlightWords3" style="width:210px; float:left; margin:0 0 0 10px;" placeholder="8个字以内"></el-input>
+              <el-input maxlength=8 v-model="ruleForm.highlightWords3" style="width:210px; float:left; margin:0 0 0 10px;" placeholder="8个字以内" @blur="highlightWords()"></el-input>
               <span class="lightspot-span">{{ruleForm.highlightWords3.length}}/8字</span>
             </el-form-item>
             <!-- 亮点词4 -->
             <el-form-item prop="highlightWords4" class="bright_b" label-width="120px">
-              <el-input maxlength=8 v-model="ruleForm.highlightWords4" class="lightspot" placeholder="8个字以内"></el-input>
+              <el-input maxlength=8 v-model="ruleForm.highlightWords4" class="lightspot" placeholder="8个字以内" @blur="highlightWords()"></el-input>
               <span class="lightspot-span">{{ruleForm.highlightWords4.length}}/8字</span>
             </el-form-item>
             <!-- 运营标签 -->
@@ -1407,6 +1409,7 @@
         }
       };
     return {
+      cognateShow:false,
       isInfoImg:false,//头图验证
       a: false,//出发地不能为空
       validaError:[],
@@ -1691,8 +1694,9 @@
           orderConfirmationType: [{ required: true, message: '订单确认类型不能为空', trigger: 'change' }],
           advanceRegistrationDays: [{ required: true, message: '提前报名天数不能为空', trigger: 'blur' },
             { pattern: /^[1-9]\d*$/, message: '提前报名天数需为正整数', trigger: 'blur' }],
-          highlightWords1: [{ required: true, message: '亮点词不能为空', trigger: 'blur' },
-                            { min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          // highlightWords1: [{ required: true, message: '亮点词不能为空', trigger: 'blur' },
+          //                   { min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords1: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
           highlightWords2: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
           highlightWords3: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
           highlightWords4: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
@@ -1999,6 +2003,11 @@
       this.itemList();
     },
     methods: {
+      highlightWords(){
+        if(this.ruleForm.highlightWords1 !== '' || this.ruleForm.highlightWords2 !== '' || this.ruleForm.highlightWords3 !== '' || this.ruleForm.highlightWords4 !== ''){
+            this.cognateShow = false;
+        }
+      },
       testVal(){
         console.log(this.ruleForm.travelDays > 20)
         if(this.ruleForm.travelDays > 20) {
@@ -2145,6 +2154,11 @@
       },
       //保存
       addsave(formName) {
+        if(this.ruleForm.highlightWords1.length == 0 && this.ruleForm.highlightWords2.length == 0 &&this.ruleForm.highlightWords3.length == 0 &&this.ruleForm.highlightWords4.length == 0 ){
+          this.cognateShow = true;
+        }else {
+          this.cognateShow = false;
+        }
         let resArr = [...this.notes, ...this.instructions]
         console.log(resArr)
         this.a = true
@@ -2359,6 +2373,8 @@
              _this.validaError.unshift("头图不能为空");
           }if(_this.ruleForm.slideshow.length==0){
              _this.validaError.unshift("轮播图不能为空");
+          }if(_this.ruleForm.highlightWords1.length==0&&_this.ruleForm.highlightWords2.length==0&&_this.ruleForm.highlightWords3.length==0**_this.ruleForm.highlightWords4.length==0){
+            _this.validaError.unshift("亮点词不能为空");
           }
           // if(_this.isInfo == true){
           //    _this.validaError.unshift("轮播图请选择3-6张图片");
@@ -3600,6 +3616,7 @@
   .upload-demo>>>.el-upload-list__item{ top: -45px;
       left: -183px; background-color:#d7d7d7; float: left; width: 90px; height: 30px; padding: 0; background-size: 44%; background-repeat: no-repeat; background-position: 2px; background-image: url('../../../assets/image/pic.png') }
   .destination-input>>>.el-input--small .el-input__inner{ height: 35px!important; }
+  .cognate{ color:red;position:absolute;left:10px;top:30px;font-size: 12px;}
 /*费用说明*/
   .cost{
     font-weight: bold;

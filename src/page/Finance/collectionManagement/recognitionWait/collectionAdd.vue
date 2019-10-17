@@ -5,7 +5,7 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="buttonDv">
           <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
-          <el-button class="el-button" type="danger" @click="closeAdd">取 消</el-button>
+          <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
         </div>
         <div>
           <el-form-item label="收款时间：" prop="collectionTime" label-width="140px">
@@ -134,6 +134,22 @@
         this.rece_code = '';
         this.fileList = [];
         this.$emit('close', false);
+      },
+      cancalBtn(){
+        if(this.ruleForm.collectionTime != '' || this.ruleForm.explain != '' || this.ruleForm.payAccount != '' || this.ruleForm.money != '' || this.ruleForm.abstract != '' || this.fileList.length != 0){
+          this.$confirm("是否取消本次添加?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            this.$message.success("已取消添加");
+            this.closeAdd();
+          }).catch(() => {
+
+          });
+        }else{
+          this.closeAdd();
+        }
       },
       submitForm(formName) {
         const that = this;

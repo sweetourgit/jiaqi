@@ -193,6 +193,7 @@
         this.endTime = '';
         this.reimbursementPerID = '';
         this.status = '';
+        this.explain = '';
         this.loadData();
       },
       addFun(){
