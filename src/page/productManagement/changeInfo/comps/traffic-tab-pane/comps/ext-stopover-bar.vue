@@ -93,7 +93,6 @@ export default {
      */
     checkHasChange(){
       let bol= !this.$checkLooseEqual(this.submitForm, this.proto);
-      console.log(`ext-stopover-bar checkHasChange: ${bol}`)
       return bol;
     },
 

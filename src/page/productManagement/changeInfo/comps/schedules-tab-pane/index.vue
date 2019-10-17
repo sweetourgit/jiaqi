@@ -110,7 +110,7 @@ export default {
       children.forEach(child => {
         !bol && (bol= child.checkHasChange());
       })
-      console.log(`schedules-tab-pane checkHasChange: ${bol}`)
+      bol && console.warn(`schedules-tab-pane checkHasChange: ${bol}`)
       return bol;
     },
 

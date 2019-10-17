@@ -166,7 +166,6 @@ export default {
      */
     nameValidator(rule, value, callback){
       if(!value) return callback(this.makeErrorQueueMsg('套餐名不能为空'));
-      console.log(this.nameChecker, value)
       if(this.nameChecker.includes(value)) return callback(this.makeErrorQueueMsg('套餐名已存在'));
       return callback();
     },
@@ -181,7 +180,7 @@ export default {
       //检查交通信息，如果基础信息中存在变动，则中断接下来的检查，提高性能，这递归大对象伤不起啊
       !bol && (bol= this.$refs.traffic.checkHasChange());
       !bol && (bol= this.$refs.schedules.checkHasChange());
-      console.log(`changeinfo-package checkHasChange: ${bol}`)
+      bol && console.warn(`changeinfo-package checkHasChange: ${bol}`)
       return bol;
     },
 

@@ -141,7 +141,7 @@ export default {
       let bol= false;
       bol= this.$refs.activitysGround.checkHasChange();
       !bol && (bol= !this.$checkLooseEqual(this.submitForm, this.checkProto));
-      console.log(`schedule-form checkHasChange: ${bol}`)
+      bol && console.warn(`schedule-form checkHasChange: ${bol}`)
       return bol;
     },
 

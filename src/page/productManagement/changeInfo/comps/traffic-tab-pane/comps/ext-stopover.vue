@@ -73,6 +73,7 @@ export default {
       children.forEach(child => {
         !bol && (bol= child.checkHasChange());
       })
+      bol && console.warn(`ext-stopover checkHasChange: ${bol}`)
       return bol;
     },
 

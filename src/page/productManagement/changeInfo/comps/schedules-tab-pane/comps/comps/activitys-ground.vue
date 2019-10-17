@@ -86,7 +86,7 @@ export default {
         !bol && (bol= child.checkHasChange());
       })
       !bol && (bol= !this.$checkLooseEqual(this.activitys, this.proto));
-      console.log(`activitys-ground checkHasChange: ${bol}`)
+      bol && console.warn(`activitys-ground checkHasChange: ${bol}`)
       return bol;
     },
 

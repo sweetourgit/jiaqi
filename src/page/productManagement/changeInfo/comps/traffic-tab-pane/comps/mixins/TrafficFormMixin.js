@@ -45,10 +45,10 @@ const TrafficFormMixin= {
         theNumber: [{ required: true, validator: this.simpleValidator, message: '航班号不能为空', trigger: 'blur' }],
         podCity:[{ required: true, validator: this.simpleValidator, message: '出发城市不能为空', trigger: 'blur' }],
         podPlace: [{ required: true, validator: this.simpleValidator, message: '出发机场不能为空', trigger: 'blur' }],
-        podTime: [{ required: true, validator: this.simpleValidator, message: '出发时间不能为空', trigger: 'blur' }],
+        podTime: [{ required: true, validator: this.timeValidator, message: '出发时间不能为空', trigger: 'blur' }],
         arriveCity: [{ required: true, validator: this.simpleValidator, message: '到达城市不能为空', trigger: 'blur' }],
         arrivePlace: [{ required: true, validator: this.simpleValidator, message: '到达机场不能为空', trigger: 'blur' }],
-        arriveTime: [{ required: true, validator: this.simpleValidator, message: '到达时间不能为空', trigger: 'blur' }],
+        arriveTime: [{ required: true, validator: this.timeValidator, message: '到达时间不能为空', trigger: 'blur' }],
         trafficMode: [{ required: true, validator: this.simpleValidator, message: '不能为空', trigger: 'blur' }],
         day: [{ required: true, validator: this.simpleValidator, message: '请选择天数', trigger: 'blur'}],
       }
@@ -61,10 +61,11 @@ const TrafficFormMixin= {
      */
     init(){
       this.submitForm= this.$deepCopy(this.proto);
-      // 返程需要给day默认值
-      // if(this.goOrBackSign=== GO_OR_BACK_SIGN.BACK){
-      //   this.submitForm.day= this.PROVIDE_DAY;
-      // }
+      //返程需要给day默认值
+      if(this.goOrBackSign=== GO_OR_BACK_SIGN.BACK){
+        this.submitForm.day= this.PROVIDE_DAY;
+      }
+      this.checkProto= this.$deepCopy(this.submitForm);
     },
 
     /**
@@ -79,9 +80,9 @@ const TrafficFormMixin= {
      */
     checkHasChange(){
       let bol= false;
-      bol= !this.$checkLooseEqual(this.submitForm, this.proto);
+      bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
       !bol && (bol= this.$refs.extStopoverRef.checkHasChange());
-      console.log(`traffic-form checkHasChange: ${bol}`)
+      bol && console.log(`traffic-form checkHasChange: ${bol}`)
       return bol;
     },
 
@@ -90,6 +91,12 @@ const TrafficFormMixin= {
       this.$refs.submitForm.validate(validate => bol= validate);
       bol && (bol= this.$refs.extStopoverRef.validate());
       return bol;
+    },
+
+    timeValidator(rule, value, cb){
+      // timepicker空间空值返回的是“null”
+      if(!value || value=== "null") return cb(this.makeErrorQueueMsg(rule.message));
+      cb();
     },
     
     /**
