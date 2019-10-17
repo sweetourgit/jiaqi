@@ -1,40 +1,21 @@
 <template>
   <div>
+    <!--搜索框-->
     <div class="demo-input-suffix">
       <span class="search-title">产品名称</span>
       <el-input placeholder="请输入" v-model="title" class="group-no" @blur="productName()"></el-input>
       <span class="search-title">报账团号</span>
       <el-input placeholder="请输入" v-model="groupCode" class="group-no" @blur="groupNo()"></el-input>
       <span class="search-title">出行日期</span>
-      <el-date-picker
-        v-model="date"
-        type="daterange"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        align="right"
-        class="group-no"
-        @change="dateline()"
-      ></el-date-picker>
+      <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
+        align="right" class="group-no" @change="dateline()"></el-date-picker>
       <br />
       <span class="search-title">操作人员</span>
       <el-input placeholder="请输入" v-model="op" class="group-no" @blur="operation()"></el-input>
       <span class="search-title">报账状态</span>
-      <el-select
-        v-model="financeState"
-        placeholder="请选择"
-        class="group-no"
-        style="width:185px"
-        @blur="condition()"
-      >
-        <el-option
-          v-for="item in financeType"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
+      <el-select v-model="financeState" placeholder="请选择" class="group-no" style="width:185px"@blur="condition()">
+        <el-option v-for="item in financeType" :key="item.value" :label="item.label":value="item.value"></el-option>
       </el-select>
-
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
       <el-button type="primary" plain @click="reset">重置</el-button>
     </div>
@@ -44,63 +25,47 @@
         <el-button :disabled="forbidden2" @click="dialogCost = true">报账单</el-button>-->
       </el-row>
       <!--list-->
-      <el-table
-        :data="teamqueryList"
-        ref="multipleTable"
-        class="table"
-        :header-cell-style="getRowClass"
-        border
-        :row-style="rowClass"
-        :cell-style="getCellClass"
-        @selection-change="changeFun"
-        @row-click="clickRow"
-      >
+      <!--列表表格-->
+      <el-table :data="teamqueryList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass"
+        :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">
         <el-table-column type="index" label="序号" width="60"></el-table-column>
-        <el-table-column prop="title" label="产品名称" min-width="200"></el-table-column>
         <el-table-column prop="groupCode" label="团号" width="220"></el-table-column>
+        <el-table-column prop="" label="状态" width="100"></el-table-column>
+        <el-table-column prop="title" label="产品名称" min-width="200"></el-table-column>
         <el-table-column prop="dateFormat" label="出行日期" width="100"></el-table-column>
-        <el-table-column prop="week" label="周" width="70"></el-table-column>
+        <el-table-column prop="" label="报账状态" width="100"></el-table-column>
+        <el-table-column prop="count" label="计划位" width="70"></el-table-column>
+        <el-table-column prop="remaining" label="余位" width="70"></el-table-column>
+        <el-table-column prop="" label="确定占位" width="70"></el-table-column>
+        <el-table-column prop="" label="预订占位" width="70"></el-table-column>
+        <el-table-column prop="" label="预订不占" width="70"></el-table-column>
+        <!-- <el-table-column prop="week" label="周" width="70"></el-table-column>
         <el-table-column prop="day" label="天数" width="70"></el-table-column>
         <el-table-column prop="refPrice" label="参考价" width="80"></el-table-column>
         <el-table-column prop="count" label="计划位" width="70"></el-table-column>
         <el-table-column prop="remaining" label="余位" width="70"></el-table-column>
-        <el-table-column prop="shareCN" label="是否共享" width="85"></el-table-column>
+        <el-table-column prop="shareCN" label="是否共享" width="85"></el-table-column> -->
         <el-table-column prop="op" label="操作人员" width="80"></el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="180">
           <template slot-scope="scope">
             <span class="cursor blue" @click="haltSales(scope.row.id)">停售</span>
             <span class="em">|</span>
             <span class="cursor blue" @click="operation(1)">下单</span>
             <span class="em">|</span>
             <span class="cursor blue" @click="operation(2)">详情</span>
+            <span class="em">|</span>
+            <span class="cursor blue">报账单</span>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        v-if="pageshow"
-        class="pagination"
-        @size-change="handleSizeChange"
-        background
-        @current-change="handleCurrentChange"
-        :current-page="1"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
+      <!--分页-->
+      <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
+        :current-page="1" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
       <!--报账单弹窗-->
       <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list" width="60%">
-        <el-table
-          :data="costList"
-          ref="costTable"
-          class="costTable"
-          :header-cell-style="getCostClass"
-          border
-          :row-style="costrowClass"
-          :cell-style="getCellClass"
-          @selection-change="changeFunCost"
-          @row-click="clickRowCost"
-        >
+        <el-table :data="costList" ref="costTable" class="costTable" :header-cell-style="getCostClass" border :row-style="costrowClass"
+          :cell-style="getCellClass" @selection-change="changeFunCost" @row-click="clickRowCost">
           <el-table-column prop="id" label fixed type="selection"></el-table-column>
           <el-table-column prop="serno" label="序号" min-width="50"></el-table-column>
           <el-table-column prop="state" label="审核状态" min-width="90"></el-table-column>
@@ -255,37 +220,19 @@ export default {
       this.teamQueryList(val, this.pageSize);
     },
     //计划list
-    teamQueryList(
-      pageIndex = this.pageIndex,
-      pageSize = this.pageSize,
-      title = this.title,
-      groupCode = this.groupCode,
-      startDate = this.date == null ? 0 : this.date[0],
-      endDate = this.date == null ? 0 : this.date[1],
-      op = this.op
-    ) {
+    teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op) {
       if (startDate) {
         let y = startDate.getFullYear();
-        let m =
-          startDate.getMonth() + 1 > 9
-            ? startDate.getMonth() + 1
-            : "0" + (startDate.getMonth() + 1);
-        let d =
-          startDate.getDate() > 9
-            ? startDate.getDate()
-            : "0" + startDate.getDate();
+        let m = startDate.getMonth() + 1 > 9 ? startDate.getMonth() + 1 : "0" + (startDate.getMonth() + 1);
+        let d = startDate.getDate() > 9 ? startDate.getDate() : "0" + startDate.getDate();
         startDate = "" + y + m + d;
       } else {
         startDate = 0;
       }
       if (endDate) {
         let y = endDate.getFullYear();
-        let m =
-          endDate.getMonth() + 1 > 9
-            ? endDate.getMonth() + 1
-            : "0" + (endDate.getMonth() + 1);
-        let d =
-          endDate.getDate() > 9 ? endDate.getDate() : "0" + endDate.getDate();
+        let m = endDate.getMonth() + 1 > 9 ? endDate.getMonth() + 1 : "0" + (endDate.getMonth() + 1);
+        let d = endDate.getDate() > 9 ? endDate.getDate() : "0" + endDate.getDate();
         endDate = "" + y + m + d;
       } else {
         endDate = 0;
