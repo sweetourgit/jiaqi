@@ -34,3 +34,20 @@ export const getGuidAction= function(){
     })
   })
 }
+
+// 获取地点
+export const getFuzzyAction= function(areaName){
+  return new Promise((resolve, reject) => {
+    this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+      "object": {
+        areaName
+      }
+    }).then(res => {
+      let { isSuccess, objects }= res.data;
+      if(!isSuccess) return reject('获取地点失败');
+      return resolve(objects);
+    }).catch((err) => {
+      reject(err);
+    })
+  });
+}

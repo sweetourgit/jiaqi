@@ -46,6 +46,10 @@ import basicPane from './comps/basic-pane/index'
 export default {
   components: { basicPane },
 
+  provide: {
+    PROVIDE_TEAM_ID: null,
+  },
+
   mounted(){
     let isSave= this.$route.query.id || false;
     this.init(isSave);
@@ -71,7 +75,11 @@ export default {
     init(id){
       let proto= this.getProto(id);
       proto.then(res => {
+        // 拆分数据
         this.splitProto(res);
+        // 修改需要透传id
+        id && (this._provided.PROVIDE_TEAM_ID= id);
+        // 通知$el数据初始化完成
         this.vm.inited= true;
       }).catch(err => {
         console.error(err);
