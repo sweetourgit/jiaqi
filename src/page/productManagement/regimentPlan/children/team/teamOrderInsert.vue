@@ -463,6 +463,7 @@ export default {
     },
     teampreview(ID) {
       //团期计划订单信息预览
+      console.log(ID)
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
           id: ID

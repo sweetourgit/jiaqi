@@ -165,15 +165,14 @@ export default {
         }
       ],
       dialogCost: false, //成本弹窗
-      costSelection: [], //选中的list
-      searchParams: 2 // 2 为翻页，控制名字转code
+      // costSelection: [], //选中的list
+      // searchParams: 2 // 2 为翻页，控制名字转code
     };
   },
   created() {
     this.teamQueryList();    
   },
   mounted () {
-    this.loadOper();
   },
   methods: {
     productName() {
@@ -232,13 +231,13 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.teamQueryList(1, val, this.searchParam);
+      this.teamQueryList();
     },
     handleCurrentChange(val) {
-      this.teamQueryList(val, this.pageSize, this.searchParam);
+      this.teamQueryList();
     },
     //计划list
-    teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op,searchParams= this.searchParam) {
+    teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op) {
       if (startDate) {
         let y = startDate.getFullYear();
         let m = startDate.getMonth() + 1 > 9 ? startDate.getMonth() + 1 : "0" + (startDate.getMonth() + 1);
@@ -255,26 +254,6 @@ export default {
       } else {
         endDate = 0;
       }
-
-      let _this = this
-      console.log('searchParams', searchParams)
-      if (searchParams == 1) {
-        // 用户名转编码
-        if (this.userCodeList) {
-          try {
-              this.userCodeList.forEach(( item => {
-                console.log(item.name === _this.op)
-                if(item.name === _this.op) {
-                  _this.changedUserCode = item.userCode
-                  throw Error();
-                } else {
-                  _this.changedUserCode = ' ' 
-                }
-              }))  
-          } catch (e) {}
-        }
-      } 
-
       this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/page", {
           pageIndex: pageIndex,
           pageSize: pageSize,
@@ -283,25 +262,12 @@ export default {
             groupCode: groupCode,
             startDate: startDate,
             endDate: endDate,
-            //"op":sessionStorage.getItem('userName')
-            op: _this.changedUserCode,
+            op: op,
           }
         })
         .then(res => {
           this.teamqueryList = [];
           this.total = res.data.total;
-          // this.teamqueryList.forEach(function(item, index, arr) {
-          //   that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
-          //       userCode: item.op
-          //   }).then(function(response) {
-          //       if (response.data.isSuccess) {
-          //         item.op = response.data.object.name;
-          //       }
-          //     })
-          //     .catch(function(error) {
-          //       console.log(error);
-          //     });
-          // });
           if (res.data.isSuccess == true) {
             this.teamqueryList = res.data.objects;
           }
@@ -345,11 +311,49 @@ export default {
       this.dialogType = i;
     },
     search() {
-      this.searchParam = 1;
-      //this.pageIndex = 1;
-      //this.pageshow = false;
-      console.log(this.date);
-      this.teamQueryList(this.searchParam);
+      var that = this
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
+        object: {
+          id: 0,
+          createTime: "2019-08-23T03:03:10.386Z",
+          isDeleted: 0,
+          code: "",
+          mobile: "",
+          name: this.op,
+          email: "",
+          userCode: "",
+          passWord: "",
+          iDcard: "",
+          tourGuide: "",
+          sex: 0,
+          userType: 0,
+          userState: 0,
+          orgID: 0,
+          orgName: "",
+          user_Position: [
+            {
+              id: 0,
+              userID: 0,
+              positionID: 0,
+              positionName: "",
+              isDefault: 0,
+              orgID: 0,
+              orgName: ""
+            }
+          ]
+        }
+      }).then(res => {
+          if (res.data.objects.length !=0) {
+            var getUserCode='';
+            getUserCode = res.data.objects[0].userCode;
+            this.teamQueryList(this.pageIndex,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
+
+          } else {
+            that.teamqueryList = [];
+          }
+        }).catch(function(error) {
+          console.log(error);
+        })
       this.$nextTick(() => {
         this.pageshow = true;
       });
@@ -381,53 +385,6 @@ export default {
           });
         });
     },
-    loadOper() {
-      var that = this;
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/org/api/userlist",
-          {
-            object: {
-              id: 0,
-              createTime: "2019-08-23T03:03:10.386Z",
-              isDeleted: 0,
-              code: "",
-              mobile: "",
-              name: "",
-              email: "",
-              userCode: "",
-              passWord: "",
-              iDcard: "",
-              tourGuide: "",
-              sex: 0,
-              userType: 0,
-              userState: 0,
-              orgID: 0,
-              orgName: "",
-              user_Position: [
-                {
-                  id: 0,
-                  userID: 0,
-                  positionID: 0,
-                  positionName: "",
-                  isDefault: 0,
-                  orgID: 0,
-                  orgName: ""
-                }
-              ]
-            }
-          })
-        .then(function(response) {
-          if (response.data.isSuccess) {
-            const kepRes = response.data.objects
-            that.userCodeList = kepRes
-          } else {
-            that.$message.success("加载数据失败~");
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    }
   }
 };
 </script>
