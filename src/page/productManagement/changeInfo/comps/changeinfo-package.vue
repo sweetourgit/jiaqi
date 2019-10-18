@@ -31,7 +31,13 @@
 
           <el-col :span="6">
             <el-form-item label="出发地：" prop="podID">
+<<<<<<< HEAD
               <el-select v-model="submitForm.podID" placeholder="出发地" style="width: 100%;">
+=======
+              <el-select v-model="submitForm.podID" placeholder="出发地" style="width: 100%;"
+                @change="podChange"
+              >
+>>>>>>> dev
                 <el-option
                   v-for="item in pods"
                   :key="item.podID"
@@ -41,7 +47,13 @@
               </el-select>
             </el-form-item>
             <el-form-item label="目的地：" prop="destinationID">
+<<<<<<< HEAD
               <el-select v-model="submitForm.destinationID" placeholder="目的地" style="width: 100%;">
+=======
+              <el-select v-model="submitForm.destinationID" placeholder="目的地" style="width: 100%;"
+                @change="destinationChange"
+              >
+>>>>>>> dev
                 <el-option
                   v-for="item in destinations"
                   :key="item.destinationID"
@@ -53,6 +65,14 @@
           </el-col>
           
         </el-row>
+<<<<<<< HEAD
+=======
+
+        <el-row v-show="false">
+          <el-input v-model="submitForm.pod"></el-input>
+          <el-input v-model="submitForm.destination"></el-input>
+        </el-row>
+>>>>>>> dev
       </el-form>
     </header>
     <main>
@@ -62,17 +82,30 @@
             ref="traffic"
             :proto="proto.traffic"
             :brief-mark="proto.briefMark"
+<<<<<<< HEAD
             @add-traffic="emitAddTraffic"
           ></traffic-tab-pane>
         </el-tab-pane>
         <!-- <el-tab-pane label="酒店信息" name="second">酒店信息</el-tab-pane> -->
         <el-tab-pane label="日程信息" name="schedules">日程信息</el-tab-pane>
+=======
+          ></traffic-tab-pane>
+        </el-tab-pane>
+        <!-- <el-tab-pane label="酒店信息" name="second">酒店信息</el-tab-pane> -->
+        <el-tab-pane label="日程信息" name="schedules">
+          <schedules-tab-pane
+            ref="schedules"
+            :proto="proto.schedules"
+          ></schedules-tab-pane>
+        </el-tab-pane>
+>>>>>>> dev
       </el-tabs>
     </main>
   </div>
 </template>
 
 <script>
+<<<<<<< HEAD
 // 组件
 import trafficTabPane from './comps/traffic-tab-pane'
 // 常量
@@ -83,6 +116,22 @@ export default {
     trafficTabPane
   },
 
+=======
+import { TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK } from '../dictionary'
+import ErrorHandlerMixin from './traffic-tab-pane/comps/mixins/ErrorHandlerMixin'
+// 组件
+import trafficTabPane from './traffic-tab-pane'
+import schedulesTabPane from './schedules-tab-pane'
+
+export default {
+  components: {
+    trafficTabPane,
+    schedulesTabPane
+  },
+
+  mixins: [ErrorHandlerMixin],
+
+>>>>>>> dev
   props: {
     //package
     proto: {
@@ -93,6 +142,12 @@ export default {
     },
     destinations: {
       type: Array
+<<<<<<< HEAD
+=======
+    },
+    nameChecker: {
+      type: Array
+>>>>>>> dev
     }
   },
 
@@ -112,23 +167,45 @@ export default {
       },
       submitForm: {
         name: null,
+<<<<<<< HEAD
         podID: null,
+=======
+        pod: '',
+        podID: null,
+        destination: '',
+>>>>>>> dev
         destinationID: null
       },
       rules: {
         name: [{ required: true, validator: this.nameValidator, trigger: 'blur' }],
+<<<<<<< HEAD
         podID: [{ required: true, validator: this.podIDValidator, trigger: 'blur' }],
         destinationID: [{ required: true, validator: this.destinationIDValidator, trigger: 'blur' }]
+=======
+        podID: [{ required: true, validator: this.simpleValidator, message: '出发地不能为空', trigger: 'blur' }],
+        destinationID: [{ required: true, validator: this.simpleValidator, message: '目的地不能为空', trigger: 'blur' }]
+>>>>>>> dev
       }
     }
   },
 
   methods: {
     /**
+<<<<<<< HEAD
      * @description: 初始化submitForm，并保存基础信息快照
      */
     init(){
       Object.keys(this.submitForm).forEach(attr => this.submitForm[attr]= this.proto[attr]);
+=======
+     * @description: 初始化submitForm，剥离交通信息，日程信息，保存基础信息快照 
+     */
+    init(){
+      Object.keys(this.proto).forEach(attr => {
+        attr!== 'schedules' 
+          && attr!== 'traffic'
+            && (this.submitForm[attr]= this.proto[attr]);
+      });
+>>>>>>> dev
       //用于比较是否发生改变的对象
       this.checkProto= this.$deepCopy(this.submitForm);
     },
@@ -139,6 +216,7 @@ export default {
      * @TODO 如果没有其他操作貌似可以合并成一个方法
      */
     nameValidator(rule, value, callback){
+<<<<<<< HEAD
       if(value) return callback();
       return callback(new Error('套餐名不能为空'));
     },
@@ -159,6 +237,11 @@ export default {
     emitAddTraffic(defaultTraffics){
       let traffics= defaultTraffics;
       traffics.splice(traffics.length- 1, 0, TEAM_TRAFFIC_DTO_GO)
+=======
+      if(!value) return callback(this.makeErrorQueueMsg('套餐名不能为空'));
+      if(this.nameChecker.includes(value)) return callback(this.makeErrorQueueMsg('套餐名已存在'));
+      return callback();
+>>>>>>> dev
     },
 
     /**
@@ -170,8 +253,54 @@ export default {
       bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
       //检查交通信息，如果基础信息中存在变动，则中断接下来的检查，提高性能，这递归大对象伤不起啊
       !bol && (bol= this.$refs.traffic.checkHasChange());
+<<<<<<< HEAD
       console.log(`changeinfo-package checkHasChange: ${bol}`)
       return bol;
+=======
+      !bol && (bol= this.$refs.schedules.checkHasChange());
+      bol && console.warn(`changeinfo-package checkHasChange: ${bol}`)
+      return bol;
+    },
+
+    /**
+     * @description: 获取数据
+     */
+    getData(){
+      let hasChange= this.checkHasChange();
+      if(!hasChange) return this.$message.info('无数据变动');
+      let { traffic, briefMark }= this.$refs.traffic.getData();
+      let schedules= this.$refs.schedules.getData();
+      let data= this.$deepCopy(this.submitForm);
+      // 保存互斥，简要则清空详细，详细则清空简要
+      data.traffic= briefMark? [
+        TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK
+      ]: traffic;
+      data.briefMark= briefMark;
+      data.schedules= schedules;
+      return data;
+    },
+
+    validate(){
+      let bol= true;
+      this.$refs.submitForm.validate(validate => {
+        bol= validate;
+      });
+      bol && (bol= this.$refs.traffic.validate());
+      bol && (bol= this.$refs.schedules.validate());
+      return bol;
+    },
+
+    /**
+     * @description: 下拉选择联动赋值
+     */
+    podChange(nval){
+      let hit= this.pods.find(el => el.podID=== nval);
+      this.submitForm.pod= hit.pod;
+    },
+    destinationChange(nval){
+      let hit= this.destinations.find(el => el.destinationID=== nval);
+      this.submitForm.destination= hit.destination;
+>>>>>>> dev
     }
   }
 }

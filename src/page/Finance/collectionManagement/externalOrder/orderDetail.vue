@@ -450,27 +450,50 @@
               }
               that.tableDataSK = [];
               that.tableDataXQ = response.data.data.list;
+              let userGetList = [];
               that.tableDataXQ.forEach(function (item, index, arr) {
                 item.sale_at = formatDate(new Date(item.sale_at*1000));
                 item.check_at = formatDate(new Date(item.check_at*1000));
                 item.import_at = formatDate(new Date(item.import_at*1000));
-                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
-                  "id": item.create_uid
-                },{
-                  headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                  }
-                }).then(function(response) {
-                  console.log('名字',response.data.object.name);
-                  if (response.data.isSuccess) {
-                    item.create_uid = response.data.object.name;
+
+//                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+//                  "id": item.create_uid
+//                },{
+//                  headers: {
+//                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+//                  }
+//                }).then(function(response) {
+//                  console.log('名字',response.data.object.name);
+//                  if (response.data.isSuccess) {
+//                    item.create_uid = response.data.object.name;
+//                  } else {
+//                    that.$message.warning("失败~");
+//                  }
+//                }).catch(function(error) {
+//                  console.log(error);
+//                });
+
+                if(userGetList.length == 0){
+                  const userItem = {
+                    id: item.create_uid,
+                    itemIndex : [index]
+                  };
+                  userGetList.push(userItem);
+                }
+                for(let i = 0; i < userGetList.length; i++){
+                  if (userGetList[i].id === item.create_uid) {
+                    userGetList[i].itemIndex.push(index);
                   } else {
-                    that.$message.warning("失败~");
+                    const userItem = {
+                      id: item.create_uid,
+                      itemIndex : [index]
+                    };
+                    userGetList.push(userItem);
                   }
-                }).catch(function(error) {
-                  console.log(error);
-                });
+                }
               });
+//              console.log(userGetList);
+              that.getUser(userGetList);
               that.totalItem = '';
               that.totalMoney = '';
               that.startTime = '';
@@ -507,6 +530,30 @@
         }).catch(function(error) {
           console.log(error);
         });
+      },
+      getUser(userGetList){
+        const that = this;
+        userGetList.forEach(function (item, index, arr) {
+          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            "id": item.id
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(function(response) {
+            console.log('名字',response.data.object.name);
+            if (response.data.isSuccess) {
+//              item.create_uid = response.data.object.name;
+              item.itemIndex.forEach(function (item, index, arr) {
+                that.tableDataXQ[item].create_uid = response.data.object.name;
+              })
+            } else {
+              that.$message.warning("失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+        })
       }
     },
     created() {

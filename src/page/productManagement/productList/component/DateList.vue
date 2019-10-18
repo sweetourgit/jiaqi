@@ -144,9 +144,12 @@
           <el-input v-model="Rform.sumNum" style="width:200px; margin:0 0 0 33px;" ></el-input>
         </el-form-item>
         <el-form-item label="订单预留时长:" style="margin-top:20px">
-          <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:200px">
+          <!-- <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:200px">
             <el-option label="0-1" value="shanghai"></el-option>
             <el-option label="1-2" value="beijing"></el-option>
+          </el-select> -->
+          <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:200px">
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of excurList" :key="item.value"/>
           </el-select>
         </el-form-item>
       </el-form>
@@ -169,7 +172,7 @@
               <el-button @click="delect(item, index)"  type="danger" size="mini">删除</el-button>
             </div>
           </div>
-          <div class="divform">
+          <div class="divform"> 
             <el-form ref="form" :model="item" :rules="formRuler"  label-width="80px">
               <el-form-item label="销售价" prop="salePrice">
                 <el-input v-if="Rform.resource == 1" :class="isAverage = item.salePrice < shareAverage && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
@@ -270,7 +273,80 @@
         //   type:false,
         // }],
         typeSelect: [], // 报名类型选择
-        signUptypeSelect:[] // 共享库存数据
+        signUptypeSelect:[], // 共享库存数据
+        excurList:[{
+          value: '1',
+          label: '1小时'
+        }, {
+          value: '2',
+          label: '2小时',
+        }, {
+          value: '3',
+          label: '3小时',
+        }, {
+          value: '4',
+          label: '4小时',
+        }, {
+          value: '5',
+          label: '5小时',
+        }, {
+          value: '6',
+          label: '6小时',
+        }, {
+          value: '7',
+          label: '7小时',
+        }, {
+          value: '8',
+          label: '8小时',
+        }, {
+          value: '9',
+          label: '9小时',
+        }, {
+          value: '10',
+          label: '10小时',
+        }, {
+          value: '11',
+          label: '11小时',
+        }, {
+          value: '12',
+          label: '12小时',
+        }, {
+          value: '13',
+          label: '13小时',
+        }, {
+          value: '14',
+          label: '14小时',
+        }, {
+          value: '15',
+          label: '15小时',
+        }, {
+          value: '16',
+          label: '16小时',
+        }, {
+          value: '17',
+          label: '17小时',
+        }, {
+          value: '18',
+          label: '18小时',
+        }, {
+          value: '19',
+          label: '19小时',
+        }, {
+          value: '20',
+          label: '20小时',
+        }, {
+          value: '21',
+          label: '21小时',
+        }, {
+          value: '22',
+          label: '22小时',
+        }, {
+          value: '23',
+          label: '23小时',
+        }, {
+          value: '24',
+          label: '24小时',
+        }]
       };
     },
     // 结算参考保留小数点后两位
@@ -790,7 +866,8 @@
       saveQuota(list, data, inventoryID, row, sumId) {
         let planEnroll = [];
         let cost = false;
-        let isSave = true; // 是否编辑判断
+        let isSave = true; 
+        // 是否编辑判断
         if (list.data.person.planEnroll.length != 0 ) {
           list.data.person.planEnroll.forEach(item => {
             let quotaPrice = '';
@@ -925,17 +1002,18 @@
             if (this.Rform.sumNum != '') {
               this.$refs['form'][index].validate(valid => {
                 if (valid) {
-
-
                   if(data.salePrice < this.average) {
                     this.$confirm('当前销售价低于共享库存的结算参考, 是否继续保存', '提示', {
                       confirmButtonText: '确定',
                       cancelButtonText: '取消',
                       type: 'warning'
                     }).then(() => {
+                      console.log('当前销售价低于共享库存的结算参考, 是否继续保存')
                       if (this.Rform.sumId) {
+                        console.log(this.Rform.sumId)
                         this.saveQuota(this.n[0], data, this.Rform.sumId);
                       } else {
+                        console.log('添加非共享库存')
                         // 添加非共享库存
                         this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', {
                           "object": {
@@ -965,6 +1043,7 @@
                           "date": this.Rform.date
                         }
                       }).then(res => {
+
                         // 添加完成后传入添加后的id
                         this.saveQuota(this.n[0], data, res.data.id);
                       }).catch(err => {
@@ -1070,6 +1149,14 @@
         this.n.forEach(item => {
           // 第一次添加时
           if (this.days[item.index].data.person.planEnroll == undefined) {
+            // 设置销售价同业价 
+            // sessionStorage.setItem("salePrice", data.salePrice);
+            // sessionStorage.setItem("traderPrice", data.traderPrice);
+            // sessionStorage.setItem("proName", data.name);
+            // 取值
+            // let getSalePrice = sessionStorage.getItem("salePrice")
+            // let getTraderPrice = sessionStorage.getItem("traderPrice")
+            // let getProName = sessionStorage.getItem("proName")
             let planEnroll = [];
             let cost = false;
             planEnroll.push({

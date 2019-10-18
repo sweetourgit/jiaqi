@@ -104,7 +104,8 @@
               <div style="color: #f5a142">{{tableData[scope.$index].opers}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="price" label="价格" align="center" width="80%"></el-table-column>
+          <el-table-column prop="refPrice" label="价格" align="center" width="80%"></el-table-column>
+          <!-- <el-table-column prop="price" label="价格" align="center" width="80%"></el-table-column> -->
         </el-table>
       </div>
 
@@ -141,20 +142,20 @@
           <el-table-column align="center" label="前缀-团号-后缀">
             <template slot-scope="scope">
               <el-input :maxlength="10"v-model="ccc[scope.$index].codePrefix"
-                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking"></el-input>
+                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
               <span>-</span>
               <span v-text="'{{'"></span>
               <span>日期</span>
               <span>}}</span>
               <span>-</span>
               <el-input :maxlength="10" v-model="ccc[scope.$index].codeSuffix"
-                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking"></el-input>
+                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
             </template>
           </el-table-column>
           <el-table-column align="center" width="180" label="清位时间">
             <template slot-scope="scope">
               <span style="margin-right:5px">前</span>
-              <el-input :maxlength="3" v-model="ccc[scope.$index].uptoDay" style="width:60px"></el-input>
+              <el-input :maxlength="3" v-model="ccc[scope.$index].uptoDay"@change="fucking" style="width:60px" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
               <span style="margin-left:10px">天</span>
               <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">时</span> -->
               <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">分</span> -->
@@ -163,12 +164,7 @@
           <!-- <el-table-column align="center" width="180" label="出行模板">
             <template slot-scope="scope">
               <el-select v-model="ccc[scope.$index].value" placeholder="请选择">
-                <el-option
-                  v-for="item in type"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+                <el-option v-for="item in type" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
           </template>-->
           <!-- </el-table-column> -->
@@ -181,7 +177,8 @@
                 <el-button size="mini" type="primary" @click="offline(scope.$index)" :disabled="isUseLine">下线</el-button>
               </template>
               <el-button :disabled="isUsePrice" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
-              <el-button size="mini" type="primary"@click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)">成本</el-button>
+              <!-- <el-button :disabled="scope.codePrefix ==''|| scope.codeSuffix ==''|| scope.uptoDay =='' || JSON.stringify(scope.costs) == '[]'" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button> -->
+              <el-button size="mini" type="primary" @click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate, true)">成本</el-button>
 
               <!-- <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button> -->
             </template>
@@ -203,7 +200,7 @@
             <div style="margin-top: 10px;float: left;margin-left: 30px;">人均结算价({{count | numFilter}})</div>
           </div>
           <div style="margin-top: 100px">
-              <el-table ref="multipleTable12" :data="tableData12" tooltip-effect="dark" style="width: 600px"
+              <el-table ref="multipleTable12" :data="tableData12" style="width: 600px"
                 @selection-change="handleSelectionChange" @select="changselet" border>
                 <el-table-column type="selection" width="50" align="center"></el-table-column>
                 <el-table-column label="序号" width="100" align="center">
@@ -286,7 +283,8 @@ export default {
       rules1: {
         name: [
           { required: true, message: "请输入金额", trigger: "change" },
-          { pattern:  /^\d+.?\d{0,2}$/, message: "金额后只保留小数点后两位" }
+          { pattern:  /^\d+.?\d{0,2}$/, message: "金额后只保留小数点后两位" },
+          //{ type:'number',message: "金额只能输入数字",trigger: "blur"}
         ],
         region: [
           { required: true, message: "请选择供应商名称", trigger: "change" }
@@ -749,7 +747,8 @@ export default {
       array1: "",
       team: "",
       chengben: [],
-      supplier_id: 0
+      supplier_id: 0,
+      team_01:0,
     };
   },
   //人均结算价保留小数点后两位
@@ -1210,14 +1209,16 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      if(this.multipleSelection.length == 1){
+      if(this.multipleSelection.length === 1){
            this.forbidden_a=false;
-        }else{
-           this.forbidden_a=true;
-        }
+      }else{
+         this.forbidden_a=true;
+      }
     },
-    basicPrice(id, rate) {
-      this.basicbutton = true;
+    basicPrice(id, rate, ShowBase) {
+      if (ShowBase) {
+        this.basicbutton = true;  
+      }
       this.team = id;
       this.lilv = rate;
       this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
@@ -1263,12 +1264,30 @@ export default {
 
     fucking() {
       for (let i = 0; i < this.ccc.length; i++) {
-        if (this.ccc[i].codePrefix == this.ccc[i].codeSuffix) {
+        if (this.ccc[i].codePrefix === '' && this.ccc[i].codeSuffix === '') {
+          this.isInfo = true;
+          this.$message.error("错了哦，团号不能为空");
+          break;
+        } else if(this.ccc[i].codePrefix == this.ccc[i].codeSuffix){
           this.isInfo = true;
           this.$message.error("错了哦，团号不能重复");
           break;
-        } else {
+        }else {
           this.isInfo = false;
+        }
+      }
+    },
+    //控制价格按钮显示
+    changeFun(id, rate, ifShowBase){
+      // basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)
+      this.basicPrice(id, rate, ifShowBase)
+      //this.multipleSelection = val;
+      for(let i = 0; i < this.ccc.length; i++){
+        console.log(this.tableData12)
+        if(this.ccc[i].codePrefix !=='' && this.ccc[i].codeSuffix !=='' && this.ccc[i].uptoDay !=='' && this.tableData12.length>0){
+          this.isUsePrice = false;
+        }else{
+          this.isUsePrice = true;
         }
       }
     },
@@ -1436,9 +1455,19 @@ export default {
       this.codePrefix = this.ccc[item].codePrefix;
       this.codeSuffix = this.ccc[item].codeSuffix;
 
+      // if(this.codePrefix === this.codeSuffix){
+      //   this.$message.error("错了哦，团号不能重复");
+      //   this.isCollapse = true;
+      // }else{
+      //   this.isCollapse = false;
+      // }
+
       if (this.codePrefix == "" || this.codeSuffix == "") {
         this.$message.error("错了哦，团号不能为空");
-      } else {
+      } else if(this.codePrefix === this.codeSuffix) {
+         this.$message.error("错了哦，团号不能重复");
+        this.isCollapse = true;
+      }else{
         this.isCollapse = false;
       }
     },
@@ -1571,7 +1600,8 @@ export default {
             arr[k]["options"] = obj.data.objects[k].createUser;
             arr[k]["status"] = "1";
             arr[k]["opers"] = "飞猪 携程";
-            arr[k]["price"] = obj.data.objects[k].refPrice;
+            arr[k]["refPrice"] = obj.data.objects[k].refPrice;
+            //arr[k]["price"] = obj.data.objects[k].refPrice;
           });
         })
         .catch(function(obj) {
@@ -1751,13 +1781,7 @@ export default {
             object: {
               teamID: this.pid
             }
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token")
-            }
-          }
-        )
+          })
         .then(function(obj) {
           console.log("团期库存按钮", obj);
           for (let i = 0; i < obj.data.objects.length; i++) {
@@ -1901,6 +1925,9 @@ export default {
         if (this.ccc[i].codeSuffix == "" || this.ccc[i].codePrefix == "") {
           this.isCollapse = true;
           this.$message.error("错了哦，团号不能为空");
+        } else if (this.ccc[i].codeSuffix === this.ccc[i].codePrefix) {
+          this.isCollapse = true;
+          this.$message.error("错了哦，团号不能重复");
         }
       }
     },
@@ -1979,7 +2006,7 @@ export default {
     clickBanle(row, event, column) {
       this.pid = row["id"];
       this.reable = false;
-    }
+    },
   },
   created() {
     this.themeList();
@@ -2188,3 +2215,4 @@ export default {
   min-width: 1455px;
 }
 </style>
+  

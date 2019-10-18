@@ -20,14 +20,18 @@
         </el-row>
         <el-row>
           <el-col :span="7">
-            <span class="search_style">状态</span>
+            <span class="search_style">状态：</span>
             <el-select v-model="status" placeholder="请选择" class="search_input">
               <el-option key="" label="全部" value=""></el-option>
               <el-option key="1" label="待认收款" value="1"></el-option>
               <el-option key="2" label="已认完" value="2"></el-option>
             </el-select>
           </el-col>
-          <el-col :span="9" :offset="7" class="buttonCol">
+          <el-col :span="7">
+            <span class="search_style">收款明细说明：</span>
+            <el-input v-model="explain" placeholder="请输入内容" class="search_input"></el-input>
+          </el-col>
+          <el-col :span="9" class="buttonCol">
             <el-button type="primary" @click="resetFun" plain>重置</el-button>
             <el-button type="primary" @click="searchFun">搜索</el-button>
           </el-col>
@@ -103,6 +107,7 @@
         startTime: '',
         endTime: '',
         status: '',
+        explain: '',
         reimbursementPerID: '',
         operatorList: [],
 
@@ -188,6 +193,7 @@
         this.endTime = '';
         this.reimbursementPerID = '';
         this.status = '';
+        this.explain = '';
         this.loadData();
       },
       addFun(){
@@ -251,6 +257,7 @@
           "rece_start": this.startTime,
           "rece_end": this.endTime,
           "status_rece": this.status,
+          "explain": this.explain,
           "limit": 0
         }, ).then(function(response) {
           if (response.data.code == '200') {
@@ -400,11 +407,14 @@
         margin-left: 20px;
         font-size: 14px;
         display: inline-block;
-        width: 80px;
+        width: 110px;
       }
       .search_input{
         /*float: left;*/
-        width: 65%;
+        width: 60%;
+      }
+      .start-time{
+        width: 30%;
       }
       .date-line {
         width: 10px;

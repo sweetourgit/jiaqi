@@ -37,7 +37,7 @@ import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 import merchantInfo1 from '@/page/contentInfo/merchantInfo/merchantInfo1'
 import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
-import proList from '@/page/contentInfo/proList/proList'
+//import proList from '@/page/contentInfo/proList/proList'
 import orderList from '@/page/orderManagement/orderList/orderList'
 import externalOrderList from '@/page/orderManagement/externalOrderList/externalOrderList'
 import canRecognition from '@/page/orderManagement/externalOrderList/canRecognition'
@@ -241,7 +241,7 @@ export default new Router({
       }
     }, {
       path: '/proList',
-      component: proList,
+      //component: proList,
       name: '权限列表',
       meta: {
         keepAlive: true,
@@ -472,7 +472,7 @@ export default new Router({
       }
     }, {
       path: '/changeInfo',
-      component: changeInfo,
+      component: () => import('@/page/productManagement/changeInfo/changeInfo'),
       name: '行程信息',
       meta: {
         keepAlive: true,

@@ -155,13 +155,14 @@ export default {
           //       this.$message.error("提交失败");
           //     }
           //   });
-
+            let createTime = moment().format('YYYY-MM-DD hh:mm:ss').toString()
+            // console.log(createTime)
             this.$http
             .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
               object: {
                 orderCode: this.orderCode,
                 content: this.markFormAdd.Mark,
-                createTime: moment().format('YYYY-DD-MM hh:mm:ss').toString()
+                createTime: createTime
               }
             })
             .then(res => {

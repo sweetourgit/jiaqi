@@ -1,14 +1,8 @@
 <template>
   <div>
     <!--下单弹窗-->
-    <el-dialog
-      title="下单"
-      :visible.sync="dialogFormOrder"
-      custom-class="city_list dialogOrder"
-      style="margin-top:-100px"
-      width="1000px"
-      @close="cancelInfoOrder('ruleForm')"
-    >
+    <el-dialog title="下单" :visible.sync="dialogFormOrder" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1000px"
+      @close="cancelInfoOrder('ruleForm')">
       <div class="main1">
         <div class="order-title">
           <h2>订单信息</h2>
@@ -49,13 +43,7 @@
             </tr>
           </table>
         </div>
-        <el-form
-          :model="ruleForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="订单来源" prop="orderRadio">
             <el-radio label="1" class="radiomar" v-model="ruleForm.orderRadio">同业社</el-radio>
             <el-radio label="2" class="radiomar" v-model="ruleForm.orderRadio">门店</el-radio>
@@ -102,11 +90,7 @@
           -->
           <el-form-item label="价格选择" prop="price" class="cb price">
             <el-radio-group v-model="ruleForm.price">
-              <span
-                v-for="(item,index) in salePrice"
-                :key="index"
-                style="margin:14px 18px 0 13px"
-              >{{item.enrollName}}：￥{{item.price_01}}</span>
+              <span v-for="(item,index) in salePrice" :key="index" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span>
               <br />
               <!--
                  <el-radio label="1" class="radiomar">销售价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio><br/>
@@ -125,26 +109,18 @@
           <div class="fl">
             <div class="registration" v-for="(item,index) in salePrice" :key="index">
               {{item.enrollName}}￥
-              <span
-                v-show="ruleForm.price==1"
-              >{{item.price_01}}*{{enrolNum[index]}}</span>
+              <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
               <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
               <div>
-                <el-input-number
-                  class="input-num"
-                  v-model="enrolNum[index]"
-                  @change="peoNum(index,item.enrollID,item.enrollName)"
-                  :min="0"
-                  :max="salePriceNum[index].quota"
-                  size="medium"
-                ></el-input-number>
+                <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)"
+                  :min="0" :max="salePriceNum[index].quota" size="medium"></el-input-number>
               </div>
               <div v-bind:class="{red:quota[index]}">
                 余位{{item.quota}}
                 <span v-show="quota[index]">库存不足</span>
               </div>
             </div>
-            <div class="red ml13" style="margin-top:-18px" v-show="enrolNums">{{enrolNumsWarn}}</div>
+            <div class="red ml13" style="margin:0 0 10px 15px;" v-show="enrolNums">{{enrolNumsWarn}}</div>
           </div>
           <!--
             <el-form-item label="" prop="">            
@@ -487,6 +463,7 @@ export default {
     },
     teampreview(ID) {
       //团期计划订单信息预览
+      console.log(ID)
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
           id: ID
@@ -547,7 +524,7 @@ export default {
       //去掉报名人数提示
       if (arrLength > 0) {
         this.enrolNums = false;
-      }
+      } 
       var len;
       if (arrLength > preLength) {
         //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
@@ -690,7 +667,7 @@ export default {
                   this.ruleForm.type == 1
                     ? 0
                     : new Date().getTime() / 1000 + 24 * 60 * 60,
-                orderChannel: this.ruleForm.orderRadio,
+                orderChannel: Number(this.ruleForm.orderRadio),
                 orgID: sessionStorage.getItem("orgID"),
                 userID: sessionStorage.getItem("id"),
                 remark: JSON.stringify([
@@ -744,7 +721,7 @@ export default {
             orderCode: orderCode,
             content: this.ruleForm.remark,
             createTime: moment()
-              .format("YYYY-DD-MM hh:mm:ss")
+              .format("YYYY-MM-DD hh:mm:ss")
               .toString()
           }
         })
@@ -824,11 +801,8 @@ export default {
       //计算总价
       this.ruleForm.totalPrice = 0;
       for (let i = 0; i < this.enrolNum.length; i++) {
-        this.ruleForm.totalPrice +=
-          this.enrolNum[i] *
-          (this.ruleForm.price == 1
-            ? this.salePrice[i].price_01
-            : this.salePrice[i].price_02);
+        console.log(this.enrolNum[i])
+        this.ruleForm.totalPrice += (this.enrolNum[i] == undefined ? 0 : this.enrolNum[i]) * (this.ruleForm.price == 1 ? this.salePrice[i].price_01 : this.salePrice[i].price_02);
       }
       this.ruleForm.totalPrice += parseInt(
         this.ruleForm.otherCost ? this.ruleForm.otherCost : 0

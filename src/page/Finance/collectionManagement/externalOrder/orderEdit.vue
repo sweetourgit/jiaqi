@@ -20,12 +20,12 @@
             <el-date-picker v-model="ruleForm.creditTime" type="date" placeholder="请选择日期" class="start-time baseIn"></el-date-picker>
           </el-form-item>
           <el-form-item label="分销商：" prop="distributor" label-width="140px" v-if="info != ''">
-            <el-radio-group v-model="ruleForm.distributor" @change="radioChange" :disabled="isPFT">
+            <el-radio-group v-model="ruleForm.distributor" @change="radioChange" :disabled="true">
               <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
               <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
               <el-radio label="去哪儿">去哪儿</el-radio>
               <!--待添加，新需求-->
-              <el-radio label="票付通余额" :disabled="!isPFT">票付通余额</el-radio>
+              <el-radio label="票付通余额">票付通余额</el-radio>
               <el-radio label="无">无</el-radio>
             </el-radio-group>
           </el-form-item>

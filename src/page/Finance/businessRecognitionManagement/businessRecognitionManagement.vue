@@ -27,15 +27,18 @@
           <el-table-column prop="rece_code" label="收款单号" align="center"></el-table-column>
           <el-table-column prop="status" label="状态" align="center">
             <template slot-scope="scope">
-              <div v-if="scope.row.status_rece=='1'" style="color: #7F7F7F" >未认款</div>
-              <div v-if="scope.row.status_rece=='2'" style="color: #00B83F" >待认收款</div>
-              <div v-if="scope.row.status_rece=='3'" style="color: #FF4A3D" >已认完</div>
+              <div v-if="scope.row.status_rece=='1'" style="color: #00B83F" >待认收款</div>
+              <div v-if="scope.row.status_rece=='2'" style="color: #FF4A3D" >已认完</div>
+              <div v-if="scope.row.status_rece=='10'" style="color: #7F7F7F" >未认款</div>
+              <div v-if="scope.row.status_rece=='11'" style="color: #00B83F" >待认收款</div>
+              <div v-if="scope.row.status_rece=='12'" style="color: #FF4A3D" >已认完</div>
             </template>
           </el-table-column>
-          <el-table-column prop="rec_type" label="认款方式" align="center">
+          <el-table-column prop="rec_mode" label="认款方式" align="center">
             <template slot-scope="scope">
-              <div v-if="scope.row.rec_type=='1'">分销商预存款</div>
-              <div v-if="scope.row.rec_type=='2'">票付通余额支付</div>
+              <div v-if="scope.row.rec_mode=='1'">分销商预存款</div>
+              <div v-if="scope.row.rec_mode=='2'">票付通余额支付</div>
+              <div v-if="scope.row.rec_mode=='3'">订单收款</div>
             </template>
           </el-table-column>
           <el-table-column prop="explain" label="款项说明" align="center"></el-table-column>
@@ -45,9 +48,9 @@
           <el-table-column prop="remark" label="摘要" align="center"></el-table-column>
           <el-table-column prop="opinion" label="操作" align="center" width="150">
             <template slot-scope="scope">
-              <el-button @click="detailExternalOrder(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.status_rece!='1' && scope.row.rece_type == '1'">详情</el-button>
-              <el-button @click="detailRecognition(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.status_rece!='1' && scope.row.rece_type == '2'">详情</el-button>
-              <el-button @click="recogintion(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.rece_type == '2' && scope.row.status_rece == '1' && scope.row.rec_type != '2'">去认款</el-button>
+              <el-button @click="detailExternalOrder(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.rece_type == '1'">详情</el-button>
+              <el-button @click="detailRecognition(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.status_rece!='10' && scope.row.rece_type == '2'">详情</el-button>
+              <el-button @click="recogintion(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.rece_type == '2' && scope.row.status_rece == '10' && scope.row.rec_mode != '2'">去认款</el-button>
             </template>
           </el-table-column>
         </el-table>
