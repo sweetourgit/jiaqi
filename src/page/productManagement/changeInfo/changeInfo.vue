@@ -104,7 +104,7 @@ export default {
   methods: {
     leavePage(){
       let current= this.getCurrentRef();
-      let hasChange= current.checkHasChange();
+      let hasChange= current && current.checkHasChange();
       if(hasChange) return this.$confirm(`当前套餐信息有修改未保存，是否仍要离开?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -296,7 +296,7 @@ export default {
      */
     addOrSave(){
       let current= this.getCurrentRef();
-      let hasChange= current.checkHasChange();
+      let hasChange= current && current.checkHasChange();
       if(!hasChange) return this.$message.info('信息无变动');
       let validate= current.validate();
       if(!validate) return this.showValidateError();
