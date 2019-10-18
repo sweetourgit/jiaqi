@@ -28,7 +28,7 @@
       <el-form-item label="出发地：" prop="pods">
         <label-input
           v-model="submitForm.pods"
-          placeholder="请输入出发地"
+          placeholder="添加出发地"
           :cb-label="'areaName'"
           :tag-label-attr="'pod'"
           :tag-value-attr="'podID'"
@@ -39,7 +39,7 @@
       <el-form-item label="出发地：" prop="destinations">
         <label-input
           v-model="submitForm.destinations"
-          placeholder="请输入目的地"
+          placeholder="添加目的地"
           :cb-label="'areaName'"
           :tag-label-attr="'destination'"
           :tag-value-attr="'destinationID'"
@@ -87,13 +87,28 @@
       <el-form-item label="亮点词：" prop="strengths">
         <label-input
           v-model="submitForm.strengths"
-          placeholder="请输入亮点词"
+          placeholder="添加亮点词"
           :tag-label-attr="'strength'"
           :tag-value-attr="'id'"
           :input-props="vm.strengthsInputProps"
         >
         </label-input>
-      </el-form-item>          
+      </el-form-item>
+
+      <el-form-item label="运营标签：" prop="label">
+        <label-input
+          v-model="submitForm.label"
+          placeholder="添加运营标签"
+          :cb-label="'labelName'"
+          :tag-label-attr="'labelName'"
+          :tag-value-attr="'labelName'"
+          :fetch-suggestions="getGlabelfuzzyAction"
+        ></label-input>
+      </el-form-item>
+
+      <el-form-item label="头图：" prop="pictureID">
+        <image-input></image-input>
+      </el-form-item>         
 
     </el-form>
   </div>
@@ -101,10 +116,11 @@
 
 <script>
 import labelInput from '../label-input/index'
-import { getFuzzyAction } from '../../api'
+import imageInput from '../image-input'
+import { getFuzzyAction, getGlabelfuzzyAction } from '../../api'
 
 export default {
-  components: { labelInput },
+  components: { labelInput, imageInput },
   
   inject: ['PROVIDE_TEAM_ID'],
 
@@ -157,6 +173,33 @@ export default {
         }
       }
       getFuzzyAction.call(this, val).then(res => {
+        cb(
+          res.map(el => {
+            return { 
+              value: el[cbLabel], 
+              data: factory(el)
+            }
+          })
+        );
+      }).catch(() => {
+        cb()
+      })
+    },
+
+    // 获取运营标签
+    getGlabelfuzzyAction(val, cb, cbLabel, tagValueAttr, tagLabelAttr){
+      let factory= (el) => {
+        return { 
+          teamID: parseInt(this.PROVIDE_TEAM_ID),
+          [tagValueAttr]: el.id,
+          [tagLabelAttr]: el.labelName,
+          code: null,  
+          createTime: Date.now(),
+          isDeleted: 0,
+          tagType: 0
+        }
+      }
+      getGlabelfuzzyAction.call(this, val).then(res => {
         cb(
           res.map(el => {
             return { 

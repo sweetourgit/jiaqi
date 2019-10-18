@@ -51,3 +51,20 @@ export const getFuzzyAction= function(areaName){
     })
   });
 }
+
+// 获取运营标签
+export const getGlabelfuzzyAction= function(labelName){
+  return new Promise((resolve, reject) => {
+    this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/olabelfuzzy', {
+      "object": {
+        labelName
+      }
+    }).then(res => {
+      let { isSuccess, objects }= res.data;
+      if(!isSuccess) return reject('获取地标签失败');
+      return resolve(objects);
+    }).catch((err) => {
+      reject(err);
+    })
+  });
+}

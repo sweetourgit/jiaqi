@@ -48,12 +48,10 @@
       </span>
     </div>
 
-    <el-button type="primary" size="small" icon="el-icon-plus"
+    <el-button type="primary" size="small" icon="el-icon-plus" circle
       v-show="!vm.inEdit"
       @click="vm.inEdit= true"
-    >
-      {{ placeholder }}
-    </el-button>
+    ></el-button>
 
     <div class="input-ground">
 
@@ -66,7 +64,6 @@
         :placeholder="placeholder"
         :trigger-on-focus="false"
         @select="select"
-        @blur="blur"
       ></el-autocomplete>
 
       <div v-show="!isAutocomplete && vm.inEdit">
@@ -160,13 +157,12 @@ export default {
 
     blur(){
       setTimeout(() => {
-        this.vm.inputVal= null;
         this.vm.inEdit= false;
-      }, 200);
+        this.vm.inputVal= null;
+      }, 50);
     },
 
     checkTagExisted(tag){
-      console.log(tag)
       return this.list.find(el => {
         let attr= this.tagLabelAttr;
         return attr? tag[attr]=== el[attr]: tag=== el;
