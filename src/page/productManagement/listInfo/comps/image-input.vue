@@ -77,19 +77,30 @@ $image-margin: 15px;
       </div>
     </div>
     <el-button type="primary" size="small" icon="el-icon-plus" circle
-      @click=
+      @click="wakeupMaterialList"
     ></el-button>
+    <material-list
+      ref="materialListRef"
+      :proto="list"
+      @submit-list="emitSubmitList"
+    ></material-list>
   </div>
 </template>
 
 <script>
-import MaterialList from '@/common/Image'
+import MaterialList from './material-list'
 
 export default {
   components: { MaterialList },
   
   props: {
-    imgData: [String, Array],
+    // 初始化数据
+    proto: [String, Array],
+    // 最大数量限制, -1为不限制数量
+    numLimit: {
+      type: Number,
+      default: -1
+    },
   },
 
   created(){
@@ -105,13 +116,26 @@ export default {
   methods: {
     init(){
       this.list.splice(0);
-      let proto= this.imgData;
+      let proto= this.proto;
       if(typeof proto=== 'string'){
         this.list.push(proto);
       } 
       if(proto && typeof proto=== 'object'){
         this.list.push(...proto);
       }
+    },
+
+    // 唤醒图片选择组件
+    wakeupMaterialList(){
+      this.$refs.materialListRef.vm.state= true;
+    },
+
+    // 提交数据
+    emitSubmitList(list){
+      // 检查数量
+      if(this.numLimit> 0 && list.length> this.numLimit) 
+        return this.$message.error(`最多选择${this.numLimit}张图片`);
+       
     }
   }
 

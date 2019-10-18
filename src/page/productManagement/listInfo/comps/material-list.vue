@@ -4,8 +4,8 @@
 </style>
 
 <template>
-  <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="state" custom-class="city_list">
-    <MaterialList v-if="state" :imgData="list" v-on:checkList="emitCheckList" v-on:closeButton="state= false"></MaterialList>
+  <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="vm.state" custom-class="city_list">
+    <MaterialList v-if="vm.state" :imgData="list" v-on:checkList="emitCheckList" v-on:closeButton="vm.state= false"></MaterialList>
   </el-dialog>
 </template>
 
@@ -14,7 +14,18 @@ import MaterialList from '@/common/Image'
 
 export default {
   components: { MaterialList },
+
+  props: {
+    proto: Array,
+  },
   
+  // watch:{
+  //   proto(){
+  //     this.list.splice(0);
+  //     this.list.push(...this.proto);
+  //   }
+  // },
+
   data(){
     return {
       vm: {
@@ -25,8 +36,9 @@ export default {
   },
 
   methods: {
-    emitCheckList(){
-      
+    // 提交选中的数据
+    emitCheckList(data){
+      this.$emit('submit-list', data);
     }
   }
 }
