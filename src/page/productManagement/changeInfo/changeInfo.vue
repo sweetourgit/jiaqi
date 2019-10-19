@@ -192,7 +192,7 @@ export default {
   methods: {
     leavePage(){
       let current= this.getCurrentRef();
-      let hasChange= current.checkHasChange();
+      let hasChange= current && current.checkHasChange();
       if(hasChange) return this.$confirm(`当前套餐信息有修改未保存，是否仍要离开?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -210,7 +210,7 @@ export default {
      */
     addTab(){
       let current= this.getCurrentRef();
-      let hasChange= current.checkHasChange();
+      let hasChange= current && current.checkHasChange();
       let newTab= this.getNewTab();
       // 有变动则缓存后返回
       if(hasChange){
@@ -266,8 +266,8 @@ export default {
           this._provided.PROVIDE_DAY
         ),
         briefMark: '',
-        codePrefix: CODE_PREFIX,
-        codeSuffix: CODE_SUFFIX
+        codePrefix: "", // CODE_PREFIX,
+        codeSuffix: "", //CODE_SUFFIX
       };
     },
 
@@ -417,7 +417,7 @@ export default {
       return this.saveAction(); 
 =======
       let current= this.getCurrentRef();
-      let hasChange= current.checkHasChange();
+      let hasChange= current && current.checkHasChange();
       if(!hasChange) return this.$message.info('信息无变动');
       let validate= current.validate();
       if(!validate) return this.showValidateError();
@@ -439,7 +439,7 @@ export default {
 =======
     getCurrentRef(){
       let packages= this.$refs.packageRef;
-      if(!packages || packages.length=== 0) return;
+      if(!packages || packages.length=== 0) return null;
       let current= packages.find(el => el.$el.dataset.name=== this.vm.currentPackage);
       !current && console.warn('getCurrentRef get none');
       return current;

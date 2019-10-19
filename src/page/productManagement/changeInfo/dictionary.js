@@ -125,6 +125,7 @@ export const getActivityDTO= function(scheduleID){
   }
 }
 
+// 根据行程天数创建默认的日程列表
 export const getTeamScheduleDTO= function(days){
   let result= [];
   for(let i= 1; i<= days; i++){

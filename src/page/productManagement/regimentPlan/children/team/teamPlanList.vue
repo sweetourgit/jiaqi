@@ -61,13 +61,15 @@
 
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <span class="cursor blue" @click="haltSales(scope.row.id)">停售</span>
-            <span class="em">|</span>
-            <span class="cursor blue" @click="operation(1)">下单</span>
-            <span class="em">|</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales(scope.row.id)">停售</span>
+            <span class="em" v-if="scope.row.regimentType=='1'">|</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='2'">恢复售卖</span>
+            <span class="em" v-if="scope.row.regimentType=='2'">|</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="operation(1)">下单</span>
+            <span class="em" v-if="scope.row.regimentType=='1'">|</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
+            <span class="em" v-if="scope.row.regimentType=='3'">|</span>
             <span class="cursor blue" @click="operation(2)">详情</span>
-            <!-- <span class="em">|</span>
-            <span class="cursor blue">报账单</span> -->
           </template>
         </el-table-column>
       </el-table>
@@ -234,7 +236,7 @@ export default {
       this.teamQueryList();
     },
     handleCurrentChange(val) {
-      this.teamQueryList();
+      this.teamQueryList(val);
     },
     //计划list
     teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op) {
@@ -347,7 +349,6 @@ export default {
             var getUserCode='';
             getUserCode = res.data.objects[0].userCode;
             this.teamQueryList(this.pageIndex,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
-
           } else {
             that.teamqueryList = [];
           }
