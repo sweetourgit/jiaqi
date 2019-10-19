@@ -6,7 +6,7 @@
 </style>
 
 <template>
-  <div class="basic-pane">
+  <div class="basic-pane" @click="$refs.submitForm.validate()">
     <!-- <div v-html="submitForm" style="white-space: pre-wrap;"></div> -->
     <el-form
       label-width="140px" 
@@ -36,7 +36,7 @@
         ></label-input>
       </el-form-item>
 
-      <el-form-item label="出发地：" prop="destinations">
+      <el-form-item label="目的地：" prop="destinations">
         <label-input
           v-model="submitForm.destinations"
           placeholder="添加目的地"
@@ -146,7 +146,7 @@
       </el-form-item>
 
       <el-form-item label="产品概况：" prop="mark">
-        <div style="width: 600px; padding-top: 10px;">
+        <div style="width: 850px; padding-top: 10px;">
           <vue-editor v-model="submitForm.mark"></vue-editor>
         </div>
       </el-form-item>         
@@ -173,7 +173,7 @@ import {
   getThemelistAction } from '../../api'
 
 export default {
-  mixin: [ValidateMsgMixin],
+  mixins: [ValidateMsgMixin],
 
   components: { VueEditor, labelInput, imageInput },
   
@@ -202,9 +202,10 @@ export default {
       submitForm: {},
       rules: {
         title: { 
+          required: true, 
           validator: this.simpleValidator, 
           message: '产品名称不能为空', 
-          trigger: 'blur' 
+          trigger: 'blur'
         },
         isForeign: { 
           required: true, 
@@ -212,31 +213,75 @@ export default {
           message: '出游类型不能为空', 
           trigger: 'blur' 
         },
-        day: { 
+        day: [
+          { 
+            required: true, 
+            validator: this.simpleValidator, 
+            message: '行程天数不能为空', 
+            trigger: 'blur' 
+          },{
+            validator: this.numberValidator, 
+            message: '行程天数必须为正整数', 
+            trigger: 'blur'
+          }
+        ],
+        night: [
+          { 
+            required: true, 
+            validator: this.simpleValidator, 
+            message: '行程晚数不能为空', 
+            trigger: 'blur' 
+          },{
+            validator: this.numberValidator, 
+            message: '行程晚数必须为正整数', 
+            trigger: 'blur'
+          }
+        ],
+        pods: {
+          required: true,
+          validator: this.notNullArrayValidator, 
+          message: '出发地不能为空', 
+          trigger: 'blur'
+        },
+        destinations: {
+          required: true,
+          validator: this.notNullArrayValidator, 
+          message: '目的地不能为空', 
+          trigger: 'blur'
+        },
+        confirmType: { 
           required: true, 
           validator: this.simpleValidator, 
-          message: '行程天数不能为空', 
-          trigger: 'blur' 
+          message: '订单确认类型不能为空', 
+          trigger: 'blur'
         },
-        night: { 
-          required: true, 
-          validator: this.simpleValidator, 
-          message: '行程晚数不能为空', 
-          trigger: 'blur' 
-        },
-        pods: [],
-        destinations: [],
-        confirmType: 0,
         // 亮点词
-        strengths: [],
-        // 运营标签
-        label: [],
-        pictureID: null,
-        vedioID: null,
-        pepeatpic: [],
-        crowdID: null,
-        themeID: null,
-        advanceDay: null,
+        strengths: {
+          required: true,
+          validator: this.notNullArrayValidator, 
+          message: '亮点词不能为空，且不能多于四个', 
+          numLimit: 4,
+          trigger: 'blur'
+        },
+        // 选填
+        // label:{}
+        // pictureID: null,
+        // vedioID: null,
+        // pepeatpic: [],
+        // crowdID: null,
+        // themeID: null,
+        advanceDay: [
+          { 
+            required: true, 
+            validator: this.simpleValidator, 
+            message: '提前天数不能为空', 
+            trigger: 'blur' 
+          },{
+            validator: this.numberValidator, 
+            message: '提前天数须为正整数', 
+            trigger: 'blur'
+          }
+        ],
         mark: '',
         instructions: [],
         others: [],
@@ -335,7 +380,20 @@ export default {
         teamID: parseInt(this.PROVIDE_TEAM_ID),
         strength
       }
-    }
+    },
+
+    numberValidator(rule, val, cb){
+      let { message }= rule; 
+      let reg= /^\d+$|^\d+[.]?\d+$/;
+      if(reg.test(val)) return cb();
+      return cb(this.makeErrorQueueMsg(message));
+    },
+    notNullArrayValidator(rule, val, cb){
+      let { message, numLimit }= rule;
+      if(!val || val.length=== 0) return cb(this.makeErrorQueueMsg(message));
+      if(numLimit && val.length> numLimit) return cb(this.makeErrorQueueMsg(message)); 
+      return cb();
+    },
   }
 }
 </script>

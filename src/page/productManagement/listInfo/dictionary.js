@@ -19,7 +19,7 @@ export const getTeamProDTO= function(){
     themeID: null,
     advanceDay: null,
     mark: '',
-    instructions: [],
+    instructions: INSTRUCTION_TITILES.map(title => getInstructionDTO(title)),
     others: [],
     
     /**
@@ -33,5 +33,18 @@ export const getTeamProDTO= function(){
     isDeleted: 0,
     // 接口获取
     guid: null,
+  }
+}
+
+export const INSTRUCTION_TITILES= [
+  '费用包含', '费用不包含', '温馨提示', '儿童政策', '购物场所', '自费项目'
+]
+
+export const getInstructionDTO= function(title){
+  return {
+    title: title,
+    createTime: new Date().toISOString(),
+    content: "",
+    code: null
   }
 }

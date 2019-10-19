@@ -1518,6 +1518,7 @@
             )
           }
           // 选中的日期有类型时进行赋值
+          console.log(day.data.person);
           if (day.data.person.id != undefined) {
             this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/get', {
               "id": day.data.person.id

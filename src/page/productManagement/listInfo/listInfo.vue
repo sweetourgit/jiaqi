@@ -30,7 +30,11 @@
             :proto="basic"
           ></basic-pane>
         </el-tab-pane>
-        <el-tab-pane label="费用说明" name="instructions">费用说明</el-tab-pane>
+        <el-tab-pane label="费用说明" name="instructions">
+          <instructions-pane
+            :proto="instructions"
+          ></instructions-pane>
+        </el-tab-pane>
         <el-tab-pane label="其他信息" name="others">其他信息</el-tab-pane>
       </el-tabs>
     </main>
