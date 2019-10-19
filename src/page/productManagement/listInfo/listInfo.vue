@@ -47,7 +47,10 @@ export default {
   components: { basicPane },
 
   provide: {
+    // 如果是修改，则透传teamID
     PROVIDE_TEAM_ID: null,
+    // 透传错误收集队列
+    ERROR_QUEUE: []
   },
 
   mounted(){

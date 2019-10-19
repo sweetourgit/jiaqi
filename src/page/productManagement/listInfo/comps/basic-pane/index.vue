@@ -143,6 +143,12 @@
 
       <el-form-item label="提前报名天数：" prop="advanceDay">
         <el-input v-model="submitForm.advanceDay" placeholder="提前报名天数" style="width: 300px;" size="small"></el-input>
+      </el-form-item>
+
+      <el-form-item label="产品概况：" prop="mark">
+        <div style="width: 600px; padding-top: 10px;">
+          <vue-editor v-model="submitForm.mark"></vue-editor>
+        </div>
       </el-form-item>         
 
     </el-form>
@@ -153,6 +159,11 @@
 /**
  * @description: 基本信息表单
  */
+import ValidateMsgMixin from '@/mixin/ValidateMsgMixin'
+
+// 第三方组件
+import { VueEditor } from 'vue2-editor'
+
 import labelInput from '../label-input/index'
 import imageInput from '../image-input'
 import { 
@@ -162,7 +173,9 @@ import {
   getThemelistAction } from '../../api'
 
 export default {
-  components: { labelInput, imageInput },
+  mixin: [ValidateMsgMixin],
+
+  components: { VueEditor, labelInput, imageInput },
   
   inject: ['PROVIDE_TEAM_ID'],
 
@@ -188,10 +201,29 @@ export default {
       },
       submitForm: {},
       rules: {
-        title: '',
-        isForeign: 1,
-        day: null,
-        night: null,
+        title: { 
+          validator: this.simpleValidator, 
+          message: '产品名称不能为空', 
+          trigger: 'blur' 
+        },
+        isForeign: { 
+          required: true, 
+          validator: this.simpleValidator, 
+          message: '出游类型不能为空', 
+          trigger: 'blur' 
+        },
+        day: { 
+          required: true, 
+          validator: this.simpleValidator, 
+          message: '行程天数不能为空', 
+          trigger: 'blur' 
+        },
+        night: { 
+          required: true, 
+          validator: this.simpleValidator, 
+          message: '行程晚数不能为空', 
+          trigger: 'blur' 
+        },
         pods: [],
         destinations: [],
         confirmType: 0,
