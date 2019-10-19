@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import MaterialList from '@/common/Image'
+import MaterialList from '@/common/image-ground'
 
 export default {
   components: { MaterialList },

@@ -50,28 +50,30 @@
 
     <el-button type="primary" size="small" icon="el-icon-plus" circle
       v-show="!vm.inEdit"
-      @click="vm.inEdit= true"
+      @click="changeState"
     ></el-button>
 
     <div class="input-ground">
 
-      <el-autocomplete
-        class="inline-input"
-        size="small"
+      <el-autocomplete class="inline-input" size="small"
+        ref="autocompleteRef"
         v-model="vm.inputVal"
         v-show="isAutocomplete && vm.inEdit"
         :fetch-suggestions="emitFetchSuggestions"
         :placeholder="placeholder"
         :trigger-on-focus="false"
         @select="select"
+        @blur="blur(200)"
       ></el-autocomplete>
 
       <div v-show="!isAutocomplete && vm.inEdit">
         <el-input class="inline-input" size="small"
+          ref="inputRef"
           v-model="vm.inputVal"
           :placeholder="placeholder"
           :maxlength="inputProps.maxlength"
           :show-word-limit="inputProps.showWordLimit"
+          @blur="blur(200)"
         >
         </el-input>
         <el-button type="primary" size="small" @click="sureInput">确定</el-button>
@@ -126,6 +128,17 @@ export default {
   methods: {
     init(){
       this.list= this.value;
+      window.ddd= this;
+    },
+
+    changeState(){
+      this.vm.inEdit= true;
+      this.$nextTick(() => {
+        let input= this.isAutocomplete? 
+          this.$refs.autocompleteRef.$el:
+            this.$refs.inputRef.$el
+        input.querySelector('input').focus();  
+      })
     },
 
     emitFetchSuggestions(val, cb){
@@ -155,11 +168,11 @@ export default {
       })
     },
 
-    blur(){
+    blur(time){
       setTimeout(() => {
         this.vm.inEdit= false;
         this.vm.inputVal= null;
-      }, 50);
+      }, time || 50);
     },
 
     checkTagExisted(tag){

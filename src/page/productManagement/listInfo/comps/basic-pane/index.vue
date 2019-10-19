@@ -9,7 +9,7 @@
   <div class="basic-pane">
     <!-- <div v-html="submitForm" style="white-space: pre-wrap;"></div> -->
     <el-form
-      label-width="120px" 
+      label-width="140px" 
       ref="submitForm"
       :model="submitForm"
       :rules="rules"
@@ -48,7 +48,7 @@
       </el-form-item>
       
       <el-row>
-        <el-col style="width:220px;">
+        <el-col style="width:240px;">
           <el-form-item label="行程天数：" prop="day">
             <el-input size="small" style="width: 100px;" placeholder="请输入天数"
               v-model="submitForm.day"
@@ -77,7 +77,7 @@
         </el-col>
       </el-row>
 
-      <el-form-item label="订单确认：" prop="confirmType">
+      <el-form-item label="订单确认类型：" prop="confirmType">
         <el-radio-group v-model="submitForm.confirmType">
           <el-radio :label="1">及时确认</el-radio>
           <el-radio :label="2">二次确认</el-radio>
@@ -107,7 +107,42 @@
       </el-form-item>
 
       <el-form-item label="头图：" prop="pictureID">
-        <image-input></image-input>
+        <!-- <image-input></image-input> -->
+        <el-button type="primary" size="small" icon="el-icon-plus" circle></el-button>
+      </el-form-item>
+      <el-form-item label="视频：" prop="pictureID">
+        <!-- <image-input></image-input> -->
+        <el-button type="primary" size="small" icon="el-icon-plus" circle></el-button>
+      </el-form-item>
+      <el-form-item label="轮播图：" prop="pictureID">
+        <!-- <image-input></image-input> -->
+        <el-button type="primary" size="small" icon="el-icon-plus" circle></el-button>
+      </el-form-item>
+
+      <el-form-item label="出游人群：" prop="crowdID">
+        <el-select v-model="submitForm.crowdID" type="date" placeholder="最高" style="width: 300px;" size="small">
+          <el-option
+            v-for="item in vm.crowdlistOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item> 
+
+      <el-form-item label="主题：" prop="themeID">
+        <el-select v-model="submitForm.themeID" type="date" placeholder="最高" style="width: 300px;" size="small">
+          <el-option
+            v-for="item in vm.themelistOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="提前报名天数：" prop="advanceDay">
+        <el-input v-model="submitForm.advanceDay" placeholder="提前报名天数" style="width: 300px;" size="small"></el-input>
       </el-form-item>         
 
     </el-form>
@@ -115,9 +150,16 @@
 </template>
 
 <script>
+/**
+ * @description: 基本信息表单
+ */
 import labelInput from '../label-input/index'
 import imageInput from '../image-input'
-import { getFuzzyAction, getGlabelfuzzyAction } from '../../api'
+import { 
+  getFuzzyAction, 
+  getGlabelfuzzyAction, 
+  getCrowdlistAction, 
+  getThemelistAction } from '../../api'
 
 export default {
   components: { labelInput, imageInput },
@@ -135,25 +177,66 @@ export default {
   data(){
     return {
       vm: {
+        // label-input中给普通输入框传入的props，和elementUI文档中的一样
         strengthsInputProps:{ 
           showWordLimit: true, 
           maxlength: 8,
           factory: this.strengthsFactory 
-        }
+        },
+        crowdlistOptions: [],
+        themelistOptions: []
       },
-      submitForm: {
-
-      },
+      submitForm: {},
       rules: {
-
-      },
-      attr: { maxlength: "10", 'show-word-limit': true }
+        title: '',
+        isForeign: 1,
+        day: null,
+        night: null,
+        pods: [],
+        destinations: [],
+        confirmType: 0,
+        // 亮点词
+        strengths: [],
+        // 运营标签
+        label: [],
+        pictureID: null,
+        vedioID: null,
+        pepeatpic: [],
+        crowdID: null,
+        themeID: null,
+        advanceDay: null,
+        mark: '',
+        instructions: [],
+        others: [],
+      }
     }
   },
 
   methods: {
     init(){
       this.submitForm= this.$deepCopy(this.proto);
+      // 人群
+      this.initCrowdlist();
+      // 主题
+      this.initThemelist();
+    },
+    initCrowdlist(){
+      getCrowdlistAction.bind(this)().then(res => {
+        this.vm.crowdlistOptions.splice(0);
+        this.vm.crowdlistOptions.push(...res);
+      }).catch(err => {
+        console.error(err);
+        this.$message.error(err);
+      })
+    },
+    initThemelist(){
+      getThemelistAction.bind(this)().then(res => {
+        this.vm.themelistOptions.splice(0);
+        this.vm.themelistOptions.push(...res);
+      }).catch(err => {
+        console.error(err);
+        this.$message.error(err);
+      })
     },
 
     /**

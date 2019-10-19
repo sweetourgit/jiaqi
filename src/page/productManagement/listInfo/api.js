@@ -61,10 +61,52 @@ export const getGlabelfuzzyAction= function(labelName){
       }
     }).then(res => {
       let { isSuccess, objects }= res.data;
-      if(!isSuccess) return reject('获取地标签失败');
+      if(!isSuccess) return reject('获取运营标签失败');
       return resolve(objects);
     }).catch((err) => {
       reject(err);
     })
   });
+}
+
+// 出游人群
+export const getCrowdlistAction= function(){
+  return new Promise((resolve, reject) => {
+    this.$http.post(this.GLOBAL.serverSrc + "/universal/crowd/api/crowdlist", {
+      object: {
+        isDeleted: 0
+      }
+    },{
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      }
+    }).then(res => {
+      let { isSuccess, objects }= res.data;
+      if(!isSuccess) return reject('获取出游人群失败');
+      return resolve(objects);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 主题
+export const getThemelistAction= function(){
+  return new Promise((resolve, reject) => {
+    this.$http.post(this.GLOBAL.serverSrc + "/universal/theme/api/themelist", {
+      object: {
+        isDeleted: 0
+      }
+    },{
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      }
+    }).then(res => {
+      let { isSuccess, objects }= res.data;
+      if(!isSuccess) return reject('获取主题失败');
+      return resolve(objects);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
 }
