@@ -178,8 +178,8 @@ export default {
           this._provided.PROVIDE_DAY
         ),
         briefMark: '',
-        codePrefix: CODE_PREFIX,
-        codeSuffix: CODE_SUFFIX
+        codePrefix: "", // CODE_PREFIX,
+        codeSuffix: "", //CODE_SUFFIX
       };
     },
 

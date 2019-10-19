@@ -19,7 +19,7 @@
       :key="item.sign"
       :proto="item"
     >
-      <el-button v-if="i> 5" slot="delete" type="primary" size="small"
+      <el-button slot="delete" type="primary" size="small"
         @click="removeInstructions(i)"
       >删除说明</el-button>
     </common-editor>
@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import commonEditor from './comps/common-editor'
-import { getInstructionDTO } from '../../dictionary'
+import commonEditor from './instructions-pane/comps/common-editor'
+import { getInstructionDTO } from '../dictionary'
 
 export default {
   components: { commonEditor },
@@ -103,7 +103,6 @@ export default {
       })
       return result;
     }
-  },
-
+  }
 }
 </script>

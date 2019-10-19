@@ -6,7 +6,7 @@
 </style>
 
 <template>
-  <div class="basic-pane" @click="$refs.submitForm.validate()">
+  <div class="basic-pane">
     <!-- <div v-html="submitForm" style="white-space: pre-wrap;"></div> -->
     <el-form
       label-width="140px" 
@@ -164,8 +164,8 @@ import ValidateMsgMixin from '@/mixin/ValidateMsgMixin'
 // 第三方组件
 import { VueEditor } from 'vue2-editor'
 
-import labelInput from '../label-input/index'
-import imageInput from '../image-input'
+import labelInput from './comps/label-input/index'
+import imageInput from './comps/image-input'
 import { 
   getFuzzyAction, 
   getGlabelfuzzyAction, 
@@ -326,11 +326,12 @@ export default {
      */
     getAreaSuggestions(val, cb, cbLabel, tagValueAttr, tagLabelAttr){
       let factory= (el) => {
-        return { 
-          teamID: parseInt(this.PROVIDE_TEAM_ID),
+        let teamID= parseInt(this.PROVIDE_TEAM_ID);
+        let object= teamID? { teamID }: {};
+        return Object.assign({ 
           [tagValueAttr]: el.id,
           [tagLabelAttr]: el.areaName  
-        }
+        }, object);
       }
       getFuzzyAction.call(this, val).then(res => {
         cb(
@@ -349,15 +350,16 @@ export default {
     // 获取运营标签
     getGlabelfuzzyAction(val, cb, cbLabel, tagValueAttr, tagLabelAttr){
       let factory= (el) => {
-        return { 
-          teamID: parseInt(this.PROVIDE_TEAM_ID),
+        let teamID= parseInt(this.PROVIDE_TEAM_ID);
+        let object= teamID? { teamID }: {};
+        return Object.assign({
           [tagValueAttr]: el.id,
           [tagLabelAttr]: el.labelName,
           code: null,  
           createTime: Date.now(),
           isDeleted: 0,
           tagType: 0
-        }
+        }, object);
       }
       getGlabelfuzzyAction.call(this, val).then(res => {
         cb(
@@ -376,10 +378,9 @@ export default {
     // 将字符串加工成strengths对象
     strengthsFactory(strength){
       if(!strength) return null;
-      return {
-        teamID: parseInt(this.PROVIDE_TEAM_ID),
-        strength
-      }
+      let teamID= parseInt(this.PROVIDE_TEAM_ID);
+      let object= teamID? { teamID }: {};
+      return Object.assign({ strength }, object)
     },
 
     numberValidator(rule, val, cb){
@@ -393,6 +394,29 @@ export default {
       if(!val || val.length=== 0) return cb(this.makeErrorQueueMsg(message));
       if(numLimit && val.length> numLimit) return cb(this.makeErrorQueueMsg(message)); 
       return cb();
+    },
+
+    validate(){
+      let bol= true;
+      this.$refs.submitForm.validate(validate => {
+        bol= validate;
+      })
+      return bol;
+    },
+
+    checkHasChange(){
+      let equal= true;
+      equal= this.$checkLooseEqual(this.submitForm, this.proto);
+      !equal && console.warn('basic-pane change');
+      return equal;
+    },
+
+    getData(){
+      let copy= this.$deepCopy(this.submitForm);
+      copy.advanceDay= parseInt(copy.advanceDay);
+      copy.day= parseInt(copy.day);
+      copy.night= parseInt(copy.night);
+      return copy
     },
   }
 }

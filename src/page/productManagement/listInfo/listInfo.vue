@@ -15,7 +15,7 @@
 <template>
   <div class="listinfo">
     <header>
-      <el-button type="primary" size="small">保存</el-button>
+      <el-button type="primary" size="small" @click="preAction">保存</el-button>
       <el-button type="info" size="small">取消</el-button>
     </header>
     
@@ -27,15 +27,22 @@
       >
         <el-tab-pane label="基本信息" name="basic">
           <basic-pane
+            ref="basicRef"
             :proto="basic"
           ></basic-pane>
         </el-tab-pane>
         <el-tab-pane label="费用说明" name="instructions">
           <instructions-pane
+            ref="instructionsRef"
             :proto="instructions"
           ></instructions-pane>
         </el-tab-pane>
-        <el-tab-pane label="其他信息" name="others">其他信息</el-tab-pane>
+        <el-tab-pane label="其他信息" name="others">
+          <others-pane
+            ref="othersRef"
+            :proto="others"
+          ></others-pane>
+        </el-tab-pane>
       </el-tabs>
     </main>
       
@@ -46,9 +53,11 @@
 import { teamgetAction } from './api'
 import { getTeamProDTO } from './dictionary'
 import basicPane from './comps/basic-pane/index'
+import instructionsPane from './comps/instructions-pane/index'
+import othersPane from './comps/others-pane'
 
 export default {
-  components: { basicPane },
+  components: { basicPane, instructionsPane, othersPane },
 
   provide: {
     // 如果是修改，则透传teamID
@@ -113,7 +122,73 @@ export default {
       this.others.splice(0);
       this.instructions.push(...proto.instructions);
       this.others.push(...proto.others);
-    }
+    },
+
+    preAction(){
+      let hasChange= this.checkHasChange();
+      if(!hasChange) return this.$message.info('数据无改动');
+      let validate= this.validate();
+      if(!validate) return this.showValidateError();
+      let data= this.getData();
+      let isSave= this.$route.query.id || false;
+      isSave? this.saveAction(data): this.addAction(data);
+    },
+
+    saveAction(object){
+      this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
+        object
+      }).then((res) => {
+        console.log(res);
+      })
+    },
+
+    addAction(object){
+      this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
+        object
+      }).then((res) => {
+        console.log(res);
+      })
+    },
+
+    getData(){
+      let basic= this.$refs.basicRef.getData();
+      let instructions= this.$refs.instructionsRef.getData();
+      let others= this.$refs.othersRef.getData();
+      basic.others= others;
+      basic.instructions= instructions;
+      return basic;
+    },
+
+    checkHasChange(){
+      let bol= false;
+      bol= this.$refs.basicRef.checkHasChange();
+      !bol && (bol= this.$refs.instructionsRef.checkHasChange());
+      !bol && (bol= this.$refs.othersRef.checkHasChange());
+      return bol;
+    },
+
+    validate(){
+      let validate= true;
+      validate= this.$refs.basicRef.validate();
+      validate && (validate= this.$refs.instructionsRef.validate());
+      validate && (validate= this.$refs.othersRef.validate());
+      return validate;
+    },
+
+    showValidateError(){
+      let ERROR_QUEUE= this._provided.ERROR_QUEUE;
+      const h = this.$createElement;
+      let errors= ERROR_QUEUE[0] && ERROR_QUEUE[0].msgs.map(error => h('div', null, error))
+      this.$msgbox({
+        title: '表单验证结果',
+        message: h('p', null, errors),
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).finally(() => {
+        ERROR_QUEUE.splice(0);
+      })
+    },
   }
 }
 </script>
