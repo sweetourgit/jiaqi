@@ -7,8 +7,6 @@ Vue.prototype.$deepCopy= function(obj){
   return JSON.parse(JSON.stringify(obj))
 }
 
-<<<<<<< HEAD
-=======
 /**
  * @description: 防抖函数
  */
@@ -41,7 +39,6 @@ Vue.prototype.$debounce = function(func, wait, immediate) {
   };
 };
 
->>>>>>> dev
 function isObject (obj) {
   return obj !== null && typeof obj === 'object'
 }

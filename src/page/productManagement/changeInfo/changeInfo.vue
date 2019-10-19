@@ -19,23 +19,15 @@
       </div>
       <div>
         <el-button type="primary" size="small" @click="addOrSave">保存</el-button>
-<<<<<<< HEAD
-        <el-button type="info" size="small">取消</el-button>
-=======
         <el-button type="info" size="small" @click="leavePage">取消</el-button>
->>>>>>> dev
       </div>
     </header>
     
     <main>
-<<<<<<< HEAD
-      <el-tabs v-model="vm.currentPackage" type="card" closable @tab-remove="removeTab">
-=======
       <el-tabs v-model="vm.currentPackage" type="card" closable 
         :before-leave="changeTab"
         @tab-remove="removeTab"
       >
->>>>>>> dev
         <el-tab-pane
           v-for="item in packages"
           :key="item.name"
@@ -45,17 +37,11 @@
           <changeinfo-package
             ref="packageRef"
             v-if="vm.currentPackage=== item.name"
-<<<<<<< HEAD
-            :proto="item"
-            :pods="pods"
-            :destinations="destinations"
-=======
             :data-name="item.name"
             :proto="item"
             :pods="pods"
             :destinations="destinations"
             :name-checker="vm.nameChecker"
->>>>>>> dev
           >
           </changeinfo-package> 
         </el-tab-pane>
@@ -67,15 +53,12 @@
 
 <script>
 import './tools'
-<<<<<<< HEAD
-=======
 import { 
   getTeamScheduleDTO, 
   TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, 
   CODE_PREFIX, CODE_SUFFIX,
   PRODUCT_LIST_PAGE
 } from './dictionary'
->>>>>>> dev
 import changeinfoPackage from './comps/changeinfo-package'
 
 export default {
@@ -84,12 +67,6 @@ export default {
   },
 
   provide: {
-<<<<<<< HEAD
-    PROVIDE_DAY: 0,
-    ERROR_QUEUE: []
-  },
-
-=======
     // 行程总天数
     PROVIDE_DAY: 0,
     // 校验错误收集队列
@@ -111,16 +88,12 @@ export default {
     },
   },
 
->>>>>>> dev
   data() {
     return {
       vm: {
         currentPackage: null,
-<<<<<<< HEAD
-=======
         // 除当前套餐外其余套餐的名字
         nameChecker: []
->>>>>>> dev
       },
       pods: [],
       destinations: [],
@@ -128,67 +101,6 @@ export default {
     }
   },
 
-<<<<<<< HEAD
-  created(){
-    this.teaminfogetAction();
-  },
-
-  methods: {
-    /**
-     * @description: 添加Tab
-     */
-    addTab(){
-      let newTabName= this.getNewPackageName();
-      this.packages.push({
-        name: newTabName
-      });
-      this.vm.currentPackage = newTabName;
-    },
-
-    /**
-     * @description: 移除Tab
-     */
-    removeTab(targetName, action) {
-      if (action === 'add') {
-        let newTabName= this.getNewPackageName();
-        this.packages.push({
-          name: newTabName
-        });
-        this.vm.currentPackage = newTabName;
-      }
-      if (action === 'remove') {
-        let tabs = this.packages;
-        let activeName = this.vm.currentPackage;
-        if (activeName === targetName) {
-          tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
-              let nextTab = tabs[index + 1] || tabs[index - 1];
-              if (nextTab) {
-                activeName = nextTab.name;
-              }
-            }
-          });
-        }
-        
-        this.vm.currentPackage = activeName;
-        this.packages = tabs.filter(tab => tab.name !== targetName);
-      }
-    },
-
-    /**
-     * @description: 新增套餐时，生成不重复的新套餐的名字
-     */
-    getNewPackageName(){
-      let hit;
-      let num= this.packages.length;
-      do{
-        ++num;
-        hit= this.packages.find(el => el.name=== ('未命名套餐'+ num));
-      } while (hit && num<= 100);
-      return '未命名套餐'+ num;
-    },
-
-=======
   methods: {
     leavePage(){
       let current= this.getCurrentRef();
@@ -333,36 +245,10 @@ export default {
       return '未命名套餐'+ num;
     },
 
->>>>>>> dev
     /**
      * @description: 获取初始化信息
      */
     teaminfogetAction(){
-<<<<<<< HEAD
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teaminfoget",
-        {
-          "object": {
-            "id": this.$route.query.id,
-            "loadPackage": true
-          }
-        }
-      ).then(res => {
-        let { isSuccess, object }= res.data;
-        let { pods, destinations, day }= object;
-        if(!isSuccess) return Promise.reject('初始化失败');
-        this.packages.splice(0);
-        this.packages.push(...object.package);
-        this.pods.push(...pods);
-        this.destinations.push(...destinations);
-        this._provided.PROVIDE_DAY= day;
-        //tab默认指向首页
-        if(this.packages.length=== 0) return;
-        this.vm.currentPackage= this.packages[0].name;
-      }).catch(err => {
-        //TODO: 错误日志
-        this.$message.error(err);
-=======
       return new Promise((resolve, reject) => {
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teaminfoget",
@@ -402,7 +288,6 @@ export default {
           // TODO: 错误日志
           this.$message.error(err);
         })
->>>>>>> dev
       })
     },
 
@@ -410,12 +295,6 @@ export default {
      * @description: 保存按钮触发的事件，先判断是保存还是新增
      */
     addOrSave(){
-<<<<<<< HEAD
-      console.log(this.$refs.packageRef[0].checkHasChange())
-      let isSave= this.isSave();
-      if(!isSave) return this.addAction();
-      return this.saveAction(); 
-=======
       let current= this.getCurrentRef();
       let hasChange= current && current.checkHasChange();
       if(!hasChange) return this.$message.info('信息无变动');
@@ -426,17 +305,11 @@ export default {
       let isSave= this.isSave();
       if(!isSave) return this.addAction(object);
       return this.saveAction(object); 
->>>>>>> dev
     },
     isSave(){
       let current= this.packages.find(el => el.name=== this.vm.currentPackage);
       return current.id=== 0 || !!current.id;
     },
-<<<<<<< HEAD
-    saveAction(){
-      //if(!this.checkHasChange()) return this.$message.info('数据未变动');
-    }
-=======
     getCurrentRef(){
       let packages= this.$refs.packageRef;
       if(!packages || packages.length=== 0) return null;
@@ -512,7 +385,6 @@ export default {
         ERROR_QUEUE.splice(0);
       })
     },
->>>>>>> dev
   }
 }
 </script>
