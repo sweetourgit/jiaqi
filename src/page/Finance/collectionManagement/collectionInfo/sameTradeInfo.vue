@@ -1,10 +1,20 @@
 <template>
+  <!-- 申请同业收款-弹窗 -->
   <div class="content">
-    <el-dialog :title="title" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" width=1100px :show-close="false" custom-class="city_list" class="addReceivables" @close="closeAdd">
+    <el-dialog
+      :title="title"
+      :visible="dialogFormVisible"
+      style="margin:-80px 0 0 0;"
+      width=1100px
+      :show-close="false"
+      custom-class="city_list"
+      class="addReceivables"
+      @close="closeAdd"
+    >
       <div v-if="this.find == 1 || this.find == 2" class="sh_style">审核中</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="btn" style="position:absolute;z-index:9;top:8px;right:1%;">
-          <el-button @click="aaa">取 消</el-button>
+          <el-button @click="canelHandle">取 消</el-button>
           <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">申 请</el-button>
           <el-button v-if="this.find == 1" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销收款</el-button>
           <el-button v-if="this.find == 2" type="primary" @click="Transfer ('ruleForm')">转办</el-button>
@@ -30,20 +40,33 @@
         <el-form-item label="摘要" prop="abstract" label-width="120px">
           <el-input v-model="ruleForm.abstract" placeholder="摘要" :disabled="change"></el-input>
         </el-form-item>
-        <el-form-item label="凭证" prop="voucher" label-width="120px">
-          <el-upload class="upload-demo" name="files" ref="upload" :limit="12" multiple :action="this.upload_url" :disabled="change" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview" list-type="picture">
+        <el-form-item label="凭证" prop="voucher" label-width="120px" ref="voucher">
+          <el-upload
+            :file-list="ruleForm.voucher"
+            class="upload-demo"
+            name="files"
+            :limit="12"
+            :action="this.uploadUrl"
+            :disabled="change"
+            :on-error="handleError"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove"
+            :on-preview="handlePreview"
+            list-type="picture"
+            :before-upload="beforePicUpload"
+          >
             <el-button size="small" type="primary">上传文件</el-button>
           </el-upload>
         </el-form-item>
-        <el-form-item label="是否选择发票"  prop="isInvoice" label-width="120px">
+        <el-form-item label="是否选择发票" prop="isInvoice" label-width="120px">
           <el-radio-group v-model="ruleForm.isInvoice" :disabled="change" @change="isInvoice">
             <el-radio label="1">是</el-radio>
             <el-radio label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible2">
-        <el-button style="margin: 5px 0 10px 0;" type="primary"@click="handleEdit()">添加</el-button>
-          <!-- 发票 -->
+        <el-form-item label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisibleInvoice">
+          <el-button style="margin: 5px 0 10px 0;" type="primary"@click="handleEdit()">添加</el-button>
+          <!-- 发票表格 -->
           <el-table :data="ruleForm.invoiceList" border style="width: 100%;">
             <el-table-column label="发票类型" width="120" align="center">
               <template slot-scope="scope">
@@ -114,7 +137,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <!-- 发票 END -->
+          <!-- 发票表格 END -->
         </el-form-item>
         <!-- 表单校验 END -->
         <!-- 表单基本信息 END -->
@@ -139,11 +162,11 @@
               </template>
            </el-table-column>
         </el-table>
+        <!-- 关联欠款 END -->
         <!-- 审批过程 -->
-        <el-form-item v-if="this.find == 1 || this.find == 2" label="审批过程" label-width="120px" label-height="auto">
-        </el-form-item>
+        <el-form-item v-if="this.find == 1 || this.find == 2" label="审批过程" label-width="120px" label-height="auto"></el-form-item>
         <el-form-item v-if="this.find == 1 || this.find == 2" label="" label-width="" label-height="auto">
-          <el-table :data="tableData1" border style="width: 97.8%;margin-left: 30px;margin-top: -25px;">
+          <el-table :data="approveCourseData" border style="width: 97.8%;margin-left: 30px;margin-top: -25px;">
             <el-table-column prop="createTime" label="申请日期" align="center">
             </el-table-column>
             <el-table-column prop="user" label="申请人" align="center">
@@ -154,40 +177,18 @@
             </el-table-column>
           </el-table>
         </el-form-item>
-        <div style="height: 200px;"></div>
       </el-form>
     </el-dialog>
-    <!--收款账户选择弹窗-->
-    <el-dialog title="选择账户" :visible.sync="accountShow" width="70%" custom-class="city_list">
-      <div style="overflow:hidden;">
-        <el-table :data="accountTable" border style="width: 100%" :header-cell-style="getRowClass">
-          <el-table-column prop="accountType" label="类型" align="center"></el-table-column>
-          <el-table-column prop="accountID" label="账号名称" align="center"></el-table-column>
-          <el-table-column prop="accountCard" label="卡号" align="center"></el-table-column>
-          <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
-          <el-table-column prop="accountHolder" label="开户人" align="center"></el-table-column>
-          <el-table-column prop="operation" label="操作" align="center">
-            <template slot-scope="scope">
-              <el-button type="text" size="small" class="table_details">选择</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="accountButton">
-          <el-button @click="accountClose()">取消</el-button>
-          <el-button  type="primary">确认</el-button>
-        </div>
-      </div>
-    </el-dialog>
     <!-- 协办弹窗 -->
-    <el-dialog style="text-align: left" title="选择协办人:" :visible.sync="dialogFormVisible1" width="50%">
+    <el-dialog style="text-align: left" title="选择协办人:" :visible.sync="dialogFormVisibleAssist" width="50%">
       <div style="text-align: center">
         <div style="width: 100%">
           <div class="button_select" style="margin-bottom: 30px;margin-top: -30px;">
-            <el-input v-model="apply_user_input" class="input" style='margin-left: 0px;'></el-input>
+            <el-input v-model="applyUserInput" class="input" style='margin-left: 0px;'></el-input>
             <el-button type="primary" @click="searchHand2()" size="medium">搜索</el-button>
           </div>
           <div class="table_trip" style=" width: 100%;">
-            <el-table :data="tableData3" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
+            <el-table :data="assistTransactionData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
               <el-table-column prop="id" label="ID" align="center" width="100%"></el-table-column>
               <el-table-column prop="name" label="姓名" width="120%" align="center"></el-table-column>
               <el-table-column prop="org" label="组织" align="center"></el-table-column>
@@ -195,7 +196,15 @@
           </div>
           <!-- 分页 -->
           <div class="block" style="margin-top: 30px;text-align:center;">
-            <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="5" layout="total, sizes, prev, pager, next, jumper" :total=total>
+            <el-pagination
+              @size-change="handleSizeChange2"
+              @current-change="handleCurrentChange2"
+              :current-page.sync="currentPage"
+              :page-sizes="[5, 10, 50, 100]"
+              :page-size="5"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total=total
+            >
             </el-pagination>
           </div>
           <!-- 分页 END -->
@@ -203,14 +212,14 @@
       </div>
       <!-- 协办弹窗按钮 -->
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible1 = false">取 消</el-button>
+        <el-button @click="dialogFormVisibleAssist = false">取 消</el-button>
         <el-button type="primary" @click="routerHandle2()">确 定</el-button>
       </span>
       <!-- 协办弹窗按钮 END -->
     </el-dialog>
     <!-- 协办弹窗 END -->
     <!-- 驳回意见弹窗 -->
-    <el-dialog title="请填写审批意见" :visible.sync="dialogFormVisible2" width="30%">
+    <el-dialog title="请填写审批意见" :visible.sync="dialogFormVisibleReject" width="30%">
       <textarea style="width: 90%; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
       <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="rejectHandle2()">确 定</el-button>
@@ -250,43 +259,55 @@
     </el-dialog>
     <!-- 收款账户选择弹窗 END -->
   </div>
+  <!-- 申请同业收款 END -->
 </template>
 
 <script type="text/javascript">
+import moment from 'moment'
+
 export default {
   name: "sameTradeInfo",
   components: {},
   props: {
-    dialogFormVisible: false,
+    dialogFormVisible: false, // 是否显示弹窗
     find: 0,
-    change: false,
+    change: false, // 相关表单是否可点击
   },
   data() {
+    var validateVoucher = (rule, value, callback) => {
+      if (this.fileCheckVal === 0) {
+        callback(new Error('请上传凭证'));
+      } else {
+        callback();
+      }
+    };
     return {
-      user_id: '',
-      user_name: '',
+      fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
+      userId: '',
+      userName: '',
       reable: false,
-      apply_user_input: '',
+      applyUserInput: '', // 经办人相关
       total: 0,
-      pageNum: 1,
-      pageSize: 5,
+      pageNum: 1, // 当前页数
+      pageSize: 5, // 每页数据量
       currentPage: 1,
       imgBigName: '',
       imgBig: '',
       dialogVisible: false,
-      dialogVisible2: false,
-      dialogFormVisible1: false,
-      dialogFormVisible2: false,
-      ruleForm: {
+      dialogVisibleInvoice: false,
+      dialogFormVisibleAssist: false, // 协办弹窗是否显示
+      dialogFormVisibleReject: false, // 驳回意见弹窗是否显示
+      ruleForm: { // 同业收款表单
+        voucher: [], // 凭证
         collectionTime: '', // 收款时间
-        createTime: '',
+        createTime: '', // 申请日期
         collectionAccount: '', // 收款账户
         sameTrade: '', // 同业社
         money: '',  // 收款金额
         abstract: '', // 摘要
-        isInvoice: '0',
-        collectionNumber:'',
-        invoiceList: [{
+        isInvoice: '0', // 发票
+        collectionNumber:'', // 收款账户
+        invoiceList: [{ // 发票相关
           type: '',
           userType: '',
           taxesNumber: '',
@@ -298,12 +319,11 @@ export default {
           address: '',
           mobile: '',
         }],
-
       },
       rules: {
+        voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         createTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
-        //collectionAccount: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
         sameTrade: [{ required: true, message: '同业社不能为空', trigger: 'change' }],
         money: [
           { required: true, message: '收款金额不能为空', trigger: 'blur' },
@@ -336,14 +356,13 @@ export default {
         value: '3',
         label: '同业社3'
       }],
-
-      tableData1: [{
+      approveCourseData: [{
         createTime: '2018-05-23',
         user: '阳阳',
         status: '通过',
         abstract: '没啥意见',
       }],
-      tableData3: [],
+      assistTransactionData: [],
       arrearsRelation: '8822.66',
       arrearsList: [{
         orderNumber: '51548979998051',
@@ -382,23 +401,14 @@ export default {
         value: '4',
         label: '项目4'
       }],
-
-      fileList: [],
-      accountShow:false, // 选择账户弹窗
-      accountTable:[{
-        accountType:'收款',
-        accountID:'洋洋',
-        accountCard:'123.00',
-        openingBank:'123.00',
-        accountHolder:'阳阳',
-      }],
-      tableData2:[], // 同业社名称模糊查询
-      supplier_id:0, // 同业社名称ID
-      accountShow:false, // 选择账户弹窗
-      tour_name_pre:'',
-      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture', // 上传凭证
-      planID:'',
-
+      fileList: [], // 文件列表
+      accountTable: [], // 收款账户列表
+      sameTradeData: [], // 同业社名称模糊查询
+      supplierId: 0, // 同业社名称ID
+      accountShow: false, // 选择账户弹窗
+      tourNamePre: '',
+      uploadUrl: this.GLOBAL.imgUrl + '/upload/api/picture', // 上传凭证
+      planID: '',
     }
   },
   computed: {
@@ -411,6 +421,12 @@ export default {
     },
   },
   methods: {
+    // 时间插件
+    moment,
+    // 上传文件之前的钩子
+    beforePicUpload (file) {
+      // console.log(file.size)
+    },
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -421,68 +437,49 @@ export default {
     },
     // 获取id
     clickBanle(row, event, column) {
-      this.user_id = row['id'];
-      this.user_name = row['name'];
+      this.userId = row['id'];
+      this.userName = row['name'];
       this.reable = false;
     },
+    // 子组件触发事件
     closeAdd(){
-        this.$emit('close', false);
+      this.$emit('close', false);
     },
-    aaa(){
-      //this.$emit('close', false);
-      this.$confirm("去否取消本次收款申请?", "提示", {
+    // 取消事件（顶部）
+    canelHandle(){
+      this.$confirm("是否取消本次收款申请?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
            type: "warning"
         }).then(() => {
-             this.$message.success("收款申请已取消");
-             //this.dialogFormVisible =false;
-             this.closeAdd();
-             this.$refs["ruleForm"].resetFields();
-             this.arrearsList = [];
-             this.indent = '';
-             this.dialogVisible2 = false;
-             this.a = false;
-           //this.clearPlan();
-           })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
+         this.$message.success("收款申请已取消");
+         //this.dialogFormVisible =false;
+         this.closeAdd();
+         this.$refs["ruleForm"].resetFields();
+         this.arrearsList = [];
+         this.indent = '';
+         this.dialogVisibleInvoice = false;
+         this.a = false;
+         //this.clearPlan();
+       })
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消"
         });
+      });
     },
-    changeInvoice() {
-      this.ruleForm.invoiceList.forEach(function(v, k, arr) {
-        console.log(arr[k]['date'])
-      })
-    },
+    // 发票模块添加事件
     handleEdit(index, row) {
       this.ruleForm.invoiceList.push({})
     },
+    // 发票模块删除事件
     handleDelete(index, row) {
       this.ruleForm.invoiceList.splice(index, 1)
       if (this.ruleForm.invoiceList.length == 0) {
         this.ruleForm.invoiceList.push({})
       }
-    }, // 提交
-    /*submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          if (this.arrearsRelation != 0 || this.arrearsRelation != '0.00') {
-            this.$message({
-              type: 'error',
-              message: '关联欠款金额有误'
-            });
-          } else {
-            alert('submit!');
-          }
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-    },*/
+    },
     // 撤销申请
     chanelSubmit() {
       this.$confirm('是否撤销该条收款, 是否继续?', '提示', {
@@ -504,11 +501,11 @@ export default {
     },
     // 转办
     Transfer() {
-      this.dialogFormVisible1 = true
+      this.dialogFormVisibleAssist = true
     },
     // 驳回
     boSubmit() {
-      this.dialogFormVisible2 = true
+      this.dialogFormVisibleReject = true
     },
     // 通过确认按钮
     adoptForm() {
@@ -547,7 +544,7 @@ export default {
           message: '已取消(转办)'
         });
       });
-      this.dialogFormVisible1 = false
+      this.dialogFormVisibleAssist = false
     },
     // 驳回确定按钮
     rejectHandle2() {
@@ -567,7 +564,7 @@ export default {
           message: '已取消(驳回)'
         });
       });
-      this.dialogFormVisible2 = false
+      this.dialogFormVisibleReject = false
     },
     // 下载图片地址和图片名
     downloadIamge(imgsrc, name) {
@@ -590,24 +587,30 @@ export default {
       };
       image.src = imgsrc;
     },
+    // 图片下载
     downs() {
       this.downloadIamge(this.imgBig, this.imgBigName)
     },
+    // 上传文件-移除
     handleRemove(file, fileList) {
       this.fileList = fileList
+      this.fileCheckVal = fileList.length
     },
     // 文件上传
     handleChange(file, fileList) {
       this.fileList = fileList.slice(-3);
     },
+    // 是否选择发票，复选框改变事件
     isInvoice(value) {
-      this.dialogVisible2 = value == '1' ? true : false
+      this.dialogVisibleInvoice = value == '1' ? true : false
     },
+    // 点击文件列表中已上传的文件时的钩子
     handlePreview(file, fileList) {
       this.dialogVisible = true
       this.imgBig = file.url
       this.imgBigName = file.name
     },
+    // 协办弹窗-搜索
     searchHand2() {
       this.pageNum = 1;
       var that = this
@@ -621,7 +624,7 @@ export default {
             "value": '',
             "type": 3,
             "user": '',
-            "input": this.apply_user_input,
+            "input": this.applyUserInput,
           },
         }, {
           headers: {
@@ -631,8 +634,8 @@ export default {
       )
       .then(function(obj) {
         that.total = obj.data.total;
-        that.tableData3 = obj.data.objects;
-        that.tableData3.forEach(function(v, k, arr) {
+        that.assistTransactionData = obj.data.objects;
+        that.assistTransactionData.forEach(function(v, k, arr) {
           arr[k]['org'] = '吉林大运通-财务部-会计'
           if (arr[k]['sex'] == 1) {
             arr[k]['sex'] = '男'
@@ -652,51 +655,53 @@ export default {
       })
       .catch(function(obj) {})
     },
+    // pageSize 改变时会触发
     handleSizeChange2(val) {
       this.pagesize = val
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/org/api/userpage", {
-            "pageIndex": this.pageNum,
-            "pageSize": this.pageSize,
-            "total": 0,
-            "object": {
-              "isDeleted": 0,
-              "value": '',
-              "type": 3,
-              "user": '',
-              "input": this.apply_user_input,
+        this.GLOBAL.serverSrc + "/org/api/userpage", {
+          "pageIndex": this.pageNum,
+          "pageSize": this.pageSize,
+          "total": 0,
+          "object": {
+            "isDeleted": 0,
+            "value": '',
+            "type": 3,
+            "user": '',
+            "input": this.applyUserInput,
 
-            },
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
+          },
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData3 = obj.data.objects;
-          that.tableData3.forEach(function(v, k, arr) {
-            arr[k]['org'] = '吉林大运通-财务部-会计'
-            if (arr[k]['sex'] == 1) {
-              arr[k]['sex'] = '男'
-            } else {
-              arr[k]['sex'] = '女'
-            }
-            if (arr[k]['userState'] == 0) {
-              arr[k]['status'] = '未选择'
-            } else if (arr[k]['userState'] == 1) {
-              arr[k]['status'] = '等待审核'
-            } else if (arr[k]['userState'] == 2) {
-              arr[k]['status'] = '正常'
-            } else {
-              arr[k]['status'] = '停用'
-            }
-          })
+        }
+      )
+      .then(function(obj) {
+        that.total = obj.data.total;
+        that.assistTransactionData = obj.data.objects;
+        that.assistTransactionData.forEach(function(v, k, arr) {
+          arr[k]['org'] = '吉林大运通-财务部-会计'
+          if (arr[k]['sex'] == 1) {
+            arr[k]['sex'] = '男'
+          } else {
+            arr[k]['sex'] = '女'
+          }
+          if (arr[k]['userState'] == 0) {
+            arr[k]['status'] = '未选择'
+          } else if (arr[k]['userState'] == 1) {
+            arr[k]['status'] = '等待审核'
+          } else if (arr[k]['userState'] == 2) {
+            arr[k]['status'] = '正常'
+          } else {
+            arr[k]['status'] = '停用'
+          }
         })
-        .catch(function(obj) {})
+      })
+      .catch(function(obj) {})
     },
+    // currentPage 改变时会触发
     handleCurrentChange2(val) {
       this.pageNum = val;
       var that = this
@@ -710,7 +715,7 @@ export default {
               "value": '',
               "type": 3,
               "user": '',
-              "input": this.apply_user_input,
+              "input": this.applyUserInput,
 
             },
           }, {
@@ -721,8 +726,8 @@ export default {
         )
         .then(function(obj) {
           that.total = obj.data.total;
-          that.tableData3 = obj.data.objects;
-          that.tableData3.forEach(function(v, k, arr) {
+          that.assistTransactionData = obj.data.objects;
+          that.assistTransactionData.forEach(function(v, k, arr) {
             arr[k]['org'] = '吉林大运通-财务部-会计'
             if (arr[k]['sex'] == 1) {
               arr[k]['sex'] = '男'
@@ -744,20 +749,20 @@ export default {
     },
     //同业社名称模糊查询
     querySearch3(queryString3, cb) {
-      this.tableData2 = []
+      this.sameTradeData = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
           name: queryString3
         }
       }).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
-          this.tableData2.push({
+          this.sameTradeData.push({
             "value": res.data.objects[i].name,
             "id": res.data.objects[i].id
           })
-          this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+          this.supplierId = res.data.objects[i].id ? res.data.objects[i].id : 0;
         }
-        var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
+        var results = queryString3 ? this.sameTradeData.filter(this.createFilter(queryString3)) : [];
         cb(results)
       }).catch(err => {})
     },
@@ -766,14 +771,15 @@ export default {
         return (restaurant.value);
       }
     },
+    // 自动完成输入框选中事件
     departure(item){
       this.productPos = item.id;
       this.originPlace = item.value;
     },
-    //选择账户弹窗
+    // 选择账户弹窗,渲染账户列表
     account(){
       this.accountShow = true;
-      var that = this
+      let that = this
         this.$http.post(
           this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
           {
@@ -786,18 +792,20 @@ export default {
           })
           .catch(function (obj) {})
     },
+    // 收款账户选择弹窗隐藏
     accountClose(){
       this.accountShow = false;
     },
     //收款账户选择
     routerHandle4() {
       setTimeout(v => {
-        this.ruleForm.collectionNumber = this.tour_name_pre
+        this.ruleForm.collectionNumber = this.tourNamePre
         this.accountShow = false
       }, 200)
     },
-    clickPlan(row){//收款账户点击
-      this.tour_name_pre = row['title'];
+    // 收款账户选择弹窗列表-行被点击时的事件
+    clickPlan(row){
+      this.tourNamePre = row['title'];
       this.planID = row['planID'];
       this.tour_id = row['planID']
     },
@@ -805,13 +813,16 @@ export default {
     handleChange(file, fileList) {
       this.fileList = fileList.slice(-3);
     },
+    // 文件上传失败时的钩子
     handleError(err, file) {
-      console.log('失败')
       this.fileList = []
     },
+    // 文件上传成功时的钩子
     handleSuccess(res, file, fileList) {
+      this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
+      this.$refs.voucher.clearValidate(); // 移除校验文字
       //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
-      if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
+      if (this.time != fileList.length) { // 多张图片情况只在第一次执行数组操作
         this.time = fileList.length;
         if (this.fileList.length == 0) {
           this.fileList = fileList;
@@ -832,8 +843,9 @@ export default {
         this.$set(this.fileList[i], "name", paths.Name);
       }
       this.uid = fileList[0].uid;
-      console.log(this.fileList)
+      // console.log(this.fileList)
     },
+    // 申请-提交表单
     submitForm(formName) {
       this.a = true
       this.$refs[formName].validate((valid) => {
@@ -849,31 +861,32 @@ export default {
           }
           let objectRequest = {}
           objectRequest = {
-            collectionTime: formatDate(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间
-            groupCode: this.ruleForm.groupCode, //团号
-            planID: this.ruleForm.planID, //团期计划的ID
-            orderID: this.ruleForm.orderID, //订单ID
-            orderNumber: this.indent, //订单号
-            collectionNumber: this.ruleForm.collectionNumber, //收款账户
-            //price: this.ruleForm.price, //金额
-            dept: this.dept, //this.org, //组织部门
-            createUser: localStorage.getItem('name'), //
-            createTime: newDate, //申请时间
-            serialNumber: this.ruleForm.serialNumber, //流水号
-            abstract: this.ruleForm.abstract, //摘要
-            files: pictureList, //图片
-            invoice: this.ruleForm.invoice, //是否发票
-            collectionType:1,//直客1.同业2
-            localCompID:0,//直客0，同业变成同业社id
+            collectionTime: cxnpo(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间
+            groupCode: this.ruleForm.groupCode, // 团号
+            planID: this.ruleForm.planID, // 团期计划的ID
+            orderID: this.ruleForm.orderID, // 订单ID
+            orderNumber: this.indent, // 订单号
+            collectionNumber: this.ruleForm.collectionNumber, // 收款账户
+            //price: this.ruleForm.price, // 金额
+            dept: this.dept, //this.org, // 组织部门
+            createUser: localStorage.getItem('name'),
+            createTime: newDate, // 申请时间
+            serialNumber: this.ruleForm.serialNumber, // 流水号
+            abstract: this.ruleForm.abstract, // 摘要
+            files: pictureList, // 图片
+            invoice: this.ruleForm.invoice, // 是否发票
+            collectionType:1, // 直客1.同业2
+            localCompID:0, // 直客0，同业变成同业社id
             //invoiceTable:this.ruleForm.invoiceTable,
           }
           if (this.ruleForm.invoice == '1') {
-            objectRequest.invoiceTable = this.ruleForm.invoice ? this.ruleForm.invoiceTable : [] //发票表格}
+            // 发票表格
+            objectRequest.invoiceTable = this.ruleForm.invoice ? this.ruleForm.invoiceTable : []
           }
           this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/insert', {
             "object": objectRequest
           }).then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             if (res.data.isSuccess == true) {
               this.$emit('searchHand', '')
               this.$message({
@@ -881,22 +894,13 @@ export default {
                 message: '创建成功!'
               });
               this.closeAdd()
-            } else {
-              console.log('有错误!')
-              console.log(res.data)
-            }
-          }).catch(err => {
-            console.log(err)
-          })
+            } else {}
+          }).catch(err => {})
         } else {
-          console.log('error submit!!')
           return false;
         }
       });
     },
-  },
-  created() {
-
   }
 }
 </script>
@@ -935,7 +939,6 @@ export default {
     margin-bottom: 20px;
     text-align: left;
   }
-
   .el-input {
     width: auto
   }
@@ -944,5 +947,4 @@ export default {
   .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}
   .associatedItems{float:left; margin: 0 0 0 10px;}
   .associatedMoney{float:left; margin: 0 0 0 30px;}
-
 </style>

@@ -1,13 +1,12 @@
 <template>
   <div>
-
-    <div class="leftSku" >
+    <div class="leftSku">
       <div style="font-size:20px;margin-left:40px;">Sku</div>
       <el-button style="margin-top:10px;margin-left:40px;width:220px;height: 64px;" :class="{'selectSku': ccc.includes(data.id)}" plain v-for="(data,index) in msgFather" :key="index"  @click="setMeal(data)">{{data.ddd}}</el-button>
       <!-- <div style="font-size:20px;margin-top:20px">附加增值服务</div>
       <el-button class="selectSku" plain v-for="(item,index) in Addprice" :key="item.id">{{item.name}}</el-button> -->
     </div>
-    <div id="calendar" >
+    <div id="calendar">
       <div style="margin-bottom: 10px;">
         <span>结算参考</span>
         <span style="margin-left: 5px;color: red;">{{average | numFilter}}</span>
@@ -32,7 +31,6 @@
           </template>
         </div>
       </div>
-
       <!-- 星期 -->
       <ul class="weekdays">
         <li style="color:red"><el-checkbox v-model="sun" class="checkbox"></el-checkbox>日</li>
@@ -43,7 +41,6 @@
         <li><el-checkbox v-model="fri" class="checkbox"></el-checkbox>五</li>
         <li style="color:red"><el-checkbox v-model="sat" class="checkbox"></el-checkbox>六</li>
       </ul>
-
       <!-- 日期 -->
       <ul class="days">
         <!-- v-for循环 每一次循环用<li>标签创建一天 -->
@@ -99,14 +96,11 @@
           </template>
         </template>
       </ul>
-
       <div class="ButtonCls">
         <el-button style="width:100px;" @click="BandCancel">取消</el-button>
         <el-button style="width:100px;" type="primary" @click="BandSave">保存</el-button>
       </div>
-
     </div>
-
     <!-- 右侧的表单 -->
     <div class="rightForm" v-show="rightTable">
       <!-- 表单 -->
@@ -144,16 +138,11 @@
           <el-input v-model="Rform.sumNum" style="width:200px; margin:0 0 0 33px;" ></el-input>
         </el-form-item>
         <el-form-item label="订单预留时长:" style="margin-top:20px">
-          <!-- <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:200px">
-            <el-option label="0-1" value="shanghai"></el-option>
-            <el-option label="1-2" value="beijing"></el-option>
-          </el-select> -->
           <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:200px">
-            <el-option :label="item.label" :value="item.value" v-for="(item,index) of excurList" :key="item.value"/>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of excurList" :key="item.value" />
           </el-select>
         </el-form-item>
       </el-form>
-
       <!-- 卡片 -->
       <template>
         <el-card class="box-card"  v-for="(item,index) in arr" :key="item.key">
@@ -172,7 +161,7 @@
               <el-button @click="delect(item, index)"  type="danger" size="mini">删除</el-button>
             </div>
           </div>
-          <div class="divform"> 
+          <div class="divform">
             <el-form ref="form" :model="item" :rules="formRuler"  label-width="80px">
               <el-form-item label="销售价" prop="salePrice">
                 <el-input v-if="Rform.resource == 1" :class="isAverage = item.salePrice < shareAverage && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
@@ -190,24 +179,18 @@
       </template>
     </div>
   </div>
-
 </template>
 
 <script>
   export default {
     name:'DateList',
     props: ['msgFather', 'piapia'],
-    mounted() {
-      console.log("渲染");
-    },
-    updated() {},
     data() {
       return {
         today: new Date(),
         isAverage: '',
         average: 0, // 结算参考价
         shareAverage: 0, // 共享库存结算参考
-        // 大表单
         Rform:{
           id: '',          // 计划id
           date: '',        // 日历时间
@@ -218,7 +201,7 @@
           shareNum: '',    // 共享库存数量
           sumNum:'',       // 总库存数量
           orderRetain: '', // 订单保留
-        },
+        }, // 大表单
         form: {
           price: "",
           number: "",
@@ -244,7 +227,6 @@
         arr:[], // 右侧报名类型表单
         ccc: [], // sku套餐选择
         clickData: '', // 当前点击的日期
-        // 非共享库存验证
         RformRuler: {
           sumNum: [
             { required: true, message: '请填写库存'},
@@ -256,7 +238,7 @@
           resource: [
             { required: true, message: '请选择库存类型'}
           ]
-        },
+        }, // 非共享库存验证
         formRuler: {
           salePrice: [
             { required: true, message: '不能为空'}
@@ -706,10 +688,8 @@
       }
     },
     created: function() {
-      // 在vue初始化时调用
-      this.initData(null);
-      // 判断是否点击套餐
-      if (this.piapia == '') {
+      this.initData(null); // 在vue初始化时调用
+      if (this.piapia == '') { // 判断是否点击套餐
         this.ccc = [];
         this.ccc.push(this.msgFather[0].id);
       } else {
@@ -717,32 +697,37 @@
         this.ccc.push(this.piapia);
       }
       this.calendarList(this.ccc[0]);
-      // 获取报名类型数据
-      this.initTypeSelect();
+      this.initTypeSelect(); // 获取报名类型数据
     },
     methods: {
       // 获取结算参考价
       getaverage(id) {
-        this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
+        this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', { // 通过套餐获取人均结算价
           "id": id
         }).then(res => {
           this.average = res.data.average;
         })
       },
-      // 按套餐获取计划
+      /*
+      *
+      *   按套餐获取计划
+      *   this.days 是初始化时期渲染的，在这里通过sku获取的计划，两者日期比对（获取的计划在相应的日历上显示）显示在日历上
+      *   同时相应要显示的日期赋值 报名类型 person
+      *
+      * */
       calendarList(id) {
         this.clearNull();
         this.getaverage(id);
         let currentMonth = this.currentMonth;
         if (currentMonth < 10) currentMonth = "0" + currentMonth;
-        this.$http.post(this.GLOBAL.serverSrc + '/team/calendar/api/get', {
+        this.$http.post(this.GLOBAL.serverSrc + '/team/calendar/api/get', { // 通过sku套餐获取 有哪些计划
           "object": {
             "year": this.currentYear,
             "month": currentMonth,
             "packageID": id
           }
         }).then(res => {
-          console.log(res)
+          console.log('按套餐获取计划', res)
           this.days.forEach(item => {
             let str = this.formatDates(
               item.day.getFullYear(),
@@ -788,7 +773,6 @@
         //   this.days.forEach(item => {
         //     // if(item.day.getTime() > new Date().getTime() || item.day.getDate() == new Date().getDate()){
         //     //   if(item.day.getMonth() + 1 == this.currentMonth){
-
         //     //   }
         //     // }
         //     let str = this.formatDates(
@@ -818,9 +802,6 @@
         //         }
         //       }
         //     })
-
-
-
         //     // let str = this.formatDates(
         //     //       item.day.getFullYear(),
         //     //       item.day.getMonth() + 1,
@@ -864,9 +845,10 @@
       },
       // 非共享库存修改
       saveQuota(list, data, inventoryID, row, sumId) {
+        console.log(data)
         let planEnroll = [];
         let cost = false;
-        let isSave = true; 
+        let isSave = true;
         // 是否编辑判断
         if (list.data.person.planEnroll.length != 0 ) {
           list.data.person.planEnroll.forEach(item => {
@@ -882,7 +864,8 @@
                 'enrollName': data.name,
                 'price_01': data.salePrice,
                 'price_02': data.traderPrice,
-                'quota': quotaPrice
+                'quota': quotaPrice,
+                "dateHous": this.Rform.orderRetain, // 调时长时新增
               })
               isSave = false;
             } else {
@@ -896,7 +879,8 @@
                 'enrollName': item.name,
                 'price_01': item.salePrice,
                 'price_02': item.traderPrice,
-                'quota': item.quotaPrice
+                'quota': item.quotaPrice,
+                "dateHous": this.Rform.orderRetain, // 调时长时新增
               })
             }
           })
@@ -913,11 +897,13 @@
             'enrollName': data.name,
             'price_01': data.salePrice,
             'price_02': data.traderPrice,
-            'quota': quotaPrice
+            'quota': quotaPrice,
+            "dateHous": this.Rform.orderRetain, // 调时长时新增
           })
         }
         // 查到非共享库存后执行修改计划
-        this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorysave', {
+        console.log('查到非共享库存后执行修改计划')
+        this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorysave', { // 库存修改
           "object": {
             "name": '',
             "count": this.Rform.sumNum,
@@ -926,7 +912,7 @@
           }
         })
         .then(resSave =>{
-          this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/save', {
+          this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/save', { // 计划修改
             "object": {
               "id": this.Rform.id,
               "inventoryID": inventoryID,
@@ -947,8 +933,6 @@
               'quotaPrice': delid.quota
             })
           })
-
-
           if(this.Rform.resource == '1') {
             planEnroll.forEach(v => {
               if(v.price_01 < this.shareAverage) {
@@ -962,9 +946,6 @@
               }
             })
           }
-
-          console.log(cost)
-
           this.days[list.index].data.person = {
             "id": this.Rform.id,
             "inventoryID": inventoryID,
@@ -981,7 +962,7 @@
           this.$message.success('修改成功');
           if (row) {
             // 修改成功后删除非共享库存
-            this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorydelete', {
+            this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorydelete', { // 删除库存
               "id": sumId
             }).then(resDelete => {
 
@@ -995,27 +976,30 @@
       },
       // 报名类型保存之后
       addQuota(data, index) {
-        // 有值执行修改操作
+        // 这个data 参数就是要填加载日历上卡片相关信息
+        console.log(this.Rform.id, '有计划id，值执行修改操作')
+        // 有计划id，值执行修改操作
         if (this.Rform.id) {
-          if (this.Rform.resource == '2') { // 2为非共享库存
+          // 2为非共享库存
+          if (this.Rform.resource == '2') {
+            console.log('2为非共享库存')
             // 验证是否填写总库存
             if (this.Rform.sumNum != '') {
+              console.log('已经填写总库存')
               this.$refs['form'][index].validate(valid => {
                 if (valid) {
+                  // 当前销售价低于共享库存的结算参考
                   if(data.salePrice < this.average) {
                     this.$confirm('当前销售价低于共享库存的结算参考, 是否继续保存', '提示', {
                       confirmButtonText: '确定',
                       cancelButtonText: '取消',
                       type: 'warning'
                     }).then(() => {
-                      console.log('当前销售价低于共享库存的结算参考, 是否继续保存')
-                      if (this.Rform.sumId) {
-                        console.log(this.Rform.sumId)
+                      if (this.Rform.sumId) { // 非共享库存id
                         this.saveQuota(this.n[0], data, this.Rform.sumId);
                       } else {
-                        console.log('添加非共享库存')
                         // 添加非共享库存
-                        this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', {
+                        this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', { // 新增库存
                           "object": {
                             "name": '',
                             "count": this.Rform.sumNum,
@@ -1024,40 +1008,20 @@
                           }
                         }).then(res => {
                           // 添加完成后传入添加后的id
-                          this.saveQuota(this.n[0], data, res.data.id);
+                          this.saveQuota(this.n[0], data, res.data.id); // 这块函数又执行了一遍 新增库存 和  新增计划 （感觉没什么意义），因为上面有一个新增库存接口
                         }).catch(err => {
                           console.log('添加非共享库存失败');
                         })
                       }
                     })
-                  } else {
-                    if (this.Rform.sumId) {
-                      this.saveQuota(this.n[0], data, this.Rform.sumId);
-                    } else {
-                      // 添加非共享库存
-                      this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', {
-                        "object": {
-                          "name": '',
-                          "count": this.Rform.sumNum,
-                          "share": 2,
-                          "date": this.Rform.date
-                        }
-                      }).then(res => {
-
-                        // 添加完成后传入添加后的id
-                        this.saveQuota(this.n[0], data, res.data.id);
-                      }).catch(err => {
-                        console.log('添加非共享库存失败');
-                      })
-                    }
                   }
-
                 }
               })
             } else {
               this.$refs['Rform'].validateField('sumNum');
             }
-          } else if (this.Rform.resource == '1') { // 1为共享库存
+          // 1为共享库存
+          } else if (this.Rform.resource == '1') {
             // 验证是否选择共享库存
             if (this.Rform.shareId != '') {
               this.$refs['form'][index].validate(valid => {
@@ -1081,15 +1045,14 @@
                       this.saveQuota(this.n[0], data, this.Rform.shareId, 'delete', this.Rform.sumId);
                     }
                   }
-
-
                 }
               })
             } else {
               this.$refs['Rform'].validateField('shareId');
             }
           }
-        } else { // 没值执行添加操作
+        // 没，值执行添加操作
+        } else {
           // 验证库存类型是否选择
           if (this.Rform.resource != '') {
             // 选择的是非共享库存
@@ -1104,9 +1067,13 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                       }).then(() => {
+                        // 共享与非共享都是 先加库存返回库存id然后传给这个新增计划的接口 （因为都用唯一库存所以计划要用库存返回的唯一id，库存id）
+
+                        // 临时注销
                         this.sumInsert(data, index);
                       })
                     } else {
+                      console.log('当前销售价高于结算参考')
                       this.sumInsert(data, index);
                     }
                    }
@@ -1114,7 +1081,8 @@
               } else {
                 this.$refs['Rform'].validateField('sumNum');
               }
-            } else if (this.Rform.resource == '1') {  // 选择的是共享库存
+              // 选择的是共享库存
+            } else if (this.Rform.resource == '1') {
               // 验证是否选择共享库存
               if (this.Rform.shareId != '') {
                 this.$refs['form'][index].validate(valid => {
@@ -1149,14 +1117,7 @@
         this.n.forEach(item => {
           // 第一次添加时
           if (this.days[item.index].data.person.planEnroll == undefined) {
-            // 设置销售价同业价 
-            // sessionStorage.setItem("salePrice", data.salePrice);
-            // sessionStorage.setItem("traderPrice", data.traderPrice);
-            // sessionStorage.setItem("proName", data.name);
-            // 取值
-            // let getSalePrice = sessionStorage.getItem("salePrice")
-            // let getTraderPrice = sessionStorage.getItem("traderPrice")
-            // let getProName = sessionStorage.getItem("proName")
+            console.log('第一次添加时')
             let planEnroll = [];
             let cost = false;
             planEnroll.push({
@@ -1176,6 +1137,7 @@
                 cost = true;
               }
             })
+            // 把新选中的计划 进行赋值
             this.days[item.index].data.person = {
                 'inventoryID': '',
                 'packageID': this.ccc[0],
@@ -1185,7 +1147,7 @@
                 'cost': cost,
                 'planEnroll': planEnroll
               }
-              n.push(this.days[item.index]);
+            n.push(this.days[item.index]);
           } else {
             let date = this.formatDates(
               item.day.getFullYear(),
@@ -1221,7 +1183,7 @@
                 'name': data.name,
                 'salePrice': data.salePrice,
                 'traderPrice': data.traderPrice,
-                'quotaPrice': data.quotaPrice
+                'quotaPrice': data.quotaPrice  // 配额
               })
             }
             planEnroll.forEach(v => {
@@ -1243,6 +1205,34 @@
         })
         this.n = [];
         this.n = n;
+        // 新增计划点击保存直接提交数据
+        n.forEach(item => {
+          this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', { // 新增库存
+            "object": {
+              "name": '', // 名称
+              "count": item.data.person.count, // 库存
+              "share": 2, // 是否共享库存 no-2
+              "date": item.data.person.date // 日历上的日期
+            }
+          }).then(res => {
+            this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/insert', { // 新增计划
+              "object": {
+                "inventoryID": res.data.id, // 所属库存
+                "packageID": item.data.person.packageID, // 套餐
+                "date": item.data.person.date, // 日历上的日期
+                "groupCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix, // 团号
+                "planEnroll": item.data.person.planEnroll // 此团期中的所有报名类型
+              }
+            }).then(resAdd => {
+              // 添加成功后从新查找
+              this.calendarList(this.ccc[0]);
+            }).catch(errAdd => {
+              console.log('添加计划失败', errAdd);
+            })
+          }).catch(err => {
+            console.log('共享库存添加失败', err);
+          })
+        })
       },
       // 共享库存时的添加
       shareInsert(data, index) {
@@ -1489,6 +1479,7 @@
           }
         // 选择时
         } else {
+          console.log('选择时')
           this.clearNull();
           if (this.n.length == 0 || day.data.person.id == undefined) {
             this.forbidden = false;
@@ -1517,17 +1508,22 @@
               day.day.getDate()
             )
           }
+          // 我发现个问题 当点击一个计划的时候person可能会为一个空对象此时无法对person进行赋值
+          // 在保存事件里也就无法遍历除当前选中的是哪些计划，所以过滤this.days 的时候返回的是一个空数组
+          // 下面两种情况是对 person 下 id 行判断， 还有一个是对 person 下的 packageID 进行判断（这两种情况有时都不满足）
+
           // 选中的日期有类型时进行赋值
           if (day.data.person.id != undefined) {
-            this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/get', {
+            console.log('day.data.person.id != undefined')
+            this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/get', { // 获取一个计划信息
               "id": day.data.person.id
             }).then(res => {
-              day.data.person.inventoryID = res.data.object.inventoryID;
-              this.$http.post(this.GLOBAL.serverSrc +  '/team/api/inventoryget', {
-                "id": res.data.object.inventoryID
+              day.data.person.inventoryID = res.data.object.inventoryID; // 所属库存
+              this.$http.post(this.GLOBAL.serverSrc +  '/team/api/inventoryget', { // 获取一个库存信息
+                "id": res.data.object.inventoryID // 所属库存（计划信息返回）
               }).then(inventoryRes => {
-                day.data.person.count = inventoryRes.data.object.count;
-                this.Rform.resource = String(day.data.person.share);
+                day.data.person.count = inventoryRes.data.object.count; // 返回当前库存id 下，库存的数量
+                this.Rform.resource = String(day.data.person.share); // 库存类型
                 this.xuanze(this.Rform.resource);
                 if (this.Rform.resource == 1) {
                   // 共享库存数量
@@ -1542,8 +1538,10 @@
                   this.Rform.sumNum = day.data.person.count;
                   // 非共享库存ID
                   this.Rform.sumId = res.data.object.inventoryID;
+                  // 非共享库存订单预留时长
+                  // this.Rform.orderRetain = res.data.object.inventoryID
                 }
-                this.Rform.id = day.data.person.id;
+                this.Rform.id = day.data.person.id; // 计划id
                 this.Rform.date = this.formatDates(
                   day.day.getFullYear(),
                   day.day.getMonth() + 1,
@@ -1553,16 +1551,20 @@
                 this.selectType(day);
               })
             })
+            // 所属套餐的id
+            console.log(day.data.person.packageID)
           } else if (day.data.person.packageID != undefined) {
+            console.log('day.data.person.packageID != undefined')
             this.Rform.resource = day.data.person.share;
             this.xuanze(this.Rform.resource);
+            // 库存类型（如果是共享库存）
             if (this.Rform.resource == 1) {
               // 共享库存数量
               this.Rform.shareNum = day.data.person.count;
               // 共享库存ID
               this.Rform.shareId = day.data.person.inventoryID;
               setTimeout(() => {
-                this.shareSelect();
+                this.shareSelect(); // 获取该库存剩余的库存量
               }, 100)
             } else {
               // 非共享库存数量
@@ -1597,6 +1599,7 @@
           }
         }
       },
+      // 数据初始化
       initData(cur) {
         var leftcount = 0; //存放剩余数量
         var date;
@@ -1641,7 +1644,6 @@
           dayobject.day = d;
           dayobject.index = this.days.length;
           this.days.push(dayobject); // 将日期放入data 中的days数组 供页面渲染使用
-          // console.log(this.days)
         }
         // 其他周
         for (var i = 1; i <= 41 - this.currentWeek; i++) {
@@ -1703,20 +1705,21 @@
       },
       // 获取共享库存
       listData() {
-        this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorylist', {
+        this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorylist', { // 库存带条件列表无分页
           "object": {
             "share": 1,
             "date": this.clickData
           }
         }).then(res => {
-          this.signUptypeSelect = [];
+          this.signUptypeSelect = []; // 共享库存数据
           res.data.objects.forEach(item => {
             this.signUptypeSelect.push({
               "id": item.id,
               "name": item.name,
-              "count": item.count,
-              "averageCost": item.averageCost
+              "count": item.count, // 数量
+              "averageCost": item.averageCost //  人均机票成本
             })
+            console.log('获取共享库存', this.signUptypeSelect)
           })
         }).catch(err => {
           console.log('共享库存获取失败');
@@ -1806,7 +1809,6 @@
             type: 'warning'
           });
         }
-
       },
       // 删除卡片
       delect(item, index) {
@@ -1817,9 +1819,7 @@
             // 删除最后一个类型时删除该计划
             this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/delete', {
                 "id": this.Rform.id
-            }).then(res => {
-              console.log(res);
-            })
+            }).then(res => {})
           } else {
             this.arr.splice(index,1);
             let planEnroll = [];
@@ -1980,7 +1980,7 @@
             }
             if (item.data.person.inventoryID == '') {
               // 添加非共享库存
-              this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', {
+              this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', { // 新增库存
                 "object": {
                   "name": '',
                   "count": item.data.person.count,
@@ -1988,7 +1988,7 @@
                   "date": item.data.person.date
                 }
               }).then(res => {
-                this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/insert', {
+                this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/insert', { // 新增计划
                   "object": {
                     "inventoryID": res.data.id,
                     "packageID": item.data.person.packageID,
@@ -2030,7 +2030,7 @@
         }
       },
       // 点击套餐Sku
-      setMeal(data){
+      setMeal(data) {
         if (data.codePrefix != '' && data.codeSuffix != '') {
           let id = '';
           if (data.id == undefined) {
@@ -2062,7 +2062,6 @@
             type: 'warning'
           });
         }
-
       },
       // 获取报名类型
       initTypeSelect() {
@@ -2285,7 +2284,7 @@
     width:300px;
     height:500px;
     margin-top:125px;
-    margin-left:-25px;
+    margin-left:-2%;
   }
   .selectSku{
     background: #409EFF !important;
@@ -2294,10 +2293,8 @@
     /* color: #409EFF; */
   }
   .rightForm{
-    float: left;
+    float: right;
     margin-top: 35px;
-    margin-left: 35px;
-    /* right: -360px; */
     width: 360px;
   }
   .clearfix{
