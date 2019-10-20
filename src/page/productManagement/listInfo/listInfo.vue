@@ -75,7 +75,9 @@ export default {
     return {
       vm: {
         currentTabName: 'basic',
-        inited: false
+        inited: false,
+        // 保存按钮的锁
+        saveActionLock: false,
       },
       basic: {},
       instructions: [],
@@ -135,12 +137,15 @@ export default {
     },
 
     saveAction(object){
+      if(this.vm.saveActionLock) return this.$message.info('数据保存中，请稍后再试');
+      this.vm.saveActionLock= true;
       let { id }= this.$route.query;
       saveAction.bind(this)(object).then(res => {
         this.$message.success('产品信息保存成功');
         this.inited= false;
         this.$nextTick(() => {
           this.init(id);
+          this.vm.saveActionLock= false;
         })
       }).catch(err => {
         this.$message.error(err);
