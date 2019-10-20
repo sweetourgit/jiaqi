@@ -1,166 +1,179 @@
 <template>
-  <div class="loanManagement">
-      <!--查看无收入借款弹窗-->
-	     <div style="margin:10px 0 0 25px; font-size:14pt;">基本信息</div>
-       <!-- <div class="checkType">审核中</div> -->
-       <table class="basictable">
-         <tr>
-          <td>
-             <div>
-               <div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
-               <div class="checkType" v-if="fundamental.checkType=='2'" style="background: #ff0000" >驳回</div>
-               <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500">通过</div>
-             </div>
-          </td>
-         </tr>
-         <tr>
-           <td class="basictd">
-             <span class="basicspan_01">ID:</span>
-             <span class="basicspan_02">{{fundamental.id}}</span>
-           </td>
-           <td class="basictd">
-             <span class="basicspan_01">申请人:</span>
-             <span class="basicspan_02">{{fundamental.createUser}}</span>
-           </td>
-           <td class="basictd">
-             <span class="basicspan_01">创建时间:</span>
-             <span class="basicspan_02">{{fundamental.createTime | formatDate}}</span>
-           </td>
-         </tr>
-         <tr>
-           <td class="basictd">
-             <span class="basicspan_01">团期计划:</span>
-             <span class="basicspan_02">{{fundamental.groupCode}}</span>
-           </td>
-           <td class="basictd">
-             <span class="basicspan_01">产品名称:</span>
-             <span class="basicspan_02">{{fundamental.plan_01}}</span>
-           </td>
-           <td class="basictd">
-             <span class="basicspan_01">供应商:</span>
-             <span class="basicspan_02">{{fundamental.supplierName}}</span>
-           </td>
-         </tr>
-         <tr>
-           <td class="basictd">
-             <span class="basicspan_01">借款类型:</span>
-             <span class="basicspan_02">{{fundamental.paymentType}}</span>
-           </td>
-           <td class="basictd">
-             <span class="basicspan_01">借款金额:</span>
-             <span class="basicspan_02">{{fundamental.price}}</span>
-           </td>
-           <td class="basictd">
-             <span class="basicspan_01">摘要:</span>
-             <span class="basicspan_02">{{fundamental.mark}}</span>
-           </td>
-         </tr>
-         <tr>
-           <td class="basictd">
-             <span class="basicspan_01">账号:</span>
-             <span class="basicspan_02">{{fundamental.cardNumber}}</span>
-           </td>
-           <td class="basictd">
-             <span class="basicspan_01">开户行:</span>
-             <span class="basicspan_02">{{fundamental.bankName}}</span>
-           </td>
-           <td class="basictd">
-             <span class="basicspan_01">开户名:</span>
-             <span class="basicspan_02">{{fundamental.cardName}}</span>
-           </td>
-         </tr>
-         <tr>
-           <td class="basictd">
-             <span class="basicspan_01">附件:</span>
-             <span class="basicspan_02">{{fundamental.files}}</span>
-           </td>
-           <td class="basictd" v-if="fundamental.checkType=='1'">
-             <span class="basicspan_01">支付账户:</span>
-             <span class="basicspan_02">{{fundamental.title}}</span>
-           </td>
-         </tr>
-       </table>
-       <div style="margin:20px 0 0 25px; font-size:14pt;">审核结果</div>
-       <el-table :data="tableCourse" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-         <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
-         <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
-         <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
-         <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
-       </el-table>
-       <div style="margin:20px 0 0 25px; font-size:14pt;">相关信息</div>
-
-			 <el-table :data="tableMoney" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-         <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
-         <el-table-column prop="paymentChecking" label="审批中借款总额" align="center"></el-table-column>
-         <el-table-column prop="payment" label="已审批借款总额" align="center"></el-table-column>
-         <el-table-column prop="expenseChecking" label="报销中总额" align="center"></el-table-column>
-         <el-table-column prop="expense" label="已报销总额" align="center"></el-table-column>
-         <el-table-column prop="price" label="已收总额" align="center"></el-table-column>
-         <el-table-column prop="supTotal" label="供应商欠款总额" align="center"></el-table-column>
-      </el-table>
-	    <div style="margin:0 0 0 25px;">无收入借款明细</div>
-        <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-           <el-table-column prop="checkType" label="审批状态" align="center">
-             <template slot-scope="scope">
-              <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
-              <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
-              <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
-            </template>
-           </el-table-column>
-           <el-table-column prop="supplierType" label="借款类型" align="center"></el-table-column>
-           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-           <el-table-column prop="price" label="金额" align="center"></el-table-column>
-           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
-           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
-           <el-table-column prop="process" label="审批过程" align="center">
-            <template slot-scope="scope">
-              <div @click="processIncome(scope.row)">查看</div>
-            </template>
-           </el-table-column>
-        </el-table>
-        <div style="margin:0 0 0 25px;">预付款明细</div>
-        <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-           <el-table-column prop="checkType" label="审批状态" align="center">
-             <template slot-scope="scope">
-              <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
-              <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
-              <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
-            </template>
-           </el-table-column>
-           <el-table-column prop="supplierType" label="借款类型" align="center"></el-table-column>
-           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-           <el-table-column prop="price" label="金额" align="center"></el-table-column>
-           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
-           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
-           <el-table-column prop="process" label="审批过程" align="center">
-            <template slot-scope="scope">
+  <div class="loan-management">
+    <!-- 查看无收入借款弹窗 -->
+    <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
+    <!-- 基本信息 -->
+    <div class="item-content">
+      <!--<div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
+      <div class="checkType" v-if="fundamental.checkType=='2'" style="background: #ff0000" >驳回</div>
+      <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500">通过</div>-->
+      <el-tag type="success" class="distributor-status">通过</el-tag>
+    </div>
+    <!-- 第一行 -->
+    <el-row type="flex" class="row-bg" justify="space-around">
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.id }}</div></el-col>
+      </el-col>
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color ">申请人:</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
+      </el-col>
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime | formatDate }}</div></el-col>
+      </el-col>
+    </el-row>
+    <!-- 第一行 END -->
+    <!-- 第二行 -->
+    <el-row type="flex" class="row-bg" justify="space-around">
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">团期计划:</div></el-col>
+        <el-col :span="18"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
+      </el-col>
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">产品名称:</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.plan_01 }}</div></el-col>
+      </el-col>
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">供应商:</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.supplierName }}</div></el-col>
+      </el-col>
+    </el-row>
+    <!-- 第二行 END -->
+    <!-- 第三行 -->
+    <el-row type="flex" class="row-bg" justify="space-around">
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">借款类型:</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.paymentType }}</div></el-col>
+      </el-col>
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">借款金额:</div></el-col>
+        <el-col :span="18"><div class="grid-del">{{ fundamental.price }}</div></el-col>
+      </el-col>
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">摘要:</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.mark }}</div></el-col>
+      </el-col>
+    </el-row>
+    <!-- 第三行 END -->
+    <!-- 第四行 -->
+    <el-row type="flex" class="row-bg" justify="space-around">
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">账号:</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
+      </el-col>
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">开户行:</div></el-col>
+        <el-col :span="18"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
+      </el-col>
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">开户名:</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
+      </el-col>
+    </el-row>
+    <!-- 第四行 END -->
+    <!-- 第五行 -->
+    <el-row type="flex" class="row-bg" justify="space-around">
+      <el-col :span="6">
+        <el-col :span="6"><div class="grid-del label-color">附件:</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.files }}</div></el-col>
+      </el-col>
+      <el-col :span="6" v-if="fundamental.checkType=='1'">
+        <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
+        <el-col :span="18"><div class="grid-del">{{ fundamental.title }}</div></el-col>
+      </el-col>
+      <el-col :span="6" v-if="fundamental.checkType!=='1'"></el-col>
+      <el-col :span="6"></el-col>
+    </el-row>
+    <!-- 第五行 END -->
+    <!-- 基本信息 END -->
+    <!-- 审核结果 -->
+    <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
+    <el-table :data="tableCourse" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+      <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
+      <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
+      <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
+      <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
+    </el-table>
+    <!-- 审核结果 END -->
+    <!-- 相关信息 -->
+    <el-divider content-position="left" class='title-margin title-margin-t'>相关信息</el-divider>
+    <el-table :data="tableMoney" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+      <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
+      <el-table-column prop="paymentChecking" label="审批中借款总额" align="center"></el-table-column>
+      <el-table-column prop="payment" label="已审批借款总额" align="center"></el-table-column>
+      <el-table-column prop="expenseChecking" label="报销中总额" align="center"></el-table-column>
+      <el-table-column prop="expense" label="已报销总额" align="center"></el-table-column>
+      <el-table-column prop="price" label="已收总额" align="center"></el-table-column>
+      <el-table-column prop="supTotal" label="供应商欠款总额" align="center"></el-table-column>
+    </el-table>
+    <!-- 相关信息 END -->
+    <!-- 无收入借款明细 -->
+    <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
+    <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+      <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
+      <el-table-column prop="checkType" label="审批状态" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
+          <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
+          <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="supplierType" label="借款类型" align="center"></el-table-column>
+      <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+      <el-table-column prop="price" label="金额" align="center"></el-table-column>
+      <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
+      <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
+      <el-table-column prop="process" label="审批过程" align="center">
+        <template slot-scope="scope">
           <div @click="processIncome(scope.row)">查看</div>
         </template>
-           </el-table-column>
-        </el-table>
-        <div style="margin:0 0 0 25px;">收入明细</div>
-        <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-           <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
-           <el-table-column prop="contactName" label="订单联系人" align="center"></el-table-column>
-           <el-table-column prop="number" label="人数" align="center"></el-table-column>
-           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
-           <el-table-column prop="paid" label="已收金额" align="center"></el-table-column>
-           <!-- <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column> -->
-           <el-table-column label="欠款金额" align="center">
-            <template slot-scope="scope">{{scope.row.payable-scope.row.paid}}</template>
-           </el-table-column>
-           <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
-           <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
-        </el-table>
-	     </el-form>
+      </el-table-column>
+    </el-table>
+    <!-- 无收入借款明细 END -->
+    <!-- 预付款明细 -->
+    <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
+    <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+      <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
+      <el-table-column prop="checkType" label="审批状态" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
+          <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
+          <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="supplierType" label="借款类型" align="center"></el-table-column>
+      <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+      <el-table-column prop="price" label="金额" align="center"></el-table-column>
+      <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
+      <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
+      <el-table-column prop="process" label="审批过程" align="center">
+        <template slot-scope="scope">
+          <div @click="processIncome(scope.row)">查看</div>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 预付款明细 END -->
+    <!-- 收入明细 -->
+    <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
+    <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+      <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+      <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
+      <el-table-column prop="contactName" label="订单联系人" align="center"></el-table-column>
+      <el-table-column prop="number" label="人数" align="center"></el-table-column>
+      <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
+      <el-table-column prop="paid" label="已收金额" align="center"></el-table-column>
+      <!-- <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column> -->
+      <el-table-column label="欠款金额" align="center">
+        <template slot-scope="scope">{{scope.row.payable-scope.row.paid}}</template>
+      </el-table-column>
+      <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
+      <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
+    </el-table>
+    <!-- 收入明细 END -->
   </div>
 </template>
-
-
-
 
 <script>
 import moment from 'moment'
@@ -171,7 +184,7 @@ import moment from 'moment'
      title:'',
     },
     data(){
-      return {	
+      return {
       	 //表头切换
          empty:'',
          people:'',
@@ -296,7 +309,7 @@ import moment from 'moment'
 		   tableCourse:[],
        planID:'',
        tour_id:0,
-		   
+
 
 
       }
@@ -307,7 +320,7 @@ import moment from 'moment'
       }
     },
     methods: {
-    
+
     // submit() {
     //     console.log(moment(this.createTime).format('YYYY-MM-DD'))
     // },
@@ -329,7 +342,7 @@ import moment from 'moment'
         //event.cancelBubble = true;//row-click和selection-change耦合事件
       },
       clickRow(row){    //选中行复选框勾选
-      	this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+      	this.$refs.multipleTable.clearSelection(); //清空用户的选择
         this.$refs.multipleTable.toggleRowSelection(row);
       },
       rowClass({row, rowIndex}){  //选中行样式改变
@@ -339,8 +352,8 @@ import moment from 'moment'
           }
         }
       },
-      
-     
+
+
       planStage(){
       	this.plan_stage = '';
       	this.plan_name = '';
@@ -434,7 +447,7 @@ import moment from 'moment'
 
               }
         }) .catch(err => {});
-      },*/	
+      },*/
     bbb(){//无收入没有订单号根据登录人员查询无收入借款明细
       var that = this
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
@@ -476,13 +489,13 @@ import moment from 'moment'
               }else if(arr[k]['supplierType'] == 11) {
                 arr[k]['supplierType'] = '火车票押金'
               }
-              
+
           })
         }
       }).catch(err => {
         console.log(err)
       })
-    },    
+    },
     getPaymentdetails(val) {
       var that = this
       //相关信息
@@ -590,9 +603,9 @@ import moment from 'moment'
       })
       //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
       that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
-      
+
           "id": val
-        
+
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableMoney = []
@@ -630,13 +643,42 @@ import moment from 'moment'
     mounted(){
 
     },
-    
+
   }
 </script>
-<style scoped>
-	
-	.loanManagement{text-align: center; font-family: '微软雅黑'; font-size: 11pt;overflow: hidden; text-align: left; margin: -15px 0 100px 0;}
-	.loanBorder{border-left:1px solid #e6e6e6;border-right:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6; margin:15px 0 20px 0; overflow: hidden; clear: both;}
+<style scoped lang="scss">
+  .loan-management{
+    /*text-align: center; font-family: '微软雅黑'; font-size: 11pt;overflow: hidden; text-align: left; margin: -15px 0 100px 0;*/
+    .title-margin{
+      margin-bottom: 30px;
+    }
+    .item-content{
+      margin-bottom: 20px;
+    }
+    .title-margin-t{
+      margin-top: 45px;
+    }
+    .el-divider__text{
+      font-size: 17px !important
+    }
+    .distributor-status{
+      margin-left: 40px;
+    }
+    .row-bg {
+      padding: 13px 0;
+      .grid-del{
+        text-align: left;
+        font-size: 14px;
+      }
+      .label-color{
+        color: #909399;
+      }
+      .doc-mt-3{
+        margin-top: 3px;
+      }
+    }
+  }
+
 	/*搜索框*/
 	.empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; }
 	.fl{float:left; margin: 20px 0 20px 0;}

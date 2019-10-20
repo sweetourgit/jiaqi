@@ -32,11 +32,11 @@ import recognitionWait from '@/page/Finance/collectionManagement/recognitionWait
 export default {
   name: "collectionManagement",
   components: {
-    SameTradeManagement,
-    StraightGuestManagement,
-    PendingApprovalManagement,
+    SameTradeManagement, // 同业
+    StraightGuestManagement, // 直客
+    PendingApprovalManagement, // 需要您审批
     externalOrder,
-    distributorsInfo,
+    distributorsInfo, // 内部收款
     recognitionWait
   },
   data() {

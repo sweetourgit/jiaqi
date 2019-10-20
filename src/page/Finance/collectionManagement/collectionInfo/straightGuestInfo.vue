@@ -86,7 +86,7 @@
                   <el-option v-for="item in invoiceType" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
-                <div style="color:red; text-align:left;" v-if="scope.row.invoiceID !== '1' && a != false">不能为空</div> 
+                <div style="color:red; text-align:left;" v-if="scope.row.invoiceID !== '1' && a != false">不能为空</div>
                 <!-- <div style="color:red;" v-show="null11">发票类型不能为空</div> -->
               </template>
             </el-table-column>
@@ -98,13 +98,13 @@
                   <el-option key="2" label="单位" value="2">
                   </el-option>
                 </el-select>
-                <div style="color:red; text-align:left;" v-if="scope.row.invoiceType == '' && a != false">不能为空</div> 
+                <div style="color:red; text-align:left;" v-if="scope.row.invoiceType == '' && a != false">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="纳税人识别号" align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.invoiceNumber" required placeholder="纳税人识别号"></el-input>
-                <div style="color:red; text-align:left;" v-if="scope.row.invoiceNumber == '' && a != false" disabled="change">不能为空</div> 
+                <div style="color:red; text-align:left;" v-if="scope.row.invoiceNumber == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="发票抬头/手机号" align="center">
@@ -118,7 +118,7 @@
                 <el-select v-model="scope.row.invoiceItem" placeholder="发票项目" :disabled="change">
                   <el-option v-for="item in invoiceProject" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
-                <div style="color:red; text-align:left;" v-if="scope.row.invoiceItem == '' && a != false">不能为空</div> 
+                <div style="color:red; text-align:left;" v-if="scope.row.invoiceItem == '' && a != false">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="金额" align="center">
@@ -451,7 +451,7 @@ export default {
         this.ruleForm.collectionNumber = this.tour_name_pre
         this.accountShow = false
       }, 200)
-      
+
     },
     clickPlan(row){//收款账户点击
       // console.log(row)
@@ -475,7 +475,7 @@ export default {
     },
     aaa(){
       //this.$emit('close', false);
-      this.$confirm("去否取消本次收款申请?", "提示", {
+      this.$confirm("是否取消本次收款申请?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
            type: "warning"
@@ -843,7 +843,7 @@ export default {
       this.fileList = fileList
     },
     handleSuccess(res, file, fileList) {
-      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
+      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
         this.time = fileList.length;
         if (this.fileList.length == 0) {

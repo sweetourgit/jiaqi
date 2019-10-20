@@ -1,4 +1,5 @@
 <template>
+  <!--  收款管理 同业 -->
   <div class="distributor-content">
     <!-- 搜索表单 -->
     <el-form :model="ruleForm" ref="ruleForm" label-width="80px" id="form-content">
@@ -58,36 +59,48 @@
         <el-button type="primary" @click="addSameGathering" class="add-style">添加</el-button>
       </div>
     <!-- 添加 END -->
-    <div>
-      <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" id="table-content">
-        <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
-        <el-table-column prop="checkTypeStatus" label="状态" width="80" align="center">
-          <template slot-scope="scope">
-            <div v-if="scope.row.checkTypeStatus=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeStatus}}</div>
-            <div v-if="scope.row.checkTypeStatus=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeStatus}}</div>
-            <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174" >{{scope.row.checkTypeStatus}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="collectionTime" label="收款时间" align="center"></el-table-column>
-        <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-        <el-table-column prop="orderNumber" label="订单号" align="center"></el-table-column>
-        <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
-        <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
-        <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-        <el-table-column prop="" label="审批意见" align="center"></el-table-column>
-        <el-table-column label="操作" width="100" align="center">
-          <template slot-scope="scope">
-            <el-button @click="dialogFind(scope.row)" type="text" size="small">详情</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- 翻页 -->
-      <div class="block">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total background></el-pagination>
-      </div>
-      <!-- 翻页 END -->
+    <!-- 同业数据列表 -->
+    <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" id="table-content">
+      <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
+      <el-table-column prop="checkTypeStatus" label="状态" width="80" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.checkTypeStatus=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeStatus}}</div>
+          <div v-if="scope.row.checkTypeStatus=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeStatus}}</div>
+          <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174" >{{scope.row.checkTypeStatus}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="collectionTime" label="收款时间" align="center"></el-table-column>
+      <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+      <el-table-column prop="orderNumber" label="订单号" align="center"></el-table-column>
+      <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
+      <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
+      <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+      <el-table-column prop="" label="审批意见" align="center"></el-table-column>
+      <el-table-column label="操作" width="100" align="center">
+        <template slot-scope="scope">
+          <el-button @click="dialogFind(scope.row)" type="text" size="small">详情</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 同业数据列表 END -->
+    <!-- 翻页 -->
+    <div class="block">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-sizes="[5, 10, 50, 100]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total=total
+        background
+      >
+      </el-pagination>
     </div>
+    <!-- 翻页 END -->
+    <!-- 添加同业数据弹窗 -->
     <SameTradeInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></SameTradeInfo>
+    <!-- 添加同业数据弹窗 END -->
     <!-- 查看详情 -->
     <el-dialog title="详情" :visible.sync="detailstShow" width="80%" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'>
       <div style="position:absolute; top:8px; right:10px;">
@@ -197,13 +210,16 @@
     </el-dialog>
     <!-- 查看详情 END -->
   </div>
+  <!--  收款管理 同业 END -->
 </template>
+
 <script type="text/javascript">
 import SameTradeInfo from '@/page/Finance/collectionManagement/collectionInfo/sameTradeInfo'
+
 export default {
   name: "sameTradeManagement",
   components: {
-    SameTradeInfo
+    SameTradeInfo // 添加同业信息弹窗
   },
   data() {
     return {
@@ -260,8 +276,6 @@ export default {
   },
   mounted(){
     this.getTableData();
-  },
-  computed: {
   },
   methods: {
     // 重置

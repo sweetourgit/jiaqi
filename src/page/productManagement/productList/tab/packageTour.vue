@@ -259,7 +259,7 @@ export default {
   },
   data() {
     return {
-      forbidden_a:true, 
+      forbidden_a:true,
       isUsePrice: true, // 判断价格按钮是否可点击 (团号 成本三个都填完才为true)
       isUseLine: true, // 判断上线按钮是否可点击 (价格添加完毕后才可以点击上线按钮)
       activeName: "first",
@@ -1115,7 +1115,7 @@ export default {
               id: this.chengben[i].id
             })
             .then(res => {
-              
+
         if (res.data.isSuccess == true) {
           this.$message.success("删除成功");
           this.$http
@@ -1217,7 +1217,7 @@ export default {
     },
     basicPrice(id, rate, ShowBase) {
       if (ShowBase) {
-        this.basicbutton = true;  
+        this.basicbutton = true;
       }
       this.team = id;
       this.lilv = rate;
@@ -1283,7 +1283,6 @@ export default {
       this.basicPrice(id, rate, ifShowBase)
       //this.multipleSelection = val;
       for(let i = 0; i < this.ccc.length; i++){
-        console.log(this.tableData12)
         if(this.ccc[i].codePrefix !=='' && this.ccc[i].codeSuffix !=='' && this.ccc[i].uptoDay !=='' && this.tableData12.length>0){
           this.isUsePrice = false;
         }else{

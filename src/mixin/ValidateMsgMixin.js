@@ -27,7 +27,8 @@ const ValidateMsgMixin= {
      * @description: 简单校验
      */
     simpleValidator(rule, value, cb){
-      if(!value) return cb(this.makeErrorQueueMsg('123'));
+      let { message }= rule;
+      if(!value) return cb(this.makeErrorQueueMsg(message));
       cb();
     }
   }

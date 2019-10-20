@@ -16,15 +16,11 @@
   <div class="listinfo">
     <header>
       <el-button type="primary" size="small" @click="preAction">保存</el-button>
-      <el-button type="info" size="small">取消</el-button>
+      <el-button type="info" size="small" @click="leavePage">取消</el-button>
     </header>
     
-    <main>
-      <el-tabs 
-        v-if="vm.inited" 
-        v-loading="!vm.inited" 
-        v-model="vm.currentTabName"
-      >
+    <main v-if="vm.inited">
+      <el-tabs v-model="vm.currentTabName">
         <el-tab-pane label="基本信息" name="basic">
           <basic-pane
             ref="basicRef"
@@ -50,7 +46,7 @@
 </template>
 
 <script>
-import { teamgetAction } from './api'
+import { teamgetAction, getGuidAction, insertAction, saveAction } from './api'
 import { getTeamProDTO } from './dictionary'
 import basicPane from './comps/basic-pane/index'
 import instructionsPane from './comps/instructions-pane/index'
@@ -75,7 +71,9 @@ export default {
     return {
       vm: {
         currentTabName: 'basic',
-        inited: false
+        inited: false,
+        // 保存按钮的锁
+        saveActionLock: false,
       },
       basic: {},
       instructions: [],
@@ -135,18 +133,33 @@ export default {
     },
 
     saveAction(object){
-      this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
-        object
-      }).then((res) => {
-        console.log(res);
+      if(this.vm.saveActionLock) return this.$message.info('数据保存中，请稍后再试');
+      this.vm.saveActionLock= true;
+      let { id }= this.$route.query;
+      saveAction.bind(this)(object).then(res => {
+        this.$message.success('产品信息保存成功');
+        this.inited= false;
+        this.$nextTick(() => {
+          this.init(id);
+          this.vm.saveActionLock= false;
+        })
+      }).catch(err => {
+        this.$message.error(err);
+        console.error(err);
       })
     },
 
     addAction(object){
-      this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
-        object
-      }).then((res) => {
-        console.log(res);
+      getGuidAction.bind(this)().then(res => {
+        object.guid= res;
+        insertAction.bind(this)(object).then(res => {
+          let { id }= res;
+          this.$message.success('产品新增成功，请完善套餐信息');
+          this.$router.replace({ path: '/changeinfo', query:{ id } });
+        })
+      }).catch(err => {
+        this.$message.error(err)
+        console.error(err);
       })
     },
 
@@ -187,6 +200,18 @@ export default {
         cancelButtonText: '取消',
       }).finally(() => {
         ERROR_QUEUE.splice(0);
+      })
+    },
+
+    leavePage(){
+      let hasChange= this.checkHasChange();
+      if(!hasChange) return this.$router.push('/productList/packageTour');
+      this.$confirm(`当前页面有数据未保存，是否要离开?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return this.$router.push('/productList/packageTour');
       })
     },
   }

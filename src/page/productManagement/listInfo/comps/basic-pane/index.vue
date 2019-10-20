@@ -100,8 +100,8 @@
           v-model="submitForm.label"
           placeholder="添加运营标签"
           :cb-label="'labelName'"
-          :tag-label-attr="'labelName'"
-          :tag-value-attr="'labelName'"
+          :tag-label-attr="'label'"
+          :tag-value-attr="'labelID'"
           :fetch-suggestions="getGlabelfuzzyAction"
         ></label-input>
       </el-form-item>
@@ -263,13 +263,18 @@ export default {
           numLimit: 4,
           trigger: 'blur'
         },
-        // 选填
-        // label:{}
-        // pictureID: null,
-        // vedioID: null,
-        // pepeatpic: [],
-        // crowdID: null,
-        // themeID: null,
+        crowdID: { 
+          required: true, 
+          validator: this.simpleValidator, 
+          message: '出游人群不能为空', 
+          trigger: 'blur'
+        },
+        themeID: { 
+          required: true, 
+          validator: this.simpleValidator, 
+          message: '主题不能为空', 
+          trigger: 'blur'
+        },
         advanceDay: [
           { 
             required: true, 
@@ -282,9 +287,12 @@ export default {
             trigger: 'blur'
           }
         ],
-        mark: '',
-        instructions: [],
-        others: [],
+        // 选填
+        // label:{}
+        // pictureID: null,
+        // vedioID: null,
+        // pepeatpic: [],
+        // mark: ''
       }
     }
   },
@@ -349,16 +357,13 @@ export default {
 
     // 获取运营标签
     getGlabelfuzzyAction(val, cb, cbLabel, tagValueAttr, tagLabelAttr){
+      console.log(tagValueAttr, tagLabelAttr)
       let factory= (el) => {
         let teamID= parseInt(this.PROVIDE_TEAM_ID);
         let object= teamID? { teamID }: {};
         return Object.assign({
           [tagValueAttr]: el.id,
-          [tagLabelAttr]: el.labelName,
-          code: null,  
-          createTime: Date.now(),
-          isDeleted: 0,
-          tagType: 0
+          [tagLabelAttr]: el.labelName
         }, object);
       }
       getGlabelfuzzyAction.call(this, val).then(res => {
@@ -405,10 +410,18 @@ export default {
     },
 
     checkHasChange(){
-      let equal= true;
-      equal= this.$checkLooseEqual(this.submitForm, this.proto);
-      !equal && console.warn('basic-pane change');
-      return equal;
+      let hasChange= false;
+      hasChange= !this.$checkLooseEqual(this.submitForm, this.proto);
+      hasChange && console.warn('basic-pane change');
+
+      // bug 每次保存，destinations， pod，strengths 的id都会自增 
+      this.submitForm.destinations.forEach((el, i) => {
+        Object.keys(this.submitForm.destinations[i]).forEach(attr => {
+          console.log(attr, this.submitForm.destinations[i][attr], this.proto.destinations[i][attr]);
+        })
+      })
+      
+      return hasChange;
     },
 
     getData(){
