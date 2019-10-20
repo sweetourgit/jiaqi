@@ -29,7 +29,7 @@ import scenicTicketingDetails from '@/page/productManagement/regimentPlan/childr
 import scenicTicketingPledging from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingPledging'
 import scenicTicketingBillReporting from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingBillReporting'
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
-import changePro from '@/page/productManagement/changePro/changePro'
+import changePro from '@/page/productManagement/listInfo/listInfo'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
 import blacklist from '@/page/contentInfo/blacklist/blacklist'
 import workFlowList from '@/page/contentInfo/workFlowList/workFlowList'//工作流接口查询管理test

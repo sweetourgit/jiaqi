@@ -405,10 +405,10 @@ export default {
     },
 
     checkHasChange(){
-      let equal= true;
-      equal= this.$checkLooseEqual(this.submitForm, this.proto);
-      !equal && console.warn('basic-pane change');
-      return equal;
+      let hasChange= false;
+      hasChange= !this.$checkLooseEqual(this.submitForm, this.proto);
+      hasChange && console.warn('basic-pane change');
+      return hasChange;
     },
 
     getData(){

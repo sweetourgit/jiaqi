@@ -16,6 +16,35 @@ export const teamgetAction= function(id){
   })
 }
 
+// 添加team
+export const insertAction= function(object){
+  return new Promise((resolve, reject) => {
+    this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
+      object
+    }).then((res) => {
+      let { isSuccess, result }= res.data;
+      if(!isSuccess) return reject('新增产品失败');
+      return resolve(result);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+export const saveAction= function(object){
+  return new Promise((resolve, reject) => {
+    this.$http.post(this.GLOBAL.serverSrc + "/team/api/teamsave", {
+      object
+    }).then((res) => {
+      let { isSuccess, result }= res.data;
+      if(!isSuccess) return reject('修改产品失败');
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
 // 获取guid
 export const getGuidAction= function(){
   return new Promise((resolve, reject) => {

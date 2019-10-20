@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { teamgetAction } from './api'
+import { teamgetAction, getGuidAction, insertAction, saveAction } from './api'
 import { getTeamProDTO } from './dictionary'
 import basicPane from './comps/basic-pane/index'
 import instructionsPane from './comps/instructions-pane/index'
@@ -135,18 +135,28 @@ export default {
     },
 
     saveAction(object){
-      this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
-        object
-      }).then((res) => {
-        console.log(res);
+      let { id }= this.$route.query;
+      saveAction.bind(this)(object).then(res => {
+        this.$message.success('产品信息保存成功');
+        this.inited= false;
+        this.$nextTick(() => {
+          this.init(id);
+        })
+      }).catch(err => {
+        console.error(err);
       })
     },
 
     addAction(object){
-      this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
-        object
-      }).then((res) => {
-        console.log(res);
+      getGuidAction.bind(this)().then(res => {
+        object.guid= res;
+        insertAction.bind(this)(object).then(res => {
+          let { id }= res;
+          this.$message.success('产品新增成功，请完善套餐信息');
+          this.$router.replace({ path: '/changeinfo', query:{ id } });
+        })
+      }).catch(err => {
+        console.error(err);
       })
     },
 
