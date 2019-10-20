@@ -2214,3 +2214,4 @@ export default {
   min-width: 1455px;
 }
 </style>
+  

@@ -33,8 +33,9 @@
           <el-table-column prop="rece_code" label="收款单号" align="center"></el-table-column>
           <el-table-column prop="status" label="状态" align="center">
             <template slot-scope="scope">
-              <div v-if="scope.row.status_rece=='1'" style="color: #7F7F7F" >待认收款</div>
-              <div v-if="scope.row.status_rece=='2'" style="color: #FF4A3D" >已认完</div>
+              <div v-if="scope.row.status_rece=='10'" style="color: #7F7F7F" >未认款</div>
+              <div v-if="scope.row.status_rece=='11'" style="color: #00B83F" >待认收款</div>
+              <div v-if="scope.row.status_rece=='12'" style="color: #FF4A3D" >已认完</div>
             </template>
           </el-table-column>
           <el-table-column prop="explain" label="款项说明" align="center"></el-table-column>

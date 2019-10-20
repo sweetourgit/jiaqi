@@ -621,13 +621,27 @@ export default {
           //   item.occupyStatus = "预订不占";
           // }
           // 订单状态
-          // if (item.occupyStatus == 1) {
-          //   item.occupyStatus = "确认占位";
-          // } else if (item.occupyStatus == 2) {
-          //   item.occupyStatus = "预订占位";
-          // } else {
-          //   item.occupyStatus = "预订不占";
-          // }
+          if (item.orderStatus == 1) {
+            item.orderStatus = "补充资料";
+          } else if (item.orderStatus == 2) {
+            item.orderStatus = "电子合同";
+          } else if (item.orderStatus == 3) {
+            item.orderStatus = "待出行";
+          } else if (item.orderStatus == 4) {
+            item.orderStatus = "出行中";
+          } else if (item.orderStatus == 5) {
+            item.orderStatus = "待评价";
+          } else if (item.orderStatus == 6) {
+            item.orderStatus = "订单完成";
+          } else if (item.orderStatus == 7) {
+            item.orderStatus = "未确认";
+          } else if (item.orderStatus == 8) {
+            item.orderStatus = "签署合同";
+          } else if (item.orderStatus == 9) {
+            item.orderStatus = "作废订单";
+          } else if (item.orderStatus == 10) {
+            item.orderStatus = "确认订单"
+          } 
           //订单来源
           if (item.orderChannel == 1) {
             item.orderChannel = "同业";

@@ -1513,6 +1513,7 @@
           // 下面两种情况是对 person 下 id 行判断， 还有一个是对 person 下的 packageID 进行判断（这两种情况有时都不满足）
 
           // 选中的日期有类型时进行赋值
+          console.log(day.data.person);
           if (day.data.person.id != undefined) {
             console.log('day.data.person.id != undefined')
             this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/get', { // 获取一个计划信息

@@ -29,7 +29,7 @@ import scenicTicketingDetails from '@/page/productManagement/regimentPlan/childr
 import scenicTicketingPledging from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingPledging'
 import scenicTicketingBillReporting from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingBillReporting'
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
-import changePro from '@/page/productManagement/changePro/changePro'
+import changePro from '@/page/productManagement/listInfo/listInfo'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
 import blacklist from '@/page/contentInfo/blacklist/blacklist'
 import workFlowList from '@/page/contentInfo/workFlowList/workFlowList'//工作流接口查询管理test
@@ -37,7 +37,7 @@ import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
 import merchantInfo1 from '@/page/contentInfo/merchantInfo/merchantInfo1'
 import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
-import proList from '@/page/contentInfo/proList/proList'
+//import proList from '@/page/contentInfo/proList/proList'
 import orderList from '@/page/orderManagement/orderList/orderList'
 import externalOrderList from '@/page/orderManagement/externalOrderList/externalOrderList'
 import canRecognition from '@/page/orderManagement/externalOrderList/canRecognition'
@@ -241,7 +241,7 @@ export default new Router({
       }
     }, {
       path: '/proList',
-      component: proList,
+      //component: proList,
       name: '权限列表',
       meta: {
         keepAlive: true,
@@ -472,7 +472,7 @@ export default new Router({
       }
     }, {
       path: '/changeInfo',
-      component: changeInfo,
+      component: () => import('@/page/productManagement/changeInfo/changeInfo'),
       name: '行程信息',
       meta: {
         keepAlive: true,

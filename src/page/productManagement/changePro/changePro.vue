@@ -113,7 +113,7 @@
             </el-form-item> -->
             <!-- 头图 -->
             <el-form-item label="头图" prop="avatarImages" label-width="120px">
-              <span class="redStar">*</span>
+              <span class="redStar_01">*</span>
               <div class="img_upload">
                 <template v-for="(item, index) in ruleForm.avatarImages">
                   <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
@@ -124,11 +124,11 @@
               <div v-show="isImgUrlShow" class="show_div">
                 <img class="show_img" :src="imgUrlShow" alt="">
               </div>
-              <span v-if="this.ruleForm.avatarImages == '' && a != false" style="position: absolute; top: 30px; left: 10px; font-size: 12px; color: #f56c6c;">头图不能为空</span>
+              <span v-if="isInfoImg" style="position: absolute; top: 35px; left: 10px; font-size: 12px; color: #f56c6c;">请选择1张图片</span>
             </el-form-item>
             <!--头图弹窗-->           
             <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
-              <MaterialList :imgData="imgData" v-on:checkList="checkList" v-on:closeButton="imgUpload = false"></MaterialList>
+              <MaterialList :imgData="imgData" :isImg="true" v-on:checkList="checkList" v-on:closeButton="imgUpload = false" v-on:isInfoImg="firstFigure"></MaterialList>
             </el-dialog>
 
             <!-- 视频 -->
@@ -299,7 +299,18 @@
           callback();
         }
       };
+      var areaIdRuleImg = (rule, value, callback) => {//头图验证
+        console.log('test')
+        if(value.length === 0 || value.length > 1) {
+          this.isInfoImg = true;
+          callback();
+        } else {
+          this.isInfoImg = false;
+          callback();
+        }
+      };
       return {
+        isInfoImg:false,//头图验证
         a: false,//头图不能为空
         validaError:[],
         dialogVadi:false,//验证提示弹窗
@@ -376,6 +387,7 @@
         imgUpload: false,     // 上传弹窗
         imgData: [],
         avatarImages: [], // 图片
+        isInfoImg:false,
         // 轮播图上传 =======
         isImgUrlShowAvatar: false,
         imgUrlShowAvatar: '', // 点击查看图片
@@ -629,7 +641,8 @@
           time: [{ required: true, message: '不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '不能为空', trigger: 'blur' }],
           details: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          //slideshow:[{ validator: areaIdRule}],
+          slideshow:[{ validator: areaIdRule}],
+          avatarImages:[{ validator: areaIdRuleImg}],
           memo: [{ required: true, message: '不能为空', trigger: 'blur' }],
           Details: [{ required: true, message: '住宿说明不能为空', trigger: 'blur' }],
           pictureID: [{ required: true, message: '不能为空', trigger: 'blur' }],
@@ -1130,25 +1143,44 @@
         }
         this.$refs[formName].validate((valid) => {
           if(valid){
-            var _this = this;
-            this.$http.post(this.GLOBAL.serverSrc + "/team/api/teamsave", {
-                object: object
-              },
-            ).then(function(response) {
-              if(response.data.isSuccess==true){
-                _this.$message.success("修改成功");
-                _this.$router.push({path: "/productList/packageTour"});
+              var _this = this;
+              if(this.isInfo == false && this.isInfoImg == false){
+                this.$http.post(this.GLOBAL.serverSrc + "/team/api/teaminsert", {
+                    object: object
+                }).then(function(response) {
+                      if(response.data.isSuccess==true){
+                        _this.$message.success("添加成功");
+                        _this.$router.push({path: "/productList/packageTour"});
+                      }else{
+                         _this.$message.success("添加失败");
+                      }
+                  }).catch(function(error) {
+                    console.log(error);
+                  });
               }else{
-                _this.$message.success("修改失败");
+                this.errors_01();
               }
-            }).catch(function(error) {
-              console.log(error);
-            });
-          }
-          else{
-            this.errors();
-          }
+            }else{
+                this.errors();
+            }
         })
+      },
+      errors_01(){
+        this.dialogVadi = true;
+        let _this=this;
+        setTimeout(function(){
+          const validaError1=[];
+          var errors = $(".el-form-item__error");
+          for(var i=0;i<errors.length;i++){
+            validaError1.push(errors.eq(i).html().trim());
+          }
+          _this.validaError=[...new Set(validaError1)];
+          if(_this.isInfo == true){
+             _this.validaError.unshift("轮播图请选择3-6张图片");
+          }if(_this.isInfoImg==true){
+             _this.validaError.unshift("头图请选择1张图片");
+          }
+        },500);
       },
       errors(){
         this.dialogVadi = true;
@@ -1167,6 +1199,8 @@
              _this.validaError.unshift("基本信息目的地不能为空");
           }if(_this.ruleForm.avatarImages.length==0){
              _this.validaError.unshift("头图不能为空");
+          }if(_this.ruleForm.slideshow.length==0){
+             _this.validaError.unshift("轮播图不能为空");
           }
         },500);
       },
@@ -1318,7 +1352,7 @@
       tabTravel(myindex) {
         this.mynumber = myindex;
       },
-      //上传按钮
+      // 图片上传==================
       handleList(a) {
         if (a.target.id != 'showDiv') {
           this.isImgUrlShow = false;
@@ -1336,15 +1370,20 @@
         })
       },
       // 上传按钮
-      handleImgUpload(data){
+      handleImgUpload() {
+        console.log(this.ruleForm)
         console.log(this.ruleForm.avatarImages)
-        console.log(this.imgData)
         this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
         this.imgUpload = true;
       },
       // 点击删除图片
       imgDelete(data) {
         this.ruleForm.avatarImages.splice(this.ruleForm.avatarImages.indexOf(data), 1);
+        if(this.ruleForm.avatarImages.length === 1){
+          this.isInfoImg = false;
+        }else{
+          this.isInfoImg = true;
+        }
       },
       // 图片添加
       checkList(data) {
@@ -1354,6 +1393,13 @@
           }
         })
       },
+      firstFigure(data){
+        this.isInfoImg = data;
+        if(!data) {
+          this.$refs.avatarImages.clearValidate();
+        }
+      },
+      // 图片上传END================
       // 轮播图上传=================
       // 点击图片查看
       imgClickShowAvatar(data) {
@@ -2112,6 +2158,7 @@
   .operation_Label{ width:120px; float: left; margin-left: 5px; height: 36px; line-height: 30px; padding-top: 2px;margin-top:1px; margin-bottom:1px; }
   #isNull,#zero{ position: relative; float: left; top:30px; left:-550px ; color: #f56c6c; font-size: 12px;}
   .redStar{ color: #f56c6c; float: left; margin-left:-64px;}
+  .redStar_01{ color: #f56c6c; float: left; margin-left:-50px;}
   .number-day>>>.el-form-item__error{ left:0px; }
   .err_span>>>.el-form-item__error{ left:0px; }
   .lable_input{ width:200px; float: left; margin-left: 5px; height: 34px; line-height: 30px; padding-top: 1px;margin-top:1px; margin-bottom:0px; padding-bottom: 2px }

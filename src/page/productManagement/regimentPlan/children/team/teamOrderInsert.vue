@@ -1,122 +1,89 @@
 <template>
   <div>
     <!--下单弹窗-->
-    <el-dialog
-      title="下单"
-      :visible.sync="dialogFormOrder"
-      custom-class="city_list dialogOrder"
-      style="margin-top:-100px"
-      width="1000px"
-      @close="cancelInfoOrder('ruleForm')"
-    >
+    <el-dialog title="下单" :visible.sync="dialogFormOrder" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"
+      @close="cancelInfoOrder('ruleForm')">
+      <div class="dialog-footer">
+        <el-button class="ml13" @click="cancelInfoOrder('ruleForm')">取 消</el-button>
+        <el-button class="ml13" type="primary">预订不占</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')" class="ml13">确定占位</el-button>
+      </div>
       <div class="main1">
-        <div class="order-title">
-          <h2>订单信息</h2>
+        <!--团期信息-->
+        <div class="planBorder">
+          <div class="order-title"><span>团期信息</span></div>
+          <div class="pro-info">
+            <table width="100%">
+              <tr>
+                <td width="33%">
+                  <div width="80" class="fl">团期计划:</div>
+                  <div class="fl ml13">{{teampreviewData.groupCode}}</div>
+                </td>
+                <td width="33%">
+                  <div width="80" class="fl">出发地:</div>
+                  <div class="fl ml13">{{teampreviewData.pod}}</div>
+                </td>
+                <td width="33%">
+                  <div width="80" class="fl">目的地:</div>
+                  <div class="fl ml13">{{teampreviewData.destination}}</div>
+                </td>
+              </tr>
+              <tr>
+                <td width="33%">
+                  <div width="80" class="fl">产品名称:</div>
+                  <div class="fl ml13">{{teampreviewData.title}}</div>
+                </td>
+                <td width="33%">
+                  <div width="80" class="fl">套餐:</div>
+                  <div class="fl ml13">{{teampreviewData.package}}</div>
+                </td>
+                <td width="33%">
+                  <div width="80" class="fl">出发日期:</div>
+                  <div class="fl ml13">{{teampreviewData.date}}</div>
+                </td>
+              </tr>
+              <tr>
+                <td width="33%">
+                  <div width="80" class="fl">余位:</div>
+                  <div class="fl ml13">{{teampreviewData.remaining}}</div>
+                </td>
+                <td width="33%">
+                  <div width="80" class="fl">参考结算:</div>
+                  <div class="fl ml13">{{average}}</div>
+                </td>
+                <td width="33%">
+                  <div width="80" class="fl">订单预留时长:</div>
+                  <div class="fl ml13">{{teampreviewData.dateHous}}小时</div>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
-        <div class="pro-info">
-          <table>
-            <tr>
-              <td width="80">产品：</td>
-              <td>{{teampreviewData.title}}</td>
-            </tr>
-            <tr>
-              <td>团期计划：</td>
-              <td>{{teampreviewData.groupCode}}</td>
-            </tr>
-            <tr>
-              <td>套餐名称：</td>
-              <td>{{teampreviewData.package}}</td>
-            </tr>
-            <tr>
-              <td>出发地：</td>
-              <td>{{teampreviewData.pod}}</td>
-            </tr>
-            <tr>
-              <td>目的地：</td>
-              <td>{{teampreviewData.destination}}</td>
-            </tr>
-            <tr>
-              <td>出发日期：</td>
-              <td>{{teampreviewData.date}}</td>
-            </tr>
-            <tr>
-              <td>余位：</td>
-              <td>{{teampreviewData.remaining}}</td>
-            </tr>
-            <tr>
-              <td>参考结算：</td>
-              <td>{{teampreviewData.refPrice}}</td>
-            </tr>
-          </table>
-        </div>
-        <el-form
-          :model="ruleForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="订单来源" prop="orderRadio">
-            <el-radio label="1" class="radiomar" v-model="ruleForm.orderRadio">同业社</el-radio>
-            <el-radio label="2" class="radiomar" v-model="ruleForm.orderRadio">门店</el-radio>
-            <el-radio label="3" class="radiomar" v-model="ruleForm.orderRadio">线下直客</el-radio>
-            <!-- <div class="ml13">线下直客</div> -->
+            <div @change="changeTab()">
+              <el-radio label="1" class="radiomar" v-model="ruleForm.orderRadio">线下直客</el-radio>
+              <el-radio label="2" class="radiomar" v-model="ruleForm.orderRadio">商户(同业、门店)</el-radio>
+            </div>
           </el-form-item>
-          <!--
-            <div v-if="ruleForm.orderRadio==1">
-                <el-form-item label="销售" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="同业社" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.travel" placeholder="请选择" class="optionw">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-            </div>
-            <div v-if="ruleForm.orderRadio==2">
-                <el-form-item label="销售" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="门店" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.travel" placeholder="请选择" class="optionw">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-            </div>
-            <div v-if="ruleForm.orderRadio==3">
-                <el-form-item label="销售" prop="sale" class="fl">
-                  <el-select v-model="ruleForm.sale" placeholder="请选择" class="optionw ml13">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-            </div>
-          -->
+          <!--选择商户按钮，显示商户名称文本框-->
+          <div v-if="ruleForm.orderRadio==2">
+              <el-form-item label="商户名称" prop="travel" class="fl">
+                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3"placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+              </el-form-item>
+          </div>
           <el-form-item label="价格选择" prop="price" class="cb price">
-            <el-radio-group v-model="ruleForm.price">
-              <span
-                v-for="(item,index) in salePrice"
-                :key="index"
-                style="margin:14px 18px 0 13px"
-              >{{item.enrollName}}：￥{{item.price_01}}</span>
-              <br />
-              <!--
-                 <el-radio label="1" class="radiomar">销售价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio><br/>
-                 <el-radio label="2" class="radiomar">同业价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio><br/>
-                 <el-radio label="自定义" class="radiomar">自定义： 
-                       成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
-                       儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
-                       老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
-                       单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
-              </el-radio>-->
+            <el-radio-group v-model="ruleForm.price" class="salesPrice">
+              <!-- <span v-for="(item,index) in salePrice" :key="index" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span>
+              <br /> -->
+             <el-radio label="1" class="radiomar">直客价格：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio>
+             <el-radio label="2" class="radiomar">商户价格(同业、门店)：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio>
+             <!-- <el-radio label="自定义" class="radiomar">自定义： 
+                   成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
+                   儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
+                   老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
+                   单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
+          </el-radio> -->
             </el-radio-group>
           </el-form-item>
           <el-form-item label="报名人数" class="fl">
@@ -125,26 +92,18 @@
           <div class="fl">
             <div class="registration" v-for="(item,index) in salePrice" :key="index">
               {{item.enrollName}}￥
-              <span
-                v-show="ruleForm.price==1"
-              >{{item.price_01}}*{{enrolNum[index]}}</span>
+              <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
               <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
               <div>
-                <el-input-number
-                  class="input-num"
-                  v-model="enrolNum[index]"
-                  @change="peoNum(index,item.enrollID,item.enrollName)"
-                  :min="0"
-                  :max="salePriceNum[index].quota"
-                  size="medium"
-                ></el-input-number>
+                <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)"
+                  :min="0" :max="salePriceNum[index].quota" size="medium"></el-input-number>
               </div>
               <div v-bind:class="{red:quota[index]}">
                 余位{{item.quota}}
                 <span v-show="quota[index]">库存不足</span>
               </div>
             </div>
-            <div class="red ml13" style="margin-top:-18px" v-show="enrolNums">{{enrolNumsWarn}}</div>
+            <div class="red ml13" style="margin:0 0 10px 15px;" v-show="enrolNums">{{enrolNumsWarn}}</div>
           </div>
           <!--
             <el-form-item label="" prop="">            
@@ -156,23 +115,22 @@
             <el-input v-model="ruleForm.otherCost" class="numw" type="number" :min="0"></el-input>
           </el-form-item>
           <div class="fl">
-            备注
             <el-input v-model="ruleForm.otherCostRemark" class="cost-remark"></el-input>
           </div>
           <!--整体优惠-->
           <el-form-item label="整体优惠" prop="allDiscount" class="cb fl">
             <el-input v-model="ruleForm.allDiscount" class="numw" type="number" :min="0"></el-input>
           </el-form-item>
-          <div class="fl">
+          <!-- <div class="fl">
             备注
             <el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
-          </div>
+          </div> -->
           <!--总计-->
-          <el-form-item label="总计" prop="totalPrice" class="cb">
+          <el-form-item label="总价" prop="totalPrice" class="cb">
             <div class="ml13">{{ruleForm.totalPrice}}</div>
           </el-form-item>
           <!--下单方式-->
-          <el-form-item label="下单方式" prop="type">
+          <!-- <el-form-item label="下单方式" prop="type">
             <el-radio-group v-model="ruleForm.type">
               <el-radio label="1" class="radiomar">确认占位</el-radio>
               <br />
@@ -180,55 +138,52 @@
               <br />
               <el-radio label="3" class="radiomar">预定不占 （订单保留24小时，到期提醒）</el-radio>
             </el-radio-group>
-          </el-form-item>
+          </el-form-item> -->
           <!--订单联系人-->
-          <el-form-item label="订单联系人" prop="contactName" class="fl">
-            <span class="ml13">姓名</span>
+          <el-form-item label="联系人" prop="contactName">
             <el-input v-model="ruleForm.contactName" class="numw" maxlength="10"></el-input>
           </el-form-item>
-          <el-form-item prop="contactPhone" class="fl" style="margin-left:-80px">
-            电话
+          <el-form-item label="电话" prop="contactPhone">
             <el-input v-model="ruleForm.contactPhone" class="numw" maxlength="20"></el-input>
+          </el-form-item>
+          <el-form-item label="备注" prop>
+            <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容"v-model="ruleForm.remark"
+            ></el-input>
           </el-form-item>
           <!--出行人信息-->
           <el-form-item label="出行人信息" class="cb">
             <div class="oh" v-for="(item,indexPrice) in salePrice" :key="indexPrice">
               <div class="tour-til">{{item.enrollName}}</div>
               <div class="tourist">
-                <span
-                  v-for="(item,index) in tour[indexPrice]"
-                  :key="index"
-                  placeholder="点击填写"
-                  @click="fillTour(indexPrice,index)"
+                <span v-for="(item,index) in tour[indexPrice]" :key="index" placeholder="点击填写" @click="fillTour(indexPrice,index)"
                 >{{item.cnName}}</span>
               </div>
             </div>
           </el-form-item>
-          <el-form-item label="备注" prop>
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 3, maxRows: 6}"
-              class="remark"
-              placeholder="请输入内容"
-              v-model="ruleForm.remark"
-            ></el-input>
-          </el-form-item>
+          <div class="travelMessage">出行人信息</div>
+          <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px">
+            <el-table-column prop="name" label="姓名" min-width="100" align="center"></el-table-column>
+            <el-table-column prop="type" label="报名类型" min-width="100" align="center"></el-table-column>
+            <el-table-column prop="phone" label="电话" min-width="120" align="center"></el-table-column>
+            <el-table-column prop="IDcard" label="身份证" min-width="180" align="center"></el-table-column>
+            <el-table-column prop="sex" label="性别" min-width="80" align="center"></el-table-column>
+            <el-table-column label="操作" min-width="120" align="center">
+              <template slot-scope="scope">
+                <span class="cursor blue" @click="fillTravel()">编辑</span>
+                <span class="em">|</span>
+                <span class="cursor blue">删除</span>
+              </template>
+            </el-table-column>
+          </el-table>
+
         </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button class="ml13" @click="cancelInfoOrder('ruleForm')">取 消</el-button>
-          <el-button type="primary" @click="submitForm('ruleForm')" class="ml13">下单</el-button>
-        </div>
+        
       </div>
     </el-dialog>
     <!--填写游客信息-->
-    <el-dialog
-      :title="'出行人信息（'+winTitle+'）'"
-      :visible.sync="dialogFormTour"
-      class="city_list"
-      @close="cancelInfo('conForm')"
-      width="700px"
-    >
-      <el-form :model="conForm" :rules="rules" ref="conForm">
+    <el-dialog :title="'出行人信息（'+winTitle+'）'" :visible.sync="dialogFormTour" class="city_list" @close="cancelInfo('conForm')"
+      width="700px">
+      <el-form :model="conForm" :rules="rules" ref="conForm" style="height:300px;">
         <el-form-item label="中文姓名" prop="cnName" label-width="110px" class="fl">
           <el-input type="text" v-model="conForm.cnName" class="w200 fl"></el-input>
         </el-form-item>
@@ -248,12 +203,7 @@
           <el-input type="text" v-model="conForm.idCard" class="w200"></el-input>
         </el-form-item>
         <el-form-item label="出生日期" prop="bornDate" label-width="110px" class="fl">
-          <el-date-picker
-            v-model="conForm.bornDate"
-            type="date"
-            placeholder="选择日期"
-            style="width:200px"
-          ></el-date-picker>
+          <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" style="width:200px" ></el-date-picker>
         </el-form-item>
         <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
           <el-select v-model="conForm.credType" placeholder="请选择">
@@ -267,17 +217,13 @@
           <el-input type="text" v-model="conForm.credCode" class="w200"></el-input>
         </el-form-item>
         <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl cb">
-          <el-date-picker
-            v-model="conForm.credTOV"
-            type="date"
-            placeholder="选择日期"
-            style="width:200px"
-          ></el-date-picker>
+          <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" style="width:200px"></el-date-picker>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer cb">
         <el-button @click="cancelInfo('conForm')">取 消</el-button>
-        <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
+        <!-- <el-button type="primary" @click="subInfo('conForm')">确 定</el-button> -->
+        <el-button type="primary" @click="ensure('conForm')">确 定</el-button>
       </div>
     </el-dialog>
     <!--下单成功弹窗-->
@@ -287,6 +233,152 @@
       <div class="text item">产品名称：{{teampreviewData.title}}</div>
       <div class="text item">团期计划：{{teampreviewData.groupCode}}</div>
       <el-button type="primary" style="margin:20px 0 10px 200px" @click="orderSuc = false">关闭</el-button>
+    </el-dialog>
+    <!--详情弹窗-->
+    <el-dialog title="详情" :visible.sync="detailsDialog" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"@close="detailsCancel('ruleForm')">
+      <div class="detail"><el-button @click="detailsCancel('ruleForm')" class="ml13">取 消</el-button></div>
+      <div class="detailsTitle">基本信息</div>
+      <div>
+        <div class="checkType" style="background: #ffa200">报账中</div>
+         <!-- <div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
+         <div class="checkType" v-if="fundamental.checkType=='2'" style="background: #ff0000" >驳回</div>
+         <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500">通过</div> -->
+      </div>
+      <div class="pro-info">
+        <table width="100%">
+          <tr>
+            <td width="33%">
+              <div width="80" class="fl">团期计划:</div>
+              <div class="fl ml13">{{teampreviewData.groupCode}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="fl">操作人:</div>
+              <div class="fl ml13">{{teampreviewData.pod}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="fl">出发日期:</div>
+              <div class="fl ml13">{{teampreviewData.date}}</div>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%">
+              <div width="80" class="fl">产品名称:</div>
+              <div class="fl ml13">{{teampreviewData.title}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="fl">套餐:</div>
+              <div class="fl ml13">{{teampreviewData.package}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="fl">出发地:</div>
+              <div class="fl ml13">{{teampreviewData.pod}}</div>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%">
+              <div width="80" class="fl">目的地:</div>
+              <div class="fl ml13">{{teampreviewData.destination}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="fl">状态:</div>
+              <div class="fl ml13">{{teampreviewData.destination}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="fl">关联订单:</div>
+              <div class="fl ml13">{{teampreviewData.remaining}}</div>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%">
+              <div width="80" class="fl">计划位:</div>
+              <div class="fl ml13">{{teampreviewData.remaining}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="fl">余位:</div>
+              <div class="fl ml13">{{teampreviewData.remaining}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="fl">成本:</div>
+              <div class="fl ml13">{{average}}</div>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%">
+              <div width="80" class="fl">收入:</div>
+              <div class="fl ml13">{{teampreviewData.remaining}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="fl">毛利率:</div>
+              <div class="fl ml13">{{teampreviewData.remaining}}%</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="detailsTitle">财务信息</div>
+      <div>
+        <el-tabs v-model="activeName">
+          <el-tab-pane label="借款" name="first">
+            <el-table :data="tableBorrowing" class="" :header-cell-style="getCostClass" border>
+              <el-table-column prop="" label="ID" min-width="80"></el-table-column>
+              <el-table-column prop="" label="借款类型" min-width="120"></el-table-column>
+              <el-table-column prop="" label="审批状态" min-width="100"></el-table-column>
+              <el-table-column prop="" label="借款类型" min-width="80"></el-table-column>
+              <el-table-column prop="" label="供应商" min-width="80"></el-table-column>
+              <el-table-column prop="" label="金额" min-width="120"></el-table-column>
+              <el-table-column prop="" label="已核销金额" min-width="120"></el-table-column>
+              <el-table-column prop="" label="申请人" min-width="70"></el-table-column>
+              <el-table-column prop="" label="审批过程" min-width="70">
+                <template slot-scope="scope">
+                  <span class="cursor blue">查看</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="报销" name="second">
+            <el-table :data="tableAccount" class="" :header-cell-style="getCostClass" border>
+              <el-table-column prop="" label="报销单号" min-width="120"></el-table-column>
+              <el-table-column prop="" label="状态" min-width="120"></el-table-column>
+              <el-table-column prop="" label="发起时间" min-width="150"></el-table-column>
+              <el-table-column prop="" label="该团期的报销金额" min-width="150"></el-table-column>
+              <el-table-column prop="" label="申请人" min-width="80"></el-table-column>
+              <el-table-column prop="" label="审批过程" min-width="70">
+                <template slot-scope="scope">
+                  <span class="cursor blue">查看</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="收款" name="third">
+            <el-table :data="tableCollection" class="" :header-cell-style="getCostClass" border>
+              <el-table-column prop="" label="收款单号" min-width="120"></el-table-column>
+              <el-table-column prop="" label="收款类型" min-width="120"></el-table-column>
+              <el-table-column prop="" label="同业社名称" min-width="100"></el-table-column>
+              <el-table-column prop="" label="状态" min-width="80"></el-table-column>
+              <el-table-column prop="" label="收款时间" min-width="150"></el-table-column>
+              <el-table-column prop="" label="团期计划" min-width="150"></el-table-column>
+              <el-table-column prop="" label="订单号" min-width="120"></el-table-column>
+              <el-table-column prop="" label="收款金额" min-width="80"></el-table-column>
+              <el-table-column prop="" label="申请人" min-width="80"></el-table-column>
+              <el-table-column prop="" label="审批过程" min-width="80">
+                <template slot-scope="scope">
+                  <span class="cursor blue">查看</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="订单" name="fourth">
+            <el-table :data="tableOrder" class="" :header-cell-style="getCostClass" border>
+              <el-table-column prop="" label="订单ID" min-width="120"></el-table-column>
+              <el-table-column prop="" label="联系人" min-width="120"></el-table-column>
+              <el-table-column prop="" label="数量" min-width="180"></el-table-column>
+              <el-table-column prop="" label="订单来源" min-width="100"></el-table-column>
+              <el-table-column prop="" label="状态" min-width="80"></el-table-column>
+              <el-table-column prop="" label="销售" min-width="80"></el-table-column>
+              <el-table-column prop="" label="订单金额" min-width="120"></el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
     </el-dialog>
     <!-- </div> -->
     <!-- </div> -->
@@ -304,10 +396,12 @@ export default {
   },
   data() {
     return {
+      tableData2:[],
       //下单弹窗
+      average:0,
       dialogFormOrder: false,
       ruleForm: {
-        orderRadio: "3",
+        orderRadio: "1",
         sale: "",
         travel: "",
         price: "1",
@@ -368,7 +462,7 @@ export default {
         ],
         sale: [{ required: true, message: "请选择销售", trigger: "change" }],
         travel: [
-          { required: true, message: "请选择同业社", trigger: "change" }
+          { required: true, message: "请输入商户名称", trigger: "blur" }
         ],
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
         price1: [{ pattern: /^[+]{0,1}(\d+)$/, message: "价格必须为数字值" }],
@@ -424,8 +518,18 @@ export default {
             message: "身份证号格式不正确",
             trigger: "blur"
           }
-        ]
-      }
+        ],
+        credTOV:[{ required: true, message: "请选择证件有效期", trigger: "blur" }],
+        
+      },
+      //出行人信息表格
+      costList:[],
+      detailsDialog:true,//详情弹窗
+      activeName:'first',//财务信息切换
+      tableBorrowing:[],//借款表格
+      tableAccount:[],//报销表格
+      tableCollection:[],//收款表格
+      tableOrder:[],//订单表格
     };
   },
   created() {},
@@ -440,6 +544,11 @@ export default {
         this.ruleForm.remark = "";
         this.ruleForm.otherCostRemark = "";
         this.ruleForm.allDisRemark = "";
+      }else if(this.dialogType == 2){
+        setTimeout(() => {
+          this.teampreview(this.planId);
+        }, 200);
+        this.detailsDialog =true;
       }
     },
     enrolNum: function(val) {
@@ -458,6 +567,16 @@ export default {
   },
   methods: {
     moment,
+    detailsCancel(){
+      this.detailsDialog = false;
+    },
+    getCostClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
+      if (rowIndex == 0) {
+        return "background:#f6f6f6;height:25px;textAlign:center;fontSize:15px";
+      } else {
+        return "";
+      }
+    },
     changeQuota() {
       //余位变化方法
       this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
@@ -485,8 +604,32 @@ export default {
         }
       }
     },
-    teampreview(ID) {
+    //详情弹窗
+    teamGetDetails(){
+      this.getaverage(ID);
       //团期计划订单信息预览
+      console.log(ID)
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
+        id: ID
+      }).then(res => {
+          if (res.data.isSuccess == true) {
+            this.teampreviewData = res.data.object;
+            this.teamEnrolls(this.planId);
+          }
+        });
+    },
+    //获取参考结算价
+    getaverage(ID) {
+      this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
+        "id": ID
+      }).then(res => {
+        this.average = res.data.average;
+      })
+    },
+    teampreview(ID) {
+      this.getaverage(ID);
+      //团期计划订单信息预览
+      console.log(ID)
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
           id: ID
@@ -529,7 +672,6 @@ export default {
           }
         });
     },
-
     peoNum(index, enrollID, enrollName) {
       //填写报名人数
       let arrLength; //报名人数
@@ -547,21 +689,23 @@ export default {
       //去掉报名人数提示
       if (arrLength > 0) {
         this.enrolNums = false;
-      }
+      } 
       var len;
       if (arrLength > preLength) {
         //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
         len = arrLength - preLength;
         for (var i = 0; i < len; i++) {
-          this.tour[index].push({
+          this.costList.push({
             enrollID: enrollID,
             enrollName: enrollName,
+            name : '姓名',
+            type : enrollName,
+            phone : '',
+            IDcard : '',
+            sex : '',
             id: 0,
             isDeleted: 0,
             code: "string",
-            cnName: "点击填写",
-            enName: "string",
-            sex: 0,
             idCard: "string",
             singlePrice: 0,
             mobile: "string",
@@ -576,19 +720,25 @@ export default {
           });
         }
       } else {
-        this.tour[index].splice(arrLength - preLength, preLength - arrLength);
+        this.costList.splice(arrLength - preLength, preLength - arrLength);
       }
     },
-    fillTour(type, index) {
-      this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
-
-      if (this.tour[type][index].cnName != "点击填写") {
-        this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
-      }
-      this.tourType = type;
-      this.fillIndex = index;
+    fillTravel(type, index){
+      console.log(this.enrollName)
+      this.winTitle = this.costList[0].enrollName; //编辑游客信息弹窗标题
       this.dialogFormTour = true;
+
     },
+    // fillTour(type, index) {
+    //   this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
+
+    //   if (this.tour[type][index].cnName != "点击填写") {
+    //     this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
+    //   }
+    //   this.tourType = type;
+    //   this.fillIndex = index;
+    //   this.dialogFormTour = true;
+    // },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
@@ -744,7 +894,7 @@ export default {
             orderCode: orderCode,
             content: this.ruleForm.remark,
             createTime: moment()
-              .format("YYYY-DD-MM hh:mm:ss")
+              .format("YYYY-MM-DD hh:mm:ss")
               .toString()
           }
         })
@@ -793,6 +943,24 @@ export default {
         })
         .then(res => {});
     },
+    ensure(formName){
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let guest = JSON.parse(JSON.stringify(this.conForm));
+          // console.log(this.costList[0].enrollName)
+          // console.log(this.costList.name)
+          // console.log(this.conForm.cnName)
+          // console.log(this.guest.cnName)
+          if (this.ruleForm.price == 1) {
+            guest.singlePrice = this.salePrice[this.tourType].price_01; //填充价格
+          } else {
+            guest.singlePrice = this.salePrice[this.tourType].price_02;
+          }
+          this.dialogFormTour = false;
+          this.$refs[formName].resetFields();
+        }
+      });
+    },
     subInfo(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -819,16 +987,14 @@ export default {
     cancelInfoOrder(formName) {
       this.dialogFormOrder = false;
       this.$refs[formName].resetFields();
+      this.costList = [] ;
     },
     compPrice() {
       //计算总价
       this.ruleForm.totalPrice = 0;
       for (let i = 0; i < this.enrolNum.length; i++) {
-        this.ruleForm.totalPrice +=
-          this.enrolNum[i] *
-          (this.ruleForm.price == 1
-            ? this.salePrice[i].price_01
-            : this.salePrice[i].price_02);
+        console.log(this.enrolNum[i])
+        this.ruleForm.totalPrice += (this.enrolNum[i] == undefined ? 0 : this.enrolNum[i]) * (this.ruleForm.price == 1 ? this.salePrice[i].price_01 : this.salePrice[i].price_02);
       }
       this.ruleForm.totalPrice += parseInt(
         this.ruleForm.otherCost ? this.ruleForm.otherCost : 0
@@ -836,12 +1002,72 @@ export default {
       this.ruleForm.totalPrice -= parseInt(
         this.ruleForm.allDiscount ? this.ruleForm.allDiscount : 0
       );
-    }
+    },
+    //商户名称模糊查询
+    querySearch3(queryString3, cb) {
+      this.tableData2 = []
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
+        "object": {
+          name: queryString3,
+          isDeleted: 0
+        }
+      }).then(res => {
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.tableData2.push({
+            "value": res.data.objects[i].name,
+            "id": res.data.objects[i].id,
+            "supplierType": res.data.objects[i].supplierType
+          })
+          this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+        }
+        var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
+        cb(results)
+      }).catch(err => {
+        //console.log(err);
+      })
+    },
+    createFilter(queryString1){
+      return (restaurant) => {
+        return (restaurant.value);
+      }
+    },
+    departure(item){
+      console.log(item)
+      //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
+      /*this.productPos = item.id;
+      this.originPlace = item.value;*/
+      this.productPos = item.id;
+      this.originPlace = item.value;
+    },
+    //订单来源切换清空相应下的文本框内容
+    changeTab(){
+      if(this.ruleForm.orderRadio==1){
+        this.ruleForm.travel = '';
+      }
+    },
   }
 };
 </script>
 
 <style scoped>
+/*下单弹窗团期信息样式*/
+.planBorder{ border: 1px solid #ebebeb; border-radius: 5px; width: 95%;margin: 0 30px 10px 30px;font-size: 14px;line-height: 25px;}
+.order-title {overflow: hidden;background: #f3f3f3; width: 100%; line-height: 40px;}
+.order-title span{margin: 0 0 0 10px; font-size: 17px; color:#000;}
+.pro-info {font-size: 14px;margin: 20px 30px 10px 10px;line-height: 30px;}
+/*下单按钮*/
+.dialog-footer {position:absolute;top: 8px; right:15px;}
+/*下单弹窗价格选择样式*/
+.salesPrice{margin: -3px 0 0 0;}
+/*出行人信息表格样式*/
+.travelMessage{ line-height: 40px; margin: 0 0 0 10px;font-size: 17px;}
+.blue {color: #2e94f9;}
+.cursor {cursor: pointer;}
+.costTable{width:800px; margin: 0 0 0 2px;}
+/*详情样式*/
+.detail{ position: absolute;right: 15px; top: 8px; }
+.detailsTitle{font-size: 18px; margin: 20px 0 20px 0;}
+.checkType{padding: 0 5px; width:50px; border-radius:5px; color:#fff; line-height:30px; text-align:center;}
 /*下单弹窗*/
 * {
   font-size: 14px;
@@ -849,28 +1075,14 @@ export default {
 .main1 {
   overflow: hidden;
   width: 70%;
-  min-width: 900px;
+  min-width: 1100px;
   margin-top: -20px;
 }
-.order-title {
-  overflow: hidden;
-}
+
 .optionw {
   width: 280px;
 }
-.order-title h2 {
-  font-size: 17px;
-  font-weight: normal;
-  float: left;
-  margin: 10px 30px;
-}
-.pro-info {
-  font-size: 14px;
-  background-color: #e6e6e6;
-  margin: 0 30px 10px 30px;
-  line-height: 25px;
-  padding: 10px 20px;
-}
+
 .demo-ruleForm {
   margin-left: 10px;
 }
@@ -958,10 +1170,7 @@ export default {
 .red {
   color: red;
 }
-.dialog-footer {
-  text-align: left;
-  margin: 20px 0 20px 108px;
-}
+
 .registration {
   float: left;
   margin: 12px;

@@ -1,40 +1,21 @@
 <template>
   <div>
+    <!--搜索框-->
     <div class="demo-input-suffix">
       <span class="search-title">产品名称</span>
       <el-input placeholder="请输入" v-model="title" class="group-no" @blur="productName()"></el-input>
       <span class="search-title">报账团号</span>
       <el-input placeholder="请输入" v-model="groupCode" class="group-no" @blur="groupNo()"></el-input>
       <span class="search-title">出行日期</span>
-      <el-date-picker
-        v-model="date"
-        type="daterange"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        align="right"
-        class="group-no"
-        @change="dateline()"
-      ></el-date-picker>
+      <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
+        align="right" class="group-no" @change="dateline()"></el-date-picker>
       <br />
       <span class="search-title">操作人员</span>
-      <el-input placeholder="请输入" v-model="op" class="group-no" @blur="operation()"></el-input>
+      <el-input placeholder="请输入" v-model="op" class="group-no" @blur="operation_01()"></el-input>
       <span class="search-title">报账状态</span>
-      <el-select
-        v-model="financeState"
-        placeholder="请选择"
-        class="group-no"
-        style="width:185px"
-        @blur="condition()"
-      >
-        <el-option
-          v-for="item in financeType"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></el-option>
+      <el-select v-model="financeState" placeholder="请选择" class="group-no" style="width:185px"@blur="condition()">
+        <el-option v-for="item in financeType" :key="item.value" :label="item.label":value="item.value"></el-option>
       </el-select>
-
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
       <el-button type="primary" plain @click="reset">重置</el-button>
     </div>
@@ -44,63 +25,62 @@
         <el-button :disabled="forbidden2" @click="dialogCost = true">报账单</el-button>-->
       </el-row>
       <!--list-->
-      <el-table
-        :data="teamqueryList"
-        ref="multipleTable"
-        class="table"
-        :header-cell-style="getRowClass"
-        border
-        :row-style="rowClass"
-        :cell-style="getCellClass"
-        @selection-change="changeFun"
-        @row-click="clickRow"
-      >
-        <el-table-column type="index" label="序号" width="60"></el-table-column>
+      <!--列表表格-->
+      <el-table :data="teamqueryList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass"
+        :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">
+        <!-- <el-table-column type="index" label="序号" width="60"></el-table-column> -->
+        <el-table-column prop="groupCode" label="团期计划" width="220"></el-table-column>
+        <el-table-column prop="regimentType" label="状态" width="100">
+          <template slot-scope="scope">
+            <div v-if="scope.row.regimentType=='1'">正常</div>
+            <div v-if="scope.row.regimentType=='2'">停售</div>
+            <div v-if="scope.row.regimentType=='3'">封团</div>
+            <div v-if="scope.row.regimentType=='4'">暂满</div>
+            <div v-if="scope.row.regimentType=='5'">满员</div>
+          </template>
+        </el-table-column>
         <el-table-column prop="title" label="产品名称" min-width="200"></el-table-column>
-        <el-table-column prop="groupCode" label="团号" width="220"></el-table-column>
         <el-table-column prop="dateFormat" label="出行日期" width="100"></el-table-column>
-        <el-table-column prop="week" label="周" width="70"></el-table-column>
+        <el-table-column prop="accountStatus" label="报账状态" width="100">
+          <template slot-scope="scope">
+            <div>报账中</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="count" label="计划位" width="70"></el-table-column>
+        <el-table-column prop="remaining" label="余位" width="70"></el-table-column>
+        <el-table-column prop="occupancy" label="确定占位" width="70"></el-table-column>
+        <el-table-column prop="scheduled" label="预订占位" width="70"></el-table-column>
+        <el-table-column prop="occupy" label="预订不占" width="70"></el-table-column>
+        <!-- <el-table-column prop="week" label="周" width="70"></el-table-column>
         <el-table-column prop="day" label="天数" width="70"></el-table-column>
         <el-table-column prop="refPrice" label="参考价" width="80"></el-table-column>
         <el-table-column prop="count" label="计划位" width="70"></el-table-column>
         <el-table-column prop="remaining" label="余位" width="70"></el-table-column>
-        <el-table-column prop="shareCN" label="是否共享" width="85"></el-table-column>
+        <el-table-column prop="shareCN" label="是否共享" width="85"></el-table-column> -->
         <el-table-column prop="op" label="操作人员" width="80"></el-table-column>
-        <el-table-column label="操作" width="150">
+
+        <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <span class="cursor blue" @click="haltSales(scope.row.id)">停售</span>
-            <span class="em">|</span>
-            <span class="cursor blue" @click="operation(1)">下单</span>
-            <span class="em">|</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales(scope.row.id)">停售</span>
+            <span class="em" v-if="scope.row.regimentType=='1'">|</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='2'">恢复售卖</span>
+            <span class="em" v-if="scope.row.regimentType=='2'">|</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="operation(1)">下单</span>
+            <span class="em" v-if="scope.row.regimentType=='1'">|</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
+            <span class="em" v-if="scope.row.regimentType=='3'">|</span>
             <span class="cursor blue" @click="operation(2)">详情</span>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        v-if="pageshow"
-        class="pagination"
-        @size-change="handleSizeChange"
-        background
-        @current-change="handleCurrentChange"
-        :current-page="1"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
+      <!--分页-->
+      <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
+        :current-page="1" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
       <!--报账单弹窗-->
       <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list" width="60%">
-        <el-table
-          :data="costList"
-          ref="costTable"
-          class="costTable"
-          :header-cell-style="getCostClass"
-          border
-          :row-style="costrowClass"
-          :cell-style="getCellClass"
-          @selection-change="changeFunCost"
-          @row-click="clickRowCost"
-        >
+        <el-table :data="costList" ref="costTable" class="costTable" :header-cell-style="getCostClass" border :row-style="costrowClass"
+          :cell-style="getCellClass" @selection-change="changeFunCost" @row-click="clickRowCost">
           <el-table-column prop="id" label fixed type="selection"></el-table-column>
           <el-table-column prop="serno" label="序号" min-width="50"></el-table-column>
           <el-table-column prop="state" label="审核状态" min-width="90"></el-table-column>
@@ -129,6 +109,7 @@ export default {
   },
   data() {
     return {
+      userCodeList: null, // 获取UserList列表
       pageshow: true,
       planId: 0,
       variable: 0, //设置一个变量展示弹窗
@@ -137,6 +118,7 @@ export default {
       groupCode: "", //团号
       date: "", //日期
       op: "", //操作人员
+      changedUserCode: '', // 用户名转变
       financeState: "", //报账状态
       financeType: [
         {
@@ -185,12 +167,14 @@ export default {
         }
       ],
       dialogCost: false, //成本弹窗
-      costSelection: [] //选中的list
+      // costSelection: [], //选中的list
+      // searchParams: 2 // 2 为翻页，控制名字转code
     };
   },
   created() {
-    this.teamQueryList();
-    this.loadOper();
+    this.teamQueryList();    
+  },
+  mounted () {
   },
   methods: {
     productName() {
@@ -208,7 +192,7 @@ export default {
         this.teamQueryList();
       }
     },
-    operation() {
+    operation_01() {
       if (this.op == "") {
         this.teamQueryList();
       }
@@ -249,49 +233,30 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.teamQueryList(1, val);
+      this.teamQueryList();
     },
     handleCurrentChange(val) {
-      this.teamQueryList(val, this.pageSize);
+      this.teamQueryList(val);
     },
     //计划list
-    teamQueryList(
-      pageIndex = this.pageIndex,
-      pageSize = this.pageSize,
-      title = this.title,
-      groupCode = this.groupCode,
-      startDate = this.date == null ? 0 : this.date[0],
-      endDate = this.date == null ? 0 : this.date[1],
-      op = this.op
-    ) {
+    teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op) {
       if (startDate) {
         let y = startDate.getFullYear();
-        let m =
-          startDate.getMonth() + 1 > 9
-            ? startDate.getMonth() + 1
-            : "0" + (startDate.getMonth() + 1);
-        let d =
-          startDate.getDate() > 9
-            ? startDate.getDate()
-            : "0" + startDate.getDate();
+        let m = startDate.getMonth() + 1 > 9 ? startDate.getMonth() + 1 : "0" + (startDate.getMonth() + 1);
+        let d = startDate.getDate() > 9 ? startDate.getDate() : "0" + startDate.getDate();
         startDate = "" + y + m + d;
       } else {
         startDate = 0;
       }
       if (endDate) {
         let y = endDate.getFullYear();
-        let m =
-          endDate.getMonth() + 1 > 9
-            ? endDate.getMonth() + 1
-            : "0" + (endDate.getMonth() + 1);
-        let d =
-          endDate.getDate() > 9 ? endDate.getDate() : "0" + endDate.getDate();
+        let m = endDate.getMonth() + 1 > 9 ? endDate.getMonth() + 1 : "0" + (endDate.getMonth() + 1);
+        let d = endDate.getDate() > 9 ? endDate.getDate() : "0" + endDate.getDate();
         endDate = "" + y + m + d;
       } else {
         endDate = 0;
       }
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/teamquery/get/api/page", {
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/page", {
           pageIndex: pageIndex,
           pageSize: pageSize,
           object: {
@@ -299,28 +264,12 @@ export default {
             groupCode: groupCode,
             startDate: startDate,
             endDate: endDate,
-            //"op":sessionStorage.getItem('userName')
-            op: op
+            op: op,
           }
         })
         .then(res => {
-          // console.log(res, 1);
           this.teamqueryList = [];
           this.total = res.data.total;
-          this.teamqueryList.forEach(function(item, index, arr) {
-            that.$http
-              .post(that.GLOBAL.serverSrc + "/org/api/userget", {
-                userCode: item.op
-              })
-              .then(function(response) {
-                if (response.data.isSuccess) {
-                  item.op = response.data.object.name;
-                }
-              })
-              .catch(function(error) {
-                console.log(error);
-              });
-          });
           if (res.data.isSuccess == true) {
             this.teamqueryList = res.data.objects;
           }
@@ -364,10 +313,48 @@ export default {
       this.dialogType = i;
     },
     search() {
-      //this.pageIndex = 1;
-      //this.pageshow = false;
-      console.log(this.date);
-      this.teamQueryList();
+      var that = this
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
+        object: {
+          id: 0,
+          createTime: "2019-08-23T03:03:10.386Z",
+          isDeleted: 0,
+          code: "",
+          mobile: "",
+          name: this.op,
+          email: "",
+          userCode: "",
+          passWord: "",
+          iDcard: "",
+          tourGuide: "",
+          sex: 0,
+          userType: 0,
+          userState: 0,
+          orgID: 0,
+          orgName: "",
+          user_Position: [
+            {
+              id: 0,
+              userID: 0,
+              positionID: 0,
+              positionName: "",
+              isDefault: 0,
+              orgID: 0,
+              orgName: ""
+            }
+          ]
+        }
+      }).then(res => {
+          if (res.data.objects.length !=0) {
+            var getUserCode='';
+            getUserCode = res.data.objects[0].userCode;
+            this.teamQueryList(this.pageIndex,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
+          } else {
+            that.teamqueryList = [];
+          }
+        }).catch(function(error) {
+          console.log(error);
+        })
       this.$nextTick(() => {
         this.pageshow = true;
       });
@@ -399,68 +386,6 @@ export default {
           });
         });
     },
-    loadOper() {
-      const that = this;
-      this.$http
-        .post(
-          this.GLOBAL.serverSrc + "/org/api/userlist",
-          {
-            object: {
-              id: 0,
-              createTime: "2019-08-23T03:03:10.386Z",
-              isDeleted: 0,
-              code: "",
-              mobile: "",
-              name: "",
-              email: "",
-              userCode: "",
-              passWord: "",
-              iDcard: "",
-              tourGuide: "",
-              sex: 0,
-              userType: 0,
-              userState: 0,
-              orgID: 0,
-              orgName: "",
-              user_Position: [
-                {
-                  id: 0,
-                  userID: 0,
-                  positionID: 0,
-                  positionName: "",
-                  isDefault: 0,
-                  orgID: 0,
-                  orgName: ""
-                }
-              ]
-            }
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token")
-            }
-          }
-        )
-        .then(function(response) {
-          if (response.data.isSuccess) {
-            //            console.log('操作人员列表',response.data.objects);
-            let operatorList = [];
-            response.data.objects.forEach(function(item, index, arr) {
-              const operator = {
-                value: item.name,
-                id: item.id
-              };
-              operatorList.push(operator);
-            });
-            that.operatorList = operatorList;
-          } else {
-            that.$message.success("加载数据失败~");
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    }
   }
 };
 </script>
