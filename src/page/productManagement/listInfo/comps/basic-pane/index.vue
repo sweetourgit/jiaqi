@@ -413,6 +413,14 @@ export default {
       let hasChange= false;
       hasChange= !this.$checkLooseEqual(this.submitForm, this.proto);
       hasChange && console.warn('basic-pane change');
+
+      // bug 每次保存，destinations， pod，strengths 的id都会自增 
+      this.submitForm.destinations.forEach((el, i) => {
+        Object.keys(this.submitForm.destinations[i]).forEach(attr => {
+          console.log(attr, this.submitForm.destinations[i][attr], this.proto.destinations[i][attr]);
+        })
+      })
+      
       return hasChange;
     },
 

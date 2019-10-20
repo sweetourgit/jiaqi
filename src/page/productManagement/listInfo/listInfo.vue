@@ -19,12 +19,8 @@
       <el-button type="info" size="small" @click="leavePage">取消</el-button>
     </header>
     
-    <main>
-      <el-tabs 
-        v-if="vm.inited" 
-        v-loading="!vm.inited" 
-        v-model="vm.currentTabName"
-      >
+    <main v-if="vm.inited">
+      <el-tabs v-model="vm.currentTabName">
         <el-tab-pane label="基本信息" name="basic">
           <basic-pane
             ref="basicRef"
