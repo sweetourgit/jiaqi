@@ -16,7 +16,7 @@
   <div class="listinfo">
     <header>
       <el-button type="primary" size="small" @click="preAction">保存</el-button>
-      <el-button type="info" size="small">取消</el-button>
+      <el-button type="info" size="small" @click="leavePage">取消</el-button>
     </header>
     
     <main>
@@ -143,6 +143,7 @@ export default {
           this.init(id);
         })
       }).catch(err => {
+        this.$message.error(err);
         console.error(err);
       })
     },
@@ -156,6 +157,7 @@ export default {
           this.$router.replace({ path: '/changeinfo', query:{ id } });
         })
       }).catch(err => {
+        this.$message.error(err)
         console.error(err);
       })
     },
@@ -197,6 +199,18 @@ export default {
         cancelButtonText: '取消',
       }).finally(() => {
         ERROR_QUEUE.splice(0);
+      })
+    },
+
+    leavePage(){
+      let hasChange= this.checkHasChange();
+      if(!hasChange) return this.$router.push('/productList/packageTour');
+      this.$confirm(`当前页面有数据未保存，是否要离开?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return this.$router.push('/productList/packageTour');
       })
     },
   }
