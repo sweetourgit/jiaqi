@@ -319,15 +319,21 @@
         <el-tabs v-model="activeName">
           <el-tab-pane label="借款" name="first">
             <el-table :data="tableBorrowing" class="" :header-cell-style="getCostClass" border>
-              <el-table-column prop="" label="ID" min-width="80"></el-table-column>
-              <el-table-column prop="" label="借款类型" min-width="120"></el-table-column>
-              <el-table-column prop="" label="审批状态" min-width="100"></el-table-column>
-              <el-table-column prop="" label="借款类型" min-width="80"></el-table-column>
-              <el-table-column prop="" label="供应商" min-width="80"></el-table-column>
-              <el-table-column prop="" label="金额" min-width="120"></el-table-column>
-              <el-table-column prop="" label="已核销金额" min-width="120"></el-table-column>
-              <el-table-column prop="" label="申请人" min-width="70"></el-table-column>
-              <el-table-column prop="" label="审批过程" min-width="70">
+              <el-table-column prop="paymentID" label="ID" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="paymentType" label="借款类型" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="checkType" label="审批状态" align="center">
+                <template slot-scope="scope">
+                  <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="supplierType" label="借款类型" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="supplierName" label="供应商" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="price" label="金额" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="expensePrice" label="已核销金额" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="createName" label="申请人" min-width="70" align="center"></el-table-column>
+              <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
                   <span class="cursor blue">查看</span>
                 </template>
@@ -524,7 +530,7 @@ export default {
       },
       //出行人信息表格
       costList:[],
-      detailsDialog:true,//详情弹窗
+      detailsDialog:false,//详情弹窗
       activeName:'first',//财务信息切换
       tableBorrowing:[],//借款表格
       tableAccount:[],//报销表格
@@ -532,7 +538,8 @@ export default {
       tableOrder:[],//订单表格
     };
   },
-  created() {},
+  created() {
+  },
   watch: {
     variable: function() {
       if (this.dialogType == 1) {
@@ -546,7 +553,7 @@ export default {
         this.ruleForm.allDisRemark = "";
       }else if(this.dialogType == 2){
         setTimeout(() => {
-          this.teampreview(this.planId);
+          this.teamGetDetails(this.planId);
         }, 200);
         this.detailsDialog =true;
       }
@@ -605,8 +612,7 @@ export default {
       }
     },
     //详情弹窗
-    teamGetDetails(){
-      this.getaverage(ID);
+    teamGetDetails(ID){
       //团期计划订单信息预览
       console.log(ID)
       this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
@@ -614,6 +620,7 @@ export default {
       }).then(res => {
           if (res.data.isSuccess == true) {
             this.teampreviewData = res.data.object;
+            this.getBorrowing(this.planId);
             this.teamEnrolls(this.planId);
           }
         });
@@ -1044,6 +1051,54 @@ export default {
       if(this.ruleForm.orderRadio==1){
         this.ruleForm.travel = '';
       }
+    },
+    //详情借款表格
+    getBorrowing(val){
+      var that = this
+      console.log(val)
+      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+        "object": {
+          "id": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableBorrowing = res.data.objects
+          that.tableBorrowing.forEach(function (v,k,arr) {
+              if(arr[k]['checkType'] == 0){
+                arr[k]['checkType'] = '审批中'
+              }else if(arr[k]['checkType'] == 1) {
+                arr[k]['checkType'] = '通过'
+              }else if(arr[k]['checkType'] == 2) {
+                arr[k]['checkType'] = '驳回'
+              }
+              if(arr[k]['supplierType'] == 1){
+                arr[k]['supplierType'] = '地接'
+              }else if(arr[k]['supplierType'] == 2) {
+                arr[k]['supplierType'] = '机票（本公司）'
+              }else if(arr[k]['supplierType'] == 3) {
+                arr[k]['supplierType'] = '机票（非本公司）'
+              }else if(arr[k]['supplierType'] == 4) {
+                arr[k]['supplierType'] = '小费'
+              }else if(arr[k]['supplierType'] == 5) {
+                arr[k]['supplierType'] = '地接（其他）'
+              }else if(arr[k]['supplierType'] == 6) {
+                arr[k]['supplierType'] = '火车票'
+              }else if(arr[k]['supplierType'] == 7) {
+                arr[k]['supplierType'] = '汽车票'
+              }else if(arr[k]['supplierType'] == 8) {
+                arr[k]['supplierType'] = '船票'
+              }else if(arr[k]['supplierType'] == 9) {
+                arr[k]['supplierType'] = '其他'
+              }else if(arr[k]['supplierType'] == 10) {
+                arr[k]['supplierType'] = '机票押金'
+              }else if(arr[k]['supplierType'] == 11) {
+                arr[k]['supplierType'] = '火车票押金'
+              }
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
   }
 };
