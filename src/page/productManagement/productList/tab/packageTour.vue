@@ -964,6 +964,8 @@ export default {
     },
     // 修改成本信息
     submitForm2(formName) {
+      console.log(this.borrowingType)
+      console.log(this.ruleForm1.costType)
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/save", {
@@ -1077,17 +1079,16 @@ export default {
 
       // })
       /* console.log(this.chengben[0].id)*/
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/get", {
-          id: this.chengben[0].id
-        })
-        .then(res => {
-          console.log(res.data.object);
-          this.cost = true;
-          this.ruleForm1.region = res.data.object.name;
-          this.ruleForm1.costType = res.data.object.supplierTypeEX;
-          this.ruleForm1.name = res.data.object.money;
-        });
+      this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/get", { // 对正本提示的弹窗进行赋值
+        id: this.chengben[0].id
+      })
+      .then(res => {
+        console.log(res.data.object);
+        this.cost = true;
+        this.ruleForm1.region = res.data.object.name;
+        this.ruleForm1.costType = res.data.object.supplierType;
+        this.ruleForm1.name = res.data.object.money;
+      });
     },
     // 成本弹窗，删除事件
     delcb() {

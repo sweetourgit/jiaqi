@@ -845,7 +845,6 @@
       },
       // 非共享库存修改
       saveQuota(list, data, inventoryID, row, sumId) {
-        console.log(data)
         let planEnroll = [];
         let cost = false;
         let isSave = true;
@@ -905,6 +904,7 @@
         console.log('查到非共享库存后执行修改计划')
         this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorysave', { // 库存修改
           "object": {
+            'id': inventoryID, // 库存id
             "name": '',
             "count": this.Rform.sumNum,
             "share": 2,
@@ -914,9 +914,9 @@
         .then(resSave =>{
           this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/save', { // 计划修改
             "object": {
-              "id": this.Rform.id,
+              "id": this.Rform.id, // 计划id
               "inventoryID": inventoryID,
-              "packageID": this.ccc[0],
+              "packageID": this.ccc[0], // 应该是SKU套餐id
               "planEnroll": planEnroll,
               "date": this.Rform.date,
               "groupCode": this.msgFather[0].codePrefix + '-' + list.data.person.date + '-' + this.msgFather[0].codeSuffix,
@@ -978,6 +978,7 @@
       addQuota(data, index) {
         // 这个data 参数就是要填加载日历上卡片相关信息
         console.log(this.Rform.id, '有计划id，值执行修改操作')
+        console.log(data, 'data报名类型保存之后')
         // 有计划id，值执行修改操作
         if (this.Rform.id) {
           // 2为非共享库存
@@ -1068,8 +1069,6 @@
                         type: 'warning'
                       }).then(() => {
                         // 共享与非共享都是 先加库存返回库存id然后传给这个新增计划的接口 （因为都用唯一库存所以计划要用库存返回的唯一id，库存id）
-
-                        // 临时注销
                         this.sumInsert(data, index);
                       })
                     } else {
