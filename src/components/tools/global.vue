@@ -1,6 +1,7 @@
 <script>
   const serverSrc="http://test.dayuntong.com";
-  const imgUrl="http://test.dayuntong.com";
+  // const imgUrl="http://test.dayuntong.com";
+  const imgUrl ="https://jiaqi-server.obs.myhwclouds.com";
   //const imgUrl="http://192.168.2.65:3024";
   //const imgUrl="http://192.168.2.65:3009";
   //const jqUrl="http://192.168.1.198:6019";

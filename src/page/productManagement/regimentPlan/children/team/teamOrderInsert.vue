@@ -319,7 +319,7 @@
         <el-tabs v-model="activeName">
           <el-tab-pane label="借款" name="first">
             <el-table :data="tableBorrowing" class="" :header-cell-style="getCostClass" border>
-              <el-table-column prop="paymentID" label="ID" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="id" label="ID" min-width="80" align="center"></el-table-column>
               <el-table-column prop="paymentType" label="借款类型" min-width="120" align="center"></el-table-column>
               <el-table-column prop="checkType" label="审批状态" align="center">
                 <template slot-scope="scope">
@@ -332,7 +332,7 @@
               <el-table-column prop="supplierName" label="供应商" min-width="80" align="center"></el-table-column>
               <el-table-column prop="price" label="金额" min-width="120" align="center"></el-table-column>
               <el-table-column prop="expensePrice" label="已核销金额" min-width="120" align="center"></el-table-column>
-              <el-table-column prop="createName" label="申请人" min-width="70" align="center"></el-table-column>
+              <el-table-column prop="createUser" label="申请人" min-width="70" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
                   <span class="cursor blue">查看</span>
@@ -1105,6 +1105,7 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+
     },
   }
 };
