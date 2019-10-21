@@ -61,6 +61,13 @@
         <el-option key="6" label="支付宝" value="6"></el-option>
         <el-option key="7" label="自采" value="7"></el-option>
       </el-select>
+      <span class="search-title">借款状态 :</span>
+      <el-select v-model="activeForm.borrowStatus" placeholder="请选择" style="width:200px">
+        <el-option key="" label="全部" value=""></el-option>
+        <el-option key="1" label="未借款" value="1"></el-option>
+        <el-option key="2" label="借款申请中" value="2"></el-option>
+        <el-option key="3" label="已借款" value="3"></el-option>
+      </el-select>
       <div class="button_select">
         <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
@@ -73,7 +80,7 @@
       <el-button type="primary" :disabled="reable" @click="unbinding" plain>解绑报账团期</el-button>
     </div>
     <div class="tableDv">
-      <div class="table_trip" style="width: 90%;">
+      <div class="table_trip" style="width: 100%;">
         <el-table ref="multipleTable" v-loading="loading" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="order_sn" label="订单ID" align="center">
@@ -114,6 +121,15 @@
               <p v-if="scope.row.pay_type == 7">自采</p>
             </template>
           </el-table-column>
+          <el-table-column prop="buy_type" label="买入支付方式" align="center">
+            <template slot-scope="scope">
+              <p v-if="scope.row.buy_type == 1">余额支付</p>
+              <p v-if="scope.row.buy_type == 2">授信支付</p>
+              <p v-if="scope.row.buy_type == 3">成本</p>
+            </template>
+          </el-table-column>
+          <el-table-column prop="supplier" label="上级供应商" align="center">
+          </el-table-column>
           <el-table-column prop="import_at" label="导入时间" align="center">
           </el-table-column>
           <el-table-column prop="is_relate_pro" label="关联产品" align="center">
@@ -126,6 +142,11 @@
             <template slot-scope="scope">
               <span v-if="scope.row.is_relate_pro == 1">未报账</span>
               <span v-else>{{bill_status[scope.row.gp_bill_status]}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="borrow_status" label="借款状态" align="center">
+            <template slot-scope="scope">
+              <span>{{borrowStatusObj[scope.row.borrow_status]}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="bill_status" label="认收款信息" align="center">
@@ -144,14 +165,14 @@
     </div>
     <Relation :dialogFormVisible="dialogFormVisible" @close="close"></Relation>
     <ImportOrder :dialogFormVisible2="dialogFormVisible2" @close2="close2"></ImportOrder>
-    <importStatus :dialogFormVisible3="dialogFormVisible3" @close3="close3"></importStatus>
+    <!--<importStatus :dialogFormVisible3="dialogFormVisible3" @close3="close3"></importStatus>-->
     <recognitionSee :dialogFormVisible4="dialogFormVisible4" @close="close4" :orderID="orderID"></recognitionSee>
   </div>
 </template>
 <script type="text/javascript">
   import Relation from '@/page/orderManagement/externalOrderList/externalChild/relation'//关联弹窗
   import ImportOrder from '@/page/orderManagement/externalOrderList/externalChild/importOrder'//导入订单弹窗
-  import importStatus from '@/page/orderManagement/externalOrderList/importOrderInfo/importStatus'//导入状态弹窗
+//  import importStatus from '@/page/orderManagement/externalOrderList/importOrderInfo/importStatus'//导入状态弹窗
   import recognitionSee from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionSee'//查看认款信息弹窗
 
   import {formatDate} from '@/js/libs/publicMethod.js'
@@ -160,7 +181,7 @@
     components: {
       Relation,
       ImportOrder,
-      importStatus,
+//      importStatus,
       recognitionSee
     },
     data() {
@@ -182,7 +203,8 @@
           validationEndTime: '',
           ticketPerson: '',
           ticketPhone: '',
-          distributors: ''
+          distributors: '',
+          borrowStatus: ''
         },// 筛选项
         reable: true,// 按钮是否可点击
         dialogFormVisible: false,
@@ -211,6 +233,11 @@
           6: '报账驳回',
           7: '已报账'
         },// 报账状态
+        borrowStatusObj: {
+          1: '未借款',
+          2: '借款申请中',
+          3: '已借款'
+        },// 借款状态
 
 //        时间限制，开始时间不能大于结束时间
         startDatePicker: this.beginDate(),
@@ -408,7 +435,8 @@
           validationEndTime: '',
           ticketPerson: '',
           ticketPhone: '',
-          distributors: ''
+          distributors: '',
+          borrowStatus: ''
         };
         this.loadData();
       },
@@ -466,6 +494,7 @@
           "contact_phone": this.activeForm.ticketPhone,
           "distributor": this.activeForm.distributors,
           "pay_type": this.activeForm.typePay,
+          "borrow_status": this.activeForm.borrowStatus,
           "import_status": 3,
           "org_id": ''
         }, ).then(function(response) {

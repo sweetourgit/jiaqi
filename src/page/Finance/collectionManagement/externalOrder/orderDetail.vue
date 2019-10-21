@@ -1,12 +1,13 @@
 <template>
   <div class="vivo" style="position:relative" id="tradeDetail">
-    <el-dialog :visible="dialogFormVisible1" @close="closeAdd" style="width: 100%">
-      <div class="buttonDv" style="float: right;margin-right: 3%;">
+    <el-dialog title="详情" :visible="dialogFormVisible1" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
+      <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>
         <el-button type="primary" @click="editBtn">修改</el-button>
       </div>
-      <p class="stepTitle">基本信息</p>
+      <!--<p class="stepTitle">基本信息</p>-->
+      <el-divider content-position="left">基本信息</el-divider>
       <el-button type="info" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 1">待认收款</el-button>
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 2">已认完</el-button>
       <div class="stepDv">
@@ -33,7 +34,8 @@
         </div>
         <p class="inputLabel"><span>分销商：</span>{{baseInfo.distributor}}</p>
       </div>
-      <p class="stepTitle" v-if="showSK">收款明细</p>
+      <!--<p class="stepTitle" v-if="showSK">收款明细</p>-->
+      <el-divider content-position="left" v-if="showSK">收款明细</el-divider>
       <div class="stepDv" style="margin-bottom: 50px;" v-if="showSK">
         <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
         <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
@@ -71,7 +73,8 @@
           </el-table-column>
         </el-table>
       </div>
-      <p class="stepTitle" v-if="showXQ">订单详情</p>
+      <!--<p class="stepTitle" v-if="showXQ">订单详情</p>-->
+      <el-divider content-position="left" v-if="showXQ">订单详情</el-divider>
       <div class="stepDv" style="margin-bottom: 50px;" v-if="showXQ">
         <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
           <el-table-column prop="order_sn" label="订单ID" align="center" >
@@ -607,6 +610,14 @@
       display: inline-block;
       margin: 10px auto;
     }
+  }
+  #tradeDetail .buttonDv{
+    position: absolute;
+    top: 8px;
+    right: 3%;
+  }
+  #tradeDetail .el-divider__text, #tradeAdd .el-link{
+    font-size: 16px;
   }
   #tradeDetail .el-upload-list__item{
     margin-top: 10px !important;
