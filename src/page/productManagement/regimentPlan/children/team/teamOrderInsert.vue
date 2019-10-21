@@ -253,7 +253,7 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">操作人:</div>
-              <div class="fl ml13">{{teampreviewData.pod}}</div>
+              <div class="fl ml13">{{teampreviewData.op}}</div>
             </td>
             <td width="33%">
               <div width="80" class="fl">出发日期:</div>
@@ -281,17 +281,17 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">状态:</div>
-              <div class="fl ml13">{{teampreviewData.destination}}</div>
+              <div class="fl ml13">{{teampreviewData.regimentType}}</div>
             </td>
             <td width="33%">
               <div width="80" class="fl">关联订单:</div>
-              <div class="fl ml13">{{teampreviewData.remaining}}</div>
+              <div class="fl ml13">{{teampreviewData.ordNum}}个</div>
             </td>
           </tr>
           <tr>
             <td width="33%">
               <div width="80" class="fl">计划位:</div>
-              <div class="fl ml13">{{teampreviewData.remaining}}</div>
+              <div class="fl ml13">{{teampreviewData.count}}</div>
             </td>
             <td width="33%">
               <div width="80" class="fl">余位:</div>
@@ -299,17 +299,17 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">成本:</div>
-              <div class="fl ml13">{{average}}</div>
+              <div class="fl ml13">{{teampreviewData.cost}}</div>
             </td>
           </tr>
           <tr>
             <td width="33%">
               <div width="80" class="fl">收入:</div>
-              <div class="fl ml13">{{teampreviewData.remaining}}</div>
+              <div class="fl ml13">{{teampreviewData.income}}</div>
             </td>
             <td width="33%">
               <div width="80" class="fl">毛利率:</div>
-              <div class="fl ml13">{{teampreviewData.remaining}}%</div>
+              <div class="fl ml13">{{teampreviewData.rate}}%</div>
             </td>
           </tr>
         </table>
@@ -938,7 +938,7 @@ export default {
         .then(res => {});
     },
     delTravel(type, index){//删除单条表格数据
-      
+
     },
     fillTravel(type, index){//点击出行人信息表格编辑显示弹窗
       console.log(this.enrollName)
