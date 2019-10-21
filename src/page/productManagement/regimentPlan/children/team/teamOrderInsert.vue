@@ -362,16 +362,22 @@
           </el-tab-pane>
           <el-tab-pane label="收款" name="third">
             <el-table :data="tableCollection" :header-cell-style="getCostClass" border>
-              <el-table-column prop="" label="收款单号" min-width="120"></el-table-column>
-              <el-table-column prop="" label="收款类型" min-width="120"></el-table-column>
-              <el-table-column prop="" label="同业社名称" min-width="100"></el-table-column>
-              <el-table-column prop="" label="状态" min-width="80"></el-table-column>
-              <el-table-column prop="" label="收款时间" min-width="150"></el-table-column>
-              <el-table-column prop="" label="团期计划" min-width="150"></el-table-column>
-              <el-table-column prop="" label="订单号" min-width="120"></el-table-column>
-              <el-table-column prop="" label="收款金额" min-width="80"></el-table-column>
-              <el-table-column prop="" label="申请人" min-width="80"></el-table-column>
-              <el-table-column prop="" label="审批过程" min-width="80">
+              <el-table-column prop="id" label="收款单号" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="collectionType" label="收款类型" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="localCompName" label="同业社名称" min-width="100" align="center"></el-table-column>
+              <el-table-column prop="checkType" label="状态" min-width="80" align="center">
+                <template slot-scope="scope">
+                  <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="collectionTime" label="收款时间" min-width="150" align="center"></el-table-column>
+              <el-table-column prop="groupCode" label="团期计划" min-width="150" align="center"></el-table-column>
+              <el-table-column prop="orderNumber" label="订单号" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="price" label="收款金额" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
+              <el-table-column label="审批过程" min-width="80" align="center">
                 <template slot-scope="scope">
                   <span class="cursor blue">查看</span>
                 </template>
@@ -380,13 +386,13 @@
           </el-tab-pane>
           <el-tab-pane label="订单" name="fourth">
             <el-table :data="tableOrder" :header-cell-style="getCostClass" border>
-              <el-table-column prop="" label="订单ID" min-width="120"></el-table-column>
-              <el-table-column prop="" label="联系人" min-width="120"></el-table-column>
-              <el-table-column prop="" label="数量" min-width="180"></el-table-column>
-              <el-table-column prop="" label="订单来源" min-width="100"></el-table-column>
-              <el-table-column prop="" label="状态" min-width="80"></el-table-column>
-              <el-table-column prop="" label="销售" min-width="80"></el-table-column>
-              <el-table-column prop="" label="订单金额" min-width="120"></el-table-column>
+              <el-table-column prop="id" label="订单ID" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="contactName" label="联系人" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="number" label="数量" min-width="180" align="center"></el-table-column>
+              <el-table-column prop="orderChannel" label="订单来源" min-width="100" align="center"></el-table-column>
+              <el-table-column prop="orderStatus" label="状态" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="saler" label="销售" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="payable" label="订单金额" min-width="120" align="center"></el-table-column>
             </el-table>
           </el-tab-pane>
         </el-tabs>
@@ -1139,7 +1145,90 @@ export default {
         console.log(err)
       })
       //收款
+      that.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/page', {
+        "pageIndex": 1,
+        "pageSize": 100,
+        "object": {
+          "id": 0,
+          "checkType": -1,
+          "startTime": "2000-01-01",
+          "endTime": "2019-10-21",
+          "planID": this.planId,
+          "collectionType": 0,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableCollection = res.data.objects
+          that.tableCollection.forEach(function (v,k,arr) {
+              if(arr[k]['checkType'] == 0){
+                arr[k]['checkType'] = '审批中'
+              }else if(arr[k]['checkType'] == 1) {
+                arr[k]['checkType'] = '通过'
+              }else if(arr[k]['checkType'] == 2) {
+                arr[k]['checkType'] = '驳回'
+              }
+              if(arr[k]['collectionType'] == 1){
+                arr[k]['collectionType'] = '直客'
+              }else if(arr[k]['collectionType'] == 2) {
+                arr[k]['collectionType'] = '同业'
+              }else if(arr[k]['collectionType'] == 3) {
+                arr[k]['collectionType'] = '外部'
+              }else if(arr[k]['collectionType'] == 4) {
+                arr[k]['collectionType'] = '分销商收款'
+              }else if(arr[k]['collectionType'] == 5) {
+                arr[k]['collectionType'] = '付款'
+              }
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
       //订单
+      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderpage', {
+        "pageIndex": 1,
+        "pageSize": 100,
+        "object": {
+          "planID": this.planId
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableOrder = res.data.objects
+          that.tableOrder.forEach(function (v,k,arr) {
+              if(arr[k]['orderChannel'] == 1){
+                arr[k]['orderChannel'] = '同业'
+              }else if(arr[k]['orderChannel'] == 2) {
+                arr[k]['orderChannel'] = '门店'
+              }else if(arr[k]['orderChannel'] == 3) {
+                arr[k]['orderChannel'] = '总部'
+              }
+              if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==1)||(arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==2)||(arr[k]['orderStatus'] == 10 && arr[k]['occupyStatus'] ==3)){
+                arr[k]['orderStatus'] = '未完成订单'
+              }else if(arr[k]['orderStatus'] == 1){
+                arr[k]['orderStatus'] = '补充游客材料'
+              }else if(arr[k]['orderStatus'] == 2) {
+                arr[k]['orderStatus'] = '电子合同'
+              }else if(arr[k]['orderStatus'] == 3) {
+                arr[k]['orderStatus'] = '待出行'
+              }else if(arr[k]['orderStatus'] == 4) {
+                arr[k]['orderStatus'] = '旅行中'
+              }else if(arr[k]['orderStatus'] == 5) {
+                arr[k]['orderStatus'] = '待评价'
+              }else if(arr[k]['orderStatus'] == 6) {
+                arr[k]['orderStatus'] = '订单完成'
+              }else if(arr[k]['orderStatus'] == 7) {
+                arr[k]['orderStatus'] = '未确认'
+              }else if(arr[k]['orderStatus'] == 8) {
+                arr[k]['orderStatus'] = '签署合同'
+              }else if(arr[k]['orderStatus'] == 9) {
+                arr[k]['orderStatus'] = '作废订单'
+              }else if(arr[k]['orderStatus'] == 10) {
+                arr[k]['orderStatus'] = '确认订单'
+              }
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
   }
 };
