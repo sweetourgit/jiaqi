@@ -128,7 +128,6 @@ export default {
   methods: {
     init(){
       this.list= this.value;
-      window.ddd= this;
     },
 
     changeState(){

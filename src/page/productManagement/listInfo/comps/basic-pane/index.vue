@@ -241,19 +241,19 @@ export default {
           required: true,
           validator: this.notNullArrayValidator, 
           message: '出发地不能为空', 
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         destinations: {
           required: true,
           validator: this.notNullArrayValidator, 
           message: '目的地不能为空', 
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         confirmType: { 
           required: true, 
           validator: this.simpleValidator, 
           message: '订单确认类型不能为空', 
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         // 亮点词
         strengths: {
@@ -261,7 +261,7 @@ export default {
           validator: this.notNullArrayValidator, 
           message: '亮点词不能为空，且不能多于四个', 
           numLimit: 4,
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         crowdID: { 
           required: true, 
