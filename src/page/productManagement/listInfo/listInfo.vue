@@ -50,7 +50,7 @@ import { teamgetAction, getGuidAction, insertAction, saveAction } from './api'
 import { getTeamProDTO } from './dictionary'
 import basicPane from './comps/basic-pane/index'
 import instructionsPane from './comps/instructions-pane/index'
-import othersPane from './comps/others-pane'
+import othersPane from './comps/others-pane/index'
 
 export default {
   components: { basicPane, instructionsPane, othersPane },
