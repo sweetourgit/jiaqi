@@ -1100,6 +1100,11 @@ export default {
               }else if(arr[k]['supplierType'] == 11) {
                 arr[k]['supplierType'] = '火车票押金'
               }
+              if(arr[k]['paymentType'] == 1){
+                arr[k]['paymentType'] = '无收入借款'
+              }else if(arr[k]['paymentType'] == 1){
+                arr[k]['paymentType'] = '预付款'
+              }
           })
         }
       }).catch(err => {
