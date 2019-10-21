@@ -171,7 +171,7 @@
               <template slot-scope="scope">
                 <span class="cursor blue" @click="fillTravel()">编辑</span>
                 <span class="em">|</span>
-                <span class="cursor blue">删除</span>
+                <span class="cursor blue" @click="delTravel()">删除</span>
               </template>
             </el-table-column>
           </el-table>
@@ -936,6 +936,9 @@ export default {
           commentText: "测试"
         })
         .then(res => {});
+    },
+    delTravel(){//删除单条表格数据
+
     },
     fillTravel(type, index){//点击出行人信息表格编辑显示弹窗
       console.log(this.enrollName)
