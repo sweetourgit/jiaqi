@@ -100,7 +100,7 @@ export const getActivityDTO= function(scheduleID){
     picture: '[]',
     memo: '',
     code: '',
-    createTime: ''
+    createTime: new Date().toISOString()
   }
 }
 
