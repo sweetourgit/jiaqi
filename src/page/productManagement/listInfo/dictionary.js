@@ -48,3 +48,12 @@ export const getInstructionDTO= function(title){
     code: null
   }
 }
+
+export const MENU_TYPE= {
+  // 费用
+  COST: 1,
+  // 预定须知
+  RESERVE: 2,
+  // 使用说明
+  INTRODUCE: 3
+}

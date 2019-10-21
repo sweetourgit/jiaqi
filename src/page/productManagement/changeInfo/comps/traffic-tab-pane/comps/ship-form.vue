@@ -138,9 +138,6 @@
     </main>
 
     <footer>
-      <el-button type="primary" size="small" 
-        @click="addExtStopover"
-      >添加经停</el-button>
       <el-button v-if="!goOrBackSign" type="info" size="small"
         @click="$emit('remove-traffic')"
       >删除中转</el-button>

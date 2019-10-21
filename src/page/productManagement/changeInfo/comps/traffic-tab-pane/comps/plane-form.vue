@@ -65,7 +65,7 @@
                 size="small"
                 v-model="vm.flightNo"
                 :fetch-suggestions="getFlightAction"
-                placeholder="输入航班ID"
+                placeholder="输入航班号"
                 :trigger-on-focus="false"
                 @select="selectFilght"
               ></el-autocomplete>
@@ -194,16 +194,15 @@ export default {
      */
     getFlightAction(queryString, cb){
       this.$http.post(
-        this.GLOBAL.serverSrc + "/flight/api/get",
+        this.GLOBAL.serverSrc + "/Flight/flighs/api/getnum",
         {
-          id: queryString,
+          number: queryString,
         }
       ).then(res => {
         let { isSuccess, object }= res.data;
-        if(!object) throw '未找到对应航班';
         // 字段对应不上，转接一下
         this.flightOptions= [object];
-        cb([{ value: object.id+ '' }]);
+        cb([{ value: object.number+ '' }]);
       }).catch(err => {
         let errMsg;
         if(err && err.status=== 400) errMsg= '自动填充请输入数字id，不得包含其他类型字符';
@@ -242,7 +241,7 @@ export default {
      * @description: 航班id查询后，以查询到的航班信息填充表单
      */
     selectFilght(flight){
-      let hit= this.flightOptions.find(el => el.id== flight.value);
+      let hit= this.flightOptions.find(el => el.number== flight.value);
       Object.assign(this.submitForm, this.flightAttrAdapter(hit));
     },
   }
