@@ -988,9 +988,9 @@
               console.log('已经填写总库存')
               this.$refs['form'][index].validate(valid => {
                 if (valid) {
-                  // 当前销售价低于共享库存的结算参考
+                  // 当前销售价低于非共享库存的结算参考
                   if(data.salePrice < this.average) {
-                    this.$confirm('当前销售价低于共享库存的结算参考, 是否继续保存', '提示', {
+                    this.$confirm('当前销售价低于非共享库存的结算参考, 是否继续保存', '提示', {
                       confirmButtonText: '确定',
                       cancelButtonText: '取消',
                       type: 'warning'
@@ -1527,6 +1527,7 @@
                 this.Rform.resource = String(day.data.person.share); // 库存类型
                 this.xuanze(this.Rform.resource);
                 if (this.Rform.resource == 1) {
+                  console.log('共享库存数量', day.data.person.count)
                   // 共享库存数量
                   this.Rform.shareNum = day.data.person.count;
                   // 共享库存ID
@@ -1535,6 +1536,7 @@
                     this.shareSelect();
                   }, 100)
                 } else {
+                  console.log('非共享库存数量', day.data.person.count)
                   // 非共享库存数量
                   this.Rform.sumNum = day.data.person.count;
                   // 非共享库存ID
