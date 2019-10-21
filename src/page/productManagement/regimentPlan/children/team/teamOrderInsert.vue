@@ -318,8 +318,8 @@
       <div>
         <el-tabs v-model="activeName">
           <el-tab-pane label="借款" name="first">
-            <el-table :data="tableBorrowing" class="" :header-cell-style="getCostClass" border>
-              <el-table-column prop="id" label="ID" min-width="80" align="center"></el-table-column>
+            <el-table :data="tableBorrowing" :header-cell-style="getCostClass" border>
+              <el-table-column prop="paymentID" label="ID" min-width="80" align="center"></el-table-column>
               <el-table-column prop="paymentType" label="借款类型" min-width="120" align="center"></el-table-column>
               <el-table-column prop="checkType" label="审批状态" align="center">
                 <template slot-scope="scope">
@@ -328,10 +328,10 @@
                   <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
                 </template>
               </el-table-column>
-              <el-table-column prop="supplierType" label="借款类型" min-width="80" align="center"></el-table-column>
+              <!-- <el-table-column prop="supplierType" label="借款类型" min-width="80" align="center"></el-table-column> -->
               <el-table-column prop="supplierName" label="供应商" min-width="80" align="center"></el-table-column>
               <el-table-column prop="price" label="金额" min-width="120" align="center"></el-table-column>
-              <el-table-column prop="expensePrice" label="已核销金额" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="expensePrice" label="已报销金额" min-width="120" align="center"></el-table-column>
               <el-table-column prop="createUser" label="申请人" min-width="70" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
@@ -341,13 +341,19 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="报销" name="second">
-            <el-table :data="tableAccount" class="" :header-cell-style="getCostClass" border>
-              <el-table-column prop="" label="报销单号" min-width="120"></el-table-column>
-              <el-table-column prop="" label="状态" min-width="120"></el-table-column>
-              <el-table-column prop="" label="发起时间" min-width="150"></el-table-column>
-              <el-table-column prop="" label="该团期的报销金额" min-width="150"></el-table-column>
-              <el-table-column prop="" label="申请人" min-width="80"></el-table-column>
-              <el-table-column prop="" label="审批过程" min-width="70">
+            <el-table :data="tableAccount" style="margin:0 1px 0 1px" :header-cell-style="getCostClass" border>
+              <el-table-column prop="id" label="报销单号" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="checkType" label="状态" min-width="120" align="center">
+                <template slot-scope="scope">
+                  <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="createTime" label="发起时间" min-width="150" align="center"></el-table-column>
+              <el-table-column prop="price" label="该团期的报销金额" min-width="150" align="center"></el-table-column>
+              <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
+              <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
                   <span class="cursor blue">查看</span>
                 </template>
@@ -355,7 +361,7 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="收款" name="third">
-            <el-table :data="tableCollection" class="" :header-cell-style="getCostClass" border>
+            <el-table :data="tableCollection" :header-cell-style="getCostClass" border>
               <el-table-column prop="" label="收款单号" min-width="120"></el-table-column>
               <el-table-column prop="" label="收款类型" min-width="120"></el-table-column>
               <el-table-column prop="" label="同业社名称" min-width="100"></el-table-column>
@@ -373,7 +379,7 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="订单" name="fourth">
-            <el-table :data="tableOrder" class="" :header-cell-style="getCostClass" border>
+            <el-table :data="tableOrder" :header-cell-style="getCostClass" border>
               <el-table-column prop="" label="订单ID" min-width="120"></el-table-column>
               <el-table-column prop="" label="联系人" min-width="120"></el-table-column>
               <el-table-column prop="" label="数量" min-width="180"></el-table-column>
@@ -1062,6 +1068,7 @@ export default {
     getBorrowing(val){
       var that = this
       console.log(this.planId)
+      //借款
       that.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/list', {
         "object": {
           "planID": this.planId,
@@ -1100,12 +1107,39 @@ export default {
               }else if(arr[k]['supplierType'] == 11) {
                 arr[k]['supplierType'] = '火车票押金'
               }
+              if(arr[k]['paymentType'] == 1){
+                arr[k]['paymentType'] = '无收入借款'
+              }else if(arr[k]['paymentType'] == 2){
+                arr[k]['paymentType'] = '预付款'
+              }
           })
         }
       }).catch(err => {
         console.log(err)
       })
-
+      //报销
+      that.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list', {
+        "object": {
+          "planID": this.planId,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableAccount = res.data.objects
+          that.tableAccount.forEach(function (v,k,arr) {
+              if(arr[k]['checkType'] == 0){
+                arr[k]['checkType'] = '审批中'
+              }else if(arr[k]['checkType'] == 1) {
+                arr[k]['checkType'] = '通过'
+              }else if(arr[k]['checkType'] == 2) {
+                arr[k]['checkType'] = '驳回'
+              }
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //收款
+      //订单
     },
   }
 };
