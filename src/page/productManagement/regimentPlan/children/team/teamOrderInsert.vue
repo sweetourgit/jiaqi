@@ -161,7 +161,7 @@
             </div>
           </el-form-item>
           <div class="travelMessage">出行人信息</div>
-          <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px">
+          <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px" v-for="(item,indexPrice) in salePrice">
             <el-table-column prop="name" label="姓名" min-width="100" align="center"></el-table-column>
             <el-table-column prop="type" label="报名类型" min-width="100" align="center"></el-table-column>
             <el-table-column prop="phone" label="电话" min-width="120" align="center"></el-table-column>
@@ -509,7 +509,7 @@ export default {
             message: "姓（拼音）格式不正确"
           }
         ],
-        sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         mobile: [
           { required: true, message: "请输入手机号", trigger: "blur" },
           {
@@ -553,6 +553,7 @@ export default {
         this.ruleForm.allDisRemark = "";
       }else if(this.dialogType == 2){
         setTimeout(() => {
+          console.log(this.planId)
           this.teamGetDetails(this.planId);
         }, 200);
         this.detailsDialog =true;
@@ -574,8 +575,12 @@ export default {
   },
   methods: {
     moment,
-    detailsCancel(){
+    detailsCancel(){//详情取消弹窗
       this.detailsDialog = false;
+      this.tableBorrowing = [];//借款表格
+      this.tableAccount = [];//报销表格
+      this.tableCollection = [];//收款表格
+      this.tableOrder = [];//订单表格
     },
     getCostClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
@@ -730,22 +735,6 @@ export default {
         this.costList.splice(arrLength - preLength, preLength - arrLength);
       }
     },
-    fillTravel(type, index){
-      console.log(this.enrollName)
-      this.winTitle = this.costList[0].enrollName; //编辑游客信息弹窗标题
-      this.dialogFormTour = true;
-
-    },
-    // fillTour(type, index) {
-    //   this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
-
-    //   if (this.tour[type][index].cnName != "点击填写") {
-    //     this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
-    //   }
-    //   this.tourType = type;
-    //   this.fillIndex = index;
-    //   this.dialogFormTour = true;
-    // },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
@@ -804,8 +793,7 @@ export default {
             enrollDetail = `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
           });
           this.ifOrderInsert = false;
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
+          this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
               object: {
                 id: 0,
                 isDeleted: 0,
@@ -895,8 +883,7 @@ export default {
     },
     // 下单弹窗 的提交按钮成功后  需再把备注信息存到/orderquery/get/api/InserOrderComment
     addComment(orderCode) {
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
+      this.$http.post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
           object: {
             orderCode: orderCode,
             content: this.ruleForm.remark,
@@ -950,19 +937,35 @@ export default {
         })
         .then(res => {});
     },
-    ensure(formName){
+    fillTravel(type, index){//点击出行人信息表格编辑显示弹窗
+      console.log(this.enrollName)
+      this.winTitle = this.costList[0].enrollName; //编辑游客信息弹窗标题
+      this.tourType = type;
+      this.fillIndex = index;
+      this.dialogFormTour = true;
+
+    },
+    // fillTour(type, index) {
+    //   this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
+
+    //   if (this.tour[type][index].cnName != "点击填写") {
+    //     this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
+    //   }
+    //   this.tourType = type;
+    //   this.fillIndex = index;
+    //   this.dialogFormTour = true;
+    // },
+    ensure(formName){//出行人弹窗添加完保存
       this.$refs[formName].validate(valid => {
         if (valid) {
+          console.log(this.tourType)
           let guest = JSON.parse(JSON.stringify(this.conForm));
-          // console.log(this.costList[0].enrollName)
-          // console.log(this.costList.name)
-          // console.log(this.conForm.cnName)
-          // console.log(this.guest.cnName)
           if (this.ruleForm.price == 1) {
-            guest.singlePrice = this.salePrice[this.tourType].price_01; //填充价格
+            guest.singlePrice = this.costList[this.tourType].price_01; //填充价格
           } else {
-            guest.singlePrice = this.salePrice[this.tourType].price_02;
+            guest.singlePrice = this.costList[this.tourType].price_02;
           }
+          this.costList[this.tourType][this.fillIndex] = guest;
           this.dialogFormTour = false;
           this.$refs[formName].resetFields();
         }
@@ -1055,10 +1058,10 @@ export default {
     //详情借款表格
     getBorrowing(val){
       var that = this
-      console.log(val)
+      console.log(this.planId)
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
         "object": {
-          "id": val,
+          "planID": this.planId,
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
