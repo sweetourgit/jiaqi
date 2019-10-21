@@ -937,8 +937,8 @@ export default {
         })
         .then(res => {});
     },
-    delTravel(){//删除单条表格数据
-
+    delTravel(type, index){//删除单条表格数据
+      
     },
     fillTravel(type, index){//点击出行人信息表格编辑显示弹窗
       console.log(this.enrollName)
@@ -1062,7 +1062,7 @@ export default {
     getBorrowing(val){
       var that = this
       console.log(this.planId)
-      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+      that.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/list', {
         "object": {
           "planID": this.planId,
         }
