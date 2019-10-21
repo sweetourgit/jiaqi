@@ -181,6 +181,8 @@ export default {
     },
 
     validate(){
+      // 先重置错误队列
+      this._provided.ERROR_QUEUE.splice(0);
       let validate= true;
       validate= this.$refs.basicRef.validate();
       validate && (validate= this.$refs.instructionsRef.validate());
