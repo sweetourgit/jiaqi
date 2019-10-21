@@ -187,6 +187,15 @@ export default {
     this.init();
   },
 
+  watch: {
+    proto:{
+      handler(){
+        this.refresh();
+      },
+      deep: true
+    }
+  },
+
   data(){
     return {
       vm: {
@@ -304,6 +313,17 @@ export default {
       this.initCrowdlist();
       // 主题
       this.initThemelist();
+    },
+    isArray(obj){
+      return Object.prototype.toString.call(obj)=== '[object Array]';
+    },
+    refresh(){
+      Object.keys(this.proto).forEach(attr => {
+        if(this.isArray(this.proto[attr])){
+          this.submitForm[attr].splice(0);
+          this.submitForm[attr].push(...this.$deepCopy(this.proto[attr]));
+        }
+      })
     },
     initCrowdlist(){
       getCrowdlistAction.bind(this)().then(res => {
