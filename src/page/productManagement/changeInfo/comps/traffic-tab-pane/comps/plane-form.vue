@@ -243,6 +243,9 @@ export default {
     selectFilght(flight){
       let hit= this.flightOptions.find(el => el.number== flight.value);
       Object.assign(this.submitForm, this.flightAttrAdapter(hit));
+      this.$nextTick(() => {
+        this.validate();
+      });
     },
   }
 }
