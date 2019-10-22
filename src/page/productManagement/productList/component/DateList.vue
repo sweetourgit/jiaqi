@@ -974,7 +974,7 @@
           console.log('修改非共享库存失败');
         })
       },
-      // 报名类型保存之后
+      // 报名类型保存之后(右侧卡片的保存按钮)
       addQuota(data, index) {
         // 这个data 参数就是要填加载日历上卡片相关信息
         // 有计划id，值执行修改操作
@@ -1254,6 +1254,7 @@
       },
       // 共享库存时的添加
       shareInsert(data, index) {
+        console.log(data,'共享库存时的添加')
         let planEnroll = [];
         let cost = false;
         let date = this.formatDates(
@@ -1267,7 +1268,8 @@
             'name': data.name,
             'salePrice': data.salePrice,
             'traderPrice': data.traderPrice,
-            'quotaPrice': data.quotaPrice
+            'quotaPrice': data.quotaPrice,
+            "dateHous": this.Rform.orderRetain, // 调时长时新增
           })
         } else {
           let isSave = true; // 是否编辑判断
@@ -1278,7 +1280,8 @@
                 'name': data.name,
                 'salePrice': data.salePrice,
                 'traderPrice': data.traderPrice,
-                'quotaPrice': data.quotaPrice
+                'quotaPrice': data.quotaPrice,
+                "dateHous": this.Rform.orderRetain, // 调时长时新增
               })
               isSave = false;
             } else {
@@ -1287,7 +1290,8 @@
                 'name': item.name,
                 'salePrice': item.salePrice,
                 'traderPrice': item.traderPrice,
-                'quotaPrice': item.quotaPrice
+                'quotaPrice': item.quotaPrice,
+                "dateHous": this.Rform.orderRetain, // 调时长时新增
               })
             }
           })
@@ -1297,7 +1301,8 @@
               'name': data.name,
               'salePrice': data.salePrice,
               'traderPrice': data.traderPrice,
-              'quotaPrice': data.quotaPrice
+              'quotaPrice': data.quotaPrice,
+              "dateHous": this.Rform.orderRetain, // 调时长时新增
             })
           }
         }
