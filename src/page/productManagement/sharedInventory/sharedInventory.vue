@@ -8,6 +8,7 @@
   <div class="shared-inventory">
     <header>
       <shared-header></shared-header>
+      <el-button type="primary" size="small">添加库存</el-button>
     </header>
   </div>
 </template>
