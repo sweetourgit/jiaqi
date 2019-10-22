@@ -29,7 +29,7 @@ import scenicTicketingList from '@/page/productManagement/regimentPlan/children/
 import scenicTicketingDetails from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingDetails'
 import scenicTicketingPledging from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingPledging'
 import scenicTicketingBillReporting from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingBillReporting'
-import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
+import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventor'
 import changePro from '@/page/productManagement/listInfo/listInfo'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
 import blacklist from '@/page/contentInfo/blacklist/blacklist'
