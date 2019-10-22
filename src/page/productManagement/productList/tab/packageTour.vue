@@ -964,8 +964,6 @@ export default {
     },
     // 修改成本信息
     submitForm2(formName) {
-      console.log(this.borrowingType)
-      console.log(this.ruleForm1.costType)
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/save", {

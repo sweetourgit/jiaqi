@@ -162,7 +162,7 @@
             </div>
           </div>
           <div class="divform">
-            <el-form ref="form" :model="item" :rules="formRuler"  label-width="80px">
+            <el-form ref="form" :model="item" :rules="formRuler"  label-width="90px">
               <el-form-item label="销售价" prop="salePrice">
                 <el-input v-if="Rform.resource == 1" :class="isAverage = item.salePrice < shareAverage && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
                 <el-input v-else :class="isAverage = item.salePrice < average && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
@@ -172,6 +172,15 @@
               </el-form-item>
               <el-form-item label="配额" v-if="arr[index].quota == true">
                 <el-input :maxlength='6' v-model="item.quotaPrice"></el-input>
+              </el-form-item>
+              <el-form-item label="团期状态:" style="margin-top:20px" prop="regimentType">
+                <el-select v-model="item.regimentType" placeholder="请选择团期状态" @change="$forceUpdate()">
+                  <el-option label="正常" value="1" key="1">正常</el-option>
+                  <el-option label="停售" value="2" key="2">停售</el-option>
+                  <el-option label="封团" value="3" key="3">封团</el-option>
+                  <el-option label="暂满" value="4" key="4">暂满</el-option>
+                  <el-option label="满员" value="5" key="5">满员</el-option>
+                </el-select>
               </el-form-item>
             </el-form>
           </div>
@@ -201,6 +210,7 @@
           shareNum: '',    // 共享库存数量
           sumNum:'',       // 总库存数量
           orderRetain: '', // 订单保留
+          regimentType: '' // 团期状态
         }, // 大表单
         form: {
           price: "",
@@ -245,6 +255,9 @@
           ],
           traderPrice: [
             { required: true, message: '不能为空'}
+          ],
+          regimentType: [
+            { required: true, message: '请选择团期状态'}
           ]
         },
         // 附加增值服务
@@ -735,6 +748,7 @@
             )
             // 清空日历里报名类型
             item.data.person = {};
+            console.log(res,'res')
             res.data.objects.forEach(items => {
               if (str == items.date) {
                 let plan_Enrolls = [];
@@ -751,6 +765,7 @@
                     })
                   })
                 }
+                console.log(items,'items')
                 item.data.person = {
                   'id': items.planID,
                   'packageID': items.packageID,
@@ -976,6 +991,7 @@
       },
       // 报名类型保存之后(右侧卡片的保存按钮)
       addQuota(data, index) {
+        console.log(this.Rform.regimentType,'团期状态的值')
         // 这个data 参数就是要填加载日历上卡片相关信息
         // 有计划id，值执行修改操作
         if (this.Rform.id) {
@@ -1130,7 +1146,6 @@
         this.n.forEach(item => {
           // 第一次添加时
           if (this.days[item.index].data.person.planEnroll == undefined) {
-            console.log('第一次添加时', data)
             let planEnroll = [];
             let cost = false;
             planEnroll.push({
@@ -1151,14 +1166,14 @@
                 cost = true;
               }
             })
-            // 把新选中的计划 进行赋值
-            this.days[item.index].data.person = {
+            this.days[item.index].data.person = { // 把新选中的计划 进行赋值
                 'inventoryID': '',
                 'packageID': this.ccc[0],
                 'date': date,
                 'count': this.Rform.sumNum,
                 'share': this.Rform.resource,
                 'cost': cost,
+                'regimentType': data.regimentType,
                 'planEnroll': planEnroll
               }
             n.push(this.days[item.index]);
@@ -1171,7 +1186,6 @@
             let planEnroll = [];
             let cost = false;
             let isSave = true; // 是否编辑判断
-            console.log('是否编辑判断',data)
             this.days[item.index].data.person.planEnroll.forEach(list => {
               if (list.enrollID == data.id && list.name == data.name) {
                 planEnroll.push({
@@ -1216,6 +1230,7 @@
               'share': this.Rform.resource,
               'cost': cost,
               'count': this.Rform.sumNum,
+              'regimentType': data.regimentType,
               'planEnroll': planEnroll
             }
             n.push(this.days[item.index]);
@@ -1225,6 +1240,7 @@
         this.n = n;
         // 新增计划点击保存直接提交数据
         n.forEach(item => {
+          console.log(item, '新增计划点击保存直接提交数据')
           this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', { // 新增库存
             "object": {
               "name": '', // 名称
@@ -1239,7 +1255,8 @@
                 "packageID": item.data.person.packageID, // 套餐
                 "date": item.data.person.date, // 日历上的日期
                 "groupCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix, // 团号
-                "planEnroll": item.data.person.planEnroll // 此团期中的所有报名类型
+                "planEnroll": item.data.person.planEnroll, // 此团期中的所有报名类型
+                'regimentType': item.data.person.regimentType // 团期状态
               }
             }).then(resAdd => {
               // 添加成功后从新查找
@@ -1471,6 +1488,7 @@
           shareNum: '', // 共享库存数量
           shareId:'',   // 共享库存
           sumNum:'',    // 总库存
+          regimentType:'',// 团期状态
         };
         // 清空表单验证样式
         if (this.$refs['Rform'] != undefined) {
@@ -1599,6 +1617,7 @@
             this.arr[i].isModify = true;
             this.arr[i].salePrice = _planEnroll[i].salePrice;
             this.arr[i].dateHous = _planEnroll[i].dateHous; // 新增等待时长
+            this.arr[i].regimentType = _planEnroll[i].regimentType; // 新增团期状态
             this.arr[i].traderPrice = _planEnroll[i].traderPrice;
             if (_planEnroll[i].quotaPrice == null || _planEnroll[i].quotaPrice == 0) {
               this.arr[i].quota = false;
@@ -1787,7 +1806,7 @@
       },
       // 添加报名类型
       AddType(type) {
-        if (this.Rform.region) {
+        if (this.Rform.region) { // 如果有报名类型
           let mon = true;
           if (this.arr.length !== 0) {
             this.arr.forEach(item => {
@@ -1806,7 +1825,8 @@
               'salePrice': '',   // 销售价
               'traderPrice': '', // 同业价
               'quota': false,    // 配额开关
-              'quotaPrice': ''   // 配额
+              'quotaPrice': '',   // 配额
+              'regimentType': ''   // 团期状态
             })
           } else {
             this.$message({
