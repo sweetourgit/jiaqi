@@ -1070,7 +1070,7 @@ export default {
         this.ruleForm.travel = '';
       }
     },
-    //详情借款表格
+    //详情四个表格查询
     getBorrowing(val){
       var that = this
       console.log(this.planId)
