@@ -50,7 +50,7 @@ import { teamgetAction, getGuidAction, insertAction, saveAction } from './api'
 import { getTeamProDTO } from './dictionary'
 import basicPane from './comps/basic-pane/index'
 import instructionsPane from './comps/instructions-pane/index'
-import othersPane from './comps/others-pane'
+import othersPane from './comps/others-pane/index'
 
 export default {
   components: { basicPane, instructionsPane, othersPane },
@@ -181,6 +181,8 @@ export default {
     },
 
     validate(){
+      // 先重置错误队列
+      this._provided.ERROR_QUEUE.splice(0);
       let validate= true;
       validate= this.$refs.basicRef.validate();
       validate && (validate= this.$refs.instructionsRef.validate());

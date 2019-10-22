@@ -14,7 +14,9 @@
         :model="submitForm"
       >
         <el-form-item>
-          <el-radio-group v-model="submitForm.activityType">
+          <el-radio-group v-model="submitForm.activityType"
+            @change="changeActivityType"
+          >
             <el-radio :label="0">景点</el-radio>
             <el-radio :label="1">购物</el-radio>
             <el-radio :label="2">自费项目</el-radio>
@@ -85,6 +87,7 @@
 <script>
 // 第三方组件
 import { VueEditor } from 'vue2-editor'
+import { getActivityDTO } from '../../../../dictionary'
 
 export default {
   components: { VueEditor },
@@ -115,6 +118,19 @@ export default {
     getData(){
       return this.submitForm;
     },
+
+    changeActivityType(nval){
+      let { activityType }= this.proto;
+      if(nval=== activityType){
+        Object.keys(this.proto).forEach(attr => {
+          this.submitForm[attr]= this.proto[attr]
+        })
+      } else {
+        let newActivity= getActivityDTO();
+        newActivity.activityType= nval;
+        Object.assign(this.submitForm, newActivity);
+      }
+    }
   },
 
   computed: {

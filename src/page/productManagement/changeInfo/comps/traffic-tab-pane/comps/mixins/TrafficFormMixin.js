@@ -72,7 +72,7 @@ const TrafficFormMixin= {
      * @description: 添加经停
      */
     addExtStopover(){
-      this.$refs.extStopoverRef.addExtStopover()
+      this.$refs.extStopoverRef && this.$refs.extStopoverRef.addExtStopover()
     },
 
     /**
@@ -81,7 +81,7 @@ const TrafficFormMixin= {
     checkHasChange(){
       let bol= false;
       bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
-      !bol && (bol= this.$refs.extStopoverRef.checkHasChange());
+      !bol && this.$refs.extStopoverRef && (bol= this.$refs.extStopoverRef.checkHasChange());
       bol && console.log(`traffic-form checkHasChange: ${bol}`)
       return bol;
     },
@@ -89,7 +89,7 @@ const TrafficFormMixin= {
     validate(){
       let bol= true;
       this.$refs.submitForm.validate(validate => bol= validate);
-      bol && (bol= this.$refs.extStopoverRef.validate());
+      bol && this.$refs.extStopoverRef && (bol= this.$refs.extStopoverRef.validate());
       return bol;
     },
 
@@ -104,8 +104,9 @@ const TrafficFormMixin= {
      */
     getData(){
       let data= this.submitForm;
-      let ext_Stopover= this.$refs.extStopoverRef.getData();
-      data.ext_Stopover= ext_Stopover;
+      if(this.$refs.extStopoverRef){
+        data.ext_Stopover= this.$refs.extStopoverRef.getData();
+      }
       return data;
     },
 

@@ -4,7 +4,7 @@
       <div class="search">
         <el-row>
           <el-col :span="7">
-            <span class="search_style">款项说明：</span>
+            <span class="search_style">收款详细说明：</span>
             <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
           </el-col>
           <el-col :span="7">
@@ -18,11 +18,24 @@
             <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="7">
+            <span class="search_style">状态：</span>
+            <el-select v-model="collectionStatus" placeholder="请选择" class="search_input">
+              <el-option key="" label="全部" value=""></el-option>
+              <el-option key="1" label="未认款" value="10"></el-option>
+              <el-option key="2" label="待认收款" value="11"></el-option>
+              <el-option key="3" label="已认完" value="12"></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="9" :offset="7">
+            <div class="buttonDv">
+              <el-button type="primary" @click="resetFun" plain>重置</el-button>
+              <el-button type="primary" @click="searchFun">搜索</el-button>
+            </div>
+          </el-col>
+        </el-row>
 
-        <div class="buttonDv">
-          <el-button type="primary" @click="resetFun" plain>重置</el-button>
-          <el-button type="primary" @click="searchFun">搜索</el-button>
-        </div>
       </div>
       <div class="search" style="background-color: transparent;padding: 0;">
         <el-button type="primary" @click="addFun" plain>添加</el-button>
@@ -40,7 +53,7 @@
           </el-table-column>
           <el-table-column prop="explain" label="款项说明" align="center"></el-table-column>
           <el-table-column prop="rece_money" label="收款金额" align="center"></el-table-column>
-          <el-table-column prop="rece_money" label="剩余确认金额" align="center"></el-table-column>
+          <el-table-column prop="leave_match_money" label="剩余确认金额" align="center"></el-table-column>
           <el-table-column prop="receivables_at" label="收款时间" width="120" align="center"></el-table-column>
           <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
           <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
@@ -71,9 +84,9 @@
 </template>
 
 <script>
-  import collectionAdd from '@/page/Finance/collectionManagement/recognitionWait/collectionAdd.vue'
-  import collectionAddBatch from '@/page/Finance/collectionManagement/recognitionWait/collectionAddBatch.vue'
-  import collectionDetail from '@/page/Finance/collectionManagement/recognitionWait/collectionDetail.vue'
+  import collectionAdd from '@/page/Finance/collectionManagement/recognitionWait/collectionAdd.vue'// 添加
+  import collectionAddBatch from '@/page/Finance/collectionManagement/recognitionWait/collectionAddBatch.vue'// 批量添加
+  import collectionDetail from '@/page/Finance/collectionManagement/recognitionWait/collectionDetail.vue'// 详情
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "tradeList",
@@ -84,27 +97,30 @@
     },
     data() {
       return {
-        disabled: false,
+        disabled: false,// 设置搜索项时间不可编辑
 
-        plan: '',
-        reimbursementPer: '',
-        startTime: '',
-        endTime: '',
-        reimbursementPerID: '',
-        operatorList: [],
+        plan: '',// 款项说明
+        startTime: '',// 搜索项，开始时间
+        endTime: '',// 搜索项，结束时间
+        reimbursementPer: '',// 申请人
+        reimbursementPerID: '',// 申请人ID
+        operatorList: [],// 申请人list
+        collectionStatus: '',// 待认款收款状态[10:未认款;11:待认收款;12:已认完]
 
+        // 页数，页码，条数
         pageSize: 10,
         currentPage: 1,
-        pageCount: 2,
+        pageCount: 0,
 
-        //待审批table
-        tableData: [{}],
+        // 列表table
+        tableData: [],
 
-        dialogFormVisible: false,
-        dialogFormVisible1: false,
-        dialogFormVisible2: false,
-        info: '',
+        dialogFormVisible: false,// 添加-显示，隐藏
+        dialogFormVisible1: false,// 详情-显示，隐藏
+        dialogFormVisible2: false,// 批量添加-显示，隐藏
+        info: '',// 详情传值字段
 
+        // 时间限制
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate()
       };
@@ -152,19 +168,22 @@
           }
         }
       },
-
+      // 添加
       addFun(){
         this.info = '';
         this.dialogFormVisible = true;
       },
+      // 批量添加
       batchAddFun(){
         this.info = '';
         this.dialogFormVisible2 = true;
       },
+      // 详情
       detail(row){
         this.info = row.id;
         this.dialogFormVisible1 = true;
       },
+      // 关闭弹窗
       closeAdd() {
         this.dialogFormVisible = false;
         this.dialogFormVisible1 = false;
@@ -173,27 +192,33 @@
         this.loadData();
       },
 
+      // 搜索
       searchFun(){
         this.loadData();
       },
+      // 重置
       resetFun(){
         this.plan = '';
         this.reimbursementPer = '';
         this.startTime = '';
         this.endTime = '';
         this.reimbursementPerID = '';
+        this.collectionStatus = '';
         this.loadData();
       },
+      // 每页条数操作
       handleSizeChange(val) {
         this.pageSize = val;
         this.currentPage = 1;
         this.loadData()
       },
+      // 页数操作
       handleCurrentChange(val) {
         this.currentPage = val;
         this.loadData();
       },
 
+      // 加载数据
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/listpage", {
@@ -203,6 +228,7 @@
           "create_uid": this.reimbursementPerID,
           "apply_start": this.startTime,
           "apply_end": this.endTime,
+          "status_rece": this.collectionStatus,
           "create_type": '1'
         }, ).then(function(response) {
           if (response.data.code == '200') {
@@ -238,6 +264,7 @@
           console.log(error);
         });
       },
+      // 加载搜索项中 申请人 list
       loadOper(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
@@ -295,6 +322,7 @@
         });
       },
 
+      // 时间限制（开始时间小于结束时间）
       beginDate(){
 //      alert(begin);
         const that = this;
@@ -352,7 +380,7 @@
         margin-left: 20px;
         font-size: 14px;
         display: inline-block;
-        width: 80px;
+        width: 100px;
       }
       .search_input{
         /*float: left;*/

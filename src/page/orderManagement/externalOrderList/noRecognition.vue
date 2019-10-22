@@ -43,7 +43,13 @@
 
       <span class="search-title">分销商:</span>
       <el-input v-model="activeForm.distributors" class="input"></el-input>
-
+      <span class="search-title">借款状态 :</span>
+      <el-select v-model="activeForm.borrowStatus" placeholder="请选择" style="width:200px">
+        <el-option key="" label="全部" value=""></el-option>
+        <el-option key="1" label="未借款" value="1"></el-option>
+        <el-option key="2" label="借款申请中" value="2"></el-option>
+        <el-option key="3" label="已借款" value="3"></el-option>
+      </el-select>
       <div class="button_select">
         <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
         <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
@@ -56,7 +62,7 @@
       <el-button type="primary" :disabled="reable" @click="recognition" plain>认收款</el-button>
     </div>
     <div class="tableDv">
-      <div class="table_trip" style="width: 88%;">
+      <div class="table_trip" style="width: 100%;">
         <el-table ref="multipleTable" v-loading="loading" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="order_sn" label="订单ID" align="center">
@@ -97,6 +103,15 @@
               <p v-if="scope.row.pay_type == 7">自采</p>
             </template>
           </el-table-column>
+          <el-table-column prop="buy_type" label="买入支付方式" align="center">
+            <template slot-scope="scope">
+              <p v-if="scope.row.buy_type == 1">余额支付</p>
+              <p v-if="scope.row.buy_type == 2">授信支付</p>
+              <p v-if="scope.row.buy_type == 3">成本</p>
+            </template>
+          </el-table-column>
+          <el-table-column prop="supplier" label="上级供应商" align="center">
+          </el-table-column>
           <el-table-column prop="import_at" label="导入时间" align="center">
           </el-table-column>
           <el-table-column prop="is_relate_pro" label="关联产品" align="center">
@@ -109,6 +124,11 @@
             <template slot-scope="scope">
               <!--<span>{{bill_status[scope.row.bill_status]}}</span>-->
               <span>未认收款</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="borrow_status" label="借款状态" align="center">
+            <template slot-scope="scope">
+              <span>{{borrowStatusObj[scope.row.borrow_status]}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -150,7 +170,8 @@
           validationEndTime: '',
           ticketPerson: '',
           ticketPhone: '',
-          distributors: ''
+          distributors: '',
+          borrowStatus: ''
         },
         reable: true,
         pid: '',
@@ -176,7 +197,12 @@
           5: '报账中',
           6: '报账驳回',
           7: '已报账'
-        },
+        },// 报账状态
+        borrowStatusObj: {
+          1: '未借款',
+          2: '借款申请中',
+          3: '已借款'
+        },// 借款状态
 
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
@@ -381,7 +407,8 @@
           validationEndTime: '',
           ticketPerson: '',
           ticketPhone: '',
-          distributors: ''
+          distributors: '',
+          borrowStatus: ''
         };
         this.loading = true;
         this.loadData();
@@ -398,7 +425,7 @@
         this.loadData();
       },
       selectInit(row, index){
-        if(row.bill_status == 0 || row.pay_type == 5){
+        if(row.bill_status == 0){
           return false  //不可勾选
         }else{
           return true  //可勾选
@@ -440,6 +467,7 @@
           "contact_phone": this.activeForm.ticketPhone,
           "distributor": this.activeForm.distributors,
           "pay_type": this.activeForm.typePay,
+          "borrow_status": this.activeForm.borrowStatus,
           "import_status": 2,
           "org_id": ''
         }, ).then(function(response) {

@@ -1,10 +1,12 @@
 <script>
   const serverSrc="http://test.dayuntong.com";
-  const imgUrl="http://test.dayuntong.com";
+  // const imgUrl="http://test.dayuntong.com";
+  const imgUrl ="https://jiaqi-server.obs.myhwclouds.com";
   //const imgUrl="http://192.168.2.65:3024";
   //const imgUrl="http://192.168.2.65:3009";
   //const jqUrl="http://192.168.1.198:6019";
-  const jqUrl="http://192.168.2.6:6019";
+  // const jqUrl="http://192.168.2.6:6019";
+  const jqUrl="http://49.4.10.11:3019"
   const serverSrcPhp="http://www.around.com";
   const token="";
   const userId="";

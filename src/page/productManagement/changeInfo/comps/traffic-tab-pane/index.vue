@@ -175,7 +175,15 @@ export default {
         this.traffics.length- 1, 0, this.$deepCopy(TEAM_TRAFFIC_DTO_GO));
     },
     removeTrafficEmit(index){
-      this.traffics.splice(index, 1);
+      this.$confirm('是否删除该交通信息?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.traffics.splice(index, 1);
+      }).catch(() => {
+        // 取消        
+      });
     },
 
     /**

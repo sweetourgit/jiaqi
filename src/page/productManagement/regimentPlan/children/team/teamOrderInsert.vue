@@ -49,8 +49,12 @@
                 </td>
                 <td width="33%">
                   <div width="80" class="fl">参考结算:</div>
-                  <div class="fl ml13">{{average}}</div>
+                  <div class="fl ml13">0.00</div>
                 </td>
+                <!-- <td width="33%">
+                  <div width="80" class="fl">参考结算:</div>
+                  <div class="fl ml13">{{average | numFilter}}</div>
+                </td> -->
                 <td width="33%">
                   <div width="80" class="fl">订单预留时长:</div>
                   <div class="fl ml13">{{teampreviewData.dateHous}}小时</div>
@@ -151,17 +155,8 @@
             ></el-input>
           </el-form-item>
           <!--出行人信息-->
-          <el-form-item label="出行人信息" class="cb">
-            <div class="oh" v-for="(item,indexPrice) in salePrice" :key="indexPrice">
-              <div class="tour-til">{{item.enrollName}}</div>
-              <div class="tourist">
-                <span v-for="(item,index) in tour[indexPrice]" :key="index" placeholder="点击填写" @click="fillTour(indexPrice,index)"
-                >{{item.cnName}}</span>
-              </div>
-            </div>
-          </el-form-item>
           <div class="travelMessage">出行人信息</div>
-          <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px">
+          <!-- <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px">
             <el-table-column prop="name" label="姓名" min-width="100" align="center"></el-table-column>
             <el-table-column prop="type" label="报名类型" min-width="100" align="center"></el-table-column>
             <el-table-column prop="phone" label="电话" min-width="120" align="center"></el-table-column>
@@ -171,11 +166,35 @@
               <template slot-scope="scope">
                 <span class="cursor blue" @click="fillTravel()">编辑</span>
                 <span class="em">|</span>
-                <span class="cursor blue">删除</span>
+                <span class="cursor blue" @click="delTravel()">删除</span>
               </template>
             </el-table-column>
-          </el-table>
-
+          </el-table> -->
+          <table class="costList" v-for="(item,indexPrice) in salePrice" :key="indexPrice" border="1" cellpadding="0" cellspacing="0">
+            <tr class="costList_01">
+              <td width="120">姓名</td>
+              <td width="100">报名类型</td>
+              <td width="120">电话</td>
+              <td width="180">身份证</td>
+              <td width="80">性别</td>
+              <td width="100">操作</td>
+            </tr>
+            <tr v-for="(item,index) in tour[indexPrice]" :key="index">
+              <td>{{item.cnName}}</td>
+              <td>{{item.enrollName}}</td>
+              <td>{{item.mobile}}</td>
+              <td>{{item.idCard}}</td>
+              <td>
+                <div v-if="item.sex=='0'">男</div>
+                <div v-if="item.sex=='1'">女</div>
+              </td>
+              <td class="tc">
+                <span class="fl blue cursor" style="margin:0 0 0 18px"@click="fillTour(indexPrice,index)">编辑</span>
+                <span class="fl" style="margin:0 8px 0 8px;">|</span>
+                <span class="fl blue cursor">删除</span>
+              </td>
+            </tr>
+          </table>
         </el-form>
         
       </div>
@@ -185,12 +204,13 @@
       width="700px">
       <el-form :model="conForm" :rules="rules" ref="conForm" style="height:300px;">
         <el-form-item label="中文姓名" prop="cnName" label-width="110px" class="fl">
-          <el-input type="text" v-model="conForm.cnName" class="w200 fl"></el-input>
+          <el-input type="text" v-model="conForm.cnName" class="w200"></el-input>
         </el-form-item>
         <el-form-item label="英文姓名" prop="enName" label-width="110px" class="fl">
           <el-input type="text" v-model="conForm.enName" class="w200"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px">
+        <div style="clear:both;"></div>
+        <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px;">
           <el-radio-group v-model="conForm.sex">
             <el-radio :label="0">男</el-radio>
             <el-radio :label="1">女</el-radio>
@@ -206,7 +226,7 @@
           <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" style="width:200px" ></el-date-picker>
         </el-form-item>
         <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
-          <el-select v-model="conForm.credType" placeholder="请选择">
+          <el-select v-model="conForm.credType" placeholder="请选择" style="width:200px;">
             <el-option label="请选择" :value="0" />
             <el-option label="护照" :value="1" />
             <el-option label="港澳通行证" :value="2" />
@@ -223,7 +243,7 @@
       <div slot="footer" class="dialog-footer cb">
         <el-button @click="cancelInfo('conForm')">取 消</el-button>
         <!-- <el-button type="primary" @click="subInfo('conForm')">确 定</el-button> -->
-        <el-button type="primary" @click="ensure('conForm')">确 定</el-button>
+        <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
       </div>
     </el-dialog>
     <!--下单成功弹窗-->
@@ -253,7 +273,7 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">操作人:</div>
-              <div class="fl ml13">{{teampreviewData.pod}}</div>
+              <div class="fl ml13">{{teampreviewData.op}}</div>
             </td>
             <td width="33%">
               <div width="80" class="fl">出发日期:</div>
@@ -281,17 +301,24 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">状态:</div>
-              <div class="fl ml13">{{teampreviewData.destination}}</div>
+              <!-- <div class="fl ml13">{{teampreviewData.regimentType}}</div> -->
+              <div class="fl ml13">
+                <div v-if="teampreviewData.regimentType=='1'">正常</div>
+                <div v-if="teampreviewData.regimentType=='2'">停售</div>
+                <div v-if="teampreviewData.regimentType=='3'">封团</div>
+                <div v-if="teampreviewData.regimentType=='4'">暂满</div>
+                <div v-if="teampreviewData.regimentType=='5'">满员</div>
+              </div>
             </td>
             <td width="33%">
               <div width="80" class="fl">关联订单:</div>
-              <div class="fl ml13">{{teampreviewData.remaining}}</div>
+              <div class="fl ml13">{{teampreviewData.ordNum}}个</div>
             </td>
           </tr>
           <tr>
             <td width="33%">
               <div width="80" class="fl">计划位:</div>
-              <div class="fl ml13">{{teampreviewData.remaining}}</div>
+              <div class="fl ml13">{{teampreviewData.count}}</div>
             </td>
             <td width="33%">
               <div width="80" class="fl">余位:</div>
@@ -299,17 +326,17 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">成本:</div>
-              <div class="fl ml13">{{average}}</div>
+              <div class="fl ml13">{{teampreviewData.cost}}</div>
             </td>
           </tr>
           <tr>
             <td width="33%">
               <div width="80" class="fl">收入:</div>
-              <div class="fl ml13">{{teampreviewData.remaining}}</div>
+              <div class="fl ml13">{{teampreviewData.income}}</div>
             </td>
             <td width="33%">
               <div width="80" class="fl">毛利率:</div>
-              <div class="fl ml13">{{teampreviewData.remaining}}%</div>
+              <div class="fl ml13">{{teampreviewData.rate}}%</div>
             </td>
           </tr>
         </table>
@@ -318,16 +345,22 @@
       <div>
         <el-tabs v-model="activeName">
           <el-tab-pane label="借款" name="first">
-            <el-table :data="tableBorrowing" class="" :header-cell-style="getCostClass" border>
-              <el-table-column prop="" label="ID" min-width="80"></el-table-column>
-              <el-table-column prop="" label="借款类型" min-width="120"></el-table-column>
-              <el-table-column prop="" label="审批状态" min-width="100"></el-table-column>
-              <el-table-column prop="" label="借款类型" min-width="80"></el-table-column>
-              <el-table-column prop="" label="供应商" min-width="80"></el-table-column>
-              <el-table-column prop="" label="金额" min-width="120"></el-table-column>
-              <el-table-column prop="" label="已核销金额" min-width="120"></el-table-column>
-              <el-table-column prop="" label="申请人" min-width="70"></el-table-column>
-              <el-table-column prop="" label="审批过程" min-width="70">
+            <el-table :data="tableBorrowing" :header-cell-style="getCostClass" border>
+              <el-table-column prop="paymentID" label="ID" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="paymentType" label="借款类型" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="checkType" label="审批状态" align="center">
+                <template slot-scope="scope">
+                  <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+                </template>
+              </el-table-column>
+              <!-- <el-table-column prop="supplierType" label="借款类型" min-width="80" align="center"></el-table-column> -->
+              <el-table-column prop="supplierName" label="供应商" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="price" label="金额" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="expensePrice" label="已报销金额" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="createUser" label="申请人" min-width="70" align="center"></el-table-column>
+              <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
                   <span class="cursor blue">查看</span>
                 </template>
@@ -335,13 +368,19 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="报销" name="second">
-            <el-table :data="tableAccount" class="" :header-cell-style="getCostClass" border>
-              <el-table-column prop="" label="报销单号" min-width="120"></el-table-column>
-              <el-table-column prop="" label="状态" min-width="120"></el-table-column>
-              <el-table-column prop="" label="发起时间" min-width="150"></el-table-column>
-              <el-table-column prop="" label="该团期的报销金额" min-width="150"></el-table-column>
-              <el-table-column prop="" label="申请人" min-width="80"></el-table-column>
-              <el-table-column prop="" label="审批过程" min-width="70">
+            <el-table :data="tableAccount" style="margin:0 1px 0 1px" :header-cell-style="getCostClass" border>
+              <el-table-column prop="id" label="报销单号" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="checkType" label="状态" min-width="120" align="center">
+                <template slot-scope="scope">
+                  <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="createTime" label="发起时间" min-width="150" align="center"></el-table-column>
+              <el-table-column prop="price" label="该团期的报销金额" min-width="150" align="center"></el-table-column>
+              <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
+              <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
                   <span class="cursor blue">查看</span>
                 </template>
@@ -349,17 +388,23 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="收款" name="third">
-            <el-table :data="tableCollection" class="" :header-cell-style="getCostClass" border>
-              <el-table-column prop="" label="收款单号" min-width="120"></el-table-column>
-              <el-table-column prop="" label="收款类型" min-width="120"></el-table-column>
-              <el-table-column prop="" label="同业社名称" min-width="100"></el-table-column>
-              <el-table-column prop="" label="状态" min-width="80"></el-table-column>
-              <el-table-column prop="" label="收款时间" min-width="150"></el-table-column>
-              <el-table-column prop="" label="团期计划" min-width="150"></el-table-column>
-              <el-table-column prop="" label="订单号" min-width="120"></el-table-column>
-              <el-table-column prop="" label="收款金额" min-width="80"></el-table-column>
-              <el-table-column prop="" label="申请人" min-width="80"></el-table-column>
-              <el-table-column prop="" label="审批过程" min-width="80">
+            <el-table :data="tableCollection" :header-cell-style="getCostClass" border>
+              <el-table-column prop="id" label="收款单号" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="collectionType" label="收款类型" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="localCompName" label="同业社名称" min-width="100" align="center"></el-table-column>
+              <el-table-column prop="checkType" label="状态" min-width="80" align="center">
+                <template slot-scope="scope">
+                  <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
+                  <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="collectionTime" label="收款时间" min-width="150" align="center"></el-table-column>
+              <el-table-column prop="groupCode" label="团期计划" min-width="150" align="center"></el-table-column>
+              <el-table-column prop="orderNumber" label="订单号" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="price" label="收款金额" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
+              <el-table-column label="审批过程" min-width="80" align="center">
                 <template slot-scope="scope">
                   <span class="cursor blue">查看</span>
                 </template>
@@ -367,14 +412,14 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="订单" name="fourth">
-            <el-table :data="tableOrder" class="" :header-cell-style="getCostClass" border>
-              <el-table-column prop="" label="订单ID" min-width="120"></el-table-column>
-              <el-table-column prop="" label="联系人" min-width="120"></el-table-column>
-              <el-table-column prop="" label="数量" min-width="180"></el-table-column>
-              <el-table-column prop="" label="订单来源" min-width="100"></el-table-column>
-              <el-table-column prop="" label="状态" min-width="80"></el-table-column>
-              <el-table-column prop="" label="销售" min-width="80"></el-table-column>
-              <el-table-column prop="" label="订单金额" min-width="120"></el-table-column>
+            <el-table :data="tableOrder" :header-cell-style="getCostClass" border>
+              <el-table-column prop="id" label="订单ID" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="contactName" label="联系人" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="number" label="数量" min-width="180" align="center"></el-table-column>
+              <el-table-column prop="orderChannel" label="订单来源" min-width="100" align="center"></el-table-column>
+              <el-table-column prop="orderStatus" label="状态" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="saler" label="销售" min-width="80" align="center"></el-table-column>
+              <el-table-column prop="payable" label="订单金额" min-width="120" align="center"></el-table-column>
             </el-table>
           </el-tab-pane>
         </el-tabs>
@@ -503,7 +548,7 @@ export default {
             message: "姓（拼音）格式不正确"
           }
         ],
-        sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         mobile: [
           { required: true, message: "请输入手机号", trigger: "blur" },
           {
@@ -524,7 +569,7 @@ export default {
       },
       //出行人信息表格
       costList:[],
-      detailsDialog:true,//详情弹窗
+      detailsDialog:false,//详情弹窗
       activeName:'first',//财务信息切换
       tableBorrowing:[],//借款表格
       tableAccount:[],//报销表格
@@ -532,7 +577,15 @@ export default {
       tableOrder:[],//订单表格
     };
   },
-  created() {},
+  filters: {
+    numFilter (value) {
+      // 截取当前数据到小数点后两位
+      let realVal = parseFloat(value).toFixed(2)
+      return realVal
+    }
+  },
+  created() {
+  },
   watch: {
     variable: function() {
       if (this.dialogType == 1) {
@@ -546,7 +599,8 @@ export default {
         this.ruleForm.allDisRemark = "";
       }else if(this.dialogType == 2){
         setTimeout(() => {
-          this.teampreview(this.planId);
+          console.log(this.planId)
+          this.teamGetDetails(this.planId);
         }, 200);
         this.detailsDialog =true;
       }
@@ -567,8 +621,12 @@ export default {
   },
   methods: {
     moment,
-    detailsCancel(){
+    detailsCancel(){//详情取消弹窗
       this.detailsDialog = false;
+      this.tableBorrowing = [];//借款表格
+      this.tableAccount = [];//报销表格
+      this.tableCollection = [];//收款表格
+      this.tableOrder = [];//订单表格
     },
     getCostClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
@@ -605,8 +663,7 @@ export default {
       }
     },
     //详情弹窗
-    teamGetDetails(){
-      this.getaverage(ID);
+    teamGetDetails(ID){
       //团期计划订单信息预览
       console.log(ID)
       this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
@@ -614,12 +671,14 @@ export default {
       }).then(res => {
           if (res.data.isSuccess == true) {
             this.teampreviewData = res.data.object;
+            this.getBorrowing(this.planId);
             this.teamEnrolls(this.planId);
           }
         });
     },
     //获取参考结算价
     getaverage(ID) {
+      console.log(ID)
       this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
         "id": ID
       }).then(res => {
@@ -627,11 +686,10 @@ export default {
       })
     },
     teampreview(ID) {
-      this.getaverage(ID);
+      //this.getaverage(ID);
       //团期计划订单信息预览
       console.log(ID)
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
           id: ID
         })
         .then(res => {
@@ -695,50 +753,32 @@ export default {
         //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
         len = arrLength - preLength;
         for (var i = 0; i < len; i++) {
-          this.costList.push({
+          this.tour[index].push({
             enrollID: enrollID,
             enrollName: enrollName,
-            name : '姓名',
-            type : enrollName,
-            phone : '',
-            IDcard : '',
-            sex : '',
             id: 0,
             isDeleted: 0,
             code: "string",
-            idCard: "string",
+            cnName: "姓名",
+            enName: "",
+            sex: "",
+            idCard: "",
             singlePrice: 0,
-            mobile: "string",
+            mobile: "",
             bornDate: 0,
             credType: 0,
-            credCode: "string",
+            credCode: "",
             credTOV: 0,
             orderID: 0,
-            orderCode: "string",
+            orderCode: "",
             orgID: 0,
             userID: 0
           });
         }
-      } else {
-        this.costList.splice(arrLength - preLength, preLength - arrLength);
+      } else{
+        this.tour[index].splice(arrLength - preLength, preLength - arrLength);
       }
     },
-    fillTravel(type, index){
-      console.log(this.enrollName)
-      this.winTitle = this.costList[0].enrollName; //编辑游客信息弹窗标题
-      this.dialogFormTour = true;
-
-    },
-    // fillTour(type, index) {
-    //   this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
-
-    //   if (this.tour[type][index].cnName != "点击填写") {
-    //     this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
-    //   }
-    //   this.tourType = type;
-    //   this.fillIndex = index;
-    //   this.dialogFormTour = true;
-    // },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
@@ -797,8 +837,7 @@ export default {
             enrollDetail = `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
           });
           this.ifOrderInsert = false;
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
+          this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
               object: {
                 id: 0,
                 isDeleted: 0,
@@ -888,8 +927,7 @@ export default {
     },
     // 下单弹窗 的提交按钮成功后  需再把备注信息存到/orderquery/get/api/InserOrderComment
     addComment(orderCode) {
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
+      this.$http.post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
           object: {
             orderCode: orderCode,
             content: this.ruleForm.remark,
@@ -943,25 +981,27 @@ export default {
         })
         .then(res => {});
     },
-    ensure(formName){
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          let guest = JSON.parse(JSON.stringify(this.conForm));
-          // console.log(this.costList[0].enrollName)
-          // console.log(this.costList.name)
-          // console.log(this.conForm.cnName)
-          // console.log(this.guest.cnName)
-          if (this.ruleForm.price == 1) {
-            guest.singlePrice = this.salePrice[this.tourType].price_01; //填充价格
-          } else {
-            guest.singlePrice = this.salePrice[this.tourType].price_02;
-          }
-          this.dialogFormTour = false;
-          this.$refs[formName].resetFields();
-        }
-      });
+    delTravel(type, index){//删除单条表格数据
+
     },
-    subInfo(formName) {
+    fillTravel(type, index){//点击出行人信息表格编辑显示弹窗
+      console.log(this.enrollName)
+      this.winTitle = this.costList[0].enrollName; //编辑游客信息弹窗标题
+      this.tourType = type;
+      this.fillIndex = index;
+      this.dialogFormTour = true;
+
+    },
+    fillTour(type, index) {
+      this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
+      if (this.tour[type][index].sex != "") {
+        this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
+      }
+      this.tourType = type;
+      this.fillIndex = index;
+      this.dialogFormTour = true;
+    },
+    subInfo(formName) {//出行人弹窗添加完保存
       this.$refs[formName].validate(valid => {
         if (valid) {
           let guest = JSON.parse(JSON.stringify(this.conForm));
@@ -1045,6 +1085,166 @@ export default {
         this.ruleForm.travel = '';
       }
     },
+    //详情四个表格查询
+    getBorrowing(val){
+      var that = this
+      console.log(this.planId)
+      //借款
+      that.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/list', {
+        "object": {
+          "planID": this.planId,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableBorrowing = res.data.objects
+          that.tableBorrowing.forEach(function (v,k,arr) {
+              if(arr[k]['checkType'] == 0){
+                arr[k]['checkType'] = '审批中'
+              }else if(arr[k]['checkType'] == 1) {
+                arr[k]['checkType'] = '通过'
+              }else if(arr[k]['checkType'] == 2) {
+                arr[k]['checkType'] = '驳回'
+              }
+              if(arr[k]['supplierType'] == 1){
+                arr[k]['supplierType'] = '地接'
+              }else if(arr[k]['supplierType'] == 2) {
+                arr[k]['supplierType'] = '机票（本公司）'
+              }else if(arr[k]['supplierType'] == 3) {
+                arr[k]['supplierType'] = '机票（非本公司）'
+              }else if(arr[k]['supplierType'] == 4) {
+                arr[k]['supplierType'] = '小费'
+              }else if(arr[k]['supplierType'] == 5) {
+                arr[k]['supplierType'] = '地接（其他）'
+              }else if(arr[k]['supplierType'] == 6) {
+                arr[k]['supplierType'] = '火车票'
+              }else if(arr[k]['supplierType'] == 7) {
+                arr[k]['supplierType'] = '汽车票'
+              }else if(arr[k]['supplierType'] == 8) {
+                arr[k]['supplierType'] = '船票'
+              }else if(arr[k]['supplierType'] == 9) {
+                arr[k]['supplierType'] = '其他'
+              }else if(arr[k]['supplierType'] == 10) {
+                arr[k]['supplierType'] = '机票押金'
+              }else if(arr[k]['supplierType'] == 11) {
+                arr[k]['supplierType'] = '火车票押金'
+              }
+              if(arr[k]['paymentType'] == 1){
+                arr[k]['paymentType'] = '无收入借款'
+              }else if(arr[k]['paymentType'] == 2){
+                arr[k]['paymentType'] = '预付款'
+              }
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //报销
+      that.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list', {
+        "object": {
+          "planID": this.planId,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableAccount = res.data.objects
+          that.tableAccount.forEach(function (v,k,arr) {
+              if(arr[k]['checkType'] == 0){
+                arr[k]['checkType'] = '审批中'
+              }else if(arr[k]['checkType'] == 1) {
+                arr[k]['checkType'] = '通过'
+              }else if(arr[k]['checkType'] == 2) {
+                arr[k]['checkType'] = '驳回'
+              }
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //收款
+      that.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/page', {
+        "pageIndex": 1,
+        "pageSize": 100,
+        "object": {
+          "id": 0,
+          "checkType": -1,
+          "startTime": "2000-01-01",
+          "endTime": "2019-10-21",
+          "planID": this.planId,
+          "collectionType": 0,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableCollection = res.data.objects
+          that.tableCollection.forEach(function (v,k,arr) {
+              if(arr[k]['checkType'] == 0){
+                arr[k]['checkType'] = '审批中'
+              }else if(arr[k]['checkType'] == 1) {
+                arr[k]['checkType'] = '通过'
+              }else if(arr[k]['checkType'] == 2) {
+                arr[k]['checkType'] = '驳回'
+              }
+              if(arr[k]['collectionType'] == 1){
+                arr[k]['collectionType'] = '直客'
+              }else if(arr[k]['collectionType'] == 2) {
+                arr[k]['collectionType'] = '同业'
+              }else if(arr[k]['collectionType'] == 3) {
+                arr[k]['collectionType'] = '外部'
+              }else if(arr[k]['collectionType'] == 4) {
+                arr[k]['collectionType'] = '分销商收款'
+              }else if(arr[k]['collectionType'] == 5) {
+                arr[k]['collectionType'] = '付款'
+              }
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //订单
+      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderpage', {
+        "pageIndex": 1,
+        "pageSize": 100,
+        "object": {
+          "planID": this.planId
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableOrder = res.data.objects
+          that.tableOrder.forEach(function (v,k,arr) {
+              if(arr[k]['orderChannel'] == 1){
+                arr[k]['orderChannel'] = '同业'
+              }else if(arr[k]['orderChannel'] == 2) {
+                arr[k]['orderChannel'] = '门店'
+              }else if(arr[k]['orderChannel'] == 3) {
+                arr[k]['orderChannel'] = '总部'
+              }
+              if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==1)||(arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==2)||(arr[k]['orderStatus'] == 10 && arr[k]['occupyStatus'] ==3)){
+                arr[k]['orderStatus'] = '未完成订单'
+              }else if(arr[k]['orderStatus'] == 1){
+                arr[k]['orderStatus'] = '补充游客材料'
+              }else if(arr[k]['orderStatus'] == 2) {
+                arr[k]['orderStatus'] = '电子合同'
+              }else if(arr[k]['orderStatus'] == 3) {
+                arr[k]['orderStatus'] = '待出行'
+              }else if(arr[k]['orderStatus'] == 4) {
+                arr[k]['orderStatus'] = '旅行中'
+              }else if(arr[k]['orderStatus'] == 5) {
+                arr[k]['orderStatus'] = '待评价'
+              }else if(arr[k]['orderStatus'] == 6) {
+                arr[k]['orderStatus'] = '订单完成'
+              }else if(arr[k]['orderStatus'] == 7) {
+                arr[k]['orderStatus'] = '未确认'
+              }else if(arr[k]['orderStatus'] == 8) {
+                arr[k]['orderStatus'] = '签署合同'
+              }else if(arr[k]['orderStatus'] == 9) {
+                arr[k]['orderStatus'] = '作废订单'
+              }else if(arr[k]['orderStatus'] == 10) {
+                arr[k]['orderStatus'] = '确认订单'
+              }
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
   }
 };
 </script>
@@ -1064,6 +1264,9 @@ export default {
 .blue {color: #2e94f9;}
 .cursor {cursor: pointer;}
 .costTable{width:800px; margin: 0 0 0 2px;}
+.costList{width:800px; line-height: 40px; text-align: center; border:1px solid #ebebeb;border-collapse:collapse;border-spacing:0; }
+.costList_01{background: #f3f3f3;}
+.tc{text-align: center;}
 /*详情样式*/
 .detail{ position: absolute;right: 15px; top: 8px; }
 .detailsTitle{font-size: 18px; margin: 20px 0 20px 0;}

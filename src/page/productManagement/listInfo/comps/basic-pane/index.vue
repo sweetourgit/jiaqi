@@ -187,6 +187,15 @@ export default {
     this.init();
   },
 
+  watch: {
+    proto:{
+      handler(){
+        this.refresh();
+      },
+      deep: true
+    }
+  },
+
   data(){
     return {
       vm: {
@@ -241,19 +250,19 @@ export default {
           required: true,
           validator: this.notNullArrayValidator, 
           message: '出发地不能为空', 
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         destinations: {
           required: true,
           validator: this.notNullArrayValidator, 
           message: '目的地不能为空', 
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         confirmType: { 
           required: true, 
           validator: this.simpleValidator, 
           message: '订单确认类型不能为空', 
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         // 亮点词
         strengths: {
@@ -261,7 +270,7 @@ export default {
           validator: this.notNullArrayValidator, 
           message: '亮点词不能为空，且不能多于四个', 
           numLimit: 4,
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         crowdID: { 
           required: true, 
@@ -304,6 +313,17 @@ export default {
       this.initCrowdlist();
       // 主题
       this.initThemelist();
+    },
+    isArray(obj){
+      return Object.prototype.toString.call(obj)=== '[object Array]';
+    },
+    refresh(){
+      Object.keys(this.proto).forEach(attr => {
+        if(this.isArray(this.proto[attr])){
+          this.submitForm[attr].splice(0);
+          this.submitForm[attr].push(...this.$deepCopy(this.proto[attr]));
+        }
+      })
     },
     initCrowdlist(){
       getCrowdlistAction.bind(this)().then(res => {
@@ -415,11 +435,11 @@ export default {
       hasChange && console.warn('basic-pane change');
 
       // bug 每次保存，destinations， pod，strengths 的id都会自增 
-      this.submitForm.destinations.forEach((el, i) => {
-        Object.keys(this.submitForm.destinations[i]).forEach(attr => {
-          console.log(attr, this.submitForm.destinations[i][attr], this.proto.destinations[i][attr]);
-        })
-      })
+      // this.submitForm.destinations.forEach((el, i) => {
+      //   Object.keys(this.submitForm.destinations[i]).forEach(attr => {
+      //     console.log(attr, this.submitForm.destinations[i][attr], this.proto.destinations[i][attr]);
+      //   })
+      // })
       
       return hasChange;
     },

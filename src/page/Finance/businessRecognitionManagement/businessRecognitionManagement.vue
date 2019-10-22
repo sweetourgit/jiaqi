@@ -3,24 +3,54 @@
     <!--业务待认款管理-->
     <div class="borders">
       <div class="search">
-        <span class="search_style">收款单号：</span> <el-input v-model="orderNo" placeholder="请输入内容" class="search_input"></el-input>
-        <span class="search_style">款项说明：</span> <el-input v-model="explain" placeholder="请输入内容" class="search_input"></el-input>
-        <span class="search_style">收款日期：</span>
-        <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
-        <div class="date-line"></div>
-        <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
-        <br><br>
-        <span class="search_style">状态：</span>
-        <el-select v-model="status" placeholder="请选择" class="search_input">
-          <el-option key="" label="全部" value=""></el-option>
-          <el-option key="1" label="待认收款" value="1"></el-option>
-          <el-option key="2" label="已认完" value="2"></el-option>
-        </el-select>
-        <span class="search_style">金额：</span> <el-input v-model="money" placeholder="请输入内容" class="search_input"></el-input>
-        <div>
-          <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
-          <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
-        </div>
+        <el-row>
+          <el-col :span="7">
+            <span class="search_style">收款单号：</span>
+            <el-input v-model="orderNo" placeholder="请输入内容" class="search_input"></el-input>
+          </el-col>
+          <el-col :span="7">
+            <span class="search_style">款项说明：</span>
+            <el-input v-model="explain" placeholder="请输入内容" class="search_input"></el-input>
+          </el-col>
+          <el-col :span="9">
+            <span class="search_style">收款日期：</span>
+            <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
+            <div class="date-line"></div>
+            <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="7">
+            <span class="search_style">状态：</span>
+            <el-select v-model="status" placeholder="请选择" class="search_input">
+              <el-option key="" label="全部" value=""></el-option>
+              <el-option key="10" label="未认款" value="10"></el-option>
+              <el-option key="1,11" label="待认收款" value="1,11"></el-option>
+              <el-option key="2,12" label="已认完" value="2,12"></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="7">
+            <span class="search_style">金额：</span>
+            <el-input v-model="money" placeholder="请输入内容" class="search_input"></el-input>
+          </el-col>
+          <el-col :span="9">
+            <span class="search_style">认款方式：</span>
+            <el-select v-model="rec_mode" placeholder="请选择" class="search_input">
+              <el-option key="" label="全部" value=""></el-option>
+              <el-option key="1" label="分销商预存款" value="1"></el-option>
+              <el-option key="2" label="票付通余额支付" value="2"></el-option>
+              <el-option key="3" label="订单收款" value="3"></el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="23">
+            <div>
+              <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
+              <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
+            </div>
+          </el-col>
+        </el-row>
       </div>
       <div class="table_style">
         <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
@@ -51,6 +81,7 @@
               <el-button @click="detailExternalOrder(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.rece_type == '1'">详情</el-button>
               <el-button @click="detailRecognition(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.status_rece!='10' && scope.row.rece_type == '2'">详情</el-button>
               <el-button @click="recogintion(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.rece_type == '2' && scope.row.status_rece == '10' && scope.row.rec_mode != '2'">去认款</el-button>
+              <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.rece_type == '2' && scope.row.rec_mode == '3' && scope.row.can_match == '2'">导入订单明细</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -70,6 +101,7 @@
       <recognitionDo :dialogFormVisible="dialogFormVisible" :info="info" @close="closeAdd"></recognitionDo>
       <externalOrderDetail :dialogFormVisible1="dialogFormVisible1" :info="info" @close="closeAdd"></externalOrderDetail>
       <recognitionDetail :dialogFormVisible2="dialogFormVisible2" :info="info" @close="closeAdd"></recognitionDetail>
+      <importOrder :dialogFormVisible3="dialogFormVisible3" :info="info" @close="closeAdd"></importOrder>
     </div>
   </div>
 </template>
@@ -78,13 +110,15 @@
   import externalOrderDetail from '@/page/Finance/businessRecognitionManagement/externalOrderDetail.vue'
   import recognitionDetail from '@/page/Finance/businessRecognitionManagement/recognitionDetail.vue'
   import recognitionDo from '@/page/Finance/businessRecognitionManagement/recognitionDo.vue'
+  import importOrder from '@/page/Finance/businessRecognitionManagement/importOrder.vue'
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "business",
     components:{
       externalOrderDetail,
       recognitionDo,
-      recognitionDetail
+      recognitionDetail,
+      importOrder
     },
     data() {
       return {
@@ -96,6 +130,7 @@
         endTime: '',
         status: '',
         money: '',
+        rec_mode: '',
 
         pageSize: 10,
         currentPage: 1,
@@ -107,6 +142,7 @@
         dialogFormVisible: false,
         dialogFormVisible1: false,
         dialogFormVisible2: false,
+        dialogFormVisible3: false,
         info: '',
 
         startDatePicker: this.beginDate(),
@@ -135,10 +171,15 @@
         this.info = row.id;
         this.dialogFormVisible = true;
       },
+      orderDetail(row){
+        this.info = row.id;
+        this.dialogFormVisible3 = true;
+      },
       closeAdd() {
         this.dialogFormVisible = false;
         this.dialogFormVisible1 = false;
         this.dialogFormVisible2 = false;
+        this.dialogFormVisible3 = false;
         this.info = '';
         this.loadData();
       },
@@ -147,11 +188,13 @@
         this.loadData();
       },
       resetFun(){
-        this.plan = '';
-        this.reimbursementPer = '';
+        this.orderNo = '';
+        this.explain = '';
         this.startTime = '';
         this.endTime = '';
-        this.reimbursementPerID = '';
+        this.status = '';
+        this.money = '';
+        this.rec_mode = '';
         this.loadData();
       },
       handleSizeChange(val) {
@@ -166,6 +209,7 @@
 
       loadData(){
         const that = this;
+
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/oprecognition/op-recognition/listpage", {
           "pageIndex": this.currentPage,
           "pageSize": this.pageSize,
@@ -174,7 +218,8 @@
           "receivables_start": this.startTime,
           "receivables_end": this.endTime,
           "status_rece": this.status,
-          "rece_money": this.money
+          "rece_money": this.money,
+          "rec_mode": this.rec_mode
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log('业务收款列表',response);
@@ -261,9 +306,15 @@
     display: inline-block;
     width: 80px;
   }
+  #trade .el-row{
+    margin-bottom: 20px;
+  }
   #trade .search_input{
     /*float: left;*/
-    width: 200px
+    width: 65%;
+  }
+  #trade .start-time{
+    width: 32.5%;
   }
   #trade .table_style{
     width: 96%;
