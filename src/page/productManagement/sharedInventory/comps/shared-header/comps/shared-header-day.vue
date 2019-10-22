@@ -22,6 +22,11 @@ $fontHeight: 32px;
   // 当前选择的日期
   .select{
     border-radius: 4px;
+    border: 1px solid #e4e7ed;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  }
+  .blank{
+    border-radius: 4px;
     background-color: rgba(0, 0, 0, 0.1);
   }
   .today::before{
@@ -46,13 +51,15 @@ $fontHeight: 32px;
 </style>
 
 <template>
-  <div class="shared-header-day">
+<!-- :style="{ backgroundColor: proto.day? 'transparent': 'rgba(0,0,0,0.1)'}" -->
+  <div class="shared-header-day" @click="$emit('select-day', proto.day)">
     <span
       :data-count="proto.count"
       :class="[ 
         proto.count? 'count': '',
         proto.today? 'today': '',
-        proto.dayInt=== current? 'select': ''
+        proto.dayInt=== current? 'select': '',
+        proto.day? '': 'blank'
       ]"
     >{{ proto.day }}</span>
   </div>

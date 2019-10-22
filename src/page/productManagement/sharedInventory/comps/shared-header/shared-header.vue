@@ -81,11 +81,13 @@ $fontHeight: 32px;
                 <shared-header-day
                   :current="currentInt"
                   :proto="findDayDate(week, day)"
+                  @select-day="emitSelectDay"
                 ></shared-header-day>
               </td>
             </tr>
           </tbody>
         </table>
+        <div style="border-top: 1px solid #ddd;">123</div>
       </div>
     </div>
   </div>
@@ -203,6 +205,10 @@ export default {
       let arr= this.getDateArr(date);
       return arr[0]* 10000+ (arr[1]+ 1)* 100+ (day? arr[2]: 0);
     },
+
+    emitSelectDay(day){
+      day && this.current.splice(2, 1, day);
+    }
   }
 }
 </script>
