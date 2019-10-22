@@ -49,7 +49,7 @@
                 </td>
                 <td width="33%">
                   <div width="80" class="fl">参考结算:</div>
-                  <div class="fl ml13">{{average}}</div>
+                  <div class="fl ml13">{{average | numFilter}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl">订单预留时长:</div>
@@ -161,7 +161,7 @@
             </div>
           </el-form-item>
           <div class="travelMessage">出行人信息</div>
-          <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px" v-for="(item,indexPrice) in salePrice" :key='item.index'>
+          <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px">
             <el-table-column prop="name" label="姓名" min-width="100" align="center"></el-table-column>
             <el-table-column prop="type" label="报名类型" min-width="100" align="center"></el-table-column>
             <el-table-column prop="phone" label="电话" min-width="120" align="center"></el-table-column>
@@ -550,6 +550,13 @@ export default {
       tableOrder:[],//订单表格
     };
   },
+  filters: {
+    numFilter (value) {
+      // 截取当前数据到小数点后两位
+      let realVal = parseFloat(value).toFixed(2)
+      return realVal
+    }
+  },
   created() {
   },
   watch: {
@@ -720,7 +727,7 @@ export default {
         len = arrLength - preLength;
         for (var i = 0; i < len; i++) {
           this.costList.push({
-            //enrollID: enrollID,
+            enrollID: enrollID,
             enrollName: enrollName,
             name : '姓名',
             type : enrollName,
@@ -973,11 +980,10 @@ export default {
     ensure(formName){//出行人弹窗添加完保存
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(guest)
-          console.log(this.tourType)
-          guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
-          guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
           let guest = JSON.parse(JSON.stringify(this.conForm));
+          guest.cnName = this.salePrice[this.tourType].name;
+          console.log(this.salePrice)
+          console.log(this.tourType)
           if (this.ruleForm.price == 1) {
             guest.singlePrice = this.costList[this.tourType].price_01; //填充价格
           } else {
