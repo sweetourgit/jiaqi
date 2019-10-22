@@ -18,7 +18,7 @@
               <el-input v-model="ruleForm.payAccount" placeholder="请选择" class="inputWidth" :readonly="readOnly"></el-input>
               <el-button type="primary" @click="chooseFun" style="margin-left: 10px">选择</el-button>
             </el-form-item>
-            <el-form-item label="批量导入：" label-width="140px">
+            <el-form-item label="批量导入：" label-width="140px" required>
               <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :limit="1" :on-exceed="handleExceed" :file-list="fileList">
                 <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
@@ -163,8 +163,24 @@
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          that.deleteStr += scope.row.key + ',';
-          that.$set(this.tableDataDD[scope.$index],'key','已删除');
+          const deleteArr = that.deleteStr.split(",");
+          if(deleteArr.length === that.tableDataDD.length){
+            this.$confirm("删除此收款最后一项，批量导入文件将被删除", "提示", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }).then(() => {
+              this.fileList = [];
+              this.tableDataDD = [];
+              this.deleteStr = '';
+            }).catch(() => {
+
+            });
+          }else{
+            that.deleteStr += scope.row.key + ',';
+            that.$set(that.tableDataDD[scope.$index],'key','已删除');
+          }
+
         }).catch(() => {
 
         });
@@ -177,18 +193,27 @@
 
             let code_arr = [];
             let codeNum = 0;
-            that.tableDataDD.forEach(function (item, index, arr) {
-              if(item.key !== '已删除'){
-                codeNum++;
-                that.getCode().then(res => {
+            if(that.tableDataDD.length != 0){
+              that.tableDataDD.forEach(function (item, index, arr) {
+                if(item.key !== '已删除'){
+                  codeNum++;
+                  that.getCode().then(res => {
 //                  console.log(res);
-                  if(res){
-                    code_arr.push(res);
-                    that.canSubmit(code_arr, codeNum);
-                  }
-                });
-              }
-            });
+                    if(res){
+                      code_arr.push(res);
+                      that.canSubmit(code_arr, codeNum);
+                    }
+                  });
+                }
+              });
+            }else{
+              that.$message({
+                type: 'warning',
+                message: '认款订单不能为空'
+              });
+              return;
+            }
+
           } else {
             console.log('error submit!!');
             return false;
@@ -209,7 +234,12 @@
               });
             })
           }else{
-            fileArr = [];
+//            fileArr = [];
+            that.$message({
+              type: 'warning',
+              message: '批量导入文件不能为空'
+            });
+            return;
           }
           that.deleteStr = that.deleteStr.substr(0, that.deleteStr.length - 1);
           let data;
@@ -320,6 +350,7 @@
         console.log(file, fileList);
         this.fileList = [];
         this.tableDataDD = [];
+        this.deleteStr = '';
       },
       handleExceed(files, fileList) {
         this.$message.warning(`平台订单只支持一个附件上传！`);

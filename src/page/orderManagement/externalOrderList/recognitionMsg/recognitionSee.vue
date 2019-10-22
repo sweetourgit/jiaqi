@@ -29,7 +29,7 @@
           </el-table-column>
         </el-table>
         <el-button type="primary" round style="display: block;margin: 18px auto;float: none;">匹配</el-button>
-        <div class="backgroundDv">
+        <div class="backgroundDv" v-if="type == 1">
           <div class="titleDv" style="width: 90%;margin: 10px auto;">
             <p class="textP">收款明细说明：{{instructions}}</p>
             <p class="textP">新款入账时间：{{data}}</p>
@@ -55,6 +55,12 @@
             <!--</el-table-column>-->
           </el-table>
         </div>
+        <div class="backgroundDv" v-if="type == 2">
+          <div class="titleDv">
+            <p class="textP">商户名称：{{distributor_code}}</p>
+            <p class="textP">收款单号：{{rece_code}}</p>
+          </div>
+        </div>
       </div>
       <div class="footer">
         <el-button class="el-button" type="warning" @click="closeAdd">取 消</el-button>
@@ -77,7 +83,10 @@
         data: '', // 入账时间
         distributors: '', // 分销商
         tableData: [], // 订单数据
-        tableData1: [] // 匹配数据
+        tableData1: [], // 匹配数据
+        type: 1,
+        distributor_code: '',
+        rece_code: ''
       }
     },
     computed: {
@@ -130,12 +139,33 @@
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log('匹配信息',response);
-            response.data.data.rece_at = formatDate(new Date(response.data.data.rece_at*1000));
-            that.instructions = response.data.data.explain;
-            that.data = formatDate(new Date(response.data.data.rece_start*1000)).split(" ")[0] + '--' + formatDate(new Date(response.data.data.rece_end*1000)).split(" ")[0];
-            that.distributors = response.data.data.rec_distributor;
-            that.tableData1 = [];
-            that.tableData1.push(response.data.data);
+            that.type = response.data.data.type;
+            if(response.data.data.type === 1){
+              response.data.data.rece_at = formatDate(new Date(response.data.data.info.rece_at*1000));
+              that.instructions = response.data.data.info.explain;
+              that.data = formatDate(new Date(response.data.data.info.rece_start*1000)).split(" ")[0] + '--' + formatDate(new Date(response.data.data.info.rece_end*1000)).split(" ")[0];
+              that.distributors = response.data.data.info.rec_distributor;
+              that.tableData1 = [];
+              that.tableData1.push(response.data.data.info);
+            }else if(response.data.data.type === 2){
+              that.rece_code = response.data.data.rece_code;
+              // 根据分销商ID获取名称
+              if(response.data.data.distributor_code){
+                that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+                  "id": response.data.data.distributor_code
+                }).then(function(obj) {
+                  console.log('获取分销商',obj);
+                  if(obj.data.isSuccess){
+                    that.distributor_code = obj.data.object.name;
+                  }else{
+                    that.$message.warning("加载数据失败~");
+                  }
+                }).catch(function(obj) {
+                  console.log(obj);
+                });
+              }
+            }
+
           } else {
             that.$message.success("加载数据失败~");
           }
@@ -172,7 +202,11 @@
     float: right;
     margin-top: -20px;
   }
-
+  .titleDv{
+    width: 90%;
+    margin: 10px auto;
+    overflow: hidden;
+  }
   .el-button {
     bottom: 1%;
     right: 1%;

@@ -24,7 +24,6 @@
               <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
               <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
               <el-radio label="去哪儿">去哪儿</el-radio>
-              <!--待添加，新需求-->
               <el-radio label="票付通余额">票付通余额</el-radio>
               <el-radio label="无">无</el-radio>
             </el-radio-group>
@@ -47,24 +46,24 @@
         <!--分销商为：票付通余额-->
         <div v-if="PFTYE">
           <div class="stepDv">
-            <el-form-item label="关联订单：" prop="payAccount" label-width="140px">
+            <el-form-item label="关联订单：" prop="distributor" label-width="140px">
               <el-button type="primary" @click="chooseDDFun" style="margin-left: 10px">选择</el-button>
             </el-form-item>
-            <el-form-item label="收款金额：" prop="payMoney" label-width="140px">
+            <el-form-item label="收款金额：" prop="distributor" label-width="140px">
               <el-input v-model="pftForm.payMoney" placeholder="请输入" class="baseIn" disabled></el-input>
               <p style="margin: 0;color: #999;line-height: 22px;">收款金额可通过附件文档自动生成</p>
             </el-form-item>
-            <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
+            <el-form-item label="款项入账时间段：" prop="distributor" label-width="140px">
               <el-date-picker v-model="pftForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :picker-options="startDatePicker"></el-date-picker>
               <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
               <el-date-picker v-model="pftForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :picker-options="endDatePicker"></el-date-picker>
               <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
             </el-form-item>
-            <el-form-item label="附件：" label-width="140px">
-              <el-upload ref="upload2" class="upload-demo" :action="UploadUrl2()" :headers="headers" :on-success="handleSuccess2" :on-error="handleError2" :on-remove="handleRemove2" :before-remove="beforeRemove2" :on-exceed="handleExceed2" :file-list="pft_list">
-                <el-button size="small" type="primary">点击上传</el-button>
-              </el-upload>
-            </el-form-item>
+            <!--<el-form-item label="附件：" label-width="140px">-->
+              <!--<el-upload ref="upload2" class="upload-demo" :action="UploadUrl2()" :headers="headers" :on-success="handleSuccess2" :on-error="handleError2" :on-remove="handleRemove2" :before-remove="beforeRemove2" :on-exceed="handleExceed2" :file-list="pft_list">-->
+                <!--<el-button size="small" type="primary">点击上传</el-button>-->
+              <!--</el-upload>-->
+            <!--</el-form-item>-->
           </div>
 
           <!--<p class="stepTitle">绑定订单</p>-->
@@ -146,17 +145,17 @@
         <!--分销商为：其他-->
         <div v-if="!PFTYE">
           <div class="stepDv">
-            <el-form-item label="收款金额：" prop="payMoney" label-width="140px">
+            <el-form-item label="收款金额：" prop="distributor" label-width="140px">
               <el-input v-model="ruleForm.payMoney" placeholder="请输入" class="baseIn"></el-input>
               <p style="margin: 0;color: #999;line-height: 22px;">收款金额可通过附件文档自动生成</p>
             </el-form-item>
-            <el-form-item label="款项入账时间段：" prop="startTime" label-width="140px">
+            <el-form-item label="款项入账时间段：" prop="distributor" label-width="140px">
               <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="开始日期" class="start-time baseIn" :editable="disabled" :picker-options="importStartDatePicker"></el-date-picker>
               <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
               <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="结束日期" class="start-time baseIn" :editable="disabled" :picker-options="importEndDatePicker"></el-date-picker>
               <p style="margin: 0;color: #999;line-height: 22px;">款项入账时间段可通过附件文档自动生成</p>
             </el-form-item>
-            <el-form-item label="附件：" label-width="140px" v-if="info == ''">
+            <el-form-item label="附件：" label-width="140px" v-if="info == ''" prop="distributor">
               <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :limit="1" :file-list="fileList">
                 <el-button size="small" type="primary">点击上传</el-button>
               </el-upload>
@@ -483,7 +482,8 @@
         rules:{
           creditTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
           payAccount: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
-          mark: [{ required: true, message: '收款详细说明不能为空', trigger: 'blur' }]
+          mark: [{ required: true, message: '收款详细说明不能为空', trigger: 'blur' }],
+          distributor: [{ required: true, message: '字段不能为空', trigger: 'change' }]
         },
         fileList: [],
 
@@ -867,16 +867,16 @@
         let fileArr = [],money = '',startTime = '',endTime = '', flag = true;
         const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
         if(this.PFTYE){
-          if(this.pft_list.length != 0){
-            this.pft_list.forEach(function (item, index, arr) {
-//              console.log(item);
-              let file = {
-                name: item.name,
-                url: item.response.data.url
-              };
-              fileArr.push(file);
-            });
-          }
+//          if(this.pft_list.length != 0){
+//            this.pft_list.forEach(function (item, index, arr) {
+////              console.log(item);
+//              let file = {
+//                name: item.name,
+//                url: item.response.data.url
+//              };
+//              fileArr.push(file);
+//            });
+//          }
           if(this.chooseTable.length == 0){
             that.$message.warning('关联订单不能为空');
             flag = false;
@@ -919,7 +919,10 @@
               url: this.fileList[0].response.data.file_url
             });
           }else{
-            fileArr = [];
+//            fileArr = [];
+            that.$message.warning('附件不能为空');
+            flag = false;
+            return;
           }
           if(this.ruleForm.payMoney == ''){
             that.$message.warning('收款金额不能为空');

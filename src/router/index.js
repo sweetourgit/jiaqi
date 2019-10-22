@@ -67,6 +67,11 @@ import balanceOrder from '@/page/Finance/balanceOrder/balanceOrder'
 import distributorsInfo from'@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo'
 import gatheringDel from'@/page/Finance/collectionManagement/distributorsInfo/gatheringDel'
 import businessRecognitionManagement from'@/page/Finance/businessRecognitionManagement/businessRecognitionManagement.vue'
+import aroundBorrowingManagement from'@/page/Finance/aroundBorrowingManagement/aroundBorrowingManagement.vue'
+import noIncomeBorrowing from'@/page/Finance/aroundBorrowingManagement/noIncomeBorrowing.vue'
+import advancePaymentAround from'@/page/Finance/aroundBorrowingManagement/advancePayment.vue'
+import balancePaymentBorrowing from'@/page/Finance/aroundBorrowingManagement/balancePaymentBorrowing.vue'
+import pendingApproval from'@/page/Finance/aroundBorrowingManagement/pendingApproval.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -616,6 +621,43 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
+    }, {
+      path: '/aroundBorrowingManagement',
+      component: aroundBorrowingManagement,
+      name: '周边借款管理',
+      children: [{
+        path: 'noIncomeBorrowing',
+        component: noIncomeBorrowing,
+        name: '周边借款管理   /无收入借款',
+        meta: {
+          keepAlive: true,
+          auth: true
+        }
+      }, {
+        path: 'advancePaymentAround',
+        component: advancePaymentAround,
+        name: '周边借款管理   /预付款管理',
+        meta: {
+          keepAlive: true,
+          auth: true
+        }
+      }, {
+        path: 'balancePaymentBorrowing',
+        component: balancePaymentBorrowing,
+        name: '周边借款管理   /余额支付借款',
+        meta: {
+          keepAlive: true,
+          auth: true
+        }
+      }, {
+        path: 'pendingApproval',
+        component: pendingApproval,
+        name: '周边借款管理   /待审批',
+        meta: {
+          keepAlive: true,
+          auth: true
+        }
+      }]
     }, {
       path: '*',
       redirect: '/userList'

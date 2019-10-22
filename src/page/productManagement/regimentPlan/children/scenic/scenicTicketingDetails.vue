@@ -476,7 +476,7 @@ export default {
             that.tableData3.forEach(function (item, index, arr) {
               item.file = JSON.parse(item.file);
               console.log(item.file);
-              for(var i = 0; i < item.file.length; i++){
+              for(let i = 0; i < item.file.length; i++){
                 item.file[i].url = that.GLOBAL.serverSrcPhp + item.file[i].url;
               }
             })

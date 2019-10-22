@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative" id="recognitionDo">
-    <el-dialog :visible="dialogFormVisible" @close="closeAdd" style="width: 100%">
+    <el-dialog title="认款" :visible="dialogFormVisible" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%">
       <div class="buttonDv" style="float: right;margin-right: 3%;">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <el-button type="primary" @click="submitBtn">确认</el-button>
@@ -51,54 +51,8 @@
             <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
             <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
             <el-radio label="去哪儿">去哪儿</el-radio>
-            <el-radio label="票付通余额">票付通余额</el-radio>
             <el-radio label="无">无</el-radio>
           </el-radio-group>
-          <br><br>
-          <span class="left_span">款项入账时间段：</span>
-          <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time baseIn" :picker-options="startDatePicker"></el-date-picker>
-          <span style="display: inline-block;line-height: 32px;margin:10px 0;">--</span>
-          <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time baseIn" :picker-options="endDatePicker"></el-date-picker>
-          <p class="mark_p">该笔款所包含的所有订单，所有订单下单的时间区间</p>
-          <br><br>
-          <span class="left_span">订单明细：</span>
-          <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="fileListUpload" :limit="1">
-            <el-button size="small" type="primary">点击上传</el-button>
-          </el-upload>
-          <p class="stepTitle MXtitle">收款明细</p>
-          <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTimeTable}}--{{endTimeTable}}</div>
-          <el-table ref="singleTable" :data="tableDataQK" border :header-cell-style="getRowClass" height="700">
-            <el-table-column prop="1" label="入账时间" align="center">
-            </el-table-column>
-            <el-table-column prop="2" label="订单编号" align="center">
-            </el-table-column>
-            <el-table-column prop="3" label="客人名称" align="center">
-            </el-table-column>
-            <el-table-column prop="4" label="产品" align="center">
-            </el-table-column>
-            <el-table-column prop="5" label="结算金额" align="center">
-              <template slot-scope="scope">
-                <span>{{scope.row[5]}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="6" label="手续费" align="center">
-              <template slot-scope="scope">
-                <span>{{scope.row[6]}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="8" label="团号" align="center">
-            </el-table-column>
-            <el-table-column prop="9" label="粉联号" align="center">
-            </el-table-column>
-            <el-table-column prop="10" label="发票号" align="center">
-            </el-table-column>
-            <el-table-column prop="money" label="操作" align="center">
-              <template slot-scope="scope">
-                <p v-if="scope.row[0] == '已删除'">已删除</p>
-                <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope)" v-else>删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
         </div>
       </div>
     </el-dialog>
@@ -139,20 +93,7 @@
         distributorID: '',// 选择的分销商ID
         distributorList: [],// 分销商列表
 
-        distributorType: '无',
-        startTime: '',// 款项入账时间：开始结束
-        endTime: '',
-
-        fileListUpload: [],
-        tableDataQK: [],// 订单明细信息
-        totalItem: '0',
-        totalMoney: '',
-        startTimeTable: '',
-        endTimeTable: '',
-        deleteStr: '',
-
-        startDatePicker: this.beginDate(),
-        endDatePicker: this.processDate(),
+        distributorType: '无',// 订单收款分销商
 
       }
     },
@@ -190,115 +131,14 @@
       },
       // 关闭弹窗
       closeAdd(){
+        this.rec_type = '';
         this.distributor = '';
         this.distributorID = '';
         this.distributorType = '无';
-        this.startTime = '';
-        this.endTime = '';
 
-        this.fileListUpload = [];
-        this.tableDataQK = [];
-        this.totalItem = '0';
-        this.totalMoney = '';
-        this.startTimeTable = '';
-        this.endTimeTable = '';
-        this.deleteStr = '';
         this.$emit('close', false);
       },
 
-      // 关联订单
-      UploadUrl(){
-        return this.GLOBAL.serverSrcPhp + '/api/v1/receivables/receivables/files';
-      },
-      handleSuccess(response, file, fileList){
-//        console.log(file);
-//        console.log(fileList);
-//        console.log('response',response);
-        if(response.code == 200){
-          this.fileListUpload = fileList;
-          this.tableDataQK = file.response.data.list;
-          this.totalItem = file.response.data.list.length;
-          this.totalMoney = file.response.data.money;
-          this.startTimeTable = formatDate(new Date(file.response.data.start*1000));
-          this.startTimeTable = this.startTimeTable.split(' ')[0];
-          this.endTimeTable = formatDate(new Date(file.response.data.end*1000));
-          this.endTimeTable = this.endTimeTable.split(' ')[0];
-          this.startTime = this.startTimeTable;
-          this.endTime = this.endTimeTable;
-          this.tableDataQK.forEach(function (item, index, arr) {
-            item[1] = formatDate(new Date(item[1]*1000));
-          })
-        }else{
-          if(response.message){
-            this.$message.warning(response.message);
-          }else{
-            this.$message.warning('文件上传失败');
-          }
-//          this.fileList = {};
-          this.$refs.upload1.clearFiles();
-        }
-      },
-      handleError(err, file, fileList){
-        this.$message.warning(`文件上传失败，请重新上传！`);
-      },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-        this.tableDataQK = [];
-        this.totalItem = '';
-        this.totalMoney = '';
-        this.startTimeTable = '';
-        this.endTimeTable = '';
-        this.startTime = '';
-        this.endTime = '';
-        this.fileListUploadv = [];
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`平台订单只支持一个附件上传！`);
-      },
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
-      },
-      // 删除明细信息
-      deleteBtn(scope){
-        const that = this;
-        this.$confirm("是否删除此明细?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-          console.log(scope.row[2]+'======'+scope.$index);
-//          that.tableDataQK.splice(scope.$index,1);
-          this.$set(that.tableDataQK[scope.$index],'0','已删除');
-          that.deleteStr += scope.$index + ',';
-          let num = parseInt(that.totalItem);
-          num--;
-          that.totalItem = num;
-//          console.log(num);
-          let totalMoney = that.totalMoney;
-          totalMoney = parseFloat(totalMoney) - parseFloat(scope.row[5]);
-          that.totalMoney = totalMoney.toFixed(2);
-//          console.log(parseFloat(totalMoney),parseFloat(scope.row[5]),parseFloat(totalMoney)-parseFloat(scope.row[5]));
-          let start = that.tableDataQK[0][1];
-          let end = that.tableDataQK[0][1];
-          that.tableDataQK.forEach(function (item, index, arr) {
-            if(item[0] != '已删除'){
-              if(new Date(Date.parse(start)) > new Date(Date.parse(item[1]))){
-                start = item[1];
-              }
-              if(new Date(Date.parse(end)) < new Date(Date.parse(item[1]))){
-                end = item[1];
-              }
-            }
-          });
-//          console.log(totalMoney.toFixed(2),start,end);
-          that.totalMoney = totalMoney.toFixed(2);
-          that.startTimeTable = start.split(' ')[0];
-          that.endTimeTable = end.split(' ')[0];
-//          console.log(that.deleteStr);
-        }).catch(() => {
-
-        });
-      },
       // 认款提交
       submitBtn(){
         const that = this;
@@ -309,57 +149,14 @@
           });
           return;
         }
-        if(this.startTime === '' && this.rec_type === "3"){
-          that.$message({
-            type: 'warning',
-            message: '款项入账时间段不能为空！'
-          });
-          return;
-        }
-        if(this.endTime === '' && this.rec_type === "3"){
-          that.$message({
-            type: 'warning',
-            message: '款项入账时间段不能为空！'
-          });
-          return;
-        }
-        let fileArr = [];
-        if(this.fileListUpload.length > 0){
-          const fileItem = {
-            name: this.fileListUpload[0].name,
-            url: this.fileListUpload[0].response.data.file_url
-          };
-          fileArr.push(fileItem);
-        }
-        let data;
-        if(this.deleteStr == ''){
-          data = {
-            "id": this.info,
-            "rec_mode": this.rec_type,
-            "distributor_code": this.distributorID,
-            "distributor": this.distributorType,
-            "rece_start": this.startTime,
-            "rece_end": this.endTime,
-            "file": fileArr,
-            "rec_uid": sessionStorage.getItem('id')
-          }
-        }else{
-          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
-          data = {
-            "id": this.info,
-            "rec_mode": this.rec_type,
-            "distributor_code": this.distributorID,
-            "distributor": this.distributorType,
-            "rece_start": this.startTime,
-            "rece_end": this.endTime,
-            "file": fileArr,
-            "del_order": this.deleteStr,
-            "rec_uid": sessionStorage.getItem('id')
-          }
-        }
-        console.log(data);
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/oprecognition/op-recognition/confirmrec", data, ).then(function(response) {
-          console.log('认款结果',response);
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/oprecognition/op-recognition/confirmrec", {
+          "id": this.info,
+          "rec_mode": this.rec_type,
+          "distributor_code": this.distributorID,
+          "distributor": this.distributorType,
+          "rec_uid": sessionStorage.getItem('id')
+        }, ).then(function(response) {
+//          console.log('认款结果',response);
           if (response.data.code == '200') {
             that.$message({
               type: 'success',
@@ -516,34 +313,7 @@
         }).catch(function(obj) {
           console.log(obj);
         });
-      },
-      // 时间限制
-      beginDate(){
-//      alert(begin);
-        const that = this;
-        return {
-          disabledDate(time){
-            if (that.endTime) {  //如果结束时间不为空，则小于结束时间
-              return new Date(that.endTime).getTime() < time.getTime()
-            } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
-            }
-          }
-        }
-      },
-      processDate(){
-//      alert(process);
-        const that = this;
-        return {
-          disabledDate(time) {
-            if (that.startTime) {  //如果开始时间不为空，则结束时间大于开始时间
-              return new Date(that.startTime).getTime() > time.getTime()
-            } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
-            }
-          }
-        }
-      },
+      }
     },
     created() {
 
@@ -557,6 +327,11 @@
 <style lang="scss">
   #recognitionDo .el-dialog{
     width: 90%;
+  }
+  #recognitionDo .buttonDv{
+    position: absolute;
+    top: 8px;
+    right: 3%;
   }
   #recognitionDo .stepTitle{
     width: 94%;

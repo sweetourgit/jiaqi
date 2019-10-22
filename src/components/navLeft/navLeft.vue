@@ -196,6 +196,10 @@
                   value: '业务待认款管理',
                   router:'/businessRecognitionManagement'
                 },
+                {
+                  value: '周边借款管理',
+                  router:'/aroundBorrowingManagement/noIncomeBorrowing'
+                },
               ],
             }
         ],
