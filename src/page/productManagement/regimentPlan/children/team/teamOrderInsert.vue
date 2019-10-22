@@ -161,7 +161,7 @@
             </div>
           </el-form-item>
           <div class="travelMessage">出行人信息</div>
-          <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px" v-for="(item,indexPrice) in salePrice">
+          <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px" v-for="(item,indexPrice) in salePrice" :key='item.index'>
             <el-table-column prop="name" label="姓名" min-width="100" align="center"></el-table-column>
             <el-table-column prop="type" label="报名类型" min-width="100" align="center"></el-table-column>
             <el-table-column prop="phone" label="电话" min-width="120" align="center"></el-table-column>
@@ -206,7 +206,7 @@
           <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" style="width:200px" ></el-date-picker>
         </el-form-item>
         <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
-          <el-select v-model="conForm.credType" placeholder="请选择">
+          <el-select v-model="conForm.credType" placeholder="请选择" style="width:200px;">
             <el-option label="请选择" :value="0" />
             <el-option label="护照" :value="1" />
             <el-option label="港澳通行证" :value="2" />
@@ -720,7 +720,7 @@ export default {
         len = arrLength - preLength;
         for (var i = 0; i < len; i++) {
           this.costList.push({
-            enrollID: enrollID,
+            //enrollID: enrollID,
             enrollName: enrollName,
             name : '姓名',
             type : enrollName,
@@ -973,7 +973,10 @@ export default {
     ensure(formName){//出行人弹窗添加完保存
       this.$refs[formName].validate(valid => {
         if (valid) {
+          console.log(guest)
           console.log(this.tourType)
+          guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
+          guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
           let guest = JSON.parse(JSON.stringify(this.conForm));
           if (this.ruleForm.price == 1) {
             guest.singlePrice = this.costList[this.tourType].price_01; //填充价格
@@ -1070,7 +1073,7 @@ export default {
         this.ruleForm.travel = '';
       }
     },
-    //详情借款表格
+    //详情四个表格查询
     getBorrowing(val){
       var that = this
       console.log(this.planId)
