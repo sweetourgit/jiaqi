@@ -24,6 +24,7 @@ import travelTemplate from '@/page/productManagement/travelTemplate/travelTempla
 //团期计划
 import regimentPlan from '@/page/productManagement/regimentPlan/regimentPlan'
 import teamPlanList from '@/page/productManagement/regimentPlan/children/team/teamPlanList'
+import teamOrderInsert from '@/page/productManagement/regimentPlan/children/team/teamOrderInsert'
 import scenicTicketingList from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingList'
 import scenicTicketingDetails from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingDetails'
 import scenicTicketingPledging from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingPledging'
