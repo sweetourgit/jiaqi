@@ -49,8 +49,12 @@
                 </td>
                 <td width="33%">
                   <div width="80" class="fl">参考结算:</div>
-                  <div class="fl ml13">{{average | numFilter}}</div>
+                  <div class="fl ml13">0.00</div>
                 </td>
+                <!-- <td width="33%">
+                  <div width="80" class="fl">参考结算:</div>
+                  <div class="fl ml13">{{average | numFilter}}</div>
+                </td> -->
                 <td width="33%">
                   <div width="80" class="fl">订单预留时长:</div>
                   <div class="fl ml13">{{teampreviewData.dateHous}}小时</div>
@@ -151,17 +155,8 @@
             ></el-input>
           </el-form-item>
           <!--出行人信息-->
-          <el-form-item label="出行人信息" class="cb">
-            <div class="oh" v-for="(item,indexPrice) in salePrice" :key="indexPrice">
-              <div class="tour-til">{{item.enrollName}}</div>
-              <div class="tourist">
-                <span v-for="(item,index) in tour[indexPrice]" :key="index" placeholder="点击填写" @click="fillTour(indexPrice,index)"
-                >{{item.cnName}}</span>
-              </div>
-            </div>
-          </el-form-item>
           <div class="travelMessage">出行人信息</div>
-          <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px">
+          <!-- <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px">
             <el-table-column prop="name" label="姓名" min-width="100" align="center"></el-table-column>
             <el-table-column prop="type" label="报名类型" min-width="100" align="center"></el-table-column>
             <el-table-column prop="phone" label="电话" min-width="120" align="center"></el-table-column>
@@ -174,8 +169,32 @@
                 <span class="cursor blue" @click="delTravel()">删除</span>
               </template>
             </el-table-column>
-          </el-table>
-
+          </el-table> -->
+          <table class="costList" v-for="(item,indexPrice) in salePrice" :key="indexPrice" border="1" cellpadding="0" cellspacing="0">
+            <tr class="costList_01">
+              <td width="120">姓名</td>
+              <td width="100">报名类型</td>
+              <td width="120">电话</td>
+              <td width="180">身份证</td>
+              <td width="80">性别</td>
+              <td width="100">操作</td>
+            </tr>
+            <tr v-for="(item,index) in tour[indexPrice]" :key="index">
+              <td>{{item.cnName}}</td>
+              <td>{{item.enrollName}}</td>
+              <td>{{item.mobile}}</td>
+              <td>{{item.idCard}}</td>
+              <td>
+                <div v-if="item.sex=='0'">男</div>
+                <div v-if="item.sex=='1'">女</div>
+              </td>
+              <td class="tc">
+                <span class="fl blue cursor" style="margin:0 0 0 18px"@click="fillTour(indexPrice,index)">编辑</span>
+                <span class="fl" style="margin:0 8px 0 8px;">|</span>
+                <span class="fl blue cursor">删除</span>
+              </td>
+            </tr>
+          </table>
         </el-form>
         
       </div>
@@ -185,12 +204,13 @@
       width="700px">
       <el-form :model="conForm" :rules="rules" ref="conForm" style="height:300px;">
         <el-form-item label="中文姓名" prop="cnName" label-width="110px" class="fl">
-          <el-input type="text" v-model="conForm.cnName" class="w200 fl"></el-input>
+          <el-input type="text" v-model="conForm.cnName" class="w200"></el-input>
         </el-form-item>
         <el-form-item label="英文姓名" prop="enName" label-width="110px" class="fl">
           <el-input type="text" v-model="conForm.enName" class="w200"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px">
+        <div style="clear:both;"></div>
+        <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px;">
           <el-radio-group v-model="conForm.sex">
             <el-radio :label="0">男</el-radio>
             <el-radio :label="1">女</el-radio>
@@ -223,7 +243,7 @@
       <div slot="footer" class="dialog-footer cb">
         <el-button @click="cancelInfo('conForm')">取 消</el-button>
         <!-- <el-button type="primary" @click="subInfo('conForm')">确 定</el-button> -->
-        <el-button type="primary" @click="ensure('conForm')">确 定</el-button>
+        <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
       </div>
     </el-dialog>
     <!--下单成功弹窗-->
@@ -281,7 +301,14 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">状态:</div>
-              <div class="fl ml13">{{teampreviewData.regimentType}}</div>
+              <!-- <div class="fl ml13">{{teampreviewData.regimentType}}</div> -->
+              <div class="fl ml13">
+                <div v-if="teampreviewData.regimentType=='1'">正常</div>
+                <div v-if="teampreviewData.regimentType=='2'">停售</div>
+                <div v-if="teampreviewData.regimentType=='3'">封团</div>
+                <div v-if="teampreviewData.regimentType=='4'">暂满</div>
+                <div v-if="teampreviewData.regimentType=='5'">满员</div>
+              </div>
             </td>
             <td width="33%">
               <div width="80" class="fl">关联订单:</div>
@@ -651,6 +678,7 @@ export default {
     },
     //获取参考结算价
     getaverage(ID) {
+      console.log(ID)
       this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
         "id": ID
       }).then(res => {
@@ -658,11 +686,10 @@ export default {
       })
     },
     teampreview(ID) {
-      this.getaverage(ID);
+      //this.getaverage(ID);
       //团期计划订单信息预览
       console.log(ID)
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
           id: ID
         })
         .then(res => {
@@ -726,32 +753,30 @@ export default {
         //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
         len = arrLength - preLength;
         for (var i = 0; i < len; i++) {
-          this.costList.push({
+          this.tour[index].push({
             enrollID: enrollID,
             enrollName: enrollName,
-            name : '姓名',
-            type : enrollName,
-            phone : '',
-            IDcard : '',
-            sex : '',
             id: 0,
             isDeleted: 0,
             code: "string",
-            idCard: "string",
+            cnName: "姓名",
+            enName: "",
+            sex: "",
+            idCard: "",
             singlePrice: 0,
-            mobile: "string",
+            mobile: "",
             bornDate: 0,
             credType: 0,
-            credCode: "string",
+            credCode: "",
             credTOV: 0,
             orderID: 0,
-            orderCode: "string",
+            orderCode: "",
             orgID: 0,
             userID: 0
           });
         }
-      } else {
-        this.costList.splice(arrLength - preLength, preLength - arrLength);
+      } else{
+        this.tour[index].splice(arrLength - preLength, preLength - arrLength);
       }
     },
     submitForm(formName) {
@@ -967,35 +992,16 @@ export default {
       this.dialogFormTour = true;
 
     },
-    // fillTour(type, index) {
-    //   this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
-
-    //   if (this.tour[type][index].cnName != "点击填写") {
-    //     this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
-    //   }
-    //   this.tourType = type;
-    //   this.fillIndex = index;
-    //   this.dialogFormTour = true;
-    // },
-    ensure(formName){//出行人弹窗添加完保存
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          let guest = JSON.parse(JSON.stringify(this.conForm));
-          guest.cnName = this.salePrice[this.tourType].name;
-          console.log(this.salePrice)
-          console.log(this.tourType)
-          if (this.ruleForm.price == 1) {
-            guest.singlePrice = this.costList[this.tourType].price_01; //填充价格
-          } else {
-            guest.singlePrice = this.costList[this.tourType].price_02;
-          }
-          this.costList[this.tourType][this.fillIndex] = guest;
-          this.dialogFormTour = false;
-          this.$refs[formName].resetFields();
-        }
-      });
+    fillTour(type, index) {
+      this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
+      if (this.tour[type][index].sex != "") {
+        this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
+      }
+      this.tourType = type;
+      this.fillIndex = index;
+      this.dialogFormTour = true;
     },
-    subInfo(formName) {
+    subInfo(formName) {//出行人弹窗添加完保存
       this.$refs[formName].validate(valid => {
         if (valid) {
           let guest = JSON.parse(JSON.stringify(this.conForm));
@@ -1258,6 +1264,9 @@ export default {
 .blue {color: #2e94f9;}
 .cursor {cursor: pointer;}
 .costTable{width:800px; margin: 0 0 0 2px;}
+.costList{width:800px; line-height: 40px; text-align: center; border:1px solid #ebebeb;border-collapse:collapse;border-spacing:0; }
+.costList_01{background: #f3f3f3;}
+.tc{text-align: center;}
 /*详情样式*/
 .detail{ position: absolute;right: 15px; top: 8px; }
 .detailsTitle{font-size: 18px; margin: 20px 0 20px 0;}
