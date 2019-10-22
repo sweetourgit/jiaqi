@@ -70,7 +70,7 @@
             </li>
           </template>
           <template v-else>
-            <li style="border: solid 1px #E7E7E7;border-left:none;border-top:none;"  :class="{'checked': n.includes(dayobject)}" @click="handleitemclick(dayobject, index)" :key="index" >
+            <li style="border: solid 1px #E7E7E7;border-left:none;border-top:none;" :class="{'checked': n.includes(dayobject)}" @click="handleitemclick(dayobject, index)" :key="index" >
               <span class="isShare" v-show="dayobject.data.person.share == 1">共享</span>
               <img class="isWarning" v-show="dayobject.data.person.cost" src="@/assets/image/warning.png" alt="">
               <!--本月-->
@@ -103,7 +103,7 @@
     </div>
     <!-- 右侧的表单 -->
     <div class="rightForm" v-show="rightTable">
-      <!-- 表单 -->
+      <!-- 固定卡片表单 -->
       <el-form :model="Rform" :rules="RformRuler" ref="Rform">
         <el-form-item label="报名类型:">
           <el-select v-model="Rform.region" filterable placeholder="请选择" style="width:180px;margin:0 0 0 33px;">
@@ -122,18 +122,12 @@
             <el-radio  label="2">非共享</el-radio>
           </el-radio-group>
         </el-form-item>
-        <!-- 共享库存 -->
-        <template  v-if='Rform.resource == "1"'>
-          <el-form-item label="共享库存:" prop="shareId" style="margin-top:-15px;">
-            <el-select v-model="Rform.shareId" placeholder="请选择" @change="shareSelect" style="width:180px">
-              <el-option v-for="(item, index) in signUptypeSelect" :key="index" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <template v-if="Rform.shareId">
-            <div><span>当前剩余:</span><span style="color:blue;margin-left:22px">{{Rform.shareNum}}</span></div>
-          </template>
-        </template>
-        <!-- 非共享库存 -->
+        <el-form-item label="共享库存:" prop="shareId" style="margin-top:-15px;" v-if='Rform.resource == "1"'>
+          <el-select v-model="Rform.shareId" placeholder="请选择" @change="shareSelect" style="width:180px">
+            <el-option v-for="(item, index) in signUptypeSelect" :key="index" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+          <div v-if="Rform.shareId"><span>当前剩余:</span><span style="color:blue;margin-left:22px">{{Rform.shareNum}}</span></div>
+        </el-form-item>
         <el-form-item label="总库存:" v-show='Rform.resource == "2"' prop="sumNum" style="margin-top:-15px;" >
           <el-input v-model="Rform.sumNum" style="width:200px; margin:0 0 0 33px;" ></el-input>
         </el-form-item>
@@ -143,40 +137,40 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <!-- 卡片 -->
-      <template>
-        <el-card class="box-card"  v-for="(item,index) in arr" :key="item.key">
-          <div  slot="header" class="clearfix">
-            <div class="fontName">
-              <span>{{item.name}}</span>
-            </div>
-            <div style="float:right;margin-top: -25px;">
-              <template v-if="arr[index].quota == false">
-                <el-button @click="AddQuotas(index)"  type="primary" size="mini">添加配额</el-button>
-              </template>
-              <template v-else>
-                <el-button @click="DelectQuota(index)"  type="primary" size="mini">删除配额</el-button>
-              </template>
-              <el-button type="primary" size="mini" id="inventorysave" @click="addQuota(item, index)">保存</el-button>
-              <el-button @click="delect(item, index)"  type="danger" size="mini">删除</el-button>
-            </div>
+      <!-- 固定卡片表单 END -->
+      <!-- 卡片（价格） -->
+      <el-card class="box-card"  v-for="(item,index) in arr" :key="item.key">
+        <div slot="header" class="clearfix">
+          <div class="fontName">
+            <span>{{item.name}}</span>
           </div>
-          <div class="divform">
-            <el-form ref="form" :model="item" :rules="formRuler"  label-width="80px">
-              <el-form-item label="销售价" prop="salePrice">
-                <el-input v-if="Rform.resource == 1" :class="isAverage = item.salePrice < shareAverage && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
-                <el-input v-else :class="isAverage = item.salePrice < average && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
-              </el-form-item>
-              <el-form-item label="同业价" prop="traderPrice">
-                <el-input :maxlength='6' v-model="item.traderPrice"></el-input>
-              </el-form-item>
-              <el-form-item label="配额" v-if="arr[index].quota == true">
-                <el-input :maxlength='6' v-model="item.quotaPrice"></el-input>
-              </el-form-item>
-            </el-form>
+          <div style="float:right;margin-top: -25px;">
+            <template v-if="arr[index].quota == false">
+              <el-button @click="AddQuotas(index)"  type="primary" size="mini">添加配额</el-button>
+            </template>
+            <template v-else>
+              <el-button @click="DelectQuota(index)"  type="primary" size="mini">删除配额</el-button>
+            </template>
+            <el-button type="primary" size="mini" id="inventorysave" @click="addQuota(item, index)">保存</el-button>
+            <el-button @click="delect(item, index)"  type="danger" size="mini">删除</el-button>
           </div>
-        </el-card>
-      </template>
+        </div>
+        <div class="divform">
+          <el-form ref="form" :model="item" :rules="formRuler"  label-width="90px">
+            <el-form-item label="销售价" prop="salePrice">
+              <el-input v-if="Rform.resource == 1" :class="isAverage = item.salePrice < shareAverage && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
+              <el-input v-else :class="isAverage = item.salePrice < average && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
+            </el-form-item>
+            <el-form-item label="同业价" prop="traderPrice">
+              <el-input :maxlength='6' v-model="item.traderPrice"></el-input>
+            </el-form-item>
+            <el-form-item label="配额" v-if="arr[index].quota == true">
+              <el-input :maxlength='6' v-model="item.quotaPrice"></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-card>
+      <!-- 卡片（价格） END -->
     </div>
   </div>
 </template>
@@ -200,7 +194,7 @@
           sumId: '',       // 非共享库存id
           shareNum: '',    // 共享库存数量
           sumNum:'',       // 总库存数量
-          orderRetain: '', // 订单保留
+          orderRetain: '' // 订单保留
         }, // 大表单
         form: {
           price: "",
@@ -221,7 +215,7 @@
         currentMonth: 1, // 当前月的月份
         currentYear: 1970, // 当前月的年份
         currentWeek: 1, // 当前月1号的星期
-        rightTable:false, // 右侧的表单显示开关
+        rightTable: false, // 右侧的表单显示开关
         forbidden:false, // 多日期共享禁用
         days: [], // 日历上每日日期
         arr:[], // 右侧报名类型表单
@@ -979,6 +973,7 @@
         // 这个data 参数就是要填加载日历上卡片相关信息
         // 有计划id，值执行修改操作
         if (this.Rform.id) {
+          console.log('执行修改操作')
           // 2为非共享库存
           if (this.Rform.resource == '2') {
             // 验证是否填写总库存
@@ -1067,6 +1062,7 @@
           }
         // 没，值执行添加操作
         } else {
+          console.log('值执行添加操作')
           // 验证库存类型是否选择
           if (this.Rform.resource != '') {
             // 选择的是非共享库存
@@ -1130,7 +1126,6 @@
         this.n.forEach(item => {
           // 第一次添加时
           if (this.days[item.index].data.person.planEnroll == undefined) {
-            console.log('第一次添加时', data)
             let planEnroll = [];
             let cost = false;
             planEnroll.push({
@@ -1151,14 +1146,14 @@
                 cost = true;
               }
             })
-            // 把新选中的计划 进行赋值
-            this.days[item.index].data.person = {
+            this.days[item.index].data.person = { // 把新选中的计划 进行赋值
                 'inventoryID': '',
                 'packageID': this.ccc[0],
                 'date': date,
                 'count': this.Rform.sumNum,
                 'share': this.Rform.resource,
                 'cost': cost,
+                'regimentType': 1,
                 'planEnroll': planEnroll
               }
             n.push(this.days[item.index]);
@@ -1171,7 +1166,6 @@
             let planEnroll = [];
             let cost = false;
             let isSave = true; // 是否编辑判断
-            console.log('是否编辑判断',data)
             this.days[item.index].data.person.planEnroll.forEach(list => {
               if (list.enrollID == data.id && list.name == data.name) {
                 planEnroll.push({
@@ -1216,6 +1210,7 @@
               'share': this.Rform.resource,
               'cost': cost,
               'count': this.Rform.sumNum,
+              'regimentType': 1,
               'planEnroll': planEnroll
             }
             n.push(this.days[item.index]);
@@ -1239,10 +1234,12 @@
                 "packageID": item.data.person.packageID, // 套餐
                 "date": item.data.person.date, // 日历上的日期
                 "groupCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix, // 团号
-                "planEnroll": item.data.person.planEnroll // 此团期中的所有报名类型
+                "planEnroll": item.data.person.planEnroll, // 此团期中的所有报名类型
+                'regimentType': 1 // 团期状态
               }
             }).then(resAdd => {
               // 添加成功后从新查找
+              this.rightTable = false;
               this.calendarList(this.ccc[0]);
             }).catch(errAdd => {
               console.log('添加计划失败', errAdd);
@@ -1471,6 +1468,7 @@
           shareNum: '', // 共享库存数量
           shareId:'',   // 共享库存
           sumNum:'',    // 总库存
+          regimentType:'',// 团期状态
         };
         // 清空表单验证样式
         if (this.$refs['Rform'] != undefined) {
@@ -1530,7 +1528,6 @@
 
           // 选中的日期有类型时进行赋值
           if (day.data.person.id != undefined) {
-            console.log(day)
             this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/get', { // 获取一个计划信息
               "id": day.data.person.id
             }).then(res => {
@@ -1599,6 +1596,7 @@
             this.arr[i].isModify = true;
             this.arr[i].salePrice = _planEnroll[i].salePrice;
             this.arr[i].dateHous = _planEnroll[i].dateHous; // 新增等待时长
+            this.arr[i].regimentType = _planEnroll[i].regimentType; // 新增团期状态
             this.arr[i].traderPrice = _planEnroll[i].traderPrice;
             if (_planEnroll[i].quotaPrice == null || _planEnroll[i].quotaPrice == 0) {
               this.arr[i].quota = false;
@@ -1787,7 +1785,7 @@
       },
       // 添加报名类型
       AddType(type) {
-        if (this.Rform.region) {
+        if (this.Rform.region) { // 如果有报名类型
           let mon = true;
           if (this.arr.length !== 0) {
             this.arr.forEach(item => {
@@ -1806,7 +1804,8 @@
               'salePrice': '',   // 销售价
               'traderPrice': '', // 同业价
               'quota': false,    // 配额开关
-              'quotaPrice': ''   // 配额
+              'quotaPrice': '',   // 配额
+              'regimentType': ''   // 团期状态
             })
           } else {
             this.$message({
