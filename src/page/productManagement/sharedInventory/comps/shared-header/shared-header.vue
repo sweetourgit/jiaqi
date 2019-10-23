@@ -17,11 +17,13 @@ $fontHeight: 32px;
     position: absolute;
     width: 488px;
     font-size: 12px;
+    background-color: #FFF;
     border: 1px solid #e4e7ed;
     box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
     border-radius: 4px;
     top: 36px;
     left: 0;
+    z-index: 2000;
     .content{
       position: relative;
       padding: 20px;
@@ -59,7 +61,7 @@ $fontHeight: 32px;
         <i class="el-icon-d-arrow-left" @click="monthHandler(-1)"></i>
         <i class="el-icon-arrow-left" @click="dayHandler(-1)"></i>
       </span>
-      <div style="display:inline-block"
+      <div style="display:inline-block; min-width: 170px; text-align: center;"
         @click="vm.state= !vm.state"
       >
         <span style="padding:0 5px;">{{ current[0] }}</span><span>年</span>
@@ -147,16 +149,17 @@ export default {
   methods: {
     
     init(date){
-      this.vm.inAsync= true;
+      this.changeInAsync(true);
       this.changeCurrent(...this.getDateArr(date));
       inventorylistAction.bind(this)(
         this.getDateInt(date)
       ).then(res => {
         this.$emit('submit-inventory', this.dayArrayMaker(res));
       }).catch(err => {
+        this.$message.error(err);
         this.$emit('submit-inventory', null);
       }).finally(() => {
-        this.vm.inAsync= false;
+        this.changeInAsync(false);
       })
     },
 
@@ -202,6 +205,7 @@ export default {
         dto.children= finder[dto.dayInt];
         dto.count= dto.children && dto.children.length;
         this.dayArray.push(dto);
+        dto.children && console.log(dto)
         if((currentMonthInt+ i)=== this.currentInt) result= dto;
       }
       return result; 
@@ -287,7 +291,15 @@ export default {
       year && this.current.splice(0, 1, year);
       (month || month=== 0) && this.current.splice(1, 1, month);
       day && this.current.splice(2, 1, day);
-    }
+    },
+
+    /**
+     * @description: 根据是否弹开执行emit
+     */
+    changeInAsync(bol){
+      this.vm.inAsync= bol;
+      !this.vm.state && this.$emit('in-async', bol); 
+    },
   }
 }
 </script>

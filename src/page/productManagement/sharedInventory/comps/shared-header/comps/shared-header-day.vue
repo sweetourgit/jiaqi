@@ -18,6 +18,21 @@ $fontHeight: 32px;
     line-height: $fontHeight;
     left: 50%;
     transform: translateX(-50%);
+    span{
+      display: block;
+      box-sizing: border-box;
+      width: $fontHeight;
+      height: $fontHeight;
+    }
+    .relative::after{
+      content: attr(data-relative);
+      font-weight: bold;
+      position: absolute;
+      bottom: -14px;
+      right: 0;
+      transform: translateX(50%);
+      color: #409EFF;
+    }
   }
   // 当前选择的日期
   .select{
@@ -71,7 +86,12 @@ $fontHeight: 32px;
         proto.day? '': 'blank',
         proto.previous? 'previous': ''
       ]"
-    >{{ proto.day }}</span>
+    >
+      <span
+        :data-relative="relative" 
+        :class="[ relative? 'relative': '', ]"
+      >{{ proto.day }}</span>
+    </span>
   </div>
 </template>
 
@@ -92,6 +112,15 @@ export default {
   watch: {
     proto(){
       this.$forceUpdate();
+    }
+  },
+
+  computed: {
+    relative(){
+      if(!this.proto.children) return 0;
+      let count= 0;
+      this.proto.children.forEach(el => count+= el.relaInventory);
+      return count;
     }
   }
 }
