@@ -191,7 +191,7 @@
               <td class="tc">
                 <span class="fl blue cursor" style="margin:0 0 0 18px"@click="fillTour(indexPrice,index)">编辑</span>
                 <span class="fl" style="margin:0 8px 0 8px;">|</span>
-                <span class="fl blue cursor">删除</span>
+                <span class="fl blue cursor" @click="delTravel(indexPrice,index)">删除</span>
               </td>
             </tr>
           </table>
@@ -416,7 +416,7 @@
               <el-table-column prop="orderCode" label="订单ID" min-width="120" align="center"></el-table-column>
               <el-table-column prop="contactName" label="联系人" min-width="120" align="center"></el-table-column>
               <el-table-column prop="number" label="数量" min-width="180" align="center"></el-table-column>
-              <el-table-column prop="orderChannel" label="订单来源" min-width="100" align="center"></el-table-column>
+              <el-table-column prop="orderChannels" label="订单来源" min-width="100" align="center"></el-table-column>
               <el-table-column prop="orderStatus" label="状态" min-width="80" align="center"></el-table-column>
               <el-table-column prop="saler" label="销售" min-width="80" align="center"></el-table-column>
               <el-table-column prop="payable" label="订单金额" min-width="120" align="center"></el-table-column>
@@ -559,7 +559,7 @@ export default {
         idCard: [
           { required: true, message: "身份证号不能为空", trigger: "blur" },
           {
-            pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+             pattern: /(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
             message: "身份证号格式不正确",
             trigger: "blur"
           }
@@ -776,7 +776,9 @@ export default {
           });
         }
       } else{
-        for(var i = this.tour[index].length;i>=0;i--){
+        // console.log(this.tour[index])
+        for(var i=0;i < this.tour[index].length;i++){
+          console.log(this.tour[index][i])
           if(this.tour[index][i].sex === ''){
             this.tour[index].splice(i, preLength - arrLength);
             break;
@@ -987,15 +989,13 @@ export default {
         .then(res => {});
     },
     delTravel(type, index){//删除单条表格数据
-
-    },
-    fillTravel(type, index){//点击出行人信息表格编辑显示弹窗
-      console.log(this.enrollName)
-      this.winTitle = this.costList[0].enrollName; //编辑游客信息弹窗标题
-      this.tourType = type;
-      this.fillIndex = index;
-      this.dialogFormTour = true;
-
+      this.$confirm("是否删除改条出行人信息?", "提示", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+      }).then(res =>{
+        this.tour[index].splice(index, 1);
+      })
     },
     fillTour(type, index) {
       this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
@@ -1204,23 +1204,15 @@ export default {
         console.log(err)
       })
       //订单
-      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderpage', {
-        "pageIndex": 1,
-        "pageSize": 100,
+      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/planordlist', {
         "object": {
-          "planID": this.planId
+          "planID": this.planId,
+          "salerID": sessionStorage.getItem("id")
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableOrder = res.data.objects
           that.tableOrder.forEach(function (v,k,arr) {
-              if(arr[k]['orderChannel'] == 1){
-                arr[k]['orderChannel'] = '同业'
-              }else if(arr[k]['orderChannel'] == 2) {
-                arr[k]['orderChannel'] = '门店'
-              }else if(arr[k]['orderChannel'] == 3) {
-                arr[k]['orderChannel'] = '总部'
-              }
               if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==1)||(arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==2)||(arr[k]['orderStatus'] == 10 && arr[k]['occupyStatus'] ==3)){
                 arr[k]['orderStatus'] = '未完成订单'
               }else if(arr[k]['orderStatus'] == 1){
