@@ -413,7 +413,7 @@
           </el-tab-pane>
           <el-tab-pane label="订单" name="fourth">
             <el-table :data="tableOrder" :header-cell-style="getCostClass" border>
-              <el-table-column prop="id" label="订单ID" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="orderCode" label="订单ID" min-width="120" align="center"></el-table-column>
               <el-table-column prop="contactName" label="联系人" min-width="120" align="center"></el-table-column>
               <el-table-column prop="number" label="数量" min-width="180" align="center"></el-table-column>
               <el-table-column prop="orderChannel" label="订单来源" min-width="100" align="center"></el-table-column>
@@ -776,7 +776,12 @@ export default {
           });
         }
       } else{
-        this.tour[index].splice(arrLength - preLength, preLength - arrLength);
+        for(var i = this.tour[index].length;i>=0;i--){
+          if(this.tour[index][i].sex === ''){
+            this.tour[index].splice(i, preLength - arrLength);
+            break;
+          }
+        }
       }
     },
     submitForm(formName) {
@@ -994,7 +999,7 @@ export default {
     },
     fillTour(type, index) {
       this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
-      if (this.tour[type][index].sex != "") {
+      if (this.tour[type][index].enName != "") {
         this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
       }
       this.tourType = type;
