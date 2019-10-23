@@ -38,6 +38,15 @@ $fontHeight: 32px;
     transform: translateX(-50%);
     color: #409EFF;
   }
+  .previous::before{
+    content: '过';
+    font-weight: bold;
+    position: absolute;
+    top: -14px;
+    left: 0;
+    transform: translateX(-50%) scale(0.8);
+    color: #aeaeae;
+  }
   .count::after{
     content: attr(data-count);
     font-weight: bold;
@@ -59,7 +68,8 @@ $fontHeight: 32px;
         proto.count? 'count': '',
         proto.today? 'today': '',
         proto.dayInt=== current? 'select': '',
-        proto.day? '': 'blank'
+        proto.day? '': 'blank',
+        proto.previous? 'previous': ''
       ]"
     >{{ proto.day }}</span>
   </div>
