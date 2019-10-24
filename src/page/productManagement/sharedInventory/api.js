@@ -48,7 +48,7 @@ export const inventoryinsertAction= function(object){
   })
 }
 
-export const inventorydeleteAction= function(id){
+export const deleteInventoryAction= function(id){
   return new Promise((resolve, reject) => {
     this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorydelete', {
       id
@@ -62,7 +62,7 @@ export const inventorydeleteAction= function(id){
   })
 }
 
-export const inventorysaveAction= function(object){
+export const updateInventoryAction= function(object){
   return new Promise((resolve, reject) => {
     this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorysave', {
       object
@@ -76,24 +76,16 @@ export const inventorysaveAction= function(object){
   })
 }
 
-
-
-
-// this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorysave', {
-//   'object': {
-//     'id': this.addStocks.id,
-//     'name': this.addStocks.name,
-//     'count': this.addStocks.count,
-//     'averageCost': this.addStocks.averageCost == '' ? 0 : this.addStocks.averageCost,
-//     "date": this.addStocks.date,
-//     "share": 1,
-//     "orgID": 0,
-//   }
-// }).then(res => {
-//   this.dialogStock = false;
-//   this.handList();
-//   this.$message({
-//     message: '更改成功',
-//     type: 'success'
-//   });
-// })
+export const getInventorydetailAction= function(id){
+  return new Promise((resolve, reject) => {
+    this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/inventorydetail', {
+      id
+    }).then((res) => {
+      let { isSuccess, plans, object }= res.data;
+      if(!isSuccess) return reject('获取库存详细信息失败');
+      return resolve({ plans, object });
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}

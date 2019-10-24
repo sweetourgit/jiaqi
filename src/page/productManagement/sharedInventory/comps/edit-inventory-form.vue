@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { inventorysaveAction } from '../api'
+import { updateInventoryAction } from '../api'
 
 export default {
 
@@ -116,7 +116,7 @@ export default {
     addAction(){
       let object= this.getSubmitDate();
       if(!object) return;
-      inventoryinsertAction.bind(this)(object).then(res => {
+      updateInventoryAction.bind(this)(object).then(res => {
         this.$message.success('库存新增成功');
         return this.afterAddAction(res);
       }).catch(err => {

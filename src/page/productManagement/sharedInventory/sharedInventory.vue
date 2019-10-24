@@ -116,7 +116,7 @@
                 </el-col>
                 <el-col style="width: 250px;">
                   <el-form-item label="剩余库存：" prop="podTime">
-                    {{ current.relaInventory }}
+                    {{ current.left }}
                   </el-form-item>
                 </el-col>
                 <el-col style="width: 250px;">
@@ -149,7 +149,7 @@
                   </el-col>
                   <el-col style="width: 250px;">
                     <el-form-item label="产品：">
-                      {{ current.relaInventory }}
+                      {{ plan.teamProName }}
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -208,7 +208,7 @@
 </template>
 
 <script>
-import { inventoryAction, inventorydeleteAction } from './api'
+import { getInventorydetailAction, deleteInventoryAction } from './api'
 import sharedHeader from './comps/shared-header/shared-header'
 import addInventoryForm from './comps/add-inventory-form'
 import editInventoryForm from './comps/edit-inventory-form'
@@ -283,10 +283,13 @@ export default {
       let inventory= this.inventorys[i];
       this.vm.index= i;
       this.vm.inventoryAsync= true;
-      this.current= inventory;
-      inventoryAction.bind(this)(inventory.id).then(res => {
-        this.plans.splice(0);
-        if(res && res.length) this.plans= res;
+      getInventorydetailAction.bind(this)(inventory.id).then(res => {
+        let { object, plans }= res;
+        let left= object.count;
+        plans.forEach(plan => left-= plan.saleCount);
+        object.left= left;
+        this.current= object;
+        if(plans && plans.length) this.plans= plans;
       }).finally(() => {
         this.vm.inventoryAsync= false;
       })
@@ -301,7 +304,7 @@ export default {
       }).then(() => {
         let { id, relaInventory }= this.inventorys[this.vm.index];
         if(relaInventory) return this.$message.error('解绑关联团期，才能删除该库存');
-        inventorydeleteAction.bind(this)(id).then(res => {
+        deleteInventoryAction.bind(this)(id).then(res => {
           this.$message.success('库存删除成功');
           return this.$refs.dateControllerRef.init(this.vm.currentDate);
         })
