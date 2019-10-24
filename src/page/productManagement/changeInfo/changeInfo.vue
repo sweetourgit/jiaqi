@@ -295,6 +295,7 @@ export default {
      * @description: 保存按钮触发的事件，先判断是保存还是新增
      */
     addOrSave(){
+      this._provided.ERROR_QUEUE.splice(0);
       let current= this.getCurrentRef();
       let hasChange= current && current.checkHasChange();
       if(!hasChange) return this.$message.info('信息无变动');
