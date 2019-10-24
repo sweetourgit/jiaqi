@@ -120,7 +120,7 @@ export default {
   components: { sharedHeaderDay },
 
   mounted(){
-    this.init()
+    this.init(new Date(2019, 9, 17));
   },
 
   computed: {
@@ -202,10 +202,10 @@ export default {
         if((currentMonthInt+ i)=== todayInt) dto.today= true;
         dto.day= i;
         dto.dayInt= currentMonthInt+ i;
+        dto.date= new Date(this.current[0], this.current[1], dto.day),
         dto.children= finder[dto.dayInt];
         dto.count= dto.children && dto.children.length;
         this.dayArray.push(dto);
-        dto.children && console.log(dto)
         if((currentMonthInt+ i)=== this.currentInt) result= dto;
       }
       return result; 
