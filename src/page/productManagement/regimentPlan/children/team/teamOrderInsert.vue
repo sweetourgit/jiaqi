@@ -5,8 +5,8 @@
       @close="cancelInfoOrder('ruleForm')">
       <div class="dialog-footer">
         <el-button class="ml13" @click="cancelInfoOrder('ruleForm')">取 消</el-button>
-        <el-button class="ml13" type="primary">预订不占</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')" class="ml13">确定占位</el-button>
+        <el-button class="ml13" @click="submitForm('ruleForm',1)"  type="primary">预订不占</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm',3)" class="ml13">确定占位</el-button>
       </div>
       <div class="main1">
         <!--团期信息-->
@@ -644,15 +644,12 @@ export default {
       //下单方式选择确认占位和预定占位，实时减少相关余位信息，提示库存不足
       for (let i = 0; i < this.salePrice.length; i++) {
         //如果下单方式选择预定不占，则不需要同步余位信息，提示库存不足
-        if (this.ruleForm.type == 1 || this.ruleForm.type == 2) {
-          this.salePrice[i].quota =
-            parseInt(this.salePrice[i].quota) -
-            parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
+        // if (this.ruleForm.type == 3 || this.ruleForm.type == 1) 
+        if (this.ruleForm.type == 1){
+          this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
           salePriceType = this.salePrice[i];
         } else {
-          salePriceType3[i].quota =
-            parseInt(salePriceType3[i].quota) -
-            parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
+          salePriceType3[i].quota = parseInt(salePriceType3[i].quota) - parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
           salePriceType = salePriceType3[i];
         }
         if (salePriceType.quota < 0) {
@@ -678,14 +675,14 @@ export default {
         });
     },
     //获取参考结算价
-    getaverage(ID) {
-      console.log(ID)
-      this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
-        "id": ID
-      }).then(res => {
-        this.average = res.data.average;
-      })
-    },
+    // getaverage(ID) {
+    //   console.log(ID)
+    //   this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
+    //     "id": ID
+    //   }).then(res => {
+    //     this.average = res.data.average;
+    //   })
+    // },
     teampreview(ID) {
       //this.getaverage(ID);
       //团期计划订单信息预览
@@ -787,7 +784,8 @@ export default {
         }
       }
     },
-    submitForm(formName) {
+    submitForm(formName,index) {
+      console.log(this.ruleForm.type)
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
         var blooen = "0";
@@ -845,6 +843,9 @@ export default {
             enrollDetail = `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
           });
           this.ifOrderInsert = false;
+          // if(this.tour[index].length === this.enrolNum[index]){
+          //   console.log(this.tour[index].length)
+          // }
           if(this.ruleForm.orderRadio === '1'){
              this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
               object: {
@@ -856,7 +857,7 @@ export default {
                 planID: this.planId,
                 orderStatus: 0, //订单状态  7未确认
                 refundStatus: 0, //退款状态
-                occupyStatus: this.ruleForm.type, //占位状态
+                occupyStatus: index, //占位状态
                 payable: this.ruleForm.totalPrice, //应付款
                 platform: 1, //1是erp，2是同业
                 favourable: [
@@ -880,7 +881,7 @@ export default {
                 ],
                 contact:
                   '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
-                endTime: this.ruleForm.type == 1 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
                 orderChannel: Number(this.ruleForm.orderRadio),
                 orgID: sessionStorage.getItem("orgID"),
                 userID: sessionStorage.getItem("id"),
@@ -931,7 +932,7 @@ export default {
                 planID: this.planId,
                 orderStatus: 0, //订单状态  7未确认
                 refundStatus: 0, //退款状态
-                occupyStatus: this.ruleForm.type, //占位状态
+                occupyStatus: index, //占位状态
                 payable: this.ruleForm.totalPrice, //应付款
                 platform: 1, //1是erp，2是同业
                 favourable: [
@@ -953,9 +954,8 @@ export default {
                     mark: this.ruleForm.allDisRemark
                   }
                 ],
-                contact:
-                  '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
-                endTime: this.ruleForm.type == 1 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
                 orderChannel: Number(this.ruleForm.orderRadio),
                 orgID:this.productPos,
                 // orgID: sessionStorage.getItem("orgID"),
