@@ -73,7 +73,7 @@
           <!--选择商户按钮，显示商户名称文本框-->
           <div v-if="ruleForm.orderRadio==2">
               <el-form-item label="商户名称" prop="travel" class="fl">
-                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3"placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
               </el-form-item>
           </div>
           <el-form-item label="价格选择" prop="price" class="cb price">
@@ -575,6 +575,7 @@ export default {
       tableAccount:[],//报销表格
       tableCollection:[],//收款表格
       tableOrder:[],//订单表格
+      productPos:0,
     };
   },
   filters: {
@@ -844,7 +845,8 @@ export default {
             enrollDetail = `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
           });
           this.ifOrderInsert = false;
-          this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
+          if(this.ruleForm.orderRadio === '1'){
+             this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
               object: {
                 id: 0,
                 isDeleted: 0,
@@ -877,15 +879,8 @@ export default {
                   }
                 ],
                 contact:
-                  '{"Name":"' +
-                  this.ruleForm.contactName +
-                  '","Tel":"' +
-                  this.ruleForm.contactPhone +
-                  '"}',
-                endTime:
-                  this.ruleForm.type == 1
-                    ? 0
-                    : new Date().getTime() / 1000 + 24 * 60 * 60,
+                  '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                endTime: this.ruleForm.type == 1 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
                 orderChannel: Number(this.ruleForm.orderRadio),
                 orgID: sessionStorage.getItem("orgID"),
                 userID: sessionStorage.getItem("id"),
@@ -900,8 +895,7 @@ export default {
                 number: number,
                 enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
               }
-            })
-            .then(res => {
+            }).then(res => {
               if (res.data.isSuccess == true) {
                 this.$message.success("提交成功");
                 let data = JSON.parse(res.data.result.details);
@@ -925,6 +919,83 @@ export default {
                 this.ifOrderInsert = true;
               }
             });
+          }else if(this.ruleForm.orderRadio === '2'){
+            this.ifOrderInsert = false;
+            this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
+              object: {
+                id: 0,
+                isDeleted: 0,
+                code: "",
+                orderCode: "",
+                proID: this.teampreviewData.teamID,
+                planID: this.planId,
+                orderStatus: 0, //订单状态  7未确认
+                refundStatus: 0, //退款状态
+                occupyStatus: this.ruleForm.type, //占位状态
+                payable: this.ruleForm.totalPrice, //应付款
+                platform: 1, //1是erp，2是同业
+                favourable: [
+                  //优惠
+                  {
+                    id: 0,
+                    orderID: 0,
+                    price: this.ruleForm.otherCost,
+                    title: "其他费用",
+                    favMode: 1,
+                    mark: this.ruleForm.otherCostRemark
+                  },
+                  {
+                    id: 0,
+                    orderID: 0,
+                    price: this.ruleForm.allDiscount,
+                    title: "整体优惠",
+                    favMode: 2,
+                    mark: this.ruleForm.allDisRemark
+                  }
+                ],
+                contact:
+                  '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                endTime: this.ruleForm.type == 1 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                orderChannel: Number(this.ruleForm.orderRadio),
+                orgID:this.productPos,
+                // orgID: sessionStorage.getItem("orgID"),
+                userID: sessionStorage.getItem("id"),
+                remark: JSON.stringify([
+                  {
+                    OrderCode: "",
+                    Mark: this.ruleForm.remark,
+                    CreateTime: formatDate(new Date())
+                  }
+                ]),
+                guests: guest,
+                number: number,
+                enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+              }
+            }).then(res => {
+              if (res.data.isSuccess == true) {
+                this.$message.success("提交成功");
+                let data = JSON.parse(res.data.result.details);
+                this.orderCode = data.OrderCode;
+                //需再次存储备注信息
+                this.addComment(this.orderCode);
+                this.orderSuc = true;
+                //清空表单
+                this.$refs[formName].resetFields();
+                this.dialogFormOrder = false;
+                this.ifOrderInsert = true;
+                this.startUpWorkFlowForJQ(
+                  data.OrderID,
+                  data.FlowModel,
+                  data.FlowModelName,
+                  data.Usercode
+                );
+              } else {
+                //预留黑名单信息？？？
+                this.$message.error("下单失败");
+                this.ifOrderInsert = true;
+              }
+            });
+          }
         } else {
           console.log("error submit!!");
           this.ifOrderInsert = true;
@@ -1051,6 +1122,7 @@ export default {
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
       this.tableData2 = []
+      console.log()
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
           name: queryString3,
@@ -1078,9 +1150,6 @@ export default {
     },
     departure(item){
       console.log(item)
-      //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
-      /*this.productPos = item.id;
-      this.originPlace = item.value;*/
       this.productPos = item.id;
       this.originPlace = item.value;
     },
