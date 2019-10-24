@@ -199,7 +199,9 @@ export default {
           number: queryString,
         }
       ).then(res => {
+        console.log(res)
         let { isSuccess, object }= res.data;
+        if(!object) return cb();
         // 字段对应不上，转接一下
         this.flightOptions= [object];
         cb([{ value: object.number+ '' }]);
