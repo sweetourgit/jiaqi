@@ -24,10 +24,10 @@
           padding: 2px 2px 2px 0;
           .content{
             padding: 20px;
-            background-color: rgba(0,0,0,0.1);
+            background-color: #FFF;
           }
           .select{
-            background-color: #FFF;
+            background-color: rgba(0,0,0,0.1);
           }
         }
         .blank{
@@ -50,11 +50,9 @@
         }
       }
       &>main{
+        padding-bottom: 20px;
         .table-bar{
           padding-top: 20px;
-          .table-header{
-            background-color: red;
-          }
         }
       }
     }
@@ -66,10 +64,11 @@
   <div class="shared-inventory">
     <header>
       <shared-header
+        ref="dateControllerRef"
         @in-async="emitInAsync"
         @submit-inventory="emitSubmitInventory"
       ></shared-header>
-      <el-button type="primary" size="small">添加库存</el-button>
+      <el-button type="primary" size="small" @click="wakeAddForm">添加库存</el-button>
     </header>
     <main 
       v-loading="vm.mainAsync"
@@ -79,10 +78,10 @@
       <div class="slider">
         <div class="name-menu">
           <div class="bar blank" 
-            v-show="!Inventorys.length"
+            v-show="!inventorys.length"
           >（无库存信息）</div>
           <div class="bar" 
-            v-for="(item, i) in Inventorys"
+            v-for="(item, i) in inventorys"
             :key="item.id"
           >
             <div 
@@ -101,7 +100,11 @@
               <span>库存名称：</span>
               <span>{{ current.name }}</span>
             </span>
-            <el-button type="primary" size="small">编辑</el-button>
+            <span>
+              <el-button type="primary" size="small" @click="wakeAddForm">编辑</el-button>
+              <el-button type="info" size="small" @click="deleteAction">删除</el-button>
+            </span>
+            
           </div>
           <div style="margin-top: 20px; padding-top: 20px; background: rgba(0,0,0,0.1)">
             <el-form label-width="100px">
@@ -113,7 +116,7 @@
                 </el-col>
                 <el-col style="width: 250px;">
                   <el-form-item label="剩余库存：" prop="podTime">
-                    {{ current.relaInventory }}
+                    {{ current.left }}
                   </el-form-item>
                 </el-col>
                 <el-col style="width: 250px;">
@@ -128,7 +131,6 @@
                 </el-col>
               </el-row>
             </el-form>
-            
           </div>
         </header>
         <main>
@@ -137,8 +139,23 @@
             v-for="(plan, i) in plans"
             :key="i" 
           >
+            <div style="margin-top: 20px; padding-top: 20px; background: rgba(0,0,0,0.1)">
+              <el-form label-width="100px">
+                <el-row>
+                  <el-col style="width: 250px;">
+                    <el-form-item label="团期计划：">
+                      {{ plan.groupCode }}
+                    </el-form-item>
+                  </el-col>
+                  <el-col style="width: 250px;">
+                    <el-form-item label="产品：">
+                      {{ plan.teamProName }}
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>
             <el-table border style="width: 100%"
-              header-row-class-name="table-header"
               :data="plan.planEnroll" 
               :highlight-current-row="false"
             >
@@ -173,18 +190,40 @@
         </main>
       </div>
     </main>
+    <footer>
+      
+      <!-- 添加表单 -->
+      <add-inventory-form
+        ref="addRef"
+        @add-callback="emitAddCallback"
+      ></add-inventory-form>
+      
+      <!-- 编辑表单 -->
+      <edit-inventory-form
+        ref="editRef"
+        @add-callback="emitAddCallback"
+      ></edit-inventory-form>
+    </footer>
   </div>
 </template>
 
 <script>
-import { inventoryAction } from './api'
-import sharedHeader from './comps/shared-header/shared-header.vue'
+import { getInventorydetailAction, deleteInventoryAction } from './api'
+import sharedHeader from './comps/shared-header/shared-header'
+import addInventoryForm from './comps/add-inventory-form'
+import editInventoryForm from './comps/edit-inventory-form'
 
 export default {
-  components: { sharedHeader },
+  components: { sharedHeader, addInventoryForm, editInventoryForm },
 
   mounted(){
+    // 修改页面高度问题
     document.querySelector(".content-body1").style.height= "100%";
+  },
+
+  beforeDestroy(){
+    // 修改页面高度问题
+    document.querySelector(".content-body1").style.height= null;
   },
 
   data(){
@@ -192,8 +231,9 @@ export default {
       vm: {
         mainAsync: false,
         index: null,
+        currentDate: new Date(),
       },
-      Inventorys: [],
+      inventorys: [],
       // 当前选择的库存
       current: {},
       plans: []
@@ -201,17 +241,33 @@ export default {
   },
 
   methods: {
+    // 唤醒新增界面
+    wakeAddForm(){
+      this.$refs.addRef.handleOpen(this.vm.currentDate);
+    },
+
+    // 唤醒编辑界面
+    wakeAddForm(){
+      this.$refs.editRef.handleOpen();
+    },
+
     /**
-     * @description: 
-     * @param {type} 
-     * @return: 
+     * @description: $refs.addRef添加动作成功后提交
+     */
+    emitAddCallback(payload){
+      let { date, id }= payload;
+      this.$refs.dateControllerRef.init(date);
+    },
+
+    /**
+     * @description: $refs.dateControllerRef时间改变时提交
      */
     emitSubmitInventory(day){
-      console.log(day)
-      let { children }= day;
-      this.Inventorys.splice(0);
+      let { children, date }= day;
       this.vm.index= null;
-      children && this.Inventorys.push(...children);
+      this.vm.currentDate= date;
+      this.inventorys.splice(0);
+      children && this.inventorys.push(...children);
     },
 
     /**
@@ -221,20 +277,41 @@ export default {
       this.vm.mainAsync= bol;
     },
 
+    // slider中选中一条库存
     selectInventory(i){
       if(this.vm.index=== i) return;
-      let inventory= this.Inventorys[i];
+      let inventory= this.inventorys[i];
       this.vm.index= i;
       this.vm.inventoryAsync= true;
-      this.current= inventory;
-      inventoryAction.bind(this)(inventory.id).then(res => {
-        this.plans.splice(0);
-        if(res && res.length) this.plans= res;
+      getInventorydetailAction.bind(this)(inventory.id).then(res => {
+        let { object, plans }= res;
+        let left= object.count;
+        plans.forEach(plan => left-= plan.saleCount);
+        object.left= left;
+        this.current= object;
+        if(plans && plans.length) this.plans= plans;
       }).finally(() => {
         this.vm.inventoryAsync= false;
       })
     },
 
+    // 删除
+    deleteAction(){
+      this.$confirm(`确定要删除当前库存吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let { id, relaInventory }= this.inventorys[this.vm.index];
+        if(relaInventory) return this.$message.error('解绑关联团期，才能删除该库存');
+        deleteInventoryAction.bind(this)(id).then(res => {
+          this.$message.success('库存删除成功');
+          return this.$refs.dateControllerRef.init(this.vm.currentDate);
+        })
+      })
+    },
+
+    // 将数字解析成双位小数
     parseDouble(val){
       val= parseFloat(val);
       return val.toFixed(2)
