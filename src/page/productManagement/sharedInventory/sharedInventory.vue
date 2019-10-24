@@ -24,10 +24,10 @@
           padding: 2px 2px 2px 0;
           .content{
             padding: 20px;
-            background-color: rgba(0,0,0,0.1);
+            background-color: #FFF;
           }
           .select{
-            background-color: #FFF;
+            background-color: rgba(0,0,0,0.1);
           }
         }
         .blank{
