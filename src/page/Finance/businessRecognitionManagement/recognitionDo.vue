@@ -43,7 +43,7 @@
         </div>
         <div class="selectDv" v-if="rec_type == '1'">
           <span class="left_span">分销商：</span>
-          <el-autocomplete class="search_input" v-model="distributor" :fetch-suggestions="querySearchD" placeholder="请输入操作人员" @select="handleSelectD" @blur="blurHand"></el-autocomplete>
+          <el-autocomplete class="search_input" v-model="distributor" :fetch-suggestions="querySearchD" placeholder="请输入分销商" @select="handleSelectD" @blur="blurHand"></el-autocomplete>
         </div>
         <div class="selectDv" v-if="rec_type == '3'">
           <span class="left_span">分销商：</span>
@@ -378,6 +378,9 @@
         color: #999999;
         padding-left: 125px;
       }
+    }
+    .search_input{
+      width: 300px;
     }
     .inputLabel{
       width: 31%;

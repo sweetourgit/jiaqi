@@ -14,9 +14,9 @@
           </el-table-column>
           <el-table-column prop="money" label="费用" align="center">
             <template slot-scope="scope">
-              <p style="margin: 0;">收入：{{scope.row.income}}</p>
-              <p style="margin: 0;">单票成本：{{scope.row.single_cost}}</p>
-              <p style="margin: 0;">总成本：{{scope.row.cost}}</p>
+              <span>收入：{{scope.row.income}}</span><br/>
+              <span>单票成本：{{scope.row.single_cost}}</span><br/>
+              <span>总成本：{{scope.row.cost}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="quantity" label="数量" align="center">
@@ -46,7 +46,7 @@
             </el-table-column>
             <el-table-column prop="rece_money" label="结算金额" align="center">
             </el-table-column>
-            <!--暂时注释，不现实-->
+            <!--暂时注释，不显示-->
             <!--<el-table-column prop="tour_no" label="团号" align="center">-->
             <!--</el-table-column>-->
             <!--<el-table-column prop="divide_connect_no" label="粉联号" align="center">-->
@@ -57,7 +57,7 @@
         </div>
         <div class="backgroundDv" v-if="type == 2">
           <div class="titleDv">
-            <p class="textP">商户名称：{{distributor_code}}</p>
+            <p class="textP" v-if="distributor_code != ''">商户名称：{{distributor_code}}</p>
             <p class="textP">收款单号：{{rece_code}}</p>
           </div>
         </div>
@@ -146,6 +146,7 @@
               that.data = formatDate(new Date(response.data.data.info.rece_start*1000)).split(" ")[0] + '--' + formatDate(new Date(response.data.data.info.rece_end*1000)).split(" ")[0];
               that.distributors = response.data.data.info.rec_distributor;
               that.tableData1 = [];
+              response.data.data.info.rece_at = formatDate(new Date(response.data.data.info.rece_at*1000));
               that.tableData1.push(response.data.data.info);
             }else if(response.data.data.type === 2){
               that.rece_code = response.data.data.rece_code;
@@ -163,6 +164,8 @@
                 }).catch(function(obj) {
                   console.log(obj);
                 });
+              }else{
+                that.distributor_code = '';
               }
             }
 
