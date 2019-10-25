@@ -92,7 +92,7 @@ export default {
     },
 
     positiveIntegerValidator(rule, value, cb){
-      let reg= /^[1-9]\d*|0$/;
+      let reg= /^(0|[1-9][0-9]*)$/;
       if(reg.test(value)) return cb();
       cb(new Error('库存必须为正整数'));
     },
