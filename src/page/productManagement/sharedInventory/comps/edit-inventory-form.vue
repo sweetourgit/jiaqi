@@ -12,7 +12,7 @@
         :rules="rules"
       >
         <el-form-item label="库存名称：" prop="name" style="width: 550px">
-          <el-input placeholder="库存名称" size="small"
+          <el-input placeholder="库存名称" size="small" maxlength="20" show-word-limit
             v-model="submitForm.name">
           </el-input>
         </el-form-item>
