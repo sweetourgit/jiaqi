@@ -101,7 +101,7 @@
               <span>{{ current.name }}</span>
             </span>
             <span>
-              <el-button type="primary" size="small" @click="wakeAddForm">编辑</el-button>
+              <el-button type="primary" size="small" @click="wakeEditForm">编辑</el-button>
               <el-button type="info" size="small" @click="deleteAction">删除</el-button>
             </span>
             
@@ -152,6 +152,11 @@
                       {{ plan.teamProName }}
                     </el-form-item>
                   </el-col>
+                  <el-col style="width: 250px;">
+                    <el-form-item label="已售：">
+                      {{ plan.saleCount }}
+                    </el-form-item>
+                  </el-col>
                 </el-row>
               </el-form>
             </div>
@@ -175,16 +180,7 @@
                   <span>{{ parseDouble(scope.row.price_03) }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="配额" header-align="center" align="center">
-                <template slot-scope="scope">
-                  <span>{{ parseDouble(scope.row.quota) }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="已售" header-align="center" align="center">
-                <template slot-scope="scope">
-                  <span>{{ parseDouble(scope.row.price_01) }}</span>
-                </template>
-              </el-table-column>
+              <el-table-column label="配额" prop="quota" header-align="center" align="center"></el-table-column>
             </el-table>
           </div>
         </main>
@@ -201,6 +197,7 @@
       <!-- 编辑表单 -->
       <edit-inventory-form
         ref="editRef"
+        :proto="current"
         @add-callback="emitAddCallback"
       ></edit-inventory-form>
     </footer>
@@ -247,8 +244,8 @@ export default {
     },
 
     // 唤醒编辑界面
-    wakeAddForm(){
-      this.$refs.editRef.handleOpen();
+    wakeEditForm(){
+      this.$refs.editRef.handleOpen(this.vm.currentDate);
     },
 
     /**
@@ -289,7 +286,7 @@ export default {
         plans.forEach(plan => left-= plan.saleCount);
         object.left= left;
         this.current= object;
-        if(plans && plans.length) this.plans= plans;
+        if(plans) this.plans= plans;
       }).finally(() => {
         this.vm.inventoryAsync= false;
       })
