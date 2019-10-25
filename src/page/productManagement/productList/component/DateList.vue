@@ -158,8 +158,8 @@
         <div class="divform">
           <el-form ref="form" :model="item" :rules="formRuler"  label-width="110px">
             <el-form-item label="销售价" prop="price_01">
-              <el-input v-if="Rform.resource == 1" :class="isAverage = item.salePrice < shareAverage && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.price_01"></el-input>
-              <el-input v-else :class="isAverage = item.salePrice < average && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.price_01"></el-input>
+              <el-input v-if="Rform.resource == 1" :class="isAverage = item.price_01 < shareAverage && item.price_01 != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.price_01"></el-input>
+              <el-input v-else :class="isAverage = item.price_01 < average && item.price_01 != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.price_01"></el-input>
             </el-form-item>
             <el-form-item label="同业价" prop="price_02">
               <el-input :maxlength='6' v-model="item.price_02"></el-input>
@@ -1004,7 +1004,7 @@
               this.$refs['form'][index].validate(valid => {
                 if (valid) {
                   // 当前销售价低于非共享库存的结算参考
-                  if(data.salePrice < this.average) {
+                  if(data.price_01 < this.average) {
                     this.$confirm('当前销售价低于非共享库存的结算参考, 是否继续保存', '提示', {
                       confirmButtonText: '确定',
                       cancelButtonText: '取消',
@@ -1058,7 +1058,7 @@
             if (this.Rform.shareId != '') {
               this.$refs['form'][index].validate(valid => {
                 if(valid) {
-                  if(data.salePrice < this.shareAverage) {
+                  if(data.price_01 < this.shareAverage) {
                     this.$confirm('当前销售价低于共享库存的结算参考, 是否继续保存', '提示', {
                       confirmButtonText: '确定',
                       cancelButtonText: '取消',
@@ -1094,7 +1094,7 @@
               if (this.Rform.sumNum != '') {
                  this.$refs['form'][index].validate(valid => {
                    if (valid) {
-                    if(data.salePrice < this.average) {
+                    if(data.price_01 < this.average) {
                       this.$confirm('当前销售价低于结算参考, 是否继续保存', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
@@ -1118,7 +1118,7 @@
               if (this.Rform.shareId != '') {
                 this.$refs['form'][index].validate(valid => {
                   if (valid) {
-                    if(data.salePrice < this.shareAverage) {
+                    if(data.price_01 < this.shareAverage) {
                       this.$confirm('当前销售价低于共享库存的结算参考, 是否继续保存', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
@@ -1166,7 +1166,7 @@
               item.day.getDate()
             )
             planEnroll.forEach(v => { // 控制价格预警图片显示与否，当团期计划的价格低于结算参考的时候就会显示价格预警图片
-              if(v.salePrice < this.average) {
+              if(v.price_01 < this.average) {
                 cost = true;
               }
             })
@@ -1228,7 +1228,7 @@
               })
             }
             planEnroll.forEach(v => {
-              if(v.salePrice < this.average) {
+              if(v.price_01 < this.average) {
                 cost = true;
               }
             })
@@ -1340,7 +1340,8 @@
           }
         }
         planEnroll.forEach(v => {
-          if(v.salePrice < this.shareAverage) {
+          console.log(v)
+          if(v.price_01 < this.shareAverage) {
             cost = true;
           }
         })
@@ -1355,11 +1356,11 @@
           'regimentType': 1,
           "dateHous": this.Rform.orderRetain, // 调时长时新增
         }
-        console.log(this.days, 'this.days')
         let n = [];
         n = this.days[this.n[0].index];
         this.n = [];
         this.n.push(n);
+        console.log(this.n, '共享库存的添加')
       },
       // 筛选周六周日按钮
       handleTwoClick() {
