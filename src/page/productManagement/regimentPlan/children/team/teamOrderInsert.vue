@@ -716,10 +716,7 @@ export default {
               this.enrolNum.push(0);
               this.quota.push(false);
               this.tour.push([]);
-              if (
-                data[i].quota == 0 ||
-                data[i].quota > this.teampreviewData.remaining
-              ) {
+              if (data[i].quota == 0 || data[i].quota > this.teampreviewData.remaining) {
                 //如果配额为0或者配额大于库存，余位显示总库存
                 data[i].quota = this.teampreviewData.remaining;
               }
@@ -758,7 +755,7 @@ export default {
             id: 0,
             isDeleted: 0,
             code: "string",
-            cnName: "姓名",
+            cnName: "",
             enName: "",
             sex: "",
             idCard: "",
@@ -854,7 +851,7 @@ export default {
                cancelButtonText: "取消",
                type: "warning"
             }).then(res =>{
-              
+
             })
           }
           if(this.ruleForm.orderRadio === '1'){
@@ -1293,8 +1290,12 @@ export default {
         if (res.data.isSuccess == true) {
           that.tableOrder = res.data.objects
           that.tableOrder.forEach(function (v,k,arr) {
-              if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==1)||(arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==2)||(arr[k]['orderStatus'] == 10 && arr[k]['occupyStatus'] ==3)){
-                arr[k]['orderStatus'] = '未完成订单'
+              if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==1)){
+                arr[k]['orderStatus'] = '预订不占'
+              }else if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==2)){
+                arr[k]['orderStatus'] = '预订占位'
+              }else if((arr[k]['orderStatus'] == 10 && arr[k]['occupyStatus'] ==3)){
+                arr[k]['orderStatus'] = '确定占位'
               }else if(arr[k]['orderStatus'] == 1){
                 arr[k]['orderStatus'] = '补充游客材料'
               }else if(arr[k]['orderStatus'] == 2) {
@@ -1307,14 +1308,10 @@ export default {
                 arr[k]['orderStatus'] = '待评价'
               }else if(arr[k]['orderStatus'] == 6) {
                 arr[k]['orderStatus'] = '订单完成'
-              }else if(arr[k]['orderStatus'] == 7) {
-                arr[k]['orderStatus'] = '未确认'
               }else if(arr[k]['orderStatus'] == 8) {
                 arr[k]['orderStatus'] = '签署合同'
               }else if(arr[k]['orderStatus'] == 9) {
                 arr[k]['orderStatus'] = '作废订单'
-              }else if(arr[k]['orderStatus'] == 10) {
-                arr[k]['orderStatus'] = '确认订单'
               }
           })
         }
@@ -1341,7 +1338,7 @@ export default {
 .blue {color: #2e94f9;}
 .cursor {cursor: pointer;}
 .costTable{width:800px; margin: 0 0 0 2px;}
-.costList{width:800px; line-height: 40px; text-align: center; border:1px solid #ebebeb;border-collapse:collapse;border-spacing:0; }
+.costList{width:800px; line-height: 40px; text-align: center; border:1px solid #ebebeb;border-collapse:collapse;border-spacing:0;}
 .costList_01{background: #f3f3f3;}
 .tc{text-align: center;}
 /*详情样式*/
