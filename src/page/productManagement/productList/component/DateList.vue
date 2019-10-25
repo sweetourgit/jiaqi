@@ -165,7 +165,7 @@
               <el-input :maxlength='6' v-model="item.price_02"></el-input>
             </el-form-item>
             <el-form-item label="甜程结算价" prop="price_03">
-              <el-input :maxlength='6' v-model="item.price_03" disabled></el-input>
+              <el-input :maxlength='6' v-model="item.price_03"></el-input>
             </el-form-item>
             <el-form-item label="甜程线上售价" prop="price_04">
               <el-input :maxlength='6' v-model="item.price_04" disabled></el-input>
@@ -252,6 +252,9 @@
             { required: true, message: '不能为空'}
           ],
           price_02: [
+            { required: true, message: '不能为空'}
+          ],
+          price_03: [
             { required: true, message: '不能为空'}
           ]
         },
@@ -966,7 +969,8 @@
             "cost": cost,
             "planEnroll": planEnrolls,
             "date": this.Rform.date,
-            'dateHous': this.Rform.dateHous
+            'dateHous': this.Rform.dateHous,
+            'regimentType': 1
           }
           let n = [];
           n = this.days[list.index];
@@ -2040,8 +2044,8 @@
                   'enrollName': list.name,
                   'price_01': list.price_01,
                   'price_02': list.price_02,
-                  'price_03': list.price_02, // 甜橙结算价
-                  'price_04': list.price_02, // 甜橙线上售价
+                  'price_03': list.price_03, // 甜橙结算价
+                  'price_04': list.price_04, // 甜橙线上售价
                   'quota': quotaPrice
                 })
               })
