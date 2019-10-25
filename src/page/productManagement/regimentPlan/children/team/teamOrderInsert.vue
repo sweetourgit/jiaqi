@@ -786,7 +786,6 @@ export default {
       }
     },
     submitForm(formName,index) {
-      console.log(this.ruleForm.type)
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
         var blooen = "0";
@@ -847,6 +846,11 @@ export default {
           // if(this.tour[index].length === this.enrolNum[index]){
           //   console.log(this.tour[index].length)
           // }
+          //console.log(this.tour[index].sex)
+          console.log(guest)
+          if(this.guest === ''){
+
+          }
           if(this.ruleForm.orderRadio === '1'){
              this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
               object: {
