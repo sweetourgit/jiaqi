@@ -1,16 +1,21 @@
 <template>
   <div class="vivo" style="position:relative">
     <!--认收款信息-->
-    <div class="main" style="width: 88%;text-align: right;">
+    <div class="buttonDv">
       <el-button type="primary" @click="cancalBtn" plain>取消</el-button>
       <el-button type="primary"  @click="submitBtn">确认</el-button>
     </div>
     <div class="tableDv">
-      <div class="table_trip" style="width: 88%;">
-        <el-select v-model="selectType" placeholder="请选择" style="width:200px;margin-bottom: 20px;" @change="selectTypeFunction">
+      <div class="table_trip" style="width: 100%;">
+        <span class="leftSpan">匹配/未匹配：</span>
+        <el-select v-model="selectType" placeholder="请选择" @change="selectTypeFunction" class="selectTable">
           <el-option :key="item.value" :label="item.text" :value="item.value" v-for="item in classList"></el-option>
         </el-select>
-        <el-table ref="multipleTable" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass">
+        <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元</div>
+        <el-button type="primary"  @click="recognitionBatchBtn" :disabled="reable" plain>去认款</el-button>
+        <el-table ref="multipleTable" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
+          <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
+          </el-table-column>
           <el-table-column prop="order_sn" label="订单ID" align="center">
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
@@ -69,25 +74,36 @@
     </div>
     <recognitionSee :dialogFormVisible4="dialogFormVisible4" @close="close" :orderID="orderID"></recognitionSee>
     <recognitionDo :dialogFormVisible2="dialogFormVisible2" @close="close" :info="info"></recognitionDo>
+    <recognitionDoBatch :dialogFormVisible3="dialogFormVisible3" @close="close" :infoBatch="infoBatch"></recognitionDoBatch>
   </div>
 </template>
 <script type="text/javascript">
   import recognitionSee from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionSee'// 查看匹配信息
   import recognitionDo from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionDo'// 认收款
+  import recognitionDoBatch from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionDoBatch.vue'// 批量认收款
   import {formatDate} from '@/js/libs/publicMethod.js' //时间转化
 
   export default {
     name: "externalOrderList",
     components: {
       recognitionSee,
-      recognitionDo
+      recognitionDo,
+      recognitionDoBatch
     },
     data() {
       return {
+        reable: true,// 批量认收款按钮是否可用
+
         dialogFormVisible4: false,// 查看匹配信息显示隐藏
         dialogFormVisible2: false,// 认收款操作显示隐藏
+        dialogFormVisible3: false,// 批量认款操作显示隐藏
         info: '',// 认收款操作数据传递
         orderID: '',// 查看匹配信息数据传递
+        infoBatch: '',// 批量认收款数据传递
+
+        multipleSelection: [],// 选中项
+        totalItem: 0,
+        totalMoney: 0,
 
         tableData: [],// 认收款table（筛选数据，显示用）
         tableDataCopy: [],// 认收款table（全部数据，筛选用）
@@ -113,7 +129,50 @@
           return ''
         }
       },
-//      筛选function
+      // 多选条件限制
+      selectInit(row, index){
+        if(row.is_match == 2){
+          return false  //不可勾选
+        }else{
+          return true  //可勾选
+        }
+      },
+      // 所选项改变是触发
+      selectionChange(val){
+//        console.log(val);
+        if(val.length > 0){
+          this.reable = false;
+          let total = 0;
+          val.forEach(function (item, index, arr) {
+            total += parseFloat(item.income);
+          });
+          this.totalItem = val.length;
+          this.totalMoney = total;
+        }else{
+          this.reable = true;
+          this.totalItem = 0;
+          this.totalMoney = 0;
+        }
+        this.multipleSelection = val;
+      },
+      // 点击行，改变选中效果
+      handleRowClick(row, column, event){
+        if(row.is_match != 2){
+          this.$refs.multipleTable.toggleRowSelection(row);
+        }
+      },
+      // 批量认款
+      recognitionBatchBtn(){
+        console.log(this.multipleSelection);
+        let batchStr = '';
+        this.multipleSelection.forEach(function (item, index, arr) {
+          batchStr += item.order_sn + ',';
+        });
+        batchStr = batchStr.substr(0, batchStr.length - 1);
+        this.infoBatch = batchStr;
+        this.dialogFormVisible3 = true;
+      },
+      // 筛选function
       selectTypeFunction() {
         const data = this.tableDataCopy;
         let tableD = [];
@@ -128,7 +187,7 @@
         }
         this.tableData = tableD;
       },
-//      取消按钮事件
+      // 取消按钮事件
       cancalBtn(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/canclerec", {
@@ -153,7 +212,7 @@
         });
 
       },
-//      确认按钮事件
+      // 确认按钮事件
       submitBtn(){
         //...
         const that = this;
@@ -193,20 +252,22 @@
         }
 
       },
-//      查看
+      // 查看
       showBtn(row){
         this.orderID = row.order_sn;
         this.dialogFormVisible4 = true;
       },
-//      关闭弹窗
+      // 关闭弹窗
       close(){
         this.dialogFormVisible4 = false;
         this.dialogFormVisible2 = false;
+        this.dialogFormVisible3 = false;
         this.orderID = '';
         this.info = '';
+        this.infoBatch = '';
         this.loadData();
       },
-//      撤销
+      // 撤销
       undoBtn(row){
         const that = this;
         this.$confirm('是否撤销该笔认款?', '提示', {
@@ -241,12 +302,12 @@
           });
         });
       },
-//      认收款
+      // 认收款
       recognitionBtn(row){
         this.info = row.order_sn;
         this.dialogFormVisible2 = true;
       },
-//      认收款自动匹配
+      // 认收款自动匹配
       initData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recmatch", {
@@ -257,7 +318,7 @@
           console.log(error);
         });
       },
-//      加载table数据
+      // 加载table数据
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/reclist", {
@@ -284,7 +345,7 @@
       },
     },
     created(){
-//        加载数据
+      // 加载数据
       if(this.$route.query.ids){
         this.initData();
       }else{
@@ -297,6 +358,28 @@
 </script>
 <style lang="scss" scoped>
   .vivo {
+    .buttonDv{
+      width: 100%;
+      text-align: right;
+    }
+    .leftSpan{
+      font-size: 14px;
+    }
+    .selectTable{
+      width: 300px;
+      margin-bottom: 20px;
+    }
+    .lineTitle{
+      width: 90%;
+      /*margin: 10px auto;*/
+      background-color: #E6F3FC;
+      height: 40px;
+      line-height: 40px;
+      box-sizing: border-box;
+      padding: 0 10px;
+      display: inline-block;
+      margin: 10px 10px 10px 0;
+    }
     .demo-input-suffix {
       width: auto;
       background-color: #F7F7F7;
