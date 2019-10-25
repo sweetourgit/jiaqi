@@ -935,6 +935,7 @@
               "date": this.Rform.date,
               "dateHous": this.Rform.orderRetain, // 调时长时新增
               "groupCode": this.msgFather[0].codePrefix + '-' + list.data.person.date + '-' + this.msgFather[0].codeSuffix,
+              'regimentType': 1
             }
           })
         }).then(resSave => {
