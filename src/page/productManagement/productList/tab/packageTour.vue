@@ -126,7 +126,7 @@
       <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
         <el-radio-group v-model="isCollapse" @change="qqq">
           <el-radio-button class="group" :label="true">库存</el-radio-button>
-          <el-radio-button :label="false">价格</el-radio-button>
+          <el-radio-button :label="false" :disabled="isUsePrice">价格</el-radio-button>
         </el-radio-group>
       </div>
       <!-- 库存 -->
@@ -1219,6 +1219,7 @@ export default {
         })
         .then(res => {// 成本为空null时报错  所以判断
           if (res.data.objects !== null) {
+            this.isUsePrice = false;
             this.tableData12 = res.data.objects;
             this.tableData12.forEach(function(v, k, arr) {
               if (arr[k]["suppliertype"] == 0) {
@@ -1254,19 +1255,30 @@ export default {
     },
     fucking() {
       for (let i = 0; i < this.ccc.length; i++) {
-        if (this.ccc[i].codePrefix === '' && this.ccc[i].codeSuffix === '') {
-          this.isInfo = true;
-          this.$message.error("错了哦，团号不能为空");
-          break;
-        } else if(this.ccc[i].codePrefix == this.ccc[i].codeSuffix){
-          this.isInfo = true;
-          this.$message.error("错了哦，团号不能重复");
-          break;
-        }else {
-          this.isInfo = false;
-        }
-      }
-    },
+        this.$http.post(this.GLOBAL.serverSrc + "/team/package/codeisexist",{
+           object: {
+            id: this.ccc[i].id,
+            codePrefix: this.ccc[i].codePrefix,
+            codeSuffix: this.ccc[i].codeSuffix
+            }
+        }).then(res =>{
+            console.log(res,2222)
+            let boon = res.data.isSuccess
+            console.log(boon);
+          if (this.ccc[i].codePrefix === '' && this.ccc[i].codeSuffix === '') {
+            this.isInfo = true;
+            this.$message.error("错了哦，团号不能为空");
+        
+          } else if(this.ccc[i].codePrefix == this.ccc[i].codeSuffix||boon === true){
+            this.isInfo = true;
+            this.$message.error("错了哦，团号不能重复");
+            
+          }else {
+            this.isInfo = false;
+            }
+          })
+   }
+   },
     // 控制价格按钮显示
     changeFun(id, rate, ifShowBase){
       // basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)

@@ -37,6 +37,7 @@ $fontHeight: 32px;
   // 当前选择的日期
   .select{
     border-radius: 4px;
+    background-color: yellow;
     border: 1px solid #e4e7ed;
     box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
   }

@@ -25,7 +25,7 @@
             </el-form-item>
           </el-col>
           <el-col style="width: 150px">
-            <el-form-item label="已售：" label-width="100px">{{ 50 }}</el-form-item>
+            <el-form-item label="已售：" label-width="100px">{{ vm.saled }}</el-form-item>
           </el-col>
         </el-row>
 
@@ -48,12 +48,19 @@ import { updateInventoryAction } from '../api'
 
 export default {
 
+  props: {
+    proto: Object
+  },
+
   data(){
     return {
       vm: {
-        state: false
+        state: false,
+        saled: 0
       },
       submitForm: {
+        id: null,
+        date: null,
         name: '',
         count: '',
         averageCost: ''
@@ -74,7 +81,10 @@ export default {
 
   methods: {
     handleOpen(date){
-      this.vm.date= date;
+      console.log(this.proto)
+      Object.keys(this.submitForm).forEach(attr => this.submitForm[attr]= this.proto[attr]);
+      this.vm.saled= this.proto.count- this.proto.left;
+      this.submitForm.date= date;
       this.vm.state= true;
     },
 
@@ -85,8 +95,9 @@ export default {
 
     positiveIntegerValidator(rule, value, cb){
       let reg= /^[1-9]\d*|0$/;
-      if(reg.test(value)) return cb();
-      cb(new Error('库存必须为正整数'));
+      if(!reg.test(value)) return cb(new Error('库存必须为正整数'));
+      if(parseInt(value)< this.vm.saled) return cb(new Error('库存不能小于已售数量'));
+      cb();
     },
 
     moneyValidator(rule, value, cb){
@@ -103,21 +114,23 @@ export default {
       this.$refs.submitForm.validate(validate => {
         if(!validate) return;
         let staticObj= { share: 1, orgID: 0 };
-        let date= this.vm.date;
+        let { date }= this.submitForm;
         let dateInt= date.getFullYear()* 10000+ 
                       (date.getMonth()+ 1)* 100+
                         date.getDate();
         copy= Object.assign(this.$deepCopy(this.submitForm), staticObj);
         copy.date= dateInt;
+        copy.count= parseFloat(copy.count);
+        copy.averageCost= parseFloat(copy.averageCost);
       })
-      return copy;
+      return Object.assign(this.$deepCopy(this.proto), copy);
     },
 
     addAction(){
       let object= this.getSubmitDate();
       if(!object) return;
       updateInventoryAction.bind(this)(object).then(res => {
-        this.$message.success('库存新增成功');
+        this.$message.success('库存修改成功');
         return this.afterAddAction(res);
       }).catch(err => {
         this.$message.error(err);

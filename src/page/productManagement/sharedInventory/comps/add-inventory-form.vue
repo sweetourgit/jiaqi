@@ -117,6 +117,8 @@ export default {
                         date.getDate();
         copy= Object.assign(this.$deepCopy(this.submitForm), staticObj);
         copy.date= dateInt;
+        copy.count= parseFloat(copy.count);
+        copy.averageCost= parseFloat(copy.averageCost);
       })
       return copy;
     },

@@ -166,6 +166,12 @@ export default {
         theNumber: '游轮号', 
         podPlace: '出发码头', 
         arrivePlace: '到达码头'
+      },
+      rules: {
+        company: [{ required: true, validator: this.simpleValidator, message: '游轮公司不能为空', trigger: 'blur' }],
+        theNumber: [{ required: true, validator: this.simpleValidator, message: '游轮号不能为空', trigger: 'blur' }],
+        podPlace: [{ required: true, validator: this.simpleValidator, message: '出发码头不能为空', trigger: 'blur' }],
+        arrivePlace: [{ required: true, validator: this.simpleValidator, message: '到达码头不能为空', trigger: 'blur' }],
       }
     }
   }

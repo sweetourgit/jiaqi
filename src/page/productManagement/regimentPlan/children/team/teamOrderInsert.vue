@@ -849,7 +849,13 @@ export default {
           //console.log(this.tour[index].sex)
           console.log(guest)
           if(this.guest === ''){
-
+            this.$confirm("请完善出行人信息?", "提示", {
+               confirmButtonText: "确定",
+               cancelButtonText: "取消",
+               type: "warning"
+            }).then(res =>{
+              
+            })
           }
           if(this.ruleForm.orderRadio === '1'){
              this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
