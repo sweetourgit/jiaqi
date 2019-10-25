@@ -5,7 +5,8 @@
       @close="cancelInfoOrder('ruleForm')">
       <div class="dialog-footer">
         <el-button class="ml13" @click="cancelInfoOrder('ruleForm')">取 消</el-button>
-        <el-button class="ml13" @click="submitForm('ruleForm',1)"  type="primary">预订不占</el-button>
+        <!-- <el-button class="ml13" @click="submitForm('ruleForm',1)"  type="primary">预订不占</el-button> -->
+        <el-button class="ml13"  type="primary">预订不占</el-button>
         <el-button type="primary" @click="submitForm('ruleForm',3)" class="ml13">确定占位</el-button>
       </div>
       <div class="main1">
@@ -1065,7 +1066,7 @@ export default {
          cancelButtonText: "取消",
          type: "warning"
       }).then(res =>{
-        this.tour[index].splice(index, 1);
+        this.tour[index].splice(index,1);
       })
     },
     fillTour(type, index) {
