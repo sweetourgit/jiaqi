@@ -1294,7 +1294,7 @@
         if (this.days[this.n[0].index].data.person.planEnroll == undefined) {
           planEnroll.push({
             'enrollID': data.id,
-            'enrollName': data.name,
+            'name': data.name,
             'price_01': data.price_01,
             'price_02': data.price_02,
             'price_03': data.price_03, // 甜程结算价
@@ -1304,10 +1304,11 @@
         } else {
           let isSave = true; // 是否编辑判断
           this.days[this.n[0].index].data.person.planEnroll.forEach(item => {
+            console.log(item,'是否编辑判断')
             if (item.enrollID == data.id && item.name == data.name) {
               planEnroll.push({
                 'enrollID': data.id,
-                'enrollName': data.name,
+                'name': data.name,
                 'price_01': data.price_01,
                 'price_02': data.price_02,
                 'price_03': data.price_03, // 甜程结算价
@@ -1319,7 +1320,7 @@
               console.log(item,'isSave = false')
               planEnroll.push({
                 'enrollID': item.enrollID,
-                'enrollName': item.name,
+                'name': item.name,
                 'price_01': item.price_01,
                 'price_02': item.price_02,
                 'price_03': item.price_03,
@@ -1331,7 +1332,7 @@
           if (isSave) {
             planEnroll.push({
               'enrollID': data.id,
-              'enrollName': data.name,
+              'name': data.name,
               'price_01': data.price_01,
               'price_02': data.price_02,
               'price_03': data.price_03, // 甜程结算价
@@ -1877,7 +1878,7 @@
         console.log(item, '删除卡片 item')
         console.log(index, '删除卡片 index')
         let _n = this.n[0];
-        if (item.isModify) {
+        if (item.isModify) { // 是否修改
           if (_n.data.person.planEnroll.length <= 0) {
             console.log('剩一个类型时');
             // 删除最后一个类型时删除该计划
@@ -1922,6 +1923,8 @@
               let n = [];
               n = this.days[_n.index];
               this.n = [];
+              console.log(n,'有两个及以上的值删除调用修改接口')
+              n.person.cost = false // 删除价格预警
               this.n.push(n);
               this.$message.success('删除成功');
             }).catch(err => {
