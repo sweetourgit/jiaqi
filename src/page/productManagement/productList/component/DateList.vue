@@ -165,10 +165,10 @@
               <el-input :maxlength='6' v-model="item.price_02"></el-input>
             </el-form-item>
             <el-form-item label="甜程结算价" prop="price_03">
-              <el-input :maxlength='6' v-model="item.price_03"></el-input>
+              <el-input :maxlength='6' v-model="item.price_03" disabled></el-input>
             </el-form-item>
             <el-form-item label="甜程线上售价" prop="price_04">
-              <el-input :maxlength='6' v-model="item.price_04"></el-input>
+              <el-input :maxlength='6' v-model="item.price_04" disabled></el-input>
             </el-form-item>
             <el-form-item label="配额" v-if="arr[index].quota == true">
               <el-input :maxlength='6' v-model="item.quotaPrice"></el-input>
@@ -252,12 +252,6 @@
             { required: true, message: '不能为空'}
           ],
           price_02: [
-            { required: true, message: '不能为空'}
-          ],
-          price_03: [
-            { required: true, message: '不能为空'}
-          ],
-          price_04: [
             { required: true, message: '不能为空'}
           ]
         },
