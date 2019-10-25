@@ -153,6 +153,10 @@ export default {
         theNumber: '车次', 
         podPlace: '出发车站', 
         arrivePlace: '到达车站'
+      },
+      rules: {
+        podPlace: [{ required: true, validator: this.simpleValidator, message: '出发车站不能为空', trigger: 'blur' }],
+        arrivePlace: [{ required: true, validator: this.simpleValidator, message: '到达车站不能为空', trigger: 'blur' }],
       }
     }
   }

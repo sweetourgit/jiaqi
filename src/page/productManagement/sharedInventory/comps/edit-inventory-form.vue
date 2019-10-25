@@ -59,6 +59,7 @@ export default {
         saled: 0
       },
       submitForm: {
+        id: null,
         date: null,
         name: '',
         count: '',
@@ -80,6 +81,7 @@ export default {
 
   methods: {
     handleOpen(date){
+      console.log(this.proto)
       Object.keys(this.submitForm).forEach(attr => this.submitForm[attr]= this.proto[attr]);
       this.vm.saled= this.proto.count- this.proto.left;
       this.submitForm.date= date;
@@ -117,10 +119,11 @@ export default {
                       (date.getMonth()+ 1)* 100+
                         date.getDate();
         copy= Object.assign(this.$deepCopy(this.submitForm), staticObj);
-        copy.count= parseFloat()
         copy.date= dateInt;
+        copy.count= parseFloat(copy.count);
+        copy.averageCost= parseFloat(copy.averageCost);
       })
-      return copy;
+      return Object.assign(this.$deepCopy(this.proto), copy);
     },
 
     addAction(){

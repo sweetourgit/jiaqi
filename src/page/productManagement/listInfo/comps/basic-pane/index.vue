@@ -276,13 +276,13 @@ export default {
           required: true, 
           validator: this.simpleValidator, 
           message: '出游人群不能为空', 
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         themeID: { 
           required: true, 
           validator: this.simpleValidator, 
           message: '主题不能为空', 
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         advanceDay: [
           { 
