@@ -60,8 +60,8 @@
 
                 <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index">
                   <p class='old'>{{data.name}}</p>
-                  <p>销售价：{{data.salePrice}}</p>
-                  <p>同业价：{{data.traderPrice}}</p>
+                  <p>销售价：{{data.price_01}}</p>
+                  <p>同业价：{{data.price_02}}</p>
                   <!-- <p>已售/库存：0/0</p> -->
                 </div>
               </div>
@@ -85,8 +85,8 @@
                   <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index" >
                     <template v-if="index<=2">
                     <p class='old'>{{data.name}}</p>
-                    <p>销售价：{{data.salePrice}}</p>
-                    <p>同业价：{{data.traderPrice}}</p>
+                    <p>销售价：{{data.price_01}}</p>
+                    <p>同业价：{{data.price_02}}</p>
                     <!-- <p>已售/库存：0/0</p> -->
                     </template>
                   </div>
@@ -152,17 +152,23 @@
               <el-button @click="DelectQuota(index)"  type="primary" size="mini">删除配额</el-button>
             </template>
             <el-button type="primary" size="mini" id="inventorysave" @click="addQuota(item, index)">保存</el-button>
-            <el-button @click="delect(item, index)"  type="danger" size="mini">删除</el-button>
+            <el-button @click="delect(item, index)" type="danger" size="mini">删除</el-button>
           </div>
         </div>
         <div class="divform">
-          <el-form ref="form" :model="item" :rules="formRuler"  label-width="90px">
-            <el-form-item label="销售价" prop="salePrice">
-              <el-input v-if="Rform.resource == 1" :class="isAverage = item.salePrice < shareAverage && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
-              <el-input v-else :class="isAverage = item.salePrice < average && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.salePrice"></el-input>
+          <el-form ref="form" :model="item" :rules="formRuler"  label-width="110px">
+            <el-form-item label="销售价" prop="price_01">
+              <el-input v-if="Rform.resource == 1" :class="isAverage = item.salePrice < shareAverage && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.price_01"></el-input>
+              <el-input v-else :class="isAverage = item.salePrice < average && item.salePrice != '' ? 'isAverage' : ''" :maxlength='6' type='tel' v-model="item.price_01"></el-input>
             </el-form-item>
-            <el-form-item label="同业价" prop="traderPrice">
-              <el-input :maxlength='6' v-model="item.traderPrice"></el-input>
+            <el-form-item label="同业价" prop="price_02">
+              <el-input :maxlength='6' v-model="item.price_02"></el-input>
+            </el-form-item>
+            <el-form-item label="甜程结算价" prop="price_03">
+              <el-input :maxlength='6' v-model="item.price_03"></el-input>
+            </el-form-item>
+            <el-form-item label="甜程线上售价" prop="price_04">
+              <el-input :maxlength='6' v-model="item.price_04"></el-input>
             </el-form-item>
             <el-form-item label="配额" v-if="arr[index].quota == true">
               <el-input :maxlength='6' v-model="item.quotaPrice"></el-input>
@@ -176,6 +182,11 @@
 </template>
 
 <script>
+  /*
+  * 通过 this.days 数据类控制日历 团期计划的更新
+  *
+  *
+  * */
   export default {
     name:'DateList',
     props: ['msgFather', 'piapia'],
@@ -193,8 +204,8 @@
           shareId:'',      // 共享库存id
           sumId: '',       // 非共享库存id
           shareNum: '',    // 共享库存数量
-          sumNum:'',       // 总库存数量
-          orderRetain: '' // 订单保留
+          sumNum:'',       // 总库存数量,
+          orderRetain: ''  // 订单预留时长
         }, // 大表单
         form: {
           price: "",
@@ -231,13 +242,22 @@
           ],
           resource: [
             { required: true, message: '请选择库存类型'}
+          ],
+          orderRetain: [
+            { required: true, message: '不能为空'}
           ]
         }, // 非共享库存验证
         formRuler: {
-          salePrice: [
+          price_01: [
             { required: true, message: '不能为空'}
           ],
-          traderPrice: [
+          price_02: [
+            { required: true, message: '不能为空'}
+          ],
+          price_03: [
+            { required: true, message: '不能为空'}
+          ],
+          price_04: [
             { required: true, message: '不能为空'}
           ]
         },
@@ -702,14 +722,10 @@
           this.average = res.data.average;
         })
       },
-      /*
-      *
-      *   按套餐获取计划
-      *   this.days 是初始化时期渲染的，在这里通过sku获取的计划，两者日期比对（获取的计划在相应的日历上显示）显示在日历上
-      *   同时相应要显示的日期赋值 报名类型 person
-      *
-      * */
+     //  按套餐获取计划
       calendarList(id) {
+        console.log(this.days)
+        // this.days 是初始化时期渲染的（ this.initData() ），在这里通过sku获取的计划，两者日期比对（获取的计划在相应的日历上显示）显示在日历上。同时相应要显示的日期赋值 报名类型 person
         this.clearNull();
         this.getaverage(id);
         let currentMonth = this.currentMonth;
@@ -727,9 +743,9 @@
               item.day.getMonth() + 1,
               item.day.getDate()
             )
-            // 清空日历里报名类型
-            item.data.person = {};
-            res.data.objects.forEach(items => {
+            // 清空日历里报名类型，重新赋值，值是从后台返回来的最新团期计划
+            item.data.person = {}; // 把之前的后台返回来的团期计划，插入到data定义的 this.days 里
+            res.data.objects.forEach(items => { // str 是渲染的日历， items.date 是从后台获取的有那几个团期计划
               if (str == items.date) {
                 let plan_Enrolls = [];
                 if (items.plan_Enrolls != '') {
@@ -738,20 +754,22 @@
                       'id': list.id,
                       'enrollID': list.enrollID,
                       'name': list.enrollName,
-                      'salePrice': list.price_01,
-                      'traderPrice': list.price_02,
-                      'quotaPrice': list.quota,
-                      'dateHous': list.dateHous
+                      'price_01': list.price_01,
+                      'price_02': list.price_02,
+                      'price_03': list.price_03,
+                      'price_04': list.price_04,
+                      'quota': list.quotaPrice
                     })
                   })
                 }
-                item.data.person = {
+                item.data.person = { // 重新给person赋值,重配 this.days 数据
                   'id': items.planID,
                   'packageID': items.packageID,
                   'share': items.share,
                   'cost': items.cost,
                   'date': str,
-                  'planEnroll': plan_Enrolls
+                  'planEnroll': plan_Enrolls,
+                  'dateHous': items.dateHous  // 这个后期要迁到外层
                 }
               }
             })
@@ -855,10 +873,11 @@
               planEnroll.push({
                 'enrollID': data.id,
                 'enrollName': data.name,
-                'price_01': data.salePrice,
-                'price_02': data.traderPrice,
-                'quota': quotaPrice,
-                "dateHous": this.Rform.orderRetain, // 调时长时新增
+                'price_01': data.price_01,
+                'price_02': data.price_02,
+                'price_03': data.price_03,
+                'price_04': data.price_04,
+                'quota': quotaPrice
               })
               isSave = false;
             } else {
@@ -870,10 +889,11 @@
               planEnroll.push({
                 'enrollID': item.enrollID,
                 'enrollName': item.name,
-                'price_01': item.salePrice,
-                'price_02': item.traderPrice,
-                'quota': item.quotaPrice,
-                "dateHous": this.Rform.orderRetain, // 调时长时新增
+                'price_01': item.price_01,
+                'price_02': item.price_02,
+                'price_03': item.price_03,
+                'price_04': item.price_04,
+                'quota': quotaPrice
               })
             }
           })
@@ -888,10 +908,11 @@
           planEnroll.push({
             'enrollID': data.id,
             'enrollName': data.name,
-            'price_01': data.salePrice,
-            'price_02': data.traderPrice,
-            'quota': quotaPrice,
-            "dateHous": this.Rform.orderRetain, // 调时长时新增
+            'price_01': data.price_01,
+            'price_02': data.price_02,
+            'price_03': data.price_03,
+            'price_04': data.price_04,
+            'quota': quotaPrice
           })
         }
         // 查到非共享库存后执行修改计划
@@ -912,6 +933,7 @@
               "packageID": this.ccc[0], // 应该是SKU套餐id
               "planEnroll": planEnroll,
               "date": this.Rform.date,
+              "dateHous": this.Rform.orderRetain, // 调时长时新增
               "groupCode": this.msgFather[0].codePrefix + '-' + list.data.person.date + '-' + this.msgFather[0].codeSuffix,
             }
           })
@@ -921,10 +943,11 @@
             planEnrolls.push({
               'enrollID': delid.enrollID,
               'name': delid.enrollName,
-              'salePrice': delid.price_01,
-              'traderPrice': delid.price_02,
-              'quotaPrice': delid.quota,
-              'dateHous': delid.dateHous
+              'price_01': delid.price_01,
+              'price_02': delid.price_02,
+              'price_03': delid.price_03,
+              'price_04': delid.price_04,
+              'quota': delid.quota
             })
           })
           if(this.Rform.resource == '1') {
@@ -947,7 +970,8 @@
             "share": this.Rform.resource,
             "cost": cost,
             "planEnroll": planEnrolls,
-            "date": this.Rform.date
+            "date": this.Rform.date,
+            'dateHous': this.Rform.dateHous
           }
           let n = [];
           n = this.days[list.index];
@@ -968,7 +992,7 @@
           console.log('修改非共享库存失败');
         })
       },
-      // 报名类型保存之后(右侧卡片的保存按钮)
+      // 报名类型保存之后(右侧卡片的保存按钮)，这里的data应该是从方法里传过来的表单值
       addQuota(data, index) {
         // 这个data 参数就是要填加载日历上卡片相关信息
         // 有计划id，值执行修改操作
@@ -1081,7 +1105,7 @@
                         this.sumInsert(data, index);
                       })
                     } else {
-                      console.log('当前销售价高于结算参考')
+                      console.log('当前销售价高于结算参考。')
                       this.sumInsert(data, index);
                     }
                    }
@@ -1116,32 +1140,33 @@
             this.$refs['Rform'].validateField('resource');
           }
         }
-        // // 删除右侧表单
+        // 删除右侧表单
         // this.arr.splice(index,1);
       },
       // 非共享库存时的添加
       sumInsert(data, index) {
         console.log(data,'非共享库存时的添加')
         let n = [];
-        this.n.forEach(item => {
+        this.n.forEach(item => { // 当前添加的计划（选中的日期）
           // 第一次添加时
           if (this.days[item.index].data.person.planEnroll == undefined) {
             let planEnroll = [];
             let cost = false;
             planEnroll.push({
               'enrollID': data.id,
-              'enrollName': data.name,
-              'price_01': data.salePrice, // 销售价
-              'price_02': data.traderPrice, // 同业价
-              'quotaPrice': data.quotaPrice,
-              "dateHous": this.Rform.orderRetain, // 调时长时新增
+              'name': data.name,
+              'price_01': data.price_01, // 销售价
+              'price_02': data.price_02, // 同业价
+              'price_03': data.price_03, // 甜程结算价
+              'price_04': data.price_04, // 甜程线上结算价
+              'quota': data.quotaPrice // 配额
             })
             let date = this.formatDates(
               item.day.getFullYear(),
               item.day.getMonth() + 1,
               item.day.getDate()
             )
-            planEnroll.forEach(v => {
+            planEnroll.forEach(v => { // 控制价格预警图片显示与否，当团期计划的价格低于结算参考的时候就会显示价格预警图片
               if(v.salePrice < this.average) {
                 cost = true;
               }
@@ -1154,9 +1179,10 @@
                 'share': this.Rform.resource,
                 'cost': cost,
                 'regimentType': 1,
-                'planEnroll': planEnroll
-              }
-            n.push(this.days[item.index]);
+                'planEnroll': planEnroll,
+                "dateHous": this.Rform.orderRetain, // 调时长时新增
+            }
+            n.push(this.days[item.index]); // 向 n 里面添加值为后续在页面里回显准备
           } else {
             let date = this.formatDates(
               item.day.getFullYear(),
@@ -1167,35 +1193,39 @@
             let cost = false;
             let isSave = true; // 是否编辑判断
             this.days[item.index].data.person.planEnroll.forEach(list => {
+              console.log(list,'list')
               if (list.enrollID == data.id && list.name == data.name) {
                 planEnroll.push({
                   'enrollID': data.id,
-                  'enrollName': data.name,
-                  'price_01': data.salePrice,
-                  'price_02': data.traderPrice,
-                  'quotaPrice': data.quotaPrice,
-                  "dateHous": this.Rform.orderRetain, // 调时长新增
+                  'name': data.name,
+                  'price_01': data.price_01,
+                  'price_02': data.price_02,
+                  'price_03': data.price_03, // 甜程结算价
+                  'price_04': data.price_04, // 甜程线上结算价
+                  'quota': data.quotaPrice
                 })
                 isSave = false;
               } else {
-                planEnroll.push({
+                planEnroll.push({  // 这里暂时缺字段 因为是list 没敢参照data的写
                   'enrollID': list.enrollID,
-                  'enrollName': list.name,
-                  'price_01': list.salePrice,
-                  'price_02': list.traderPrice,
-                  'quotaPrice': list.quotaPrice,
-                  "dateHous": this.Rform.orderRetain, // 调时长新增
+                  'name': list.name,
+                  'price_01': list.price_01,
+                  'price_02': list.price_02,
+                  'price_03': list.price_03,
+                  'price_04': list.price_04,
+                  'quota': list.quotaPrice
                 })
               }
             })
             if (isSave) {
               planEnroll.push({
                 'enrollID': data.id,
-                'enrollName': data.name,
-                'price_01': data.salePrice, // 销售价
-                'price_02': data.traderPrice, // 同业价
-                'quotaPrice': data.quotaPrice,  // 配额
-                "dateHous": this.Rform.orderRetain, // 调时长新增
+                'name': data.name,
+                'price_01': data.price_01, // 销售价
+                'price_02': data.price_02, // 同业价
+                'price_03': data.price_03, // 甜程结算价
+                'price_04': data.price_04, // 甜程线上结算价
+                'quota': data.quotaPrice
               })
             }
             planEnroll.forEach(v => {
@@ -1211,7 +1241,8 @@
               'cost': cost,
               'count': this.Rform.sumNum,
               'regimentType': 1,
-              'planEnroll': planEnroll
+              'planEnroll': planEnroll,
+              "dateHous": this.Rform.orderRetain, // 调时长新增
             }
             n.push(this.days[item.index]);
           }
@@ -1219,7 +1250,7 @@
         this.n = [];
         this.n = n;
         // 新增计划点击保存直接提交数据
-        n.forEach(item => {
+        /*n.forEach(item => {
           this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventoryinsert', { // 新增库存
             "object": {
               "name": '', // 名称
@@ -1247,7 +1278,7 @@
           }).catch(err => {
             console.log('共享库存添加失败', err);
           })
-        })
+        })*/
       },
       // 共享库存时的添加
       shareInsert(data, index) {
@@ -1262,11 +1293,12 @@
         if (this.days[this.n[0].index].data.person.planEnroll == undefined) {
           planEnroll.push({
             'enrollID': data.id,
-            'name': data.name,
-            'salePrice': data.salePrice,
-            'traderPrice': data.traderPrice,
-            'quotaPrice': data.quotaPrice,
-            "dateHous": this.Rform.orderRetain, // 调时长时新增
+            'enrollName': data.name,
+            'price_01': data.price_01,
+            'price_02': data.price_02,
+            'price_03': data.price_03, // 甜程结算价
+            'price_04': data.price_04, // 甜程线上结算价
+            'quota': data.quotaPrice // 配额
           })
         } else {
           let isSave = true; // 是否编辑判断
@@ -1274,32 +1306,36 @@
             if (item.enrollID == data.id && item.name == data.name) {
               planEnroll.push({
                 'enrollID': data.id,
-                'name': data.name,
-                'salePrice': data.salePrice,
-                'traderPrice': data.traderPrice,
-                'quotaPrice': data.quotaPrice,
-                "dateHous": this.Rform.orderRetain, // 调时长时新增
+                'enrollName': data.name,
+                'price_01': data.price_01,
+                'price_02': data.price_02,
+                'price_03': data.price_03, // 甜程结算价
+                'price_04': data.price_04, // 甜程线上结算价
+                'quota': data.quotaPrice // 配额
               })
               isSave = false;
             } else {
+              console.log(item,'isSave = false')
               planEnroll.push({
                 'enrollID': item.enrollID,
-                'name': item.name,
-                'salePrice': item.salePrice,
-                'traderPrice': item.traderPrice,
-                'quotaPrice': item.quotaPrice,
-                "dateHous": this.Rform.orderRetain, // 调时长时新增
+                'enrollName': item.name,
+                'price_01': item.price_01,
+                'price_02': item.price_02,
+                'price_03': item.price_03,
+                'price_04': item.price_04,
+                'quota': item.quotaPrice
               })
             }
           })
           if (isSave) {
             planEnroll.push({
               'enrollID': data.id,
-              'name': data.name,
-              'salePrice': data.salePrice,
-              'traderPrice': data.traderPrice,
-              'quotaPrice': data.quotaPrice,
-              "dateHous": this.Rform.orderRetain, // 调时长时新增
+              'enrollName': data.name,
+              'price_01': data.price_01,
+              'price_02': data.price_02,
+              'price_03': data.price_03, // 甜程结算价
+              'price_04': data.price_04, // 甜程线上结算价
+              'quota': data.quotaPrice // 配额
             })
           }
         }
@@ -1315,8 +1351,11 @@
           'packageID': this.ccc[0],
           'count': this.Rform.shareNum,
           'date': date,
-          'planEnroll': planEnroll
+          'planEnroll': planEnroll,
+          'regimentType': 1,
+          "dateHous": this.Rform.orderRetain, // 调时长时新增
         }
+        console.log(this.days, 'this.days')
         let n = [];
         n = this.days[this.n[0].index];
         this.n = [];
@@ -1475,7 +1514,7 @@
           this.$refs['Rform'].resetFields();
         }
       },
-      // 点击日期的时候
+      // 点击日期（日历上的日）的时候
       handleitemclick(day, index) {
         if (this.n.includes(day)) { // 取消选择时
           this.n = this.n.filter(v => v != day);
@@ -1527,7 +1566,9 @@
           // 下面两种情况是对 person 下 id 行判断， 还有一个是对 person 下的 packageID 进行判断（这两种情况有时都不满足）
 
           // 选中的日期有类型时进行赋值
+          // 如果有计划 id
           if (day.data.person.id != undefined) {
+            console.log('有计划 id')
             this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/get', { // 获取一个计划信息
               "id": day.data.person.id
             }).then(res => {
@@ -1544,7 +1585,7 @@
                   // 共享库存ID
                   this.Rform.shareId = res.data.object.inventoryID;
                   // 共享库存订单预留时长
-                  this.Rform.orderRetain = day.data.person.planEnroll[0].dateHous
+                  this.Rform.orderRetain = res.data.object.dateHous
                   setTimeout(() => {
                     this.shareSelect();
                   }, 100)
@@ -1554,7 +1595,7 @@
                   // 非共享库存ID
                   this.Rform.sumId = res.data.object.inventoryID;
                   // 非共享库存订单预留时长
-                  this.Rform.orderRetain = day.data.person.planEnroll[0].dateHous
+                  this.Rform.orderRetain = res.data.object.dateHous
                 }
                 this.Rform.id = day.data.person.id; // 计划id
                 this.Rform.date = this.formatDates(
@@ -1578,27 +1619,27 @@
             } else {
               this.Rform.sumNum = day.data.person.count; // 非共享库存数量
               this.Rform.sumId = day.data.person.inventoryID; // 非共享库存ID
-              this.Rform.orderRetain = day.data.person.planEnroll[0].dateHous // 非共享库存订单预留时长
+              this.Rform.orderRetain = day.data.person.dateHous // 非共享库存订单预留时长
             }
             this.selectType(day); // 给选中类型赋值
           }
         }
       },
-      // 单击日历赋值调用
+      // 在单击日历事件里调用此函数作为赋值用
       selectType(day) {
-        // 给选中类型赋值
-        console.log('给选中类型赋值',day)
+        // 给选中类型赋值,这个day是点击日历时，请求接口后，用后台接口组合的值
         let _planEnroll = day.data.person.planEnroll;
         for (let i = 0; i < _planEnroll.length; i++) {
           this.Rform.region = _planEnroll[i].enrollID + '-' + _planEnroll[i].name;
-          this.AddType();
+          this.AddType(); // 点击按钮添加卡片事件
           if (this.arr[i].id == _planEnroll[i].enrollID && this.arr[i].name == _planEnroll[i].name) {
             this.arr[i].isModify = true;
-            this.arr[i].salePrice = _planEnroll[i].salePrice;
-            this.arr[i].dateHous = _planEnroll[i].dateHous; // 新增等待时长
+            this.arr[i].price_01 = _planEnroll[i].price_01;
+            this.arr[i].price_03 = _planEnroll[i].price_03;
+            this.arr[i].price_04 = _planEnroll[i].price_04;
             this.arr[i].regimentType = _planEnroll[i].regimentType; // 新增团期状态
-            this.arr[i].traderPrice = _planEnroll[i].traderPrice;
-            if (_planEnroll[i].quotaPrice == null || _planEnroll[i].quotaPrice == 0) {
+            this.arr[i].price_02 = _planEnroll[i].price_02;
+            if (_planEnroll[i].quotaPrice == null || _planEnroll[i].quotaPrice == 0) {   // quotaPrice  quota  字段里是 quota，这块估计还得会有问题，
               this.arr[i].quota = false;
               this.arr[i].quotaPrice = '';
             } else {
@@ -1783,8 +1824,9 @@
           this.shareAverage = res.data.average;
         })
       },
-      // 添加报名类型
+      // 添加报名类型（点击按钮添加卡片事件）
       AddType(type) {
+        console.log('添加报名类型')
         if (this.Rform.region) { // 如果有报名类型
           let mon = true;
           if (this.arr.length !== 0) {
@@ -1795,17 +1837,25 @@
             })
           }
           if (mon) {
+            /*
+            * 这里给arr，配置一个已经设定默认值的空对象,然后在 this.selectType 这个方法里调用，
+            * this.selectType 这个方法里 有一个传入的参数day（在点击某一个团期计划调用接口返回的数据组合成的当前计划最新值）通过 day 的值循环给 arr 数组赋值，
+            * arr 数组是给报名类型的卡片模板用 v-for 遍历用的数据
+            * */
             let id = this.Rform.region.substring(0, this.Rform.region.indexOf('-'));
             let name = this.Rform.region.substring(this.Rform.region.lastIndexOf('-') + 1, this.Rform.region.length);
             this.arr.push({
               'id': id,
               'name': name,
               'isModify': false, // 计划id
-              'salePrice': '',   // 销售价
-              'traderPrice': '', // 同业价
+              'price_01': '',   // 销售价
+              'price_02': '', // 同业价
+              'price_03': '',     // 甜程结算价
+              'price_04': '', // 甜程线上结算价
               'quota': false,    // 配额开关
               'quotaPrice': '',   // 配额
-              'regimentType': ''   // 团期状态
+              'regimentType': 1,   // 团期状态
+              'orderRetain': '',   // 订单预留时长
             })
           } else {
             this.$message({
@@ -1822,6 +1872,9 @@
       },
       // 删除卡片
       delect(item, index) {
+        console.log(this.n, '删除卡片 this.n')
+        console.log(item, '删除卡片 item')
+        console.log(index, '删除卡片 index')
         let _n = this.n[0];
         if (item.isModify) {
           if (_n.data.person.planEnroll.length <= 0) {
@@ -1831,9 +1884,11 @@
                 "id": this.Rform.id
             }).then(res => {})
           } else {
+            console.log(this.arr)
             this.arr.splice(index,1);
             let planEnroll = [];
             this.arr.forEach(data => {
+              console.log(data,'删除里面的data')
               let quotaPrice = '';
               // 判断是否填写配额
               if (data.quotaPrice == '') {
@@ -1844,8 +1899,10 @@
               planEnroll.push({
                 'enrollID': data.id,
                 'enrollName': data.name,
-                'price_01': data.salePrice,
-                'price_02': data.traderPrice,
+                'price_01': data.price_01,
+                'price_02': data.price_02,
+                'price_03': data.price_03,
+                'price_04': data.price_04,
                 'quota': quotaPrice
               })
             })
@@ -1859,6 +1916,7 @@
                 "planEnroll": planEnroll
               }
             }).then(res => {
+              console.log(this.days[_n.index].data.person.planEnroll, '有两个及以上的值删除调用修改接口')
               this.days[_n.index].data.person.planEnroll.splice(index,1);
               let n = [];
               n = this.days[_n.index];
@@ -1966,7 +2024,7 @@
           .filter(item => item.day.getMonth() + 1 == this.currentMonth)
           .filter(item => item.data.person.inventoryID != undefined && item.data.person.id == undefined);
         if (newAll.length == 0) {
-          $("#inventorysave").click();
+          $("#inventorysave").click(); // 应该是没提交接口只是将数据显示在日历上
         } else {
           newAll.forEach(item => {
             let planEnroll = [];
@@ -1982,8 +2040,10 @@
                 planEnroll.push({
                   'enrollID': list.enrollID,
                   'enrollName': list.name,
-                  'price_01': list.salePrice,
-                  'price_02': list.traderPrice,
+                  'price_01': list.price_01,
+                  'price_02': list.price_02,
+                  'price_03': list.price_02, // 甜橙结算价
+                  'price_04': list.price_02, // 甜橙线上售价
                   'quota': quotaPrice
                 })
               })
@@ -2000,11 +2060,14 @@
               }).then(res => {
                 this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/insert', { // 新增计划
                   "object": {
+                    'createTime': 0,
                     "inventoryID": res.data.id,
                     "packageID": item.data.person.packageID,
                     "date": item.data.person.date,
                     "groupCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix,
-                    "planEnroll": planEnroll
+                    "planEnroll": planEnroll,
+                    "regimentType": 1,
+                    'dateHous': item.data.person.dateHous
                   }
                 }).then(resAdd => {
                   // 添加成功后从新查找
