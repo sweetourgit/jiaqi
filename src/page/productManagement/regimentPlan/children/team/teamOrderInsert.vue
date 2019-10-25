@@ -5,8 +5,9 @@
       @close="cancelInfoOrder('ruleForm')">
       <div class="dialog-footer">
         <el-button class="ml13" @click="cancelInfoOrder('ruleForm')">取 消</el-button>
-        <el-button class="ml13" type="primary">预订不占</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')" class="ml13">确定占位</el-button>
+        <!-- <el-button class="ml13" @click="submitForm('ruleForm',1)"  type="primary">预订不占</el-button> -->
+        <el-button class="ml13"  type="primary">预订不占</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm',3)" class="ml13">确定占位</el-button>
       </div>
       <div class="main1">
         <!--团期信息-->
@@ -49,8 +50,12 @@
                 </td>
                 <td width="33%">
                   <div width="80" class="fl">参考结算:</div>
-                  <div class="fl ml13">{{average | numFilter}}</div>
+                  <div class="fl ml13">0.00</div>
                 </td>
+                <!-- <td width="33%">
+                  <div width="80" class="fl">参考结算:</div>
+                  <div class="fl ml13">{{average | numFilter}}</div>
+                </td> -->
                 <td width="33%">
                   <div width="80" class="fl">订单预留时长:</div>
                   <div class="fl ml13">{{teampreviewData.dateHous}}小时</div>
@@ -69,7 +74,7 @@
           <!--选择商户按钮，显示商户名称文本框-->
           <div v-if="ruleForm.orderRadio==2">
               <el-form-item label="商户名称" prop="travel" class="fl">
-                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3"placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
               </el-form-item>
           </div>
           <el-form-item label="价格选择" prop="price" class="cb price">
@@ -151,17 +156,8 @@
             ></el-input>
           </el-form-item>
           <!--出行人信息-->
-          <el-form-item label="出行人信息" class="cb">
-            <div class="oh" v-for="(item,indexPrice) in salePrice" :key="indexPrice">
-              <div class="tour-til">{{item.enrollName}}</div>
-              <div class="tourist">
-                <span v-for="(item,index) in tour[indexPrice]" :key="index" placeholder="点击填写" @click="fillTour(indexPrice,index)"
-                >{{item.cnName}}</span>
-              </div>
-            </div>
-          </el-form-item>
           <div class="travelMessage">出行人信息</div>
-          <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px">
+          <!-- <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px">
             <el-table-column prop="name" label="姓名" min-width="100" align="center"></el-table-column>
             <el-table-column prop="type" label="报名类型" min-width="100" align="center"></el-table-column>
             <el-table-column prop="phone" label="电话" min-width="120" align="center"></el-table-column>
@@ -174,8 +170,32 @@
                 <span class="cursor blue" @click="delTravel()">删除</span>
               </template>
             </el-table-column>
-          </el-table>
-
+          </el-table> -->
+          <table class="costList" v-for="(item,indexPrice) in salePrice" :key="indexPrice" border="1" cellpadding="0" cellspacing="0">
+            <tr class="costList_01">
+              <td width="120">姓名</td>
+              <td width="100">报名类型</td>
+              <td width="120">电话</td>
+              <td width="180">身份证</td>
+              <td width="80">性别</td>
+              <td width="100">操作</td>
+            </tr>
+            <tr v-for="(item,index) in tour[indexPrice]" :key="index">
+              <td>{{item.cnName}}</td>
+              <td>{{item.enrollName}}</td>
+              <td>{{item.mobile}}</td>
+              <td>{{item.idCard}}</td>
+              <td>
+                <div v-if="item.sex=='0'">男</div>
+                <div v-if="item.sex=='1'">女</div>
+              </td>
+              <td class="tc">
+                <span class="fl blue cursor" style="margin:0 0 0 18px"@click="fillTour(indexPrice,index)">编辑</span>
+                <span class="fl" style="margin:0 8px 0 8px;">|</span>
+                <span class="fl blue cursor" @click="delTravel(indexPrice,index)">删除</span>
+              </td>
+            </tr>
+          </table>
         </el-form>
         
       </div>
@@ -185,12 +205,13 @@
       width="700px">
       <el-form :model="conForm" :rules="rules" ref="conForm" style="height:300px;">
         <el-form-item label="中文姓名" prop="cnName" label-width="110px" class="fl">
-          <el-input type="text" v-model="conForm.cnName" class="w200 fl"></el-input>
+          <el-input type="text" v-model="conForm.cnName" class="w200"></el-input>
         </el-form-item>
         <el-form-item label="英文姓名" prop="enName" label-width="110px" class="fl">
           <el-input type="text" v-model="conForm.enName" class="w200"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px">
+        <div style="clear:both;"></div>
+        <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px;">
           <el-radio-group v-model="conForm.sex">
             <el-radio :label="0">男</el-radio>
             <el-radio :label="1">女</el-radio>
@@ -223,7 +244,7 @@
       <div slot="footer" class="dialog-footer cb">
         <el-button @click="cancelInfo('conForm')">取 消</el-button>
         <!-- <el-button type="primary" @click="subInfo('conForm')">确 定</el-button> -->
-        <el-button type="primary" @click="ensure('conForm')">确 定</el-button>
+        <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
       </div>
     </el-dialog>
     <!--下单成功弹窗-->
@@ -281,7 +302,14 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">状态:</div>
-              <div class="fl ml13">{{teampreviewData.regimentType}}</div>
+              <!-- <div class="fl ml13">{{teampreviewData.regimentType}}</div> -->
+              <div class="fl ml13">
+                <div v-if="teampreviewData.regimentType=='1'">正常</div>
+                <div v-if="teampreviewData.regimentType=='2'">停售</div>
+                <div v-if="teampreviewData.regimentType=='3'">封团</div>
+                <div v-if="teampreviewData.regimentType=='4'">暂满</div>
+                <div v-if="teampreviewData.regimentType=='5'">满员</div>
+              </div>
             </td>
             <td width="33%">
               <div width="80" class="fl">关联订单:</div>
@@ -386,10 +414,10 @@
           </el-tab-pane>
           <el-tab-pane label="订单" name="fourth">
             <el-table :data="tableOrder" :header-cell-style="getCostClass" border>
-              <el-table-column prop="id" label="订单ID" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="orderCode" label="订单ID" min-width="120" align="center"></el-table-column>
               <el-table-column prop="contactName" label="联系人" min-width="120" align="center"></el-table-column>
               <el-table-column prop="number" label="数量" min-width="180" align="center"></el-table-column>
-              <el-table-column prop="orderChannel" label="订单来源" min-width="100" align="center"></el-table-column>
+              <el-table-column prop="orderChannels" label="订单来源" min-width="100" align="center"></el-table-column>
               <el-table-column prop="orderStatus" label="状态" min-width="80" align="center"></el-table-column>
               <el-table-column prop="saler" label="销售" min-width="80" align="center"></el-table-column>
               <el-table-column prop="payable" label="订单金额" min-width="120" align="center"></el-table-column>
@@ -532,7 +560,7 @@ export default {
         idCard: [
           { required: true, message: "身份证号不能为空", trigger: "blur" },
           {
-            pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+             pattern: /(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
             message: "身份证号格式不正确",
             trigger: "blur"
           }
@@ -548,6 +576,7 @@ export default {
       tableAccount:[],//报销表格
       tableCollection:[],//收款表格
       tableOrder:[],//订单表格
+      productPos:0,
     };
   },
   filters: {
@@ -616,15 +645,12 @@ export default {
       //下单方式选择确认占位和预定占位，实时减少相关余位信息，提示库存不足
       for (let i = 0; i < this.salePrice.length; i++) {
         //如果下单方式选择预定不占，则不需要同步余位信息，提示库存不足
-        if (this.ruleForm.type == 1 || this.ruleForm.type == 2) {
-          this.salePrice[i].quota =
-            parseInt(this.salePrice[i].quota) -
-            parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
+        // if (this.ruleForm.type == 3 || this.ruleForm.type == 1) 
+        if (this.ruleForm.type == 1){
+          this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
           salePriceType = this.salePrice[i];
         } else {
-          salePriceType3[i].quota =
-            parseInt(salePriceType3[i].quota) -
-            parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
+          salePriceType3[i].quota = parseInt(salePriceType3[i].quota) - parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
           salePriceType = salePriceType3[i];
         }
         if (salePriceType.quota < 0) {
@@ -650,19 +676,19 @@ export default {
         });
     },
     //获取参考结算价
-    getaverage(ID) {
-      this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
-        "id": ID
-      }).then(res => {
-        this.average = res.data.average;
-      })
-    },
+    // getaverage(ID) {
+    //   console.log(ID)
+    //   this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
+    //     "id": ID
+    //   }).then(res => {
+    //     this.average = res.data.average;
+    //   })
+    // },
     teampreview(ID) {
-      this.getaverage(ID);
+      //this.getaverage(ID);
       //团期计划订单信息预览
       console.log(ID)
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
           id: ID
         })
         .then(res => {
@@ -726,35 +752,41 @@ export default {
         //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
         len = arrLength - preLength;
         for (var i = 0; i < len; i++) {
-          this.costList.push({
+          this.tour[index].push({
             enrollID: enrollID,
             enrollName: enrollName,
-            name : '姓名',
-            type : enrollName,
-            phone : '',
-            IDcard : '',
-            sex : '',
             id: 0,
             isDeleted: 0,
             code: "string",
-            idCard: "string",
+            cnName: "姓名",
+            enName: "",
+            sex: "",
+            idCard: "",
             singlePrice: 0,
-            mobile: "string",
+            mobile: "",
             bornDate: 0,
             credType: 0,
-            credCode: "string",
+            credCode: "",
             credTOV: 0,
             orderID: 0,
-            orderCode: "string",
+            orderCode: "",
             orgID: 0,
             userID: 0
           });
         }
-      } else {
-        this.costList.splice(arrLength - preLength, preLength - arrLength);
+      } else{
+        // console.log(this.tour[index])
+        for(var i=0;i < this.tour[index].length;i++){
+          console.log(this.tour[index][i])
+          if(this.tour[index][i].sex === ''){
+            this.tour[index].splice(i, preLength - arrLength);
+            break;
+          }
+        }
       }
     },
-    submitForm(formName) {
+    submitForm(formName,index) {
+      console.log(this.ruleForm.type)
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
         var blooen = "0";
@@ -812,7 +844,11 @@ export default {
             enrollDetail = `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
           });
           this.ifOrderInsert = false;
-          this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
+          // if(this.tour[index].length === this.enrolNum[index]){
+          //   console.log(this.tour[index].length)
+          // }
+          if(this.ruleForm.orderRadio === '1'){
+             this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
               object: {
                 id: 0,
                 isDeleted: 0,
@@ -822,7 +858,7 @@ export default {
                 planID: this.planId,
                 orderStatus: 0, //订单状态  7未确认
                 refundStatus: 0, //退款状态
-                occupyStatus: this.ruleForm.type, //占位状态
+                occupyStatus: index, //占位状态
                 payable: this.ruleForm.totalPrice, //应付款
                 platform: 1, //1是erp，2是同业
                 favourable: [
@@ -845,15 +881,8 @@ export default {
                   }
                 ],
                 contact:
-                  '{"Name":"' +
-                  this.ruleForm.contactName +
-                  '","Tel":"' +
-                  this.ruleForm.contactPhone +
-                  '"}',
-                endTime:
-                  this.ruleForm.type == 1
-                    ? 0
-                    : new Date().getTime() / 1000 + 24 * 60 * 60,
+                  '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
                 orderChannel: Number(this.ruleForm.orderRadio),
                 orgID: sessionStorage.getItem("orgID"),
                 userID: sessionStorage.getItem("id"),
@@ -868,8 +897,7 @@ export default {
                 number: number,
                 enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
               }
-            })
-            .then(res => {
+            }).then(res => {
               if (res.data.isSuccess == true) {
                 this.$message.success("提交成功");
                 let data = JSON.parse(res.data.result.details);
@@ -893,6 +921,82 @@ export default {
                 this.ifOrderInsert = true;
               }
             });
+          }else if(this.ruleForm.orderRadio === '2'){
+            this.ifOrderInsert = false;
+            this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
+              object: {
+                id: 0,
+                isDeleted: 0,
+                code: "",
+                orderCode: "",
+                proID: this.teampreviewData.teamID,
+                planID: this.planId,
+                orderStatus: 0, //订单状态  7未确认
+                refundStatus: 0, //退款状态
+                occupyStatus: index, //占位状态
+                payable: this.ruleForm.totalPrice, //应付款
+                platform: 1, //1是erp，2是同业
+                favourable: [
+                  //优惠
+                  {
+                    id: 0,
+                    orderID: 0,
+                    price: this.ruleForm.otherCost,
+                    title: "其他费用",
+                    favMode: 1,
+                    mark: this.ruleForm.otherCostRemark
+                  },
+                  {
+                    id: 0,
+                    orderID: 0,
+                    price: this.ruleForm.allDiscount,
+                    title: "整体优惠",
+                    favMode: 2,
+                    mark: this.ruleForm.allDisRemark
+                  }
+                ],
+                contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                orderChannel: Number(this.ruleForm.orderRadio),
+                orgID:this.productPos,
+                // orgID: sessionStorage.getItem("orgID"),
+                userID: sessionStorage.getItem("id"),
+                remark: JSON.stringify([
+                  {
+                    OrderCode: "",
+                    Mark: this.ruleForm.remark,
+                    CreateTime: formatDate(new Date())
+                  }
+                ]),
+                guests: guest,
+                number: number,
+                enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+              }
+            }).then(res => {
+              if (res.data.isSuccess == true) {
+                this.$message.success("提交成功");
+                let data = JSON.parse(res.data.result.details);
+                this.orderCode = data.OrderCode;
+                //需再次存储备注信息
+                this.addComment(this.orderCode);
+                this.orderSuc = true;
+                //清空表单
+                this.$refs[formName].resetFields();
+                this.dialogFormOrder = false;
+                this.ifOrderInsert = true;
+                this.startUpWorkFlowForJQ(
+                  data.OrderID,
+                  data.FlowModel,
+                  data.FlowModelName,
+                  data.Usercode
+                );
+              } else {
+                //预留黑名单信息？？？
+                this.$message.error("下单失败");
+                this.ifOrderInsert = true;
+              }
+            });
+          }
         } else {
           console.log("error submit!!");
           this.ifOrderInsert = true;
@@ -957,45 +1061,24 @@ export default {
         .then(res => {});
     },
     delTravel(type, index){//删除单条表格数据
-
+      this.$confirm("是否删除改条出行人信息?", "提示", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+      }).then(res =>{
+        this.tour[index].splice(index,1);
+      })
     },
-    fillTravel(type, index){//点击出行人信息表格编辑显示弹窗
-      console.log(this.enrollName)
-      this.winTitle = this.costList[0].enrollName; //编辑游客信息弹窗标题
+    fillTour(type, index) {
+      this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
+      if (this.tour[type][index].enName != "") {
+        this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
+      }
       this.tourType = type;
       this.fillIndex = index;
       this.dialogFormTour = true;
-
     },
-    // fillTour(type, index) {
-    //   this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
-
-    //   if (this.tour[type][index].cnName != "点击填写") {
-    //     this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
-    //   }
-    //   this.tourType = type;
-    //   this.fillIndex = index;
-    //   this.dialogFormTour = true;
-    // },
-    ensure(formName){//出行人弹窗添加完保存
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          let guest = JSON.parse(JSON.stringify(this.conForm));
-          guest.cnName = this.salePrice[this.tourType].name;
-          console.log(this.salePrice)
-          console.log(this.tourType)
-          if (this.ruleForm.price == 1) {
-            guest.singlePrice = this.costList[this.tourType].price_01; //填充价格
-          } else {
-            guest.singlePrice = this.costList[this.tourType].price_02;
-          }
-          this.costList[this.tourType][this.fillIndex] = guest;
-          this.dialogFormTour = false;
-          this.$refs[formName].resetFields();
-        }
-      });
-    },
-    subInfo(formName) {
+    subInfo(formName) {//出行人弹窗添加完保存
       this.$refs[formName].validate(valid => {
         if (valid) {
           let guest = JSON.parse(JSON.stringify(this.conForm));
@@ -1040,6 +1123,7 @@ export default {
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
       this.tableData2 = []
+      console.log()
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
           name: queryString3,
@@ -1067,9 +1151,6 @@ export default {
     },
     departure(item){
       console.log(item)
-      //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
-      /*this.productPos = item.id;
-      this.originPlace = item.value;*/
       this.productPos = item.id;
       this.originPlace = item.value;
     },
@@ -1193,23 +1274,15 @@ export default {
         console.log(err)
       })
       //订单
-      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderpage', {
-        "pageIndex": 1,
-        "pageSize": 100,
+      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/planordlist', {
         "object": {
-          "planID": this.planId
+          "planID": this.planId,
+          "salerID": sessionStorage.getItem("id")
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableOrder = res.data.objects
           that.tableOrder.forEach(function (v,k,arr) {
-              if(arr[k]['orderChannel'] == 1){
-                arr[k]['orderChannel'] = '同业'
-              }else if(arr[k]['orderChannel'] == 2) {
-                arr[k]['orderChannel'] = '门店'
-              }else if(arr[k]['orderChannel'] == 3) {
-                arr[k]['orderChannel'] = '总部'
-              }
               if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==1)||(arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==2)||(arr[k]['orderStatus'] == 10 && arr[k]['occupyStatus'] ==3)){
                 arr[k]['orderStatus'] = '未完成订单'
               }else if(arr[k]['orderStatus'] == 1){
@@ -1258,6 +1331,9 @@ export default {
 .blue {color: #2e94f9;}
 .cursor {cursor: pointer;}
 .costTable{width:800px; margin: 0 0 0 2px;}
+.costList{width:800px; line-height: 40px; text-align: center; border:1px solid #ebebeb;border-collapse:collapse;border-spacing:0; }
+.costList_01{background: #f3f3f3;}
+.tc{text-align: center;}
 /*详情样式*/
 .detail{ position: absolute;right: 15px; top: 8px; }
 .detailsTitle{font-size: 18px; margin: 20px 0 20px 0;}

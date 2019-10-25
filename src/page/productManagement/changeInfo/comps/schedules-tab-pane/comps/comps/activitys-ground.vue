@@ -19,7 +19,7 @@
       <activitys-bar
         ref="children" 
         v-for="(item, i) in activitys"
-        :key="i"
+        :key="item.createTime"
         :proto="item"
       >
         <el-button type="info" size="small" style="margin-left: 120px;"
@@ -93,7 +93,7 @@ export default {
     getData(){
       let children= this.$refs.children || [];
       return children.map(child => child.getData());
-    }
+    },
   }
 
 }

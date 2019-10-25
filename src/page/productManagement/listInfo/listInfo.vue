@@ -141,15 +141,18 @@ export default {
         this.inited= false;
         this.$nextTick(() => {
           this.init(id);
-          this.vm.saveActionLock= false;
         })
       }).catch(err => {
         this.$message.error(err);
         console.error(err);
+      }).finally(() => {
+        this.vm.saveActionLock= false;
       })
     },
 
     addAction(object){
+      if(this.vm.saveActionLock) return this.$message.info('数据保存中，请稍后再试');
+      this.vm.saveActionLock= true;
       getGuidAction.bind(this)().then(res => {
         object.guid= res;
         insertAction.bind(this)(object).then(res => {
@@ -160,6 +163,8 @@ export default {
       }).catch(err => {
         this.$message.error(err)
         console.error(err);
+      }).finally(() => {
+        this.vm.saveActionLock= false;
       })
     },
 

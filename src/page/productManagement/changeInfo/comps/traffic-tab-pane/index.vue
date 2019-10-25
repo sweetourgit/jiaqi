@@ -188,14 +188,15 @@ export default {
 
     /**
      * @description: 更换出行方式需要判断是否与原始数据中的出行方式一样，一样则以原始数据填充
-     * @bug 1.新增加一个中转，由中转飞机改为中转火车，再改回中转飞机，这个对象的数据与返程数据会混淆
+     * @bug 1.新增加一个中转，由中转飞机改为中转火车，再改回中转飞机，这个对象的数据与返程数据会混淆 resolve
+     * @TODO 如果发生过插入和删除，则重置数据的功能失效，不然会有幻读的可能 
      */
     changeTrafficModeEmit(payload){
       let { index, trafficMode, goOrBackSign }= payload;
       // 只有返程会自动定位到最后一个
-      index= goOrBackSign=== GO_OR_BACK_SIGN.BACK? 
+      let protoIndex= goOrBackSign=== GO_OR_BACK_SIGN.BACK? 
         (this.proto.length- 1): index;
-      // bug: 当切换交通方式的时候，会重置其他表单的数据
+      // bug: 当切换交通方式的时候，会重置其他表单的数据，这里用最新数据填充一下
       let newTraffics= this.getData().traffic;
       this.traffics.splice(0);
       this.traffics.push(...newTraffics);
@@ -211,8 +212,12 @@ export default {
       let notRestore= 
         goOrBackSign!== GO_OR_BACK_SIGN.BACK && (index=== this.proto.length-1);
       // 如果是初始数据中的出行方式，则填充初始数据
-      if(!notRestore && this.proto[index] 
-        && this.proto[index].trafficMode===trafficMode){
+      if(!notRestore 
+          && this.proto[index] 
+            && this.proto[index].trafficMode===trafficMode){
+        let copy= this.$deepCopy(this.proto[
+          goOrBackSign=== GO_OR_BACK_SIGN.BACK? protoIndex: index
+        ]);
         Object.assign(this.traffics[index], this.$deepCopy(this.proto[index]));
       }
       this.vm.descriptionState= false;
