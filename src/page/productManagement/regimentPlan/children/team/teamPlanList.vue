@@ -3,17 +3,17 @@
     <!--搜索框-->
     <div class="demo-input-suffix">
       <span class="search-title">产品名称</span>
-      <el-input placeholder="请输入" v-model="title" class="group-no" @blur="productName()"></el-input>
+      <el-input placeholder="请输入" v-model="title" class="group-no"></el-input>
       <span class="search-title">报账团号</span>
-      <el-input placeholder="请输入" v-model="groupCode" class="group-no" @blur="groupNo()"></el-input>
+      <el-input placeholder="请输入" v-model="groupCode" class="group-no"></el-input>
       <span class="search-title">出行日期</span>
       <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
-        align="right" class="group-no" @change="dateline()"></el-date-picker>
+        align="right" class="group-no"></el-date-picker>
       <br />
       <span class="search-title">操作人员</span>
-      <el-input placeholder="请输入" v-model="op" class="group-no" @blur="operation_01()"></el-input>
+      <el-input placeholder="请输入" v-model="op" class="group-no"></el-input>
       <span class="search-title">报账状态</span>
-      <el-select v-model="financeState" placeholder="请选择" class="group-no" style="width:185px"@blur="condition()">
+      <el-select v-model="financeState" placeholder="请选择" class="group-no" style="width:185px">
         <el-option v-for="item in financeType" :key="item.value" :label="item.label":value="item.value"></el-option>
       </el-select>
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
@@ -177,31 +177,36 @@ export default {
   mounted () {
   },
   methods: {
-    productName() {
-      if (this.title == "") {
-        this.teamQueryList();
-      }
-    },
-    groupNo() {
-      if (this.groupCode == "") {
-        this.teamQueryList();
-      }
-    },
-    dateline() {
-      if (this.date == "") {
-        this.teamQueryList();
-      }
-    },
-    operation_01() {
-      if (this.op == "") {
-        this.teamQueryList();
-      }
-    },
-    condition() {
-      if (this.financeState == "") {
-        this.teamQueryList();
-      }
-    },
+    //产品名称
+    // productName() {
+    //   if (this.title == "") {
+    //     this.teamQueryList();
+    //   }
+    // },
+    // 报账团号
+    // groupNo() {
+    //   if (this.groupCode == "") {
+    //     this.teamQueryList();
+    //   }
+    // },
+    // 出行日期
+    // dateline() {
+    //   if (this.date == "") {
+    //     this.teamQueryList();
+    //   }
+    // },
+    // 操作人员
+    // operation_01() {
+    //   if (this.op == "") {
+    //     this.teamQueryList();
+    //   }
+    // },
+    // 报账状态
+    // condition() {
+    //   if (this.financeState == "") {
+    //     this.teamQueryList();
+    //   }
+    // },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";

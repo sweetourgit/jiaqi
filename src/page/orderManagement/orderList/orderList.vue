@@ -302,13 +302,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
-      <process-manage
-        :orderId="orderId"
-        :variable="variable"
-        :dialogType="dialogType"
-        :orderCode="orderCode"
-       
-      ></process-manage>
+      <process-manage :orderId="orderId" :variable="variable" :dialogType="dialogType" :orderCode="orderCode"></process-manage>
       <remarks-infor :orderId="orderId" :variable="variable" :dialogType="dialogType" :orderCode="orderCode"></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
     </div>

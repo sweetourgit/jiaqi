@@ -1,15 +1,7 @@
 <template>
   <div>
     <!--流程管理弹窗-->
-    <el-dialog
-      title="流程管理"
-      :visible.sync="dialogFormProcess"
-      :close-on-click-modal="false"
-      class="city_list"
-      width="850px"
-      style="margin-top:-50px"
-      @close="cancle"
-    >
+    <el-dialog title="流程管理" :visible.sync="dialogFormProcess" :close-on-click-modal="false" class="city_list" width="850px" style="margin-top:-50px" @close="cancle">
       <!--订单状态-->
       <div style="position:relative;height:50px">
         <el-button type="primary" plain icon="el-icon-check" circle size="medium"></el-button>
@@ -28,11 +20,7 @@
       </div>
       <!-- switch 更改价格(直客价和同业价) beign-->
       <p>使用{{priceChange}}价格</p>
-      <el-switch
-        v-model="isPricechange"
-        active-color="#409eff"
-        inactive-color="#dcdfe6"
-        @change="priceChangeEvent(isPricechange)">
+      <el-switch v-model="isPricechange" active-color="#409eff" inactive-color="#dcdfe6" @change="priceChangeEvent(isPricechange)">
       </el-switch>
       <!-- switch 更改价格(直客价和同业价) end-->
       <!--报名人数-->
