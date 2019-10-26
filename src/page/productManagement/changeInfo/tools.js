@@ -7,6 +7,11 @@ Vue.prototype.$deepCopy= function(obj){
   return JSON.parse(JSON.stringify(obj))
 }
 
+Vue.prototype.$isNull= function(val){
+  val+= '';
+  return !val || val=== 'undefined' || val=== 'null' || val=== 'false';
+}
+
 /**
  * @description: 防抖函数
  */

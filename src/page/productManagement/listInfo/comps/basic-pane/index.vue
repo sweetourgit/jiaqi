@@ -410,7 +410,7 @@ export default {
 
     numberValidator(rule, val, cb){
       let { message }= rule; 
-      let reg= /^\d+$|^\d+[.]?\d+$/;
+      let reg= /^([1-9][0-9]*)$/;
       if(reg.test(val)) return cb();
       return cb(this.makeErrorQueueMsg(message));
     },

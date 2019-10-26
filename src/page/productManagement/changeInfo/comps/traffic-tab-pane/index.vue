@@ -41,7 +41,7 @@
         <component 
           v-for="(item, i) in traffics" 
           ref="children"
-          :key="item.goOrBack+ '-'+ i"
+          :key="item.goOrBack+ '-'+ Date.now()+ i"
           :rank="i"
           :proto="item"
           :is="'child'+ item.trafficMode"
@@ -174,13 +174,17 @@ export default {
       this.traffics.splice(
         this.traffics.length- 1, 0, this.$deepCopy(TEAM_TRAFFIC_DTO_GO));
     },
+    
     removeTrafficEmit(index){
       this.$confirm('是否删除该交通信息?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.traffics.splice(index, 1);
+        let newTraffics= this.getData().traffic;
+        newTraffics.splice(index, 1);
+        this.traffics.splice(0);
+        this.traffics.push(...newTraffics);
       }).catch(() => {
         // 取消        
       });

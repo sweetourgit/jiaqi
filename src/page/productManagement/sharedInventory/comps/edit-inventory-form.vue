@@ -12,7 +12,7 @@
         :rules="rules"
       >
         <el-form-item label="库存名称：" prop="name" style="width: 550px">
-          <el-input placeholder="库存名称" size="small"
+          <el-input placeholder="库存名称" size="small" maxlength="20" show-word-limit
             v-model="submitForm.name">
           </el-input>
         </el-form-item>
@@ -94,7 +94,7 @@ export default {
     },
 
     positiveIntegerValidator(rule, value, cb){
-      let reg= /^[1-9]\d*|0$/;
+      let reg= /^(0|[1-9][0-9]*)$/;
       if(!reg.test(value)) return cb(new Error('库存必须为正整数'));
       if(parseInt(value)< this.vm.saled) return cb(new Error('库存不能小于已售数量'));
       cb();

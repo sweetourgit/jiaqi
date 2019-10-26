@@ -4,7 +4,7 @@
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
-        <el-button type="primary" @click="backoutBtn">撤销</el-button>
+        <el-button type="primary" @click="backoutBtn" v-if="baseInfo.rec_mode!='票付通余额支付'">撤销</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -46,6 +46,15 @@
           <p class="inputLabel"><span>分销商：</span>{{baseInfo.distributor_code}}</p>
         </div>
       </div>
+      <div v-if="baseInfo.rec_mode == '票付通余额支付'">
+        <!--<p class="stepTitle">认款信息</p>-->
+        <el-divider content-position="left">认款信息</el-divider>
+        <div class="stepDv">
+          <p class="inputLabel"><span>认款方式：</span>{{baseInfo.rec_mode}}</p>
+          <p class="inputLabel"><span>认款人：</span>{{baseInfo.rec_uid}}</p>
+          <p class="inputLabel"><span>认款时间：</span>{{baseInfo.rec_created_at}}</p>
+        </div>
+      </div>
       <div v-if="baseInfo.rec_mode == '订单收款'">
         <!--<p class="stepTitle">认款信息</p>-->
         <el-divider content-position="left">认款信息</el-divider>
@@ -72,117 +81,121 @@
         </div>
       </div>
 
-      <div v-if="baseInfo.status_rece == 12 && baseInfo.rec_mode == '分销商预存款'">
-        <!--<p class="stepTitle">认款订单</p>-->
-        <el-divider content-position="left">认款订单</el-divider>
-        <div class="stepDv" style="margin-bottom: 50px;">
-          <el-table ref="singleTable" :data="tableDataFXS" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
-            <el-table-column prop="order_sn" label="订单ID" align="center" >
-            </el-table-column>
-            <el-table-column prop="product_name" label="产品名称" align="center">
-            </el-table-column>
-            <el-table-column prop="income" label="订单费用" align="center">
-              <!--<template slot-scope="scope">-->
-              <!--<span>收入:{{scope.row.income}}</span><br>-->
-              <!--<span>单票成本:{{scope.row.single_cost}}</span><br>-->
-              <!--<span>总成本:{{scope.row.cost}}</span>-->
-              <!--</template>-->
-            </el-table-column>
-          </el-table>
+      <div v-if="baseInfo.status_rece == 12">
+        <div v-if="baseInfo.rec_mode == '分销商预存款' || baseInfo.rec_mode == '票付通余额支付'">
+          <!--<p class="stepTitle">认款订单</p>-->
+          <el-divider content-position="left">认款订单</el-divider>
+          <div class="stepDv" style="margin-bottom: 50px;">
+            <el-table ref="singleTable" :data="tableDataFXS" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
+              <el-table-column prop="order_sn" label="订单ID" align="center" >
+              </el-table-column>
+              <el-table-column prop="product_name" label="产品名称" align="center">
+              </el-table-column>
+              <el-table-column prop="income" label="订单费用" align="center">
+                <!--<template slot-scope="scope">-->
+                <!--<span>收入:{{scope.row.income}}</span><br>-->
+                <!--<span>单票成本:{{scope.row.single_cost}}</span><br>-->
+                <!--<span>总成本:{{scope.row.cost}}</span>-->
+                <!--</template>-->
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+        <div v-if="baseInfo.rec_mode == '订单收款'">
+          <!--<p class="stepTitle" v-if="showSK">收款明细</p>-->
+          <el-divider content-position="left" v-if="showSK">收款明细</el-divider>
+          <div class="stepDv" style="margin-bottom: 50px;" v-if="showSK">
+            <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
+            <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+              <el-table-column prop="rece_at" label="入账时间" align="center">
+              </el-table-column>
+              <el-table-column prop="order_sn" label="订单编号" align="center">
+                <template slot-scope="scope">
+                  <span>{{scope.row.plat_order_sn}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="guest_name" label="客人名称" align="center">
+              </el-table-column>
+              <el-table-column prop="product_name" label="产品" align="center">
+              </el-table-column>
+              <el-table-column prop="rece_money" label="结算金额" align="center">
+              </el-table-column>
+              <el-table-column prop="charge" label="手续费" align="center">
+                <template slot-scope="scope">
+                  <span>{{scope.row.charge}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="tour_no" label="团号" align="center">
+              </el-table-column>
+              <el-table-column prop="divide_connect_no" label="粉联号" align="center">
+                <template slot-scope="scope">
+                  <span>{{scope.row.divide_connect_no}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="invoice_no" label="发票号" align="center">
+              </el-table-column>
+              <el-table-column prop="" label="操作" align="center">
+                <template slot-scope="scope">
+                  <el-button size="small" type="text" @click="detailBtn(scope.row)" v-if="scope.row.order_sn != '' && scope.row.import_status == 3">绑定订单详情</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <!--<p class="stepTitle" v-if="showXQ">订单详情</p>-->
+          <el-divider content-position="left" v-if="showXQ">订单详情</el-divider>
+          <div class="stepDv" style="margin-bottom: 50px;" v-if="showXQ">
+            <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+              <el-table-column prop="order_sn" label="订单ID" align="center" >
+              </el-table-column>
+              <el-table-column prop="distributor" label="分销商" align="center">
+                <template slot-scope="scope">
+                  <span>{{scope.row.distributor}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="product_name" label="产品名称" align="center">
+              </el-table-column>
+              <el-table-column prop="type_name" label="类别" align="center">
+              </el-table-column>
+              <el-table-column prop="sale_at" label="下单时间" align="center" width="100">
+              </el-table-column>
+              <el-table-column prop="option" label="费用" align="center">
+                <template slot-scope="scope">
+                  <span>收入:{{scope.row.income}}</span><br>
+                  <span>单票成本:{{scope.row.single_cost}}</span><br>
+                  <span>总成本:{{scope.row.cost}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="quantity" label="数量" align="center">
+              </el-table-column>
+              <el-table-column prop="money" label="客人信息" align="center">
+                <template slot-scope="scope">
+                  <span>取票人:{{scope.row.contact_name}}</span><br>
+                  <span>手机:{{scope.row.contact_phone}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="check_at" label="验证时间" align="center" width="100">
+              </el-table-column>
+              <el-table-column prop="pay_type" label="卖出支付方式" align="center" width="100">
+                <template slot-scope="scope">
+                  <span>{{scope.row.pay_type_name}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="import_at" label="导入时间" align="center" width="100">
+              </el-table-column>
+              <el-table-column prop="tour_no" label="关联产品" align="center">
+                <template slot-scope="scope">
+                  <p v-if="scope.row.tour_no == ''">未关联产品</p>
+                  <p v-else>产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
+                </template>
+              </el-table-column>
+              <el-table-column prop="create_uid" label="操作人" align="center" width="100">
+              </el-table-column>
+            </el-table>
+          </div>
         </div>
       </div>
-      <div v-if="baseInfo.status_rece == 12 && baseInfo.rec_mode == '订单收款'">
-        <!--<p class="stepTitle" v-if="showSK">收款明细</p>-->
-        <el-divider content-position="left" v-if="showSK">收款明细</el-divider>
-        <div class="stepDv" style="margin-bottom: 50px;" v-if="showSK">
-          <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-          <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
-            <el-table-column prop="rece_at" label="入账时间" align="center">
-            </el-table-column>
-            <el-table-column prop="order_sn" label="订单编号" align="center">
-              <template slot-scope="scope">
-                <span>{{scope.row.plat_order_sn}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="guest_name" label="客人名称" align="center">
-            </el-table-column>
-            <el-table-column prop="product_name" label="产品" align="center">
-            </el-table-column>
-            <el-table-column prop="rece_money" label="结算金额" align="center">
-            </el-table-column>
-            <el-table-column prop="charge" label="手续费" align="center">
-              <template slot-scope="scope">
-                <span>{{scope.row.charge}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="tour_no" label="团号" align="center">
-            </el-table-column>
-            <el-table-column prop="divide_connect_no" label="粉联号" align="center">
-              <template slot-scope="scope">
-                <span>{{scope.row.divide_connect_no}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="invoice_no" label="发票号" align="center">
-            </el-table-column>
-            <el-table-column prop="" label="操作" align="center">
-              <template slot-scope="scope">
-                <el-button size="small" type="text" @click="detailBtn(scope.row)" v-if="scope.row.order_sn != '' && scope.row.import_status == 3">绑定订单详情</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <!--<p class="stepTitle" v-if="showXQ">订单详情</p>-->
-        <el-divider content-position="left" v-if="showXQ">订单详情</el-divider>
-        <div class="stepDv" style="margin-bottom: 50px;" v-if="showXQ">
-          <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
-            <el-table-column prop="order_sn" label="订单ID" align="center" >
-            </el-table-column>
-            <el-table-column prop="distributor" label="分销商" align="center">
-              <template slot-scope="scope">
-                <span>{{scope.row.distributor}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="product_name" label="产品名称" align="center">
-            </el-table-column>
-            <el-table-column prop="type_name" label="类别" align="center">
-            </el-table-column>
-            <el-table-column prop="sale_at" label="下单时间" align="center" width="100">
-            </el-table-column>
-            <el-table-column prop="option" label="费用" align="center">
-              <template slot-scope="scope">
-                <span>收入:{{scope.row.income}}</span><br>
-                <span>单票成本:{{scope.row.single_cost}}</span><br>
-                <span>总成本:{{scope.row.cost}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="quantity" label="数量" align="center">
-            </el-table-column>
-            <el-table-column prop="money" label="客人信息" align="center">
-              <template slot-scope="scope">
-                <span>取票人:{{scope.row.contact_name}}</span><br>
-                <span>手机:{{scope.row.contact_phone}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="check_at" label="验证时间" align="center" width="100">
-            </el-table-column>
-            <el-table-column prop="pay_type" label="卖出支付方式" align="center" width="100">
-              <template slot-scope="scope">
-                <span>{{scope.row.pay_type_name}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="import_at" label="导入时间" align="center" width="100">
-            </el-table-column>
-            <el-table-column prop="tour_no" label="关联产品" align="center">
-              <template slot-scope="scope">
-                <p v-if="scope.row.tour_no == ''">未关联产品</p>
-                <p v-else>产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
-              </template>
-            </el-table-column>
-            <el-table-column prop="create_uid" label="操作人" align="center" width="100">
-            </el-table-column>
-          </el-table>
-        </div>
-      </div>
+
+
 
       <!--绑定订单详情-->
       <el-dialog title="绑定订单详情" :visible="dialogFormVisible" width=90% @close="close" append-to-body>
@@ -465,7 +478,7 @@
               dateQuantun: response.data.data.rece_start + '-' + response.data.data.rece_end
             };
             // 获取订单信息
-            if(response.data.data.rec_mode === '1'){
+            if(response.data.data.rec_mode === '1' || response.data.data.rec_mode === '2'){
               that.getOrder();
             }else if(response.data.data.rec_mode === '3'){
               that.getReceive();
