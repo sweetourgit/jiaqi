@@ -121,12 +121,14 @@
     <!--margin-bottom: 20px;">-->
     <!--<el-button type="primary"  @click="dialogVisible = true" >添加产品</el-button>-->
     <!--</div>-->
+    <!-- 弹窗 -->
     <el-dialog :close-on-click-modal="false" class="merchandise" :visible.sync="merchandise" :show-close="false" append-to-body
       width="77%" @open="merchandiseDialogOpen">
       <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
         <el-radio-group v-model="isCollapse" @change="qqq">
           <el-radio-button class="group" :label="true">库存</el-radio-button>
-          <el-radio-button :label="false" :disabled="isUsePrice">价格</el-radio-button>
+          <!-- 点击时会出现弹窗 -->
+          <el-radio-button :label="false" :disabled="tabBtnDisabled">价格</el-radio-button>
         </el-radio-group>
       </div>
       <!-- 库存 -->
@@ -141,21 +143,21 @@
           <el-table-column prop="ddd" label="名称" width="180" align="center"></el-table-column>
           <el-table-column align="center" label="前缀-团号-后缀">
             <template slot-scope="scope">
-              <el-input :maxlength="10"v-model="ccc[scope.$index].codePrefix"
-                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
+              <el-input :maxlength="10" v-model="ccc[scope.$index].codePrefix"
+                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking(scope.$index)" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
               <span>-</span>
               <span v-text="'{{'"></span>
               <span>日期</span>
               <span>}}</span>
               <span>-</span>
               <el-input :maxlength="10" v-model="ccc[scope.$index].codeSuffix"
-                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
+                :style="isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"@change="fucking(scope.$index)" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
             </template>
           </el-table-column>
           <el-table-column align="center" width="180" label="清位时间">
             <template slot-scope="scope">
               <span style="margin-right:5px">前</span>
-              <el-input :maxlength="3" v-model="ccc[scope.$index].uptoDay"@change="fucking" style="width:60px" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
+              <el-input :maxlength="3" v-model="ccc[scope.$index].uptoDay"@change="fucking(scope.$index)" style="width:60px" @blur="changeFun(ccc[scope.$index].id,ccc[scope.$index].rate, false)"></el-input>
               <span style="margin-left:10px">天</span>
               <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">时</span> -->
               <!-- <el-input style="width:40px"></el-input><span style="margin-left:10px">分</span> -->
@@ -176,7 +178,7 @@
               <template v-else>
                 <el-button size="mini" type="primary" @click="offline(scope.$index)" :disabled="isUseLine">下线</el-button>
               </template>
-              <el-button :disabled="isUsePrice" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
+              <el-button :disabled="ccc[scope.$index].btnDisabled" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
               <!-- <el-button :disabled="scope.codePrefix ==''|| scope.codeSuffix ==''|| scope.uptoDay =='' || JSON.stringify(scope.costs) == '[]'" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button> -->
               <el-button size="mini" type="primary" @click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate, true)">成本</el-button>
 
@@ -264,6 +266,7 @@ export default {
       isUsePrice: true, // 判断价格按钮是否可点击 (团号 成本三个都填完才为true)
       isUseLine: true, // 判断上线按钮是否可点击 (价格添加完毕后才可以点击上线按钮)
       activeName: "first",
+      tabBtnDisabled:true,
       ruleForm1: {
         name: "", // 金额
         region: "", // 供应商
@@ -1206,7 +1209,12 @@ export default {
          this.forbidden_a=true;
       }
     },
+    // 请求数据成功时显示当前的列表
     basicPrice(id, rate, ShowBase) {
+    console.log('id====', id);
+    this.tableData12 = [];
+    let that = this;
+    that.isUsePrice = true;
       if (ShowBase) {
         this.basicbutton = true;
       }
@@ -1218,8 +1226,17 @@ export default {
           }
         })
         .then(res => {// 成本为空null时报错  所以判断
-          if (res.data.objects !== null) {
-            this.isUsePrice = false;
+          if (res.data.isSuccess) {
+            // for(let i = 0;i<res.data.id;i++){
+            //   this.isUsePrice[i] = false;
+            // }
+            for(let i = 0;i < this.ccc.length;i++) {
+              if(this.team === this.ccc[i].id) {
+                this.ccc[i].btnDisabled = false;
+                this.tabBtnDisabled = false;
+                break;
+              }
+            }
             this.tableData12 = res.data.objects;
             this.tableData12.forEach(function(v, k, arr) {
               if (arr[k]["suppliertype"] == 0) {
@@ -1244,6 +1261,15 @@ export default {
                 arr[k]["suppliertype"] = "汽车票";
               }
             });
+          }else{
+            
+             for(let i = 0;i < this.ccc.length;i++) {
+              if(this.team === this.ccc[i].id) {
+                this.ccc[i].btnDisabled = true;
+                this.tabBtnDisabled = true;
+                break;
+              }
+            }
           }
         });
       this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
@@ -1253,31 +1279,37 @@ export default {
           this.count = res.data.average;
         });
     },
-    fucking() {
-      for (let i = 0; i < this.ccc.length; i++) {
+    // 判断输入的值是否在数据库中
+    fucking(index) {
+      // for (let i = 0; i < this.ccc.length; i++) {
+        console.log(index);
         this.$http.post(this.GLOBAL.serverSrc + "/team/package/codeisexist",{
            object: {
-            id: this.ccc[i].id,
-            codePrefix: this.ccc[i].codePrefix,
-            codeSuffix: this.ccc[i].codeSuffix
+            id: this.ccc[index].id,
+            codePrefix: this.ccc[index].codePrefix,
+            codeSuffix: this.ccc[index].codeSuffix
             }
         }).then(res =>{
             console.log(res,2222)
             let boon = res.data.isSuccess
             console.log(boon);
-          if (this.ccc[i].codePrefix === '' && this.ccc[i].codeSuffix === '') {
+          if (this.ccc[index].codePrefix === '' && this.ccc[index].codeSuffix === '') {
             this.isInfo = true;
             this.$message.error("错了哦，团号不能为空");
+          
         
-          } else if(this.ccc[i].codePrefix == this.ccc[i].codeSuffix||boon === true){
+          } else if(boon === true){
             this.isInfo = true;
             this.$message.error("错了哦，团号不能重复");
+          
             
           }else {
             this.isInfo = false;
             }
           })
-   }
+
+        
+    // }
    },
     // 控制价格按钮显示
     changeFun(id, rate, ifShowBase){
@@ -1285,7 +1317,9 @@ export default {
       this.basicPrice(id, rate, ifShowBase)
       //this.multipleSelection = val;
       for(let i = 0; i < this.ccc.length; i++){
+        // console.log(ccc,111111)
         if(this.ccc[i].codePrefix !=='' && this.ccc[i].codeSuffix !=='' && this.ccc[i].uptoDay !=='' && this.tableData12.length>0){
+          this.basicPrice(id, rate, ifShowBase)
           this.isUsePrice = false;
         }else{
           this.isUsePrice = true;
@@ -1454,7 +1488,7 @@ export default {
       this.piaid = this.ccc[item].id;
       this.codePrefix = this.ccc[item].codePrefix;
       this.codeSuffix = this.ccc[item].codeSuffix;
-
+      
       // if(this.codePrefix === this.codeSuffix){
       //   this.$message.error("错了哦，团号不能重复");
       //   this.isCollapse = true;
@@ -1543,6 +1577,7 @@ export default {
       }
     },
     BandCancel() {
+      // 点击取消时让弹窗隐藏
       this.merchandise = false;
       this.isCollapse = true;
     },
@@ -1796,7 +1831,8 @@ export default {
               codeSuffix: obj.data.objects[i].codeSuffix,
               createTime: obj.data.objects[i].createTime,
               type: false,
-              rate: obj.data.objects[i].rate
+              rate: obj.data.objects[i].rate,
+              btnDisabled:true
             });
             if (that.ccc[i].value == 0) {
               that.ccc[i].value = "";
@@ -1925,14 +1961,16 @@ export default {
         if (this.ccc[i].codeSuffix == "" || this.ccc[i].codePrefix == "") {
           this.isCollapse = true;
           this.$message.error("错了哦，团号不能为空");
-        } else if (this.ccc[i].codeSuffix === this.ccc[i].codePrefix) {
-          this.isCollapse = true;
-          this.$message.error("错了哦，团号不能重复");
+          break;
         }
+        // } else if (this.ccc[i].codeSuffix === this.ccc[i].codePrefix) {
+        //   this.isCollapse = true;
+        //   this.$message.error("错了哦，团号不能重复");
+        // }
       }
     },
     headCall(data) {
-      console.log(this.merchandise);
+      console.log(this.merchandise,111);
       if (this.merchandise == true) {
         this.isCollapse = true;
       }
@@ -2191,6 +2229,7 @@ export default {
 }
 
 .el-radio-button>>>.el-radio-button__inner {
+  text-align:center;
   width: 120px;
 }
 
