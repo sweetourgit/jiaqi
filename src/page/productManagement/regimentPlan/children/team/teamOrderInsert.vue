@@ -837,9 +837,7 @@ export default {
               }).then(res =>{
                 this.ifOrderInsert = true;
               })
-              console.log('if')
             }else{
-              console.log('else')
               if(this.ruleForm.orderRadio === '1'){
                  this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
                   object: {
@@ -873,8 +871,7 @@ export default {
                         mark: this.ruleForm.allDisRemark
                       }
                     ],
-                    contact:
-                      '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                    contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
                     endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
                     orderChannel: Number(this.ruleForm.orderRadio),
                     orgID: sessionStorage.getItem("orgID"),
@@ -915,6 +912,7 @@ export default {
                     this.ifOrderInsert = true;
                   }
                 });
+                return;
               }else if(this.ruleForm.orderRadio === '2'){
                 this.ifOrderInsert = false;
                 this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
@@ -990,6 +988,7 @@ export default {
                     this.ifOrderInsert = true;
                   }
                 });
+                return;
               }
             }
           }
