@@ -871,7 +871,8 @@ export default {
                         mark: this.ruleForm.allDisRemark
                       }
                     ],
-                    contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                    contact:
+                      '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
                     endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
                     orderChannel: Number(this.ruleForm.orderRadio),
                     orgID: sessionStorage.getItem("orgID"),
@@ -910,11 +911,11 @@ export default {
                     //预留黑名单信息？？？
                     this.$message.error("下单失败");
                     this.ifOrderInsert = true;
+                    return;
                   }
                 });
-                return;
               }else if(this.ruleForm.orderRadio === '2'){
-                this.ifOrderInsert = false;
+                //this.ifOrderInsert = false;
                 this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                   object: {
                     id: 0,
@@ -986,9 +987,9 @@ export default {
                     //预留黑名单信息？？？
                     this.$message.error("下单失败");
                     this.ifOrderInsert = true;
+                    return;
                   }
                 });
-                return;
               }
             }
           }
