@@ -224,7 +224,7 @@
             </el-form-item>-->
             <el-form-item label="供应商" prop="region">
               <el-autocomplete v-model="ruleForm1.region" :fetch-suggestions="querySearch5" placeholder="请输入供应商"
-                :trigger-on-focus="false" @select="departure" style="width: 200px"></el-autocomplete>
+                :trigger-on-focus="false" @select="departure5" style="width: 200px"></el-autocomplete>
             </el-form-item>
             <el-form-item label="成本类型" prop="costType">
               <el-select v-model="ruleForm1.costType" placeholder="请选择" style="width: 200px">
@@ -784,7 +784,7 @@ export default {
         return restaurant.value;
       };
     },
-    departure(item) {
+    departure5(item) {
       console.log(item);
       // this.productPos = item.id;
       // this.originPlace = item.value;
@@ -822,7 +822,10 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/saverate", {
         object: {
           id: this.team,
-          rate: this.lilv
+          rate: this.lilv,
+          // codePrefix: this.ccc[index].codePrefix,
+          // codeSuffix: this.ccc[index].codeSuffix
+
         }
       }).then(res =>{
         this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
@@ -853,8 +856,10 @@ export default {
                 if (that.ccc[i].value == 0) {
                   that.ccc[i].value = "";
                 }
+                break;
               }
               console.log(obj.data);
+              console.log(obj.data.codePrefix,11111111)
             })
             .catch(function(obj) {
               console.log(obj);
@@ -1291,6 +1296,7 @@ export default {
             }
         }).then(res =>{
             console.log(res,2222)
+            console.log(res.data.codePrefix,44444)
             let boon = res.data.isSuccess
             console.log(boon);
           if (this.ccc[index].codePrefix === '' && this.ccc[index].codeSuffix === '') {
@@ -1298,7 +1304,7 @@ export default {
             this.$message.error("错了哦，团号不能为空");
           
         
-          } else if(boon === true){
+          } else if(this.boon==true){
             this.isInfo = true;
             this.$message.error("错了哦，团号不能重复");
           
@@ -1360,6 +1366,7 @@ export default {
         return restaurant.value;
       };
     },
+    // originPlace代表的是出发地
     departure(item) {
       console.log(item);
       /*this.productPos = item.id;
@@ -1405,6 +1412,7 @@ export default {
         return restaurant.value;
       };
     },
+    // originPlace代表的是出发地
     departure1(item) {
       console.log(item);
       /*this.productPos = item.id;
@@ -1498,12 +1506,13 @@ export default {
 
       if (this.codePrefix == "" || this.codeSuffix == "") {
         this.$message.error("错了哦，团号不能为空");
-      } else if(this.codePrefix === this.codeSuffix) {
-         this.$message.error("错了哦，团号不能重复");
-        this.isCollapse = true;
-      }else{
-        this.isCollapse = false;
       }
+      // } else if(this.codePrefix === this.codeSuffix) {
+      //    this.$message.error("错了哦，团号不能重复");
+      //   this.isCollapse = true;
+      // }else{
+      //   this.isCollapse = false;
+      // }
     },
     //库存修改
     inventorysave() {
@@ -1554,8 +1563,9 @@ export default {
                 uptoDay: Number(this.ccc[i].uptoDay),
                 // templateID: this.ccc[i].value,
                 codePrefix: this.ccc[i].codePrefix,
-                codeSuffix: this.ccc[i].codeSuffix
+                codeSuffix: this.ccc[i].codeSuffix,
                 // cost: this.tableData12
+                rate:this.ccc[i].rate
               }
             },
             {
@@ -1566,6 +1576,7 @@ export default {
           )
           .then(obj => {
             console.log("保存按钮", obj);
+            console.log(obj.data.codePrefix,56454)
           })
           .catch(obj => {
             console.log("error", obj);
