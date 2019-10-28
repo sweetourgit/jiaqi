@@ -75,7 +75,7 @@
       </el-table>
       <!--分页-->
       <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
-        :current-page="1" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
+        :current-page="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
       <!--报账单弹窗-->
       <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list" width="60%">
@@ -137,6 +137,7 @@ export default {
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数
       total: 0,
+      current:1,
       teamqueryList: [],
       multipleSelection: [], //选中的list
       //成本
@@ -178,31 +179,32 @@ export default {
   },
   methods: {
     //产品名称
-    // productName() {
+    // productName(curPage) {
     //   if (this.title == "") {
+    //     this.current = curPage;
     //     this.teamQueryList();
     //   }
     // },
-    // 报账团号
-    // groupNo() {
+    // // 报账团号
+    // groupNo(curPage) {
     //   if (this.groupCode == "") {
     //     this.teamQueryList();
     //   }
     // },
-    // 出行日期
-    // dateline() {
+    // // 出行日期
+    // dateline(curPage) {
     //   if (this.date == "") {
     //     this.teamQueryList();
     //   }
     // },
-    // 操作人员
-    // operation_01() {
+    // // 操作人员
+    // operation_01(curPage) {
     //   if (this.op == "") {
     //     this.teamQueryList();
     //   }
     // },
-    // 报账状态
-    // condition() {
+    // // 报账状态
+    // condition(curPage) {
     //   if (this.financeState == "") {
     //     this.teamQueryList();
     //   }
@@ -364,12 +366,14 @@ export default {
         this.pageshow = true;
       });
     },
-    reset() {
+    reset(curPage) {
       this.title = "";
       this.groupCode = "";
       this.date = "";
       this.op = "";
       this.financeState = "";
+      //this.pageIndex = 1 ;
+      this.current = curPage;
       this.teamQueryList();
     },
     haltSales(status) {

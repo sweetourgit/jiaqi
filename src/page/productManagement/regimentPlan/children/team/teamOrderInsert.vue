@@ -223,9 +223,9 @@
         <el-form-item label="证件号码" prop="credCode" label-width="110px" class="fl">
           <el-input type="text" v-model="conForm.credCode" class="w200"></el-input>
         </el-form-item>
-        <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl cb">
+        <!-- <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl cb">
           <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" style="width:200px"></el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer cb">
         <el-button @click="cancelInfo('conForm')">取 消</el-button>
@@ -476,7 +476,7 @@ export default {
         bornDate: 0,
         credType: 0,
         credCode: "",
-        credTOV: "",
+        //credTOV: "",
         orderID: 0,
         orderCode: "string",
         orgID: sessionStorage.getItem("orgID"),
@@ -551,7 +551,7 @@ export default {
             trigger: "blur"
           }
         ],
-        credTOV:[{ required: true, message: "请选择证件有效期", trigger: "blur" }],
+        //credTOV:[{ required: true, message: "请选择证件有效期", trigger: "blur" }],
         
       },
       //出行人信息表格
@@ -738,6 +738,7 @@ export default {
           this.tour[index].push({
             enrollID: enrollID,
             enrollName: enrollName,
+            //enrollNum:enrolNum,
             id: 0,
             isDeleted: 0,
             code: "string",
@@ -750,7 +751,7 @@ export default {
             bornDate: 0,
             credType: 0,
             credCode: "",
-            credTOV: 0,
+            //credTOV: 0,
             orderID: 0,
             orderCode: "",
             orgID: 0,
@@ -810,7 +811,7 @@ export default {
               //过滤掉未填写人员信息
               guest.push(guestAll[i]);
               guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
-              guest[i].credTOV = new Date(guest[i].credTOV).getTime();
+              //guest[i].credTOV = new Date(guest[i].credTOV).getTime();
             } else {
               guest.push(guestAll[i]);
             }
@@ -1085,6 +1086,9 @@ export default {
           let guest = JSON.parse(JSON.stringify(this.conForm));
           guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
           guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
+          console.log(guest.enrollNum)
+          console.log(this.salePrice[this.tourType].enrolNum)
+          //guest.enrollNum = this.salePrice[this.tourType].enrolNum; //填充报名类型数量
           // guest.enrollNum = this.
           // guest.createTime = this.createTime
           if (this.ruleForm.price == 1) {
