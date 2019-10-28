@@ -61,10 +61,10 @@ const TrafficFormMixin= {
      */
     init(){
       this.submitForm= this.$deepCopy(this.proto);
-      //返程需要给day默认值
-      if(this.goOrBackSign=== GO_OR_BACK_SIGN.BACK){
-        this.submitForm.day= this.PROVIDE_DAY;
-      }
+      //返程需要给day默认值 @返程不一定是最后一天
+      // if(this.goOrBackSign=== GO_OR_BACK_SIGN.BACK){
+      //   this.submitForm.day= this.PROVIDE_DAY;
+      // }
       this.checkProto= this.$deepCopy(this.submitForm);
     },
 
