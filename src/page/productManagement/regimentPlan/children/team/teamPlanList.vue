@@ -370,6 +370,7 @@ export default {
       this.date = "";
       this.op = "";
       this.financeState = "";
+      this.teamQueryList();
     },
     haltSales(status) {
       //停售
