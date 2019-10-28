@@ -41,7 +41,7 @@
 
           <el-col style="width: 150px;">
             <el-form-item label="第" label-width="50px" prop="day">
-              <el-select v-model="submitForm.day" placeholder="第几天" size="small" :disabled="!!goOrBackSign">
+              <el-select v-model="submitForm.day" placeholder="第几天" size="small">
                 <el-option
                   v-for="item in PROVIDE_DAY"
                   :key="item"

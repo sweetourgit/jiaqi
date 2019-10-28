@@ -55,7 +55,7 @@
 <script>
 import './tools'
 import { 
-  getTeamScheduleDTO, 
+  getTeamScheduleDTOList, 
   TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, 
   CODE_PREFIX, CODE_SUFFIX
 } from './dictionary'
@@ -114,7 +114,7 @@ export default {
           TEAM_TRAFFIC_DTO_GO,
           TEAM_TRAFFIC_DTO_BACK
         ],
-        schedules: getTeamScheduleDTO(
+        schedules: getTeamScheduleDTOList(
           this._provided.PROVIDE_DAY
         ),
         briefMark: '',

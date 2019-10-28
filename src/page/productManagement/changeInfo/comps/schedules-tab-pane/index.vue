@@ -99,6 +99,7 @@ export default {
     // 点击侧边栏
     changeDay(e){
       let day= e.target.dataset.day;
+      console.log(day)
       if(!day) return;
       this.vm.currentDay= parseInt(day);
     },

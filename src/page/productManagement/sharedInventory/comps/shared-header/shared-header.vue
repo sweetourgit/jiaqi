@@ -120,7 +120,7 @@ export default {
   components: { sharedHeaderDay },
 
   mounted(){
-    this.init(new Date(2019, 9, 17));
+    this.init();
   },
 
   computed: {

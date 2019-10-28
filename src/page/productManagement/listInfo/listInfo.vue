@@ -95,6 +95,7 @@ export default {
         id && (this._provided.PROVIDE_TEAM_ID= id);
         // 通知$el数据初始化完成
         this.vm.inited= true;
+        this.vm.saveActionLock= false;
       }).catch(err => {
         console.error(err);
         this.$message.error(err || "初始化失败");
@@ -123,6 +124,7 @@ export default {
     },
 
     preAction(){
+      if(this.vm.saveActionLock) return this.$message.info('数据保存中，请稍后再试');
       let hasChange= this.checkHasChange();
       if(!hasChange) return this.$message.info('数据无改动');
       let validate= this.validate();
@@ -132,8 +134,10 @@ export default {
       isSave? this.saveAction(data): this.addAction(data);
     },
 
+    /**
+     * @description: 保存动作的锁在init方法中重置
+     */
     saveAction(object){
-      if(this.vm.saveActionLock) return this.$message.info('数据保存中，请稍后再试');
       this.vm.saveActionLock= true;
       let { id }= this.$route.query;
       saveAction.bind(this)(object).then(res => {
@@ -143,15 +147,16 @@ export default {
           this.init(id);
         })
       }).catch(err => {
+        this.vm.saveActionLock= false;
         this.$message.error(err);
         console.error(err);
-      }).finally(() => {
-        this.vm.saveActionLock= false;
       })
     },
 
+    /**
+     * @description: 添加动作的锁只有失败会重置，成功跳转页面，再进来走init重置
+     */
     addAction(object){
-      if(this.vm.saveActionLock) return this.$message.info('数据保存中，请稍后再试');
       this.vm.saveActionLock= true;
       getGuidAction.bind(this)().then(res => {
         object.guid= res;
@@ -161,10 +166,9 @@ export default {
           this.$router.replace({ path: '/changeinfo', query:{ id } });
         })
       }).catch(err => {
-        this.$message.error(err)
-        console.error(err);
-      }).finally(() => {
         this.vm.saveActionLock= false;
+        this.$message.error(err);
+        console.error(err);
       })
     },
 
