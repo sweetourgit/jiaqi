@@ -825,7 +825,6 @@ export default {
           rate: this.lilv,
           // codePrefix: this.ccc[index].codePrefix,
           // codeSuffix: this.ccc[index].codeSuffix
-
         }
       }).then(res =>{
         this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
@@ -841,6 +840,7 @@ export default {
                 }
               })
             .then(function(obj) {
+              // 28日改过btndisabled控制价格按钮的显示
               for (let i = 0; i < obj.data.objects.length; i++) {
                 that.ccc.push({
                   id: obj.data.objects[i].id,
@@ -851,13 +851,16 @@ export default {
                   codeSuffix: obj.data.objects[i].codeSuffix,
                   createTime: obj.data.objects[i].createTime,
                   type: false,
-                  rate: obj.data.objects[i].rate
+                  rate: obj.data.objects[i].rate,
+                  btnDisabled:true
                 });
+                
                 if (that.ccc[i].value == 0) {
                   that.ccc[i].value = "";
                 }
-                break;
+                // break;
               }
+
               console.log(obj.data);
               console.log(obj.data.codePrefix,11111111)
             })
@@ -951,6 +954,7 @@ export default {
                   });
                 });
               this.cost = false;
+              // 28日修改过
               this.chongzhi();
               this.$refs.ruleForm1.resetFields();
             });
@@ -1214,7 +1218,7 @@ export default {
          this.forbidden_a=true;
       }
     },
-    // 请求数据成功时显示当前的列表
+    // 请求数据成功时显示当前的列表以及价格的
     basicPrice(id, rate, ShowBase) {
     console.log('id====', id);
     this.tableData12 = [];
@@ -1236,7 +1240,7 @@ export default {
             //   this.isUsePrice[i] = false;
             // }
             for(let i = 0;i < this.ccc.length;i++) {
-              if(this.team === this.ccc[i].id) {
+              if(this.team === this.ccc[i].id||this.lilv === this.ccc[i].rate) {
                 this.ccc[i].btnDisabled = false;
                 this.tabBtnDisabled = false;
                 break;
@@ -1269,7 +1273,7 @@ export default {
           }else{
             
              for(let i = 0;i < this.ccc.length;i++) {
-              if(this.team === this.ccc[i].id) {
+              if(this.team === this.ccc[i].id||this.lilv === this.ccc[i].rate) {
                 this.ccc[i].btnDisabled = true;
                 this.tabBtnDisabled = true;
                 break;
@@ -1296,7 +1300,6 @@ export default {
             }
         }).then(res =>{
             console.log(res,2222)
-            console.log(res.data.codePrefix,44444)
             let boon = res.data.isSuccess
             console.log(boon);
           if (this.ccc[index].codePrefix === '' && this.ccc[index].codeSuffix === '') {
@@ -1304,7 +1307,7 @@ export default {
             this.$message.error("错了哦，团号不能为空");
           
         
-          } else if(this.boon==true){
+          } else if(this.boon === true){
             this.isInfo = true;
             this.$message.error("错了哦，团号不能重复");
           
@@ -1563,9 +1566,9 @@ export default {
                 uptoDay: Number(this.ccc[i].uptoDay),
                 // templateID: this.ccc[i].value,
                 codePrefix: this.ccc[i].codePrefix,
-                codeSuffix: this.ccc[i].codeSuffix,
+                codeSuffix: this.ccc[i].codeSuffix
                 // cost: this.tableData12
-                rate:this.ccc[i].rate
+
               }
             },
             {
@@ -1576,7 +1579,6 @@ export default {
           )
           .then(obj => {
             console.log("保存按钮", obj);
-            console.log(obj.data.codePrefix,56454)
           })
           .catch(obj => {
             console.log("error", obj);
