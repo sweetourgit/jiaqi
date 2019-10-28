@@ -282,6 +282,7 @@ export default {
       this.changeCurrent(null, null, day);
       day= this.dayArray.find(el => el && el.day== day);
       this.$emit('submit-inventory', day);
+      this.vm.state= false;
     },
 
     /**
