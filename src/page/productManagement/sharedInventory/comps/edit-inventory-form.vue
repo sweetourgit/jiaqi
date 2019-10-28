@@ -1,8 +1,7 @@
 <template>
-  <el-dialog
-    title="编辑"
+  <el-dialog title="编辑" width="800px"
     :visible="vm.state"
-    width="800px"
+    :close-on-click-modal="false"
     :before-close="handleClose">
     <div style="width: 700px;">
       <el-form
