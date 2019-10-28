@@ -100,6 +100,10 @@ export default {
 
   mixins: [ErrorHandlerMixin],
 
+  provide: {
+    PROVIDE_PACKAGE_ID: null,
+  },
+
   props: {
     //package
     proto: {
@@ -157,6 +161,9 @@ export default {
       });
       //用于比较是否发生改变的对象
       this.checkProto= this.$deepCopy(this.submitForm);
+      this.$nextTick(() => {
+        this._provided.PROVIDE_PACKAGE_ID= this.proto.id;
+      });
     },
 
     /**

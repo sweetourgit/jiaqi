@@ -171,8 +171,11 @@ export default {
      * @description: 添加删除交通（中转）信息
      */
     addTraffic(){
-      this.traffics.splice(
-        this.traffics.length- 1, 0, this.$deepCopy(TEAM_TRAFFIC_DTO_GO));
+      let newTraffics= this.getData().traffic;
+      newTraffics.splice(
+        newTraffics.length- 1, 0, this.$deepCopy(TEAM_TRAFFIC_DTO_GO));
+      this.traffics.splice(0);
+      this.traffics.push(...newTraffics);
     },
     
     removeTrafficEmit(index){

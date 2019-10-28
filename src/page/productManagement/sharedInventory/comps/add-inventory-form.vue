@@ -135,9 +135,9 @@ export default {
 
     afterAddAction(id){
       let date= this.submitForm.date;
-      this.vm.state= false;
+      this.handleClose();
       this.$nextTick(() => {
-        this.$emit('add-callback', { date: this.submitForm.date, id });
+        this.$emit('add-callback', { date, id });
       })
     },
   }

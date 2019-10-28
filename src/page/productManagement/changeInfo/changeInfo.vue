@@ -26,6 +26,7 @@
     <main>
       <el-tabs v-model="vm.currentPackage" type="card" closable 
         :before-leave="changeTab"
+        :v-loading="vm.actionLock"
         @tab-remove="removeTab"
       >
         <el-tab-pane
@@ -54,7 +55,7 @@
 <script>
 import './tools'
 import { 
-  getTeamScheduleDTO, 
+  getTeamScheduleDTOList, 
   TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, 
   CODE_PREFIX, CODE_SUFFIX,
   PRODUCT_LIST_PAGE
@@ -91,6 +92,7 @@ export default {
   data() {
     return {
       vm: {
+        actionLock: false,
         currentPackage: null,
         // 除当前套餐外其余套餐的名字
         nameChecker: []
@@ -174,7 +176,7 @@ export default {
           TEAM_TRAFFIC_DTO_GO,
           TEAM_TRAFFIC_DTO_BACK
         ],
-        schedules: getTeamScheduleDTO(
+        schedules: getTeamScheduleDTOList(
           this._provided.PROVIDE_DAY
         ),
         briefMark: '',
@@ -249,6 +251,8 @@ export default {
      * @description: 获取初始化信息
      */
     teaminfogetAction(){
+      if(this.vm.actionLock) return this.$message.info('数据保存中，请稍后再试');
+      this.vm.actionLock= true;
       return new Promise((resolve, reject) => {
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teaminfoget",
@@ -287,6 +291,8 @@ export default {
         }).catch(err => {
           // TODO: 错误日志
           this.$message.error(err);
+        }).finally(() => {
+          this.vm.actionLock= false;
         })
       })
     },

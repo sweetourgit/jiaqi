@@ -15,7 +15,7 @@
       :rules="rules"
     >
       <el-form-item label="产品名称：" prop="title">
-        <el-input v-model="submitForm.title" placeholder="产品名称" style="width: 300px;" size="small"></el-input>
+        <el-input v-model="submitForm.title" placeholder="产品名称" style="width: 300px;" size="small" maxlength="20" show-word-limit></el-input>
       </el-form-item>
 
       <el-form-item label="出游类型：" prop="isForeign">
