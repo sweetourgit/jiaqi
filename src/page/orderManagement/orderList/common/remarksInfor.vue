@@ -65,7 +65,7 @@ export default {
       //备注信息弹窗
       dialogFormMark: false,
       markFormAdd: {
-        OrderCode: "",
+        orderCode: "",
         Mark: "",
         CreateTime: formatDate(new Date())
       },
@@ -76,7 +76,8 @@ export default {
       }
     };
   },
-  created() {},
+  created() {
+  },
   watch: {
     variable: function() {
       if (this.dialogType == 2) {
@@ -92,7 +93,7 @@ export default {
       this.$refs["markFormAdd"].resetFields();
     },
     orderGetFun(orderId,orderCode) {
-      console.log(orderId,orderCode)
+
       //查询一条订单信息 /orderquery/get/api/SIOrders
       // this.$http
       //   .post(this.GLOBAL.serverSrc + "/order/all/api/orderget", {
@@ -116,7 +117,6 @@ export default {
         })
         .then(res => {
           // console.log(res)
-          console.log("备注获取的数据",res)
           if (res.data.isSuccess == true) {
             // this.orderget = res.data.objects;
             this.markForms = res.data.objects
@@ -156,7 +156,6 @@ export default {
           //     }
           //   });
             let createTime = moment().format('YYYY-MM-DD hh:mm:ss').toString()
-            console.log(orderCode)
             this.$http
             .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
               object: {
@@ -166,7 +165,6 @@ export default {
               }
             })
             .then(res => {
-              console.log("提交", res);
               if (res.data.isSuccess == true) {
                 this.$message.success("提交成功");
                 this.dialogFormMark = false;

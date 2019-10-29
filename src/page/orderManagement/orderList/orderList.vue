@@ -444,6 +444,7 @@ export default {
           this.getListOneMessage = res.data.object;
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
+          this.orderCode = res.data.object.orderCode;
           //订单来源
           // if (this.getListOneMessage.orderChannel == 1) {
           //   this.getListOneMessage.orderChannel = "同业";
