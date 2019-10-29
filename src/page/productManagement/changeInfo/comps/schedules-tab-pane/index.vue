@@ -64,12 +64,13 @@
 </template>
 
 <script>
+import { getTeamScheduleDTO } from '../../dictionary'
 import scheduleForm from './comps/schedule-form'
 
 export default {
   components: { scheduleForm },
 
-  inject: ['PROVIDE_DAY'],
+  inject: ['PROVIDE_DAY', 'PROVIDE_PACKAGE_ID'],
 
   props: {
     //package
@@ -91,9 +92,28 @@ export default {
 
   methods: {
     // 初始化
+    // 10.28更新，存在一种情况，基本信息中的天数修改
     init(){
       this.schedules.splice(0);
-      this.schedules.push(...this.$deepCopy(this.proto))
+      let payload= this.PROVIDE_DAY- this.proto.length;
+      if(!payload) return this.schedules.push(...this.$deepCopy(this.proto));
+      payload> 0? this.plusInit(payload): this.minusInit(payload);
+    },
+
+    plusInit(payload){
+      let length= this.proto.length;
+      let result= [];
+      for(let i= length+ 1; i<= length+ payload; i++){
+        let schedule= getTeamScheduleDTO(i);
+        if(this.PROVIDE_PACKAGE_ID) schedule.packageID= this.PROVIDE_PACKAGE_ID;
+        result.push(schedule);
+      }
+      this.schedules.push(...this.$deepCopy(this.proto), ...result);
+    },
+
+    minusInit(payload){
+      let length= this.proto.length+ payload;
+      this.schedules.push(...this.$deepCopy(this.proto.slice(0, length)));
     },
 
     // 点击侧边栏
@@ -107,6 +127,7 @@ export default {
     checkHasChange(){
       let bol= false;
       let children= this.$refs.children;
+      bol= (this.schedules.length!== this.proto.length)
       children.forEach(child => {
         !bol && (bol= child.checkHasChange());
       })

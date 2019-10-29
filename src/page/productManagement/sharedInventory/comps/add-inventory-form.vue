@@ -1,8 +1,7 @@
 <template>
-  <el-dialog
-    title="添加共享库存"
+  <el-dialog title="添加共享库存" width="650px" 
     :visible="vm.state"
-    width="650px"
+    :close-on-click-modal="false"
     :before-close="handleClose">
     <div style="width: 550px;">
       <el-form
@@ -136,9 +135,9 @@ export default {
 
     afterAddAction(id){
       let date= this.submitForm.date;
-      this.vm.state= false;
+      this.handleClose();
       this.$nextTick(() => {
-        this.$emit('add-callback', { date: this.submitForm.date, id });
+        this.$emit('add-callback', { date, id });
       })
     },
   }

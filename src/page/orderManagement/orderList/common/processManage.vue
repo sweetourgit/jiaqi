@@ -18,7 +18,16 @@
           <em class="line line1"></em>
           <el-button type="primary" circle size="medium">&nbsp;2&nbsp;</el-button>
           <span class="sta-title">{{statusNext}}</span>
-          <span class="confirm-time" v-if="false">10:19:00</span>
+          <!-- 预订不占 预订占位 有倒计时的显示 -->
+          <span
+            class="confirm-time"
+            v-if="orderget.occupyStatus==1||orderget.occupyStatus==2"
+          >{{endTimeStamp}}</span>
+          <!-- 补充资料 订单来源为线下直客时订单总额不等于已付金额时 动态按钮置灰并且出现提示语（已付金额低于订单总额不能进行下一状态） -->
+          <!-- <span
+            class="confirmPrompt"
+            v-if="orderget.occupyStatus==3&&orderget.orderStatus==10&&isLowPrice"
+          >已付金额低于订单总额不能进行下一状态</span>-->
         </span>
         <span v-if="statusEnd!=''">
           <em class="line line2"></em>
@@ -32,8 +41,8 @@
         v-model="isPricechange"
         active-color="#409eff"
         inactive-color="#dcdfe6"
-        @change="priceChangeEvent(isPricechange)">
-      </el-switch>
+        @change="priceChangeEvent(isPricechange)"
+      ></el-switch>
       <!-- switch 更改价格(直客价和同业价) end-->
       <!--报名人数-->
       <el-form :model="ruleForm" ref="ruleForm" class="demo-ruleForm cb" :rules="rules">
@@ -41,7 +50,7 @@
           <span class="num-req">*</span>
           报名人数
         </div>
-        <div class="registration" v-for="(item,index) in salePrice" :key="index">
+        <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
           {{item.enrollName}}￥
           <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
           <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
@@ -53,7 +62,7 @@
               :min="0"
               :max="salePriceNum[index].quota"
               size="medium"
-              :disabled="orderget.orderStatus==2||orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
+              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
             ></el-input-number>
           </div>
           <div v-bind:class="{red:quota[index]}">
@@ -79,7 +88,7 @@
         </div>
         <!--总价-->
         <div class="price">
-          <p class="totle">总价：￥{{orderget.payable}}</p>
+          <p class="totle">总价：￥{{toDecimal2(payable)}}</p>
           <p class="surplus" v-if="false">剩余额度：￥400,000.00</p>
         </div>
         <hr />
@@ -122,19 +131,20 @@
       <!--按钮-->
       <hr />
       <div style="height:50px;margin-top:25px">
-        <!--取消订单按钮-->
         <el-button
           class="fl"
-          @click="orderModification(orderget.orderStatus,1)"
+          @click="dialogVisible = true"
           v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9"
         >取消订单</el-button>
-        <!--修改订单状态按钮-->
+        <!-- 修改订单状态按钮:disabled="isChangeNumber || isLowPrice"-->
+        <!-- 订单来源为线下直客的时候订单总额不等于已付金额时 加上islowPrice -->
         <el-button
           type="primary"
-          v-if="orderget.orderStatus!=2&&orderget.orderStatus!=3&&orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9"
-          @click="orderModification(orderget.orderStatus)"
+          v-if="orderget.orderStatus==0||orderget.orderStatus==10||orderget.orderStatus==1"
+          @click="orderModification(orderget.orderStatus,orderget.occupyStatus)"
+          :disabled="isChangeNumber"
           class="confirm fr"
-        >{{statusNext=="签订合同"?"已签合同":statusNext}}</el-button>
+        >{{statusNext}}</el-button>
         <!--保存游客信息按钮-->
         <el-button
           type="primary"
@@ -145,6 +155,16 @@
         <!--取消按钮-->
         <el-button class="fr" @click="cancle">取消</el-button>
       </div>
+      <!-- 更改的end -->
+    </el-dialog>
+
+    <!--取消订单弹框 @click="dialogVisible = false"-->
+    <el-dialog title="提示" :visible.sync="dialogVisible" :modal-append-to-body="false" width="500px">
+      <span>是否需要取消该订单</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="orderModification(orderget.orderStatus,0)">确 定</el-button>
+      </span>
     </el-dialog>
 
     <!--填写游客信息-->
@@ -207,11 +227,14 @@ export default {
     orderId: 0,
     variable: 0,
     dialogType: 0,
-    orderCode:""
+    orderCode: "",
+    paid: 0 //已付金额
   },
   data() {
     return {
       //流程管理弹窗
+      showContent: null, //保存更改传个父组件的值 为了list折叠
+      dialogVisible: false,
       dialogFormProcess: false,
       orderget: {}, //保存单个订单信息
       teampreviewData: {}, //团期计划订单信息预览
@@ -225,14 +248,18 @@ export default {
         price: "1", //价格类型  1直客 2同业
         favourable: []
       },
-      priceChange: '直客',//同业价格好还是直客价格
+      priceChange: "直客", //同业价格好还是直客价格
       isPricechange: true, //true为直客   false为同业价格
+      isChangeNumber: false, //判断动态按钮是否可点击 数量和价格有变化的时候为true
+      isLowPrice: false, //确认订单状态时 已付金额低于订单总价时为true
       //游客信息
       quota: [], //余位信息负数红色提示
+      endTimeStamp: "00天00时00分00秒", //倒计时
       enrolNum: [], //报名人数[1,3]形式
       enrolNums: false, //报名人数是否为空提示
       enrolNumsWarn: "",
       number: 0, //报名总人数
+      payable: 0, //总价
       dialogFormTour: false,
       salePrice: [], //报名类型价格列表数据
       salePriceNum: [], //报名类型价格列表数据副本,显示余位用
@@ -253,7 +280,7 @@ export default {
         bornDate: 0,
         credType: 0,
         credCode: "",
-        credTOV: "",
+        credTOV: 0,
         orderID: 0,
         orderCode: "string",
         orgID: 0,
@@ -311,13 +338,13 @@ export default {
   },
   created() {},
   watch: {
-    variable: function() {
+    variable() {
       if (this.dialogType == 1) {
         this.processManage(this.orderId);
         this.dialogFormProcess = true;
       }
     },
-    enrolNum: function(val) {
+    enrolNum(val) {
       this.changeQuota();
       this.compPrice(1);
     }
@@ -331,37 +358,95 @@ export default {
           id: orderId
         })
         .then(res => {
-          console.log("查询一条订单信息", res);
+          // console.log(res, "get");
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
+            this.payable = res.data.object.payable;
             this.ruleForm.favourable = this.orderget.favourable;
-            this.getOrderStatus(this.orderget.orderStatus);
+            this.getOrderStatus(
+              this.orderget.orderStatus,
+              this.orderget.endTime,
+              this.orderget.occupyStatus,
+              this.orderget.orderChannel
+            );
+            this.occupyStatus = this.orderget.occupyStatus; // 唐 占位状态
             //联系人信息
+            this.Timechange(this.orderget.endTime);
             this.ruleForm.contactName = JSON.parse(
               res.data.object.contact
             ).Name;
             this.ruleForm.contactPhone = JSON.parse(
               res.data.object.contact
             ).Tel;
-
+            this.orderSourceFun(res.data.object.orderChannel);
             this.dialogFormProcess = true;
             this.teampreview(res.data.object.planID);
-            // setTimeout(() => {
-            //   this.teamEnrolls(res.data.object.planID);
-            // },500)
           }
         })
         .catch(err => {
           console.log(err);
         });
     },
+    //唐时间转换
+    timeFormat(param) {
+      return param < 10 ? "0" + param : param;
+    },
+
+    Timechange(endTime) {
+      // var interval = setInterval(() => {
+      //   let obj = null;
+      //   let newTime = new Date().getTime(); // 未结束，对时间进行处理
+      //   var tt = endTime - newTime;
+      //   if (tt < 0) {
+      //     // 临时相反
+      //     obj = {
+      //       day: "00",
+      //       hou: "00",
+      //       min: "00",
+      //       sec: "00"
+      //     };
+      //     this.orderget.orderStatus = 9;
+      //     window.clearInterval(interval);
+      //   } else {
+      //     let time = (endTime - newTime) / 1000;
+      //     // 获取天、时、分、秒
+      //     let day = parseInt(time / (60 * 60 * 24));
+      //     let hou = parseInt((time % (60 * 60 * 24)) / 3600);
+      //     let min = parseInt(((time % (60 * 60 * 24)) % 3600) / 60);
+      //     let sec = parseInt(((time % (60 * 60 * 24)) % 3600) % 60);
+      //     obj = {
+      //       day: this.timeFormat(day),
+      //       hou: this.timeFormat(hou),
+      //       min: this.timeFormat(min),
+      //       sec: this.timeFormat(sec)
+      //     };
+      //   }
+      //   return (this.endTimeStamp =
+      //     obj.day + "天" + obj.hou + "时" + obj.min + "分" + obj.sec + "秒");
+      // }, 1000);
+    },
+
     orderModification(status, cancle) {
       //订单修改保存
       let url = "/order/stat/api";
       switch (status) {
         case 0:
         case 7:
-          url += "/confirmed";
+          switch (cancle) {
+            case 1:
+              this.ordersave(this.orderget.id, cancle);
+              break;
+              retrun;
+            case 2:
+              url = "";
+              this.ordersave(this.orderget.id, cancle);
+              break;
+              retrun;
+            // case 3:
+            //   url += "/material";
+            //   break;
+            //   retrun;
+          }
           break;
         case 10:
           url += "/material";
@@ -373,13 +458,15 @@ export default {
           url += "/signcontract";
           break;
       }
-      if (cancle) {
+      if (cancle == 0) {
+        this.dialogVisible = false;
         url = "/order/stat/api/invalid";
       }
       this.$http
         .post(this.GLOBAL.serverSrc + url, {
           object: {
-            id: this.orderget.id
+            id: this.orderget.id,
+            occupyStatus: this.orderget.occupyStatus
           }
         })
         .then(res => {
@@ -394,14 +481,43 @@ export default {
         });
     },
     //列表订单状态显示
-    getOrderStatus(status) {
+    getOrderStatus(status, endTime, occupyStatus, orderChannel) {
+      if (status == 2) {
+        status = 3; //没有电子合同，直接跳到待出行
+      }
       switch (status) {
         case 0: //订单状态0，暂按未确认处理
-          this.statusNow = "未确认";
-          this.statusNext = "订单确认";
-          this.statusEnd = "补充资料";
+          switch (occupyStatus) {
+            case 1: //不占
+              this.statusNow = "预定不占";
+              this.statusNext = "预定占位";
+              this.statusEnd = "确认占位";
+              break;
+            case 2: // 预定占位
+              this.statusNow = "预定占位";
+              this.statusNext = "确定占位";
+              this.statusEnd = "补充资料";
+              break;
+            case 3: // 确定占位
+              this.statusNow = "确定占位";
+              this.replenishInfoToastFun(this.orderget.orderChannel);
+              this.statusNext = "补充资料";
+              this.statusEnd = "签订合同";
+              break;
+          }
           break;
         case 1:
+          let guest = this.orderget.guests;
+          for (let i = 0; i < guest.length; i++) {
+            if (guest[i].cnName == "点击填写") {
+              this.isChangeNumber = true;
+            } else {
+              this.isChangeNumber = false;
+            }
+          }
+          if (this.isChangeNumber === true) {
+            this.$message.error("请补全出行人信息");
+          }
           this.statusNow = "补充材料";
           this.statusNext = "签订合同";
           this.statusEnd = "待出行";
@@ -417,9 +533,24 @@ export default {
           this.statusEnd = "待点评";
           break;
         case 4:
-          this.statusNow = "出行中";
-          this.statusNext = "待点评";
-          this.statusEnd = "订单完成";
+          //同业社没有待评价 直客有待评价
+          switch (orderChannel) {
+            case 1:
+              this.statusNow = "出行中";
+              this.statusNext = "订单完成";
+              this.statusEnd = "";
+              break;
+            case 2:
+              this.statusNow = "出行中";
+              this.statusNext = "订单完成";
+              this.statusEnd = "";
+              break;
+            // case 3:
+            //   this.statusNow = "出行中";
+            //   this.statusNext = "待评价";
+            //   this.statusEnd = "订单完成";
+            //   break;
+          }
           break;
         case 5:
           this.statusNow = "待点评";
@@ -432,7 +563,7 @@ export default {
           this.statusEnd = "";
           break;
         case 7:
-          this.statusNow = "未确认";
+          this.statusNow = "确认占位";
           this.statusNext = "订单确认";
           this.statusEnd = "补充资料";
           break;
@@ -442,39 +573,67 @@ export default {
           this.statusEnd = "";
           break;
         case 10:
-          this.statusNow = "订单确认";
+          this.statusNow = "确认占位";
+          this.replenishInfoToastFun(this.orderget.orderChannel);
           this.statusNext = "补充资料";
           this.statusEnd = "签订合同";
           break;
       }
     },
+    // 补充资料状态下监听动态按钮 价格变革则不能点击
+    addInfoFun() {
+      // console.log(this.orderget.payable, this.payable);
+      if (this.orderget.payable !== this.payable) {
+        this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
+      } else {
+        this.isChangeNumber = false;
+      }
+    },
     changeQuota() {
       //余位变化方法
       this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
-      // console.log('//余位变化方法', this.salePrice)
       let salePriceType = {};
       // 实时减少相关余位信息，提示库存不足
-      for (let i = 0; i < this.salePrice.length; i++) {
-        // this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
-        this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
-        salePriceType = this.salePrice[i];
-        // console.log(salePriceType)
-        if (salePriceType.quota < 0) {
-          //判断是否显示库存不足
-          this.quota[i] = true;
-        } else {
-          this.quota[i] = false;
+      //判断下单时  是否是预订占位 如果是则余位不变
+      if (this.orderget.occupyStatus !== 1 || this.orderget.orderStatus !== 0) {
+        for (let i = 0; i < this.salePrice.length; i++) {
+          // this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
+          this.salePrice[i].quota =
+            parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
+          salePriceType = this.salePrice[i];
+          if (salePriceType.quota < 0) {
+            //判断是否显示库存不足
+            this.quota[i] = true;
+          } else {
+            this.quota[i] = false;
+          }
+        }
+      }
+    },
+    // 订单是否需要跳转回确认占位的状态
+    isEqualityFun() {
+      // get的总价不等于更改后的总价时
+      if (this.orderget.payable !== this.payable) {
+        // 如果是补充资料状态下  价格有变动 则动态按钮置灰 点击保存修改然后跳转到确认占位状态 (待出行修改价格变动也要跳转到确认占位状态)
+        if (
+          this.orderget.orderStatus === 1 ||
+          this.orderget.orderStatus === 3 ||
+          this.orderget.orderStatus === 2
+        ) {
+          this.isChangeNumber = true;
+          this.orderget.orderStatus = 10;
+          this.orderget.occupyStatus = 3;
         }
       }
     },
     peoNum(index, enrollID, enrollName) {
+      // this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
+
       //填写报名人数
       let arrLength; //报名人数
       let preLength; //记录上一次报名人数
       preLength = this.preLength[index]; //获取上一次报名人数
       arrLength = this.enrolNum[index]; //获取当前报名人数
-      // console.log(preLength,'获取上一次报名人数')
-      // console.log(arrLength,'获取当前报名人数')
       this.preLength[index] = this.enrolNum[index]; //记录上一次报名人数为当前报名人数
       var len;
       if (arrLength > preLength) {
@@ -484,6 +643,7 @@ export default {
           this.tour[index].push({
             enrollID: enrollID,
             enrollName: enrollName,
+            createTime: new Date().getTime(),
             id: 0,
             isDeleted: 0,
             code: "string",
@@ -491,21 +651,23 @@ export default {
             enName: "string",
             sex: "0",
             idCard: "string",
-            singlePrice: 0,
+            singlePrice: this.orderget.guests[0].singlePrice,
             mobile: "string",
             bornDate: 0,
             credType: 0,
             credCode: "string",
-            credTOV: "",
-            orderID: 0,
-            orderCode: "string",
-            orgID: 0,
-            userID: 0
+            credTOV: 0,
+            orderID: this.orderget.id,
+            orderCode: this.orderget.orderCode,
+            orgID: this.orderget.orgID,
+            userID: this.orderget.userID,
+            productType: this.orderget.productTyp
           });
         }
       } else {
         this.tour[index].splice(arrLength - preLength, preLength - arrLength);
       }
+      this.isEqualityFun();
     },
     fillTour(type, index) {
       this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
@@ -524,7 +686,7 @@ export default {
           bornDate: 0,
           credType: 0,
           credCode: "",
-          credTOV: "",
+          credTOV: 0,
           orderID: 0,
           orderCode: "string",
           orgID: 0,
@@ -537,12 +699,9 @@ export default {
     },
     //游客信息保存
     subInfo(formName) {
-      // console.log("subinfo是否走")
       this.$refs[formName].validate(valid => {
         if (valid) {
           let guest = JSON.parse(JSON.stringify(this.conForm));
-          // console.log(guest.bornDate);
-          // console.log(this.salePrice[this.tourType],'this.salePrice[this.tourType]')
           guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
           guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
           if (this.ruleForm.price == 1) {
@@ -566,49 +725,45 @@ export default {
     },
 
     teamEnrolls(planId) {
-      // console.log(planId)
       //获取报名类型列表数据
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/enrolls", {
           id: planId
         })
         .then(res => {
-          console.log('teamEnrolls',res)
+          // console.log("enrolls余位data", res.data.objects);
           if (res.data.isSuccess == true) {
             this.preLength = []; //记录上一次报名人数[1,3]形式
             this.enrolNum = []; //报名人数[1,3]形式
             this.quota = []; //余位信息负数红色提示
             this.tour = []; //总游客信息,二维数组
             let data = res.data.objects;
-            // console.log(data)
             for (let i = 0; i < data.length; i++) {
               this.quota.push(false);
               this.tour.push([]);
             }
             // console.log(this.quota,"this.quota")
             //出游人信息转换格式,二维数组，通过类型分类,便于页面分类型显示出游人
-            var guest = this.orderget.guests;
-            // console.log('guest' , guest)
-            var j = 0;
-            //  if (this.orderget.guest !== undefined) {
+            let guest = this.orderget.guests;
+            let j = 0;
             for (let i = 0; i < guest.length; i++) {
-              if (guest[i].credTOV == 0) {
-                guest[i].credTOV = ""; //转为空字符，日历日期显示当前月份
-              }
+              // console.log(++j,"12")
+              // console.log(guest[i].enrollName)
               if (i > 0 && guest[i].enrollName != guest[i - 1].enrollName) {
                 this.tour[j + 1].push(guest[i]);
+                j += 1;
               } else {
                 this.tour[j].push(guest[i]);
               }
             }
-            //  }
-            // console.log('this.tourt',this.tour)
+            // console.log(this.tour,"this.tour")
             //设置报名人数
             for (let i = 0; i < this.tour.length; i++) {
               this.preLength.push(this.tour[i].length);
               this.enrolNum.push(this.tour[i].length);
             }
-            // console.log(this.teampreviewData.remaining,'this.teampreviewData.remaining')
+            // console.log(this.preLength,"this.preLength")
+            // console.log(this.enrolNum,"this.enrolNum")
             for (let i = 0; i < data.length; i++) {
               if (
                 data[i].quota == 0 ||
@@ -623,12 +778,11 @@ export default {
             }
             this.salePrice = data;
             this.salePriceNum = data;
-            for(let i = 0; i < this.salePriceNum.length; i++) {
-              this.salePriceNum[i].quota =  parseInt(this.salePriceNum[i].quota) + parseInt(this.preLength[i]);
+            for (let i = 0; i < this.salePriceNum.length; i++) {
+              this.salePriceNum[i].quota =
+                parseInt(this.salePriceNum[i].quota) +
+                parseInt(this.preLength[i]);
             }
-            // console.log(this.salePriceNum)
-            // console.log(this.salePrice,'enrollssalePrice')
-            // console.log(this.salePriceNum,'enrollssalePriceNum')
           }
         });
     },
@@ -640,30 +794,30 @@ export default {
         })
         .then(res => {
           if (res.data.isSuccess == true) {
-            console.log(res,'团期计划订单信息预览teampreviewData')
+            // console.log(res,'团期计划订单信息预览teampreviewData')
             this.teampreviewData = res.data.object;
             this.teamEnrolls(planId);
           }
         });
     },
 
-     // switch 开关监听价格显示事件 true为直客价格 false为同业价格  price_01是直客价格 price_01是同业价格
+    // switch 开关监听价格显示事件 true为直客价格 false为同业价格  price_01是直客价格 price_01是同业价格
     priceChangeEvent(val) {
-      if(val == true) {
-        this.priceChange = "直客"
-        this.ruleForm.price = "1"
-        console.log()
-        this.compPrice()
+      if (val == true) {
+        this.priceChange = "直客";
+        this.ruleForm.price = "1";
+        this.compPrice();
       } else {
-        this.priceChange = "同业"
-        this.ruleForm.price = "2"
-        this.compPrice()
+        this.priceChange = "同业";
+        this.ruleForm.price = "2";
+        this.compPrice();
       }
     },
 
     compPrice(type, index) {
       //计算总价
       if (type == 2) {
+        this.isChangeNumber = true; //数量有变动 则动态按钮不可点击
         // 其他费用和优惠 随时监听 然后总价变化
         if (
           typeof this.ruleForm.favourable[index].price == "number" &&
@@ -680,31 +834,32 @@ export default {
         // }
         // 原先结束
       }
-      this.orderget.payable = 0;
+      this.payable = 0;
+
       for (let i = 0; i < this.enrolNum.length; i++) {
-        // console.log(this.salePrice[i].price_01)
-        this.orderget.payable +=
+        this.payable +=
           this.enrolNum[i] *
-          (this.ruleForm.price == 2
+          (this.ruleForm.price == 1
             ? this.salePrice[i].price_01
             : this.salePrice[i].price_02);
       }
       if (this.orderget.favourable[0]) {
-        this.orderget.payable += parseInt(
+        this.payable += parseInt(
           this.orderget.favourable[0].price
             ? this.orderget.favourable[0].price
             : 0
         );
       }
       if (this.orderget.favourable[1]) {
-        this.orderget.payable -= parseInt(
+        this.payable -= parseInt(
           this.orderget.favourable[1].price
             ? this.orderget.favourable[1].price
             : 0
         );
       }
+      this.addInfoFun()
     },
-    ordersave() {
+    ordersave(id, occupyStatus) {
       //更新订单，补充游客信息
       this.$refs["ruleForm"].validate(valid => {
         if (valid) {
@@ -715,6 +870,12 @@ export default {
             '","Tel":"' +
             this.ruleForm.contactPhone +
             '"}';
+
+          if (occupyStatus == 1) {
+            obj.occupyStatus = 2;
+          } else if (occupyStatus == 2) {
+            obj.occupyStatus = 3;
+          } //++++++
 
           //获取报名总人数
           obj.number = this.number;
@@ -733,7 +894,6 @@ export default {
           } else {
             this.enrolNums = false;
           }
-
           //出游人信息
           let guest = [];
           for (let i = 0; i < this.tour.length; i++) {
@@ -741,37 +901,77 @@ export default {
               guest.push(this.tour[i][j]);
             }
           }
+          // 补充资料前未填写出行人信息是可以点击动态按钮和保存更改的
           for (let i = 0; i < guest.length; i++) {
-            if (guest[i].cnName == "点击填写") {
-              this.$message.error("请补全游客资料");
-              return;
+            if (this.occupyStatus == 3 && this.orderget.orderStatus === 1) {
+              if (guest[i].cnName == "点击填写") {
+                this.$message.error("请补全游客资料");
+                return;
+              }
             }
             guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
             guest[i].credTOV = new Date(guest[i].credTOV).getTime();
           }
 
+           // 补充资料和待出行 信息更改跳转回到确认占位状态
+          if (this.isChangeNumber === true && (this.orderget.orderStatus === 1 || this.orderget.orderStatus === 2)) {
+            console.log(1)
+            obj.orderStatus = 10
+          }
+
           obj.guests = guest;
+          obj.payable = this.payable;
+          // console.log(obj, "传给后台的");
           this.$http
             .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
               object: obj
             })
             .then(res => {
-              console.log('保存',res)
               if (res.data.isSuccess == true) {
                 this.$message({
                   message: "更改成功",
                   type: "success"
                 });
-                this.$parent.orderPage();
-                // this.$emit("orderPage");
+                this.$emit("orderPage");
+                this.$emit("childByValue", this.showContent);
                 this.cancle();
-                // this.processManage(this.orderId);
               }
             });
         }
       });
     },
+
+    // 监听订单来源是同业社还是直客下单  是直客则返回true
+    orderSourceFun(orderChannel) {
+      if (orderChannel == 3) return true;
+    },
+
+    // 当订单来源为线下直客，订单总额不等于已付金额的时候 补充资料下方出现提示语
+    replenishInfoToastFun(orderChannel) {
+      if (this.orderSourceFun(orderChannel) == true) {
+        if (this.payable !== this.paid) {
+          this.isLowPrice = true;
+        }
+      }
+    },
+
+    //整数转浮点数
+    toDecimal2(x) {
+      let f = Math.round(x * 100) / 100;
+      var s = f.toString();
+      var rs = s.indexOf(".");
+      if (rs < 0) {
+        rs = s.length;
+        s += ".";
+      }
+      while (s.length <= rs + 2) {
+        s += "0";
+      }
+      return s;
+    },
+
     cancle() {
+      this.isChangeNumber = false;
       this.enrolNums = false;
       this.$refs["ruleForm"].resetFields();
       this.dialogFormProcess = false;
@@ -799,8 +999,16 @@ export default {
 }
 .confirm-time {
   position: absolute;
-  top: 30px;
-  left: 394px;
+  top: 40px;
+  left: 375px;
+}
+
+.confirmPrompt {
+  position: absolute;
+  top: 40px;
+  left: 375px;
+  color: #f75454;
+  font-size: 12px;
 }
 /*报名人数*/
 .demo-ruleForm {

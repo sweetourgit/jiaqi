@@ -9,13 +9,27 @@
       <span class="search-title">产品名称</span>
       <el-input v-model="name" class="input" @blur="nameBlur()"></el-input>
       <span class="search-title">下单日期</span>
-      <el-date-picker v-model="beginDate" type="date" placeholder="开始日期" class="start-time" @blur="beginDateBlur()" @change="endDateChange()"></el-date-picker>
+      <el-date-picker
+        v-model="beginDate"
+        type="date"
+        placeholder="开始日期"
+        class="start-time"
+        @blur="beginDateBlur()"
+        @change="endDateChange()"
+      ></el-date-picker>
       <div class="date-line"></div>
-      <el-date-picker v-model="endDate" type="date" placeholder="终止日期" class="start-time" @blur="endDateBlur()" @change="endDateChange()"></el-date-picker>
+      <el-date-picker
+        v-model="endDate"
+        type="date"
+        placeholder="终止日期"
+        class="start-time"
+        @blur="endDateBlur()"
+        @change="endDateChange()"
+      ></el-date-picker>
       <br />
       <span class="search-title">团期计划</span>
       <el-input v-model="groupCode" class="input" @blur="groupCodeBlur()"></el-input>
-      <span class="search-title">出发地</span>
+      <!-- <span class="search-title">出发地</span>
       <el-autocomplete
         class="input"
         v-model="pod"
@@ -34,12 +48,12 @@
         :trigger-on-focus="false"
         @select="departure"
         @blur="destinationBlur()"
-      ></el-autocomplete>
-      <br />
+      ></el-autocomplete>-->
+      <!-- <br /> -->
       <span class="search-title">商户名称</span>
       <el-input v-model="localCompName" class="input" @blur="localCompNameBlur()"></el-input>
-      <span class="search-title">销售</span>
-      <el-input v-model="saler" class="input" @blur="salerBlur()"></el-input>
+      <!-- <span class="search-title">销售</span>
+      <el-input v-model="saler" class="input" @blur="salerBlur()"></el-input>-->
       <span class="search-title">订单联系人</span>
       <el-input v-model="contact" class="input" @blur="contactBlur()"></el-input>
       <!-- <span class="search-title">产品类型</span>
@@ -58,27 +72,33 @@
         >{{item.name}}</li>-->
         <li @click="statusTab(1,0,0)" v-bind:class="{statusbg: orderNum==0}">
           全部
-          (<span>{{ orderStateAllNum.allNumber }}</span>)
+          <!-- (
+          <span>{{ orderStateAllNum.allNumber }}</span>)-->
         </li>
         <li @click="statusTab(1,1,7)" v-bind:class="{statusbg: orderNum==1}">
           未确认
-          (<span>{{orderStateAllNum.unconfirmedNumber}}</span>)
+          <!-- (
+          <span>{{orderStateAllNum.unconfirmedNumber}}</span>)-->
         </li>
         <li @click="statusTab(1,2,1)" v-bind:class="{statusbg: orderNum==2}">
           补充资料
-          (<span>{{orderStateAllNum.materialNumber}}</span>)
+          <!-- (
+          <span>{{orderStateAllNum.materialNumber}}</span>)-->
         </li>
         <li @click="statusTab(1,3,8)" v-bind:class="{statusbg: orderNum==3}">
           签署合同
-          (<span>{{orderStateAllNum.signContractNumber }}</span>)
+          <!-- (
+          <span>{{orderStateAllNum.signContractNumber }}</span>)-->
         </li>
         <li @click="statusTab(1,4,4)" v-bind:class="{statusbg: orderNum==4}">
           出行中
-          (<span>{{orderStateAllNum.travelingNumber}}</span>)
+          <!-- (
+          <span>{{orderStateAllNum.travelingNumber}}</span>)-->
         </li>
         <li @click="statusTab(1,5,5)" v-bind:class="{statusbg: orderNum==5}">
           待点评
-          (<span>{{orderStateAllNum.evaluationNumber}}</span>)
+          <!-- (
+          <span>{{orderStateAllNum.evaluationNumber}}</span>)-->
         </li>
         <li @click="statusTab(1,6,6)" v-bind:class="{statusbg: orderNum==6}">完成订单</li>
         <li @click="statusTab(1,7,9)" v-bind:class="{statusbg: orderNum==7}">作废订单</li>
@@ -92,204 +112,160 @@
           :key="index"
           @click="statusTab(2,index,item.status)"
           v-bind:class="{statusbg: refundNum==index}"
-        >{{item.name}}</li> -->
+        >{{item.name}}</li>-->
         <li @click="statusTab(2,0,5)" v-bind:class="{statusbg: refundNum==0}">
           申请退款
-          (<span>{{orderStateAllNum.applyNumber}}</span>)
+          <!-- (
+          <span>{{orderStateAllNum.applyNumber}}</span>)-->
         </li>
         <li @click="statusTab(2,1,1)" v-bind:class="{statusbg: refundNum==1}">
           退款中
-          (<span>{{orderStateAllNum.refundingNumber}}</span>)
+          <!-- (
+          <span>{{orderStateAllNum.refundingNumber}}</span>)-->
         </li>
         <li @click="statusTab(2,2,6)" v-bind:class="{statusbg: refundNum==2}">完成退款</li>
-        <li @click="statusTab(2,3,2)" v-bind:class="{statusbg: refundNum==3}">拒绝退款</li> 
+        <li @click="statusTab(2,3,2)" v-bind:class="{statusbg: refundNum==3}">拒绝退款</li>
       </ul>
       <br />
       <el-button type="primary" class="search-but" @click="orderPage(1,pageSize)">搜索</el-button>
       <el-button type="primary" class="search-but" @click="handleReset">重置</el-button>
       <!--订单列表-->
       <div class="pro-info" v-for="(item,index) in orderpage" :key="index">
+        <!-- 后加的折叠begin -->
         <h3>{{item.name}}</h3>
-        <table cellpadding="5">
-          <!-- <tr>
-            <td width="60" class="tr">订单ID</td>
-            <td>{{item.orderCode}}</td>
-            <td width="60" class="tr">产品ID</td>
-            <td width="220">{{item.teamID}}</td>
-            <td width="85" class="tr">订单状态</td>
-            <td width="90">{{getOrderStatus(item.orderStatus)}}</td>
-            <td width="60" class="tr">退款状态</td>
-            <td width="60">{{getrefundStatus(item.refundStatus)}}</td>
-            <td width="60" class="tr">订单时间</td>
-            <td>{{formatDate(new Date(item.createTime))}}</td>
-          </tr>
-          <tr>
-            <td width="60" class="tr">产品名</td>
-            <td colspan="9">{{item.name}}</td>
-          </tr>
-          <tr>
-            <td width="60" class="tr">套餐名称</td>
-            <td colspan="3">{{item.package}}</td>
-            <td width="60" class="tr">团号</td>
-            <td colspan="5">{{item.groupCode}}</td>
-          </tr>
-          <tr>
-            <td width="60" class="tr">应付</td>
-            <td>{{item.payable}}</td>
-            <td width="60" class="tr">电话</td>
-            <td rowspan="2" valign="top">{{item.contactTel}}</td>
-            <td width="60" class="tr">优惠</td>
-            <td colspan="4" rowspan="2" valign="top">{{item.favTitle}}</td>
-            <td rowspan="2">&nbsp;</td>
-          </tr>
-          <tr>
-            <td width="60" class="tr">已付</td>
-            <td>{{item.paid}}</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          <tr>
-            <td width="60" class="tr">平台</td>
-            <td>苹果</td>
-            <td width="60" class="tr">支付方式</td>
-            <td>微信支付</td>
-            <td width="60" class="tr">订单来源</td>
-            <td colspan="3">xxx旅行社</td>
-            <td width="60" class="tr">销售</td>
-            <td>{{item.saler}}</td>
-          </tr>
-          <tr>
-            <td width="60" class="tr">用户姓名</td>
-            <td>{{item.contactName}}</td>
-            <td width="60" class="tr"></td>
-            <td></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>-->
-          <tr>
-            <td class="tr moneyColor">
-              订单总额&nbsp;&nbsp;
-              <span class="normal">{{toDecimal2(item.payable)}}</span>
-            </td>
-            <td class="tr moneyColor">
-              已付金额 &nbsp;&nbsp;
-              <span class="normal">{{toDecimal2(item.paid)}}</span>
-            </td>
-          </tr>
-          <tr>
-            <td class="tr">订单ID</td>
-            <td>{{item.orderCode}}</td>
-            <div class="tableCenter">
-              <td class="tr">团期计划</td>
-              <td>{{item.groupCode}}</td>
-            </div>
-            <td class="tr">订单时间</td>
-            <td>{{formatDate(new Date(item.createTime))}}</td>
-          </tr>
-          <tr>
-            <td class="tr">套餐名称</td>
-            <td>{{item.package}}</td>
-            <div class="tableCenter">
-              <td class="tr">出发地</td>
-              <td>{{item.pod}}</td>
-            </div>
-            <td class="tr">目的地</td>
-            <td>{{item.destination}}</td>
-          </tr>
-          <tr>
-            <td class="tr">出发日期</td>
-            <td>{{formatDate(new Date(item.createTime))}}</td>
-            <div class="tableCenter">
-              <td class="tr">电话</td>
-              <td valign="top">{{item.contactTel}}</td>
-            </div>
-            <td class="tr">产品类型</td>
-            <!-- <td valign="top">{{item.productType}}</td> -->
-            <td valign="top">跟团游</td>
-          </tr>
-          <tr>
-            <td class="tr">联系人</td>
-            <td valign="top">{{item.contactName}}</td>
-            <div class="tableCenter">
-              <td class="tr">数量</td>
-              <td valign="top">{{item.enrollDetail}}</td>
-              <!-- <td valign="top">{{item.number}}</td> -->
-            </div>
-            <td class="tr">其他费用</td>
-            <td valign="top">{{item.otherTitle}} (<span>{{toDecimal2(item.otherPrice)}}</span>) </td>
-          </tr>
-          <tr>
-            <td class="tr">整体优惠</td>
-            <td valign="top">{{toDecimal2(item.entiretyFav)}}</td>
-            <div class="tableCenter">
-              <td class="tr">销售</td>
-              <td valign="top">{{item.saler}}</td>
-            </div>
-            <td class="tr">订单来源</td>
-            <td>{{item.orderChannel}}</td>
-          </tr>
-          <tr>
-            <!-- <td class="tr">优惠活动</td>
-            <td valign="top">{{item.favTitle}}</td> -->
-            <td class="tr">支付方式</td>
-              <td></td>
-            <div class="tableCenter">
-              <td class="tr">操作</td>
-              <td valign="top">{{item.op}}</td>
-            </div>
-            <td class="tr">商户销售</td>
-            <td valign="top"></td>
-          </tr>
-          <tr>
-            <td class="tr">平台</td>
-            <td valign="top">{{item.platform}}</td>
-          </tr>
-        </table>
-        <!-- <div class="confirm-time">
-          待确认剩余
-          <span>1天22:33:33</span>
-        </div>-->
-        <!-- <el-row class="but-row">
-          <el-button>联系客人</el-button>
-          <el-button @click="operation(item.id,1)">流程管理</el-button>
-          <el-button @click="operation(item.id,2)">备注信息</el-button>
-          <el-button>未申请退款</el-button>
-          <el-button @click="operation(item.id,4)">转团</el-button>
-        </el-row>-->
-        <el-breadcrumb separator="|" class="confirm-time">
-          <el-breadcrumb-item class="breadCrumbPointer">联系客人</el-breadcrumb-item>
-          <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,2,item.orderCode)">备注</el-breadcrumb-item>
-          <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item>
-          <!-- <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,4)">转团</el-breadcrumb-item> -->
-          <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,1,item.orderCode)">流程管理</el-breadcrumb-item>
-          <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item>
-          <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item>
-          <!-- <el-breadcrumb-item class="breadCrumbPointer">
-            <el-select v-model="breadcrumbSelectValue">
-              <el-option
-                v-for="item in breadcrumbOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-breadcrumb-item>-->
-        </el-breadcrumb>
-        <div class="but-row">
-          <span class="dotFather">
-            <span class="dot"></span>
-            <span>{{item.orderStatus}}</span>
-          </span>
-          <!--  -->
-          <span v-if="item.occupyStatus !== '确认占位'">
-            待确认剩余 &nbsp;
-            <span class="moneyColor">1天22:33:33</span>
-          </span>
+        <!-- <p class="tr moneyColor">
+          订单总额&nbsp;&nbsp;
+          <span class="normal">{{toDecimal2(item.payable)}}</span>
+          已付金额 &nbsp;&nbsp;
+          <span class="normal">{{toDecimal2(item.paid)}}</span>
+        </p>-->
+        <div class="contentHeader" @click="handleContentHeader(item,index)">
+          <table>
+            <tr>
+              <td class="tr">订单ID&nbsp;&nbsp;</td>
+              <td>{{item.orderCode}}</td>
+              <div class="tableCenter">
+                <td class="tr">团期计划&nbsp;&nbsp;</td>
+                <td>{{item.groupCode}}</td>
+              </div>
+              <td class="tr">订单时间&nbsp;&nbsp;</td>
+              <td>{{formatDate(new Date(item.createTime))}}</td>
+            </tr>
+            <tr>
+              <td class="tr">联系人&nbsp;&nbsp;</td>
+              <td valign="top">{{item.contactName}}</td>
+              <div class="tableCenter">
+                <td class="tr">电话&nbsp;&nbsp;</td>
+                <td valign="top">{{item.contactTel}}</td>
+              </div>
+            </tr>
+          </table>
+          <!-- 点击一个其余不折叠 -->
+          <!-- <i
+            :class="['contentHeaderIcon', item.showContent == false ? 'el-icon-arrow-right': 'el-icon-arrow-down']"
+          ></i>-->
+          <!-- 点击一个其余折叠 -->
+          <i
+            :class="['contentHeaderIcon', showContent !== index ? 'el-icon-arrow-right': 'el-icon-arrow-down']"
+          ></i>
         </div>
+
+        <transition name="el-fade-in">
+          <!-- 点击一个其余不折叠 -->
+          <!-- <div class="contentBody" v-show="item.showContent"> -->
+          <!-- 点击一个其余折叠 -->
+          <div class="contentBody" v-show="showContent == index">
+            <table>
+              <tr>
+                <td class="tr">套餐名称&nbsp;&nbsp;</td>
+                <td>{{getListOneMessage.package}}</td>
+                <div class="BodyTableCenter">
+                  <td class="tr">出发地&nbsp;&nbsp;</td>
+                  <td>{{getListOneMessage.pod}}</td>
+                </div>
+                <td class="tr">目的地&nbsp;&nbsp;</td>
+                <td>{{getListOneMessage.destination}}</td>
+              </tr>
+              <tr>
+                <td class="tr">出发日期&nbsp;&nbsp;</td>
+                <td>{{getListOneMessage.date}}</td>
+                <div class="BodyTableCenter">
+                  <td class="tr">数量&nbsp;&nbsp;</td>
+                  <td valign="top">{{getListOneMessage.enrollDetail}}</td>
+                </div>
+                <td class="tr">产品类型&nbsp;&nbsp;</td>
+                <td valign="top">跟团游</td>
+              </tr>
+              <tr>
+                <td class="tr">整体优惠&nbsp;&nbsp;</td>
+                <td valign="top">{{toDecimal2(getListOneMessage.entiretyFav)}}</td>
+                <div class="BodyTableCenter">
+                  <td class="tr">其他费用</td>
+                  <td valign="top">
+                    {{item.otherTitle}} &nbsp;
+                    <span>{{toDecimal2(getListOneMessage.otherPrice)}}</span>
+                  </td>
+                </div>
+                <td class="tr">订单来源&nbsp;&nbsp;</td>
+                <td>{{getListOneMessage.orderChannels}}</td>
+              </tr>
+              <tr>
+                <td class="tr">支付方式&nbsp;&nbsp;</td>
+                <td></td>
+                <div class="BodyTableCenter">
+                  <td class="tr">操作&nbsp;&nbsp;</td>
+                  <td valign="top">{{getListOneMessage.op}}</td>
+                </div>
+                <td class="tr">商户销售&nbsp;&nbsp;</td>
+                <td valign="top"></td>
+              </tr>
+              <tr>
+                <td class="tr">平台&nbsp;&nbsp;</td>
+                <td valign="top">{{getListOneMessage.platform}}</td>
+                <div class="BodyTableCenter">
+                  <td class="tr">产品类型&nbsp;&nbsp;</td>
+                  <td valign="top">跟团游</td>
+                </div>
+                <td class="tr">销售&nbsp;&nbsp;</td>
+                <td valign="top">{{getListOneMessage.saler}}</td>
+              </tr>
+              <tr>
+                <td class="tr">订单总额&nbsp;&nbsp;</td>
+                <td valign="top">{{toDecimal2(getListOneMessage.payable)}}</td>
+                <div class="BodyTableCenter">
+                  <td class="tr">已付金额&nbsp;&nbsp;</td>
+                  <td valign="top">{{toDecimal2(getListOneMessage.paid)}}</td>
+                </div>
+              </tr>
+            </table>
+            <el-breadcrumb separator="|" class="confirm-time">
+              <el-breadcrumb-item class="breadCrumbPointer">联系客人</el-breadcrumb-item>
+              <el-breadcrumb-item
+                class="breadCrumbPointer"
+                @click.native="operation(item.id,2,item.orderCode)"
+              >备注</el-breadcrumb-item>
+              <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item>
+              <!-- <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,4)">转团</el-breadcrumb-item> -->
+              <el-breadcrumb-item
+                class="breadCrumbPointer"
+                @click.native="operation(item.id,1,item.orderCode)"
+              >流程管理</el-breadcrumb-item>
+              <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item>
+              <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item>
+            </el-breadcrumb>
+            <div class="but-row">
+              <span class="dotFather">
+                <span class="dot"></span>
+                <span>{{item.orderStatus}}</span>
+              </span>
+              <!--  -->
+              <span v-if="item.occupyStatus !== '确认占位'">
+                待确认剩余 &nbsp;
+                <span class="moneyColor">1天22:33:33</span>
+              </span>
+            </div>
+          </div>
+        </transition>
       </div>
       <el-pagination
         class="pagination"
@@ -307,9 +283,16 @@
         :variable="variable"
         :dialogType="dialogType"
         :orderCode="orderCode"
-       
+        :paid="getListOneMessage.paid"
+        @orderPage="orderPage"
+        @childByValue="childByValue"
       ></process-manage>
-      <remarks-infor :orderId="orderId" :variable="variable" :dialogType="dialogType" :orderCode="orderCode"></remarks-infor>
+      <remarks-infor
+        :orderId="orderId"
+        :variable="variable"
+        :dialogType="dialogType"
+        :orderCode="orderCode"
+      ></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
     </div>
   </div>
@@ -319,7 +302,7 @@
 import processManage from "./common/processManage";
 import remarksInfor from "./common/remarksInfor";
 import orderTransfer from "./common/orderTransfer";
-import moment from "moment"
+import moment from "moment";
 export default {
   components: {
     "process-manage": processManage,
@@ -328,6 +311,10 @@ export default {
   },
   data() {
     return {
+      defaultProps: {
+        children: "children",
+        label: "label"
+      },
       orderStatusSearch: [
         { status: 0, name: "全部" },
         { status: 7, name: "未确认" },
@@ -383,19 +370,7 @@ export default {
         {
           value: "0",
           label: "跟团游"
-        } /*, {
-          value: '1',
-          label: '自由行'
-        }, {
-          value: '2',
-          label: '签证'
-        }, {
-          value: '3',
-          label: '邮轮'
-        }, {
-          value: '4',
-          label: '周边游'
-       }*/
+        } 
       ],
       //订单列表
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
@@ -405,8 +380,10 @@ export default {
       orderId: 0,
       variable: 0, //设置一个变量展示弹窗
       dialogType: 0, //弹窗类型  1：流程管理  2：备注信息
-      orderCode:"",//订单编号
-      orderStateAllNum: {} //订单状态 每个按钮的数量下标
+      orderCode: "", //订单编号
+      orderStateAllNum: {}, //订单状态 每个按钮的数量下标
+      getListOneMessage: {},
+      showContent: null //list折叠展示的
     };
   },
   watch: {
@@ -430,7 +407,6 @@ export default {
           }
         })
         .then(res => {
-          // console.log("出发地目的地", res);
           let tableData = [];
           for (let i = 0; i < res.data.objects.length; i++) {
             tableData.push({
@@ -447,6 +423,48 @@ export default {
           console.log(err);
         });
     },
+    // 点击list列表中的一个
+    handleContentHeader(item, index) {
+      // let temp = this.orderpage;
+      // temp[index].showContent = !temp[index].showContent;
+      // this.orderpage = temp;
+      this.showContent = index;
+      this.axiosListOneInfo(item.id);
+    },
+
+    // 请求list中的一个数据
+    axiosListOneInfo(id) {
+      // console.log(id)
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/order/all/api/pageinfo", {
+          id: id
+        })
+        .then(res => {
+          // console.log("请求一条数据的",res)
+          this.getListOneMessage = res.data.object;
+          let date = res.data.object.date.toString();
+          this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
+          //订单来源
+          // if (this.getListOneMessage.orderChannel == 1) {
+          //   this.getListOneMessage.orderChannel = "同业";
+          // } else if (this.getListOneMessage.orderChannel == 2) {
+          //   this.getListOneMessage.orderChannel = "线上直客";
+          // } else {
+          //   this.getListOneMessage.orderChannel = "线下直客";
+          // }
+
+          // 下单平台
+          if (this.getListOneMessage.platform == 1) {
+            this.getListOneMessage.platform = "ERP系统";
+          } else {
+            this.getListOneMessage.platform = "同业系统";
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+
     createFilter(queryString) {
       return restaurant => {
         return restaurant.value;
@@ -458,11 +476,9 @@ export default {
     },
     handlePod(item) {
       this.podID = item.id;
-      console.log(this.podID);
       this.pod = item.value;
     },
     statusTab(num, index, status) {
-      console.log(num,"statusTab", status);
       if (num == 1) {
         this.whichStateTab = num;
         this.orderNum = index;
@@ -470,7 +486,6 @@ export default {
         this.orderPage(1, this.pageSize);
       }
       if (num == 2) {
-        console.log("kkkk")
         this.whichStateTab = num;
         this.refundNum = index;
         this.refundStatus = status;
@@ -500,12 +515,15 @@ export default {
       this.destinationID = ""; //目的地
       this.destination = ""; //目的地
       this.saler = ""; //销售
-      this.otherPrice = "", //其他费用名称
-      this.platform = null, //平台
-      this.productType = ""; //产品类型
+      (this.otherPrice = ""), //其他费用名称
+        (this.platform = null), //平台
+        (this.productType = ""); //产品类型
       this.localCompName = ""; //商户名称
       this.contact = ""; //订单联系人
-      this.orderChannel = null; //订单来源
+      // this.orderChannel = null; //订单来源
+      this.showContent = null; //折叠按钮
+      // this.statusTab(1,0,0)
+      // this.statusTab(2,0,5)
       this.orderPage(1, this.pageSize);
     },
     orderPage(
@@ -518,7 +536,7 @@ export default {
       groupCode = this.groupCode, //团期计划
       beginDate = this.beginDate,
       endDate = this.endDate,
-      saler = this.saler, 
+      saler = this.saler,
       localCompName = this.localCompName, //商户名称
       // productType = this.productType,
       orderStatus = this.orderStatus,
@@ -554,35 +572,29 @@ export default {
       } else {
         endDate = 0;
       }
-      // console.log(beginDate,endDate)
-      // if (this.whichStateTab == 1) {
-      //   this.refundStatus =
-      // } else {
-      //   this.orderStatus = 11
-      // }
-      // console.log(orderStatus,refundStatus)
-          this.orderpage = [];
-      let object = {orderCode: orderCode,
-            // teamID: teamID ? teamID : 0,
-            // groupCode: groupCode,
-            groupCode: groupCode,
-            // beginDate: beginDate,
-            // endDate: endDate,
-            name: name,
-            destinationID: destinationID ? destinationID : 0,
-            saler: saler,
-            // productType: productType ? productType : 0,
-            orderStatus: this.orderStatus,
-            refundStatus: this.refundStatus,
-            contact: contact,
-            podID: podID ? podID : 0,
-            localCompName : localCompName, //商户名称
-        }
+      this.orderpage = [];
+      let object = {
+        orderCode: orderCode,
+        // teamID: teamID ? teamID : 0,
+        // groupCode: groupCode,
+        groupCode: groupCode,
+        // beginDate: beginDate,
+        // endDate: endDate,
+        name: name,
+        destinationID: destinationID ? destinationID : 0,
+        saler: saler,
+        // productType: productType ? productType : 0,
+        orderStatus: this.orderStatus,
+        refundStatus: this.refundStatus,
+        contact: contact,
+        podID: podID ? podID : 0,
+        localCompName: localCompName //商户名称
+      };
       if (endDate !== 0 && beginDate !== 0) {
         // object.beginDate = beginDate
         // object.endDate = endDate
-        object.beginDate = moment(beginDate).format('YYYY-MM-DD')
-        object.endDate = moment(endDate).format('YYYY-MM-DD')
+        object.beginDate = moment(beginDate).format("YYYY-MM-DD");
+        object.endDate = moment(endDate).format("YYYY-MM-DD");
       }
       this.$http
         .post(this.GLOBAL.serverSrc + "/order/all/api/orderpage", {
@@ -591,18 +603,17 @@ export default {
           object: object
         })
         .then(res => {
-          console.log("判断是否是 页面初始", res);
-          // this.orderpage = [];
-       
           this.total = res.data.total;
           if (res.data.isSuccess == true) {
             this.orderpage = res.data.objects;
-            // console.log(this.orderpage,"doubao")
-            if(res.data.objects !== null) {
+            // 折叠面板最开始都为隐藏false
+            // this.orderpage.forEach((item,index) => {
+            //   item.showContent = false;
+            // });
+            if (res.data.objects.length !== 0) {
               this.orderStateAllNum = res.data.objects[0];
-              this.receiveDataJudgeShow();
+              this.receiveDataJudgeShow(this.orderpage);
             }
-            
           }
         })
         .catch(err => {
@@ -610,118 +621,106 @@ export default {
         });
     },
     // 接收数据 判断显示
-    receiveDataJudgeShow() {
-        this.orderpage.forEach(item => {
-          //占位状态
-          // if (item.occupyStatus == 1) {
-          //   item.occupyStatus = "确认占位";
-          // } else if (item.occupyStatus == 2) {
-          //   item.occupyStatus = "预订占位";
-          // } else {
-          //   item.occupyStatus = "预订不占";
-          // }
-          // 订单状态
-          if (item.orderStatus == 1) {
-            item.orderStatus = "补充资料";
-          } else if (item.orderStatus == 2) {
-            item.orderStatus = "电子合同";
-          } else if (item.orderStatus == 3) {
-            item.orderStatus = "待出行";
-          } else if (item.orderStatus == 4) {
-            item.orderStatus = "出行中";
-          } else if (item.orderStatus == 5) {
-            item.orderStatus = "待评价";
-          } else if (item.orderStatus == 6) {
-            item.orderStatus = "订单完成";
-          } else if (item.orderStatus == 7) {
-            item.orderStatus = "未确认";
-          } else if (item.orderStatus == 8) {
-            item.orderStatus = "签署合同";
-          } else if (item.orderStatus == 9) {
-            item.orderStatus = "作废订单";
-          } else if (item.orderStatus == 10) {
-            item.orderStatus = "确认订单"
-          } 
-          //订单来源
-          if (item.orderChannel == 1) {
-            item.orderChannel = "同业";
-          } else if (item.orderChannel == 2) {
-            item.orderChannel = "门店";
+    receiveDataJudgeShow(orderpage) {
+      orderpage.forEach(item => {
+        // 订单状态
+        if (item.orderStatus == 0) {
+          // 占位状态
+          if (item.occupyStatus == 3) {
+            item.occupyStatus = "确认占位";
+          } else if (item.occupyStatus == 2) {
+            item.occupyStatus = "预订占位";
           } else {
-            item.orderChannel = "总部";
+            item.occupyStatus = "预订不占";
           }
-          //产品类型
-          // if (item.productType == 1) {
-          //   item.productType = "跟团游";
-          // } else {
-          //   item.productType = "自由行";
-          // }
-
-          // 下单平台
-          if (item.platform == 1) {
-            item.platform = "ERP系统";
-          } else {
-            item.platform = "同业系统";
-          }
-        });
+          item.orderStatus = item.occupyStatus;
+        } else if (item.orderStatus == 1) {
+          item.orderStatus = "补充资料";
+        } else if (item.orderStatus == 2) {
+          // item.orderStatus = "电子合同";
+          item.orderStatus = "待出行";
+        } else if (item.orderStatus == 3) {
+          item.orderStatus = "待出行";
+        } else if (item.orderStatus == 4) {
+          item.orderStatus = "出行中";
+        } else if (item.orderStatus == 5) {
+          item.orderStatus = "待评价";
+        } else if (item.orderStatus == 6) {
+          item.orderStatus = "订单完成";
+        } else if (item.orderStatus == 7) {
+          item.orderStatus = "未确认";
+        } else if (item.orderStatus == 8) {
+          item.orderStatus = "签署合同";
+        } else if (item.orderStatus == 9) {
+          item.orderStatus = "作废订单";
+        } else if (item.orderStatus == 10) {
+          item.orderStatus = "确认订单";
+        }
+        //产品类型
+        // if (item.productType == 1) {
+        //   item.productType = "跟团游";
+        // } else {
+        //   item.productType = "自由行";
+        // }
+      });
     },
-    orderCodeBlur () {
+    orderCodeBlur() {
       if (this.orderCode == "") {
         this.orderPage(1, this.pageSize);
       }
     },
-    nameBlur () {
+    nameBlur() {
       if (this.name == "") {
         this.orderPage(1, this.pageSize);
       }
     },
-    beginDateBlur () {
-      if (this.beginDate == "" && this.endDate == "" ) {
+    beginDateBlur() {
+      if (this.beginDate == "" && this.endDate == "") {
         this.orderPage(1, this.pageSize);
       }
     },
-    endDateBlur () {
-      if (this.beginDate == "" && this.endDate == "" ) {
+    endDateBlur() {
+      if (this.beginDate == "" && this.endDate == "") {
         this.orderPage(1, this.pageSize);
       }
     },
     //判断结束时间不能在开始时间之前
-    endDateChange () {
-      let beginTime = moment(this.beginDate).format("YYYYMMDD")
-      let entTime = moment(this.endDate).format("YYYYMMDD")
+    endDateChange() {
+      let beginTime = moment(this.beginDate).format("YYYYMMDD");
+      let entTime = moment(this.endDate).format("YYYYMMDD");
       if (this.beginDate !== "") {
-          if (entTime < beginTime) {
-          this.$message.error("结束时间不能早于开始时间")
-          this.endDate = ""
+        if (entTime < beginTime) {
+          this.$message.error("结束时间不能早于开始时间");
+          this.endDate = "";
         }
       }
     },
-    groupCodeBlur () {
+    groupCodeBlur() {
       if (this.groupCode == "") {
         this.orderPage(1, this.pageSize);
       }
     },
-    podBlur () {
+    podBlur() {
       if (this.cdestination == "") {
         this.orderPage(1, this.pageSize);
       }
     },
-    destinationBlur () {
+    destinationBlur() {
       if (this.destination == "") {
         this.orderPage(1, this.pageSize);
       }
     },
-    localCompNameBlur () {
+    localCompNameBlur() {
       if (this.localCompName == "") {
         this.orderPage(1, this.pageSize);
       }
     },
-    salerBlur () {
+    salerBlur() {
       if (this.saler == "") {
         this.orderPage(1, this.pageSize);
       }
     },
-    contactBlur () {
+    contactBlur() {
       if (this.contact == "") {
         this.orderPage(1, this.pageSize);
       }
@@ -800,11 +799,14 @@ export default {
     },
     operation(orderId, i, orderCode) {
       this.orderId = orderId;
-      // console.log(orderId,orderCode)
       this.variable++;
       this.dialogType = i;
-      this.orderCode = orderCode
     },
+    // 出发日期转换格式显示
+    // goDataChangeFun (data) {
+    //   console.log(data)
+    //   return moment(data).format('YYYY-MM-DD')
+    // },
     //周边信息 整数转浮点数
     toDecimal2(x) {
       let f = Math.round(x * 100) / 100;
@@ -819,11 +821,30 @@ export default {
       }
       return s;
     },
+    childByValue (childByValue) {
+      this.showContent = childByValue
+    }
   }
 };
 </script>
 
 <style scoped>
+/* 折叠面板 */
+.contentHeader {
+  position: relative;
+}
+
+.contentHeaderIcon {
+  position: absolute;
+  right: 10px;
+  top: 42%;
+  transform: translateY(-50%);
+}
+
+.BodyTableCenter {
+  margin: 0 96px 0 122px;
+}
+
 .demo-input-suffix {
   width: 1150px;
 }
@@ -890,7 +911,7 @@ export default {
   background-color: #e4e4e4;
   margin: 0 30px 30px 10px;
   line-height: 25px;
-  padding: 10px;
+  padding: 15px;
   width: 70%;
   min-width: 1120px;
 }

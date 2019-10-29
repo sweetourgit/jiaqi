@@ -3,17 +3,17 @@
     <!--搜索框-->
     <div class="demo-input-suffix">
       <span class="search-title">产品名称</span>
-      <el-input placeholder="请输入" v-model="title" class="group-no" @blur="productName()"></el-input>
+      <el-input placeholder="请输入" v-model="title" class="group-no"></el-input>
       <span class="search-title">报账团号</span>
-      <el-input placeholder="请输入" v-model="groupCode" class="group-no" @blur="groupNo()"></el-input>
+      <el-input placeholder="请输入" v-model="groupCode" class="group-no"></el-input>
       <span class="search-title">出行日期</span>
       <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
-        align="right" class="group-no" @change="dateline()"></el-date-picker>
+        align="right" class="group-no"></el-date-picker>
       <br />
       <span class="search-title">操作人员</span>
-      <el-input placeholder="请输入" v-model="op" class="group-no" @blur="operation_01()"></el-input>
+      <el-input placeholder="请输入" v-model="op" class="group-no"></el-input>
       <span class="search-title">报账状态</span>
-      <el-select v-model="financeState" placeholder="请选择" class="group-no" style="width:185px"@blur="condition()">
+      <el-select v-model="financeState" placeholder="请选择" class="group-no" style="width:185px">
         <el-option v-for="item in financeType" :key="item.value" :label="item.label":value="item.value"></el-option>
       </el-select>
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
@@ -75,7 +75,7 @@
       </el-table>
       <!--分页-->
       <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
-        :current-page="1" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
+        :current-page="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
       <!--报账单弹窗-->
       <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list" width="60%">
@@ -137,6 +137,7 @@ export default {
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数
       total: 0,
+      current:1,
       teamqueryList: [],
       multipleSelection: [], //选中的list
       //成本
@@ -177,31 +178,37 @@ export default {
   mounted () {
   },
   methods: {
-    productName() {
-      if (this.title == "") {
-        this.teamQueryList();
-      }
-    },
-    groupNo() {
-      if (this.groupCode == "") {
-        this.teamQueryList();
-      }
-    },
-    dateline() {
-      if (this.date == "") {
-        this.teamQueryList();
-      }
-    },
-    operation_01() {
-      if (this.op == "") {
-        this.teamQueryList();
-      }
-    },
-    condition() {
-      if (this.financeState == "") {
-        this.teamQueryList();
-      }
-    },
+    //产品名称
+    // productName(curPage) {
+    //   if (this.title == "") {
+    //     this.current = curPage;
+    //     this.teamQueryList();
+    //   }
+    // },
+    // // 报账团号
+    // groupNo(curPage) {
+    //   if (this.groupCode == "") {
+    //     this.teamQueryList();
+    //   }
+    // },
+    // // 出行日期
+    // dateline(curPage) {
+    //   if (this.date == "") {
+    //     this.teamQueryList();
+    //   }
+    // },
+    // // 操作人员
+    // operation_01(curPage) {
+    //   if (this.op == "") {
+    //     this.teamQueryList();
+    //   }
+    // },
+    // // 报账状态
+    // condition(curPage) {
+    //   if (this.financeState == "") {
+    //     this.teamQueryList();
+    //   }
+    // },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -359,12 +366,15 @@ export default {
         this.pageshow = true;
       });
     },
-    reset() {
+    reset(curPage) {
       this.title = "";
       this.groupCode = "";
       this.date = "";
       this.op = "";
       this.financeState = "";
+      //this.pageIndex = 1 ;
+      this.current = curPage;
+      this.teamQueryList();
     },
     haltSales(status) {
       //停售

@@ -24,15 +24,16 @@ $fontHeight: 32px;
       width: $fontHeight;
       height: $fontHeight;
     }
-    .relative::after{
-      content: attr(data-relative);
-      font-weight: bold;
-      position: absolute;
-      bottom: -14px;
-      right: 0;
-      transform: translateX(50%);
-      color: #409EFF;
-    }
+    // 右下角关联的团期个数
+    // .relative::after{
+    //   content: attr(data-relative);
+    //   font-weight: bold;
+    //   position: absolute;
+    //   bottom: -14px;
+    //   right: 0;
+    //   transform: translateX(50%);
+    //   color: #409EFF;
+    // }
   }
   // 当前选择的日期
   .select{
