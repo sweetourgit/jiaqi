@@ -822,10 +822,11 @@ export default {
           }
           // 拼接字段 enrollDetail报名类型详情
           let enrollDetail = "";
-          console.log(this.salePrice)
           this.salePrice.forEach((ele, idx) => {
             let price = this.toDecimal2(ele.price_01);
-            enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
+            if(this.enrolNum[idx]!==0){
+              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
+            }
           });
           this.ifOrderInsert = true;
           //判断出行人信息是否填写完整
