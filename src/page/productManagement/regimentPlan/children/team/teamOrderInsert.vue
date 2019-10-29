@@ -605,6 +605,9 @@ export default {
     },
     "ruleForm.type": function(val) {
       this.changeQuota();
+    },
+    "ruleForm.price": function (val) {
+      this.compPrice();
     }
   },
   methods: {
@@ -1116,6 +1119,7 @@ export default {
     compPrice() {
       //计算总价
       this.ruleForm.totalPrice = 0;
+      console.log(this.ruleForm.price)
       for (let i = 0; i < this.enrolNum.length; i++) {
         console.log(this.enrolNum[i])
         this.ruleForm.totalPrice += (this.enrolNum[i] == undefined ? 0 : this.enrolNum[i]) * (this.ruleForm.price == 1 ? this.salePrice[i].price_01 : this.salePrice[i].price_02);
