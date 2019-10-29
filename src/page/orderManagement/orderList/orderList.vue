@@ -207,7 +207,7 @@
                   </td>
                 </div>
                 <td class="tr">订单来源&nbsp;&nbsp;</td>
-                <td>{{getListOneMessage.orderChannel}}</td>
+                <td>{{getListOneMessage.orderChannels}}</td>
               </tr>
               <tr>
                 <td class="tr">支付方式&nbsp;&nbsp;</td>
@@ -445,13 +445,13 @@ export default {
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
           //订单来源
-          if (this.getListOneMessage.orderChannel == 1) {
-            this.getListOneMessage.orderChannel = "同业";
-          } else if (this.getListOneMessage.orderChannel == 2) {
-            this.getListOneMessage.orderChannel = "线上直客";
-          } else {
-            this.getListOneMessage.orderChannel = "线下直客";
-          }
+          // if (this.getListOneMessage.orderChannel == 1) {
+          //   this.getListOneMessage.orderChannel = "同业";
+          // } else if (this.getListOneMessage.orderChannel == 2) {
+          //   this.getListOneMessage.orderChannel = "线上直客";
+          // } else {
+          //   this.getListOneMessage.orderChannel = "线下直客";
+          // }
 
           // 下单平台
           if (this.getListOneMessage.platform == 1) {
@@ -520,7 +520,7 @@ export default {
         (this.productType = ""); //产品类型
       this.localCompName = ""; //商户名称
       this.contact = ""; //订单联系人
-      this.orderChannel = null; //订单来源
+      // this.orderChannel = null; //订单来源
       this.showContent = null; //折叠按钮
       // this.statusTab(1,0,0)
       // this.statusTab(2,0,5)
