@@ -233,6 +233,7 @@ export default {
   data() {
     return {
       //流程管理弹窗
+      showContent: null, //保存更改传个父组件的值 为了list折叠
       dialogVisible: false,
       dialogFormProcess: false,
       orderget: {}, //保存单个订单信息
@@ -357,7 +358,7 @@ export default {
           id: orderId
         })
         .then(res => {
-          console.log(res, "get");
+          // console.log(res, "get");
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -461,9 +462,6 @@ export default {
         this.dialogVisible = false;
         url = "/order/stat/api/invalid";
       }
-      console.log(this.tour);
-
-      console.log(url);
       this.$http
         .post(this.GLOBAL.serverSrc + url, {
           object: {
@@ -513,13 +511,12 @@ export default {
           for (let i = 0; i < guest.length; i++) {
             if (guest[i].cnName == "点击填写") {
               this.isChangeNumber = true;
-              
             } else {
               this.isChangeNumber = false;
             }
           }
-          if(this.isChangeNumber === true) {
-            this.$message.error("请补全出行人信息")
+          if (this.isChangeNumber === true) {
+            this.$message.error("请补全出行人信息");
           }
           this.statusNow = "补充材料";
           this.statusNext = "签订合同";
@@ -583,6 +580,15 @@ export default {
           break;
       }
     },
+    // 补充资料状态下监听动态按钮 价格变革则不能点击
+    addInfoFun() {
+      // console.log(this.orderget.payable, this.payable);
+      if (this.orderget.payable !== this.payable) {
+        this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
+      } else {
+        this.isChangeNumber = false;
+      }
+    },
     changeQuota() {
       //余位变化方法
       this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
@@ -621,7 +627,8 @@ export default {
       }
     },
     peoNum(index, enrollID, enrollName) {
-      this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
+      // this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
+
       //填写报名人数
       let arrLength; //报名人数
       let preLength; //记录上一次报名人数
@@ -850,6 +857,7 @@ export default {
             : 0
         );
       }
+      this.addInfoFun()
     },
     ordersave(id, occupyStatus) {
       //更新订单，补充游客信息
@@ -904,7 +912,15 @@ export default {
             guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
             guest[i].credTOV = new Date(guest[i].credTOV).getTime();
           }
+
+           // 补充资料和待出行 信息更改跳转回到确认占位状态
+          if (this.isChangeNumber === true && (this.orderget.orderStatus === 1 || this.orderget.orderStatus === 2)) {
+            console.log(1)
+            obj.orderStatus = 10
+          }
+
           obj.guests = guest;
+          obj.payable = this.payable;
           // console.log(obj, "传给后台的");
           this.$http
             .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
@@ -917,6 +933,7 @@ export default {
                   type: "success"
                 });
                 this.$emit("orderPage");
+                this.$emit("childByValue", this.showContent);
                 this.cancle();
               }
             });

@@ -156,7 +156,7 @@ export default {
           //     }
           //   });
             let createTime = moment().format('YYYY-MM-DD hh:mm:ss').toString()
-            // console.log(createTime)
+            console.log(orderCode)
             this.$http
             .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
               object: {
