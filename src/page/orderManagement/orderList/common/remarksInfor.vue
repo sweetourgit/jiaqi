@@ -57,7 +57,7 @@ export default {
     orderId: 0,
     variable: 0,
     dialogType: 0,
-    orderCode:""
+    orderCodeSon:""
   },
   data() {
     return {
@@ -81,7 +81,7 @@ export default {
   watch: {
     variable: function() {
       if (this.dialogType == 2) {
-        this.orderGetFun(this.orderId,this.orderCode);
+        this.orderGetFun(this.orderId,this.orderCodeSon);
         this.dialogFormMark = true;
       }
     }
@@ -159,7 +159,7 @@ export default {
             this.$http
             .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
               object: {
-                orderCode: this.orderCode,
+                orderCode: this.orderCodeSon,
                 content: this.markFormAdd.Mark,
                 createTime: createTime
               }
