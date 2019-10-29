@@ -2089,6 +2089,7 @@
                   "date": item.data.person.date,
                   "groupCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix,
                   "planEnroll": planEnroll,
+                  "regimentType": 1,
                   'dateHous': item.data.person.dateHous
                 }
               }).then(res => {
