@@ -163,7 +163,8 @@ export default {
         insertAction.bind(this)(object).then(res => {
           let { id }= res;
           this.$message.success('产品新增成功，请完善套餐信息');
-          this.$router.replace({ path: '/changeinfo', query:{ id } });
+          // 带有add标识，会自动添加一个套餐
+          this.$router.replace({ path: '/changeinfo', query:{ id, add: true } });
         })
       }).catch(err => {
         this.vm.saveActionLock= false;
