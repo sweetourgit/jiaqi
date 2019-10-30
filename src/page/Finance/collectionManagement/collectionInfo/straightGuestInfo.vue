@@ -1075,7 +1075,7 @@ export default {
         })
     },
     sendBPM(result) {
-      this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/StartUpWorkFlowForJQ', {
         jQ_ID: result.guid,
         jQ_Type: result.flowModel,
         workflowCode: result.flowModelName,

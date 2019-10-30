@@ -1,72 +1,119 @@
+<!-- 预付款管理 -> 借款记录 -->
 <template>
-  <div class="vivo" style="position:relative">
+  <div class="vivo">
     <el-tabs v-model="activeName" @tab-click="handleClick">
+      <!-- 借款记录 -->
       <el-tab-pane label="借款记录" name="first">
-        <span class="search-title">团期计划:</span>
-        <el-input v-model="planID" class="input"></el-input>
-        <span class="search-title">申请人:</span>
-        <el-input v-model="user" class="input"></el-input>
-        <span class="search-title">发起时间:</span>
-        <el-date-picker v-model="startTime" type="date" placeholder="开始日期"></el-date-picker>
-        <div class="date-line"></div>
-        <el-date-picker v-model="endTime" type="date" placeholder="终止日期"></el-date-picker><br/><br/>
-        <span class="search-title" style="margin-left:47px">状态:</span>
-        <el-select v-model="checkType" placeholder="请选择" style="width:185px">
-          <el-option  key="0" label="审批中" value="0"></el-option>
-          <el-option  key="1" label="通过" value="1"></el-option>
-          <el-option  key="2" label="驳回" value="2"></el-option>
-        </el-select>
-        <div style="border: 0px solid #e9eaea;  margin-bottom:100px; margin-top: 30px; margin-left: 20px; width: 100%">
-          <div class="button_select">
-            <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
-            <el-button type="primary" @click="resetHand()" size="medium">重置</el-button>
-          </div>
-          <div class="button_select">
-            <el-button type="primary" @click="dialogchange" plain>申请</el-button>
-          </div>
-          <div class="table_trip" style="width: 80%;">
-            <el-table :data="tableData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-              <el-table-column prop="paymentID" label="借款单号" align="center" width="80%">
-              </el-table-column>
-              <el-table-column prop="checkTypeEX" label="状态" width="90" align="center">
-              </el-table-column>
-              <el-table-column label="发起时间" align="center" width="190">
-                <template slot-scope="scope">
-                  {{formatDate1(scope.row.createTime)}}
-                </template>
-              </el-table-column>
-              <el-table-column prop="groupCode" label="团期计划" align="center" width="180">
-              </el-table-column>
-              <el-table-column prop="supplierName" label="供应商名称" align="center" width="120">
-              </el-table-column>
-              <el-table-column prop="supplierTypeEX" label="类型" align="center" width="90">
-              </el-table-column>
-              <el-table-column cell-style prop="price" label="借款金额" align="center" width="90">
-              </el-table-column>
-              <el-table-column cell-style prop="expensePrice" label="已核销金额" align="center" width="95">
-              </el-table-column>
-              <el-table-column prop="createUser" label="申请人" align="center" width="90">
-              </el-table-column>
-              <el-table-column prop="opinion" label="审批意见" align="center">
-              </el-table-column>
-              <el-table-column prop="opinion" label="操作" align="center" width="100">
-                 <template slot-scope="scope">
-                    <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-                 </template>
-              </el-table-column>
-            </el-table>
-          </div>
-          <!--分页-->
-          <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-            <el-pagination v-if="pageshow" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total' background>
-            </el-pagination>
-          </div>
-          <!--分页-->
+        <div class="distributor-content">
+          <!-- 搜索表单 -->
+          <el-form :model="ruleForm" ref="ruleForm"  label-width="80px" id="form-content">
+            <el-row type="flex" class="row-bg">
+              <el-col :span="8">
+                <el-form-item label="团期计划:" prop="planID">
+                  <el-input v-model="ruleForm.planID" placeholder="请输入团期计划"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="申请人:" prop="user">
+                  <el-input v-model="ruleForm.user" placeholder="请输入借款人"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="状态:" prop="checkType">
+                  <el-select v-model="ruleForm.checkType" placeholder="请选择类型" class="status-length">
+                    <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlement" :key="item.value" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row type="flex">
+              <el-col :span="8">
+                <el-form-item label="发起时间:">
+                  <el-col :span="11">
+                    <el-form-item prop="startTime">
+                      <el-date-picker type="date" placeholder="选择开始日期" v-model="ruleForm.startTime" style="width: 100%;"></el-date-picker>
+                    </el-form-item>
+                  </el-col>
+                  <el-col class="line" :span="2">-</el-col>
+                  <el-col :span="11">
+                    <el-form-item prop="endTime">
+                      <el-date-picker type="date" placeholder="选择结束日期" v-model="ruleForm.endTime" style="width: 100%;"></el-date-picker>
+                    </el-form-item>
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item>
+                  <el-button @click="searchHand()" type="primary">搜索</el-button>
+                  <el-button @click="resetHand('ruleForm')" type="primary">重置</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+          <!-- 搜索表单 END -->
+          <!-- 申请按钮 -->
+          <el-button type="primary" @click="dialogchange()" class="add-style">申请</el-button>
+          <!-- 申请按钮 END -->
+          <!-- 表格 -->
+          <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" id="table-content">
+            <el-table-column prop="paymentID" label="借款单号" align="center" width="80%">
+            </el-table-column>
+            <el-table-column prop="checkTypeEX" label="状态" width="90" align="center">
+            </el-table-column>
+            <el-table-column label="发起时间" align="center" width="190">
+              <template slot-scope="scope">
+                {{formatDate1(scope.row.createTime)}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="groupCode" label="团期计划" align="center" width="180">
+            </el-table-column>
+            <el-table-column prop="supplierName" label="供应商名称" align="center" width="120">
+            </el-table-column>
+            <el-table-column prop="supplierTypeEX" label="类型" align="center" width="90">
+            </el-table-column>
+            <el-table-column cell-style prop="price" label="借款金额" align="center" width="90">
+            </el-table-column>
+            <el-table-column cell-style prop="expensePrice" label="已核销金额" align="center" width="95">
+            </el-table-column>
+            <el-table-column prop="createUser" label="申请人" align="center" width="90">
+            </el-table-column>
+            <el-table-column prop="opinion" label="审批意见" align="center">
+            </el-table-column>
+            <el-table-column prop="opinion" label="操作" align="center" width="100">
+               <template slot-scope="scope">
+                  <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+               </template>
+            </el-table-column>
+          </el-table>
+          <!-- 表格 END -->
+          <!-- 分页 -->
+          <el-row type="flex" class="paging">
+            <el-col :span="8" :offset="13">
+              <el-pagination
+                v-if="pageshow"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="1"
+                :page-sizes="[5, 10, 50, 100]"
+                :page-size="10"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total='total'
+                background
+              >
+              </el-pagination>
+            </el-col>
+          </el-row>
+          <!-- 分页 END -->
         </div>
       </el-tab-pane>
+      <!-- 借款记录 END -->
+      <!-- 需要您审批 -->
       <el-tab-pane :label="'需要您审批'+msg" name="second">
-        <NeedApproval v-on:headCallBack="headCall"></NeedApproval>
+        <div class="distributor-content">
+          <NeedApproval v-on:headCallBack="headCall"></NeedApproval>
+        </div>
       </el-tab-pane>
+      <!-- 需要您审批 END -->
     </el-tabs>
     <!-- <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :infoStatus="infoStatus" @searchHandList="searchHand"></AdvanceInfo>  -->
     <!--查看无收入借款弹窗-->
@@ -94,16 +141,28 @@ export default {
   },
   data() {
     return {
+      ruleForm: {
+        planID: '', // 团期计划输入框
+        user: '', // 申请人
+        startTime: '', // 开始时间
+        endTime: '', // 结束时间
+        checkType:'' // 状态
+      },
+      settlement:[{ // 状态切换
+        value: '0',
+        label: '审批中'
+      }, {
+        value: '1',
+        label: '通过'
+      }, {
+        value: '2',
+        label: '驳回'
+      }],
       checkIncomeShow:false,//详情弹窗
       paymentID:0,
       groupCode:0,
       pageshow:true,
       activeName: 'first',
-      planID: '',
-      user: '',
-      startTime: '',
-      endTime: '',
-      checkType:'',
       reable: true,
       tableData: [],
       currentPage4: 1,
@@ -131,12 +190,9 @@ export default {
     headCall: function (msg) { //回调方法，接收子组件传的参数
         this.msg = '(' + msg + ')';
     },
-    resetHand(){
-      this.planID='';
-      this.user='';
-      this.startTime='';
-      this.endTime='';
-      this.checkType='';
+    // 重置
+    resetHand(formName){
+      this.$refs[formName].resetFields();
     },
     closeAdd() {
       this.dialogFormVisible = false;
@@ -204,12 +260,12 @@ export default {
           }
         )
         .then(function(obj) {
-          console.log(obj.data);
+          // console.log(obj.data);
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
         })
         .catch(function(obj) {
-          console.log(obj)
+          // console.log(obj)
         })
     },
     //搜索
@@ -218,11 +274,12 @@ export default {
       this.pageshow = false
       let objectRequest = {}
       objectRequest.paymentType = 2;
-      if (this.planID) { objectRequest.planID = this.planID; }
-      if (this.user) { objectRequest.createUser = this.user; }
-      if (this.startTime) { objectRequest.beginTime = this.startTime}
-      if (this.endTime) { objectRequest.endTime = this.endTime}
-      if (this.checkType) { objectRequest.checkType = this.checkType; }else{objectRequest.checkType='-1'}
+      if (this.ruleForm.planID) { objectRequest.planID = this.ruleForm.planID; }
+      if (this.ruleForm.user) { objectRequest.createUser = this.ruleForm.user; }
+      if (this.ruleForm.startTime) { objectRequest.beginTime = this.ruleForm.startTime}
+      if (this.ruleForm.endTime) { objectRequest.endTime = this.ruleForm.endTime}
+      if (this.ruleForm.checkType) { objectRequest.checkType = this.ruleForm.checkType; }else{objectRequest.checkType='-1'}
+
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/finance/payment/api/page", {
@@ -236,7 +293,7 @@ export default {
           that.tableData = obj.data.objects;
         })
         .catch(function(obj) {
-          console.log(obj)
+          // console.log(obj)
         })
         this.$nextTick(() => {
              this.pageshow = true
@@ -361,101 +418,42 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-.el-tabs__nav>>>.el-tabs__item {
-  font-size: 30px !important;
-}
-
-#tab-first {
-  font-size: 30px
-}
-
-.el-table th {
-  background-color: red;
-}
-
-.demo-input-suffix {
-  width: 900px
-}
-
-.el-input {
-  width: auto
-}
-
-.group-no {
-  margin-left: 10px
-}
-
-.start-time {
-  margin-left: 25px
-}
-
-.date-line {
-  width: 10px;
-  border-bottom: 1px solid #e6e6e6;
-  display: inline-block;
-  margin: 0 3px 3px 0
-}
-
-.search-title {
-  font-size: 14px;
-  margin-left: 20px;
-  margin-top: 10px;
-}
-
-.el-input__inner {
-  width: 10%;
-}
-
-.button_select {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  text-align: left;
-  //margin-left: 50px;
-
-  .select_button {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e9eaea;
-    text-align: left;
-    padding-left: 50px;
+  .vivo{margin-bottom: 50px;}
+  .distributor-content {
+    width: 99%;
+    margin: 25px auto;
+    height: auto;
+    border: 1px solid #e6e6e6;
+    #form-content {
+      background: #f7f7f7;
+      padding: 20px 10px;
+      margin: 20px 10px;
+      .line{
+        text-align: center;
+      }
+      .status-length{
+        width: 100% !important;
+      }
+    }
+    .add-style{
+      margin-left: 1%;
+      margin-top: 30px;
+    }
+    #table-content{
+      width: 98%;
+      margin: 10px auto 10px;
+    }
+    .paging{
+      margin:20px 0 10px 0;
+    }
+    .title-margin{
+      margin-bottom: 30px;
+    }
+    .title-margin-t{
+      margin-top: 45px;
+    }
+    .el-divider__text{
+      font-size: 17px !important
+    }
   }
-}
-
-.el-autocomplete>>>.el-input--small .el-input__inner {
-  height: 35px !important;
-}
-
-.input-new-tags {
-  width: 200px;
-  float: left;
-  margin-left: 5px;
-  height: 30px;
-  line-height: 30px;
-  padding-top: 1px;
-  margin-top: 1px;
-  margin-bottom: 4px;
-  padding-bottom: 2px
-}
-
-.bright_b {
-  float: left;
-  margin-left: 205px;
-  margin-top: -62px;
-}
-
-.sh_style {
-  background: #eaeaea;
-  position: absolute;
-  width: 50px;
-  height: 23px;
-  text-align: center;
-  line-height: 26px;
-  top: 20px;
-  left: 116px;
-}
-
-.inputWidth {
-  width: 200px;
-}
-
 </style>

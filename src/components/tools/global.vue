@@ -6,7 +6,9 @@
   //const imgUrl="http://192.168.2.65:3009";
   //const jqUrl="http://192.168.1.198:6019";
   // const jqUrl="http://192.168.2.6:6019";
-  const jqUrl="http://49.4.10.11:3019"
+  // const jqUrl="http://49.4.10.11:3019"
+  // const jqUrl="117.78.20.162:3019"
+  const jqUrl="http://test.dayuntong.com/h3wf"
   const serverSrcPhp="http://www.around.com";
   const token="";
   const userId="";
