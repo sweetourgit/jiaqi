@@ -220,7 +220,7 @@ export default new Router({
       }
     }, {
       path: '/merchantInfo',
-      component: () => import('@/page/contentInfo/merchantInfo/merchantInfo'),
+      component: () => import('@/page/contentInfo/merchantInfo/merchantInfo1'),
       name: '商户信息',
       meta: {
         keepAlive: true,
