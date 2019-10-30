@@ -280,6 +280,7 @@
         :dialogType="dialogType"
         :orderCode="orderCode"
         :paid="getListOneMessage.paid"
+        :priceType="priceType"
         @orderPage="orderPage"
         @childByValue="childByValue"
       ></process-manage>
@@ -348,6 +349,7 @@ export default {
       otherPrice: "", //其他费用名称
       platform: null, //平台 1 ERP系统  2 同业系统
       productType: "", //产品类型  Team = 1 跟团游 Free = 2 自由行
+      priceType:null, //价格类型  1直客  2同业价格
       localCompName: "", //商户名称
       contact: "", //订单联系人
       orderChannel: null, //订单来源  1 线上直客 2 线下直客 3 同业系统
@@ -441,6 +443,7 @@ export default {
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
           this.orderCodeSon = res.data.object.orderCode;
+          this.priceType = res.data.object.priceType
           //订单来源
           // if (this.getListOneMessage.orderChannel == 1) {
           //   this.getListOneMessage.orderChannel = "同业";
@@ -840,7 +843,7 @@ export default {
 }
 
 .BodyTableCenter {
-  margin: 0 80px 0 73px;
+  margin: 0 60px 0 73px;
 }
 
 .longWeight {
