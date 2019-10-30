@@ -379,13 +379,13 @@ export default {
       this.teamQueryList();
     },
     haltSales(status) {
+      console.log(status)
       //停售
       this.$confirm("该团期是否停售?", "提示", {
         confirmButtonText: "停售",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
+      }).then(() => {
           this.$message({
             type: "info",
             message: "已停售"

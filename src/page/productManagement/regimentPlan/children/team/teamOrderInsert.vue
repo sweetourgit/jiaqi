@@ -99,10 +99,10 @@
                 <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)"
                   :min="0" :max="salePriceNum[index].quota" size="medium"></el-input-number>
               </div>
-              <div v-bind:class="{red:quota[index]}">
+              <!-- <div v-bind:class="{red:quota[index]}">
                 余位{{item.quota}}
                 <span v-show="quota[index]">库存不足</span>
-              </div>
+              </div> -->
             </div>
             <div class="red ml13" style="margin:0 0 10px 15px;" v-show="enrolNums">{{enrolNumsWarn}}</div>
           </div>
@@ -604,7 +604,10 @@ export default {
     },
     "ruleForm.price": function (val) {
       this.compPrice();
-    }
+    },
+    // "ruleForm.index":function(val){
+    //   this.changeQuota();
+    // }
   },
   methods: {
     moment,
@@ -622,7 +625,7 @@ export default {
         return "";
       }
     },
-    changeQuota() {
+    changeQuota(index) {
       //余位变化方法
       this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
       let salePriceType3 = JSON.parse(JSON.stringify(this.salePriceNum));
@@ -631,7 +634,8 @@ export default {
       for (let i = 0; i < this.salePrice.length; i++) {
         //如果下单方式选择预定不占，则不需要同步余位信息，提示库存不足
         // if (this.ruleForm.type == 3 || this.ruleForm.type == 1) 
-        if (this.ruleForm.type == 1){
+        // if (this.ruleForm.type == 1)
+        if (this.ruleForm.index == 3){
           this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
           salePriceType = this.salePrice[i];
         } else {
@@ -722,9 +726,15 @@ export default {
         this.enrolNum[index] = this.salePriceNum[index].quota;
         arrLength = this.salePriceNum[index].quota;
       }
+      console.log(this.salePriceNum[index].quota)
+      console.log(arrLength)
+      if(arrLength >= this.salePriceNum[index].quota){
+        return;
+      }
       //记录上一次报名人数为当前报名人数
       this.preLength[index] = this.enrolNum[index];
-
+      //报名类型报名人数的总数等于余位，其余的报名类型不允许添加
+      
       //去掉报名人数提示
       if (arrLength > 0) {
         this.enrolNums = false;
@@ -805,6 +815,7 @@ export default {
             }
           }
           let guest = [];
+          console.log(guest)
           for (let i = 0; i < guestAll.length; i++) {
             if (guestAll[i].cnName != "") {
               //过滤掉未填写人员信息
@@ -821,8 +832,15 @@ export default {
           }
           // 拼接字段 enrollDetail报名类型详情
           let enrollDetail = "";
+          console.log(this.salePrice)
           this.salePrice.forEach((ele, idx) => {
-            let price = this.toDecimal2(ele.price_01);
+            let price=0;
+            if(this.ruleForm.price == 1){
+              price = this.toDecimal2(ele.price_01);
+            }else{
+              price = this.toDecimal2(ele.price_02);
+            }
+            //let price = this.toDecimal2(ele.price_01);
             if(this.enrolNum[idx]!==0){
               enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
             }
@@ -830,7 +848,6 @@ export default {
           this.ifOrderInsert = true;
           //判断出行人信息是否填写完整
           for(let i = 0; i<guest.length;i++){
-            console.log(guest[i].sex === '')
             if(guest[i].sex === ''){
               this.ifOrderInsert = false;
               this.$confirm("请完善出行人信息?", "提示", {
@@ -844,6 +861,7 @@ export default {
           }
           if(this.ifOrderInsert===true){
             if(this.ruleForm.orderRadio === '1'){
+             console.log(guest)
              this.ifOrderInsert = false;
              this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
               object: {
@@ -933,7 +951,7 @@ export default {
                   refundStatus: 0, //退款状态
                   occupyStatus: index, //占位状态
                   payable: this.ruleForm.totalPrice, //应付款
-                  platform: 1, //1是erp，2是同业
+                  platform: 2, //1是erp，2是同业
                   favourable: [
                     //优惠
                     {
