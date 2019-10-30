@@ -1065,12 +1065,14 @@ export default {
          cancelButtonText: "取消",
          type: "warning"
       }).then(res =>{
-        for(let i = 0 ; i < this.tour[index].length ; i++){
-          // console.log(this.tour[index].length)
-          // console.log(this.enrolNum[index])
-          this.tour[index].splice(this.tour[index][i],1);
+        // for(let i = 0 ; i < this.tour[index].length ; i++){
+        //   // console.log(this.tour[index].length)
+        //   // console.log(this.enrolNum[index])
+        //   this.tour[index].splice(i,1);
+        //   this.enrolNum[index] = this.tour[index].length;
+        // }
+          this.tour[index].splice(type,1);
           this.enrolNum[index] = this.tour[index].length;
-        }
         // console.log(type)
         // console.log(index)
         // this.tour[index].splice(index,1);
