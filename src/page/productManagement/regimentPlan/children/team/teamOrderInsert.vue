@@ -721,15 +721,13 @@ export default {
       let preLength; //记录上一次报名人数
       preLength = this.preLength[index]; //获取上一次报名人数
       arrLength = this.enrolNum[index]; //获取当前报名人数
+      if(arrLength >= this.salePriceNum[index].quota){
+        return;
+      }
       //如果填写数量大于余位，则显示余位数量
       if (arrLength > this.salePriceNum[index].quota) {
         this.enrolNum[index] = this.salePriceNum[index].quota;
         arrLength = this.salePriceNum[index].quota;
-      }
-      console.log(this.salePriceNum[index].quota)
-      console.log(arrLength)
-      if(arrLength >= this.salePriceNum[index].quota){
-        return;
       }
       //记录上一次报名人数为当前报名人数
       this.preLength[index] = this.enrolNum[index];
@@ -931,9 +929,9 @@ export default {
                   //   data.FlowModelName,
                   //   data.Usercode
                   // );
-                } else {
+                } else if(res.data.isSuccess == false){
                   //预留黑名单信息？？？
-                  this.$message.error("下单失败");
+                  this.$message.success(res.data.result.message + "");
                   this.ifOrderInsert = true;
                 }
               });
@@ -1008,7 +1006,7 @@ export default {
                   // );
                 } else {
                   //预留黑名单信息？？？
-                  this.$message.error("下单失败");
+                  this.$message.success(res.data.result.message + "");
                   this.ifOrderInsert = true;
                 }
               });
