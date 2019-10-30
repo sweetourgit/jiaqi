@@ -240,7 +240,7 @@ import moment from 'moment'
       people_01:'',
       planTime_01:'',
       planData_01:'', //借款表格
-      tableData:[], //分页
+      tableData:[], // 需要审批表格数据
       currentPage: 1,
       total:0,
       pagesize:10,
@@ -249,32 +249,23 @@ import moment from 'moment'
       tableMoney:[], // 无收入借款金额表格
       tablePayment:[], // 无收入借款弹窗预付款明细表格
       dialogFormVisible_paymenrt:false, // 无收入借款弹窗中预付款明细查看弹窗
-      tableApprove:[{
-        times:' 2019-1-14 19:00:00',
-        people:'洋洋',
-        result:'通过',
-        opinion:'不同意'
-      }],
       tableIncome:[], //无收入借款弹窗中无收入借款明细弹窗
       dialogFormVisible_Income:false, // 无收入借款弹窗中预付款明细查看弹窗
-      tableIncomeCheck:[{
-        times:' 2019-1-14 19:00:00',
-        people:'洋洋1',
-        result:'通过',
-        opinion:'不同意'
-      }],
       tableEarning:[], // 无收入借款弹窗中收入明细表格
       checkIncomeShow:false, // 查看无收入借款弹窗
-     tableCourse:[], // 查看无收入借款审批过程
-     tour_id:0,
-     multipleSelection: [],
-     pid:'',
-     arr1:[],
-     guid:'',
-     transitShow:false, // 通过驳回弹窗
-     title:"",
-     commentText:'',
+      tableCourse:[], // 查看无收入借款审批过程
+      tour_id:0,
+      multipleSelection: [],
+      pid:'',
+      arr1:[],
+      guid:'',
+      transitShow:false, // 通过驳回弹窗
+      title:"",
+      commentText:'',
     }
+  },
+  created(){
+    this.pageList();
   },
   methods: {
     // 起始时间格式转换
@@ -311,7 +302,7 @@ import moment from 'moment'
     },
     // 启动工作流
     sendBPM(result) {
-      this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/StartUpWorkFlowForJQ', {
         jQ_ID: result.guid,
         jQ_Type: result.flowModel,
         workflowCode: result.flowModelName,
@@ -332,47 +323,42 @@ import moment from 'moment'
     pageList(){
       var that = this
       var arr = []
-      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递
-      .then(obj => {
-        this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
-            //"userCode": sessionStorage.getItem('userCode'),
-            "userCode": sessionStorage.getItem('userCode'),
-            "startTime": this.startTime?this.startTime:"1970-07-23T01:30:54.452Z",
-            "endTime": this.endTime?this.endTime:new Date(),
-            "startIndex": this.currentPage,  // 页码
-            "endIndex": this.pagesize ,  // 每页条数
-            "workflowCode": obj.data.objects[0].name
-          }
-        )
+      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
-           obj.data.forEach(v=>{
-            arr.push(v.jq_ID)
-            that.arr1.push(v.workItemID)
-           })
-           this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid',
-            {
-              "guid": arr
-            }).then(obj =>{
-              console.log(obj)
-              that.total = obj.data.total;
-              that.tableData = obj.data.objects;
-            })
-        // .then(obj =>{
-        //   this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ',
-        //     {
-        //       "jQ_ID": "974fdbc7-2f1d-4e9c-8bf1-e910e3d4ac01",
-        //       "jQ_Type":1
-        //     }).then(obj =>{
-        //       that.tableCourse = obj.data.objects;
-        //     })
-        // })
-           console.log(arr)
+          this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
+              //"userCode": sessionStorage.getItem('userCode'),
+              "userCode": sessionStorage.getItem('userCode'),
+              "startTime": this.startTime?this.startTime:"1970-07-23T01:30:54.452Z",
+              "endTime": this.endTime?this.endTime:new Date(),
+              "startIndex": this.currentPage,  // 页码
+              "endIndex": this.pagesize ,  // 每页条数
+              "workflowCode": obj.data.objects[0].name
+            }).then(obj => {
+             obj.data.forEach(v=>{
+               arr.push(v.jq_ID)
+              that.arr1.push(v.workItemID)
+             })
+             this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', { // 通过GUID查找无收入/预付款列表
+                "guid": arr
+              }).then(obj =>{
+                that.total = obj.data.total;
+                that.tableData = obj.data.objects;
+              })
+          // .then(obj =>{
+          //   this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ',
+          //     {
+          //       "jQ_ID": "974fdbc7-2f1d-4e9c-8bf1-e910e3d4ac01",
+          //       "jQ_Type":1
+          //     }).then(obj =>{
+          //       that.tableCourse = obj.data.objects;
+          //     })
+          // })
+          })
         })
-      })
       },
       // 审核结果
       auditResult(result) {
-        this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ', {
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jQ_ID: result,
           jQ_Type: 1,
         }).then(obj => {
@@ -422,7 +408,7 @@ import moment from 'moment'
       },
       transit(formName){
         var that = this;
-        this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/SubmitWorkAssignmentsForJQ',
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
         {
           //"userCode": "rbop01",
           "userCode":sessionStorage.getItem('userCode'),
@@ -438,7 +424,7 @@ import moment from 'moment'
       // 驳回
       rejected_01(formName){
         var that = this;
-        this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/RejectionOfWorkTasksForJQ',
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ',
         {
           //"userCode": "rbop01",
           "userCode":sessionStorage.getItem('userCode'),
@@ -451,7 +437,8 @@ import moment from 'moment'
             that.pageList();
             //that.repeal();
         })
-        this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/EndProcess',
+
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',
         {
           //"userCode": "rbop01",
           "jq_id":this.guid,
@@ -470,41 +457,26 @@ import moment from 'moment'
             }
         })
       },
-
       // 详情弹窗
       checkIncome(row){
         this.pid = row.paymentID;
         this.detailstShow = true;
-        // this.getLabel();
-
+        this.getLabel();
       },
       closeDetailstShow(){
         this.detailstShow = false;
       },
       // 获取一条详情
-      // getLabel(){
-
-      //   console.log(this.tableData)
-      //   this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
-      //       "id":this.pid
-      //   }).then(res => {
-      //     if(res.data.isSuccess == true){
-      //        this.guid = res.data.object.guid
-      //        this.fundamental=res.data.object;
-      //        this.tour_id = res.data.object.planID;
-      //        this.getTourByPlanId(res.data.object.planID);
-      //        this.getPaymentdetails(res.data.object.planID);
-      //        this.auditResult(res.data.object.guid);
-      //        /*res.data.object.files.forEach(function(v, k, arr) {
-      //             that.fileList.push({
-      //               "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
-      //               "name": arr[k]['name'],
-      //             });
-      //           })*/
-      //     }
-      //  })
-
-      // },
+      getLabel(){
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
+            "id":this.pid
+        }).then(res => {
+          if(res.data.isSuccess == true){
+             this.guid = res.data.object.guid
+            console.log(this.guid)
+          }
+       })
+      },
       getTourByPlanId(val) {
         var that = this
         that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
@@ -583,11 +555,7 @@ import moment from 'moment'
         this.tour_id = row['planID'];
         this.id = row.id;
       },
-  },
-  mounted(){
-    this.pageList();
-  },
-  created(){}
+  }
 }
 </script>
 <style lang="scss" scoped>

@@ -309,9 +309,6 @@ import moment from 'moment'
 		   tableCourse:[],
        planID:'',
        tour_id:0,
-
-
-
       }
     },
     filters: {
@@ -352,8 +349,6 @@ import moment from 'moment'
           }
         }
       },
-
-
       planStage(){
       	this.plan_stage = '';
       	this.plan_name = '';
@@ -383,7 +378,7 @@ import moment from 'moment'
       },
       auditResult(result) {
         var that =this
-          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ', {
+          this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
             jQ_ID: result,
             jQ_Type: 1,
           }).then(obj => {

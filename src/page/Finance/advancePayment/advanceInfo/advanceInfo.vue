@@ -169,7 +169,7 @@
                   </el-table-column>
                   <el-table-column label="借款类型" align="center">
                     <template slot-scope="scope">
-                      <span v-if="scope.row.paymentType==1">无收入借款</span> 
+                      <span v-if="scope.row.paymentType==1">无收入借款</span>
                       <span v-if="scope.row.paymentType==2">预付款</span>
                     </template>
                   </el-table-column>
@@ -186,7 +186,7 @@
                       <span style="color:blue;" v-on:click="advanceProcess(scope.row.id)">查看</span>
                     </template>
                   </el-table-column>
-                  
+
                 </el-table>
               </el-form-item>
 
@@ -1062,7 +1062,7 @@ export default {
       });
     },
     sendBPM(result) {
-      this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/StartUpWorkFlowForJQ', {
         jQ_ID: result.guid,
         jQ_Type: result.flowModel,
         workflowCode: result.flowModelName,
@@ -1247,7 +1247,7 @@ export default {
       if (this.$refs['ruleForm'] != undefined) {
         this.$refs['ruleForm'].resetFields();
       }
-      
+
     },
   },
   created() {

@@ -84,7 +84,7 @@
               <!--
                  <el-radio label="1" class="radiomar">销售价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio><br/>
                  <el-radio label="2" class="radiomar">同业价：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio><br/>
-                 <el-radio label="自定义" class="radiomar">自定义： 
+                 <el-radio label="自定义" class="radiomar">自定义：
                        成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
                        儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
                        老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
@@ -120,7 +120,7 @@
             <div class="red ml13" style="margin-top:-30px" v-show="enrolNums">报名人数不能为空</div>
           </div>
           <!--
-            <el-form-item label="" prop="">            
+            <el-form-item label="" prop="">
               <div class="ml13">单房差 ￥340</div>
             </el-form-item>
           -->
@@ -637,7 +637,7 @@ export default {
     //启动工作流
     startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
       this.$http
-        .post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
+        .post(this.GLOBAL.jqUrl + "/JQ/StartUpWorkFlowForJQ", {
           jQ_ID: OrderID,
           jQ_Type: FlowModel,
           workflowCode: FlowModelName,
@@ -650,7 +650,7 @@ export default {
     //提交工作任务
     submitWAForJQ(Usercode, workItemID) {
       this.$http
-        .post(this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ", {
+        .post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ", {
           userCode: Usercode,
           workItemID: workItemID,
           commentText: "测试"

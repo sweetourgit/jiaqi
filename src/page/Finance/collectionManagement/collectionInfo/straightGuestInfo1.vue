@@ -692,7 +692,7 @@ export default {
       this.fileList = fileList
     },
     handleSuccess(res, file, fileList) {
-      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
+      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
         this.time = fileList.length;
         if (this.fileList.length == 0) {
@@ -922,7 +922,7 @@ export default {
         })
     },
     sendBPM(result) {
-      this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/StartUpWorkFlowForJQ', {
         jQ_ID: result.guid,
         jQ_Type: result.flowModel,
         workflowCode: result.flowModelName,
