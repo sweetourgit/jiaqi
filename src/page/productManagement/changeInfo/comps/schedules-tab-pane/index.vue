@@ -99,7 +99,8 @@ export default {
       if(!payload) return this.schedules.push(...this.$deepCopy(this.proto));
       payload> 0? this.plusInit(payload): this.minusInit(payload);
     },
-
+    
+    // 基本信息中天数增加了
     plusInit(payload){
       let length= this.proto.length;
       let result= [];
@@ -110,7 +111,8 @@ export default {
       }
       this.schedules.push(...this.$deepCopy(this.proto), ...result);
     },
-
+    
+    // 基本信息中天数减少了
     minusInit(payload){
       let length= this.proto.length+ payload;
       this.schedules.push(...this.$deepCopy(this.proto.slice(0, length)));
