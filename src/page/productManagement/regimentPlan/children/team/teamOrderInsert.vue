@@ -1060,23 +1060,13 @@ export default {
     //     .then(res => {});
     // },
     delTravel(type, index){//删除单条表格数据
-      this.$confirm("是否删除改条出行人信息?", "提示", {
+      this.$confirm("是否删除该条出行人信息?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
          type: "warning"
       }).then(res =>{
-        // for(let i = 0 ; i < this.tour[index].length ; i++){
-        //   // console.log(this.tour[index].length)
-        //   // console.log(this.enrolNum[index])
-        //   this.tour[index].splice(i,1);
-        //   this.enrolNum[index] = this.tour[index].length;
-        // }
-          this.tour[index].splice(type,1);
-          this.enrolNum[index] = this.tour[index].length;
-        // console.log(type)
-        // console.log(index)
-        // this.tour[index].splice(index,1);
-        // this.enrolNum[index] = this.tour[index].length;
+        this.tour[index].splice(type,1);//手动删除单条出行人信息
+        this.enrolNum[index] = this.tour[index].length;//删除出行人信息后，表格长度和报名人数相等
       })
     },
     fillTour(type, index) {
