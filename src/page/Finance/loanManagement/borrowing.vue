@@ -1115,7 +1115,7 @@ export default {
     },
     // 撤销借款
     /*repeal(){
-        this.$confirm("其否需要撤销该笔借款?", "提示", {
+        this.$confirm("是否需要撤销该笔借款?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
            type: "warning"
@@ -1143,7 +1143,7 @@ export default {
       },*/
     // 结束工作流程
     repeal(){
-      this.$confirm("其否需要撤销该笔借款?", "提示", {
+      this.$confirm("是否需要撤销该笔借款?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
          type: "warning"

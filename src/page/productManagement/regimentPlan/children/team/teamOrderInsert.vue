@@ -48,10 +48,6 @@
                   <div width="80" class="fl">余位:</div>
                   <div class="fl ml13">{{teampreviewData.remaining}}</div>
                 </td>
-                <td width="33%">
-                  <div width="80" class="fl">参考结算:</div>
-                  <div class="fl ml13">0.00</div>
-                </td>
                 <!-- <td width="33%">
                   <div width="80" class="fl">参考结算:</div>
                   <div class="fl ml13">{{average | numFilter}}</div>
@@ -178,7 +174,7 @@
               <td class="tc">
                 <span class="fl blue cursor" style="margin:0 0 0 18px"@click="fillTour(indexPrice,index)">编辑</span>
                 <span class="fl" style="margin:0 8px 0 8px;">|</span>
-                <span class="fl blue cursor" @click="delTravel(indexPrice,index)">删除</span>
+                <span class="fl blue cursor" @click="delTravel(index,indexPrice)">删除</span>
               </td>
             </tr>
           </table>
@@ -605,6 +601,9 @@ export default {
     },
     "ruleForm.type": function(val) {
       this.changeQuota();
+    },
+    "ruleForm.price": function (val) {
+      this.compPrice();
     }
   },
   methods: {
@@ -822,10 +821,11 @@ export default {
           }
           // 拼接字段 enrollDetail报名类型详情
           let enrollDetail = "";
-          console.log(this.salePrice)
           this.salePrice.forEach((ele, idx) => {
             let price = this.toDecimal2(ele.price_01);
-            enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
+            if(this.enrolNum[idx]!==0){
+              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
+            }
           });
           this.ifOrderInsert = true;
           //判断出行人信息是否填写完整
@@ -1066,10 +1066,17 @@ export default {
          type: "warning"
       }).then(res =>{
         // for(let i = 0 ; i < this.tour[index].length ; i++){
-        //   console.log(this.tour[index])
-        //   this.tour[index].splice(i,index);
+        //   // console.log(this.tour[index].length)
+        //   // console.log(this.enrolNum[index])
+        //   this.tour[index].splice(i,1);
+        //   this.enrolNum[index] = this.tour[index].length;
         // }
-        this.tour[index].splice(index,1);
+          this.tour[index].splice(type,1);
+          this.enrolNum[index] = this.tour[index].length;
+        // console.log(type)
+        // console.log(index)
+        // this.tour[index].splice(index,1);
+        // this.enrolNum[index] = this.tour[index].length;
       })
     },
     fillTour(type, index) {
@@ -1115,6 +1122,7 @@ export default {
     compPrice() {
       //计算总价
       this.ruleForm.totalPrice = 0;
+      console.log(this.ruleForm.price)
       for (let i = 0; i < this.enrolNum.length; i++) {
         console.log(this.enrolNum[i])
         this.ruleForm.totalPrice += (this.enrolNum[i] == undefined ? 0 : this.enrolNum[i]) * (this.ruleForm.price == 1 ? this.salePrice[i].price_01 : this.salePrice[i].price_02);

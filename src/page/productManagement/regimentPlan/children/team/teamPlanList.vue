@@ -70,6 +70,8 @@
             <span class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
             <span class="em" v-if="scope.row.regimentType=='3'">|</span>
             <span class="cursor blue" @click="operation(2)">详情</span>
+            <span class="em" v-if="scope.row.regimentType=='1'">|</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='1'">封团</span>
           </template>
         </el-table-column>
       </el-table>
