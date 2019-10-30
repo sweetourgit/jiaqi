@@ -80,6 +80,7 @@
         <el-button plain :disabled="reable">退改</el-button>
         <el-button plain @click="groupStage" :disabled="reable">团期/库存</el-button>
         <el-button @click="handInfo" plain :disabled="reable">修改行程信息</el-button>
+        <!-- 29日改过 -->
         <el-button type="danger" plain :disabled="reable" @click="handleDelete">删除</el-button>
       </div>
 
@@ -180,7 +181,7 @@
               </template>
               <el-button :disabled="ccc[scope.$index].btnDisabled" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button>
               <!-- <el-button :disabled="scope.codePrefix ==''|| scope.codeSuffix ==''|| scope.uptoDay =='' || JSON.stringify(scope.costs) == '[]'" size="mini" type="primary" @click="bandlePrice(scope.$index)">价格</el-button> -->
-              <el-button size="mini" type="primary" @click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate, true)">成本</el-button>
+              <el-button size="mini" type="primary" class="testj" @click="basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate, true)">成本</el-button>
 
               <!-- <el-button size="mini" type="danger" @click="delSku(scope.$index)">删除</el-button> -->
             </template>
@@ -1220,73 +1221,73 @@ export default {
     },
     // 请求数据成功时显示当前的列表以及价格的
     basicPrice(id, rate, ShowBase) {
-    console.log('id====', id);
-    this.tableData12 = [];
-    let that = this;
-    that.isUsePrice = true;
-      if (ShowBase) {
-        this.basicbutton = true;
-      }
-      this.team = id;
-      this.lilv = rate;
-      this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
-          object: {
-            packageID: this.team
-          }
-        })
-        .then(res => {// 成本为空null时报错  所以判断
-          if (res.data.isSuccess) {
-            // for(let i = 0;i<res.data.id;i++){
-            //   this.isUsePrice[i] = false;
-            // }
-            for(let i = 0;i < this.ccc.length;i++) {
-              if(this.team === this.ccc[i].id||this.lilv === this.ccc[i].rate) {
-                this.ccc[i].btnDisabled = false;
-                this.tabBtnDisabled = false;
-                break;
+      console.log('id====', id);
+      this.tableData12 = [];
+      let that = this;
+      that.isUsePrice = true;
+        if (ShowBase) {
+          this.basicbutton = true;
+        }
+        this.team = id;
+        this.lilv = rate;
+        this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
+            object: {
+              packageID: this.team
+            }
+          })
+          .then(res => {// 成本为空null时报错  所以判断
+            if (res.data.isSuccess) {
+              // for(let i = 0;i<res.data.id;i++){
+              //   this.isUsePrice[i] = false;
+              // }
+              for(let i = 0;i < this.ccc.length;i++) {
+                if(this.team === this.ccc[i].id||this.lilv === this.ccc[i].rate) {
+                  this.ccc[i].btnDisabled = false;
+                  this.tabBtnDisabled = false;
+                  break;
+                }
+              }
+              this.tableData12 = res.data.objects;
+              this.tableData12.forEach(function(v, k, arr) {
+                if (arr[k]["suppliertype"] == 0) {
+                  arr[k]["suppliertype"] = "船票";
+                } else if (arr[k]["suppliertype"] == 1) {
+                  arr[k]["suppliertype"] = "地接社";
+                } else if (arr[k]["suppliertype"] == 2) {
+                  arr[k]["suppliertype"] = "机票";
+                } else if (arr[k]["suppliertype"] == 3) {
+                  arr[k]["suppliertype"] = "拼票";
+                } else if (arr[k]["suppliertype"] == 4) {
+                  arr[k]["suppliertype"] = "酒店";
+                } else if (arr[k]["suppliertype"] == 5) {
+                  arr[k]["suppliertype"] = "签证";
+                } else if (arr[k]["suppliertype"] == 6) {
+                  arr[k]["suppliertype"] = "合作拼团社";
+                } else if (arr[k]["suppliertype"] == 7) {
+                  arr[k]["suppliertype"] = "游轮";
+                } else if (arr[k]["suppliertype"] == 8) {
+                  arr[k]["suppliertype"] = "火车票";
+                } else if (arr[k]["suppliertype"] == 9) {
+                  arr[k]["suppliertype"] = "汽车票";
+                }
+              });
+            }else{
+              
+              for(let i = 0;i < this.ccc.length;i++) {
+                if(this.team === this.ccc[i].id||this.lilv === this.ccc[i].rate) {
+                  this.ccc[i].btnDisabled = true;
+                  this.tabBtnDisabled = true;
+                  break;
+                }
               }
             }
-            this.tableData12 = res.data.objects;
-            this.tableData12.forEach(function(v, k, arr) {
-              if (arr[k]["suppliertype"] == 0) {
-                arr[k]["suppliertype"] = "船票";
-              } else if (arr[k]["suppliertype"] == 1) {
-                arr[k]["suppliertype"] = "地接社";
-              } else if (arr[k]["suppliertype"] == 2) {
-                arr[k]["suppliertype"] = "机票";
-              } else if (arr[k]["suppliertype"] == 3) {
-                arr[k]["suppliertype"] = "拼票";
-              } else if (arr[k]["suppliertype"] == 4) {
-                arr[k]["suppliertype"] = "酒店";
-              } else if (arr[k]["suppliertype"] == 5) {
-                arr[k]["suppliertype"] = "签证";
-              } else if (arr[k]["suppliertype"] == 6) {
-                arr[k]["suppliertype"] = "合作拼团社";
-              } else if (arr[k]["suppliertype"] == 7) {
-                arr[k]["suppliertype"] = "游轮";
-              } else if (arr[k]["suppliertype"] == 8) {
-                arr[k]["suppliertype"] = "火车票";
-              } else if (arr[k]["suppliertype"] == 9) {
-                arr[k]["suppliertype"] = "汽车票";
-              }
-            });
-          }else{
-            
-             for(let i = 0;i < this.ccc.length;i++) {
-              if(this.team === this.ccc[i].id||this.lilv === this.ccc[i].rate) {
-                this.ccc[i].btnDisabled = true;
-                this.tabBtnDisabled = true;
-                break;
-              }
-            }
-          }
-        });
-      this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
-          id: this.team
-        })
-        .then(res => {
-          this.count = res.data.average;
-        });
+          });
+        this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
+            id: this.team
+          })
+          .then(res => {
+            this.count = res.data.average;
+          });
     },
     // 判断输入的值是否在数据库中
     fucking(index) {
@@ -1307,8 +1308,12 @@ export default {
             this.$message.error("错了哦，团号不能为空");
           
         
-          } else if(this.boon === true){
+          } else if(boon === true){
             this.isInfo = true;
+             for(let i = 0;i < this.ccc.length;i++) {
+                this.ccc[i].btnDisabled = true;
+                this.tabBtnDisabled = true;
+             }
             this.$message.error("错了哦，团号不能重复");
           
             
@@ -1432,7 +1437,7 @@ export default {
         .catch(function(obj) {});
     },
     reset() {
-      //重置
+      //重置29日改过
       this.productId = "";
       this.productTitle = "";
       this.productPos = "";
@@ -1443,6 +1448,67 @@ export default {
       this.productBehind = "";
       this.originPlace = "";
       this.originMod = "";
+      this.pageNum = 1;
+      console.log(this.originMod);
+
+      if (!this.productTitle) {
+        this.productTitle = "";
+      } else {
+        this.pageNum = 1;
+      }
+      if (!this.productUser) {
+        this.productUser = "";
+      } else {
+        this.pageNum = 1;
+      }
+
+      if (!this.productPos || !this.originPlace) {
+        this.productPos = 0;
+      } else {
+        this.pageNum = 1;
+      }
+      if (!this.productMod || !this.originMod) {
+        this.productMod = 0;
+      } else {
+        this.pageNum = 1;
+      }
+
+      var that = this;
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/team/api/teamsearch", {
+          pageIndex: this.pageNum,
+          pageSize: this.pagesize,
+          total: 0,
+          object: {
+            id: that.productId == "" ? 0 : that.productId,
+            title: that.productTitle,
+            createUser: that.productUser,
+            minPrice: that.productPrefix == "" ? 0 : that.productPrefix,
+            maxPrice: that.productBehind == "" ? 0 : that.productBehind,
+            podID: that.productPos,
+            destinationID: that.productMod
+          },
+        })
+        .then(function(obj) {
+          console.log(obj.data.objects[0].createUser,123456)
+          that.total = obj.data.total;
+          that.tableData = obj.data.objects;
+          that.tableData.forEach(function(v, k, arr) {
+            arr[k]["type"] = "跟团游";
+            arr[k]["name"] = obj.data.objects[k].title;
+            arr[k]["mu_address"] =
+              obj.data.objects[k].destinations[0].destination;
+            arr[k]["options"] = obj.data.objects[k].createUser;
+            arr[k]["status"] = "1";
+            arr[k]["opers"] = "飞猪 携程";
+            arr[k]["refPrice"] = obj.data.objects[k].refPrice;
+            //arr[k]["price"] = obj.data.objects[k].refPrice;
+          });
+        })
+        .catch(function(obj) {
+          console.log(obj);
+        });
+      
     },
     handleDelete() {
       console.log(this.pid);
@@ -1460,6 +1526,7 @@ export default {
               id: this.pid
             })
             .then(res => {
+              console.log(res,4444)
               if (res.data.isSuccess == false) {
                 this.$confirm("该产品有计划，不允许删除", "提示", {
                   confirmButtonText: "确定",
@@ -1468,7 +1535,63 @@ export default {
                 });
               } else {
                 this.$message.success("删除成功");
-                this.pageList();
+                 if (!this.productTitle) {
+        this.productTitle = "";
+      } else {
+        this.pageNum = 1;
+      }
+      if (!this.productUser) {
+        this.productUser = "";
+      } else {
+        this.pageNum = 1;
+      }
+
+      if (!this.productPos || !this.originPlace) {
+        this.productPos = 0;
+      } else {
+        this.pageNum = 1;
+      }
+      if (!this.productMod || !this.originMod) {
+        this.productMod = 0;
+      } else {
+        this.pageNum = 1;
+      }
+
+      var that = this;
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/team/api/teamsearch", {
+          pageIndex: this.pageNum,
+          pageSize: this.pagesize,
+          total: 0,
+          object: {
+            id: that.productId == "" ? 0 : that.productId,
+            title: that.productTitle,
+            createUser: that.productUser,
+            minPrice: that.productPrefix == "" ? 0 : that.productPrefix,
+            maxPrice: that.productBehind == "" ? 0 : that.productBehind,
+            podID: that.productPos,
+            destinationID: that.productMod
+          }
+        })
+        .then(function(obj) {
+          that.total = obj.data.total;
+          that.tableData = obj.data.objects;
+          that.tableData.forEach(function(v, k, arr) {
+            arr[k]["type"] = "跟团游";
+            arr[k]["name"] = obj.data.objects[k].title;
+            arr[k]["mu_address"] =
+              obj.data.objects[k].destinations[0].destination;
+            arr[k]["options"] = obj.data.objects[k].createUser;
+            arr[k]["status"] = "1";
+            arr[k]["opers"] = "飞猪 携程";
+            arr[k]["refPrice"] = obj.data.objects[k].refPrice;
+            //arr[k]["price"] = obj.data.objects[k].refPrice;
+          });
+        })
+        .catch(function(obj) {
+          console.log(obj);
+        });
+                // this.pageList();
               }
             });
         })
@@ -1509,6 +1632,10 @@ export default {
 
       if (this.codePrefix == "" || this.codeSuffix == "") {
         this.$message.error("错了哦，团号不能为空");
+        this.isCollapse = true;
+      }
+      else{
+        this.isCollapse = false;
       }
       // } else if(this.codePrefix === this.codeSuffix) {
       //    this.$message.error("错了哦，团号不能重复");
@@ -1686,6 +1813,7 @@ export default {
     handleClick(row) {
       console.log(row);
     },
+    // 列表
     handleSizeChange(val) {
       if (!this.productTitle) {
         this.productTitle = "";
@@ -1820,6 +1948,9 @@ export default {
     },
     // 团期/库存按钮 获取dialog数据
     groupStage() {
+      // document.getElementById("#testa").basicPrice()
+      // this.$refs.config.basicPrice();
+      // console.log($('.testj'))
       this.ccc = [];
       var that = this;
       this.$http
@@ -2057,6 +2188,10 @@ export default {
       this.pid = row["id"];
       this.reable = false;
     },
+  },
+  mounted(){
+    console.log($('.testj'))
+    $('.testj').click()
   },
   created() {
     this.themeList();

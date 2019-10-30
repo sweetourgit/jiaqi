@@ -122,7 +122,7 @@ export default {
         copy.count= parseFloat(copy.count);
         copy.averageCost= parseFloat(copy.averageCost);
       })
-      return Object.assign(this.$deepCopy(this.proto), copy);
+      return copy? Object.assign(this.$deepCopy(this.proto), copy): copy;
     },
 
     addAction(){

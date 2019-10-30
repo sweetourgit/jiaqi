@@ -65,9 +65,9 @@
               :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
             ></el-input-number>
           </div>
-          <div v-bind:class="{red:quota[index]}">
+          <div>
             余位{{item.quota}}
-            <span v-show="quota[index]">库存不足</span>
+            <!-- <span v-show="quota[index]">库存不足</span>  v-bind:class="{red:quota[index]}" -->
           </div>
         </div>
         <div class="red cb" v-show="enrolNums">{{enrolNumsWarn}}</div>
@@ -358,7 +358,7 @@ export default {
           id: orderId
         })
         .then(res => {
-          // console.log(res, "get");
+          console.log(res, "get");
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -507,17 +507,20 @@ export default {
           }
           break;
         case 1:
-          let guest = this.orderget.guests;
-          for (let i = 0; i < guest.length; i++) {
-            if (guest[i].cnName == "点击填写") {
-              this.isChangeNumber = true;
-            } else {
-              this.isChangeNumber = false;
+          setTimeout(() => {
+            let guest = this.orderget.guests;
+            for (let i = 0; i < guest.length; i++) {
+              if (guest[i].cnName == "点击填写") {
+                this.isChangeNumber = true;
+              } else {
+                this.isChangeNumber = false;
+              }
             }
-          }
-          if (this.isChangeNumber === true) {
-            this.$message.error("请补全出行人信息");
-          }
+            if (this.isChangeNumber === true) {
+              this.$message.error("请补全出行人信息");
+            }
+          }, 200);
+
           this.statusNow = "补充材料";
           this.statusNext = "签订合同";
           this.statusEnd = "待出行";
@@ -582,7 +585,6 @@ export default {
     },
     // 补充资料状态下监听动态按钮 价格变革则不能点击
     addInfoFun() {
-      // console.log(this.orderget.payable, this.payable);
       if (this.orderget.payable !== this.payable) {
         this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
       } else {
@@ -601,11 +603,16 @@ export default {
           this.salePrice[i].quota =
             parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
           salePriceType = this.salePrice[i];
-          if (salePriceType.quota < 0) {
-            //判断是否显示库存不足
-            this.quota[i] = true;
-          } else {
-            this.quota[i] = false;
+          // if (salePriceType.quota < 0) {
+          //   //判断是否显示库存不足
+          //   this.quota[i] = true;
+          // } else {
+          //   this.quota[i] = false;
+          // }
+          if (salePriceType.quota === -1 || salePriceType.quota === NaN) {
+            // console.log(666, "走这了");
+            salePriceType.quota = 0;
+            // this.enrolNum[index] = 0;
           }
         }
       }
@@ -621,8 +628,8 @@ export default {
           this.orderget.orderStatus === 2
         ) {
           this.isChangeNumber = true;
-          this.orderget.orderStatus = 10;
-          this.orderget.occupyStatus = 3;
+          // this.orderget.orderStatus = 10;
+          // this.orderget.occupyStatus = 3;
         }
       }
     },
@@ -731,7 +738,6 @@ export default {
           id: planId
         })
         .then(res => {
-          // console.log("enrolls余位data", res.data.objects);
           if (res.data.isSuccess == true) {
             this.preLength = []; //记录上一次报名人数[1,3]形式
             this.enrolNum = []; //报名人数[1,3]形式
@@ -742,13 +748,10 @@ export default {
               this.quota.push(false);
               this.tour.push([]);
             }
-            // console.log(this.quota,"this.quota")
             //出游人信息转换格式,二维数组，通过类型分类,便于页面分类型显示出游人
             let guest = this.orderget.guests;
             let j = 0;
             for (let i = 0; i < guest.length; i++) {
-              // console.log(++j,"12")
-              // console.log(guest[i].enrollName)
               if (i > 0 && guest[i].enrollName != guest[i - 1].enrollName) {
                 this.tour[j + 1].push(guest[i]);
                 j += 1;
@@ -756,14 +759,11 @@ export default {
                 this.tour[j].push(guest[i]);
               }
             }
-            // console.log(this.tour,"this.tour")
             //设置报名人数
             for (let i = 0; i < this.tour.length; i++) {
               this.preLength.push(this.tour[i].length);
               this.enrolNum.push(this.tour[i].length);
             }
-            // console.log(this.preLength,"this.preLength")
-            // console.log(this.enrolNum,"this.enrolNum")
             for (let i = 0; i < data.length; i++) {
               if (
                 data[i].quota == 0 ||
@@ -794,7 +794,6 @@ export default {
         })
         .then(res => {
           if (res.data.isSuccess == true) {
-            // console.log(res,'团期计划订单信息预览teampreviewData')
             this.teampreviewData = res.data.object;
             this.teamEnrolls(planId);
           }
@@ -857,7 +856,7 @@ export default {
             : 0
         );
       }
-      this.addInfoFun()
+      this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
       //更新订单，补充游客信息
@@ -876,6 +875,19 @@ export default {
           } else if (occupyStatus == 2) {
             obj.occupyStatus = 3;
           } //++++++
+
+          // get的总价不等于更改后的总价时 补充资料待出行都要跳转回到确认中占位状态
+          // if (this.orderget.payable !== this.payable) {
+          //   if (
+          //     this.orderget.orderStatus === 1 ||
+          //     this.orderget.orderStatus === 3 ||
+          //     this.orderget.orderStatus === 2
+          //   ) {
+          //     // this.isChangeNumber = true;
+          //     this.orderget.orderStatus = 10;
+          //     this.orderget.occupyStatus = 3;
+          //   }
+          // }
 
           //获取报名总人数
           obj.number = this.number;
@@ -913,10 +925,13 @@ export default {
             guest[i].credTOV = new Date(guest[i].credTOV).getTime();
           }
 
-           // 补充资料和待出行 信息更改跳转回到确认占位状态
-          if (this.isChangeNumber === true && (this.orderget.orderStatus === 1 || this.orderget.orderStatus === 2)) {
-            console.log(1)
-            obj.orderStatus = 10
+          // 补充资料和待出行 信息更改跳转回到确认占位状态
+          if (
+            this.isChangeNumber === true &&
+            (this.orderget.orderStatus === 1 || this.orderget.orderStatus === 2)
+          ) {
+            console.log(1);
+            obj.orderStatus = 10;
           }
 
           obj.guests = guest;

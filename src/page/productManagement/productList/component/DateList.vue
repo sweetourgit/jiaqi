@@ -1759,13 +1759,15 @@
             "date": this.clickData
           }
         }).then(res => {
+          // 29日改过
           this.signUptypeSelect = []; // 共享库存数据
           res.data.objects.forEach(item => {
             this.signUptypeSelect.push({
               "id": item.id,
               "name": item.name,
               "count": item.count, // 数量
-              "averageCost": item.averageCost //  人均机票成本
+              "averageCost": item.averageCost, //  人均机票成本
+             
             })
             console.log('获取共享库存', this.signUptypeSelect)
           })

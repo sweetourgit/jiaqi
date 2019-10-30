@@ -178,64 +178,60 @@
             <table>
               <tr>
                 <td class="tr">套餐名称&nbsp;&nbsp;</td>
-                <td>{{getListOneMessage.package}}</td>
+                <td class="longWeight">{{getListOneMessage.package}}</td>
                 <div class="BodyTableCenter">
                   <td class="tr">出发地&nbsp;&nbsp;</td>
-                  <td>{{getListOneMessage.pod}}</td>
+                  <td class="longWeight">{{getListOneMessage.pod}}</td>
                 </div>
                 <td class="tr">目的地&nbsp;&nbsp;</td>
-                <td>{{getListOneMessage.destination}}</td>
+                <td class="longWeight">{{getListOneMessage.destination}}</td>
               </tr>
               <tr>
                 <td class="tr">出发日期&nbsp;&nbsp;</td>
-                <td>{{getListOneMessage.date}}</td>
+                <td class="longWeight">{{getListOneMessage.date}}</td>
                 <div class="BodyTableCenter">
                   <td class="tr">数量&nbsp;&nbsp;</td>
-                  <td valign="top">{{getListOneMessage.enrollDetail}}</td>
+                  <td class="longWeight" valign="top">{{getListOneMessage.enrollDetail}}</td>
                 </div>
                 <td class="tr">产品类型&nbsp;&nbsp;</td>
-                <td valign="top">跟团游</td>
+                <td class="longWeight">跟团游</td>
               </tr>
               <tr>
                 <td class="tr">整体优惠&nbsp;&nbsp;</td>
-                <td valign="top">{{toDecimal2(getListOneMessage.entiretyFav)}}</td>
+                <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.entiretyFav)}}</td>
                 <div class="BodyTableCenter">
                   <td class="tr">其他费用</td>
-                  <td valign="top">
+                  <td class="longWeight" valign="top">
                     {{item.otherTitle}} &nbsp;
                     <span>{{toDecimal2(getListOneMessage.otherPrice)}}</span>
                   </td>
                 </div>
                 <td class="tr">订单来源&nbsp;&nbsp;</td>
-                <td>{{getListOneMessage.orderChannels}}</td>
+                <td class="longWeight">{{getListOneMessage.orderChannels}}</td>
               </tr>
               <tr>
                 <td class="tr">支付方式&nbsp;&nbsp;</td>
-                <td></td>
+                <td class="longWeight"></td>
                 <div class="BodyTableCenter">
                   <td class="tr">操作&nbsp;&nbsp;</td>
-                  <td valign="top">{{getListOneMessage.op}}</td>
+                  <td class="longWeight" valign="top">{{getListOneMessage.op}}</td>
                 </div>
                 <td class="tr">商户销售&nbsp;&nbsp;</td>
-                <td valign="top"></td>
+                <td class="longWeight" valign="top"></td>
               </tr>
               <tr>
                 <td class="tr">平台&nbsp;&nbsp;</td>
-                <td valign="top">{{getListOneMessage.platform}}</td>
+                <td class="longWeight" valign="top">{{getListOneMessage.platform}}</td>
                 <div class="BodyTableCenter">
-                  <td class="tr">产品类型&nbsp;&nbsp;</td>
-                  <td valign="top">跟团游</td>
+                  <td class="tr">销售&nbsp;&nbsp;</td>
+                  <td class="longWeight" valign="top">{{getListOneMessage.saler}}</td>
                 </div>
-                <td class="tr">销售&nbsp;&nbsp;</td>
-                <td valign="top">{{getListOneMessage.saler}}</td>
+                <td class="tr">订单总额&nbsp;&nbsp;</td>
+                <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.payable)}}</td>
               </tr>
               <tr>
-                <td class="tr">订单总额&nbsp;&nbsp;</td>
-                <td valign="top">{{toDecimal2(getListOneMessage.payable)}}</td>
-                <div class="BodyTableCenter">
-                  <td class="tr">已付金额&nbsp;&nbsp;</td>
-                  <td valign="top">{{toDecimal2(getListOneMessage.paid)}}</td>
-                </div>
+                <td class="tr">已付金额&nbsp;&nbsp;</td>
+                <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.paid)}}</td>
               </tr>
             </table>
             <el-breadcrumb separator="|" class="confirm-time">
@@ -291,7 +287,7 @@
         :orderId="orderId"
         :variable="variable"
         :dialogType="dialogType"
-        :orderCode="orderCode"
+        :orderCodeSon="orderCodeSon"
       ></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
     </div>
@@ -337,6 +333,7 @@ export default {
       refundStatus: 0,
       refundNum: "0",
       orderCode: "", //订单ID
+      orderCodeSon: null, //传给子组件
       teamID: "", //产品ID
       groupCode: "", //团期计划ID
       beginDate: "",
@@ -370,7 +367,7 @@ export default {
         {
           value: "0",
           label: "跟团游"
-        } 
+        }
       ],
       //订单列表
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
@@ -434,7 +431,6 @@ export default {
 
     // 请求list中的一个数据
     axiosListOneInfo(id) {
-      // console.log(id)
       this.$http
         .post(this.GLOBAL.serverSrc + "/order/all/api/pageinfo", {
           id: id
@@ -444,6 +440,7 @@ export default {
           this.getListOneMessage = res.data.object;
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
+          this.orderCodeSon = res.data.object.orderCode;
           //订单来源
           // if (this.getListOneMessage.orderChannel == 1) {
           //   this.getListOneMessage.orderChannel = "同业";
@@ -603,6 +600,7 @@ export default {
           object: object
         })
         .then(res => {
+          // console.log("orderpage",res)
           this.total = res.data.total;
           if (res.data.isSuccess == true) {
             this.orderpage = res.data.objects;
@@ -821,8 +819,8 @@ export default {
       }
       return s;
     },
-    childByValue (childByValue) {
-      this.showContent = childByValue
+    childByValue(childByValue) {
+      this.showContent = childByValue;
     }
   }
 };
@@ -842,7 +840,11 @@ export default {
 }
 
 .BodyTableCenter {
-  margin: 0 96px 0 122px;
+  margin: 0 80px 0 73px;
+}
+
+.longWeight {
+  width: 160px;
 }
 
 .demo-input-suffix {
