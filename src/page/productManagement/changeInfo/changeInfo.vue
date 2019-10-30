@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import './tools'
 import { 
   getTeamScheduleDTOList, 
   TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, 

@@ -31,11 +31,8 @@ import scenicTicketingPledging from '@/page/productManagement/regimentPlan/child
 import scenicTicketingBillReporting from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingBillReporting'
 import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
 import changePro from '@/page/productManagement/listInfo/listInfo'
-import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
 import blacklist from '@/page/contentInfo/blacklist/blacklist'
 import workFlowList from '@/page/contentInfo/workFlowList/workFlowList'//工作流接口查询管理test
-import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
-import merchantInfo1 from '@/page/contentInfo/merchantInfo/merchantInfo1'
 import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
 //import proList from '@/page/contentInfo/proList/proList'
@@ -223,16 +220,8 @@ export default new Router({
       }
     }, {
       path: '/merchantInfo',
-      component: merchantInfo,
+      component: () => import('@/page/contentInfo/merchantInfo/merchantInfo'),
       name: '商户信息',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
-    }, {
-      path: '/merchantInfo1',
-      component: merchantInfo1,
-      name: '商户信息1',
       meta: {
         keepAlive: true,
         auth: true
