@@ -402,7 +402,7 @@ export default {
     },
     //恢复售卖
     haltSales_01(status) {
-      this.$confirm("该团期是否恢复售卖?", "提示", {
+      this.$confirm("该团期是否正常售卖?", "提示", {
         confirmButtonText: "停售",
         cancelButtonText: "取消",
         type: "warning"
