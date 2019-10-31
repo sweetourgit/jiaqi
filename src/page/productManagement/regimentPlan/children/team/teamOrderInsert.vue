@@ -74,18 +74,18 @@
               </el-form-item>
           </div>
           <el-form-item label="价格选择" prop="price" class="cb price">
-            <el-radio-group v-model="ruleForm.price" class="salesPrice">
+            <!-- <el-radio-group v-model="ruleForm.price" class="salesPrice"> -->
               <!-- <span v-for="(item,index) in salePrice" :key="index" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span>
               <br /> -->
-             <el-radio label="1" class="radiomar">直客价格：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio>
-             <el-radio label="2" class="radiomar">商户价格(同业、门店)：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio>
+             <el-radio label="1" v-model="ruleForm.price" class="radiomar">直客价格：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio>
+             <el-radio label="2" v-model="ruleForm.price" class="radiomar">商户价格(同业、门店)：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio>
              <!-- <el-radio label="自定义" class="radiomar">自定义： 
                    成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
                    儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
                    老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
                    单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
           </el-radio> -->
-            </el-radio-group>
+            <!-- </el-radio-group> -->
           </el-form-item>
           <el-form-item label="报名人数" class="fl">
             <div class="num-req">*</div>
@@ -726,11 +726,6 @@ export default {
         this.enrolNum[index] = this.salePriceNum[index].quota;
         arrLength = this.salePriceNum[index].quota;
       }
-      console.log(this.salePriceNum[index].quota)
-      console.log(arrLength)
-      if(arrLength >= this.salePriceNum[index].quota){
-        return;
-      }
       //记录上一次报名人数为当前报名人数
       this.preLength[index] = this.enrolNum[index];
       //报名类型报名人数的总数等于余位，其余的报名类型不允许添加
@@ -899,6 +894,7 @@ export default {
                   '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
                 endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
                 orderChannel: Number(this.ruleForm.orderRadio),
+                priceType: Number(this.ruleForm.price),
                 orgID: sessionStorage.getItem("orgID"),
                 userID: sessionStorage.getItem("id"),
                 remark: JSON.stringify([
@@ -913,6 +909,7 @@ export default {
                 enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
               }
               }).then(res => {
+                console.log(typeof res.data.result.message)
                 if (res.data.isSuccess == true) {
                   this.$message.success("提交成功");
                   this.$parent.teamQueryList();
@@ -931,9 +928,9 @@ export default {
                   //   data.FlowModelName,
                   //   data.Usercode
                   // );
-                } else {
+                } else if(res.data.isSuccess == false){
                   //预留黑名单信息？？？
-                  this.$message.error("下单失败");
+                  this.$message.success(res.data.result.message + "");
                   this.ifOrderInsert = true;
                 }
               });
@@ -974,6 +971,7 @@ export default {
                   contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
                   endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
                   orderChannel: Number(this.ruleForm.orderRadio),
+                  priceType: Number(this.ruleForm.price),
                   orgID:this.productPos,
                   // orgID: sessionStorage.getItem("orgID"),
                   userID: sessionStorage.getItem("id"),
@@ -1008,7 +1006,7 @@ export default {
                   // );
                 } else {
                   //预留黑名单信息？？？
-                  this.$message.error("下单失败");
+                  this.$message.success(res.data.result.message + "");
                   this.ifOrderInsert = true;
                 }
               });
