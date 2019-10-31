@@ -1639,7 +1639,7 @@
             this.arr[i].price_02 = _planEnroll[i].price_02;
             if (_planEnroll[i].quota == null || _planEnroll[i].quota == 0) {   // quotaPrice  quota  字段里是 quota，这块估计还得会有问题，
               this.arr[i].quota = false; // 这里的quota是我们本地设置的，如果有配额设置为true 就是让配额输入框显示出来
-              this.arr[i].quota = '';
+              this.arr[i].quota = '';//这里30日改过
             } else {
               this.arr[i].quota = true;
               this.arr[i].quotaPrice = _planEnroll[i].quota; // 这是借口里的quota
