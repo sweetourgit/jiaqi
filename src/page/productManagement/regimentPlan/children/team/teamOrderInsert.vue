@@ -857,7 +857,7 @@ export default {
           }
           if(this.ifOrderInsert===true){
             console.log(this.tour[index].length)
-            if(this.enrolNum[index]===this.tour[index].length){//判断报名人数与出行人信息是否相等
+            //if(this.enrolNum[index]===this.tour[index].length){//判断报名人数与出行人信息是否相等
               if(this.teampreviewData.regimentType === 1){//判断是都停售
                 if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
                    console.log(guest)
@@ -1025,13 +1025,13 @@ export default {
                   this.$parent.teamQueryList();
                 })
               }
-            }else{
-              this.$confirm("报名人数与出行人信息不符?请修改出行人信息", "提示", {
-               confirmButtonText: "确定",
-               cancelButtonText: "取消",
-               type: "warning"
-              })
-            }
+            //}else{
+              // this.$confirm("报名人数与出行人信息不符?请修改出行人信息", "提示", {
+              //  confirmButtonText: "确定",
+              //  cancelButtonText: "取消",
+              //  type: "warning"
+              // })
+            //}
             
           }
         } else {
