@@ -35,6 +35,7 @@
           <span class="sta-title">{{statusEnd}}</span>
         </span>
       </div>
+      <p class="yuwei">余位：{{teampreviewData.remaining}}</p>
       <!-- switch 更改价格(直客价和同业价) beign-->
       <p>使用{{priceChange}}价格</p>
       <el-switch
@@ -65,10 +66,10 @@
               :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
             ></el-input-number>
           </div>
-          <div>
-            余位{{item.quota}}
-            <!-- <span v-show="quota[index]">库存不足</span>  v-bind:class="{red:quota[index]}" -->
-          </div>
+          <!-- <div> -->
+          <!-- 余位{{item.quota}} -->
+          <!-- <span v-show="quota[index]">库存不足</span>  v-bind:class="{red:quota[index]}" -->
+          <!-- </div> -->
         </div>
         <div class="red cb" v-show="enrolNums">{{enrolNumsWarn}}</div>
         <!--其他费用-->
@@ -289,8 +290,8 @@ export default {
         price: "1", //价格类型  1直客 2同业
         favourable: []
       },
-      priceChange: "直客", //同业价格好还是直客价格
-      isPricechange: true, //true为直客   false为同业价格
+      priceChange: "", //同业价格好还是直客价格
+      isPricechange: null, //true为直客   false为同业价格
       isChangeNumber: false, //判断动态按钮是否可点击 数量和价格有变化的时候为true
       isLowPrice: false, //确认订单状态时 已付金额低于订单总价时为true
       //游客信息
@@ -410,7 +411,12 @@ export default {
               this.orderget.occupyStatus,
               this.orderget.orderChannel
             );
-            this.priceType == 1 ? this.isPricechange = true : this.isPricechange = false
+            this.priceType == 1
+              ? (this.isPricechange = true)
+              : (this.isPricechange = false);
+            this.priceType == 1
+              ? (this.priceChange = "直客")
+              : (this.priceChange = "同业");
             this.occupyStatus = this.orderget.occupyStatus; // 唐 占位状态
             //联系人信息
             this.Timechange(this.orderget.endTime);
@@ -494,7 +500,18 @@ export default {
           url += "/material";
           break;
         case 1:
-          url += "/econtract";
+          for (let i = 0; i < this.salePrice.length; i++) {
+            for (let j = 0; j < this.tour[i].length; j++) {
+              if (this.tour[i][j].cnName == "") {
+                this.$message.error("请补全出行人信息");
+                this.isChangeNumber = true;
+                return;
+              } else {
+                url = "/order/stat/api/econtract";
+              }
+            }
+          }
+          // url += "/econtract";
           break;
         case 2:
           url += "/signcontract";
@@ -652,11 +669,9 @@ export default {
           //   this.quota[i] = false;
           // }
           if (this.enrolNum[i] == undefined) {
-            // console.log(666,"走这了");
-            this.enrolNum[i] = 0;
+            this.enrolNum[i] = "";
           }
           if (salePriceType.quota === -1) {
-            //console.log(salePriceType.quota,"看这了");
             salePriceType.quota = 0;
           }
         }
@@ -680,18 +695,17 @@ export default {
     },
     peoNum(index, enrollID, enrollName) {
       // this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
-
       //填写报名人数
       let arrLength; //报名人数
       let preLength; //记录上一次报名人数
       preLength = this.preLength[index]; //获取上一次报名人数
       arrLength = this.enrolNum[index]; //获取当前报名人数
       this.preLength[index] = this.enrolNum[index]; //记录上一次报名人数为当前报名人数
-      var len;
+      let len;
       if (arrLength > preLength) {
         //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
         len = arrLength - preLength;
-        for (var i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
           this.tour[index].push({
             enrollID: enrollID,
             enrollName: enrollName,
@@ -783,7 +797,7 @@ export default {
           id: planId
         })
         .then(res => {
-          console.log("获取报名类型列表数据", res);
+          // console.log("获取报名类型列表数据", res);
           if (res.data.isSuccess == true) {
             this.preLength = []; //记录上一次报名人数[1,3]形式
             this.enrolNum = []; //报名人数[1,3]形式
@@ -795,25 +809,32 @@ export default {
               this.tour.push([]);
             }
             //出游人信息转换格式,二维数组，通过类型分类,便于页面分类型显示出游人
+            // let guest = this.orderget.guests;
+            // // console.log("guest", guest);
+            // let j = 0;
+            // for (let i = 0; i < guest.length; i++) {
+            //   if (i > 0 && guest[i].enrollName != guest[i - 1].enrollName) {
+            //     this.tour[j + 1].push(guest[i]);
+            //     j += 1;
+            //   } else {
+            //     this.tour[j].push(guest[i]);
+            //   }
+            // }
             let guest = this.orderget.guests;
-            console.log("guest", guest);
-            let j = 0;
-            for (let i = 0; i < guest.length; i++) {
-              if (i > 0 && guest[i].enrollName != guest[i - 1].enrollName) {
-                this.tour[j + 1].push(guest[i]);
-                ++j
-              } else {
-                this.tour[j].push(guest[i]);
-                ++j
+            for (let g = 0; g < data.length; g++) {
+              for (let i = 0; i < guest.length; i++) {
+                if (guest[i].enrollName == data[g].enrollName) {
+                  this.tour[g].push(guest[i]);
+                } else {
+                  this.tour.push();
+                }
               }
             }
-            console.log("this.tour", this.tour);
             //设置报名人数
             for (let i = 0; i < this.tour.length; i++) {
               this.preLength.push(this.tour[i].length);
               this.enrolNum.push(this.tour[i].length);
             }
-            console.log("this.enrolNum", this.enrolNum);
             for (let i = 0; i < data.length; i++) {
               if (
                 data[i].quota == 0 ||
@@ -827,7 +848,6 @@ export default {
               }
             }
             this.salePrice = data;
-            console.log("this.salePrice", this.salePrice);
             this.salePriceNum = data;
             for (let i = 0; i < this.salePriceNum.length; i++) {
               this.salePriceNum[i].quota =
@@ -973,6 +993,7 @@ export default {
               }
             }
             guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
+            if (guest[i].sex == null) guest[i].sex = 2; //出行人没有填写时传值性别为2 要不报错  正确的 0 男  1 女
             // // guest[i].credTOV = new Date(guest[i].credTOV).getTime();
           }
 
@@ -981,7 +1002,7 @@ export default {
             this.isChangeNumber === true &&
             (this.orderget.orderStatus === 1 || this.orderget.orderStatus === 2)
           ) {
-            console.log(1);
+            // console.log(1);
             obj.orderStatus = 10;
           }
 
@@ -1002,7 +1023,6 @@ export default {
           obj.enrollDetail = enrollDetail;
           obj.guests = guest;
           obj.payable = this.payable;
-          // console.log(obj, "传给后台的");
           this.$http
             .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
               object: obj
@@ -1023,17 +1043,23 @@ export default {
     },
 
     // 出行人信息表单中的删除
-    delTravel(type, index){//删除单条表格数据
-      this.$confirm("是否删除该条出行人信息?", "提示", {
-         confirmButtonText: "确定",
-         cancelButtonText: "取消",
-         type: "warning"
-      }).then(res =>{
-        this.tour[index].splice(type,1);//手动删除单条出行人信息
-        console.log(this.tour[index],'11111')
-        this.enrolNum[index] = this.tour[index].length;//删除出行人信息后，表格长度和报名人数相等
-        console.log("this.enrolNum[index]",this.enrolNum[index])
-      })
+    delTravel(type, index) {
+      //删除单条表格数据
+      if (this.tour[index][type].cnName != "") {
+        this.$confirm("是否删除该条出行人信息?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(res => {
+          this.tour[index].splice(type, 1); //手动删除单条出行人信息
+          this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
+          this.preLength[index] = this.enrolNum[index];
+        });
+      } else {
+        this.tour[index].splice(type, 1); //手动删除单条出行人信息
+        this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
+        this.preLength[index] = this.enrolNum[index];
+      }
     },
 
     // 监听订单来源是同业社还是直客下单  是直客则返回true
@@ -1104,6 +1130,11 @@ export default {
   left: 375px;
   color: #f75454;
   font-size: 12px;
+}
+
+/* 余位 */
+.yuwei {
+  margin-bottom: 10px;
 }
 /*报名人数*/
 .demo-ruleForm {

@@ -64,67 +64,67 @@
       <br />
       <div class="status-title">订单状态</div>
       <ul class="order-status">
-        <!-- <li
+        <li
           v-for="(item,index) in orderStatusSearch"
           :key="index"
           @click="statusTab(1,index,item.status)"
           v-bind:class="{statusbg: orderNum==index}"
-        >{{item.name}}</li>-->
-        <li @click="statusTab(1,0,0)" v-bind:class="{statusbg: orderNum==0}">
-          全部
-          <!-- (
-          <span>{{ orderStateAllNum.allNumber }}</span>)-->
-        </li>
-        <li @click="statusTab(1,1,7)" v-bind:class="{statusbg: orderNum==1}">
-          未确认
-          <!-- (
-          <span>{{orderStateAllNum.unconfirmedNumber}}</span>)-->
-        </li>
-        <li @click="statusTab(1,2,1)" v-bind:class="{statusbg: orderNum==2}">
-          补充资料
-          <!-- (
-          <span>{{orderStateAllNum.materialNumber}}</span>)-->
-        </li>
-        <li @click="statusTab(1,3,8)" v-bind:class="{statusbg: orderNum==3}">
-          签署合同
-          <!-- (
-          <span>{{orderStateAllNum.signContractNumber }}</span>)-->
-        </li>
-        <li @click="statusTab(1,4,4)" v-bind:class="{statusbg: orderNum==4}">
-          出行中
-          <!-- (
-          <span>{{orderStateAllNum.travelingNumber}}</span>)-->
-        </li>
-        <li @click="statusTab(1,5,5)" v-bind:class="{statusbg: orderNum==5}">
-          待点评
-          <!-- (
-          <span>{{orderStateAllNum.evaluationNumber}}</span>)-->
-        </li>
+        >{{item.name}}</li>
+        <!-- <li @click="statusTab(1,0,0)" v-bind:class="{statusbg: orderNum==0}"> -->
+        <!-- 全部 -->
+        <!-- (
+        <span>{{ orderStateAllNum.allNumber }}</span>)-->
+        <!-- </li> -->
+        <!-- <li @click="statusTab(1,1,7)" v-bind:class="{statusbg: orderNum==1}"> -->
+        <!-- 未确认 -->
+        <!-- (
+        <span>{{orderStateAllNum.unconfirmedNumber}}</span>)-->
+        <!-- </li> -->
+        <!-- <li @click="statusTab(1,2,1)" v-bind:class="{statusbg: orderNum==2}"> -->
+        <!-- 补充资料 -->
+        <!-- (
+        <span>{{orderStateAllNum.materialNumber}}</span>)-->
+        <!-- </li> -->
+        <!-- <li @click="statusTab(1,3,8)" v-bind:class="{statusbg: orderNum==3}"> -->
+        <!-- 签署合同 -->
+        <!-- (
+        <span>{{orderStateAllNum.signContractNumber }}</span>)-->
+        <!-- </li> -->
+        <!-- <li @click="statusTab(1,4,4)" v-bind:class="{statusbg: orderNum==4}"> -->
+        <!-- 出行中 -->
+        <!-- (
+        <span>{{orderStateAllNum.travelingNumber}}</span>)-->
+        <!-- </li> -->
+        <!-- <li @click="statusTab(1,5,5)" v-bind:class="{statusbg: orderNum==5}"> -->
+        <!-- 待点评 -->
+        <!-- (
+        <span>{{orderStateAllNum.evaluationNumber}}</span>)-->
+        <!-- </li>
         <li @click="statusTab(1,6,6)" v-bind:class="{statusbg: orderNum==6}">完成订单</li>
-        <li @click="statusTab(1,7,9)" v-bind:class="{statusbg: orderNum==7}">作废订单</li>
+        <li @click="statusTab(1,7,9)" v-bind:class="{statusbg: orderNum==7}">作废订单</li>-->
       </ul>
       <br />
       <!--退款状态-->
       <!-- <div class="status-title">退款状态</div> -->
       <ul class="order-status" style="margin-left:90px">
-        <!-- <li
+        <li
           v-for="(item,index) in refundStatusSearch"
           :key="index"
           @click="statusTab(2,index,item.status)"
           v-bind:class="{statusbg: refundNum==index}"
-        >{{item.name}}</li>-->
-        <li @click="statusTab(2,0,5)" v-bind:class="{statusbg: refundNum==0}">
-          申请退款
-          <!-- (
-          <span>{{orderStateAllNum.applyNumber}}</span>)-->
-        </li>
-        <li @click="statusTab(2,1,1)" v-bind:class="{statusbg: refundNum==1}">
-          退款中
-          <!-- (
-          <span>{{orderStateAllNum.refundingNumber}}</span>)-->
-        </li>
+        >{{item.name}}</li>
+        <!-- <li @click="statusTab(2,0,5)" v-bind:class="{statusbg: refundNum==0}">
+        申请退款-->
+        <!-- (
+        <span>{{orderStateAllNum.applyNumber}}</span>)-->
+        <!-- </li>
+        <li @click="statusTab(2,1,1)" v-bind:class="{statusbg: refundNum==1}">-->
+        <!-- 退款中 -->
+        <!-- (
+        <span>{{orderStateAllNum.refundingNumber}}</span>)-->
+        <!-- </li>
         <li @click="statusTab(2,2,6)" v-bind:class="{statusbg: refundNum==2}">完成退款</li>
-        <li @click="statusTab(2,3,2)" v-bind:class="{statusbg: refundNum==3}">拒绝退款</li>
+        <li @click="statusTab(2,3,2)" v-bind:class="{statusbg: refundNum==3}">拒绝退款</li>-->
       </ul>
       <br />
       <el-button type="primary" class="search-but" @click="orderPage(1,pageSize)">搜索</el-button>
@@ -322,7 +322,7 @@ export default {
         { status: 6, name: "完成订单" },
         { status: 9, name: "作废订单" }
       ],
-      orderNum: "0",
+      orderNum: null,
       orderStatus: 0,
       refundStatusSearch: [
         // { status: 0, name: "全部" },
@@ -332,7 +332,7 @@ export default {
         { status: 2, name: "拒绝退款" }
       ],
       refundStatus: 0,
-      refundNum: "0",
+      refundNum: null,
       orderCode: "", //订单ID
       orderCodeSon: null, //传给子组件
       teamID: "", //产品ID
@@ -383,6 +383,7 @@ export default {
       orderStateAllNum: {}, //订单状态 每个按钮的数量下标
       getListOneMessage: {},
       showContent: null //list折叠展示的
+
     };
   },
   watch: {
@@ -478,8 +479,24 @@ export default {
       this.podID = item.id;
       this.pod = item.value;
     },
+    // statusTab(num, index, status) {
+    //   if (num == 1) {
+    //     this.whichStateTab = num;
+    //     this.orderNum = index;
+    //     this.orderStatus = status;
+    //     this.orderPage(1, this.pageSize);
+    //   }
+    //   if (num == 2) {
+    //     this.whichStateTab = num;
+    //     this.refundNum = index;
+    //     this.refundStatus = status;
+    //     this.orderPage(1, this.pageSize);
+    //   }
+    // },
     statusTab(num, index, status) {
-      if (num == 1) {
+        if (num == 1) {
+        this.refundNum = 7 //为7 只要不等于索引值不等于退款状态号就行
+        this.refundStatus = 0
         this.whichStateTab = num;
         this.orderNum = index;
         this.orderStatus = status;
@@ -489,6 +506,8 @@ export default {
         this.whichStateTab = num;
         this.refundNum = index;
         this.refundStatus = status;
+        this.orderNum = null;
+        this.orderStatus = 0
         this.orderPage(1, this.pageSize);
       }
     },
@@ -502,6 +521,7 @@ export default {
       this.orderPage(val, this.pageSize);
       this.pageIndex = val;
     },
+    
     // 重置
     handleReset() {
       this.orderCode = ""; //订单ID
@@ -522,6 +542,7 @@ export default {
       this.contact = ""; //订单联系人
       // this.orderChannel = null; //订单来源
       this.showContent = null; //折叠按钮
+      this.isSeach = null; //是否点击 
       // this.statusTab(1,0,0)
       // this.statusTab(2,0,5)
       this.orderPage(1, this.pageSize);
