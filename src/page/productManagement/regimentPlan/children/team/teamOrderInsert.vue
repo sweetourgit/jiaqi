@@ -1038,7 +1038,7 @@ export default {
             orderCode: orderCode,
             content: this.ruleForm.remark,
             createTime: moment()
-              .format("YYYY-MM-DD hh:mm:ss")
+              .format("YYYY-MM-DD HH:mm:ss")
               .toString()
           }
         })
