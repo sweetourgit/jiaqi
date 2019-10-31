@@ -134,7 +134,18 @@
         </el-form-item>
         <el-button class="plan_button" @click="IncomeAccount()">选择</el-button>
         <el-form-item label="附件" style="clear:both;" prop="accessory">
-          <el-upload class="upload-demo" name="files" ref="upload" :action="this.upload_url" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview" list-type="picture">
+          <el-upload
+            class="upload-demo"
+            name="files"
+            ref="upload"
+            :action="this.upload_url"
+            :file-list="ruleForm.accessory"
+            :on-error="handleError"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove"
+            :on-preview="handlePreview"
+            list-type="picture"
+          >
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
@@ -189,17 +200,14 @@
         <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
         <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-          <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
-          <el-table-column prop="contactName" label="订单联系人" align="center"></el-table-column>
+          <el-table-column prop="channel" label="订单来源" align="center"></el-table-column>
+          <el-table-column prop="person" label="订单联系人" align="center"></el-table-column>
           <el-table-column prop="number" label="人数" align="center"></el-table-column>
           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
-          <el-table-column prop="paid" label="已收金额" align="center"></el-table-column>
-          <!-- <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column> -->
-          <el-table-column label="欠款金额" align="center">
-          <template slot-scope="scope">{{scope.row.payable-scope.row.paid}}</template>
-          </el-table-column>
-          <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
-          <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
+          <el-table-column prop="priceSum" label="已收金额" align="center"></el-table-column>
+          <el-table-column prop="arrears" label="欠款金额" align="center"></el-table-column>
+          <el-table-column prop="arrearsDate" label="欠款日期" align="center"></el-table-column>
+          <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
         </el-table>
         <!-- 收入明细 END -->
       </el-form>
@@ -359,7 +367,15 @@ export default {
     checkLoanManagement,
   },
   data(){
+    var validateVoucher = (rule, value, callback) => {
+      if (this.fileCheckVal === 0) {
+        callback(new Error('请上传附件'));
+      } else {
+        callback();
+      }
+    };
     return {
+      fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       ruleFormSeach: {
         groupCode_01:'', // 团号
         createTime:'', // 创建时间
@@ -400,7 +416,7 @@ export default {
         accountBank:'',
         accountOpenName:'',
         payment:'',
-        //accessory:'',
+        accessory:[],
       },
       dialogVisible4:false, // 查看图片文件弹窗
       imgBig: '',
@@ -432,7 +448,7 @@ export default {
         planType:[{ required: true, message: '请选择借款类型', trigger: 'change' }],
         planAmount:[
           { required: true, message: '请输入借款金额', trigger: 'blur' },
-          { pattern: /^[+]{0,1}(\d+)$/, message: '借款金额需为正整数' }
+          { pattern: /^(([1-9]+)|([0-9]+\.[0-9]{1,2}))$/, message: '请正确输入借款金额（若有小数点，其后面不应超过两位）' }
         ],
         abstract:[
           { required: true, message: '请输入摘要', trigger: 'change' },
@@ -442,7 +458,7 @@ export default {
         accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
         accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],
         payment:[{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-        //accessory:[{ required: true, message: '附件不能为空', trigger: 'change' }],
+        accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
       },
       fileList: [],
       dialogFormVisible1:false, // 无收入借款中借款人弹窗
@@ -1087,6 +1103,7 @@ export default {
       this.fileList = []
     },
     handleSuccess(res, file, fileList) {
+      this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
       // 多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { // 多张图片情况只在第一次执行数组操作
         this.time = fileList.length;
@@ -1113,6 +1130,7 @@ export default {
     handleRemove(file, fileList) {
       this.uid = fileList[0].uid;
       this.fileList = fileList
+      this.fileCheckVal = fileList.length
     },
     handlePreview(file, fileList) {
       this.uid = file.uid
