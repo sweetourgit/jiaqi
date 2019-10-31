@@ -856,7 +856,13 @@ export default {
             }
           }
           if(this.ifOrderInsert===true){
-            if(this.enrolNum.length !== guest.length){//判断报名人数与出行人信息是否相等
+            console.log(guest.length)
+            let sum =0;//求this.enrolNum的总和
+            this.enrolNum.forEach(function(item){
+              sum += item;
+            })
+            console.log(sum)
+            if(sum !== guest.length){//判断报名人数与出行人信息是否相等
               this.$confirm("报名人数与出行人信息不符?请修改出行人信息", "提示", {
                confirmButtonText: "确定",
                cancelButtonText: "取消",
