@@ -1018,7 +1018,8 @@ export default {
                  cancelButtonText: "取消",
                  type: "warning"
               }).then(res =>{
-                this.ifOrderInsert = true;
+                //this.ifOrderInsert = true;
+                this.$parent.teamQueryList();
               })
             }
             
