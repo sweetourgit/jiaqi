@@ -475,7 +475,7 @@ export default new Router({
       }
     },{
       path: '/planInventory',
-      component: () => import('@/page/productManagement/planInventory/planInventory'),
+      component: () => import('@/page/productManagement/planInventory/index'),
       name: '团期/库存',
       meta: {
         keepAlive: true,

@@ -8,6 +8,18 @@ $backgroundColor: #F7F7F7;
       background-color: $backgroundColor;
     } 
   }
+  .btns-ground{
+    display: flex;
+    .sub-ground{
+      display: flex;
+      flex-direction: column;
+    }
+    .sub-ground:nth-child(2){
+      margin-left: 5px;
+      padding-left: 5px;
+      border-left: 1px dashed #aeaeae;
+    }
+  }
 }
 </style>
 
@@ -26,20 +38,20 @@ $backgroundColor: #F7F7F7;
           <span>前&nbsp;{{ scope.row.uptoDay }}&nbsp;天</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" prop="quota" header-align="center" align="center">
+      <el-table-column label="操作" prop="quota" header-align="center" align="center" width="150">
         <template slot-scope="scope">
-          <div v-if="scope.row.inited">
-            <div>
-              <el-button type="primary" size="mini">成本</el-button>
-              <el-button type="primary" size="mini">价格</el-button>
+          <div v-if="scope.row.inited" class="btns-ground">
+            <div class="sub-ground">
+              <el-button type="primary" size="mini" @click="toCostChild(scope.row)">成本</el-button>
+              <el-button type="primary" size="mini" style="margin: 5px 0 0 0;">价格</el-button>
             </div>
-            <div>
-              <el-button type="primary" size="mini">团号</el-button>
-              <el-button type="primary" size="mini">上线</el-button>
+            <div class="sub-ground">
+              <el-button type="primary" size="mini" @click="wakeSignForm(scope.row)">团号</el-button>
+              <el-button type="primary" size="mini" style="margin: 5px 0 0 0;" disabled>上线</el-button>
             </div>
           </div>
           <div v-else>
-            <el-button type="primary" size="mini" @click="wakeSignForm">设置团号</el-button>
+            <el-button type="primary" size="mini" @click="wakeSignForm(scope.row)">设置团号</el-button>
           </div>
         </template>
       </el-table-column>
@@ -47,7 +59,7 @@ $backgroundColor: #F7F7F7;
     <footer>
       <sign-form
         ref="signFormRef"
-        @action-callback="emitAddCallback"
+        @action-callback="emitSaveShortCallback"
       ></sign-form>
     </footer>
   </div>
@@ -62,10 +74,6 @@ import signForm from './comps/sign-form'
 export default {
   components: { signForm },
 
-  mounted(){
-    this.init();
-  },
-
   data(){
     return {
       tableData: [],
@@ -74,8 +82,8 @@ export default {
 
   methods: {
 
-    init(id){
-      id= parseInt(id || this.$route.query.id);
+    init(){
+      let id= this.$route.query.id;
       if(!id) return this.$message.error('页面初始参数出错');
       this.getTeamListPackagesAction(id).then(objects => {
         this.tableData.splice(0);
@@ -106,6 +114,20 @@ export default {
       })
     },
 
+    // 唤醒团号表单
+    wakeSignForm(pac){
+      this.$refs.signFormRef.handleOpen(pac);
+    },
+
+    // 设置团号后的回调
+    emitSaveShortCallback(){
+      this.init();
+    },
+
+    // 去成本
+    toCostChild(pac){
+      this.$emit('emit-handler', { func: 'toCostChild', payload: pac });
+    }
   }
 
 }
