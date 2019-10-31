@@ -282,7 +282,7 @@
         </el-table>
         <div class="number_button">
           <el-button @click="accountCancel()">取消</el-button>
-          <el-button type="primary">申请</el-button>
+          <el-button type="primary">确定</el-button>
         </div>
       </div>
     </el-dialog>
