@@ -716,6 +716,7 @@ export default {
         });
     },
     peoNum(index, enrollID, enrollName) {
+      console.log(this.enrolNum[index])
       //填写报名人数
       let arrLength; //报名人数
       let preLength; //记录上一次报名人数
@@ -1095,6 +1096,8 @@ export default {
       }).then(res =>{
         this.tour[index].splice(type,1);//手动删除单条出行人信息
         this.enrolNum[index] = this.tour[index].length;//删除出行人信息后，表格长度和报名人数相等
+        this.preLength[index] = this.enrolNum[index];
+        //console.log(this.enrolNum[index])
       })
     },
     fillTour(type, index) {
@@ -1140,9 +1143,7 @@ export default {
     compPrice() {
       //计算总价
       this.ruleForm.totalPrice = 0;
-      console.log(this.ruleForm.price)
       for (let i = 0; i < this.enrolNum.length; i++) {
-        console.log(this.enrolNum[i])
         this.ruleForm.totalPrice += (this.enrolNum[i] == undefined ? 0 : this.enrolNum[i]) * (this.ruleForm.price == 1 ? this.salePrice[i].price_01 : this.salePrice[i].price_02);
       }
       this.ruleForm.totalPrice += parseInt(
@@ -1155,7 +1156,6 @@ export default {
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
       this.tableData2 = []
-      console.log()
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
           name: queryString3,
