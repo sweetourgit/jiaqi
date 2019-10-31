@@ -174,18 +174,18 @@
           return ''
         }
       },
-//      收款明细侧边栏点击事件
+      // 收款明细侧边栏点击事件
       clickNavHandle(item, index){
         this.activeIndex = index;
 //        console.log(item);
         this.item = item;
         this.getReceiptDetail();
       },
-//      关闭此弹窗
+      // 关闭此弹窗
       closeAdd() {
         this.$emit('close', false);
       },
-//      加载基础数据
+      // 加载基础数据
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/recorderinfo", {
@@ -218,11 +218,11 @@
           console.log(error);
         });
       },
-//      搜索
+      // 搜索
       searchHand(){
         this.getReceiptDetail();
       },
-//      重置
+      // 重置
       resetHand(){
         this.activeForm = {
           title: '',
@@ -234,7 +234,7 @@
         };
         this.getReceiptDetail();
       },
-//      获取收款明细
+      // 获取收款明细
       getReceiptDetail(){
         const that = this;
         console.log(this.$refs.multipleTable);
@@ -269,30 +269,34 @@
           console.log(error);
         });
       },
-//      提交认款
+      // 提交认款
       doSubmit(row){
         console.log(row);
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/submitrec", {
-          "order_sn": this.tableData[0].order_sn,
-          "rec_detail_id": row.id,
-          "create_uid": sessionStorage.getItem('id')
-        }, ).then(function(response) {
-          if (response.data.code == '200') {
-            console.log('提交认款',response);
-            that.$message.success("认款成功~");
-            that.closeAdd();
-          } else {
-            if(response.data.message){
-              that.$message.warning(response.data.message);
-            }else{
-              that.$message.warning("认款失败~");
-            }
+        if(that.tableData[0].income > row.rece_money){
+          that.$message.warning("待认收款金额小于收入，不能提交认款");
+        }else {
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/submitrec", {
+            "order_sn": this.tableData[0].order_sn,
+            "rec_detail_id": row.id,
+            "create_uid": sessionStorage.getItem('id')
+          }, ).then(function(response) {
+            if (response.data.code == '200') {
+              console.log('提交认款',response);
+              that.$message.success("认款成功~");
+              that.closeAdd();
+            } else {
+              if(response.data.message){
+                that.$message.warning(response.data.message);
+              }else{
+                that.$message.warning("认款失败~");
+              }
 
-          }
-        }).catch(function(error) {
-          console.log(error);
-        });
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }
       }
 
     },

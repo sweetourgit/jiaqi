@@ -16,7 +16,7 @@
         :rules="rules"
       >
         <el-form-item label="主题：" label-width="80px" prop="subject">
-          <el-input v-model="submitForm.subject" placeholder="日程主题" style="width: 300px;" size="small"></el-input>
+          <el-input v-model="submitForm.subject" placeholder="日程主题" style="width: 300px;" size="small" maxlength="20" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="住宿：" label-width="80px" prop="ext_Hotel">
           <ext-hotel 

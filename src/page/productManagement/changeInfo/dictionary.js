@@ -3,7 +3,7 @@ export const CODE_PREFIX= "LKCO";
 export const CODE_SUFFIX= "US621";
 
 // 列表页地址
-export const PRODUCT_LIST_PAGE= '/productList/packageTour';
+export const PRODUCT_LIST_ROUTE= '/productList/packageTour';
 
 // 默认交通方式
 export const DEFALUT_TRAFFIC_MODE= 1
@@ -105,19 +105,26 @@ export const getActivityDTO= function(scheduleID){
 }
 
 // 根据行程天数创建默认的日程列表
-export const getTeamScheduleDTO= function(days){
+export const getTeamScheduleDTOList= function(days){
   let result= [];
   for(let i= 1; i<= days; i++){
-    result.push({
-      day: i,
-      subject: '',
-      info: '',
-      ext_Hotel: '{"IsHotel":0,"Details":""}',
-      ext_Meals: '[{"Myself":0,"Detail":""},{"Myself":0,"Detail":""},{"Myself":0,"Detail":""}]',
-      activitys: [],
-      createTime: new Date().toISOString(),
-      code: "" 
-    })
+    result.push(getTeamScheduleDTO(i))
   }
   return result;
 }
+<<<<<<< HEAD
+=======
+
+export const getTeamScheduleDTO= function(day){
+  return {
+    day,
+    subject: '',
+    info: '',
+    ext_Hotel: '{"IsHotel":0,"Details":""}',
+    ext_Meals: '[{"Myself":0,"Detail":""},{"Myself":0,"Detail":""},{"Myself":0,"Detail":""}]',
+    activitys: [],
+    createTime: new Date().toISOString(),
+    code: "" 
+  }
+}
+>>>>>>> dev

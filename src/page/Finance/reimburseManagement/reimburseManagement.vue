@@ -750,7 +750,7 @@ export default {
     beginWokeing(res) {
       console.log(res);
       this.$http
-        .post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
+        .post(this.GLOBAL.jqUrl + "/JQ/StartUpWorkFlowForJQ", {
           jQ_ID: res.guid,
           jQ_Type: res.flowModel,
           workflowCode: res.flowModelName,

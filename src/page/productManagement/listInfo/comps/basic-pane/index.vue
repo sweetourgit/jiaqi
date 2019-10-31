@@ -15,7 +15,7 @@
       :rules="rules"
     >
       <el-form-item label="产品名称：" prop="title">
-        <el-input v-model="submitForm.title" placeholder="产品名称" style="width: 300px;" size="small"></el-input>
+        <el-input v-model="submitForm.title" placeholder="产品名称" style="width: 300px;" size="small" maxlength="20" show-word-limit></el-input>
       </el-form-item>
 
       <el-form-item label="出游类型：" prop="isForeign">
@@ -276,13 +276,13 @@ export default {
           required: true, 
           validator: this.simpleValidator, 
           message: '出游人群不能为空', 
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         themeID: { 
           required: true, 
           validator: this.simpleValidator, 
           message: '主题不能为空', 
-          trigger: 'blur'
+          trigger: ['blur', 'change']
         },
         advanceDay: [
           { 
@@ -410,7 +410,7 @@ export default {
 
     numberValidator(rule, val, cb){
       let { message }= rule; 
-      let reg= /^\d+$|^\d+[.]?\d+$/;
+      let reg= /^([1-9][0-9]*)$/;
       if(reg.test(val)) return cb();
       return cb(this.makeErrorQueueMsg(message));
     },

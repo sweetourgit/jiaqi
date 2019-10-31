@@ -5,8 +5,9 @@
       @close="cancelInfoOrder('ruleForm')">
       <div class="dialog-footer">
         <el-button class="ml13" @click="cancelInfoOrder('ruleForm')">取 消</el-button>
-        <el-button class="ml13" type="primary">预订不占</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')" class="ml13">确定占位</el-button>
+        <!-- <el-button class="ml13" @click="submitForm('ruleForm',1)"  type="primary">预订不占</el-button> -->
+        <el-button class="ml13"  type="primary">预订不占</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm',3)" class="ml13">确定占位</el-button>
       </div>
       <div class="main1">
         <!--团期信息-->
@@ -47,10 +48,6 @@
                   <div width="80" class="fl">余位:</div>
                   <div class="fl ml13">{{teampreviewData.remaining}}</div>
                 </td>
-                <td width="33%">
-                  <div width="80" class="fl">参考结算:</div>
-                  <div class="fl ml13">0.00</div>
-                </td>
                 <!-- <td width="33%">
                   <div width="80" class="fl">参考结算:</div>
                   <div class="fl ml13">{{average | numFilter}}</div>
@@ -73,22 +70,22 @@
           <!--选择商户按钮，显示商户名称文本框-->
           <div v-if="ruleForm.orderRadio==2">
               <el-form-item label="商户名称" prop="travel" class="fl">
-                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3"placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
               </el-form-item>
           </div>
           <el-form-item label="价格选择" prop="price" class="cb price">
-            <el-radio-group v-model="ruleForm.price" class="salesPrice">
+            <!-- <el-radio-group v-model="ruleForm.price" class="salesPrice"> -->
               <!-- <span v-for="(item,index) in salePrice" :key="index" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span>
               <br /> -->
-             <el-radio label="1" class="radiomar">直客价格：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio>
-             <el-radio label="2" class="radiomar">商户价格(同业、门店)：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio>
+             <el-radio label="1" v-model="ruleForm.price" class="radiomar">直客价格：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio>
+             <el-radio label="2" v-model="ruleForm.price" class="radiomar">商户价格(同业、门店)：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio>
              <!-- <el-radio label="自定义" class="radiomar">自定义： 
                    成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
                    儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
                    老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
                    单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
           </el-radio> -->
-            </el-radio-group>
+            <!-- </el-radio-group> -->
           </el-form-item>
           <el-form-item label="报名人数" class="fl">
             <div class="num-req">*</div>
@@ -102,10 +99,10 @@
                 <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)"
                   :min="0" :max="salePriceNum[index].quota" size="medium"></el-input-number>
               </div>
-              <div v-bind:class="{red:quota[index]}">
+              <!-- <div v-bind:class="{red:quota[index]}">
                 余位{{item.quota}}
                 <span v-show="quota[index]">库存不足</span>
-              </div>
+              </div> -->
             </div>
             <div class="red ml13" style="margin:0 0 10px 15px;" v-show="enrolNums">{{enrolNumsWarn}}</div>
           </div>
@@ -156,20 +153,6 @@
           </el-form-item>
           <!--出行人信息-->
           <div class="travelMessage">出行人信息</div>
-          <!-- <el-table :data="costList" class="costTable" :header-cell-style="getCostClass" border width="551px">
-            <el-table-column prop="name" label="姓名" min-width="100" align="center"></el-table-column>
-            <el-table-column prop="type" label="报名类型" min-width="100" align="center"></el-table-column>
-            <el-table-column prop="phone" label="电话" min-width="120" align="center"></el-table-column>
-            <el-table-column prop="IDcard" label="身份证" min-width="180" align="center"></el-table-column>
-            <el-table-column prop="sex" label="性别" min-width="80" align="center"></el-table-column>
-            <el-table-column label="操作" min-width="120" align="center">
-              <template slot-scope="scope">
-                <span class="cursor blue" @click="fillTravel()">编辑</span>
-                <span class="em">|</span>
-                <span class="cursor blue" @click="delTravel()">删除</span>
-              </template>
-            </el-table-column>
-          </el-table> -->
           <table class="costList" v-for="(item,indexPrice) in salePrice" :key="indexPrice" border="1" cellpadding="0" cellspacing="0">
             <tr class="costList_01">
               <td width="120">姓名</td>
@@ -191,7 +174,7 @@
               <td class="tc">
                 <span class="fl blue cursor" style="margin:0 0 0 18px"@click="fillTour(indexPrice,index)">编辑</span>
                 <span class="fl" style="margin:0 8px 0 8px;">|</span>
-                <span class="fl blue cursor">删除</span>
+                <span class="fl blue cursor" @click="delTravel(index,indexPrice)">删除</span>
               </td>
             </tr>
           </table>
@@ -236,9 +219,9 @@
         <el-form-item label="证件号码" prop="credCode" label-width="110px" class="fl">
           <el-input type="text" v-model="conForm.credCode" class="w200"></el-input>
         </el-form-item>
-        <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl cb">
+        <!-- <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl cb">
           <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" style="width:200px"></el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer cb">
         <el-button @click="cancelInfo('conForm')">取 消</el-button>
@@ -413,10 +396,10 @@
           </el-tab-pane>
           <el-tab-pane label="订单" name="fourth">
             <el-table :data="tableOrder" :header-cell-style="getCostClass" border>
-              <el-table-column prop="id" label="订单ID" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="orderCode" label="订单ID" min-width="120" align="center"></el-table-column>
               <el-table-column prop="contactName" label="联系人" min-width="120" align="center"></el-table-column>
               <el-table-column prop="number" label="数量" min-width="180" align="center"></el-table-column>
-              <el-table-column prop="orderChannel" label="订单来源" min-width="100" align="center"></el-table-column>
+              <el-table-column prop="orderChannels" label="订单来源" min-width="100" align="center"></el-table-column>
               <el-table-column prop="orderStatus" label="状态" min-width="80" align="center"></el-table-column>
               <el-table-column prop="saler" label="销售" min-width="80" align="center"></el-table-column>
               <el-table-column prop="payable" label="订单金额" min-width="120" align="center"></el-table-column>
@@ -489,7 +472,7 @@ export default {
         bornDate: 0,
         credType: 0,
         credCode: "",
-        credTOV: "",
+        //credTOV: "",
         orderID: 0,
         orderCode: "string",
         orgID: sessionStorage.getItem("orgID"),
@@ -559,12 +542,12 @@ export default {
         idCard: [
           { required: true, message: "身份证号不能为空", trigger: "blur" },
           {
-            pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+             pattern: /(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
             message: "身份证号格式不正确",
             trigger: "blur"
           }
         ],
-        credTOV:[{ required: true, message: "请选择证件有效期", trigger: "blur" }],
+        //credTOV:[{ required: true, message: "请选择证件有效期", trigger: "blur" }],
         
       },
       //出行人信息表格
@@ -575,6 +558,7 @@ export default {
       tableAccount:[],//报销表格
       tableCollection:[],//收款表格
       tableOrder:[],//订单表格
+      productPos:0,
     };
   },
   filters: {
@@ -617,7 +601,13 @@ export default {
     },
     "ruleForm.type": function(val) {
       this.changeQuota();
-    }
+    },
+    "ruleForm.price": function (val) {
+      this.compPrice();
+    },
+    // "ruleForm.index":function(val){
+    //   this.changeQuota();
+    // }
   },
   methods: {
     moment,
@@ -635,7 +625,7 @@ export default {
         return "";
       }
     },
-    changeQuota() {
+    changeQuota(index) {
       //余位变化方法
       this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
       let salePriceType3 = JSON.parse(JSON.stringify(this.salePriceNum));
@@ -643,15 +633,13 @@ export default {
       //下单方式选择确认占位和预定占位，实时减少相关余位信息，提示库存不足
       for (let i = 0; i < this.salePrice.length; i++) {
         //如果下单方式选择预定不占，则不需要同步余位信息，提示库存不足
-        if (this.ruleForm.type == 1 || this.ruleForm.type == 2) {
-          this.salePrice[i].quota =
-            parseInt(this.salePrice[i].quota) -
-            parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
+        // if (this.ruleForm.type == 3 || this.ruleForm.type == 1) 
+        // if (this.ruleForm.type == 1)
+        if (this.ruleForm.index == 3){
+          this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
           salePriceType = this.salePrice[i];
         } else {
-          salePriceType3[i].quota =
-            parseInt(salePriceType3[i].quota) -
-            parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
+          salePriceType3[i].quota = parseInt(salePriceType3[i].quota) - parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
           salePriceType = salePriceType3[i];
         }
         if (salePriceType.quota < 0) {
@@ -677,14 +665,14 @@ export default {
         });
     },
     //获取参考结算价
-    getaverage(ID) {
-      console.log(ID)
-      this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
-        "id": ID
-      }).then(res => {
-        this.average = res.data.average;
-      })
-    },
+    // getaverage(ID) {
+    //   console.log(ID)
+    //   this.$http.post(this.GLOBAL.serverSrc + '/team/cost/api/getaverage', {
+    //     "id": ID
+    //   }).then(res => {
+    //     this.average = res.data.average;
+    //   })
+    // },
     teampreview(ID) {
       //this.getaverage(ID);
       //团期计划订单信息预览
@@ -717,10 +705,7 @@ export default {
               this.enrolNum.push(0);
               this.quota.push(false);
               this.tour.push([]);
-              if (
-                data[i].quota == 0 ||
-                data[i].quota > this.teampreviewData.remaining
-              ) {
+              if (data[i].quota == 0 || data[i].quota > this.teampreviewData.remaining) {
                 //如果配额为0或者配额大于库存，余位显示总库存
                 data[i].quota = this.teampreviewData.remaining;
               }
@@ -731,6 +716,7 @@ export default {
         });
     },
     peoNum(index, enrollID, enrollName) {
+      console.log(this.enrolNum[index])
       //填写报名人数
       let arrLength; //报名人数
       let preLength; //记录上一次报名人数
@@ -743,7 +729,8 @@ export default {
       }
       //记录上一次报名人数为当前报名人数
       this.preLength[index] = this.enrolNum[index];
-
+      //报名类型报名人数的总数等于余位，其余的报名类型不允许添加
+      
       //去掉报名人数提示
       if (arrLength > 0) {
         this.enrolNums = false;
@@ -756,10 +743,11 @@ export default {
           this.tour[index].push({
             enrollID: enrollID,
             enrollName: enrollName,
+            //enrollNum:enrolNum,
             id: 0,
             isDeleted: 0,
             code: "string",
-            cnName: "姓名",
+            cnName: "",
             enName: "",
             sex: "",
             idCard: "",
@@ -768,7 +756,7 @@ export default {
             bornDate: 0,
             credType: 0,
             credCode: "",
-            credTOV: 0,
+            //credTOV: 0,
             orderID: 0,
             orderCode: "",
             orgID: 0,
@@ -776,10 +764,17 @@ export default {
           });
         }
       } else{
-        this.tour[index].splice(arrLength - preLength, preLength - arrLength);
+        // console.log(this.tour[index])
+        for(var i=0;i < this.tour[index].length;i++){
+          console.log(this.tour[index][i])
+          if(this.tour[index][i].sex === ''){
+            this.tour[index].splice(i, preLength - arrLength);
+            break;
+          }
+        }
       }
     },
-    submitForm(formName) {
+    submitForm(formName,index) {
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
         var blooen = "0";
@@ -816,108 +811,236 @@ export default {
             }
           }
           let guest = [];
+          console.log(guest)
           for (let i = 0; i < guestAll.length; i++) {
-            if (guestAll[i].cnName != "点击填写") {
+            if (guestAll[i].cnName != "") {
               //过滤掉未填写人员信息
               guest.push(guestAll[i]);
               guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
-              guest[i].credTOV = new Date(guest[i].credTOV).getTime();
+              //guest[i].credTOV = new Date(guest[i].credTOV).getTime();
             } else {
               guest.push(guestAll[i]);
             }
           }
           //防止重复提交订单判断
           if (this.ifOrderInsert == false) {
-            return false;
+             return false;
           }
           // 拼接字段 enrollDetail报名类型详情
           let enrollDetail = "";
+          console.log(this.salePrice)
           this.salePrice.forEach((ele, idx) => {
-            let price = this.toDecimal2(ele.price_01);
-            enrollDetail = `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
+            let price=0;
+            if(this.ruleForm.price == 1){
+              price = this.toDecimal2(ele.price_01);
+            }else{
+              price = this.toDecimal2(ele.price_02);
+            }
+            //let price = this.toDecimal2(ele.price_01);
+            if(this.enrolNum[idx]!==0){
+              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
+            }
           });
-          this.ifOrderInsert = false;
-          this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
-              object: {
-                id: 0,
-                isDeleted: 0,
-                code: "",
-                orderCode: "",
-                proID: this.teampreviewData.teamID,
-                planID: this.planId,
-                orderStatus: 0, //订单状态  7未确认
-                refundStatus: 0, //退款状态
-                occupyStatus: this.ruleForm.type, //占位状态
-                payable: this.ruleForm.totalPrice, //应付款
-                platform: 1, //1是erp，2是同业
-                favourable: [
-                  //优惠
-                  {
-                    id: 0,
-                    orderID: 0,
-                    price: this.ruleForm.otherCost,
-                    title: "其他费用",
-                    favMode: 1,
-                    mark: this.ruleForm.otherCostRemark
-                  },
-                  {
-                    id: 0,
-                    orderID: 0,
-                    price: this.ruleForm.allDiscount,
-                    title: "整体优惠",
-                    favMode: 2,
-                    mark: this.ruleForm.allDisRemark
-                  }
-                ],
-                contact:
-                  '{"Name":"' +
-                  this.ruleForm.contactName +
-                  '","Tel":"' +
-                  this.ruleForm.contactPhone +
-                  '"}',
-                endTime:
-                  this.ruleForm.type == 1
-                    ? 0
-                    : new Date().getTime() / 1000 + 24 * 60 * 60,
-                orderChannel: Number(this.ruleForm.orderRadio),
-                orgID: sessionStorage.getItem("orgID"),
-                userID: sessionStorage.getItem("id"),
-                remark: JSON.stringify([
-                  {
-                    OrderCode: "",
-                    Mark: this.ruleForm.remark,
-                    CreateTime: formatDate(new Date())
-                  }
-                ]),
-                guests: guest,
-                number: number,
-                enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
-              }
+          this.ifOrderInsert = true;
+          //判断出行人信息是否填写完整
+          for(let i = 0; i<guest.length;i++){
+            if(guest[i].sex === ''){
+              this.ifOrderInsert = false;
+              this.$confirm("请完善出行人信息?", "提示", {
+                 confirmButtonText: "确定",
+                 cancelButtonText: "取消",
+                 type: "warning"
+              }).then(res =>{
+                this.ifOrderInsert = true;
+              })
+            }
+          }
+          if(this.ifOrderInsert===true){
+            console.log(guest.length)
+            let sum =0;//求this.enrolNum的总和
+            this.enrolNum.forEach(function(item){
+              sum += item;
             })
-            .then(res => {
-              if (res.data.isSuccess == true) {
-                this.$message.success("提交成功");
-                let data = JSON.parse(res.data.result.details);
-                this.orderCode = data.OrderCode;
-                //需再次存储备注信息
-                this.addComment(this.orderCode);
-                this.orderSuc = true;
-                //清空表单
-                this.$refs[formName].resetFields();
-                this.dialogFormOrder = false;
+            console.log(sum)
+            if(sum !== guest.length){//判断报名人数与出行人信息是否相等
+              this.$confirm("报名人数与出行人信息不符?请修改出行人信息", "提示", {
+               confirmButtonText: "确定",
+               cancelButtonText: "取消",
+               type: "warning"
+              }).then(res =>{
                 this.ifOrderInsert = true;
-                this.startUpWorkFlowForJQ(
-                  data.OrderID,
-                  data.FlowModel,
-                  data.FlowModelName,
-                  data.Usercode
-                );
-              } else {
-                //预留黑名单信息？？？
-                this.$message.error("下单失败");
-                this.ifOrderInsert = true;
+              })
+            }else{
+              if(this.teampreviewData.regimentType === 1){//判断是都停售
+                              if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
+                                 console.log(guest)
+                                 this.ifOrderInsert = false;
+                                 this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
+                                  object: {
+                                    id: 0,
+                                    isDeleted: 0,
+                                    code: "",
+                                    orderCode: "",
+                                    proID: this.teampreviewData.teamID,
+                                    planID: this.planId,
+                                    orderStatus: 0, //订单状态  7未确认
+                                    refundStatus: 0, //退款状态
+                                    occupyStatus: index, //占位状态
+                                    payable: this.ruleForm.totalPrice, //应付款
+                                    platform: 1, //1是erp，2是同业
+                                    favourable: [
+                                      //优惠
+                                      {
+                                        id: 0,
+                                        orderID: 0,
+                                        price: this.ruleForm.otherCost,
+                                        title: "其他费用",
+                                        favMode: 1,
+                                        mark: this.ruleForm.otherCostRemark
+                                      },
+                                      {
+                                        id: 0,
+                                        orderID: 0,
+                                        price: this.ruleForm.allDiscount,
+                                        title: "整体优惠",
+                                        favMode: 2,
+                                        mark: this.ruleForm.allDisRemark
+                                      }
+                                    ],
+                                    contact:
+                                      '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                                    endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                                    orderChannel: Number(this.ruleForm.orderRadio),
+                                    priceType: Number(this.ruleForm.price),
+                                    orgID: sessionStorage.getItem("orgID"),
+                                    userID: sessionStorage.getItem("id"),
+                                    remark: JSON.stringify([
+                                      {
+                                        OrderCode: "",
+                                        Mark: this.ruleForm.remark,
+                                        CreateTime: formatDate(new Date())
+                                      }
+                                    ]),
+                                    guests: guest,
+                                    number: number,
+                                    enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                                  }
+                                  }).then(res => {
+                                    console.log(typeof res.data.result.message)
+                                    if (res.data.isSuccess == true) {
+                                      this.$message.success("提交成功");
+                                      this.$parent.teamQueryList();
+                                      let data = JSON.parse(res.data.result.details);
+                                      this.orderCode = data.OrderCode;
+                                      //需再次存储备注信息
+                                      this.addComment(this.orderCode);
+                                      this.orderSuc = true;
+                                      //清空表单
+                                      this.$refs[formName].resetFields();
+                                      this.dialogFormOrder = false;
+                                      this.ifOrderInsert = true;
+                                      // this.startUpWorkFlowForJQ(
+                                      //   data.OrderID,
+                                      //   data.FlowModel,
+                                      //   data.FlowModelName,
+                                      //   data.Usercode
+                                      // );
+                                    } else if(res.data.isSuccess == false){
+                                      //预留黑名单信息？？？
+                                      this.$message.success(res.data.result.message + "");
+                                      this.ifOrderInsert = true;
+                                    }
+                                  });
+                              }else if(this.ruleForm.orderRadio === '2'){
+                                this.ifOrderInsert = false;
+                                this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
+                                  object: {
+                                    id: 0,
+                                    isDeleted: 0,
+                                    code: "",
+                                    orderCode: "",
+                                    proID: this.teampreviewData.teamID,
+                                    planID: this.planId,
+                                    orderStatus: 0, //订单状态  7未确认
+                                    refundStatus: 0, //退款状态
+                                    occupyStatus: index, //占位状态
+                                    payable: this.ruleForm.totalPrice, //应付款
+                                    platform: 2, //1是erp，2是同业
+                                    favourable: [
+                                      //优惠
+                                      {
+                                        id: 0,
+                                        orderID: 0,
+                                        price: this.ruleForm.otherCost,
+                                        title: "其他费用",
+                                        favMode: 1,
+                                        mark: this.ruleForm.otherCostRemark
+                                      },
+                                      {
+                                        id: 0,
+                                        orderID: 0,
+                                        price: this.ruleForm.allDiscount,
+                                        title: "整体优惠",
+                                        favMode: 2,
+                                        mark: this.ruleForm.allDisRemark
+                                      }
+                                    ],
+                                    contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                                    endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                                    orderChannel: Number(this.ruleForm.orderRadio),
+                                    priceType: Number(this.ruleForm.price),
+                                    orgID:this.productPos,
+                                    // orgID: sessionStorage.getItem("orgID"),
+                                    userID: sessionStorage.getItem("id"),
+                                    remark: JSON.stringify([
+                                      {
+                                        OrderCode: "",
+                                        Mark: this.ruleForm.remark,
+                                        CreateTime: formatDate(new Date())
+                                      }
+                                    ]),
+                                    guests: guest,
+                                    number: number,
+                                    enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                                  }
+                                }).then(res => {
+                                  if (res.data.isSuccess == true) {
+                                    this.$message.success("提交成功");
+                                    let data = JSON.parse(res.data.result.details);
+                                    this.orderCode = data.OrderCode;
+                                    //需再次存储备注信息
+                                    this.addComment(this.orderCode);
+                                    this.orderSuc = true;
+                                    //清空表单
+                                    this.$refs[formName].resetFields();
+                                    this.dialogFormOrder = false;
+                                    this.ifOrderInsert = true;
+                                    // this.startUpWorkFlowForJQ(
+                                    //   data.OrderID,
+                                    //   data.FlowModel,
+                                    //   data.FlowModelName,
+                                    //   data.Usercode
+                                    // );
+                                  } else {
+                                    //预留黑名单信息？？？
+                                    this.$message.success(res.data.result.message + "");
+                                    this.ifOrderInsert = true;
+                                  }
+                                });
+                              }
+              }else{
+                this.$confirm("该团号已停售?", "提示", {
+                   confirmButtonText: "确定",
+                   cancelButtonText: "取消",
+                   type: "warning"
+                }).then(res =>{
+                  //this.ifOrderInsert = true;
+                  this.$parent.teamQueryList();
+                })
               }
-            });
+            }
+            
+          }
         } else {
           console.log("error submit!!");
           this.ifOrderInsert = true;
@@ -932,7 +1055,7 @@ export default {
             orderCode: orderCode,
             content: this.ruleForm.remark,
             createTime: moment()
-              .format("YYYY-MM-DD hh:mm:ss")
+              .format("YYYY-MM-DD HH:mm:ss")
               .toString()
           }
         })
@@ -959,42 +1082,43 @@ export default {
       return s;
     },
     //启动工作流
-    startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
-      this.$http
-        .post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
-          jQ_ID: OrderID,
-          jQ_Type: FlowModel,
-          workflowCode: FlowModelName,
-          userCode: Usercode
-        })
-        .then(res => {
-          this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
-        });
-    },
-    //提交工作任务
-    submitWAForJQ(Usercode, workItemID) {
-      this.$http
-        .post(this.GLOBAL.jqUrl + "/api/JQ/SubmitWorkAssignmentsForJQ", {
-          userCode: Usercode,
-          workItemID: workItemID,
-          commentText: "测试"
-        })
-        .then(res => {});
-    },
+    // startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
+    //   this.$http
+    //     .post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
+    //       jQ_ID: OrderID,
+    //       jQ_Type: FlowModel,
+    //       workflowCode: FlowModelName,
+    //       userCode: Usercode
+    //     })
+    //     .then(res => {
+    //       this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
+    //     });
+    // },
+    // //提交工作任务
+    // submitWAForJQ(Usercode, workItemID) {
+    //   this.$http
+    //     .post(this.GLOBAL.jqUrl + "/api/JQ/SubmitWorkAssignmentsForJQ", {
+    //       userCode: Usercode,
+    //       workItemID: workItemID,
+    //       commentText: "测试"
+    //     })
+    //     .then(res => {});
+    // },
     delTravel(type, index){//删除单条表格数据
-
-    },
-    fillTravel(type, index){//点击出行人信息表格编辑显示弹窗
-      console.log(this.enrollName)
-      this.winTitle = this.costList[0].enrollName; //编辑游客信息弹窗标题
-      this.tourType = type;
-      this.fillIndex = index;
-      this.dialogFormTour = true;
-
+      this.$confirm("是否删除该条出行人信息?", "提示", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+      }).then(res =>{
+        this.tour[index].splice(type,1);//手动删除单条出行人信息
+        this.enrolNum[index] = this.tour[index].length;//删除出行人信息后，表格长度和报名人数相等
+        this.preLength[index] = this.enrolNum[index];
+        //console.log(this.enrolNum[index])
+      })
     },
     fillTour(type, index) {
       this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
-      if (this.tour[type][index].sex != "") {
+      if (this.tour[type][index].enName != "") {
         this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
       }
       this.tourType = type;
@@ -1007,6 +1131,9 @@ export default {
           let guest = JSON.parse(JSON.stringify(this.conForm));
           guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
           guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
+          console.log(guest.enrollNum)
+          console.log(this.salePrice[this.tourType].enrolNum)
+          //guest.enrollNum = this.salePrice[this.tourType].enrolNum; //填充报名类型数量
           // guest.enrollNum = this.
           // guest.createTime = this.createTime
           if (this.ruleForm.price == 1) {
@@ -1033,7 +1160,6 @@ export default {
       //计算总价
       this.ruleForm.totalPrice = 0;
       for (let i = 0; i < this.enrolNum.length; i++) {
-        console.log(this.enrolNum[i])
         this.ruleForm.totalPrice += (this.enrolNum[i] == undefined ? 0 : this.enrolNum[i]) * (this.ruleForm.price == 1 ? this.salePrice[i].price_01 : this.salePrice[i].price_02);
       }
       this.ruleForm.totalPrice += parseInt(
@@ -1073,10 +1199,7 @@ export default {
     },
     departure(item){
       console.log(item)
-      //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
-      /*this.productPos = item.id;
-      this.originPlace = item.value;*/
-      this.productPos = item.id;
+      this.productPos = item.id;//获取供应商的id传给下单接口的orgID
       this.originPlace = item.value;
     },
     //订单来源切换清空相应下的文本框内容
@@ -1199,25 +1322,21 @@ export default {
         console.log(err)
       })
       //订单
-      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderpage', {
-        "pageIndex": 1,
-        "pageSize": 100,
+      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/planordlist', {
         "object": {
-          "planID": this.planId
+          "planID": this.planId,
+          "salerID": sessionStorage.getItem("id")
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableOrder = res.data.objects
           that.tableOrder.forEach(function (v,k,arr) {
-              if(arr[k]['orderChannel'] == 1){
-                arr[k]['orderChannel'] = '同业'
-              }else if(arr[k]['orderChannel'] == 2) {
-                arr[k]['orderChannel'] = '门店'
-              }else if(arr[k]['orderChannel'] == 3) {
-                arr[k]['orderChannel'] = '总部'
-              }
-              if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==1)||(arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==2)||(arr[k]['orderStatus'] == 10 && arr[k]['occupyStatus'] ==3)){
-                arr[k]['orderStatus'] = '未完成订单'
+              if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==1)){
+                arr[k]['orderStatus'] = '预订不占'
+              }else if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==2)){
+                arr[k]['orderStatus'] = '预订占位'
+              }else if((arr[k]['orderStatus'] == 10 && arr[k]['occupyStatus'] ==3)){
+                arr[k]['orderStatus'] = '确定占位'
               }else if(arr[k]['orderStatus'] == 1){
                 arr[k]['orderStatus'] = '补充游客材料'
               }else if(arr[k]['orderStatus'] == 2) {
@@ -1230,14 +1349,10 @@ export default {
                 arr[k]['orderStatus'] = '待评价'
               }else if(arr[k]['orderStatus'] == 6) {
                 arr[k]['orderStatus'] = '订单完成'
-              }else if(arr[k]['orderStatus'] == 7) {
-                arr[k]['orderStatus'] = '未确认'
               }else if(arr[k]['orderStatus'] == 8) {
                 arr[k]['orderStatus'] = '签署合同'
               }else if(arr[k]['orderStatus'] == 9) {
                 arr[k]['orderStatus'] = '作废订单'
-              }else if(arr[k]['orderStatus'] == 10) {
-                arr[k]['orderStatus'] = '确认订单'
               }
           })
         }
@@ -1264,7 +1379,7 @@ export default {
 .blue {color: #2e94f9;}
 .cursor {cursor: pointer;}
 .costTable{width:800px; margin: 0 0 0 2px;}
-.costList{width:800px; line-height: 40px; text-align: center; border:1px solid #ebebeb;border-collapse:collapse;border-spacing:0; }
+.costList{width:800px; line-height: 40px; text-align: center; border:1px solid #ebebeb;border-collapse:collapse;border-spacing:0;}
 .costList_01{background: #f3f3f3;}
 .tc{text-align: center;}
 /*详情样式*/
@@ -1272,9 +1387,7 @@ export default {
 .detailsTitle{font-size: 18px; margin: 20px 0 20px 0;}
 .checkType{padding: 0 5px; width:50px; border-radius:5px; color:#fff; line-height:30px; text-align:center;}
 /*下单弹窗*/
-* {
-  font-size: 14px;
-}
+* { font-size: 14px;}
 .main1 {
   overflow: hidden;
   width: 70%;

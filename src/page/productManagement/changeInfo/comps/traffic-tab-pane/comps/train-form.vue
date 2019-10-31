@@ -41,7 +41,7 @@
 
           <el-col style="width: 150px;">
             <el-form-item label="第" label-width="50px" prop="day">
-              <el-select v-model="submitForm.day" placeholder="第几天" size="small" :disabled="!!goOrBackSign">
+              <el-select v-model="submitForm.day" placeholder="第几天" size="small">
                 <el-option
                   v-for="item in PROVIDE_DAY"
                   :key="item"
@@ -165,6 +165,11 @@ export default {
         theNumber: '车次', 
         podPlace: '出发车站', 
         arrivePlace: '到达车站'
+      },
+      rules: {
+        theNumber: [{ required: true, validator: this.simpleValidator, message: '车次不能为空', trigger: 'blur' }],
+        podPlace: [{ required: true, validator: this.simpleValidator, message: '出发车站不能为空', trigger: 'blur' }],
+        arrivePlace: [{ required: true, validator: this.simpleValidator, message: '到达车站不能为空', trigger: 'blur' }],
       }
     }
   }

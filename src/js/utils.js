@@ -1,10 +1,15 @@
 import Vue from 'vue'
 
 /**
- * @description: 简易版深拷贝，不可拷贝树结构
+ * @description: 简易版深拷贝，不可拷贝循环引用结构
  */
 Vue.prototype.$deepCopy= function(obj){
   return JSON.parse(JSON.stringify(obj))
+}
+
+Vue.prototype.$isNull= function(val){
+  val+= '';
+  return !val || val=== 'undefined' || val=== 'null' || val=== 'false';
 }
 
 /**

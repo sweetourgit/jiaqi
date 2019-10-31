@@ -26,6 +26,7 @@
     <main>
       <el-tabs v-model="vm.currentPackage" type="card" closable 
         :before-leave="changeTab"
+        :v-loading="vm.actionLock"
         @tab-remove="removeTab"
       >
         <el-tab-pane
@@ -52,12 +53,11 @@
 </template>
 
 <script>
-import './tools'
 import { 
-  getTeamScheduleDTO, 
+  getTeamScheduleDTOList, 
   TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, 
   CODE_PREFIX, CODE_SUFFIX,
-  PRODUCT_LIST_PAGE
+  PRODUCT_LIST_ROUTE
 } from './dictionary'
 import changeinfoPackage from './comps/changeinfo-package'
 
@@ -91,6 +91,7 @@ export default {
   data() {
     return {
       vm: {
+        actionLock: false,
         currentPackage: null,
         // 除当前套餐外其余套餐的名字
         nameChecker: []
@@ -110,9 +111,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$router.push(PRODUCT_LIST_PAGE);
+        this.$router.push(PRODUCT_LIST_ROUTE);
       });
-      this.$router.push(PRODUCT_LIST_PAGE);
+      this.$router.push(PRODUCT_LIST_ROUTE);
     },
 
     /**
@@ -157,7 +158,8 @@ export default {
     // 获取新tab实例
     getNewTab(){
       let newTabName= this.getNewPackageName();
-      TEAM_TRAFFIC_DTO_BACK.day= this._provided.PROVIDE_DAY;
+      // 返程不再给默认最大天数
+      // TEAM_TRAFFIC_DTO_BACK.day= this._provided.PROVIDE_DAY;
       return {
         teamID:this.$route.query.id,
         loadPackage: true,
@@ -174,7 +176,7 @@ export default {
           TEAM_TRAFFIC_DTO_GO,
           TEAM_TRAFFIC_DTO_BACK
         ],
-        schedules: getTeamScheduleDTO(
+        schedules: getTeamScheduleDTOList(
           this._provided.PROVIDE_DAY
         ),
         briefMark: '',
@@ -201,6 +203,7 @@ export default {
     },
 
     changeTab(activeName, oldActiveName){
+      // 进入页面之后，会默认执行一次changeTab，这时候的activeName是undefined，组织这次默认事件触发之后的逻辑
       if(!activeName) return false;
       return new Promise((res, rej) => {
         this.asyncCheckHasChange(activeName, oldActiveName).then(() => {
@@ -249,6 +252,8 @@ export default {
      * @description: 获取初始化信息
      */
     teaminfogetAction(){
+      if(this.vm.actionLock) return this.$message.info('数据保存中，请稍后再试');
+      this.vm.actionLock= true;
       return new Promise((resolve, reject) => {
         this.$http.post(
           this.GLOBAL.serverSrc + "/team/api/teaminfoget",
@@ -287,6 +292,8 @@ export default {
         }).catch(err => {
           // TODO: 错误日志
           this.$message.error(err);
+        }).finally(() => {
+          this.vm.actionLock= false;
         })
       })
     },
@@ -295,6 +302,8 @@ export default {
      * @description: 保存按钮触发的事件，先判断是保存还是新增
      */
     addOrSave(){
+      // 清空错误信息队列
+      this._provided.ERROR_QUEUE.splice(0);
       let current= this.getCurrentRef();
       let hasChange= current && current.checkHasChange();
       if(!hasChange) return this.$message.info('信息无变动');
@@ -306,10 +315,14 @@ export default {
       if(!isSave) return this.addAction(object);
       return this.saveAction(object); 
     },
+
+    // 是保存操作
     isSave(){
       let current= this.packages.find(el => el.name=== this.vm.currentPackage);
       return current.id=== 0 || !!current.id;
     },
+
+    // 获取当前package的ref
     getCurrentRef(){
       let packages= this.$refs.packageRef;
       if(!packages || packages.length=== 0) return null;
@@ -317,6 +330,7 @@ export default {
       !current && console.warn('getCurrentRef get none');
       return current;
     },
+
     addAction(object){
       return new Promise((resolve, reject) => {
         this.$http.post(
@@ -363,9 +377,7 @@ export default {
         })
       }
       // 删除的是尚未存入数据库的
-      if(!id) {
-        return successFunc();
-      }
+      if(!id) return successFunc();
       this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagedelete", {
         id
       }).then(successFunc);

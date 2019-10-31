@@ -4,10 +4,9 @@
     <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
     <!-- 基本信息 -->
     <div class="item-content">
-      <!--<div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
-      <div class="checkType" v-if="fundamental.checkType=='2'" style="background: #ff0000" >驳回</div>
-      <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500">通过</div>-->
-      <el-tag type="success" class="distributor-status">通过</el-tag>
+      <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
+      <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
+      <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
     </div>
     <!-- 第一行 -->
     <el-row type="flex" class="row-bg" justify="space-around">
@@ -110,7 +109,7 @@
     </el-table>
     <!-- 相关信息 END -->
     <!-- 无收入借款明细 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
+    <el-divider content-position="left" class='title-margin title-margin-t'>审批过程</el-divider>
     <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
       <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
       <el-table-column prop="checkType" label="审批状态" align="center">
@@ -192,11 +191,11 @@ import moment from 'moment'
          planData:'',
          //借款表格
          forbidden:true,
-		 multipleSelection: [],
+		    multipleSelection: [],
          tableData:[],
          fundamental:{},
-		 //分页
-		 pagesize: 10, // 设定默认分页每页显示数
+         //分页
+         pagesize: 10, // 设定默认分页每页显示数
          pageIndex: 1, // 设定当前页数
          total: 0,
          currentPage: 1,
@@ -293,15 +292,14 @@ import moment from 'moment'
           //无收入借款弹窗中预付款明细查看弹窗
           dialogFormVisible_paymenrt:false,
           tableApprove:[],
-          ////无收入借款弹窗中无收入借款明细弹窗
-          tableIncome:[],
+          tableIncome:[], //无收入借款弹窗中无收入借款明细弹窗
           //无收入借款弹窗中预付款明细查看弹窗
           dialogFormVisible_Income:false,
           tableIncomeCheck:[{
           	times:' 2019-1-14 19:00:00',
-			people:'洋洋1',
-			result:'通过',
-			opinion:'不同意'
+            people:'洋洋1',
+            result:'通过',
+            opinion:'不同意'
           }],
           //无收入借款弹窗中收入明细表格
           tableEarning:[],
@@ -309,9 +307,6 @@ import moment from 'moment'
 		   tableCourse:[],
        planID:'',
        tour_id:0,
-
-
-
       }
     },
     filters: {
@@ -352,8 +347,6 @@ import moment from 'moment'
           }
         }
       },
-
-
       planStage(){
       	this.plan_stage = '';
       	this.plan_name = '';
@@ -383,7 +376,7 @@ import moment from 'moment'
       },
       auditResult(result) {
         var that =this
-          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ', {
+          this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
             jQ_ID: result,
             jQ_Type: 1,
           }).then(obj => {
@@ -520,7 +513,7 @@ import moment from 'moment'
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tablePayment = res.data.objects
-          that.tablePayment.forEach(function (v,k,arr) {
+/*          that.tablePayment.forEach(function (v,k,arr) {
               if(arr[k]['checkType'] == 0){
                 arr[k]['checkType'] = '审批中'
               }else if(arr[k]['checkType'] == 1) {
@@ -551,7 +544,7 @@ import moment from 'moment'
               }else if(arr[k]['supplierType'] == 11) {
                 arr[k]['supplierType'] = '火车票押金'
               }
-          })
+          })*/
         }
       }).catch(err => {
         console.log(err)
@@ -603,9 +596,7 @@ import moment from 'moment'
       })
       //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
       that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
-
-          "id": val
-
+        "id": val
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableMoney = []
@@ -614,10 +605,10 @@ import moment from 'moment'
       }).catch(err => {
         console.log(err)
       })
-      //收入明细
-      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderlist', {
+      // 收入明细
+      that.$http.post(this.GLOBAL.serverSrc + '/orderquery/api/income/detail', {
         "object": {
-          "planID": val,
+          "id": val,
         }
       }).then(res => {
         if (res.data.isSuccess == true) {

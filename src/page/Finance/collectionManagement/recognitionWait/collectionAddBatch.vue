@@ -129,6 +129,7 @@
           return ''
         }
       },
+      // 关闭当前弹窗
       closeAdd() {
         this.ruleForm = {
           explain: '',
@@ -139,6 +140,7 @@
         this.fileList = [];
         this.$emit('close', false);
       },
+      // 取消按钮事件
       cancalBtn(){
         if(this.ruleForm.explain != '' || this.ruleForm.payAccount != '' || this.fileList.length != 0){
           this.$confirm("是否取消本次添加?", "提示", {
@@ -155,6 +157,7 @@
           this.closeAdd();
         }
       },
+      // 删除认款订单明细
       deleteFun(scope){
         console.log(scope);
         const that = this;
@@ -164,6 +167,7 @@
           type: "warning"
         }).then(() => {
           const deleteArr = that.deleteStr.split(",");
+          // 剩下最后一个时提示，但是根据,切分时最后会产生一个空元素，所以判断长度相等时提示
           if(deleteArr.length === that.tableDataDD.length){
             this.$confirm("删除此收款最后一项，批量导入文件将被删除", "提示", {
               confirmButtonText: "确定",
@@ -186,6 +190,7 @@
         });
 
       },
+      // 提交事件（加载收款编码code）
       submitForm(formName) {
         const that = this;
         this.$refs[formName].validate((valid) => {
@@ -220,6 +225,7 @@
           }
         });
       },
+      // 提交
       canSubmit(arr, num){
         const that = this;
         if(arr.length === num){
@@ -288,7 +294,7 @@
           })
         }
       },
-//      选择账户function
+      // 选择账户function
       chooseFun(){
         const that = this;
         this.dialogFormVisible1 = true;
@@ -319,7 +325,7 @@
         this.ruleForm.payAccountID = row.id;
         this.close();
       },
-//      上传凭证function
+      // 上传凭证function
       UploadUrl(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/predeposit/predeposit/files';
       },
@@ -358,7 +364,7 @@
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
-//      获取收款编码
+      // 获取收款编码
       getCode(){
         const that = this;
         return this.$http.post(this.GLOBAL.serverSrc + "/ong/api/receivable/get", {},

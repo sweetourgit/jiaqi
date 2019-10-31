@@ -41,7 +41,7 @@
 
           <el-col style="width: 150px;">
             <el-form-item label="第" label-width="50px" prop="day">
-              <el-select v-model="submitForm.day" placeholder="第几天" size="small" :disabled="!!goOrBackSign">
+              <el-select v-model="submitForm.day" placeholder="第几天" size="small">
                 <el-option
                   v-for="item in PROVIDE_DAY"
                   :key="item"
@@ -199,7 +199,9 @@ export default {
           number: queryString,
         }
       ).then(res => {
+        console.log(res)
         let { isSuccess, object }= res.data;
+        if(!object) return cb();
         // 字段对应不上，转接一下
         this.flightOptions= [object];
         cb([{ value: object.number+ '' }]);

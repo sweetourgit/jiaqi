@@ -183,7 +183,8 @@ export default {
 
     deleteTag(index){
       this.list.splice(index, 1);
-      this.$forceUpdate();
+      this.vm.inputVal= 'index';
+      this.$nextTick(() => { this.vm.inputVal= null });
     },
   }
 }
