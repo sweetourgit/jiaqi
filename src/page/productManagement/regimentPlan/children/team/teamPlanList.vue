@@ -77,7 +77,7 @@
       </el-table>
       <!--分页-->
       <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
-        :current-page="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
+        :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
       <!--报账单弹窗-->
       <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list" width="60%">
@@ -242,8 +242,8 @@ export default {
       this.teamQueryList(this.pageIndex,val);
     },
     handleCurrentChange(val) {
-      console.log(val,'jack')
-      this.teamQueryList(val);
+      this.pageIndex = val
+      this.teamQueryList(val,this.pageSize);
     },
     //计划list
     teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op) {
@@ -372,7 +372,6 @@ export default {
       this.date = "";
       this.op = "";
       this.financeState = "";
-      //this.pageIndex = 1 ;
       this.current = curPage;
       this.teamQueryList();
     },
@@ -388,8 +387,8 @@ export default {
             "num":2
           }).then(res => {
               if(res.data.isSuccess == true){
-                console.log(this.current,'jack')
-                 this.teamQueryList(this.current);
+                //console.log(this.current,'jack')
+                 this.teamQueryList();
               }
            })
         })
