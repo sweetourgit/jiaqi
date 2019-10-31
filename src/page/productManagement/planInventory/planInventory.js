@@ -47,3 +47,32 @@ export const codeIsExist= function(object){
     })
   })
 }
+
+// 获取人均结算价
+export const getAverage= function(id){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/cost/api/getaverage",{
+      id: 10568
+    }).then((res) => {
+      let { average }= res.data;
+      return resolve(average);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 获取成本列表
+export const getCostList= function(packageID){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/cost/api/list",{
+      object: { packageID }
+    }).then((res) => {
+      let { isSuccess, objects }= res.data;
+      if(!isSuccess) return reject('获取成本列表失败');
+      return resolve(objects);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}

@@ -1980,7 +1980,7 @@ export default {
     // 团期/库存按钮 获取dialog数据
     groupStage() {
       // let id= this.pid;
-      // this.$router.push({ path: '/planInventory', query: { id } });
+      // return this.$router.push({ path: '/planInventory', query: { id } });
       
       this.ccc = [];
       this.tabBtnDisabled = true;

@@ -74,6 +74,8 @@ import signForm from './comps/sign-form'
 export default {
   components: { signForm },
 
+  inject: [ 'PACKAGE_LIST' ],
+
   data(){
     return {
       tableData: [],
@@ -87,7 +89,10 @@ export default {
       if(!id) return this.$message.error('页面初始参数出错');
       this.getTeamListPackagesAction(id).then(objects => {
         this.tableData.splice(0);
-        this.tableData.push(...this.mixinFactory(objects));
+        let result= this.mixinFactory(objects);
+        this.tableData.push(...result);
+        // 将套餐列表分享
+        this.PACKAGE_LIST.push(...result);
       })
     },
 

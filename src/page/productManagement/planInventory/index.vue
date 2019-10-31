@@ -45,6 +45,10 @@ export default {
 
   components: { inventoryChild, priceChild, costChild },
 
+  provide: {
+    PACKAGE_LIST: []
+  },
+
   mounted(){
     // 修改页面高度问题
     document.querySelector(".content-body1").style.height= "100%";
@@ -59,14 +63,15 @@ export default {
   data(){
     return {
       vm: {
-        currentChild: null,
+        currentChild: 'inventory',
       },
     }
   },
 
   methods: {
+    emitChangeChild(){},
     init(){
-      this.beforeChangeChild('inventory');
+      this.$refs.child.init()
     },
 
     beforeChangeChild(child, payload){
