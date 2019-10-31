@@ -112,8 +112,6 @@ export const getTeamScheduleDTOList= function(days){
   }
   return result;
 }
-<<<<<<< HEAD
-=======
 
 export const getTeamScheduleDTO= function(day){
   return {
@@ -127,4 +125,3 @@ export const getTeamScheduleDTO= function(day){
     code: "" 
   }
 }
->>>>>>> dev
