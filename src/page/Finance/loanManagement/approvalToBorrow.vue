@@ -343,6 +343,7 @@ import moment from 'moment'
               }).then(obj =>{
                 that.total = obj.data.total;
                 that.tableData = obj.data.objects;
+                that.$emit('headCallBack',that.tableData.length)
               })
           // .then(obj =>{
           //   this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ',
@@ -437,24 +438,20 @@ import moment from 'moment'
             that.pageList();
             //that.repeal();
         })
-
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',
-        {
-          //"userCode": "rbop01",
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',{
           "jq_id":this.guid,
           "jQ_Type": 1
         })
       },
       // 驳回成功通过guid将checktype修改成2
       rejectedSuccess(){
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',
-        {
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',{
           /*"guid": this.guid,
           "checkType": 2*/
-           "object": {
-              "guid": this.guid,
-              "checkType": 2
-            }
+         "object": {
+            "guid": this.guid,
+            "checkType": 2
+          }
         })
       },
       // 详情弹窗
