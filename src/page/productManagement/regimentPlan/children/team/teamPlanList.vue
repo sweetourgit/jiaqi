@@ -63,15 +63,15 @@
           <template slot-scope="scope">
             <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales(scope.row.id)">停售</span>
             <span class="em" v-if="scope.row.regimentType=='1'">|</span>
-            <span class="cursor blue" v-if="scope.row.regimentType=='2'">恢复售卖</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='2'" @click="haltSales_01(scope.row.id)">恢复售卖</span>
             <span class="em" v-if="scope.row.regimentType=='2'">|</span>
             <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="operation(1)">下单</span>
             <span class="em" v-if="scope.row.regimentType=='1'">|</span>
-            <span class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
-            <span class="em" v-if="scope.row.regimentType=='3'">|</span>
             <span class="cursor blue" @click="operation(2)">详情</span>
+            <span class="em" v-if="scope.row.regimentType=='3'">|</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
             <span class="em" v-if="scope.row.regimentType=='1'">|</span>
-            <span class="cursor blue" v-if="scope.row.regimentType=='1'">封团</span>
+            <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales_02(scope.row.id)">封团</span>
           </template>
         </el-table-column>
       </el-table>
@@ -181,11 +181,8 @@ export default {
   },
   methods: {
     //产品名称
-    // productName(curPage) {
-    //   if (this.title == "") {
-    //     this.current = curPage;
-    //     this.teamQueryList();
-    //   }
+    // productName(val) {
+    //   this.teamQueryList(this.pageIndex,val);
     // },
     // // 报账团号
     // groupNo(curPage) {
@@ -242,9 +239,10 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.teamQueryList();
+      this.teamQueryList(this.pageIndex,val);
     },
     handleCurrentChange(val) {
+      console.log(val,'jack')
       this.teamQueryList(val);
     },
     //计划list
@@ -378,18 +376,68 @@ export default {
       this.current = curPage;
       this.teamQueryList();
     },
+    //停售
     haltSales(status) {
-      console.log(status)
-      //停售
       this.$confirm("该团期是否停售?", "提示", {
         confirmButtonText: "停售",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() => {
+      }).then(res => {
+          this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/GetPlanType",{
+            "id": status,
+            "num":2
+          }).then(res => {
+              if(res.data.isSuccess == true){
+                console.log(this.current,'jack')
+                 this.teamQueryList(this.current);
+              }
+           })
+        })
+        .catch(res => {
           this.$message({
             type: "info",
-            message: "已停售"
+            message: "已取消"
           });
+        });
+    },
+    //恢复售卖
+    haltSales_01(status) {
+      this.$confirm("该团期是否恢复售卖?", "提示", {
+        confirmButtonText: "停售",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(res => {
+          this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/GetPlanType",{
+            "id": status,
+            "num":1
+          }).then(res => {
+            if(res.data.isSuccess == true){
+               this.teamQueryList();
+              }
+           })
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    //封团
+    haltSales_02(status) {
+      this.$confirm("该团期是否封团?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(res => {
+          this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/GetPlanType",{
+            "id": status,
+            "num":3
+          }).then(res => {
+            if(res.data.isSuccess == true){
+               this.teamQueryList();
+              }
+           })
         })
         .catch(() => {
           this.$message({
