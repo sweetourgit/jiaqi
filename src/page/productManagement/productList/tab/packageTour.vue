@@ -1948,53 +1948,52 @@ export default {
     },
     // 团期/库存按钮 获取dialog数据
     groupStage() {
-      // document.getElementById("#testa").basicPrice()
-      // this.$refs.config.basicPrice();
-      // console.log($('.testj'))
-      this.ccc = [];
-      var that = this;
-      this.$http
-        .post(
-          this.GLOBAL.serverSrc + "/team/api/teampackagelist",
-          {
-            object: {
-              teamID: this.pid
-            }
-          })
-        .then(function(obj) {
-          console.log("团期库存按钮", obj);
-          for (let i = 0; i < obj.data.objects.length; i++) {
-            /* console.log(obj.data.objects[0].id)*/
+      let id= this.pid;
+      this.$router.push({ path: '/planInventory', query: { id } });
+      // this.ccc = [];
+      // var that = this;
+      // this.$http
+      //   .post(
+      //     this.GLOBAL.serverSrc + "/team/api/teampackagelist",
+      //     {
+      //       object: {
+      //         teamID: this.pid
+      //       }
+      //     })
+      //   .then(function(obj) {
+      //     console.log("团期库存按钮", obj);
+      //     for (let i = 0; i < obj.data.objects.length; i++) {
+      //       /* console.log(obj.data.objects[0].id)*/
 
-            that.ccc.push({
-              id: obj.data.objects[i].id,
-              ddd: obj.data.objects[i].name,
-              uptoDay: obj.data.objects[i].uptoDay,
-              value: obj.data.objects[i].templateID,
-              codePrefix: obj.data.objects[i].codePrefix,
-              codeSuffix: obj.data.objects[i].codeSuffix,
-              createTime: obj.data.objects[i].createTime,
-              type: false,
-              rate: obj.data.objects[i].rate,
-              btnDisabled:true
-            });
-            if (that.ccc[i].value == 0) {
-              that.ccc[i].value = "";
-            }
-            console.log("库存按钮出现", that.ccc);
-          }
-          // console.log(obj.data);
-        })
-        .catch(function(obj) {
-          console.log(obj);
-        });
-      this.merchandise = true;
-      this.addtable.push({
-        allprice: []
-      });
-      this.sku.push({
-        price: []
-      });
+      //       that.ccc.push({
+      //         id: obj.data.objects[i].id,
+      //         ddd: obj.data.objects[i].name,
+      //         uptoDay: obj.data.objects[i].uptoDay,
+      //         value: obj.data.objects[i].templateID,
+      //         codePrefix: obj.data.objects[i].codePrefix,
+      //         codeSuffix: obj.data.objects[i].codeSuffix,
+      //         createTime: obj.data.objects[i].createTime,
+      //         type: false,
+      //         rate: obj.data.objects[i].rate,
+      //         btnDisabled:true
+      //       });
+      //       if (that.ccc[i].value == 0) {
+      //         that.ccc[i].value = "";
+      //       }
+      //       console.log("库存按钮出现", that.ccc);
+      //     }
+      //     // console.log(obj.data);
+      //   })
+      //   .catch(function(obj) {
+      //     console.log(obj);
+      //   });
+      // this.merchandise = true;
+      // this.addtable.push({
+      //   allprice: []
+      // });
+      // this.sku.push({
+      //   price: []
+      // });
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
