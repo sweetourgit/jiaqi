@@ -854,6 +854,7 @@ export default {
               }).then(res =>{
                 this.ifOrderInsert = true;
               }).catch(() => {
+                this.ifOrderInsert = true;
                 this.$message({
                   type: "info",
                   message: "已取消"
