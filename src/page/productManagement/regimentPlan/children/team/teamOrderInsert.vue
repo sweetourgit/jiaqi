@@ -736,6 +736,7 @@ export default {
         this.enrolNums = false;
       } 
       var len;
+      console.log(arrLength)
       if (arrLength > preLength) {
         //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
         len = arrLength - preLength;
@@ -764,7 +765,7 @@ export default {
           });
         }
       } else{
-        // console.log(this.tour[index])
+        console.log(this.tour[index])
         for(var i=0;i < this.tour[index].length;i++){
           console.log(this.tour[index][i])
           if(this.tour[index][i].sex === ''){
@@ -852,7 +853,12 @@ export default {
                  type: "warning"
               }).then(res =>{
                 this.ifOrderInsert = true;
-              })
+              }).catch(() => {
+                this.$message({
+                  type: "info",
+                  message: "已取消"
+                });
+              });
             }
           }
           if(this.ifOrderInsert===true){
