@@ -274,7 +274,10 @@ export default {
       this.vm.mainAsync= bol;
     },
 
-    // slider中选中一条库存
+    /**
+     * @description: slider中选择一条库存
+     * @update @497，由原来的剩余= 总数- 各个plan售出 变为 各个plan的售出就是总售出
+     */
     selectInventory(i){
       if(this.vm.index=== i) return;
       let inventory= this.inventorys[i];
@@ -282,9 +285,15 @@ export default {
       this.vm.inventoryAsync= true;
       getInventorydetailAction.bind(this)(inventory.id).then(res => {
         let { object, plans }= res;
+        
         let left= object.count;
-        plans.forEach(plan => left-= plan.saleCount);
-        object.left= left;
+        // @497
+        // 原逻辑
+        // plans.forEach(plan => left-= plan.saleCount);
+        // object.left= left;
+        // 新逻辑
+        left= plans && plans[0]? plans[0].saleCount: 0;
+
         this.current= object;
         if(plans) this.plans= plans;
       }).finally(() => {
