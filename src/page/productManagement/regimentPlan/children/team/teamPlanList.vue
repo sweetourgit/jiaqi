@@ -388,7 +388,7 @@ export default {
           }).then(res => {
               if(res.data.isSuccess == true){
                 //console.log(this.current,'jack')
-                 this.teamQueryList();
+                this.teamQueryList();
               }
            })
         })
@@ -402,7 +402,7 @@ export default {
     //恢复售卖
     haltSales_01(status) {
       this.$confirm("该团期是否正常售卖?", "提示", {
-        confirmButtonText: "停售",
+        confirmButtonText: "恢复售卖",
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {

@@ -863,12 +863,10 @@ export default {
             }
           }
           if(this.ifOrderInsert===true){
-            console.log(guest.length)
             let sum =0;//求this.enrolNum的总和
             this.enrolNum.forEach(function(item){
               sum += item;
             })
-            console.log(sum)
             if(sum !== guest.length){//判断报名人数与出行人信息是否相等
               this.$confirm("报名人数与出行人信息不符?请修改出行人信息", "提示", {
                confirmButtonText: "确定",
@@ -884,7 +882,8 @@ export default {
                 });
               });
             }else{
-              if(this.teampreviewData.regimentType === '1'){//判断是都停售
+              // this.$parent.teamQueryList();
+              // if(this.teampreviewData.regimentType === '1'){//判断是都停售
                 if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
                    console.log(guest)
                    this.ifOrderInsert = false;
@@ -1041,22 +1040,37 @@ export default {
                     }
                   });
                 }
-              }else{
-                this.$confirm("该团号已停售?", "提示", {
-                   confirmButtonText: "确定",
-                   cancelButtonText: "取消",
-                   type: "warning"
-                }).then(res =>{
-                  //this.ifOrderInsert = true;
-                  this.$parent.teamQueryList();
-                }).catch(() => {
-                  //this.ifOrderInsert = true;
-                  this.$message({
-                    type: "info",
-                    message: "已取消"
-                  });
-                });
-              }
+              // }else if(this.teampreviewData.regimentType === '2'){
+              //   this.$confirm("该团号已停售?", "提示", {
+              //      confirmButtonText: "确定",
+              //      cancelButtonText: "取消",
+              //      type: "warning"
+              //   }).then(res =>{
+              //     //this.ifOrderInsert = true;
+              //     this.$parent.teamQueryList();
+              //   }).catch(() => {
+              //     //this.ifOrderInsert = true;
+              //     this.$message({
+              //       type: "info",
+              //       message: "已取消"
+              //     });
+              //   });
+              // }else if(this.teampreviewData.regimentType === '3'){
+              //   this.$confirm("该团号已封团?", "提示", {
+              //      confirmButtonText: "确定",
+              //      cancelButtonText: "取消",
+              //      type: "warning"
+              //   }).then(res =>{
+              //     //this.ifOrderInsert = true;
+              //     this.$parent.teamQueryList();
+              //   }).catch(() => {
+              //     //this.ifOrderInsert = true;
+              //     this.$message({
+              //       type: "info",
+              //       message: "已取消"
+              //     });
+              //   });
+              // }
             }
             
           }
