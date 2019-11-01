@@ -40,8 +40,8 @@
             <!-- <el-input v-model="productPos" style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input> -->
             <el-autocomplete class="inline-input" style="width: 205px;margin-left: 20px;"
             v-model="originPlace"
-            :fetch-suggestions="querySearch3" 
-            placeholder="请输入内容" 
+            :fetch-suggestions="querySearch3"
+            placeholder="请输入内容"
             :trigger-on-focus="false"
             @select="departure"></el-autocomplete>
           </div>
@@ -49,10 +49,10 @@
             目的地
             <!-- <el-input   v-model="productMod" style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input> -->
             <el-autocomplete class="inline-input" style="width: 205px;margin-left: 10px;"
-             v-model="originMod" 
+             v-model="originMod"
              :fetch-suggestions="querySearch4"
-              placeholder="请输入内容" 
-              :trigger-on-focus="false" 
+              placeholder="请输入内容"
+              :trigger-on-focus="false"
               @select="departure1"></el-autocomplete>
           </div>
           <div class="options">
@@ -122,11 +122,11 @@
 
       <!--分页-->
       <div class="block" style="margin-top: 30px;">
-        <el-pagination 
-        @size-change="handleSizeChange" 
-        @current-change="handleCurrentChange" 
-        :current-page.sync="currentPage4" 
-        :page-sizes="[5, 10, 50, 100]" 
+        <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage4"
+        :page-sizes="[5, 10, 50, 100]"
         :page-size="10" background layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
       </div>
       <!--分页-->
@@ -160,17 +160,17 @@
           <el-table-column prop="ddd" label="名称" width="180" align="center"></el-table-column>
           <el-table-column align="center" label="前缀-团号-后缀">
             <template slot-scope="scope">
-              <el-input 
-                :maxlength="10" 
+              <el-input
+                :maxlength="10"
                 v-model="ccc[scope.$index].codePrefix"
-                :style="ccc[scope.$index].isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'" 
+                :style="ccc[scope.$index].isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"
                 @change="fucking(scope.$index)"></el-input>
               <span>-</span>
               <span v-text="'{{'"></span>
               <span>日期</span>
               <span>}}</span>
               <span>-</span>
-              <el-input 
+              <el-input
                 :maxlength="10"
                  v-model="ccc[scope.$index].codeSuffix"
                 :style="ccc[scope.$index].isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"
@@ -932,7 +932,7 @@ export default {
                   btnDisabled:true,
                   isInfo:true
                 });
-                
+
                 if (that.ccc[i].value == 0) {
                   that.ccc[i].value = "";
                 }
@@ -1359,7 +1359,7 @@ export default {
                   break;
                 }
               }
-              
+
             }
           });
         this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
@@ -1584,7 +1584,7 @@ export default {
         })
         .catch(function(obj) {
         });
-      
+
     },
     handleDelete() {
       this.$confirm("此操作将删除该跟团游信息", "提示", {
@@ -1696,7 +1696,7 @@ export default {
       this.piaid = this.ccc[item].id;
       this.codePrefix = this.ccc[item].codePrefix;
       this.codeSuffix = this.ccc[item].codeSuffix;
-      
+
       // if(this.codePrefix === this.codeSuffix){
       //   this.$message.error("错了哦，团号不能重复");
       //   this.isCollapse = true;
@@ -2009,7 +2009,7 @@ export default {
     groupStage() {
       // let id= this.pid;
       // return this.$router.push({ path: '/planInventory', query: { id } });
-      
+
       this.ccc = [];
       this.tabBtnDisabled = true;
       var that = this;

@@ -135,7 +135,7 @@ export default {
         }).then(() => {
           return this.addOrSave();
         }).catch(() => {
-          // 放弃修改不加这句，会两次弹窗，这里直接关闭当前项，不走校验逻辑 
+          // 放弃修改如果不加这句，会两次弹窗，这里直接关闭当前项，不走校验逻辑 
           this.vm.currentPackage= null;
           
           let newTabName= newTab.name;
@@ -312,8 +312,8 @@ export default {
       let object= current.getData();
 
       let isSave= this.isSave();
-      if(!isSave) return this.addAction(object);
-      return this.saveAction(object); 
+      if(isSave) return this.saveAction(object);
+      return this.addAction(object);
     },
 
     // 是保存操作

@@ -151,7 +151,8 @@ export default {
 
   methods: {
     /**
-     * @description: 初始化submitForm，剥离交通信息，日程信息，保存基础信息快照 
+     * @description: 初始化submitForm，剥离交通信息，日程信息，保存基础信息快照
+     * @bug 127: 产品修改出发地和目的地后，套餐的出发地和目的地不存在在新数据中
      */
     init(){
       Object.keys(this.proto).forEach(attr => {
@@ -159,11 +160,31 @@ export default {
           && attr!== 'traffic'
             && (this.submitForm[attr]= this.proto[attr]);
       });
-      //用于比较是否发生改变的对象
+      // bug 127: 这里记录原始数据
       this.checkProto= this.$deepCopy(this.submitForm);
+      this.checkIfLoseInfo();
+
       this.$nextTick(() => {
         this._provided.PROVIDE_PACKAGE_ID= this.proto.id;
       });
+    },
+
+    // bug 127:检查套餐目的地和出发地是否还在产品的池子中
+    checkIfLoseInfo(){
+      let { podID, destinationID }= this.submitForm;
+      let podLose= !this.pods.find(pod => pod.podID=== podID);
+      let desLose= !this.destinations.find(destination => destination.destinationID=== destinationID);
+      if(podLose){
+        this.submitForm.pod= null;
+        this.submitForm.podID= null;
+      }
+      if(desLose){
+        this.submitForm.destination= null;
+        this.submitForm.destinationID= null;
+      }
+      if(podLose || desLose) return this.$message.info(
+        `套餐${podLose?'出发地': ''}${desLose?'目的地': ''}失效，请重新选择`
+      );
     },
 
     /**

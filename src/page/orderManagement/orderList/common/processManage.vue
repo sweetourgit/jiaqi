@@ -53,8 +53,10 @@
         </div>
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
           {{item.enrollName}}￥
-          <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
-          <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
+          <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+          <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
+          <span v-show="priceType==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+          <span v-show="priceType==2">{{item.price_02}}*{{enrolNum[index]}}</span>
           <div>
             <el-input-number
               class="input-num"
@@ -401,6 +403,7 @@ export default {
         })
         .then(res => {
           console.log(res, "get");
+          console.log("getorderStatus", res.data.object.orderStatus);
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -504,7 +507,7 @@ export default {
             for (let j = 0; j < this.tour[i].length; j++) {
               if (this.tour[i][j].cnName == "") {
                 this.$message.error("请补全出行人信息");
-                this.isChangeNumber = true;
+                // this.isChangeNumber = true;
                 return;
               } else {
                 url = "/order/stat/api/econtract";
@@ -534,6 +537,9 @@ export default {
               message: "提交成功",
               type: "success"
             });
+            if (status === 1) {
+              this.ordersave(3);
+            }
             this.$emit("orderPage");
             this.cancle();
           }
@@ -731,7 +737,30 @@ export default {
           });
         }
       } else {
-        this.tour[index].splice(arrLength - preLength, preLength - arrLength);
+        // 循环判断表格中的出行人信息是否有没填写的如果有则自动删除 没有则提示手动删除
+
+        // let tour = this.tour[index];
+        // for (let i = 0; i < tour.length; i++) {
+        //   if (tour[i].cnName == "") {
+        //     tour.splice(i, 1);
+        //     console.log(1);
+        //     return;
+        //   } else {
+        //     console.log(2);
+        //     const num = tour.length.toString();
+        //     this.$set(this.enrolNum, index, num);
+        //     this.$message.error("请手动删除表格中的出行人");
+        //   }
+        // }
+
+        let tour = this.tour[index];
+        if (tour[tour.length - 1].cnName != "") {
+          const num = this.tour[index].length.toString()
+          this.$set(this.enrolNum,index,num)
+          this.$message.error("请手动删除表格中的出行人");
+        } else {
+          this.tour[index].splice(arrLength - preLength, preLength - arrLength);
+        }
       }
       this.isEqualityFun();
     },
@@ -875,11 +904,11 @@ export default {
     priceChangeEvent(val) {
       if (val == true) {
         this.priceChange = "直客";
-        this.ruleForm.price = "1";
+        this.priceType = 1;
         this.compPrice();
       } else {
         this.priceChange = "同业";
-        this.ruleForm.price = "2";
+        this.priceType = 2;
         this.compPrice();
       }
     },
@@ -909,7 +938,7 @@ export default {
       for (let i = 0; i < this.enrolNum.length; i++) {
         this.payable +=
           this.enrolNum[i] *
-          (this.ruleForm.price == 1
+          (this.priceType == 1
             ? this.salePrice[i].price_01
             : this.salePrice[i].price_02);
       }
@@ -967,10 +996,14 @@ export default {
               obj.number += parseInt(this.enrolNum[i]);
             }
           }
+
+          let t_num =
+            this.teampreviewData.count - this.teampreviewData.remaining;
+          let n_num = obj.number - t_num;
           if (obj.number == 0) {
             (this.enrolNumsWarn = "报名人数不能为空"), (this.enrolNums = true);
             return false;
-          } else if (obj.number > this.teampreviewData.remaining) {
+          } else if (n_num > this.teampreviewData.remaining)  {
             (this.enrolNumsWarn = "报名总人数不能超过余位"),
               (this.enrolNums = true);
             return false;
@@ -1000,9 +1033,10 @@ export default {
           // 补充资料和待出行 信息更改跳转回到确认占位状态
           if (
             this.isChangeNumber === true &&
-            (this.orderget.orderStatus === 1 || this.orderget.orderStatus === 2)
+            (this.orderget.orderStatus === 1 ||
+              this.orderget.orderStatus === 2 ||
+              this.orderget.orderStatus === 3)
           ) {
-            // console.log(1);
             obj.orderStatus = 10;
           }
 
@@ -1019,6 +1053,18 @@ export default {
               enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
             }
           });
+
+          // 签署订单按钮
+          if (id === 3) {
+            obj.orderStatus = 3;
+          }
+
+          // 保存的时候用的直客价格还是同业的价格 swatch
+          if (this.priceType == 1) {
+            obj.priceType = 1
+          } else {
+            obj.priceType = 2
+          }
 
           obj.enrollDetail = enrollDetail;
           obj.guests = guest;

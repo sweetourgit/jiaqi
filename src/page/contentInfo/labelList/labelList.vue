@@ -29,7 +29,7 @@
         <el-table :data="tableData" ref="multipleTable" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass"@selection-change="changeFun" @row-click="clickRow">
           <el-table-column prop="id" label="ID" width="180" align="center"></el-table-column>
           <el-table-column prop="labelName" label="标签名称" width="180" align="center"></el-table-column>
-          <el-table-column prop="product" label="绑定相关产品" align="center"></el-table-column>
+          <el-table-column prop="countPro" label="绑定相关产品" align="center"></el-table-column>
         </el-table>
         <!--分页-->
         <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
