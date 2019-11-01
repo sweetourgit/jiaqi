@@ -540,6 +540,9 @@ export default {
             if (status === 1) {
               this.ordersave(3);
             }
+            if (status === 10) {
+              this.ordersave();
+            }
             this.$emit("orderPage");
             this.cancle();
           }
