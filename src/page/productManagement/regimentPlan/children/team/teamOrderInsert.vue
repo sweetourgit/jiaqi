@@ -882,7 +882,7 @@ export default {
                 });
               });
             }else{
-              console.log(this.teampreviewData.regimentType)
+              // this.$parent.teamQueryList();
               // if(this.teampreviewData.regimentType === '1'){//判断是都停售
                 if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
                    console.log(guest)

@@ -388,7 +388,7 @@ export default {
           }).then(res => {
               if(res.data.isSuccess == true){
                 //console.log(this.current,'jack')
-                 this.teamQueryList();
+                this.teamQueryList();
               }
            })
         })
