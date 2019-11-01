@@ -52,7 +52,7 @@ export const codeIsExist= function(object){
 export const getAverage= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/cost/api/getaverage",{
-      id: 10568
+      id
     }).then((res) => {
       let { average }= res.data;
       return resolve(average);
@@ -71,6 +71,22 @@ export const getCostList= function(packageID){
       let { isSuccess, objects }= res.data;
       if(!isSuccess) return reject('获取成本列表失败');
       return resolve(objects);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 修改毛利率
+export const saveRate= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/cost/api/saverate",{
+      object
+    }).then((res) => {
+      console.log(res)
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject('毛利率修改失败');
+      return resolve();
     }).catch((err) => {
       reject(err);
     })

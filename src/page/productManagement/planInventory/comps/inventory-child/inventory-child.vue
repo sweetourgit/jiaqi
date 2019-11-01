@@ -88,10 +88,11 @@ export default {
       let id= this.$route.query.id;
       if(!id) return this.$message.error('页面初始参数出错');
       this.getTeamListPackagesAction(id).then(objects => {
-        this.tableData.splice(0);
         let result= this.mixinFactory(objects);
+        this.tableData.splice(0);
         this.tableData.push(...result);
         // 将套餐列表分享
+        this.PACKAGE_LIST.splice(0);
         this.PACKAGE_LIST.push(...result);
       })
     },

@@ -19,7 +19,7 @@
         > 库 存 </el-button>
         <el-button
           :type="vm.currentChild=== 'cost'? 'primary': ''"
-          @click="beforeChangeChild('cost')"
+          @click="toCostChild(null)"
         > 成 本 </el-button>
         <el-button
           :type="vm.currentChild=== 'price'? 'primary': ''"
@@ -49,9 +49,12 @@ export default {
     PACKAGE_LIST: []
   },
 
-  mounted(){
+  created(){
     // 修改页面高度问题
     document.querySelector(".content-body1").style.height= "100%";
+  },
+
+  mounted(){
     this.init();
   },
 
@@ -88,6 +91,7 @@ export default {
     },
     
     toCostChild(payload){
+      if(!payload) payload= this._provided.PACKAGE_LIST[0];
       this.beforeChangeChild('cost', payload);
     }
   }
