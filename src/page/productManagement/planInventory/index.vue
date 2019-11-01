@@ -37,6 +37,10 @@
 </template>
 
 <script>
+// api
+import { getTeamListPackages } from './planInventory'
+
+// comps
 import inventoryChild from './comps/inventory-child/inventory-child'
 import costChild from './comps/cost-child/cost-child'
 import priceChild from './comps/price-child/price-child'
@@ -49,12 +53,9 @@ export default {
     PACKAGE_LIST: []
   },
 
-  created(){
-    // 修改页面高度问题
-    document.querySelector(".content-body1").style.height= "100%";
-  },
-
   mounted(){
+     // 修改页面高度问题
+    document.querySelector(".content-body1").style.height= "100%";
     this.init();
   },
 
@@ -73,8 +74,31 @@ export default {
 
   methods: {
     emitChangeChild(){},
-    init(){
-      this.$refs.child.init()
+    
+    // 可传入packageId
+    init(pacId){
+      let id= this.$route.query.id;
+      if(!id) return this.$message.error('页面初始参数出错');
+      getTeamListPackages(id).then(objects => {
+        let result= this.mixinFactory(objects);
+        // 将套餐列表分享
+        this._provided.PACKAGE_LIST.splice(0);
+        this._provided.PACKAGE_LIST.push(...result);
+        // 初始化库存
+        let pac= result.find(el => el.id=== pacId);
+        pac? this.$refs.child.init(pac): this.$refs.child.init();
+      })
+    },
+
+    mixinFactory(objects){
+      return objects.map(object => {
+        object.sign= '未设置'
+        if(object.codePrefix && object.codeSuffix){
+          object.sign= `${object.codePrefix} - 日期 - ${object.codeSuffix}`;
+          object.inited= true;
+        }
+        return object;
+      })
     },
 
     beforeChangeChild(child, payload){

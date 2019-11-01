@@ -8,6 +8,7 @@
     height: 100%;
     padding-left: 10px;
     border-left: 1px solid #ddd;
+    box-sizing: border-box;
     &>header{
       position: relative;
       padding-bottom: 20px;
@@ -51,6 +52,7 @@
         <div class="btn">
           <el-button type="primary" size="small" 
             :disabled="!vm.inited"
+            @click="wakeAddForm"
           >添加成本</el-button>
         </div>
       </header>
@@ -71,6 +73,12 @@
           </el-table-column>
         </el-table>
       </main>
+      <footer>
+        <add-form
+          ref="addFormRef"
+          @action-callback="emitSaveShortCallback"
+        ></add-form>
+      </footer>
     </div>
   </div>
 </template>
@@ -78,10 +86,11 @@
 <script>
 import { getAverage, getCostList, saveRate } from '../../planInventory'
 import commonSlider from '../common-slider'
+import addForm from './comps/add-form'
 
 export default {
 
-  components: { commonSlider },
+  components: { commonSlider, addForm },
 
   data(){
     return {
@@ -108,7 +117,7 @@ export default {
 
     getAverageAction(id){
       getAverage(id).then(res => {
-        this.vm.average= res;
+        this.vm.average= parseFloat(res).toFixed(2);
       })
     },
 
@@ -130,10 +139,15 @@ export default {
       if(this.checkProto.rate=== parseFloat(rate)) return;
       let { id }= this.checkProto;
       saveRate({ id, rate }).then(() => {
-        this.init(this.checkProto);
+        this.$emit('emit-handler', { func: 'init', payload: id });
         this.$message.success('毛利率修改成功');
       });
     },
+
+    wakeAddForm(pac){
+      this.$refs.addFormRef.handleOpen(pac);
+    },
+    emitSaveShortCallback(){}
   }
 
 }

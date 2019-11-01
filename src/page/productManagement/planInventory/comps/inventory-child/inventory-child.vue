@@ -66,8 +66,6 @@ $backgroundColor: #F7F7F7;
 </template>
 
 <script>
-// api
-import { getTeamListPackages } from '../../planInventory'
 // 子组件
 import signForm from './comps/sign-form'
 
@@ -85,39 +83,8 @@ export default {
   methods: {
 
     init(){
-      let id= this.$route.query.id;
-      if(!id) return this.$message.error('页面初始参数出错');
-      this.getTeamListPackagesAction(id).then(objects => {
-        let result= this.mixinFactory(objects);
-        this.tableData.splice(0);
-        this.tableData.push(...result);
-        // 将套餐列表分享
-        this.PACKAGE_LIST.splice(0);
-        this.PACKAGE_LIST.push(...result);
-      })
-    },
-
-    getTeamListPackagesAction(id){
-      return new Promise((resolve, reject) => {
-        getTeamListPackages(id).then(res => {
-          resolve(res);
-        }).catch(err => {
-          console.error(err);
-          this.$message.err(err);
-          reject;
-        })
-      })
-    },
-
-    mixinFactory(objects){
-      return objects.map(object => {
-        object.sign= '未设置'
-        if(object.codePrefix && object.codeSuffix){
-          object.sign= `${object.codePrefix} - 日期 - ${object.codeSuffix}`;
-          object.inited= true;
-        }
-        return object;
-      })
+      this.tableData.splice(0);
+      this.tableData.push(...this.PACKAGE_LIST);
     },
 
     // 唤醒团号表单
