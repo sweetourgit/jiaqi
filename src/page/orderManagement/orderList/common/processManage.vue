@@ -53,8 +53,10 @@
         </div>
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
           {{item.enrollName}}￥
-          <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
-          <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
+          <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+          <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
+          <span v-show="priceType==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+          <span v-show="priceType==2">{{item.price_02}}*{{enrolNum[index]}}</span>
           <div>
             <el-input-number
               class="input-num"
@@ -504,7 +506,7 @@ export default {
             for (let j = 0; j < this.tour[i].length; j++) {
               if (this.tour[i][j].cnName == "") {
                 this.$message.error("请补全出行人信息");
-                this.isChangeNumber = true;
+                // this.isChangeNumber = true;
                 return;
               } else {
                 url = "/order/stat/api/econtract";
@@ -534,6 +536,7 @@ export default {
               message: "提交成功",
               type: "success"
             });
+            // this.ordersave(orderStatus = 1)
             this.$emit("orderPage");
             this.cancle();
           }
@@ -731,7 +734,26 @@ export default {
           });
         }
       } else {
-        this.tour[index].splice(arrLength - preLength, preLength - arrLength);
+        // for (let i = 0; i < this.tour.length; i++) {
+        //   for (let j = 0; j < this.tour[i].length; j++) {
+        //     if (this.tour[index].cnName != "") {
+        //       this.$message.error("请手动删除表格中的出行人");
+        //     } else {
+        //       this.tour[index].splice(
+        //         arrLength - preLength,
+        //         preLength - arrLength
+        //       );
+        //     }
+        //   }
+        // }
+        let tour = this.tour[index];
+        if (tour[tour.length - 1].cnName != "") {
+          const num = this.tour[index].length.toString()
+          this.$set(this.enrolNum,index,num)
+          this.$message.error("请手动删除表格中的出行人");
+        } else {
+          this.tour[index].splice(arrLength - preLength, preLength - arrLength);
+        }
       }
       this.isEqualityFun();
     },
@@ -875,11 +897,11 @@ export default {
     priceChangeEvent(val) {
       if (val == true) {
         this.priceChange = "直客";
-        this.ruleForm.price = "1";
+        this.priceType = 1;
         this.compPrice();
       } else {
         this.priceChange = "同业";
-        this.ruleForm.price = "2";
+        this.priceType = 2;
         this.compPrice();
       }
     },
@@ -909,7 +931,7 @@ export default {
       for (let i = 0; i < this.enrolNum.length; i++) {
         this.payable +=
           this.enrolNum[i] *
-          (this.ruleForm.price == 1
+          (this.priceType == 1
             ? this.salePrice[i].price_01
             : this.salePrice[i].price_02);
       }
@@ -1019,6 +1041,10 @@ export default {
               enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
             }
           });
+
+          // if(orderStatus == 1) {
+          //   obj.orderStatus = 3
+          // }
 
           obj.enrollDetail = enrollDetail;
           obj.guests = guest;
