@@ -14,7 +14,6 @@
           </div>
         </div>
     </div>
-      
     <!--左侧导航-->
     <div class="left-tree">
          <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>

@@ -876,7 +876,13 @@ export default {
                type: "warning"
               }).then(res =>{
                 this.ifOrderInsert = true;
-              })
+              }).catch(() => {
+                this.ifOrderInsert = true;
+                this.$message({
+                  type: "info",
+                  message: "已取消"
+                });
+              });
             }else{
               if(this.teampreviewData.regimentType === 1){//判断是都停售
                 if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
@@ -1043,7 +1049,13 @@ export default {
                 }).then(res =>{
                   //this.ifOrderInsert = true;
                   this.$parent.teamQueryList();
-                })
+                }).catch(() => {
+                  //this.ifOrderInsert = true;
+                  this.$message({
+                    type: "info",
+                    message: "已取消"
+                  });
+                });
               }
             }
             
