@@ -882,9 +882,10 @@ export default {
                 });
               });
             }else{
-              console.log(this.teampreviewData.regimentType === 1)
-              console.log(this.teampreviewData.regimentType === 2)
-              if(this.teampreviewData.regimentType === '1'){//判断是都停售
+              console.log(this.teampreviewData.count == 500)
+              console.log(this.teampreviewData.regimentType == 1)
+              console.log(this.teampreviewData.regimentType == 2)
+              // if(this.teampreviewData.regimentType == '1'){//判断是都停售
                 if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
                    console.log(guest)
                    this.ifOrderInsert = false;
@@ -1041,37 +1042,38 @@ export default {
                     }
                   });
                 }
-              }else if(this.teampreviewData.regimentType === '2'){
-                this.$confirm("该团号已停售?", "提示", {
-                   confirmButtonText: "确定",
-                   cancelButtonText: "取消",
-                   type: "warning"
-                }).then(res =>{
-                  //this.ifOrderInsert = true;
-                  this.$parent.teamQueryList();
-                }).catch(() => {
-                  //this.ifOrderInsert = true;
-                  this.$message({
-                    type: "info",
-                    message: "已取消"
-                  });
-                });
-              }else if(this.teampreviewData.regimentType === '3'){
-                this.$confirm("该团号已封团?", "提示", {
-                   confirmButtonText: "确定",
-                   cancelButtonText: "取消",
-                   type: "warning"
-                }).then(res =>{
-                  //this.ifOrderInsert = true;
-                  this.$parent.teamQueryList();
-                }).catch(() => {
-                  //this.ifOrderInsert = true;
-                  this.$message({
-                    type: "info",
-                    message: "已取消"
-                  });
-                });
-              }
+              // }else if(this.teampreviewData.regimentType == '2'){
+              //   this.$confirm("该团号已停售?", "提示", {
+              //      confirmButtonText: "确定",
+              //      cancelButtonText: "取消",
+              //      type: "warning"
+              //   }).then(res =>{
+              //     //this.ifOrderInsert = true;
+              //     this.$parent.teamQueryList();
+              //   }).catch(() => {
+              //     //this.ifOrderInsert = true;
+              //     this.$message({
+              //       type: "info",
+              //       message: "已取消"
+              //     });
+              //   });
+              // }else if(this.teampreviewData.regimentType == '3'){
+              //   this.$confirm("该团号已封团?", "提示", {
+              //      confirmButtonText: "确定",
+              //      cancelButtonText: "取消",
+              //      type: "warning"
+              //   }).then(res =>{
+              //     //this.ifOrderInsert = true;
+              //     this.$parent.teamQueryList();
+              //   }).catch(() => {
+              //     //this.ifOrderInsert = true;
+              //     this.$message({
+              //       type: "info",
+              //       message: "已取消"
+              //     });
+              //   });
+              // }
+              return;
             }
             
           }
