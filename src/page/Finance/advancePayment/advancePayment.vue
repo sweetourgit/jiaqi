@@ -115,7 +115,7 @@
       </el-tab-pane>
       <!-- 需要您审批 END -->
     </el-tabs>
-    <!-- <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :infoStatus="infoStatus" @searchHandList="searchHand"></AdvanceInfo>  -->
+     <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :infoStatus="infoStatus" @searchHandList="searchHand"></AdvanceInfo>
     <!--查看无收入借款弹窗-->
     <el-dialog title="借款申请详情" :visible.sync="checkIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>
       <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
@@ -228,6 +228,7 @@ export default {
     },
     // 报销弹窗
     dialogchange() {
+      console.log('报销弹窗')
       this.find = 0;
       this.change = false
       this.dialogFormVisible = true;

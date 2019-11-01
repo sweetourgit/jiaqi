@@ -1997,9 +1997,9 @@ export default {
     },
     // 团期/库存按钮 获取dialog数据
     groupStage() {
-      // document.getElementById("#testa").basicPrice()
-      // this.$refs.config.basicPrice();
-      // console.log($('.testj'))
+      // let id= this.pid;
+      // return this.$router.push({ path: '/planInventory', query: { id } });
+      
       this.ccc = [];
       this.tabBtnDisabled = true;
       var that = this;

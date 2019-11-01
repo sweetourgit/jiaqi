@@ -716,6 +716,7 @@ export default {
         });
     },
     peoNum(index, enrollID, enrollName) {
+      console.log(this.enrolNum[index])
       //填写报名人数
       let arrLength; //报名人数
       let preLength; //记录上一次报名人数
@@ -855,172 +856,188 @@ export default {
             }
           }
           if(this.ifOrderInsert===true){
-            if(this.teampreviewData.regimentType === 1){//判断是都停售
-              if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
-               console.log(guest)
-               this.ifOrderInsert = false;
-               this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
-                object: {
-                  id: 0,
-                  isDeleted: 0,
-                  code: "",
-                  orderCode: "",
-                  proID: this.teampreviewData.teamID,
-                  planID: this.planId,
-                  orderStatus: 0, //订单状态  7未确认
-                  refundStatus: 0, //退款状态
-                  occupyStatus: index, //占位状态
-                  payable: this.ruleForm.totalPrice, //应付款
-                  platform: 1, //1是erp，2是同业
-                  favourable: [
-                    //优惠
-                    {
-                      id: 0,
-                      orderID: 0,
-                      price: this.ruleForm.otherCost,
-                      title: "其他费用",
-                      favMode: 1,
-                      mark: this.ruleForm.otherCostRemark
-                    },
-                    {
-                      id: 0,
-                      orderID: 0,
-                      price: this.ruleForm.allDiscount,
-                      title: "整体优惠",
-                      favMode: 2,
-                      mark: this.ruleForm.allDisRemark
-                    }
-                  ],
-                  contact:
-                    '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
-                  endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
-                  orderChannel: Number(this.ruleForm.orderRadio),
-                  priceType: Number(this.ruleForm.price),
-                  orgID: sessionStorage.getItem("orgID"),
-                  userID: sessionStorage.getItem("id"),
-                  remark: JSON.stringify([
-                    {
-                      OrderCode: "",
-                      Mark: this.ruleForm.remark,
-                      CreateTime: formatDate(new Date())
-                    }
-                  ]),
-                  guests: guest,
-                  number: number,
-                  enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
-                }
-                }).then(res => {
-                  console.log(typeof res.data.result.message)
-                  if (res.data.isSuccess == true) {
-                    this.$message.success("提交成功");
-                    this.$parent.teamQueryList();
-                    let data = JSON.parse(res.data.result.details);
-                    this.orderCode = data.OrderCode;
-                    //需再次存储备注信息
-                    this.addComment(this.orderCode);
-                    this.orderSuc = true;
-                    //清空表单
-                    this.$refs[formName].resetFields();
-                    this.dialogFormOrder = false;
-                    this.ifOrderInsert = true;
-                    // this.startUpWorkFlowForJQ(
-                    //   data.OrderID,
-                    //   data.FlowModel,
-                    //   data.FlowModelName,
-                    //   data.Usercode
-                    // );
-                  } else if(res.data.isSuccess == false){
-                    //预留黑名单信息？？？
-                    this.$message.success(res.data.result.message + "");
-                    this.ifOrderInsert = true;
-                  }
-                });
-              }else if(this.ruleForm.orderRadio === '2'){
-                this.ifOrderInsert = false;
-                this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
-                  object: {
-                    id: 0,
-                    isDeleted: 0,
-                    code: "",
-                    orderCode: "",
-                    proID: this.teampreviewData.teamID,
-                    planID: this.planId,
-                    orderStatus: 0, //订单状态  7未确认
-                    refundStatus: 0, //退款状态
-                    occupyStatus: index, //占位状态
-                    payable: this.ruleForm.totalPrice, //应付款
-                    platform: 2, //1是erp，2是同业
-                    favourable: [
-                      //优惠
-                      {
-                        id: 0,
-                        orderID: 0,
-                        price: this.ruleForm.otherCost,
-                        title: "其他费用",
-                        favMode: 1,
-                        mark: this.ruleForm.otherCostRemark
-                      },
-                      {
-                        id: 0,
-                        orderID: 0,
-                        price: this.ruleForm.allDiscount,
-                        title: "整体优惠",
-                        favMode: 2,
-                        mark: this.ruleForm.allDisRemark
-                      }
-                    ],
-                    contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
-                    endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
-                    orderChannel: Number(this.ruleForm.orderRadio),
-                    priceType: Number(this.ruleForm.price),
-                    orgID:this.productPos,
-                    // orgID: sessionStorage.getItem("orgID"),
-                    userID: sessionStorage.getItem("id"),
-                    remark: JSON.stringify([
-                      {
-                        OrderCode: "",
-                        Mark: this.ruleForm.remark,
-                        CreateTime: formatDate(new Date())
-                      }
-                    ]),
-                    guests: guest,
-                    number: number,
-                    enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
-                  }
-                }).then(res => {
-                  if (res.data.isSuccess == true) {
-                    this.$message.success("提交成功");
-                    let data = JSON.parse(res.data.result.details);
-                    this.orderCode = data.OrderCode;
-                    //需再次存储备注信息
-                    this.addComment(this.orderCode);
-                    this.orderSuc = true;
-                    //清空表单
-                    this.$refs[formName].resetFields();
-                    this.dialogFormOrder = false;
-                    this.ifOrderInsert = true;
-                    // this.startUpWorkFlowForJQ(
-                    //   data.OrderID,
-                    //   data.FlowModel,
-                    //   data.FlowModelName,
-                    //   data.Usercode
-                    // );
-                  } else {
-                    //预留黑名单信息？？？
-                    this.$message.success(res.data.result.message + "");
-                    this.ifOrderInsert = true;
-                  }
-                });
-              }
-            }else{
-              this.$confirm("该团号已停售?", "提示", {
-                 confirmButtonText: "确定",
-                 cancelButtonText: "取消",
-                 type: "warning"
+            console.log(guest.length)
+            let sum =0;//求this.enrolNum的总和
+            this.enrolNum.forEach(function(item){
+              sum += item;
+            })
+            console.log(sum)
+            if(sum !== guest.length){//判断报名人数与出行人信息是否相等
+              this.$confirm("报名人数与出行人信息不符?请修改出行人信息", "提示", {
+               confirmButtonText: "确定",
+               cancelButtonText: "取消",
+               type: "warning"
               }).then(res =>{
-                //this.ifOrderInsert = true;
-                this.$parent.teamQueryList();
+                this.ifOrderInsert = true;
               })
+            }else{
+              if(this.teampreviewData.regimentType === 1){//判断是都停售
+                if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
+                   console.log(guest)
+                   this.ifOrderInsert = false;
+                   this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
+                    object: {
+                      id: 0,
+                      isDeleted: 0,
+                      code: "",
+                      orderCode: "",
+                      proID: this.teampreviewData.teamID,
+                      planID: this.planId,
+                      orderStatus: 0, //订单状态  7未确认
+                      refundStatus: 0, //退款状态
+                      occupyStatus: index, //占位状态
+                      payable: this.ruleForm.totalPrice, //应付款
+                      platform: 1, //1是erp，2是同业
+                      favourable: [
+                        //优惠
+                        {
+                          id: 0,
+                          orderID: 0,
+                          price: this.ruleForm.otherCost,
+                          title: "其他费用",
+                          favMode: 1,
+                          mark: this.ruleForm.otherCostRemark
+                        },
+                        {
+                          id: 0,
+                          orderID: 0,
+                          price: this.ruleForm.allDiscount,
+                          title: "整体优惠",
+                          favMode: 2,
+                          mark: this.ruleForm.allDisRemark
+                        }
+                      ],
+                      contact:
+                        '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                      endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                      orderChannel: Number(this.ruleForm.orderRadio),
+                      priceType: Number(this.ruleForm.price),
+                      orgID: sessionStorage.getItem("orgID"),
+                      userID: sessionStorage.getItem("id"),
+                      remark: JSON.stringify([
+                        {
+                          OrderCode: "",
+                          Mark: this.ruleForm.remark,
+                          CreateTime: formatDate(new Date())
+                        }
+                      ]),
+                      guests: guest,
+                      number: number,
+                      enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                    }
+                    }).then(res => {
+                      console.log(typeof res.data.result.message)
+                      if (res.data.isSuccess == true) {
+                        this.$message.success("提交成功");
+                        this.$parent.teamQueryList();
+                        let data = JSON.parse(res.data.result.details);
+                        this.orderCode = data.OrderCode;
+                        //需再次存储备注信息
+                        this.addComment(this.orderCode);
+                        this.orderSuc = true;
+                        //清空表单
+                        this.$refs[formName].resetFields();
+                        this.dialogFormOrder = false;
+                        this.ifOrderInsert = true;
+                        // this.startUpWorkFlowForJQ(
+                        //   data.OrderID,
+                        //   data.FlowModel,
+                        //   data.FlowModelName,
+                        //   data.Usercode
+                        // );
+                      } else if(res.data.isSuccess == false){
+                        //预留黑名单信息？？？
+                        this.$message.success(res.data.result.message + "");
+                        this.ifOrderInsert = true;
+                      }
+                    });
+                }else if(this.ruleForm.orderRadio === '2'){
+                  this.ifOrderInsert = false;
+                  this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
+                    object: {
+                      id: 0,
+                      isDeleted: 0,
+                      code: "",
+                      orderCode: "",
+                      proID: this.teampreviewData.teamID,
+                      planID: this.planId,
+                      orderStatus: 0, //订单状态  7未确认
+                      refundStatus: 0, //退款状态
+                      occupyStatus: index, //占位状态
+                      payable: this.ruleForm.totalPrice, //应付款
+                      platform: 2, //1是erp，2是同业
+                      favourable: [
+                        //优惠
+                        {
+                          id: 0,
+                          orderID: 0,
+                          price: this.ruleForm.otherCost,
+                          title: "其他费用",
+                          favMode: 1,
+                          mark: this.ruleForm.otherCostRemark
+                        },
+                        {
+                          id: 0,
+                          orderID: 0,
+                          price: this.ruleForm.allDiscount,
+                          title: "整体优惠",
+                          favMode: 2,
+                          mark: this.ruleForm.allDisRemark
+                        }
+                      ],
+                      contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                      endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                      orderChannel: Number(this.ruleForm.orderRadio),
+                      priceType: Number(this.ruleForm.price),
+                      orgID:this.productPos,
+                      // orgID: sessionStorage.getItem("orgID"),
+                      userID: sessionStorage.getItem("id"),
+                      remark: JSON.stringify([
+                        {
+                          OrderCode: "",
+                          Mark: this.ruleForm.remark,
+                          CreateTime: formatDate(new Date())
+                        }
+                      ]),
+                      guests: guest,
+                      number: number,
+                      enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                    }
+                  }).then(res => {
+                    if (res.data.isSuccess == true) {
+                      this.$message.success("提交成功");
+                      let data = JSON.parse(res.data.result.details);
+                      this.orderCode = data.OrderCode;
+                      //需再次存储备注信息
+                      this.addComment(this.orderCode);
+                      this.orderSuc = true;
+                      //清空表单
+                      this.$refs[formName].resetFields();
+                      this.dialogFormOrder = false;
+                      this.ifOrderInsert = true;
+                      // this.startUpWorkFlowForJQ(
+                      //   data.OrderID,
+                      //   data.FlowModel,
+                      //   data.FlowModelName,
+                      //   data.Usercode
+                      // );
+                    } else {
+                      //预留黑名单信息？？？
+                      this.$message.success(res.data.result.message + "");
+                      this.ifOrderInsert = true;
+                    }
+                  });
+                }
+              }else{
+                this.$confirm("该团号已停售?", "提示", {
+                   confirmButtonText: "确定",
+                   cancelButtonText: "取消",
+                   type: "warning"
+                }).then(res =>{
+                  //this.ifOrderInsert = true;
+                  this.$parent.teamQueryList();
+                })
+              }
             }
             
           }
@@ -1038,7 +1055,7 @@ export default {
             orderCode: orderCode,
             content: this.ruleForm.remark,
             createTime: moment()
-              .format("YYYY-MM-DD hh:mm:ss")
+              .format("YYYY-MM-DD HH:mm:ss")
               .toString()
           }
         })
@@ -1095,6 +1112,8 @@ export default {
       }).then(res =>{
         this.tour[index].splice(type,1);//手动删除单条出行人信息
         this.enrolNum[index] = this.tour[index].length;//删除出行人信息后，表格长度和报名人数相等
+        this.preLength[index] = this.enrolNum[index];
+        //console.log(this.enrolNum[index])
       })
     },
     fillTour(type, index) {
@@ -1140,9 +1159,7 @@ export default {
     compPrice() {
       //计算总价
       this.ruleForm.totalPrice = 0;
-      console.log(this.ruleForm.price)
       for (let i = 0; i < this.enrolNum.length; i++) {
-        console.log(this.enrolNum[i])
         this.ruleForm.totalPrice += (this.enrolNum[i] == undefined ? 0 : this.enrolNum[i]) * (this.ruleForm.price == 1 ? this.salePrice[i].price_01 : this.salePrice[i].price_02);
       }
       this.ruleForm.totalPrice += parseInt(
@@ -1155,7 +1172,6 @@ export default {
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
       this.tableData2 = []
-      console.log()
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
           name: queryString3,

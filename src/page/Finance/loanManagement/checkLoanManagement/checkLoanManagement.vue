@@ -596,9 +596,7 @@ import moment from 'moment'
       })
       //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
       that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
-
-          "id": val
-
+        "id": val
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableMoney = []
@@ -607,10 +605,10 @@ import moment from 'moment'
       }).catch(err => {
         console.log(err)
       })
-      //收入明细
-      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderlist', {
+      // 收入明细
+      that.$http.post(this.GLOBAL.serverSrc + '/orderquery/api/income/detail', {
         "object": {
-          "planID": val,
+          "id": val,
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
