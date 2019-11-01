@@ -145,17 +145,17 @@
           <el-table-column prop="ddd" label="名称" width="180" align="center"></el-table-column>
           <el-table-column align="center" label="前缀-团号-后缀">
             <template slot-scope="scope">
-              <el-input 
-                :maxlength="10" 
+              <el-input
+                :maxlength="10"
                 v-model="ccc[scope.$index].codePrefix"
-                :style="ccc[scope.$index].isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'" 
+                :style="ccc[scope.$index].isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"
                 @change="fucking(scope.$index)"></el-input>
               <span>-</span>
               <span v-text="'{{'"></span>
               <span>日期</span>
               <span>}}</span>
               <span>-</span>
-              <el-input 
+              <el-input
                 :maxlength="10"
                  v-model="ccc[scope.$index].codeSuffix"
                 :style="ccc[scope.$index].isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"
@@ -864,14 +864,14 @@ export default {
                   btnDisabled:true,
                   isInfo:true
                 });
-                
+
                 if (that.ccc[i].value == 0) {
                   that.ccc[i].value = "";
                 }
                 // break;
               }
 
-            
+
 
 
               console.log(obj.data);
@@ -1261,10 +1261,10 @@ export default {
                     this.ccc[i].btnDisabled = false;
                     this.tabBtnDisabled = false;
                   }
-                  
-                  
+
+
                   break;
-                  
+
                 }
               }
               this.tableData12 = res.data.objects;
@@ -1292,7 +1292,7 @@ export default {
                 }
               });
             }else{
-              
+
               for(let i = 0;i < this.ccc.length;i++) {
                 if(this.team === this.ccc[i].id) {
                   this.ccc[i].btnDisabled = true;
@@ -1327,15 +1327,15 @@ export default {
             console.log(boon);
           if (this.ccc[index].codePrefix === '' && this.ccc[index].codeSuffix === '') {
             this.ccc[index].isInfo = true;
-             
-            //  for(let i = 0;i < this.ccc.length;i++) {
-            //     this.ccc[i].btnDisabled = true;
-            //     this.tabBtnDisabled = true;
-            //     break;
-            //  }
+
+             for(let i = 0;i < this.ccc.length;i++) {
+                this.ccc[i].btnDisabled = true;
+                this.tabBtnDisabled = true;
+                break;
+             }
             this.$message.error("错了哦，团号不能为空");
-          
-        
+
+
           } else if(boon === true){
             this.ccc[index].isInfo = true;
             //  for(let i = 0;i < this.ccc.length;i++) {
@@ -1344,15 +1344,15 @@ export default {
             //     break;
             //  }
             this.$message.error("错了哦，团号不能重复");
-          
-            
+
+
           }else {
             this.basicPrice(this.ccc[index].id, this.ccc[index].rate, false,boon)
             this.ccc[index].isInfo = false;
             }
           })
 
-        
+
     // }
    },
     // 控制价格按钮显示
@@ -1538,7 +1538,7 @@ export default {
         .catch(function(obj) {
           console.log(obj);
         });
-      
+
     },
     handleDelete() {
       console.log(this.pid);
@@ -1653,7 +1653,7 @@ export default {
       this.piaid = this.ccc[item].id;
       this.codePrefix = this.ccc[item].codePrefix;
       this.codeSuffix = this.ccc[item].codeSuffix;
-      
+
       // if(this.codePrefix === this.codeSuffix){
       //   this.$message.error("错了哦，团号不能重复");
       //   this.isCollapse = true;
