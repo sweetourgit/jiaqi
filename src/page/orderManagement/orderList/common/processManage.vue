@@ -403,6 +403,7 @@ export default {
         })
         .then(res => {
           console.log(res, "get");
+          console.log("getorderStatus",res.data.object.orderStatus)
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -536,7 +537,9 @@ export default {
               message: "提交成功",
               type: "success"
             });
-            // this.ordersave(orderStatus = 1)
+            if(status === 1) {
+              this.ordersave(3)
+            }
             this.$emit("orderPage");
             this.cancle();
           }
@@ -1022,7 +1025,7 @@ export default {
           // 补充资料和待出行 信息更改跳转回到确认占位状态
           if (
             this.isChangeNumber === true &&
-            (this.orderget.orderStatus === 1 || this.orderget.orderStatus === 2)
+            (this.orderget.orderStatus === 1 || this.orderget.orderStatus === 2 || this.orderget.orderStatus === 3)
           ) {
             // console.log(1);
             obj.orderStatus = 10;
@@ -1041,11 +1044,12 @@ export default {
               enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
             }
           });
-
-          // if(orderStatus == 1) {
-          //   obj.orderStatus = 3
-          // }
-
+          console.log(id)
+          if(id === 3) {
+            console.log(id)
+            obj.orderStatus = 3
+          }
+          console.log(obj.orderStatus)
           obj.enrollDetail = enrollDetail;
           obj.guests = guest;
           obj.payable = this.payable;
