@@ -738,29 +738,34 @@ export default {
         }
       } else {
         // 循环判断表格中的出行人信息是否有没填写的如果有则自动删除 没有则提示手动删除
+        let isInfNull = this.tour[index].some((item, index, arr) => {
+          return item.cnName == "";
+        });
+        let isInfNullIndex;
+        if (isInfNull) {
+          for (let i = 0; i < this.tour[index].length; i++) {
+            if (this.tour[index][i].cnName == "") {
+              isInfNullIndex = i
+            }
+          }
+          console.log(isInfNullIndex)
+        }
+        if (isInfNull) {
+          this.tour[index].splice(isInfNullIndex, 1);
+        } else {
+          const num = this.tour[index].length.toString();
+          this.$set(this.enrolNum, index, num);
+          this.$message.error("请手动删除表格中的出行人");
+        }
 
         // let tour = this.tour[index];
-        // for (let i = 0; i < tour.length; i++) {
-        //   if (tour[i].cnName == "") {
-        //     tour.splice(i, 1);
-        //     console.log(1);
-        //     return;
-        //   } else {
-        //     console.log(2);
-        //     const num = tour.length.toString();
-        //     this.$set(this.enrolNum, index, num);
-        //     this.$message.error("请手动删除表格中的出行人");
-        //   }
+        // if (tour[tour.length - 1].cnName != "") {
+        //   const num = this.tour[index].length.toString()
+        //   this.$set(this.enrolNum,index,num)
+        //   this.$message.error("请手动删除表格中的出行人");
+        // } else {
+        //   this.tour[index].splice(arrLength - preLength, preLength - arrLength);
         // }
-
-        let tour = this.tour[index];
-        if (tour[tour.length - 1].cnName != "") {
-          const num = this.tour[index].length.toString()
-          this.$set(this.enrolNum,index,num)
-          this.$message.error("请手动删除表格中的出行人");
-        } else {
-          this.tour[index].splice(arrLength - preLength, preLength - arrLength);
-        }
       }
       this.isEqualityFun();
     },
@@ -1003,7 +1008,7 @@ export default {
           if (obj.number == 0) {
             (this.enrolNumsWarn = "报名人数不能为空"), (this.enrolNums = true);
             return false;
-          } else if (n_num > this.teampreviewData.remaining)  {
+          } else if (n_num > this.teampreviewData.remaining) {
             (this.enrolNumsWarn = "报名总人数不能超过余位"),
               (this.enrolNums = true);
             return false;
@@ -1061,9 +1066,9 @@ export default {
 
           // 保存的时候用的直客价格还是同业的价格 swatch
           if (this.priceType == 1) {
-            obj.priceType = 1
+            obj.priceType = 1;
           } else {
-            obj.priceType = 2
+            obj.priceType = 2;
           }
 
           obj.enrollDetail = enrollDetail;
