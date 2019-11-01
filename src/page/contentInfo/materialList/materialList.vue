@@ -14,7 +14,6 @@
           </div>
         </div>
     </div>
-      
     <!--左侧导航-->
     <div class="left-tree">
          <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
@@ -181,7 +180,7 @@
                 :limit="12"
                 drag
                 :file-list="fileList"
-                action="http://test.dayuntong.com/upload/api/picture"
+                action="http://49.4.10.11:3009/upload/obs/api/picture"
                 multiple
                 list-type="picture"
                 :on-error="handleError"
@@ -231,8 +230,6 @@
 
 
 
-
-
            
    
 </div>
@@ -247,7 +244,7 @@
     data() {        
       return {       
         isDest: '',
-        picSrc:'http://test.dayuntong.com/upload',
+        picSrc:'https://jiaqi-server.obs.myhwclouds.com',
         //左侧菜单
         list:[],
         lists: [], //子级
@@ -333,7 +330,7 @@
       },
       //获取景点类型
       albumtypeget(){
-        this.$http.post('http://test.dayuntong.com' + '/album/api/albumtypeget').then(res => {
+        this.$http.post('http://test.dayuntong.com' + '/tpk/album/api/albumtypeget').then(res => {
             if(res.data.isSuccess == true){
                this.albumtype=res.data.objects
             }
@@ -358,7 +355,7 @@
         this.$refs[formName].validate((valid) => {
           if(valid){
             if(this.isDest != 'destint') {
-              this.$http.post('http://test.dayuntong.com' + '/album/api/insert',{
+              this.$http.post('http://test.dayuntong.com' + '/tpk/album/api/insert',{
                 "object": {
                   "id": 0,
                   "name": this.picForm.name,
@@ -479,7 +476,7 @@
       },
       //相册list
       albumPage(pageIndex=this.pageIndex,pageSize=this.pageSize,areaID=0,name=""){
-        this.$http.post('http://test.dayuntong.com' + '/album/api/page',{
+        this.$http.post('http://test.dayuntong.com' + '/tpk/album/api/page',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object": {
@@ -501,7 +498,7 @@
       },
       //获取一个相册信息
       getAlbum(id){       
-        this.$http.post('http://test.dayuntong.com' + '/album/api/get',{
+        this.$http.post('http://test.dayuntong.com' + '/tpk/album/api/get',{
             "id": id,
           }).then(res => {
             if(res.data.isSuccess == true){
@@ -600,7 +597,7 @@
       getPicture(index){
         this.picDisabled=true;
         this.savPicBut="修改属性";
-        this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
+        this.$http.post('http://test.dayuntong.com' + '/tpk/picture/api/get',{
              id:this.albumInfo.pictures[index].id
           }).then(res => {
             if(res.data.isSuccess == true){
@@ -674,7 +671,7 @@
       },
       //获取公司
       getCompany(){
-        this.$http.post('http://test.dayuntong.com' + '/picture/api/companyget')
+        this.$http.post('http://test.dayuntong.com' + '/tpk/picture/api/companyget')
         .then(res => {
             this.insertCheCompany=[];
             this.companyList=res.data.objects;

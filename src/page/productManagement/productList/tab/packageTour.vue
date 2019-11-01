@@ -27,7 +27,7 @@
         <div class="select_two">
           <div class="id">
             ID
-            <el-input v-model="productId" style="width: 205px;margin-left: 20px;"placeholder="请输入内容"></el-input>
+            <el-input v-model="productId" style="width: 205px;margin-left: 20px;" placeholder="请输入内容"></el-input>
           </div>
           <div class="product">
             商品名称
@@ -38,12 +38,22 @@
           <div class="address">
             出发地
             <!-- <el-input v-model="productPos" style="width: 205px;margin-left: 20px;"  placeholder="请输入内容"></el-input> -->
-            <el-autocomplete class="inline-input" style="width: 205px;margin-left: 20px;"v-model="originPlace":fetch-suggestions="querySearch3" placeholder="请输入内容" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+            <el-autocomplete class="inline-input" style="width: 205px;margin-left: 20px;"
+            v-model="originPlace"
+            :fetch-suggestions="querySearch3"
+            placeholder="请输入内容"
+            :trigger-on-focus="false"
+            @select="departure"></el-autocomplete>
           </div>
           <div class="name">
             目的地
             <!-- <el-input   v-model="productMod" style="width: 200px; margin-left: 10px;"  placeholder="请输入内容"></el-input> -->
-            <el-autocomplete class="inline-input" style="width: 205px;margin-left: 10px;" v-model="originMod" :fetch-suggestions="querySearch4" placeholder="请输入内容" :trigger-on-focus="false" @select="departure1"></el-autocomplete>
+            <el-autocomplete class="inline-input" style="width: 205px;margin-left: 10px;"
+             v-model="originMod"
+             :fetch-suggestions="querySearch4"
+              placeholder="请输入内容"
+              :trigger-on-focus="false"
+              @select="departure1"></el-autocomplete>
           </div>
           <div class="options">
             产品操作人
@@ -112,7 +122,12 @@
 
       <!--分页-->
       <div class="block" style="margin-top: 30px;">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" background layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+        <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage4"
+        :page-sizes="[5, 10, 50, 100]"
+        :page-size="10" background layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
       </div>
       <!--分页-->
     </div>
@@ -321,7 +336,7 @@ export default {
       codeSuffix: "",
       pagesize: 10,
       total: 0,
-      reable: true,
+      reable: true,//控制列表上方按钮的显示
       fid: 0,
       buttonlist: [],
       pid: "",
@@ -715,7 +730,7 @@ export default {
       type: [],
       value: "",
       piaid: "",
-      tableData: [],
+      tableData: [],//存放下面产品列表的数据
       price: [], // 属性输入框
       abc: false,
       array1: "",
@@ -827,11 +842,11 @@ export default {
       this.chengben = selection;
     },
     // 毛利率输入框change事件
-    changinpt(index) {
+    changinpt() {
       this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/saverate", {
         object: {
-          id: this.team[index],
-          rate: this.lilv[index],
+          id: this.team,
+          rate: this.lilv,
           // codePrefix: this.ccc[index].codePrefix,
           // codeSuffix: this.ccc[index].codeSuffix
         }
@@ -1236,7 +1251,7 @@ export default {
       console.log('id====', id);
       this.tableData12 = [];
       let that = this;
-      that.isUsePrice = true;
+      // that.isUsePrice = true;
         if (ShowBase) {
           this.basicbutton = true;
         }
@@ -1254,12 +1269,13 @@ export default {
               // }
               for(let i = 0;i < this.ccc.length;i++) {
                 if(this.team === this.ccc[i].id) {
-                  if(boon){
-                    this.ccc[i].btnDisabled = true;
-                    this.tabBtnDisabled = true;
-                  }else {
+                  if(boon === true){
                     this.ccc[i].btnDisabled = false;
                     this.tabBtnDisabled = false;
+                  }else {
+
+                     this.ccc[i].btnDisabled = true;
+                    this.tabBtnDisabled = true;
                   }
 
 
@@ -1300,6 +1316,7 @@ export default {
                   break;
                 }
               }
+
             }
           });
         this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
@@ -1323,7 +1340,7 @@ export default {
             }
         }).then(res =>{
             console.log(res,2222)
-            let boon = res.data.isSuccess
+            var boon = res.data.isSuccess
             console.log(boon);
           if (this.ccc[index].codePrefix === '' && this.ccc[index].codeSuffix === '') {
             this.ccc[index].isInfo = true;
@@ -1337,18 +1354,16 @@ export default {
 
 
           } else if(boon === true){
-            this.ccc[index].isInfo = true;
+            // this.ccc[index].isInfo = true;
             //  for(let i = 0;i < this.ccc.length;i++) {
             //     this.ccc[i].btnDisabled = true;
             //     this.tabBtnDisabled = true;
             //     break;
             //  }
-            this.$message.error("错了哦，团号不能重复");
-
-
-          }else {
             this.basicPrice(this.ccc[index].id, this.ccc[index].rate, false,boon)
             this.ccc[index].isInfo = false;
+          }else {
+            this.$message.error("错了哦，团号不能重复");
             }
           })
 
@@ -1979,9 +1994,9 @@ export default {
     },
     // 团期/库存按钮 获取dialog数据
     groupStage() {
-      // document.getElementById("#testa").basicPrice()
-      // this.$refs.config.basicPrice();
-      // console.log($('.testj'))
+      // let id= this.pid;
+      // return this.$router.push({ path: '/planInventory', query: { id } });
+
       this.ccc = [];
       this.tabBtnDisabled = true;
       var that = this;
@@ -2224,7 +2239,13 @@ export default {
     clickBanle(row, event, column) {
       this.pid = row["id"];
       this.reable = false;
+      console.log(this.pid)
     },
+    // clickBanle(index,data){
+    //   this.pid = data,
+    //   console.log(this.pid)
+    //   console.log(index)
+    // }
   },
   mounted(){
     console.log($('.testj'))

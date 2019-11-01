@@ -116,7 +116,9 @@ export default {
     },
 
     getData(){
-      return this.submitForm;
+      let result= { ...this.submitForm };
+      result.time= parseInt(result.time);
+      return result;
     },
 
     changeActivityType(nval){

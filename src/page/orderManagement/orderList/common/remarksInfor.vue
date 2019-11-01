@@ -155,7 +155,7 @@ export default {
           //       this.$message.error("提交失败");
           //     }
           //   });
-            let createTime = moment().format('YYYY-MM-DD hh:mm:ss').toString()
+            let createTime = moment().utcOffset(480).format('YYYY-MM-DD HH:mm:ss').toString()
             this.$http
             .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
               object: {

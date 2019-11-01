@@ -93,7 +93,7 @@ export const getActivityDTO= function(scheduleID){
   return {
     scheduleID,
     activityType: 0,
-    time: '',
+    time: 0,
     name: '',
     details: '',
     typeExt: '',
