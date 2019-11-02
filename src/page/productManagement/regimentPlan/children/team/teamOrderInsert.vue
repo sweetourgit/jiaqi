@@ -678,9 +678,8 @@ export default {
       //团期计划订单信息预览
       console.log(ID)
       this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
-          id: ID
-        })
-        .then(res => {
+        id: ID
+      }).then(res => {
           if (res.data.isSuccess == true) {
             this.teampreviewData = res.data.object;
             this.teamEnrolls(this.planId);
@@ -882,8 +881,8 @@ export default {
                 });
               });
             }else{
-              // this.$parent.teamQueryList();
-              // if(this.teampreviewData.regimentType === '1'){//判断是都停售
+              //this.regimentType(this.teampreviewData.regimentType);
+              if(this.teampreviewData.regimentType === '1'){//判断是都停售 1正常
                 if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
                    console.log(guest)
                    this.ifOrderInsert = false;
@@ -1040,37 +1039,37 @@ export default {
                     }
                   });
                 }
-              // }else if(this.teampreviewData.regimentType === '2'){
-              //   this.$confirm("该团号已停售?", "提示", {
-              //      confirmButtonText: "确定",
-              //      cancelButtonText: "取消",
-              //      type: "warning"
-              //   }).then(res =>{
-              //     //this.ifOrderInsert = true;
-              //     this.$parent.teamQueryList();
-              //   }).catch(() => {
-              //     //this.ifOrderInsert = true;
-              //     this.$message({
-              //       type: "info",
-              //       message: "已取消"
-              //     });
-              //   });
-              // }else if(this.teampreviewData.regimentType === '3'){
-              //   this.$confirm("该团号已封团?", "提示", {
-              //      confirmButtonText: "确定",
-              //      cancelButtonText: "取消",
-              //      type: "warning"
-              //   }).then(res =>{
-              //     //this.ifOrderInsert = true;
-              //     this.$parent.teamQueryList();
-              //   }).catch(() => {
-              //     //this.ifOrderInsert = true;
-              //     this.$message({
-              //       type: "info",
-              //       message: "已取消"
-              //     });
-              //   });
-              // }
+              }else if(this.teampreviewData.regimentType === '2'){//2停售
+                this.$confirm("该团号已停售?", "提示", {
+                   confirmButtonText: "确定",
+                   cancelButtonText: "取消",
+                   type: "warning"
+                }).then(res =>{
+                  //this.ifOrderInsert = true;
+                  this.$parent.teamQueryList();
+                }).catch(() => {
+                  //this.ifOrderInsert = true;
+                  this.$message({
+                    type: "info",
+                    message: "已取消"
+                  });
+                });
+              }else if(this.teampreviewData.regimentType === '3'){//3封团
+                this.$confirm("该团号已封团?", "提示", {
+                   confirmButtonText: "确定",
+                   cancelButtonText: "取消",
+                   type: "warning"
+                }).then(res =>{
+                  //this.ifOrderInsert = true;
+                  this.$parent.teamQueryList();
+                }).catch(() => {
+                  //this.ifOrderInsert = true;
+                  this.$message({
+                    type: "info",
+                    message: "已取消"
+                  });
+                });
+              }
             }
             
           }
@@ -1080,6 +1079,15 @@ export default {
           return false;
         }
       });
+    },
+    regimentType(ID){//获取状态
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
+        id: ID
+      }).then(res => {
+          if (res.data.isSuccess == true) {
+            this.teampreviewData = res.data.object;
+          }
+        });
     },
     // 下单弹窗 的提交按钮成功后  需再把备注信息存到/orderquery/get/api/InserOrderComment
     addComment(orderCode) {

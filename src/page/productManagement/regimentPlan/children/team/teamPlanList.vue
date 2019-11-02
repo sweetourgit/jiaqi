@@ -242,7 +242,7 @@ export default {
       this.teamQueryList(this.pageIndex,val);
     },
     handleCurrentChange(val) {
-      this.pageIndex = val
+      this.pageIndex = val;
       this.teamQueryList(val,this.pageSize);
     },
     //计划list
