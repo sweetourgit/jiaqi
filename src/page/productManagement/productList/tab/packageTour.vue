@@ -164,7 +164,8 @@
                 :maxlength="10"
                 v-model="ccc[scope.$index].codePrefix"
                 :style="ccc[scope.$index].isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"
-                @change="fucking(scope.$index)"></el-input>
+                @change="fucking(scope.$index)"
+                :disabled="InputDisable"></el-input>
               <span>-</span>
               <span v-text="'{{'"></span>
               <span>日期</span>
@@ -174,7 +175,9 @@
                 :maxlength="10"
                  v-model="ccc[scope.$index].codeSuffix"
                 :style="ccc[scope.$index].isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"
-                @change="fucking(scope.$index)"></el-input>
+                @change="fucking(scope.$index)"
+                :disabled="InputDisable"
+                ></el-input>
             </template>
           </el-table-column>
           <el-table-column align="center" width="180" label="清位时间">
@@ -742,7 +745,8 @@ export default {
       watchCostLength: null, // 成本里的数据长度
       watchPrefixStatus: null, // 监听前后缀
       keepPrefixAndCostStatus: false, // 前缀后缀验证结果（布尔值）
-      hasCostLength: false // 成本里面有数据（不是默认添加的，手动添加之后的）
+      hasCostLength: false, // 成本里面有数据（不是默认添加的，手动添加之后的）
+      InputDisable:false//控制前后缀输入是否禁用
     };
   },
   watch: {
@@ -793,7 +797,11 @@ export default {
           break
         }
       }
+      immediate:true;
+      deep:true
     }
+    
+
   },
   computed: {
     // 成本提示弹窗，显示添加还是编辑
@@ -930,7 +938,8 @@ export default {
                   type: false,
                   rate: obj.data.objects[i].rate,
                   btnDisabled:true,
-                  isInfo:true
+                  isInfo:true,
+                  
                 });
 
                 if (that.ccc[i].value == 0) {
@@ -938,6 +947,8 @@ export default {
                 }
                 // break;
               }
+              console.log(obj.data);
+              console.log(this.ccc.codePrefix,11111111)
             })
             .catch(function(obj) {});
         });
@@ -1194,12 +1205,21 @@ export default {
               })
                 .then(res => {
                   this.count = res.data.average;
+                  
                 });
               this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", { // 成本信息无分页列表
                 object: { packageID: this.team }
               })
               .then(res => {
-                this.tableData12 = res.data.objects;
+                if(res.data.length>0){
+                   for(let i = 0;i < this.ccc.length;i++) {
+                if(this.team === this.ccc[i].id) {
+                  this.ccc[i].btnDisabled = false;
+                  // this.tabBtnDisabled = true;
+                  break;
+                }
+              }
+                  this.tableData12 = res.data.objects;
                 this.tableData12.forEach(function(v, k, arr) {
                   if (arr[k]["suppliertype"] == 0) {
                     arr[k]["suppliertype"] = "船票";
@@ -1223,6 +1243,16 @@ export default {
                     arr[k]["suppliertype"] = "汽车票";
                   }
                 });
+                }else{
+                   for(let i = 0;i < this.ccc.length;i++) {
+                if(this.team === this.ccc[i].id) {
+                  this.ccc[i].btnDisabled = true;
+                  // this.tabBtnDisabled = true;
+                  break;
+                }
+              }
+                }
+                
               });
             }
           });
@@ -1316,10 +1346,12 @@ export default {
                 if(this.team === this.ccc[i].id) {
                   if(boon === true){
                     this.ccc[i].btnDisabled = false;
+                   
                     this.tabBtnDisabled = false;
-                  }else {
+                  }else if(boon === false){
                     if(!this.hasCostLength) {
                       this.ccc[i].btnDisabled = true;
+                      
                     // this.tabBtnDisabled = true;  
                     }
                   }
@@ -1352,6 +1384,7 @@ export default {
               });
             }else{
               //控制下方价格的显示以及上面价格的显示
+              
               for(let i = 0;i < this.ccc.length;i++) {
                 if(this.team === this.ccc[i].id) {
                   this.ccc[i].btnDisabled = true;
@@ -1771,7 +1804,9 @@ export default {
           }
         }
         )
-        .then(obj => {})
+        .then(obj => {
+
+        })
         .catch(obj => {
           console.log("error", obj);
           console.log("error");
@@ -2011,6 +2046,12 @@ export default {
       // return this.$router.push({ path: '/planInventory', query: { id } });
 
       this.ccc = [];
+      if(this.hasCostLength){
+        this.btnDisabled = false;
+      }else{
+        this.btnDisabled = true;
+      }
+      //1号修改过
       this.tabBtnDisabled = true;
       var that = this;
       this.$http
