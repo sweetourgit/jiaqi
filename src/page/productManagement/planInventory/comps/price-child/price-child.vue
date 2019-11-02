@@ -49,7 +49,7 @@ export default {
       this.vm.inited= true;
       this.vm.rate= rate;
       this.$refs.sliderRef.init(id);
-      this.$refs.dateRef.init();
+      this.$refs.dateRef.init({ id });
     },
   }
 

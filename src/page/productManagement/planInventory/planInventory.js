@@ -143,18 +143,11 @@ export const getCalendar= function(object){
     $http.post(GLOBAL.serverSrc + "/team/calendar/api/get",{
       object
     }).then((res) => {
-      let { isSuccess }= res.data;
+      let { isSuccess, objects }= res.data;
       if(!isSuccess) return reject('毛利率修改失败');
-      return resolve();
+      return resolve(objects);
     }).catch((err) => {
       reject(err);
     })
   })
 }
-// this.$http.post(this.GLOBAL.serverSrc + '/team/calendar/api/get', { // 通过sku套餐获取 有哪些计划
-//   "object": {
-//     "year": this.currentYear,
-//     "month": currentMonth,
-//     "packageID": id
-//   }
-// })
