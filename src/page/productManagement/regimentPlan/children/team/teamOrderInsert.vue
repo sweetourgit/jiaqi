@@ -881,11 +881,67 @@ export default {
                 });
               });
             }else{
-              //this.regimentType(this.teampreviewData.regimentType);
-              if(this.teampreviewData.regimentType === '1'){//判断是都停售 1正常
+              this.regimentType(this.planId);
+            }
+            
+          }
+        } else {
+          console.log("error submit!!");
+          this.ifOrderInsert = true;
+          return false;
+        }
+      });
+    },
+    regimentType(ID,index,formName){//获取状态
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
+        id: ID
+      }).then(res => {
+          //获取报名总人数
+          let number = 0;
+          for (let i = 0; i < this.enrolNum.length; i++) {
+            if (this.enrolNum[i]) {
+              number += parseInt(this.enrolNum[i]);
+            }
+          }
+          let guestAll = [];
+          for (let i = 0; i < this.tour.length; i++) {
+            for (let j = 0; j < this.tour[i].length; j++) {
+              guestAll.push(this.tour[i][j]);
+            }
+          }
+          let guest = [];
+          console.log(guest)
+          for (let i = 0; i < guestAll.length; i++) {
+            if (guestAll[i].cnName != "") {
+              //过滤掉未填写人员信息
+              guest.push(guestAll[i]);
+              guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
+              //guest[i].credTOV = new Date(guest[i].credTOV).getTime();
+            } else {
+              guest.push(guestAll[i]);
+            }
+          }
+          // 拼接字段 enrollDetail报名类型详情
+          let enrollDetail = "";
+          this.salePrice.forEach((ele, idx) => {
+            let price=0;
+            if(this.ruleForm.price == 1){
+              price = this.toDecimal2(ele.price_01);
+            }else{
+              price = this.toDecimal2(ele.price_02);
+            }
+            //let price = this.toDecimal2(ele.price_01);
+            if(this.enrolNum[idx]!==0){
+              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
+            }
+          });
+          if (res.data.isSuccess == true) {
+            this.teampreviewData.regimentType = res.data.object.regimentType;
+            console.log(this.teampreviewData.regimentType)
+            if(this.teampreviewData.regimentType === 1){//判断是都停售 1正常
                 if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
                    console.log(guest)
-                   this.ifOrderInsert = false;
+                   this.ifOrderInsert = true;
                    this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
                     object: {
                       id: 0,
@@ -947,7 +1003,7 @@ export default {
                         this.addComment(this.orderCode);
                         this.orderSuc = true;
                         //清空表单
-                        this.$refs[formName].resetFields();
+                        //this.$refs[formName].resetFields();
                         this.dialogFormOrder = false;
                         this.ifOrderInsert = true;
                         // this.startUpWorkFlowForJQ(
@@ -963,7 +1019,7 @@ export default {
                       }
                     });
                 }else if(this.ruleForm.orderRadio === '2'){
-                  this.ifOrderInsert = false;
+                  this.ifOrderInsert = true;
                   this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                     object: {
                       id: 0,
@@ -1023,7 +1079,7 @@ export default {
                       this.addComment(this.orderCode);
                       this.orderSuc = true;
                       //清空表单
-                      this.$refs[formName].resetFields();
+                      //this.$refs[formName].resetFields();
                       this.dialogFormOrder = false;
                       this.ifOrderInsert = true;
                       // this.startUpWorkFlowForJQ(
@@ -1039,7 +1095,7 @@ export default {
                     }
                   });
                 }
-              }else if(this.teampreviewData.regimentType === '2'){//2停售
+            }else if(this.teampreviewData.regimentType === 2){//2停售
                 this.$confirm("该团号已停售?", "提示", {
                    confirmButtonText: "确定",
                    cancelButtonText: "取消",
@@ -1054,7 +1110,7 @@ export default {
                     message: "已取消"
                   });
                 });
-              }else if(this.teampreviewData.regimentType === '3'){//3封团
+            }else if(this.teampreviewData.regimentType === 3){//3封团
                 this.$confirm("该团号已封团?", "提示", {
                    confirmButtonText: "确定",
                    cancelButtonText: "取消",
@@ -1069,23 +1125,7 @@ export default {
                     message: "已取消"
                   });
                 });
-              }
             }
-            
-          }
-        } else {
-          console.log("error submit!!");
-          this.ifOrderInsert = true;
-          return false;
-        }
-      });
-    },
-    regimentType(ID){//获取状态
-      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
-        id: ID
-      }).then(res => {
-          if (res.data.isSuccess == true) {
-            this.teampreviewData = res.data.object;
           }
         });
     },
