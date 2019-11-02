@@ -3,11 +3,11 @@
   height: 100%;
   position: relative;
   padding-left: 200px;
+  padding-bottom: 50px;
   .main{
     width: 100%;
     height: 100%;
     padding-left: 10px;
-    border-left: 1px solid #ddd;
     box-sizing: border-box;
     &>header{
       position: relative;
@@ -52,7 +52,7 @@
         <div class="btn">
           <el-button type="primary" size="small" 
             :disabled="!vm.inited"
-            @click="wakeAddForm"
+            @click="wakeEditForm(null)"
           >添加成本</el-button>
         </div>
       </header>
@@ -67,30 +67,35 @@
           <el-table-column label="金额（元）" prop="money" header-align="center" align="center"></el-table-column>
           <el-table-column label="操作" header-align="center" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" size="small">编辑</el-button>
-              <el-button type="danger" size="small">删除</el-button>
+              <el-button type="primary" size="small"
+                @click="wakeEditForm(scope.row)"
+              >编辑</el-button>
+              <el-button type="danger" size="small"
+                @click="deleteCostAction(scope.row)"
+              >删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </main>
       <footer>
-        <add-form
-          ref="addFormRef"
-          @action-callback="emitSaveShortCallback"
-        ></add-form>
+        <edit-form
+          ref="editFormRef"
+          @add-action="addCostAction"
+          @edit-action="editCostAction"
+        ></edit-form>
       </footer>
     </div>
   </div>
 </template>
 
 <script>
-import { getAverage, getCostList, saveRate } from '../../planInventory'
+import { getAverage, getCostList, saveRate, addCost, deleteCost, editCost } from '../../planInventory'
 import commonSlider from '../common-slider'
-import addForm from './comps/add-form'
+import editForm from './comps/edit-form'
 
 export default {
 
-  components: { commonSlider, addForm },
+  components: { commonSlider, editForm },
 
   data(){
     return {
@@ -105,8 +110,8 @@ export default {
 
   methods: {
     init(payload){
+      if(!payload) return this.vm.inited= false;
       let { id, rate }= payload;
-      if(!id) return this.vm.inited= false;
       this.checkProto= payload;
       this.vm.inited= true;
       this.vm.rate= rate;
@@ -125,6 +130,8 @@ export default {
       getCostList(id).then(res => {
         this.tableData.splice(0);
         this.tableData.push(...res);
+      }).catch(err => {
+        this.tableData.splice(0);
       })
     },
 
@@ -144,9 +151,34 @@ export default {
       });
     },
 
-    wakeAddForm(pac){
-      this.$refs.addFormRef.handleOpen(pac);
+    wakeEditForm(pac){
+      if(pac) return this.$refs.editFormRef.editInit(pac);
+      this.$refs.editFormRef.addInit(this.checkProto.id);
     },
+
+    addCostAction(cost){
+      let { id }= this.checkProto;
+      addCost(cost).then(() => {
+        this.$emit('emit-handler', { func: 'init', payload: id });
+        this.$refs.editFormRef.handleClose();
+      })
+    },
+
+    editCostAction(cost){
+      let { id }= this.checkProto;
+      editCost(cost).then(() => {
+        this.$emit('emit-handler', { func: 'init', payload: id });
+        this.$refs.editFormRef.handleClose();
+      })
+    },
+
+    deleteCostAction(cost){
+      let { id }= this.checkProto;
+      deleteCost(cost.id).then(() => {
+        this.$emit('emit-handler', { func: 'init', payload: id });
+      })
+    },
+
     emitSaveShortCallback(){}
   }
 

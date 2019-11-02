@@ -23,7 +23,7 @@
         > 成 本 </el-button>
         <el-button
           :type="vm.currentChild=== 'price'? 'primary': ''"
-          @click="beforeChangeChild('price')"
+          @click="toPriceChild(null)"
         > 价 格 </el-button>
       </el-button-group>
     </header>
@@ -55,13 +55,17 @@ export default {
 
   mounted(){
      // 修改页面高度问题
-    document.querySelector(".content-body1").style.height= "100%";
+    document.querySelector(".content-body1").style.height= "auto";
+    document.querySelector(".content-body1").style.paddingBottom= "50px";
+    // TODO预警
+    this.todoWarn();
     this.init();
   },
 
   beforeDestroy(){
     // 修改页面高度问题
     document.querySelector(".content-body1").style.height= null;
+    document.querySelector(".content-body1").style.paddingBottom= null;
   },
 
   data(){
@@ -74,7 +78,12 @@ export default {
 
   methods: {
     emitChangeChild(){},
-    
+    // TODO记录
+    todoWarn(){
+      console.warn('TODO: /cost-child/edit-form 尚未获取编辑用户');
+      console.warn('TODO: /cost-child/edit-form addCost接口有问题默认传值很奇怪');
+    },
+
     // 可传入packageId
     init(pacId){
       let id= this.$route.query.id;
@@ -115,8 +124,17 @@ export default {
     },
     
     toCostChild(payload){
-      if(!payload) payload= this._provided.PACKAGE_LIST[0];
+      if(!payload) payload= this.findFirstInitedPackage();
       this.beforeChangeChild('cost', payload);
+    },
+
+    toPriceChild(payload){
+      if(!payload) payload= this.findFirstInitedPackage();
+      this.beforeChangeChild('price', payload);
+    },
+
+    findFirstInitedPackage(){
+      return this._provided.PACKAGE_LIST.find(el => el.inited);
     }
   }
 }

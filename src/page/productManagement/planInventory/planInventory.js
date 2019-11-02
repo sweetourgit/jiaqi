@@ -83,7 +83,6 @@ export const saveRate= function(object){
     $http.post(GLOBAL.serverSrc + "/team/cost/api/saverate",{
       object
     }).then((res) => {
-      console.log(res)
       let { isSuccess }= res.data;
       if(!isSuccess) return reject('毛利率修改失败');
       return resolve();
@@ -92,3 +91,70 @@ export const saveRate= function(object){
     })
   })
 }
+
+// 新增成本
+export const addCost= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/cost/api/insert",{
+      object
+    }).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject('毛利率修改失败');
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 修改成本
+export const editCost= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/cost/api/save",{
+      object
+    }).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject('毛利率修改失败');
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 删除成本
+export const deleteCost= function(id){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/cost/api/delete",{
+      id
+    }).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject('毛利率修改失败');
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 获取指定月份所有计划
+export const getCalendar= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/calendar/api/get",{
+      object
+    }).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject('毛利率修改失败');
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+// this.$http.post(this.GLOBAL.serverSrc + '/team/calendar/api/get', { // 通过sku套餐获取 有哪些计划
+//   "object": {
+//     "year": this.currentYear,
+//     "month": currentMonth,
+//     "packageID": id
+//   }
+// })

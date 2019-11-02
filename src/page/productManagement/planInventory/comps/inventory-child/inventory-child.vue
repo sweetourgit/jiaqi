@@ -2,6 +2,8 @@
 $backgroundColor: #F7F7F7;
 
 .inventory-child{
+  height: 100%;
+  padding-bottom: 50px;
   &>>>.row-header{
     background-color: $backgroundColor;
     th{

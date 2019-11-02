@@ -66,7 +66,7 @@
           <el-tooltip effect="dark" :content="pac.inited? pac.name: '团号未设置'" placement="top-start">
             <div :class="[
               'title-bar', 
-              i=== currentIndex? 'selected': '',
+              (pac.inited && i=== currentIndex)? 'selected': '',
               pac.inited? '': 'disabled'
             ]">
               {{ pac.name }}
