@@ -20,7 +20,7 @@
         padding: 0 2px;
         border-radius: 4px;
         font-size: 14px;
-        color: #FFF;
+        color: #000;
         background-color: red;
       }
       .today{
@@ -36,10 +36,20 @@
 .previous{
   background-color: #ddd;
 }
+.selected{
+  border: 1px solid red !important;
+}
 </style>
 
 <template>
-  <li :class="['panel-day', current.after? '': 'previous']" ground="panel-day">
+  <li ground="panel-day"
+    :class="[
+      'panel-day', 
+      !current.after? 'previous': '',
+      current.selected? 'selected': '',
+    ]"
+    @click="select"
+  >
     <div class="day-ground">
       <header>
         <span :class="[current.today? 'today': '']">{{ current.day }}</span>
@@ -57,7 +67,7 @@
         </span>
       </header>
     </div>
-    <div>{{ current }}</div>
+    <div>{{ current.vm }}</div>
   </li>
 </template>
 
@@ -69,6 +79,8 @@ export default {
     proto: {
       type: [Object],
     },
+    week: Number,
+    day: Number
   },
 
   props: ['proto'],
@@ -87,5 +99,16 @@ export default {
       deep: true
     }
   },
+
+  methods: {
+    select(){
+      let { day, selected }= this.current;
+      // 不是当月日期
+      if(!day) return;
+      !selected?
+        this.$emit('select-day', { week: this.week, day: this.day, proto: this.current }):
+          this.$emit('unselect-day', { week: this.week, day: this.day, proto: this.current });
+    },
+  }
 }
 </script>

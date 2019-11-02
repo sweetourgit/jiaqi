@@ -96,7 +96,10 @@
     <main>
       <div class="week-container">
         <div v-for="(el, i) in weekArray" :key="i">
-          <el-checkbox v-model="weekArray[i].selected">
+          <el-checkbox 
+            v-model="weekArray[i].selected"
+            @change="clickWeekCheckBox(i)"
+          >
             <span class="week-text">{{ el.text }}</span>
           </el-checkbox>
         </div>
@@ -106,12 +109,19 @@
           <template v-for="day in 7">
             <panel-day
               :key="week+ '-'+ day"
+              :week="week"
+              :day="day"
               :proto="findDayDate(week, day)"
+              @select-day="emitSelectDay"
+              @unselect-day="emitUnselectDay"
             ></panel-day>
           </template>
         </template>
       </ul>
     </main>
+    <footer>
+
+    </footer>
   </div>
 </template>
 
@@ -120,6 +130,7 @@ import { getCalendar, getAverage } from '../../../../planInventory'
 import panelDay from './comps/panel-day'
 import { getDayDTO } from '../../../../dictionary'
 
+// 管理选中
 export default {
   components: { panelDay },
 
@@ -167,10 +178,8 @@ export default {
       this.changeInAsync(true);
       this.changeCurrent(...this.getDateArr(date));
       this.getCalendarAction();
-      this.getAverageAction(id)
+      this.getAverageAction()
     },
-
-    dayHandler(){},
     
     monthHandler(payload){
       let monthVal= this.current[1]+ payload;
@@ -193,8 +202,8 @@ export default {
       })
     },
 
-    getAverageAction(id){
-      getAverage(id).then(res => {
+    getAverageAction(){
+      getAverage(this.packageID).then(res => {
         let average= parseFloat(res).toFixed(2);
         this.vm.average= average;
         this._provided.average= average;
@@ -275,6 +284,24 @@ export default {
      */
     findDayDate(week, day){
       return this.dayArray[(week- 1)* 7+ day];
+    },
+
+    // 单选
+    emitSelectDay(payload){
+      let { week, day, proto}= payload;
+      console.log(proto)
+      proto.selected= true;
+    },
+    
+    emitUnselectDay(payload){
+      let { week, day, proto}= payload;
+      console.log(proto)
+      proto.selected= false;
+    },
+
+    // checkbox
+    clickWeekCheckBox(i){
+      let selected= this.weekArray[i].selected;
     },
   }
 }
