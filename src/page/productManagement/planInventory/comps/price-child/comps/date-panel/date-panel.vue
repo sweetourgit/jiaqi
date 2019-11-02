@@ -34,16 +34,22 @@
     ol, ul, li {
       list-style: none;
     }
-    .day-conteiner{
-      width: 100%;
+    .week-container{
+      display: flex;
+      &>div{
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+        width: 14.28%;
+        & /deep/ .week-text{
+          font-weight: bold;
+          font-size: 18px;
+        }
+      }
     }
-    .day{
-      display: inline-block;
-      padding: 2px;
-      width: 14.28%;
-      height: 180px;
-      border: 1px solid #aeaeae;
-      overflow: hidden;
+    .day-container{
+      line-height: 0;
+      width: 100%;
     }
   }
 }
@@ -52,39 +58,56 @@
 <template>
   <div class="date-panel">
     <header>
-      <div class="selector">
-        <span class="control-btns">
-          <el-button type="primary" icon="el-icon-arrow-left" size="small"
-            @click="monthHandler(-1)"
-          ></el-button>
-        </span>
-        <div style="display:inline-block; min-width: 120px; text-align: center;"
-          @click="vm.state= !vm.state"
-        >
-          <span style="padding:0 5px;">{{ current[0] }}</span><span>年</span>
-          <span style="padding:0 5px;">{{ current[1]+ 1 }}</span><span>月</span>
+      <div style="display: flex;">
+        <div class="selector">
+          <span class="control-btns">
+            <el-button type="primary" icon="el-icon-arrow-left" size="small"
+              @click="monthHandler(-1)"
+            ></el-button>
+          </span>
+          <div style="display:inline-block; min-width: 120px; text-align: center;"
+            @click="vm.state= !vm.state"
+          >
+            <span style="padding:0 5px;">{{ current[0] }}</span><span>年</span>
+            <span style="padding:0 5px;">{{ current[1]+ 1 }}</span><span>月</span>
+          </div>
+          <span class="control-btns">
+            <el-button type="primary" icon="el-icon-arrow-right" size="small"
+              @click="monthHandler(1)"
+            ></el-button>
+          </span>
         </div>
-        <span class="control-btns">
-          <el-button type="primary" icon="el-icon-arrow-right" size="small"
-            @click="monthHandler(1)"
-          ></el-button>
-        </span>
+        <div>
+          <span style="line-height: 32px;">
+            <span>人均结算价：</span>
+            <span>{{ vm.average }}</span>
+          </span>
+        </div>
       </div>
       <div>
+        <el-button type="info" size="small"
+          @click="monthHandler(1)"
+        >清除选中</el-button>
         <el-button type="primary" size="small"
           @click="monthHandler(1)"
         >新增计划</el-button>
       </div>
     </header>
     <main>
+      <div class="week-container">
+        <div v-for="(el, i) in weekArray" :key="i">
+          <el-checkbox v-model="weekArray[i].selected">
+            <span class="week-text">{{ el.text }}</span>
+          </el-checkbox>
+        </div>
+      </div>
       <ul class="day-container">
         <template v-for="week in 6">
           <template v-for="day in 7">
-            <li :key="week+ '-'+ day" class="day">
-              <panel-day
-                :proto="findDayDate(week, day)"
-              ></panel-day>
-            </li>
+            <panel-day
+              :key="week+ '-'+ day"
+              :proto="findDayDate(week, day)"
+            ></panel-day>
           </template>
         </template>
       </ul>
@@ -93,11 +116,16 @@
 </template>
 
 <script>
-import { getCalendar } from '../../../../planInventory'
+import { getCalendar, getAverage } from '../../../../planInventory'
 import panelDay from './comps/panel-day'
+import { getDayDTO } from '../../../../dictionary'
 
 export default {
   components: { panelDay },
+
+  provide: {
+    average: 0,
+  },
 
   computed: {
     // 当前选择日期的int表达
@@ -114,11 +142,21 @@ export default {
     return {
       vm: {
         inAsync: false,
-        state: false
+        state: false,
+        average: 0,
       },
       // 长度为3的数组，依次存放年月日
       current: [],
-      dayArray: []
+      dayArray: [],
+      weekArray: [
+        { text: '日', day: 0, selected: false },
+        { text: '一', day: 1, selected: false },
+        { text: '二', day: 2, selected: false },
+        { text: '三', day: 3, selected: false },
+        { text: '四', day: 4, selected: false },
+        { text: '五', day: 5, selected: false },
+        { text: '六', day: 6, selected: false },
+      ]
     }
   },
 
@@ -129,10 +167,20 @@ export default {
       this.changeInAsync(true);
       this.changeCurrent(...this.getDateArr(date));
       this.getCalendarAction();
+      this.getAverageAction(id)
     },
 
     dayHandler(){},
-    monthHandler(){},
+    
+    monthHandler(payload){
+      let monthVal= this.current[1]+ payload;
+      let dayVal= this.current[2]
+      // new Date(2019, 10, 0).getDate()
+      let max= new Date(this.current[0], monthVal- 1, 0).getDate();
+      max= (dayVal> max? max: dayVal);
+      let newDate= new Date(this.current[0], monthVal, max);
+      this.init({ date: newDate });
+    },
 
     getCalendarAction(){
       let object= {
@@ -142,6 +190,14 @@ export default {
       }
       getCalendar(object).then(res => {
         let list= this.dayArrayPreFull(res);
+      })
+    },
+
+    getAverageAction(id){
+      getAverage(id).then(res => {
+        let average= parseFloat(res).toFixed(2);
+        this.vm.average= average;
+        this._provided.average= average;
       })
     },
 
@@ -171,13 +227,12 @@ export default {
         this.dayArray.push(void 0);
       }
       for(let i= 1; i<= total; i++){
-        let dto= this.getDayDTO();
-        if((currentMonthInt+ i)< todayInt) dto.previous= true;
+        let dto= getDayDTO();
+        if((currentMonthInt+ i)>= todayInt) dto.after= true;
         if((currentMonthInt+ i)=== todayInt) dto.today= true;
         dto.day= i;
         dto.dayInt= currentMonthInt+ i;
         dto.date= new Date(this.current[0], this.current[1], dto.day),
-        console.log(finder)
         dto.vm= finder.find(el => el.date=== dto.dayInt);
         this.dayArray.push(dto);
         if((currentMonthInt+ i)=== this.currentInt) result= dto;
@@ -221,18 +276,6 @@ export default {
     findDayDate(week, day){
       return this.dayArray[(week- 1)* 7+ day];
     },
-
-    getDayDTO(){
-      return {
-        // 显示的天
-        day: null,
-        // 是否是过时的信息
-        previous: false,
-        // getDateInt
-        dayInt: null,
-        today: false
-      }
-    }
   }
 }
 </script>
