@@ -3,7 +3,8 @@
 </style>
 
 <template>
-  <el-card style="width: 380px;flex-shrink: 0; margin-right: 20px;">
+  <el-card style="width: 380px;flex-shrink: 0; margin-right: 20px; background-color: #f6f6f6;"
+    shadow="never">
     <div slot="header">
       <span>卡片名称</span>
       <!-- <el-button style="float: right; padding: 3px 0" type="text">保存</el-button> -->

@@ -45,7 +45,7 @@ $backgroundColor: #F7F7F7;
           <div v-if="scope.row.inited" class="btns-ground">
             <div class="sub-ground">
               <el-button type="primary" size="mini" @click="toCostChild(scope.row)">成本</el-button>
-              <el-button type="primary" size="mini" style="margin: 5px 0 0 0;">价格</el-button>
+              <el-button type="primary" size="mini" style="margin: 5px 0 0 0;" @click="toPriceChild(scope.row)">价格</el-button>
             </div>
             <div class="sub-ground">
               <el-button type="primary" size="mini" @click="wakeSignForm(scope.row)">团号</el-button>
@@ -102,6 +102,9 @@ export default {
     // 去成本
     toCostChild(pac){
       this.$emit('emit-handler', { func: 'toCostChild', payload: pac });
+    },
+    toPriceChild(pac){
+      this.$emit('emit-handler', { func: 'toPriceChild', payload: pac });
     }
   }
 

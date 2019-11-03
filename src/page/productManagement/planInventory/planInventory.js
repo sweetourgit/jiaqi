@@ -167,7 +167,7 @@ export const getPlan= function(id){
   })
 }
 
-// 获取库存
+// 获取指定库存
 export const getInventory= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/api/inventoryget", {
@@ -176,6 +176,21 @@ export const getInventory= function(id){
       let { isSuccess, object }= res.data;
       if(!isSuccess) return reject('获取库存失败');
       return resolve(object);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 获取指定天库存
+export const getInventoryList= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/api/inventorylist", {
+      object
+    }).then((res) => {
+      let { isSuccess, objects }= res.data;
+      if(!isSuccess) return reject('获取库存列表失败');
+      return resolve(objects);
     }).catch((err) => {
       reject(err);
     })

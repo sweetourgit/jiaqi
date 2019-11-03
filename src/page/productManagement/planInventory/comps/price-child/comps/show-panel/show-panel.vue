@@ -100,7 +100,7 @@ $height: 40px;
     </header>
     <main>
       <div class="container">
-        <el-card style="margin-bottom: 10px;"
+        <el-card style="margin-bottom: 10px; background-color: #f6f6f6;"
           shadow="never"
           v-for="(enroll, i) in enrolls" 
           :key="i">

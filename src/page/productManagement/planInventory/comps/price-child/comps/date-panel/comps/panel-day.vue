@@ -1,7 +1,7 @@
 <style lang="scss" scoped>
 .panel-day[ground="panel-day"]{
   display: inline-block;
-  padding: 10px;
+  padding: 10px 5px;
   width: 14.28%;
   height: 150px;
   overflow: hidden;
@@ -15,8 +15,10 @@
       display: flex;
       justify-content: space-between;
       font-size: 18px;
-      line-height: 1;
+      line-height: 30px;
       .share{
+        height: 20px;
+        line-height: 20px;
         padding: 0 2px;
         border-radius: 4px;
         font-size: 14px;
@@ -30,6 +32,20 @@
     }
     .cost-img{
       height: 18px;
+    }
+  }
+  .child-ground{
+    height: 100px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    .name{
+      color: #e6e6e6;
+      line-height: 40px;
+      background: #3096fb;
+    }
+    .money{
+      line-height: 30px;
+      background-color: #f6f6f6;
     }
   }
 }
@@ -52,22 +68,32 @@
   >
     <div class="day-ground">
       <header>
-        <span :class="[current.today? 'today': '']">{{ current.day }}</span>
-        <span>
-          <span style="line-height: 0;" 
+        <div :class="[current.today? 'today': '']">{{ current.day }}</div>
+        <div style="display: flex; align-items: center;">
+          <div style="line-height: 0;" 
             v-show="current.vm && current.vm.cost"
           >
             <img class="cost-img" src="@/assets/image/warning.png" alt="">
-          </span>
-          <span class="share"
+          </div>
+          <div class="share"
             v-show="current.vm && current.vm.share=== 1"  
           >
             共享
-          </span>
-        </span>
+          </div>
+        </div>
       </header>
     </div>
-    <div>{{ current.vm }}</div>
+    <div class="child-ground" v-if="children.length">
+      <div class="name">
+        {{ children[0].enrollName }}
+      </div>
+      <div class="money">
+        销售价:{{ children[0].price_01 }}
+      </div>
+      <div class="money">
+        同业价:{{ children[0].price_02 }}
+      </div>
+    </div>
   </li>
 </template>
 
@@ -89,10 +115,15 @@ export default {
     }
   },
 
+  computed: {
+    children(){
+      return (this.current.vm && this.current.vm.plan_Enrolls) || []
+    }
+  },
+
   watch: {
     proto:{
       handler(nval){
-        if(nval.vm)console.log(nval)
         this.current= nval || getDayDTO();
       },
       deep: true
