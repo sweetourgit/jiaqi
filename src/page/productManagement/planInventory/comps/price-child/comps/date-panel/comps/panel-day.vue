@@ -34,7 +34,7 @@
   }
 }
 .previous{
-  background-color: #ddd;
+  background-color: #EEE;
 }
 .selected{
   border: 1px solid red !important;

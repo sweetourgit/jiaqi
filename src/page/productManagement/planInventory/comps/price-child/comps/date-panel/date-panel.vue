@@ -177,10 +177,13 @@ export default {
       if(id) this.packageID= id;
       this.changeInAsync(true);
       this.changeCurrent(...this.getDateArr(date));
+      // 日历
       this.getCalendarAction();
+      // 均价
       this.getAverageAction()
     },
     
+    // 月份加减
     monthHandler(payload){
       let monthVal= this.current[1]+ payload;
       let dayVal= this.current[2]
@@ -209,16 +212,6 @@ export default {
         this._provided.average= average;
       })
     },
-
-    getDateArr(date){
-      date= date || new Date();
-      return [
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-      ]
-    },
-
 
     // 预先填满dayArray
     dayArrayPreFull(finder){
@@ -259,6 +252,16 @@ export default {
       let arr= this.getDateArr(date);
       return arr[0]* 10000+ (arr[1]+ 1)* 100+ (day? arr[2]: 0);
     },
+    
+    // 将传入日期或当前日期转为int型长度为3的数组
+    getDateArr(date){
+      date= date || new Date();
+      return [
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      ]
+    },
 
     /**
      * @description: 更改当前current的值
@@ -286,13 +289,14 @@ export default {
       return this.dayArray[(week- 1)* 7+ day];
     },
 
-    // 单选
+    // 点击单选
     emitSelectDay(payload){
       let { week, day, proto}= payload;
       console.log(proto)
       proto.selected= true;
     },
     
+    // 点击取消单选
     emitUnselectDay(payload){
       let { week, day, proto}= payload;
       console.log(proto)
