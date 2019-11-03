@@ -82,6 +82,7 @@ export default {
     todoWarn(){
       console.warn('TODO: /cost-child/edit-form 尚未获取编辑用户');
       console.warn('TODO: /cost-child/edit-form addCost接口有问题默认传值很奇怪');
+      console.warn('TODO: /price-child/panel-day props无法传递任何绑定！！！');
     },
 
     // 可传入packageId

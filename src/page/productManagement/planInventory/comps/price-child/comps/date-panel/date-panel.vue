@@ -109,8 +109,6 @@
           <template v-for="day in 7">
             <panel-day
               :key="week+ '-'+ day"
-              :week="week"
-              :day="day"
               :proto="findDayDate(week, day)"
               @select-day="emitSelectDay"
               @unselect-day="emitUnselectDay"
@@ -134,9 +132,7 @@ import { getDayDTO } from '../../../../dictionary'
 export default {
   components: { panelDay },
 
-  provide: {
-    average: 0,
-  },
+  inject: ['poolManager'],
 
   computed: {
     // 当前选择日期的int表达
@@ -146,9 +142,7 @@ export default {
     },
     currentMax(){
       return new Date(this.current[0], this.current[1]+ 1, 0).getDate();
-    },
-
-    isMu
+    }
   },
 
   data(){
@@ -182,7 +176,9 @@ export default {
       // 日历
       this.getCalendarAction();
       // 均价
-      this.getAverageAction()
+      this.getAverageAction();
+      this.weekArray.forEach(el => el.selected= false);
+      this.poolManager.initCalendarVM({ vm: this, calendar: this.dayArray });
     },
     
     // 月份加减
@@ -211,7 +207,6 @@ export default {
       getAverage(this.packageID).then(res => {
         let average= parseFloat(res).toFixed(2);
         this.vm.average= average;
-        this._provided.average= average;
       })
     },
 
@@ -228,7 +223,7 @@ export default {
         new Date(this.current[0], this.current[1], this.current[2]), false);
       this.dayArray.splice(0);
       for(let i= 0; i<= begin; i++){
-        this.dayArray.push(void 0);
+        this.dayArray.push(getDayDTO());
       }
       for(let i= 1; i<= total; i++){
         let dto= getDayDTO();
@@ -240,6 +235,10 @@ export default {
         dto.vm= finder.find(el => el.date=== dto.dayInt);
         this.dayArray.push(dto);
         if((currentMonthInt+ i)=== this.currentInt) result= dto;
+      }
+      // 填补剩余
+      for(let i= begin+ total; i<= 41; i++){
+        this.dayArray.push(getDayDTO());
       }
       return result; 
     },
@@ -288,26 +287,30 @@ export default {
      * @param {Number} day: 当前列数
      */
     findDayDate(week, day){
-      return this.dayArray[(week- 1)* 7+ day];
+      let hit= this.dayArray[(week- 1)* 7+ day];
+      if(hit){
+        hit.weekNum= week- 1;
+        hit.weekDay= day- 1;
+      }
+      return hit;
     },
 
     // 点击单选
-    emitSelectDay(payload){
-      let { week, day, proto}= payload;
-      console.log(proto)
-      proto.selected= true;
+    emitSelectDay(day){
+      this.poolManager.selectDay(day);
     },
     
     // 点击取消单选
-    emitUnselectDay(payload){
-      let { week, day, proto}= payload;
-      console.log(proto)
-      proto.selected= false;
+    emitUnselectDay(day){
+      this.poolManager.unSelectDay(day);
     },
 
     // checkbox
     clickWeekCheckBox(i){
       let selected= this.weekArray[i].selected;
+      selected? 
+        this.poolManager.selectWeek(i):
+          this.poolManager.unSelectWeek(i);
     },
   }
 }

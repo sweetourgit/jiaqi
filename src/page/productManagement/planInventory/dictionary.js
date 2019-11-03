@@ -14,6 +14,10 @@ export const SUPPLIER_TYPE_OPTIONS= [
 
 export const getDayDTO= function(day){
   return {
+    // 第几周
+    weekNum: 0,
+    // 周几
+    weekDay: 0,
     // 显示的天
     day: day,
     // 是否是过时的信息
@@ -23,4 +27,12 @@ export const getDayDTO= function(day){
     today: false,
     selected: false,
   }
+}
+
+// 库存状态
+export const DAY_STATE= {
+  UNDO: 0,  //无选
+  MULTIPLE: -1, //多选
+  SHARE: 1,
+  NOT_SHARE: 2
 }

@@ -78,9 +78,7 @@ export default {
   props: {
     proto: {
       type: [Object],
-    },
-    week: Number,
-    day: Number
+    }
   },
 
   props: ['proto'],
@@ -94,6 +92,7 @@ export default {
   watch: {
     proto:{
       handler(nval){
+        if(nval.vm)console.log(nval)
         this.current= nval || getDayDTO();
       },
       deep: true
@@ -106,8 +105,8 @@ export default {
       // 不是当月日期
       if(!day) return;
       !selected?
-        this.$emit('select-day', { week: this.week, day: this.day, proto: this.current }):
-          this.$emit('unselect-day', { week: this.week, day: this.day, proto: this.current });
+        this.$emit('select-day', this.current):
+          this.$emit('unselect-day', this.current);
     },
   }
 }

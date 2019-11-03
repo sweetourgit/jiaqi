@@ -15,13 +15,16 @@
   <div class="price-child">
     <header></header>
     <main>
-      <common-slider style="position:absolute;width: 200px;left: 0; top: 0;"
+      <common-slider style="position:absolute;height: 940px; width: 200px; left: 0; top: 50px;"
         ref="sliderRef"
         @slider-select="init"
       ></common-slider>
       <date-panel
         ref="dateRef"
       ></date-panel>
+      <show-panel style="position:absolute; width: 380px; right: 0; top: 54px;"
+        ref="showRef"
+      ></show-panel>
     </main>
     <footer></footer>
   </div>
@@ -30,10 +33,21 @@
 <script>
 import commonSlider from '../common-slider'
 import datePanel from './comps/date-panel/date-panel'
+import showPanel from './comps/show-panel/show-panel'
+
+import PoolManager from './PoolManager'
 
 export default {
 
-  components: { commonSlider, datePanel },
+  components: { commonSlider, datePanel, showPanel },
+
+  provide: {
+    poolManager: new PoolManager(),
+  },
+
+  beforeDestroy(){
+    this._provided.poolManager.destroy();
+  },
 
   data(){
     return {
@@ -50,6 +64,7 @@ export default {
       this.vm.rate= rate;
       this.$refs.sliderRef.init(id);
       this.$refs.dateRef.init({ id });
+      this.$refs.showRef.init({ id });
     },
   }
 
