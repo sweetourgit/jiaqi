@@ -86,10 +86,10 @@
       </div>
       <div>
         <el-button type="info" size="small"
-          @click="monthHandler(1)"
+          @click="clearAll"
         >清除选中</el-button>
         <el-button type="primary" size="small"
-          @click="monthHandler(1)"
+          @click="awakeAddForm"
         >新增计划</el-button>
       </div>
     </header>
@@ -118,19 +118,27 @@
       </ul>
     </main>
     <footer>
-
+      <add-form
+        ref="addRef"
+      ></add-form>
+      <edit-form
+        ref="editRef"
+      ></edit-form>
     </footer>
   </div>
 </template>
 
 <script>
 import { getCalendar, getAverage } from '../../../../planInventory'
+import { getDayDTO, DAY_STATE } from '../../../../dictionary'
+
+import editForm from './comps/forms/edit-form'
+import addForm from './comps/forms/add-form'
 import panelDay from './comps/panel-day'
-import { getDayDTO } from '../../../../dictionary'
 
 // 管理选中
 export default {
-  components: { panelDay },
+  components: { panelDay, addForm, editForm },
 
   inject: ['poolManager'],
 
@@ -305,6 +313,11 @@ export default {
       this.poolManager.unSelectDay(day);
     },
 
+    // 全部取消
+    clearAll(){
+      this.poolManager.clearAll();
+    },
+
     // checkbox
     clickWeekCheckBox(i){
       let selected= this.weekArray[i].selected;
@@ -312,6 +325,14 @@ export default {
         this.poolManager.selectWeek(i):
           this.poolManager.unSelectWeek(i);
     },
+
+    // 新增计划
+    awakeAddForm(){
+      let state= this.poolManager.state;
+      if(state=== DAY_STATE.SHARE || state=== DAY_STATE.NOT_SHARE) return this.$message.error('库存已存在');
+      if(state=== DAY_STATE.UNDO) return this.$message.error('未指定日期');   
+      this.$refs.addRef.handleOpen();
+    }
   }
 }
 </script>

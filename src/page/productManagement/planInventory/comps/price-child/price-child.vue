@@ -42,7 +42,7 @@ export default {
   components: { commonSlider, datePanel, showPanel },
 
   provide: {
-    poolManager: new PoolManager(),
+    poolManager: new PoolManager()
   },
 
   beforeDestroy(){

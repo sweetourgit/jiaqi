@@ -99,7 +99,7 @@ export const addCost= function(object){
       object
     }).then((res) => {
       let { isSuccess }= res.data;
-      if(!isSuccess) return reject('毛利率修改失败');
+      if(!isSuccess) return reject('新增成本失败');
       return resolve();
     }).catch((err) => {
       reject(err);
@@ -114,7 +114,7 @@ export const editCost= function(object){
       object
     }).then((res) => {
       let { isSuccess }= res.data;
-      if(!isSuccess) return reject('毛利率修改失败');
+      if(!isSuccess) return reject('修改成本失败');
       return resolve();
     }).catch((err) => {
       reject(err);
@@ -129,7 +129,7 @@ export const deleteCost= function(id){
       id
     }).then((res) => {
       let { isSuccess }= res.data;
-      if(!isSuccess) return reject('毛利率修改失败');
+      if(!isSuccess) return reject('删除成本失败');
       return resolve();
     }).catch((err) => {
       reject(err);
@@ -144,8 +144,38 @@ export const getCalendar= function(object){
       object
     }).then((res) => {
       let { isSuccess, objects }= res.data;
-      if(!isSuccess) return reject('毛利率修改失败');
+      if(!isSuccess) return reject('获取月份计划失败');
       return resolve(objects);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 获取指定计划
+export const getPlan= function(id){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/plan/api/get", {
+      id
+    }).then((res) => {
+      let { isSuccess, object }= res.data;
+      if(!isSuccess) return reject('获取指定计划失败');
+      return resolve(object);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 获取库存
+export const getInventory= function(id){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/api/inventoryget", {
+      id
+    }).then((res) => {
+      let { isSuccess, object }= res.data;
+      if(!isSuccess) return reject('获取库存失败');
+      return resolve(object);
     }).catch((err) => {
       reject(err);
     })

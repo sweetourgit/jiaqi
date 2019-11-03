@@ -25,15 +25,15 @@ PoolManager.prototype.initShowVM= function({ vm }){
 }
 
 PoolManager.prototype.destroy= function(){
+  this.state= STATE.UNDO;
   this.currentDay= {};
   this.showVM= null;
   this.calendarVM= null;
   this.calendar= null;
 }
 
-// day已过滤掉不是本月的天
+// day已过滤掉不是当前月的天
 PoolManager.prototype.selectDay= function(day){
-  console.log(1)
   let oldDay= this.currentDay || {};
   let oldState= this.state;
   this.currentDay= day;
@@ -59,6 +59,8 @@ PoolManager.prototype.selectDay= function(day){
 PoolManager.prototype.unSelectDay= function(day){
   day.selected= false;
   let weekSelected= this.dayLinkWeekFunc(day);
+  let state= this.getStateByDay(day);
+  if(state=== STATE.SHARE || state=== STATE.NOT_SHARE) this.setState(STATE.UNDO);
 }
 
 /**
@@ -121,6 +123,22 @@ PoolManager.prototype.dayLinkWeekFunc= function(day){
 PoolManager.prototype.getStateByDay= function(day){
   if(day.vm) return day.vm.share;
   return STATE.MULTIPLE;
+}
+
+// 清理所有选中
+PoolManager.prototype.clearAll= function(){
+  this.calendar.forEach(el => el.selected= false);
+  this.calendarVM.weekArray.forEach(
+    weekDay => {
+      weekDay.selected= false;
+    }
+  );
+  this.currentDay= {};
+  this.setState(STATE.UNDO);
+}
+
+PoolManager.prototype.getAverage= function(){
+  return this.calendarVM.vm.average;
 }
 
 export default PoolManager
