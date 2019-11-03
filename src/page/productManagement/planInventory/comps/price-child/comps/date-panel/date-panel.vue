@@ -146,7 +146,9 @@ export default {
     },
     currentMax(){
       return new Date(this.current[0], this.current[1]+ 1, 0).getDate();
-    }
+    },
+
+    isMu
   },
 
   data(){
