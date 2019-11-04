@@ -6,7 +6,7 @@
       :visible.sync="dialogFormProcess"
       :close-on-click-modal="false"
       class="city_list"
-      width="850px"
+      width="870px"
       style="margin-top:-50px"
       @close="cancle"
     >
@@ -43,6 +43,7 @@
         active-color="#409eff"
         inactive-color="#dcdfe6"
         @change="priceChangeEvent(isPricechange)"
+        :disabled="orderget.orderStatus == 4"
       ></el-switch>
       <!-- switch 更改价格(直客价和同业价) end-->
       <!--报名人数-->
@@ -53,8 +54,10 @@
         </div>
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
           {{item.enrollName}}￥
-          <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
-          <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
+          <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+          <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
+          <span v-show="priceType==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+          <span v-show="priceType==2">{{item.price_02}}*{{enrolNum[index]}}</span>
           <div>
             <el-input-number
               class="input-num"
@@ -80,11 +83,12 @@
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
               @input="compPrice(2,index)"
             ></el-input>
           </el-form-item>
           <el-form-item class="otherCost-mark" v-if="index == 0">
-            <el-input v-model="item.mark" placeholder="请输入摘要" class="input1"></el-input>
+            <el-input v-model="item.mark" placeholder="请输入摘要" class="input1" :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"></el-input>
           </el-form-item>
         </div>
         <!--总价-->
@@ -132,20 +136,20 @@
         <!-- 出行人表格后加 begin -->
         <div class="travelMessage">出行人信息</div>
         <table
-          class="costList"
+          :class="['costList',orderget.orderStatus == 4 || orderget.orderStatus == 6 ? 'disableColor':'']"
           v-for="(item,indexPrice) in salePrice"
           :key="item.id + indexPrice"
           border="1"
           cellpadding="0"
           cellspacing="0"
         >
-          <tr class="costList_01">
+          <tr class="costList_01" >
             <td width="120">姓名</td>
             <td width="100">报名类型</td>
             <td width="120">电话</td>
             <td width="180">身份证</td>
             <td width="80">性别</td>
-            <td width="100">操作</td>
+            <td width="140">操作</td>
           </tr>
           <tr v-for="(item,index) in tour[indexPrice]" :key="'b'+index">
             <td>{{item.cnName}}</td>
@@ -157,13 +161,13 @@
               <div v-if="item.sex=='1'">女</div>
             </td>
             <td class="tc">
-              <span
-                class="fl blue cursor"
-                style="margin:0 0 0 18px"
+              <el-button
+                class="fl cursor"
                 @click="fillTour(indexPrice,index)"
-              >编辑</span>
-              <span class="fl" style="margin:0 8px 0 8px;">|</span>
-              <span class="fl blue cursor" @click="delTravel(index,indexPrice)">删除</span>
+                :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
+              >编辑</el-button>
+              <span class="fl">|</span>
+              <el-button class="fl cursor" @click="delTravel(index,indexPrice)" :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6">删除</el-button>
             </td>
           </tr>
         </table>
@@ -204,7 +208,9 @@
       <span>是否需要取消该订单</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="orderModification(orderget.orderStatus,0)">确 定</el-button>
+        <!-- <el-button type="primary" @click="orderModification(orderget.orderStatus,0)">确 定</el-button> -->
+        <el-button type="primary" @click="orderModification(9,0)">确 定</el-button>
+
       </span>
     </el-dialog>
 
@@ -400,7 +406,8 @@ export default {
           id: orderId
         })
         .then(res => {
-          console.log(res, "get");
+          // console.log(res, "get");
+          // console.log("getorderStatus", res.data.object.orderStatus);
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -475,6 +482,7 @@ export default {
     },
 
     orderModification(status, cancle) {
+      // console.log(status)
       //订单修改保存
       let url = "/order/stat/api";
       switch (status) {
@@ -504,7 +512,7 @@ export default {
             for (let j = 0; j < this.tour[i].length; j++) {
               if (this.tour[i][j].cnName == "") {
                 this.$message.error("请补全出行人信息");
-                this.isChangeNumber = true;
+                // this.isChangeNumber = true;
                 return;
               } else {
                 url = "/order/stat/api/econtract";
@@ -534,6 +542,12 @@ export default {
               message: "提交成功",
               type: "success"
             });
+            if (status === 1) {
+              this.ordersave(3);
+            }
+            if (status === 10) {
+              this.ordersave(1);
+            }
             this.$emit("orderPage");
             this.cancle();
           }
@@ -541,6 +555,7 @@ export default {
     },
     //列表订单状态显示
     getOrderStatus(status, endTime, occupyStatus, orderChannel) {
+      // console.log("订单来源是直客还是同业",orderChannel)
       if (status == 2) {
         status = 3; //没有电子合同，直接跳到待出行
       }
@@ -596,6 +611,8 @@ export default {
           break;
         case 4:
           //同业社没有待评价 直客有待评价
+          //订单来源现在是后台写死的3  后台对应的 1同业  2 线上直客 3 线下直客
+          //而实际项目团期计划下单位置 1 线下直客 2 商户（同业和门店）
           switch (orderChannel) {
             case 1:
               this.statusNow = "出行中";
@@ -607,11 +624,11 @@ export default {
               this.statusNext = "订单完成";
               this.statusEnd = "";
               break;
-            // case 3:
-            //   this.statusNow = "出行中";
-            //   this.statusNext = "待评价";
-            //   this.statusEnd = "订单完成";
-            //   break;
+            case 3:
+              this.statusNow = "出行中";
+              this.statusNext = "订单完成";
+              this.statusEnd = "";
+              break;
           }
           break;
         case 5:
@@ -731,7 +748,35 @@ export default {
           });
         }
       } else {
-        this.tour[index].splice(arrLength - preLength, preLength - arrLength);
+        // 循环判断表格中的出行人信息是否有没填写的如果有则自动删除 没有则提示手动删除
+        let isInfNull = this.tour[index].some((item, index, arr) => {
+          return item.cnName == "";
+        });
+        let isInfNullIndex;
+        if (isInfNull) {
+          for (let i = 0; i < this.tour[index].length; i++) {
+            if (this.tour[index][i].cnName == "") {
+              isInfNullIndex = i
+            }
+          }
+          // console.log(isInfNullIndex)
+        }
+        if (isInfNull) {
+          this.tour[index].splice(isInfNullIndex, 1);
+        } else {
+          const num = this.tour[index].length.toString();
+          this.$set(this.enrolNum, index, num);
+          this.$message.error("请手动删除表格中的出行人");
+        }
+
+        // let tour = this.tour[index];
+        // if (tour[tour.length - 1].cnName != "") {
+        //   const num = this.tour[index].length.toString()
+        //   this.$set(this.enrolNum,index,num)
+        //   this.$message.error("请手动删除表格中的出行人");
+        // } else {
+        //   this.tour[index].splice(arrLength - preLength, preLength - arrLength);
+        // }
       }
       this.isEqualityFun();
     },
@@ -875,11 +920,11 @@ export default {
     priceChangeEvent(val) {
       if (val == true) {
         this.priceChange = "直客";
-        this.ruleForm.price = "1";
+        this.priceType = 1;
         this.compPrice();
       } else {
         this.priceChange = "同业";
-        this.ruleForm.price = "2";
+        this.priceType = 2;
         this.compPrice();
       }
     },
@@ -909,7 +954,7 @@ export default {
       for (let i = 0; i < this.enrolNum.length; i++) {
         this.payable +=
           this.enrolNum[i] *
-          (this.ruleForm.price == 1
+          (this.priceType == 1
             ? this.salePrice[i].price_01
             : this.salePrice[i].price_02);
       }
@@ -967,10 +1012,14 @@ export default {
               obj.number += parseInt(this.enrolNum[i]);
             }
           }
+
+          let t_num =
+            this.teampreviewData.count - this.teampreviewData.remaining;
+          let n_num = obj.number - t_num;
           if (obj.number == 0) {
             (this.enrolNumsWarn = "报名人数不能为空"), (this.enrolNums = true);
             return false;
-          } else if (obj.number > this.teampreviewData.remaining) {
+          } else if (n_num > this.teampreviewData.remaining) {
             (this.enrolNumsWarn = "报名总人数不能超过余位"),
               (this.enrolNums = true);
             return false;
@@ -1000,9 +1049,10 @@ export default {
           // 补充资料和待出行 信息更改跳转回到确认占位状态
           if (
             this.isChangeNumber === true &&
-            (this.orderget.orderStatus === 1 || this.orderget.orderStatus === 2)
+            (this.orderget.orderStatus === 1 ||
+              this.orderget.orderStatus === 2 ||
+              this.orderget.orderStatus === 3)
           ) {
-            // console.log(1);
             obj.orderStatus = 10;
           }
 
@@ -1020,6 +1070,25 @@ export default {
             }
           });
 
+          // 签署订单按钮
+          if (id === 3) {
+            obj.orderStatus = 3;
+          }
+
+          // 补充资料按钮
+          if (id === 1) {
+            obj.orderStatus = 1;
+          }
+
+          // 保存的时候用的直客价格还是同业的价格 swatch
+          if (this.priceType == 1) {
+            obj.priceType = 1;
+          } else {
+            obj.priceType = 2;
+          }
+
+
+
           obj.enrollDetail = enrollDetail;
           obj.guests = guest;
           obj.payable = this.payable;
@@ -1029,7 +1098,7 @@ export default {
             })
             .then(res => {
               if (res.data.isSuccess == true) {
-                this.$message({
+                  this.$message({
                   message: "更改成功",
                   type: "success"
                 });
@@ -1252,8 +1321,13 @@ hr {
 .blue {
   color: #2e94f9;
 }
+.disableColor {
+  color: #C0C4CC;
+}
 .cursor {
   cursor: pointer;
+  border:none;
+  width: 70px;
 }
 .costTable {
   width: 800px;

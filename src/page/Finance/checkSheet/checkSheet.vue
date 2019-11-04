@@ -5,41 +5,57 @@
       <el-tab-pane label="报账单" name="first">
         <div class="borders">
           <div class="search">
-            <span class="search_style">团期计划：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
-            <span class="search_style">报账人：</span>
-            <!--<el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>-->
-            <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
-            <span class="search_style">发起时间：</span>
-            <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
-            <div class="date-line"></div>
-            <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
-            <div style="margin-top: 20px;"></div>
-            <span class="search_style">产品名称：</span> <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
-            <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
-            <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
-
+            <el-row>
+              <el-col :span="7">
+                <span class="search_style">团期计划：</span>
+                <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
+              </el-col>
+              <el-col :span="7">
+                <span class="search_style">报账人：</span>
+                <!--<el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>-->
+                <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
+              </el-col>
+              <el-col :span="9">
+                <span class="search_style">发起时间：</span>
+                <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
+                <div class="date-line"></div>
+                <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="7">
+                <span class="search_style">产品名称：</span>
+                <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
+              </el-col>
+              <el-col :span="9" :offset="7">
+                <el-button type="primary" @click="resetFun" plain class="buttonSearch">重置</el-button>
+                <el-button type="primary" @click="searchFun" class="buttonSearch">搜索</el-button>
+              </el-col>
+            </el-row>
           </div>
           <div class="table_style">
             <el-table :data="tableData" border :header-cell-style="getRowClass">
-              <el-table-column prop="tour_no" label="团期计划" width="180" align="center"></el-table-column>
-              <el-table-column prop="" label="状态" width="120" align="center">
+              <el-table-column prop="tour_no" label="团期计划" align="center"></el-table-column>
+              <el-table-column prop="" label="状态" align="center">
                 <template slot-scope="scope">
                   <div v-if="scope.row.bill_status=='5'" style="color: #7F7F7F" >报账中</div>
                   <div v-if="scope.row.bill_status=='6'" style="color: #FF4A3D" >报账驳回</div>
                   <div v-if="scope.row.bill_status=='7'" style="color: #33D174" >已报账</div>
+                  <div v-if="scope.row.bill_status=='8'" style="color: #66b1ff" >已回冲</div>
                 </template>
               </el-table-column>
               <el-table-column prop="product_name" label="产品名称" align="center"></el-table-column>
-              <el-table-column prop="create_uid" label="申请人" width="120" align="center"></el-table-column>
-              <el-table-column prop="created_at" label="申请时间" width="180" align="center"></el-table-column>
-              <el-table-column prop="mark" label="审批意见" width="250" align="center"></el-table-column>
-              <el-table-column prop="opinion" label="操作" align="center" width="100">
+              <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
+              <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
+              <el-table-column prop="mark" label="审批意见" align="center"></el-table-column>
+              <el-table-column prop="opinion" label="操作" align="center">
                 <template slot-scope="scope">
                   <div v-if="scope.row.bill_status=='5'">
                     <el-button @click="approve(scope.row)" type="text" size="small" class="table_details">审批</el-button>
                   </div>
                   <div v-if="scope.row.bill_status=='7'" style="color: #33D174" >
                     <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+                    <el-button @click="recoilloan(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.bill_status=='7'">回冲借款单</el-button>
                   </div>
                   <div v-if="scope.row.bill_status=='6'" style="color: #FF4A3D" ></div>
                 </template>
@@ -309,7 +325,38 @@
           }).catch(function(error) {
             console.log(error);
           });
+        },
+
+        recoilloan(row){
+          const that = this;
+          console.log(row);
+          this.$confirm("是否回冲此报账单?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/recoilloan", {
+              "id": row.id
+            }, ).then(function(response) {
+              console.log('回冲报账单',response);
+              if (response.data.code == '200') {
+                that.$message.success("回冲报账单成功~");
+//                that.closeAdd();
+              } else {
+                if(response.data.message){
+                  that.$message.warning(response.data.message);
+                }else{
+                  that.$message.warning("撤销失败~");
+                }
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
+          }).catch(() => {
+            that.$message.success("已取消此操作~");
+          });
         }
+
       },
       created(){
           this.reimList();
@@ -324,10 +371,12 @@
     overflow: hidden;
     border: 1px solid #E6E6E6;
     margin-bottom: 30px;
+    margin-top: 25px;
   }
   .search{
     float: left;
     margin-top: 30px;
+    width: 100%;
   }
   .date-line {
     width: 10px;
@@ -335,21 +384,33 @@
     display: inline-block;
     margin: 0 3px 3px 0
   }
+  .table_style{
+    width: 100%;
+    padding: 0 20px;
+    float: left;
+    box-sizing: border-box;
+  }
+  .el-row{
+    margin-bottom: 20px;
+  }
   .search_style{
     /*float: left;*/
     margin-top: 10px;
     margin-left: 20px;
-    font-size: 14px
+    font-size: 14px;
+    display: inline-block;
+    width: 100px;
   }
   .search_input{
     /*float: left;*/
-    width: 200px
+    width: 65%;
   }
-  .table_style{
-    width: 90%;
-    margin-left: 20px;
-    margin-top: 20px;
-    float: left;
+  .start-time{
+    width: 32.5%;
+  }
+  .buttonSearch{
+    float: right;
+    margin-right: 20px;
   }
   .block{
     float: left;

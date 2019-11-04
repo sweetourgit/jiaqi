@@ -147,7 +147,7 @@
             total += parseFloat(item.income);
           });
           this.totalItem = val.length;
-          this.totalMoney = total;
+          this.totalMoney = total.toFixed(2);
         }else{
           this.reable = true;
           this.totalItem = 0;
@@ -321,6 +321,7 @@
       // 加载table数据
       loadData(){
         const that = this;
+//        console.log(this.$route.query.ids);
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/reclist", {
           "order_sn": this.$route.query.ids
         }, ).then(function(response) {

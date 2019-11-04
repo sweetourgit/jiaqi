@@ -29,7 +29,11 @@
         <el-table :data="tableData" ref="multipleTable" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass"@selection-change="changeFun" @row-click="clickRow">
           <el-table-column prop="id" label="ID" width="180" align="center"></el-table-column>
           <el-table-column prop="labelName" label="标签名称" width="180" align="center"></el-table-column>
-          <el-table-column prop="product" label="绑定相关产品" align="center"></el-table-column>
+          <el-table-column prop="countPro" label="绑定相关产品" align="center">
+            <template slot-scope="scope">
+              <div><span style="cursor:pointer" @click="binding()">{{scope.row.countPro}}</span></div>
+            </template>
+          </el-table-column>
         </el-table>
         <!--分页-->
         <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
@@ -115,15 +119,18 @@
     </div>
   </el-dialog>
   <!--绑定相关产品弹窗-->
-  <div class="popup" v-show="contentShow=false">
-    <div class="mask"></div>
-    <div class="add">
-      <div class="gatherColor">
-        <div class="gatherTitle">绑定相关产品</div>
-        <div class="gatherClose">×</div>
-      </div>
-    </div>
-  </div>
+  <el-dialog title="绑定相关产品" :visible.sync="contentShow" class="city_list" width="700px">
+    <el-table :data="tableDataProduct" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass">
+      <el-table-column prop="teamName" label="产品信息" width="560" align="center"></el-table-column>
+      <el-table-column label="操作" align="center"width="99">
+        <template slot-scope="scope">
+          <div>解绑</div>
+        </template>
+      </el-table-column>
+    </el-table>
+    
+    
+  </el-dialog>
 
 </div>
 
@@ -180,6 +187,8 @@
         sid:'',
         typeName:'',
         labelName:'',
+        contentShow:false,//绑定相关产品弹窗
+        tableDataProduct:[],//绑定相关产品弹窗里的表格
        };   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         
@@ -430,16 +439,6 @@
       },
       //循环主题ID
       cycleId(){
-        console.log("cycleId")
-        // for(var i =0; i<this.editableTabs.length; i++){
-        //   if(i== this.editableTabsValue){
-        //     this.clickTab = this.editableTabs[i].typeName;
-        //     this.sid = this.editableTabs[i].id;            
-        //   }
-        // }
-        // let i = this.editableTabs.length;
-        // this.clickTab = this.editableTabs[i].typeName;
-        // this.sid = this.editableTabs[i].id;
         this.clickTab = this.editableTabs[this.editableTabsValue].typeName;
         this.sid = this.editableTabs[this.editableTabsValue].id; 
       },
@@ -544,14 +543,14 @@
            type: "warning"
         })
         .then(() => {
-              this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/oplabledelete',{
-                    "id": this.multipleSelection[0].id
-                  }).then(res => {
-                      if(res.data.isSuccess == true){
-                         this.$message.success("删除成功");
-                         this.pageList();
-                  }
-               })
+          this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/oplabledelete',{
+                "id": this.multipleSelection[0].id
+              }).then(res => {
+                  if(res.data.isSuccess == true){
+                     this.$message.success("删除成功");
+                     this.pageList();
+              }
+           })
           })
           .catch(() => {
             this.$message({
@@ -569,8 +568,7 @@
       //主题列表显示
       pageList() {
         var that = this
-        this.$http.post(
-          this.GLOBAL.serverSrc + "/universal/labletype/api/list",
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/labletype/api/list",
           {
             "pageIndex": 0,
             "pageSize": 0,
@@ -631,6 +629,23 @@
             //console.log(obj)
           })
       },
+      //绑定相关产品弹窗
+      binding(){
+        this.contentShow = true;
+        //this.queryProduct(this.labelID);
+      },
+      //查询相关产品列表
+      // queryProduct(id){
+      //   var that = this
+      //   this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/pageteamlabel",
+      //     {
+      //       "pageIndex": 1,
+      //       "pageSize": 10,
+      //       "labelID": this.multipleSelection[0].id
+      //     }).then(function(obj){
+      //       that.tableDataProduct = obj.data.objects
+      //     })
+      // },
     }
 }
 

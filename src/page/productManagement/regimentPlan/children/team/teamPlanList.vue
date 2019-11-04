@@ -242,7 +242,7 @@ export default {
       this.teamQueryList(this.pageIndex,val);
     },
     handleCurrentChange(val) {
-      this.pageIndex = val
+      this.pageIndex = val;
       this.teamQueryList(val,this.pageSize);
     },
     //计划list
@@ -264,16 +264,16 @@ export default {
         endDate = 0;
       }
       this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/page", {
-          pageIndex: pageIndex,
-          pageSize: pageSize,
-          object: {
-            title: title,
-            groupCode: groupCode,
-            startDate: startDate,
-            endDate: endDate,
-            op: op,
-          }
-        })
+        pageIndex: (this.title !== '' || this.groupCode !== '' || this.date !== '' || this.op !== '' || this.financeState !== '') ? 1 : pageIndex,
+        pageSize: pageSize,
+        object: {
+          title: title,
+          groupCode: groupCode,
+          startDate: startDate,
+          endDate: endDate,
+          op: op,
+        }
+      })
         .then(res => {
           this.teamqueryList = [];
           this.total = res.data.total;
@@ -388,7 +388,7 @@ export default {
           }).then(res => {
               if(res.data.isSuccess == true){
                 //console.log(this.current,'jack')
-                 this.teamQueryList();
+                this.teamQueryList();
               }
            })
         })
@@ -402,7 +402,7 @@ export default {
     //恢复售卖
     haltSales_01(status) {
       this.$confirm("该团期是否正常售卖?", "提示", {
-        confirmButtonText: "停售",
+        confirmButtonText: "恢复售卖",
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {

@@ -1,77 +1,117 @@
 <template>
   <div class="vivo" style="position:relative;">
     <div class="demo-input-suffix">
-      <span class="search-title">产品名称:</span>
-      <el-input v-model="activeForm.title" class="input"></el-input>
-      <span class="search-title">订单ID:</span>
-      <el-input v-model="activeForm.oid" class="input"></el-input>
-      <span class="search-title">下单时间:</span>
-      <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数" :picker-options="startDatePicker"></el-date-picker>
-      <div class="date-line"></div>
-      <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数" :picker-options="endDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">报账状态:</span>
-      <el-select v-model="activeForm.status" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="未认款" value="1"></el-option>
-        <el-option key="2" label="认款申请" value="2"></el-option>
-        <el-option key="3" label="认款待修改" value="3"></el-option>
-        <el-option key="4" label="认款通过" value="4"></el-option>
-        <el-option key="5" label="报账中" value="5"></el-option>
-        <el-option key="6" label="报账驳回" value="6"></el-option>
-        <el-option key="7" label="已报账" value="7"></el-option>
-      </el-select>
-      <span class="search-title">是否关联产品:</span>
-      <el-select v-model="activeForm.proRelation" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="是" value="2"></el-option>
-        <el-option key="2" label="否" value="1"></el-option>
-      </el-select>
-      <span class="search-title">导入时间:</span>
-      <el-date-picker v-model="activeForm.importStartTime" type="date" placeholder="开始天数" :picker-options="importStartDatePicker"></el-date-picker>
-      <div class="date-line"></div>
-      <el-date-picker v-model="activeForm.importEndTime" type="date" placeholder="结束天数" :picker-options="importEndDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">关联团期:</span>
-      <el-input v-model="activeForm.tour" class="input"></el-input>
-      <span class="search-title">类别:</span>
-      <el-select v-model="activeForm.type" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="门票" value="1"></el-option>
-        <el-option key="2" label="线路" value="2"></el-option>
-        <el-option key="3" label="酒店" value="3"></el-option>
-        <el-option key="4" label="套餐" value="4"></el-option>
-      </el-select>
-      <span class="search-title">验证时间:</span>
-      <el-date-picker v-model="activeForm.validationStartTime" type="date" placeholder="开始天数" :picker-options="validationStartDatePicker"></el-date-picker>
-      <div class="date-line"></div>
-      <el-date-picker v-model="activeForm.validationEndTime" type="date" placeholder="结束天数" :picker-options="validationEndDatePicker"></el-date-picker><br /><br />
-      <span class="search-title">取票人:</span>
-      <el-input v-model="activeForm.ticketPerson" class="input"></el-input>
-      <span class="search-title">取票人手机:</span>
-      <el-input v-model="activeForm.ticketPhone" class="input"></el-input>
-      <span class="search-title">分销商:</span>
-      <el-input v-model="activeForm.distributors" class="input" style="width: 485px;"></el-input><br /><br />
-      <span class="search-title">卖出支付方式:</span>
-      <el-select v-model="activeForm.typePay" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="产品自销" value="1"></el-option>
-        <el-option key="2" label="授信支付" value="2"></el-option>
-        <el-option key="3" label="微信支付" value="3"></el-option>
-        <el-option key="4" label="易宝云企付" value="4"></el-option>
-        <el-option key="5" label="余额支付" value="5"></el-option>
-        <el-option key="6" label="支付宝" value="6"></el-option>
-        <el-option key="7" label="自采" value="7"></el-option>
-      </el-select>
-      <span class="search-title">借款状态 :</span>
-      <el-select v-model="activeForm.borrowStatus" placeholder="请选择" style="width:200px">
-        <el-option key="" label="全部" value=""></el-option>
-        <el-option key="1" label="未借款" value="1"></el-option>
-        <el-option key="2" label="借款申请中" value="2"></el-option>
-        <el-option key="3" label="已借款" value="3"></el-option>
-      </el-select>
-      <div class="button_select">
-        <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
-        <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
-      </div>
+      <el-row>
+        <el-col :span="7">
+          <span class="search-title">产品名称:</span>
+          <el-input v-model="activeForm.title" class="input"></el-input>
+        </el-col>
+        <el-col :span="7">
+          <span class="search-title">订单ID:</span>
+          <el-input v-model="activeForm.oid" class="input"></el-input>
+        </el-col>
+        <el-col :span="9">
+          <span class="search-title">下单时间:</span>
+          <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数" :picker-options="startDatePicker" class="dataIn"></el-date-picker>
+          <div class="date-line"></div>
+          <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数" :picker-options="endDatePicker" class="dataIn"></el-date-picker>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="7">
+          <span class="search-title">报账状态:</span>
+          <el-select v-model="activeForm.status" placeholder="请选择">
+            <el-option key="" label="全部" value=""></el-option>
+            <el-option key="1" label="未认款" value="1"></el-option>
+            <el-option key="2" label="认款申请" value="2"></el-option>
+            <el-option key="3" label="认款待修改" value="3"></el-option>
+            <el-option key="4" label="认款通过" value="4"></el-option>
+            <el-option key="5" label="报账中" value="5"></el-option>
+            <el-option key="6" label="报账驳回" value="6"></el-option>
+            <el-option key="7" label="已报账" value="7"></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="7">
+          <span class="search-title">是否关联产品:</span>
+          <el-select v-model="activeForm.proRelation" placeholder="请选择">
+            <el-option key="" label="全部" value=""></el-option>
+            <el-option key="1" label="是" value="2"></el-option>
+            <el-option key="2" label="否" value="1"></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="9">
+          <span class="search-title">导入时间:</span>
+          <el-date-picker v-model="activeForm.importStartTime" type="date" placeholder="开始天数" :picker-options="importStartDatePicker" class="dataIn"></el-date-picker>
+          <div class="date-line"></div>
+          <el-date-picker v-model="activeForm.importEndTime" type="date" placeholder="结束天数" :picker-options="importEndDatePicker" class="dataIn"></el-date-picker>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="7">
+          <span class="search-title">关联团期:</span>
+          <el-input v-model="activeForm.tour" class="input"></el-input>
+        </el-col>
+        <el-col :span="7">
+          <span class="search-title">类别:</span>
+          <el-select v-model="activeForm.type" placeholder="请选择">
+            <el-option key="" label="全部" value=""></el-option>
+            <el-option key="1" label="门票" value="1"></el-option>
+            <el-option key="2" label="线路" value="2"></el-option>
+            <el-option key="3" label="酒店" value="3"></el-option>
+            <el-option key="4" label="套餐" value="4"></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="9">
+          <span class="search-title">验证时间:</span>
+          <el-date-picker v-model="activeForm.validationStartTime" type="date" placeholder="开始天数" :picker-options="validationStartDatePicker" class="dataIn"></el-date-picker>
+          <div class="date-line"></div>
+          <el-date-picker v-model="activeForm.validationEndTime" type="date" placeholder="结束天数" :picker-options="validationEndDatePicker" class="dataIn"></el-date-picker>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="7">
+          <span class="search-title">取票人:</span>
+          <el-input v-model="activeForm.ticketPerson" class="input"></el-input>
+        </el-col>
+        <el-col :span="7">
+          <span class="search-title">取票人手机:</span>
+          <el-input v-model="activeForm.ticketPhone" class="input"></el-input>
+        </el-col>
+        <el-col :span="9">
+          <span class="search-title">分销商:</span>
+          <el-input v-model="activeForm.distributors" class="input"></el-input>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="7">
+          <span class="search-title">卖出支付方式:</span>
+          <el-select v-model="activeForm.typePay" placeholder="请选择">
+            <el-option key="" label="全部" value=""></el-option>
+            <el-option key="1" label="产品自销" value="1"></el-option>
+            <el-option key="2" label="授信支付" value="2"></el-option>
+            <el-option key="3" label="微信支付" value="3"></el-option>
+            <el-option key="4" label="易宝云企付" value="4"></el-option>
+            <el-option key="5" label="余额支付" value="5"></el-option>
+            <el-option key="6" label="支付宝" value="6"></el-option>
+            <el-option key="7" label="自采" value="7"></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="7">
+          <span class="search-title">借款状态 :</span>
+          <el-select v-model="activeForm.borrowStatus" placeholder="请选择">
+            <el-option key="" label="全部" value=""></el-option>
+            <el-option key="1" label="未借款" value="1"></el-option>
+            <el-option key="2" label="借款申请中" value="2"></el-option>
+            <el-option key="3" label="已借款" value="3"></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="9">
+          <div class="button_select">
+            <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
+            <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
+          </div>
+        </el-col>
+      </el-row>
     </div>
     <div class="main">
       <el-button type="primary" @click="importOrder" plain>导入订单</el-button>
@@ -610,6 +650,7 @@
       padding: 20px;
       /*min-width: 1350px;*/
       overflow-x: auto;
+      margin-top: 25px;
 
       .search-title {
         font-size: 14px;
@@ -620,9 +661,17 @@
         width: 100px;
         text-align: right;
       }
-
+      .el-row{
+        margin-bottom: 20px;
+      }
       .el-input {
-        width: auto;
+        width: 65%;
+      }
+      .el-select{
+        width: 65%;
+      }
+      .dataIn{
+        width: 32.5%;
       }
 
       .el-input__inner {
@@ -636,15 +685,6 @@
         margin: 0 3px 3px 0
       }
 
-      .button_select {
-        /*width: 1300px;*/
-        display: inline-block;
-        float: right;
-        margin-right: 265px;
-        overflow: hidden;
-        padding: 10px;
-        box-sizing: border-box;
-      }
       .button_select button{
         float: right;
         margin-left: 20px;

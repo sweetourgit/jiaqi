@@ -7,7 +7,7 @@
           <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">申 请</el-button>
           <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
         </div>
-        <el-divider content-position="left">noIncome基本信息</el-divider>
+        <el-divider content-position="left">基本信息</el-divider>
         <div>
           <el-form-item label="供应商名称：" prop="supplier" label-width="140px">
             <el-autocomplete class="inputWidth" v-model="ruleForm.supplier" :fetch-suggestions="querySearchD" placeholder="请输入供应商" @select="handleSelectD" @blur="blurHand"></el-autocomplete>
@@ -28,6 +28,12 @@
             <el-input v-model="ruleForm.payName" class="inputWidthS" placeholder="开户人姓名"></el-input>
             <el-input v-model="ruleForm.payAccount" class="inputWidthS" placeholder="开户行"></el-input>
             <el-button type="primary" @click="chooseFun" style="margin-left: 10px">选择</el-button>
+          </el-form-item>
+          <el-form-item label="对公/对私：" prop="account_type" label-width="140px">
+            <el-radio-group v-model="ruleForm.account_type">
+              <el-radio label="1">对公</el-radio>
+              <el-radio label="2">对私</el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item label="附件：" label-width="140px" required>
             <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="fileList">
@@ -86,57 +92,26 @@
           supplierName: '',
           supplierID: '',// 选择的供应商ID
           number: '',
-          buy_type: ''
+          buy_type: '',
+          account_type: ''
         },
 
         typeList: [
           {
             value: 1,
-            label: '地接'
+            label: '门票'
           },
           {
             value: 2,
-            label: '机票（本公司）'
+            label: '酒店'
           },
           {
             value: 3,
-            label: '机票（非本公司）'
+            label: '地接'
           },
           {
             value: 4,
-            label: '小费'
-          },
-          {
-            value: 5,
-            label: '签证'
-          },
-          {
-            value: 6,
-            label: '地接（其他）'
-          },
-          {
-            value: 7,
-            label: '火车票'
-          },
-          {
-            value: 8,
-            label: '汽车票'
-          },
-          {
-            value: 9,
-            label: '船票'
-          },
-          {
-            value: 10,
-            label: '其他'
-          },
-          {
-            value: 11,
-            label: '机票押金'
-          },
-          {
-            value: 12,
-            label: '火车票押金'
+            label: '定制游(跟团游)'
           }
         ],
 
@@ -146,7 +121,8 @@
           type: [{ required: true, message: '类型不能为空!', trigger: 'change' }],
           money: [{ required: true, message: '借款金额不能为空!', trigger: 'blur' }],
           abstract: [{ required: true, message: '摘要不能为空!', trigger: 'blur' }],
-          payAccount: [{ required: true, message: '收款账户不能为空!', trigger: 'change' }]
+          payAccount: [{ required: true, message: '收款账户不能为空!', trigger: 'change' }],
+          account_type: [{ required: true, message: '账户类别不能为空!', trigger: 'change' }]
         },
 
         dialogFormVisible1: false,
@@ -231,24 +207,7 @@
               fileArr = [];
             }
 
-            this.ruleForm.supplierID = 6;
-//            const data = {
-//              "supplier_code": this.ruleForm.supplierID,
-//              "supplier_name": this.ruleForm.supplierName,
-//              "periphery_type": 1,
-//              "loan_type": this.ruleForm.type,
-//              "loan_money": this.ruleForm.money,
-//              "mark": this.ruleForm.abstract,
-//              "remittance_account": this.ruleForm.payNumber,
-//              "account_name": this.ruleForm.payName,
-//              "opening_bank": this.ruleForm.payAccount,
-//              "number": this.ruleForm.number,
-//              "file": fileArr,
-//              "create_uid": sessionStorage.getItem('id'),
-//              "org_id": sessionStorage.getItem('orgID'),
-//              "buy_type": this.ruleForm.buy_type
-//            };
-//            console.log(data);
+//            this.ruleForm.supplierID = 6;
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
               "supplier_code": this.ruleForm.supplierID,
               "supplier_name": this.ruleForm.supplierName,
@@ -263,7 +222,8 @@
               "file": fileArr,
               "create_uid": sessionStorage.getItem('id'),
               "org_id": sessionStorage.getItem('orgID'),
-              "buy_type": this.ruleForm.buy_type
+              "buy_type": this.ruleForm.buy_type,
+              "account_type": this.ruleForm.account_type
             }).then(res => {
               console.log(res);
               if (res.data.code == 200) {
@@ -271,7 +231,8 @@
                   type: 'success',
                   message: '创建成功!'
                 });
-                that.closeAdd();
+                that.startWork(res.data.data);
+
 //                that.$emit('loadData');
               } else {
                 if(res.data.message){
@@ -312,7 +273,11 @@
             if(obj.data.isSuccess){
               that.tableDataZH = obj.data.objects;
             }else{
-              that.$message.warning("加载账户信息失败");
+              if(obj.data.result.message){
+                that.$message.warning(obj.data.result.message);
+              }else{
+                that.$message.warning("加载账户信息失败");
+              }
             }
           }).catch(function (obj) {
             console.log(obj)
@@ -431,6 +396,72 @@
           }
         }).catch(function(obj) {
           console.log(obj);
+        });
+      },
+
+      // 开始工作流
+      startWork(obj){
+//        alert('执行工作流function！');
+        const that = this;
+        this.$http.post(this.GLOBAL.jqUrl + '/ZB/StartUpWorkFlowForZB_V2', {
+          "jQ_ID": obj.id,
+          "jQ_Type": obj.periphery_type,
+          "workflowCode": obj.workflowCode,
+          "userCode": sessionStorage.getItem('userCode'),
+//          "userCode": "zb1",// 测试
+          "finishStart": "true",
+          "paramValues": [{
+            "itemName": "amount",
+            "itemValue": this.ruleForm.money
+          }, {
+            "itemName": "supplierName",
+            "itemValue": this.ruleForm.supplierName
+          }, {
+            "itemName": "loanId",
+            "itemValue": obj.id
+          }, {
+            "itemName": "accountType",
+            "itemValue": this.ruleForm.account_type
+          }]
+        }).then(res => {
+//          console.log('工作流',res);
+          let result = JSON.parse(res.data);
+          if (result.code == '0') {
+            console.log('启动工作流成功');
+            that.closeAdd();
+          } else {
+            console.log('启动工作流错误!');
+            if(result.msg){
+              that.$message.warning(result.msg);
+            }else{
+              that.$message.warning('启动工作流错误!');
+            }
+            that.cancalLoan(obj.id);
+            console.log(res.data);
+          }
+        }).catch(err => {
+          console.log(err);
+        })
+      },
+
+      cancalLoan(id){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/cancleloan", {
+          "id": id
+        }, ).then(function(response) {
+//            console.log('借款撤销操作',response);
+          if (response.data.code == '200') {
+//            that.$message.success("撤销成功~");
+//            that.closeAdd();
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("撤销失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
         });
       }
     },

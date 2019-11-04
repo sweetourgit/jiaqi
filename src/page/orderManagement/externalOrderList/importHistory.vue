@@ -1,20 +1,28 @@
 <template>
   <div class="vivo" style="position:relative">
-    <div style="padding-top:1px;">
-      <el-button style="float: right;" @click="close()" size="medium">关闭</el-button>
+    <div class="topButton">
+      <el-button @click="close()" size="medium">关闭</el-button>
     </div>
     <div class="demo-input-suffix">
-      <span class="search-title" style="margin-right: 40px;">导入人:</span>
-      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
-      <span class="search-title">导入时间:</span>
-      <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数"></el-date-picker>
-      <div class="date-line"></div>
-      <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数"></el-date-picker>
-      <br /><br />
-      <div class="button_select">
-        <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
-        <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
-      </div>
+      <el-row>
+        <el-col :span="7">
+          <span class="search-title">导入人:</span>
+          <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
+        </el-col>
+        <el-col :span="9">
+          <span class="search-title">导入时间:</span>
+          <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始天数" class="dataIn"></el-date-picker>
+          <div class="date-line"></div>
+          <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束天数" class="dataIn"></el-date-picker>
+        </el-col>
+        <el-col :span="7">
+          <div class="button_select">
+            <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
+            <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
+          </div>
+        </el-col>
+      </el-row>
+
     </div>
     <div class="table_trip" style="width: 100%;">
       <el-table ref="singleTable" :data="tableData" v-loading="loading" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
@@ -92,7 +100,8 @@ export default {
       console.log(row);
     },
     close() {
-      this.$router.push({ path: "/externalOrderList/canRecognition" });
+//      this.$router.push({ path: "/externalOrderList/canRecognition" });
+      this.$router.go(-1);
     },
     close2() {
       this.dialogFormVisible = false;
@@ -313,29 +322,42 @@ export default {
 </script>
 <style lang="scss" scoped>
 .vivo {
+  .topButton{
+    width: 100%;
+    overflow: hidden;
+    .el-button{
+      float: right;
+    }
+  }
   .demo-input-suffix {
     width: auto;
     background-color: #F7F7F7;
-    margin-top: 40px;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding: 20px;
+    /*min-width: 1350px;*/
+    overflow-x: auto;
+    margin-top: 10px;
 
     .search-title {
       font-size: 14px;
-      margin-left: 20px;
+      margin-left: 10px;
       margin-top: 10px;
+      margin-right: 20px;
+      display: inline-block;
+      width: 100px;
+      text-align: right;
     }
-
-    .el-input {
-      width: auto;
+    .el-row{
+      margin-bottom: 20px;
+    }
+    .input {
+      width: 65%;
+    }
+    .dataIn{
+      width: 32.5%;
     }
 
     .el-input__inner {
       width: 10%;
-    }
-
-    .demo-input-suffix {
-      width: 900px
     }
 
     .date-line {
@@ -345,10 +367,11 @@ export default {
       margin: 0 3px 3px 0
     }
 
-    .button_select {
-      display: inline;
-      margin-left: 85%;
+    .button_select button{
+      float: right;
+      margin-left: 20px;
     }
+
   }
 
   .table_trip {

@@ -280,13 +280,18 @@
       },
       // 提交认款
       doSubmit(row){
-        console.log(row);
+//        console.log(row);
         const that = this;
         if(that.totalMoney > row.rece_money){
           that.$message.warning("待认收款金额小于收入，不能提交认款");
         }else{
-          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/submitrec", {
-            "order_sn": this.tableData[0].order_sn,
+          let order_sns = '';
+          this.tableData.forEach(function (item, index, arr) {
+            order_sns += item.order_sn + ',';
+          });
+          order_sns = order_sns.substr(0, order_sns.length - 1);
+          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/batchsubmitrec", {
+            "order_sn": order_sns,
             "rec_detail_id": row.id,
             "create_uid": sessionStorage.getItem('id')
           }, ).then(function(response) {

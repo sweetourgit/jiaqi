@@ -9,8 +9,8 @@
               <el-table-column prop="status" label="状态" align="center">
                 <template slot-scope="scope">
                   <div v-if="scope.row.approval_status=='1'" style="color: #7F7F7F" >审批中</div>
-                  <div v-if="scope.row.approval_status=='2'" style="color: #00B83F" >驳回</div>
-                  <div v-if="scope.row.approval_status=='3'" style="color: #FF4A3D" >通过</div>
+                  <div v-if="scope.row.approval_status=='2'" style="color: #FF4A3D" >驳回</div>
+                  <div v-if="scope.row.approval_status=='3'" style="color: #00B83F" >通过</div>
                 </template>
               </el-table-column>
               <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
@@ -26,8 +26,7 @@
               <el-table-column prop="approval_comments" label="审批意见" align="center"></el-table-column>
               <el-table-column prop="opinion" label="操作" align="center" width="150">
                 <template slot-scope="scope">
-                  <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-                  <el-button @click="detail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.status_rece == 12">选择付款账户</el-button>
+                  <el-button @click="approval(scope.row)" type="text" size="small" class="table_details">审批</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -52,8 +51,8 @@
               <el-table-column prop="status" label="状态" align="center">
                 <template slot-scope="scope">
                   <div v-if="scope.row.approval_status=='1'" style="color: #7F7F7F" >审批中</div>
-                  <div v-if="scope.row.approval_status=='2'" style="color: #00B83F" >驳回</div>
-                  <div v-if="scope.row.approval_status=='3'" style="color: #FF4A3D" >通过</div>
+                  <div v-if="scope.row.approval_status=='2'" style="color: #FF4A3D" >驳回</div>
+                  <div v-if="scope.row.approval_status=='3'" style="color: #00B83F" >通过</div>
                 </template>
               </el-table-column>
               <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
@@ -69,8 +68,7 @@
               <el-table-column prop="approval_comments" label="审批意见" align="center"></el-table-column>
               <el-table-column prop="opinion" label="操作" align="center" width="150">
                 <template slot-scope="scope">
-                  <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-                  <el-button @click="detail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.status_rece == 12">选择付款账户</el-button>
+                  <el-button @click="approval(scope.row)" type="text" size="small" class="table_details">审批</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -95,8 +93,8 @@
               <el-table-column prop="status" label="状态" align="center">
                 <template slot-scope="scope">
                   <div v-if="scope.row.approval_status=='1'" style="color: #7F7F7F" >审批中</div>
-                  <div v-if="scope.row.approval_status=='2'" style="color: #00B83F" >驳回</div>
-                  <div v-if="scope.row.approval_status=='3'" style="color: #FF4A3D" >通过</div>
+                  <div v-if="scope.row.approval_status=='2'" style="color: #FF4A3D" >驳回</div>
+                  <div v-if="scope.row.approval_status=='3'" style="color: #00B83F" >通过</div>
                 </template>
               </el-table-column>
               <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
@@ -112,8 +110,7 @@
               <el-table-column prop="approval_comments" label="审批意见" align="center"></el-table-column>
               <el-table-column prop="opinion" label="操作" align="center" width="150">
                 <template slot-scope="scope">
-                  <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-                  <el-button @click="detail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.status_rece == 12">选择付款账户</el-button>
+                  <el-button @click="approval(scope.row)" type="text" size="small" class="table_details">审批</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -133,24 +130,18 @@
         </el-tab-pane>
       </el-tabs>
 
-      <applyFornoIncome :dialogFormVisible="dialogFormVisible" @close="closeAdd"></applyFornoIncome>
-      <detail :dialogFormVisible1="dialogFormVisible1" :info="info" @close="closeAdd"></detail>
-      <collectionAddBatch  :dialogFormVisible2="dialogFormVisible2" @close="closeAdd"></collectionAddBatch>
+      <approval :dialogFormVisible="dialogFormVisible" @close="closeAdd" :info="info"></approval>
     </div>
   </div>
 </template>
 
 <script>
-  import applyFornoIncome from '@/page/Finance/aroundBorrowingManagement/apply/applyFornoIncome.vue'// 添加
-  import collectionAddBatch from '@/page/Finance/collectionManagement/recognitionWait/collectionAddBatch.vue'// 批量添加
-  import detail from '@/page/Finance/aroundBorrowingManagement/detail.vue'// 详情
+  import approval from '@/page/Finance/aroundBorrowingManagement/approval.vue'// 审批
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "tradeList",
     components:{
-      applyFornoIncome,
-      detail,
-      collectionAddBatch
+      approval
     },
     data() {
       return {
@@ -179,24 +170,16 @@
         tableDataBalance: [],
 
         typeList: {
-          1: '地接',
-          2: '机票（本公司）',
-          3: '机票（非本公司）',
-          4: '小费',
-          5: '签证',
-          6: '地接（其他）',
-          7: '火车票',
-          8: '汽车票',
-          9: '船票',
-          10: '其他',
-          11: '机票押金',
-          12: '火车票押金'
+          1: '门票',
+          2: '酒店',
+          3: '地接',
+          4: '定制游(跟团游)'
         },
 
-        dialogFormVisible: false,// 添加-显示，隐藏
-        dialogFormVisible1: false,// 详情-显示，隐藏
-        dialogFormVisible2: false,// 批量添加-显示，隐藏
+        dialogFormVisible: false,// 审批-显示，隐藏
         info: '',// 详情传值字段
+
+        unfinishWorking: []
 
       };
     },
@@ -243,23 +226,30 @@
           }
         }
       },
-      // 申请
-      applyFor(){
-        console.log('申请~');
+
+      // 审批
+      approval(row){
+//        console.log(this.unfinishWorking);
+        const that = this;
+        this.unfinishWorking.forEach(function (item, index, arr) {
+          if(row.id == item.jq_ID){
+            that.info = {
+              "id": row.id ,
+              "workItemID": item.workItemID
+            };
+            return;
+          }
+        });
         this.dialogFormVisible = true;
-      },
-      // 详情
-      detail(row){
-        this.info = row.id;
-        this.dialogFormVisible1 = true;
       },
       // 关闭弹窗
       closeAdd() {
         this.dialogFormVisible = false;
-        this.dialogFormVisible1 = false;
-        this.dialogFormVisible2 = false;
         this.info = '';
-        this.loadData();
+        const that = this;
+        const timer = setTimeout(function () {
+          that.loadUnfinished();
+        }, 800);
       },
 
       // 每页条数操作--无收入
@@ -298,8 +288,73 @@
         this.loadData(3);
       },
 
+      // 获取工作流未完成任务
+      loadUnfinished(loan){
+        const that = this;
+        this.$http.post(this.GLOBAL.jqUrl + "/ZB/GettingUnfinishedTasksForZB", {
+          "userCode": sessionStorage.getItem('userCode'),
+//          "userCode": "zb1",
+          "startTime": "1970-07-23T01:30:54.452Z",
+          "endTime": new Date(),
+          "startIndex": -1,
+          "endIndex": -1,
+          "workflowCode": loan
+        }, ).then(function(response) {
+          console.log('获取未完成任务', response);
+          let noIncomeIDs = '', noIncomeNum = 0, advanceIDs = '', advanceNum = 0, balanceIDs = '', balanceNum = 0;
+          // 用ids 字符串调用loadData接口，获取未完成
+
+//          that.$parent.totalNum = response.data.length;
+          that.unfinishWorking = that.unfinishWorking.concat(response.data);
+          if(response.data.length !== 0){
+            response.data.forEach(function (item, index, arr) {
+              if(item.jq_Type == 1){
+                noIncomeIDs += item.jq_ID + ',';
+                noIncomeNum++;
+              }else if(item.jq_Type == 2){
+                advanceIDs += item.jq_ID + ',';
+                advanceNum++;
+              }else if(item.jq_Type == 3){
+                balanceIDs += item.jq_ID + ',';
+                balanceNum++;
+              }
+            });
+          }
+          that.$parent.noIncomeNum = noIncomeNum;
+          that.$parent.advanceNum = advanceNum;
+          that.$parent.balanceNum = balanceNum;
+
+          if(noIncomeIDs != ''){
+            noIncomeIDs = noIncomeIDs.substr(0, noIncomeIDs.length - 1);
+            that.loadData(1, noIncomeIDs);
+          }else{
+            that.noIncomeNum = 0;
+            that.tableDatanoIncome = [];
+            that.pageCountnoIncome = 0;
+          }
+          if(advanceIDs != ''){
+            advanceIDs = advanceIDs.substr(0, advanceIDs.length - 1);
+            that.loadData(2, advanceIDs);
+          }else{
+            that.advanceNum = 0;
+            that.tableDataAdvance = [];
+            that.pageCountAdvance = 0;
+          }
+          if(balanceIDs != ''){
+            balanceIDs = balanceIDs.substr(0, balanceIDs.length - 1);
+            that.loadData(3, balanceIDs);
+          }else{
+            that.balanceNum = 0;
+            that.tableDataBalance = [];
+            that.pageCountBalance = 0;
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+
       // 加载数据
-      loadData(periphery_type){
+      loadData(periphery_type, ids){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/examinepage", {
           "pageIndex": this.currentPage,
@@ -310,9 +365,9 @@
           "end_at": '',
           "periphery_type": periphery_type,
           "approval_status": '',
-          "id": ""
+          "id": ids
         }, ).then(function(response) {
-          console.log('待审批list',response);
+//          console.log('待审批list',response);
           if (response.data.code == '200') {
 //            console.log('无收入借款list',response);
             if(periphery_type == 1){
@@ -335,7 +390,7 @@
                   if (response.data.isSuccess) {
                     item.create_uid = response.data.object.name
                   } else {
-                    that.$message.success("获取录入人失败~");
+                    that.$message.success("获取申请人失败~");
                   }
                 }).catch(function(error) {
                   console.log(error);
@@ -361,7 +416,7 @@
                   if (response.data.isSuccess) {
                     item.create_uid = response.data.object.name
                   } else {
-                    that.$message.success("获取录入人失败~");
+                    that.$message.success("获取申请人失败~");
                   }
                 }).catch(function(error) {
                   console.log(error);
@@ -387,7 +442,7 @@
                   if (response.data.isSuccess) {
                     item.create_uid = response.data.object.name
                   } else {
-                    that.$message.success("获取录入人失败~");
+                    that.$message.success("获取申请人失败~");
                   }
                 }).catch(function(error) {
                   console.log(error);
@@ -405,9 +460,13 @@
 
     },
     created(){
-      this.loadData(1);
-      this.loadData(2);
-      this.loadData(3);
+//      this.loadData(1);
+//      this.loadData(2);
+//      this.loadData(3);
+//      this.loadUnfinished();
+      this.loadUnfinished('NoIncomeLoan_ZB');
+      this.loadUnfinished('IncomeLoan_ZB');
+      this.loadUnfinished('BalancePayment_ZB');
 
 //      console.log(this.$parent);
     }

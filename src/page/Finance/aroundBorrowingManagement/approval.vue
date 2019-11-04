@@ -1,10 +1,11 @@
 <template>
   <div class="vivo" style="position:relative" id="collectionDetail">
-    <el-dialog title="详情" :visible="dialogFormVisible1" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
+    <el-dialog title="详情" :visible="dialogFormVisible" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
-        <el-button type="primary" @click="backoutBtn" v-if="baseInfo.approval_status == 1 && showBack == true">撤销</el-button>
+        <el-button type="primary" @click="approvalPass">通过</el-button>
+        <el-button type="primary" @click="approvalReject">驳回</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -22,7 +23,7 @@
         <p class="inputLabel"><span>账号：</span>{{baseInfo.account}}</p>
         <p class="inputLabel"><span>开户行：</span>{{baseInfo.accountBank}}</p>
         <p class="inputLabel"><span>开户名：</span>{{baseInfo.accountName}}</p>
-        <p class="inputLabel"><span>支付账户：</span>{{baseInfo.accountPay}}</p>
+        <p class="inputLabel"><span>支付账户：</span>{{baseInfo.accountCode}}</p>
         <p class="inputLabel"><span>已报销金额：</span>{{baseInfo.reimbursed_money}}</p>
 
         <div class="inputLabel">
@@ -41,7 +42,7 @@
 
       <el-divider content-position="left">审核结果</el-divider>
       <div class="stepDv bottomDis">
-        <el-table ref="singleTable" :data="tableDataResult" border :header-cell-style="getRowClass">
+        <el-table ref="singleTable" :data="tableDataResult" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
           <el-table-column prop="approval_at" label="审批时间" align="center" >
           </el-table-column>
           <el-table-column prop="approval_uid" label="审批人" align="center" >
@@ -81,7 +82,21 @@
         </div>
       </div>
 
-
+      <!--审批弹窗-->
+      <div>
+        <el-dialog style="text-align: left;" :title="approvalTitle" :visible.sync="dialogVisibleApproval" width="30%" top="20vh" append-to-body>
+          <div>
+            <p class="areaP" v-if="approval_status == 3">通过说明：</p>
+            <p class="areaP" v-if="approval_status == 2">驳回意见：</p>
+            <el-input class="areaIn" type="textarea" :rows="3" placeholder="请输入内容(选填)" v-model="approvalMark"></el-input>
+          </div>
+          <div slot="footer" style="overflow: hidden;">
+            <el-button @click="dialogVisibleApproval = false">取 消</el-button>
+            <el-button type="primary" @click="approvalSubmitWorking()">确 定</el-button>
+          </div>
+        </el-dialog>
+      </div>
+      <!--审批结束-->
 
     </el-dialog>
   </div>
@@ -93,7 +108,7 @@
     components: {
     },
     props: {
-      dialogFormVisible1: false,
+      dialogFormVisible: false,
       info: ''
     },
     data() {
@@ -111,9 +126,8 @@
           account: '',
           accountBank: '',
           accountName: '',
-          accountPay: '',
-          reimbursed_money: '',
-          approval_status: ''
+          accountCode: '',
+          reimbursed_money: ''
         },
         // 认款方式array
         periphery_type: {
@@ -128,17 +142,21 @@
         // 相关信息，table数据
         tableDataRelated: [],
 
-        showBack: true
+        //审批弹框数据
+        approvalTitle: '',
+        dialogVisibleApproval: false,
+        approval_status: '',
+        approvalMark: ''
       }
     },
     computed: {
       // 计算属性的 getter
     },
     watch: {
-      info: {
+      dialogFormVisible: {
         handler:function(){
-//          alert(this.info);
-          if(this.info != '' && this.dialogFormVisible1){
+//          console.log(this.info);
+          if(this.info != '' && this.dialogFormVisible){
             this.loadData();
           }
         }
@@ -177,57 +195,108 @@
         this.$emit('close', false);
       },
 
-      // 撤销操作
-      backoutBtn(){
+      // 通过按钮事件
+      approvalPass(){
+        this.dialogVisibleApproval = true;
+        this.approvalTitle = '审批通过';
+        this.approval_status = '3';
+      },
+      // 驳回按钮事件
+      approvalReject(){
+        this.dialogVisibleApproval = true;
+        this.approvalTitle = '审批驳回';
+        this.approval_status = '2';
+      },
+
+      // 工作流审批
+      approvalSubmitWorking(){
         const that = this;
-        this.$confirm("是否撤销此借款?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-          this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/cancleloan", {
-            "id": this.info
+        if(this.approval_status == 2){// 驳回
+          this.$http.post(this.GLOBAL.jqUrl + "/ZB/RejectionOfWorkTasksForZB", {
+            "userCode": sessionStorage.getItem('userCode'),
+//            "userCode": "zb1",
+            "workItemID": this.info.workItemID,
+            "commentText": this.approvalMark
           }, ).then(function(response) {
-//            console.log('借款撤销操作',response);
-            if (response.data.code == '200') {
-              that.$message.success("撤销成功~");
-              that.endWorking();
-              that.closeAdd();
-            } else {
-              if(response.data.message){
-                that.$message.warning(response.data.message);
-              }else{
-                that.$message.warning("撤销失败~");
-              }
+            console.log('工作流驳回操作', response);
+            const result = JSON.parse(response.data);
+            if(result.code == 0){
+              that.approvalSubmit();
+            }
+
+          }).catch(function(error) {
+            console.log(error);
+          });
+
+          this.$http.post(this.GLOBAL.jqUrl + "/ZB/EndProcessForZB", {
+            "jq_id": this.info.id,
+            "jQ_Type": this.baseInfo.type
+          }, ).then(function(response) {
+            console.log('工作流结束进程', response);
+            const result = JSON.parse(response.data);
+            if(result.code == 0){
+              console.log("结束工作流");
             }
           }).catch(function(error) {
             console.log(error);
           });
-        }).catch(() => {
-          that.$message.success("已取消此操作~");
-        });
+
+        }else if(this.approval_status == 3){// 通过
+          this.$http.post(this.GLOBAL.jqUrl + "/ZB/SubmitWorkAssignmentsForZB", {
+            "userCode": sessionStorage.getItem('userCode'),
+//            "userCode": "zb1",
+            "workItemID": this.info.workItemID,
+            "commentText": this.approvalMark
+          }, ).then(function(response) {
+            const result = JSON.parse(response.data);
+            if(result.code == 0){
+              console.log('工作流提交通过', response);
+              that.approvalSubmit();
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }
 
       },
 
-      // 结束工作流
-      endWorking(){
-        this.$http.post(this.GLOBAL.jqUrl + "/ZB/EndProcessForZB", {
-          "jq_id": this.info,
-          "jQ_Type": this.baseInfo.type
+      // 审批提交事件
+      approvalSubmit(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/examine", {
+          "id": this.info.id,
+          "create_uid": sessionStorage.getItem('id'),
+          "org_id": sessionStorage.getItem('orgID'),
+          "approval_status": this.approval_status,
+          "approval_comments": this.approvalMark
         }, ).then(function(response) {
-          console.log('工作流结束进程', response);
-
+          console.log('审批操作',response);
+          if (response.data.code == '200') {
+            that.$message.success("审批提交成功~");
+            that.dialogVisibleApproval = false;
+            that.approval_status = '';
+            that.approvalMark = '';
+            that.closeAdd();
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("撤销失败~");
+            }
+          }
         }).catch(function(error) {
           console.log(error);
         });
+
       },
 
       // 加载数据
       loadData(){
         const that = this;
+//        const
         // 获取基本信息
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/info", {
-          "id": this.info
+          "id": this.info.id
         }, ).then(function(response) {
           console.log('详情',response);
           if (response.data.code == '200') {
@@ -241,23 +310,13 @@
               type: response.data.data.info.periphery_type,
               money: response.data.data.info.loan_money,
               remark: response.data.data.info.mark,
-              account: response.data.data.info.remittance_account,
+              account: response.data.data.info.supplier_code,
               accountBank: response.data.data.info.opening_bank,
               accountName: response.data.data.info.account_name,
-              accountPay: '',
+              accountCode: response.data.data.info.remittance_account,
               reimbursed_money: response.data.data.info.reimbursed_money,
               approval_status: response.data.data.info.approval_status
             };
-
-            if(response.data.data.info.pay_type){
-              const payType = JSON.parse(response.data.data.info.pay_type);
-              that.baseInfo.accountPay = payType.account;
-            }
-
-            if(response.data.data.info.create_uid != sessionStorage.getItem('id')){
-              that.showBack = false;
-            }
-//            alert(that.baseInfo.approval_status == 1 && that.showBack == true);
 
             // 根据ID获取人名
             that.getName(response.data.data.info.create_uid).then(res => {
@@ -266,59 +325,37 @@
             });
 
             // 根据分销商ID获取名称
-            if(response.data.data.info.supplier_code){
+            if(response.data.data.distributor_code){
               that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
-                "id": response.data.data.info.supplier_code
+                "id": response.data.data.distributor_code
               }).then(function(obj) {
-                console.log('获取分销商',obj);
+//              console.log('获取分销商',obj);
                 if(obj.data.isSuccess){
-                  that.baseInfo.supplier = obj.data.object.name;
+                  that.baseInfo.distributor_code = obj.data.object.name;
                 }else{
                   that.$message.warning("加载数据失败~");
                 }
               }).catch(function(obj) {
                 console.log(obj);
               });
-
-//              获取供应商的，先注释
-//              that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
-//                "id": response.data.data.info.supplier_code
-//              },{
-//                headers: {
-//                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
-//                }
-//              }).then(function(response) {
-//                console.log(response);
-//                if (response.data.isSuccess) {
-//                  that.baseInfo.supplier = response.data.object.name
-//                } else {
-//                  if(response.data.result.message){
-//                    that.$message.warning(response.data.result.message);
-//                  }else{
-//                    that.$message.warning("获取供应商名称失败~");
-//                  }
-//                }
-//              }).catch(function(error) {
-//                console.log(error);
-//              });
             }
 
             // 根据账户ID获取账户名称
-//            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
-//              {
-//                "id": response.data.data.account_id
-//              },{
-//                headers: {
-//                  'Authorization': 'Bearer ' + localStorage.getItem('token')
-//                }
-//              }).then(function (obj) {
-////              console.log('账户查询',obj);
-//              if(obj.data.isSuccess){
-//                that.baseInfo.account = obj.data.object.title;
-//              }
-//            }).catch(function (obj) {
-//              console.log(obj)
-//            });
+            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
+              {
+                "id": response.data.data.account_id
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+              }).then(function (obj) {
+//              console.log('账户查询',obj);
+              if(obj.data.isSuccess){
+                that.baseInfo.account = obj.data.object.title;
+              }
+            }).catch(function (obj) {
+              console.log(obj)
+            });
             // 凭证
             that.fileList = JSON.parse(response.data.data.info.file);
             for(let i = 0; i < that.fileList.length; i++){
@@ -340,9 +377,8 @@
             if(response.data.data.info.rel_order){
               that.tableDataRelated = response.data.data.info.rel_order;
             }
-
           } else {
-            that.$message.success("加载数据失败~");
+            that.$message.warning("加载数据失败~");
           }
         }).catch(function(error) {
           console.log(error);
@@ -377,11 +413,13 @@
       getApproval(){
         const that = this;
         this.$http.post(this.GLOBAL.jqUrl + "/ZB/GetInstanceActityInfoForZB", {
-          "jq_id": this.info,
+          "jq_id": this.info.id,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {
-//          console.log('获取审批节点', response);
+          console.log('获取审批节点', response);
+//          const result = JSON.parse(response.data);
           if(response.status == 200){
+            console.log("成功");
             response.data.extend.instanceLogInfo.forEach(function (item, index, arr) {
               if(item.finishedTime == '' && item.approvalName == '等待中'){
                 const dataSingle = {
@@ -398,6 +436,7 @@
           console.log(error);
         });
       }
+
     },
     created() {
 
@@ -461,10 +500,6 @@
   }
   #collectionDetail .bottomDis{
     margin-bottom: 50px;
-    .el-table{
-      width: 96%;
-      margin: 0 auto;
-    }
   }
   #collectionDetail .buttonDv{
     position: absolute;

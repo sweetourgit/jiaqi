@@ -255,7 +255,7 @@
                 <span>{{item.orderStatus}}</span>
               </span>
               <!--  -->
-              <span v-if="item.occupyStatus !== '确认占位'">
+              <span v-if="item.occupyStatus == '预订不占' || item.occupyStatus == '预订占位'">
                 待确认剩余 &nbsp;
                 <span class="moneyColor">1天22:33:33</span>
               </span>
@@ -349,7 +349,7 @@ export default {
       otherPrice: "", //其他费用名称
       platform: null, //平台 1 ERP系统  2 同业系统
       productType: "", //产品类型  Team = 1 跟团游 Free = 2 自由行
-      priceType:null, //价格类型  1直客  2同业价格
+      priceType: null, //价格类型  1直客  2同业价格
       localCompName: "", //商户名称
       contact: "", //订单联系人
       orderChannel: null, //订单来源  1 线上直客 2 线下直客 3 同业系统
@@ -383,7 +383,6 @@ export default {
       orderStateAllNum: {}, //订单状态 每个按钮的数量下标
       getListOneMessage: {},
       showContent: null //list折叠展示的
-
     };
   },
   watch: {
@@ -428,8 +427,12 @@ export default {
       // let temp = this.orderpage;
       // temp[index].showContent = !temp[index].showContent;
       // this.orderpage = temp;
-      this.showContent = index;
-      this.axiosListOneInfo(item.id);
+      if (this.showContent != index) {
+        this.showContent = index;
+        this.axiosListOneInfo(item.id);
+      } else {
+        this.showContent = null;
+      }
     },
 
     // 请求list中的一个数据
@@ -444,7 +447,7 @@ export default {
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
           this.orderCodeSon = res.data.object.orderCode;
-          this.priceType = res.data.object.priceType
+          this.priceType = res.data.object.priceType;
           //订单来源
           // if (this.getListOneMessage.orderChannel == 1) {
           //   this.getListOneMessage.orderChannel = "同业";
@@ -494,9 +497,9 @@ export default {
     //   }
     // },
     statusTab(num, index, status) {
-        if (num == 1) {
-        this.refundNum = 7 //为7 只要不等于索引值不等于退款状态号就行
-        this.refundStatus = 0
+      if (num == 1) {
+        this.refundNum = 7; //为7 只要不等于索引值不等于退款状态号就行
+        this.refundStatus = 0;
         this.whichStateTab = num;
         this.orderNum = index;
         this.orderStatus = status;
@@ -507,7 +510,7 @@ export default {
         this.refundNum = index;
         this.refundStatus = status;
         this.orderNum = null;
-        this.orderStatus = 0
+        this.orderStatus = 0;
         this.orderPage(1, this.pageSize);
       }
     },
@@ -521,7 +524,7 @@ export default {
       this.orderPage(val, this.pageSize);
       this.pageIndex = val;
     },
-    
+
     // 重置
     handleReset() {
       this.orderCode = ""; //订单ID
@@ -542,7 +545,7 @@ export default {
       this.contact = ""; //订单联系人
       // this.orderChannel = null; //订单来源
       this.showContent = null; //折叠按钮
-      this.isSeach = null; //是否点击 
+      this.isSeach = null; //是否点击
       // this.statusTab(1,0,0)
       // this.statusTab(2,0,5)
       this.orderPage(1, this.pageSize);
@@ -869,6 +872,7 @@ export default {
 
 .longWeight {
   width: 160px;
+  vertical-align: top;
 }
 
 .demo-input-suffix {
@@ -961,6 +965,7 @@ export default {
 .tr {
   /* text-align: right; */
   font-weight: bold;
+  vertical-align: top;
 }
 .but-row {
   margin: 40px 0 20px 10px;

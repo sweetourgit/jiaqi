@@ -28,7 +28,15 @@
               <el-option key="3" label="通过" value="3"></el-option>
             </el-select>
           </el-col>
-          <el-col :span="9" :offset="7">
+          <el-col :span="7">
+            <span class="search_style">对公/对私：</span>
+            <el-select v-model="accountType" placeholder="请选择" class="search_input">
+              <el-option key="" label="全部" value=""></el-option>
+              <el-option key="1" label="对公" value="1"></el-option>
+              <el-option key="2" label="对私" value="2"></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="9">
             <div class="buttonDv">
               <el-button type="primary" @click="resetFun" plain>重置</el-button>
               <el-button type="primary" @click="searchFun">搜索</el-button>
@@ -46,8 +54,8 @@
           <el-table-column prop="status" label="状态" align="center">
             <template slot-scope="scope">
               <div v-if="scope.row.approval_status=='1'" style="color: #7F7F7F" >审批中</div>
-              <div v-if="scope.row.approval_status=='2'" style="color: #00B83F" >驳回</div>
-              <div v-if="scope.row.approval_status=='3'" style="color: #FF4A3D" >通过</div>
+              <div v-if="scope.row.approval_status=='2'" style="color: #FF4A3D" >驳回</div>
+              <div v-if="scope.row.approval_status=='3'" style="color: #00B83F" >通过</div>
             </template>
           </el-table-column>
           <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
@@ -59,12 +67,18 @@
           </el-table-column>
           <el-table-column prop="loan_money" label="借款金额" width="120" align="center"></el-table-column>
           <el-table-column prop="reimbursed_money" label="已报销金额" align="center"></el-table-column>
+          <el-table-column prop="account_type" label="对公/对私" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.account_type=='1'">对公</span>
+              <span v-if="scope.row.account_type=='2'">对私</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
           <el-table-column prop="approval_comments" label="审批意见" align="center"></el-table-column>
           <el-table-column prop="opinion" label="操作" align="center" width="150">
             <template slot-scope="scope">
               <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-              <el-button @click="detail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.status_rece == 12">选择付款账户</el-button>
+              <el-button @click="chooseAccount(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.approval_status == 3 && scope.row.pay_type == null">选择付款账户</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -83,14 +97,14 @@
       </div>
       <applyForAdvance :dialogFormVisible="dialogFormVisible" @close="closeAdd"></applyForAdvance>
       <detail :dialogFormVisible1="dialogFormVisible1" :info="info" @close="closeAdd"></detail>
-      <collectionAddBatch  :dialogFormVisible2="dialogFormVisible2" @close="closeAdd"></collectionAddBatch>
+      <chooseAccount  :dialogFormVisible2="dialogFormVisible2" :info="info" @close="closeAdd"></chooseAccount>
     </div>
   </div>
 </template>
 
 <script>
-  import applyForAdvance from '@/page/Finance/aroundBorrowingManagement/apply/applyForAdvance.vue'// 添加
-  import collectionAddBatch from '@/page/Finance/collectionManagement/recognitionWait/collectionAddBatch.vue'// 批量添加
+  import applyForAdvance from '@/page/Finance/aroundBorrowingManagement/apply/applyForAdvance.vue'// 申请
+  import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'// 选择收款账户
   import detail from '@/page/Finance/aroundBorrowingManagement/detail.vue'// 详情
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
@@ -98,7 +112,7 @@
     components:{
       applyForAdvance,
       detail,
-      collectionAddBatch
+      chooseAccount
     },
     data() {
       return {
@@ -112,6 +126,7 @@
         reimbursementPerID: '',// 申请人ID
         operatorList: [],// 申请人list
         borrowStatus: '',// 借款状态
+        accountType: '',
 
         // 页数，页码，条数
         pageSize: 10,
@@ -121,23 +136,15 @@
         // 列表table
         tableData: [],
         typeList: {
-          1: '地接',
-          2: '机票（本公司）',
-          3: '机票（非本公司）',
-          4: '小费',
-          5: '签证',
-          6: '地接（其他）',
-          7: '火车票',
-          8: '汽车票',
-          9: '船票',
-          10: '其他',
-          11: '机票押金',
-          12: '火车票押金'
+          1: '门票',
+          2: '酒店',
+          3: '地接',
+          4: '定制游(跟团游)'
         },
 
         dialogFormVisible: false,// 添加-显示，隐藏
         dialogFormVisible1: false,// 详情-显示，隐藏
-        dialogFormVisible2: false,// 批量添加-显示，隐藏
+        dialogFormVisible2: false,// 选择付款账户-显示，隐藏
         info: '',// 详情传值字段
 
         // 时间限制
@@ -198,6 +205,11 @@
         this.info = row.id;
         this.dialogFormVisible1 = true;
       },
+      // 选择付款账户
+      chooseAccount(row){
+        this.info = row.id;
+        this.dialogFormVisible2 = true;
+      },
       // 关闭弹窗
       closeAdd() {
         this.dialogFormVisible = false;
@@ -205,6 +217,10 @@
         this.dialogFormVisible2 = false;
         this.info = '';
         this.loadData();
+        const that = this;
+        const timer = setTimeout(function () {
+          that.$parent.loadData('IncomeLoan_ZB');
+        }, 800);
       },
 
       // 搜索
@@ -219,6 +235,7 @@
         this.endTime = '';
         this.reimbursementPerID = '';
         this.collectionStatus = '';
+        this.accountType = '';
         this.loadData();
       },
       // 每页条数操作
@@ -244,7 +261,8 @@
           "start_at": this.startTime,
           "end_at": this.endTime,
           "periphery_type": 2,
-          "approval_status": this.borrowStatus
+          "approval_status": this.borrowStatus,
+          "account_type": this.accountType
         }, ).then(function(response) {
           console.log('无收入借款list',response);
           if (response.data.code == '200') {
@@ -256,6 +274,7 @@
 //              item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));
 //              item.created_at = item.created_at.split(" ")[0];
+              // 获取申请人
               that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
                 "id": item.create_uid
               },{
@@ -267,10 +286,46 @@
                 if (response.data.isSuccess) {
                   item.create_uid = response.data.object.name
                 } else {
-                  that.$message.success("获取录入人失败~");
+                  that.$message.success("获取申请人失败~");
                 }
               }).catch(function(error) {
                 console.log(error);
+              });
+
+              // 获取供应商名称
+//              that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
+//                "id": item.supplier_code
+//              },{
+//                headers: {
+//                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+//                }
+//              }).then(function(response) {
+//                console.log(response);
+//                if (response.data.isSuccess) {
+//                  item.supplier_code = response.data.object.name
+//                } else {
+//                  if(response.data.result.message){
+//                    that.$message.warning(response.data.result.message);
+//                  }else{
+//                    that.$message.warning("获取供应商名称失败~");
+//                  }
+//
+//                }
+//              }).catch(function(error) {
+//                console.log(error);
+//              });
+
+              that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+                "id": item.supplier_code
+              }).then(function(obj) {
+//              console.log('获取分销商',obj);
+                if(obj.data.isSuccess){
+                  item.supplier_code = obj.data.object.name;
+                }else{
+                  that.$message.warning("加载数据失败~");
+                }
+              }).catch(function(obj) {
+                console.log(obj);
               });
             })
           } else {
@@ -369,6 +424,7 @@
     created(){
       this.loadData();
       this.loadOper();
+
     }
   }
 </script>
