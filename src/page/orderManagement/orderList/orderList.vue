@@ -872,6 +872,7 @@ export default {
 
 .longWeight {
   width: 160px;
+  vertical-align: top;
 }
 
 .demo-input-suffix {
