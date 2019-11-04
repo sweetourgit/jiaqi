@@ -6,7 +6,7 @@
       :visible.sync="dialogFormProcess"
       :close-on-click-modal="false"
       class="city_list"
-      width="850px"
+      width="870px"
       style="margin-top:-50px"
       @close="cancle"
     >
@@ -43,6 +43,7 @@
         active-color="#409eff"
         inactive-color="#dcdfe6"
         @change="priceChangeEvent(isPricechange)"
+        :disabled="orderget.orderStatus == 4"
       ></el-switch>
       <!-- switch 更改价格(直客价和同业价) end-->
       <!--报名人数-->
@@ -82,11 +83,12 @@
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
+              :disabled="orderget.orderStatus == 4"
               @input="compPrice(2,index)"
             ></el-input>
           </el-form-item>
           <el-form-item class="otherCost-mark" v-if="index == 0">
-            <el-input v-model="item.mark" placeholder="请输入摘要" class="input1"></el-input>
+            <el-input v-model="item.mark" placeholder="请输入摘要" class="input1" :disabled="orderget.orderStatus == 4"></el-input>
           </el-form-item>
         </div>
         <!--总价-->
@@ -134,20 +136,20 @@
         <!-- 出行人表格后加 begin -->
         <div class="travelMessage">出行人信息</div>
         <table
-          class="costList"
+          :class="['costList',orderget.orderStatus == 4 ? 'disableColor':'']"
           v-for="(item,indexPrice) in salePrice"
           :key="item.id + indexPrice"
           border="1"
           cellpadding="0"
           cellspacing="0"
         >
-          <tr class="costList_01">
+          <tr class="costList_01" >
             <td width="120">姓名</td>
             <td width="100">报名类型</td>
             <td width="120">电话</td>
             <td width="180">身份证</td>
             <td width="80">性别</td>
-            <td width="100">操作</td>
+            <td width="140">操作</td>
           </tr>
           <tr v-for="(item,index) in tour[indexPrice]" :key="'b'+index">
             <td>{{item.cnName}}</td>
@@ -159,13 +161,13 @@
               <div v-if="item.sex=='1'">女</div>
             </td>
             <td class="tc">
-              <span
-                class="fl blue cursor"
-                style="margin:0 0 0 18px"
+              <el-button
+                class="fl cursor"
                 @click="fillTour(indexPrice,index)"
-              >编辑</span>
-              <span class="fl" style="margin:0 8px 0 8px;">|</span>
-              <span class="fl blue cursor" @click="delTravel(index,indexPrice)">删除</span>
+                :disabled="orderget.orderStatus == 4"
+              >编辑</el-button>
+              <span class="fl">|</span>
+              <el-button class="fl cursor" @click="delTravel(index,indexPrice)" :disabled="orderget.orderStatus == 4">删除</el-button>
             </td>
           </tr>
         </table>
@@ -553,6 +555,7 @@ export default {
     },
     //列表订单状态显示
     getOrderStatus(status, endTime, occupyStatus, orderChannel) {
+      console.log("订单来源是直客还是同业",orderChannel)
       if (status == 2) {
         status = 3; //没有电子合同，直接跳到待出行
       }
@@ -608,6 +611,8 @@ export default {
           break;
         case 4:
           //同业社没有待评价 直客有待评价
+          //订单来源现在是后台写死的3  后台对应的 1同业  2 线上直客 3 线下直客
+          //而实际项目团期计划下单位置 1 线下直客 2 商户（同业和门店）
           switch (orderChannel) {
             case 1:
               this.statusNow = "出行中";
@@ -619,11 +624,11 @@ export default {
               this.statusNext = "订单完成";
               this.statusEnd = "";
               break;
-            // case 3:
-            //   this.statusNow = "出行中";
-            //   this.statusNext = "待评价";
-            //   this.statusEnd = "订单完成";
-            //   break;
+            case 3:
+              this.statusNow = "出行中";
+              this.statusNext = "订单完成";
+              this.statusEnd = "";
+              break;
           }
           break;
         case 5:
@@ -1316,8 +1321,13 @@ hr {
 .blue {
   color: #2e94f9;
 }
+.disableColor {
+  color: #C0C4CC;
+}
 .cursor {
   cursor: pointer;
+  border:none;
+  width: 70px;
 }
 .costTable {
   width: 800px;
