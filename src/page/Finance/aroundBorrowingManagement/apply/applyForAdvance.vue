@@ -244,8 +244,21 @@
             }else{
               fileArr = [];
             }
-
-            this.ruleForm.supplierID = 6;
+            if(that.ruleForm.money == 0){
+              that.$message({
+                type: 'warning',
+                message: '借款金额需大于零'
+              });
+              return;
+            }
+            if(that.ruleForm.number == 0){
+              that.$message({
+                type: 'warning',
+                message: '人数需大于零'
+              });
+              return;
+            }
+//            this.ruleForm.supplierID = 6;
             this.ruleForm.supplierName = 2;
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
               "supplier_code": this.ruleForm.supplierID,

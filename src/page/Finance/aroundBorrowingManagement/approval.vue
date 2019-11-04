@@ -155,7 +155,7 @@
     watch: {
       dialogFormVisible: {
         handler:function(){
-//          alert(this.info);
+//          console.log(this.info);
           if(this.info != '' && this.dialogFormVisible){
             this.loadData();
           }

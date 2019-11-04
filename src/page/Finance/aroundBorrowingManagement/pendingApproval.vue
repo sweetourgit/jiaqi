@@ -229,16 +229,17 @@
 
       // 审批
       approval(row){
-        let workItemID = '';
+//        console.log(this.unfinishWorking);
+        const that = this;
         this.unfinishWorking.forEach(function (item, index, arr) {
           if(row.id == item.jq_ID){
-            workItemID = item.workItemID;
+            that.info = {
+              "id": row.id ,
+              "workItemID": item.workItemID
+            };
+            return;
           }
         });
-        this.info = {
-          "id": row.id ,
-          "workItemID": workItemID
-        };
         this.dialogFormVisible = true;
       },
       // 关闭弹窗
@@ -302,21 +303,23 @@
           console.log('获取未完成任务', response);
           let noIncomeIDs = '', noIncomeNum = 0, advanceIDs = '', advanceNum = 0, balanceIDs = '', balanceNum = 0;
           // 用ids 字符串调用loadData接口，获取未完成
-          that.unfinishWorking = response.data;
-//          that.$parent.totalNum = response.data.length;
-          that.unfinishWorking.forEach(function (item, index, arr) {
-            if(item.jq_Type == 1){
-              noIncomeIDs += item.jq_ID + ',';
-              noIncomeNum++;
-            }else if(item.jq_Type == 2){
-              advanceIDs += item.jq_ID + ',';
-              advanceNum++;
-            }else if(item.jq_Type == 3){
-              balanceIDs += item.jq_ID + ',';
-              balanceNum++;
-            }
-          });
 
+//          that.$parent.totalNum = response.data.length;
+          that.unfinishWorking = that.unfinishWorking.concat(response.data);
+          if(response.data.length !== 0){
+            response.data.forEach(function (item, index, arr) {
+              if(item.jq_Type == 1){
+                noIncomeIDs += item.jq_ID + ',';
+                noIncomeNum++;
+              }else if(item.jq_Type == 2){
+                advanceIDs += item.jq_ID + ',';
+                advanceNum++;
+              }else if(item.jq_Type == 3){
+                balanceIDs += item.jq_ID + ',';
+                balanceNum++;
+              }
+            });
+          }
           that.$parent.noIncomeNum = noIncomeNum;
           that.$parent.advanceNum = advanceNum;
           that.$parent.balanceNum = balanceNum;
