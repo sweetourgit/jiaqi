@@ -530,7 +530,7 @@
             this.albumNameEmpty=true;
             return false;
           }         
-          this.$http.post('http://test.dayuntong.com' + '/album/api/save',{
+          this.$http.post('http://test.dayuntong.com' + '/tpk/album/api/save',{
              "object":this.albumInfo
           }).then(res => {
             if(res.data.isSuccess == true){
@@ -652,7 +652,7 @@
                   "pictureID": this.pictInfo.id
               });
           } 
-          this.$http.post('http://test.dayuntong.com' + '/picture/api/save',{
+          this.$http.post('http://test.dayuntong.com' + '/tpk/picture/api/save',{
              "object":this.pictInfo
           }).then(res => {
             if(res.data.isSuccess == true){
@@ -754,7 +754,7 @@
            pictureList.push(picture);
         }
 
-        this.$http.post('http://test.dayuntong.com' + '/picture/api/insertlist',{
+        this.$http.post('http://test.dayuntong.com' + '/tpk/picture/api/insertlist',{
             "object":{"pictures":pictureList}
           }).then(res => {
              if(res.data.isSuccess == true){

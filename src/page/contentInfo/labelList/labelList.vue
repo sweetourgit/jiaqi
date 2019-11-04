@@ -29,7 +29,11 @@
         <el-table :data="tableData" ref="multipleTable" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass"@selection-change="changeFun" @row-click="clickRow">
           <el-table-column prop="id" label="ID" width="180" align="center"></el-table-column>
           <el-table-column prop="labelName" label="标签名称" width="180" align="center"></el-table-column>
-          <el-table-column prop="countPro" label="绑定相关产品" align="center"></el-table-column>
+          <el-table-column prop="countPro" label="绑定相关产品" align="center">
+            <template slot-scope="scope">
+              <div><span style="cursor:pointer" @click="binding()">{{scope.row.countPro}}</span></div>
+            </template>
+          </el-table-column>
         </el-table>
         <!--分页-->
         <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
@@ -115,15 +119,11 @@
     </div>
   </el-dialog>
   <!--绑定相关产品弹窗-->
-  <div class="popup" v-show="contentShow=false">
-    <div class="mask"></div>
-    <div class="add">
-      <div class="gatherColor">
-        <div class="gatherTitle">绑定相关产品</div>
-        <div class="gatherClose">×</div>
-      </div>
-    </div>
-  </div>
+  <el-dialog title="绑定相关产品" :visible.sync="contentShow" class="city_list" width="700px">
+    123455698989
+    
+    
+  </el-dialog>
 
 </div>
 
@@ -180,6 +180,7 @@
         sid:'',
         typeName:'',
         labelName:'',
+        contentShow:false,//绑定相关产品弹窗
        };   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         
@@ -630,6 +631,10 @@
           .catch(function (obj) {
             //console.log(obj)
           })
+      },
+      //绑定相关产品弹窗
+      binding(){
+        this.contentShow = true;
       },
     }
 }

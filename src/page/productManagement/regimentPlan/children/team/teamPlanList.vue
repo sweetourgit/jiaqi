@@ -247,6 +247,9 @@ export default {
     },
     //计划list
     teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op) {
+      // if(this.title !== '' || this.groupCode !== '' || this.date !== '' || this.op !== '' || this.financeState !== ''){
+      //     pageIndex: 1,
+      // }
       if (startDate) {
         let y = startDate.getFullYear();
         let m = startDate.getMonth() + 1 > 9 ? startDate.getMonth() + 1 : "0" + (startDate.getMonth() + 1);
