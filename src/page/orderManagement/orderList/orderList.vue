@@ -964,6 +964,7 @@ export default {
 .tr {
   /* text-align: right; */
   font-weight: bold;
+  vertical-align: top;
 }
 .but-row {
   margin: 40px 0 20px 10px;
