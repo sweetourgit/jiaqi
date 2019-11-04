@@ -58,6 +58,8 @@ export default {
   methods: {
     init(payload){
       if(!payload) return this.vm.inited= false;
+      console.log(payload);
+      
       let { id, rate }= payload;
       this.checkProto= payload;
       this.vm.inited= true;

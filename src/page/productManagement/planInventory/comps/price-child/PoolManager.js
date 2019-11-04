@@ -22,6 +22,7 @@ PoolManager.prototype.initCalendarVM= function({ vm, calendar }){
 // 挂载show-panel
 PoolManager.prototype.initShowVM= function({ vm }){
   this.showVM= vm;
+  this.showVM.setState(STATE.UNDO);
 }
 
 PoolManager.prototype.destroy= function(){
@@ -101,7 +102,6 @@ PoolManager.prototype.findDayOfWeek= function(week){
     if(!day.after || state!== STATE.MULTIPLE) continue;
     result.push(day);
   }
-  console.log('findDayOfWeek', result);
   return result;
 }
 
@@ -121,6 +121,8 @@ PoolManager.prototype.dayLinkWeekFunc= function(day){
 
 // 返回该天状态，但不判断是否过期
 PoolManager.prototype.getStateByDay= function(day){
+  // 过期有计划的显示，过期没计划的不显示
+  if(!day.after && !day.vm) return STATE.UNDO;
   if(day.vm) return day.vm.share;
   return STATE.MULTIPLE;
 }
@@ -139,6 +141,10 @@ PoolManager.prototype.clearAll= function(){
 
 PoolManager.prototype.getAverage= function(){
   return this.calendarVM.vm.average;
+}
+
+PoolManager.prototype.getSelected= function(){
+  return this.calendar.filter(day => day.selected);
 }
 
 export default PoolManager
