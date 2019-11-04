@@ -406,8 +406,8 @@ export default {
           id: orderId
         })
         .then(res => {
-          console.log(res, "get");
-          console.log("getorderStatus", res.data.object.orderStatus);
+          // console.log(res, "get");
+          // console.log("getorderStatus", res.data.object.orderStatus);
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -482,7 +482,7 @@ export default {
     },
 
     orderModification(status, cancle) {
-      console.log(status)
+      // console.log(status)
       //订单修改保存
       let url = "/order/stat/api";
       switch (status) {
@@ -555,7 +555,7 @@ export default {
     },
     //列表订单状态显示
     getOrderStatus(status, endTime, occupyStatus, orderChannel) {
-      console.log("订单来源是直客还是同业",orderChannel)
+      // console.log("订单来源是直客还是同业",orderChannel)
       if (status == 2) {
         status = 3; //没有电子合同，直接跳到待出行
       }
@@ -759,7 +759,7 @@ export default {
               isInfNullIndex = i
             }
           }
-          console.log(isInfNullIndex)
+          // console.log(isInfNullIndex)
         }
         if (isInfNull) {
           this.tour[index].splice(isInfNullIndex, 1);
