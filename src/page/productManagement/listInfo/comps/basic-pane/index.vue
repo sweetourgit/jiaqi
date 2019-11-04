@@ -430,9 +430,9 @@ export default {
     },
 
     checkHasChange(){
-      let hasChange= false;
-      hasChange= !this.$checkLooseEqual(this.submitForm, this.proto);
-      hasChange && console.warn('basic-pane change');
+      let bol= false;
+      bol= !this.$checkLooseEqual(this.submitForm, this.proto);
+      bol && console.warn('basic-pane change');
 
       // bug 每次保存，destinations， pod，strengths 的id都会自增 
       // this.submitForm.destinations.forEach((el, i) => {
@@ -441,7 +441,8 @@ export default {
       //   })
       // })
       
-      return hasChange;
+      bol && console.log('basic-pane has changed');
+      return bol;
     },
 
     getData(){

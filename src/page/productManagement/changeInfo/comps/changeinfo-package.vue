@@ -172,6 +172,8 @@ export default {
     // bug 127:检查套餐目的地和出发地是否还在产品的池子中
     checkIfLoseInfo(){
       let { podID, destinationID }= this.submitForm;
+      // 判断是否是新增套餐
+      if(!podID && !destinationID) return;
       let podLose= !this.pods.find(pod => pod.podID=== podID);
       let desLose= !this.destinations.find(destination => destination.destinationID=== destinationID);
       if(podLose){

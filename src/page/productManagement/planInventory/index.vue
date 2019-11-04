@@ -38,7 +38,7 @@
 
 <script>
 // api
-import { getTeamListPackages } from './planInventory'
+import { getTeamListPackages, getEnrollTypeDictionary } from './planInventory'
 
 // comps
 import inventoryChild from './comps/inventory-child/inventory-child'
@@ -83,12 +83,15 @@ export default {
       console.warn('TODO: /cost-child/edit-form 尚未获取编辑用户');
       console.warn('TODO: /cost-child/edit-form addCost接口有问题默认传值很奇怪');
       console.warn('TODO: /price-child/panel-day props无法传递任何绑定！！！');
+      console.warn('TODO: enrollcard按enrolla类别分类排列');
     },
 
     // 可传入packageId
     init(pacId){
       let id= this.$route.query.id;
       if(!id) return this.$message.error('页面初始参数出错');
+      // 初始化字典
+      getEnrollTypeDictionary();
       getTeamListPackages(id).then(objects => {
         let result= this.mixinFactory(objects);
         // 将套餐列表分享
@@ -126,11 +129,13 @@ export default {
     
     toCostChild(payload){
       if(!payload) payload= this.findFirstInitedPackage();
+      if(!payload) return this.$message.error('产品下套餐都未设置团号');
       this.beforeChangeChild('cost', payload);
     },
 
     toPriceChild(payload){
       if(!payload) payload= this.findFirstInitedPackage();
+      if(!payload) return this.$message.error('产品下套餐都未设置团号');
       this.beforeChangeChild('price', payload);
     },
 
