@@ -541,7 +541,7 @@ export default {
               this.ordersave(3);
             }
             if (status === 10) {
-              this.ordersave();
+              this.ordersave(1);
             }
             this.$emit("orderPage");
             this.cancle();
@@ -1067,12 +1067,19 @@ export default {
             obj.orderStatus = 3;
           }
 
+          // 补充资料按钮
+          if (id === 1) {
+            obj.orderStatus = 1;
+          }
+
           // 保存的时候用的直客价格还是同业的价格 swatch
           if (this.priceType == 1) {
             obj.priceType = 1;
           } else {
             obj.priceType = 2;
           }
+
+
 
           obj.enrollDetail = enrollDetail;
           obj.guests = guest;
@@ -1083,7 +1090,7 @@ export default {
             })
             .then(res => {
               if (res.data.isSuccess == true) {
-                this.$message({
+                  this.$message({
                   message: "更改成功",
                   type: "success"
                 });

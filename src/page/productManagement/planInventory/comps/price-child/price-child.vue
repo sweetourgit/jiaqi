@@ -1,13 +1,72 @@
 <style lang="scss" scoped>
-
+.price-child{
+  height: 100%;
+  padding-bottom: 50px;
+  &>main{
+    position: relative;
+    height: 100%;
+    padding-left: 200px;
+    padding-right: 400px;
+  }
+}
 </style>
 
 <template>
-  <div>price</div>
+  <div class="price-child">
+    <header></header>
+    <main>
+      <common-slider style="position:absolute;height: 940px; width: 200px; left: 0; top: 50px;"
+        ref="sliderRef"
+        @slider-select="init"
+      ></common-slider>
+      <date-panel
+        ref="dateRef"
+      ></date-panel>
+      <show-panel style="position:absolute; width: 380px; right: 0; top: 54px;"
+        ref="showRef"
+      ></show-panel>
+    </main>
+    <footer></footer>
+  </div>
 </template>
 
 <script>
+import commonSlider from '../common-slider'
+import datePanel from './comps/date-panel/date-panel'
+import showPanel from './comps/show-panel/show-panel'
+
+import PoolManager from './PoolManager'
+
 export default {
+
+  components: { commonSlider, datePanel, showPanel },
+
+  provide: {
+    poolManager: new PoolManager()
+  },
+
+  beforeDestroy(){
+    this._provided.poolManager.destroy();
+  },
+
+  data(){
+    return {
+      vm: {},
+    }
+  },
+
+  methods: {
+    init(payload){
+      if(!payload) return this.vm.inited= false;
+      let { id, rate }= payload;
+      this.checkProto= payload;
+      this.vm.inited= true;
+      this.vm.rate= rate;
+      this.$refs.sliderRef.init(id);
+      this.$refs.dateRef.init({ id });
+      this.$refs.showRef.init({ id });
+    },
+  }
 
 }
 </script>

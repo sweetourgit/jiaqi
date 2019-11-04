@@ -164,7 +164,8 @@
                 :maxlength="10"
                 v-model="ccc[scope.$index].codePrefix"
                 :style="ccc[scope.$index].isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"
-                @change="fucking(scope.$index)"></el-input>
+                @change="fucking(scope.$index)"
+                :disabled="ccc[scope.$index].codePrefixDisabled"></el-input>
               <span>-</span>
               <span v-text="'{{'"></span>
               <span>日期</span>
@@ -174,7 +175,9 @@
                 :maxlength="10"
                  v-model="ccc[scope.$index].codeSuffix"
                 :style="ccc[scope.$index].isInfo ? 'border: solid 1px #f56c6c;width:100px;' : 'width:100px;'"
-                @change="fucking(scope.$index)"></el-input>
+                @change="fucking(scope.$index)"
+                :disabled="ccc[scope.$index].codeSuffixDisabled"
+                ></el-input>
             </template>
           </el-table-column>
           <el-table-column align="center" width="180" label="清位时间">
@@ -742,7 +745,8 @@ export default {
       watchCostLength: null, // 成本里的数据长度
       watchPrefixStatus: null, // 监听前后缀
       keepPrefixAndCostStatus: false, // 前缀后缀验证结果（布尔值）
-      hasCostLength: false // 成本里面有数据（不是默认添加的，手动添加之后的）
+      hasCostLength: false, // 成本里面有数据（不是默认添加的，手动添加之后的）
+      InputDisable:false//控制前后缀输入是否禁用
     };
   },
   watch: {
@@ -793,7 +797,11 @@ export default {
           break
         }
       }
+      immediate:true;
+      deep:true
     }
+    
+
   },
   computed: {
     // 成本提示弹窗，显示添加还是编辑
@@ -903,43 +911,63 @@ export default {
           // codePrefix: this.ccc[index].codePrefix,
           // codeSuffix: this.ccc[index].codeSuffix
         }
+        
       }).then(res =>{
+        console.log(res,898)
+        for(let i=0;i<this.ccc.length;i++){
+          if (this.ccc[i].value == 0) {
+                  this.ccc[i].value = "";
+                }
+            this.ccc[i].rate=this.lilv;
+            
+          }
         this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
           id: this.team
         })
         .then(res => {
+          console.log(res,666)
           this.count = res.data.average;
-          this.ccc = [];
-          var that = this;
-          this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagelist",{
-                object: {
-                  teamID: this.pid
+          // this.ccc = [];//问题利率？
+          // var that = this;
+          for(let i=0;i<this.ccc.length;i++){
+           if (this.ccc[i].value == 0) {
+                  this.ccc[i].value = "";
                 }
-              })
-            .then(function(obj) {
-              // 28日改过btndisabled控制价格按钮的显示
-              for (let i = 0; i < obj.data.objects.length; i++) {
-                that.ccc.push({
-                  id: obj.data.objects[i].id,
-                  ddd: obj.data.objects[i].name,
-                  uptoDay: obj.data.objects[i].uptoDay,
-                  value: obj.data.objects[i].templateID,
-                  codePrefix: obj.data.objects[i].codePrefix,
-                  codeSuffix: obj.data.objects[i].codeSuffix,
-                  createTime: obj.data.objects[i].createTime,
-                  type: false,
-                  rate: obj.data.objects[i].rate,
-                  btnDisabled:true,
-                  isInfo:true
-                });
-
-                if (that.ccc[i].value == 0) {
-                  that.ccc[i].value = "";
-                }
+            this.count = res.data.average;
+          }
+          // 之前的代码
+          // this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagelist",{
+          //       object: {
+          //         teamID: this.pid
+          //       }
+          //     })
+          //   .then(function(obj) {
+          //     // 28日改过btndisabled控制价格按钮的显示
+          //     for (let i = 0; i < obj.data.objects.length; i++) {
+          //       that.ccc.push({
+          //         id: obj.data.objects[i].id,
+          //         ddd: obj.data.objects[i].name,
+          //         uptoDay: obj.data.objects[i].uptoDay,
+          //         value: obj.data.objects[i].templateID,
+          //         codePrefix: obj.data.objects[i].codePrefix,
+          //         codeSuffix: obj.data.objects[i].codeSuffix,
+          //         createTime: obj.data.objects[i].createTime,
+          //         type: false,
+          //         rate: obj.data.objects[i].rate,
+          //         btnDisabled:true,
+          //         isInfo:true,
+                  
+          //       });
+          
+                // if (that.ccc[i].value == 0) {
+                //   that.ccc[i].value = "";
+                // }
                 // break;
-              }
-            })
-            .catch(function(obj) {});
+              // }
+              // console.log(obj.data);
+              // console.log(this.ccc.codePrefix,11111111)
+            // })
+            // .catch(function(obj) {});
         });
       })
     },
@@ -1194,12 +1222,21 @@ export default {
               })
                 .then(res => {
                   this.count = res.data.average;
+                  
                 });
               this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", { // 成本信息无分页列表
                 object: { packageID: this.team }
               })
               .then(res => {
-                this.tableData12 = res.data.objects;
+                if(res.data.length>0){
+                   for(let i = 0;i < this.ccc.length;i++) {
+                if(this.team === this.ccc[i].id) {
+                  this.ccc[i].btnDisabled = false;
+                  // this.tabBtnDisabled = true;
+                  break;
+                }
+              }
+                  this.tableData12 = res.data.objects;
                 this.tableData12.forEach(function(v, k, arr) {
                   if (arr[k]["suppliertype"] == 0) {
                     arr[k]["suppliertype"] = "船票";
@@ -1223,6 +1260,16 @@ export default {
                     arr[k]["suppliertype"] = "汽车票";
                   }
                 });
+                }else{
+                   for(let i = 0;i < this.ccc.length;i++) {
+                if(this.team === this.ccc[i].id) {
+                  this.ccc[i].btnDisabled = true;
+                  // this.tabBtnDisabled = true;
+                  break;
+                }
+              }
+                }
+                
               });
             }
           });
@@ -1316,10 +1363,12 @@ export default {
                 if(this.team === this.ccc[i].id) {
                   if(boon === true){
                     this.ccc[i].btnDisabled = false;
+                   
                     this.tabBtnDisabled = false;
-                  }else {
+                  }else if(boon === false){
                     if(!this.hasCostLength) {
                       this.ccc[i].btnDisabled = true;
+                      
                     // this.tabBtnDisabled = true;  
                     }
                   }
@@ -1352,6 +1401,7 @@ export default {
               });
             }else{
               //控制下方价格的显示以及上面价格的显示
+              
               for(let i = 0;i < this.ccc.length;i++) {
                 if(this.team === this.ccc[i].id) {
                   this.ccc[i].btnDisabled = true;
@@ -1550,7 +1600,6 @@ export default {
       } else {
         this.pageNum = 1;
       }
-
       var that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/team/api/teamsearch", {
@@ -1771,7 +1820,10 @@ export default {
           }
         }
         )
-        .then(obj => {})
+        .then(obj => {
+          console.log(this.ccc,2222222)
+          
+        })
         .catch(obj => {
           console.log("error", obj);
           console.log("error");
@@ -2011,6 +2063,7 @@ export default {
       // return this.$router.push({ path: '/planInventory', query: { id } });
 
       this.ccc = [];
+      //1号修改过
       this.tabBtnDisabled = true;
       var that = this;
       this.$http
@@ -2021,34 +2074,72 @@ export default {
               teamID: this.pid
             }
           })
-        .then(function(obj) {
-          for (let i = 0; i < obj.data.objects.length; i++) {
-            that.ccc.push({
+        .then((obj) => {
+          console.log(obj)
+          for (let i = 0; i < obj.data.objects.length; i++) { 
+            // this.$http.post(this.GLOBAL.serverSrc + "/team/cost/api/list", { // 成本信息无分页列表
+            //     object: { packageID: obj.data.objects[i].id }
+            //   }).then((res)=>{
+            //     console.log(res,6666)
+            //     if(res.data.objects.length>0){
+                  
+            //     }else{
+                  
+            //     }
+            //   })
+            if(obj.data.objects[i].codePrefix!== ''||obj.data.objects[i].codeSuffix!==''){
+                 that.ccc.push({
               id: obj.data.objects[i].id,
               ddd: obj.data.objects[i].name,
               uptoDay: obj.data.objects[i].uptoDay,
               value: obj.data.objects[i].templateID,
               codePrefix: obj.data.objects[i].codePrefix,
+              codePrefixDisabled: obj.data.objects[i].codePrefix!== '',
               codeSuffix: obj.data.objects[i].codeSuffix,
+               codeSuffixDisabled:obj.data.objects[i].codeSuffix!=='',
+              createTime: obj.data.objects[i].createTime,
+              type: false,
+              rate: obj.data.objects[i].rate,
+              btnDisabled:false,
+            });
+            }else{
+               that.ccc.push({
+              id: obj.data.objects[i].id,
+              ddd: obj.data.objects[i].name,
+              uptoDay: obj.data.objects[i].uptoDay,
+              value: obj.data.objects[i].templateID,
+              codePrefix: obj.data.objects[i].codePrefix,
+              codePrefixDisabled: obj.data.objects[i].codePrefix!== '',
+              codeSuffix: obj.data.objects[i].codeSuffix,
+               codeSuffixDisabled:obj.data.objects[i].codeSuffix!=='',
               createTime: obj.data.objects[i].createTime,
               type: false,
               rate: obj.data.objects[i].rate,
               btnDisabled:true,
             });
+            }
+            // that.ccc.push({
+            //   id: obj.data.objects[i].id,
+            //   ddd: obj.data.objects[i].name,
+            //   uptoDay: obj.data.objects[i].uptoDay,
+            //   value: obj.data.objects[i].templateID,
+            //   codePrefix: obj.data.objects[i].codePrefix,
+            //   codePrefixDisabled: obj.data.objects[i].codePrefix!== '',
+            //   codeSuffix: obj.data.objects[i].codeSuffix,
+            //    codeSuffixDisabled:obj.data.objects[i].codeSuffix!=='',
+            //   createTime: obj.data.objects[i].createTime,
+            //   type: false,
+            //   rate: obj.data.objects[i].rate,
+            //   btnDisabled:true,
+            // });
             if (that.ccc[i].value == 0) {
               that.ccc[i].value = "";
-              //判断存不存在数据
+             
             }
-          }
+          }      
         })
         .catch(function(obj) {});
       this.merchandise = true;
-      for(let j=0;j<this.ccc.length;j++){
-        if(this.ccc[j].codePrefix !==""||this.ccc[j].codeSuffix !==""){
-                this.ccc[j].btnDisabled=false;
-            }
-      }
-      
       this.addtable.push({
         allprice: []
       });
