@@ -83,12 +83,12 @@
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
-              :disabled="orderget.orderStatus == 4"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
               @input="compPrice(2,index)"
             ></el-input>
           </el-form-item>
           <el-form-item class="otherCost-mark" v-if="index == 0">
-            <el-input v-model="item.mark" placeholder="请输入摘要" class="input1" :disabled="orderget.orderStatus == 4"></el-input>
+            <el-input v-model="item.mark" placeholder="请输入摘要" class="input1" :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"></el-input>
           </el-form-item>
         </div>
         <!--总价-->
@@ -136,7 +136,7 @@
         <!-- 出行人表格后加 begin -->
         <div class="travelMessage">出行人信息</div>
         <table
-          :class="['costList',orderget.orderStatus == 4 ? 'disableColor':'']"
+          :class="['costList',orderget.orderStatus == 4 || orderget.orderStatus == 6 ? 'disableColor':'']"
           v-for="(item,indexPrice) in salePrice"
           :key="item.id + indexPrice"
           border="1"
@@ -164,10 +164,10 @@
               <el-button
                 class="fl cursor"
                 @click="fillTour(indexPrice,index)"
-                :disabled="orderget.orderStatus == 4"
+                :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
               >编辑</el-button>
               <span class="fl">|</span>
-              <el-button class="fl cursor" @click="delTravel(index,indexPrice)" :disabled="orderget.orderStatus == 4">删除</el-button>
+              <el-button class="fl cursor" @click="delTravel(index,indexPrice)" :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6">删除</el-button>
             </td>
           </tr>
         </table>
