@@ -142,7 +142,7 @@ export default {
       let { id }= this.$route.query;
       saveAction.bind(this)(object).then(res => {
         this.$message.success('产品信息保存成功');
-        this.inited= false;
+        this.vm.inited= false;
         this.$nextTick(() => {
           this.init(id);
         })
