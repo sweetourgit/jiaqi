@@ -26,7 +26,7 @@
         <el-col :span="8">
           <el-form-item label="申请时间:">
             <el-col :span="11">
-              <el-form-item prop="createTime">
+              <el-form-item prop="beginTime">
                 <el-date-picker type="date" placeholder="选择开始日期" v-model="ruleFormSeach.beginTime" style="width: 100%;"></el-date-picker>
               </el-form-item>
             </el-col>
@@ -273,14 +273,31 @@
           <el-button class="indialog_button" @click="planStage()" type="primary">重置</el-button>
         </div>
         <el-table :data="tablePlan" border ref="multipleTablePlan" style="width: 100%; margin:30px 0 20px 0;":header-cell-style="getRowClass" @row-click="clickPlan" :row-style="rowClassPlan"@selection-change="changeFunPlan">
-          <el-table-column prop="groupCode" label="团期计划ID" align="center"></el-table-column>
+          <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
           <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
           <el-table-column prop="destination" label="目的地" align="center"></el-table-column>
           <el-table-column prop="date" label="出行日期" align="center"></el-table-column>
           <!-- <el-table-column prop="orgName" label="部门" align="center"></el-table-column> -->
           <el-table-column prop="name" label="产品录入人" align="center"></el-table-column>
         </el-table>
-        <div class="number_button">
+        <!-- 分页 -->
+        <el-row type="flex" class="paging">
+          <el-col :span="8" :offset="13">
+            <el-pagination
+              :page-sizes="[5,10,50,100]"
+              background
+              @size-change="handleSizeChangePlan"
+              :page-size="pagesize"
+              :current-page.sync="currentPage"
+              @current-change="handleCurrentChangePlan"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total"
+            >
+            </el-pagination>
+          </el-col>
+        </el-row>
+        <!-- 分页 END -->
+        <div class="number_button" style="margin-top: 30px">
           <el-button @click="planCancel()">取消</el-button>
           <el-button @click="routerHandle4()" type="primary">确定</el-button>
         </div>
@@ -290,16 +307,25 @@
     <!-- 申请无收入借款中账号选择弹窗 -->
     <el-dialog width="45%" title="选择账户" :visible.sync="dialogFormVisible_account"append-to-body>
       <div class="indialog">
-        <el-table :data="tableAccount" ref="multipleTableBank" border style="width: 100%; margin:30px 0 20px 0;" :header-cell-style="getRowClass" @row-click="clickBank" @selection-change="changeFunBank">
-          <el-table-column prop="accountName" label="汇款户名" align="center"></el-table-column>
-          <el-table-column prop="accountNumber" width="200" label="账号" align="center"></el-table-column>
-          <el-table-column prop="openBank" label="开户行" align="center"></el-table-column>
-          <el-table-column prop="openBank" label="备注" align="center"></el-table-column>
-          <el-table-column prop="openBank" label="操作" align="center"></el-table-column>
+        <el-table
+          :data="tableAccount"
+          @current-change="handleCurrentChangeAcount"
+          ref="multipleTableBank"
+          border
+          style="width: 100%; margin:30px 0 20px 0;"
+          :header-cell-style="getRowClass"
+          @row-click="clickBank"
+          @selection-change="changeFunBank"
+          highlight-current-row
+        >
+          <el-table-column prop="cardName" label="汇款户名" align="center"></el-table-column>
+          <el-table-column prop="cardNumber" width="200" label="账号" align="center"></el-table-column>
+          <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
+          <el-table-column prop="memo" label="备注" align="center"></el-table-column>
         </el-table>
         <div class="number_button">
           <el-button @click="accountCancel()">取消</el-button>
-          <el-button type="primary">申请</el-button>
+          <el-button @click="accountSure" type="primary">申请</el-button>
         </div>
       </div>
     </el-dialog>
@@ -471,15 +497,7 @@ export default {
       tablePlan:[], // 申请无收入借款中团期计划选择弹窗表格
       multipleSelectionPlan: [],
       dialogFormVisible_account:false, // 无收入借款中账户弹窗
-      tableAccount:[{ // 无收入借款中账户弹窗表格
-        accountNumber:'1234 1234 1234 1234 1234',
-        openBank:'建行',
-        accountName:'洋洋'
-      },{ // 无收入借款中账户弹窗表格
-        accountNumber:'1234 1234 1234 1234 1234',
-        openBank:'弄行',
-        accountName:'洋洋'
-      }],
+      tableAccount:[], // 选择账户表格数据
       multipleSelectionBank:[], // 银行表格高亮
       tableMoney:[], // 无收入借款金额表格
       tablePayment:[], // 无收入借款弹窗预付款明细表格
@@ -520,7 +538,8 @@ export default {
       SelectAccount:false, // 选择账户弹窗
       tableSelect:[], // 选择弹窗表格
       pageshow:true,
-      pid:''
+      pid:'',
+      countItemInfo: null // 选择账户表格选中行时，行的信息
     }
   },
   methods: {
@@ -644,9 +663,33 @@ export default {
       this.pagesize = page;
       this.pageList();
     },
+    // 分页（计划列表）
+    handleSizeChangePlan(page) {
+      this.currentPage = 1;
+      this.pagesize = page;
+      this.planList();
+    },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
       this.pageList();
+    },
+    // 选择账户弹窗的表格选择事件
+    handleCurrentChangeAcount(currentPage) {
+      this.countItemInfo = currentPage
+    },
+    // 选择账户弹窗里面的申请事件
+    accountSure () {
+      if (this.countItemInfo) {
+        this.ruleForm.account = this.countItemInfo.cardNumber
+        this.ruleForm.accountOpenName = this.countItemInfo.cardName
+        this.ruleForm.accountBank = this.countItemInfo.bankName
+        this.dialogFormVisible_account = false;
+      }
+    },
+    // 分页页数改变的时候（计划列表）
+    handleCurrentChangePlan(currentPage) {
+      this.currentPage = currentPage;
+      this.planList();
     },
     // 无收入借款弹窗
     noIncome(){
@@ -736,8 +779,11 @@ export default {
     // 查询无收入借款团期计划列表
     planList(){
       this.$http.post(
-        this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancelist",
+        this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancepage",
         {
+          "pageSize":this.pagesize,
+          "pageIndex":this.currentPage,
+          "total": 0,
           "object": {
             "groupCode": this.plan_stage, // 团号
             "title": this.plan_name, // 产品名称
