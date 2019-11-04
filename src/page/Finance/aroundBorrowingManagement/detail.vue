@@ -48,6 +48,7 @@
           </el-table-column>
           <el-table-column prop="approval_status" label="审批结果" align="center">
             <template slot-scope="scope">
+              <div v-if="scope.row.approval_status=='0'" style="color: #7F7F7F" >等待中</div>
               <div v-if="scope.row.approval_status=='1'" style="color: #7F7F7F" >审批中</div>
               <div v-if="scope.row.approval_status=='2'" style="color: #FF4A3D" >驳回</div>
               <div v-if="scope.row.approval_status=='3'" style="color: #00B83F" >通过</div>
@@ -334,6 +335,7 @@
                 });
               })
             }
+            that.getApproval();
 
             if(response.data.data.info.rel_order){
               that.tableDataRelated = response.data.data.info.rel_order;
@@ -368,6 +370,32 @@
         }).catch(function(error) {
           console.log(error);
           return '';
+        });
+      },
+
+      // 获取审批节点
+      getApproval(){
+        const that = this;
+        this.$http.post(this.GLOBAL.jqUrl + "/ZB/GetInstanceActityInfoForZB", {
+          "jq_id": this.info,
+          "jQ_Type": this.baseInfo.type
+        }, ).then(function(response) {
+//          console.log('获取审批节点', response);
+          if(response.status == 200){
+            response.data.extend.instanceLogInfo.forEach(function (item, index, arr) {
+              if(item.finishedTime == '' && item.approvalName == '等待中'){
+                const dataSingle = {
+                  approval_at: '',
+                  approval_uid: item.participantName,
+                  approval_status: 0,
+                  approval_comments: ''
+                };
+                that.tableDataResult.push(dataSingle);
+              }
+            })
+          }
+        }).catch(function(error) {
+          console.log(error);
         });
       }
     },

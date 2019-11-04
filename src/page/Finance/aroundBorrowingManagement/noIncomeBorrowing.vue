@@ -219,7 +219,7 @@
         this.loadData();
         const that = this;
         const timer = setTimeout(function () {
-          that.$parent.loadData();
+          that.$parent.loadData('NoIncomeLoan_ZB');
         }, 800);
 //        console.log(this.$parent.loadData(1));
       },

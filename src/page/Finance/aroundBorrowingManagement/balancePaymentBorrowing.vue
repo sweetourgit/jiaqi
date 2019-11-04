@@ -204,7 +204,7 @@
         this.loadData();
         const that = this;
         const timer = setTimeout(function () {
-          that.$parent.loadData();
+          that.$parent.loadData('BalancePayment_ZB');
         }, 800);
       },
 

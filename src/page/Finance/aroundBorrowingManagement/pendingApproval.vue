@@ -288,7 +288,7 @@
       },
 
       // 获取工作流未完成任务
-      loadUnfinished(){
+      loadUnfinished(loan){
         const that = this;
         this.$http.post(this.GLOBAL.jqUrl + "/ZB/GettingUnfinishedTasksForZB", {
           "userCode": sessionStorage.getItem('userCode'),
@@ -297,22 +297,30 @@
           "endTime": new Date(),
           "startIndex": -1,
           "endIndex": -1,
-          "workflowCode": "loan"
+          "workflowCode": loan
         }, ).then(function(response) {
           console.log('获取未完成任务', response);
-          let noIncomeIDs = '', advanceIDs = '', balanceIDs = '';
+          let noIncomeIDs = '', noIncomeNum = 0, advanceIDs = '', advanceNum = 0, balanceIDs = '', balanceNum = 0;
           // 用ids 字符串调用loadData接口，获取未完成
           that.unfinishWorking = response.data;
-          that.$parent.totalNum = response.data.length;
+//          that.$parent.totalNum = response.data.length;
           that.unfinishWorking.forEach(function (item, index, arr) {
             if(item.jq_Type == 1){
               noIncomeIDs += item.jq_ID + ',';
+              noIncomeNum++;
             }else if(item.jq_Type == 2){
               advanceIDs += item.jq_ID + ',';
+              advanceNum++;
             }else if(item.jq_Type == 3){
               balanceIDs += item.jq_ID + ',';
+              balanceNum++;
             }
           });
+
+          that.$parent.noIncomeNum = noIncomeNum;
+          that.$parent.advanceNum = advanceNum;
+          that.$parent.balanceNum = balanceNum;
+
           if(noIncomeIDs != ''){
             noIncomeIDs = noIncomeIDs.substr(0, noIncomeIDs.length - 1);
             that.loadData(1, noIncomeIDs);
@@ -452,7 +460,10 @@
 //      this.loadData(1);
 //      this.loadData(2);
 //      this.loadData(3);
-      this.loadUnfinished();
+//      this.loadUnfinished();
+      this.loadUnfinished('NoIncomeLoan_ZB');
+      this.loadUnfinished('IncomeLoan_ZB');
+      this.loadUnfinished('BalancePayment_ZB');
 
 //      console.log(this.$parent);
     }

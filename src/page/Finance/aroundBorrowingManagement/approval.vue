@@ -43,13 +43,19 @@
       <el-divider content-position="left">审核结果</el-divider>
       <div class="stepDv bottomDis">
         <el-table ref="singleTable" :data="tableDataResult" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass">
-          <el-table-column prop="order_sn" label="审批时间" align="center" >
+          <el-table-column prop="approval_at" label="审批时间" align="center" >
           </el-table-column>
-          <el-table-column prop="order_sn" label="审批人" align="center" >
+          <el-table-column prop="approval_uid" label="审批人" align="center" >
           </el-table-column>
-          <el-table-column prop="product_name" label="审批结果" align="center">
+          <el-table-column prop="approval_status" label="审批结果" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.approval_status=='0'" style="color: #7F7F7F" >等待中</div>
+              <div v-if="scope.row.approval_status=='1'" style="color: #7F7F7F" >审批中</div>
+              <div v-if="scope.row.approval_status=='2'" style="color: #FF4A3D" >驳回</div>
+              <div v-if="scope.row.approval_status=='3'" style="color: #00B83F" >通过</div>
+            </template>
           </el-table-column>
-          <el-table-column prop="income" label="审批意见" align="center">
+          <el-table-column prop="approval_comments" label="审批意见" align="center">
           </el-table-column>
         </el-table>
       </div>
@@ -359,9 +365,14 @@
             if(response.data.data.info.approval){
               that.tableDataResult = response.data.data.info.approval;
               that.tableDataResult.forEach(function (item, index, arr) {
-//                item.
+                item.approval_at = formatDate(new Date(item.approval_at*1000));
+                that.getName(item.approval_uid).then(res => {
+                  console.log(res);
+                  item.approval_uid = res;
+                });
               })
             }
+            that.getApproval();
 
             if(response.data.data.info.rel_order){
               that.tableDataRelated = response.data.data.info.rel_order;
@@ -397,6 +408,34 @@
           return '';
         });
       },
+
+      // 获取审批节点
+      getApproval(){
+        const that = this;
+        this.$http.post(this.GLOBAL.jqUrl + "/ZB/GetInstanceActityInfoForZB", {
+          "jq_id": this.info.id,
+          "jQ_Type": this.baseInfo.type
+        }, ).then(function(response) {
+          console.log('获取审批节点', response);
+//          const result = JSON.parse(response.data);
+          if(response.status == 200){
+            console.log("成功");
+            response.data.extend.instanceLogInfo.forEach(function (item, index, arr) {
+              if(item.finishedTime == '' && item.approvalName == '等待中'){
+                const dataSingle = {
+                  approval_at: '',
+                  approval_uid: item.participantName,
+                  approval_status: 0,
+                  approval_comments: ''
+                };
+                that.tableDataResult.push(dataSingle);
+              }
+            })
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      }
 
     },
     created() {

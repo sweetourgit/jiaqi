@@ -4,7 +4,7 @@
       <el-tab-pane label="无收入借款" name="noIncomeBorrowing"></el-tab-pane>
       <el-tab-pane label="预付款管理" name="advancePaymentAround"></el-tab-pane>
       <el-tab-pane label="余额支付借款" name="balancePaymentBorrowing"></el-tab-pane>
-      <el-tab-pane :label="'需要您审批（'+ totalNum +'）'" name="pendingApproval"></el-tab-pane>
+      <el-tab-pane :label="'需要您审批（'+ (noIncomeNum + advanceNum + balanceNum) +'）'" name="pendingApproval"></el-tab-pane>
     </el-tabs>
     <router-view></router-view>
   </div>
@@ -15,7 +15,9 @@
       return {
         activeName: 'noIncomeBorrowing',
         url_is: true,
-        totalNum: 0,
+        noIncomeNum: 0,
+        advanceNum: 0,
+        balanceNum: 0
       };
     },
     methods: {
@@ -31,7 +33,7 @@
         }
       },
       // 加载待审批数量（-1，-1 目前看可以获取全部）
-      loadData(){
+      loadData(loan){
         const that = this;
         this.$http.post(this.GLOBAL.jqUrl + "/ZB/GettingUnfinishedTasksForZB", {
           "userCode": sessionStorage.getItem('userCode'),
@@ -40,11 +42,18 @@
           "endTime": new Date(),
           "startIndex": -1,
           "endIndex": -1,
-          "workflowCode": "loan"
+          "workflowCode": loan
         }, ).then(function(response) {
           console.log('获取未完成任务数量', response);
 //          alert(response.data.length);
-          that.totalNum = response.data.length;
+
+          if(loan === 'NoIncomeLoan_ZB'){
+            that.noIncomeNum = response.data.length;
+          }else if(loan === 'IncomeLoan_ZB'){
+            that.advanceNum = response.data.length;
+          }else if(loan === 'BalancePayment_ZB'){
+            that.balanceNum = response.data.length;
+          }
           // 赋值代码
         }).catch(function(error) {
           console.log(error);
@@ -80,7 +89,9 @@
       }
 
       // 加载待审批数量
-      this.loadData();
+      this.loadData('NoIncomeLoan_ZB');
+      this.loadData('IncomeLoan_ZB');
+      this.loadData('BalancePayment_ZB');
 
     },
   };
