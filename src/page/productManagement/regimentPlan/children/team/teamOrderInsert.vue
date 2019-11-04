@@ -942,7 +942,7 @@ export default {
               if(this.teampreviewData.regimentType === 1){//判断是都停售 1正常
                   if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
                      console.log(guest)
-                     this.ifOrderInsert = true;
+                     //this.ifOrderInsert = true;
                      this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
                       object: {
                         id: 0,
@@ -1006,7 +1006,7 @@ export default {
                           //清空表单
                           //this.$refs[formName].resetFields();
                           this.dialogFormOrder = false;
-                          this.ifOrderInsert = true;
+                          this.ifOrderInsert = false;
                           // this.startUpWorkFlowForJQ(
                           //   data.OrderID,
                           //   data.FlowModel,
@@ -1020,7 +1020,7 @@ export default {
                         }
                       });
                   }else if(this.ruleForm.orderRadio === '2'){
-                    this.ifOrderInsert = true;
+                    //this.ifOrderInsert = true;
                     this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                       object: {
                         id: 0,
@@ -1082,7 +1082,7 @@ export default {
                         //清空表单
                         //this.$refs[formName].resetFields();
                         this.dialogFormOrder = false;
-                        this.ifOrderInsert = true;
+                        this.ifOrderInsert = false;
                         // this.startUpWorkFlowForJQ(
                         //   data.OrderID,
                         //   data.FlowModel,
