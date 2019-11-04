@@ -35,6 +35,7 @@
     }
   }
   .child-ground{
+    font-size: 12px;
     height: 100px;
     box-sizing: border-box;
     border: 1px solid #ddd;
