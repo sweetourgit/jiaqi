@@ -413,7 +413,6 @@
   import DateList from "../component/DateList";
   import scenicOrTicketList from "@/page/productManagement/productList/tab/scenicOrTicketList";
 
-<<<<<<< HEAD
   export default {
     components: {
       DateList,
@@ -452,76 +451,6 @@
           costType: [
             { required: true, message: "请选择成本类型", trigger: "change" }
           ]
-=======
-export default {
-  components: {
-    DateList,
-    scenicOrTicketList
-  },
-  data() {
-    return {
-      forbidden_a: true, // 是否禁用成立里的编辑，删除按钮
-      isUsePrice: true, // 判断价格按钮是否可点击 (团号 成本三个都填完才为true)
-      isUseLine: true, // 判断上线按钮是否可点击 (价格添加完毕后才可以点击上线按钮)
-      activeName: "first",
-      tabBtnDisabled: true,
-      ruleForm1: {
-        name: "", // 金额
-        region: "", // 供应商
-        region1: "", // 供应商
-        costType: "", // 供应商类型（成本类型？）
-        supplierTypeEX: "", // 供应商类型中文
-        supplierID: "" // 供应商id
-      },
-      options2: [],
-      options3: [], // 成本类型
-      value2: "",
-      rules1: {
-        name: [
-          { required: true, message: "请输入金额", trigger: "change" },
-          {
-            pattern: /^\d+.?\d{0,2}$/,
-            message: "金额（数字类型）且只保留小数点后两位"
-          }
-          //{ type:'number',message: "金额只能输入数字",trigger: "blur"}
-        ],
-        region: [
-          { required: true, message: "请选择供应商名称", trigger: "change" }
-        ],
-        costType: [
-          { required: true, message: "请选择成本类型", trigger: "change" }
-        ]
-      },
-      cost: false, // 添加成本列表弹窗
-      tableData12: [],
-      multipleSelection12: [],
-      count: 0, // 人均结算价
-      lilv: "",
-      basicbutton: false,
-      isInfo: false,
-      productId: "",
-      productTitle: "",
-      productPos: "",
-      originPlace: "", //出发地
-      productMod: "",
-      originMod: "", //目的地
-      productUser: "",
-      productPrefix: "",
-      productBehind: "",
-      pageNum: 1,
-      codePrefix: "",
-      codeSuffix: "",
-      pagesize: 10,
-      total: 0,
-      reable: true, //控制列表上方按钮的显示
-      fid: 0,
-      buttonlist: [],
-      pid: "",
-      domains: [
-        {
-          value: "跟团游",
-          status: "false"
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
         },
         cost: false, // 添加成本列表弹窗
         tableData12: [],
@@ -584,102 +513,6 @@ export default {
          value: '保险',
          status:"false"
          }*/
-<<<<<<< HEAD
-=======
-      ],
-      thisClass: "",
-      options1: [
-        {
-          value1: "1",
-          label: "跟团游"
-        },
-        {
-          value1: "2",
-          label: "自由行"
-        },
-        {
-          value1: "3",
-          label: "景区/票务"
-        }
-      ],
-      typeList: [
-        {
-          //状态搜索
-          value: "0",
-          label: "未上架"
-        },
-        {
-          value: "1",
-          label: "erp上架"
-        },
-        {
-          value: "2",
-          label: "线上上架"
-        },
-        {
-          value: "3",
-          label: "全部"
-        }
-      ],
-      about: "",
-      dialogVisible: false,
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 1,
-      merchandise: false,
-      isCollapse: true,
-      aaa: 0,
-      di: 0,
-      wc: "",
-      listId: "",
-      io: 0,
-      lm: "",
-      forbidden: true, // 属性按钮禁用
-      mm: true, // 属性按钮选中效果
-      pp: true, // 添加值按钮
-      qq: false, // 确认属性值按钮
-      aa: true, // 输入框隐藏
-      bb: false, //输入框变为按钮
-      again: false, // 重新设计属性
-      close: false, // 关闭添加属性按钮
-      select: false, // 属性按钮选择
-      addsku: false, // 生成sku按钮
-      skuList: true, // sku列表
-      ccc: [], // 显示sku的数组
-      skuid: 0, // sku的id
-      xianshi: false, // 属相按钮的禁用
-      arr: [], // 禁用时,未被禁用的按钮的key值数组
-      accretion: true, // 添加增值(整个大块)
-      accretionBall: false, // 添加增值(弹框)
-      accretionTable: true, // 增值服务(表格)
-      ruleForm: {
-        name: "",
-        priceSelect: "",
-        explain: ""
-      }, // 增值表单
-      Addprice: [
-        {
-          id: 1,
-          name: "保险",
-          priceSelect: "非日历价格",
-          explain: "保护安全",
-          type: false
-        },
-        {
-          id: 2,
-          name: "小费",
-          priceSelect: "日历价格",
-          explain: "给小费鼓励一下吧",
-          type: false
-        }
-      ], // 增值服务数组
-      AddpriceId: 0, // 增值服务的id
-      rules: {
-        name: [
-          { required: true, message: "请输入活动名称", trigger: "blur" },
-          { max: 20, message: "不超过20个汉字", trigger: "blur" }
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
         ],
         thisClass: "",
         options1: [
@@ -1118,7 +951,6 @@ export default {
         } else {
           return false;
         }
-<<<<<<< HEAD
       }
     },
     //人均结算价保留小数点后两位
@@ -1233,309 +1065,6 @@ export default {
                 for (let i = 0; i < this.ccc.length; i++) {
                   if (this.ccc[i].value == 0) {
                     this.ccc[i].value = "";
-=======
-      ],
-      type: [],
-      value: "",
-      piaid: "",
-      tableData: [], //存放下面产品列表的数据
-      price: [], // 属性输入框
-      abc: false,
-      array1: "",
-      team: "",
-      chengben: [],
-      supplier_id: 0,
-      team_01: 0,
-      selRowsCount: 0, // 监测有没有被选中的行
-      watchCostLength: null, // 成本里的数据长度
-      watchPrefixStatus: null, // 监听前后缀
-      keepPrefixAndCostStatus: false, // 前缀后缀验证结果（布尔值）
-      hasCostLength: false, // 成本里面有数据（不是默认添加的，手动添加之后的）
-      InputDisable: false //控制前后缀输入是否禁用
-    };
-  },
-  watch: {
-    watchCostLength(oldVal) {
-      console.log(this.keepPrefixAndCostStatus, "前缀后缀验证结果");
-      if (oldVal.length > 0) {
-        this.hasCostLength = true;
-      }
-      if (this.keepPrefixAndCostStatus && oldVal.length > 0) {
-        for (let i = 0; i < this.ccc.length; i++) {
-          if (this.team === this.ccc[i].id) {
-            if (this.keepPrefixAndCostStatus === true) {
-              this.ccc[i].btnDisabled = false;
-              this.tabBtnDisabled = false;
-              console.log("boon === true");
-            } else {
-              console.log("boon === false");
-              this.ccc[i].btnDisabled = true;
-              this.tabBtnDisabled = true;
-            }
-            break;
-          }
-        }
-      }
-    },
-    watchPrefixStatus(val) {
-      console.log(val, "监听前后缀");
-
-      if (val && this.ccc.length > 0) {
-        // this.keepBasePriceLength = this.tableData12.length
-        for (let i = 0; i < this.ccc.length; i++) {
-          if (this.team === this.ccc[i].id) {
-            this.ccc[i].btnDisabled = false;
-            this.tabBtnDisabled = false;
-            console.log("boon === true");
-          }
-          break;
-        }
-      } else {
-        console.log("else");
-        for (let i = 0; i < this.ccc.length; i++) {
-          console.log("else for");
-          if (this.team === this.ccc[i].id) {
-            console.log("boon === false");
-            this.ccc[i].btnDisabled = true;
-            this.tabBtnDisabled = true;
-          }
-          break;
-        }
-      }
-      immediate: true;
-      deep: true;
-    }
-  },
-  computed: {
-    // 成本提示弹窗，显示添加还是编辑
-    isShowAddOfEdict: function() {
-      if (this.selRowsCount.length > 0) {
-        return false;
-      } else {
-        return true;
-      }
-    },
-    // 如果成本列表有选中的就禁止其添加功能只能修改
-    idDisabledCostAdd: function() {
-      if (this.selRowsCount.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  },
-  //人均结算价保留小数点后两位
-  filters: {
-    numFilter(value) {
-      // 截取当前数据到小数点后两位
-      let realVal = parseFloat(value).toFixed(2);
-      return realVal;
-    }
-  },
-  methods: {
-    // merchandise 弹窗出现时判断团号和成本是否已填写如果已填写则价格按钮可点击  否则禁用
-    merchandiseDialogOpen() {
-      // for (let i = 1)
-    },
-    //供应商模糊查询
-    querySearch5(queryString3, cb) {
-      this.tableData2 = [];
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierlist", {
-          object: {
-            name: queryString3,
-            UserState: -1,
-            SupplierType: -1
-          }
-        })
-        .then(res => {
-          for (let i = 0; i < res.data.objects.length; i++) {
-            this.tableData2.push({
-              value: res.data.objects[i].name,
-              id: res.data.objects[i].id,
-              supplierType: res.data.objects[i].supplierType
-            });
-            this.supplier_id = res.data.objects[i].id
-              ? res.data.objects[i].id
-              : 0;
-          }
-          var results = queryString3
-            ? this.tableData2.filter(this.createFilter(queryString3))
-            : [];
-          cb(results);
-        })
-        .catch(err => {
-          //console.log(err);
-        });
-    },
-    createFilter(queryString1) {
-      return restaurant => {
-        return restaurant.value;
-      };
-    },
-    departure5(item) {
-      // this.productPos = item.id;
-      // this.originPlace = item.value;
-    },
-    // 成本类型
-    themeList() {
-      this.borrowingType = [];
-      this.$http
-        .post(
-          "http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=SupplierType"
-          // SupplierType 之前的   PaymentType 无收入借款
-        )
-        .then(res => {
-          // console.log("themeList",res)
-          for (let i = 0; i < res.data.objects.length; i++) {
-            this.borrowingType.push({
-              value: res.data.objects[i].id,
-              label: res.data.objects[i].name
-            });
-          }
-        })
-        .then(res => {
-          //this.borrowingType =  res.data.objects;
-        });
-    },
-    handleClick(tab, event) {
-      //          console.log(tab, event);
-    },
-    // 表格行选中事件
-    changselet(selection, row) {
-      this.chengben = selection;
-    },
-    // 毛利率输入框change事件
-    changinpt() {
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/saverate", {
-          object: {
-            id: this.team,
-            rate: this.lilv
-            // codePrefix: this.ccc[index].codePrefix,
-            // codeSuffix: this.ccc[index].codeSuffix
-          }
-        })
-        .then(res => {
-          console.log(res, 898);
-          for (let i = 0; i < this.ccc.length; i++) {
-            if (this.ccc[i].value == 0) {
-              this.ccc[i].value = "";
-            }
-            this.ccc[i].rate = this.lilv;
-          }
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
-              id: this.team
-            })
-            .then(res => {
-              console.log(res, 666);
-              this.count = res.data.average;
-              // this.ccc = [];//问题利率？
-              // var that = this;
-              for (let i = 0; i < this.ccc.length; i++) {
-                if (this.ccc[i].value == 0) {
-                  this.ccc[i].value = "";
-                }
-                this.count = res.data.average;
-              }
-              // 之前的代码
-              // this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagelist",{
-              //       object: {
-              //         teamID: this.pid
-              //       }
-              //     })
-              //   .then(function(obj) {
-              //     // 28日改过btndisabled控制价格按钮的显示
-              //     for (let i = 0; i < obj.data.objects.length; i++) {
-              //       that.ccc.push({
-              //         id: obj.data.objects[i].id,
-              //         ddd: obj.data.objects[i].name,
-              //         uptoDay: obj.data.objects[i].uptoDay,
-              //         value: obj.data.objects[i].templateID,
-              //         codePrefix: obj.data.objects[i].codePrefix,
-              //         codeSuffix: obj.data.objects[i].codeSuffix,
-              //         createTime: obj.data.objects[i].createTime,
-              //         type: false,
-              //         rate: obj.data.objects[i].rate,
-              //         btnDisabled:true,
-              //         isInfo:true,
-
-              //       });
-
-              // if (that.ccc[i].value == 0) {
-              //   that.ccc[i].value = "";
-              // }
-              // break;
-              // }
-              // console.log(obj.data);
-              // console.log(this.ccc.codePrefix,11111111)
-              // })
-              // .catch(function(obj) {});
-            });
-        });
-    },
-    changys(res) {
-      this.ruleForm1.region1 = res.substring(
-        res.indexOf("+") + 1,
-        res.indexOf("-")
-      );
-      this.ruleForm1.supplierID = res.substring(
-        res.indexOf("|") + 1,
-        res.indexOf("+")
-      );
-      this.ruleForm1.costType = res.substring(
-        res.indexOf("-") + 1,
-        res.indexOf("*")
-      );
-      this.ruleForm1.supplierTypeEX = res.slice(res.indexOf("*") + 1);
-
-      /*this.ruleForm1.costType = res.slice(res.indexOf("-")+1)*/
-      /*   //供应商id
-         console.log( res.substring(res.indexOf("|")+1,res.indexOf("+")))
-         //供应商名称
-         console.log( res.substring(res.indexOf("+")+1,res.indexOf("-")))
-         //类型cn
-         console.log(  res.substring(res.indexOf("-")+1,res.indexOf("*")))
-         //类型ty
-         console.log(  res.slice(res.indexOf("*")+1))*/
-    },
-    // 添加成本列表的弹窗，添加事件
-    submitForm1(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/team/cost/api/insert", {
-              // 增加一个套餐成本
-              object: {
-                id: 0,
-                createTime: 0,
-                code: "string",
-                createUser: "string",
-                packageID: this.team,
-                //"supplierID": this.ruleForm1.supplierID,
-                supplierID: this.supplier_id,
-                //"name": this.ruleForm1.region1,
-                name: this.ruleForm1.region,
-                //"supplierType": this.ruleForm1.supplierTypeEX,
-                suppliertype: this.ruleForm1.costType,
-                money: this.ruleForm1.name
-              }
-            })
-            .then(res => {
-              this.$http
-                .post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
-                  // 通过套餐获取人均结算价
-                  id: this.team
-                })
-                .then(res => {
-                  this.count = res.data.average;
-                });
-              this.$http
-                .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
-                  object: {
-                    packageID: this.team
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
                   }
                   this.count = res.data.average;
                 }
@@ -1665,7 +1194,6 @@ export default {
                     // 监听成本列表数据长度
                     this.watchCostLength = res.data.objects;
                   });
-<<<<<<< HEAD
                 this.cost = false;
                 // 28日修改过
                 this.chongzhi();
@@ -1721,91 +1249,6 @@ export default {
                   .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
                     object: {
                       packageID: this.team
-=======
-                  // 监听成本列表数据长度
-                  this.watchCostLength = res.data.objects;
-                });
-              this.cost = false;
-              // 28日修改过
-              this.chongzhi();
-              this.$refs.ruleForm1.resetFields();
-            });
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    },
-    // 重置表单
-    chongzhi() {
-      this.ruleForm1.region = "";
-      this.ruleForm1.costType = "";
-      this.ruleForm1.name = "";
-    },
-    cancel() {
-      this.chongzhi();
-      this.$refs.ruleForm1.resetFields();
-    },
-    // 修改成本信息
-    submitForm2(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/team/cost/api/save", {
-              object: {
-                // "supplierID": this.ruleForm1.supplierID,
-                // "name": this.ruleForm1.region1,
-                // "supplierType": this.ruleForm1.supplierTypeEX,
-                // "money": this.ruleForm1.name
-                id: this.chengben[0].id,
-                createTime: 0,
-                code: "string",
-                createUser: "string",
-                packageID: this.team,
-                supplierID: this.supplier_id,
-                name: this.ruleForm1.region,
-                suppliertype: this.ruleForm1.costType, // 供应商类型
-                money: this.ruleForm1.name
-              }
-            })
-            .then(res => {
-              this.$http
-                .post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
-                  id: this.team
-                })
-                .then(res => {
-                  this.count = res.data.average;
-                });
-              this.$http
-                .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
-                  object: {
-                    packageID: this.team
-                  }
-                })
-                .then(res => {
-                  this.tableData12 = res.data.objects;
-                  this.tableData12.forEach(function(v, k, arr) {
-                    if (arr[k]["suppliertype"] == 0) {
-                      arr[k]["suppliertype"] = "船票";
-                    } else if (arr[k]["suppliertype"] == 1) {
-                      arr[k]["suppliertype"] = "地接社";
-                    } else if (arr[k]["suppliertype"] == 2) {
-                      arr[k]["suppliertype"] = "机票";
-                    } else if (arr[k]["suppliertype"] == 3) {
-                      arr[k]["suppliertype"] = "拼票";
-                    } else if (arr[k]["suppliertype"] == 4) {
-                      arr[k]["suppliertype"] = "酒店";
-                    } else if (arr[k]["suppliertype"] == 5) {
-                      arr[k]["suppliertype"] = "签证";
-                    } else if (arr[k]["suppliertype"] == 6) {
-                      arr[k]["suppliertype"] = "合作拼团社";
-                    } else if (arr[k]["suppliertype"] == 7) {
-                      arr[k]["suppliertype"] = "游轮";
-                    } else if (arr[k]["suppliertype"] == 8) {
-                      arr[k]["suppliertype"] = "火车票";
-                    } else if (arr[k]["suppliertype"] == 9) {
-                      arr[k]["suppliertype"] = "汽车票";
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
                     }
                   })
                   .then(res => {
@@ -1834,7 +1277,6 @@ export default {
                       }
                     });
                   });
-<<<<<<< HEAD
                 this.cost = false;
                 this.chongzhi();
                 this.$refs.ruleForm1.resetFields();
@@ -2242,459 +1684,6 @@ export default {
         this.vague = [];
         this.$http
           .post(this.GLOBAL.serverSrc + "/universal/area/api/fuzzy", {
-=======
-                });
-              this.cost = false;
-              this.chongzhi();
-              this.$refs.ruleForm1.resetFields();
-            });
-        } else {
-        }
-      });
-    },
-    // 重置
-    resetForm1(formName) {
-      this.$refs[formName].resetFields();
-    },
-    // 成本弹窗编辑事件
-    editorcb() {
-      this.chongzhi();
-      // var arry = [];
-      // var arry1 = [];
-      // var that = this;
-      // this.$http
-      //   .post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage", {
-      //     object: {
-      //       isDeleted: 0
-      //     },
-      //     pageSize: 1000,
-      //     pageIndex: 1,
-      //     isGetAll: true,
-      //     id: 0
-      //   })
-      //   .then(function(obj) {
-      //     for (var j = 0; j < obj.data.objects.length; j++) {
-      //       arry1.push(obj.data.objects[j]);
-      //       arry1[j].label = arry1[j].name;
-      //       arry1[j].value =
-      //         "|" +
-      //         arry1[j].id +
-      //         "+" +
-      //         arry1[j].name +
-      //         "-" +
-      //         arry1[j].types[0].supplierTypeEX +
-      //         "*" +
-      //         arry1[j].types[0].supplierType;
-      //     }
-      //     that.options2 = arry1;
-      //   });
-
-      // this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
-      // }).then(res => {
-
-      //   for (var i = 0; i<res.data.objects.length;i++){
-      //     arry.push(res.data.objects[i])
-      //     arry[i].label = arry[i].name
-      //     arry[i].value = arry[i].id
-      //   }
-      //   this.options3 = arry
-
-      // })
-      /* console.log(this.chengben[0].id)*/
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/get", {
-          // 对正本提示的弹窗进行赋值
-          id: this.chengben[0].id
-        })
-        .then(res => {
-          this.cost = true;
-          this.ruleForm1.region = res.data.object.name;
-          this.ruleForm1.costType = res.data.object.supplierType;
-          this.ruleForm1.name = res.data.object.money;
-        });
-    },
-    // 成本弹窗，删除事件
-    delcb() {
-      this.$confirm("确认删除?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(res => {
-        for (var i = 0; i < this.chengben.length; i++) {
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/team/cost/api/delete", {
-              // 删除一条成本
-              id: this.chengben[i].id
-            })
-            .then(res => {
-              if (res.data.isSuccess == true) {
-                this.$message.success("删除成功");
-                this.$refs.multipleTable12.clearSelection(); // 因为你之前会有行被选中，要取消选中状态，否则会影响弹窗(虽然删除了但是UI记住了选中的状态)，编辑弹窗的修改，添加的显示
-                this.selRowsCount = 0; // 删除之后手动把监听列表行选中的状态置位0（没有选中状态）
-                this.$http
-                  .post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
-                    // 删除之后重新计算人均结算价
-                    id: this.team
-                  })
-                  .then(res => {
-                    this.count = res.data.average;
-                  });
-                this.$http
-                  .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
-                    // 成本信息无分页列表
-                    object: { packageID: this.team }
-                  })
-                  .then(res => {
-                    this.tableData12 = res.data.objects;
-                    if (this.tableData12 !== null) {
-                      console.log(this.tableData12);
-                      for (let i = 0; i < this.ccc.length; i++) {
-                        if (this.team === this.ccc[i].id) {
-                          this.ccc[i].btnDisabled = false;
-                          this.tabBtnDisabled = false;
-                          break;
-                        }
-                      }
-                    } else {
-                      console.log(this.tableData12, 8888);
-                      for (let i = 0; i < this.ccc.length; i++) {
-                        if (this.team === this.ccc[i].id) {
-                          this.ccc[i].btnDisabled = true;
-                          break;
-                        }
-                      }
-                    }
-                    for (let i = 0; i < this.ccc.length; i++) {
-                      if (this.ccc[i].btnDisabled == false) {
-                        this.tabBtnDisabled == false;
-                        // this.isCollapse = false;
-                      }
-                    }
-                    this.tableData12.forEach(function(v, k, arr) {
-                      if (arr[k]["suppliertype"] == 0) {
-                        arr[k]["suppliertype"] = "船票";
-                      } else if (arr[k]["suppliertype"] == 1) {
-                        arr[k]["suppliertype"] = "地接社";
-                      } else if (arr[k]["suppliertype"] == 2) {
-                        arr[k]["suppliertype"] = "机票";
-                      } else if (arr[k]["suppliertype"] == 3) {
-                        arr[k]["suppliertype"] = "拼票";
-                      } else if (arr[k]["suppliertype"] == 4) {
-                        arr[k]["suppliertype"] = "酒店";
-                      } else if (arr[k]["suppliertype"] == 5) {
-                        arr[k]["suppliertype"] = "签证";
-                      } else if (arr[k]["suppliertype"] == 6) {
-                        arr[k]["suppliertype"] = "合作拼团社";
-                      } else if (arr[k]["suppliertype"] == 7) {
-                        arr[k]["suppliertype"] = "游轮";
-                      } else if (arr[k]["suppliertype"] == 8) {
-                        arr[k]["suppliertype"] = "火车票";
-                      } else if (arr[k]["suppliertype"] == 9) {
-                        arr[k]["suppliertype"] = "汽车票";
-                      }
-                    });
-                    // if (res.data.length > 0) {
-                    //   for (let i = 0; i < this.ccc.length; i++) {
-                    //     if (this.team === this.ccc[i].id) {
-                    //       this.ccc[i].btnDisabled = false;
-                    //       // this.tabBtnDisabled = true;
-                    //       break;
-                    //     }
-                    //   }
-                    // } else {
-                    //   for (let i = 0; i < this.ccc.length; i++) {
-                    //     if (this.team === this.ccc[i].id) {
-                    //       this.ccc[i].btnDisabled = true;
-                    //       // this.tabBtnDisabled = true;
-                    //       break;
-                    //     }
-                    //   }
-                    // }
-                  });
-              }
-            });
-        }
-      });
-    },
-    // 成本弹窗的添加列表方法
-    addcost() {
-      // console.log(this.chengben);
-      // var arry = [];
-      // var arry1 = [];
-      // var that = this;
-      // this.$http
-      //   .post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage", {
-      //     object: {
-      //       isDeleted: 0
-      //     },
-      //     pageSize: 1000,
-      //     pageIndex: 1,
-      //     isGetAll: true,
-      //     id: 0
-      //   })
-      //   .then(function(obj) {
-      //     console.log("addcost",obj);
-      //     // console.log(obj.data.object)
-      //     // if (obj.data.object == undefined) {
-      //       for (var j = 0; j < obj.data.objects.length; j++) {
-      //       arry1.push(obj.data.objects[j]);
-      //       arry1[j].label = arry1[j].name;
-      //       arry1[j].value =
-      //         "|" +
-      //         arry1[j].id +
-      //         "+" +
-      //         arry1[j].name +
-      //         "-" +
-      //         arry1[j].types[0].supplierTypeEX +
-      //         "*" +
-      //         arry1[j].types[0].supplierType;
-      //     }
-      //     that.options2 = arry1;
-      //     // console.log("options2",that.options2)
-      //     // }
-      //   });
-
-      // this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {
-      // }).then(res => {
-
-      //   for (var i = 0; i<res.data.objects.length;i++){
-      //     arry.push(res.data.objects[i])
-      //     arry[i].label = arry[i].name
-      //     arry[i].value = arry[i].id
-      //   }
-      //   this.options3 = arry
-
-      // })
-      this.chongzhi();
-      this.cost = true;
-    },
-    // 成本弹窗列表，选择项发生变化时触发
-    handleSelectionChange(val) {
-      this.selRowsCount = val;
-      this.multipleSelection = val;
-      if (this.multipleSelection.length === 1) {
-        this.forbidden_a = false;
-      } else {
-        this.forbidden_a = true;
-      }
-    },
-    // 请求数据成功时显示当前的列表以及价格的
-    basicPrice(id, rate, ShowBase, boon) {
-      this.tableData12 = [];
-      let that = this;
-      // that.isUsePrice = true;
-      if (ShowBase) {
-        this.basicbutton = true;
-      }
-      this.team = id;
-      this.lilv = rate;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
-          object: {
-            packageID: this.team
-          }
-        })
-        .then(res => {
-          // 成本为空null时报错  所以判断
-          if (res.data.isSuccess) {
-            // for(let i = 0;i<res.data.id;i++){
-            //   this.isUsePrice[i] = false;
-            // }
-            for (let i = 0; i < this.ccc.length; i++) {
-              if (this.team === this.ccc[i].id) {
-                if (boon === true) {
-                  this.ccc[i].btnDisabled = false;
-                  this.tabBtnDisabled = false;
-                  // this.isCollapse =false
-                } else if (boon === false) {
-                  this.ccc[i].btnDisabled = true;
-                  if (!this.hasCostLength) {
-                    this.ccc[i].btnDisabled = true;
-                    // this.isCollapse =true
-                    // this.tabBtnDisabled = true;
-                  }
-                }
-                break;
-              }
-              // if(this.ccc[i].btnDisabled = false){
-              //    this.tabBtnDisabled = false;
-              // }else{
-
-              // }
-            }
-            this.tableData12 = res.data.objects;
-            this.tableData12.forEach(function(v, k, arr) {
-              if (arr[k]["suppliertype"] == 0) {
-                arr[k]["suppliertype"] = "船票";
-              } else if (arr[k]["suppliertype"] == 1) {
-                arr[k]["suppliertype"] = "地接社";
-              } else if (arr[k]["suppliertype"] == 2) {
-                arr[k]["suppliertype"] = "机票";
-              } else if (arr[k]["suppliertype"] == 3) {
-                arr[k]["suppliertype"] = "拼票";
-              } else if (arr[k]["suppliertype"] == 4) {
-                arr[k]["suppliertype"] = "酒店";
-              } else if (arr[k]["suppliertype"] == 5) {
-                arr[k]["suppliertype"] = "签证";
-              } else if (arr[k]["suppliertype"] == 6) {
-                arr[k]["suppliertype"] = "合作拼团社";
-              } else if (arr[k]["suppliertype"] == 7) {
-                arr[k]["suppliertype"] = "游轮";
-              } else if (arr[k]["suppliertype"] == 8) {
-                arr[k]["suppliertype"] = "火车票";
-              } else if (arr[k]["suppliertype"] == 9) {
-                arr[k]["suppliertype"] = "汽车票";
-              }
-            });
-          } else {
-            //控制下方价格的显示以及上面价格的显示
-            for (let i = 0; i < this.ccc.length; i++) {
-              if (this.team === this.ccc[i].id) {
-                this.ccc[i].btnDisabled = true;
-                // this.tabBtnDisabled = true;
-                break;
-              }
-            }
-          }
-        });
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
-          id: this.team
-        })
-        .then(res => {
-          this.count = res.data.average;
-        });
-    },
-    // 判断输入的值是否在数据库中
-    fucking(index) {
-      // for (let i = 0; i < this.ccc.length; i++) {
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/package/codeisexist", {
-          object: {
-            id: this.ccc[index].id,
-            codePrefix: this.ccc[index].codePrefix,
-            codeSuffix: this.ccc[index].codeSuffix
-          }
-        })
-        .then(res => {
-          var boon = res.data.isSuccess;
-          this.watchPrefixStatus = boon;
-          this.keepPrefixAndCostStatus = boon;
-          if (
-            this.ccc[index].codePrefix === "" &&
-            this.ccc[index].codeSuffix === ""
-          ) {
-            this.ccc[index].isInfo = true;
-            this.ccc[index].btnDisabled = true;
-            // for (let i = 0; i < this.ccc.length; i++) {
-            //   this.ccc[i].btnDisabled = true;
-            //   this.tabBtnDisabled = true;
-            //   break;
-            // }
-            // this.$message.error("错了哦，团号不能为空");
-          } else if (boon === true) {
-            this.ccc[index].btnDisabled = false;
-            // this.ccc[index].isInfo = true;
-            //  for(let i = 0;i < this.ccc.length;i++) {
-            //     this.ccc[i].btnDisabled = true;
-            // this.tabBtnDisabled = false;
-            //     break;
-            //  }
-            // if(){}
-            this.basicPrice(
-              this.ccc[index].id,
-              this.ccc[index].rate,
-              false,
-              boon
-            );
-            this.ccc[index].isInfo = false;
-            // this.tabBtnDisabled=false;
-            // for(let i = 0;i < this.ccc.length;i++) {
-            //   this.ccc[i].btnDisabled = false;
-            //   break;
-            // }
-          } else {
-            // for(let i = 0;i < this.ccc.length;i++) {
-            //   this.ccc[i].btnDisabled = true;
-            //   break;
-            // }
-            this.$message.error("错了哦，团号不能重复");
-          }
-        });
-      // }
-    },
-    // 控制价格按钮显示
-    changeFun(id, rate, ifShowBase) {
-      // basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)
-      this.basicPrice(id, rate, ifShowBase, boon);
-      //this.multipleSelection = val;
-      for (let i = 0; i < this.ccc.length; i++) {
-        // console.log(ccc,111111)
-        if (
-          this.ccc[i].codePrefix !== "" &&
-          this.ccc[i].codeSuffix !== "" &&
-          this.ccc[i].uptoDay !== "" &&
-          this.tableData12.length > 0 &&
-          boon === true
-        ) {
-          this.basicPrice(id, rate, ifShowBase);
-          this.isUsePrice = false;
-          this.tabBtnDisabled = false;
-        } else {
-          this.isUsePrice = true;
-          this.tabBtnDisabled = true;
-        }
-      }
-    },
-    // 出发地
-    querySearch3(queryString1, cb) {
-      this.vague = [];
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/area/api/fuzzy", {
-          object: {
-            areaName: queryString1
-          }
-        })
-        .then(res => {
-          for (let i = 0; i < res.data.objects.length; i++) {
-            this.vague.push({
-              id: res.data.objects[i].id,
-              value: res.data.objects[i].areaName
-            });
-          }
-          var results = queryString1
-            ? this.vague.filter(this.createFilter(queryString1))
-            : [];
-          cb(results);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    /*querySearch1(queryString1, cb1) {//搜索出发地方法
-       var results1 = queryString1 ? this.tableData1.filter(this.createFilter(queryString1)) : [];
-       cb1(results1);
-       },*/
-    createFilter(queryString1) {
-      return restaurant => {
-        return restaurant.value;
-      };
-    },
-    // originPlace代表的是出发地
-    departure(item) {
-      /*this.productPos = item.id;
-         this.originPlace = item.value;*/
-      this.productPos = item.id;
-      this.originPlace = item.value;
-    },
-    //目的地
-    querySearch4(queryString2, cb) {
-      this.tableData1 = [];
-      this.$http
-        .post(
-          this.GLOBAL.serverSrc + "/universal/area/api/fuzzy",
-          {
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
             object: {
               areaName: queryString1
             }
@@ -2706,7 +1695,6 @@ export default {
                 value: res.data.objects[i].areaName
               });
             }
-<<<<<<< HEAD
             var results = queryString1
               ? this.vague.filter(this.createFilter(queryString1))
               : [];
@@ -2788,61 +1776,6 @@ export default {
       reset() {
         //重置29日改过
         this.productId = "";
-=======
-          }
-        )
-        .then(res => {
-          for (let i = 0; i < res.data.objects.length; i++) {
-            this.tableData1.push({
-              value: res.data.objects[i].areaName,
-              id: res.data.objects[i].id
-            });
-          }
-          var results = queryString2
-            ? this.tableData1.filter(this.createFilter(queryString2))
-            : [];
-          cb(results);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    createFilter(queryString2) {
-      return restaurant => {
-        return restaurant.value;
-      };
-    },
-    // originPlace代表的是出发地
-    departure1(item) {
-      /*this.productPos = item.id;
-         this.originPlace = item.value;*/
-      this.productMod = item.id;
-      this.originMod = item.value;
-    },
-    deleta() {
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/api/teamdelete", {
-          id: that.pid
-        })
-        .then(function(obj) {})
-        .catch(function(obj) {});
-    },
-    reset() {
-      //重置29日改过
-      this.productId = "";
-      this.productTitle = "";
-      this.productPos = "";
-      this.productMod = "";
-      this.productUser = "";
-      this.value = "";
-      this.productPrefix = "";
-      this.productBehind = "";
-      this.originPlace = "";
-      this.originMod = "";
-      this.pageNum = 1;
-
-      if (!this.productTitle) {
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
         this.productTitle = "";
         this.productPos = "";
         this.productMod = "";
@@ -2854,7 +1787,6 @@ export default {
         this.originMod = "";
         this.pageNum = 1;
 
-<<<<<<< HEAD
         if (!this.productTitle) {
           this.productTitle = "";
         } else {
@@ -3095,131 +2027,6 @@ export default {
                 headers: {
                   Authorization: "Bearer " + localStorage.getItem("token")
                 }
-=======
-      if (!this.productPos || !this.originPlace) {
-        this.productPos = 0;
-      } else {
-        this.pageNum = 1;
-      }
-      if (!this.productMod || !this.originMod) {
-        this.productMod = 0;
-      } else {
-        this.pageNum = 1;
-      }
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-          pageIndex: this.pageNum,
-          pageSize: this.pagesize,
-          total: 0,
-          object: {
-            id: that.productId == "" ? 0 : that.productId,
-            title: that.productTitle,
-            createUser: that.productUser,
-            minPrice: that.productPrefix == "" ? 0 : that.productPrefix,
-            maxPrice: that.productBehind == "" ? 0 : that.productBehind,
-            podID: that.productPos,
-            destinationID: that.productMod
-          }
-        })
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]["type"] = "跟团游";
-            arr[k]["name"] = obj.data.objects[k].title;
-            arr[k]["mu_address"] =
-              obj.data.objects[k].destinations[0].destination;
-            arr[k]["options"] = obj.data.objects[k].createUser;
-            arr[k]["status"] = "1";
-            arr[k]["opers"] = "飞猪 携程";
-            arr[k]["refPrice"] = obj.data.objects[k].refPrice;
-            //arr[k]["price"] = obj.data.objects[k].refPrice;
-          });
-        })
-        .catch(function(obj) {});
-    },
-    handleDelete() {
-      this.$confirm("此操作将删除该跟团游信息", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          if (this.tableData.length == 1) {
-            this.pageNum = this.pageNum - 1;
-          }
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/team/api/teamdelete", {
-              id: this.pid
-            })
-            .then(res => {
-              if (res.data.isSuccess == false) {
-                this.$confirm("该产品有计划，不允许删除", "提示", {
-                  confirmButtonText: "确定",
-                  cancelButtonText: "取消",
-                  type: "warning"
-                });
-              } else {
-                this.$message.success("删除成功");
-                if (!this.productTitle) {
-                  this.productTitle = "";
-                } else {
-                  this.pageNum = 1;
-                }
-                if (!this.productUser) {
-                  this.productUser = "";
-                } else {
-                  this.pageNum = 1;
-                }
-
-                if (!this.productPos || !this.originPlace) {
-                  this.productPos = 0;
-                } else {
-                  this.pageNum = 1;
-                }
-                if (!this.productMod || !this.originMod) {
-                  this.productMod = 0;
-                } else {
-                  this.pageNum = 1;
-                }
-
-                var that = this;
-                this.$http
-                  .post(this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-                    pageIndex: this.pageNum,
-                    pageSize: this.pagesize,
-                    total: 0,
-                    object: {
-                      id: that.productId == "" ? 0 : that.productId,
-                      title: that.productTitle,
-                      createUser: that.productUser,
-                      minPrice:
-                        that.productPrefix == "" ? 0 : that.productPrefix,
-                      maxPrice:
-                        that.productBehind == "" ? 0 : that.productBehind,
-                      podID: that.productPos,
-                      destinationID: that.productMod
-                    }
-                  })
-                  .then(function(obj) {
-                    that.total = obj.data.total;
-                    that.tableData = obj.data.objects;
-                    that.tableData.forEach(function(v, k, arr) {
-                      arr[k]["type"] = "跟团游";
-                      arr[k]["name"] = obj.data.objects[k].title;
-                      arr[k]["mu_address"] =
-                        obj.data.objects[k].destinations[0].destination;
-                      arr[k]["options"] = obj.data.objects[k].createUser;
-                      arr[k]["status"] = "1";
-                      arr[k]["opers"] = "飞猪 携程";
-                      arr[k]["refPrice"] = obj.data.objects[k].refPrice;
-                      //arr[k]["price"] = obj.data.objects[k].refPrice;
-                    });
-                  })
-                  .catch(function(obj) {});
-                this.pageList();
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
               }
             )
             .then(obj => {
@@ -3239,7 +2046,6 @@ export default {
             }
           }
         }
-<<<<<<< HEAD
       },
       BandCancel() {
         // 点击取消时让弹窗隐藏
@@ -3259,63 +2065,6 @@ export default {
         } else {
           this.pageNum = 1;
         }
-=======
-      });
-    },
-    // fucking()两个可能是判断重复了
-    bandlePrice(item) {
-      this.piaid = this.ccc[item].id;
-      this.codePrefix = this.ccc[item].codePrefix;
-      this.codeSuffix = this.ccc[item].codeSuffix;
-
-      // if(this.codePrefix === this.codeSuffix){
-      //   this.$message.error("错了哦，团号不能重复");
-      //   this.isCollapse = true;
-      // }else{
-      //   this.isCollapse = false;
-      // }
-
-      if (this.codePrefix == "" || this.codeSuffix == "") {
-        // this.$message.error("错了哦，团号不能为空");
-        this.isCollapse = true;
-      } else {
-        this.isCollapse = false;
-      }
-      // } else if(this.codePrefix === this.codeSuffix) {
-      //    this.$message.error("错了哦，团号不能重复");
-      //   this.isCollapse = true;
-      // }else{
-      //   this.isCollapse = false;
-      // }
-    },
-    //库存修改
-    inventorysave() {
-      var that = this;
-      /* this.$http.post(
-         this.GLOBAL.serverSrc + "/team/api/inventorysave",
-         {
-         "object": {
-         "id": 0,
-         "name": "string",
-         "isDeleted": 0,
-         "createTime": 0,
-         "code": "string",
-         "count": 0,
-         "orgID": 0,
-         "teamID": 0,
-         "createUser": "string",
-         "share": 0,
-         "date": 0
-         }
-         },
-         {
-         headers:{
-         'Authorization': 'Bearer ' + localStorage.getItem('token')
-         }
-         }
-         )
-         .then(function (obj) {
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
 
         if (!this.productPos || !this.originPlace) {
           this.productPos = 0;
@@ -3328,7 +2077,6 @@ export default {
           this.pageNum = 1;
         }
 
-<<<<<<< HEAD
         var that = this;
         this.$http
           .post(this.GLOBAL.serverSrc + "/team/api/teamsearch", {
@@ -3414,13 +2162,6 @@ export default {
 
         this.pagesize = val;
         var that = this;
-=======
-         })*/
-    },
-    // 团期/库存弹窗的保存按钮
-    BandSave() {
-      for (let i = 0; i < this.ccc.length; i++) {
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
         this.$http
           .post(
             this.GLOBAL.serverSrc + "/team/api/teamsearch",
@@ -3429,7 +2170,6 @@ export default {
               pageSize: val,
               total: 0,
               object: {
-<<<<<<< HEAD
                 id: that.productId == "" ? 0 : that.productId,
                 title: that.productTitle,
                 createUser: that.productUser,
@@ -3583,15 +2323,6 @@ export default {
                   btnDisabled: true
                 });
                 this.tabBtnDisabled = true;
-=======
-                id: this.ccc[i].id,
-                loadPlan: true,
-                uptoDay: Number(this.ccc[i].uptoDay),
-                // templateID: this.ccc[i].value,
-                codePrefix: this.ccc[i].codePrefix,
-                codeSuffix: this.ccc[i].codeSuffix
-                // cost: this.tableData12
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
               }
               // that.ccc.push({
               //   id: obj.data.objects[i].id,
@@ -3611,12 +2342,6 @@ export default {
                 that.ccc[i].value = "";
               }
             }
-<<<<<<< HEAD
-=======
-          )
-          .then(obj => {
-            console.log(this.ccc, 2222222);
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
           })
           .catch(function(obj) {});
         this.merchandise = true;
@@ -3642,7 +2367,6 @@ export default {
           this.arr.push({
             id: key
           });
-<<<<<<< HEAD
           // console.log(this.arr);
           document.getElementById("kk" + key).style.border = "solid 1px #409EFF";
           document.getElementById("kk" + key).style.color = "#409EFF";
@@ -3665,63 +2389,6 @@ export default {
               document.getElementById("kk" + this.arr[lo].id).style.color =
                 "#409EFF";
             }
-=======
-      }
-      if (this.isInfo == false) {
-        this.merchandise = false;
-        for (let i = 0; i < this.ccc.length; i++) {
-          if (this.team === this.ccc[i].id) {
-            this.ccc[i].btnDisabled = false;
-            this.tabBtnDisabled = false;
-          }
-        }
-      }
-    },
-    BandCancel() {
-      // 点击取消时让弹窗隐藏
-      this.merchandise = false;
-      this.isCollapse = true;
-    },
-    //搜索
-    searchHand() {
-      this.pageNum = 1;
-      if (!this.productTitle) {
-        this.productTitle = "";
-      } else {
-        this.pageNum = 1;
-      }
-      if (!this.productUser) {
-        this.productUser = "";
-      } else {
-        this.pageNum = 1;
-      }
-
-      if (!this.productPos || !this.originPlace) {
-        this.productPos = 0;
-      } else {
-        this.pageNum = 1;
-      }
-      if (!this.productMod || !this.originMod) {
-        this.productMod = 0;
-      } else {
-        this.pageNum = 1;
-      }
-
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-          pageIndex: this.pageNum,
-          pageSize: this.pagesize,
-          total: 0,
-          object: {
-            id: that.productId == "" ? 0 : that.productId,
-            title: that.productTitle,
-            createUser: that.productUser,
-            minPrice: that.productPrefix == "" ? 0 : that.productPrefix,
-            maxPrice: that.productBehind == "" ? 0 : that.productBehind,
-            podID: that.productPos,
-            destinationID: that.productMod
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
           }
           // 点击向数组中添加数值
           this.addtable[this.addtable.length - 1].allprice.push({
@@ -3730,7 +2397,6 @@ export default {
             verifier: e.verifier,
             value: []
           });
-<<<<<<< HEAD
           // 按下按钮给一个true表示按下
           this.buttonList[key].pp = true;
           // 判断表格中的数据条数,如果数据只有一条那么生成一条确认属性值
@@ -3874,17 +2540,6 @@ export default {
       clickBanle(row, event, column) {
         this.pid = row["id"];
         this.reable = false;
-=======
-        })
-        .catch(function(obj) {});
-    },
-    clickHand(index) {
-      if (this.domains[index].status == "true") {
-        this.domains[index].status = "false";
-      } else {
-        this.buttonlist.push(this.domains[index].value);
-        this.domains[index].status = "true";
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
       }
       // clickBanle(index,data){
       //   this.pid = data,
@@ -3892,7 +2547,6 @@ export default {
       //   console.log(index)
       // }
     },
-<<<<<<< HEAD
     mounted() {
       $(".testj").click();
     },
@@ -3901,29 +2555,6 @@ export default {
       //产品列表
       var that = this;
       this.pageNum = 1;
-=======
-    routerHandle() {
-      this.$router.push({ path: "/listInfo" });
-      //        console.log(this.about);
-      //        if(this.about == ""){
-      //          this.$message({
-      //            showClose: true,
-      //            message: '请选择要添加的产品类型',
-      //            type: 'error'
-      //          });
-      //        }
-      //        this.about = 1;
-      //        if(this.about == 1){
-      //          this.$router.push({path: "listInfo"});
-      //        }
-      //        if(this.about == 3){
-      //          this.$router.push({path: "listInfoScenic"});
-      //        }
-    },
-    handleClick(row) {},
-    // 列表
-    handleSizeChange(val) {
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
       if (!this.productTitle) {
         this.productTitle = "";
       } else {
@@ -3972,31 +2603,6 @@ export default {
           });
         })
         .catch(function(obj) {});
-<<<<<<< HEAD
-=======
-    },
-    handleCurrentChange(val) {
-      if (!this.productTitle) {
-        this.productTitle = "";
-      } else {
-        this.pageNum = 1;
-      }
-      if (!this.productUser) {
-        this.productUser = "";
-      } else {
-        this.pageNum = 1;
-      }
-      if (!this.productPos) {
-        this.productPos = 0;
-      } else {
-        this.pageNum = 1;
-      }
-      if (!this.productMod) {
-        this.productMod = 0;
-      } else {
-        this.pageNum = 1;
-      }
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
 
       //出行模板data
       this.$http
@@ -4012,7 +2618,6 @@ export default {
           }
         )
         .then(function(obj) {
-<<<<<<< HEAD
           // console.log("出行模板",obj)
           for (let i = 0; i < obj.data.objects.length; i++) {
             that.type.push({
@@ -4024,388 +2629,6 @@ export default {
         .catch(function(obj) {});
     }
   };
-=======
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]["type"] = "跟团游";
-            arr[k]["name"] = obj.data.objects[k].title;
-            arr[k]["mu_address"] =
-              obj.data.objects[k].destinations[0].destination;
-            arr[k]["options"] = obj.data.objects[k].createUser;
-            arr[k]["status"] = "1";
-            arr[k]["opers"] = "飞猪 携程";
-            arr[k]["price"] = obj.data.objects[k].refPrice;
-          });
-        })
-        .catch(function(obj) {});
-    },
-    // 团期/库存按钮 获取dialog数据
-    groupStage() {
-      this.ccc = [];
-      //1号修改过
-      this.tabBtnDisabled = true;
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/team/api/teampackagelist", {
-          object: {
-            teamID: this.pid
-          }
-        })
-        .then(obj => {
-          console.log(obj);
-          for (let i = 0; i < obj.data.objects.length; i++) {
-            this.$http
-              .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
-                // 成本信息无分页列表
-                object: { packageID: obj.data.objects[i].id }
-              })
-              .then(res => {
-                let tableTest = res.data.objects;
-                console.log(tableTest, 9999);
-              });
-            if (
-              obj.data.objects[i].codePrefix !== "" ||
-              obj.data.objects[i].codeSuffix !== ""
-            ) {
-              that.ccc.push({
-                id: obj.data.objects[i].id,
-                ddd: obj.data.objects[i].name,
-                uptoDay: obj.data.objects[i].uptoDay,
-                value: obj.data.objects[i].templateID,
-                codePrefix: obj.data.objects[i].codePrefix,
-                codePrefixDisabled: obj.data.objects[i].codePrefix !== "",
-                codeSuffix: obj.data.objects[i].codeSuffix,
-                codeSuffixDisabled: obj.data.objects[i].codeSuffix !== "",
-                createTime: obj.data.objects[i].createTime,
-                type: false,
-                rate: obj.data.objects[i].rate,
-                btnDisabled: false
-              });
-              this.tabBtnDisabled = false;
-            } else {
-              that.ccc.push({
-                id: obj.data.objects[i].id,
-                ddd: obj.data.objects[i].name,
-                uptoDay: obj.data.objects[i].uptoDay,
-                value: obj.data.objects[i].templateID,
-                codePrefix: obj.data.objects[i].codePrefix,
-                codePrefixDisabled: obj.data.objects[i].codePrefix !== "",
-                codeSuffix: obj.data.objects[i].codeSuffix,
-                codeSuffixDisabled: obj.data.objects[i].codeSuffix !== "",
-                createTime: obj.data.objects[i].createTime,
-                type: false,
-                rate: obj.data.objects[i].rate,
-                btnDisabled: true
-              });
-              this.tabBtnDisabled = true;
-            }
-            // that.ccc.push({
-            //   id: obj.data.objects[i].id,
-            //   ddd: obj.data.objects[i].name,
-            //   uptoDay: obj.data.objects[i].uptoDay,
-            //   value: obj.data.objects[i].templateID,
-            //   codePrefix: obj.data.objects[i].codePrefix,
-            //   codePrefixDisabled: obj.data.objects[i].codePrefix!== '',
-            //   codeSuffix: obj.data.objects[i].codeSuffix,
-            //    codeSuffixDisabled:obj.data.objects[i].codeSuffix!=='',
-            //   createTime: obj.data.objects[i].createTime,
-            //   type: false,
-            //   rate: obj.data.objects[i].rate,
-            //   btnDisabled:true,
-            // });
-            if (that.ccc[i].value == 0) {
-              that.ccc[i].value = "";
-            }
-          }
-        })
-        .catch(function(obj) {});
-      this.merchandise = true;
-      this.addtable.push({
-        allprice: []
-      });
-      this.sku.push({
-        price: []
-      });
-    },
-    getRowClass({ row, column, rowIndex, columnIndex }) {
-      if (rowIndex == 0) {
-        return "background:#F7F7F7";
-      } else {
-        return "";
-      }
-    },
-    // 点击属性按钮的时候
-    begin(e, key) {
-      // 按下按钮
-      if (e.pp == false) {
-        // 给点击之后的样式
-        this.arr.push({
-          id: key
-        });
-        // console.log(this.arr);
-        document.getElementById("kk" + key).style.border = "solid 1px #409EFF";
-        document.getElementById("kk" + key).style.color = "#409EFF";
-        // 当不符合属性条件时先将全部的按钮都禁用
-        if (this.addtable[this.addtable.length - 1].allprice.length >= 3) {
-          // console.log("超过了")
-          for (var po = 0; po < this.buttonList.length; po++) {
-            this.buttonList[po].forbidden = true;
-
-            document.getElementById("kk" + po).style.border =
-              "dashed 1px #c2c2c2";
-            document.getElementById("kk" + po).style.color = "#c0c4cc";
-            document.getElementById("kk" + po).style.background = "#fff";
-          }
-          // 然后再将点击了的按钮存在一个数组里面,再将这个数组里面的按钮取消禁用.
-          for (var lo = 0; lo < this.arr.length; lo++) {
-            this.buttonList[this.arr[lo].id].forbidden = false;
-            document.getElementById("kk" + this.arr[lo].id).style.border =
-              "solid 1px #409EFF";
-            document.getElementById("kk" + this.arr[lo].id).style.color =
-              "#409EFF";
-          }
-        }
-        // 点击向数组中添加数值
-        this.addtable[this.addtable.length - 1].allprice.push({
-          id: e.id,
-          property: e.button,
-          verifier: e.verifier,
-          value: []
-        });
-        // 按下按钮给一个true表示按下
-        this.buttonList[key].pp = true;
-        // 判断表格中的数据条数,如果数据只有一条那么生成一条确认属性值
-        if (this.addtable[this.addtable.length - 1].allprice.length == 1) {
-          this.addtable[this.addtable.length - 1].allprice.push({
-            ll: ""
-          });
-          this.qq = true;
-          this.buttonList[key].key =
-            this.addtable[this.addtable.length - 1].allprice.length - 2;
-        } else {
-          // 如果数据条数大于一条,则吧str,也就是确认属性值这条代码拿出来在重新放到数据尾部
-          var str = this.addtable[this.addtable.length - 1].allprice.splice(
-            this.addtable[this.addtable.length - 1].allprice.length - 2,
-            1
-          );
-          this.addtable[this.addtable.length - 1].allprice.push(str[0]);
-          this.buttonList[key].key =
-            this.addtable[this.addtable.length - 1].allprice.length - 2;
-          // console.log(e);
-        }
-      } else if (e.pp) {
-        // 当按钮抬起了
-        // 这个地方删除有些问题!
-        this.addtable[this.addtable.length - 1].allprice.splice(e.key, 1);
-        for (
-          let i = 0;
-          i < this.addtable[this.addtable.length - 1].allprice.length - 1;
-          i++
-        ) {
-          this.buttonList[
-            this.addtable[this.addtable.length - 1].allprice[i].id
-          ].key = i;
-        }
-        if (this.addtable[this.addtable.length - 1].allprice.length == 1) {
-          this.addtable[this.addtable.length - 1].allprice.splice(0, 1);
-        }
-        this.buttonList[key].pp = false;
-        // 当抬起按钮的时候,如果符合属性数量的要求,那么将所有的禁用关闭
-        if (this.addtable[this.addtable.length - 1].allprice.length < 4) {
-          for (var po = 0; po < this.buttonList.length; po++) {
-            this.buttonList[po].forbidden = false;
-            document.getElementById("kk" + po).style.border =
-              "solid 1px #c2c2c2";
-            document.getElementById("kk" + po).style.color = "#606266";
-          }
-          this.arr.splice(e.key, 1);
-        }
-        // 在其他按钮禁用的情况下也显示已经选中的按钮
-        for (var lo = 0; lo < this.arr.length; lo++) {
-          document.getElementById("kk" + this.arr[lo].id).style.border =
-            "solid 1px #409EFF";
-          document.getElementById("kk" + this.arr[lo].id).style.color =
-            "#409EFF";
-        }
-      }
-    },
-    qqq() {
-      for (var i = 0; i < this.ccc.length; i++) {
-        if (this.ccc[i].codeSuffix == "" || this.ccc[i].codePrefix == "") {
-          this.isCollapse = true;
-          // this.$message.error("错了哦，团号不能为空");
-        } else if (this.ccc[i].btnDisabled === false) {
-          // this.isCollapse = false;
-          this.tabBtnDisabled = false;
-          // this.$message.error("错了哦，团号不能重复");
-        }
-      }
-    },
-    headCall(data) {
-      if (this.merchandise == true) {
-        this.isCollapse = true;
-      }
-      this.merchandise = data;
-    },
-    // 添加增值
-    // appreciation(){
-    //   this.accretionBall = true;
-    // },
-    // 保存增值
-    // save(formName){
-    //   this.$refs[formName].validate((valid) =>{
-    //     if (valid){
-    //       this.$message({
-    //         message: '添加成功',
-    //         type: 'success'
-    //       });
-    //       console.log(this.ruleForm);
-    //       this.accretionBall = false;
-    //       this.AddpriceId++;
-    //       this.Addprice.push({
-    //         id:this.Addprice.length+1,
-    //         name:this.ruleForm.name,
-    //         priceSelect:this.ruleForm.priceSelect,
-    //         explain:this.ruleForm.explain,
-    //         type:false,
-    //       })
-    //       this.accretionTable = true;
-    //       console.log(this.Addprice);
-    //       // 清空输入框的数据
-    //       this.ruleForm.name = '';
-    //       this.ruleForm.priceSelect = '';
-    //       this.ruleForm.explain = '';
-    //       // this.$refs[formName].resetFields();
-    //     } else {
-    //       console.log('error submit!!');
-    //       return false;
-    //     }
-    //   });
-    // },
-    // 删除sku
-    // delSku(a){
-    //   this.ccc.splice(a,1);
-    // },
-    // 删除增值服务
-    // delPrice(b){
-    //   this.Addprice.splice(b,1);
-    // },
-    // sku上线
-    online(index) {
-      this.ccc[index].type = true;
-    },
-    // tableshow(){
-    //   if(this.ccc.length === 0){
-    //     this.$message.error("错了哦，必须添加套餐");
-    //   }
-    // },
-    // sku下线
-    offline(index) {
-      this.ccc[index].type = false;
-    },
-    // 增值服务上线
-    addOnline(index) {
-      this.Addprice[index].type = true;
-    },
-    // 增值服务下线
-    addOffline(index) {
-      this.Addprice[index].type = false;
-    },
-    //获取id
-    clickBanle(row, event, column) {
-      this.pid = row["id"];
-      this.reable = false;
-    }
-    // clickBanle(index,data){
-    //   this.pid = data,
-    //   console.log(this.pid)
-    //   console.log(index)
-    // }
-  },
-  mounted() {
-    $(".testj").click();
-  },
-  created() {
-    this.themeList();
-    //产品列表
-    var that = this;
-    this.pageNum = 1;
-    if (!this.productTitle) {
-      this.productTitle = "";
-    } else {
-      this.pageNum = 1;
-    }
-    if (!this.productUser) {
-      this.productUser = "";
-    } else {
-      this.pageNum = 1;
-    }
-    this.$http
-      .post(
-        this.GLOBAL.serverSrc + "/team/api/teamsearch",
-        {
-          pageIndex: 1,
-          pageSize: this.pagesize,
-          total: 0,
-          object: {
-            id: 0,
-            title: that.productTitle,
-            createUser: that.productUser,
-            minPrice: 0,
-            maxPrice: 0,
-            podID: 0,
-            destinationID: 0
-          }
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token")
-          }
-        }
-      )
-      .then(function(obj) {
-        that.total = obj.data.total;
-        that.tableData = obj.data.objects;
-        that.tableData.forEach(function(v, k, arr) {
-          arr[k]["type"] = "跟团游";
-          arr[k]["name"] = obj.data.objects[k].title;
-          arr[k]["mu_address"] =
-            obj.data.objects[k].destinations[0].destination;
-          arr[k]["options"] = obj.data.objects[k].createUser;
-          arr[k]["status"] = "1";
-          arr[k]["opers"] = "飞猪 携程";
-          arr[k]["price"] = obj.data.objects[k].refPrice;
-        });
-      })
-      .catch(function(obj) {});
-
-    //出行模板data
-    this.$http
-      .post(
-        this.GLOBAL.serverSrc + "/universal/template/api/templatelist",
-        {
-          object: {}
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token")
-          }
-        }
-      )
-      .then(function(obj) {
-        // console.log("出行模板",obj)
-        for (let i = 0; i < obj.data.objects.length; i++) {
-          that.type.push({
-            value: obj.data.objects[i].id,
-            label: obj.data.objects[i].name
-          });
-        }
-      })
-      .catch(function(obj) {});
-  }
-};
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
 </script>
 
 <style lang="stylus" scoped>
@@ -4505,17 +2728,10 @@ export default {
     /* margin-left: calc(50% - 120px); */
   }
 
-<<<<<<< HEAD
   .el-radio-button>>>.el-radio-button__inner {
     text-align: center;
     width: 120px;
   }
-=======
-.el-radio-button>>>.el-radio-button__inner {
-  text-align: center;
-  width: 120px;
-}
->>>>>>> 4efed933d7b22a768f3479e5f12aedc56f4cbd5a
 
   .property {
     margin-right: 10px;
