@@ -4,7 +4,7 @@
       <el-tab-pane label="无收入借款" name="noIncomeBorrowing"></el-tab-pane>
       <el-tab-pane label="预付款管理" name="advancePaymentAround"></el-tab-pane>
       <el-tab-pane label="余额支付借款" name="balancePaymentBorrowing"></el-tab-pane>
-      <el-tab-pane :label="'需要您审批（'+ (noIncomeNum + advanceNum + balanceNum) +'）'" name="pendingApproval"></el-tab-pane>
+      <el-tab-pane :label="'需要您审批（'+ totalNum +'）'" name="pendingApproval"></el-tab-pane>
     </el-tabs>
     <router-view></router-view>
   </div>
@@ -15,9 +15,7 @@
       return {
         activeName: 'noIncomeBorrowing',
         url_is: true,
-        noIncomeNum: 0,
-        advanceNum: 0,
-        balanceNum: 0
+        totalNum: 0,
       };
     },
     methods: {
@@ -32,30 +30,22 @@
           this.$router.push({ path: "/aroundBorrowingManagement/pendingApproval" });
         }
       },
-      loadData(periphery_type){
+      // 加载待审批数量（-1，-1 目前看可以获取全部）
+      loadData(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/examinepage", {
-          "pageIndex": this.currentPage,
-          "pageSize": this.pageSize,
-          "create_uid": '',
-          "supplier_code": '',
-          "start_at": '',
-          "end_at": '',
-          "periphery_type": periphery_type,
-          "approval_status": '',
-          "id": ""
+        this.$http.post(this.GLOBAL.jqUrl + "/ZB/GettingUnfinishedTasksForZB", {
+          "userCode": sessionStorage.getItem('userCode'),
+//          "userCode": "zb1",
+          "startTime": "1970-07-23T01:30:54.452Z",
+          "endTime": new Date(),
+          "startIndex": -1,
+          "endIndex": -1,
+          "workflowCode": "loan"
         }, ).then(function(response) {
-          if (response.data.code == '200') {
-            if(periphery_type == 1){
-              that.noIncomeNum = response.data.data.list.length;
-            }else if(periphery_type == 2){
-              that.advanceNum = response.data.data.list.length;
-            }else if(periphery_type == 3){
-              that.balanceNum = response.data.data.list.length;
-            }
-          } else {
-            that.$message.success("加载数据失败~");
-          }
+          console.log('获取未完成任务数量', response);
+//          alert(response.data.length);
+          that.totalNum = response.data.length;
+          // 赋值代码
         }).catch(function(error) {
           console.log(error);
         });
@@ -90,9 +80,7 @@
       }
 
       // 加载待审批数量
-      this.loadData(1);
-      this.loadData(2);
-      this.loadData(3);
+      this.loadData();
 
     },
   };

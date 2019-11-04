@@ -48,46 +48,48 @@
         <el-date-picker v-model="startTime" type="date" placeholder="开始日期" class="start-time baseIn" :picker-options="startDatePicker" required></el-date-picker>
         <span class="lineSpan">--</span>
         <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time baseIn" :picker-options="endDatePicker" required></el-date-picker>
-        <p class="mark_p">该笔款所包含的所有订单，所有订单下单的时间区间</p>
+        <p class="mark_p">导入明细，直接填充开始时间和结束时间</p>
         <br><br>
-        <p class="left_span"><span>*</span>订单明细：</p>
-        <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="fileListUpload" :limit="1" required>
-          <el-button size="small" type="primary">点击上传</el-button>
-        </el-upload>
-        <p class="stepTitle">收款明细</p>
-        <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTimeTable}}--{{endTimeTable}}</div>
-        <el-table ref="singleTable" :data="tableDataQK" border :header-cell-style="getRowClass" height="700">
-          <el-table-column prop="1" label="入账时间" align="center">
-          </el-table-column>
-          <el-table-column prop="2" label="订单编号" align="center">
-          </el-table-column>
-          <el-table-column prop="3" label="客人名称" align="center">
-          </el-table-column>
-          <el-table-column prop="4" label="产品" align="center">
-          </el-table-column>
-          <el-table-column prop="5" label="结算金额" align="center">
-            <template slot-scope="scope">
-              <span>{{scope.row[5]}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="6" label="手续费" align="center">
-            <template slot-scope="scope">
-              <span>{{scope.row[6]}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="8" label="团号" align="center">
-          </el-table-column>
-          <el-table-column prop="9" label="粉联号" align="center">
-          </el-table-column>
-          <el-table-column prop="10" label="发票号" align="center">
-          </el-table-column>
-          <el-table-column prop="money" label="操作" align="center">
-            <template slot-scope="scope">
-              <p v-if="scope.row[0] == '已删除'">已删除</p>
-              <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope)" v-else>删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div v-if="baseInfo.distributor != '无'">
+          <p class="left_span"><span>*</span>订单明细：</p>
+          <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="fileListUpload" :limit="1" required>
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
+          <p class="stepTitle">收款明细</p>
+          <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTimeTable}}--{{endTimeTable}}</div>
+          <el-table ref="singleTable" :data="tableDataQK" border :header-cell-style="getRowClass" height="700">
+            <el-table-column prop="1" label="入账时间" align="center">
+            </el-table-column>
+            <el-table-column prop="2" label="订单编号" align="center">
+            </el-table-column>
+            <el-table-column prop="3" label="客人名称" align="center">
+            </el-table-column>
+            <el-table-column prop="4" label="产品" align="center">
+            </el-table-column>
+            <el-table-column prop="5" label="结算金额" align="center">
+              <template slot-scope="scope">
+                <span>{{scope.row[5]}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="6" label="手续费" align="center">
+              <template slot-scope="scope">
+                <span>{{scope.row[6]}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="8" label="团号" align="center">
+            </el-table-column>
+            <el-table-column prop="9" label="粉联号" align="center">
+            </el-table-column>
+            <el-table-column prop="10" label="发票号" align="center">
+            </el-table-column>
+            <el-table-column prop="money" label="操作" align="center">
+              <template slot-scope="scope">
+                <p v-if="scope.row[0] == '已删除'">已删除</p>
+                <el-button size="small" type="text" style="color: red;" @click="deleteBtn(scope)" v-else>删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
     </el-dialog>
   </div>
@@ -183,10 +185,13 @@
           that.$message.warning("款项入账时间段不能为空");
           return;
         }
-        if(this.fileListUpload.length === 0){
-          that.$message.warning("订单明细不能为空");
-          return;
+        if(this.baseInfo.distributor != '无'){
+          if(this.fileListUpload.length === 0){
+            that.$message.warning("订单明细不能为空");
+            return;
+          }
         }
+
         let fileArr = [];
         if(this.fileListUpload.length > 0){
           const fileItem = {
@@ -438,9 +443,27 @@
               console.log(obj)
             });
             // 凭证
-            that.fileList = response.data.data.file;
-            for(let i = 0; i < that.fileList.length; i++){
-              that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
+            if(response.data.data.fil){
+              that.fileList = response.data.data.file;
+              for(let i = 0; i < that.fileList.length; i++){
+                that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
+              }
+            }else{
+              that.fileList = [];
+            }
+
+
+            // 分销商为无，自动填充时间
+            if(response.data.data.distributor == '无'){
+              const timeToday = new Date();
+              const year = timeToday.getFullYear();
+              const month = timeToday.getMonth();
+              const day = timeToday.getDate();
+              that.startTime = (year - 1) + '-' + month + '-' + day;
+              that.endTime = (year + 1) + '-' + month + '-' + day;
+
+              console.log(that.startTime);
+              console.log(that.endTime);
             }
           } else {
             that.$message.success("加载数据失败~");
