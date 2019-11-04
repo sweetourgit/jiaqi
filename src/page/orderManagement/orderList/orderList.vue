@@ -427,9 +427,6 @@ export default {
       // let temp = this.orderpage;
       // temp[index].showContent = !temp[index].showContent;
       // this.orderpage = temp;
-
-      // this.showContent = index;
-      // this.axiosListOneInfo(item.id);
       if (this.showContent != index) {
         this.showContent = index;
         this.axiosListOneInfo(item.id);

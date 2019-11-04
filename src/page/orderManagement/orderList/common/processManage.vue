@@ -206,7 +206,9 @@
       <span>是否需要取消该订单</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="orderModification(orderget.orderStatus,0)">确 定</el-button>
+        <!-- <el-button type="primary" @click="orderModification(orderget.orderStatus,0)">确 定</el-button> -->
+        <el-button type="primary" @click="orderModification(9,0)">确 定</el-button>
+
       </span>
     </el-dialog>
 
@@ -478,6 +480,7 @@ export default {
     },
 
     orderModification(status, cancle) {
+      console.log(status)
       //订单修改保存
       let url = "/order/stat/api";
       switch (status) {
