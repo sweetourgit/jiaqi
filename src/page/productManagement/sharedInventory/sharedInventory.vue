@@ -110,23 +110,28 @@
             <el-form label-width="100px">
               <el-row>
                 <el-col style="width: 250px;">
-                  <el-form-item label="总库存：" prop="podCity">
+                  <el-form-item label="总库存：">
                     {{ current.count }}
                   </el-form-item>
                 </el-col>
                 <el-col style="width: 250px;">
-                  <el-form-item label="剩余库存：" prop="podTime">
+                  <el-form-item label="剩余库存：">
                     {{ current.left }}
                   </el-form-item>
                 </el-col>
                 <el-col style="width: 250px;">
-                  <el-form-item label="人均成本：" prop="podPlace">
+                  <el-form-item label="人均成本：">
                     {{ parseDouble(current.averageCost) }}
                   </el-form-item>
                 </el-col>
                 <el-col style="width: 250px;">
-                  <el-form-item label="操作：" prop="podTime">
+                  <el-form-item label="操作：">
                     {{ current.createUser }}
+                  </el-form-item>
+                </el-col>
+                <el-col style="width: 250px;">
+                  <el-form-item label="已售：">
+                    {{ current.count - current.left }}
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -152,11 +157,11 @@
                       {{ plan.teamProName }}
                     </el-form-item>
                   </el-col>
-                  <el-col style="width: 250px;">
+                  <!-- <el-col style="width: 250px;">
                     <el-form-item label="已售：">
                       {{ plan.saleCount }}
                     </el-form-item>
-                  </el-col>
+                  </el-col> -->
                 </el-row>
               </el-form>
             </div>
@@ -286,13 +291,13 @@ export default {
       getInventorydetailAction.bind(this)(inventory.id).then(res => {
         let { object, plans }= res;
         
-        let left= object.count;
+        let count= object.count;
         // @497
         // 原逻辑
         // plans.forEach(plan => left-= plan.saleCount);
         // object.left= left;
         // 新逻辑
-        left= plans && plans[0]? plans[0].saleCount: 0;
+        object.left= count- (plans && plans[0]? plans[0].saleCount: 0);
 
         this.current= object;
         if(plans) this.plans= plans;

@@ -21,7 +21,7 @@
         </el-col>
         <el-col :span="8">
           <div class="fl">
-            <el-button type="primary">搜索</el-button>
+            <el-button type="primary" @click="planSelect()" >搜索</el-button>
             <el-button @click="emptyButton_01()" type="primary">重置</el-button>
           </div>
         </el-col>
@@ -289,6 +289,35 @@ import moment from 'moment'
       } else {
         return ''
       }
+    },
+    // 检索
+    planSelect(){
+      let getJqId = []
+      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+        .then(obj => {
+          this.$http.post('http://test.dayuntong.com/h3wf/JQ/GettingUnfinishedTasksForJQ', {
+            "userCode": sessionStorage.getItem('userCode'),
+            "startTime": this.planTime_01 ? moment(this.planTime_01).format('YYYY-MM-DD') : '',
+            "endTime": this.planData_01 ? moment(this.planData_01).format('YYYY-MM-DD') : '',
+            "startIndex": this.currentPage,
+            "endIndex": this.pagesize,
+            "workflowCode": obj.data.objects[0].name
+          }).then(res => {
+            let keepRes = res.data
+            keepRes.forEach(function (item) {
+              getJqId.push(item.jq_ID)
+            })
+            this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', { // 通过GUID查找无收入/预付款列表
+              "guid": getJqId
+            }).then(obj =>{
+              this.tableData = obj.data.objects;
+            })
+          }).catch(err => {
+            console.log(err);
+          })
+        }).catch(err => {
+          console.log(err)
+      })
     },
     // 分页
     handleSizeChange(page) {

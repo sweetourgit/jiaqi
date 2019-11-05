@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="vm.isMultiple?'新增库存（多选）':'新增库存'" width="1260px"
+  <el-dialog :title="vm.isMultiple?'新增计划（多选）':'新增计划'" width="1260px"
     :visible="vm.state"
     :close-on-click-modal="false"
     :before-close="handleClose">
@@ -20,8 +20,10 @@
               <el-radio :label="1">共享</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="共享库存：" prop="night" v-if="vm.share=== SHARE_STATE.SHARE">
-            <el-select v-model="submitForm.crowdID" type="date" placeholder="最高" style="width: 400px;" size="small">
+          <el-form-item label="共享库存：" prop="inventoryID" v-if="vm.share=== SHARE_STATE.SHARE">
+            <el-select v-model="submitForm.inventoryID" type="date" placeholder="共享库存" style="width: 400px;" size="small"
+              @change="selectShareInventory"
+            >
               <el-option
                 v-for="item in shareOptions"
                 :key="item.id"
@@ -30,13 +32,13 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="总库存：" prop="count">
-            <el-input size="small" style="width: 400px;" placeholder="请输入总库存"
+          <el-form-item :label="countText" prop="count">
+            <el-input size="small" style="width: 400px;" placeholder="总库存" :disabled="vm.share=== SHARE_STATE.SHARE"
               v-model="submitForm.count"
             ></el-input>        
           </el-form-item>
-          <el-form-item label="预留时长：" prop="night">
-            <el-select v-model="submitForm.crowdID" type="date" placeholder="最高" style="width: 400px;" size="small">
+          <el-form-item label="预留时长：" prop="dateHous">
+            <el-select v-model="submitForm.dateHous" type="date" placeholder="预留时长" style="width: 400px;" size="small">
               <el-option
                 v-for="item in 24"
                 :key="item"
@@ -45,14 +47,29 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="报名类型：" prop="enrollName">
+            <el-select v-model="submitForm.enrollName" placeholder="最高" size="small">
+              <el-option
+                v-for="(item, i) in enrollTypeOptions"
+                :key="i"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
+            <el-button type="primary" size="small" @click="addEnrollCard">添加</el-button>
+          </el-form-item>
         </el-form>
       </div>
-      <div style="padding:0 20px;">
-        <el-button type="primary" size="small">新增</el-button>
-      </div>
+
       <div style="width: 100%; overflow: auto; padding: 20px 20px 0 20px; box-sizing: border-box;">
         <div style="display: flex;">
-          <plan-card></plan-card>
+          <enroll-card ref="enrollRef" 
+            v-for="(item, i) in enrollList" 
+            :key="i"
+            :proto="item"
+          >
+            <el-button style="float: right; padding: 3px 0;" type="text" @click="removeEnrollCard(i)">删除</el-button>
+          </enroll-card>
         </div>
       </div>
     </div>
@@ -64,17 +81,26 @@
 </template>
 
 <script>
-import planCard from './comps/plan-card'
+import enrollCard from './comps/enroll-card'
 import { DAY_STATE as SHARE_STATE } from '../../../../../../dictionary'
-import { getInventoryList } from '../../../../../../planInventory'
+import { 
+  getInventoryList, // 获取指定天的所有共享库存 
+  getEnrollTypeDictionary, // 获取报名类型字典
+} from '../../../../../../planInventory'
 
 export default {
-  components: { planCard },
+  components: { enrollCard },
 
-  inject: ['poolManager'],
+  inject: ['poolManager', 'PACKAGE_LIST'],
 
   props: {
     proto: Object
+  },
+
+  computed: {
+    countText(){
+      return this.vm.share=== SHARE_STATE.SHARE? '剩余库存：': '总库存：'
+    }
   },
 
   data(){
@@ -82,67 +108,106 @@ export default {
       vm: {
         state: false,
         share: SHARE_STATE.NOT_SHARE,
-        isMultiple: false
+        isMultiple: false,
+        
       },
       // 新增plan
-      planList: [],
+      enrollList: [],
       // 共享库存列表
       shareOptions: [],
+      // 报名类型列表
+      enrollTypeOptions: [],
       submitForm: {
         id: null,
         date: null,
         name: '',
         count: '',
-        share: SHARE_STATE.NOT_SHARE
+        share: SHARE_STATE.NOT_SHARE,
+        dateHous: null,
+        inventoryID: null,
+        enrollName: null
       },
       rules: {
+        inventoryID: { required: true, message: '请选择共享库存', trigger: ['blur']}, 
+        share: { required: true, message: '请选择库存类型', trigger: ['blur']},
         name: { required: true, message: '请填写库存名称', trigger: ['blur']},
         count: [
-          { required: true, message: '请填写库存', trigger: ['blur']},
-          { required: true, validator: this.positiveIntegerValidator, trigger: ['blur']},
+          { required: true, message: '请填写库存', trigger: ['change', 'blur']},
+          { required: true, validator: this.positiveIntegerValidator, trigger: ['change', 'blur']},
         ],
-        averageCost: [
-          { required: true, message: '请填写人均成本', trigger: ['blur']},
-          { required: true, validator: this.moneyValidator, trigger: ['blur']},
-        ]
+        dateHous: { required: true, message: '请选择预留时长', trigger: ['blur']},
       }
     }, { SHARE_STATE })
   },
 
   methods: {
     handleOpen(date){
-      let managerState= this.poolManager.state;
-      // 判断是否是多选
-      let selectList= [];
-      if(managerState=== SHARE_STATE.MULTIPLE){
-        this.poolManager.calendar.forEach(day => day.selected && selectList.push(day));
-      };
-      this.selectList= selectList;
-      this.vm.isMultiple= selectList.length> 1;
+      // 得到所有选中
+      this.selectedList= this.poolManager.getSelected();
+      // 判断当前是否是多选状态
+      this.vm.isMultiple= this.selectedList.length> 1;
+      getEnrollTypeDictionary().then(res => {
+        this.enrollTypeOptions.push(...res);
+      });
       this.vm.state= true;
     },
 
     handleClose(){
-      this.planList.splice(0);
-      this.shareOptions.splice(0);
-      this.$refs.submitForm.resetFields();
+      this.enrollList.splice(0);  // 清空子列
+      this.shareOptions.splice(0);  // 清空共享库存表单
+      this.enrollTypeOptions.splice(0);
+      this.vm.share= SHARE_STATE.NOT_SHARE; //重置共享状态
+      this.$refs.submitForm.resetFields();  // 重置表单
       this.vm.state= false;
     },
 
-    // 改变表单中的类型
+    // 改变库存类型
     shareChange(bol){
       // 从共享到非共享 直接返回
       if(bol=== SHARE_STATE.NOT_SHARE) return this.vm.share= SHARE_STATE.NOT_SHARE;
       // 如果已经获取过该天共享库存，则返回
-      if(this.shareOptions.length) return;
+      if(this.shareOptions.length) return this.vm.share= bol;
       let { dayInt }= this.poolManager.currentDay;
       getInventoryList({ share: SHARE_STATE.SHARE, date: dayInt }).then(res => {
         this.shareOptions.push(...res)
         this.vm.share= SHARE_STATE.SHARE;
       })
     },
+    
+    // 选择了一条共享库存
+    selectShareInventory(shareId){
+      let hit= this.shareOptions.find(share => share.id=== shareId);
+      if(!hit) return;
+      let { count }= hit;
+      this.submitForm.count= count;
+    },
 
+    // 添加一个报名
+    addEnrollCard(){
+      let name= this.submitForm.enrollName;
+      if(!name) return this.$message.error('请先选择报名类型');
+      if(this.checkEnrollTypeExists(name)) return this.$message.error('报名类型已存在');
+      let enrollDate= this.enrollTypeOptions.find(enroll => enroll.name=== name);
+      let newEnroll= this.getEnrollDTO(name, enrollDate.id);
+      this.enrollList.push(newEnroll);
+    },
+    
+    // 删除一个enroll
+    removeEnrollCard(i){
+      let left= this.getEnrollRefs().map(enrollRef => enrollRef.getData());
+      left.splice(i, 1);
+      this.enrollList.splice(0);
+      this.$nextTick(() => {
+        this.enrollList.push(...left);
+      })
+    },
 
+    // 检查报名类型是否存在
+    checkEnrollTypeExists(name){
+      let enrollRefs= this.getEnrollRefs();
+      let hit= enrollRefs.find(enrollRef => enrollRef.submitForm.enrollName=== name);
+      return hit;
+    },
 
     positiveIntegerValidator(rule, value, cb){
       let reg= /^(0|[1-9][0-9]*)$/;
@@ -177,15 +242,129 @@ export default {
       return copy? Object.assign(this.$deepCopy(this.proto), copy): copy;
     },
 
+    /**
+     * @description:
+     * 1. 共享库存：直接新增计划，且每次只能一个
+     * 2. 非共享库存：先新增库存再新增计划，可以有多个 vm.isMultiple
+     */
     addAction(){
-      let object= this.getSubmitDate();
-      if(!object) return;
-      updateInventoryAction.bind(this)(object).then(res => {
-        this.$message.success('库存修改成功');
-        return this.afterAddAction(res);
-      }).catch(err => {
-        this.$message.error(err);
-      })    
+      if(!this.validate()) return console.error('validator errors');
+      // 清空enrollCache
+      // 缓存子数据集合 this.getEnrollRefs().map(enrollRef => enrollRef.getData());
+      if(this.vm.share=== SHARE_STATE.SHARE) return this.shareAddAction();
+      return this.notShareAddAction();
+    },
+
+    // 共享库存
+    shareAddAction(){
+      let day= this.poolManager.currentDay;
+      let inventoryID= this.submitForm.inventoryID;
+      this.addPlanAction(inventoryID, day);
+    },
+
+    // 非共享
+    notShareAddAction(){
+      let days= this.poolManager.getSelected();
+      console.log(days);
+      let func= (planBol) => {
+        if(!planBol) console.log(this.dayInloop); // 这里是当前day插入plan成功与否的记录 
+
+        // 整理错误队列 然后 return Promise
+        if(days.length=== 0) return;
+        let day= days.pop();
+        // 收集错误信息
+        this.dayInloop= day;
+        this.addInventoryAction(day)
+        .then(inventoryID => {
+          if(!inventoryID){
+            //TODO log dayinloop
+            console.log(this.dayInloop);
+    
+            return Promise.resolve();
+          }
+          return this.addPlanAction(inventoryID, day);
+        })
+        .then(func);
+      }
+
+      return func();
+    },
+
+    //新增库存
+    addInventoryAction(day){
+      return this.linkAddInventory({
+        name: '',
+        count: this.submitForm.count,
+        share: SHARE_STATE.NOT_SHARE,
+        date: day.dayInt
+      })
+    },
+
+    // 新增计划
+    // 返回错误，但是新增成功了
+    addPlanAction(inventoryID, day){
+      let plan= this.getPlanDTO(inventoryID, day);
+      return this.linkAddPlan(plan)
+    },
+
+    validate(){
+      let bol= true;
+      this.$refs.submitForm.validate(validate => {
+        if(!validate) return bol= false;
+        bol= this.childrenValidate();
+      })
+      return bol;
+    },
+
+    childrenValidate(){
+      let bol= true;
+      let enrollRefs= this.getEnrollRefs()
+      if(enrollRefs.length=== 0){
+        this.$message.info('最少包含一条报名类型');
+        return false;
+      }
+      enrollRefs.forEach(enrollRef => {
+        if(bol) bol= enrollRef.validate();
+      })
+      return bol;
+    },
+
+    // 获取所有enrollRef实例
+    getEnrollRefs(){
+      return this.$refs.enrollRef || [];
+    },
+
+    getPlanDTO(inventoryID, day){
+      let currentPac= this.PACKAGE_LIST.find(pac => pac.selected);
+      let { id, codePrefix, codeSuffix }= currentPac;
+      console.log(currentPac, this.submitForm);
+      
+      let { dayInt }= day;
+      return {
+        createTime: 0,
+        inventoryID,
+        packageID: id,
+        date: dayInt,
+        groupCode: `${codePrefix}-${dayInt}-${codeSuffix}`,
+        planEnroll: this.getEnrollRefs().map(enrollRef => enrollRef.getData()),
+        regimentType: 1,
+        dateHous: this.submitForm.dateHous
+      }
+    },
+
+    // 获得一个报名实例
+    getEnrollDTO(enrollName, enrollID, planID){
+      let newEnroll= {
+        enrollID,
+        enrollName,
+        price_01: null,
+        price_02: null,
+        price_03: null,
+        price_04: 0,
+        quota: 0
+      };
+      if(planID) newEnroll.planID= planID;
+      return newEnroll;
     },
 
     afterAddAction(id){
@@ -196,7 +375,35 @@ export default {
       })
     },
 
+    // 链式调用
+    linkAddInventory(object){
+      return new Promise((resolve, reject) => {
+        this.$http.post(this.GLOBAL.serverSrc + "/team/api/inventoryinsert", {
+          object
+        }).then((res) => {
+          let { isSuccess, id }= res.data;
+          if(!isSuccess) return resolve(false);
+          return resolve(id);
+        }).catch((err) => {
+          resolve(false);
+        })
+      })
+    },
 
+    // 链式调用
+    linkAddPlan(object){
+      return new Promise((resolve, reject) => {
+        this.$http.post(this.GLOBAL.serverSrc + "/team/plan/api/insert",{
+          object
+        }).then((res) => {
+          let { isSuccess, objects }= res.data;
+          if(!isSuccess) return resolve(false);
+          return resolve(objects);
+        }).catch((err) => {
+          resolve(false);
+        })
+      })
+    }
   }
 }
 </script>

@@ -630,22 +630,32 @@
           })
       },
       //绑定相关产品弹窗
-      binding(){
+      binding(id){
         this.contentShow = true;
+        //console.log(this.multipleSelection[0].id)
+        var that = this
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/pageteamlabel",
+          {
+            "pageIndex": 1,
+            "pageSize": 10,
+            "labelID": this.multipleSelection[0].id
+          }).then(function(obj){
+            that.tableDataProduct = obj.data.objects
+          })
         //this.queryProduct(this.labelID);
       },
       //查询相关产品列表
-      // queryProduct(id){
-      //   var that = this
-      //   this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/pageteamlabel",
-      //     {
-      //       "pageIndex": 1,
-      //       "pageSize": 10,
-      //       "labelID": this.multipleSelection[0].id
-      //     }).then(function(obj){
-      //       that.tableDataProduct = obj.data.objects
-      //     })
-      // },
+      queryProduct(id){
+        var that = this
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/pageteamlabel",
+          {
+            "pageIndex": 1,
+            "pageSize": 10,
+            "labelID": this.multipleSelection[0].id
+          }).then(function(obj){
+            that.tableDataProduct = obj.data.objects
+          })
+      },
     }
 }
 

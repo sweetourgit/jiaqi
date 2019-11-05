@@ -329,6 +329,8 @@ export default {
     // 新增计划
     awakeAddForm(){
       let state= this.poolManager.state;
+      let day= this.poolManager.currentDay;
+      if(!day.after) return this.$message.error('过期日期不能新增库存、计划');
       if(state=== DAY_STATE.SHARE || state=== DAY_STATE.NOT_SHARE) return this.$message.error('库存已存在');
       if(state=== DAY_STATE.UNDO) return this.$message.error('未指定日期');   
       this.$refs.addRef.handleOpen();

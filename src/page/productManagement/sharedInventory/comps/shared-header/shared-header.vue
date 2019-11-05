@@ -149,6 +149,12 @@ export default {
   methods: {
     
     init(date){
+      // 团期计划跳转 感觉不该放这里
+      if(this.$route.query.date){
+        date= new Date(parseInt(this.$route.query.date));
+        this.$router.replace('/sharedInventory');
+      }
+
       this.changeInAsync(true);
       this.changeCurrent(...this.getDateArr(date));
       inventorylistAction.bind(this)(

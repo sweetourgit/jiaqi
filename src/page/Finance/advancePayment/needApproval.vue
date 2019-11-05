@@ -2,403 +2,413 @@
 <template>
   <div class="all">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-        <!-- 搜索表单 -->
-        <el-form :model="ruleForm" ref="ruleForm"  label-width="80px" id="form-content">
-          <el-row type="flex">
-            <el-col :span="8">
-              <el-form-item label="发起时间:">
-                <el-col :span="11">
-                  <el-form-item prop="startTime">
-                    <el-date-picker type="date" placeholder="选择开始日期" v-model="ruleForm.startTime" style="width: 100%;"></el-date-picker>
-                  </el-form-item>
-                </el-col>
-                <el-col class="line" :span="2">-</el-col>
-                <el-col :span="11">
-                  <el-form-item prop="endTime">
-                    <el-date-picker type="date" placeholder="选择结束日期" v-model="ruleForm.endTime" style="width: 100%;"></el-date-picker>
-                  </el-form-item>
-                </el-col>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item>
-                <el-button @click="searchHand()" type="primary">搜索</el-button>
-                <el-button @click="resetHand('ruleForm')" type="primary">重置</el-button>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-        <!-- 搜索表单 END -->
-        <!-- 表格 -->
-        <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" id="table-content">
-          <el-table-column prop="paymentID" label="借款单号" align="center">
-          </el-table-column>
-          <el-table-column label="发起时间" align="center" width="190">
-            <template slot-scope="scope">
-              {{formatDate1(scope.row.createTime)}}
-            </template>
-          </el-table-column>
-          <el-table-column prop="groupCode" label="团期计划" align="center" width="230">
-          </el-table-column>
-          <el-table-column prop="supplierName" label="供应商名称" align="center" width="170">
-          </el-table-column>
-          <el-table-column prop="supplierTypeEX" label="类型" align="center" width="90">
-          </el-table-column>
-          <el-table-column cell-style prop="price" label="借款金额" align="center" width="90">
-          </el-table-column>
-          <el-table-column prop="createUser" label="申请人" align="center" width="90">
-          </el-table-column>
-          <el-table-column prop="opinion" label="操作" align="center" width="100">
-             <template slot-scope="scope">
-                <el-button @click="dialogFind(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-             </template>
-          </el-table-column>
-        </el-table>
-        <!-- 表格 END -->
-        <!-- 翻页 -->
-        <el-row type="flex" class="paging">
-          <el-col :span="8" :offset="13">
-            <el-pagination
-              v-if="pageshow1"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="pageNum"
-              :page-sizes="[5, 10, 50, 100]"
-              :page-size="pageSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total='total'
-              background
-            >
-            </el-pagination>
+      <!-- 搜索表单 -->
+      <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="80px" id="form-content">
+        <el-row type="flex" class="row-bg">
+          <el-col :span="8">
+            <el-form-item label="团期计划:" prop="groupCode_01">
+              <el-input v-model="ruleFormSeach.groupCode_01" placeholder="请输入团期计划"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="借款人:" prop="borrower">
+              <el-input v-model="ruleFormSeach.borrower" placeholder="请输入借款人"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="申请时间:">
+              <el-col :span="11">
+                <el-form-item prop="startTime">
+                  <el-date-picker type="date" placeholder="选择开始日期" v-model="ruleFormSeach.startTime" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col class="line" :span="2">-</el-col>
+              <el-col :span="11">
+                <el-form-item prop="endTime">
+                  <el-date-picker type="date" placeholder="选择结束日期" v-model="ruleFormSeach.endTime" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5" style="text-align: center">
+            <el-form-item>
+              <el-button @click="searchHand()" type="primary">搜索</el-button>
+              <el-button @click="resetHand('ruleFormSeach')" type="primary">重置</el-button>
+            </el-form-item>
           </el-col>
         </el-row>
-        <!-- 翻页 END -->
-        <!-- 报销弹窗 -->
-        <!-- 申请预付款 -->
-        <el-dialog title="申请预付款" :visible.sync="dialogFormVisible" width=60% :show-close="false">
-          <div v-if="this.find == 1" class="sh_style">审核中</div>
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-            <div class="btn" style="position:absolute;z-index:9;top:20px;right:5%;">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button v-if="this.find == 1" type="primary" @click="Transfer ('ruleForm')">转办</el-button>
-              <el-button v-if="this.find == 1" type="success" @click="submitForm('ruleForm')">确 定</el-button>
-              <el-button v-if="this.find == 1" type="danger" @click="boSubmit('ruleForm')">驳回</el-button>
-            </div>
-            <el-tabs v-model="activeName" @tab-click="handleClick">
-              <!-- 基本信息 -->
-              <el-tab-pane label="预付款申请" name="first">
-                <div>
-                  <!--申请人-->
-                  <el-form-item label="申请人" prop="user" ref="user" label-width="120px">
-                    <div class="destination-input">
-                      <el-tag :key="tag3.pod" v-for="tag3 in dynamicTags3" closable :disable-transitions="false" @close="handleClose3(tag3)">
-                        {{tag3.pod}}
-                      </el-tag>
-                      <el-autocomplete id="ddd" class="input-new-tags" v-model="ruleForm.user" v-if="inputVisible3" ref="saveTagInput" size="small" placeholder="请输入申请人" :trigger-on-focus="false"></el-autocomplete>
-                      <el-button v-else class="input-new-tag" size="small" :disabled="change" @click="showInput3">请输入申请人</el-button>
-                    </div>
-                    <span id="isNull" v-show="noNull">不能为空</span>
-                  </el-form-item>
-                  <!--团期计划-->
-                  <el-form-item label="团期计划" prop="tour" label-width="120px">
-                    <el-input v-model="ruleForm.tour" :disabled="true" @blur="tour_check" class="productName" placeholder="请输入或者选择团期计划"></el-input>
-                    <el-input v-model="ruleForm.productName" :disabled="true" class="productName" placeholder="自动补充产品名称" style="width:30%;"></el-input>
-                    <el-button class="input-new-tag2" size="small" :disabled="change" @click="showInput4">选择</el-button>
-                  </el-form-item>
-                  <!-- 供应商 -->
-                  <el-form-item label="供应商" prop="supplier" ref="supplier" label-width="120px">
-                    <div class="destination-input">
-                      <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
-                        {{tag2.label}}
-                      </el-tag>
-                      <el-autocomplete id="input-error" :disabled="change" class="lable_input" v-if="inputVisible2" v-model="ruleForm.supplier" ref="saveTagInput" size="small" placeholder="请输入供应商" @keyup.enter.native="handleInputConfirm2" :fetch-suggestions="querySearch5" :trigger-on-focus="false" @select="dest_01" @blur="handleInputConfirm2">
-                      </el-autocomplete>
-                      <el-button v-else class="operation_Label" :disabled="change" v-show="supplierLength" size="small" @click="showInput2">请输入供应商</el-button>
-                    </div>
-                    <span id="empty" v-show="empty">不能为空</span>
-                  </el-form-item>
-                  <!-- 类型 -->
-                  <el-form-item label="类型" prop="type" label-width="120px">
-                    <el-select style="float: left;" v-model="ruleForm.type" placeholder="请选择" :disabled="change">
-                      <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                  <!-- 借款金额 -->
-                  <el-form-item label="借款金额" prop="loanMoney" label-width="120px">
-                    <el-input type="number" v-model="ruleForm.loanMoney" class="bright" placeholder="借款金额" :disabled="change"></el-input>
-                  </el-form-item>
-                  <!-- 借款数量 -->
-                  <el-form-item label="借款数量" prop="loanNumber" class="bright_b" label-width="120px" style="margin-left: 35%;">
-                    <el-input type="number" v-model="ruleForm.loanNumber" class="lightspot" placeholder="借款数量" :disabled="change" style='margin-left: 10px;'></el-input>
-                  </el-form-item>
-                  <!-- 摘要 -->
-                  <el-form-item label="摘要" prop="abstract" label-width="120px">
-                    <el-input v-model="ruleForm.abstract" class="bright" placeholder="摘要" :disabled="change"></el-input>
-                  </el-form-item>
-                  <!-- 账户 -->
-                  <el-form-item label="账户" prop="account" label-width="120px">
-                    <el-input v-model="ruleForm.account" class="bright" placeholder="账户" :disabled="change"></el-input>
-                  </el-form-item>
-                  <!-- 开户行 -->
-                  <el-form-item label="开户行" prop="bank" label-width="120px">
-                    <el-input v-model="ruleForm.bank" class="bright" placeholder="开户行" :disabled="change"></el-input>
-                  </el-form-item>
-                  <!-- 开户行 -->
-                  <el-form-item label="开户名" prop="bankName" label-width="120px">
-                    <el-input v-model="ruleForm.bankName" class="bright" placeholder="开户名" :disabled="change"></el-input>
-                  </el-form-item>
-                  <!-- 付款方式 -->
-                  <el-form-item label="付款方式" prop="payMode" label-width="120px">
-                    <el-select style="float: left;" v-model="ruleForm.payMode" placeholder="请选择" :disabled="change">
-                      <el-option v-for="item in payModeList" :key="item.value" :label="item.label" :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="附件" label-width="120px">
-                    <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :disabled="change" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
-                      <el-button size="small" type="primary">点击上传</el-button>
-                      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                    </el-upload>
-                  </el-form-item>
-                  <el-form-item label="" label-width="120px" label-height="auto">
-                    <el-table :data="tableData5" border style="width:70%" :header-cell-style="getRowClass2">
-                      <el-table-column prop="total" label="订单总额" align="center">
-                      </el-table-column>
-                      <el-table-column prop="isTotal" label="已审批总额" align="center">
-                      </el-table-column>
-                      <el-table-column prop="onTotal" label="审批中总额" align="center">
-                      </el-table-column>
-                      <el-table-column prop="sucTotal" label="已收总额" align="center">
-                      </el-table-column>
-                      <el-table-column prop="supTotal" label="供应商欠款总额" align="center">
-                      </el-table-column>
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                  <el-form-item label="付款明细" label-width="120px" label-height="auto">
-                    <br />
-                    <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
-                      <el-table-column prop="id" label="ID" align="center">
-                      </el-table-column>
-                      <el-table-column prop="status" label="状态" align="center">
-                      </el-table-column>
-                      <el-table-column prop="type" label="类型" align="center">
-                      </el-table-column>
-                      <el-table-column prop="supplier" label="供应商" align="center">
-                      </el-table-column>
-                      <el-table-column prop="price" label="付款金额" align="center">
-                      </el-table-column>
-                      <el-table-column prop="number" label="人数" align="center">
-                      </el-table-column>
-                      <el-table-column prop="org" label="部门" align="center">
-                      </el-table-column>
-                      <el-table-column prop="user" label="申请人" align="center">
-                      </el-table-column>
-                      <el-table-column prop="createTime" label="申请日期" align="center">
-                      </el-table-column>
-                      <el-table-column prop="abstract" label="摘要" align="center">
-                      </el-table-column>
-                      <el-table-column label="审批过程" align="center">
-                        <template slot-scope="scope">
-                          <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="cancellationMoney" label="已核销金额" align="center">
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                  <el-form-item label="" label-width="120px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible6">
-                    <el-table :data="tableData11" border style="width:55%" :header-cell-style="getRowClass2">
-                      <el-table-column prop="createTime" label="申请日期" align="center">
-                      </el-table-column>
-                      <el-table-column prop="user" label="申请人" align="center">
-                      </el-table-column>
-                      <el-table-column prop="status" label="状态" align="center">
-                      </el-table-column>
-                      <el-table-column prop="abstract" label="摘要" align="center">
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                  <el-form-item label="无收入借款明细" label-width="120px" label-height="auto">
-                    <br />
-                    <el-table :data="tableData7" border style="width:90%" :header-cell-style="getRowClass2">
-                      <el-table-column prop="id" label="ID" align="center">
-                      </el-table-column>
-                      <el-table-column prop="status" label="状态" align="center">
-                      </el-table-column>
-                      <el-table-column prop="type" label="类型" align="center">
-                      </el-table-column>
-                      <el-table-column prop="supplier" label="供应商" align="center">
-                      </el-table-column>
-                      <el-table-column prop="price" label="付款金额" align="center">
-                      </el-table-column>
-                      <el-table-column prop="org" label="部门" align="center">
-                      </el-table-column>
-                      <el-table-column prop="user" label="申请人" align="center">
-                      </el-table-column>
-                      <el-table-column prop="createTime" label="申请日期" align="center">
-                      </el-table-column>
-                      <el-table-column prop="abstract" label="摘要" align="center">
-                      </el-table-column>
-                      <el-table-column label="审批过程" align="center">
-                        <template slot-scope="scope">
-                          <span style="color:blue;" v-on:click="advanceProcess(scope.row.id)">查看</span>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="cancellationMoney" label="已核销金额" align="center">
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                  <el-form-item label="" label-width="120px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible5">
-                    <el-table :data="tableData10" border style="width:55%" :header-cell-style="getRowClass2">
-                      <el-table-column prop="createTime" label="申请日期" align="center">
-                      </el-table-column>
-                      <el-table-column prop="user" label="申请人" align="center">
-                      </el-table-column>
-                      <el-table-column prop="status" label="状态" align="center">
-                      </el-table-column>
-                      <el-table-column prop="abstract" label="摘要" align="center">
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                  <el-form-item label="收入明细" label-width="120px" label-height="auto">
-                    <br />
-                    <el-table :data="tableData8" border style="width:85%" :header-cell-style="getRowClass2">
-                      <el-table-column prop="oNo" label="订单编号" align="center">
-                      </el-table-column>
-                      <el-table-column prop="source" label="来源" align="center">
-                      </el-table-column>
-                      <el-table-column prop="user" label="联系人" align="center">
-                      </el-table-column>
-                      <el-table-column prop="number" label="人数" align="center">
-                      </el-table-column>
-                      <el-table-column prop="total" label="订单金额" align="center">
-                      </el-table-column>
-                      <el-table-column prop="accepted" label="已收" align="center">
-                      </el-table-column>
-                      <el-table-column prop="arrears" label="欠款" align="center">
-                      </el-table-column>
-                      <el-table-column prop="aNo" label="收款单号" align="center">
-                      </el-table-column>
-                      <el-table-column prop="arrearsTime" label="欠款日期" align="center">
-                      </el-table-column>
-                      <el-table-column prop="repaymentTime" label="应还日期" align="center">
-                      </el-table-column>
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                </div>
-              </el-tab-pane>
-            </el-tabs>
-          </el-form>
-        </el-dialog>
-        <!-- 预付款弹窗 END -->
-        <!--协办弹窗-->
-        <el-dialog style="text-align: left" title="选择协办人:" :visible.sync="dialogFormVisible1" width="50%">
-          <div style="text-align: center">
-            <div style="width: 100%">
-              <div class="button_select" style="margin-bottom: 30px;margin-top: -30px;">
-                <el-input v-model="apply_user_input" class="input" style='margin-left: 0px;'></el-input>
-                <el-button type="primary" @click="searchHand2()" size="medium">搜索</el-button>
-              </div>
-              <div class="table_trip" style=" width: 100%;">
-                <el-table :data="tableData3" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle2" :header-cell-style="getRowClass2">
-                  <el-table-column prop="id" label="ID" align="center" width="100%">
-                  </el-table-column>
-                  <el-table-column prop="name" label="姓名" width="120%" align="center">
-                  </el-table-column>
-                  <el-table-column prop="org" label="组织" align="center">
-                  </el-table-column>
-                  </el-table-column>
-                </el-table>
-              </div>
-              <!--分页-->
-              <div class="block" style="margin-top: 30px;text-align:center;">
-                <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="currentPage2" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total2>
-                </el-pagination>
-              </div>
-              <!--分页-->
-            </div>
+      </el-form>
+      <!-- 搜索表单 END -->
+      <!-- 表格 -->
+      <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" id="table-content">
+        <el-table-column prop="paymentID" label="借款单号" align="center">
+        </el-table-column>
+        <el-table-column label="发起时间" align="center" width="190">
+          <template slot-scope="scope">
+            {{formatDate1(scope.row.createTime)}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="groupCode" label="团期计划" align="center" width="230">
+        </el-table-column>
+        <el-table-column prop="supplierName" label="供应商名称" align="center" width="170">
+        </el-table-column>
+        <el-table-column prop="supplierTypeEX" label="类型" align="center" width="90">
+        </el-table-column>
+        <el-table-column cell-style prop="price" label="借款金额" align="center" width="90">
+        </el-table-column>
+        <el-table-column prop="createUser" label="申请人" align="center" width="90">
+        </el-table-column>
+        <el-table-column prop="opinion" label="操作" align="center" width="100">
+           <template slot-scope="scope">
+              <el-button @click="dialogFind(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+           </template>
+        </el-table-column>
+      </el-table>
+      <!-- 表格 END -->
+      <!-- 翻页 -->
+      <el-row type="flex" class="paging">
+        <el-col :span="8" :offset="13">
+          <el-pagination
+            v-if="pageshow1"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            :page-sizes="[5, 10, 50, 100]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total='total'
+            background
+          >
+          </el-pagination>
+        </el-col>
+      </el-row>
+      <!-- 翻页 END -->
+      <!-- 报销弹窗 -->
+      <!-- 申请预付款 -->
+      <el-dialog title="申请预付款" :visible.sync="dialogFormVisible" width=60% :show-close="false">
+        <div v-if="this.find == 1" class="sh_style">审核中</div>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+          <div class="btn" style="position:absolute;z-index:9;top:20px;right:5%;">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button v-if="this.find == 1" type="primary" @click="Transfer ('ruleForm')">转办</el-button>
+            <el-button v-if="this.find == 1" type="success" @click="submitForm('ruleForm')">确 定</el-button>
+            <el-button v-if="this.find == 1" type="danger" @click="boSubmit('ruleForm')">驳回</el-button>
           </div>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible1 = false">取 消</el-button>
-            <el-button type="primary" @click="routerHandle2()">确 定</el-button>
-          </span>
-        </el-dialog>
-        <!--报销人弹窗end-->
-        <!--团期计划弹窗-->
-        <el-dialog width="60%" title="选择报销的人" :visible.sync="dialogFormVisible2" append-to-body>
-          <div class="indialog">
-            <div class="indialog_search">
-              <span class="search_style">团期单号：</span>
-              <el-input v-model="planNum" placeholder="请输入内容" class="search_input"></el-input>
-              <span class="search_style">产品名称：</span>
-              <el-input v-model="planName" placeholder="请输入内容" class="search_input"></el-input>
-              <span class="search_style">出行日期：</span>
-              <el-input v-model="planTime" placeholder="请输入内容" style="float: left; width: 100px"></el-input>
-              <span class="search__">—</span>
-              <el-input v-model="planTime1" placeholder="请输入内容" style="float: left; width: 100px"></el-input>
-              <el-button type="primary" size="mini" round style="margin-top: 5px; margin-left: 10px">重置</el-button>
+          <el-tabs v-model="activeName" @tab-click="handleClick">
+            <!-- 基本信息 -->
+            <el-tab-pane label="预付款申请" name="first">
+              <div>
+                <!--申请人-->
+                <el-form-item label="申请人" prop="user" ref="user" label-width="120px">
+                  <div class="destination-input">
+                    <el-tag :key="tag3.pod" v-for="tag3 in dynamicTags3" closable :disable-transitions="false" @close="handleClose3(tag3)">
+                      {{tag3.pod}}
+                    </el-tag>
+                    <el-autocomplete id="ddd" class="input-new-tags" v-model="ruleForm.user" v-if="inputVisible3" ref="saveTagInput" size="small" placeholder="请输入申请人" :trigger-on-focus="false"></el-autocomplete>
+                    <el-button v-else class="input-new-tag" size="small" :disabled="change" @click="showInput3">请输入申请人</el-button>
+                  </div>
+                  <span id="isNull" v-show="noNull">不能为空</span>
+                </el-form-item>
+                <!--团期计划-->
+                <el-form-item label="团期计划" prop="tour" label-width="120px">
+                  <el-input v-model="ruleForm.tour" :disabled="true" @blur="tour_check" class="productName" placeholder="请输入或者选择团期计划"></el-input>
+                  <el-input v-model="ruleForm.productName" :disabled="true" class="productName" placeholder="自动补充产品名称" style="width:30%;"></el-input>
+                  <el-button class="input-new-tag2" size="small" :disabled="change" @click="showInput4">选择</el-button>
+                </el-form-item>
+                <!-- 供应商 -->
+                <el-form-item label="供应商" prop="supplier" ref="supplier" label-width="120px">
+                  <div class="destination-input">
+                    <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
+                      {{tag2.label}}
+                    </el-tag>
+                    <el-autocomplete id="input-error" :disabled="change" class="lable_input" v-if="inputVisible2" v-model="ruleForm.supplier" ref="saveTagInput" size="small" placeholder="请输入供应商" @keyup.enter.native="handleInputConfirm2" :fetch-suggestions="querySearch5" :trigger-on-focus="false" @select="dest_01" @blur="handleInputConfirm2">
+                    </el-autocomplete>
+                    <el-button v-else class="operation_Label" :disabled="change" v-show="supplierLength" size="small" @click="showInput2">请输入供应商</el-button>
+                  </div>
+                  <span id="empty" v-show="empty">不能为空</span>
+                </el-form-item>
+                <!-- 类型 -->
+                <el-form-item label="类型" prop="type" label-width="120px">
+                  <el-select style="float: left;" v-model="ruleForm.type" placeholder="请选择" :disabled="change">
+                    <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <!-- 借款金额 -->
+                <el-form-item label="借款金额" prop="loanMoney" label-width="120px">
+                  <el-input type="number" v-model="ruleForm.loanMoney" class="bright" placeholder="借款金额" :disabled="change"></el-input>
+                </el-form-item>
+                <!-- 借款数量 -->
+                <el-form-item label="借款数量" prop="loanNumber" class="bright_b" label-width="120px" style="margin-left: 35%;">
+                  <el-input type="number" v-model="ruleForm.loanNumber" class="lightspot" placeholder="借款数量" :disabled="change" style='margin-left: 10px;'></el-input>
+                </el-form-item>
+                <!-- 摘要 -->
+                <el-form-item label="摘要" prop="abstract" label-width="120px">
+                  <el-input v-model="ruleForm.abstract" class="bright" placeholder="摘要" :disabled="change"></el-input>
+                </el-form-item>
+                <!-- 账户 -->
+                <el-form-item label="账户" prop="account" label-width="120px">
+                  <el-input v-model="ruleForm.account" class="bright" placeholder="账户" :disabled="change"></el-input>
+                </el-form-item>
+                <!-- 开户行 -->
+                <el-form-item label="开户行" prop="bank" label-width="120px">
+                  <el-input v-model="ruleForm.bank" class="bright" placeholder="开户行" :disabled="change"></el-input>
+                </el-form-item>
+                <!-- 开户行 -->
+                <el-form-item label="开户名" prop="bankName" label-width="120px">
+                  <el-input v-model="ruleForm.bankName" class="bright" placeholder="开户名" :disabled="change"></el-input>
+                </el-form-item>
+                <!-- 付款方式 -->
+                <el-form-item label="付款方式" prop="payMode" label-width="120px">
+                  <el-select style="float: left;" v-model="ruleForm.payMode" placeholder="请选择" :disabled="change">
+                    <el-option v-for="item in payModeList" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="附件" label-width="120px">
+                  <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :disabled="change" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                  </el-upload>
+                </el-form-item>
+                <el-form-item label="" label-width="120px" label-height="auto">
+                  <el-table :data="tableData5" border style="width:70%" :header-cell-style="getRowClass2">
+                    <el-table-column prop="total" label="订单总额" align="center">
+                    </el-table-column>
+                    <el-table-column prop="isTotal" label="已审批总额" align="center">
+                    </el-table-column>
+                    <el-table-column prop="onTotal" label="审批中总额" align="center">
+                    </el-table-column>
+                    <el-table-column prop="sucTotal" label="已收总额" align="center">
+                    </el-table-column>
+                    <el-table-column prop="supTotal" label="供应商欠款总额" align="center">
+                    </el-table-column>
+                    </el-table-column>
+                  </el-table>
+                </el-form-item>
+                <el-form-item label="付款明细" label-width="120px" label-height="auto">
+                  <br />
+                  <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
+                    <el-table-column prop="id" label="ID" align="center">
+                    </el-table-column>
+                    <el-table-column prop="status" label="状态" align="center">
+                    </el-table-column>
+                    <el-table-column prop="type" label="类型" align="center">
+                    </el-table-column>
+                    <el-table-column prop="supplier" label="供应商" align="center">
+                    </el-table-column>
+                    <el-table-column prop="price" label="付款金额" align="center">
+                    </el-table-column>
+                    <el-table-column prop="number" label="人数" align="center">
+                    </el-table-column>
+                    <el-table-column prop="org" label="部门" align="center">
+                    </el-table-column>
+                    <el-table-column prop="user" label="申请人" align="center">
+                    </el-table-column>
+                    <el-table-column prop="createTime" label="申请日期" align="center">
+                    </el-table-column>
+                    <el-table-column prop="abstract" label="摘要" align="center">
+                    </el-table-column>
+                    <el-table-column label="审批过程" align="center">
+                      <template slot-scope="scope">
+                        <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="cancellationMoney" label="已核销金额" align="center">
+                    </el-table-column>
+                  </el-table>
+                </el-form-item>
+                <el-form-item label="" label-width="120px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible6">
+                  <el-table :data="tableData11" border style="width:55%" :header-cell-style="getRowClass2">
+                    <el-table-column prop="createTime" label="申请日期" align="center">
+                    </el-table-column>
+                    <el-table-column prop="user" label="申请人" align="center">
+                    </el-table-column>
+                    <el-table-column prop="status" label="状态" align="center">
+                    </el-table-column>
+                    <el-table-column prop="abstract" label="摘要" align="center">
+                    </el-table-column>
+                  </el-table>
+                </el-form-item>
+                <el-form-item label="无收入借款明细" label-width="120px" label-height="auto">
+                  <br />
+                  <el-table :data="tableData7" border style="width:90%" :header-cell-style="getRowClass2">
+                    <el-table-column prop="id" label="ID" align="center">
+                    </el-table-column>
+                    <el-table-column prop="status" label="状态" align="center">
+                    </el-table-column>
+                    <el-table-column prop="type" label="类型" align="center">
+                    </el-table-column>
+                    <el-table-column prop="supplier" label="供应商" align="center">
+                    </el-table-column>
+                    <el-table-column prop="price" label="付款金额" align="center">
+                    </el-table-column>
+                    <el-table-column prop="org" label="部门" align="center">
+                    </el-table-column>
+                    <el-table-column prop="user" label="申请人" align="center">
+                    </el-table-column>
+                    <el-table-column prop="createTime" label="申请日期" align="center">
+                    </el-table-column>
+                    <el-table-column prop="abstract" label="摘要" align="center">
+                    </el-table-column>
+                    <el-table-column label="审批过程" align="center">
+                      <template slot-scope="scope">
+                        <span style="color:blue;" v-on:click="advanceProcess(scope.row.id)">查看</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="cancellationMoney" label="已核销金额" align="center">
+                    </el-table-column>
+                  </el-table>
+                </el-form-item>
+                <el-form-item label="" label-width="120px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible5">
+                  <el-table :data="tableData10" border style="width:55%" :header-cell-style="getRowClass2">
+                    <el-table-column prop="createTime" label="申请日期" align="center">
+                    </el-table-column>
+                    <el-table-column prop="user" label="申请人" align="center">
+                    </el-table-column>
+                    <el-table-column prop="status" label="状态" align="center">
+                    </el-table-column>
+                    <el-table-column prop="abstract" label="摘要" align="center">
+                    </el-table-column>
+                  </el-table>
+                </el-form-item>
+                <el-form-item label="收入明细" label-width="120px" label-height="auto">
+                  <br />
+                  <el-table :data="tableData8" border style="width:85%" :header-cell-style="getRowClass2">
+                    <el-table-column prop="oNo" label="订单编号" align="center">
+                    </el-table-column>
+                    <el-table-column prop="source" label="来源" align="center">
+                    </el-table-column>
+                    <el-table-column prop="user" label="联系人" align="center">
+                    </el-table-column>
+                    <el-table-column prop="number" label="人数" align="center">
+                    </el-table-column>
+                    <el-table-column prop="total" label="订单金额" align="center">
+                    </el-table-column>
+                    <el-table-column prop="accepted" label="已收" align="center">
+                    </el-table-column>
+                    <el-table-column prop="arrears" label="欠款" align="center">
+                    </el-table-column>
+                    <el-table-column prop="aNo" label="收款单号" align="center">
+                    </el-table-column>
+                    <el-table-column prop="arrearsTime" label="欠款日期" align="center">
+                    </el-table-column>
+                    <el-table-column prop="repaymentTime" label="应还日期" align="center">
+                    </el-table-column>
+                    </el-table-column>
+                  </el-table>
+                </el-form-item>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </el-form>
+      </el-dialog>
+      <!-- 预付款弹窗 END -->
+      <!--协办弹窗-->
+      <el-dialog style="text-align: left" title="选择协办人:" :visible.sync="dialogFormVisible1" width="50%">
+        <div style="text-align: center">
+          <div style="width: 100%">
+            <div class="button_select" style="margin-bottom: 30px;margin-top: -30px;">
+              <el-input v-model="apply_user_input" class="input" style='margin-left: 0px;'></el-input>
+              <el-button type="primary" @click="searchHand2()" size="medium">搜索</el-button>
             </div>
-            <el-table :data="planData" border style="width: 100%; margin-top: 30px">
-              <el-table-column prop="id" label="团期计划ID">
-              </el-table-column>
-              <el-table-column prop="name" label="产品名称">
-              </el-table-column>
-              <el-table-column prop="address" label="目的地">
-              </el-table-column>
-              <el-table-column prop="time" label="出行日期">
-              </el-table-column>
-              <el-table-column prop="ornize" label="部门">
-              </el-table-column>
-              <el-table-column prop="proer" label="产品录入人">
-              </el-table-column>
-            </el-table>
+            <div class="table_trip" style=" width: 100%;">
+              <el-table :data="tableData3" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle2" :header-cell-style="getRowClass2">
+                <el-table-column prop="id" label="ID" align="center" width="100%">
+                </el-table-column>
+                <el-table-column prop="name" label="姓名" width="120%" align="center">
+                </el-table-column>
+                <el-table-column prop="org" label="组织" align="center">
+                </el-table-column>
+                </el-table-column>
+              </el-table>
+            </div>
+            <!--分页-->
+            <div class="block" style="margin-top: 30px;text-align:center;">
+              <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="currentPage2" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total2>
+              </el-pagination>
+            </div>
+            <!--分页-->
           </div>
-        </el-dialog>
-        <!--团期计划弹窗end-->
-        <!--添加报销弹窗-->
-        <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body>
-          <el-table :data="joinData1" border style="width: 100%; margin-top: 30px">
-            <el-table-column prop="id" label="关联单号" width="80">
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible1 = false">取 消</el-button>
+          <el-button type="primary" @click="routerHandle2()">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!--报销人弹窗end-->
+      <!--团期计划弹窗-->
+      <el-dialog width="60%" title="选择报销的人" :visible.sync="dialogFormVisible2" append-to-body>
+        <div class="indialog">
+          <div class="indialog_search">
+            <span class="search_style">团期单号：</span>
+            <el-input v-model="planNum" placeholder="请输入内容" class="search_input"></el-input>
+            <span class="search_style">产品名称：</span>
+            <el-input v-model="planName" placeholder="请输入内容" class="search_input"></el-input>
+            <span class="search_style">出行日期：</span>
+            <el-input v-model="planTime" placeholder="请输入内容" style="float: left; width: 100px"></el-input>
+            <span class="search__">—</span>
+            <el-input v-model="planTime1" placeholder="请输入内容" style="float: left; width: 100px"></el-input>
+            <el-button type="primary" size="mini" round style="margin-top: 5px; margin-left: 10px">重置</el-button>
+          </div>
+          <el-table :data="planData" border style="width: 100%; margin-top: 30px">
+            <el-table-column prop="id" label="团期计划ID">
             </el-table-column>
-            <el-table-column prop="type" label="类型" width="70">
+            <el-table-column prop="name" label="产品名称">
             </el-table-column>
-            <el-table-column prop="gys" label="供应商" width="60">
+            <el-table-column prop="address" label="目的地">
             </el-table-column>
-            <el-table-column prop="bm" label="部门">
+            <el-table-column prop="time" label="出行日期">
             </el-table-column>
-            <el-table-column prop="accpeter" label="申请人" width="80">
+            <el-table-column prop="ornize" label="部门">
             </el-table-column>
-            <el-table-column prop="time" label="发起日期">
-            </el-table-column>
-            <el-table-column prop="content" label="摘要">
-            </el-table-column>
-            <el-table-column prop="count" label="金额" width="100">
-            </el-table-column>
-            <el-table-column prop="wcount" label="未报销金额">
-            </el-table-column>
-            <el-table-column prop="bcount" label="报销金额">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.bcount" style="width:100px;"></el-input>
-              </template>
+            <el-table-column prop="proer" label="产品录入人">
             </el-table-column>
           </el-table>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="text('joinData1')">确 定</el-button>
-          </div>
-        </el-dialog>
-        <!--添加报销弹窗end-->
-        <!--驳回意见弹窗-->
-        <el-dialog title="请填写审批意见" :visible.sync="dialogFormVisible4" width="30%">
-          <textarea style="width: 90%; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </span>
-        </el-dialog>
-        <!--驳回意见弹窗end-->
+        </div>
+      </el-dialog>
+      <!--团期计划弹窗end-->
+      <!--添加报销弹窗-->
+      <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body>
+        <el-table :data="joinData1" border style="width: 100%; margin-top: 30px">
+          <el-table-column prop="id" label="关联单号" width="80">
+          </el-table-column>
+          <el-table-column prop="type" label="类型" width="70">
+          </el-table-column>
+          <el-table-column prop="gys" label="供应商" width="60">
+          </el-table-column>
+          <el-table-column prop="bm" label="部门">
+          </el-table-column>
+          <el-table-column prop="accpeter" label="申请人" width="80">
+          </el-table-column>
+          <el-table-column prop="time" label="发起日期">
+          </el-table-column>
+          <el-table-column prop="content" label="摘要">
+          </el-table-column>
+          <el-table-column prop="count" label="金额" width="100">
+          </el-table-column>
+          <el-table-column prop="wcount" label="未报销金额">
+          </el-table-column>
+          <el-table-column prop="bcount" label="报销金额">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.bcount" style="width:100px;"></el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="text('joinData1')">确 定</el-button>
+        </div>
+      </el-dialog>
+      <!--添加报销弹窗end-->
+      <!--驳回意见弹窗-->
+      <el-dialog title="请填写审批意见" :visible.sync="dialogFormVisible4" width="30%">
+        <textarea style="width: 90%; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+      </el-dialog>
+      <!--驳回意见弹窗end-->
     </el-tabs>
   </div>
 </template>
@@ -425,39 +435,34 @@ export default {
       }
     };
     return {
-      //选择申请人员
-      apply_user_input: '',
+      ruleFormSeach:{
+        groupCode_01: '',
+        borrower: '',
+        startTime: '',
+        endTime: ''
+      },
+      apply_user_input: '', //选择申请人员
       pageNum: 1, // 设定当前页数
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       total: 0,
       total2: 0,
-      //分辨查看
-      find: 0,
+      find: 0, // 分辨查看
       change: false,
-      // 单选
-      radio: '1',
-      //团期计划弹窗
-      dialogFormVisible2: false,
-      //添加报销
-      dialogFormVisible3: false,
-      //报销表单弹窗
-      dialogFormVisible: false,
-      //报销人弹窗
-      dialogFormVisible1: false,
-      //审批意见弹窗
-      dialogFormVisible4: false,
-      //团期计划搜索
-      planNum: '',
+      radio: '1', // 单选
+      dialogFormVisible2: false, // 团期计划弹窗
+      dialogFormVisible3: false, // 添加报销
+      dialogFormVisible: false, // 报销表单弹窗
+      dialogFormVisible1: false, // 报销人弹窗
+      dialogFormVisible4: false, // 审批意见弹窗
+      planNum: '', // 团期计划搜索
       planName: '',
       planTime: '',
       planTime1: '',
-      //手添报销
-      domains: [{
+      domains: [{ // 手添报销
         type: '地接',
         money: '9000.00'
       }],
-      //报销表单
-      ruleForm: {
+      ruleForm: { // 报销表单
         name: [{
           tt: '大运通-日本',
           peo: '阳阳'
@@ -472,8 +477,7 @@ export default {
         },
         content: ''
       },
-      //报销表单验证
-      rules: {
+      rules: { // 报销表单验证
         name: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
         ],
@@ -487,8 +491,7 @@ export default {
           { required: true, message: '请输入摘要信息', trigger: 'blur' },
         ],
       },
-      //审批意见
-      reimData: [{
+      reimData: [{ // 审批意见
         reier: '',
         reisult: '',
         info: '',
@@ -503,10 +506,8 @@ export default {
       pageshow1:true,
       startTime: '',
       endTime: '',
-      //报销table
-      tableData: [],
-      //报销人表单
-      tableData1: [{
+      tableData: [], // 报销table
+      tableData1: [{ // 报销人表单
         id: '001',
         name: '张三',
         phone: '15566447881',
@@ -535,8 +536,7 @@ export default {
         sex: '男',
         type: '启用'
       }],
-      //团期计划表格
-      planData: [{
+      planData: [{ // 团期计划表格
         id: 'TC-GTY-1001-01-180806-01',
         name: '美国西海岸三城双奥莱10日之旅',
         address: '西雅图',
@@ -551,8 +551,7 @@ export default {
         ornize: '辽宁大运通-北美部',
         proer: '阳阳',
       }],
-      //关联单据表单
-      joinData: [{
+      joinData: [{ // 关联单据表单
         id: '1',
         type: '地接',
         gys: '国旅',
@@ -671,8 +670,7 @@ export default {
         status: '审批结果',
         abstract: '审批意见',
       }],
-      //文件上传列表
-      fileList: [{
+      fileList: [{ // 文件上传列表
         name: 'food.jpeg',
         url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
       }, {
