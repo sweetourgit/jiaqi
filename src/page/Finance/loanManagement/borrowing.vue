@@ -738,7 +738,7 @@ export default {
     },
     // 点击关闭弹窗
     CloseNoIncomeShow(){
-      this.$confirm("去否取消本次借款申请?", "提示", {
+      this.$confirm("是否取消本次借款申请?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
          type: "warning"
