@@ -113,6 +113,9 @@
           <el-form-item label="产品主要方向" prop="orientation">
             <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
           </el-form-item>
+          <el-form-item label="供应商编码" prop="orientation">
+            <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
+          </el-form-item>
           <el-form-item label="到期日期" prop="expireData">
             <el-date-picker class="name_input" v-model="ruleForm.expireData" type="date" placeholder="选择日期"></el-date-picker>
           </el-form-item>
@@ -151,6 +154,9 @@
           </el-form-item>
           <el-form-item label="备注" prop="remark">
             <el-input class="name_input" v-model="ruleForm.remark"></el-input>
+          </el-form-item>
+          <el-form-item label="供应商其他名称" prop="orientation">
+            <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
           </el-form-item>
         </div>
       </el-form>
@@ -285,7 +291,11 @@
           routeType:[{ required: true, message: '线路不能为空', trigger: 'blur' }],
           supplierType:[{ required: true, message: '类别不能为空', trigger: 'blur' }],
           supplierWay:[{ required: true, message: '结算方式不能为空', trigger: 'blur' }],
+          expireData:[{ required: true, message: '到期日期不能为空', trigger: 'blur' }],
           userDepartment:[{ required: true, message: '使用部门不能为空', trigger: 'blur' }],
+          accountName:[{required: true, message: '汇款账户不能为空', trigger: 'blur'}],
+          account:[{required: true, message: '账号不能为空', trigger: 'blur'}],
+          openingBank:[{required: true, message: '开户行不能为空', trigger: 'blur'}],
         },
         //0settlement: [],//结算方式
         condition:[{//状态

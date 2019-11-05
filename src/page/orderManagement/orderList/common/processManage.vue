@@ -37,7 +37,7 @@
       </div>
       <p class="yuwei">余位：{{teampreviewData.remaining}}</p>
       <!-- switch 更改价格(直客价和同业价) beign-->
-      <p>使用{{priceChange}}价格</p>
+      <p>当前使用{{priceChange}}价格</p>
       <el-switch
         v-model="isPricechange"
         active-color="#409eff"
