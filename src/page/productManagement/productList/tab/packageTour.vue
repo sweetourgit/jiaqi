@@ -2266,91 +2266,92 @@
       },
       // 团期/库存按钮 获取dialog数据
       groupStage() {
-        this.ccc = [];
-        //1号修改过
-        this.tabBtnDisabled = true;
-        var that = this;
-        this.$http
-          .post(this.GLOBAL.serverSrc + "/team/api/teampackagelist", {
-            object: {
-              teamID: this.pid
-            }
-          })
-          .then(obj => {
-            console.log(obj);
-            for (let i = 0; i < obj.data.objects.length; i++) {
-              this.$http
-                .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
-                  // 成本信息无分页列表
-                  object: { packageID: obj.data.objects[i].id }
-                })
-                .then(res => {
-                  let tableTest = res.data.objects;
-                  console.log(tableTest, 9999);
-                });
-              if (
-                obj.data.objects[i].codePrefix !== "" ||
-                obj.data.objects[i].codeSuffix !== ""
-              ) {
-                that.ccc.push({
-                  id: obj.data.objects[i].id,
-                  ddd: obj.data.objects[i].name,
-                  uptoDay: obj.data.objects[i].uptoDay,
-                  value: obj.data.objects[i].templateID,
-                  codePrefix: obj.data.objects[i].codePrefix,
-                  codePrefixDisabled: obj.data.objects[i].codePrefix !== "",
-                  codeSuffix: obj.data.objects[i].codeSuffix,
-                  codeSuffixDisabled: obj.data.objects[i].codeSuffix !== "",
-                  createTime: obj.data.objects[i].createTime,
-                  type: false,
-                  rate: obj.data.objects[i].rate,
-                  btnDisabled: false
-                });
-                this.tabBtnDisabled = false;
-              } else {
-                that.ccc.push({
-                  id: obj.data.objects[i].id,
-                  ddd: obj.data.objects[i].name,
-                  uptoDay: obj.data.objects[i].uptoDay,
-                  value: obj.data.objects[i].templateID,
-                  codePrefix: obj.data.objects[i].codePrefix,
-                  codePrefixDisabled: obj.data.objects[i].codePrefix !== "",
-                  codeSuffix: obj.data.objects[i].codeSuffix,
-                  codeSuffixDisabled: obj.data.objects[i].codeSuffix !== "",
-                  createTime: obj.data.objects[i].createTime,
-                  type: false,
-                  rate: obj.data.objects[i].rate,
-                  btnDisabled: true
-                });
-                this.tabBtnDisabled = true;
-              }
-              // that.ccc.push({
-              //   id: obj.data.objects[i].id,
-              //   ddd: obj.data.objects[i].name,
-              //   uptoDay: obj.data.objects[i].uptoDay,
-              //   value: obj.data.objects[i].templateID,
-              //   codePrefix: obj.data.objects[i].codePrefix,
-              //   codePrefixDisabled: obj.data.objects[i].codePrefix!== '',
-              //   codeSuffix: obj.data.objects[i].codeSuffix,
-              //    codeSuffixDisabled:obj.data.objects[i].codeSuffix!=='',
-              //   createTime: obj.data.objects[i].createTime,
-              //   type: false,
-              //   rate: obj.data.objects[i].rate,
-              //   btnDisabled:true,
-              // });
-              if (that.ccc[i].value == 0) {
-                that.ccc[i].value = "";
-              }
-            }
-          })
-          .catch(function(obj) {});
-        this.merchandise = true;
-        this.addtable.push({
-          allprice: []
-        });
-        this.sku.push({
-          price: []
-        });
+        this.$router.push(`/planInventory?id=${this.pid}`);
+        // this.ccc = [];
+        // //1号修改过
+        // this.tabBtnDisabled = true;
+        // var that = this;
+        // this.$http
+        //   .post(this.GLOBAL.serverSrc + "/team/api/teampackagelist", {
+        //     object: {
+        //       teamID: this.pid
+        //     }
+        //   })
+        //   .then(obj => {
+        //     console.log(obj);
+        //     for (let i = 0; i < obj.data.objects.length; i++) {
+        //       this.$http
+        //         .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
+        //           // 成本信息无分页列表
+        //           object: { packageID: obj.data.objects[i].id }
+        //         })
+        //         .then(res => {
+        //           let tableTest = res.data.objects;
+        //           console.log(tableTest, 9999);
+        //         });
+        //       if (
+        //         obj.data.objects[i].codePrefix !== "" ||
+        //         obj.data.objects[i].codeSuffix !== ""
+        //       ) {
+        //         that.ccc.push({
+        //           id: obj.data.objects[i].id,
+        //           ddd: obj.data.objects[i].name,
+        //           uptoDay: obj.data.objects[i].uptoDay,
+        //           value: obj.data.objects[i].templateID,
+        //           codePrefix: obj.data.objects[i].codePrefix,
+        //           codePrefixDisabled: obj.data.objects[i].codePrefix !== "",
+        //           codeSuffix: obj.data.objects[i].codeSuffix,
+        //           codeSuffixDisabled: obj.data.objects[i].codeSuffix !== "",
+        //           createTime: obj.data.objects[i].createTime,
+        //           type: false,
+        //           rate: obj.data.objects[i].rate,
+        //           btnDisabled: false
+        //         });
+        //         this.tabBtnDisabled = false;
+        //       } else {
+        //         that.ccc.push({
+        //           id: obj.data.objects[i].id,
+        //           ddd: obj.data.objects[i].name,
+        //           uptoDay: obj.data.objects[i].uptoDay,
+        //           value: obj.data.objects[i].templateID,
+        //           codePrefix: obj.data.objects[i].codePrefix,
+        //           codePrefixDisabled: obj.data.objects[i].codePrefix !== "",
+        //           codeSuffix: obj.data.objects[i].codeSuffix,
+        //           codeSuffixDisabled: obj.data.objects[i].codeSuffix !== "",
+        //           createTime: obj.data.objects[i].createTime,
+        //           type: false,
+        //           rate: obj.data.objects[i].rate,
+        //           btnDisabled: true
+        //         });
+        //         this.tabBtnDisabled = true;
+        //       }
+        //       // that.ccc.push({
+        //       //   id: obj.data.objects[i].id,
+        //       //   ddd: obj.data.objects[i].name,
+        //       //   uptoDay: obj.data.objects[i].uptoDay,
+        //       //   value: obj.data.objects[i].templateID,
+        //       //   codePrefix: obj.data.objects[i].codePrefix,
+        //       //   codePrefixDisabled: obj.data.objects[i].codePrefix!== '',
+        //       //   codeSuffix: obj.data.objects[i].codeSuffix,
+        //       //    codeSuffixDisabled:obj.data.objects[i].codeSuffix!=='',
+        //       //   createTime: obj.data.objects[i].createTime,
+        //       //   type: false,
+        //       //   rate: obj.data.objects[i].rate,
+        //       //   btnDisabled:true,
+        //       // });
+        //       if (that.ccc[i].value == 0) {
+        //         that.ccc[i].value = "";
+        //       }
+        //     }
+        //   })
+        //   .catch(function(obj) {});
+        // this.merchandise = true;
+        // this.addtable.push({
+        //   allprice: []
+        // });
+        // this.sku.push({
+        //   price: []
+        // });
       },
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
