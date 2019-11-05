@@ -1427,7 +1427,7 @@ export default {
               }else if(arr[k]['orderStatus'] == 3) {
                 arr[k]['orderStatus'] = '待出行'
               }else if(arr[k]['orderStatus'] == 4) {
-                arr[k]['orderStatus'] = '旅行中'
+                arr[k]['orderStatus'] = '出行中'
               }else if(arr[k]['orderStatus'] == 5) {
                 arr[k]['orderStatus'] = '待评价'
               }else if(arr[k]['orderStatus'] == 6) {

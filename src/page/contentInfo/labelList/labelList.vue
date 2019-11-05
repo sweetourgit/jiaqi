@@ -28,10 +28,11 @@
         </div>
         <el-table :data="tableData" ref="multipleTable" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass"@selection-change="changeFun" @row-click="clickRow">
           <el-table-column prop="id" label="ID" width="180" align="center"></el-table-column>
-          <el-table-column prop="labelName" label="标签名称" width="180" align="center"></el-table-column>
+          <el-table-column prop="labelName" label="标签名称" width="500" align="center"></el-table-column>
           <el-table-column prop="countPro" label="绑定相关产品" align="center">
             <template slot-scope="scope">
-              <div><span style="cursor:pointer" @click="binding()">{{scope.row.countPro}}</span></div>
+              <el-button @click="binding(scope.row)" type="text" class="table_details"><u>{{scope.row.countPro}}</u></el-button>
+              <!-- <span style="cursor:pointer; color:blue" @click="binding()"><u>{{scope.row.countPro}}</u></span> -->
             </template>
           </el-table-column>
         </el-table>
@@ -120,20 +121,20 @@
   </el-dialog>
   <!--绑定相关产品弹窗-->
   <el-dialog title="绑定相关产品" :visible.sync="contentShow" class="city_list" width="700px">
-    <el-table :data="tableDataProduct" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass">
-      <el-table-column prop="teamName" label="产品信息" width="560" align="center"></el-table-column>
-      <el-table-column label="操作" align="center"width="99">
-        <template slot-scope="scope">
-          <div>解绑</div>
-        </template>
-      </el-table-column>
-    </el-table>
-    
-    
+    <div style="overflow:hidden;">
+      <el-table :data="tableDataProduct" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass">
+        <el-table-column prop="teamName" label="产品信息" width="560" align="center"></el-table-column>
+        <el-table-column label="操作" align="center"width="99">
+          <template slot-scope="scope">
+            <el-button @click="deleteProduct(scope.row)" type="text" class="table_details">解绑</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!--绑定相关产品分页-->
+      <el-pagination class="pageList_p" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange_p" :page-size="pagesize_p" :current-page.sync="currentPage_p" @current-change="handleCurrentChange_p" layout="total, sizes, prev, pager, next, jumper" :total="total_p"></el-pagination>
+    </div>
   </el-dialog>
-
 </div>
-
 </template>
 <script>
   export default {
@@ -189,6 +190,12 @@
         labelName:'',
         contentShow:false,//绑定相关产品弹窗
         tableDataProduct:[],//绑定相关产品弹窗里的表格
+        //绑定相关产品分页
+        currentPage_p: 1,
+        total_p:0,
+        pagesize_p:10,
+        pid:'',
+        bid:'',
        };   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         
@@ -564,7 +571,6 @@
         this.dialogFormVisible = false
         this.$refs["rformA"].resetFields();
       },
-
       //主题列表显示
       pageList() {
         var that = this
@@ -630,22 +636,56 @@
           })
       },
       //绑定相关产品弹窗
-      binding(){
+      binding(row){
+        this.pid = row.id;//获取表格到当前行的id
+        this.product();
         this.contentShow = true;
-        //this.queryProduct(this.labelID);
       },
-      //查询相关产品列表
-      // queryProduct(id){
-      //   var that = this
-      //   this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/pageteamlabel",
-      //     {
-      //       "pageIndex": 1,
-      //       "pageSize": 10,
-      //       "labelID": this.multipleSelection[0].id
-      //     }).then(function(obj){
-      //       that.tableDataProduct = obj.data.objects
-      //     })
-      // },
+      product(){//绑定相关产品表格
+        var that = this
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/pageteamlabel",
+          {
+            "pageIndex": this.currentPage_p,
+            "pageSize": this.pagesize_p,
+            "labelID": this.pid
+          }).then(function(obj){
+            that.total_p = obj.data.total
+            that.tableDataProduct = obj.data.objects
+          })
+      },
+      deleteProduct(row){
+        this.bid = row.id
+        this.$confirm("是否解绑该产品?", "提示", {
+           confirmButtonText: "确定",
+           cancelButtonText: "取消",
+           type: "warning"
+        }).then(res =>{
+          this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/deleteteamlabel",{
+            "id":this.bid
+          }).then(res =>{
+            if(res.data.isSuccess == true){
+              this.$message.success("解绑成功");
+              this.product();
+              this.themeList();
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+      },
+      //绑定相关产品分页
+      handleSizeChange_p(page) {
+        this.currentPage_p = 1;
+        this.pagesize_p = page;
+        this.product();
+      },
+      handleCurrentChange_p(currentPage) {
+        this.currentPage_p = currentPage;
+        this.product();
+      },
     }
 }
 
@@ -685,6 +725,8 @@
 .labelTable{text-align: center; margin: 20px 0 0 0;}
 /*分页*/
 .pageList{float:right; margin: 20px 0 0 0;}
+/*绑定相关产品分页*/
+.pageList_p{float: right;margin: 20px 0 0 0; overflow: hidden;}
 /*弹窗*/
 .mask{background-color: #000; width: 100%; height: 100%; position: fixed; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5; z-index: 100;}
 .add {width: 450px; height: 250px; margin:auto; position: fixed;top: 50%; left: 50%; margin-top: -125px; margin-left:-225px;background-color: #fff; overflow: hidden; border: 1px solid #eeeeee; border-radius: 3px; z-index: 1000;}

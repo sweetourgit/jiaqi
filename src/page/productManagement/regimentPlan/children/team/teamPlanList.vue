@@ -181,8 +181,9 @@ export default {
   },
   methods: {
     //产品名称
-    // productName(val) {
-    //   this.teamQueryList(this.pageIndex,val);
+    // productName() {
+    //   console.log(this.pageIndex)
+    //   this.teamQueryList(this.pageIndex);
     // },
     // // 报账团号
     // groupNo(curPage) {
@@ -355,7 +356,7 @@ export default {
           if (res.data.objects.length !=0) {
             var getUserCode='';
             getUserCode = res.data.objects[0].userCode;
-            this.teamQueryList(this.pageIndex,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
+            this.teamQueryList(this.pageIndex == 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
           } else {
             that.teamqueryList = [];
           }

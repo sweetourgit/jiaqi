@@ -31,6 +31,12 @@ $height: 40px;
       .bar{
         line-height: $height;
         height: $height;
+        .icon-link-outer{
+          padding: 0 5px;
+        }
+        .icon-link-outer:hover{
+          color: red;
+        }
       }
     }
   }
@@ -88,7 +94,14 @@ $height: 40px;
           库存类型：{{ vm.share=== 1? '共享': '非共享' }}
         </div>
         <div class="bar" v-if="vm.share=== 1">
-          共享库存：{{ vm.name}}
+          <span>
+            共享库存：{{ vm.name }}
+          </span>
+          <span class="icon-link-outer" title="查看该共享库存"
+            @click="toSharedInventoryPage"
+          >
+            <i class="el-icon-link"></i>
+          </span>
         </div>
         <div class="bar">
           {{ vm.share=== 1? '当前剩余': '总库存' }}：{{ vm.count }}
@@ -199,6 +212,11 @@ export default {
 
     isCost(price){
       return parseFloat(price)< parseFloat(this.vm.average);
+    },
+
+    toSharedInventoryPage(){
+      let day= this.poolManager.currentDay;
+      this.$router.push({ path: '/sharedInventory', query: { date: day.date.getTime() } });
     }
   }
 }

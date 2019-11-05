@@ -141,16 +141,7 @@ export const deleteCost= function(id){
 export const addPlan= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/plan/api/insert",{
-      "object": {
-        'createTime': 0,
-        "inventoryID": res.data.id,
-        "packageID": item.data.person.packageID,
-        "date": item.data.person.date,
-        "groupCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix,
-        "planEnroll": planEnroll,
-        "regimentType": 1,
-        'dateHous': item.data.person.dateHous
-      }
+      object
     }).then((res) => {
       let { isSuccess, objects }= res.data;
       if(!isSuccess) return reject('获取月份计划失败');

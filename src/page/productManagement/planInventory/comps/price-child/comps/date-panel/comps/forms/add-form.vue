@@ -37,8 +37,8 @@
               v-model="submitForm.count"
             ></el-input>        
           </el-form-item>
-          <el-form-item label="预留时长：" prop="dataHous">
-            <el-select v-model="submitForm.dataHous" type="date" placeholder="预留时长" style="width: 400px;" size="small">
+          <el-form-item label="预留时长：" prop="dateHous">
+            <el-select v-model="submitForm.dateHous" type="date" placeholder="预留时长" style="width: 400px;" size="small">
               <el-option
                 v-for="item in 24"
                 :key="item"
@@ -83,7 +83,10 @@
 <script>
 import enrollCard from './comps/enroll-card'
 import { DAY_STATE as SHARE_STATE } from '../../../../../../dictionary'
-import { getInventoryList, getEnrollTypeDictionary } from '../../../../../../planInventory'
+import { 
+  getInventoryList, // 获取指定天的所有共享库存 
+  getEnrollTypeDictionary, // 获取报名类型字典
+} from '../../../../../../planInventory'
 
 export default {
   components: { enrollCard },
@@ -120,7 +123,7 @@ export default {
         name: '',
         count: '',
         share: SHARE_STATE.NOT_SHARE,
-        dataHous: null,
+        dateHous: null,
         inventoryID: null,
         enrollName: null
       },
@@ -132,7 +135,7 @@ export default {
           { required: true, message: '请填写库存', trigger: ['change', 'blur']},
           { required: true, validator: this.positiveIntegerValidator, trigger: ['change', 'blur']},
         ],
-        dataHous: { required: true, message: '请选择预留时长', trigger: ['blur']},
+        dateHous: { required: true, message: '请选择预留时长', trigger: ['blur']},
       }
     }, { SHARE_STATE })
   },
@@ -245,19 +248,63 @@ export default {
      * 2. 非共享库存：先新增库存再新增计划，可以有多个 vm.isMultiple
      */
     addAction(){
-      if(!this.validate()) return;
+      if(!this.validate()) return console.error('validator errors');
+      // 清空enrollCache
+      // 缓存子数据集合 this.getEnrollRefs().map(enrollRef => enrollRef.getData());
       if(this.vm.share=== SHARE_STATE.SHARE) return this.shareAddAction();
       return this.notShareAddAction();
     },
 
     // 共享库存
     shareAddAction(){
-
+      let day= this.poolManager.currentDay;
+      let inventoryID= this.submitForm.inventoryID;
+      this.addPlanAction(inventoryID, day);
     },
 
     // 非共享
     notShareAddAction(){
+      let days= this.poolManager.getSelected();
+      console.log(days);
+      let func= (planBol) => {
+        if(!planBol) console.log(this.dayInloop); // 这里是当前day插入plan成功与否的记录 
 
+        // 整理错误队列 然后 return Promise
+        if(days.length=== 0) return;
+        let day= days.pop();
+        // 收集错误信息
+        this.dayInloop= day;
+        this.addInventoryAction(day)
+        .then(inventoryID => {
+          if(!inventoryID){
+            //TODO log dayinloop
+            console.log(this.dayInloop);
+    
+            return Promise.resolve();
+          }
+          return this.addPlanAction(inventoryID, day);
+        })
+        .then(func);
+      }
+
+      return func();
+    },
+
+    //新增库存
+    addInventoryAction(day){
+      return this.linkAddInventory({
+        name: '',
+        count: this.submitForm.count,
+        share: SHARE_STATE.NOT_SHARE,
+        date: day.dayInt
+      })
+    },
+
+    // 新增计划
+    // 返回错误，但是新增成功了
+    addPlanAction(inventoryID, day){
+      let plan= this.getPlanDTO(inventoryID, day);
+      return this.linkAddPlan(plan)
     },
 
     validate(){
@@ -287,18 +334,21 @@ export default {
       return this.$refs.enrollRef || [];
     },
 
-    getPlanDTO(){
+    getPlanDTO(inventoryID, day){
       let currentPac= this.PACKAGE_LIST.find(pac => pac.selected);
-      let { packageID, codePrefix, codeSuffix }= currentPac;
+      let { id, codePrefix, codeSuffix }= currentPac;
+      console.log(currentPac, this.submitForm);
+      
+      let { dayInt }= day;
       return {
         createTime: 0,
-        inventoryID: res.data.id,
-        "packageID": item.data.person.packageID,
-        "date": item.data.person.date,
-        "groupCode": this.msgFather[0].codePrefix + '-' + item.data.person.date + '-' + this.msgFather[0].codeSuffix,
-        "planEnroll": planEnroll,
-        "regimentType": 1,
-        'dateHous': item.data.person.dateHous
+        inventoryID,
+        packageID: id,
+        date: dayInt,
+        groupCode: `${codePrefix}-${dayInt}-${codeSuffix}`,
+        planEnroll: this.getEnrollRefs().map(enrollRef => enrollRef.getData()),
+        regimentType: 1,
+        dateHous: this.submitForm.dateHous
       }
     },
 
@@ -310,8 +360,8 @@ export default {
         price_01: null,
         price_02: null,
         price_03: null,
-        price_04: null,
-        quota: null
+        price_04: 0,
+        quota: 0
       };
       if(planID) newEnroll.planID= planID;
       return newEnroll;
@@ -325,7 +375,35 @@ export default {
       })
     },
 
+    // 链式调用
+    linkAddInventory(object){
+      return new Promise((resolve, reject) => {
+        this.$http.post(this.GLOBAL.serverSrc + "/team/api/inventoryinsert", {
+          object
+        }).then((res) => {
+          let { isSuccess, id }= res.data;
+          if(!isSuccess) return resolve(false);
+          return resolve(id);
+        }).catch((err) => {
+          resolve(false);
+        })
+      })
+    },
 
+    // 链式调用
+    linkAddPlan(object){
+      return new Promise((resolve, reject) => {
+        this.$http.post(this.GLOBAL.serverSrc + "/team/plan/api/insert",{
+          object
+        }).then((res) => {
+          let { isSuccess, objects }= res.data;
+          if(!isSuccess) return resolve(false);
+          return resolve(objects);
+        }).catch((err) => {
+          resolve(false);
+        })
+      })
+    }
   }
 }
 </script>
