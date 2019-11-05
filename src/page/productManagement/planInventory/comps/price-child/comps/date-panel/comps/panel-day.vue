@@ -41,11 +41,13 @@
     border: 1px solid #ddd;
     .name{
       color: #e6e6e6;
+      padding: 0 5px;
       line-height: 40px;
       background: #3096fb;
     }
     .money{
       line-height: 30px;
+      padding: 0 5px;
       background-color: #f6f6f6;
     }
   }

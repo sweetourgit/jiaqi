@@ -84,8 +84,11 @@ $height: 40px;
         <div :class="['date-block', vm.previous?'previous': '']">
           {{ vm.dateText }}
         </div>
-        <div class="edit-btns">
-          <el-button type="primary" size="small">编辑</el-button>
+        <div class="edit-btns" v-if="!vm.previous">
+          <el-button type="primary" size="small"
+            @click="awakeEditForm"
+          >编辑</el-button>
+          <el-button type="primary" size="small" v-if="vm.share=== 1">解除共享</el-button>
           <el-button type="primary" size="small" v-if="vm.share=== 2">删除</el-button>
         </div>
       </header>
@@ -152,48 +155,50 @@ export default {
     return {
       vm: {
         state: false,
-        previous: false,
+        previous: false,  // 是否过期
         dateText: '',
         share: '',
         name: '',
         regimentType: '',
         dateHous: '',
         count: 0,
+        inventoryID: null,
       },
       enrolls: [],
     }
   },
 
   methods: {
-    init(payload){
-      let { date, id }= payload;
-      if(id) this.packageID= id;
+    init(){
+      // 再manager上挂载该实例
       this.poolManager.initShowVM({ vm: this });
     },
 
+    // 实质上的初始化方法
     setState(state, day){
       if(state=== DAY_STATE.MULTIPLE || state=== DAY_STATE.UNDO) return this.vm.state= false;
       this.vm.state= true;
-      let computedDay= this.dayFactory(day); 
+      this.dayFactory(day)
     },
 
     dayFactory(day){
       let { after, dayInt, vm }= day;
-      this.getInventoryAction(vm.planID);
       this.vm.previous= !after;
       this.vm.dateText= this.dayIntToText(dayInt);
       // 均价
       this.vm.average= this.poolManager.getAverage();
       this.enrolls.splice(0);
       this.enrolls.push(...vm.plan_Enrolls);
+      return this.getInventoryAction(vm.planID);
     },
 
     getInventoryAction(id){
-      getPlan(id).then(res => {
+      return getPlan(id).then(res => {
         let { inventoryID, dateHous, regimentType }= res;
         this.vm.dateHous= dateHous;
         this.vm.regimentType= regimentType;
-        getInventory(inventoryID).then(res2 => {
+        this.vm.inventoryID= inventoryID;
+        return getInventory(inventoryID).then(res2 => {
           let { share, name, count }= res2;
           this.vm.share= share;
           this.vm.name= name;
@@ -214,10 +219,26 @@ export default {
       return parseFloat(price)< parseFloat(this.vm.average);
     },
 
+    // 跳转到共享库存页
     toSharedInventoryPage(){
       let day= this.poolManager.currentDay;
       this.$router.push({ path: '/sharedInventory', query: { date: day.date.getTime() } });
-    }
+    },
+
+    getPlanData(){
+      let { inventoryID, count, dateHous, name }= this.vm;
+      let planEnroll= this.$deepCopy(this.enrolls);
+      return {
+        inventoryID, name, count, dateHous, planEnroll
+      }
+    },
+
+    awakeEditForm(){
+      let payload= this.getPlanData();
+      payload.share= this.poolManager.state;
+      payload.day= this.poolManager.currentDay;
+      this.$emit('awake-edit-form', payload);
+    },
   }
 }
 </script>

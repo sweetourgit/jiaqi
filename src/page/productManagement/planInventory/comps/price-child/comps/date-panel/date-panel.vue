@@ -120,6 +120,7 @@
     <footer>
       <add-form
         ref="addRef"
+        @refresh="refresh"
       ></add-form>
       <edit-form
         ref="editRef"
@@ -156,7 +157,8 @@ export default {
   data(){
     return {
       vm: {
-        inAsync: false,
+        // 日历接口完成才允许其他操作，不然会产生bug
+        inited: false,
         state: false,
         average: 0,
       },
@@ -178,13 +180,14 @@ export default {
   methods: {
     init(payload){
       let { date, id }= payload;
-      if(id) this.packageID= id;
-      this.changeInAsync(true);
+      // 缓存payload 刷新用
+      this.initCache= payload;
+
       this.changeCurrent(...this.getDateArr(date));
       // 日历
-      this.getCalendarAction();
+      this.getCalendarAction(id);
       // 均价
-      this.getAverageAction();
+      this.getAverageAction(id);
       this.weekArray.forEach(el => el.selected= false);
       this.poolManager.initCalendarVM({ vm: this, calendar: this.dayArray });
     },
@@ -197,22 +200,26 @@ export default {
       let max= new Date(this.current[0], monthVal- 1, 0).getDate();
       max= (dayVal> max? max: dayVal);
       let newDate= new Date(this.current[0], monthVal, max);
-      this.init({ date: newDate });
+      this.init({ id:this.initCache.id, date: newDate });
     },
 
-    getCalendarAction(){
+    getCalendarAction(pacId){
+      this.vm.inited= false;
       let object= {
         year: this.current[0],
         month: this.current[1]+ 1,
-        packageID: this.packageID
+        packageID: pacId
       }
       getCalendar(object).then(res => {
-        let list= this.dayArrayPreFull(res);
+        this.dayArrayPreFull(res);
+      })
+      .finally(() => {
+        this.vm.inited= true;
       })
     },
 
-    getAverageAction(){
-      getAverage(this.packageID).then(res => {
+    getAverageAction(pacId){
+      getAverage(pacId).then(res => {
         let average= parseFloat(res).toFixed(2);
         this.vm.average= average;
       })
@@ -244,7 +251,7 @@ export default {
         this.dayArray.push(dto);
         if((currentMonthInt+ i)=== this.currentInt) result= dto;
       }
-      // 填补剩余
+      // 填补剩余 41= 6* 7- 1
       for(let i= begin+ total; i<= 41; i++){
         this.dayArray.push(getDayDTO());
       }
@@ -279,14 +286,6 @@ export default {
       year && this.current.splice(0, 1, year);
       (month || month=== 0) && this.current.splice(1, 1, month);
       day && this.current.splice(2, 1, day);
-    },
-
-    /**
-     * @description: 根据是否弹开执行emit
-     */
-    changeInAsync(bol){
-      this.vm.inAsync= bol;
-      !this.vm.state && this.$emit('in-async', bol); 
     },
 
     /**
@@ -326,15 +325,27 @@ export default {
           this.poolManager.unSelectWeek(i);
     },
 
+    // 刷新
+    refresh(){
+      this.init(this.initCache);
+    },
+
     // 新增计划
     awakeAddForm(){
+      if(!this.vm.inited) return this.$message.info('数据初始化中，请稍后...');
       let state= this.poolManager.state;
       let day= this.poolManager.currentDay;
-      if(!day.after) return this.$message.error('过期日期不能新增库存、计划');
-      if(state=== DAY_STATE.SHARE || state=== DAY_STATE.NOT_SHARE) return this.$message.error('库存已存在');
+      if(state=== DAY_STATE.SHARE || state=== DAY_STATE.NOT_SHARE) return this.$message.error('计划已存在');
       if(state=== DAY_STATE.UNDO) return this.$message.error('未指定日期');   
+      if(!day.after) return this.$message.error('过期日期不能新增计划');
       this.$refs.addRef.handleOpen();
-    }
+    },
+
+    // 编辑计划
+    awakeEditForm(payload){
+      if(!this.vm.inited) return this.$message.info('数据初始化中，请稍后...');
+      this.$refs.editRef.handleOpen(payload);
+    },
   }
 }
 </script>

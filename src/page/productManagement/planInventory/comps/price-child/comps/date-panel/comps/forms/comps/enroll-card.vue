@@ -99,7 +99,7 @@ export default {
       this.vm.averageText= this.poolManager.getAverage();
       this.vm.average= parseFloat(this.poolManager.getAverage());
       this.submitForm= this.$deepCopy(this.proto);
-      if(!this.$isNull(this.proto.quota)) this.vm.hasQuota= true;
+      if(this.proto.quota) this.vm.hasQuota= true;
     },
 
     // 配额
@@ -118,6 +118,10 @@ export default {
 
     getData(){
       return this.$deepCopy(this.submitForm);
+    },
+
+    hasChange(){
+      return !this.$checkLooseEqual(this.submitForm, this.proto);
     },
 
     moneyValidator(rule, value, cb){
