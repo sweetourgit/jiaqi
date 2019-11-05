@@ -31,7 +31,8 @@
           <el-table-column prop="labelName" label="标签名称" width="500" align="center"></el-table-column>
           <el-table-column prop="countPro" label="绑定相关产品" align="center">
             <template slot-scope="scope">
-              <div><span style="cursor:pointer; color:blue" @click="binding()"><u>{{scope.row.countPro}}</u></span></div>
+              <el-button @click="binding(scope.row)" type="text" class="table_details"><u>{{scope.row.countPro}}</u></el-button>
+              <!-- <span style="cursor:pointer; color:blue" @click="binding()"><u>{{scope.row.countPro}}</u></span> -->
             </template>
           </el-table-column>
         </el-table>
@@ -125,7 +126,7 @@
         <el-table-column prop="teamName" label="产品信息" width="560" align="center"></el-table-column>
         <el-table-column label="操作" align="center"width="99">
           <template slot-scope="scope">
-            <div>解绑</div>
+            <el-button @click="deleteProduct(scope.row)" type="text" class="table_details">解绑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -133,9 +134,7 @@
       <el-pagination class="pageList_p" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange_p" :page-size="pagesize_p" :current-page.sync="currentPage_p" @current-change="handleCurrentChange_p" layout="total, sizes, prev, pager, next, jumper" :total="total_p"></el-pagination>
     </div>
   </el-dialog>
-
 </div>
-
 </template>
 <script>
   export default {
@@ -195,6 +194,8 @@
         currentPage_p: 1,
         total_p:0,
         pagesize_p:10,
+        pid:'',
+        bid:'',
        };   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         
@@ -635,22 +636,45 @@
           })
       },
       //绑定相关产品弹窗
-      binding(){
+      binding(row){
+        this.pid = row.id;//获取表格到当前行的id
         this.product();
         this.contentShow = true;
       },
       product(){//绑定相关产品表格
-        console.log(this.multipleSelection[0].id)
         var that = this
         this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/pageteamlabel",
           {
             "pageIndex": this.currentPage_p,
             "pageSize": this.pagesize_p,
-            "labelID": this.multipleSelection[0].id
+            "labelID": this.pid
           }).then(function(obj){
-            that.total = obj.data.total
+            that.total_p = obj.data.total
             that.tableDataProduct = obj.data.objects
           })
+      },
+      deleteProduct(row){
+        this.bid = row.id
+        this.$confirm("是否解绑该产品?", "提示", {
+           confirmButtonText: "确定",
+           cancelButtonText: "取消",
+           type: "warning"
+        }).then(res =>{
+          this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/deleteteamlabel",{
+            "id":this.bid
+          }).then(res =>{
+            if(res.data.isSuccess == true){
+              this.$message.success("解绑成功");
+              this.product();
+              this.themeList();
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
       },
       //绑定相关产品分页
       handleSizeChange_p(page) {
