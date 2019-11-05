@@ -127,7 +127,7 @@ $height: 40px;
             <div :class="['bar', isCost(enroll.price_01)?'red':'']">
               销售价：{{ enroll.price_01 }}
             </div>
-            <div class="bar">
+            <div :class="['bar', isCost(enroll.price_02)?'red':'']">
               同业价：{{ enroll.price_02 }}
             </div>
             <div class="bar">
