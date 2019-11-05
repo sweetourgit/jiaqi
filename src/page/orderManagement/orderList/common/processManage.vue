@@ -88,7 +88,12 @@
             ></el-input>
           </el-form-item>
           <el-form-item class="otherCost-mark" v-if="index == 0">
-            <el-input v-model="item.mark" placeholder="请输入摘要" class="input1" :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"></el-input>
+            <el-input
+              v-model="item.mark"
+              placeholder="请输入摘要"
+              class="input1"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
+            ></el-input>
           </el-form-item>
         </div>
         <!--总价-->
@@ -143,7 +148,7 @@
           cellpadding="0"
           cellspacing="0"
         >
-          <tr class="costList_01" >
+          <tr class="costList_01">
             <td width="120">姓名</td>
             <td width="100">报名类型</td>
             <td width="120">电话</td>
@@ -167,7 +172,11 @@
                 :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
               >编辑</el-button>
               <span class="fl">|</span>
-              <el-button class="fl cursor" @click="delTravel(index,indexPrice)" :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6">删除</el-button>
+              <el-button
+                class="fl cursor"
+                @click="delTravel(index,indexPrice)"
+                :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
+              >删除</el-button>
             </td>
           </tr>
         </table>
@@ -210,7 +219,6 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <!-- <el-button type="primary" @click="orderModification(orderget.orderStatus,0)">确 定</el-button> -->
         <el-button type="primary" @click="orderModification(9,0)">确 定</el-button>
-
       </span>
     </el-dialog>
 
@@ -605,9 +613,23 @@ export default {
           this.statusEnd = "出行中";
           break;
         case 3:
-          this.statusNow = "待出行";
-          this.statusNext = "出行中";
-          this.statusEnd = "待点评";
+          switch (orderChannel) {
+            case 1:
+              this.statusNow = "待出行";
+              this.statusNext = "出行中";
+              this.statusEnd = "订单完成";
+              break;
+            case 2:
+              this.statusNow = "待出行";
+              this.statusNext = "出行中";
+              this.statusEnd = "待点评";
+              break;
+            case 3:
+              this.statusNow = "待出行";
+              this.statusNext = "出行中";
+              this.statusEnd = "订单完成";
+              break;
+          }
           break;
         case 4:
           //同业社没有待评价 直客有待评价
@@ -756,7 +778,7 @@ export default {
         if (isInfNull) {
           for (let i = 0; i < this.tour[index].length; i++) {
             if (this.tour[index][i].cnName == "") {
-              isInfNullIndex = i
+              isInfNullIndex = i;
             }
           }
           // console.log(isInfNullIndex)
@@ -1087,8 +1109,6 @@ export default {
             obj.priceType = 2;
           }
 
-
-
           obj.enrollDetail = enrollDetail;
           obj.guests = guest;
           obj.payable = this.payable;
@@ -1098,7 +1118,7 @@ export default {
             })
             .then(res => {
               if (res.data.isSuccess == true) {
-                  this.$message({
+                this.$message({
                   message: "更改成功",
                   type: "success"
                 });
@@ -1322,11 +1342,11 @@ hr {
   color: #2e94f9;
 }
 .disableColor {
-  color: #C0C4CC;
+  color: #c0c4cc;
 }
 .cursor {
   cursor: pointer;
-  border:none;
+  border: none;
   width: 70px;
 }
 .costTable {
