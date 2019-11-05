@@ -224,7 +224,13 @@ export default {
       saveInventory(inventory)
       .then(
         () => savePlan(plan)
-      );
+      )
+      .then(() => {
+        this.$message.success('修改成功');
+        this.$emit('refresh');
+        this.handleClose();
+      })
+      .catch(() => this.$message.success('修改失败'));
     },
     
     hasChange(){
@@ -265,7 +271,7 @@ export default {
     },
 
     getInventorySave(){
-      let { share, dateHous, count, inventoryID, planEnroll, day }= this.cacheInit;
+      let { share, dateHous, count, inventoryID, planEnroll, day, name }= this.cacheInit;
       return {
         id: inventoryID,
         name: name,

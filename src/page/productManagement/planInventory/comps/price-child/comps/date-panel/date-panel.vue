@@ -124,6 +124,7 @@
       ></add-form>
       <edit-form
         ref="editRef"
+        @refresh="refresh"
       ></edit-form>
     </footer>
   </div>

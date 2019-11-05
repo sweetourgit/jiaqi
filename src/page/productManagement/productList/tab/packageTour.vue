@@ -1932,14 +1932,6 @@ export default {
               }
             }
           )
-<<<<<<< HEAD
-          .then(obj => {
-            console.log(this.ccc, 2222222);
-          })
-          .catch(obj => {
-            console.log("error", obj);
-            console.log("error");
-=======
           .then(function(obj) {
             that.total = obj.data.total;
             that.tableData = obj.data.objects;
@@ -1955,7 +1947,7 @@ export default {
             });
           })
           .catch(function(obj) {});
-      },
+      }},
       // 团期/库存按钮 获取dialog数据
       groupStage() {
         this.$router.push(`/planInventory?id=${this.pid}`);
@@ -2059,7 +2051,6 @@ export default {
           // 给点击之后的样式
           this.arr.push({
             id: key
->>>>>>> foolseward
           });
       }
       if (this.isInfo == false) {

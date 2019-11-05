@@ -254,7 +254,7 @@ export default {
       if(this.vm.share=== SHARE_STATE.SHARE) return this.shareAddAction();
       return this.notShareAddAction().then(res => {
         this.handleClose();
-        this.$message.success('批量库存添加成功');
+        this.$message.success('添加成功');
         this.$emit('refresh');
       });
     },
@@ -266,7 +266,7 @@ export default {
       this.addPlanAction(inventoryID, day)
       .then(res => {
         this.handleClose();
-        this.$message.success('共享库存添加成功');
+        this.$message.success('添加成功');
         this.$emit('refresh');
       })
       .catch(err => {
