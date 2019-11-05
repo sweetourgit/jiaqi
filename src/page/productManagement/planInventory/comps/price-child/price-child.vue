@@ -23,6 +23,7 @@
         ref="dateRef"
       ></date-panel>
       <show-panel style="position:absolute; width: 380px; right: 0; top: 54px;"
+        @awake-edit-form="awakeEditForm"
         ref="showRef"
       ></show-panel>
     </main>
@@ -68,6 +69,10 @@ export default {
       this.$refs.dateRef.init({ id });
       this.$refs.showRef.init({ id });
     },
+  
+    awakeEditForm(payload){
+      this.$refs.dateRef.awakeEditForm(payload);
+    }
   }
 
 }
