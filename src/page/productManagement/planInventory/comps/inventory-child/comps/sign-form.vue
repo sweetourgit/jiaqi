@@ -13,7 +13,7 @@
         <el-row>
           <el-col style="width: 290px;">
             <el-form-item ref="prefixRef" label="团号：" prop="codePrefix">
-              <el-input placeholder="团号前缀" size="small"
+              <el-input placeholder="团号前缀" size="small" :disabled="vm.inited"
                 v-model="submitForm.codePrefix">
               </el-input>
             </el-form-item>
@@ -23,7 +23,7 @@
           </el-col>
           <el-col style="width: 170px;">
             <el-form-item ref="suffixRef" label-width="0" prop="codeSuffix">
-              <el-input placeholder="团号后缀" size="small"
+              <el-input placeholder="团号后缀" size="small" :disabled="vm.inited"
                 v-model="submitForm.codeSuffix">
               </el-input>
             </el-form-item>
@@ -55,7 +55,8 @@ export default {
   data(){
     return {
       vm: {
-        state: false
+        state: false,
+        inited: false,  //是否设置过团号，设置后不许再改变
       },
       submitForm: {
         codePrefix: '',
@@ -78,11 +79,12 @@ export default {
 
   methods: {
     handleOpen(pac){
-      let { id, codePrefix, codeSuffix, uptoDay }= pac;
+      let { id, codePrefix, codeSuffix, uptoDay, inited }= pac;
       this.submitForm.id= id;
       this.submitForm.codePrefix= codePrefix;
       this.submitForm.codeSuffix= codeSuffix;
       this.submitForm.uptoDay= uptoDay;
+      this.vm.inited= inited;
       this.vm.state= true;
     },
 
@@ -137,9 +139,7 @@ export default {
 
     afterAddAction(){
       this.handleClose();
-      this.$nextTick(() => {
-        this.$emit('action-callback');
-      })
+      this.$emit('action-callback');
     },
   }
 }
