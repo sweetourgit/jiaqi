@@ -181,7 +181,7 @@
            <el-table-column prop="invoiceType" label="发票类型" align="center"></el-table-column>
            <el-table-column prop="invoiceUnit" label="个人/单位" align="center"></el-table-column>
            <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
-           <el-table-column prop="invoiceTitle" label="发票抬头/手机号" align="center"></el-table-column>
+           <el-table-column prop="invoiceTitle" label="发票抬头" align="center"></el-table-column>
            <el-table-column prop="invoiceProject" label="发票项目" align="center"></el-table-column>
            <el-table-column prop="invoiceMoney" label="金额" align="center"></el-table-column>
            <el-table-column prop="invoiceAccount" label="账号" align="center"></el-table-column>

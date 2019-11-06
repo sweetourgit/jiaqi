@@ -107,9 +107,9 @@
                 <div style="color:red; text-align:left;" v-if="scope.row.invoiceNumber == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
-            <el-table-column label="发票抬头/手机号" align="center">
+            <el-table-column label="发票抬头" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.invoiceHeaderOrTel" placeholder="发票抬头/手机号" :disabled="change"></el-input>
+                <el-input v-model="scope.row.invoiceHeaderOrTel" placeholder="发票抬头" :disabled="change"></el-input>
                 <div style="color:red; text-align:left;" v-if="scope.row.invoiceHeaderOrTel == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
