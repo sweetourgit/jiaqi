@@ -178,7 +178,7 @@
            <el-table-column prop="invoiceID" label="发票类型" align="center"></el-table-column>
            <el-table-column prop="invoiceType" label="个人/单位" align="center"></el-table-column>
            <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
-           <el-table-column prop="invoiceHeaderOrTel" label="发票抬头/手机号" align="center"></el-table-column>
+           <el-table-column prop="invoiceHeaderOrTel" label="发票抬头" align="center"></el-table-column>
            <el-table-column prop="invoiceItem" label="发票项目" align="center"></el-table-column>
            <el-table-column prop="invoicePrice" label="金额" align="center"></el-table-column>
            <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>

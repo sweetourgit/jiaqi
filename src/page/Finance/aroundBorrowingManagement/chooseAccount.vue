@@ -17,13 +17,13 @@
           </el-table-column>
           <el-table-column prop="title" label="账号名称" align="center">
           </el-table-column>
-          <el-table-column prop="cardNum" label="卡号" align="center" width="70%">
+          <el-table-column prop="cardNum" label="卡号" align="center">
           </el-table-column>
           <el-table-column prop="openingBank" label="开户行" align="center">
           </el-table-column>
           <el-table-column prop="openingName" label="开户人" align="center">
           </el-table-column>
-          <el-table-column prop="option" label="操作" align="center" width="100">
+          <el-table-column prop="option" label="操作" align="center" width="120">
             <template slot-scope="scope">
               <el-button @click="chooseBtn(scope.row)" type="danger" size="small" class="table_details">选择</el-button>
             </template>
@@ -35,7 +35,7 @@
 </template>
 <script type="text/javascript">
   export default {
-    name: "newTour",
+    name: "account",
     components: {},
     props: {
       dialogFormVisible2: false,
@@ -67,6 +67,7 @@
           return ''
         }
       },
+      // 加载付款账户信息
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list", {
@@ -84,9 +85,11 @@
           console.log(obj)
         })
       },
+      // 关闭
       close(){
         this.$emit('close', false);
       },
+      // 选择账户，然后关闭
       chooseBtn(row){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/choiceaccount', {

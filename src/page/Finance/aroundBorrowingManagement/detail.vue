@@ -27,12 +27,8 @@
 
         <div class="inputLabel">
           <span>附件：</span>
-          <!--<el-upload ref="upload1" class="upload-demo" action="" :file-list="fileList" :disabled="disabled">-->
-          <!--<el-button size="small" type="primary" :disabled="disabled">点击上传</el-button>-->
-          <!--</el-upload>-->
-
           <ul>
-            <li v-for="item in fileList">
+            <li v-for="item in fileList" :key="item.index">
               <a :href="item.url" target="_blank">{{item.name}}</a>
             </li>
           </ul>
@@ -128,7 +124,7 @@
         // 相关信息，table数据
         tableDataRelated: [],
 
-        showBack: true
+        showBack: true // 是否显示撤销按钮(当前状态为审批中，并且登录人和申请人相同时，显示按钮，可以撤销)
       }
     },
     computed: {

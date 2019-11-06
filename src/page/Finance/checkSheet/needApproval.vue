@@ -33,7 +33,7 @@
           </el-row>
         </div>
         <div class="table_style">
-          <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
+          <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;" v-loading="loading">
             <el-table-column prop="tour_no" label="团期计划" width="180" align="center"></el-table-column>
             <el-table-column prop="bill_status" label="状态" width="120" align="center">
               <template slot-scope="scope">
@@ -99,7 +99,8 @@
         dialogFormVisible: false,
         info: '',
         //待审批table
-        tableData: []
+        tableData: [],
+        loading: true
       };
     },
     methods: {
@@ -111,7 +112,7 @@
           return ''
         }
       },
-      //        操作人员
+      // 操作人员
       querySearchOper(queryString, cb){
         const operatorList = this.operatorList;
         var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
@@ -146,9 +147,11 @@
         }
       },
       searchFun(){
+        this.loading = true;
         this.loadData();
       },
       resetFun(){
+        this.loading = true;
         this.plan = '';
         this.reimbursementPer = '';
         this.productName = '';
@@ -159,14 +162,17 @@
       },
       handleClick(tab, event) {
 //        console.log(tab, event);
+        this.loading = true;
         this.loadData();
       },
       handleSizeChange(val) {
+        this.loading = true;
         this.pageSize = val;
         this.currentPage = 1;
         this.loadData()
       },
       handleCurrentChange(val) {
+        this.loading = true;
         this.currentPage = val;
         this.loadData()
       },
@@ -193,6 +199,7 @@
 //            console.log(response);
           if (response.data.code == '200') {
             console.log('需要审批',response);
+            that.loading = false;
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
             that.$parent.$parent.$parent.number = response.data.data.list.length;

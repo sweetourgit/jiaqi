@@ -270,9 +270,6 @@
       close2() {
         this.dialogFormVisible2 = false;
         this.loadData();
-//        if(str == 'success'){
-//          this.showStatus();
-//        }
       },
       delOrder() {
         console.log(this.multipleSelection);
@@ -330,15 +327,12 @@
           });
         });
       },
-      //导入历史
+      // 导入历史
       importHistory() {
         this.$router.push({ path: "/importHistory" });
       },
-      //认收款
+      // 认收款
       recognition() {
-//        console.log(this.multipleSelection);
-//        console.log(this.multipleSelection.length);
-//        console.log(this.multipleSelection[0]);
         let orderStr = '';
         for(let i = 0; i < this.multipleSelection.length; i++){
           orderStr += this.multipleSelection[i].order_sn + ',';
@@ -355,7 +349,7 @@
         this.dialogFormVisible = false;
         this.loadData();
       },
-      //解绑
+      // 解绑
       unbinding() {
         console.log(this.multipleSelection);
         let num = 0;
@@ -417,7 +411,7 @@
           this.$message.warning(orderS + "订单不是已关联或未报账状态，不可解绑");
         }
       },
-      //搜索
+      // 搜索
       searchHand() {
         this.loading = true;
         this.loadData();
@@ -449,12 +443,12 @@
         this.pageSize = val;
         this.loadData();
       },
-
       handleCurrentChange(val) {
         this.loading = true;
         this.pageIndex = val;
         this.loadData();
       },
+      // 多选框限制
       selectInit(row, index){
         if(row.bill_status == 0){
           return false  //不可勾选
@@ -476,6 +470,7 @@
           this.$refs.multipleTable.toggleRowSelection(row);
         }
       },
+      // 加载数据
       loadData(){
         //加载数据
         const that = this;
@@ -522,7 +517,8 @@
           console.log(error);
         });
       },
-//    时间限制
+
+      // 时间限制
       beginDate(){
 //      alert(begin);
         const that = this;

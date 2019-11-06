@@ -120,7 +120,7 @@
 
         // 列表table
         tableData: [],
-        typeList: {
+        typeList: { // 借款类型
           1: '门票',
           2: '酒店',
           3: '地接',
@@ -129,7 +129,7 @@
 
         dialogFormVisible: false,// 添加-显示，隐藏
         dialogFormVisible1: false,// 详情-显示，隐藏
-        dialogFormVisible2: false,// 批量添加-显示，隐藏
+        dialogFormVisible2: false,// 选择账户-显示，隐藏
         info: '',// 详情传值字段
 
         // 时间限制
@@ -402,7 +402,7 @@
             }
           }
         }
-      },
+      }
     },
     created(){
       this.loadData();

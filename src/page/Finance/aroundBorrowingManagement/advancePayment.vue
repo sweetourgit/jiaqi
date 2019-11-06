@@ -126,7 +126,7 @@
         reimbursementPerID: '',// 申请人ID
         operatorList: [],// 申请人list
         borrowStatus: '',// 借款状态
-        accountType: '',
+        accountType: '',// 对公 对私
 
         // 页数，页码，条数
         pageSize: 10,
@@ -419,7 +419,7 @@
             }
           }
         }
-      },
+      }
     },
     created(){
       this.loadData();

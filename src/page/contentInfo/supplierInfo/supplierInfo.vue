@@ -125,7 +125,7 @@
           <el-form-item label="供应商名称" prop="name">
             <el-input class="name_input" v-model="ruleForm.name"></el-input>
           </el-form-item>
-          <el-form-item label="公司可见性" prop="visible">
+          <!--<el-form-item label="公司可见性" prop="visible">
             <el-select v-model="ruleForm.visible" placeholder="请选择" @change="companyList">
               <el-option
                 v-for="item in visibleType"
@@ -134,8 +134,8 @@
                 :value="item.value"
               ></el-option>
             </el-select>
-            <!-- <el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader> -->
-          </el-form-item>
+            &lt;!&ndash; <el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader> &ndash;&gt;
+          </el-form-item>-->
           <el-form-item label="状态" prop="supplierState">
             <el-select v-model="ruleForm.supplierState" placeholder="请选择">
               <el-option
@@ -176,14 +176,14 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="使用部门" prop="userDepartment">
+<!--          <el-form-item label="使用部门" prop="userDepartment">
             <el-cascader
               v-model="ruleForm.userDepartment"
               :options="options"
               :props="{ multiple: true }"
               clearable
             ></el-cascader>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item label="产品主要方向" prop="orientation">
             <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
           </el-form-item>
@@ -208,7 +208,7 @@
             </el-upload>
           </el-form-item>
         </div>
-        <div style="float:right; margin:0 200px 0 0; overflow:hidden;">
+        <div style="float:right; width:41%;overflow:hidden;">
           <el-form-item label="法人代表" prop="legalPerson">
             <el-input class="name_input" v-model="ruleForm.legalPerson"></el-input>
           </el-form-item>
@@ -243,8 +243,29 @@
           <el-form-item label="备注" prop="remark">
             <el-input class="name_input" v-model="ruleForm.remark"></el-input>
           </el-form-item>
-          <el-form-item label="供应商其他名称" prop="orientation">
-            <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
+          <el-form-item label="供应商其他名称" prop="otherSupplier">
+            <el-input class="name_input" v-model="ruleForm.otherSupplier"></el-input>
+          </el-form-item>
+          <el-form-item label="供应商其他名称" prop="" style="width: 90%">
+            <el-tag
+              :key="tag"
+              v-for="tag in dynamicTags"
+              closable
+              :disable-transitions="false"
+              @close="handleClose(tag)">
+              {{tag}}
+            </el-tag>
+            <el-input
+              style="width: 90%"
+              v-if="inputVisible"
+              v-model="inputValue"
+              ref="saveTagInput"
+              size="small"
+              @keyup.enter.native="handleInputConfirm"
+              @blur="handleInputConfirm"
+            >
+            </el-input>
+            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 点我添加供应商名称</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -306,9 +327,13 @@
 
 <script>
 // let id = 0;
+import moment from 'moment'
 export default {
   data() {
     return {
+      dynamicTags: [],
+      inputVisible: false,
+      inputValue: '',
       // aaa: 1,
       // props: {},
       /*props: {
@@ -435,15 +460,15 @@ export default {
       condition: [
         {
           //状态
-          value: "正常",
+          value: 1,
           label: "正常"
         },
         {
-          value: "停用",
+          value: 2,
           label: "停用"
         },
         {
-          value: "待审核",
+          value: 0,
           label: "待审核"
         }
       ],
@@ -477,6 +502,24 @@ export default {
     };
   },
   methods: {
+    handleClose(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    },
+    showInput() {
+      this.inputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    handleInputConfirm() {
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        this.dynamicTags.push(inputValue);
+      }
+      this.inputVisible = false;
+      this.inputValue = '';
+    },
+    moment,
     //表格颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -548,7 +591,8 @@ export default {
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.visibleType.push({
-              value: res.data.objects[i].id,
+              value: res.data.objects[i].name,
+              key: res.data.objects[i].id,
               label: res.data.objects[i].name
             });
           }
@@ -561,52 +605,43 @@ export default {
         });
     },
     // 把公司可见性传给后端
-    companyList() {
+    companyList(item) {
       this.userDeparType = [];
       let sid = this.ruleForm.visible;
-      // console.log(sid)
-      this.$http
-        .post(
-          // this.GLOBAL.serverSrc + "/universal/supplier/api/companyarealist",
-          "http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=CompanyArea",
-          {
-            id: sid
-          }
-        )
-        .then(res => {
-          this.aaaa();
-          // console.log(res);
-        });
+      this.$http.post("http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=CompanyArea",{
+        id: sid
+      }).then(res => {
+        console.log(res, '把公司可见性传给后端');
+        console.log(item, '获取选中的项')
+        this.aaaa();
+      });
     },
     //使用部门请求的接口
     aaaa(node, resolve) {
       this.options = [];
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
-          object: {
-            ParentID: 210,
-            isDeleted: 0
-          }
-        })
-        .then(res => {
-          // console.log(res,"部门请求")
-          for (let i = 0; i < res.data.objects.length; i++) {
-            this.options.push({
-              value: res.data.objects[i].id,
-              label: res.data.objects[i].orgName
-              //"children":[res.data.objects[i].id,res.data.objects[i].orgName]
-            });
-          }
-          // console.log(this.options);
-
-          /*let data = res.data.objects.map(v => {
-              return {
-                label: v.orgName,
-                value: v.id,
-              };
-          })*/
-          //resolve(data);
-        });
+      this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+        object: {
+          ParentID: 210,
+          isDeleted: 0
+        }
+      })
+      .then(res => {
+        // console.log(res,"部门请求")
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.options.push({
+            value: res.data.objects[i].id,
+            label: res.data.objects[i].orgName
+            //"children":[res.data.objects[i].id,res.data.objects[i].orgName]
+          });
+        }
+        /*let data = res.data.objects.map(v => {
+            return {
+              label: v.orgName,
+              value: v.id,
+            };
+        })*/
+        //resolve(data);
+      });
     },
     /*visible(node, resolve){
         this.visibleType = [];
@@ -671,11 +706,18 @@ export default {
     //添加一条供应商
     addLabelTheme(formName) {
       let types = [];
+      let keepAlias = [] // 给alias赋值用
       types.push({
         id: 0,
         supplierType: this.ruleForm.supplierType,
         supplierID: 0
       });
+      if(this.dynamicTags.length > 0){
+        this.dynamicTags.forEach(function (item) {
+          keepAlias.push({'name': item})
+        })
+        console.log(keepAlias,'this.dynamicTags')
+      }
       this.$refs[formName].validate(valid => {
         if (valid) {
           var _this = this;
@@ -691,9 +733,11 @@ export default {
                   name: this.ruleForm.name,
                   types: types,
                   productDirection: this.ruleForm.orientation,
+                  supplierCode: this.ruleForm.supplierCode, // 供应商编码
                   isMonthly: this.ruleForm.supplierWay,
                   isAgree: this.ruleForm.agreement,
-                  companyArea: this.ruleForm.visible,
+                  // companyArea: this.ruleForm.visible,
+                  companyArea: 0, // 公司可見性
                   productArea: this.ruleForm.routeType,
                   leader: this.ruleForm.principal,
                   phone: this.ruleForm.principalPhone,
@@ -702,10 +746,30 @@ export default {
                   handPhone: this.ruleForm.handlersPhone,
                   billName: this.ruleForm.operator,
                   taxNumber: this.ruleForm.pactNumber,
-                  expireTime: "2019-08-28",
+                  orgs: [], // 使用部門
+                  alias:keepAlias, // 部门其他名 otherSupplier
+                  expireTime: moment(this.ruleForm.expireData).format('YYYY-MM-DD'), // 到期日期
                   memo: this.ruleForm.remark,
-                  banks: [],
-                  files: []
+                  banks: [{
+                    "id": 0,
+                    "createTime": 0,
+                    "code": "string",
+                    "isDeleted": 0,
+                    "cardNumber": "string",
+                    "bankName": "string",
+                    "cardName": "string",
+                    "memo": "string",
+                    "supplierID": 0
+                  }],
+                  files: [{
+                    "id": 0,
+                    "createTime": 0,
+                    "code": "string",
+                    "isDeleted": 0,
+                    "url": "string",
+                    "supplierID": 0,
+                    "name": "string"
+                  }]
                 }
               }
             )
