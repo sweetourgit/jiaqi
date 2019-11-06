@@ -188,7 +188,7 @@
             <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
           </el-form-item>
           <el-form-item label="供应商编码" prop="orientation">
-            <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
+            <el-input class="name_input" v-model="ruleForm.supplierCode"></el-input>
           </el-form-item>
           <el-form-item label="到期日期" prop="expireData">
             <el-date-picker
@@ -305,12 +305,12 @@
 </template>
 
 <script>
-let id = 0;
+// let id = 0;
 export default {
   data() {
     return {
-      aaa: 1,
-      props: {},
+      // aaa: 1,
+      // props: {},
       /*props: {
           lazy: true,
           _this: this,
@@ -346,33 +346,33 @@ export default {
       category: "", //搜索框类别
       visibleArea: "", //搜索框可见区域
       ruleForm: {
-        name: "",
-        visible: '集团共享',
-        supplierState: '正常',
-        routeType: "",
-        supplierType: "",
-        supplierWay: "",
-        userDepartment: "",
-        orientation: "",
-        expireData: "",
-        supplierUpload: "",
-        legalPerson: "",
-        pactNumber: "",
-        handlers: "",
-        handlersPhone: "",
-        principal: "",
-        principalPhone: "",
-        operator: "",
-        agreement: "",
-        remark: "",
-        accountName: "",
-        openingBank: "",
-        account: "",
-        note: ""
+        name: "", //供应商名称
+        visible: "", //公司可见性
+        supplierState: "正常", //状态
+        routeType: "", //线路
+        supplierType: "", //类别
+        supplierWay: "", //结算方式
+        userDepartment: "", //使用部门
+        orientation: "", //产品主要方向
+        expireData: "", //到期日期
+        supplierUpload: "", //附件
+        legalPerson: "", //法人代表
+        pactNumber: "", //合同编号
+        handlers: "", //经手人
+        handlersPhone: "", //经手人电话
+        principal: "", //负责人
+        principalPhone: "", //负责人电话
+        operator: "", //操作负责人
+        agreement: "", //供应商协议
+        remark: "", //备注
+        accountName: "", //汇款户名
+        openingBank: "", //开户行
+        account: "", //账号
+        note: "" //备注
       },
+      //状态
       conditionType: [
         {
-          //状态
           value: "1",
           label: "正常"
         },
@@ -385,14 +385,14 @@ export default {
           label: "待审核"
         }
       ],
-      ruleForm_01: {
-        accountName: "",
-        openingBank: "",
-        account: "",
-        note: ""
-      },
+      // ruleForm_01: {
+      //   accountName: "",
+      //   openingBank: "",
+      //   account: "",
+      //   note: ""
+      // },
+      //验证
       rules: {
-        //验证
         name: [
           { required: true, message: "供应商名称不能为空", trigger: "blur" },
           {
@@ -469,11 +469,11 @@ export default {
       tableDataBank: [], //账户信息表格
       title: "", //标题
       //分页
-      currentPage: 1,
+      currentPage: 1, //当前页数
       pagesize: 10, // 设定默认分页每页显示数
       pageIndex: 1, // 设定当前页数
-      total: 0,
-      options: []
+      total: 0, //总条目数
+      options: [] //
     };
   },
   methods: {
@@ -512,7 +512,7 @@ export default {
         .then(res => {
           //that.settlementType =  res.data.objects;
         })
-        .catch(function(err) {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -534,7 +534,7 @@ export default {
         .then(res => {
           //this.borrowingType =  res.data.objects;
         })
-        .catch(function(err) {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -556,25 +556,29 @@ export default {
         .then(res => {
           //this.borrowingType =  res.data.objects;
         })
-        .catch(function(err) {
+        .catch(err => {
           console.log(err);
         });
     },
+    // 把公司可见性传给后端
     companyList() {
       this.userDeparType = [];
       let sid = this.ruleForm.visible;
+      // console.log(sid)
       this.$http
         .post(
-          this.GLOBAL.serverSrc + "/universal/supplier/api/companyarealist",
+          // this.GLOBAL.serverSrc + "/universal/supplier/api/companyarealist",
+          "http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=CompanyArea",
           {
             id: sid
           }
         )
         .then(res => {
-          console.log(res);
+          this.aaaa();
+          // console.log(res);
         });
-      this.aaaa();
     },
+    //使用部门请求的接口
     aaaa(node, resolve) {
       this.options = [];
       this.$http
@@ -585,6 +589,7 @@ export default {
           }
         })
         .then(res => {
+          // console.log(res,"部门请求")
           for (let i = 0; i < res.data.objects.length; i++) {
             this.options.push({
               value: res.data.objects[i].id,
@@ -592,8 +597,7 @@ export default {
               //"children":[res.data.objects[i].id,res.data.objects[i].orgName]
             });
           }
-
-          console.log(this.options);
+          // console.log(this.options);
 
           /*let data = res.data.objects.map(v => {
               return {
@@ -643,7 +647,7 @@ export default {
         .then(res => {
           //this.pathType =  res.data.objects;
         })
-        .catch(function(err) {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -652,19 +656,20 @@ export default {
       this.title = "添加供应商";
       this.supplierShow = true;
     },
+    // 取消按钮关闭弹窗
     closeSupplier() {
       this.supplierShow = false;
     },
+    //判断显示编辑或者添加弹窗
     saveModule(formName) {
-      //判断显示编辑或者添加弹窗
       if (this.title == "添加供应商") {
         this.addLabelTheme(formName);
       } else {
         this.editLabelTheme(formName);
       }
     },
+    //添加一条供应商
     addLabelTheme(formName) {
-      //添加一条供应商
       let types = [];
       types.push({
         id: 0,
@@ -726,6 +731,7 @@ export default {
       this.pagesize = page;
       this.supplierPage();
     },
+    //当前页面改变时会触发的事件
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
       this.supplierPage();
@@ -755,19 +761,19 @@ export default {
             UserState: condition == "" ? -1 : condition,
             companyArea: visibleArea == "" ? 1 : visibleArea
             /*"isDeleted": 0,
-              "supplierType": -1,
-              "UserState":-1,*/
+            "supplierType": -1,
+            "UserState":-1,*/
           },
           pageSize: this.pagesize,
           pageIndex: this.currentPage,
           isGetAll: true,
           id: 0
         })
-        .then(function(obj) {
+        .then(obj => {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
         })
-        .catch(function(obj) {
+        .catch(obj => {
           console.log(obj);
         });
     },
