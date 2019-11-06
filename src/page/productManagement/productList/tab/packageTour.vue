@@ -172,7 +172,7 @@
       </div>
       <!--分页-->
     </div>
-    <!-- 弹窗 -->
+    <!-- 团期/库存的弹窗 -->
     <el-dialog
       :close-on-click-modal="false"
       class="merchandise"
@@ -1064,8 +1064,9 @@ export default {
                 if (this.ccc[i].value == 0) {
                   this.ccc[i].value = "";
                 }
-                this.rate=this.lilv
-                
+                // this.rate=this.lilv
+                this.ccc[i].rate =this.lilv
+                break;
               }
               
               })
@@ -1569,12 +1570,13 @@ export default {
             );
             this.ccc[index].isInfo = false;
           } else {
+            this.ccc[index].isInfo = false;
             this.$message.error("错了哦，团号不能重复");
           }
         });
     },
     // 控制价格按钮显示
-    changeFun(id, rate, ifShowBase) {
+    changeFun(id, rate, ifShowBase,boon) {
       // basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)
       this.basicPrice(id, rate, ifShowBase, boon);
       //this.multipleSelection = val;
@@ -1587,7 +1589,7 @@ export default {
           this.tableData12.length > 0 &&
           boon === true
         ) {
-          this.basicPrice(id, rate, ifShowBase);
+          this.basicPrice(id, rate, ifShowBase,boon);
           this.isUsePrice = false;
           this.tabBtnDisabled = false;
         } else {
@@ -2176,25 +2178,30 @@ export default {
       this.$http
         .post(this.GLOBAL.serverSrc + "/team/api/teampackagelist", {
           object: {
-            teamID: this.pid
+            teamID: this.pid,
+            loadPlan:true
           }
         })
         .then(obj => {
-          console.log(obj);
+          console.log(obj,222223);
+          
           for (let i = 0; i < obj.data.objects.length; i++) {
+            console.log(obj.data.objects[i].loadPlan,8888)
             that.ccc.push({
               id: obj.data.objects[i].id,
               ddd: obj.data.objects[i].name,
               uptoDay: obj.data.objects[i].uptoDay,
               value: obj.data.objects[i].templateID,
               codePrefix: obj.data.objects[i].codePrefix,
-              codePrefixDisabled: obj.data.objects[i].codePrefix !== "",
+              codePrefixDisabled: obj.data.objects[i].codePrefix !== ""&&obj.data.objects[i].loadPlan ==false,
               codeSuffix: obj.data.objects[i].codeSuffix,
-              codeSuffixDisabled: obj.data.objects[i].codeSuffix !== "",
+              codeSuffixDisabled: obj.data.objects[i].codeSuffix !== ""&&obj.data.objects[i].loadPlan ==false,
               createTime: obj.data.objects[i].createTime,
               type: false,
               rate: obj.data.objects[i].rate,
-              btnDisabled: true
+              btnDisabled: true,
+              loadPlan:obj.data.objects[i].loadPlan,
+              
             });
             if (that.ccc[i].value == 0) {
               that.ccc[i].value = "";
@@ -2208,10 +2215,13 @@ export default {
                 object: { packageID: this.ccc[i].id }
               })
               .then(res => {
+                console.log(obj.data.objects[i].loadPlan,8888)
                 if (
                   res.data.objects !== null &&
                   obj.data.objects[i].codePrefix !== "" &&
                   obj.data.objects[i].codeSuffix !== ""
+                  // &&obj.data.objects[i].loadPlan ==true
+                
                 ) {
                   this.ccc[i].btnDisabled = false;
                 } else {
