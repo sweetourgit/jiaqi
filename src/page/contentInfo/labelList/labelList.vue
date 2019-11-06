@@ -538,34 +538,63 @@
         })
         }
       },
-      deleteLabel(index){ //删除Module
+      deleteLabel(){
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
            type: "warning"
-        })
-        .then(obj => {
-          // let arr = []
-          // this.multipleSelection.forEach(v=>{
-          //    arr.push(v.id)
-          // })
-          // console.log(arr)
-          this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/oplabledelete',{
-            ////"id": arr
-            "id": this.multipleSelection[0].id
-          }).then(res => {
-              if(res.data.isSuccess == true){
-                 this.$message.success("删除成功");
-                 this.pageList();
-              }
+        }).then(obj =>{
+          let arr = []
+          this.multipleSelection.forEach(v=>{
+            arr.push(v.id)
           })
-          }).catch(() => {
-            this.$message({
-            type: "info",
-            message: "已取消"
+          for(var i=0;i<arr.length;i++){
+            this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/oplabledelete',{
+             "id": this.multipleSelection[i].id
+            }).then(res => {
+                if(res.data.isSuccess == true){
+                   this.$message.success("删除成功");
+                   this.pageList();
+                }
+              })
+          }
+        }).catch(() => {
+              this.$message({
+              type: "info",
+              message: "已取消"
+            });
           });
-        });
+        
       },
+      // deleteLabel(index){ //删除Module
+      //   this.$confirm("确认删除?", "提示", {
+      //      confirmButtonText: "确定",
+      //      cancelButtonText: "取消",
+      //      type: "warning"
+      //   })
+      //   .then(obj => {
+      //     // let arr = []
+      //     // this.multipleSelection.forEach(v=>{
+      //     //    arr.push(v.id)
+      //     // })
+      //     // console.log(arr)
+          
+      //     this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/oplabledelete',{
+      //       ////"id": arr
+      //       "id": this.multipleSelection[0].id
+      //     }).then(res => {
+      //         if(res.data.isSuccess == true){
+      //            this.$message.success("删除成功");
+      //            this.pageList();
+      //         }
+      //     })
+      //     }).catch(() => {
+      //       this.$message({
+      //       type: "info",
+      //       message: "已取消"
+      //     });
+      //   });
+      // },
 
       cancel(){
         this.dialogFormVisible = false
