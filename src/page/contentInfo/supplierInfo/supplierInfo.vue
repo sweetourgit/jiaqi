@@ -319,7 +319,7 @@ export default {
             const { level } = node;
             let nId =204;
             if (level > 0) {
-               nId = node.value;              
+               nId = node.value;
             }
             console.log(nId);
             this._this.$http
@@ -599,7 +599,7 @@ export default {
               return {
                 label: v.orgName,
                 value: v.id,
-              };         
+              };
           })*/
           //resolve(data);
         });
