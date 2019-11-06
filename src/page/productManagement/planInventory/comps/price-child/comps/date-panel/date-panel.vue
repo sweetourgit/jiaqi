@@ -336,8 +336,8 @@ export default {
     },
 
     // 刷新
-    refresh(){
-      this.init(this.initCache);
+    refresh(payload){
+      this.init(Object.assign({}, this.initCache, payload));
     },
 
     // 新增计划
@@ -346,8 +346,8 @@ export default {
       let state= this.poolManager.state;
       let day= this.poolManager.currentDay;
       if(state=== DAY_STATE.SHARE || state=== DAY_STATE.NOT_SHARE) return this.$message.error('计划已存在');
-      if(state=== DAY_STATE.UNDO) return this.$message.error('未指定日期');   
-      if(!day.after) return this.$message.error('过期日期不能新增计划');
+      // 如果空选，或者不是多选的情况下day过期
+      if(state=== DAY_STATE.UNDO || (state!== DAY_STATE.MULTIPLE && !day.after)) return this.$message.error('无效日期（未指定定或已过期）不能新增计划');
       this.$refs.addRef.handleOpen();
     },
 

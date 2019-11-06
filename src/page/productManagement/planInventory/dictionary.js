@@ -20,6 +20,8 @@ export const getDayDTO= function(day){
     weekDay: 0,
     // 显示的天
     day: day,
+    // 日期对象
+    date: null,
     // 是否是过时的信息
     after: false,
     // getDateInt
