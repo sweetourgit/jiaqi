@@ -33,7 +33,7 @@
           <!--</el-upload>-->
 
           <ul>
-            <li v-for="item in fileList">
+            <li v-for="item in fileList" :key="item.index">
               <a :href="item.url" target="_blank">{{item.name}}</a>
             </li>
           </ul>
@@ -113,7 +113,6 @@
     },
     data() {
       return {
-        disabled: true,
         // 基础信息
         baseInfo: {
           id: '',
@@ -142,7 +141,7 @@
         // 相关信息，table数据
         tableDataRelated: [],
 
-        //审批弹框数据
+        // 审批弹框数据
         approvalTitle: '',
         dialogVisibleApproval: false,
         approval_status: '',

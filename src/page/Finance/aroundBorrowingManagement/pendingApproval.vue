@@ -151,19 +151,19 @@
         advanceNum: 0,
         balanceNum: 0,
 
-        // 页数，页码，条数，列表table
+        // 页数，页码，条数，列表table -- 无收入借款
         pageSizenoIncome: 10,
         currentPagenoIncome: 1,
         pageCountnoIncome: 0,
         tableDatanoIncome: [],
 
-        // 页数，页码，条数，列表table
+        // 页数，页码，条数，列表table -- 预付款管理
         pageSizeAdvance: 10,
         currentPageAdvance: 1,
         pageCountAdvance: 0,
         tableDataAdvance: [],
 
-        // 页数，页码，条数，列表table
+        // 页数，页码，条数，列表table -- 余额支付借款
         pageSizeBalance: 10,
         currentPageBalance: 1,
         pageCountBalance: 0,
@@ -179,7 +179,7 @@
         dialogFormVisible: false,// 审批-显示，隐藏
         info: '',// 详情传值字段
 
-        unfinishWorking: []
+        unfinishWorking: [] // 根据工作流查询左右未完成订单array
 
       };
     },
@@ -460,15 +460,10 @@
 
     },
     created(){
-//      this.loadData(1);
-//      this.loadData(2);
-//      this.loadData(3);
-//      this.loadUnfinished();
+      // 加载数据(先加载工作流未完成数据，根据id查询周边待审批借款)
       this.loadUnfinished('NoIncomeLoan_ZB');
       this.loadUnfinished('IncomeLoan_ZB');
       this.loadUnfinished('BalancePayment_ZB');
-
-//      console.log(this.$parent);
     }
   }
 </script>

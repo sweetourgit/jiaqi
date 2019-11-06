@@ -196,6 +196,7 @@
           return ''
         }
       },
+      // 关闭弹窗
       closeAdd() {
         this.ruleForm = {
           type: '',
@@ -211,6 +212,7 @@
         this.fileList = [];
         this.$emit('close', false);
       },
+      // 取消添加
       cancalBtn(){
         if(this.ruleForm.collectionTime != '' || this.ruleForm.explain != '' || this.ruleForm.payAccount != '' || this.ruleForm.money != '' || this.ruleForm.abstract != '' || this.fileList.length != 0){
           this.$confirm("是否取消本次添加?", "提示", {
@@ -227,6 +229,7 @@
           this.closeAdd();
         }
       },
+      // 提交
       submitForm(formName) {
         const that = this;
         this.$refs[formName].validate((valid) => {
@@ -311,7 +314,8 @@
           }
         });
       },
-      // 选择账户function
+
+      // 选择账户function -- chooseFun 加载账户，打开弹窗；close 关闭弹框；chooseBtn 选择账户并关闭弹框
       chooseFun(){
         const that = this;
 
@@ -349,6 +353,7 @@
         this.ruleForm.payAccountID = row.id;
         this.close();
       },
+
       // 上传凭证function
       UploadUrl(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
@@ -432,7 +437,7 @@
         }
       },
 
-      // 加载供应商信息---接口不是这个，要换的
+      // 加载供应商信息 --- 接口不是这个，要换的
       loadSupplier(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
@@ -565,6 +570,7 @@
         }
       },
 
+      // 工作流启动失败，需撤销借款申请
       cancalLoan(id){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/cancleloan", {
