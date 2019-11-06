@@ -80,10 +80,11 @@ export default {
     emitChangeChild(){},
     // TODO记录
     todoWarn(){
-      console.warn('TODO: /cost-child/edit-form 尚未获取编辑用户');
+      console.warn('TODO: /cost-child/edit-form 尚未获取编辑用户，接口提交的是假值');
       console.warn('TODO: /cost-child/edit-form addCost接口有问题默认传值很奇怪');
       console.warn('TODO: /price-child/panel-day props无法传递任何绑定！！！');
-      console.warn('TODO: enrollcard按enrolla类别分类排列');
+      console.warn('TODO: enrollcard可以按enrolla类别分类排列');
+      console.warn('TODO: 可以通过传入routeQuery tab&package来直接进入子tab');
     },
 
     // 可传入packageId

@@ -76,8 +76,9 @@ PoolManager.prototype.selectWeek= function(week){
   // 找到week下所属day
   let days= this.findDayOfWeek(week);
   days.forEach(day => day.selected= true);
-  // 点击周选则一定进入多选状态
-  this.currentDay.selected= false;
+  // 点击周选则一定进入多选状态，如果当前选有计划，则取消选择
+  let state= this.getStateByDay(this.currentDay);
+  if(state=== STATE.SHARE || state=== STATE.NOT_SHARE) this.currentDay.selected= false;
   this.setState(STATE.MULTIPLE);
 }
 PoolManager.prototype.unSelectWeek= function(week){
@@ -92,9 +93,7 @@ PoolManager.prototype.unSelectWeek= function(week){
  * @return {[dayDTO]} 
  */
 PoolManager.prototype.findDayOfWeek= function(week){
-  let day;
-  let state;
-  let result= [];
+  let day, state, result= [];
   for(let i= 0; i< 6; i++){
     day= this.calendar[i*7+ week+ 1];
     state= this.getStateByDay(day);

@@ -183,6 +183,21 @@ export const getPlan= function(id){
   })
 }
 
+// 保存计划
+export const savePlan= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/plan/api/save", {
+      object
+    }).then((res) => {
+      let { isSuccess, object }= res.data;
+      if(!isSuccess) return reject('获取指定计划失败');
+      return resolve(object);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
 // 新增非共享库存
 export const addInventory= function(object){
   return new Promise((resolve, reject) => {
@@ -191,6 +206,21 @@ export const addInventory= function(object){
     }).then((res) => {
       let { isSuccess, id }= res.data;
       if(!isSuccess) return reject('新增库存失败');
+      return resolve(id);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 修改库存
+export const saveInventory= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/api/inventorysave", {
+      object
+    }).then((res) => {
+      let { isSuccess, id }= res.data;
+      if(!isSuccess) return reject('修改库存失败');
       return resolve(id);
     }).catch((err) => {
       reject(err);

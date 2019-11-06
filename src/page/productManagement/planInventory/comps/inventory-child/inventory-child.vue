@@ -61,7 +61,7 @@ $backgroundColor: #F7F7F7;
     <footer>
       <sign-form
         ref="signFormRef"
-        @action-callback="emitSaveShortCallback"
+        @action-callback="$emit('emit-handler', { func: 'init' })"
       ></sign-form>
     </footer>
   </div>
@@ -92,11 +92,6 @@ export default {
     // 唤醒团号表单
     wakeSignForm(pac){
       this.$refs.signFormRef.handleOpen(pac);
-    },
-
-    // 设置团号后的回调
-    emitSaveShortCallback(){
-      this.init();
     },
 
     // 去成本

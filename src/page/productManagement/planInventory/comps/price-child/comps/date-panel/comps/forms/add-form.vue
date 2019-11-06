@@ -141,7 +141,7 @@ export default {
   },
 
   methods: {
-    handleOpen(date){
+    handleOpen(){
       // 得到所有选中
       this.selectedList= this.poolManager.getSelected();
       // 判断当前是否是多选状态
@@ -252,42 +252,56 @@ export default {
       // 清空enrollCache
       // 缓存子数据集合 this.getEnrollRefs().map(enrollRef => enrollRef.getData());
       if(this.vm.share=== SHARE_STATE.SHARE) return this.shareAddAction();
-      return this.notShareAddAction();
+      return this.notShareAddAction().then(res => {
+        this.handleClose();
+        this.$message.success('添加成功');
+        this.$emit('refresh');
+      });
     },
 
     // 共享库存
     shareAddAction(){
       let day= this.poolManager.currentDay;
       let inventoryID= this.submitForm.inventoryID;
-      this.addPlanAction(inventoryID, day);
+      this.addPlanAction(inventoryID, day)
+      .then(res => {
+        this.handleClose();
+        this.$message.success('添加成功');
+        this.$emit('refresh');
+      })
+      .catch(err => {
+        if(typeof err=== 'string') return this.$message.error(err);
+        console.log(err);
+      });
     },
 
     // 非共享
     notShareAddAction(){
-      let days= this.poolManager.getSelected();
-      console.log(days);
-      let func= (planBol) => {
-        if(!planBol) console.log(this.dayInloop); // 这里是当前day插入plan成功与否的记录 
+      return new Promise((resolve, reject) => {
+        let days= this.poolManager.getSelected();
+        let func= (planBol) => {
+          if(!planBol) console.log(this.dayInloop); // 这里是当前day插入plan成功与否的记录 
 
-        // 整理错误队列 然后 return Promise
-        if(days.length=== 0) return;
-        let day= days.pop();
-        // 收集错误信息
-        this.dayInloop= day;
-        this.addInventoryAction(day)
-        .then(inventoryID => {
-          if(!inventoryID){
-            //TODO log dayinloop
-            console.log(this.dayInloop);
-    
-            return Promise.resolve();
-          }
-          return this.addPlanAction(inventoryID, day);
-        })
-        .then(func);
-      }
-
-      return func();
+          // 出口，整理错误队列 然后 return Promise
+          if(days.length=== 0) return resolve();
+          let day= days.pop();
+          // 收集错误信息
+          this.dayInloop= day;
+          this.addInventoryAction(day)
+          .then(inventoryID => {
+            if(!inventoryID){
+              //TODO log dayinloop
+              console.log(this.dayInloop);
+      
+              return Promise.resolve();
+            }
+            return this.addPlanAction(inventoryID, day);
+          })
+          .then(func);
+        }
+        // 启动
+        func()
+      })
     },
 
     //新增库存
