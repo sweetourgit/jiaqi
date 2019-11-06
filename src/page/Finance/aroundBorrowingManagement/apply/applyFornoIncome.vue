@@ -158,6 +158,7 @@
           return ''
         }
       },
+      // 关闭弹框
       closeAdd() {
         this.ruleForm = {
           type: '',
@@ -173,6 +174,7 @@
         this.fileList = [];
         this.$emit('close', false);
       },
+      // 取消按钮事件
       cancalBtn(){
         if(this.ruleForm.collectionTime != '' || this.ruleForm.explain != '' || this.ruleForm.payAccount != '' || this.ruleForm.money != '' || this.ruleForm.abstract != '' || this.fileList.length != 0){
           this.$confirm("是否取消本次添加?", "提示", {
@@ -189,6 +191,7 @@
           this.closeAdd();
         }
       },
+      // 提交按钮
       submitForm(formName) {
         const that = this;
         this.$refs[formName].validate((valid) => {
@@ -257,6 +260,7 @@
           }
         });
       },
+
       // 选择账户function
       chooseFun(){
         const that = this;
@@ -295,6 +299,7 @@
         this.ruleForm.payAccountID = row.id;
         this.close();
       },
+
       // 上传凭证function
       UploadUrl(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
@@ -444,6 +449,7 @@
         })
       },
 
+      // 工作流启动失败，需要撤销此借款
       cancalLoan(id){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/cancleloan", {

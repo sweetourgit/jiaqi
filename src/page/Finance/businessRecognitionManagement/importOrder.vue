@@ -140,6 +140,8 @@
         deleteStr: '',
         fileListUpload: [],
 
+        isEqual: true,
+
         // 认款方式array
         recModeList: {
           '1': '分销商预存款',
@@ -190,6 +192,10 @@
             that.$message.warning("订单明细不能为空");
             return;
           }
+        }
+        if(!this.isEqual){
+          that.$message.warning("收款金额和收款明细总金额不相等，不可提交！");
+          return;
         }
 
         let fileArr = [];
@@ -267,7 +273,11 @@
           this.endTime = this.endTimeTable;
           this.tableDataQK.forEach(function (item, index, arr) {
             item[1] = formatDate(new Date(item[1]*1000));
-          })
+          });
+          if(file.response.data.money != this.baseInfo.rece_money){
+            this.$message.warning('收款金额和收款明细总金额不相等，不可提交！');
+            this.isEqual = false;
+          }
         }else{
           if(response.message){
             this.$message.warning(response.message);
@@ -334,6 +344,12 @@
           that.totalMoney = totalMoney.toFixed(2);
           that.startTimeTable = start.split(' ')[0];
           that.endTimeTable = end.split(' ')[0];
+          if(that.totalMoney != that.baseInfo.rece_money){
+//            this.$message.warning('收款金额和收款明细总金额不相等，不可提交！');
+            this.isEqual = false;
+          }else{
+            this.isEqual = true;
+          }
 //          console.log(that.deleteStr);
         }).catch(() => {
 

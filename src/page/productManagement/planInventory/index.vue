@@ -89,8 +89,10 @@ export default {
 
     // 可传入packageId
     init(pacId){
-      let id= this.$route.query.id;
+      let { id, pac_id, tab }= this.$route.query;
       if(!id) return this.$message.error('页面初始参数出错');
+      if(pac_id) pacId= parseInt(pac_id);
+      if(tab) this.vm.currentChild= tab;
       // 初始化字典
       getEnrollTypeDictionary();
       getTeamListPackages(id).then(objects => {

@@ -1949,8 +1949,8 @@ export default {
           .catch(function(obj) {});
       }},
       // 团期/库存按钮 获取dialog数据
-      groupStage() {
-        this.$router.push(`/planInventory?id=${this.pid}`);
+      groupStag2e() {
+        return this.$router.push(`/planInventory?id=${this.pid}`);
         // this.ccc = [];
         // //1号修改过
         // this.tabBtnDisabled = true;
@@ -2282,6 +2282,7 @@ export default {
     },
     // 团期/库存按钮 获取dialog数据
     groupStage() {
+      if(this.$route.query.user!== 'yang') return this.$router.push(`/planInventory?id=${this.pid}`);
       this.ccc = [];
       //1号修改过
       this.tabBtnDisabled = true;
