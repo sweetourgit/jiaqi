@@ -149,7 +149,11 @@
                 <el-row>
                   <el-col style="width: 250px;">
                     <el-form-item label="团期计划：">
-                      {{ plan.groupCode }}
+                      <a style="color: blue; border-bottom: 1px solid blue; cursor: pointer;" 
+                        v-if="vm.teamId" 
+                        @click="toPlanInventory(plan)"
+                      >{{ plan.groupCode }}</a>
+                      <span v-else>{{ plan.groupCode }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col style="width: 250px;">
@@ -221,6 +225,7 @@ export default {
   mounted(){
     // 修改页面高度问题
     document.querySelector(".content-body1").style.height= "100%";
+    this.init();
   },
 
   beforeDestroy(){
@@ -232,8 +237,9 @@ export default {
     return {
       vm: {
         mainAsync: false,
-        index: null,
+        index: null,  // 左侧菜单指针
         currentDate: new Date(),
+        teamId: null,
       },
       inventorys: [],
       // 当前选择的库存
@@ -243,6 +249,18 @@ export default {
   },
 
   methods: {
+    init(){
+      let { timestamp, team_id, inventory_id }= this.$route.query;
+      let dcRef= this.$refs.dateControllerRef;
+      if(timestamp && team_id && inventory_id){
+        this.vm.teamId= team_id;
+        this.vm.inventoryId= inventory_id;
+        timestamp= this.vm.currentDate= new Date(parseInt(timestamp));
+        this.$router.replace('/sharedInventory');
+      }
+      dcRef.init(timestamp);
+    },
+
     // 唤醒新增界面
     wakeAddForm(){
       this.$refs.addRef.handleOpen(this.vm.currentDate);
@@ -270,6 +288,13 @@ export default {
       this.vm.currentDate= date;
       this.inventorys.splice(0);
       children && this.inventorys.push(...children);
+      // 如果指定了inventoryId, 则选中，否则选中第一个
+      let pointer= 0;
+      if(this.vm.inventoryId){
+        pointer= children.findIndex(child => child.id=== this.vm.inventoryId);
+        this.vm.inventoryId= null;
+      }
+      this.selectInventory(pointer);
     },
 
     /**
@@ -286,6 +311,11 @@ export default {
     selectInventory(i){
       if(this.vm.index=== i) return;
       let inventory= this.inventorys[i];
+      if(!inventory){
+        this.current= {};
+        this.plans.splice(0);
+        return console.warn('未找到库存信息');
+      }
       this.vm.index= i;
       this.vm.inventoryAsync= true;
       getInventorydetailAction.bind(this)(inventory.id).then(res => {
@@ -303,6 +333,23 @@ export default {
         if(plans) this.plans= plans;
       }).finally(() => {
         this.vm.inventoryAsync= false;
+      })
+    },
+
+    toPlanInventory(plan){
+      let { packageID, date }= plan;
+      let dateStr= date+ '';
+      let year= parseInt(dateStr.substr(0, 4));
+      let month= parseInt(dateStr.substr(4, 2))- 1;
+      let day= parseInt(dateStr.substr(6, 2));
+      this.$router.push({ 
+        path: '/planInventory', 
+        query: {
+          id: this.vm.teamId,
+          tab: 'price',
+          pac_id: packageID,
+          timestamp: new Date(year, month, day).getTime()
+        }
       })
     },
 

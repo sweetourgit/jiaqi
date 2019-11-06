@@ -180,10 +180,10 @@ export default {
 
   methods: {
     init(payload){
-      let { date, id }= payload;
+      // sureDate为true时，getCalendarAction结束会默认执行一次emitSelectDay
+      let { date, id, sureDate }= payload;
       // 缓存payload 刷新用
       this.initCache= payload;
-
       this.changeCurrent(...this.getDateArr(date));
       // 日历
       this.getCalendarAction(id);
@@ -201,6 +201,8 @@ export default {
       let max= new Date(this.current[0], monthVal- 1, 0).getDate();
       max= (dayVal> max? max: dayVal);
       let newDate= new Date(this.current[0], monthVal, max);
+      // 没有放到init里调用的原因在于，dateRef先于showRef初始化，而clearAll里
+      this.poolManager.clearAll();
       this.init({ id:this.initCache.id, date: newDate });
     },
 
@@ -213,7 +215,13 @@ export default {
         packageID: pacId
       }
       getCalendar(object).then(res => {
-        this.dayArrayPreFull(res);
+        // 共享库存中重定向用到的逻辑
+        let selected= this.dayArrayPreFull(res);
+        if(this.initCache.sureDate){
+          this.initCache.sureDate= false;
+          console.log(this.initCache.sureDate)
+          this.emitSelectDay(selected);
+        }
       })
       .finally(() => {
         this.vm.inited= true;

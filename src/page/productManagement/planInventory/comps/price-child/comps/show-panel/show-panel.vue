@@ -222,7 +222,14 @@ export default {
     // 跳转到共享库存页
     toSharedInventoryPage(){
       let day= this.poolManager.currentDay;
-      this.$router.push({ path: '/sharedInventory', query: { date: day.date.getTime() } });
+      this.$router.push({ 
+        path: '/sharedInventory', 
+        query: { 
+          team_id: parseInt(this.$route.query.id), 
+          timestamp: day.date.getTime(), 
+          inventory_id: this.vm.inventoryID
+        } 
+      });
     },
 
     getPlanData(){

@@ -10,6 +10,7 @@ const PoolManager= function(){
 }
 
 PoolManager.prototype.setState= function(state){
+  if(!this.showVM) return console.log('showVm is not inited');
   this.state= state;
   this.showVM.setState(state, this.currentDay);
 }
