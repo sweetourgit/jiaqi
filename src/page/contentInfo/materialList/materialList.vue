@@ -308,7 +308,7 @@
             { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
           ],
           type: [
-            { required: true, message: '请选择类型',trigger: 'blur' }
+            { required: true, message: '请选择类型',trigger: 'change' }
           ],
           destination: [
             { required: true, message: '请选择目的地',trigger: 'blur' }

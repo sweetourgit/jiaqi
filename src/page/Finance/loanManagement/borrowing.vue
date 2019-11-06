@@ -105,12 +105,13 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
         <!-- 基本信息 -->
         <el-form-item label="团期计划" prop="plan" style="float:left;">
-          <el-input class="name_input" @blur="tour_check" v-model="ruleForm.plan" placeholder="请输入团期计划"></el-input>
+<!--          <el-input class="name_input" @blur="tour_check" v-model="" placeholder=""></el-input>    注意这里面 tour_check 这个方法还需要调用 -->
+          <el-autocomplete class="name_input" v-model="ruleForm.plan" :fetch-suggestions="querySearch3Plan" placeholder="请输入团期计划"  @select="departurePlan" :trigger-on-focus="false"></el-autocomplete>
           <el-input style="width:300px;" disabled v-model="ruleForm.plan_01" placeholder="通过输入团期计划,自动补充产品名称"></el-input>
           <el-button class="name_button" @click="IncomePlan()">选择</el-button>
         </el-form-item>
         <el-form-item label="供应商名称" prop="supplier" style="clear:both;">
-          <el-autocomplete class="name_input" v-model="ruleForm.supplier" :fetch-suggestions="querySearch3"placeholder="请输入供应商名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+          <el-autocomplete class="name_input" v-model="ruleForm.supplier" :fetch-suggestions="querySearch3" placeholder="请输入供应商名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
         </el-form-item>
         <el-form-item label="借款类型" prop="planType">
           <el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
@@ -272,7 +273,7 @@
           <el-button class="indialog_button" @click="planSelect()" type="primary">搜索</el-button>
           <el-button class="indialog_button" @click="planStage()" type="primary">重置</el-button>
         </div>
-        <el-table :data="tablePlan" border ref="multipleTablePlan" style="width: 100%; margin:30px 0 20px 0;":header-cell-style="getRowClass" @row-click="clickPlan" :row-style="rowClassPlan"@selection-change="changeFunPlan">
+        <el-table :data="tablePlan" border ref="multipleTablePlan" style="width: 100%; margin:30px 0 20px 0;" :header-cell-style="getRowClass" @row-click="clickPlan" :row-style="rowClassPlan" @selection-change="changeFunPlan">
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
           <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
           <el-table-column prop="destination" label="目的地" align="center"></el-table-column>
@@ -484,7 +485,7 @@ export default {
         accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
         accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],
         payment:[{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-        accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
+        // accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
       },
       fileList: [],
       dialogFormVisible1:false, // 无收入借款中借款人弹窗
@@ -509,7 +510,9 @@ export default {
         opinion:'不同意'
         }*/
       ],
-      tableIncome:[], // 无收入借款弹窗中无收入借款明细弹窗
+      tableIncome:[
+
+      ], // 无收入借款弹窗中无收入借款明细弹窗
       dialogFormVisible_Income:false, // 无收入借款弹窗中预付款明细查看弹窗
       tableIncomeCheck:[/*{
         times:' 2019-1-14 19:00:00',
@@ -539,7 +542,8 @@ export default {
       tableSelect:[], // 选择弹窗表格
       pageshow:true,
       pid:'',
-      countItemInfo: null // 选择账户表格选中行时，行的信息
+      countItemInfo: null, // 选择账户表格选中行时，行的信息
+      querySearchPlanData: [] // 团期计划检索联想数组
     }
   },
   methods: {
@@ -624,6 +628,7 @@ export default {
           this.$message.error('供应商未匹配后台数据,请手动输入银行信息!');
       }
     },
+    // 供应商联想查询
     querySearch3(queryString3, cb) {
       this.tableData2 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
@@ -644,6 +649,31 @@ export default {
         var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
         cb(results)
       }).catch(err => {})
+    },
+    // 团号搜索联想
+    querySearch3Plan(queryStringPlan, cb) {
+      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+        "object": {
+          "groupCode": this.ruleForm.plan, // 团号
+          "title": '', // 产品名称
+          "beginDate": 0, // 搜索用开始日期
+          "endDate": 0, // 搜索用结束日期
+        }
+      }).then(res => {
+        console.log(res, '团号搜索联想 res')
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.querySearchPlanData.push({
+            "value": res.data.objects[i].groupCode,
+            "planID": res.data.objects[i].planID,
+          })
+        }
+        var results = queryStringPlan ? this.querySearchPlanData.filter(this.createFilter(queryStringPlan)) : [];
+        cb(results)
+      }).catch(err => {})
+    },
+    departurePlan(item) {
+      this.tour_id = item.planID
+      console.log(item, 'departurePlan')
     },
     createFilter(queryString1){
       return (restaurant) => {
@@ -708,7 +738,7 @@ export default {
     },
     // 点击关闭弹窗
     CloseNoIncomeShow(){
-      this.$confirm("去否取消本次借款申请?", "提示", {
+      this.$confirm("是否取消本次借款申请?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
          type: "warning"

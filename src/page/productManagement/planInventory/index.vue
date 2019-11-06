@@ -80,16 +80,19 @@ export default {
     emitChangeChild(){},
     // TODO记录
     todoWarn(){
-      console.warn('TODO: /cost-child/edit-form 尚未获取编辑用户');
+      console.warn('TODO: /cost-child/edit-form 尚未获取编辑用户，接口提交的是假值');
       console.warn('TODO: /cost-child/edit-form addCost接口有问题默认传值很奇怪');
       console.warn('TODO: /price-child/panel-day props无法传递任何绑定！！！');
-      console.warn('TODO: enrollcard按enrolla类别分类排列');
+      console.warn('TODO: enrollcard可以按enrolla类别分类排列');
+      console.warn('TODO: 可以通过传入routeQuery tab&package来直接进入子tab');
     },
 
     // 可传入packageId
     init(pacId){
-      let id= this.$route.query.id;
+      let { id, pac_id, tab }= this.$route.query;
       if(!id) return this.$message.error('页面初始参数出错');
+      if(pac_id) pacId= parseInt(pac_id);
+      if(tab) this.vm.currentChild= tab;
       // 初始化字典
       getEnrollTypeDictionary();
       getTeamListPackages(id).then(objects => {

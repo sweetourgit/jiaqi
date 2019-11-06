@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="借款" name="first">
+      <el-tab-pane label="借款记录" name="first">
         <borrowing></borrowing>
       </el-tab-pane>
        <el-tab-pane :label="examine + msg" name="second">

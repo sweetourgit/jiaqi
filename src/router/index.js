@@ -17,6 +17,7 @@ import labelList from '@/page/contentInfo/labelList/labelList'
 import materialList from '@/page/contentInfo/materialList/materialList'
 import hotelList from '@/page/contentInfo/hotelList/hotelList'
 import supplierInfo from '@/page/contentInfo/supplierInfo/supplierInfo'
+import supplierDetails from '@/page/contentInfo/supplierInfo/supplierDetails/supplierDetails'
 import productList from '@/page/productManagement/productList/productList'
 import baseInfo from '@/page/productManagement/listInfo/listInfo'
 import listInfoScenic from '@/page/productManagement/listInfoScenic/listInfoScenic'
@@ -40,9 +41,7 @@ import orderList from '@/page/orderManagement/orderList/orderList'
 import externalOrderList from '@/page/orderManagement/externalOrderList/externalOrderList'
 import canRecognition from '@/page/orderManagement/externalOrderList/canRecognition'
 import noRecognition from '@/page/orderManagement/externalOrderList/noRecognition'
-import noCost from '@/page/orderManagement/externalOrderList/noCost'
 import recognitionMsg from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionMsg'
-// import recognitionDo from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionDo'
 import importHistory from '@/page/orderManagement/externalOrderList/importHistory'
 import loanManagement from '@/page/Finance/loanManagement/loanManagement'
 import advancePayment from '@/page/Finance/advancePayment/advancePayment'
@@ -214,6 +213,14 @@ export default new Router({
       path: '/supplierInfo',
       component: supplierInfo,
       name: '供应商信息',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/supplierDetails',
+      component: supplierDetails,
+      name: '供应商信息详情',
       meta: {
         keepAlive: true,
         auth: true
@@ -411,14 +418,6 @@ export default new Router({
           path: 'noRecognition',
           name: '外部订单  /未认收款',
           component: noRecognition,
-          meta: {
-            keepAlive: true,
-            auth: true
-          },
-        }, {
-          path: 'noCost',
-          name: '外部订单  /无成本',
-          component: noCost,
           meta: {
             keepAlive: true,
             auth: true

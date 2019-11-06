@@ -59,6 +59,11 @@
             <el-table-column prop="paymentID" label="借款单号" align="center" width="80%">
             </el-table-column>
             <el-table-column prop="checkTypeEX" label="状态" width="90" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
+                <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
+                <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
+              </template>
             </el-table-column>
             <el-table-column label="发起时间" align="center" width="190">
               <template slot-scope="scope">
@@ -130,7 +135,7 @@
 <script>
 import NeedApproval from '@/page/Finance/advancePayment/needApproval'
 import AdvanceInfo from '@/page/Finance/advancePayment/advanceInfo/advanceInfo'
-import { formatDate } from '@/js/libs/formatDate.js'
+import moment from 'moment'
 import checkLoanManagement from '@/page/Finance/loanManagement/checkLoanManagement/checkLoanManagement'
 export default {
   name: "advancePayment",
@@ -187,6 +192,7 @@ export default {
     },
   },
   methods: {
+    moment,
     headCall: function (msg) { //回调方法，接收子组件传的参数
         this.msg = '(' + msg + ')';
     },
@@ -245,8 +251,8 @@ export default {
       objectRequest.paymentType = 2;
       if (this.planID) { objectRequest.planID = this.planID; }
       if (this.user) { objectRequest.createUser = this.user; }
-      if (this.startTime) { objectRequest.beginTime = this.startTime}
-      if (this.endTime) { objectRequest.endTime = this.endTime}
+      if (this.startTime) { objectRequest.beginTime = moment(this.startTime).format('YYYY-MM-DD'); }
+      if (this.endTime) { objectRequest.endTime = moment(this.endTime).format('YYYY-MM-DD'); }
       if (this.checkType) { objectRequest.checkType = this.checkType; }else{objectRequest.checkType='-1'}
       var that = this
       this.$http.post(
@@ -277,8 +283,8 @@ export default {
       objectRequest.paymentType = 2;
       if (this.ruleForm.planID) { objectRequest.planID = this.ruleForm.planID; }
       if (this.ruleForm.user) { objectRequest.createUser = this.ruleForm.user; }
-      if (this.ruleForm.startTime) { objectRequest.beginTime = this.ruleForm.startTime}
-      if (this.ruleForm.endTime) { objectRequest.endTime = this.ruleForm.endTime}
+      if (this.ruleForm.startTime) { objectRequest.beginTime = moment(this.ruleForm.startTime).format('YYYY-MM-DD'); }
+      if (this.ruleForm.endTime) { objectRequest.endTime = moment(this.ruleForm.endTime).format('YYYY-MM-DD');}
       if (this.ruleForm.checkType) { objectRequest.checkType = this.ruleForm.checkType; }else{objectRequest.checkType='-1'}
 
       var that = this
