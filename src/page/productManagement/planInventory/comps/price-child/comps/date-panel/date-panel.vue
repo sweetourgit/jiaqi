@@ -206,9 +206,10 @@ export default {
 
     getCalendarAction(pacId){
       this.vm.inited= false;
+      let currentIntStr= this.currentInt+ '';
       let object= {
-        year: this.current[0],
-        month: this.current[1]+ 1,
+        year: currentIntStr.substr(0, 4),
+        month: currentIntStr.substr(4, 2),
         packageID: pacId
       }
       getCalendar(object).then(res => {
