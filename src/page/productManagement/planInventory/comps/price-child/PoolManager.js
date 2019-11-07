@@ -86,7 +86,10 @@ PoolManager.prototype.selectWeek= function(week){
   let state= this.getStateByDay(this.currentDay);
   // 如果之前选择存在计划或者之前选择是过期天，则取消选择
   if(state=== STATE.SHARE || state=== STATE.NOT_SHARE || !this.currentDay.after) this.currentDay.selected= false;
+  // 如果当前日期下无可选天，
+  if(days.length=== 0) return this.calendarVM.weekArray[week].selected= false;
   this.setState(STATE.MULTIPLE);
+  return true;
 }
 PoolManager.prototype.unSelectWeek= function(week){
   let days= this.findDayOfWeek(week);
