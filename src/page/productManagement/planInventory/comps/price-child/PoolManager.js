@@ -26,6 +26,11 @@ PoolManager.prototype.initShowVM= function({ vm }){
   this.showVM.setState(STATE.UNDO);
 }
 
+PoolManager.prototype.refresh= function(){
+  this.currentDay= {};
+  this.state= STATE.UNDO;
+},
+
 PoolManager.prototype.destroy= function(){
   this.state= STATE.UNDO;
   this.currentDay= {};
@@ -36,7 +41,6 @@ PoolManager.prototype.destroy= function(){
 
 // day已过滤掉不是当前月的天
 PoolManager.prototype.selectDay= function(day){
-  console.log(123)
   let oldDay= this.currentDay || {};
   let oldState= this.state;
   this.currentDay= day;
