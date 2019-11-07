@@ -258,6 +258,21 @@ export const getInventoryList= function(object){
   })
 }
 
+// 删除库存
+export const deleteInventory= function(id){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/api/inventorydelete", {
+      id
+    }).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject('删除库存失败');
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
 // 合成报名类型
 export const getEnrollTypeDictionary= function(){
   return new Promise((resolve, reject) => {

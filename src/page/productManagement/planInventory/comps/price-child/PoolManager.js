@@ -45,7 +45,7 @@ PoolManager.prototype.selectDay= function(day){
   // 如果前后点击的是同一天，则返回
   if(oldDay=== day) return;
   // 如果之前是有计划状态，则清除oldDay
-  if(oldState=== STATE.SHARE || oldState=== STATE.NOT_SHARE) return oldDay.selected= false;
+  if(oldState=== STATE.SHARE || oldState=== STATE.NOT_SHARE || !oldDay.after) return oldDay.selected= false;
   // 如果newDay无计划，则联动周
   if(state=== STATE.MULTIPLE) return this.dayLinkWeekFunc(day);
   // 如果之前无状态，且newDay有计划，则清除所有选中天，所有选定周

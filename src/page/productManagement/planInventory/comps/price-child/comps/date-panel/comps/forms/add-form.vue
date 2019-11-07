@@ -20,7 +20,7 @@
               <el-radio :label="1">共享</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="共享库存：" prop="inventoryID" v-show="vm.share=== SHARE_STATE.SHARE">
+          <el-form-item label="共享库存：" prop="inventoryID" v-if="vm.share=== SHARE_STATE.SHARE">
             <el-select v-model="submitForm.inventoryID" type="date" placeholder="共享库存" style="width: 400px;" size="small"
               @change="selectShareInventory"
             >
@@ -153,7 +153,6 @@ export default {
     },
 
     handleClose(){
-      console.log(123)
       this.enrollList.splice(0);  // 清空子列
       this.shareOptions.splice(0);  // 清空共享库存表单
       this.enrollTypeOptions.splice(0);

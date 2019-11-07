@@ -184,12 +184,15 @@ export default {
       let { date, id, sureDate }= payload;
       // 缓存payload 刷新用
       this.initCache= payload;
+      // 初始化日期
       this.changeCurrent(...this.getDateArr(date));
       // 日历
       this.getCalendarAction(id);
       // 均价
       this.getAverageAction(id);
+      // 重置周选状态
       this.weekArray.forEach(el => el.selected= false);
+      // 将实例挂载到poolManager
       this.poolManager.initCalendarVM({ vm: this, calendar: this.dayArray });
     },
     
@@ -347,7 +350,7 @@ export default {
       let day= this.poolManager.currentDay;
       if(state=== DAY_STATE.SHARE || state=== DAY_STATE.NOT_SHARE) return this.$message.error('计划已存在');
       // 如果空选，或者不是多选的情况下day过期
-      if(state=== DAY_STATE.UNDO || (state!== DAY_STATE.MULTIPLE && !day.after)) return this.$message.error('无效日期（未指定定或已过期）不能新增计划');
+      if(state=== DAY_STATE.UNDO || (state!== DAY_STATE.MULTIPLE && !day.after)) return this.$message.error('无效日期（未指定或已过期）不能新增计划');
       this.$refs.addRef.handleOpen();
     },
 
