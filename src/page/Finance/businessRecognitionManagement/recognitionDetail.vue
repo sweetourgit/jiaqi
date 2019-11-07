@@ -723,9 +723,14 @@
   }
 
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   #tradeDetail .el-dialog{
     width: 90%;
+  }
+  #tradeDetail .buttonDv{
+    position: absolute;
+    top: 8px;
+    right: 3%;
   }
   #tradeDetail .stepTitle{
     width: 94%;

@@ -35,13 +35,13 @@
             v-model="submitForm.price_02">
           </el-input>
         </el-form-item>
-        <el-form-item label="甜橙结算价：" prop="price_03" style="width: 320px">
-          <el-input placeholder="甜橙结算价" size="small"
+        <el-form-item label="甜程结算价：" prop="price_03" style="width: 320px">
+          <el-input placeholder="甜程结算价" size="small"
             v-model="submitForm.price_03">
           </el-input>
         </el-form-item>
-        <el-form-item label="甜橙线上售价：" prop="price_04" style="width: 320px">
-          <el-input placeholder="甜橙线上售价" size="small" disabled
+        <el-form-item label="甜程线上售价：" prop="price_04" style="width: 320px">
+          <el-input placeholder="甜程线上售价" size="small" disabled
             v-model="submitForm.price_04">
           </el-input>
         </el-form-item>
@@ -86,7 +86,7 @@ export default {
           { required: true, validator: this.moneyValidator, trigger: ['change', 'blur']},
         ],
         price_03: [
-          { required: true, message: '甜橙结算价不能为空', trigger: ['change', 'blur']},
+          { required: true, message: '甜程结算价不能为空', trigger: ['change', 'blur']},
           { required: true, validator: this.moneyValidator, trigger: ['change', 'blur']},
         ]
       }

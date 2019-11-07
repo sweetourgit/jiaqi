@@ -22,7 +22,7 @@
           <el-col :span="7">
             <span class="search_style">状态：</span>
             <el-select v-model="borrowStatus" placeholder="请选择" class="search_input">
-              <el-option key="0" label="全部" value="0"></el-option>
+              <el-option key="" label="全部" value=""></el-option>
               <el-option key="1" label="审批中" value="1"></el-option>
               <el-option key="2" label="驳回" value="2"></el-option>
               <el-option key="3" label="通过" value="3"></el-option>
@@ -230,12 +230,12 @@
       },
       // 重置
       resetFun(){
-        this.plan = '';
+        this.supplier = '';
         this.reimbursementPer = '';
         this.startTime = '';
         this.endTime = '';
         this.reimbursementPerID = '';
-        this.collectionStatus = '';
+        this.borrowStatus = '';
         this.accountType = '';
         this.loadData();
       },

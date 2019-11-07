@@ -180,10 +180,10 @@ export default {
 
   methods: {
     init(payload){
-      let { date, id }= payload;
+      // sureDate为true时，getCalendarAction结束会默认执行一次emitSelectDay
+      let { date, id, sureDate }= payload;
       // 缓存payload 刷新用
       this.initCache= payload;
-
       this.changeCurrent(...this.getDateArr(date));
       // 日历
       this.getCalendarAction(id);
@@ -201,6 +201,8 @@ export default {
       let max= new Date(this.current[0], monthVal- 1, 0).getDate();
       max= (dayVal> max? max: dayVal);
       let newDate= new Date(this.current[0], monthVal, max);
+      // 没有放到init里调用的原因在于，dateRef先于showRef初始化，而clearAll里
+      this.poolManager.clearAll();
       this.init({ id:this.initCache.id, date: newDate });
     },
 
@@ -213,7 +215,13 @@ export default {
         packageID: pacId
       }
       getCalendar(object).then(res => {
-        this.dayArrayPreFull(res);
+        // 共享库存中重定向用到的逻辑
+        let selected= this.dayArrayPreFull(res);
+        if(this.initCache.sureDate){
+          this.initCache.sureDate= false;
+          console.log(this.initCache.sureDate)
+          this.emitSelectDay(selected);
+        }
       })
       .finally(() => {
         this.vm.inited= true;
@@ -328,8 +336,8 @@ export default {
     },
 
     // 刷新
-    refresh(){
-      this.init(this.initCache);
+    refresh(payload){
+      this.init(Object.assign({}, this.initCache, payload));
     },
 
     // 新增计划
@@ -338,8 +346,8 @@ export default {
       let state= this.poolManager.state;
       let day= this.poolManager.currentDay;
       if(state=== DAY_STATE.SHARE || state=== DAY_STATE.NOT_SHARE) return this.$message.error('计划已存在');
-      if(state=== DAY_STATE.UNDO) return this.$message.error('未指定日期');   
-      if(!day.after) return this.$message.error('过期日期不能新增计划');
+      // 如果空选，或者不是多选的情况下day过期
+      if(state=== DAY_STATE.UNDO || (state!== DAY_STATE.MULTIPLE && !day.after)) return this.$message.error('无效日期（未指定定或已过期）不能新增计划');
       this.$refs.addRef.handleOpen();
     },
 

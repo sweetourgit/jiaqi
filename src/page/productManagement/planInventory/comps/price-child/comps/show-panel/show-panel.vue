@@ -131,7 +131,7 @@ $height: 40px;
               同业价：{{ enroll.price_02 }}
             </div>
             <div class="bar">
-              甜橙结算价：{{ enroll.price_03 }}
+              甜程结算价：{{ enroll.price_03 }}
             </div>
             <div class="bar" v-show="enroll.quota">
               配额：{{ enroll.quota }}
@@ -222,14 +222,21 @@ export default {
     // 跳转到共享库存页
     toSharedInventoryPage(){
       let day= this.poolManager.currentDay;
-      this.$router.push({ path: '/sharedInventory', query: { date: day.date.getTime() } });
+      this.$router.push({ 
+        path: '/sharedInventory', 
+        query: { 
+          team_id: parseInt(this.$route.query.id), 
+          timestamp: day.date.getTime(), 
+          inventory_id: this.vm.inventoryID
+        } 
+      });
     },
 
     getPlanData(){
-      let { inventoryID, count, dateHous, name }= this.vm;
+      let { inventoryID, count, dateHous, name, regimentType }= this.vm;
       let planEnroll= this.$deepCopy(this.enrolls);
       return {
-        inventoryID, name, count, dateHous, planEnroll
+        inventoryID, name, count, dateHous, regimentType, planEnroll
       }
     },
 

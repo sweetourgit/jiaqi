@@ -140,6 +140,8 @@
         deleteStr: '',
         fileListUpload: [],
 
+        isEqual: true,
+
         // 认款方式array
         recModeList: {
           '1': '分销商预存款',
@@ -191,6 +193,10 @@
             return;
           }
         }
+        if(!this.isEqual){
+          that.$message.warning("收款金额和收款明细总金额不相等，不可提交！");
+          return;
+        }
 
         let fileArr = [];
         if(this.fileListUpload.length > 0){
@@ -210,7 +216,11 @@
             "rec_uid": sessionStorage.getItem('id')
           }
         }else{
-          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+//          alert(this.deleteStr.substr(this.deleteStr.length-1,1) === ',');
+          if(this.deleteStr.substr(this.deleteStr.length-1,1) === ','){
+            this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          }
+
           data = {
             "id": this.info,
             "rece_start": this.startTime,
@@ -267,7 +277,11 @@
           this.endTime = this.endTimeTable;
           this.tableDataQK.forEach(function (item, index, arr) {
             item[1] = formatDate(new Date(item[1]*1000));
-          })
+          });
+          if(file.response.data.money != this.baseInfo.rece_money){
+            this.$message.warning('收款金额和收款明细总金额不相等，不可提交！');
+            this.isEqual = false;
+          }
         }else{
           if(response.message){
             this.$message.warning(response.message);
@@ -309,7 +323,12 @@
           console.log(scope.row[2]+'======'+scope.$index);
 //          that.tableDataQK.splice(scope.$index,1);
           this.$set(that.tableDataQK[scope.$index],'0','已删除');
-          that.deleteStr += scope.$index + ',';
+          if(this.deleteStr.substr(this.deleteStr.length-1,1) === ','){
+            that.deleteStr += scope.$index + ',';
+          }else{
+            that.deleteStr += ',' + scope.$index + ',';
+          }
+
           let num = parseInt(that.totalItem);
           num--;
           that.totalItem = num;
@@ -334,6 +353,12 @@
           that.totalMoney = totalMoney.toFixed(2);
           that.startTimeTable = start.split(' ')[0];
           that.endTimeTable = end.split(' ')[0];
+          if(that.totalMoney != that.baseInfo.rece_money){
+//            this.$message.warning('收款金额和收款明细总金额不相等，不可提交！');
+            this.isEqual = false;
+          }else{
+            this.isEqual = true;
+          }
 //          console.log(that.deleteStr);
         }).catch(() => {
 
@@ -457,7 +482,7 @@
             if(response.data.data.distributor == '无'){
               const timeToday = new Date();
               const year = timeToday.getFullYear();
-              const month = timeToday.getMonth();
+              const month = timeToday.getMonth() + 1;
               const day = timeToday.getDate();
               that.startTime = (year - 1) + '-' + month + '-' + day;
               that.endTime = (year + 1) + '-' + month + '-' + day;

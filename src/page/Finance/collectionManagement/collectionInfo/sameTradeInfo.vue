@@ -28,7 +28,7 @@
           <el-date-picker v-model="ruleForm.collectionTime" type="date" placeholder="收款时间" :disabled="change"></el-date-picker>
         </el-form-item>
         <el-form-item label="同业社名称" prop="sameTrade" label-width="120px">
-          <el-autocomplete v-model="ruleForm.sameTrade" :fetch-suggestions="querySearch3"placeholder="请输入同业社名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
+          <el-autocomplete v-model="ruleForm.sameTrade" :fetch-suggestions="querySearch3" placeholder="请输入同业社名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
         </el-form-item>
         <el-form-item label="收款账户" prop="collectionNumber" label-width="120px">
           <el-input v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
@@ -40,7 +40,7 @@
         <el-form-item label="摘要" prop="abstract" label-width="120px">
           <el-input v-model="ruleForm.abstract" placeholder="摘要" :disabled="change"></el-input>
         </el-form-item>
-        <el-form-item label="凭证" prop="voucher" label-width="120px" ref="voucher">
+        <!--<el-form-item label="凭证" prop="voucher" label-width="120px" ref="voucher">
           <el-upload
             :file-list="ruleForm.voucher"
             class="upload-demo"
@@ -57,7 +57,7 @@
           >
             <el-button size="small" type="primary">上传文件</el-button>
           </el-upload>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="是否选择发票" prop="isInvoice" label-width="120px">
           <el-radio-group v-model="ruleForm.isInvoice" :disabled="change" @change="isInvoice">
             <el-radio label="1">是</el-radio>
@@ -91,9 +91,9 @@
                 <el-input v-model="scope.row.taxesNumber" required placeholder="纳税人识别号" :disabled="change"></el-input>
               </template>
             </el-table-column>
-            <el-table-column label="发票抬头/手机号" align="center">
+            <el-table-column label="发票抬头" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.titleOrMobile" placeholder="发票抬头/手机号" :disabled="change"></el-input>
+                <el-input v-model="scope.row.titleOrMobile" placeholder="发票抬头" :disabled="change"></el-input>
               </template>
             </el-table-column>
             <el-table-column label="发票项目" width="120" align="center">
@@ -851,7 +851,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let pictureList = [];
-          let newDate = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss')
+          let newDate = moment(new Date(), 'yyyy-MM-dd hh:mm:ss')
           for (let i = 0; i < this.fileList.length; i++) {
             let picture = {};
             picture.url = this.fileList[i].url1;
@@ -861,23 +861,48 @@ export default {
           }
           let objectRequest = {}
           objectRequest = {
-            collectionTime: cxnpo(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间
+            checkType: 0, // 审批状态
+            collectionTime: moment(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间
             groupCode: this.ruleForm.groupCode, // 团号
             planID: this.ruleForm.planID, // 团期计划的ID
             orderID: this.ruleForm.orderID, // 订单ID
             orderNumber: this.indent, // 订单号
             collectionNumber: this.ruleForm.collectionNumber, // 收款账户
-            //price: this.ruleForm.price, // 金额
+            price: this.ruleForm.price, // 金额
             dept: this.dept, //this.org, // 组织部门
             createUser: localStorage.getItem('name'),
             createTime: newDate, // 申请时间
+            code: '',
             serialNumber: this.ruleForm.serialNumber, // 流水号
             abstract: this.ruleForm.abstract, // 摘要
-            files: pictureList, // 图片
+            files: [], // 图片
+            // files: pictureList, // 图片
             invoice: this.ruleForm.invoice, // 是否发票
-            collectionType:1, // 直客1.同业2
+            collectionType:2, // 直客1.同业2
             localCompID:0, // 直客0，同业变成同业社id
-            //invoiceTable:this.ruleForm.invoiceTable,
+            isDeleted: 0,
+            collectionType: 1,
+            localCompID: 0,
+            "arrears": [
+              {
+                "id": 0,
+                "collectionID": 0,
+                "orderCode": "string",
+                "productName": "string",
+                "groupCode": "string",
+                "date": 0,
+                "payablePrice": 0,
+                "arrearsPrice": 0,
+                "repaidPrice": 0,
+                "amountPrice": 0,
+                "matchingPrice": 0
+              }
+            ],
+            "isEBS": 0,
+            "accountID": 0, // 银行账号ID
+            "moneyExplain": "string", // 款项说明
+            "distributor": "string", // 分销商
+            "payarr": [] // 付款欠款关联订单
           }
           if (this.ruleForm.invoice == '1') {
             // 发票表格

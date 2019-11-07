@@ -1,5 +1,6 @@
 <template>
   <div class="vivo" style="position:relative;">
+    <!--搜索项-->
     <div class="demo-input-suffix">
       <el-row>
         <el-col :span="7">
@@ -113,12 +114,16 @@
         </el-col>
       </el-row>
     </div>
+    <!--搜索项  end-->
+    <!--功能按钮-->
     <div class="main">
       <el-button type="primary" @click="importOrder" plain>导入订单</el-button>
       <el-button type="primary" @click="importHistory" plain>导入历史</el-button>
       <el-button type="primary" :disabled="reable" @click="relation" plain>关联报账团期</el-button>
       <el-button type="primary" :disabled="reable" @click="unbinding" plain>解绑报账团期</el-button>
     </div>
+    <!--功能按钮  end-->
+    <!--table-->
     <div class="tableDv">
       <div class="table_trip" style="width: 100%;">
         <el-table ref="multipleTable" v-loading="loading" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
@@ -203,6 +208,7 @@
         </el-pagination>
       </div>
     </div>
+    <!--table  end-->
     <Relation :dialogFormVisible="dialogFormVisible" @close="close"></Relation>
     <ImportOrder :dialogFormVisible2="dialogFormVisible2" @close2="close2"></ImportOrder>
     <!--<importStatus :dialogFormVisible3="dialogFormVisible3" @close3="close3"></importStatus>-->
@@ -210,10 +216,10 @@
   </div>
 </template>
 <script type="text/javascript">
-  import Relation from '@/page/orderManagement/externalOrderList/externalChild/relation'//关联弹窗
-  import ImportOrder from '@/page/orderManagement/externalOrderList/externalChild/importOrder'//导入订单弹窗
-//  import importStatus from '@/page/orderManagement/externalOrderList/importOrderInfo/importStatus'//导入状态弹窗
-  import recognitionSee from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionSee'//查看认款信息弹窗
+  import Relation from '@/page/orderManagement/externalOrderList/externalChild/relation'// 关联弹窗
+  import ImportOrder from '@/page/orderManagement/externalOrderList/externalChild/importOrder'// 导入订单弹窗
+//  import importStatus from '@/page/orderManagement/externalOrderList/importOrderInfo/importStatus'// 导入状态弹窗 -- 暂时没有
+  import recognitionSee from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionSee'// 查看认款信息弹窗
 
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
@@ -247,6 +253,7 @@
           borrowStatus: ''
         },// 筛选项
         reable: true,// 按钮是否可点击
+
         dialogFormVisible: false,
         dialogFormVisible2: false,
         dialogFormVisible3: false,

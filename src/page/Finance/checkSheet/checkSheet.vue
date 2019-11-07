@@ -34,7 +34,7 @@
             </el-row>
           </div>
           <div class="table_style">
-            <el-table :data="tableData" border :header-cell-style="getRowClass">
+            <el-table :data="tableData" border :header-cell-style="getRowClass" v-loading="loading">
               <el-table-column prop="tour_no" label="团期计划" align="center"></el-table-column>
               <el-table-column prop="" label="状态" align="center">
                 <template slot-scope="scope">
@@ -53,7 +53,7 @@
                   <div v-if="scope.row.bill_status=='5'">
                     <el-button @click="approve(scope.row)" type="text" size="small" class="table_details">审批</el-button>
                   </div>
-                  <div v-if="scope.row.bill_status=='7'" style="color: #33D174" >
+                  <div v-if="scope.row.bill_status=='7' || scope.row.bill_status=='8'">
                     <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
                     <el-button @click="recoilloan(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.bill_status=='7'">回冲借款单</el-button>
                   </div>
@@ -101,9 +101,9 @@
       data() {
         return {
           disabled: false,
-//        报账单需要审批数量
+          // 报账单需要审批数量
           number: 0,
-//        搜索字段
+          // 搜索字段
           plan: '',
           reimbursementPer: '',
           productName: '',
@@ -111,17 +111,18 @@
           endTime: '',
           reimbursementPerID: '',
           operatorList: [],
-//        切换字段
+          // 切换字段
           activeName: 'first',
-//        分页字段
+          // 分页字段
           pageSize: 10,
           currentPage: 1,
           pageCount: 0,
-//        弹出层字段
+          // 弹出层字段
           dialogFormVisible: false,
           info: '',
-//        报账单table
-          tableData: []
+          // 报账单table
+          tableData: [],
+          loading: true
         };
       },
       watch: {
@@ -140,7 +141,11 @@
             return ''
           }
         },
-//        操作人员
+        // tab栏点击事件
+        handleClick(tab, event) {
+//          console.log(tab, event);
+        },
+        // 操作人员
         querySearchOper(queryString, cb){
           const operatorList = this.operatorList;
           var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
@@ -174,10 +179,13 @@
             }
           }
         },
+        // 搜索
         searchFun(){
+          this.loading = true;
           this.reimList();
         },
         resetFun(){
+          this.loading = true;
           this.plan = '';
           this.reimbursementPer = '';
           this.productName = '';
@@ -186,34 +194,34 @@
           this.reimbursementPerID = '';
           this.reimList();
         },
-        handleClick(tab, event) {
-//          console.log(tab, event);
-        },
         handleSizeChange(val) {
+          this.loading = true;
           this.pageSize = val;
           this.currentPage = 1;
           this.reimList()
         },
         handleCurrentChange(val) {
+          this.loading = true;
           this.currentPage = val;
           this.reimList()
         },
-//        获取报账单列表数据
+        // 获取报账单列表数据
         reimList(){
           const that = this;
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/listpage", {
-            "pageIndex": this.pageIndex,
+            "pageIndex": this.currentPage,
             "pageSize": this.pageSize,
             "product_name": this.productName,
             "tour_no": this.plan,
             "start_time": this.startTime,
             "end_time": this.endTime,
             "create_uid": this.reimbursementPerID,
-            "bill_status": '5,6,7'
+            "bill_status": '5,6,7,8'
           }, ).then(function(response) {
 //            console.log(response);
             if (response.data.code == '200') {
               console.log(response);
+              that.loading = false;
               that.tableData = response.data.data.list;
               that.pageCount = response.data.data.total - 0;
               that.tableData.forEach(function (item, index, arr) {
@@ -250,7 +258,7 @@
             console.log(error);
           });
         },
-//        审批报账单
+        // 审批报账单
         approve(res){
           console.log(res);
           this.info = res;
@@ -259,11 +267,13 @@
 //          query: { name: 'name' },
 //          params: { usersitelist: 'userlist' }
         },
+        // 详情
         detail(res){
           console.log(res);
           this.info = res;
           this.dialogFormVisible = true;
         },
+        // 关闭
         closeFun() {
           this.dialogFormVisible = false;
           this.reimList();
@@ -326,7 +336,7 @@
             console.log(error);
           });
         },
-
+        // 借款单回冲
         recoilloan(row){
           const that = this;
           console.log(row);
@@ -341,6 +351,7 @@
               console.log('回冲报账单',response);
               if (response.data.code == '200') {
                 that.$message.success("回冲报账单成功~");
+                that.reimList();
 //                that.closeAdd();
               } else {
                 if(response.data.message){

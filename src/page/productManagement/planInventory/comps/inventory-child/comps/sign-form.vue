@@ -94,6 +94,8 @@ export default {
     },
 
     codeValidator(rule, value, cb){
+      // 如果已经设置过则直接返回
+      if(this.vm.inited) return cb();
       let { id, codePrefix, codeSuffix }= this.submitForm;
       if(!codePrefix || !codeSuffix) return cb();
       this.$refs.prefixRef.clearValidate();
@@ -129,7 +131,7 @@ export default {
     addAction(){
       this.getSubmitDate().then(object => {
         saveShort(object).then(res => {
-          this.$message.success('库存新增成功');
+          this.$message.success('保存成功');
           return this.afterAddAction();
         }).catch(err => {
           this.$message.error(err);
