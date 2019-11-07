@@ -1037,7 +1037,7 @@ export default {
             }
             this.ccc[i].rate =this.lilv
             break;
-            
+
           }
           this.$http
             .post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
@@ -1068,7 +1068,7 @@ export default {
                 this.ccc[i].rate =this.lilv
                 break;
               }
-              
+
               })
             })
         });
@@ -1705,6 +1705,7 @@ export default {
       this.originPlace = "";
       this.originMod = "";
       this.pageNum = 1;
+      this.currentPage4 =1;
 
       if (!this.productTitle) {
         this.productTitle = "";
@@ -2297,8 +2298,7 @@ export default {
           }
         })
         .then(obj => {
-          console.log(obj,222223);
-          
+          console.log(obj)
           for (let i = 0; i < obj.data.objects.length; i++) {
             console.log(obj.data.objects[i].loadPlan,8888)
             that.ccc.push({
@@ -2315,7 +2315,7 @@ export default {
               rate: obj.data.objects[i].rate,
               btnDisabled: true,
               loadPlan:obj.data.objects[i].loadPlan,
-              
+
             });
             if (that.ccc[i].value == 0) {
               that.ccc[i].value = "";
@@ -2335,7 +2335,7 @@ export default {
                   obj.data.objects[i].codePrefix !== "" &&
                   obj.data.objects[i].codeSuffix !== ""
                   // &&obj.data.objects[i].loadPlan ==true
-                
+
                 ) {
                   this.ccc[i].btnDisabled = false;
                 } else {
