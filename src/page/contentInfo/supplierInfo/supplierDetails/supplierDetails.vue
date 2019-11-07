@@ -33,7 +33,7 @@
             </td>
             <td width="33%">
               <div width="80" class="teampreview">类别:</div>
-              <!-- <div class="fl ml13">{{teampreviewData.types[0].supplierTypeEX}}</div> -->
+              <div class="fl ml13" v-for="item in types">{{item.supplierTypeEX}}</div>
             </td>
             <td width="33%">
               <div width="80" class="teampreview">结算方式:</div>
@@ -43,7 +43,7 @@
           <tr>
             <td width="33%">
               <div width="80" class="teampreview">使用部门:</div>
-              <!-- <div class="fl ml13">{{teampreviewData.orgs[0].orgName}}</div> -->
+              <div class="fl ml13" v-for="item in orgs">{{item.orgName}}</div>
             </td>
             <td width="33%">
               <div width="80" class="teampreview">到期日期:</div>
@@ -114,7 +114,7 @@
             <td width="33%">
               <div class="teampreview">供应商其他名称:</div>
               <!-- <div class="fl ml13">{{alias}}</div> -->
-              <div class="fl ml13" v-for="item in alias">{{item.name}}</div>
+              <div class="fl ml13" v-for="item in alias">{{item.name}} ,</div>
             </td>
           </tr>
           <tr>
@@ -143,7 +143,9 @@
         supplierDialog:true,//详情弹窗
         teampreviewData:{},//基本信息数组
         accountTable:[],//账户信息表格
-        alias:[],
+        types:[],//供应商类别数组
+        orgs:[],//使用部门数组
+        alias:[],//供应商其他名称数组
       }
     },
     methods:{
@@ -161,14 +163,11 @@
           id: 1
         }).then(res => {
             if (res.data.isSuccess == true) {
-              this.teampreviewData = res.data.object;
-              this.accountTable = res.data.object.banks;
-              this.alias= res.data.object.alias;
-              //let alias = [];
-              // this.teampreviewData.alias.forEach(v=>{
-              //   alias.push(v.name)
-              // })
-              // console.log(alias)
+              this.teampreviewData = res.data.object;// 获取基本信息数据
+              this.accountTable = res.data.object.banks;//获取账户信息数据
+              this.alias= res.data.object.alias;//获取供应商其他名称数组
+              this.types = res.data.object.types;//获取类别数组
+              this.orgs = res.data.object.orgs;//获取使用部门数组
             }
           });
       },
