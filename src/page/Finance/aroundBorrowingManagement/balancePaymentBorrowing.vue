@@ -214,12 +214,12 @@
       },
       // 重置
       resetFun(){
-        this.plan = '';
+        this.supplier = '';
         this.reimbursementPer = '';
         this.startTime = '';
         this.endTime = '';
         this.reimbursementPerID = '';
-        this.collectionStatus = '';
+        this.borrowStatus = '';
         this.loadData();
       },
       // 每页条数操作
