@@ -464,12 +464,13 @@
     },
     data() {
       return {
-        disabled: false,
-        readOnly: true,
-//       基本信息
-        rece_code: '',
-        rece_codeEdit: '',
-        ruleForm: {
+        disabled: false,// 时间选择不可编辑
+        readOnly: true,// 账户选择input 只读
+
+        // 基本信息
+        rece_code: '',// 收款编码 -- 添加
+        rece_codeEdit: '',// 收款编码 -- 编辑
+        ruleForm: { // 表单数据
           creditTime: '',
           payAccount: '',
           payAccountID: '',
@@ -479,21 +480,21 @@
           startTime: '',
           endTime: ''
         },
-        rules:{
+        rules:{ // 验证规则 -- 必填项
           creditTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
           payAccount: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
           mark: [{ required: true, message: '收款详细说明不能为空', trigger: 'blur' }],
           distributor: [{ required: true, message: '字段不能为空', trigger: 'change' }]
         },
-        fileList: [],
+        fileList: [], // 凭证
 
-//        收款账户选择
-        dialogFormVisible1: false,
-        tableDataZH: [],
-        deleteStr: '',
+        // 收款账户选择
+        dialogFormVisible1: false,// 收款账户显示隐藏
+        tableDataZH: [],// 账户的table
 
-//        收款明细
+        // 收款明细
         tableDataQK: [],
+        deleteStr: '',
         totalItem: '0',
         totalMoney: '',
         startTime: '',
@@ -986,7 +987,10 @@
             "get_order":getOrder
           }
         }else{
-          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          if(this.deleteStr.substr(this.deleteStr.length-1,1) === ','){
+            this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          }
+//          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
           data = {
             "rece_code":this.rece_code,
             "explain":this.ruleForm.mark,
@@ -1279,7 +1283,10 @@
             this.ruleForm.creditTime = formatDate(this.ruleForm.creditTime);
           }
           getOrder = getOrder.substr(0, getOrder.length - 1);
-          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          if(this.deleteStr.substr(this.deleteStr.length-1,1) === ','){
+            this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          }
+//          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/updrece", {
             "id": this.info,
             "rece_code": this.rece_codeEdit,
@@ -1489,7 +1496,12 @@
           console.log(scope.row[2]+'======'+scope.$index);
 //          that.tableDataQK.splice(scope.$index,1);
           this.$set(that.tableDataQK[scope.$index],'0','已删除');
-          that.deleteStr += scope.$index + ',';
+          if(that.deleteStr.substr(that.deleteStr.length-1,1) === ',' || that.deleteStr === ''){
+            that.deleteStr += scope.$index + ',';
+          }else{
+            that.deleteStr += ',' + scope.$index + ',';
+          }
+//          that.deleteStr += scope.$index + ',';
           let num = parseInt(that.totalItem);
           num--;
           that.totalItem = num;
@@ -1534,7 +1546,12 @@
             if (response.data.code == '200') {
               that.$message.success("删除成功~");
               that.tableDataQK.splice(scope.$index,1);
-              that.deleteStr += scope.row.id + ',';
+//              that.deleteStr += scope.row.id + ',';
+              if(that.deleteStr.substr(that.deleteStr.length-1,1) === ',' || that.deleteStr === ''){
+                that.deleteStr += scope.$index + ',';
+              }else{
+                that.deleteStr += ',' + scope.$index + ',';
+              }
               let num = parseInt(that.totalItem);
               num--;
               that.totalItem = num;
