@@ -47,8 +47,6 @@
 
 <script>
 import { saveShort, codeIsExist } from '../../../planInventory'
-import { reject } from 'q';
-
 
 export default {
 
@@ -123,6 +121,7 @@ export default {
           if(!validate) reject();
           let copy= this.$deepCopy(this.submitForm);
           copy.uptoDay= parseInt(copy.uptoDay || 0);
+          if(this.vm.inited) copy= { id: copy.id, uptoDay: copy.uptoDay };
           resolve(copy);
         })
       })

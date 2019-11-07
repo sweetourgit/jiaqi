@@ -340,6 +340,8 @@ export default {
 
     // 刷新
     refresh(payload){
+      // 重置poolManager的状态
+      this.poolManager.destroy();
       this.init(Object.assign({}, this.initCache, payload));
     },
 

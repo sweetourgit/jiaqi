@@ -130,13 +130,14 @@ export default {
 
   methods: {
     handleOpen(payload){
-      let { share, dateHous, count, inventoryID, planEnroll, day, regimentType }= payload;
+      let { share, dateHous, count, inventoryID, planEnroll, day, regimentType, name }= payload;
       // 共享类型
       this.vm.share= share;
       this.submitForm.regimentType= regimentType;
       this.submitForm.dateHous= dateHous;
       this.submitForm.count= count;
       this.submitForm.inventoryID= inventoryID;
+      this.submitForm.name= name;
       this.enrollList.push(...planEnroll);
       this.checkProto= this.$deepCopy(this.submitForm);
       this.cacheInit= payload;
@@ -165,7 +166,8 @@ export default {
     selectShareInventory(shareId){
       let hit= this.shareOptions.find(share => share.id=== shareId);
       if(!hit) return;
-      let { count }= hit;
+      let { count, inventoryID, name }= hit;
+      this.submitForm.name= name;
       this.submitForm.count= count;
     },
 
@@ -275,10 +277,10 @@ export default {
     },
 
     getInventorySave(){
-      let { share, dateHous, count, inventoryID, planEnroll, day, name }= this.cacheInit;
+      let { share, day }= this.cacheInit;
       return {
-        id: inventoryID,
-        name: name,
+        id: this.submitForm.inventoryID,
+        name: this.submitForm.name,
         count: this.submitForm.count,
         share: share,
         date: day.dayInt
