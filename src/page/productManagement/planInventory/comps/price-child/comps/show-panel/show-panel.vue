@@ -89,7 +89,7 @@ $height: 40px;
             @click="awakeEditForm"
           >编辑</el-button>
           <el-button type="primary" size="small" v-if="vm.share=== 1">解除共享</el-button>
-          <el-button type="primary" size="small" v-if="vm.share=== 2">删除</el-button>
+          <el-button type="primary" size="small" v-if="vm.share=== 2" @click="deleteInventoryAction">删除</el-button>
         </div>
       </header>
       <main>
@@ -144,7 +144,7 @@ $height: 40px;
 </template>
 
 <script>
-import { getPlan, getInventory } from '../../../../planInventory'
+import { getPlan, getInventory, deleteInventory } from '../../../../planInventory'
 import { DAY_STATE } from '../../../../dictionary'
 
 export default {
@@ -204,6 +204,24 @@ export default {
           this.vm.name= name;
           this.vm.count= count;
         })
+      })
+    },
+
+    deleteInventoryAction(){
+      this.$confirm(`确定要删除当前计划吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteInventory(this.vm.inventoryID).then(res => {
+          this.$message.success('计划删除成功');
+          let day= this.poolManager.currentDay;
+          this.$emit('refresh-date-panel', { sureDate: true, date: day.date });
+        }).catch(err => {
+          this.$message.error('计划删除失败');
+        })
+      }).catch(() => {
+        this.$message.error('计划删除失败');
       })
     },
 

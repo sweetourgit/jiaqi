@@ -24,6 +24,7 @@
       ></date-panel>
       <show-panel style="position:absolute; width: 380px; right: 0; top: 54px;"
         @awake-edit-form="awakeEditForm"
+        @refresh-date-panel="refreshDatePanel"
         ref="showRef"
       ></show-panel>
     </main>
@@ -75,6 +76,10 @@ export default {
   
     awakeEditForm(payload){
       this.$refs.dateRef.awakeEditForm(payload);
+    },
+
+    refreshDatePanel(payload){
+      this.$refs.dateRef.refresh(payload);
     }
   }
 

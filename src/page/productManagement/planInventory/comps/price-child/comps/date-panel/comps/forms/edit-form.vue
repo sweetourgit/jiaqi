@@ -237,6 +237,8 @@ export default {
     
     hasChange(){
       let bol= this.$checkLooseEqual(this.submitForm, this.checkProto);
+      //　报名数发生变化
+      if(bol) bol= (this.cacheInit.planEnroll.length=== this.enrollList.length);
       if(bol) bol= !this.childrenHasChange(); 
       return !bol;
     },
