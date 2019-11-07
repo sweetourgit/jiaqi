@@ -161,7 +161,7 @@
                 </div>                    
             </div>
             <div class="album-picbutton" v-show="picInfoShow">              
-                 <el-button type="primary" @click="savPic">{{savPicBut}}</el-button>
+                <el-button type="primary" @click="savPic">{{savPicBut}}</el-button>
             </div>
            </div>
         </div> 
@@ -759,7 +759,7 @@
           }).then(res => {
              if(res.data.isSuccess == true){
              this.$message({
-               message: '图片图片成功',
+               message: '图片上传成功',
                type: 'success'
              });
              this.getAlbum(this.albumId);
@@ -822,7 +822,7 @@
 .album-name1 .el-input{width:200px;margin-left:13px}
 .album-name1{margin-left:42px}
 .album-button{width:250px;height:50px;margin-left:65px;margin-top:10px}
-.album-picbutton{width:250px;position: absolute;bottom:20px;left:145px;}
+.album-picbutton{width:250px;position: absolute;bottom:40px;left:200px;}
 .album-info{height:100px;margin-left:46px;margin-top:-5px}
 .album-info .size{margin-top:10px;clear:both}
 .empty{position:absolute;left:100px;top:40px;font-size:12px;color:red}
