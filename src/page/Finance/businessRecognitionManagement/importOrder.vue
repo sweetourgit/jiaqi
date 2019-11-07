@@ -323,7 +323,7 @@
           console.log(scope.row[2]+'======'+scope.$index);
 //          that.tableDataQK.splice(scope.$index,1);
           this.$set(that.tableDataQK[scope.$index],'0','已删除');
-          if(this.deleteStr.substr(this.deleteStr.length-1,1) === ','){
+          if(that.deleteStr.substr(that.deleteStr.length-1,1) === ',' || that.deleteStr === ''){
             that.deleteStr += scope.$index + ',';
           }else{
             that.deleteStr += ',' + scope.$index + ',';
