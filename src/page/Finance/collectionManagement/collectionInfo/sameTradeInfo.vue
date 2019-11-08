@@ -247,7 +247,7 @@
           <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
           <el-table-column prop="operation" label="操作" align="center">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="routerHandle4()" class="table_details">选择</el-button>
+              <el-button type="text" size="small" @click="routerHandle4(scope.$index, scope.row)" class="table_details">选择</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -360,17 +360,7 @@ export default {
       }],
       assistTransactionData: [],
       arrearsRelation: '8822.66',
-      arrearsList: [{
-        orderNumber: '51548979998051',
-        productName: '【HKN-101】椰风海岸（海口）双飞6日游',
-        tour: 'TC-GTY-1001-01-180806-01',
-        tourStartTime: '2018-05-23',
-        orderMoney: '1699.00',
-        arrearsMoney: '1699.00',
-        repaymentMoney: '0.00',
-        inAuditMoney: '0.00',
-        matchingMoney: '',
-      }],
+      arrearsList: [],
       invoiceType: [{
         value: '1',
         label: '类型1'
@@ -405,6 +395,7 @@ export default {
       tourNamePre: '',
       uploadUrl: this.GLOBAL.imgUrl + '/upload/api/picture', // 上传凭证
       planID: '',
+      accountCredited: null // 收款账户选择
     }
   },
   computed: {
@@ -793,7 +784,9 @@ export default {
       this.accountShow = false;
     },
     //收款账户选择
-    routerHandle4() {
+    routerHandle4(index, row) {
+      this.accountCredited = row.id
+      console.log(row, '收款账户选择')
       setTimeout(v => {
         this.ruleForm.collectionNumber = this.tourNamePre
         this.accountShow = false
@@ -857,49 +850,34 @@ export default {
           }
           let objectRequest = {}
           objectRequest = {
-            checkType: 0, // 审批状态
-            collectionTime: moment(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间
-            groupCode: this.ruleForm.groupCode, // 团号
-            planID: this.ruleForm.planID, // 团期计划的ID
-            orderID: this.ruleForm.orderID, // 订单ID
-            orderNumber: this.indent, // 订单号
-            collectionNumber: this.ruleForm.collectionNumber, // 收款账户
-            price: this.ruleForm.price, // 金额
-            dept: this.dept, //this.org, // 组织部门
-            createUser: localStorage.getItem('name'),
-            createTime: newDate, // 申请时间
-            code: '',
-            serialNumber: this.ruleForm.serialNumber, // 流水号
-            abstract: this.ruleForm.abstract, // 摘要
-            files: [], // 图片
+            "checkType": 0, // 审批状态
+            "collectionTime":  moment(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间,
+            "groupCode": this.ruleForm.groupCode, // 团号,
+            "planID": this.ruleForm.planID, // 团期计划的ID,
+            "orderID": this.ruleForm.orderID, // 订单ID,
+            "orderNumber": this.indent, // 订单号
+            "collectionNumber":  this.ruleForm.collectionNumber, // 收款账户
+            "price": this.ruleForm.price, // 金额,
+            "dept": this.org, // 组织部门 this.dept
+            "createUser": localStorage.getItem('name'), // 创建者
+            "createTime": newDate, // 申请时间
+            "code": "",
+            "serialNumber": this.ruleForm.serialNumber, // 流水号
+            "abstract": this.ruleForm.abstract, // 摘要
+            "files": [], // 文件
             // files: pictureList, // 图片
-            invoice: this.ruleForm.invoice, // 是否发票
-            collectionType:2, // 直客1.同业2
-            localCompID:0, // 直客0，同业变成同业社id
-            isDeleted: 0,
-            collectionType: 1,
-            localCompID: 0,
-            "arrears": [
-              {
-                "id": 0,
-                "collectionID": 0,
-                "orderCode": "string",
-                "productName": "string",
-                "groupCode": "string",
-                "date": 0,
-                "payablePrice": 0,
-                "arrearsPrice": 0,
-                "repaidPrice": 0,
-                "amountPrice": 0,
-                "matchingPrice": 0
-              }
-            ],
+            "invoice": this.ruleForm.invoice, // 是否发票,
+            "isDeleted": 0,
+            "collectionType": 2, // 直客1.同业2
+            "localCompID": this.productPos, // 直客0，同业变成同业社id
+            "arrears": [], // 欠款列表
             "isEBS": 0,
-            "accountID": 0, // 银行账号ID
+            "accountID": this.accountCredited, // 银行账号ID
             "moneyExplain": "string", // 款项说明
             "distributor": "string", // 分销商
-            "payarr": [] // 付款欠款关联订单
+            "payarr": [], // 付款欠款关联订单
           }
+
           if (this.ruleForm.invoice == '1') {
             // 发票表格
             objectRequest.invoiceTable = this.ruleForm.invoice ? this.ruleForm.invoiceTable : []

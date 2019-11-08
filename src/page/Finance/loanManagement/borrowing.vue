@@ -976,6 +976,8 @@ export default {
     // 查看无收入借款弹窗(列表中的详情)
     checkIncome(row){
       this.checkIncomeShow = true;
+      console.log(this.checkIncomeShow,'this.checkIncomeShow')
+      console.log(row.paymentID,'row')
       this.pid = row.paymentID;
       this.status = row.checkTypeEX;
       this.ruleForm = row;
@@ -1003,6 +1005,7 @@ export default {
         }
      })
     },
+    // 关闭弹窗
     CloseCheckIncomeShow(){
       this.checkIncomeShow = false;
       this.$refs['ruleForm'].resetFields();
@@ -1054,19 +1057,29 @@ export default {
           this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insert",
             {
               object: {
-                createUser:sessionStorage.getItem('id'),
-                paymentType: 1, // 借款类型 1无收入借款 2预付款
-                planID: this.tour_id, // 对应计划ID --Plan，不存在传值0
-                supplierID: this.supplier_id, // 对应供应商ID --Supplier，不存在传值0
-                supplierName: this.ruleForm.supplier, // Supplier不存在时补充供应商名称
-                supplierType: this.ruleForm.planType, // 供应商类型 0返款
-                price: this.ruleForm.planAmount, // 金额
-                mark: this.ruleForm.abstract, // 摘要
-                cardNumber: this.ruleForm.account, // 账号
-                bankName: this.ruleForm.accountBank, // 开户行
-                cardName: this.ruleForm.accountOpenName, // 开户名
                 //payway: this.ruleForm.payment, // 付款方
-                files: pictureList, //上传图片
+                "createUser": sessionStorage.getItem('id'),
+                "paymentType": 1, // 借款类型 1无收入借款 2预付款
+                "planID": this.tour_id, // 对应计划ID --Plan，不存在传值0
+                "supplierID": this.supplier_id, // 对应供应商ID --Supplier，不存在传值0
+                "supplierName": this.ruleForm.supplier, // Supplier不存在时补充供应商名称
+                "supplierType": this.ruleForm.planType, // 供应商类型 0返款
+                "price": this.ruleForm.planAmount, // 金额
+                "mark": this.ruleForm.abstract, // 摘要
+                "cardNumber": this.ruleForm.account, // 账号
+                "bankName": this.ruleForm.accountBank, // 开户行
+                "cardName": this.ruleForm.accountOpenName, // 开户名
+                "files": pictureList, //上传图片,
+
+                "peopleCount": 0,
+                "id": 0,
+                "createTime": "2019-11-08T05:04:43.582Z",
+                "code": "string",
+                "payway": 0,
+                "guid": "string",
+                "checkType": 0,
+                "accountID": 0
+
               }
             })
             .then(res => {

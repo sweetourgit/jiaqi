@@ -1,7 +1,7 @@
 <template>
   <div class="loan-management">
     <!-- 查看无收入借款弹窗 -->
-    <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
+    <el-divider content-position="left" class='title-margin'>基本信息{{paymentID}}</el-divider>
     <!-- 基本信息 -->
     <div class="item-content">
       <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
