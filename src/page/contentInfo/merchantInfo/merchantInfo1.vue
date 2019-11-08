@@ -72,7 +72,7 @@
         <el-table-column prop="quota" label="额度" width="130" align="center"></el-table-column>
         <el-table-column prop="arrears" label="剩余额度" width="130" align="center"></el-table-column>
         <el-table-column prop="balance" label="总欠款" width="130" align="center"></el-table-column>
-        <el-table-column prop="operation" label="操作" width="160" align="center">
+        <el-table-column prop="operation" label="操作" width="175" align="center">
           <template slot-scope="scope" style="cursor:pointer;">
             <div
               style="color: #f5a142;float:left;margin-left:30px;cursor:pointer;"
@@ -503,7 +503,7 @@
               <el-table-column prop="Title" label="产品名称" width="120" align="center"></el-table-column>
               <el-table-column prop="GroupCode" label="团期计划" width="120" align="center"></el-table-column>
               <el-table-column prop="CF_Date" label="出团日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="Payable" label="订单金额" width="80" align="center"></el-table-column>
+              <el-table-column prop="Payable" label="订单金额" width="98" align="center"></el-table-column>
               <el-table-column prop="qk_price" label="欠款金额" width="120" align="center"></el-table-column>
               <el-table-column prop="yh_price" label="已还金额" width="120" align="center"></el-table-column>
               <el-table-column prop="CreateTime" label="欠款日期" width="120" align="center"></el-table-column>
@@ -2105,6 +2105,7 @@ export default {
 </script>
 
 <style scoped>
+
 .BodyTableCenter {
   margin: 0 60px 0 100px;
 }
@@ -2143,7 +2144,7 @@ export default {
   color: #f5a142;
 }
 .relevanceDept {
-  width: 98%;
+  width: 100%;
 }
 .relevanceDeptWarn {
   background-color: #e6f3fc;
