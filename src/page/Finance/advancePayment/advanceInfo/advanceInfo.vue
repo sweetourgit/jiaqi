@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
-    <!--申请预付款-->
+    <!-- 申请预付款 -->
     <el-dialog title="申请预付款" :visible="dialogFormVisible" width=60% :show-close="false" @close="closeAdd">
       <div v-if="this.find == 1" class="sh_style">{{this.infoStatus}}</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
@@ -11,7 +11,7 @@
         </div>
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <!-- 基本信息 -->
-          <el-tab-pane label="预付款申请" name="first">
+          <el-divider content-position="left" class='title-margin'>申请预付款</el-divider>
             <div>
               <!--申请人-->
               <!--<el-form-item label="申请人" prop="user" ref="user" label-width="120px">-->
@@ -81,9 +81,22 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <div style="    color: red;position: absolute;top: 571px;left: 65px;">*</div>
-              <el-form-item label="附件" label-width="120px"  prop="pass">
-                <el-upload class="upload-demo" name="files" ref="upload" :limit="12" multiple :action="this.upload_url" :disabled="change" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview"  list-type="picture" >
+              <el-form-item label="附件" label-width="120px" prop="pass">
+                <el-upload
+                  class="upload-demo"
+                  name="files"
+                  ref="upload"
+                  :limit="12"
+                  multiple
+                  :action="this.upload_url"
+                  :disabled="change"
+                  :file-list="fileList"
+                  :on-error="handleError"
+                  :on-success="handleSuccess"
+                  :on-remove="handleRemove"
+                  :on-preview="handlePreview"
+                  list-type="picture"
+                >
                   <el-button size="small" type="primary">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
@@ -118,34 +131,32 @@
                   </el-table-column>
                 </el-table>
               </el-form-item>
-              <el-form-item label="预付款明细" label-width="120px" label-height="auto">
-                <br />
-                <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
-                  <el-table-column prop="paymentID" label="ID" align="center">
-                  </el-table-column>
-                  <el-table-column prop="checkTypeEX" label="审批状态" align="center">
-                  </el-table-column>
-                  <el-table-column label="借款类型" align="center">
-                    <template slot-scope="scope">
-                      <span v-if="scope.row.paymentType==1">无收入借款</span>
-                      <span v-if="scope.row.paymentType==2">预付款</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="supplierName" label="供应商" align="center">
-                  </el-table-column>
-                  <el-table-column prop="price" label="金额" align="center">
-                  </el-table-column>
-                  <el-table-column prop="expensePrice" label="已核销金额" align="center">
-                  </el-table-column>
-                  <el-table-column prop="createName" label="申请人" align="center">
-                  </el-table-column>
-                  <el-table-column label="审批过程" align="center">
-                    <template slot-scope="scope">
-                      <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-form-item>
+              <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
+              <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
+                <el-table-column prop="paymentID" label="ID" align="center">
+                </el-table-column>
+                <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+                </el-table-column>
+                <el-table-column label="借款类型" align="center">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.paymentType==1">无收入借款</span>
+                    <span v-if="scope.row.paymentType==2">预付款</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="supplierName" label="供应商" align="center">
+                </el-table-column>
+                <el-table-column prop="price" label="金额" align="center">
+                </el-table-column>
+                <el-table-column prop="expensePrice" label="已核销金额" align="center">
+                </el-table-column>
+                <el-table-column prop="createName" label="申请人" align="center">
+                </el-table-column>
+                <el-table-column label="审批过程" align="center">
+                  <template slot-scope="scope">
+                    <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
+                  </template>
+                </el-table-column>
+              </el-table>
 
               <el-dialog title="审批过程" class="aaaaa" custom-class="approvalClass" :append-to-body="true" :visible.sync="dialogVisible6" width=900px>
                 <el-table :data="tableData11" border style="800px;" :header-cell-style="getRowClass2">
@@ -159,10 +170,8 @@
                   </el-table-column>
                 </el-table>
               </el-dialog>
-
-              <el-form-item label="无收入借款明细" label-width="120px" label-height="auto">
-                <br />
-                <el-table :data="tableData7" border style="width:100%" :header-cell-style="getRowClass2">
+              <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
+                <el-table :data="tableData7" border :header-cell-style="getRowClass2">
                   <el-table-column prop="paymentID" label="ID" align="center">
                   </el-table-column>
                   <el-table-column prop="checkTypeEX" label="审批状态" align="center">
@@ -186,9 +195,7 @@
                       <span style="color:blue;" v-on:click="advanceProcess(scope.row.id)">查看</span>
                     </template>
                   </el-table-column>
-
                 </el-table>
-              </el-form-item>
 
               <el-dialog title="审批过程" class="aaaaa" custom-class="approvalClass" :append-to-body="true" :visible.sync="dialogVisible5" width=900px>
                 <el-table :data="tableData10" border style="800px;" :header-cell-style="getRowClass2">
@@ -203,10 +210,8 @@
                 </el-table>
               </el-dialog>
 
-
-              <el-form-item label="收入明细" label-width="120px" label-height="auto">
-                <br />
-                <el-table :data="tableData8" border style="width:85%" :header-cell-style="getRowClass2">
+              <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
+                <el-table :data="tableData8" border :header-cell-style="getRowClass2">
                   <el-table-column prop="oNo" label="订单编号" align="center">
                   </el-table-column>
                   <el-table-column prop="source" label="订单来源" align="center">
@@ -225,11 +230,8 @@
                   </el-table-column>
                   <el-table-column prop="repaymentTime" label="应还日期" align="center">
                   </el-table-column>
-                  </el-table-column>
                 </el-table>
-              </el-form-item>
             </div>
-          </el-tab-pane>
         </el-tabs>
       </el-form>
     </el-dialog>
@@ -455,7 +457,6 @@ export default {
         pass:'',
       }, //文件上传列表
       fileList: [],
-
       fiels:'',
       rules: {
         //user: [{ required: true, message: '申请人不能为空', trigger: 'change' }],
@@ -1257,6 +1258,15 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+  .title-margin{
+    margin-bottom: 30px;
+  }
+  .title-margin-t{
+    margin-top: 45px;
+  }
+  .el-divider__text{
+    font-size: 17px !important
+  }
 .el-tabs__nav>>>.el-tabs__item {
   font-size: 30px !important;
 }
