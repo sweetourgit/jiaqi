@@ -180,7 +180,7 @@
                 :limit="12"
                 drag
                 :file-list="fileList"
-                action="http://49.4.10.11:3009/upload/obs/api/picture"
+                action="http://test.dayuntong.com/upload/obs/api/picture"
                 multiple
                 list-type="picture"
                 :on-error="handleError"
