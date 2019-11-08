@@ -305,7 +305,7 @@
                     placeholder="请输入"
                   ></el-input>
                 </el-form-item>
-                <el-form-item label="商户其他名称 :" prop="otherNames" class="business">
+                <el-form-item label="商户其他名称:" prop="otherNames" class="business">
                   <el-input
                     v-model="ruleForm.otherNames"
                     placeholder="请输入，可输入多个"
@@ -482,7 +482,7 @@
                   <!-- <td class="dialogTableTd">
                     <label>周边预存款：</label>
                     <span>{{AbouDeposit}}</span>
-                  </td> -->
+                  </td>-->
                 </tr>
               </table>
             </div>
@@ -600,17 +600,84 @@ export default {
     };
     //商户编码唯一性验证
     let localCompCode = (rule, value, callback) => {
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistcode", {
-          object: {
-            name: this.localCompCode
-          }
-        })
-        .then(res => {
-          return callback()
-        }).catch(err => {
-          return callback("此商户编号已有")
-        })
+      if (this.ruleForm.localCompCode == "") {
+        return callback("请输入商户编码");
+      } else {
+        this.$http
+          .post(
+            this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistcode",
+            {
+              localCompCode: this.ruleForm.localCompCode
+            }
+          )
+          .then(res => {
+            if (res.status == 200 && res.data.isSuccess == false) {
+              return callback("已存在该编码的商户");
+            } else {
+              return callback();
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    };
+    // 商户名称唯一性验证
+    let nameValidator = (rule, value, callback) => {
+      if (this.ruleForm.name == "") {
+        return callback("请输入名字");
+      } else {
+        if (this.ruleForm.name.length > 40) {
+          return callback("不要超过40个字符");
+        } else {
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistalias",
+              {
+                name: this.ruleForm.name
+              }
+            )
+            .then(res => {
+              if (res.status == 200 && res.data.isSuccess == false) {
+                return callback("已存在该名称的商户");
+              } else {
+                return callback();
+              }
+            })
+            .catch(err => {
+              return callback();
+              console.log(err);
+            });
+        }
+      }
+    };
+    //商户其他名称验证唯一性
+    let otherNamesValidator = (rule, value, callback) => {
+      if (this.ruleForm.otherNames !== undefined) {
+        if (this.ruleForm.otherNames.length > 40) {
+          return callback("不要超过40个字符");
+        } else {
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistalias",
+              {
+                name: this.ruleForm.otherNames
+              }
+            )
+            .then(res => {
+              if (res.status == 200 && res.data.isSuccess == false) {
+                return callback("已存在该名称的商户");
+              } else {
+                return callback();
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      } else {
+        return callback();
+      }
     };
     return {
       otherNamesObj: {}, //添加商户其他名称enter接收
@@ -638,25 +705,22 @@ export default {
       statesValue: "", //搜索状态字段
       payValue: "", //搜过结算字段
       tid: 0,
-      pagesize: 10,
-      total: 1,
-      currentPage4: 1,
+      pagesize: 10,//一页几条数据
+      total: 1,//总条数
+      currentPage4: 1,//第几页
       accountForm: {
-        name: "",
-        phone: "",
-        email: "",
-        sex: "",
-        wx: "",
-        qq: "",
-        state: "",
-        passWord: "",
-        peerUserType: [1]
+        name: "", //账户信息名字
+        phone: "",//手机号
+        email: "",//邮箱
+        sex: "",//性别
+        wx: "",//微信号
+        qq: "",//qq号
+        state: "",//状态
+        passWord: "",//密码
+        peerUserType: [1]//职位
       }, //添加账户信息的对象
       accountFormRules: {
-        name: [
-          { required: true, message: "请输入名字", trigger: "blur" },
-          { max: 40, message: "不要超过40个字符", trigger: "blur" }
-        ],
+        name: [{ required: true, trigger: "blur" }],
         phone: [
           { required: true, message: "请输入电话", trigger: "blur" },
           { min: 11, max: 11, message: "请输入11位数字", trigger: "blur" },
@@ -714,9 +778,7 @@ export default {
       rules: {
         expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
         name: [
-          { required: true, message: "请输入名称", trigger: "blur" },
-          { max: 40, message: "不要超过40个字符", trigger: "blur" }
-          // { validator: nameValidator, trigger: "blur" }
+          { required: true,validator: nameValidator, trigger: "blur" }
         ],
         localCompType: [
           { required: true, message: "请选择类型", trigger: "change" }
@@ -781,15 +843,17 @@ export default {
           }
         ],
         salesman: [{ required: true, message: "请输入", trigger: "change" }],
-        otherNames: [{ max: 40 }],
+        otherNames: [
+          { validator: otherNamesValidator, trigger: "keyup.enter" }
+        ],
         localCompCode: [
           {
             required: true,
             max: 10,
-            message: "请输入",
             trigger: "blur",
             validator: localCompCode
-          }
+          },
+          { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: "请输入数字" }
         ]
       },
       dialogFormVisible: false,
@@ -1346,10 +1410,13 @@ export default {
     //提交
     submitForm(ruleForm) {
       // 判断添加是是否有账户 有则可以添加 无则不可添加
+      // console.log(this.useList.length);
       if (this.useList.length == 0) {
         this.$message.error("请添加账户信息");
       } else {
+        console.log("shifouzou ", this.$refs[ruleForm]);
         this.$refs[ruleForm].validate(valid => {
+          console.log(valid);
           if (valid) {
             this.addMerchan(ruleForm);
           } else {
@@ -1587,7 +1654,7 @@ export default {
             jqAdminList: adminAndSalesArr,
             localCompAliasList: this.businessOtherNamesArr, //商户其他名称
             abouQuota: this.AbouQuota, //周边授信额度
-            localCompCode: this.localCompCode //商户编码
+            localCompCode: this.ruleForm.localCompCode //商户编码
           }
         })
         .then(obj => {
@@ -1729,7 +1796,7 @@ export default {
             jqAdminList: adminAndSalesArr,
             localCompAliasList: this.businessOtherNamesArr,
             abouQuota: this.AbouQuota, //周边授信额度
-            localCompCode: this.localCompCode
+            localCompCode: this.ruleForm.localCompCode
           }
         })
         .then(obj => {
