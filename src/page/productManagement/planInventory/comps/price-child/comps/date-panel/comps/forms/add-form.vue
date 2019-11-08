@@ -289,7 +289,7 @@ export default {
           let day= days.pop();
           // 收集错误信息
           this.dayInloop= day;
-          this.addInventoryAction(day)
+          this.addInventoryAction(day.dayInt)
           .then(inventoryID => {
             if(!inventoryID){
               //TODO log dayinloop
@@ -297,7 +297,7 @@ export default {
       
               return Promise.resolve();
             }
-            return this.addPlanAction(inventoryID, day);
+            return this.addPlanAction(inventoryID, day.dayInt);
           })
           .then(func);
         }
@@ -306,13 +306,13 @@ export default {
       })
     },
 
-    //新增库存
-    addInventoryAction(day){
+    // 新增库存 传入一个dayInt
+    addInventoryAction(date){
       return this.linkAddInventory({
         name: '',
         count: this.submitForm.count,
         share: SHARE_STATE.NOT_SHARE,
-        date: day.dayInt
+        date
       })
     },
 
@@ -350,12 +350,9 @@ export default {
       return this.$refs.enrollRef || [];
     },
 
-    getPlanDTO(inventoryID, day){
+    getPlanDTO(inventoryID, dayInt){
       let currentPac= this.PACKAGE_LIST.find(pac => pac.selected);
       let { id, codePrefix, codeSuffix }= currentPac;
-      console.log(currentPac, this.submitForm);
-      
-      let { dayInt }= day;
       return {
         createTime: 0,
         inventoryID,
@@ -383,14 +380,6 @@ export default {
       return newEnroll;
     },
 
-    afterAddAction(id){
-      let date= this.submitForm.date;
-      this.vm.state= false;
-      this.$nextTick(() => {
-        this.$emit('add-callback', { date: this.submitForm.date, id });
-      })
-    },
-
     // 链式调用
     linkAddInventory(object){
       return new Promise((resolve, reject) => {
@@ -412,9 +401,9 @@ export default {
         this.$http.post(this.GLOBAL.serverSrc + "/team/plan/api/insert",{
           object
         }).then((res) => {
-          let { isSuccess, objects }= res.data;
+          let { isSuccess }= res.data;
           if(!isSuccess) return resolve(false);
-          return resolve(objects);
+          return resolve();
         }).catch((err) => {
           resolve(false);
         })
