@@ -582,7 +582,7 @@
     right: 20px;
     left:0px;
     // background:green;
-    background-image:url('../../../static/login-img/login.png');
+    background-image:url('../../../static/login-img/login.jpg');
     // background-repeat: no-repeat
     background-size:100% 80%;
 

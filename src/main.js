@@ -4,20 +4,17 @@ import router from './router'
 import global from './components/tools/global'
 import store from '@/store'
 import '@/js/utils'
-import '../static/UE/ueditor.config.js'
-import '../static/UE/ueditor.all.min.js'
-import '../static/UE/lang/zh-cn/zh-cn.js'
-import '../static/UE/ueditor.parse.min.js'
+// import '../static/UE/ueditor.config.js'
+// import '../static/UE/ueditor.all.min.js'
+// import '../static/UE/lang/zh-cn/zh-cn.js'
+// import '../static/UE/ueditor.parse.min.js'
 
 
-// element-ui
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import ELEMENT from 'element-ui'
+Vue.use(ELEMENT);
 
-Vue.use(ElementUI);
-
-import Print  from './js/libs/print.js'
-Vue.use(Print) // 打印
+// import Print  from './js/libs/print.js'
+// Vue.use(Print) // 打印
 
 //axios
 import axios from 'axios'
