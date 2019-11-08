@@ -1,6 +1,7 @@
 <template>
   <div class="all" id="externalOrderManagement">
     <div class="borders">
+      <!--搜索-->
       <div class="search">
         <el-row>
           <el-col :span="7">
@@ -38,9 +39,11 @@
         </el-row>
 
       </div>
+      <!--添加-->
       <div class="search" style="background-color: transparent;padding: 0;">
         <el-button type="primary" @click="addFun">添加</el-button>
       </div>
+      <!--表格-->
       <div class="table_style">
         <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
           <el-table-column prop="rece_code" label="收款单号" align="center"></el-table-column>
@@ -69,6 +72,7 @@
           </el-table-column>
         </el-table>
       </div>
+      <!--分页-->
       <div class="block">
         <el-pagination
           @size-change="handleSizeChange"
@@ -88,8 +92,8 @@
 </template>
 
 <script>
-  import orderEdit from '@/page/Finance/collectionManagement/externalOrder/orderEdit.vue'
-  import orderDetail from '@/page/Finance/collectionManagement/externalOrder/orderDetail.vue'
+  import orderEdit from '@/page/Finance/collectionManagement/externalOrder/orderEdit.vue'// 编辑
+  import orderDetail from '@/page/Finance/collectionManagement/externalOrder/orderDetail.vue'// 详情
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "tradeList",
@@ -99,29 +103,30 @@
     },
     data() {
       return {
-        disabled: false,
+        disabled: false,// 日期不可编辑
 
-        plan: '',
-        reimbursementPer: '',
-        productName: '',
-        startTime: '',
-        endTime: '',
-        status: '',
-        explain: '',
-        reimbursementPerID: '',
-        operatorList: [],
+        // 搜索项
+        plan: '',// 分销商
+        reimbursementPer: '',// 申请人
+        startTime: '',// 收款时间 -- 开始
+        endTime: '',// 收款时间 -- 结束
+        status: '',// 状态（待认收款，已认完）
+        explain: '',// 收款明细说明
+        reimbursementPerID: '',// 申请人ID
+        operatorList: [],// 申请人list
 
-        pageSize: 10,
-        currentPage: 1,
-        pageCount: 2,
+        pageSize: 10,// 每页条数
+        currentPage: 1,// 当前页数
+        pageCount: 2,// 总条数
 
         //待审批table
-        tableData: [{}],
+        tableData: [{}],// 列表数据
 
-        dialogFormVisible: false,
-        dialogFormVisible1: false,
-        info: '',
+        dialogFormVisible: false,// 编辑弹框 -- 显示/隐藏
+        dialogFormVisible1: false,// 详情弹框 -- 显示/隐藏
+        info: '',// 数据传递
 
+        // 时间限制
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate()
       };
@@ -135,6 +140,7 @@
           return ''
         }
       },
+      // 关闭弹窗事件（详情内执行弹窗关闭返回success时，要继续打开编辑弹框）
       closeAdd(str) {
         if(str == 'success'){
           this.dialogFormVisible = false;
@@ -148,7 +154,7 @@
           this.loadData();
         }
       },
-      //        操作人员
+      // 操作人员
       querySearchOper(queryString, cb){
         const operatorList = this.operatorList;
         var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
@@ -182,13 +188,14 @@
           }
         }
       },
+      // 搜索事件
       searchFun(){
         this.loadData();
       },
+      // 重置
       resetFun(){
         this.plan = '';
         this.reimbursementPer = '';
-        this.productName = '';
         this.startTime = '';
         this.endTime = '';
         this.reimbursementPerID = '';
@@ -196,17 +203,21 @@
         this.explain = '';
         this.loadData();
       },
+      // 添加
       addFun(){
         this.dialogFormVisible = true;
       },
+      // 详情
       detail(row){
         this.info = row.id;
         this.dialogFormVisible1 = true;
       },
+      // 编辑
       editOrder(row){
         this.info = row.id;
         this.dialogFormVisible = true;
       },
+      // 删除
       deleteFun(row){
         this.$confirm("是否删除该笔收款?", "提示", {
           confirmButtonText: "确定",
@@ -238,15 +249,18 @@
           });
         });
       },
+      // 条数改变
       handleSizeChange(val) {
         this.pageSize = val;
         this.currentPage = 1;
         this.loadData()
       },
+      // 页数改变
       handleCurrentChange(val) {
         this.currentPage = val;
         this.loadData();
       },
+      // 数据加载
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/listpage", {
@@ -295,6 +309,7 @@
           console.log(error);
         });
       },
+      // 加载申请人list
       loadOper(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
@@ -351,6 +366,8 @@
           console.log(error);
         });
       },
+
+      // 时间限制
       beginDate(){
 //      alert(begin);
         const that = this;

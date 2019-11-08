@@ -668,7 +668,7 @@
           console.log(error);
         });
       },
-      //table数据，根据id获取人名，去重获取
+      // table数据，根据id获取人名，去重获取
       getUser(userGetList){
         const that = this;
         userGetList.forEach(function (item, index, arr) {
