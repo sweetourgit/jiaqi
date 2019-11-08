@@ -4,7 +4,7 @@
     <div class="demo-input-suffix">
       <span class="search-title">产品名称</span>
       <el-input placeholder="请输入" v-model="title" class="group-no"></el-input>
-      <span class="search-title">报账团号</span>
+      <span class="search-title">团&nbsp;号</span>
       <el-input placeholder="请输入" v-model="groupCode" class="group-no"></el-input>
       <span class="search-title">出行日期</span>
       <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
