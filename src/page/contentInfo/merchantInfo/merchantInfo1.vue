@@ -50,7 +50,7 @@
       <el-table
         :data="tableData"
         border
-        style="width: 82%"
+        style="width: 83%"
         :highlight-current-row="true"
         @row-click="handleClick"
       >
@@ -88,7 +88,7 @@
     </div>
     <!--end-->
     <!--分页-->
-    <div class="block" style="margin-bottom: 20px;margin-top: 20px">
+    <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -328,7 +328,7 @@
           <div class="accountInfo">
             <h3>账户信息</h3>
             <el-button type="primary" @click="addAccount(1)">添加</el-button>
-            <el-table :data="useList" border style="width: 100%;margin-top: 20px;">
+            <el-table :data="useList" border style="margin-top: 20px;">
               <el-table-column prop="name" label="名称" width="150" align="center"></el-table-column>
               <el-table-column prop="state" label="状态" width="80" align="center"></el-table-column>
               <el-table-column prop="phone" label="手机号" width="140" align="center"></el-table-column>
@@ -337,7 +337,7 @@
               <el-table-column prop="wx" label="微信" width="140" align="center"></el-table-column>
               <el-table-column prop="qq" label="qq" width="140" align="center"></el-table-column>
               <el-table-column prop="peerUserType" label="职务" width="80" align="center"></el-table-column>
-              <el-table-column prop="operation" label="操作" width="110" align="center">
+              <el-table-column prop="operation" label="操作" width="108" align="center">
                 <template slot-scope="scope">
                   <div
                     style="color: #f5a142;float: left;margin-left: 14px"
@@ -500,15 +500,15 @@
               </p>
             </div>
             <el-table :data="tableRelevanceDeptInfo" border style="width: 100%;margin-top: 20px;">
-              <el-table-column prop="orderNum" label="订单编号" width="120" align="center"></el-table-column>
-              <el-table-column prop="state" label="产品名称" width="120" align="center"></el-table-column>
-              <el-table-column prop="telphone" label="团期计划" width="120" align="center"></el-table-column>
-              <el-table-column prop="email" label="出团日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="gender" label="订单金额" width="80" align="center"></el-table-column>
-              <el-table-column prop="wechat" label="欠款金额" width="120" align="center"></el-table-column>
-              <el-table-column prop="QQ" label="已还金额" width="120" align="center"></el-table-column>
-              <el-table-column prop="duty" label="欠款日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="duty" label="应还日期" width="120" align="center"></el-table-column>
+              <el-table-column prop="OrderCode" label="订单编号" width="120" align="center"></el-table-column>
+              <el-table-column prop="Title" label="产品名称" width="120" align="center"></el-table-column>
+              <el-table-column prop="GroupCode" label="团期计划" width="120" align="center"></el-table-column>
+              <el-table-column prop="CF_Date" label="出团日期" width="120" align="center"></el-table-column>
+              <el-table-column prop="Payable" label="订单金额" width="80" align="center"></el-table-column>
+              <el-table-column prop="qk_price" label="欠款金额" width="120" align="center"></el-table-column>
+              <el-table-column prop="yh_price" label="已还金额" width="120" align="center"></el-table-column>
+              <el-table-column prop="CreateTime" label="欠款日期" width="120" align="center"></el-table-column>
+              <el-table-column prop="RepaymentDate" label="应还日期" width="120" align="center"></el-table-column>
             </el-table>
           </div>
         </div>
@@ -600,7 +600,7 @@ export default {
         return callback();
       }
     };
-    let that = this;
+    // let that = this;
     return {
       otherNamesObj: {}, //添加商户其他名称enter接收
       // isBusinessTrue: false, //添加商户其他名称是判断issuccess false则此名字已存在
@@ -745,7 +745,7 @@ export default {
         ],
         bankName: [
           { required: true, message: "请输入开户行", trigger: "blur" },
-          { max: 30, message: "不要超过30个字符", trigger: "blur" }
+          { max: 80, message: "不要超过80个字符", trigger: "blur" }
         ],
         bankcardNo: [
           { required: true, message: "请输入对公账号", trigger: "blur" },
@@ -852,10 +852,11 @@ export default {
           }
         )
         .then(obj => {
+          console.log(obj, "名字校验重复是否");
           if (obj.data.isSuccess == true) {
             this.businessOtherNamesArr.push(this.otherNamesObj);
           } else {
-            this.$message.error("该商户其他名称已存在")
+            this.$message.error("该商户其他名称已存在");
           }
           // console.log(this.isBusinessTrue);
         })
@@ -867,7 +868,10 @@ export default {
     handleEnterOtherNames() {
       this.otherNamesObj = {};
       this.otherNamesObj["name"] = this.ruleForm.otherNames;
-      if (this.otherNamesObj.name !== undefined && this.otherNamesObj.name !== "") {
+      if (
+        this.otherNamesObj.name !== undefined &&
+        this.otherNamesObj.name !== ""
+      ) {
         if (this.businessOtherNamesArr.length == 0) {
           this.adminOtherAxios();
           // console.log(this.isBusinessTrue);
@@ -890,7 +894,7 @@ export default {
             //   this.$message.error("该商户其他名称已存在");
             // }
           } else {
-            this.$message.error("该商户其他名称已存在");
+            this.$message.error("该商户其他名称已存在2");
           }
         }
       }
@@ -1145,25 +1149,30 @@ export default {
       this.pageList();
     },
     //查询列表
-    pageList() {
-      var that = this;
+    pageList(
+      input = this.input,
+      statesValue = this.statesValue,
+      settlementType = this.payValue
+    ) {
+      let object = {};
+      input !== "" ? (object.name = input) : "",
+        statesValue !== "" ? (object.state = statesValue) : statesValue,
+        settlementType !== ""
+          ? (object.settlementType = settlementType)
+          : settlementType;
+      // 1月结 2非月结
+      // 2正常 3停用
+      // jqUserType 1 管理员  2 销售
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
           pageIndex: 1,
           pageSize: 10,
-          object: {
-            name: that.input,
-            state: that.statesValue,
-            settlementType: that.payValue
-            // 1月结 2非月结
-            // 2正常 3停用
-            // jqUserType 1 管理员  2 销售
-          }
+          object: object
         })
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
+        .then(obj => {
+          this.total = obj.data.total;
+          this.tableData = obj.data.objects;
+          this.tableData.forEach(function(v, k, arr) {
             arr[k]["department"] = "XXX";
             arr[k]["manager"] = "阳阳";
             if (arr[k]["state"] == 2) {
@@ -1185,7 +1194,7 @@ export default {
             }
           });
         })
-        .catch(function(obj) {
+        .catch(obj => {
           console.log(obj);
         });
     },
@@ -1291,6 +1300,26 @@ export default {
       this.tid = row;
       this.getOneMess(this.tid);
       this.dialogFormVisible = true;
+    },
+    // 关联欠款表格的接口
+    getDebitTable() {
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
+          pageIndex: 1,
+          pageSize: this.pagesize,
+          // total: 1, //总条数
+          object: {
+            // isDeleted: 0 //是否删除
+            orgID:this.businewwInfPageId
+          }
+        })
+        .then(obj => {
+          console.log(obj)
+          this.tableRelevanceDeptInfo = obj.data.objects
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     //提交
     submitForm(ruleForm) {
@@ -1684,8 +1713,8 @@ export default {
           this.list();
           this.$message.success("修改成功");
         })
-        .catch(function(obj) {
-          console.log(obj);
+        .catch(obj => {
+          console.log("error");
         });
     },
     clear() {
@@ -1753,6 +1782,7 @@ export default {
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID
           this.businewwInfPageId = object.id;
+          this.getDebitTable()
           this.useList = useList;
           this.useList.forEach((val, idx, arr) => {
             if (arr[idx].state == 2) {
@@ -1803,23 +1833,22 @@ export default {
           } else {
             this.ruleForm.storeType = "第三方门市";
           }
-
           // 经营范围
           if (this.btnindex == 1) {
             this.ruleForm.scopeExt = object.scopeExt;
           } else {
             this.ruleForm.scopeExt = object.scopeExt.split(",");
           }
+          this.adminArr = [];
+          this.salesArr = [];
 
-          // 管理人员 和 销售
           jqAdminList.forEach((val, idx, arr) => {
-            if (arr[idx].jqUserType == 1) {
-              this.adminArr.push(arr[idx]);
-            } else if (arr[idx].jqUserType == 2) {
-              this.salesArr.push(arr[idx]);
+            if (arr[idx].jqUserType === 1) {
+              this.adminArr.push(val);
+            } else {
+              this.salesArr.push(val);
             }
           });
-
           let adminArr = [],
             salesArr = [];
           // 从商户详情页点击编辑进入编辑页然后管理人员与销售人员去重
@@ -1979,9 +2008,6 @@ export default {
 </script>
 
 <style scoped>
-/* .el-table--scrollable-x .el-table__body-wrapper {
-    overflow-x: hidden!important;
-} */
 .el-pagination {
   margin-right: 300px !important;
 }
@@ -2106,6 +2132,9 @@ export default {
   float: right;
   margin-top: 50px;
   margin-bottom: 50px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  height: 100px;
 }
 .dialogTableTr {
   line-height: 40px;

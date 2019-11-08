@@ -527,6 +527,11 @@
   #tradeDetail .el-dialog{
     width: 90%;
   }
+  #tradeDetail .buttonDv{
+    position: absolute;
+    top: 8px;
+    right: 3%;
+  }
   #tradeDetail .stepTitle{
     width: 94%;
     line-height: 45px;

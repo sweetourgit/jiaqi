@@ -89,7 +89,7 @@ $height: 40px;
             @click="awakeEditForm"
           >编辑</el-button>
           <el-button type="primary" size="small" v-if="vm.share=== 1">解除共享</el-button>
-          <el-button type="primary" size="small" v-if="vm.share=== 2">删除</el-button>
+          <el-button type="primary" size="small" v-if="vm.share=== 2" @click="deleteInventoryAction">删除</el-button>
         </div>
       </header>
       <main>
@@ -131,7 +131,7 @@ $height: 40px;
               同业价：{{ enroll.price_02 }}
             </div>
             <div class="bar">
-              甜橙结算价：{{ enroll.price_03 }}
+              甜程结算价：{{ enroll.price_03 }}
             </div>
             <div class="bar" v-show="enroll.quota">
               配额：{{ enroll.quota }}
@@ -144,7 +144,7 @@ $height: 40px;
 </template>
 
 <script>
-import { getPlan, getInventory } from '../../../../planInventory'
+import { getPlan, getInventory, deleteInventory } from '../../../../planInventory'
 import { DAY_STATE } from '../../../../dictionary'
 
 export default {
@@ -207,6 +207,24 @@ export default {
       })
     },
 
+    deleteInventoryAction(){
+      this.$confirm(`确定要删除当前计划吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteInventory(this.vm.inventoryID).then(res => {
+          this.$message.success('计划删除成功');
+          let day= this.poolManager.currentDay;
+          this.$emit('refresh-date-panel', { sureDate: true, date: day.date });
+        }).catch(err => {
+          this.$message.error('计划删除失败');
+        })
+      }).catch(() => {
+        this.$message.error('计划删除失败');
+      })
+    },
+
     // dayInt转字符串
     dayIntToText(dayInt){
       dayInt= (dayInt+ '').split('');
@@ -222,14 +240,21 @@ export default {
     // 跳转到共享库存页
     toSharedInventoryPage(){
       let day= this.poolManager.currentDay;
-      this.$router.push({ path: '/sharedInventory', query: { date: day.date.getTime() } });
+      this.$router.push({ 
+        path: '/sharedInventory', 
+        query: { 
+          team_id: parseInt(this.$route.query.id), 
+          timestamp: day.date.getTime(), 
+          inventory_id: this.vm.inventoryID
+        } 
+      });
     },
 
     getPlanData(){
-      let { inventoryID, count, dateHous, name }= this.vm;
+      let { inventoryID, count, dateHous, name, regimentType }= this.vm;
       let planEnroll= this.$deepCopy(this.enrolls);
       return {
-        inventoryID, name, count, dateHous, planEnroll
+        inventoryID, name, count, dateHous, regimentType, planEnroll
       }
     },
 

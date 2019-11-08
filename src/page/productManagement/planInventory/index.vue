@@ -89,10 +89,18 @@ export default {
 
     // 可传入packageId
     init(pacId){
-      let { id, pac_id, tab }= this.$route.query;
-      if(!id) return this.$message.error('页面初始参数出错');
-      if(pac_id) pacId= parseInt(pac_id);
-      if(tab) this.vm.currentChild= tab;
+      console.warn(JSON.stringify(this.$route.query));
+      let { id, pac_id, tab, timestamp }= this.$route.query;
+      let payloadAssign= {};
+      if(!id) return this.$message.error('页面初始参数出错，请回退到上一页');
+      // 处理一次性路由参数
+      if(pac_id || tab || timestamp){
+        this.$router.replace({ path: this.$route.path, query: { id } });
+        // 讲路由套餐id以参数传入
+        if(pac_id) pacId= parseInt(pac_id);
+        if(tab) this.vm.currentChild= tab;
+        if(timestamp) payloadAssign.timestamp= timestamp;
+      }
       // 初始化字典
       getEnrollTypeDictionary();
       getTeamListPackages(id).then(objects => {
@@ -102,7 +110,8 @@ export default {
         this._provided.PACKAGE_LIST.push(...result);
         // 初始化库存
         let pac= result.find(el => el.id=== pacId);
-        pac? this.$refs.child.init(pac): this.$refs.child.init();
+        pac? this.$refs.child.init(Object.assign(payloadAssign, pac))
+          : this.$refs.child.init();
       })
     },
 

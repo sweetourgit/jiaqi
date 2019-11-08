@@ -24,6 +24,9 @@
         right: 0;
       }
     }
+    &>main{
+      min-height: 500px;
+    }
   }
 }
 </style>

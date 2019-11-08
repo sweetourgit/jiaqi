@@ -25,7 +25,7 @@
                 </el-tooltip>
               </template>
               <template v-else-if="scope.row.isLeaf == 1">
-                <span type="text">{{ scope.row.country }}</span>                
+                <span type="text">{{ scope.row.country }}</span>
               </template>
             </template>
           </el-table-column>
@@ -105,6 +105,9 @@
           <el-form-item label="ID:" :label-width="formLabelWidth" prop="id">
             <span class="country_span">{{editCountryPopup.id}}</span>
           </el-form-item>
+          <el-form-item label="所属国家:" :label-width="formLabelWidth" v-show="flag">
+            <span class="country_span">{{editCountryPopup.country}}</span>
+          </el-form-item>
           <el-form-item label="所属地区:" :label-width="formLabelWidth">
             <span class="country_span">{{editCountryPopup.select}}</span>
           </el-form-item>
@@ -168,6 +171,7 @@
         level: '', // 层级数据
         // 数据表格
         tableData: [],
+        flag:false,
         // 添加区域数据
         countryPopup: {
           countryName: '',
@@ -180,7 +184,8 @@
           parentID: '',
           isLeaf: '2',
           spareName: '',
-          url: ''
+          url: '',
+          // titles:"国家编辑"
         },
         // 编辑区域数据
         editCountryPopup: {
@@ -195,7 +200,9 @@
           isLeaf: '',
           parentID: '',
           spareName: '',
-          url: ''
+          url: '',
+          // titles:""
+          country:''
         },
         // 添加区域正则判断
         countryRules: {
@@ -213,7 +220,7 @@
         // 编辑区域正则判断
         editCountryRules: {
           countryName: [
-            { required: true, message: '请填写国家名称', trigger: 'blur'},
+            { required: true, message: '请填写区域名称', trigger: 'blur'},
             { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
@@ -333,6 +340,7 @@
           this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforget',{
             id: data.id
           }).then(res => {
+            console.log(res,33333);
             this.tableData.push({
               id: res.data.object.id,
               country: res.data.object.areaName,
@@ -366,17 +374,20 @@
             "parentID": id,
             "areaName": name
           },
+          //7号修改过
           pageIndex: this.currentPage,
           pageSize:this.pagesize,
         }).then(res => {
           if (res.data.isSuccess == false) {
             this.tableData = [];
+            this.total =0;
             if (this.currentPage != 1) {
-              this.currentPage = 1
+              this.currentPage = 0
               this.treeClick(data)
             }
           } else {
             this.tableData = res.data.objects
+            console.log(res,1111)
             this.total = res.data.total
             this.geography = 1
             this.tableData.forEach((item, i) => {
@@ -536,7 +547,8 @@
       },
       // 删除国家
       handleDelete(key, data){
-        this.$confirm('是否删除' + data.areaName, '信息', {
+        console.log(data,521)
+        this.$confirm('是否删除' + data.value, '信息', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           customClass: 'delete_country',
@@ -545,6 +557,7 @@
         }).then(() => {
           // 为2非末级
           if (data.isLeaf == 2) {
+            console.log(data.areaName,5555)
             this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforlist',{
               object: {
                 parentID: data.id

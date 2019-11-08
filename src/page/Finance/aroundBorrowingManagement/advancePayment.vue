@@ -229,12 +229,12 @@
       },
       // 重置
       resetFun(){
-        this.plan = '';
+        this.supplier = '';
         this.reimbursementPer = '';
         this.startTime = '';
         this.endTime = '';
         this.reimbursementPerID = '';
-        this.collectionStatus = '';
+        this.borrowStatus = '';
         this.accountType = '';
         this.loadData();
       },

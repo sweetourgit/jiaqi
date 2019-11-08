@@ -103,7 +103,7 @@ export default {
       vm: {
         state: false,
         share: SHARE_STATE.NOT_SHARE,
-        enrollName: null,
+        enrollName: null
       },
       submitForm: {
         count: '',
@@ -130,12 +130,14 @@ export default {
 
   methods: {
     handleOpen(payload){
-      let { share, dateHous, count, inventoryID, planEnroll, day }= payload;
+      let { share, dateHous, count, inventoryID, planEnroll, day, regimentType, name }= payload;
       // 共享类型
       this.vm.share= share;
+      this.submitForm.regimentType= regimentType;
       this.submitForm.dateHous= dateHous;
       this.submitForm.count= count;
       this.submitForm.inventoryID= inventoryID;
+      this.submitForm.name= name;
       this.enrollList.push(...planEnroll);
       this.checkProto= this.$deepCopy(this.submitForm);
       this.cacheInit= payload;
@@ -164,7 +166,8 @@ export default {
     selectShareInventory(shareId){
       let hit= this.shareOptions.find(share => share.id=== shareId);
       if(!hit) return;
-      let { count }= hit;
+      let { count, inventoryID, name }= hit;
+      this.submitForm.name= name;
       this.submitForm.count= count;
     },
 
@@ -221,13 +224,14 @@ export default {
       }
       let inventory= this.getInventorySave();
       let plan= this.getPlanSave();
+      let { date }= this.cacheInit.day;
       saveInventory(inventory)
       .then(
         () => savePlan(plan)
       )
       .then(() => {
         this.$message.success('修改成功');
-        this.$emit('refresh');
+        this.$emit('refresh', { date, sureDate: true });
         this.handleClose();
       })
       .catch(() => this.$message.success('修改失败'));
@@ -235,6 +239,8 @@ export default {
     
     hasChange(){
       let bol= this.$checkLooseEqual(this.submitForm, this.checkProto);
+      //　报名数发生变化
+      if(bol) bol= (this.cacheInit.planEnroll.length=== this.enrollList.length);
       if(bol) bol= !this.childrenHasChange(); 
       return !bol;
     },
@@ -271,10 +277,10 @@ export default {
     },
 
     getInventorySave(){
-      let { share, dateHous, count, inventoryID, planEnroll, day, name }= this.cacheInit;
+      let { share, day }= this.cacheInit;
       return {
-        id: inventoryID,
-        name: name,
+        id: this.submitForm.inventoryID,
+        name: this.submitForm.name,
         count: this.submitForm.count,
         share: share,
         date: day.dayInt
@@ -293,7 +299,7 @@ export default {
         date: dayInt,
         groupCode: `${codePrefix}-${dayInt}-${codeSuffix}`,
         planEnroll: this.getEnrollRefs().map(enrollRef => enrollRef.getData()),
-        regimentType: 1,
+        regimentType: this.submitForm.regimentType,
         createTime: 0,
       }
     },

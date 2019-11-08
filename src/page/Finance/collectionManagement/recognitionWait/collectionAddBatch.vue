@@ -138,6 +138,8 @@
         };
         this.rece_code = '';
         this.fileList = [];
+        this.tableDataDD = [];
+        this.deleteStr = '';
         this.$emit('close', false);
       },
       // 取消按钮事件
@@ -159,7 +161,7 @@
       },
       // 删除认款订单明细
       deleteFun(scope){
-        console.log(scope);
+//        console.log(scope);
         const that = this;
         this.$confirm("是否删除此收款?", "提示", {
           confirmButtonText: "确定",

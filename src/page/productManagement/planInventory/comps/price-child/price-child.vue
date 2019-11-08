@@ -24,6 +24,7 @@
       ></date-panel>
       <show-panel style="position:absolute; width: 380px; right: 0; top: 54px;"
         @awake-edit-form="awakeEditForm"
+        @refresh-date-panel="refreshDatePanel"
         ref="showRef"
       ></show-panel>
     </main>
@@ -59,19 +60,26 @@ export default {
   methods: {
     init(payload){
       if(!payload) return this.vm.inited= false;
-      console.log(payload);
-      
-      let { id, rate }= payload;
+      let { id, rate, timestamp }= payload;
       this.checkProto= payload;
       this.vm.inited= true;
       this.vm.rate= rate;
-      this.$refs.sliderRef.init(id);
-      this.$refs.dateRef.init({ id });
+      // timestamp为共享库存跳转带来的制定天
+      this.$refs.dateRef.init({ 
+        id, 
+        date: timestamp? new Date(parseInt(timestamp)): null, 
+        sureDate: timestamp? true: false, //是否初始化后选择准确日期
+      });
       this.$refs.showRef.init({ id });
+      this.$refs.sliderRef.init(id);
     },
   
     awakeEditForm(payload){
       this.$refs.dateRef.awakeEditForm(payload);
+    },
+
+    refreshDatePanel(payload){
+      this.$refs.dateRef.refresh(payload);
     }
   }
 
