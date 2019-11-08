@@ -70,9 +70,9 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">审批</el-button>
-          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0">|</span>
-          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0" type="text" size="small" class="table_details">付款账户</el-button>
+          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn">|</span>
+          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn" type="text" size="small" class="table_details">付款账户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -375,7 +375,7 @@
         <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="addAccount()" class="table_details">选择</el-button>
+            <el-button type="text" size="small" @click="addAccount(scope.$index, scope.row)" class="table_details">选择</el-button>
           </template>
         </el-table-column>
         </el-table>
@@ -402,6 +402,7 @@ export default {
       }
     };
     return {
+      ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       ruleFormSeach: {
         groupCode_01:'', // 团号
@@ -485,7 +486,7 @@ export default {
         accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
         accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],
         payment:[{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-        // accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
+        accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
       },
       fileList: [],
       dialogFormVisible1:false, // 无收入借款中借款人弹窗
@@ -535,7 +536,7 @@ export default {
       planID:'',
       supplier_id:0, // 供应商选择银行账号
       tableData2:[],
-      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture', // 图片上传
+      upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
       uid: 0, // 上传图片缩略图选中项
       status:"",
       SelectAccount:false, // 选择账户弹窗
@@ -975,6 +976,7 @@ export default {
     // 查看无收入借款弹窗(列表中的详情)
     checkIncome(row){
       this.checkIncomeShow = true;
+      console.log(this.checkIncomeShow,'this.checkIncomeShow')
       this.pid = row.paymentID;
       this.status = row.checkTypeEX;
       this.ruleForm = row;
@@ -1002,6 +1004,7 @@ export default {
         }
      })
     },
+    // 关闭弹窗
     CloseCheckIncomeShow(){
       this.checkIncomeShow = false;
       this.$refs['ruleForm'].resetFields();
@@ -1053,19 +1056,29 @@ export default {
           this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insert",
             {
               object: {
-                createUser:sessionStorage.getItem('id'),
-                paymentType: 1, // 借款类型 1无收入借款 2预付款
-                planID: this.tour_id, // 对应计划ID --Plan，不存在传值0
-                supplierID: this.supplier_id, // 对应供应商ID --Supplier，不存在传值0
-                supplierName: this.ruleForm.supplier, // Supplier不存在时补充供应商名称
-                supplierType: this.ruleForm.planType, // 供应商类型 0返款
-                price: this.ruleForm.planAmount, // 金额
-                mark: this.ruleForm.abstract, // 摘要
-                cardNumber: this.ruleForm.account, // 账号
-                bankName: this.ruleForm.accountBank, // 开户行
-                cardName: this.ruleForm.accountOpenName, // 开户名
                 //payway: this.ruleForm.payment, // 付款方
-                files: pictureList, //上传图片
+                "createUser": sessionStorage.getItem('id'),
+                "paymentType": 1, // 借款类型 1无收入借款 2预付款
+                "planID": this.tour_id, // 对应计划ID --Plan，不存在传值0
+                "supplierID": this.supplier_id, // 对应供应商ID --Supplier，不存在传值0
+                "supplierName": this.ruleForm.supplier, // Supplier不存在时补充供应商名称
+                "supplierType": this.ruleForm.planType, // 供应商类型 0返款
+                "price": this.ruleForm.planAmount, // 金额
+                "mark": this.ruleForm.abstract, // 摘要
+                "cardNumber": this.ruleForm.account, // 账号
+                "bankName": this.ruleForm.accountBank, // 开户行
+                "cardName": this.ruleForm.accountOpenName, // 开户名
+                "files": pictureList, //上传图片,
+
+                "peopleCount": 0,
+                "id": 0,
+                "createTime": "2019-11-08T05:04:43.582Z",
+                "code": "string",
+                "payway": 0,
+                "guid": "string",
+                "checkType": 0,
+                "accountID": 0
+
               }
             })
             .then(res => {
@@ -1179,6 +1192,7 @@ export default {
       this.fileList = []
     },
     handleSuccess(res, file, fileList) {
+      console.log(res)
       this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
       // 多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { // 多张图片情况只在第一次执行数组操作
@@ -1260,13 +1274,13 @@ export default {
     closeAccount(){
       this.SelectAccount = false;
     },
-    addAccount(){
+    addAccount(index, row){
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",
         {
           "paymentID": this.paymentID,
-          "accountID": this.tableSelect[0].id
+          "accountID": row.id
         }
       )
       .then(function (obj) {})
@@ -1294,6 +1308,11 @@ export default {
     this.planList();
   },
   created(){
+    if (sessionStorage.getItem('hasCashierInfo')) { // 只有是出纳的时候才显示申请人检索
+      this.ifAccountBtn = true
+    } else {
+      this.ifAccountBtn = false
+    }
     this.themeList();
     this.payment();
   }

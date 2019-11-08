@@ -746,7 +746,9 @@ export default {
                   handPhone: this.ruleForm.handlersPhone,
                   billName: this.ruleForm.operator,
                   taxNumber: this.ruleForm.pactNumber,
-                  orgs: [], // 使用部門
+                  orgs: [{
+                    "orgID": 0,
+                    "orgName": "string"}], // 使用部門
                   alias:keepAlias, // 部门其他名 otherSupplier
                   expireTime: moment(this.ruleForm.expireData).format('YYYY-MM-DD'), // 到期日期
                   memo: this.ruleForm.remark,
