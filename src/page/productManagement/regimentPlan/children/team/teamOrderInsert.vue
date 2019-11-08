@@ -775,6 +775,7 @@ export default {
       }
     },
     submitForm(formName,index) {
+      console.log(1)
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
         var blooen = "0";
@@ -887,7 +888,7 @@ export default {
           }
         } else {
           console.log("error submit!!");
-          this.ifOrderInsert = true;
+          this.ifOrderInsert = false;
           return false;
         }
       });
@@ -937,12 +938,11 @@ export default {
           });
           if (res.data.isSuccess == true) {
             this.teampreviewData.regimentType = res.data.object.regimentType;
-            console.log(this.teampreviewData.regimentType)
             if(this.ifOrderInsert===true){
               if(this.teampreviewData.regimentType === 1){//判断是都停售 1正常
                   if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
                      console.log(guest)
-                     //this.ifOrderInsert = true;
+                     this.ifOrderInsert = true;
                      this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
                       object: {
                         id: 0,
@@ -1006,7 +1006,7 @@ export default {
                           //清空表单
                           //this.$refs[formName].resetFields();
                           this.dialogFormOrder = false;
-                          this.ifOrderInsert = false;
+                          this.ifOrderInsert = true;
                           // this.startUpWorkFlowForJQ(
                           //   data.OrderID,
                           //   data.FlowModel,
@@ -1020,7 +1020,7 @@ export default {
                         }
                       });
                   }else if(this.ruleForm.orderRadio === '2'){
-                    //this.ifOrderInsert = true;
+                    this.ifOrderInsert = true;
                     this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                       object: {
                         id: 0,

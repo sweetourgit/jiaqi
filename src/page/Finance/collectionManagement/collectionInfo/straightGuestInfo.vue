@@ -270,10 +270,6 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <div class="accountButton">
-                <el-button @click="accountClose()">取消</el-button>
-                <el-button  type="primary">确认</el-button>
-              </div>
             </div>
           </el-dialog>
   </div>
