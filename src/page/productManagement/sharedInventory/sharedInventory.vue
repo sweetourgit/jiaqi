@@ -93,7 +93,10 @@
           </div>
         </div>
       </div>
-      <div class="main" v-if="vm.index!== null">
+      <div class="main" 
+        v-if="vm.index!== null"
+        v-loading="vm.inventoryAsync"
+      >
         <header>
           <div class="title">
             <span>
@@ -331,7 +334,8 @@ export default {
 
         this.current= object;
         if(plans) this.plans= plans;
-      }).finally(() => {
+        this.vm.inventoryAsync= false;
+      }).catch(() => {
         this.vm.inventoryAsync= false;
       })
     },

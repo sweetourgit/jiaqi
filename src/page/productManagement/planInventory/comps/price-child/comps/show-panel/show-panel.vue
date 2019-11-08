@@ -88,7 +88,7 @@ $height: 40px;
           <el-button type="primary" size="small"
             @click="awakeEditForm"
           >编辑</el-button>
-          <el-button type="primary" size="small" v-if="vm.share=== 1">解除共享</el-button>
+          <el-button type="primary" size="small" v-if="vm.share=== 1" @click="deletePlanAction">删除计划</el-button>
           <el-button type="primary" size="small" v-if="vm.share=== 2" @click="deleteInventoryAction">删除</el-button>
         </div>
       </header>
@@ -144,7 +144,7 @@ $height: 40px;
 </template>
 
 <script>
-import { getPlan, getInventory, deleteInventory } from '../../../../planInventory'
+import { getPlan, getInventory, deleteInventory, deletePlan } from '../../../../planInventory'
 import { DAY_STATE } from '../../../../dictionary'
 
 export default {
@@ -163,6 +163,7 @@ export default {
         dateHous: '',
         count: 0,
         inventoryID: null,
+        planID: null,
       },
       enrolls: [],
     }
@@ -187,6 +188,7 @@ export default {
       this.vm.dateText= this.dayIntToText(dayInt);
       // 均价
       this.vm.average= this.poolManager.getAverage();
+      this.vm.planID= vm.planID;
       this.enrolls.splice(0);
       this.enrolls.push(...vm.plan_Enrolls);
       return this.getInventoryAction(vm.planID);
@@ -208,7 +210,7 @@ export default {
     },
 
     deleteInventoryAction(){
-      this.$confirm(`确定要删除当前计划吗?`, '提示', {
+      this.$confirm(`确定要删除当前库存及计划吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -220,8 +222,22 @@ export default {
         }).catch(err => {
           this.$message.error('计划删除失败');
         })
-      }).catch(() => {
-        this.$message.error('计划删除失败');
+      })
+    },
+
+    deletePlanAction(){
+      this.$confirm(`确定要删除当前计划吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deletePlan(this.vm.planID).then(res => {
+          this.$message.success('计划删除成功');
+          let day= this.poolManager.currentDay;
+          this.$emit('refresh-date-panel', { sureDate: true, date: day.date });
+        }).catch(err => {
+          this.$message.error('计划删除失败');
+        })
       })
     },
 
