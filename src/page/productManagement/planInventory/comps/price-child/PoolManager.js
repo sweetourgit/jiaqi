@@ -26,6 +26,11 @@ PoolManager.prototype.initShowVM= function({ vm }){
   this.showVM.setState(STATE.UNDO);
 }
 
+PoolManager.prototype.refresh= function(){
+  this.currentDay= {};
+  this.state= STATE.UNDO;
+},
+
 PoolManager.prototype.destroy= function(){
   this.state= STATE.UNDO;
   this.currentDay= {};
@@ -44,10 +49,14 @@ PoolManager.prototype.selectDay= function(day){
   this.setState(state);
   // 如果前后点击的是同一天，则返回
   if(oldDay=== day) return;
+  // 
   // 如果之前是有计划状态，则清除oldDay
-  if(oldState=== STATE.SHARE || oldState=== STATE.NOT_SHARE || !oldDay.after) return oldDay.selected= false;
-  // 如果newDay无计划，则联动周
-  if(state=== STATE.MULTIPLE) return this.dayLinkWeekFunc(day);
+  if(oldState=== STATE.SHARE || oldState=== STATE.NOT_SHARE) return oldDay.selected= false;
+  // 因为过期也是多选状态，所以如果多选，先判断oldDay是否过期，然后联动周
+  if(state=== STATE.MULTIPLE){
+    if(!oldDay.after) oldDay.selected= false;
+    return this.dayLinkWeekFunc(day);
+  }
   // 如果之前无状态，且newDay有计划，则清除所有选中天，所有选定周
   oldDay.selected= false;
   this.calendarVM.weekArray.forEach(
@@ -60,9 +69,10 @@ PoolManager.prototype.selectDay= function(day){
 
 PoolManager.prototype.unSelectDay= function(day){
   day.selected= false;
-  let weekSelected= this.dayLinkWeekFunc(day);
+  this.dayLinkWeekFunc(day);
   let state= this.getStateByDay(day);
-  if(state=== STATE.SHARE || state=== STATE.NOT_SHARE) this.setState(STATE.UNDO);
+  if(state=== STATE.SHARE || state=== STATE.NOT_SHARE) return this.setState(STATE.UNDO);
+  if(state=== STATE.MULTIPLE && this.getSelected().length=== 0) this.setState(STATE.UNDO);
 }
 
 /**
@@ -70,17 +80,17 @@ PoolManager.prototype.unSelectDay= function(day){
  * @param {Number} week
  */
 PoolManager.prototype.selectWeek= function(week){
-  // 如果之前选择存在计划
-  if(this.state=== STATE.SHARE || this.state=== STATE.NOT_SHARE){
-    // TODO: listVM清空面板
-  };
   // 找到week下所属day
   let days= this.findDayOfWeek(week);
   days.forEach(day => day.selected= true);
   // 点击周选则一定进入多选状态，如果当前选有计划，则取消选择
   let state= this.getStateByDay(this.currentDay);
-  if(state=== STATE.SHARE || state=== STATE.NOT_SHARE) this.currentDay.selected= false;
+  // 如果之前选择存在计划或者之前选择是过期天，则取消选择
+  if(state=== STATE.SHARE || state=== STATE.NOT_SHARE || !this.currentDay.after) this.currentDay.selected= false;
+  // 如果当前日期下无可选天，
+  if(days.length=== 0) return this.calendarVM.weekArray[week].selected= false;
   this.setState(STATE.MULTIPLE);
+  return true;
 }
 PoolManager.prototype.unSelectWeek= function(week){
   let days= this.findDayOfWeek(week);
@@ -121,9 +131,11 @@ PoolManager.prototype.dayLinkWeekFunc= function(day){
 
 // 返回该天状态，但不判断是否过期
 PoolManager.prototype.getStateByDay= function(day){
-  // 过期有计划的显示，过期没计划的不显示
+  // 过期且没计划的返回空选
   if(!day.after && !day.vm) return STATE.UNDO;
+  // 有计划的返回计划类型，不管过没过期
   if(day.vm) return day.vm.share;
+  // 既没过期也没计划的，返回多选
   return STATE.MULTIPLE;
 }
 

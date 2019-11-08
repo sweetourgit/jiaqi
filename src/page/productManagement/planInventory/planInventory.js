@@ -198,6 +198,21 @@ export const savePlan= function(object){
   })
 }
 
+// 删除计划
+export const deletePlan= function(id){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/plan/api/delete", {
+      id
+    }).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject('删除指定计划失败');
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
 // 新增非共享库存
 export const addInventory= function(object){
   return new Promise((resolve, reject) => {

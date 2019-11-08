@@ -1,19 +1,25 @@
 <template>
-        <div class="header">
-          <div class="log">
-           <!-- <div class="el-icon-star-on"></div> -->
-            <div class="left">嘉麒管理后台</div>
-          </div>
-          <div class="right">
-           	<el-badge :value="100" :max="99" class="icon el-icon-bell">
-              <div class=""></div>
-            </el-badge>
-            <div class="vertical-line"></div>
-           		<div class="icon el-icon-service"><span id="nameNum" @click="listUser">{{name}}</span></div>
-              <div class="vertical-line1"></div>
-           		<div v-on:click="submit" class="icon1">退出</div>
-          </div>
-        </div>
+    <div class="header">
+      <div class="log">
+        <!-- <div class="el-icon-star-on"></div> -->
+        <div class="left">嘉麒管理后台</div>
+      </div>
+      <div class="right">
+
+        <!-- bugReporter -->
+        <input ref="clipInput" type="text" id="clip" value="123" style="height: 1px; width: 1px; opacity: 0;" />
+        <button ref="clipBtn" data-clipboard-target="#clip" class="clip-btn" style="height: 1px; width: 1px; opacity: 0;"></button>
+        <!-- bugReporter -->
+        
+        <el-badge :value="100" :max="99" class="icon el-icon-bell">
+          <div style="position:absolute;width:30px;height:30px;top:0;" @click="bugReporter"></div>
+        </el-badge>
+        <div class="vertical-line"></div>
+          <div class="icon el-icon-service"><span id="nameNum" @click="listUser">{{name}}</span></div>
+          <div class="vertical-line1"></div>
+          <div v-on:click="submit" class="icon1">退出</div>
+      </div>
+    </div>
 </template>
 
 <script>
@@ -26,16 +32,32 @@
       created (){
         this.name = localStorage.getItem('name')
       },
+      
+      mounted(){
+        new ClipboardJS('.clip-btn');
+      },
+
 	    methods: {
-          submit:function() {
-            this.$router.push({ path: '/login' })
-            localStorage.clear()
-            sessionStorage.clear()
-          },
-          listUser() {
-            this.$router.push({ path: '/accountInfor' })
-          }
-	        }
+        submit:function() {
+          this.$router.push({ path: '/login' })
+          localStorage.clear()
+          sessionStorage.clear()
+        },
+        listUser() {
+          this.$router.push({ path: '/accountInfor' })
+        },
+        bugReporter(){
+          let { path, query, name }= this.$route;
+          let queryStr= '?';
+          Object.keys(query).forEach(attr => {
+            queryStr+= `${attr}=${query[attr]}&`
+          })
+          queryStr= queryStr.substring(0, queryStr.length- 1);
+          let bugStr= `${name}：${path}${queryStr}`;
+          this.$refs.clipInput.value= bugStr;
+          this.$refs.clipBtn.click();
+        }
+      }
     }
 
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="loan-management">
     <!-- 查看无收入借款弹窗 -->
-    <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
+    <el-divider content-position="left" class='title-margin'>基本信息{{paymentID}}</el-divider>
     <!-- 基本信息 -->
     <div class="item-content">
       <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
@@ -44,7 +44,10 @@
     <el-row type="flex" class="row-bg" justify="space-around">
       <el-col :span="6">
         <el-col :span="6"><div class="grid-del label-color">借款类型:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.paymentType }}</div></el-col>
+        <el-col :span="18">
+          <div class="grid-del" v-if="fundamental.paymentType == 1">无收入借款</div>
+          <div class="grid-del" v-if="fundamental.paymentType == 2">预付款</div>
+        </el-col>
       </el-col>
       <el-col :span="6">
         <el-col :span="6"><div class="grid-del label-color">借款金额:</div></el-col>

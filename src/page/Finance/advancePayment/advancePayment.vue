@@ -15,7 +15,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="申请人:" prop="user">
-                  <el-input v-model="ruleForm.user" placeholder="请输入借款人"></el-input>
+                  <el-input v-model="ruleForm.user" placeholder="请输入申请人" :disabled="ifShowProposer"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -146,6 +146,7 @@ export default {
   },
   data() {
     return {
+      ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       ruleForm: {
         planID: '', // 团期计划输入框
         user: '', // 申请人
@@ -281,7 +282,7 @@ export default {
       this.pageshow = false
       let objectRequest = {}
       objectRequest.paymentType = 2;
-      if (this.ruleForm.planID) { objectRequest.planID = this.ruleForm.planID; }
+      if (this.ruleForm.planID) { objectRequest.groupCode = this.ruleForm.planID; }
       if (this.ruleForm.user) { objectRequest.createUser = this.ruleForm.user; }
       if (this.ruleForm.startTime) { objectRequest.beginTime = moment(this.ruleForm.startTime).format('YYYY-MM-DD'); }
       if (this.ruleForm.endTime) { objectRequest.endTime = moment(this.ruleForm.endTime).format('YYYY-MM-DD');}
@@ -382,7 +383,7 @@ export default {
     //查看无收入借款弹窗
     checkIncome(row){
       this.checkIncomeShow = true;
-      this.ruleForm = row;
+      // this.ruleForm = row;
       //this.getLabel();
     },
     repeal(){
@@ -420,6 +421,9 @@ export default {
     this.querySearch6()
     this.querySearch7()
     this.searchHand()
+    if (!sessionStorage.getItem('hasCashierInfo')) { // 只有是出纳的时候才显示申请人检索
+      this.ifShowProposer = true
+    }
   },
 };
 

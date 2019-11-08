@@ -333,13 +333,16 @@ export default {
     // checkbox
     clickWeekCheckBox(i){
       let selected= this.weekArray[i].selected;
-      selected? 
-        this.poolManager.selectWeek(i):
-          this.poolManager.unSelectWeek(i);
+      let bol= selected? 
+                this.poolManager.selectWeek(i):
+                  this.poolManager.unSelectWeek(i);
+      if(selected && !bol) this.$message.info('没有可供多选的日期');
     },
 
     // 刷新
     refresh(payload){
+      // 重置poolManager的状态
+      this.poolManager.refresh();
       this.init(Object.assign({}, this.initCache, payload));
     },
 

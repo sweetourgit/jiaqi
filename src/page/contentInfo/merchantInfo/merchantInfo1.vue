@@ -72,7 +72,7 @@
         <el-table-column prop="quota" label="额度" width="130" align="center"></el-table-column>
         <el-table-column prop="arrears" label="剩余额度" width="130" align="center"></el-table-column>
         <el-table-column prop="balance" label="总欠款" width="130" align="center"></el-table-column>
-        <el-table-column prop="operation" label="操作" width="160" align="center">
+        <el-table-column prop="operation" label="操作" width="175" align="center">
           <template slot-scope="scope" style="cursor:pointer;">
             <div
               style="color: #f5a142;float:left;margin-left:30px;cursor:pointer;"
@@ -130,6 +130,7 @@
                   <el-option label="门店" value="0"></el-option>
                   <el-option label="同业" value="1"></el-option>
                   <el-option label="翻盘门店" value="2"></el-option>
+                  <el-option label="个体分销" value="3"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="状态 :" prop="state">
@@ -298,7 +299,14 @@
                     >{{tag.name}}</el-tag>
                   </div>
                 </el-form-item>
-                <el-form-item label="商户其他名称 :" prop="otherNames" class="business">
+                <el-form-item label="商户编码:" prop="localCompCode">
+                  <el-input
+                    v-model="ruleForm.localCompCode"
+                    style="width: 250px;"
+                    placeholder="请输入"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item label="商户其他名称:" prop="otherNames" class="business">
                   <el-input
                     v-model="ruleForm.otherNames"
                     placeholder="请输入，可输入多个"
@@ -356,102 +364,93 @@
         <!-- 点击页面的详情出现的dialog是table -->
         <div class="dialogTable" v-if="btnindex == 1">
           <!-- 点击详情基本信息 -->
-          <table style="width: 100%;">
-            <tr class="dialogTableTr">
-              <td class="dialogTableTd">
-                <label>ID：</label>
-                <span>{{businewwInfPageId}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>状态：</label>
-                <span>{{ruleForm.state}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>区域可见：</label>
-                <span>{{ruleForm.orgs}}</span>
-              </td>
+          <table>
+            <tr>
+              <td class="tr">ID：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{businewwInfPageId}}</td>
+              <div class="BodyTableCenter">
+                <td class="tr">状态：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.state}}</td>
+              </div>
+              <td class="tr">区域可见：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.orgs}}</td>
             </tr>
-            <tr class="dialogTableTr">
-              <td class="dialogTableTd">
-                <label>商户名称：</label>
-                <span>{{ruleForm.name}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>类别：</label>
-                <span>{{ruleForm.localCompType}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>结算方式：</label>
-                <span>{{ruleForm.settlementType}}</span>
-              </td>
+            <br />
+            <tr>
+              <td class="tr">商户名称：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.name}}</td>
+              <div class="BodyTableCenter">
+                <td class="tr">类别：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.localCompType}}</td>
+              </div>
+              <td class="tr">结算方式：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.settlementType}}</td>
             </tr>
-            <tr class="dialogTableTr">
-              <td class="dialogTableTd">
-                <label>商户角色：</label>
-                <span>{{ruleForm.localCompRole}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>到期日期：</label>
-                <span>{{ruleForm.expTime}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>门市类型：</label>
-                <span>{{ruleForm.storeType}}</span>
-              </td>
+            <br />
+            <tr>
+              <td class="tr">商户角色：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.localComRole}}</td>
+              <div class="BodyTableCenter">
+                <td class="tr">到期日期：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.expTime}}</td>
+              </div>
+              <td class="tr">门市类型：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.storeType}}</td>
             </tr>
-            <tr class="dialogTableTr">
-              <td class="dialogTableTd">
-                <label>管理人员：</label>
-                <span>{{ruleForm.administrative}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>地址：</label>
-                <span>{{ruleForm.address}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>联系人姓名：</label>
-                <span>{{ruleForm.linker}}</span>
-              </td>
+            <br />
+            <tr>
+              <td class="tr">管理人员：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.administrative}}</td>
+              <div class="BodyTableCenter">
+                <td class="tr">地址：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.address}}</td>
+              </div>
+              <td class="tr">联系人姓名：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.linker}}</td>
             </tr>
-            <tr class="dialogTableTr">
-              <td class="dialogTableTd">
-                <label>联系人电话：</label>
-                <span>{{ruleForm.phone}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>对公户名：</label>
-                <span>{{ruleForm.publicName}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>开户行：</label>
-                <span>{{ruleForm.bankName}}</span>
-              </td>
+            <br />
+            <tr>
+              <td class="tr">联系人电话：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.phone}}</td>
+              <div class="BodyTableCenter">
+                <td class="tr">对公户名：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.publicName}}</td>
+              </div>
+              <td class="tr">开户行：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.bankName}}</td>
             </tr>
-            <tr class="dialogTableTr">
-              <td class="dialogTableTd">
-                <label>对公账号：</label>
-                <span>{{ruleForm.bankcardNo}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>经营范围：</label>
-                <span>{{ruleForm.scopeExt}}</span>
-              </td>
-              <td class="dialogTableTd">
-                <label>额度：</label>
-                <span>{{ruleForm.quota}}</span>
-              </td>
+            <br />
+            <tr>
+              <td class="tr">对公账号：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.bankcardNo}}</td>
+              <div class="BodyTableCenter">
+                <td class="tr">经营范围：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.scoopeExt}}</td>
+              </div>
+              <td class="tr">额度：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.quota}}</td>
             </tr>
-            <tr class="dialogTableTr">
-              <td class="dialogTableTd">
-                <label>公司logo：</label>
-                <span></span>
-              </td>
-              <td class="dialogTableTd">
-                <label>销售人员：</label>
-                <span>{{ruleForm.salesman}}</span>
-              </td>
+            <tr>
+              <td class="tr">预存款：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.bankcardNo}}</td>
+              <div class="BodyTableCenter">
+                <td class="tr">销售人员：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.salesman}}</td>
+              </div>
+              <td class="tr">商户其他名称&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.quota}}</td>
+            </tr>
+            <br />
+            <tr>
+              <td class="tr">公司logo：&nbsp;&nbsp;</td>
+              <td class="longWeight"></td>
+              <div class="BodyTableCenter">
+                <td class="tr">商户编码：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.localCompCode}}</td>
+              </div>
             </tr>
           </table>
+
           <!-- 点击详情账户信息 -->
           <div class="accountInfo">
             <h3>账户信息</h3>
@@ -481,10 +480,10 @@
                     <label>周边剩余授信额度：</label>
                     <span>{{AbouBalance}}</span>
                   </td>
-                  <td class="dialogTableTd">
+                  <!-- <td class="dialogTableTd">
                     <label>周边预存款：</label>
                     <span>{{AbouDeposit}}</span>
-                  </td>
+                  </td>-->
                 </tr>
               </table>
             </div>
@@ -495,8 +494,8 @@
             <div class="relevanceDeptWarn">
               <p class="el-icon-warning">
                 已关联
-                <span style="color:#108ee9">1</span> 项 &nbsp;&nbsp;&nbsp; 总计：
-                <span style="font-size: 16px;">1200.00 元</span>
+                <span style="color:#108ee9">{{pageOrderTotal}}</span> 项 &nbsp;&nbsp;&nbsp; 总计：
+                <span style="font-size: 16px;">{{arrears}}元</span>
               </p>
             </div>
             <el-table :data="tableRelevanceDeptInfo" border style="width: 100%;margin-top: 20px;">
@@ -504,7 +503,7 @@
               <el-table-column prop="Title" label="产品名称" width="120" align="center"></el-table-column>
               <el-table-column prop="GroupCode" label="团期计划" width="120" align="center"></el-table-column>
               <el-table-column prop="CF_Date" label="出团日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="Payable" label="订单金额" width="80" align="center"></el-table-column>
+              <el-table-column prop="Payable" label="订单金额" width="98" align="center"></el-table-column>
               <el-table-column prop="qk_price" label="欠款金额" width="120" align="center"></el-table-column>
               <el-table-column prop="yh_price" label="已还金额" width="120" align="center"></el-table-column>
               <el-table-column prop="CreateTime" label="欠款日期" width="120" align="center"></el-table-column>
@@ -600,14 +599,96 @@ export default {
         return callback();
       }
     };
-    // let that = this;
+    //商户编码唯一性验证
+    let localCompCode = (rule, value, callback) => {
+      if (this.ruleForm.localCompCode == "") {
+        return callback("请输入商户编码");
+      } else {
+        this.$http
+          .post(
+            this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistcode",
+            {
+              localCompCode: this.ruleForm.localCompCode
+            }
+          )
+          .then(res => {
+            if (res.status == 200 && res.data.isSuccess == false) {
+              return callback("已存在该编码的商户");
+            } else {
+              return callback();
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    };
+    // 商户名称唯一性验证
+    let nameValidator = (rule, value, callback) => {
+      if (this.ruleForm.name == "") {
+        return callback("请输入名字");
+      } else {
+        if (this.ruleForm.name.length > 40) {
+          return callback("不要超过40个字符");
+        } else {
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistalias",
+              {
+                name: this.ruleForm.name
+              }
+            )
+            .then(res => {
+              if (res.status == 200 && res.data.isSuccess == false) {
+                return callback("已存在该名称的商户");
+              } else {
+                return callback();
+              }
+            })
+            .catch(err => {
+              return callback();
+              console.log(err);
+            });
+        }
+      }
+    };
+    //商户其他名称验证唯一性
+    let otherNamesValidator = (rule, value, callback) => {
+      if (this.ruleForm.otherNames !== undefined) {
+        if (this.ruleForm.otherNames.length > 40) {
+          return callback("不要超过40个字符");
+        } else {
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistalias",
+              {
+                name: this.ruleForm.otherNames
+              }
+            )
+            .then(res => {
+              if (res.status == 200 && res.data.isSuccess == false) {
+                return callback("已存在该名称的商户");
+              } else {
+                return callback();
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      } else {
+        return callback();
+      }
+    };
     return {
       otherNamesObj: {}, //添加商户其他名称enter接收
       // isBusinessTrue: false, //添加商户其他名称是判断issuccess false则此名字已存在
       // orgsAddArr: [], //添加商户信息是存储区域可见的数组
       AbouArrears: null, //周边欠款
       AbouBalance: null, //周边剩余授信额度
-      AbouDeposit: null, //周边预存款
+      // AbouDeposit: null, //周边预存款
+      arrears: null, //关联欠款总价多少
+      pageOrderTotal: null, //关联数量
       AbouQuota: null, //周边授信额度
       // editAdmin: [], //点击编辑页的admin 用来接收修改之前的
       businewwInfPageId: "", //商户信息详情页的ID 同时也是商户其他名称添加接口的localCompID
@@ -627,25 +708,22 @@ export default {
       statesValue: "", //搜索状态字段
       payValue: "", //搜过结算字段
       tid: 0,
-      pagesize: 10,
-      total: 1,
-      currentPage4: 1,
+      pagesize: 10, //一页几条数据
+      total: 1, //总条数
+      currentPage4: 1, //第几页
       accountForm: {
-        name: "",
-        phone: "",
-        email: "",
-        sex: "",
-        wx: "",
-        qq: "",
-        state: "",
-        passWord: "",
-        peerUserType: [1]
+        name: "", //账户信息名字
+        phone: "", //手机号
+        email: "", //邮箱
+        sex: "", //性别
+        wx: "", //微信号
+        qq: "", //qq号
+        state: "", //状态
+        passWord: "", //密码
+        peerUserType: [1] //职位
       }, //添加账户信息的对象
       accountFormRules: {
-        name: [
-          { required: true, message: "请输入名字", trigger: "blur" },
-          { max: 40, message: "不要超过40个字符", trigger: "blur" }
-        ],
+        name: [{ required: true, trigger: "blur" }],
         phone: [
           { required: true, message: "请输入电话", trigger: "blur" },
           { min: 11, max: 11, message: "请输入11位数字", trigger: "blur" },
@@ -676,35 +754,33 @@ export default {
         ]
       },
       ruleForm: {
-        name: "", //
+        name: "", //商户名称
         storeType: "", //门市类型默认是无
         localCompType: "", //类别
         state: null, //状态默认是正常
         expTime: "", //到期时间
         settlementType: null, //结算方式
-        quota: "",
-        department: "",
-        people: "",
+        quota: "", //额度
+        // department: "",//类型
+        // people: "",//
         scopeExt: [], //经营范围
         orgs: [], //区域可见
-        address: "",
-        linker: "",
-        phone: "",
-        publicName: "",
-        bankName: "",
-        bankcardNo: "",
+        address: "", //地址
+        linker: "", //联系人姓名
+        phone: "", //联系人电话
+        publicName: "", //对公户名
+        bankName: "", //开户行
+        bankcardNo: "", //对公账号
         localCompRole: "", //商户角色
         salesman: "", //销售人员
         administrative: "", //管理人员
-        otherNames: "" //商户其他名字
+        otherNames: "", //商户其他名字
+        localCompCode: "", //商户编码
+        ImgUrl: "" //logo
       },
       rules: {
         expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
-        name: [
-          { required: true, message: "请输入名称", trigger: "blur" },
-          { max: 40, message: "不要超过40个字符", trigger: "blur" }
-          // { validator: nameValidator, trigger: "blur" }
-        ],
+        name: [{ required: true, validator: nameValidator, trigger: "blur" }],
         localCompType: [
           { required: true, message: "请选择类型", trigger: "change" }
         ],
@@ -725,10 +801,10 @@ export default {
           { required: true, message: "请输入额度", trigger: "blur" },
           { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: "请输入自然数" }
         ],
-        department: [
-          { required: true, message: "请选择类型", trigger: "change" }
-        ],
-        people: [{ required: true, message: "请选择类型", trigger: "change" }],
+        // department: [
+        //   { required: true, message: "请选择类型", trigger: "change" }
+        // ],
+        // people: [{ required: true, message: "请选择类型", trigger: "change" }],
         address: [{ max: 80, message: "不要超过80个字符", trigger: "blur" }],
         linker: [
           { required: true, message: "请输入联系人姓名", trigger: "blur" },
@@ -768,7 +844,16 @@ export default {
           }
         ],
         salesman: [{ required: true, message: "请输入", trigger: "change" }],
-        otherNames: [{ max: 40 }]
+        otherNames: [{ validator: otherNamesValidator, trigger: "blur" }],
+        localCompCode: [
+          {
+            required: true,
+            max: 10,
+            trigger: "blur",
+            validator: localCompCode
+          },
+          { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: "请输入数字" }
+        ]
       },
       dialogFormVisible: false,
       input: "", //搜索输入框
@@ -852,13 +937,9 @@ export default {
           }
         )
         .then(obj => {
-          console.log(obj, "名字校验重复是否");
           if (obj.data.isSuccess == true) {
             this.businessOtherNamesArr.push(this.otherNamesObj);
-          } else {
-            this.$message.error("该商户其他名称已存在");
           }
-          // console.log(this.isBusinessTrue);
         })
         .catch(err => {
           console.log(err);
@@ -874,12 +955,6 @@ export default {
       ) {
         if (this.businessOtherNamesArr.length == 0) {
           this.adminOtherAxios();
-          // console.log(this.isBusinessTrue);
-          // if (this.isBusinessTrue == true) {
-          //   this.businessOtherNamesArr.push(otherNamesObj);
-          // } else {
-          //   this.$message.error("该商户其他名称已存在");
-          // }
         } else {
           if (
             JSON.stringify(this.businessOtherNamesArr).indexOf(
@@ -887,12 +962,6 @@ export default {
             ) == -1
           ) {
             this.adminOtherAxios();
-            // console.log(this.isBusinessTrue);
-            // if (this.isBusinessTrue == true) {
-            //   this.businessOtherNamesArr.push(otherNamesObj);
-            // } else {
-            //   this.$message.error("该商户其他名称已存在");
-            // }
           } else {
             this.$message.error("该商户其他名称已存在2");
           }
@@ -1173,7 +1242,7 @@ export default {
           this.total = obj.data.total;
           this.tableData = obj.data.objects;
           this.tableData.forEach(function(v, k, arr) {
-            arr[k]["department"] = "XXX";
+            // arr[k]["department"] = "XXX";
             arr[k]["manager"] = "阳阳";
             if (arr[k]["state"] == 2) {
               arr[k]["state"] = "正常";
@@ -1184,8 +1253,10 @@ export default {
               arr[k]["localCompType"] = "门店";
             } else if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "同业";
-            } else {
+            } else if (arr[k]["localCompType"] == 2) {
               arr[k]["localCompType"] = "翻盘门店";
+            } else {
+              arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
               arr[k]["settlementType"] = "非月结";
@@ -1230,8 +1301,10 @@ export default {
               arr[k]["localCompType"] = "门店";
             } else if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "同业";
-            } else {
+            } else if (arr[k]["localCompType"] == 2) {
               arr[k]["localCompType"] = "翻盘门店";
+            } else {
+              arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
               arr[k]["settlementType"] = "非月结";
@@ -1257,7 +1330,7 @@ export default {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
           that.tableData.forEach(function(v, k, arr) {
-            arr[k]["department"] = "XXX";
+            // arr[k]["department"] = "XXX";
             arr[k]["manager"] = "阳阳";
             if (arr[k]["state"] == 2) {
               arr[k]["state"] = "正常";
@@ -1268,8 +1341,10 @@ export default {
               arr[k]["localCompType"] = "门店";
             } else if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "同业";
-            } else {
+            } else if (arr[k]["localCompType"] == 2) {
               arr[k]["localCompType"] = "翻盘门店";
+            } else {
+              arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
               arr[k]["settlementType"] = "非月结";
@@ -1310,12 +1385,13 @@ export default {
           // total: 1, //总条数
           object: {
             // isDeleted: 0 //是否删除
-            orgID:this.businewwInfPageId
+            orgID: this.businewwInfPageId
           }
         })
         .then(obj => {
-          console.log(obj)
-          this.tableRelevanceDeptInfo = obj.data.objects
+          // console.log(obj)
+          this.tableRelevanceDeptInfo = obj.data.objects;
+          this.pageOrderTotal = obj.data.total;
         })
         .catch(err => {
           console.log(err);
@@ -1324,10 +1400,13 @@ export default {
     //提交
     submitForm(ruleForm) {
       // 判断添加是是否有账户 有则可以添加 无则不可添加
+      // console.log(this.useList.length);
       if (this.useList.length == 0) {
         this.$message.error("请添加账户信息");
       } else {
+        console.log("shifouzou ", this.$refs[ruleForm]);
         this.$refs[ruleForm].validate(valid => {
+          console.log(valid);
           if (valid) {
             this.addMerchan(ruleForm);
           } else {
@@ -1340,15 +1419,15 @@ export default {
     resetForm(ruleForm) {
       //this.$refs[formName].resetFields();
       this.ruleForm = {
-        name: "", //
+        name: "", //商户名称
         storeType: "", //门市类型默认是无
         localCompType: "",
         state: 0, //状态默认是正常
         expTime: "",
         settlementType: 1, //结算方式
-        quota: "",
-        department: "",
-        people: "",
+        quota: "", //额度
+        // department: "",
+        // people: "",
         scopeExt: [], //经营范围
         orgs: [], //区域可见
         address: "",
@@ -1396,7 +1475,7 @@ export default {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
           that.tableData.forEach(function(v, k, arr) {
-            arr[k]["department"] = "XXX";
+            // arr[k]["department"] = "XXX";
             arr[k]["manager"] = "阳阳";
             if (arr[k]["state"] == 2) {
               arr[k]["state"] = "正常";
@@ -1407,8 +1486,10 @@ export default {
               arr[k]["localCompType"] = "门店";
             } else if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "同业";
-            } else {
+            } else if (arr[k]["localCompType"] == 2) {
               arr[k]["localCompType"] = "翻盘门店";
+            } else {
+              arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
               arr[k]["settlementType"] = "非月结";
@@ -1417,7 +1498,7 @@ export default {
             }
           });
         })
-        .catch(function(obj) {
+        .catch(obj => {
           console.log(obj);
         });
     },
@@ -1449,14 +1530,25 @@ export default {
         this.ruleForm.localCompRole = 2;
       }
 
-      // 判断商户名称是否是具有唯一性
-      if (
-        this.tableData.filter(v => this.ruleForm.name == v.name).length != 0
-      ) {
-        this.$message.error("添加失败,该商户名称已存在");
-        this.dialogFormVisible = true;
-        return;
+      // 类别
+      if (this.ruleForm.localCompType = "门店") {
+        this.ruleForm.localCompType = 0;
+      } else if (this.ruleForm.localCompType = "同业") {
+        this.ruleForm.localCompType = 1;
+      } else if (this.ruleForm.localCompType = "翻牌门店") {
+        this.ruleForm.localCompType = 2;
+      } else if (this.ruleForm.localCompType = "个体分销") {
+        this.ruleForm.localCompType = 3;
       }
+
+      // 判断商户名称是否是具有唯一性
+      // if (
+      //   this.tableData.filter(v => this.ruleForm.name == v.name).length != 0
+      // ) {
+      //   this.$message.error("添加失败,该商户名称已存在");
+      //   this.dialogFormVisible = true;
+      //   return;
+      // }
 
       // 状态
       if (this.ruleForm.state == "停用") {
@@ -1564,7 +1656,8 @@ export default {
             useList: this.useList,
             jqAdminList: adminAndSalesArr,
             localCompAliasList: this.businessOtherNamesArr, //商户其他名称
-            abouQuota: this.AbouQuota //周边授信额度
+            abouQuota: this.AbouQuota, //周边授信额度
+            localCompCode: this.ruleForm.localCompCode //商户编码
           }
         })
         .then(obj => {
@@ -1705,7 +1798,8 @@ export default {
             orgs: this.ruleForm.orgs,
             jqAdminList: adminAndSalesArr,
             localCompAliasList: this.businessOtherNamesArr,
-            abouQuota: this.AbouQuota //周边授信额度
+            abouQuota: this.AbouQuota, //周边授信额度
+            localCompCode: this.ruleForm.localCompCode
           }
         })
         .then(obj => {
@@ -1732,8 +1826,8 @@ export default {
         expTime: "",
         settlementType: "非月结", //结算方式
         quota: "",
-        department: "",
-        people: "",
+        // department: "",
+        // people: "",
         scopeExt: [], //经营范围
         orgs: [], //区域可见
         address: "",
@@ -1782,7 +1876,7 @@ export default {
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID
           this.businewwInfPageId = object.id;
-          this.getDebitTable()
+          this.getDebitTable();
           this.useList = useList;
           this.useList.forEach((val, idx, arr) => {
             if (arr[idx].state == 2) {
@@ -1812,8 +1906,10 @@ export default {
             this.ruleForm.localCompType = "门店";
           } else if (object.localCompType == 1) {
             this.ruleForm.localCompType = "同业";
-          } else {
+          } else if (object.localCompType == 2) {
             this.ruleForm.localCompType = "翻盘门店";
+          } else {
+            this.ruleForm.localCompType = "个体分销";
           }
           // 商户角色
           if (object.localCompRole == 0) {
@@ -1916,8 +2012,8 @@ export default {
           }
           this.ruleForm.quota = object.quota;
           //todo    部门和人员 预留
-          this.ruleForm.department = "1";
-          this.ruleForm.people = "2";
+          // this.ruleForm.department = "1";
+          // this.ruleForm.people = "2";
           // this.ruleForm.scopeExt = object.scopeExt.split(",");
           this.ruleForm.quota = object.quota;
           this.ruleForm.address = object.address;
@@ -1926,9 +2022,10 @@ export default {
           this.ruleForm.publicName = object.publicName;
           this.ruleForm.bankName = object.bankName;
           this.ruleForm.bankcardNo = object.bankcardNo;
-          this.AbouDeposit = this.toDecimal2(object.abouDeposit);
+          // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
+          this.arrears = this.toDecimal2(object.arrears);
         })
         .catch(obj => {
           console.log(obj);
@@ -2008,6 +2105,19 @@ export default {
 </script>
 
 <style scoped>
+
+.BodyTableCenter {
+  margin: 0 60px 0 100px;
+}
+.longWeight {
+  width: 160px;
+  vertical-align: top;
+}
+.tr {
+  /* text-align: right; */
+  font-weight: bold;
+  vertical-align: top;
+}
 .el-pagination {
   margin-right: 300px !important;
 }
@@ -2034,7 +2144,7 @@ export default {
   color: #f5a142;
 }
 .relevanceDept {
-  width: 98%;
+  width: 100%;
 }
 .relevanceDeptWarn {
   background-color: #e6f3fc;
@@ -2139,8 +2249,8 @@ export default {
 .dialogTableTr {
   line-height: 40px;
 }
-.dialogTableTd {
+/* .dialogTableTd {
   width: 33.33%;
   height: auto;
-}
+} */
 </style>
