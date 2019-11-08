@@ -71,7 +71,8 @@ PoolManager.prototype.unSelectDay= function(day){
   day.selected= false;
   this.dayLinkWeekFunc(day);
   let state= this.getStateByDay(day);
-  if(state=== STATE.SHARE || state=== STATE.NOT_SHARE) this.setState(STATE.UNDO);
+  if(state=== STATE.SHARE || state=== STATE.NOT_SHARE) return this.setState(STATE.UNDO);
+  if(state=== STATE.MULTIPLE && this.getSelected().length=== 0) this.setState(STATE.UNDO);
 }
 
 /**

@@ -72,7 +72,7 @@
         <el-table-column prop="quota" label="额度" width="130" align="center"></el-table-column>
         <el-table-column prop="arrears" label="剩余额度" width="130" align="center"></el-table-column>
         <el-table-column prop="balance" label="总欠款" width="130" align="center"></el-table-column>
-        <el-table-column prop="operation" label="操作" width="160" align="center">
+        <el-table-column prop="operation" label="操作" width="175" align="center">
           <template slot-scope="scope" style="cursor:pointer;">
             <div
               style="color: #f5a142;float:left;margin-left:30px;cursor:pointer;"
@@ -130,6 +130,7 @@
                   <el-option label="门店" value="0"></el-option>
                   <el-option label="同业" value="1"></el-option>
                   <el-option label="翻盘门店" value="2"></el-option>
+                  <el-option label="个体分销" value="3"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="状态 :" prop="state">
@@ -493,8 +494,8 @@
             <div class="relevanceDeptWarn">
               <p class="el-icon-warning">
                 已关联
-                <span style="color:#108ee9">1</span> 项 &nbsp;&nbsp;&nbsp; 总计：
-                <span style="font-size: 16px;">1200.00 元</span>
+                <span style="color:#108ee9">{{pageOrderTotal}}</span> 项 &nbsp;&nbsp;&nbsp; 总计：
+                <span style="font-size: 16px;">{{arrears}}元</span>
               </p>
             </div>
             <el-table :data="tableRelevanceDeptInfo" border style="width: 100%;margin-top: 20px;">
@@ -502,7 +503,7 @@
               <el-table-column prop="Title" label="产品名称" width="120" align="center"></el-table-column>
               <el-table-column prop="GroupCode" label="团期计划" width="120" align="center"></el-table-column>
               <el-table-column prop="CF_Date" label="出团日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="Payable" label="订单金额" width="80" align="center"></el-table-column>
+              <el-table-column prop="Payable" label="订单金额" width="98" align="center"></el-table-column>
               <el-table-column prop="qk_price" label="欠款金额" width="120" align="center"></el-table-column>
               <el-table-column prop="yh_price" label="已还金额" width="120" align="center"></el-table-column>
               <el-table-column prop="CreateTime" label="欠款日期" width="120" align="center"></el-table-column>
@@ -686,6 +687,8 @@ export default {
       AbouArrears: null, //周边欠款
       AbouBalance: null, //周边剩余授信额度
       // AbouDeposit: null, //周边预存款
+      arrears: null, //关联欠款总价多少
+      pageOrderTotal: null, //关联数量
       AbouQuota: null, //周边授信额度
       // editAdmin: [], //点击编辑页的admin 用来接收修改之前的
       businewwInfPageId: "", //商户信息详情页的ID 同时也是商户其他名称添加接口的localCompID
@@ -705,19 +708,19 @@ export default {
       statesValue: "", //搜索状态字段
       payValue: "", //搜过结算字段
       tid: 0,
-      pagesize: 10,//一页几条数据
-      total: 1,//总条数
-      currentPage4: 1,//第几页
+      pagesize: 10, //一页几条数据
+      total: 1, //总条数
+      currentPage4: 1, //第几页
       accountForm: {
         name: "", //账户信息名字
-        phone: "",//手机号
-        email: "",//邮箱
-        sex: "",//性别
-        wx: "",//微信号
-        qq: "",//qq号
-        state: "",//状态
-        passWord: "",//密码
-        peerUserType: [1]//职位
+        phone: "", //手机号
+        email: "", //邮箱
+        sex: "", //性别
+        wx: "", //微信号
+        qq: "", //qq号
+        state: "", //状态
+        passWord: "", //密码
+        peerUserType: [1] //职位
       }, //添加账户信息的对象
       accountFormRules: {
         name: [{ required: true, trigger: "blur" }],
@@ -777,9 +780,7 @@ export default {
       },
       rules: {
         expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
-        name: [
-          { required: true,validator: nameValidator, trigger: "blur" }
-        ],
+        name: [{ required: true, validator: nameValidator, trigger: "blur" }],
         localCompType: [
           { required: true, message: "请选择类型", trigger: "change" }
         ],
@@ -843,9 +844,7 @@ export default {
           }
         ],
         salesman: [{ required: true, message: "请输入", trigger: "change" }],
-        otherNames: [
-          { validator: otherNamesValidator, trigger: "keyup.enter" }
-        ],
+        otherNames: [{ validator: otherNamesValidator, trigger: "blur" }],
         localCompCode: [
           {
             required: true,
@@ -938,54 +937,38 @@ export default {
           }
         )
         .then(obj => {
-          console.log(obj, "名字校验重复是否");
           if (obj.data.isSuccess == true) {
             this.businessOtherNamesArr.push(this.otherNamesObj);
-          } else {
-            this.$message.error("该商户其他名称已存在");
           }
-          // console.log(this.isBusinessTrue);
         })
         .catch(err => {
           console.log(err);
         });
     },
     // 商户其他名字enter触发的事件
-    // handleEnterOtherNames() {
-    //   this.otherNamesObj = {};
-    //   this.otherNamesObj["name"] = this.ruleForm.otherNames;
-    //   if (
-    //     this.otherNamesObj.name !== undefined &&
-    //     this.otherNamesObj.name !== ""
-    //   ) {
-    //     if (this.businessOtherNamesArr.length == 0) {
-    //       this.adminOtherAxios();
-    //       // console.log(this.isBusinessTrue);
-    //       // if (this.isBusinessTrue == true) {
-    //       //   this.businessOtherNamesArr.push(otherNamesObj);
-    //       // } else {
-    //       //   this.$message.error("该商户其他名称已存在");
-    //       // }
-    //     } else {
-    //       if (
-    //         JSON.stringify(this.businessOtherNamesArr).indexOf(
-    //           JSON.stringify(this.otherNamesObj)
-    //         ) == -1
-    //       ) {
-    //         this.adminOtherAxios();
-    //         // console.log(this.isBusinessTrue);
-    //         // if (this.isBusinessTrue == true) {
-    //         //   this.businessOtherNamesArr.push(otherNamesObj);
-    //         // } else {
-    //         //   this.$message.error("该商户其他名称已存在");
-    //         // }
-    //       } else {
-    //         this.$message.error("该商户其他名称已存在2");
-    //       }
-    //     }
-    //   }
-    //   this.ruleForm.otherNames = "";
-    // },
+    handleEnterOtherNames() {
+      this.otherNamesObj = {};
+      this.otherNamesObj["name"] = this.ruleForm.otherNames;
+      if (
+        this.otherNamesObj.name !== undefined &&
+        this.otherNamesObj.name !== ""
+      ) {
+        if (this.businessOtherNamesArr.length == 0) {
+          this.adminOtherAxios();
+        } else {
+          if (
+            JSON.stringify(this.businessOtherNamesArr).indexOf(
+              JSON.stringify(this.otherNamesObj)
+            ) == -1
+          ) {
+            this.adminOtherAxios();
+          } else {
+            this.$message.error("该商户其他名称已存在2");
+          }
+        }
+      }
+      this.ruleForm.otherNames = "";
+    },
     // 商户其他人员tag删除
     businessHandleClose(tag) {
       this.$http
@@ -1270,8 +1253,10 @@ export default {
               arr[k]["localCompType"] = "门店";
             } else if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "同业";
-            } else {
+            } else if (arr[k]["localCompType"] == 2) {
               arr[k]["localCompType"] = "翻盘门店";
+            } else {
+              arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
               arr[k]["settlementType"] = "非月结";
@@ -1316,8 +1301,10 @@ export default {
               arr[k]["localCompType"] = "门店";
             } else if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "同业";
-            } else {
+            } else if (arr[k]["localCompType"] == 2) {
               arr[k]["localCompType"] = "翻盘门店";
+            } else {
+              arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
               arr[k]["settlementType"] = "非月结";
@@ -1354,8 +1341,10 @@ export default {
               arr[k]["localCompType"] = "门店";
             } else if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "同业";
-            } else {
+            } else if (arr[k]["localCompType"] == 2) {
               arr[k]["localCompType"] = "翻盘门店";
+            } else {
+              arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
               arr[k]["settlementType"] = "非月结";
@@ -1402,6 +1391,7 @@ export default {
         .then(obj => {
           // console.log(obj)
           this.tableRelevanceDeptInfo = obj.data.objects;
+          this.pageOrderTotal = obj.data.total;
         })
         .catch(err => {
           console.log(err);
@@ -1496,8 +1486,10 @@ export default {
               arr[k]["localCompType"] = "门店";
             } else if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "同业";
-            } else {
+            } else if (arr[k]["localCompType"] == 2) {
               arr[k]["localCompType"] = "翻盘门店";
+            } else {
+              arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
               arr[k]["settlementType"] = "非月结";
@@ -1536,6 +1528,17 @@ export default {
         this.ruleForm.localCompRole = 1;
       } else {
         this.ruleForm.localCompRole = 2;
+      }
+
+      // 类别
+      if (this.ruleForm.localCompType = "门店") {
+        this.ruleForm.localCompType = 0;
+      } else if (this.ruleForm.localCompType = "同业") {
+        this.ruleForm.localCompType = 1;
+      } else if (this.ruleForm.localCompType = "翻牌门店") {
+        this.ruleForm.localCompType = 2;
+      } else if (this.ruleForm.localCompType = "个体分销") {
+        this.ruleForm.localCompType = 3;
       }
 
       // 判断商户名称是否是具有唯一性
@@ -1903,8 +1906,10 @@ export default {
             this.ruleForm.localCompType = "门店";
           } else if (object.localCompType == 1) {
             this.ruleForm.localCompType = "同业";
-          } else {
+          } else if (object.localCompType == 2) {
             this.ruleForm.localCompType = "翻盘门店";
+          } else {
+            this.ruleForm.localCompType = "个体分销";
           }
           // 商户角色
           if (object.localCompRole == 0) {
@@ -2020,6 +2025,7 @@ export default {
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
+          this.arrears = this.toDecimal2(object.arrears);
         })
         .catch(obj => {
           console.log(obj);
@@ -2099,6 +2105,7 @@ export default {
 </script>
 
 <style scoped>
+
 .BodyTableCenter {
   margin: 0 60px 0 100px;
 }
@@ -2137,7 +2144,7 @@ export default {
   color: #f5a142;
 }
 .relevanceDept {
-  width: 98%;
+  width: 100%;
 }
 .relevanceDeptWarn {
   background-color: #e6f3fc;

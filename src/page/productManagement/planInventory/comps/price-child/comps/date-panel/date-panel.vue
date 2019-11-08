@@ -336,7 +336,7 @@ export default {
       let bol= selected? 
                 this.poolManager.selectWeek(i):
                   this.poolManager.unSelectWeek(i);
-      if(selected && !bol) this.$message.info('该周下无可选日期');
+      if(selected && !bol) this.$message.info('没有可供多选的日期');
     },
 
     // 刷新

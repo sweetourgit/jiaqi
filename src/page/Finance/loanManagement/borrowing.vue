@@ -326,7 +326,7 @@
         </el-table>
         <div class="number_button">
           <el-button @click="accountCancel()">取消</el-button>
-          <el-button @click="accountSure" type="primary">申请</el-button>
+          <el-button @click="accountSure" type="primary">确定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -977,6 +977,7 @@ export default {
     checkIncome(row){
       this.checkIncomeShow = true;
       console.log(this.checkIncomeShow,'this.checkIncomeShow')
+      console.log(row.paymentID,'row')
       this.pid = row.paymentID;
       this.status = row.checkTypeEX;
       this.ruleForm = row;

@@ -383,7 +383,7 @@ export default {
     //查看无收入借款弹窗
     checkIncome(row){
       this.checkIncomeShow = true;
-      this.ruleForm = row;
+      // this.ruleForm = row;
       //this.getLabel();
     },
     repeal(){
