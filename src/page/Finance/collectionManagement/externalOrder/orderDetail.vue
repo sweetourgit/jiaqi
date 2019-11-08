@@ -196,11 +196,9 @@
     },
     data() {
       return {
-        disabled: true,
-
+        // 基础信息
         baseInfo: {
           ID: '',
-//          applicant: '',
           creatTime: '',
           creditTime: '',
           mark: '',
@@ -214,21 +212,21 @@
           approved: '',
           status_rece: ''
         },
-        applicant: '',
-        fileList: [],
-        tableDataSK: [],
-        tableDataXQ: [],
-        totalItem: '',
-        totalMoney: '',
-        startTime: '',
-        endTime: '',
-        tableDataDD: [],
-        dialogFormVisible: false,
+        applicant: '',// 创建人
+        fileList: [],// 附件凭证
+        tableDataSK: [],// 收款明细table
+        tableDataXQ: [],// 订单详情table
+        totalItem: '',// 总条数
+        totalMoney: '',// 总钱数
+        startTime: '',// 开始时间
+        endTime: '',// 结束时间
+        tableDataDD: [],// 绑定订单详情
+        dialogFormVisible: false,// 绑定订单详情 -- 弹框
 
-        showSK: true,
-        showXQ: false,
+        showSK: true,// 显示收款明细
+        showXQ: false,// 显示订单详情
 
-        payList: {
+        payList: { // 卖出支付方式
           '1': '产品自销',
           '2': '授信支付',
           '3': '微信',
@@ -261,7 +259,7 @@
           return ''
         }
       },
-//      关闭弹窗
+      // 关闭弹窗
       closeAdd(){
         this.baseInfo = {
           ID: '',
@@ -287,7 +285,7 @@
         this.tableDataXQ = [];
         this.$emit('close', false);
       },
-//      删除
+      // 删除此收款
       deleteDo(){
         this.$confirm("是否删除该笔收款?", "提示", {
           confirmButtonText: "确定",
@@ -319,10 +317,11 @@
           });
         });
       },
-//
+      // 跳转编辑页面（先关闭详情弹框，再打开编辑弹框）
       editBtn(){
         this.$emit('close', 'success');
       },
+      // 查看绑定订单详情
       detailBtn(row){
         this.dialogFormVisible = true;
         const that = this;
@@ -360,10 +359,11 @@
           console.log(error);
         });
       },
-//      关闭订单详情
+      // 关闭订单详情
       close(){
         this.dialogFormVisible = false;
       },
+      // 加载数据
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/receive", {
@@ -534,6 +534,7 @@
           console.log(error);
         });
       },
+      // 获取用户名称
       getUser(userGetList){
         const that = this;
         userGetList.forEach(function (item, index, arr) {
