@@ -977,6 +977,7 @@ export default {
     checkIncome(row){
       this.checkIncomeShow = true;
       console.log(this.checkIncomeShow,'this.checkIncomeShow')
+      console.log(row.paymentID,'row')
       this.pid = row.paymentID;
       this.status = row.checkTypeEX;
       this.ruleForm = row;
