@@ -569,7 +569,7 @@ export default {
       tableOrder:[],//订单表格
       productPos:0,
       approvalTable:[],//审批过程表格
-      approvalShow:true,//审批过程弹窗
+      approvalShow:false,//审批过程弹窗
     };
   },
   filters: {
@@ -1177,16 +1177,28 @@ export default {
     },
     //启动工作流
     startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
-      this.$http
-        .post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
-          jQ_ID: OrderID,
-          jQ_Type: FlowModel,
-          workflowCode: FlowModelName,
-          userCode: Usercode
+      this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
+        jQ_ID: OrderID,
+        jQ_Type: FlowModel,
+        workflowCode: FlowModelName,
+        userCode: Usercode
+      })
+      .then(res => {
+        this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
+      });
+    },
+    //查看借款详情
+    auditResult(result) {
+      var that =this
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+          jQ_ID: result,
+          jQ_Type: 1,
+        }).then(obj => {
+          // var json = JSON.parse(obj.data);
+          // console.log(json);
+          that.tableCourse = obj.data.extend.instanceLogInfo;
+        }).catch(obj => {
         })
-        .then(res => {
-          this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
-        });
     },
     //提交工作任务
     submitWAForJQ(Usercode, workItemID) {
