@@ -139,8 +139,11 @@ export default {
       }
     }, {
       // 处理递归添加逻辑
+      linkList: [],
       inventorySuccessList: [],
       errorList: [],
+      // 是否是多个添加
+      isMultiple: false
     }, 
     { SHARE_STATE })
   },
@@ -160,9 +163,10 @@ export default {
     handleClose(){
       this.enrollList.splice(0);  // 清空子列
       this.shareOptions.splice(0);  // 清空共享库存表单
-      this.enrollTypeOptions.splice(0);
-      this.inventorySuccessList.splice(0);
-      this.errorList.splice(0);
+      this.enrollTypeOptions.splice(0); // 报名类型
+      this.inventorySuccessList.splice(0); // 成功队列
+      this.linkList.splice(0) // 总队列
+      this.errorList.splice(0); // 错误队列
       this.vm.share= SHARE_STATE.NOT_SHARE; //重置共享状态
       this.$refs.submitForm.resetFields();  // 重置表单
       this.vm.state= false;
@@ -264,7 +268,7 @@ export default {
       return this.notShareAddAction().then(res => {
         this.handleClose();
         this.$message.success('添加成功');
-        this.$emit('refresh');
+        setTimeout(() => this.$emit('refresh'), 1200);
       });
     },
 
@@ -274,46 +278,47 @@ export default {
       let inventoryID= this.submitForm.inventoryID;
       this.addPlanAction(inventoryID, day)
       .then(res => {
+        if(!res) return this.$message.success('添加失败');
         this.handleClose();
         this.$message.success('添加成功');
         this.$emit('refresh');
-      })
-      .catch(err => {
-        if(typeof err=== 'string') return this.$message.error(err);
-        console.log(err);
       });
     },
 
     
     /**
-     * @description: 递归添加
+     * @description: 递归添加非共享库存
      * @return: 
      */
     notShareAddAction(){
+      this.linkList.push(...this.poolManager.getSelected());
+      this.isMultiple= this.linkList.length> 1;
+      if(this.isMultiple){
+        this.linkList.forEach(el => el.savingState= 'waiting');
+        this.vm.state= false;
+      }
       return new Promise((resolve, reject) => {
-        let days= this.poolManager.getSelected();
         let func= (planBol) => {
           if(!planBol) console.log(this.dayInloop); // 这里是当前day插入plan成功与否的记录 
 
           // 出口，整理错误队列 然后 return Promise
-          if(days.length=== 0) return resolve();
-          let day= days.pop();
+          if(this.linkList.length=== 0 && this.errorList.length=== 0) return resolve();
+          let day= (this.linkList.pop() || this.errorList.pop());
+          this.savingState(day, 'saving');
           // 收集错误信息
           this.dayInloop= day;
           this.addInventoryAction(day)
           .then(inventoryID => {
             if(!inventoryID){
-              //TODO log dayinloop
-              console.log(this.dayInloop);
-      
+              // inventoryID为false说明添加库存失败，错误收集逻辑在linkAddInventoryFailCb中
               return Promise.resolve();
             }
-            return this.addPlanAction(inventoryID, day);
+            return this.addPlanAction(inventoryID, day)
           })
           .then(func);
         }
         // 启动
-        func()
+        func(true)
       })
     },
 
@@ -321,6 +326,8 @@ export default {
      * @description:　新增库存，如果dayInt存在于成功队列，则直接返回对应inventoryID
      */
     addInventoryAction(day){
+      let hit= this.inventorySuccessList.find(el => el.day.dayInt=== day.dayInt);
+      if(hit) return Promise.resolve(hit.inventoryID);
       return this.linkAddInventory({
         name: '',
         count: this.submitForm.count,
@@ -400,11 +407,13 @@ export default {
           object
         }).then((res) => {
           let { isSuccess, id }= res.data;
-          if(!isSuccess) return resolve(false);
+          if(!isSuccess) return resolve(this.linkFailCb(day));
           
+          // 将正确添加的库存放入正确队列
+          this.inventorySuccessList.push({ day, inventoryID: id })
           return resolve(id);
         }).catch((err) => {
-          resolve(false);
+          resolve(this.linkFailCb(day));
         })
       })
     },
@@ -416,12 +425,25 @@ export default {
           object
         }).then((res) => {
           let { isSuccess }= res.data;
-          if(!isSuccess) return resolve(false);
-          return resolve();
+          if(!isSuccess) return resolve(this.linkFailCb(day));
+          this.savingState(day, 'success');
+          return resolve(true);
         }).catch((err) => {
-          resolve(false);
+          resolve(this.linkFailCb(day));
         })
       })
+    },
+
+    linkFailCb(day){
+      this.savingState(day, 'error');
+      this.errorList.push(day);
+      return false;
+    },
+
+    // 改变day的savingState
+    savingState(day, state){
+      if(!this.isMultiple) return;
+      day.savingState= state;
     }
   }
 }

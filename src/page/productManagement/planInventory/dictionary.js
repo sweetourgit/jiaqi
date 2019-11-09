@@ -28,6 +28,8 @@ export const getDayDTO= function(day){
     dayInt: null,
     today: false,
     selected: false,
+    // 保存动作中的状态 normal:正常，waiting: 等待中, saving:保存中, error:出错, success:成功, 
+    savingState: 'normal'
   }
 }
 
