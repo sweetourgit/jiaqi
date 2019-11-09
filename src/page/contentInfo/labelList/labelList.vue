@@ -216,7 +216,6 @@
           }
         }
         if (action === 'remove') {
-           
           if(this.deleteGatherShow==false){            
             this.deleteGatherShow=true;
             this.editableTabsValue = targetName;

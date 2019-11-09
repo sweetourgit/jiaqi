@@ -29,7 +29,9 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column prop="continent" label="所属大洲" align="center" width="80px"></el-table-column>
+          <el-table-column prop="continent" label="所属大洲" align="center" width="80px">{{countryPopup.select}}</el-table-column>
+          <!--<el-table-column prop="continent" label="所属国家" align="center" width="80px">{{countryPopup.select}}</el-table-column>-->
+          <!--<el-table-column prop="continent" label="所属区域" align="center" width="80px">{{countryPopup.select}}</el-table-column>-->
           <el-table-column prop="englishName" label="英文名" align="center"></el-table-column>
           <el-table-column prop="pinyin" label="中文全拼" align="center"></el-table-column>
           <el-table-column prop="initials" label="首字母" align="center" width="70px"></el-table-column>
@@ -58,12 +60,15 @@
       <!-- 添加区域弹框 -->
       <el-dialog class="add_country_popup" custom-class="city_list" title="添加" :visible.sync="addState" width="600px">
         <el-form :model="countryPopup" status-icon :rules="countryRules" ref="countryPopup">
-          <el-form-item label="所属地区:" :label-width="formLabelWidth">
+          <el-form-item label="所属地区:" :label-width="formLabelWidth" v-show="flags1">
             <span class="country_span">{{countryPopup.select}}</span>
           </el-form-item>
           <el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">
             <el-input class="country_input" v-model="countryPopup.countryName" clearable></el-input>
           </el-form-item>
+          <!--<el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">-->
+            <!--<el-input class="country_input" v-model="countryPopup.countryName" clearable></el-input>-->
+          <!--</el-form-item>-->
           <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName">
             <el-input class="country_input" v-model="countryPopup.spareName" clearable></el-input>
           </el-form-item>
@@ -100,15 +105,12 @@
       <!-- 添加区域END -->
 
       <!-- 编辑区域弹框 -->
-      <el-dialog class="edit_country_popup" custom-class="city_list" title="国家编辑" :visible.sync="editState" width="600px">
+      <el-dialog class="edit_country_popup" custom-class="city_list" :title="changeTitle" :visible.sync="editState" width="600px">
         <el-form :model="editCountryPopup" status-icon :rules="editCountryRules" ref="editCountryPopup">
           <el-form-item label="ID:" :label-width="formLabelWidth" prop="id">
             <span class="country_span">{{editCountryPopup.id}}</span>
           </el-form-item>
-          <el-form-item label="所属国家:" :label-width="formLabelWidth" v-show="flag">
-            <span class="country_span">{{editCountryPopup.country}}</span>
-          </el-form-item>
-          <el-form-item label="所属地区:" :label-width="formLabelWidth">
+          <el-form-item :label="changelable" :label-width="formLabelWidth">
             <span class="country_span">{{editCountryPopup.select}}</span>
           </el-form-item>
           <el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">
@@ -155,6 +157,8 @@
   export default {
     data() {
       return {
+        changeTitle:"",
+        changelable:"所属地区:",
         searchInput: '', // 搜索
         list:[],
         lists: [], //子级
@@ -171,6 +175,8 @@
         level: '', // 层级数据
         // 数据表格
         tableData: [],
+        flags1:true,
+        flags2:false,
         flag:false,
         // 添加区域数据
         countryPopup: {
@@ -185,6 +191,7 @@
           isLeaf: '2',
           spareName: '',
           url: '',
+
           // titles:"国家编辑"
         },
         // 编辑区域数据
@@ -207,7 +214,7 @@
         // 添加区域正则判断
         countryRules: {
           countryName: [
-            { required: true, message: '请填写国家名称', trigger: 'blur'},
+            { required: true, message: '请填写区域名称', trigger: 'blur'},
             { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
@@ -255,6 +262,7 @@
                 "parentID": -1,
               }
             }).then(obj => {
+              console.log(obj,"list");
               for (let i = 0; i < obj.data.objects.length; i++) {
                 this.list.push({
                   name:obj.data.objects[i].areaName,
@@ -270,6 +278,7 @@
             })
         }
         if (node.level >= 1) {
+
           this.getSon(
             node.data.key,
             node.data.label,
@@ -324,6 +333,7 @@
       // 单击tree节点
       treeClick(data,name){
         // this.tableData = [];
+        console.log(data,'节点的数据')
         this.isSearch = false;
         this.geography = 1
         this.data = data
@@ -334,8 +344,12 @@
         if (data.Hierarchy == 0) {
           // 所属地区
           this.theContinent = data.id
+          this.changeTitle="国家编辑"
         }
         if (data.isLeaf == 1) {
+          // this.flags1 =false;
+          // this.flags2=true;
+          // this.changeTitle="区域编辑"
         this.tableData = [];
           this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforget',{
             id: data.id
@@ -345,6 +359,7 @@
               id: res.data.object.id,
               country: res.data.object.areaName,
               continent: res.data.object.earth,
+              // continent:data.name,
               englishName: res.data.object.englishName,
               pinyin: res.data.object.chineseFull,
               initials: res.data.object.firstChar,
@@ -366,6 +381,7 @@
             }
           this.clickId = data.id
           this.initData(data.id)
+          // this.changeTitle="地区编辑"
         }
       },
       initData(id, name) {
@@ -454,6 +470,7 @@
                   initial: this.countryPopup.initial,
                   // createTime: "2018-09-11",
                   earth: '-1',
+                  // earth:this.countryPopup.select,
                   markName: this.countryPopup.spareName,
                   url: this.countryPopup.url
                 }
@@ -493,6 +510,7 @@
                   initial: this.editCountryPopup.initial,
                   parentID: this.editCountryPopup.parentID,
                   earth: '-1',
+                  // earth:this.editCountryPopup.select,
                   markName: this.editCountryPopup.spareName,
                   url: this.editCountryPopup.url
                 }
@@ -522,6 +540,7 @@
       },
       // 添加国家弹窗
       addStates(key, data){
+        console.log(data,"添加")
         this.countryPopup.select = data.country
         this.countryPopup.parentID = data.id
         this.editCountryPopup.parentID = data.id
@@ -530,6 +549,7 @@
       },
       // 编辑国家
       handleEdit(key, data){
+        console.log(data,"编辑")
         this.editState = true;
         this.editCountryPopup.parentID = data.parentID
         this.editCountryPopup.id = data.id;
@@ -610,11 +630,13 @@
       },
       // 点击按钮查看下级
       subordinate(data){
+        console.log(data.isLeaf,"层级")
         let table = {}
         table.name = data.country
         table.id = data.id
         table.isLeaf = data.isLeaf
         this.treeClick(table)
+        this.changeTitle="编辑地区"
       },
       // 分页显示条数的改变
       pagesizes(page) {
