@@ -294,6 +294,7 @@ export default {
       this.linkList.push(...this.poolManager.getSelected());
       this.isMultiple= this.linkList.length> 1;
       if(this.isMultiple){
+        this.$message.warning('批量添加中，耐心等候，请勿操作！');
         this.linkList.forEach(el => el.savingState= 'waiting');
         this.vm.state= false;
       }

@@ -156,7 +156,7 @@ PoolManager.prototype.getAverage= function(){
 }
 
 PoolManager.prototype.getSelected= function(){
-  return this.calendar.filter(day => day.selected);
+  return this.calendar.filter(day => day.selected).reverse();
 }
 
 export default PoolManager
