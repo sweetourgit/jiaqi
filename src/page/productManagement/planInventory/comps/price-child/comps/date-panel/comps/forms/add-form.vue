@@ -137,7 +137,12 @@ export default {
         ],
         dateHous: { required: true, message: '请选择预留时长', trigger: ['blur']},
       }
-    }, { SHARE_STATE })
+    }, {
+      // 处理递归添加逻辑
+      inventorySuccessList: [],
+      errorList: [],
+    }, 
+    { SHARE_STATE })
   },
 
   methods: {
@@ -156,6 +161,8 @@ export default {
       this.enrollList.splice(0);  // 清空子列
       this.shareOptions.splice(0);  // 清空共享库存表单
       this.enrollTypeOptions.splice(0);
+      this.inventorySuccessList.splice(0);
+      this.errorList.splice(0);
       this.vm.share= SHARE_STATE.NOT_SHARE; //重置共享状态
       this.$refs.submitForm.resetFields();  // 重置表单
       this.vm.state= false;
@@ -265,7 +272,7 @@ export default {
     shareAddAction(){
       let day= this.poolManager.currentDay;
       let inventoryID= this.submitForm.inventoryID;
-      this.addPlanAction(inventoryID, day)
+      this.addPlanAction(inventoryID, day.dayInt)
       .then(res => {
         this.handleClose();
         this.$message.success('添加成功');
@@ -277,7 +284,11 @@ export default {
       });
     },
 
-    // 非共享
+    
+    /**
+     * @description: 递归添加
+     * @return: 
+     */
     notShareAddAction(){
       return new Promise((resolve, reject) => {
         let days= this.poolManager.getSelected();
@@ -289,7 +300,7 @@ export default {
           let day= days.pop();
           // 收集错误信息
           this.dayInloop= day;
-          this.addInventoryAction(day.dayInt)
+          this.addInventoryAction(day)
           .then(inventoryID => {
             if(!inventoryID){
               //TODO log dayinloop
@@ -297,7 +308,7 @@ export default {
       
               return Promise.resolve();
             }
-            return this.addPlanAction(inventoryID, day.dayInt);
+            return this.addPlanAction(inventoryID, day);
           })
           .then(func);
         }
@@ -306,21 +317,23 @@ export default {
       })
     },
 
-    // 新增库存 传入一个dayInt
-    addInventoryAction(date){
+    /**
+     * @description:　新增库存，如果dayInt存在于成功队列，则直接返回对应inventoryID
+     */
+    addInventoryAction(day){
       return this.linkAddInventory({
         name: '',
         count: this.submitForm.count,
         share: SHARE_STATE.NOT_SHARE,
-        date
-      })
+        date: day.dayInt
+      }, day)
     },
 
     // 新增计划
     // 返回错误，但是新增成功了
     addPlanAction(inventoryID, day){
-      let plan= this.getPlanDTO(inventoryID, day);
-      return this.linkAddPlan(plan)
+      let plan= this.getPlanDTO(inventoryID, day.dayInt);
+      return this.linkAddPlan(plan, day)
     },
 
     validate(){
@@ -381,13 +394,14 @@ export default {
     },
 
     // 链式调用
-    linkAddInventory(object){
+    linkAddInventory(object, day){
       return new Promise((resolve, reject) => {
         this.$http.post(this.GLOBAL.serverSrc + "/team/api/inventoryinsert", {
           object
         }).then((res) => {
           let { isSuccess, id }= res.data;
           if(!isSuccess) return resolve(false);
+          
           return resolve(id);
         }).catch((err) => {
           resolve(false);
@@ -396,7 +410,7 @@ export default {
     },
 
     // 链式调用
-    linkAddPlan(object){
+    linkAddPlan(object, day){
       return new Promise((resolve, reject) => {
         this.$http.post(this.GLOBAL.serverSrc + "/team/plan/api/insert",{
           object
