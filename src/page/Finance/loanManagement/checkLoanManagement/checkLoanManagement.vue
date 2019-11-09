@@ -79,7 +79,11 @@
     <el-row type="flex" class="row-bg" justify="space-around">
       <el-col :span="6">
         <el-col :span="6"><div class="grid-del label-color">附件:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.files }}</div></el-col>
+        <el-col :span="18">
+          <div class="grid-del">
+            {{ fundamental.files }}
+          </div>
+        </el-col>
       </el-col>
       <el-col :span="6" v-if="fundamental.checkType=='1'">
         <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
@@ -187,14 +191,13 @@ import moment from 'moment'
     },
     data(){
       return {
-      	 //表头切换
-         empty:'',
+         empty:'', //表头切换
          people:'',
          planTime:'',
          planData:'',
          //借款表格
          forbidden:true,
-		    multipleSelection: [],
+		     multipleSelection: [],
          tableData:[],
          fundamental:{},
          //分页
