@@ -161,7 +161,7 @@
                 </div>                    
             </div>
             <div class="album-picbutton" v-show="picInfoShow">              
-                <el-button type="primary" @click="savPic">{{savPicBut}}</el-button>
+              <el-button type="primary" @click="savPic">{{savPicBut}}</el-button>
             </div>
            </div>
         </div> 
@@ -244,7 +244,8 @@
     data() {        
       return {       
         isDest: '',
-        picSrc:'https://jiaqi-server.obs.myhwclouds.com',
+        picSrc:'',
+        //picSrc:'https://jiaqi-server.obs.myhwclouds.com',
         //左侧菜单
         list:[],
         lists: [], //子级
