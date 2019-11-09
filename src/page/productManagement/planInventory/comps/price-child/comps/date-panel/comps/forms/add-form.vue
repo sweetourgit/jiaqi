@@ -272,7 +272,7 @@ export default {
     shareAddAction(){
       let day= this.poolManager.currentDay;
       let inventoryID= this.submitForm.inventoryID;
-      this.addPlanAction(inventoryID, day.dayInt)
+      this.addPlanAction(inventoryID, day)
       .then(res => {
         this.handleClose();
         this.$message.success('添加成功');
