@@ -29,7 +29,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column prop="continent" label="所属大洲" align="center" width="80px">{{countryPopup.select}}</el-table-column>
+          <el-table-column prop="continent" :label="earth" align="center" width="80px">{{countryPopup.select}}</el-table-column>
           <!--<el-table-column prop="continent" label="所属国家" align="center" width="80px">{{countryPopup.select}}</el-table-column>-->
           <!--<el-table-column prop="continent" label="所属区域" align="center" width="80px">{{countryPopup.select}}</el-table-column>-->
           <el-table-column prop="englishName" label="英文名" align="center"></el-table-column>
@@ -60,19 +60,19 @@
       <!-- 添加区域弹框 -->
       <el-dialog class="add_country_popup" custom-class="city_list" title="添加" :visible.sync="addState" width="600px">
         <el-form :model="countryPopup" status-icon :rules="countryRules" ref="countryPopup">
-          <el-form-item label="所属地区:" :label-width="formLabelWidth" v-show="flags1">
+          <el-form-item :label="changelable" :label-width="formLabelWidth" v-show="flags1">
             <span class="country_span">{{countryPopup.select}}</span>
           </el-form-item>
-          <el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">
+          <el-form-item label="区域名称:" :label-width="formLabelWidth" prop="countryName">
             <el-input class="country_input" v-model="countryPopup.countryName" clearable></el-input>
           </el-form-item>
           <!--<el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">-->
             <!--<el-input class="country_input" v-model="countryPopup.countryName" clearable></el-input>-->
           <!--</el-form-item>-->
-          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName">
+          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName" v-show="flag3">
             <el-input class="country_input" v-model="countryPopup.spareName" clearable></el-input>
           </el-form-item>
-          <el-form-item label="url:" :label-width="formLabelWidth" prop="url">
+          <el-form-item label="url:" :label-width="formLabelWidth" prop="url" v-show="flag3">
             <el-input class="country_input" v-model="countryPopup.url" clearable></el-input>
           </el-form-item>
           <el-form-item label="末级区域:" :label-width="formLabelWidth">
@@ -110,18 +110,18 @@
           <el-form-item label="ID:" :label-width="formLabelWidth" prop="id">
             <span class="country_span">{{editCountryPopup.id}}</span>
           </el-form-item>
-          <el-form-item :label="changelable" :label-width="formLabelWidth">
+          <el-form-item :label="earth" :label-width="formLabelWidth">
             <span class="country_span">{{editCountryPopup.select}}</span>
           </el-form-item>
-          <el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">
+          <el-form-item :label="araname" :label-width="formLabelWidth" prop="countryName">
             <el-input class="country_input" v-model="editCountryPopup.countryName" clearable></el-input>
           </el-form-item>
-          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName">
+          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName" v-show="flag3" >
             <el-input class="country_input" v-model="editCountryPopup.spareName" clearable></el-input>
           </el-form-item>
-          <el-form-item label="url:" :label-width="formLabelWidth" prop="url">
-            <el-input class="country_input" v-model="editCountryPopup.url" clearable></el-input>
-          </el-form-item>
+          <el-form-item label="url:" :label-width="formLabelWidth" prop="url" v-show="flag3">
+          <el-input class="country_input" v-model="editCountryPopup.url" clearable></el-input>
+        </el-form-item>
           <el-form-item label="末级区域:" :label-width="formLabelWidth">
             <el-radio-group class="virtualDepartment" v-model="editCountryPopup.isLeaf">
               <el-radio label="1">是</el-radio>
@@ -157,8 +157,12 @@
   export default {
     data() {
       return {
+        araname:'',
+        earth:"",
         changeTitle:"",
-        changelable:"所属地区:",
+        changelable:"",
+        changeName:"",
+        flag3:true,
         searchInput: '', // 搜索
         list:[],
         lists: [], //子级
@@ -257,6 +261,8 @@
         this.level = node.level
         /*添加第一级*/
         if (node.level === 0) {
+          this.earth = '所属大洲'
+
           this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",{
               "object": {
                 "parentID": -1,
@@ -278,7 +284,6 @@
             })
         }
         if (node.level >= 1) {
-
           this.getSon(
             node.data.key,
             node.data.label,
@@ -345,6 +350,21 @@
           // 所属地区
           this.theContinent = data.id
           this.changeTitle="国家编辑"
+          this.earth ="所属大洲"
+          this.araname ="国家名称:"
+          this.flag3 =false
+          this.changelable ="所属区域"//????
+        }
+        if (data.Hierarchy >=1){
+          this.changelable ="所属区域"
+          this.changeTitle="区域编辑"
+          this.earth ="所属国家"
+          this.araname ="区域名称:"
+          this.flag3=true
+        }
+        if (data.Hierarchy ==2){
+          this.earth ="所属地区"
+          this.araname ="区域名称:"
         }
         if (data.isLeaf == 1) {
           // this.flags1 =false;
@@ -544,8 +564,10 @@
         this.countryPopup.select = data.country
         this.countryPopup.parentID = data.id
         this.editCountryPopup.parentID = data.id
-
         this.addState = true
+        //??????
+
+
       },
       // 编辑国家
       handleEdit(key, data){
@@ -578,6 +600,7 @@
           // 为2非末级
           if (data.isLeaf == 2) {
             console.log(data.areaName,5555)
+            this.changeTitle="区域编辑"
             this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforlist',{
               object: {
                 parentID: data.id
@@ -630,13 +653,17 @@
       },
       // 点击按钮查看下级
       subordinate(data){
-        console.log(data.isLeaf,"层级")
+        console.log(data,"层级")
         let table = {}
         table.name = data.country
         table.id = data.id
         table.isLeaf = data.isLeaf
         this.treeClick(table)
-        this.changeTitle="编辑地区"
+        this.changeTitle="区域编辑"
+        this.earth="所属国家"
+        this.araname ="区域名称:"
+        this.changelable ="所属区域"
+        this.flag3=true
       },
       // 分页显示条数的改变
       pagesizes(page) {
