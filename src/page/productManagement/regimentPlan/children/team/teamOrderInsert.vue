@@ -408,6 +408,15 @@
         </el-tabs>
       </div>
     </el-dialog>
+    <!--审批过程-->
+    <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px">
+      <el-table :data="approvalTable" :header-cell-style="getCostClass" border>
+        <el-table-column prop="" label="审批时间" min-width="180" align="center"></el-table-column>
+        <el-table-column prop="" label="审批人" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="" label="审批结果" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="" label="审批意见" min-width="180" align="center"></el-table-column>
+      </el-table>
+    </el-dialog>
     <!-- </div> -->
     <!-- </div> -->
   </div>
@@ -559,6 +568,8 @@ export default {
       tableCollection:[],//收款表格
       tableOrder:[],//订单表格
       productPos:0,
+      approvalTable:[],//审批过程表格
+      approvalShow:false,//审批过程弹窗
     };
   },
   filters: {
@@ -1007,12 +1018,12 @@ export default {
                           //this.$refs[formName].resetFields();
                           this.dialogFormOrder = false;
                           this.ifOrderInsert = true;
-                          // this.startUpWorkFlowForJQ(
-                          //   data.OrderID,
-                          //   data.FlowModel,
-                          //   data.FlowModelName,
-                          //   data.Usercode
-                          // );
+                          this.startUpWorkFlowForJQ(
+                            data.OrderID,
+                            data.FlowModel,
+                            data.FlowModelName,
+                            data.Usercode
+                          );
                         } else if(res.data.isSuccess == false){
                           //预留黑名单信息？？？
                           this.$message.success(res.data.result.message + "");
@@ -1083,12 +1094,12 @@ export default {
                         //this.$refs[formName].resetFields();
                         this.dialogFormOrder = false;
                         this.ifOrderInsert = false;
-                        // this.startUpWorkFlowForJQ(
-                        //   data.OrderID,
-                        //   data.FlowModel,
-                        //   data.FlowModelName,
-                        //   data.Usercode
-                        // );
+                        this.startUpWorkFlowForJQ(
+                          data.OrderID,
+                          data.FlowModel,
+                          data.FlowModelName,
+                          data.Usercode
+                        );
                       } else {
                         //预留黑名单信息？？？
                         this.$message.success(res.data.result.message + "");
@@ -1165,28 +1176,40 @@ export default {
       return s;
     },
     //启动工作流
-    // startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
-    //   this.$http
-    //     .post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
-    //       jQ_ID: OrderID,
-    //       jQ_Type: FlowModel,
-    //       workflowCode: FlowModelName,
-    //       userCode: Usercode
-    //     })
-    //     .then(res => {
-    //       this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
-    //     });
-    // },
-    // //提交工作任务
-    // submitWAForJQ(Usercode, workItemID) {
-    //   this.$http
-    //     .post(this.GLOBAL.jqUrl + "/api/JQ/SubmitWorkAssignmentsForJQ", {
-    //       userCode: Usercode,
-    //       workItemID: workItemID,
-    //       commentText: "测试"
-    //     })
-    //     .then(res => {});
-    // },
+    startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
+      this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
+        jQ_ID: OrderID,
+        jQ_Type: FlowModel,
+        workflowCode: FlowModelName,
+        userCode: Usercode
+      })
+      .then(res => {
+        this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
+      });
+    },
+    //查看借款详情
+    auditResult(result) {
+      var that =this
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+          jQ_ID: result,
+          jQ_Type: 1,
+        }).then(obj => {
+          // var json = JSON.parse(obj.data);
+          // console.log(json);
+          that.tableCourse = obj.data.extend.instanceLogInfo;
+        }).catch(obj => {
+        })
+    },
+    //提交工作任务
+    submitWAForJQ(Usercode, workItemID) {
+      this.$http
+        .post(this.GLOBAL.jqUrl + "/api/JQ/SubmitWorkAssignmentsForJQ", {
+          userCode: Usercode,
+          workItemID: workItemID,
+          commentText: "测试"
+        })
+        .then(res => {});
+    },
     delTravel(type, index){//删除单条表格数据
       this.$confirm("是否删除该条出行人信息?", "提示", {
          confirmButtonText: "确定",
