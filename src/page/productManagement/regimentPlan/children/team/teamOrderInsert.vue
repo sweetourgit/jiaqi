@@ -345,7 +345,7 @@
               <el-table-column prop="createUser" label="申请人" min-width="70" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
-                  <span class="cursor blue">查看</span>
+                  <span class="cursor blue" @click="approval()">查看</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -411,10 +411,10 @@
     <!--审批过程-->
     <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px">
       <el-table :data="approvalTable" :header-cell-style="getCostClass" border>
-        <el-table-column prop="" label="审批时间" min-width="180" align="center"></el-table-column>
-        <el-table-column prop="" label="审批人" min-width="120" align="center"></el-table-column>
-        <el-table-column prop="" label="审批结果" min-width="120" align="center"></el-table-column>
-        <el-table-column prop="" label="审批意见" min-width="180" align="center"></el-table-column>
+        <el-table-column prop="finishedTime" label="审批时间" min-width="180" align="center"></el-table-column>
+        <el-table-column prop="participantName" label="审批人" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="approvalName" label="审批结果" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="No" label="审批意见" min-width="180" align="center"></el-table-column>
       </el-table>
     </el-dialog>
     <!-- </div> -->
@@ -1177,6 +1177,7 @@ export default {
     },
     //启动工作流
     startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
+      console.log(OrderID)
       this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
         jQ_ID: OrderID,
         jQ_Type: FlowModel,
@@ -1188,18 +1189,17 @@ export default {
       });
     },
     //查看借款详情
-    auditResult(result) {
-      var that =this
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
-          jQ_ID: result,
-          jQ_Type: 1,
-        }).then(obj => {
-          // var json = JSON.parse(obj.data);
-          // console.log(json);
-          that.tableCourse = obj.data.extend.instanceLogInfo;
-        }).catch(obj => {
-        })
-    },
+    // auditResult(OrderID) {
+    //   console.log(OrderID)
+    //   var that =this
+    //     this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+    //       jQ_ID: OrderID,
+    //       jQ_Type: 1,
+    //     }).then(obj => {
+    //       that.tableCourse = obj.data.extend.instanceLogInfo;
+    //     }).catch(obj => {
+    //     })
+    // },
     //提交工作任务
     submitWAForJQ(Usercode, workItemID) {
       this.$http
@@ -1464,6 +1464,18 @@ export default {
         }
       }).catch(err => {
         console.log(err)
+      })
+    },
+    //借款审批过程
+    approval(result){
+      this.approvalShow = true;
+      var that =this
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+        jQ_ID: result,
+        jQ_Type: 1,
+      }).then(obj => {
+        that.approvalTable = obj.data.extend.instanceLogInfo;
+      }).catch(obj => {
       })
     },
   }
