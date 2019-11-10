@@ -722,7 +722,7 @@ export default {
         state: "",
         passWord: "",
         peerUserType: [1],
-        id:"",
+        //id:"",
       }, //添加账户信息的对象
       accountFormRules: { // 添加账号提示信息
         name: [
@@ -1101,7 +1101,7 @@ export default {
         state: "",
         passWord: "",
         peerUserType: [], //职位
-        id:"",
+        //id:"",
       };
       this.$refs[accountForm].resetFields();
       this.isAddAccount = false;
@@ -1223,7 +1223,7 @@ export default {
         state: "",
         passWord: "",
         peerUserType: [] ,//职位
-        id:"",
+        //id:"",
       };
       // this.$nextTick((accountForm) => {
       //   this.$refs["addForm"].resetFields();
