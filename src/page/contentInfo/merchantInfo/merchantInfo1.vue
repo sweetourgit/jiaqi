@@ -1737,7 +1737,7 @@ export default {
         this.ruleForm.storeType = 3;
       }
        // 商户角色
-      if (this.ruleForm.localCompRole == "旅游组团社" &&  this.ruleForm.localCompRole == 1) {
+      if (this.ruleForm.localCompRole == "旅游组团社" ||  this.ruleForm.localCompRole == 1) {
         this.ruleForm.localCompRole = 1;
       } else if (this.ruleForm.localCompRole == "独立旅行社" || this.ruleForm.localCompRole == 2) {
         this.ruleForm.localCompRole = 2;
