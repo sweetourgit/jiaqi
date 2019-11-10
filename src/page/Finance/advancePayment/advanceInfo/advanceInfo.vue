@@ -38,7 +38,20 @@
                   <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
                     {{tag2.label}}
                   </el-tag>
-                  <el-autocomplete id="input-error" :disabled="change" class="lable_input" v-if="inputVisible2" v-model="ruleForm.supplier" ref="saveTagInput"  placeholder="请输入供应商" @keyup.enter.native="handleInputConfirm2" :fetch-suggestions="querySearch5" :trigger-on-focus="false" @select="dest_01" @blur="handleInputConfirm2">
+                  <el-autocomplete
+                    id="input-error"
+                    :disabled="change"
+                    class="lable_input"
+                    v-if="inputVisible2"
+                    v-model="ruleForm.supplier"
+                    ref="saveTagInput"
+                    placeholder="请输入供应商"
+                    @keyup.enter.native="handleInputConfirm2"
+                    :fetch-suggestions="querySearch5"
+                    :trigger-on-focus="false"
+                    @select="dest_01"
+                    @blur="handleInputConfirm2"
+                  >
                   </el-autocomplete>
                 </div>
               </el-form-item>
@@ -100,21 +113,10 @@
                   <el-button size="small" type="primary">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
-               <!-- <el-upload
-                  class="upload-demo"
-                  name="files"
-                  ref="upload"
-                  :limit="12"
-                  :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview"
-                  multiple :action="this.upload_url"
-                  :disabled="change"
-                  :file-list="fileList">
-                  <el-button size="small" type="primary">点击上传</el-button>
-                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                </el-upload>-->
               </el-form-item>
+              <el-divider content-position="left" class='title-margin title-margin-t' v-if="tableData5.length != 0">相关信息</el-divider>
               <el-form-item label="" label-width="120px" label-height="auto" v-if="tableData5.length != 0">
-                <el-table :data="tableData5" border style="width:90%" :header-cell-style="getRowClass2">
+                <el-table :data="tableData5" style="width:100%" border :header-cell-style="getRowClass2">
                   <el-table-column prop="payable" label="订单总额" align="center">
                   </el-table-column>
                   <el-table-column prop="paymentChecking" label="审批中借款总额" align="center">
@@ -159,7 +161,7 @@
               </el-table>
 
               <el-dialog title="审批过程" class="aaaaa" custom-class="approvalClass" :append-to-body="true" :visible.sync="dialogVisible6" width=900px>
-                <el-table :data="tableData11" border style="800px;" :header-cell-style="getRowClass2">
+                <el-table :data="tableData11" border :header-cell-style="getRowClass2">
                   <el-table-column prop="createTime" label="审批时间" align="center">
                   </el-table-column>
                   <el-table-column prop="user" label="审批人" align="center">
@@ -358,7 +360,7 @@ export default {
     change: false,
     pid: '',
     infoStatus: '',
-    typeList: {
+    typeList: {  // 借款类型
       type: Array,
       default: () => []
     },
@@ -368,6 +370,13 @@ export default {
     },
   },
   data() {
+    var validateVoucher = (rule, value, callback) => {
+      if (this.fileCheckVal === 0) {
+        callback(new Error('请上传附件'));
+      } else {
+        callback();
+      }
+    };
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('文件不能为空'));
@@ -379,6 +388,7 @@ export default {
       }
     };
     return {
+      fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       pagesize3:10,
       count3:300,
       currentPage4: 1,
@@ -454,7 +464,7 @@ export default {
         cardName: '',
         payMode: '',
         type: '',
-        pass:'',
+        pass: [],
       }, //文件上传列表
       fileList: [],
       fiels:'',
@@ -476,7 +486,7 @@ export default {
         bankName: [{ required: true, message: '开户行不能为空', trigger: 'blur' }],
         cardName: [{ required: true, message: '开户名不能为空', trigger: 'blur' }],
         pass: [
-          { validator: validatePass, trigger: 'blur' }
+          { required: true, trigger: 'change', validator: validateVoucher}
         ],
         fiels:[{ required: true, message: '不能为空', trigger: 'blur' }],
       },
@@ -510,11 +520,13 @@ export default {
       cardNumber_pre: '',
       bankName_pre: '',
       cardName_pre: '',
+      upload:{
+        pass:'',
+      },
       time: 0,
       len: 0,
       uid: 0, //上传图片缩略图选中项
-
-      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',
+      upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
     }
   },
   computed: { // 计算属性的 getter
@@ -616,6 +628,7 @@ export default {
     handleRemove(file, fileList) {
       this.uid = fileList[0].uid;
       this.fileList = fileList
+      this.fileCheckVal = fileList.length
     },
     //文件上传
     handleChange(file, fileList) {
@@ -627,7 +640,7 @@ export default {
     },
     handleSuccess(res, file, fileList) {
       this.ruleForm.pass = 1
-
+      this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
       //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
         this.time = fileList.length;
@@ -994,7 +1007,8 @@ export default {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.tableData2.push({
               "value": res.data.objects[i].name,
-              "id": res.data.objects[i].id
+              "id": res.data.objects[i].id,
+              "supplierType": res.data.objects[i].supplierType
             })
             this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
           }
@@ -1017,12 +1031,10 @@ export default {
         if (valid) {
           this.inputVisible2 = true;
           let pictureList = [];
-          for (let i = 0; i < this.fileList.length; i++) {
-            let picture = {};
-            picture.url = this.fileList[i].url1;
-            picture.name = this.fileList[i].name;
-            pictureList.push(picture);
-          }
+          this.fileList.forEach(function(item){
+            pictureList.push({ url: item.url.slice(5), name: item.name})
+          })
+
           this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/insert', {
             "object": {
               createUser: sessionStorage.getItem('id'),
@@ -1038,7 +1050,7 @@ export default {
               bankName: this.ruleForm.bankName, //开户行
               cardName: this.ruleForm.cardName, //开户名
               payway: this.ruleForm.payMode, //付款方式
-              files: pictureList, //付款方式
+              files: pictureList, //上传图片
             }
           }).then(res => {
             if (res.data.isSuccess == true) {
@@ -1252,7 +1264,6 @@ export default {
     },
   },
   created() {
-
   },
 };
 
