@@ -150,7 +150,7 @@
                   <el-option key="1" label="非月结" value="2"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item v-if="ruleForm.settlementType == '0'" label="额度 :" prop="quota">
+              <el-form-item v-if="ruleForm.settlementType == '月结'|| ruleForm.settlementType == '1'" label="额度 :" prop="quota">
                 <el-input v-model="ruleForm.quota" style="width: 250px;" placeholder="请输入额度"></el-input>
               </el-form-item>
 
@@ -426,11 +426,12 @@
               <td class="longWeight">{{ruleForm.bankcardNo}}</td>
               <div class="BodyTableCenter">
                 <td class="tr">经营范围：&nbsp;&nbsp;</td>
-                <td class="longWeight">{{ruleForm.scoopeExt}}</td>
+                <td class="longWeight">{{ruleForm.scopeExt}}</td>
               </div>
               <td class="tr">额度：&nbsp;&nbsp;</td>
               <td class="longWeight">{{ruleForm.quota}}</td>
             </tr>
+            <br />
             <tr>
               <td class="tr">预存款：&nbsp;&nbsp;</td>
               <td class="longWeight">{{ruleForm.bankcardNo}}</td>
@@ -1966,7 +1967,6 @@ export default {
             }
           });
           // 状态
-          console.log("获取的数据",object);
           if (object.state == 2) {
             this.ruleForm.state = "正常";
           } else {
@@ -2078,14 +2078,15 @@ export default {
           }
           if (object.settlementType == 2) {
             this.ruleForm.settlementType = "非月结";
-          } else {
+          } else if(object.settlementType == 1) {
             this.ruleForm.settlementType = "月结";
           }
           this.ruleForm.quota = object.quota;
           //todo    部门和人员 预留
          // this.ruleForm.department = "1";
           //this.ruleForm.people = "2";
-          // this.ruleForm.scopeExt = object.scopeExt.split(",");
+         // this.ruleForm.scopeExt = object.scopeExt.split(",");
+         
           this.ruleForm.quota = object.quota;
           this.ruleForm.address = object.address;
           this.ruleForm.linker = object.linker;
@@ -2093,11 +2094,12 @@ export default {
           this.ruleForm.publicName = object.publicName;
           this.ruleForm.bankName = object.bankName;
           this.ruleForm.bankcardNo = object.bankcardNo;
+          this.ruleForm.localCompCode = object.localCompCode
          // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
           this.arrears = this.toDecimal2(object.arrears);
-        })
+       })
         .catch(obj => {
           console.log(obj);
         });
