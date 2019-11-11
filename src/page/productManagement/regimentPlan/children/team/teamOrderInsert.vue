@@ -328,7 +328,7 @@
       <div>
         <el-tabs v-model="activeName">
           <el-tab-pane label="借款" name="first">
-            <el-table :data="tableBorrowing" :header-cell-style="getCostClass" border>
+            <el-table :data="tableBorrowing" :header-cell-style="getCostClass" ref="multipleTable" border @row-click="clickRow">
               <el-table-column prop="paymentID" label="ID" min-width="80" align="center"></el-table-column>
               <el-table-column prop="paymentType" label="借款类型" min-width="120" align="center"></el-table-column>
               <el-table-column prop="checkType" label="审批状态" align="center">
@@ -345,7 +345,7 @@
               <el-table-column prop="createUser" label="申请人" min-width="70" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
-                  <span class="cursor blue" @click="approval()">查看</span>
+                  <span class="cursor blue" @click="approval(scope.row.id)">查看</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -570,6 +570,9 @@ export default {
       productPos:0,
       approvalTable:[],//审批过程表格
       approvalShow:false,//审批过程弹窗
+      guid:'',
+      pid:'',
+      multipleSelection: [], //选中的list
     };
   },
   filters: {
@@ -1175,41 +1178,6 @@ export default {
       }
       return s;
     },
-    //启动工作流
-    startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
-      console.log(OrderID)
-      this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
-        jQ_ID: OrderID,
-        jQ_Type: FlowModel,
-        workflowCode: FlowModelName,
-        userCode: Usercode
-      })
-      .then(res => {
-        this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
-      });
-    },
-    //查看借款详情
-    // auditResult(OrderID) {
-    //   console.log(OrderID)
-    //   var that =this
-    //     this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
-    //       jQ_ID: OrderID,
-    //       jQ_Type: 1,
-    //     }).then(obj => {
-    //       that.tableCourse = obj.data.extend.instanceLogInfo;
-    //     }).catch(obj => {
-    //     })
-    // },
-    //提交工作任务
-    submitWAForJQ(Usercode, workItemID) {
-      this.$http
-        .post(this.GLOBAL.jqUrl + "/api/JQ/SubmitWorkAssignmentsForJQ", {
-          userCode: Usercode,
-          workItemID: workItemID,
-          commentText: "测试"
-        })
-        .then(res => {});
-    },
     delTravel(type, index){//删除单条表格数据
       this.$confirm("是否删除该条出行人信息?", "提示", {
          confirmButtonText: "确定",
@@ -1325,8 +1293,10 @@ export default {
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
+          let guid = [];
           that.tableBorrowing = res.data.objects
           that.tableBorrowing.forEach(function (v,k,arr) {
+              guid.push(v.guid)
               if(arr[k]['checkType'] == 0){
                 arr[k]['checkType'] = '审批中'
               }else if(arr[k]['checkType'] == 1) {
@@ -1466,17 +1436,43 @@ export default {
         console.log(err)
       })
     },
-    //借款审批过程
+    //启动工作流
+    startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
+      console.log(OrderID)
+      this.$http.post(this.GLOBAL.jqUrl + "/JQ/StartUpWorkFlowForJQ", {
+        jQ_ID: OrderID,
+        jQ_Type: FlowModel,
+        workflowCode: FlowModelName,
+        userCode: Usercode
+      })
+      .then(res => {
+        this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
+      });
+    },
+    //提交工作任务
+    submitWAForJQ(Usercode, workItemID) {
+      this.$http
+        .post(this.GLOBAL.jqUrl + "/JQ/SubmitWorkAssignmentsForJQ", {
+          userCode: Usercode,
+          workItemID: workItemID,
+          commentText: "测试"
+        })
+        .then(res => {});
+    },
     approval(result){
       this.approvalShow = true;
       var that =this
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
-        jQ_ID: result,
+        jQ_ID: this.pid,
         jQ_Type: 1,
       }).then(obj => {
         that.approvalTable = obj.data.extend.instanceLogInfo;
-      }).catch(obj => {
-      })
+        that.guid = obj.data.extend.guid
+      }).catch(obj => {})
+    },
+    clickRow(row) {
+      console.log(this.multipleSelection)
+      this.pid = this.multipleSelection;
     },
   }
 };
