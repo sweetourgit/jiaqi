@@ -67,6 +67,7 @@
             v-for="(item, i) in enrollList" 
             :key="i"
             :proto="item"
+            :average="vm.average"
           >
             <el-button style="float: right; padding: 3px 0;" type="text" @click="removeEnrollCard(i)">删除</el-button>
           </enroll-card>
@@ -86,6 +87,7 @@ import { DAY_STATE as SHARE_STATE } from '../../../../../../dictionary'
 import { 
   getInventoryList, // 获取指定天的所有共享库存 
   getEnrollTypeDictionary, // 获取报名类型字典
+  getCostList
 } from '../../../../../../planInventory'
 
 export default {
@@ -109,7 +111,7 @@ export default {
         state: false,
         share: SHARE_STATE.NOT_SHARE,
         isMultiple: false,
-        
+        average: 0
       },
       // 新增plan
       enrollList: [],
@@ -149,7 +151,7 @@ export default {
   },
 
   methods: {
-    handleOpen(){
+    handleOpen(pacId){
       // 得到所有选中
       this.selectedList= this.poolManager.getSelected();
       // 判断当前是否是多选状态
@@ -157,6 +159,7 @@ export default {
       getEnrollTypeDictionary().then(res => {
         this.enrollTypeOptions.push(...res);
       });
+      this.vm.average= this.poolManager.getAverage();
       this.vm.state= true;
     },
 
@@ -167,9 +170,10 @@ export default {
       this.inventorySuccessList.splice(0); // 成功队列
       this.linkList.splice(0) // 总队列
       this.errorList.splice(0); // 错误队列
+      this.vm.average= 0;
       this.vm.share= SHARE_STATE.NOT_SHARE; //重置共享状态
-      this.$refs.submitForm.resetFields();  // 重置表单
       this.vm.state= false;
+      this.$refs.submitForm.resetFields();  // 重置表单
     },
 
     // 改变库存类型
@@ -191,6 +195,7 @@ export default {
     selectShareInventory(shareId){
       let hit= this.shareOptions.find(share => share.id=== shareId);
       if(!hit) return;
+      console.log(hit)
       let { count }= hit;
       this.submitForm.count= count;
     },
@@ -445,6 +450,21 @@ export default {
     savingState(day, state){
       if(!this.isMultiple) return;
       day.savingState= state;
+    },
+
+    getCostExceptPlane(pacId){
+      return new Promise((resolve, reject) => {
+        getCostList(pacId).then(res => {
+          let sum= 0;
+          res.forEach(el => {
+            if(el.supplierType=== 2) return;
+            sum+= el.money;
+          })
+          sum= sum/(1- rate/100);
+          this.vm.average= parseFloat(sum.toFixed(2));
+          this.$forceUpdate();
+        })
+      })
     }
   }
 }

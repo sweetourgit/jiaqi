@@ -58,8 +58,6 @@
 <script>
 export default {
 
-  inject: ['poolManager'],
-
   props: {
     proto: Object,
     average: [String, Number]
