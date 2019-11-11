@@ -328,7 +328,7 @@
       <div>
         <el-tabs v-model="activeName">
           <el-tab-pane label="借款" name="first">
-            <el-table :data="tableBorrowing" :header-cell-style="getCostClass" ref="multipleTable" border @row-click="clickRow">
+            <el-table :data="tableBorrowing" ref="multipleTable" class="table" border  @row-click="clickRow">
               <el-table-column prop="paymentID" label="ID" min-width="80" align="center"></el-table-column>
               <el-table-column prop="paymentType" label="借款类型" min-width="120" align="center"></el-table-column>
               <el-table-column prop="checkType" label="审批状态" align="center">
@@ -1293,10 +1293,8 @@ export default {
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
-          let guid = [];
           that.tableBorrowing = res.data.objects
           that.tableBorrowing.forEach(function (v,k,arr) {
-              guid.push(v.guid)
               if(arr[k]['checkType'] == 0){
                 arr[k]['checkType'] = '审批中'
               }else if(arr[k]['checkType'] == 1) {
@@ -1459,7 +1457,7 @@ export default {
         })
         .then(res => {});
     },
-    approval(result){
+    approval(row){
       this.approvalShow = true;
       var that =this
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
@@ -1467,12 +1465,13 @@ export default {
         jQ_Type: 1,
       }).then(obj => {
         that.approvalTable = obj.data.extend.instanceLogInfo;
-        that.guid = obj.data.extend.guid
       }).catch(obj => {})
     },
     clickRow(row) {
-      console.log(this.multipleSelection)
-      this.pid = this.multipleSelection;
+      console.log(row.guid)
+      console.log(this.pid)
+      this.$refs.multipleTable.toggleRowSelection(row)
+      this.pid = row.guid;
     },
   }
 };
