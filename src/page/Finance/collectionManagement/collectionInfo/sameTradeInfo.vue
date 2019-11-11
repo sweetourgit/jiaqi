@@ -40,12 +40,12 @@
         <el-form-item label="摘要" prop="abstract" label-width="120px">
           <el-input v-model="ruleForm.abstract" placeholder="摘要" :disabled="change"></el-input>
         </el-form-item>
-        <!--<el-form-item label="凭证" prop="voucher" label-width="120px" ref="voucher">
+        <el-form-item label="凭证" prop="voucher" label-width="120px" ref="voucher">
           <el-upload
-            :file-list="ruleForm.voucher"
+            :file-list="fileList"
             class="upload-demo"
             name="files"
-            :limit="12"
+            multiple
             :action="this.uploadUrl"
             :disabled="change"
             :on-error="handleError"
@@ -53,11 +53,10 @@
             :on-remove="handleRemove"
             :on-preview="handlePreview"
             list-type="picture"
-            :before-upload="beforePicUpload"
           >
             <el-button size="small" type="primary">上传文件</el-button>
           </el-upload>
-        </el-form-item>-->
+        </el-form-item>
         <el-form-item label="是否选择发票" prop="isInvoice" label-width="120px">
           <el-radio-group v-model="ruleForm.isInvoice" :disabled="change" @change="isInvoice">
             <el-radio label="1">是</el-radio>
@@ -145,10 +144,10 @@
         <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
         <div class="associated">
           <div class="associatedIcon"><i class="el-icon-warning"></i></div>
-          <div class="associatedItems">已关联<span style="margin:0 5px; font-weight: bold;">1</span>项</div>
+          <div class="associatedItems">已关联<span style="font-weight: bold;">1</span>项</div>
           <div class="associatedMoney">总计：1200.00元</div>
         </div>
-        <el-table :data="arrearsList" border style="width: 1030px; margin:10px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="arrearsList" border :header-cell-style="getRowClass">
            <el-table-column prop="orderNumber" label="订单编号" align="center"></el-table-column>
            <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
            <el-table-column prop="tour" label="团期计划" align="center"></el-table-column>
@@ -316,6 +315,9 @@ export default {
           mobile: '',
         }],
       },
+      upload:{
+        accessory:'',
+      },
       rules: {
         voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
@@ -393,7 +395,7 @@ export default {
       supplierId: 0, // 同业社名称ID
       accountShow: false, // 选择账户弹窗
       tourNamePre: '',
-      uploadUrl: this.GLOBAL.imgUrl + '/upload/api/picture', // 上传凭证
+      uploadUrl: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 上传凭证
       planID: '',
       accountCredited: null // 收款账户选择
     }
@@ -410,10 +412,6 @@ export default {
   methods: {
     // 时间插件
     moment,
-    // 上传文件之前的钩子
-    beforePicUpload (file) {
-      // console.log(file.size)
-    },
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -581,6 +579,7 @@ export default {
     // 上传文件-移除
     handleRemove(file, fileList) {
       this.fileList = fileList
+      this.fileCheckVal = fileList.length
       this.fileCheckVal = fileList.length
     },
     // 文件上传
@@ -809,7 +808,7 @@ export default {
     // 文件上传成功时的钩子
     handleSuccess(res, file, fileList) {
       this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
-      this.$refs.voucher.clearValidate(); // 移除校验文字
+      // this.$refs.voucher.clearValidate(); // 移除校验文字
       //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { // 多张图片情况只在第一次执行数组操作
         this.time = fileList.length;
@@ -942,7 +941,7 @@ export default {
     width: auto
   }
   .accountButton{float:right; margin:20px 0 0 0; overflow: hidden;}
-  .associated{ line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc;width: 1030px; margin: 0 0 0 25px; border-radius: 5px;overflow: hidden; }
+  .associated{ line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc; border-radius: 5px;overflow: hidden; }
   .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}
   .associatedItems{float:left; margin: 0 0 0 10px;}
   .associatedMoney{float:left; margin: 0 0 0 30px;}

@@ -15,7 +15,7 @@
           <el-table-column prop="date" label="审批意见" align="center"></el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
-              <el-button type="text" @click="dialogFind(scope.row)" size="small" class="table_details">详情</el-button>
+              <el-button type="text" @click="dialogFind(scope.row)" size="small" class="table_details">审批</el-button>
             </template>
           </el-table-column>
          </el-table>
@@ -38,7 +38,7 @@
           <el-table-column prop="date" label="审批意见" align="center"></el-table-column>
           <el-table-column label="操作" width="180" align="center">
             <template slot-scope="scope">
-              <el-button type="text" @click="dialogFind(scope.row)" size="small" class="table_details">详情</el-button>
+              <el-button type="text" @click="dialogFind(scope.row)" size="small" class="table_details">审批</el-button>
             </template>
           </el-table-column>
          </el-table>

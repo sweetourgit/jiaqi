@@ -72,7 +72,7 @@
         <el-table-column prop="quota" label="额度" width="130" align="center"></el-table-column>
         <el-table-column prop="arrears" label="剩余额度" width="130" align="center"></el-table-column>
         <el-table-column prop="balance" label="总欠款" width="130" align="center"></el-table-column>
-        <el-table-column prop="operation" label="操作" width="175" align="center">
+        <el-table-column prop="operation" label="操作" width="160" align="center">
           <template slot-scope="scope" style="cursor:pointer;">
             <div
               style="color: #f5a142;float:left;margin-left:30px;cursor:pointer;"
@@ -103,7 +103,7 @@
     <!--end-->
     <!--弹窗-->
     <el-dialog
-      title="基本信息"
+      title="基本信息1"
       :visible.sync="dialogFormVisible"
       :show-close="false"
       @close="closeDialog"
@@ -123,14 +123,19 @@
           >
             <div class="saf" style="float: left">
               <el-form-item label="商户名称 :" prop="name">
-                <el-input v-model="ruleForm.name" style="width: 250px;" placeholder="请输入"></el-input>
+                <el-input
+                  v-model="ruleForm.name"
+                  style="width: 250px;"
+                  placeholder="请输入"
+                  :disabled="this.readonly == false"
+                ></el-input>
               </el-form-item>
               <el-form-item label="类别 :" prop="localCompType">
                 <el-select v-model="ruleForm.localCompType" placeholder="请选择" style="width: 250px;">
-                  <el-option label="门店" value="0"></el-option>
-                  <el-option label="同业" value="1"></el-option>
-                  <el-option label="翻盘门店" value="2"></el-option>
-                  <el-option label="个体分销" value="3"></el-option>
+                  <el-option label="门店" value="1"></el-option>
+                  <el-option label="同业" value="2"></el-option>
+                  <el-option label="翻盘门店" value="3"></el-option>
+                  <el-option label="个体分销" value="4"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="状态 :" prop="state">
@@ -145,19 +150,23 @@
                   placeholder="请选择"
                   style="width: 250px;"
                 >
-                  <el-option key="0" label="月结" value="0"></el-option>
-                  <el-option key="1" label="非月结" value="1"></el-option>
+                  <el-option key="0" label="月结" value="1"></el-option>
+                  <el-option key="1" label="非月结" value="2"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item v-if="ruleForm.settlementType == '0'" label="额度 :" prop="quota">
+              <el-form-item
+                v-if="ruleForm.settlementType == '月结'|| ruleForm.settlementType == '1'"
+                label="额度 :"
+                prop="quota"
+              >
                 <el-input v-model="ruleForm.quota" style="width: 250px;" placeholder="请输入额度"></el-input>
               </el-form-item>
 
               <el-form-item label="商户角色 :" prop="localCompRole">
                 <el-select v-model="ruleForm.localCompRole" placeholder="请选择" style="width: 250px;">
-                  <el-option label="旅游组团社" value="0" key="0"></el-option>
-                  <el-option label="独立旅行社" value="1" key="1"></el-option>
-                  <el-option label="个人/独立旅游顾问" value="2" key="2"></el-option>
+                  <el-option label="旅游组团社" value="1" key="1"></el-option>
+                  <el-option label="独立旅行社" value="2" key="2"></el-option>
+                  <el-option label="个人/独立旅游顾问" value="3" key="3"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="门市类型 :" prop="storeType">
@@ -304,9 +313,10 @@
                     v-model="ruleForm.localCompCode"
                     style="width: 250px;"
                     placeholder="请输入"
+                    :disabled="this.readonly == false"
                   ></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="商户其他名称:" prop="otherNames" class="business">
+                <el-form-item label="商户其他名称 " prop="otherNames" class="business">
                   <el-input
                     v-model="ruleForm.otherNames"
                     placeholder="请输入，可输入多个"
@@ -323,29 +333,6 @@
                       style="margin-botton: 5px;"
                     >{{tag.name}}</el-tag>
                   </div>
-                </el-form-item> -->
-                <el-form-item label="商户其他名称" prop="otherNames" style="width: 90%">
-                  <el-tag
-                    :key="index"
-                    v-for="(tag,index) in businessOtherNamesArr"
-                    closable
-                    :disable-transitions="false"
-                    @close="businessHandleClose(tag)"
-                  >{{tag.name}}</el-tag>
-                  <el-input
-                    style="width: 90%"
-                    v-if="inputVisible"
-                    v-model="ruleForm.otherNames"
-                    ref="saveTagInput"
-                    size="small"
-                    @keyup.enter.native="handleEnterOtherNames"
-                  ></el-input>
-                  <el-button
-                    v-else
-                    class="button-new-tag"
-                    size="small"
-                    @click="showInput"
-                  >+ 点我添加供应商名称</el-button>
                 </el-form-item>
               </div>
             </div>
@@ -412,7 +399,7 @@
             <br />
             <tr>
               <td class="tr">商户角色：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.localComRole}}</td>
+              <td class="longWeight">{{ruleForm.localCompRole}}</td>
               <div class="BodyTableCenter">
                 <td class="tr">到期日期：&nbsp;&nbsp;</td>
                 <td class="longWeight">{{ruleForm.expTime}}</td>
@@ -448,11 +435,12 @@
               <td class="longWeight">{{ruleForm.bankcardNo}}</td>
               <div class="BodyTableCenter">
                 <td class="tr">经营范围：&nbsp;&nbsp;</td>
-                <td class="longWeight">{{ruleForm.scoopeExt}}</td>
+                <td class="longWeight">{{ruleForm.scopeExt}}</td>
               </div>
               <td class="tr">额度：&nbsp;&nbsp;</td>
               <td class="longWeight">{{ruleForm.quota}}</td>
             </tr>
+            <br />
             <tr>
               <td class="tr">预存款：&nbsp;&nbsp;</td>
               <td class="longWeight">{{ruleForm.bankcardNo}}</td>
@@ -473,7 +461,6 @@
               </div>
             </tr>
           </table>
-
           <!-- 点击详情账户信息 -->
           <div class="accountInfo">
             <h3>账户信息</h3>
@@ -503,10 +490,10 @@
                     <label>周边剩余授信额度：</label>
                     <span>{{AbouBalance}}</span>
                   </td>
-                  <!-- <td class="dialogTableTd">
+                  <td class="dialogTableTd">
                     <label>周边预存款：</label>
                     <span>{{AbouDeposit}}</span>
-                  </td>-->
+                  </td>
                 </tr>
               </table>
             </div>
@@ -517,7 +504,7 @@
             <div class="relevanceDeptWarn">
               <p class="el-icon-warning">
                 已关联
-                <span style="color:#108ee9">{{pageOrderTotal}}</span> 项 &nbsp;&nbsp;&nbsp; 总计：
+                <span style="color:#108ee9">{{page_order_total}}</span> 项 &nbsp;&nbsp;&nbsp; 总计：
                 <span style="font-size: 16px;">{{arrears}}元</span>
               </p>
             </div>
@@ -526,7 +513,7 @@
               <el-table-column prop="Title" label="产品名称" width="120" align="center"></el-table-column>
               <el-table-column prop="GroupCode" label="团期计划" width="120" align="center"></el-table-column>
               <el-table-column prop="CF_Date" label="出团日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="Payable" label="订单金额" width="98" align="center"></el-table-column>
+              <el-table-column prop="Payable" label="订单金额" width="80" align="center"></el-table-column>
               <el-table-column prop="qk_price" label="欠款金额" width="120" align="center"></el-table-column>
               <el-table-column prop="yh_price" label="已还金额" width="120" align="center"></el-table-column>
               <el-table-column prop="CreateTime" label="欠款日期" width="120" align="center"></el-table-column>
@@ -624,26 +611,31 @@ export default {
     };
     //商户编码唯一性验证
     let localCompCode = (rule, value, callback) => {
-      if (this.ruleForm.localCompCode == "") {
-        return callback("请输入商户编码");
+      if (this.btnindex !== 2) {
+        if (this.ruleForm.localCompCode == "") {
+          return callback("请输入商户编码");
+        } else {
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistcode",
+              {
+                localCompCode: this.ruleForm.localCompCode
+              }
+            )
+            .then(res => {
+              console.log(res, "已存在该编码的商户");
+              if (res.status == 200 && res.data.isSuccess == false) {
+                return callback("已存在该编码的商户");
+              } else {
+                return callback();
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
       } else {
-        this.$http
-          .post(
-            this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistcode",
-            {
-              localCompCode: this.ruleForm.localCompCode
-            }
-          )
-          .then(res => {
-            if (res.status == 200 && res.data.isSuccess == false) {
-              return callback("已存在该编码的商户");
-            } else {
-              return callback();
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          });
+        return callback()
       }
     };
     // 商户名称唯一性验证
@@ -662,6 +654,7 @@ export default {
               }
             )
             .then(res => {
+              console.log(res, "已存在该名称的商户");
               if (res.status == 200 && res.data.isSuccess == false) {
                 return callback("已存在该名称的商户");
               } else {
@@ -677,8 +670,7 @@ export default {
     };
     //商户其他名称验证唯一性
     let otherNamesValidator = (rule, value, callback) => {
-      console.log(this.ruleForm.otherNames)
-      if (this.ruleForm.otherNames !== undefined && this.ruleForm.otherNames !== "") {
+      if (this.ruleForm.otherNames !== undefined) {
         if (this.ruleForm.otherNames.length > 40) {
           return callback("不要超过40个字符");
         } else {
@@ -704,16 +696,16 @@ export default {
         return callback();
       }
     };
+    // let that = this;
     return {
       otherNamesObj: {}, //添加商户其他名称enter接收
-      inputVisible: false, //商户其他名称输入框是否显示
       // isBusinessTrue: false, //添加商户其他名称是判断issuccess false则此名字已存在
       // orgsAddArr: [], //添加商户信息是存储区域可见的数组
       AbouArrears: null, //周边欠款
       AbouBalance: null, //周边剩余授信额度
-      // AbouDeposit: null, //周边预存款
-      arrears: null, //关联欠款总价多少
-      pageOrderTotal: null, //关联数量
+      AbouDeposit: null, //周边预存款
+      arrears: null, //关联欠款总计多少
+      page_order_total: null, //关联数量 不准确到时和后台确认参数名
       AbouQuota: null, //周边授信额度
       // editAdmin: [], //点击编辑页的admin 用来接收修改之前的
       businewwInfPageId: "", //商户信息详情页的ID 同时也是商户其他名称添加接口的localCompID
@@ -733,22 +725,27 @@ export default {
       statesValue: "", //搜索状态字段
       payValue: "", //搜过结算字段
       tid: 0,
-      pagesize: 10, //一页几条数据
-      total: 1, //总条数
-      currentPage4: 1, //第几页
+      pagesize: 10,
+      total: 1,
+      currentPage4: 1, //分页
       accountForm: {
-        name: "", //账户信息名字
-        phone: "", //手机号
-        email: "", //邮箱
-        sex: "", //性别
-        wx: "", //微信号
-        qq: "", //qq号
-        state: "", //状态
-        passWord: "", //密码
-        peerUserType: [1] //职位
+        name: "",
+        phone: "",
+        email: "",
+        sex: "",
+        wx: "",
+        qq: "",
+        state: "",
+        passWord: "",
+        peerUserType: [1]
+        //id:"",
       }, //添加账户信息的对象
       accountFormRules: {
-        name: [{ required: true, trigger: "blur" }],
+        // 添加账号提示信息
+        name: [
+          { required: true, message: "请输入名字", trigger: "blur" },
+          { max: 40, message: "不要超过40个字符", trigger: "blur" }
+        ],
         phone: [
           { required: true, message: "请输入电话", trigger: "blur" },
           { min: 11, max: 11, message: "请输入11位数字", trigger: "blur" },
@@ -757,7 +754,7 @@ export default {
         email: [
           { type: "email", message: "请输入正确格式的邮箱", trigger: "blur" }
         ],
-        sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         // rules中 正则
         wx: [{ validator: wechatvalidator, trigger: "blur" }],
         qq: [
@@ -769,43 +766,45 @@ export default {
             trigger: "blur"
           }
         ],
-        state: [{ required: true, message: "请选择状态", trigger: "blur" }],
+        state: [{ required: true, message: "请选择状态", trigger: "change" }],
         passWord: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 6, max: 30, message: "请输入6-30位密码", trigger: "blur" }
         ],
         peerUserType: [
-          { required: true, message: "请选择职务", trigger: "blur" }
+          { required: true, message: "请选择职务", trigger: "change" }
         ]
       },
       ruleForm: {
-        name: "", //商户名称
+        name: "", //
         storeType: "", //门市类型默认是无
         localCompType: "", //类别
         state: null, //状态默认是正常
         expTime: "", //到期时间
         settlementType: null, //结算方式
-        quota: "", //额度
-        // department: "",//类型
-        // people: "",//
+        quota: "",
+        //department: "",
+        // people: "",
         scopeExt: [], //经营范围
         orgs: [], //区域可见
-        address: "", //地址
-        linker: "", //联系人姓名
-        phone: "", //联系人电话
-        publicName: "", //对公户名
-        bankName: "", //开户行
-        bankcardNo: "", //对公账号
+        address: "",
+        linker: "",
+        phone: "",
+        publicName: "",
+        bankName: "",
+        bankcardNo: "",
         localCompRole: "", //商户角色
         salesman: "", //销售人员
         administrative: "", //管理人员
-        otherNames: "", //商户其他名字
-        localCompCode: "", //商户编码
-        ImgUrl: "" //logo
+        otherNames: "" //商户其他名字
       },
       rules: {
         expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
-        name: [{ required: true, validator: nameValidator, trigger: "blur" }],
+        name: [
+          { required: true, message: "请输入名称", trigger: "blur" },
+          { max: 40, message: "不要超过40个字符", trigger: "blur" }
+          // { validator: nameValidator, trigger: "blur" }
+        ],
         localCompType: [
           { required: true, message: "请选择类型", trigger: "change" }
         ],
@@ -869,15 +868,14 @@ export default {
           }
         ],
         salesman: [{ required: true, message: "请输入", trigger: "change" }],
-        otherNames: [{ validator: otherNamesValidator, trigger: "blur" }],
+        otherNames: [{ max: 40 }],
         localCompCode: [
           {
             required: true,
             max: 10,
             trigger: "blur",
             validator: localCompCode
-          },
-          { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: "请输入数字" }
+          }
         ]
       },
       dialogFormVisible: false,
@@ -920,15 +918,6 @@ export default {
         }
       }
     },
-    // 商户其他名称点击出现输入框
-    showInput() {
-      this.inputVisible = true;
-      this.$nextTick(_ => {
-        // console.log(this.$refs.saveTagInput)
-        // console.log(this.$refs.saveTagInput.$refs.input)
-        this.$refs.saveTagInput.$refs.input.focus();
-      });
-    },
     // 管理人员的模糊查询
     querySearchAsync(queryString, cb) {
       this.vague = [];
@@ -958,38 +947,33 @@ export default {
       };
     },
     // 商户其他名称添加请求
-    // adminOtherAxios() {
-    //   this.$http
-    //     .post(
-    //       this.GLOBAL.serverSrc +
-    //         "/universal/localcomp/api/localcompaliasinsert",
-    //       {
-    //         object: {
-    //           name: this.ruleForm.otherNames,
-    //           localCompID: this.businewwInfPageId
-    //         }
-    //       }
-    //     )
-    //     .then(obj => {
-    //       if (obj.data.isSuccess == true) {
-    //         this.businessOtherNamesArr.push(this.otherNamesObj);
-    //       }
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    // },
+    adminOtherAxios() {
+      this.$http
+        .post(
+          this.GLOBAL.serverSrc +
+            "/universal/localcomp/api/localcompaliasinsert",
+          {
+            object: {
+              name: this.ruleForm.otherNames,
+              localCompID: this.businewwInfPageId
+            }
+          }
+        )
+        .then(obj => {
+          console.log(obj, "名字校验重复是否");
+          if (obj.data.isSuccess == true) {
+            this.businessOtherNamesArr.push(this.otherNamesObj);
+          } else {
+            this.$message.error("该商户其他名称已存在");
+          }
+          // console.log(this.isBusinessTrue);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     // 商户其他名字enter触发的事件
-    handleEnterOtherNames() {
-      let obj = {}
-      obj.name = this.ruleForm.otherNames
-      if (this.ruleForm.otherNames) {
-        this.businessOtherNamesArr.push(obj);
-      }
-      // console.log(this.businessOtherNamesArr)
-      this.inputVisible = false;
-      this.ruleForm.otherNames = '';
-
+    // handleEnterOtherNames() {
     //   this.otherNamesObj = {};
     //   this.otherNamesObj["name"] = this.ruleForm.otherNames;
     //   if (
@@ -998,6 +982,12 @@ export default {
     //   ) {
     //     if (this.businessOtherNamesArr.length == 0) {
     //       this.adminOtherAxios();
+    //       // console.log(this.isBusinessTrue);
+    //       // if (this.isBusinessTrue == true) {
+    //       //   this.businessOtherNamesArr.push(otherNamesObj);
+    //       // } else {
+    //       //   this.$message.error("该商户其他名称已存在");
+    //       // }
     //     } else {
     //       if (
     //         JSON.stringify(this.businessOtherNamesArr).indexOf(
@@ -1005,31 +995,37 @@ export default {
     //         ) == -1
     //       ) {
     //         this.adminOtherAxios();
+    //         // console.log(this.isBusinessTrue);
+    //         // if (this.isBusinessTrue == true) {
+    //         //   this.businessOtherNamesArr.push(otherNamesObj);
+    //         // } else {
+    //         //   this.$message.error("该商户其他名称已存在");
+    //         // }
     //       } else {
     //         this.$message.error("该商户其他名称已存在2");
     //       }
     //     }
     //   }
     //   this.ruleForm.otherNames = "";
-    },
+    // },
     // 商户其他人员tag删除
     businessHandleClose(tag) {
-      this.businessOtherNamesArr.splice(this.businessOtherNamesArr.indexOf(tag), 1);
-      // this.$http
-      //   .post(
-      //     this.GLOBAL.serverSrc +
-      //       "/universal/localcomp/api/localcompaliasdelete",
-      //     {
-      //       id: tag.id
-      //     }
-      //   )
-      //   .then(obj => {
-      //     this.getOneMess(this.tid);
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
+      this.$http
+        .post(
+          this.GLOBAL.serverSrc +
+            "/universal/localcomp/api/localcompaliasdelete",
+          {
+            id: tag.id
+          }
+        )
+        .then(obj => {
+          this.getOneMess(this.tid);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
+
     // 管理人员focus触发的事件
     handleFocusAdminNames() {
       this.ruleForm.administrative = "";
@@ -1095,6 +1091,7 @@ export default {
     },
     //编辑账户信息按钮
     accountEdit(idx, index, row) {
+      // console.log(idx)
       if (row.peerUserType == "销售") {
         row.peerUserType = 2;
       } else {
@@ -1103,6 +1100,7 @@ export default {
       this.isAddAccount = true;
       this.accountForm = row;
       this.isAddAccountBtn = idx;
+      // console.log(this.isAddAccountBtn,"this.isAddAccountBtn")
     },
     // 从编辑按钮进入的弹窗的取消按钮
     addAccountEditCancel() {
@@ -1121,6 +1119,7 @@ export default {
         state: "",
         passWord: "",
         peerUserType: [] //职位
+        //id:"",
       };
       this.$refs[accountForm].resetFields();
       this.isAddAccount = false;
@@ -1166,6 +1165,7 @@ export default {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
             this.useList.push(this.accountForm);
+            console.log("账户信息", this.accountForm);
             if (this.accountForm.state == "正常") {
               this.accountForm.state = 2;
             } else {
@@ -1190,7 +1190,7 @@ export default {
                 {
                   phone: this.accountForm.phone,
                   email: this.accountForm.email,
-                  id: this.accountForm.id
+                  id: 0
                 }
               )
               .then(obj => {
@@ -1212,6 +1212,7 @@ export default {
                       this.getOneMess(this.tid);
                     })
                     .catch(err => {
+                      this.isAddAccount = false;
                       console.log(err);
                     });
                 }
@@ -1240,6 +1241,7 @@ export default {
         state: "",
         passWord: "",
         peerUserType: [] //职位
+        //id:"",
       };
       // this.$nextTick((accountForm) => {
       //   this.$refs["addForm"].resetFields();
@@ -1286,20 +1288,20 @@ export default {
           this.total = obj.data.total;
           this.tableData = obj.data.objects;
           this.tableData.forEach(function(v, k, arr) {
-            // arr[k]["department"] = "XXX";
+            //arr[k]["department"] = "XXX";
             arr[k]["manager"] = "阳阳";
             if (arr[k]["state"] == 2) {
               arr[k]["state"] = "正常";
             } else {
               arr[k]["state"] = "停用";
             }
-            if (arr[k]["localCompType"] == 0) {
+            if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "门店";
-            } else if (arr[k]["localCompType"] == 1) {
-              arr[k]["localCompType"] = "同业";
             } else if (arr[k]["localCompType"] == 2) {
+              arr[k]["localCompType"] = "同业";
+            } else if (arr[k]["localCompType"] == 3) {
               arr[k]["localCompType"] = "翻盘门店";
-            } else {
+            } else if (arr[k]["localCompType"] == 4) {
               arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
@@ -1319,6 +1321,7 @@ export default {
       this.statesValue = "";
       this.payValue = "";
       this.list();
+      this.currentPage4 = 1;
     },
     handleSizeChange(val) {
       this.pagesize = val;
@@ -1341,13 +1344,13 @@ export default {
             } else {
               arr[k]["state"] = "停用";
             }
-            if (arr[k]["localCompType"] == 0) {
+            if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "门店";
-            } else if (arr[k]["localCompType"] == 1) {
-              arr[k]["localCompType"] = "同业";
             } else if (arr[k]["localCompType"] == 2) {
+              arr[k]["localCompType"] = "同业";
+            } else if (arr[k]["localCompType"] == 3) {
               arr[k]["localCompType"] = "翻盘门店";
-            } else {
+            } else if (arr[k]["localCompType"] == 4) {
               arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
@@ -1374,20 +1377,20 @@ export default {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
           that.tableData.forEach(function(v, k, arr) {
-            // arr[k]["department"] = "XXX";
+            //arr[k]["department"] = "XXX";
             arr[k]["manager"] = "阳阳";
             if (arr[k]["state"] == 2) {
               arr[k]["state"] = "正常";
             } else {
               arr[k]["state"] = "停用";
             }
-            if (arr[k]["localCompType"] == 0) {
+            if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "门店";
-            } else if (arr[k]["localCompType"] == 1) {
-              arr[k]["localCompType"] = "同业";
             } else if (arr[k]["localCompType"] == 2) {
+              arr[k]["localCompType"] = "同业";
+            } else if (arr[k]["localCompType"] == 3) {
               arr[k]["localCompType"] = "翻盘门店";
-            } else {
+            } else if (arr[k]["localCompType"] == 4) {
               arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
@@ -1435,7 +1438,7 @@ export default {
         .then(obj => {
           // console.log(obj)
           this.tableRelevanceDeptInfo = obj.data.objects;
-          this.pageOrderTotal = obj.data.total;
+          this.page_order_total = obj.data.total;
         })
         .catch(err => {
           console.log(err);
@@ -1444,13 +1447,10 @@ export default {
     //提交
     submitForm(ruleForm) {
       // 判断添加是是否有账户 有则可以添加 无则不可添加
-      // console.log(this.useList.length);
       if (this.useList.length == 0) {
         this.$message.error("请添加账户信息");
       } else {
-        console.log("shifouzou ", this.$refs[ruleForm]);
         this.$refs[ruleForm].validate(valid => {
-          console.log(valid);
           if (valid) {
             this.addMerchan(ruleForm);
           } else {
@@ -1463,13 +1463,13 @@ export default {
     resetForm(ruleForm) {
       //this.$refs[formName].resetFields();
       this.ruleForm = {
-        name: "", //商户名称
+        name: "", //
         storeType: "", //门市类型默认是无
         localCompType: "",
         state: 0, //状态默认是正常
         expTime: "",
         settlementType: 1, //结算方式
-        quota: "", //额度
+        quota: "",
         // department: "",
         // people: "",
         scopeExt: [], //经营范围
@@ -1496,7 +1496,7 @@ export default {
     editorForm(ruleForm) {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
-          this.editMerchan();
+          this.editMerchan(ruleForm);
         } else {
           console.log("error submit!!");
           return false;
@@ -1519,20 +1519,20 @@ export default {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
           that.tableData.forEach(function(v, k, arr) {
-            // arr[k]["department"] = "XXX";
+            //arr[k]["department"] = "XXX";
             arr[k]["manager"] = "阳阳";
             if (arr[k]["state"] == 2) {
               arr[k]["state"] = "正常";
             } else {
               arr[k]["state"] = "停用";
             }
-            if (arr[k]["localCompType"] == 0) {
+            if (arr[k]["localCompType"] == 1) {
               arr[k]["localCompType"] = "门店";
-            } else if (arr[k]["localCompType"] == 1) {
-              arr[k]["localCompType"] = "同业";
             } else if (arr[k]["localCompType"] == 2) {
+              arr[k]["localCompType"] = "同业";
+            } else if (arr[k]["localCompType"] == 3) {
               arr[k]["localCompType"] = "翻盘门店";
-            } else {
+            } else if (arr[k]["localCompType"] == 4) {
               arr[k]["localCompType"] = "个体分销";
             }
             if (arr[k]["settlementType"] == 2) {
@@ -1542,12 +1542,13 @@ export default {
             }
           });
         })
-        .catch(obj => {
+        .catch(function(obj) {
           console.log(obj);
         });
     },
     //添加
     addMerchan(ruleForm) {
+      //console.log("提交的数据1",this.ruleForm);
       //判断商户其他名称是否具有唯一性 并且输个个数不可超过五十个
       if (this.businessOtherNamesArr.length !== 0) {
         if (this.businessOtherNamesArr.length > 50) {
@@ -1566,49 +1567,53 @@ export default {
       // }
 
       // 商户角色
-      if ((this.ruleForm.localCompRole = "旅游组团社")) {
-        this.ruleForm.localCompRole = 0;
-      } else if ((this.ruleForm.localCompRole = "独立旅行社")) {
-        this.ruleForm.localCompRole = 1;
-      } else {
-        this.ruleForm.localCompRole = 2;
-      }
-
-      // 类别
-      if ((this.ruleForm.localCompType = "门店")) {
-        this.ruleForm.localCompType = 0;
-      } else if ((this.ruleForm.localCompType = "同业")) {
-        this.ruleForm.localCompType = 1;
-      } else if ((this.ruleForm.localCompType = "翻牌门店")) {
-        this.ruleForm.localCompType = 2;
-      } else if ((this.ruleForm.localCompType = "个体分销")) {
-        this.ruleForm.localCompType = 3;
-      }
-
-      // 判断商户名称是否是具有唯一性
-      // if (
-      //   this.tableData.filter(v => this.ruleForm.name == v.name).length != 0
-      // ) {
-      //   this.$message.error("添加失败,该商户名称已存在");
-      //   this.dialogFormVisible = true;
-      //   return;
+      //console.log("商户角色",this.ruleForm.localCompRole)
+      // if ((this.ruleForm.localCompRole = "旅游组团社")) {
+      //   this.ruleForm.localCompRole = 1;
+      // } else if ((this.ruleForm.localCompRole = "独立旅行社")) {
+      //   this.ruleForm.localCompRole = 2;
+      // } else {
+      //   this.ruleForm.localCompRole = 3;
       // }
+      // 类别
+      // console.log("类别",this.ruleForm.localCompType)
+      // if ((this.ruleForm.localCompType = "门店")) {
+      //   this.ruleForm.localCompType = 1;
+      // } else if ((this.ruleForm.localCompType = "同业")) {
+      //   this.ruleForm.localCompType = 2;
+      // } else if ((this.ruleForm.localCompType = "翻牌门店")) {
+      //   this.ruleForm.localCompType = 3;
+      // }else if ((this.ruleForm.localCompType = "个体分销")) {
+      //   this.ruleForm.localCompType = 4;
+      // }
+      // 判断商户名称是否是具有唯一性
+      if (
+        this.tableData.filter(v => this.ruleForm.name == v.name).length != 0
+      ) {
+        this.$message.error("添加失败,该商户名称已存在");
+        this.dialogFormVisible = true;
+        return;
+      }
 
       // 状态
-      if (this.ruleForm.state == "停用") {
-        this.ruleForm.state = 3;
-      } else {
-        this.ruleForm.state = 2;
-      }
-
+      // console.log("状态",this.ruleForm.state)
+      // if (this.ruleForm.state == "停用") {
+      //   this.ruleForm.state = 3;
+      // } else {
+      //   this.ruleForm.state = 2;
+      // }
+      //console.log("结算方式",this.ruleForm.settlementType)
       // 结算方式
-      if (this.ruleForm.settlementType == "非月结") {
-        this.ruleForm.settlementType = 2;
+      // if (this.ruleForm.settlementType == "非月结") {
+      //   this.ruleForm.settlementType = 2;
+      //   this.ruleForm.quota = 0;
+      // } else {
+      //   this.ruleForm.settlementType = 1;
+      // }
+      if (this.ruleForm.settlementType == 2) {
         this.ruleForm.quota = 0;
-      } else {
-        this.ruleForm.settlementType = 1;
       }
-
+      //console.log("门市类型",this.ruleForm.storeType)
       // 门市类型
       if (this.ruleForm.storeType == "无") {
         this.ruleForm.storeType = 0;
@@ -1670,6 +1675,10 @@ export default {
       if (this.AbouQuota == null) {
         this.AbouQuota = 0;
       }
+      if (this.ruleForm.quota == "") {
+        this.ruleForm.quota = 0;
+      }
+      console.log("提交的数据", this.ruleForm);
 
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
@@ -1677,8 +1686,8 @@ export default {
             isDeleted: 0,
             code: null,
             name: this.ruleForm.name,
-            // localCompType: this.ruleForm.localCompType,
-            localCompType: 1,
+            localCompType: this.ruleForm.localCompType,
+            //localCompType: 1,
             address: this.ruleForm.address,
             state: this.ruleForm.state,
             expTime: this.ruleForm.expTime,
@@ -1693,8 +1702,8 @@ export default {
             balance: this.ruleForm.balance,
             arrears: this.ruleForm.arrears,
             imgUrl: this.ruleForm.imgUrl,
-            // localCompRole: this.ruleForm.localCompRole,
-            localCompRole: 1,
+            localCompRole: this.ruleForm.localCompRole,
+            //localCompRole: 1,
             storeType: this.ruleForm.storeType,
             orgs: this.ruleForm.orgs,
             useList: this.useList,
@@ -1707,6 +1716,7 @@ export default {
         .then(obj => {
           this.dialogFormVisible = false;
           this.list();
+          this.currentPage4 = 1;
           this.$message({
             message: "添加成功",
             type: "success"
@@ -1721,7 +1731,7 @@ export default {
         });
     },
     //修改
-    editMerchan() {
+    editMerchan(ruleForm) {
       //判断商户其他名称是否具有唯一性 并且输个个数不可超过五十个
       if (this.businessOtherNamesArr.length !== 0) {
         if (this.businessOtherNamesArr.length > 50) {
@@ -1731,31 +1741,95 @@ export default {
         }
       }
 
-      // 状态
-      if (this.ruleForm.state == "停用") {
-        this.ruleForm.state = 3;
-      } else {
-        this.ruleForm.state = 2;
-      }
-
-      // 结算方式
-      if (this.ruleForm.settlementType == "非月结") {
-        this.ruleForm.settlementType = 2;
-        this.ruleForm.quota = 0;
-      } else {
-        this.ruleForm.settlementType = 1;
-      }
-
       // 门市类型
       if (this.ruleForm.storeType == "无") {
         this.ruleForm.storeType = 0;
-      } else if (this.ruleForm.storeType == "大运通自营") {
+      } else if (
+        this.ruleForm.storeType == "大运通自营" ||
+        this.ruleForm.storeType == 1
+      ) {
         this.ruleForm.storeType = 1;
-      } else if (this.ruleForm.storeType == "加盟门市") {
+      } else if (
+        this.ruleForm.storeType == "加盟门市" ||
+        this.ruleForm.storeType == 2
+      ) {
+        // console.log(6);
         this.ruleForm.storeType = 2;
-      } else if (this.ruleForm.storeType == "第三方门市") {
+      } else if (
+        this.ruleForm.storeType == "第三方门市" ||
+        this.ruleForm.storeType == 3
+      ) {
         this.ruleForm.storeType = 3;
       }
+      // 商户角色
+      if (
+        this.ruleForm.localCompRole == "旅游组团社" ||
+        this.ruleForm.localCompRole == 1
+      ) {
+        this.ruleForm.localCompRole = 1;
+      } else if (
+        this.ruleForm.localCompRole == "独立旅行社" ||
+        this.ruleForm.localCompRole == 2
+      ) {
+        this.ruleForm.localCompRole = 2;
+      } else if (
+        this.ruleForm.localCompRole == "个人/独立旅游顾问" ||
+        this.ruleForm.localCompRole == 3
+      ) {
+        this.ruleForm.localCompRole = 3;
+      }
+      //类别
+      if (
+        this.ruleForm.localCompType == "门店" ||
+        this.ruleForm.localCompType == 1
+      ) {
+        this.ruleForm.localCompType = 1;
+      } else if (
+        this.ruleForm.localCompType == "同业" ||
+        this.ruleForm.localCompType == 2
+      ) {
+        this.ruleForm.localCompType = 2;
+      } else if (
+        this.ruleForm.localCompType == "翻盘门店" ||
+        this.ruleForm.localCompType == 3
+      ) {
+        this.ruleForm.localCompType = 3;
+      } else if (
+        this.ruleForm.localCompType == "个体分销" ||
+        this.ruleForm.localCompType == 4
+      ) {
+        this.ruleForm.localCompType = 4;
+      }
+      // 状态
+      if (this.ruleForm.state == "停用" || this.ruleForm.state == 3) {
+        this.ruleForm.state = 3;
+      } else if (this.ruleForm.state == "正常" || this.ruleForm.state == 2) {
+        this.ruleForm.state = 2;
+      }
+      //结算方式
+      if (
+        this.ruleForm.settlementType == "非月结" ||
+        this.ruleForm.settlementType == 2
+      ) {
+        this.ruleForm.settlementType = 2;
+        this.ruleForm.quota = 0;
+      } else if (
+        this.ruleForm.settlementType == "月结" ||
+        this.ruleForm.settlementType == 1
+      ) {
+        this.ruleForm.settlementType = 1;
+      }
+
+      // 状态
+      // console.log("停用", this.ruleForm.state);
+      // 商户角色
+      // console.log("商户角色", this.ruleForm.localCompRole);
+      // 类别
+      // console.log("类别", this.ruleForm.localCompType);
+      // 结算方式
+      // console.log("结算方式", this.ruleForm.settlementType);
+      // 门市类型
+      // console.log("门市类型", this.ruleForm.storeType);
 
       // 经营范围
       let scopeExt = this.ruleForm.scopeExt.join(",");
@@ -1820,8 +1894,8 @@ export default {
             isDeleted: 0,
             code: null,
             name: this.ruleForm.name,
-            // localCompType: this.ruleForm.localCompType,
-            localCompType: 1,
+            localCompType: this.ruleForm.localCompType,
+            //localCompType: 1,
             address: this.ruleForm.address,
             state: this.ruleForm.state,
             expTime: this.ruleForm.expTime,
@@ -1836,20 +1910,21 @@ export default {
             balance: this.ruleForm.balance,
             arrears: this.ruleForm.arrears,
             imgUrl: this.ruleForm.imgUrl,
-            // localCompRole: this.ruleForm.localCompRole,
-            localCompRole: 1,
+            localCompRole: this.ruleForm.localCompRole,
+            //localCompRole: 1,
             storeType: this.ruleForm.storeType,
             orgs: this.ruleForm.orgs,
             jqAdminList: adminAndSalesArr,
             localCompAliasList: this.businessOtherNamesArr,
             abouQuota: this.AbouQuota, //周边授信额度
-            localCompCode: this.ruleForm.localCompCode
+            localCompCode: this.localCompCode
           }
         })
         .then(obj => {
           this.dialogFormVisible = false;
           this.list();
           this.$message.success("修改成功");
+          this.currentPage4 = 1;
         })
         .catch(obj => {
           console.log("error");
@@ -1870,8 +1945,8 @@ export default {
         expTime: "",
         settlementType: "非月结", //结算方式
         quota: "",
-        // department: "",
-        // people: "",
+        //department: "",
+        //people: "",
         scopeExt: [], //经营范围
         orgs: [], //区域可见
         address: "",
@@ -1946,21 +2021,21 @@ export default {
             this.ruleForm.state = "停用";
           }
           // 类别
-          if (object.localCompType == 0) {
+          if (object.localCompType == 1) {
             this.ruleForm.localCompType = "门店";
-          } else if (object.localCompType == 1) {
-            this.ruleForm.localCompType = "同业";
           } else if (object.localCompType == 2) {
+            this.ruleForm.localCompType = "同业";
+          } else if (object.localCompType == 3) {
             this.ruleForm.localCompType = "翻盘门店";
-          } else {
+          } else if (object.localCompType == 4) {
             this.ruleForm.localCompType = "个体分销";
           }
           // 商户角色
-          if (object.localCompRole == 0) {
+          if (object.localCompRole == 1) {
             this.ruleForm.localCompRole = "旅游组团社";
-          } else if (object.localCompRole == 1) {
+          } else if (object.localCompRole == 2) {
             this.ruleForm.localCompRole = "独立旅行社";
-          } else {
+          } else if (object.localCompRole == 3) {
             this.ruleForm.localCompRole = "个人/独立旅游顾问";
           }
           // 门市类型
@@ -2051,14 +2126,15 @@ export default {
           }
           if (object.settlementType == 2) {
             this.ruleForm.settlementType = "非月结";
-          } else {
+          } else if (object.settlementType == 1) {
             this.ruleForm.settlementType = "月结";
           }
           this.ruleForm.quota = object.quota;
           //todo    部门和人员 预留
           // this.ruleForm.department = "1";
-          // this.ruleForm.people = "2";
+          //this.ruleForm.people = "2";
           // this.ruleForm.scopeExt = object.scopeExt.split(",");
+
           this.ruleForm.quota = object.quota;
           this.ruleForm.address = object.address;
           this.ruleForm.linker = object.linker;
@@ -2066,6 +2142,7 @@ export default {
           this.ruleForm.publicName = object.publicName;
           this.ruleForm.bankName = object.bankName;
           this.ruleForm.bankcardNo = object.bankcardNo;
+          this.ruleForm.localCompCode = object.localCompCode;
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
@@ -2143,6 +2220,7 @@ export default {
   },
   created() {
     this.list();
+    this.currentPage4 = 1;
     this.areaAxios();
   }
 };
@@ -2187,7 +2265,7 @@ export default {
   color: #f5a142;
 }
 .relevanceDept {
-  width: 100%;
+  width: 98%;
 }
 .relevanceDeptWarn {
   background-color: #e6f3fc;
@@ -2296,4 +2374,141 @@ export default {
   width: 33.33%;
   height: auto;
 } */
+</style>
+
+.el-pagination {
+  margin-right: 300px !important;
+}
+.addAccountBtn {
+  margin-top: -44px;
+}
+
+.el-dialog .el-input,
+.el-select {
+  width: 250px !important;
+}
+.fr {
+  float: right;
+}
+.addAccount {
+  padding-bottom: 30px;
+  padding-left: 20px;
+  box-sizing: border-box;
+}
+.addAccount h3 {
+  margin-left: 22px;
+  margin-top: -5px;
+  margin-bottom: 30px;
+  color: #f5a142;
+}
+.relevanceDept {
+  width: 98%;
+}
+.relevanceDeptWarn {
+  background-color: #e6f3fc;
+  padding-left: 16px;
+  border-radius: 5px;
+}
+.el-icon-warning:before {
+  color: #108ee9;
+  font-size: 18px;
+  margin-right: 10px;
+}
+.el-upload-list__item {
+  width: 130px !important;
+}
+/* .upload-demo .el-upload-list,.el-form-item__content{
+  width: 250px!important;
+} */
+.el-input__inner::-webkit-input-placeholder {
+  color: #333 !important;
+}
+.tag {
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
+  display: block;
+  margin-bottom: 10px;
+  width: 250px;
+}
+.el-tag {
+  white-space: normal !important;
+  height: auto;
+}
+.fl {
+  float: left;
+}
+.accountInfo {
+  width: 100%;
+  margin-top: 30px;
+}
+.dialog {
+  height: 600px;
+  min-width: 934px;
+  overflow-y: scroll;
+}
+.dialog::-webkit-scrollbar {
+  width: 0px;
+  background-color: #808080;
+}
+.clearfix:after,
+.clearfix:before {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  *zoom: 1;
+}
+.btn {
+  position: absolute;
+  right: -85px;
+  bottom: -60px;
+}
+.el-dialog__wrapper .el-dialog {
+  top: -7vh !important;
+}
+.rrr .el-form-item {
+  margin-bottom: 32px !important;
+}
+.search {
+  display: flex;
+  padding-left: 5px;
+  box-sizing: border-box;
+}
+.search_input {
+  width: 217px;
+  margin-left: 20px;
+}
+.button_style {
+  margin-top: 65px;
+}
+.info_table {
+  margin-top: 20px;
+}
+.ButtonCls {
+  position: absolute;
+  right: 30px;
+  top: 16px;
+}
+.el-checkbox + .el-checkbox {
+  margin-right: 10px;
+}
+.block {
+  float: right;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  height: 100px;
+}
+.dialogTableTr {
+  line-height: 40px;
+}
+.dialogTableTd {
+  width: 33.33%;
+  height: auto;
+}
 </style>

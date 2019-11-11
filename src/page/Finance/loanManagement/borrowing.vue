@@ -99,7 +99,7 @@
     <el-dialog title="借款申请" :visible.sync="noIncomeShow" width="1100px" custom-class="city_list" @close="cancel">
       <div style="position:absolute; top:8px; right:10px;">
         <el-button @click="CloseNoIncomeShow()">取消</el-button>
-        <el-button type="primary"@click="ensureIncome()">申请</el-button>
+        <el-button type="primary" @click="ensureIncome()">申请</el-button>
       </div>
       <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
@@ -139,8 +139,9 @@
             class="upload-demo"
             name="files"
             ref="upload"
+            multiple
             :action="this.upload_url"
-            :file-list="ruleForm.accessory"
+            :file-list="fileList"
             :on-error="handleError"
             :on-success="handleSuccess"
             :on-remove="handleRemove"
@@ -344,7 +345,7 @@
     </el-dialog>
     <!-- 申请无收入借款中预付款明细查看弹窗 END -->
     <!-- 申请无收入借款中无收入借款明细查看弹窗 -->
-    <el-dialog width="45%" title="无收入借款明细" :visible.sync="dialogFormVisible_Income"append-to-body>
+    <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income"append-to-body>
       <div class="indialog">
         <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="times" label="审批时间" width="150" align="center"></el-table-column>
@@ -636,7 +637,7 @@ export default {
         "object": {
           name: queryString3,
           UserState:-1,
-        SupplierType:-1,
+          SupplierType:-1,
         }
       }).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
@@ -1299,7 +1300,8 @@ export default {
     this.planList();
   },
   created(){
-    if (sessionStorage.getItem('hasCashierInfo')) { // 只有是出纳的时候才显示申请人检索
+    // 只有是出纳的时候才显示申请人检索
+    if (sessionStorage.getItem('hasCashierInfo')) {
       this.ifAccountBtn = true
     } else {
       this.ifAccountBtn = false
