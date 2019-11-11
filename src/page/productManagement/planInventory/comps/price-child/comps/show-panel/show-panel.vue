@@ -214,6 +214,7 @@ export default {
           this.vm.share= share;
           this.vm.name= name;
           this.vm.count= count;
+          this.vm.averageCost= averageCost;
           //　共性机票预警价格逻辑
           if(share=== DAY_STATE.SHARE) this.getShareCost(averageCost)
         })
@@ -289,18 +290,18 @@ export default {
       let payload= this.getPlanData();
       payload.share= this.poolManager.state;
       payload.day= this.poolManager.currentDay;
+      payload.averageCost= this.vm.averageCost;
       this.$emit('awake-edit-form', payload);
     },
 
     getShareCost(shareAverageCost){
       let { pacId, rate }= this.parentVm;
       getCostList(pacId).then(res => {
-        let sum= 0;
+        let sum= shareAverageCost;
         res.forEach(el => {
-          if(el.supplierType=== 2) return sum+= shareAverageCost;
+          if(el.supplierType=== 2) return;
           sum+= el.money;
         })
-        console.log(shareAverageCost)
         sum= sum/(1- rate/100);
         this.vm.average= parseFloat(sum.toFixed(2));
         this.$forceUpdate();
