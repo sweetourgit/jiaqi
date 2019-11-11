@@ -477,7 +477,7 @@
                 <td class="longWeight">{{ruleForm.salesman}}</td>
               </div>
               <td class="tr">商户其他名称&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.quota}}</td>
+              <td class="longWeight">{{ruleForm.otherNames}}</td>
             </tr>
             <br />
             <tr>
@@ -518,10 +518,10 @@
                     <label>周边剩余授信额度：</label>
                     <span>{{AbouBalance}}</span>
                   </td>
-                  <td class="dialogTableTd">
+                  <!-- <td class="dialogTableTd">
                     <label>周边预存款：</label>
                     <span>{{AbouDeposit}}</span>
-                  </td>
+                  </td>-->
                 </tr>
               </table>
             </div>
@@ -699,10 +699,7 @@ export default {
     };
     //商户其他名称验证唯一性
     let otherNamesValidator = (rule, value, callback) => {
-      // console.log("商户其他名称验证唯一性otherNamesValidator")
-      console.log(this.ruleForm.otherNames)
       if (this.ruleForm.otherNames) {
-        console.log(1)
         if (this.ruleForm.otherNames.length > 40) {
           return callback("不要超过40个字符");
         } else {
@@ -714,8 +711,11 @@ export default {
               }
             )
             .then(res => {
+              res.data.isSuccess == false
+                ? (this.isOtherSuccess = false)
+                : (this.isOtherSuccess = true);
               if (res.status == 200 && res.data.isSuccess == false) {
-                this.isOtherSuccess = false
+                this.isOtherSuccess = false;
                 return callback("已存在该名称的商户");
               } else {
                 return callback();
@@ -1018,6 +1018,7 @@ export default {
     },
     // 商户其他名字enter触发的事件
     handleEnterOtherNames() {
+      console.log(this.isOtherSuccess);
       let obj = {};
       obj.name = this.ruleForm.otherNames;
       if (this.ruleForm.otherNames && this.isOtherSuccess == true) {
@@ -1333,7 +1334,7 @@ export default {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
           pageIndex: 1,
-          pageSize: 10,
+          pageSize: this.pagesize,
           object: object
         })
         .then(obj => {
@@ -1733,8 +1734,8 @@ export default {
       if (this.ruleForm.quota == "") {
         this.ruleForm.quota = 0;
       }
-      
-      console.log("提交的数据", this.businessOtherNamesArr)
+
+      console.log("提交的数据", this.businessOtherNamesArr);
 
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
@@ -2155,16 +2156,27 @@ export default {
             this.ruleForm.orgs = areaEdit;
           }
 
-          // 商户其他名称
-          let businessNamesArr = [];
-          localCompAliasList.forEach((val, idx, arr) => {
-            businessNamesArr.push({
-              name: arr[idx].name,
-              id: arr[idx].id
+          // 商户其他名称 btnindex为1则是详情页 2是编辑页展现形式
+          if (this.btnindex == 2) {
+            let businessNamesArr = [];
+            localCompAliasList.forEach((val, idx, arr) => {
+              businessNamesArr.push({
+                name: arr[idx].name,
+                id: arr[idx].id
+              });
             });
-          });
-          this.businessOtherNamesArr = businessNamesArr;
+            this.businessOtherNamesArr = businessNamesArr;
+          }
 
+          if (this.btnindex == 1) {
+            let businessNamesArr = [];
+            localCompAliasList.forEach((val, idx, arr) => {
+              businessNamesArr.push(arr[idx].name);
+            });
+            this.ruleForm.otherNames = businessNamesArr.toString()
+          }
+
+          // console.log("get",this.businessOtherNamesArr)
           if (this.btnindex == 1) {
             this.ruleForm.expTime = moment(object.expTime.toString()).format(
               "YYYY-MM-DD"
