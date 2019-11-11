@@ -23,9 +23,10 @@
         ref="dateRef"
       ></date-panel>
       <show-panel style="position:absolute; width: 380px; right: 0; top: 54px;"
+        ref="showRef"
+        :parent-vm="vm"
         @awake-edit-form="awakeEditForm"
         @refresh-date-panel="refreshDatePanel"
-        ref="showRef"
       ></show-panel>
     </main>
     <footer></footer>
@@ -53,7 +54,11 @@ export default {
 
   data(){
     return {
-      vm: {},
+      vm: {
+        pacId: null,
+        inited: false,
+        rate: 0
+      },
     }
   },
 
@@ -62,6 +67,7 @@ export default {
       if(!payload) return this.vm.inited= false;
       let { id, rate, timestamp }= payload;
       this.checkProto= payload;
+      this.vm.pacId= id;
       this.vm.inited= true;
       this.vm.rate= rate;
       // timestamp为共享库存跳转带来的制定天
