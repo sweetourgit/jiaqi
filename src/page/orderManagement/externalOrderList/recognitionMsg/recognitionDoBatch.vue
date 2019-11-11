@@ -291,7 +291,7 @@
       doSubmit(row){
 //        console.log(row);
         const that = this;
-        if(that.totalMoney > row.rece_money){
+        if(parseFloat(that.totalMoney) > parseFloat(row.rece_money)){
           that.$message.warning("待认收款金额小于收入，不能提交认款");
         }else{
           let order_sns = '';

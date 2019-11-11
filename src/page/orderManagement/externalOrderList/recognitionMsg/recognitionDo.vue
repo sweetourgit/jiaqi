@@ -284,7 +284,10 @@
       doSubmit(row){
         console.log(row);
         const that = this;
-        if(that.tableData[0].income > row.rece_money){
+//        alert('收入：'+that.tableData[0].income);
+//        alert('待认收款金额：'+row.rece_money);
+//        alert(parseFloat(that.tableData[0].income) > parseFloat(row.rece_money));
+        if(parseFloat(that.tableData[0].income) > parseFloat(row.rece_money)){
           that.$message.warning("待认收款金额小于收入，不能提交认款");
         }else {
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/submitrec", {
