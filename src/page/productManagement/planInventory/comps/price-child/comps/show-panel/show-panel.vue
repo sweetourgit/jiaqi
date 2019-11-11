@@ -172,7 +172,9 @@ export default {
         dateHous: '',
         count: 0,
         inventoryID: null,
-        planID: null
+        planID: null,
+        average: 0, // 用来和价格比较显示红色
+        averageCost: 0  // 用来传递给编辑表单，保存时带回
       },
       enrolls: [],
     }
@@ -214,7 +216,9 @@ export default {
           this.vm.share= share;
           this.vm.name= name;
           this.vm.count= count;
-          //　共性机票预警价格逻辑
+          // 用来传递给编辑表单
+          this.vm.averageCost= averageCost;
+          // 如果是共享库存，则均价需要另行计算
           if(share=== DAY_STATE.SHARE) this.getShareCost(averageCost)
         })
       })
@@ -289,18 +293,19 @@ export default {
       let payload= this.getPlanData();
       payload.share= this.poolManager.state;
       payload.day= this.poolManager.currentDay;
+      payload.average= this.vm.average;
+      payload.averageCost= this.vm.averageCost;
       this.$emit('awake-edit-form', payload);
     },
 
     getShareCost(shareAverageCost){
       let { pacId, rate }= this.parentVm;
       getCostList(pacId).then(res => {
-        let sum= 0;
+        let sum= shareAverageCost;
         res.forEach(el => {
-          if(el.supplierType=== 2) return sum+= shareAverageCost;
+          if(el.supplierType=== 2) return;
           sum+= el.money;
         })
-        console.log(shareAverageCost)
         sum= sum/(1- rate/100);
         this.vm.average= parseFloat(sum.toFixed(2));
         this.$forceUpdate();
