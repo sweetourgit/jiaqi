@@ -279,7 +279,8 @@
       >
         <div style="float:left;">
           <el-form-item label="汇款户名" prop="accountName">
-            <el-input class="name_input" v-model="ruleForm.accountName"></el-input>
+            <el-input class="
+            " v-model="ruleForm.accountName"></el-input>
           </el-form-item>
           <el-form-item label="开户行" prop="openingBank">
             <el-input class="name_input" v-model="ruleForm.openingBank"></el-input>

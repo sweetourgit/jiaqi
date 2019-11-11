@@ -127,7 +127,7 @@
                   v-model="ruleForm.name"
                   style="width: 250px;"
                   placeholder="请输入"
-                  :disabled="this.readonly == false"
+                  :disabled="btnindex == 2"
                 ></el-input>
               </el-form-item>
               <el-form-item label="类别 :" prop="localCompType">
@@ -313,10 +313,10 @@
                     v-model="ruleForm.localCompCode"
                     style="width: 250px;"
                     placeholder="请输入"
-                    :disabled="this.readonly == false"
+                    :disabled="btnindex == 2"
                   ></el-input>
                 </el-form-item>
-                <el-form-item label="商户其他名称 " prop="otherNames" class="business">
+                <!-- <el-form-item label="商户其他名称 " prop="otherNames" class="business">
                   <el-input
                     v-model="ruleForm.otherNames"
                     placeholder="请输入，可输入多个"
@@ -333,6 +333,34 @@
                       style="margin-botton: 5px;"
                     >{{tag.name}}</el-tag>
                   </div>
+                </el-form-item>-->
+
+                <!-- <el-form-item label="商户其他名称" prop="otherNames">
+                  <el-input class="name_input" v-model="ruleForm.otherNames"></el-input>
+                </el-form-item>-->
+                <el-form-item label="商户其他名称" prop="otherNames">
+                  <el-tag
+                    :key="index"
+                    v-for="(tag,index) in businessOtherNamesArr"
+                    closable
+                    :disable-transitions="false"
+                    @close="businessHandleClose(tag)"
+                  >{{tag.name}}</el-tag>
+                  <el-input
+                    style="width: 90%"
+                    v-if="isInputVisible"
+                    v-model="ruleForm.otherNames"
+                    ref="saveTagInput"
+                    size="small"
+                    @keyup.enter.native="handleEnterOtherNames"
+                    @blur="handleEnterOtherNames"
+                  ></el-input>
+                  <el-button
+                    v-else
+                    class="button-new-tag"
+                    size="small"
+                    @click="showInput"
+                  >+ 点我添加商户名称</el-button>
                 </el-form-item>
               </div>
             </div>
@@ -623,7 +651,6 @@ export default {
               }
             )
             .then(res => {
-              console.log(res, "已存在该编码的商户");
               if (res.status == 200 && res.data.isSuccess == false) {
                 return callback("已存在该编码的商户");
               } else {
@@ -635,42 +662,47 @@ export default {
             });
         }
       } else {
-        return callback()
+        return callback();
       }
     };
     // 商户名称唯一性验证
     let nameValidator = (rule, value, callback) => {
-      if (this.ruleForm.name == "") {
-        return callback("请输入名字");
-      } else {
-        if (this.ruleForm.name.length > 40) {
-          return callback("不要超过40个字符");
+      if (this.btnindex !== 2) {
+        if (this.ruleForm.name == "") {
+          return callback("请输入名字");
         } else {
-          this.$http
-            .post(
-              this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistalias",
-              {
-                name: this.ruleForm.name
-              }
-            )
-            .then(res => {
-              console.log(res, "已存在该名称的商户");
-              if (res.status == 200 && res.data.isSuccess == false) {
-                return callback("已存在该名称的商户");
-              } else {
-                return callback();
-              }
-            })
-            .catch(err => {
-              return callback();
-              console.log(err);
-            });
+          if (this.ruleForm.name.length > 40) {
+            return callback("不要超过40个字符");
+          } else {
+            this.$http
+              .post(
+                this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistalias",
+                {
+                  name: this.ruleForm.name
+                }
+              )
+              .then(res => {
+                if (res.status == 200 && res.data.isSuccess == false) {
+                  return callback("已存在该名称的商户");
+                } else {
+                  return callback();
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
         }
+      } else {
+        return callback();
       }
     };
     //商户其他名称验证唯一性
     let otherNamesValidator = (rule, value, callback) => {
-      if (this.ruleForm.otherNames !== undefined) {
+      // console.log("商户其他名称验证唯一性otherNamesValidator")
+      console.log(this.ruleForm.otherNames)
+      if (this.ruleForm.otherNames) {
+        console.log(1)
         if (this.ruleForm.otherNames.length > 40) {
           return callback("不要超过40个字符");
         } else {
@@ -683,6 +715,7 @@ export default {
             )
             .then(res => {
               if (res.status == 200 && res.data.isSuccess == false) {
+                this.isOtherSuccess = false
                 return callback("已存在该名称的商户");
               } else {
                 return callback();
@@ -710,7 +743,7 @@ export default {
       // editAdmin: [], //点击编辑页的admin 用来接收修改之前的
       businewwInfPageId: "", //商户信息详情页的ID 同时也是商户其他名称添加接口的localCompID
       vague: [], //模糊搜索的数组
-      cascaderArr: [],
+      // cascaderArr: [],
       isAddAccountBtn: 0, //判断账户信息弹窗是从添加按钮进入还是编辑进入
       accountArr: [], //用来接收本地添加账户的字段
       tableRelevanceDeptInfo: [], //点击详情欠款信息
@@ -724,24 +757,26 @@ export default {
       readonly: true, // 点击表单修改然后只读
       statesValue: "", //搜索状态字段
       payValue: "", //搜过结算字段
-      tid: 0,
-      pagesize: 10,
-      total: 1,
-      currentPage4: 1, //分页
+      isInputVisible: false, //商户其他名称tags显示隐藏
+      isOtherSuccess: true, //商户其他名称唯一性判断  false则有重复的 则不能添加到businessOtherNamesArr
+      tid: 0, //
+      pagesize: 10, //每页显示条数 默认10
+      total: 1, //总条数
+      currentPage4: 1, //当前页数
       accountForm: {
-        name: "",
-        phone: "",
-        email: "",
-        sex: "",
-        wx: "",
-        qq: "",
-        state: "",
-        passWord: "",
-        peerUserType: [1]
+        name: "", //账户信息名字
+        phone: "", //手机号
+        email: "", //邮箱
+        sex: "", //性别
+        wx: "", //微信号
+        qq: "", //qq号
+        state: "", //状态
+        passWord: "", //密码
+        peerUserType: [1] //职位
         //id:"",
       }, //添加账户信息的对象
+      // 添加账号信息的验证
       accountFormRules: {
-        // 添加账号提示信息
         name: [
           { required: true, message: "请输入名字", trigger: "blur" },
           { max: 40, message: "不要超过40个字符", trigger: "blur" }
@@ -782,28 +817,30 @@ export default {
         state: null, //状态默认是正常
         expTime: "", //到期时间
         settlementType: null, //结算方式
-        quota: "",
+        quota: "", //额度
         //department: "",
         // people: "",
         scopeExt: [], //经营范围
         orgs: [], //区域可见
-        address: "",
-        linker: "",
-        phone: "",
-        publicName: "",
-        bankName: "",
-        bankcardNo: "",
+        address: "", //地址
+        linker: "", //联系人姓名
+        phone: "", //联系人电话
+        publicName: "", //对公户名
+        bankName: "", //开户行
+        bankcardNo: "", //对公账号
         localCompRole: "", //商户角色
         salesman: "", //销售人员
         administrative: "", //管理人员
-        otherNames: "" //商户其他名字
+        otherNames: "", //商户其他名字
+        localCompCode: "", //商户编码
+        ImgUrl: "" //logo
       },
       rules: {
         expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
         name: [
-          { required: true, message: "请输入名称", trigger: "blur" },
-          { max: 40, message: "不要超过40个字符", trigger: "blur" }
-          // { validator: nameValidator, trigger: "blur" }
+          // { required: true, message: "请输入名称", trigger: "blur" },
+          // { max: 40, message: "不要超过40个字符", trigger: "blur" }
+          { validator: nameValidator, trigger: "blur" }
         ],
         localCompType: [
           { required: true, message: "请选择类型", trigger: "change" }
@@ -868,14 +905,15 @@ export default {
           }
         ],
         salesman: [{ required: true, message: "请输入", trigger: "change" }],
-        otherNames: [{ max: 40 }],
+        otherNames: [{ validator: otherNamesValidator, trigger: "change" }],
         localCompCode: [
           {
             required: true,
             max: 10,
             trigger: "blur",
             validator: localCompCode
-          }
+          },
+          { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: "请输入数字" }
         ]
       },
       dialogFormVisible: false,
@@ -907,6 +945,14 @@ export default {
   },
   methods: {
     moment,
+    // 点击添加商户其他名称事件
+    showInput() {
+      this.isInputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    // 时间格式转换
     dataPickerFocus() {
       if (this.btnindex == 2) {
         if (this.ruleForm.expTime.toString().length !== 8) {
@@ -960,70 +1006,79 @@ export default {
           }
         )
         .then(obj => {
-          console.log(obj, "名字校验重复是否");
           if (obj.data.isSuccess == true) {
             this.businessOtherNamesArr.push(this.otherNamesObj);
           } else {
             this.$message.error("该商户其他名称已存在");
           }
-          // console.log(this.isBusinessTrue);
         })
         .catch(err => {
           console.log(err);
         });
     },
     // 商户其他名字enter触发的事件
-    // handleEnterOtherNames() {
-    //   this.otherNamesObj = {};
-    //   this.otherNamesObj["name"] = this.ruleForm.otherNames;
-    //   if (
-    //     this.otherNamesObj.name !== undefined &&
-    //     this.otherNamesObj.name !== ""
-    //   ) {
-    //     if (this.businessOtherNamesArr.length == 0) {
-    //       this.adminOtherAxios();
-    //       // console.log(this.isBusinessTrue);
-    //       // if (this.isBusinessTrue == true) {
-    //       //   this.businessOtherNamesArr.push(otherNamesObj);
-    //       // } else {
-    //       //   this.$message.error("该商户其他名称已存在");
-    //       // }
-    //     } else {
-    //       if (
-    //         JSON.stringify(this.businessOtherNamesArr).indexOf(
-    //           JSON.stringify(this.otherNamesObj)
-    //         ) == -1
-    //       ) {
-    //         this.adminOtherAxios();
-    //         // console.log(this.isBusinessTrue);
-    //         // if (this.isBusinessTrue == true) {
-    //         //   this.businessOtherNamesArr.push(otherNamesObj);
-    //         // } else {
-    //         //   this.$message.error("该商户其他名称已存在");
-    //         // }
-    //       } else {
-    //         this.$message.error("该商户其他名称已存在2");
-    //       }
-    //     }
-    //   }
-    //   this.ruleForm.otherNames = "";
-    // },
+    handleEnterOtherNames() {
+      let obj = {};
+      obj.name = this.ruleForm.otherNames;
+      if (this.ruleForm.otherNames && this.isOtherSuccess == true) {
+        this.businessOtherNamesArr.push(obj);
+      }
+      this.isInputVisible = false;
+      this.ruleForm.otherNames = "";
+      //   this.otherNamesObj = {};
+      //   this.otherNamesObj["name"] = this.ruleForm.otherNames;
+      //   if (
+      //     this.otherNamesObj.name !== undefined &&
+      //     this.otherNamesObj.name !== ""
+      //   ) {
+      //     if (this.businessOtherNamesArr.length == 0) {
+      //       this.adminOtherAxios();
+      //       // console.log(this.isBusinessTrue);
+      //       // if (this.isBusinessTrue == true) {
+      //       //   this.businessOtherNamesArr.push(otherNamesObj);
+      //       // } else {
+      //       //   this.$message.error("该商户其他名称已存在");
+      //       // }
+      //     } else {
+      //       if (
+      //         JSON.stringify(this.businessOtherNamesArr).indexOf(
+      //           JSON.stringify(this.otherNamesObj)
+      //         ) == -1
+      //       ) {
+      //         this.adminOtherAxios();
+      //         // console.log(this.isBusinessTrue);
+      //         // if (this.isBusinessTrue == true) {
+      //         //   this.businessOtherNamesArr.push(otherNamesObj);
+      //         // } else {
+      //         //   this.$message.error("该商户其他名称已存在");
+      //         // }
+      //       } else {
+      //         this.$message.error("该商户其他名称已存在2");
+      //       }
+      //     }
+      //   }
+      //   this.ruleForm.otherNames = "";
+    },
     // 商户其他人员tag删除
     businessHandleClose(tag) {
-      this.$http
-        .post(
-          this.GLOBAL.serverSrc +
-            "/universal/localcomp/api/localcompaliasdelete",
-          {
-            id: tag.id
-          }
-        )
-        .then(obj => {
-          this.getOneMess(this.tid);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      this.businessOtherNamesArr.splice(
+        this.businessOtherNamesArr.indexOf(tag),
+        1
+      );
+      // this.$http
+      //   .post(
+      //     this.GLOBAL.serverSrc +
+      //       "/universal/localcomp/api/localcompaliasdelete",
+      //     {
+      //       id: tag.id
+      //     }
+      //   )
+      //   .then(obj => {
+      //     this.getOneMess(this.tid);
+      //   })
+      //   .catch(err => {
+      //     console.log(err);
+      //   });
     },
 
     // 管理人员focus触发的事件
@@ -1091,7 +1146,6 @@ export default {
     },
     //编辑账户信息按钮
     accountEdit(idx, index, row) {
-      // console.log(idx)
       if (row.peerUserType == "销售") {
         row.peerUserType = 2;
       } else {
@@ -1100,7 +1154,6 @@ export default {
       this.isAddAccount = true;
       this.accountForm = row;
       this.isAddAccountBtn = idx;
-      // console.log(this.isAddAccountBtn,"this.isAddAccountBtn")
     },
     // 从编辑按钮进入的弹窗的取消按钮
     addAccountEditCancel() {
@@ -1165,7 +1218,6 @@ export default {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
             this.useList.push(this.accountForm);
-            console.log("账户信息", this.accountForm);
             if (this.accountForm.state == "正常") {
               this.accountForm.state = 2;
             } else {
@@ -1323,6 +1375,7 @@ export default {
       this.list();
       this.currentPage4 = 1;
     },
+    // pageSize 改变时会触发
     handleSizeChange(val) {
       this.pagesize = val;
       var that = this;
@@ -1364,6 +1417,7 @@ export default {
           console.log(obj);
         });
     },
+    // currentPage 改变时会触发
     handleCurrentChange(val) {
       var that = this;
       this.$http
@@ -1436,7 +1490,6 @@ export default {
           }
         })
         .then(obj => {
-          // console.log(obj)
           this.tableRelevanceDeptInfo = obj.data.objects;
           this.page_order_total = obj.data.total;
         })
@@ -1460,15 +1513,16 @@ export default {
         });
       }
     },
+    // 重置
     resetForm(ruleForm) {
       //this.$refs[formName].resetFields();
       this.ruleForm = {
         name: "", //
-        storeType: "", //门市类型默认是无
+        storeType: "无", //门市类型默认是无
         localCompType: "",
-        state: 0, //状态默认是正常
+        state: "正常", //状态默认是正常
         expTime: "",
-        settlementType: 1, //结算方式
+        settlementType: "非月结", //结算方式
         quota: "",
         // department: "",
         // people: "",
@@ -1586,30 +1640,31 @@ export default {
       // }else if ((this.ruleForm.localCompType = "个体分销")) {
       //   this.ruleForm.localCompType = 4;
       // }
+
       // 判断商户名称是否是具有唯一性
-      if (
-        this.tableData.filter(v => this.ruleForm.name == v.name).length != 0
-      ) {
-        this.$message.error("添加失败,该商户名称已存在");
-        this.dialogFormVisible = true;
-        return;
-      }
+      // if (
+      //   this.tableData.filter(v => this.ruleForm.name == v.name).length != 0
+      // ) {
+      //   this.$message.error("添加失败,该商户名称已存在");
+      //   this.dialogFormVisible = true;
+      //   return;
+      // }
 
       // 状态
-      // console.log("状态",this.ruleForm.state)
-      // if (this.ruleForm.state == "停用") {
-      //   this.ruleForm.state = 3;
-      // } else {
-      //   this.ruleForm.state = 2;
-      // }
-      //console.log("结算方式",this.ruleForm.settlementType)
+      if (this.ruleForm.state == "停用") {
+        this.ruleForm.state = 3;
+      } else {
+        this.ruleForm.state = 2;
+      }
+
       // 结算方式
-      // if (this.ruleForm.settlementType == "非月结") {
-      //   this.ruleForm.settlementType = 2;
-      //   this.ruleForm.quota = 0;
-      // } else {
-      //   this.ruleForm.settlementType = 1;
-      // }
+      if (this.ruleForm.settlementType == "非月结") {
+        this.ruleForm.settlementType = 2;
+        this.ruleForm.quota = 0;
+      } else {
+        this.ruleForm.settlementType = 1;
+      }
+
       if (this.ruleForm.settlementType == 2) {
         this.ruleForm.quota = 0;
       }
@@ -1678,7 +1733,8 @@ export default {
       if (this.ruleForm.quota == "") {
         this.ruleForm.quota = 0;
       }
-      console.log("提交的数据", this.ruleForm);
+      
+      console.log("提交的数据", this.businessOtherNamesArr)
 
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
@@ -1710,7 +1766,8 @@ export default {
             jqAdminList: adminAndSalesArr,
             localCompAliasList: this.businessOtherNamesArr, //商户其他名称
             abouQuota: this.AbouQuota, //周边授信额度
-            localCompCode: this.ruleForm.localCompCode //商户编码
+            localCompCode: this.ruleForm.localCompCode, //商户编码
+            localCompAliasList: this.businessOtherNamesArr
           }
         })
         .then(obj => {
@@ -1727,7 +1784,7 @@ export default {
             message: "添加失败",
             type: "error"
           });
-          console.log(obj);
+          // console.log(obj);
         });
     },
     //修改
