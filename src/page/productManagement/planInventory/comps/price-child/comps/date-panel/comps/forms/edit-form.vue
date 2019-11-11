@@ -64,6 +64,7 @@
             v-for="(item, i) in enrollList" 
             :key="i"
             :proto="item"
+            :average="vm.average"
           >
             <el-button style="float: right; padding: 3px 0;" type="text" @click="removeEnrollCard(i)">删除</el-button>
           </enroll-card>
@@ -131,15 +132,16 @@ export default {
 
   methods: {
     handleOpen(payload){
-      let { share, dateHous, count, inventoryID, planEnroll, day, regimentType, name, averageCost}= payload;
+      let { share, dateHous, count, inventoryID, planEnroll, day, regimentType, name, average, averageCost}= payload;
       // 共享类型
       this.vm.share= share;
+      this.vm.average= average; // 传递给enroll
       this.submitForm.regimentType= regimentType;
       this.submitForm.dateHous= dateHous;
       this.submitForm.count= count;
       this.submitForm.inventoryID= inventoryID;
       this.submitForm.name= name;
-      this.submitForm.averageCost= averageCost;
+      this.submitForm.averageCost= averageCost; // 提交修改时带上
       this.enrollList.push(...planEnroll);
       this.checkProto= this.$deepCopy(this.submitForm);
       this.cacheInit= payload;
