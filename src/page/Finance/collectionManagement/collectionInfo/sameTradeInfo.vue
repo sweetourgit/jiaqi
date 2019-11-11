@@ -15,7 +15,7 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="btn" style="position:absolute;z-index:9;top:8px;right:1%;">
           <el-button @click="canelHandle">取 消</el-button>
-          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">申 请</el-button>
+          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')" :disabled="ifShowApply">申 请</el-button>
           <el-button v-if="this.find == 1" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销收款</el-button>
           <el-button v-if="this.find == 2" type="primary" @click="Transfer ('ruleForm')">转办</el-button>
           <el-button v-if="this.find == 2" type="primary" @click="adoptForm('ruleForm')">通过</el-button>
@@ -58,7 +58,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="是否选择发票" prop="isInvoice" label-width="120px">
-          <el-radio-group v-model="ruleForm.isInvoice" :disabled="change" @change="isInvoice">
+          <el-radio-group v-model="ruleForm.isInvoice" :disabled="change" @change="isInvoiceHandle">
             <el-radio label="1">是</el-radio>
             <el-radio label="0">否</el-radio>
           </el-radio-group>
@@ -78,9 +78,9 @@
             <el-table-column label="个人/单位" width="120" align="center">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.userType" placeholder="请选择" :disabled="change">
-                  <el-option key="个人" label="个人" value="个人">
+                  <el-option key="个人" label="个人" value="1">
                   </el-option>
-                  <el-option key="单位" label="单位" value="单位">
+                  <el-option key="单位" label="单位" value="2">
                   </el-option>
                 </el-select>
               </template>
@@ -105,7 +105,7 @@
             </el-table-column>
             <el-table-column label="金额" align="center">
               <template slot-scope="scope">
-                <el-input type='number' v-model="scope.row.money" placeholder="金额" :disabled="change"></el-input>
+                <el-input  v-model="scope.row.money" placeholder="金额" :disabled="change"></el-input>
               </template>
             </el-table-column>
             <el-table-column label="帐号" align="center">
@@ -144,17 +144,17 @@
         <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
         <div class="associated">
           <div class="associatedIcon"><i class="el-icon-warning"></i></div>
-          <div class="associatedItems">已关联<span style="font-weight: bold;">1</span>项</div>
-          <div class="associatedMoney">总计：1200.00元</div>
+          <div class="associatedItems">已关联<span style="font-weight: bold;">{{ tableManyRow }}</span>项</div>
+          <div class="associatedMoney">总计：{{ getCollectionPriceTotal }}元</div>
         </div>
         <el-table :data="arrearsList" border :header-cell-style="getRowClass">
-           <el-table-column prop="orderNumber" label="订单编号" align="center"></el-table-column>
-           <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
-           <el-table-column prop="tour" label="团期计划" align="center"></el-table-column>
-           <el-table-column prop="tourStartTime" label="出发日期" align="center"></el-table-column>
-           <el-table-column prop="orderMoney" label="订单金额" align="center"></el-table-column>
-           <el-table-column prop="arrearsMoney" label="欠款金额" align="center"></el-table-column>
-           <el-table-column prop="repaymentMoney" label="已还金额" align="center"></el-table-column>
+           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+           <el-table-column prop="proName" label="产品名称" align="center"></el-table-column>
+           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+           <el-table-column prop="departure" label="出发日期" align="center"></el-table-column>
+           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
+           <el-table-column prop="arrears_Amount" label="欠款金额" align="center"></el-table-column>
+           <el-table-column prop="repayment_Amount" label="已还金额" align="center"></el-table-column>
            <el-table-column label="匹配收款金额" align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.matchingMoney" placeholder="匹配收款金额" :disabled="change"></el-input>
@@ -277,6 +277,9 @@ export default {
       }
     };
     return {
+      tableManyRow: null, // 关联欠款表格共多少行
+      getCollectionPriceTotal: 0, // 当前收款总额（合计）
+      ifShowApply: false, // 当同业社名字下面没有关联欠款清下将其置灰
       fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       userId: '',
       userName: '',
@@ -334,6 +337,10 @@ export default {
         isInvoice: [{ required: true, message: '是否开发票不能为空', trigger: 'blur' }],
         collectionNumber:[{ required: true, message: '收款账户不能为空', trigger: 'change' }]
       },
+      invoiceProject:[{
+        value: '1',
+        label: '旅游费'
+      }],
       collectionAccountList: [{
         value: '1',
         label: '收款账户1'
@@ -362,32 +369,10 @@ export default {
       }],
       assistTransactionData: [],
       arrearsRelation: '8822.66',
-      arrearsList: [],
+      arrearsList: [], // 关联欠款列表
       invoiceType: [{
         value: '1',
-        label: '类型1'
-      }, {
-        value: '2',
-        label: '类型2'
-      }, {
-        value: '3',
-        label: '类型3'
-      }, {
-        value: '4',
-        label: '类型4'
-      }],
-      invoiceProject: [{
-        value: '1',
-        label: '项目1'
-      }, {
-        value: '2',
-        label: '项目2'
-      }, {
-        value: '3',
-        label: '项目3'
-      }, {
-        value: '4',
-        label: '项目4'
+        label: '纸质发票'
       }],
       fileList: [], // 文件列表
       accountTable: [], // 收款账户列表
@@ -587,7 +572,7 @@ export default {
       this.fileList = fileList.slice(-3);
     },
     // 是否选择发票，复选框改变事件
-    isInvoice(value) {
+    isInvoiceHandle(value) {
       this.dialogVisibleInvoice = value == '1' ? true : false
     },
     // 点击文件列表中已上传的文件时的钩子
@@ -702,7 +687,6 @@ export default {
               "type": 3,
               "user": '',
               "input": this.applyUserInput,
-
             },
           }, {
             headers: {
@@ -733,7 +717,7 @@ export default {
         })
         .catch(function(obj) {})
     },
-    //同业社名称模糊查询
+    // 同业社名称模糊查询
     querySearch3(queryString3, cb) {
       this.sameTradeData = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
@@ -761,6 +745,25 @@ export default {
     departure(item){
       this.productPos = item.id;
       this.originPlace = item.value;
+      var that =this
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getArrearsList', {
+        lcID: item.id
+      }).then(obj => {
+        if(obj.data.objects == null){
+          this.ifShowApply = true
+          this.$message.success('该同业社下无关联欠款，无法申请同业收款');
+        } else {
+          this.arrearsList = obj.data.objects;
+          this.ifShowApply = false
+          this.tableManyRow = obj.data.objects.length
+          let getPriceTotal = 0
+          obj.data.objects.forEach(function(item){
+            getPriceTotal += item.arrears_Amount
+          })
+          this.getCollectionPriceTotal = getPriceTotal
+        }
+
+      }).catch(obj => {})
     },
     // 选择账户弹窗,渲染账户列表
     account(){
@@ -835,6 +838,7 @@ export default {
     },
     // 申请-提交表单
     submitForm(formName) {
+      let _this = this
       this.a = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -847,7 +851,26 @@ export default {
             picture.createTime = newDate
             pictureList.push(picture);
           }
+
           let objectRequest = {}
+
+          let needArrearData = [] // 转变关联欠款数据格式之后的数据模型
+          this.arrearsList.forEach(function(item){ // 转换关联欠款表格数据结构
+            needArrearData.push({
+              "id": 0,
+              "collectionID": 0, // 收款id
+              "orderCode": item.orderCode,
+              "productName": item.proName,
+              "groupCode": item.groupCode,
+              "date": item.departure,
+              "payablePrice": item.payable, // 订单金额
+              "arrearsPrice": item.arrears_Amount, // 欠款金额
+              "repaidPrice": item.repayment_Amount, // 已还金额
+              "amountPrice": item.audited_Amount, // 待审核金额
+              "matchingPrice": item.matchingMoney // 匹配收款金额
+            })
+          })
+
           objectRequest = {
             "checkType": 0, // 审批状态
             "collectionTime":  moment(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间,
@@ -865,22 +888,44 @@ export default {
             "abstract": this.ruleForm.abstract, // 摘要
             "files": [], // 文件
             // files: pictureList, // 图片
-            "invoice": this.ruleForm.invoice, // 是否发票,
+            "invoice": this.ruleForm.isInvoice, // 是否发票,
             "isDeleted": 0,
             "collectionType": 2, // 直客1.同业2
             "localCompID": this.productPos, // 直客0，同业变成同业社id
-            "arrears": [], // 欠款列表
+            "arrears": needArrearData, // 收款 - 关联欠款列表
             "isEBS": 0,
             "accountID": this.accountCredited, // 银行账号ID
             "moneyExplain": "string", // 款项说明
             "distributor": "string", // 分销商
-            "payarr": [], // 付款欠款关联订单
+            "payarr": [], // 付款 欠款关联订单
           }
 
-          if (this.ruleForm.invoice == '1') {
-            // 发票表格
-            objectRequest.invoiceTable = this.ruleForm.invoice ? this.ruleForm.invoiceTable : []
+          console.log(_this.ruleForm.isInvoice)
+          if(_this.ruleForm.isInvoice == 1) { // 发票列表，如果选择发票则添加该对象
+            let needInvoiceData = []
+            _this.ruleForm.invoiceList.forEach(function(item){
+              needInvoiceData.push({
+                "id": 0,
+                "createTime": "2019-11-11T02:43:05.258Z",
+                "code": "string",
+                "invoiceID": item.type, // 发票类型 – 纸质发票
+                "invoiceType": item.userType, // 个人/单位
+                "invoiceNumber": item.taxesNumber, // 纳税人识别号
+                "invoiceHeaderOrTel": item.titleOrMobile, // 发票抬头/手机号
+                "invoiceItem": item.project, // 发票项目–旅游费
+                "invoicePrice": item.money, // 金额
+                "cardNumber": item.account, // 账号
+                "bankName": item.bank, // 开户行
+                "address": item.address, // 地址
+                "tel": item.mobile, // 电话
+                "collectionID": 0
+              })
+            })
+            objectRequest.invoiceTable = needInvoiceData
+          } else {
+            objectRequest.invoiceTable = []
           }
+
           this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/insert', {
             "object": objectRequest
           }).then(res => {

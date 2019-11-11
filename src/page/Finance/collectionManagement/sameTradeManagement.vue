@@ -69,7 +69,7 @@
           <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174" >{{scope.row.checkTypeStatus}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="collectionTime" label="收款时间" align="center"></el-table-column>
+      <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
       <el-table-column prop="orderNumber" label="订单号" align="center"></el-table-column>
       <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
@@ -236,6 +236,7 @@
 
 <script type="text/javascript">
 import SameTradeInfo from '@/page/Finance/collectionManagement/collectionInfo/sameTradeInfo'
+import moment from 'moment'
 
 export default {
   name: "sameTradeManagement",
@@ -272,10 +273,24 @@ export default {
   created(){
     this.getTableData();
   },
+  filters: {
+    formatDate: function (value) {
+      return moment(value).format('YYYY-MM-DD')
+    }
+  },
   methods: {
+    moment,
     // 重置
     emptyButtonInside () {
       this.$refs['ruleForm'].resetFields()
+    },
+    // 起始时间格式转换
+    dateFormat: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined) {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD')
     },
     // 表单搜索
     searchHandInside () {
@@ -419,11 +434,10 @@ export default {
       }).catch(obj => {})
     },
     // 获取同业社列表
-    getLcList (paramsLcID, paramsId) {
+    getLcList (paramsLcID) {
       var that =this
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getArrearsList', {
-        lcID: paramsLcID,
-        id: paramsId,
+        lcID: paramsLcID
       }).then(obj => {
         that.tableAudit = obj.data.extend.instanceLogInfo;
       }).catch(obj => {})
@@ -435,7 +449,7 @@ export default {
       }).then(res => {
         if(res.data.isSuccess == true){
            this.fundamental=res.data.object;
-           this.getLcList(res.data.object.localCompID, res.data.object.id)
+           this.getLcList(res.data.object.id)
           // this.auditResult(res.data.object.guid); 此接口没返回guid 查不了审批流程，跟后台碰下
         }
      })

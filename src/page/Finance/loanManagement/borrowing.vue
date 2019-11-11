@@ -1301,6 +1301,7 @@ export default {
   },
   created(){
     // 只有是出纳的时候才显示申请人检索
+    console.log(sessionStorage.getItem('hasCashierInfo'),'出纳')
     if (sessionStorage.getItem('hasCashierInfo')) {
       this.ifAccountBtn = true
     } else {
