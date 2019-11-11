@@ -328,7 +328,7 @@
       <div>
         <el-tabs v-model="activeName">
           <el-tab-pane label="借款" name="first">
-            <el-table :data="tableBorrowing" ref="multipleTable" class="table" border  @row-click="clickRow">
+            <el-table :data="tableBorrowing" ref="multipleTable" class="table" border>
               <el-table-column prop="paymentID" label="ID" min-width="80" align="center"></el-table-column>
               <el-table-column prop="paymentType" label="借款类型" min-width="120" align="center"></el-table-column>
               <el-table-column prop="checkType" label="审批状态" align="center">
@@ -345,7 +345,7 @@
               <el-table-column prop="createUser" label="申请人" min-width="70" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
-                  <span class="cursor blue" @click="approval(scope.row.id)">查看</span>
+                  <span class="cursor blue" @click="approval(scope.row)">查看</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -409,7 +409,7 @@
       </div>
     </el-dialog>
     <!--审批过程-->
-    <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px">
+    <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px"@close="closeApprova()">
       <el-table :data="approvalTable" :header-cell-style="getCostClass" border>
         <el-table-column prop="finishedTime" label="审批时间" min-width="180" align="center"></el-table-column>
         <el-table-column prop="participantName" label="审批人" min-width="120" align="center"></el-table-column>
@@ -572,6 +572,7 @@ export default {
       approvalShow:false,//审批过程弹窗
       guid:'',
       pid:'',
+      paymentType:'',
       multipleSelection: [], //选中的list
     };
   },
@@ -1457,21 +1458,24 @@ export default {
         })
         .then(res => {});
     },
-    approval(row){
+    approval(row){//点击借款出现弹窗
+      this.pid = row.guid;//
+      this.paymentType = row.paymentType;
+      this.infoForJQ();
       this.approvalShow = true;
+    },
+    infoForJQ(){//借款获取审批流程
       var that =this
+      console.log(this.paymentType)
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
         jQ_ID: this.pid,
-        jQ_Type: 1,
+        jQ_Type: this.paymentType == '无收入借款' ? 1 : 2,
       }).then(obj => {
         that.approvalTable = obj.data.extend.instanceLogInfo;
       }).catch(obj => {})
     },
-    clickRow(row) {
-      console.log(row.guid)
-      console.log(this.pid)
-      this.$refs.multipleTable.toggleRowSelection(row)
-      this.pid = row.guid;
+    closeApprova(){//关闭借款弹窗
+      this.approvalTable = [];
     },
   }
 };
