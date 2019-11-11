@@ -770,9 +770,9 @@ export default {
         sex: "", //性别
         wx: "", //微信号
         qq: "", //qq号
-        state: "", //状态
+        state: null, //状态 2正常 3 停用
         passWord: "", //密码
-        peerUserType: [1] //职位
+        peerUserType: null //职位  1管理员 2销售
         //id:"",
       }, //添加账户信息的对象
       // 添加账号信息的验证
@@ -1189,6 +1189,7 @@ export default {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
             this.useList.push(this.accountForm);
+            console.log(this.useList,"弹窗上面的添加按钮")
             if (this.accountForm.state == 2) {
               this.accountForm.state = "正常";
             } else {
@@ -1291,14 +1292,14 @@ export default {
         sex: "",
         wx: "",
         qq: "",
-        state: "",
+        state: null,
         passWord: "",
-        peerUserType: [] //职位
+        peerUserType: null //职位
         //id:"",
       };
-      // this.$nextTick((accountForm) => {
-      //   this.$refs["addForm"].resetFields();
-      // });
+      this.$nextTick((accountForm) => {
+        this.$refs["addForm"].resetFields();
+      });
     },
     handlePreview(file) {
       // console.log(file);
@@ -1726,7 +1727,7 @@ export default {
           arr[idx].state = 3;
         }
       });
-
+      console.log(this.useList,"上传的账号信息")
       // 周边授信额度
       if (this.AbouQuota == null) {
         this.AbouQuota = 0;
@@ -1734,8 +1735,6 @@ export default {
       if (this.ruleForm.quota == "") {
         this.ruleForm.quota = 0;
       }
-
-      console.log("提交的数据", this.businessOtherNamesArr);
 
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
@@ -1785,7 +1784,6 @@ export default {
             message: "添加失败",
             type: "error"
           });
-          // console.log(obj);
         });
     },
     //修改
@@ -1878,17 +1876,6 @@ export default {
         this.ruleForm.settlementType = 1;
       }
 
-      // 状态
-      // console.log("停用", this.ruleForm.state);
-      // 商户角色
-      // console.log("商户角色", this.ruleForm.localCompRole);
-      // 类别
-      // console.log("类别", this.ruleForm.localCompType);
-      // 结算方式
-      // console.log("结算方式", this.ruleForm.settlementType);
-      // 门市类型
-      // console.log("门市类型", this.ruleForm.storeType);
-
       // 经营范围
       let scopeExt = this.ruleForm.scopeExt.join(",");
 
@@ -1917,32 +1904,26 @@ export default {
         };
       });
 
-      // if (this.ruleForm.state == "停用") {
-      //   this.ruleForm.state = 3;
-      // } else {
-      //   this.ruleForm.state = 2;
-      // }
-      // if (this.ruleForm.settlementType == "非月结") {
-      //   this.ruleForm.settlementType = 2;
-      // } else {
-      //   this.ruleForm.settlementType = 1;
-      // }
-      // if (this.ruleForm.settlementType == 0) {
-      //   this.ruleForm.quota = 0;
-      // }
-      // this.ruleForm.scopeExt = this.ruleForm.scopeExt.join(",");
-      // console.log(this.ruleForm.expTime);
-      // if (this.ruleForm.expTime.length > 0) {
-      //   let year = "";
-      //   let month = "";
-      //   let day = "";
-      //   let pin = "";
-      //   year = this.ruleForm.expTime.substring(0, 4);
-      //   month = this.ruleForm.expTime.substring(5, 7);
-      //   day = this.ruleForm.expTime.substring(8, 10);
-      //   pin = year + month + day;
-      //   this.ruleForm.expTime = pin;
-      // }
+      // useList
+      // this.useList.forEach((val, idx, arr) => {
+      //   if (arr[idx].peerUserType == "管理员") {
+      //     arr[idx].peerUserType = 1;
+      //   } else {
+      //     arr[idx].peerUserType = 2;
+      //   }
+      //   if (arr[idx].sex == "男") {
+      //     arr[idx].sex = 1;
+      //   } else {
+      //     arr[idx].sex = 2;
+      //   }
+      //   if (arr[idx].state == "正常") {
+      //     arr[idx].state = 2;
+      //   } else {
+      //     arr[idx].state = 3;
+      //   }
+      // });
+      // console.log(this.useList,"修改的账号信息")
+
       this.ruleForm.expTime = moment(this.ruleForm.expTime).format("YYYYMMDD");
       this.ruleForm.id = this.tid;
       this.$http
@@ -1975,7 +1956,8 @@ export default {
             jqAdminList: adminAndSalesArr,
             localCompAliasList: this.businessOtherNamesArr,
             abouQuota: this.AbouQuota, //周边授信额度
-            localCompCode: this.localCompCode
+            localCompCode: this.localCompCode,
+            useList: this.useList
           }
         })
         .then(obj => {

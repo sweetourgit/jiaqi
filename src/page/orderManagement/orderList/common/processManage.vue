@@ -43,7 +43,7 @@
         active-color="#409eff"
         inactive-color="#dcdfe6"
         @change="priceChangeEvent(isPricechange)"
-        :disabled="orderget.orderStatus == 4 || orderget.getOrderStatus == 6"
+        :disabled="orderget.orderStatus==4||orderget.orderStatus==6"
       ></el-switch>
       <!-- switch 更改价格(直客价和同业价) end-->
       <!--报名人数-->
