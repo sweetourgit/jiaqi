@@ -416,18 +416,7 @@ export default {
       tableData5: [],
       tableData6: [],
       tableData7: [],
-      tableData8: [{
-        oNo: '订单编号',
-        source: '来源',
-        user: '联系人',
-        number: '人数',
-        total: '订单金额',
-        accepted: '已收',
-        arrears: '欠款',
-        aNo: '收款单号',
-        arrearsTime: '欠款日期',
-        repaymentTime: '应还日期',
-      }],
+      tableData8: [], // 收入明细
       tableData9: [{
         account: '账户',
         bank: '开户行',
@@ -551,6 +540,21 @@ export default {
     closeAdd() {
       this.clearForm()
       this.$emit('close', false);
+      this.$confirm("是否取消本次借款申请?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(res => {
+        this.$message.success("借款申请已取消");
+        this.dialogFormVisible =false;
+        this.$refs["ruleForm"].resetFields();
+      })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
     },
     advanceProcess2(num) {
       this.dialogVisible6 = true

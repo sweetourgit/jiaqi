@@ -345,7 +345,7 @@
     </el-dialog>
     <!-- 申请无收入借款中预付款明细查看弹窗 END -->
     <!-- 申请无收入借款中无收入借款明细查看弹窗 -->
-    <el-dialog width="45%" title="无收入借款明细" :visible.sync="dialogFormVisible_Income"append-to-body>
+    <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income"append-to-body>
       <div class="indialog">
         <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="times" label="审批时间" width="150" align="center"></el-table-column>

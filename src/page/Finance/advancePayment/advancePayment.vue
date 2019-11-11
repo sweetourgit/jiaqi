@@ -235,7 +235,6 @@ export default {
     },
     // 报销弹窗
     dialogchange() {
-      console.log('报销弹窗')
       this.find = 0;
       this.change = false
       this.dialogFormVisible = true;
