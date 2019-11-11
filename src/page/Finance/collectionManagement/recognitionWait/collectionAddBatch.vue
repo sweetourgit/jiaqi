@@ -183,7 +183,12 @@
 
             });
           }else{
-            that.deleteStr += scope.row.key + ',';
+
+            if(that.deleteStr.substr(that.deleteStr.length-1,1) === ',' || that.deleteStr === ''){
+              that.deleteStr += scope.row.key + ',';
+            }else{
+              that.deleteStr += ',' + scope.row.key + ',';
+            }
             that.$set(that.tableDataDD[scope.$index],'key','已删除');
           }
 
@@ -249,7 +254,10 @@
             });
             return;
           }
-          that.deleteStr = that.deleteStr.substr(0, that.deleteStr.length - 1);
+          if(that.deleteStr.substr(that.deleteStr.length-1,1) === ','){
+            that.deleteStr = that.deleteStr.substr(0, that.deleteStr.length - 1);
+          }
+
           let data;
           if(that.deleteStr == ''){
             data = {

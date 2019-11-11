@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
-    <div class="table_trip" style="width: 90%;">
+    <div class="table_trip">
       <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
         <el-table-column prop="tour_no" label="报账团号" align="center">
         </el-table-column>

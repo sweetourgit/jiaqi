@@ -49,7 +49,6 @@ PoolManager.prototype.selectDay= function(day){
   this.setState(state);
   // 如果前后点击的是同一天，则返回
   if(oldDay=== day) return;
-  // 
   // 如果之前是有计划状态，则清除oldDay
   if(oldState=== STATE.SHARE || oldState=== STATE.NOT_SHARE) return oldDay.selected= false;
   // 因为过期也是多选状态，所以如果多选，先判断oldDay是否过期，然后联动周
