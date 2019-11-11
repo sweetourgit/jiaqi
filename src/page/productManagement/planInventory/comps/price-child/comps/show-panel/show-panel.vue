@@ -106,9 +106,9 @@ $height: 40px;
             <i class="el-icon-link"></i>
           </span>
         </div>
-        <div class="bar" v-if="vm.share=== 1">
+        <div class="bar">
           <span>
-            共享均价：{{ vm.average }}
+            库存均价：{{ vm.average }}
           </span>
         </div>
         <div class="bar">
