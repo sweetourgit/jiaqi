@@ -1189,7 +1189,7 @@ export default {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
             this.useList.push(this.accountForm);
-            console.log(this.useList,"弹窗上面的添加按钮")
+            // console.log(this.useList,"弹窗上面的添加按钮")
             if (this.accountForm.state == 2) {
               this.accountForm.state = "正常";
             } else {
@@ -1297,10 +1297,14 @@ export default {
         peerUserType: null //职位
         //id:"",
       };
-      this.$nextTick((accountForm) => {
-        this.$refs["addForm"].resetFields();
-      });
+      // if (this.$refs["addForm"] !== undefined) {
+      //   this.$refs["addForm"].resetFields();
+      // }
+      // this.$nextTick((accountForm) => {
+      //   this.$refs["addForm"].resetFields();
+      // });
     },
+    
     handlePreview(file) {
       // console.log(file);
     },
@@ -1891,7 +1895,7 @@ export default {
       }
       this.ruleForm.orgs = orgs;
       // 添加账户
-
+      console.log(25656)
       // jqAdminList 管理和销售人员
       let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
       adminAndSalesArr = adminAndSalesArr.map(item => {
@@ -1905,24 +1909,23 @@ export default {
       });
 
       // useList
-      // this.useList.forEach((val, idx, arr) => {
-      //   if (arr[idx].peerUserType == "管理员") {
-      //     arr[idx].peerUserType = 1;
-      //   } else {
-      //     arr[idx].peerUserType = 2;
-      //   }
-      //   if (arr[idx].sex == "男") {
-      //     arr[idx].sex = 1;
-      //   } else {
-      //     arr[idx].sex = 2;
-      //   }
-      //   if (arr[idx].state == "正常") {
-      //     arr[idx].state = 2;
-      //   } else {
-      //     arr[idx].state = 3;
-      //   }
-      // });
-      // console.log(this.useList,"修改的账号信息")
+      this.useList.forEach((val, idx, arr) => {
+        if (arr[idx].peerUserType == "管理员") {
+          arr[idx].peerUserType = 1;
+        } else {
+          arr[idx].peerUserType = 2;
+        }
+        if (arr[idx].sex == "男") {
+          arr[idx].sex = 1;
+        } else {
+          arr[idx].sex = 2;
+        }
+        if (arr[idx].state == "正常") {
+          arr[idx].state = 2;
+        } else {
+          arr[idx].state = 3;
+        }
+      });
 
       this.ruleForm.expTime = moment(this.ruleForm.expTime).format("YYYYMMDD");
       this.ruleForm.id = this.tid;

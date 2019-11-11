@@ -51,7 +51,9 @@
       ></el-autocomplete>-->
       <!-- <br /> -->
       <span class="search-title">商户名称</span>
-      <el-input v-model="localCompName" class="input" @blur="localCompNameBlur()"></el-input>
+      <!-- <el-input v-model="localCompName" class="input" @blur="localCompNameBlur()"></el-input> -->
+      <el-input v-model="orderChannels" class="input" @blur="localCompNameBlur()"></el-input>
+
       <!-- <span class="search-title">销售</span>
       <el-input v-model="saler" class="input" @blur="salerBlur()"></el-input>-->
       <span class="search-title">订单联系人</span>
