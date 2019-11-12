@@ -616,7 +616,7 @@
         </el-form-item>
         <el-form-item class="addAccountBtn fr" v-if="isAddAccountBtn == 2">
           <el-button @click="addAccountEditCancel">取消</el-button>
-          <el-button type="primary" @click="addAccountAddBtn('accountForm')">更改账户</el-button>
+          <el-button type="primary" @click="editAccountAddBtn('accountForm')">更改账户</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -761,11 +761,13 @@ export default {
       payValue: "", //搜过结算字段
       isInputVisible: false, //商户其他名称tags显示隐藏
       isOtherSuccess: true, //商户其他名称唯一性判断  false则有重复的 则不能添加到businessOtherNamesArr
+      isAccountValidator: null, //账户信息添加时验证唯一性 后台返回false则重复
       tid: 0, //
       pageSize: 10, //每页条数 默认10
-      pageIndex: 1,//每页
+      pageIndex: 1, //每页
       total: 1, //总条数
       currentPage4: 1, //当前页数
+      // editAccouontScopeid: null, //账户信息修改时需要的scopeid
       accountForm: {
         name: "", //账户信息名字
         phone: "", //手机号
@@ -1150,11 +1152,14 @@ export default {
     },
     //编辑账户信息按钮
     accountEdit(idx, index, row) {
+      console.log(index);
+      console.log(row);
       if (row.peerUserType == "销售") {
         row.peerUserType = 2;
       } else {
         row.peerUserType = 1;
       }
+      // this.editAccouontScopeid = index;
       this.isAddAccount = true;
       this.accountForm = row;
       this.isAddAccountBtn = idx;
@@ -1187,7 +1192,8 @@ export default {
       // debugger
       // isAddAccountBtn == 1 是第一次添加保存到本地
       // isAddAccountBtn == 2 是此时没有删除按钮 只可编辑 掉接口
-      if (this.isAddAccountBtn == 1) {
+      // if (this.isAddAccountBtn == 1) {
+      if (this.tid === 0) {
         this.$refs[accountForm].validate(valid => {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
@@ -1209,16 +1215,21 @@ export default {
               this.accountForm.peerUserType = "销售";
             }
             this.isAddAccount = false;
-            this.$message({
-              message: "添加成功",
-              type: "success"
+            this.accountValidator().then(obj => {
+              if (obj == true) {
+                console.log(2);
+                this.$message({
+                  message: "添加成功",
+                  type: "success"
+                });
+              }
             });
           } else {
             console.log("error submit!!");
             return false;
           }
         });
-      } else if (this.isAddAccountBtn == 2) {
+      } else {
         this.$refs[accountForm].validate(valid => {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
@@ -1238,51 +1249,136 @@ export default {
             } else {
               this.accountForm.peerUserType = 2;
             }
-
-            // 修改验证手机号和邮箱的接口的接口
-            this.$http
-              .post(
-                this.GLOBAL.serverSrc +
-                  "/universal/localcomp/api/isexistpeeruser",
-                {
-                  phone: this.accountForm.phone,
-                  email: this.accountForm.email,
-                  id: 0
-                }
-              )
-              .then(obj => {
-                const { isSuccess } = obj.data;
-                if (isSuccess == false) {
-                  this.$message.error("该手机号，邮箱已注册过");
-                } else {
-                  // 修改的接口
-                  this.$http
-                    .post(
-                      this.GLOBAL.serverSrc +
-                        "/universal/localcomp/api/PeerUserUpdate",
-                      {
-                        object: this.accountForm
-                      }
-                    )
-                    .then(obj => {
-                      this.isAddAccount = false;
-                      this.getOneMess(this.tid);
-                    })
-                    .catch(err => {
-                      this.isAddAccount = false;
-                      console.log(err);
-                    });
-                }
-              })
-              .catch(err => {
-                console.log(err);
-              });
+            this.accountValidator().then(obj => {
+              this.accountForm.localCompID = this.tid;
+              console.log(this.accountForm, "this.accountForm");
+              if (obj == true) {
+                this.$http
+                  .post(
+                    this.GLOBAL.serverSrc +
+                      "/universal/localcomp/api/PeerUserinsert",
+                    {
+                      object: this.accountForm
+                    }
+                  )
+                  .then(obj => {
+                    this.isAddAccount = false;
+                    this.getOneMess(this.tid);
+                  })
+                  .catch(err => {
+                    this.isAddAccount = false;
+                    console.log(err);
+                  });
+              }
+            });
+            // // 修改验证手机号和邮箱的接口的接口
+            // this.$http
+            //   .post(
+            //     this.GLOBAL.serverSrc +
+            //       "/universal/localcomp/api/isexistpeeruser",
+            //     {
+            //       phone: this.accountForm.phone,
+            //       email: this.accountForm.email,
+            //       id: 0
+            //     }
+            //   )
+            //   .then(obj => {
+            //     const { isSuccess } = obj.data;
+            //     if (isSuccess == false) {
+            //       this.$message.error("该手机号，邮箱已注册过");
+            //     } else {
+            //       // 修改的接口
+            //       this.$http
+            //         .post(
+            //           this.GLOBAL.serverSrc +
+            //             "/universal/localcomp/api/PeerUserUpdate",
+            //           {
+            //             object: this.accountForm
+            //           }
+            //         )
+            //         .then(obj => {
+            //           this.isAddAccount = false;
+            //           this.getOneMess(this.tid);
+            //         })
+            //         .catch(err => {
+            //           this.isAddAccount = false;
+            //           console.log(err);
+            //         });
+            //     }
+            //   })
+            //   .catch(err => {
+            //     console.log(err);
+            //   });
           } else {
             console.log("error submit!!");
             return false;
           }
         });
       }
+    },
+    // 修改验证手机号和邮箱的接口的接口
+    accountValidator() {
+      return this.$http
+        .post(
+          this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistpeeruser",
+          {
+            phone: this.accountForm.phone,
+            email: this.accountForm.email,
+            id: 0
+          }
+        )
+        .then(obj => {
+          const { isSuccess } = obj.data;
+          if (isSuccess == false) {
+            this.$message.error("该手机号，邮箱已注册过");
+          }
+          // this.isAccountValidator = isSuccess;
+          return isSuccess;
+        })
+        .catch(err => {
+          console.log(err);
+          return "";
+        });
+    },
+    // 更改账户
+    editAccountAddBtn() {
+      // this.accountForm.id = this.editAccouontScopeid;
+      this.accountForm.localCompID = this.tid;
+      console.log(this.accountForm, "this.accountForm");
+      if (this.accountForm.state == "正常") {
+        this.accountForm.state = 2;
+      } else {
+        this.accountForm.state = 3;
+      }
+      if (this.accountForm.sex == "男") {
+        this.accountForm.sex = 1;
+      } else {
+        this.accountForm.sex = 2;
+      }
+      if (this.accountForm.peerUserType == "管理员") {
+        this.accountForm.peerUserType = 1;
+      } else {
+        this.accountForm.peerUserType = 2;
+      }
+      this.$http
+        .post(
+          this.GLOBAL.serverSrc + "/universal/localcomp/api/PeerUserUpdate",
+          {
+            object: this.accountForm
+          }
+        )
+        .then(obj => {
+          if (obj.data.isSuccess == true) {
+            this.$message({
+              message: "修改成功",
+              type: "success"
+            });
+            this.isAddAccount = false
+          }
+        })
+        .catch( err => {
+          console.log(err);
+        });
     },
     // 点击添加商户或者编辑出现的dialog上的添加账户信息
     addAccount(index) {
@@ -1307,7 +1403,7 @@ export default {
       //   this.$refs["addForm"].resetFields();
       // });
     },
-    
+
     handlePreview(file) {
       // console.log(file);
     },
@@ -1319,7 +1415,7 @@ export default {
     closeDialog() {
       this.btnindex = 0;
     },
-   // 重置
+    // 重置
     handleReset() {
       this.pageIndex = 1;
       this.input = "";
@@ -1333,15 +1429,12 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageList(1, val);
-   
     },
     // currentPage 改变时会触发
     handleCurrentChange(val) {
-      console.log(val);
+      // console.log(val);
       this.pageIndex = val;
       this.pageList(val, this.pageSize);
-     
-      
     },
     // 搜索
     handleSearch() {
@@ -1403,7 +1496,7 @@ export default {
           console.log(obj);
         });
     },
- 
+    // 添加按钮 新增商户信息的
     add_info() {
       this.tid = 0;
       this.clear();
@@ -1671,7 +1764,7 @@ export default {
           arr[idx].state = 3;
         }
       });
-      console.log(this.useList,"上传的账号信息")
+      // console.log(this.useList, "上传的账号信息");
       // 周边授信额度
       if (this.AbouQuota == null) {
         this.AbouQuota = 0;
@@ -2097,7 +2190,7 @@ export default {
             localCompAliasList.forEach((val, idx, arr) => {
               businessNamesArr.push(arr[idx].name);
             });
-            this.ruleForm.otherNames = businessNamesArr.toString()
+            this.ruleForm.otherNames = businessNamesArr.toString();
           }
 
           // console.log("get",this.businessOtherNamesArr)
