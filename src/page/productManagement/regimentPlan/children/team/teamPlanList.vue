@@ -369,11 +369,13 @@ export default {
       });
     },
     reset(curPage) {
+      console.log(this.pageIndex)
       this.title = "";
       this.groupCode = "";
       this.date = "";
       this.op = "";
       this.financeState = "";
+      this.pageIndex = 1 ? 1 : 1;
       this.current = curPage;
       this.teamQueryList();
     },
