@@ -23,6 +23,7 @@
     <div v-show="geography == 1" class="address-big">
          <div class="address-img" v-for="img in albumList">
               <div class="marterialist-img" @click="getAlbum(img.id)">
+                <!-- <img width="100%" height="100%" src="https://jiaqi-server.obs.cn-north-1.myhuaweicloud.com/c6f6585f-e674-4f26-a232-01a8e124ca88.jpg" v-if="img.pictures.length>0"/> -->
                  <img width="100%" height="100%" :src="picSrc+img.pictures[0].url" v-if="img.pictures.length>0"/>
                  <img width="100%" height="100%" :src="'../../../static/materialList/nopic.jpg'" v-else/> 
               </div>
@@ -161,7 +162,7 @@
                 </div>                    
             </div>
             <div class="album-picbutton" v-show="picInfoShow">              
-                 <el-button type="primary" @click="savPic">{{savPicBut}}</el-button>
+              <el-button type="primary" @click="savPic">{{savPicBut}}</el-button>
             </div>
            </div>
         </div> 
@@ -180,7 +181,7 @@
                 :limit="12"
                 drag
                 :file-list="fileList"
-                action="http://49.4.10.11:3009/upload/obs/api/picture"
+                action="http://test.dayuntong.com/upload/obs/api/picture"
                 multiple
                 list-type="picture"
                 :on-error="handleError"
@@ -244,7 +245,8 @@
     data() {        
       return {       
         isDest: '',
-        picSrc:'https://jiaqi-server.obs.myhwclouds.com',
+        picSrc:'',
+        //picSrc:'https://jiaqi-server.obs.myhwclouds.com',
         //左侧菜单
         list:[],
         lists: [], //子级
@@ -759,7 +761,7 @@
           }).then(res => {
              if(res.data.isSuccess == true){
              this.$message({
-               message: '图片图片成功',
+               message: '图片上传成功',
                type: 'success'
              });
              this.getAlbum(this.albumId);
@@ -822,7 +824,7 @@
 .album-name1 .el-input{width:200px;margin-left:13px}
 .album-name1{margin-left:42px}
 .album-button{width:250px;height:50px;margin-left:65px;margin-top:10px}
-.album-picbutton{width:250px;position: absolute;bottom:20px;left:145px;}
+.album-picbutton{width:250px;position: absolute;bottom:40px;left:200px;}
 .album-info{height:100px;margin-left:46px;margin-top:-5px}
 .album-info .size{margin-top:10px;clear:both}
 .empty{position:absolute;left:100px;top:40px;font-size:12px;color:red}

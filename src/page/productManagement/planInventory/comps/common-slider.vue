@@ -83,11 +83,6 @@ export default {
 
   inject: ['PACKAGE_LIST'],
 
-  mounted(){
-    this.list.splice(0);
-    this.list.push(...this.PACKAGE_LIST);
-  },
-
   data(){
     return {
       currentIndex: 0,
@@ -98,6 +93,8 @@ export default {
   methods: {
     init(id){
       if(!id) return;
+      this.list.splice(0);
+      this.list.push(...this.PACKAGE_LIST);
       // 取消之前的选中
       this.PACKAGE_LIST[this.currentIndex].selected= false;
       // 选中新的

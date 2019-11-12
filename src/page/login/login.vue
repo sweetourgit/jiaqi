@@ -420,11 +420,21 @@
                       }
 
                     }).then(res => {
+                      // 因为申请人检索（财务）那块对操作是隐藏的
+                      let keepUserPosition = res.data.user_Position
+                      keepUserPosition.forEach(function(item){
+                        if(item.positionName === '出纳'){
+                          sessionStorage.setItem('hasCashierInfo', true)
+                        }
+                      })
+
                       sessionStorage.setItem('id',res.data.id)
                       sessionStorage.setItem('orgID',res.data.orgID)
                       sessionStorage.setItem('topID',res.data.topID)
+                      sessionStorage.setItem('name',res.data.name)
                       //sessionStorage.setItem('account',this.ruleForm.user)//刚掉account
                       sessionStorage.setItem('userCode',res.data.userCode)
+
                       store.save('name',res.data.name)
                       this.$router.push('/userList')
                       this.$message.success('登录成功');
@@ -582,7 +592,7 @@
     right: 20px;
     left:0px;
     // background:green;
-    background-image:url('../../../static/login-img/login.png');
+    background-image:url('../../../static/login-img/login.jpg');
     // background-repeat: no-repeat
     background-size:100% 80%;
 

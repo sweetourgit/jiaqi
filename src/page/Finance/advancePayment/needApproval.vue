@@ -43,7 +43,7 @@
       <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" id="table-content">
         <el-table-column prop="paymentID" label="借款单号" align="center">
         </el-table-column>
-        <el-table-column label="发起时间" align="center" width="190">
+        <el-table-column label="发起时间" :formatter='dateFormat' align="center" width="190">
           <template slot-scope="scope">
             {{formatDate1(scope.row.createTime)}}
           </template>
@@ -799,6 +799,14 @@ export default {
     };
   },
   methods: {
+    // 起始时间格式转换
+    dateFormat: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined) {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    },
     advanceProcess2(num) {
       console.log(num)
       this.dialogVisible6 = true

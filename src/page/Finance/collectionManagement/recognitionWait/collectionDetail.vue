@@ -4,7 +4,7 @@
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
-        <el-button type="primary" @click="backoutBtn" v-if="baseInfo.rec_mode!='票付通余额支付'">撤销</el-button>
+        <el-button type="primary" @click="backoutBtn" v-if="baseInfo.rec_mode!='票付通余额支付' && baseInfo.status_rece != 12">撤销</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -63,7 +63,7 @@
           <p class="inputLabel"><span>认款人：</span>{{baseInfo.rec_uid}}</p>
           <p class="inputLabel"><span>认款时间：</span>{{baseInfo.rec_created_at}}</p>
           <p class="inputLabel"><span>分销商：</span>{{baseInfo.distributor}}</p>
-          <p class="inputLabel"><span>款项入账时间：</span>{{baseInfo.dateQuantun}}</p>
+          <p class="inputLabel" v-if="baseInfo.dateQuantun != ''"><span>款项入账时间：</span>{{baseInfo.dateQuantun}}</p>
           <div class="inputLabel" v-if="fileListDD.length != 0">
             <span style="vertical-align: top;">凭证：</span>
             <!--<el-upload ref="upload1" class="upload-demo" action="" :file-list="fileList" :disabled="disabled">-->
@@ -194,8 +194,6 @@
           </div>
         </div>
       </div>
-
-
 
       <!--绑定订单详情-->
       <el-dialog title="绑定订单详情" :visible="dialogFormVisible" width=90% @close="close" append-to-body>
@@ -452,11 +450,13 @@
             if(response.data.data.rec_created_at){
               response.data.data.rec_created_at = formatDate(new Date(response.data.data.rec_created_at*1000));
             }
+            let startToend = '';
             if(response.data.data.rece_start){
               response.data.data.rece_start = formatDate(new Date(response.data.data.rece_start*1000));
               response.data.data.rece_start = response.data.data.rece_start.split(" ")[0];
               response.data.data.rece_end = formatDate(new Date(response.data.data.rece_end*1000));
               response.data.data.rece_end = response.data.data.rece_end.split(" ")[0];
+              startToend = response.data.data.rece_start + '-' + response.data.data.rece_end;
             }
             that.baseInfo = {
               status_rece: response.data.data.status_rece,
@@ -475,7 +475,7 @@
               rec_created_at: response.data.data.rec_created_at,
               distributor: response.data.data.distributor,
               distributor_code: response.data.data.distributor_code,
-              dateQuantun: response.data.data.rece_start + '-' + response.data.data.rece_end
+              dateQuantun: startToend
             };
             // 获取订单信息
             if(response.data.data.rec_mode === '1' || response.data.data.rec_mode === '2'){
@@ -668,7 +668,7 @@
           console.log(error);
         });
       },
-      //table数据，根据id获取人名，去重获取
+      // table数据，根据id获取人名，去重获取
       getUser(userGetList){
         const that = this;
         userGetList.forEach(function (item, index, arr) {
@@ -706,6 +706,11 @@
 <style lang="scss">
   #collectionDetail .el-dialog{
     width: 90%;
+  }
+  #collectionDetail .buttonDv{
+    position: absolute;
+    top: 8px;
+    right: 3%;
   }
   #collectionDetail .stepTitle{
     width: 94%;

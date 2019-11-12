@@ -69,7 +69,8 @@ export const getCostList= function(packageID){
       object: { packageID }
     }).then((res) => {
       let { isSuccess, objects }= res.data;
-      if(!isSuccess) return reject('获取成本列表失败');
+      // 0条返回的是isSuccess是false
+      if(!isSuccess) return resolve([]);
       return resolve(objects);
     }).catch((err) => {
       reject(err);
@@ -198,6 +199,21 @@ export const savePlan= function(object){
   })
 }
 
+// 删除计划
+export const deletePlan= function(id){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/plan/api/delete", {
+      id
+    }).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject('删除指定计划失败');
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
 // 新增非共享库存
 export const addInventory= function(object){
   return new Promise((resolve, reject) => {
@@ -252,6 +268,21 @@ export const getInventoryList= function(object){
       let { isSuccess, objects }= res.data;
       if(!isSuccess) return reject('获取库存列表失败');
       return resolve(objects);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+// 删除库存
+export const deleteInventory= function(id){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/team/api/inventorydelete", {
+      id
+    }).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject('删除库存失败');
+      return resolve();
     }).catch((err) => {
       reject(err);
     })

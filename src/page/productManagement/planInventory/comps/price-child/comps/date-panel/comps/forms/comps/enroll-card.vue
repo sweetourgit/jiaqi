@@ -24,24 +24,24 @@
         <el-form-item label="销售价：" prop="price_01" style="width: 320px">
           <el-input size="small"
             :class="[ isRed(submitForm.price_01)?'red': '' ]"
-            :placeholder="'成本均价:'+ vm.averageText" 
+            :placeholder="'成本均价:'+ average" 
             v-model="submitForm.price_01">
           </el-input>
         </el-form-item>
         <el-form-item label="同业价：" prop="price_02" style="width: 320px">
           <el-input size="small"
             :class="[ isRed(submitForm.price_02)?'red': '' ]"
-            :placeholder="'成本均价:'+ vm.averageText"
+            :placeholder="'成本均价:'+ average"
             v-model="submitForm.price_02">
           </el-input>
         </el-form-item>
-        <el-form-item label="甜橙结算价：" prop="price_03" style="width: 320px">
-          <el-input placeholder="甜橙结算价" size="small"
+        <el-form-item label="甜程结算价：" prop="price_03" style="width: 320px">
+          <el-input placeholder="甜程结算价" size="small"
             v-model="submitForm.price_03">
           </el-input>
         </el-form-item>
-        <el-form-item label="甜橙线上售价：" prop="price_04" style="width: 320px">
-          <el-input placeholder="甜橙线上售价" size="small" disabled
+        <el-form-item label="甜程线上售价：" prop="price_04" style="width: 320px">
+          <el-input placeholder="甜程线上售价" size="small" disabled
             v-model="submitForm.price_04">
           </el-input>
         </el-form-item>
@@ -58,10 +58,9 @@
 <script>
 export default {
 
-  inject: ['poolManager'],
-
   props: {
-    proto: Object
+    proto: Object,
+    average: [String, Number]
   },
 
   created(){
@@ -71,8 +70,6 @@ export default {
   data(){
     return {
       vm: {
-        average: 0,
-        averageText: 0, //均价文字
         hasQuota: false
       },
       submitForm: {},
@@ -86,7 +83,7 @@ export default {
           { required: true, validator: this.moneyValidator, trigger: ['change', 'blur']},
         ],
         price_03: [
-          { required: true, message: '甜橙结算价不能为空', trigger: ['change', 'blur']},
+          { required: true, message: '甜程结算价不能为空', trigger: ['change', 'blur']},
           { required: true, validator: this.moneyValidator, trigger: ['change', 'blur']},
         ]
       }
@@ -95,9 +92,6 @@ export default {
 
   methods: {
     init(){
-      // 处理均值相关
-      this.vm.averageText= this.poolManager.getAverage();
-      this.vm.average= parseFloat(this.poolManager.getAverage());
       this.submitForm= this.$deepCopy(this.proto);
       if(this.proto.quota) this.vm.hasQuota= true;
     },
@@ -134,7 +128,7 @@ export default {
     isRed(val){
       val= parseFloat(val);
       if(val=== isNaN) return false;
-      return val< this.vm.average;
+      return val< parseFloat(this.average);
     },
   }
 }

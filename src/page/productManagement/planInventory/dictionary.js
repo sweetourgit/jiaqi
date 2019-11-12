@@ -20,12 +20,16 @@ export const getDayDTO= function(day){
     weekDay: 0,
     // 显示的天
     day: day,
+    // 日期对象
+    date: null,
     // 是否是过时的信息
     after: false,
     // getDateInt
     dayInt: null,
     today: false,
     selected: false,
+    // 保存动作中的状态 normal:正常，waiting: 等待中, saving:保存中, error:出错, success:成功, 
+    savingState: 'normal'
   }
 }
 

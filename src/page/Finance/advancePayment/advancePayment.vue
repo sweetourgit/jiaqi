@@ -15,7 +15,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="申请人:" prop="user">
-                  <el-input v-model="ruleForm.user" placeholder="请输入借款人"></el-input>
+                  <el-input v-model="ruleForm.user" placeholder="请输入申请人" :disabled="ifShowProposer"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -121,7 +121,7 @@
       <!-- 需要您审批 END -->
     </el-tabs>
      <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :infoStatus="infoStatus" @searchHandList="searchHand"></AdvanceInfo>
-    <!--查看无收入借款弹窗-->
+    <!--查看借款详情弹窗-->
     <el-dialog title="借款申请详情" :visible.sync="checkIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>
       <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
         <div style="position:absolute; top:8px; right:10px;">
@@ -146,6 +146,7 @@ export default {
   },
   data() {
     return {
+      ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       ruleForm: {
         planID: '', // 团期计划输入框
         user: '', // 申请人
@@ -234,7 +235,6 @@ export default {
     },
     // 报销弹窗
     dialogchange() {
-      console.log('报销弹窗')
       this.find = 0;
       this.change = false
       this.dialogFormVisible = true;
@@ -281,7 +281,7 @@ export default {
       this.pageshow = false
       let objectRequest = {}
       objectRequest.paymentType = 2;
-      if (this.ruleForm.planID) { objectRequest.planID = this.ruleForm.planID; }
+      if (this.ruleForm.planID) { objectRequest.groupCode = this.ruleForm.planID; }
       if (this.ruleForm.user) { objectRequest.createUser = this.ruleForm.user; }
       if (this.ruleForm.startTime) { objectRequest.beginTime = moment(this.ruleForm.startTime).format('YYYY-MM-DD'); }
       if (this.ruleForm.endTime) { objectRequest.endTime = moment(this.ruleForm.endTime).format('YYYY-MM-DD');}
@@ -345,7 +345,16 @@ export default {
     //获取供应商类型
     querySearch6() {
       this.typeList = []
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {}).then(res => {
+      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=PaymentType')
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.typeList.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].name
+            })
+          }
+        })
+      /*this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {}).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
           this.typeList.push({
             "value": res.data.objects[i].id,
@@ -354,7 +363,7 @@ export default {
         }
       }).catch(err => {
         console.log(err);
-      })
+      })*/
     },
     //付款方式
     querySearch7() {
@@ -374,6 +383,7 @@ export default {
         console.log(err);
       })
     },
+    // 时间转换
     formatDate1(dates){
      var dateee = new Date(dates).toJSON();
      var date = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')
@@ -381,8 +391,10 @@ export default {
     },
     //查看无收入借款弹窗
     checkIncome(row){
+      this.paymentID = row.paymentID // 设置 paymentID 给子组件，子组件会根据这个值的变化进行页面渲染。子组件目前设置的是0，本页的也是0
+      console.log(this.paymentID)
       this.checkIncomeShow = true;
-      this.ruleForm = row;
+      // this.ruleForm = row;
       //this.getLabel();
     },
     repeal(){
@@ -420,6 +432,9 @@ export default {
     this.querySearch6()
     this.querySearch7()
     this.searchHand()
+    if (!sessionStorage.getItem('hasCashierInfo')) { // 只有是出纳的时候才显示申请人检索
+      this.ifShowProposer = true
+    }
   },
 };
 

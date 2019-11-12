@@ -2,10 +2,12 @@
   <div class="vivo" style="position:relative" id="tradeAdd">
     <el-dialog :title="info == ''?'添加':'编辑'" :visible="dialogFormVisible" style="margin:-80px 0 0 0;width: 100%;" custom-class="city_list" :show-close="false" @close="closeAdd" >
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+        <!--添加弹框按钮-->
         <div class="buttonDv" v-if="info == ''">
           <el-button type="primary" @click="cancelBtnTJ" style="margin-right: 10px" plain>取消</el-button>
           <el-button type="primary" @click="submitBtnTJ('ruleForm')" style="margin: 0">添加</el-button>
         </div>
+        <!--编辑弹框按钮-->
         <div class="buttonDv" v-if="info != ''">
           <el-button type="primary" @click="cancelBtnXG" style="margin-right: 10px" plain>取消</el-button>
           <el-button type="primary" @click="submitBtnXG('ruleForm')" style="margin: 0">保存</el-button>
@@ -464,12 +466,13 @@
     },
     data() {
       return {
-        disabled: false,
-        readOnly: true,
-//       基本信息
-        rece_code: '',
-        rece_codeEdit: '',
-        ruleForm: {
+        disabled: false,// 时间选择不可编辑
+        readOnly: true,// 账户选择input 只读
+
+        // 基本信息
+        rece_code: '',// 收款编码 -- 添加
+        rece_codeEdit: '',// 收款编码 -- 编辑
+        ruleForm: { // 表单数据
           creditTime: '',
           payAccount: '',
           payAccountID: '',
@@ -479,27 +482,27 @@
           startTime: '',
           endTime: ''
         },
-        rules:{
+        rules:{ // 验证规则 -- 必填项
           creditTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
           payAccount: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
           mark: [{ required: true, message: '收款详细说明不能为空', trigger: 'blur' }],
           distributor: [{ required: true, message: '字段不能为空', trigger: 'change' }]
         },
-        fileList: [],
+        fileList: [], // 凭证
 
-//        收款账户选择
-        dialogFormVisible1: false,
-        tableDataZH: [],
-        deleteStr: '',
+        // 收款账户选择
+        dialogFormVisible1: false,// 收款账户显示隐藏
+        tableDataZH: [],// 账户的table
 
-//        收款明细
-        tableDataQK: [],
-        totalItem: '0',
-        totalMoney: '',
-        startTime: '',
-        endTime: '',
-        dialogFormVisible3: false,
-        detailForm: {
+        // 收款明细
+        tableDataQK: [],// 收款明细table(编辑时，无明细的绑定订单也是这个)
+        deleteStr: '',// 删除字段的字符串
+        totalItem: '0',// 总条数
+        totalMoney: '',// 总钱数
+        startTime: '',// 开始时间
+        endTime: '',// 结束时间
+        dialogFormVisible3: false, // 订单详情弹框--显示/隐藏
+        detailForm: { // 订单详情字段(修改)
           enterTime: '',
           orderNum: '',
           guestName: '',
@@ -512,42 +515,40 @@
           id: '',
           indexDetail: ''
         },
-        detailRules:{
+        detailRules:{ // 验证规则
           enterTime: [{ required: true, message: '入账时间不能为空', trigger: 'blur' }],
-//          orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
-//          product: [{ required: true, message: '产品不能为空', trigger: 'blur' }],
           money: [
             { required: true, message: '结算金额不能为空', trigger: 'blur' },
             { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
           ]
         },
 
-        showSK: true,
+        showSK: true,// 收款明细是否显示
 
-//        票付通余额
-        PFTYE: false,
-        tableDataGLDD: [],
-        dialogFormVisible2: false,
-        multipleSelection: [],
-        chooseTable: [],
-        loading: true,
-        pageSizeGL: 10,
-        pageCountGL: 0,
-        currentPageGL: 1,
-        pftForm: {
+        // 票付通余额
+        PFTYE: false,// 是否为票付通余额
+        tableDataGLDD: [],// 票付通余额关联订单
+        dialogFormVisible2: false,// 票付通余额关联订单 -- 显示/隐藏
+        multipleSelection: [],// 关联订单选择，多选项记录
+        chooseTable: [],// 绑定订单table(绑定的是上面关联订单的数据)
+        loading: true,// 订单多，加上loading...
+        pageSizeGL: 10,// 关联订单table，每页条数
+        pageCountGL: 0,// 关联订单table，总条数
+        currentPageGL: 1,// 关联订单table，当前页数
+        pftForm: { // 票付通提交数据
           payMoney: '',
           startTime: '',
           endTime: ''
         },
-        pft_list: [],
-        isPFT: false,
+        pft_list: [],// 票付通附件(暂时被注释了，前端不上传附件)
+        isPFT: false,// 是否为票付通
 
-        PFT_num: 0,
-        PFT_money: 0,
-        PFT_start: '',
-        PFT_end: '',
+        PFT_num: 0,// 关联订单页面内已选项的总数
+        PFT_money: 0,// 关联订单页面内已选项的总金额
+        PFT_start: '',// 关联订单页面内已选项的开始时间
+        PFT_end: '',// 关联订单页面内已选项的结束时间
 
-//        时间限制
+        // 时间限制
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
         importStartDatePicker: this.beginDate1(),
@@ -584,50 +585,49 @@
           return ''
         }
       },
-//      关闭添加/编辑弹窗
+      // 关闭添加/编辑弹窗
       closeAdd(){
-//        if(this.info != ''){
-          this.ruleForm = {
-            creditTime: '',
-            payAccount: '',
-            payAccountID: '',
-            mark: '',
-            distributor: '无',
-            payMoney: '',
-            startTime: '',
-            endTime: ''
-          };
-          this.showSK = true;
-          this.fileList = [];
-          this.deleteStr = '';
-          this.tableDataQK = [];
-          this.totalItem = '0';
-          this.totalMoney = '';
-          this.startTime = '';
-          this.endTime = '';
-          this.PFTYE = false;
-          this.tableDataGLDD = [];
-          this.dialogFormVisible2 = false;
-          this.multipleSelection = [];
-          this.chooseTable = [];
-          this.loading = true;
-          this.pageSizeGL = 10;
-          this.pageCountGL = 0;
-          this.currentPageGL = 1;
-          this.pftForm = {
-            payMoney: '',
-            startTime: '',
-            endTime: ''
-          };
-          this.pft_list = [];
+        this.ruleForm = {
+          creditTime: '',
+          payAccount: '',
+          payAccountID: '',
+          mark: '',
+          distributor: '无',
+          payMoney: '',
+          startTime: '',
+          endTime: ''
+        };
+        this.showSK = true;
+        this.fileList = [];
+        this.deleteStr = '';
+        this.tableDataQK = [];
+        this.totalItem = '0';
+        this.totalMoney = '';
+        this.startTime = '';
+        this.endTime = '';
+        this.PFTYE = false;
+        this.tableDataGLDD = [];
+        this.dialogFormVisible2 = false;
+        this.multipleSelection = [];
+        this.chooseTable = [];
+        this.loading = true;
+        this.pageSizeGL = 10;
+        this.pageCountGL = 0;
+        this.currentPageGL = 1;
+        this.pftForm = {
+          payMoney: '',
+          startTime: '',
+          endTime: ''
+        };
+        this.pft_list = [];
 
-          this.PFT_num = 0;
-          this.PFT_money = 0;
-          this.PFT_start = '';
-          this.PFT_end = '';
-//        }
+        this.PFT_num = 0;
+        this.PFT_money = 0;
+        this.PFT_start = '';
+        this.PFT_end = '';
         this.$emit('close', false);
       },
+      // 分销商选择
       radioChange(val){
         if(val == '票付通余额'){
           this.PFTYE = true;
@@ -635,7 +635,7 @@
           this.PFTYE = false;
         }
       },
-//      票付通余额，关联订单
+      // 票付通余额，关联订单（显示订单列表，加载列表数据）
       chooseDDFun(){
         let orderStr = '';
         if(this.chooseTable.length > 0){
@@ -647,6 +647,7 @@
         this.getListRece(orderStr);
         this.dialogFormVisible2 = true;
       },
+      // 关联订单选择（同时计算顶部所选项总数，金额，时间）
       selectionChange(val) {
         const that = this;
 //        console.log(val);
@@ -671,10 +672,11 @@
           that.PFT_end = formatDate(new Date(Date.parse(end))).split(" ")[0];
         }
       },
+      // 点击行，执行选择及反选
       handleRowClick(row, column, event){
-//        console.log(this.$refs.multipleTable.selection);
         this.$refs.multipleTable.toggleRowSelection(row);
       },
+      // 选择关联订单时，保存按钮事件（concat table里面数据和选择的数据，计算金额 时间，关闭弹窗）
       saveBtn(){
         let table = [];
         if(this.chooseTable != ''){
@@ -703,6 +705,7 @@
         }
         this.close();
       },
+      // 票付通余额 -- 绑定订单的删除（添加时）
       deleteBtnGL(scope){
         this.chooseTable.splice(scope.$index,1);
         if(this.chooseTable.length != 0){
@@ -726,10 +729,9 @@
           };
         }
       },
+      // 票付通余额 -- 绑定订单的删除（编辑时）
       deleteBtnGLEdit(scope){
-//        alert(scope.row.id);
         const that = this;
-//        console.log(scope.row);
         if(scope.row.id){
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/deldetails", {
             "id": scope.row.id
@@ -778,7 +780,7 @@
         }
 
       },
-//      添加
+      // 添加（提示及数据的验证）
       cancelBtnTJ(){
         this.$confirm("是否取消本次添加?", "提示", {
           confirmButtonText: "确定",
@@ -986,7 +988,10 @@
             "get_order":getOrder
           }
         }else{
-          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          if(this.deleteStr.substr(this.deleteStr.length-1,1) === ','){
+            this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          }
+//          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
           data = {
             "rece_code":this.rece_code,
             "explain":this.ruleForm.mark,
@@ -1041,7 +1046,7 @@
           });
         }
       },
-//      修改
+      // 修改（提示及数据的验证）
       cancelBtnXG(){
 
         this.$confirm("是否取消本次编辑?", "提示", {
@@ -1279,7 +1284,10 @@
             this.ruleForm.creditTime = formatDate(this.ruleForm.creditTime);
           }
           getOrder = getOrder.substr(0, getOrder.length - 1);
-          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          if(this.deleteStr.substr(this.deleteStr.length-1,1) === ','){
+            this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          }
+//          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/updrece", {
             "id": this.info,
             "rece_code": this.rece_codeEdit,
@@ -1333,7 +1341,7 @@
         }
       },
 
-//      选择收款账户
+      // 选择收款账户
       chooseFun(){
         const that = this;
         this.dialogFormVisible1 = true;
@@ -1356,6 +1364,7 @@
             console.log(obj)
           })
       },
+      // 弹窗关闭
       close(){
         this.dialogFormVisible1 = false;
         this.dialogFormVisible2 = false;
@@ -1366,13 +1375,14 @@
         this.PFT_start = '';
         this.PFT_end = '';
       },
+      // 选择账户后关闭账户弹窗
       chooseBtn(row){
         this.ruleForm.payAccount = row.title;
         this.ruleForm.payAccountID = row.id;
         this.close();
       },
 
-//      上传凭证
+      // 上传凭证
       UploadUrl(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/receivables/receivables/files';
       },
@@ -1427,7 +1437,7 @@
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
-//      上传票付通余额凭证
+      // 上传票付通余额凭证（暂时不需要，HTML注释）
       UploadUrl2(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/receivables/receivables/fzfilesfiles';
       },
@@ -1478,7 +1488,7 @@
       beforeRemove2(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
-//      明细删除
+      // 明细删除（添加，记录删除，记录要删除的数据，添加时传到后台）
       deleteBtn(scope){
         const that = this;
         this.$confirm("是否删除此明细?", "提示", {
@@ -1489,7 +1499,12 @@
           console.log(scope.row[2]+'======'+scope.$index);
 //          that.tableDataQK.splice(scope.$index,1);
           this.$set(that.tableDataQK[scope.$index],'0','已删除');
-          that.deleteStr += scope.$index + ',';
+          if(that.deleteStr.substr(that.deleteStr.length-1,1) === ',' || that.deleteStr === ''){
+            that.deleteStr += scope.$index + ',';
+          }else{
+            that.deleteStr += ',' + scope.$index + ',';
+          }
+//          that.deleteStr += scope.$index + ',';
           let num = parseInt(that.totalItem);
           num--;
           that.totalItem = num;
@@ -1519,6 +1534,7 @@
 
         });
       },
+      // 明细删除（编辑，接口删除，同时记录）
       deleteBtnEdit(scope){
         const that = this;
         this.$confirm("是否删除此明细?", "提示", {
@@ -1534,7 +1550,12 @@
             if (response.data.code == '200') {
               that.$message.success("删除成功~");
               that.tableDataQK.splice(scope.$index,1);
-              that.deleteStr += scope.row.id + ',';
+//              that.deleteStr += scope.row.id + ',';
+              if(that.deleteStr.substr(that.deleteStr.length-1,1) === ',' || that.deleteStr === ''){
+                that.deleteStr += scope.$index + ',';
+              }else{
+                that.deleteStr += ',' + scope.$index + ',';
+              }
               let num = parseInt(that.totalItem);
               num--;
               that.totalItem = num;
@@ -1575,9 +1596,8 @@
 
         });
       },
-//      明细编辑
+      // 明细编辑
       detailEdit(scope){
-//        alert(scope.row.reco_status);
         let flagEdit;
         if(scope.row.reco_status == 1){
           flagEdit = false;
@@ -1599,6 +1619,7 @@
         };
         this.dialogFormVisible3 = true;
       },
+      // 明细保存，提示（提示后保存）
       detailSave(){
 //        alert(this.detailForm.money != this.tableDataQK[this.detailForm.indexDetail].rece_money);
         if(parseFloat(this.detailForm.money).toFixed(2) != parseFloat(this.tableDataQK[this.detailForm.indexDetail].rece_money).toFixed(2) && this.tableDataQK[this.detailForm.indexDetail].order_sn != ''){
@@ -1617,6 +1638,7 @@
 
 
       },
+      // 明细保存
       saveFun(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/upddetailed", {
@@ -1695,7 +1717,7 @@
           console.log(error);
         });
       },
-
+      // 获取收款编码
       getCode(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrc + "/ong/api/receivable/get", {},
@@ -1720,6 +1742,7 @@
           console.log(obj)
         });
       },
+      // 编辑时加载数据
       loadData(){
 //        console.log(this.info);
         const that = this;
@@ -1889,6 +1912,7 @@
           console.log(error);
         });
       },
+      // 获取关联订单（票付通余额时）
       getListRece(orderStr){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/listforrece", {
@@ -1931,19 +1955,21 @@
           console.log(error);
         });
       },
+      // 关联订单 条数改变
       handleSizeChangeGL(val){
         this.loading = true;
         this.pageSizeGL = val;
         this.currentPageGL = 1;
         this.getListRece();
       },
+      // 关联订单 页数改变
       handleCurrentChangeGL(val){
         this.loading = true;
         this.currentPageGL = val;
         this.getListRece();
       },
 
-//     时间限制
+      // 时间限制
       beginDate(){
 //      alert(begin);
         const that = this;

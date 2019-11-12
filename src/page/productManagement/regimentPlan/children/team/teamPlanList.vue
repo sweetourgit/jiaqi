@@ -4,7 +4,7 @@
     <div class="demo-input-suffix">
       <span class="search-title">产品名称</span>
       <el-input placeholder="请输入" v-model="title" class="group-no"></el-input>
-      <span class="search-title">报账团号</span>
+      <span class="search-title" style="margin:0 0 0 60px;">团号</span>
       <el-input placeholder="请输入" v-model="groupCode" class="group-no"></el-input>
       <span class="search-title">出行日期</span>
       <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
@@ -13,7 +13,7 @@
       <span class="search-title">操作人员</span>
       <el-input placeholder="请输入" v-model="op" class="group-no"></el-input>
       <span class="search-title">报账状态</span>
-      <el-select v-model="financeState" placeholder="请选择" class="group-no" style="width:185px">
+      <el-select v-model="financeState" placeholder="请选择" class="group-no" style="width:200px">
         <el-option v-for="item in financeType" :key="item.value" :label="item.label":value="item.value"></el-option>
       </el-select>
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
@@ -475,6 +475,7 @@ export default {
 .search-title {
   font-size: 14px;
   margin-left: 30px;
+  text-align:right;
 }
 .search-but {
   margin: 20px 0 15px 295px;

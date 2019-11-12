@@ -5,7 +5,11 @@
         <el-row>
           <el-col :span="7">
             <span class="search_style">供应商名称：</span>
-            <el-input v-model="supplier" placeholder="请输入内容" class="search_input"></el-input>
+            <el-autocomplete class="search_input" v-model="supplier" :fetch-suggestions="querySearchD" placeholder="请输入供应商" @select="handleSelectD" @blur="blurHand">
+              <template slot-scope="{ item }">
+                <div>{{ item.valueName }}</div>
+              </template>
+            </el-autocomplete>
           </el-col>
           <el-col :span="7">
             <span class="search_style">申请人：</span>
@@ -120,6 +124,7 @@
 
         supplier: '',// 供应商
         supplierID: '',
+        supplierList: [],
         startTime: '',// 搜索项，开始时间
         endTime: '',// 搜索项，结束时间
         reimbursementPer: '',// 申请人
@@ -229,12 +234,12 @@
       },
       // 重置
       resetFun(){
-        this.plan = '';
+        this.supplier = '';
         this.reimbursementPer = '';
         this.startTime = '';
         this.endTime = '';
         this.reimbursementPerID = '';
-        this.collectionStatus = '';
+        this.borrowStatus = '';
         this.accountType = '';
         this.loadData();
       },
@@ -293,39 +298,26 @@
               });
 
               // 获取供应商名称
-//              that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
-//                "id": item.supplier_code
-//              },{
-//                headers: {
-//                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
-//                }
-//              }).then(function(response) {
-//                console.log(response);
-//                if (response.data.isSuccess) {
-//                  item.supplier_code = response.data.object.name
-//                } else {
-//                  if(response.data.result.message){
-//                    that.$message.warning(response.data.result.message);
-//                  }else{
-//                    that.$message.warning("获取供应商名称失败~");
-//                  }
-//
-//                }
-//              }).catch(function(error) {
-//                console.log(error);
-//              });
-
-              that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+              that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
                 "id": item.supplier_code
-              }).then(function(obj) {
-//              console.log('获取分销商',obj);
-                if(obj.data.isSuccess){
-                  item.supplier_code = obj.data.object.name;
-                }else{
-                  that.$message.warning("加载数据失败~");
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
-              }).catch(function(obj) {
-                console.log(obj);
+              }).then(function(response) {
+                console.log(response);
+                if (response.data.isSuccess) {
+                  item.supplier_code = response.data.object.name
+                } else {
+                  if(response.data.result.message){
+                    that.$message.warning(response.data.result.message);
+                  }else{
+                    that.$message.warning("获取供应商名称失败~");
+                  }
+
+                }
+              }).catch(function(error) {
+                console.log(error);
               });
             })
           } else {
@@ -419,12 +411,73 @@
             }
           }
         }
-      }
+      },
+
+      // 供应商选择
+      querySearchD(queryString, cb){
+        let supplierList = this.supplierList;
+        let results = queryString ? supplierList.filter(this.createFilterD(queryString)) : supplierList;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilterD(queryString) {
+        return (supplierList) => {
+          return (supplierList.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
+        };
+      },
+      handleSelectD(item){
+        console.log(item);
+        this.supplierID = item.id;
+        this.supplier = item.valueName;
+      },
+      blurHand(){
+        const that = this;
+        let ida = '', name = '';
+        if(that.supplier == ''){
+          that.supplierID = '';
+        }else{
+          this.supplierList.forEach(function (item, index, arr) {
+            if(that.supplier == item.valueName){
+              ida = item.id;
+              name = item.valueName;
+            }
+          });
+          if(ida){
+            that.supplierID = ida;
+            that.supplier = name;
+          }else{
+            that.supplierID = '';
+          }
+        }
+      },
+
+      // 加载供应商信息
+      loadSupplier(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/alias/supplier/api/all").then(function(obj) {
+          console.log('获取供应商',obj);
+          if(obj.data.isSuccess){
+            let supplierObj = [];
+            obj.data.objects.forEach(function (item, index, arr) {
+              const valName = item.allName.split(',')[0];
+              const supplier = {
+                'value' : item.allName,
+                'id' : item.id,
+                'valueName': valName
+              };
+              supplierObj.push(supplier);
+            });
+            that.supplierList = supplierObj;
+          }
+        }).catch(function(obj) {
+          console.log(obj);
+        });
+      },
     },
     created(){
       this.loadData();
       this.loadOper();
-
+      this.loadSupplier();
     }
   }
 </script>

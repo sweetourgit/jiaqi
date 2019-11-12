@@ -1,21 +1,46 @@
 <template>
   <div class="cityList">
       <div class="cascade">
-       <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
+       <el-tree :props="props1"
+                :load="loadNode1"
+                class="treeDemo"
+                lazy
+                @node-click="treeClick"
+                :expand-on-click-node="false"
+                node-key="id"
+                ref="refTree"></el-tree>
       </div>
       <div class="search">
         <span class="keyword">输入关键字:</span>
         <!-- <el-autocomplete class="inputBox" clearable placeholder="请输入关键字" :fetch-suggestions="querySearch" @select="handleSelect" suffix-icon="el-icon-search" v-model="input" :trigger-on-focus="false"></el-autocomplete> -->
-        <el-input class="inputBox" v-model="input" placeholder="请输入关键字" clearable suffix-icon="el-icon-search"></el-input>
-        <el-button class="searchButton" type="primary" icon="el-icon-search" @click="searchClick"></el-button>
+        <el-input class="inputBox"
+                  v-model="input"
+                  placeholder="请输入关键字"
+                  clearable
+                  suffix-icon="el-icon-search"></el-input>
+        <el-button class="searchButton"
+                   type="primary"
+                   icon="el-icon-search"
+                   @click="searchClick"></el-button>
       </div>
       <!-- 区域列表 -->
       <template v-if="geography == 1">
       <template v-if="data.isLeaf == 2">
-        <el-button class="add_country" type="primary" @click="addState = true">添加</el-button>
+        <el-button class="add_country"
+                   type="primary"
+                   @click="addState = true">添加</el-button>
       </template>
-        <el-table class="table_list" :data="tableData" border :header-row-style="tableHead" :cell-style="tableHeight" :header-cell-style="getRowClass" style="width: 1130px;">
-          <el-table-column prop="id" label="ID" align="center" width="60px"></el-table-column>
+        <el-table class="table_list"
+                  :data="tableData"
+                  border
+                  :header-row-style="tableHead"
+                  :cell-style="tableHeight"
+                  :header-cell-style="getRowClass"
+                  style="width: 1130px;">
+          <el-table-column prop="id"
+                           label="ID"
+                           align="center"
+                           width="60px"></el-table-column>
           <el-table-column label="名称" align="center">
             <template slot-scope="scope">
               <template v-if="scope.row.isLeaf == 2">
@@ -25,11 +50,13 @@
                 </el-tooltip>
               </template>
               <template v-else-if="scope.row.isLeaf == 1">
-                <span type="text">{{ scope.row.country }}</span>                
+                <span type="text">{{ scope.row.country }}</span>
               </template>
             </template>
           </el-table-column>
-          <el-table-column prop="continent" label="所属大洲" align="center" width="80px"></el-table-column>
+          <el-table-column prop="continent" :label="earth" align="center" width="80px">{{countryPopup.select}}</el-table-column>
+          <!--<el-table-column prop="continent" label="所属国家" align="center" width="80px">{{countryPopup.select}}</el-table-column>-->
+          <!--<el-table-column prop="continent" label="所属区域" align="center" width="80px">{{countryPopup.select}}</el-table-column>-->
           <el-table-column prop="englishName" label="英文名" align="center"></el-table-column>
           <el-table-column prop="pinyin" label="中文全拼" align="center"></el-table-column>
           <el-table-column prop="initials" label="首字母" align="center" width="70px"></el-table-column>
@@ -58,16 +85,19 @@
       <!-- 添加区域弹框 -->
       <el-dialog class="add_country_popup" custom-class="city_list" title="添加" :visible.sync="addState" width="600px">
         <el-form :model="countryPopup" status-icon :rules="countryRules" ref="countryPopup">
-          <el-form-item label="所属地区:" :label-width="formLabelWidth">
+          <el-form-item :label="changelable" :label-width="formLabelWidth" v-show="flags1">
             <span class="country_span">{{countryPopup.select}}</span>
           </el-form-item>
-          <el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">
+          <el-form-item label="区域名称:" :label-width="formLabelWidth" prop="countryName">
             <el-input class="country_input" v-model="countryPopup.countryName" clearable></el-input>
           </el-form-item>
-          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName">
+          <!--<el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">-->
+            <!--<el-input class="country_input" v-model="countryPopup.countryName" clearable></el-input>-->
+          <!--</el-form-item>-->
+          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName" v-show="flag3">
             <el-input class="country_input" v-model="countryPopup.spareName" clearable></el-input>
           </el-form-item>
-          <el-form-item label="url:" :label-width="formLabelWidth" prop="url">
+          <el-form-item label="url:" :label-width="formLabelWidth" prop="url" v-show="flag3">
             <el-input class="country_input" v-model="countryPopup.url" clearable></el-input>
           </el-form-item>
           <el-form-item label="末级区域:" :label-width="formLabelWidth">
@@ -100,23 +130,23 @@
       <!-- 添加区域END -->
 
       <!-- 编辑区域弹框 -->
-      <el-dialog class="edit_country_popup" custom-class="city_list" title="国家编辑" :visible.sync="editState" width="600px">
+      <el-dialog class="edit_country_popup" custom-class="city_list" :title="changeTitle" :visible.sync="editState" width="600px">
         <el-form :model="editCountryPopup" status-icon :rules="editCountryRules" ref="editCountryPopup">
           <el-form-item label="ID:" :label-width="formLabelWidth" prop="id">
             <span class="country_span">{{editCountryPopup.id}}</span>
           </el-form-item>
-          <el-form-item label="所属地区:" :label-width="formLabelWidth">
+          <el-form-item :label="earth" :label-width="formLabelWidth">
             <span class="country_span">{{editCountryPopup.select}}</span>
           </el-form-item>
-          <el-form-item label="地区名称:" :label-width="formLabelWidth" prop="countryName">
+          <el-form-item :label="araname" :label-width="formLabelWidth" prop="countryName">
             <el-input class="country_input" v-model="editCountryPopup.countryName" clearable></el-input>
           </el-form-item>
-          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName">
+          <el-form-item label="备用名:" :label-width="formLabelWidth" prop="spareName" v-show="flag3" >
             <el-input class="country_input" v-model="editCountryPopup.spareName" clearable></el-input>
           </el-form-item>
-          <el-form-item label="url:" :label-width="formLabelWidth" prop="url">
-            <el-input class="country_input" v-model="editCountryPopup.url" clearable></el-input>
-          </el-form-item>
+          <el-form-item label="url:" :label-width="formLabelWidth" prop="url" v-show="flag3">
+          <el-input class="country_input" v-model="editCountryPopup.url" clearable></el-input>
+        </el-form-item>
           <el-form-item label="末级区域:" :label-width="formLabelWidth">
             <el-radio-group class="virtualDepartment" v-model="editCountryPopup.isLeaf">
               <el-radio label="1">是</el-radio>
@@ -152,6 +182,12 @@
   export default {
     data() {
       return {
+        araname:'',
+        earth:"",
+        changeTitle:"",
+        changelable:"",
+        changeName:"",
+        flag3:true,
         searchInput: '', // 搜索
         list:[],
         lists: [], //子级
@@ -168,6 +204,9 @@
         level: '', // 层级数据
         // 数据表格
         tableData: [],
+        flags1:true,
+        flags2:false,
+        flag:false,
         // 添加区域数据
         countryPopup: {
           countryName: '',
@@ -180,7 +219,9 @@
           parentID: '',
           isLeaf: '2',
           spareName: '',
-          url: ''
+          url: '',
+
+          // titles:"国家编辑"
         },
         // 编辑区域数据
         editCountryPopup: {
@@ -195,12 +236,14 @@
           isLeaf: '',
           parentID: '',
           spareName: '',
-          url: ''
+          url: '',
+          // titles:""
+          country:''
         },
         // 添加区域正则判断
         countryRules: {
           countryName: [
-            { required: true, message: '请填写国家名称', trigger: 'blur'},
+            { required: true, message: '请填写区域名称', trigger: 'blur'},
             { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
@@ -213,7 +256,7 @@
         // 编辑区域正则判断
         editCountryRules: {
           countryName: [
-            { required: true, message: '请填写国家名称', trigger: 'blur'},
+            { required: true, message: '请填写区域名称', trigger: 'blur'},
             { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位汉字'}
           ],
           pinyin: [
@@ -238,16 +281,20 @@
     },
     methods: {
       loadNode1(node, resolve) {
-        this.node = node.data
+        this.node = node.data;
+        window.localStorage.setItem('node', this.node);
         this.resolve = resolve
         this.level = node.level
         /*添加第一级*/
         if (node.level === 0) {
+          this.earth = '所属大洲'
+
           this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",{
               "object": {
                 "parentID": -1,
               }
             }).then(obj => {
+              console.log(obj,"list");
               for (let i = 0; i < obj.data.objects.length; i++) {
                 this.list.push({
                   name:obj.data.objects[i].areaName,
@@ -317,6 +364,7 @@
       // 单击tree节点
       treeClick(data,name){
         // this.tableData = [];
+        console.log(data,'节点的数据')
         this.isSearch = false;
         this.geography = 1
         this.data = data
@@ -327,18 +375,42 @@
         if (data.Hierarchy == 0) {
           // 所属地区
           this.theContinent = data.id
+          this.changeTitle="国家编辑"
+          this.earth ="所属大洲"
+          this.araname ="国家名称:"
+          this.flag3 =false
+          this.changelable ="所属大洲"//????
+        }
+
+        if (data.Hierarchy >=1){
+          this.changelable ="所属区域"
+          this.changeTitle="区域编辑"
+          this.earth ="所属国家"
+          this.araname ="区域名称:"
+          this.flag3=true
+
+        }
+        if (data.Hierarchy ==2){
+          this.earth ="所属地区"
+          this.araname ="区域名称:"
+          this.changelable ="所属区域"
         }
         if (data.isLeaf == 1) {
+          // this.flags1 =false;
+          // this.flags2=true;
+          // this.changeTitle="区域编辑"
         this.tableData = [];
           this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforget',{
             id: data.id
           }).then(res => {
+            console.log(res,33333);
             this.tableData.push({
               id: res.data.object.id,
               country: res.data.object.areaName,
               continent: res.data.object.earth,
+              // continent:data.name,
               englishName: res.data.object.englishName,
-              pinyin: res.data.object.chineseFull,
+              pinyin: (res.data.object.chineseFull).toLowerCase(),
               initials: res.data.object.firstChar,
               code: res.data.object.areaCode,
               value: res.data.object.areaName,
@@ -358,6 +430,7 @@
             }
           this.clickId = data.id
           this.initData(data.id)
+          // this.changeTitle="地区编辑"
         }
       },
       initData(id, name) {
@@ -366,17 +439,20 @@
             "parentID": id,
             "areaName": name
           },
+          //7号修改过
           pageIndex: this.currentPage,
           pageSize:this.pagesize,
         }).then(res => {
           if (res.data.isSuccess == false) {
             this.tableData = [];
+            this.total =0;
             if (this.currentPage != 1) {
-              this.currentPage = 1
+              this.currentPage = 0
               this.treeClick(data)
             }
           } else {
             this.tableData = res.data.objects
+            console.log(res,1111)
             this.total = res.data.total
             this.geography = 1
             this.tableData.forEach((item, i) => {
@@ -384,7 +460,7 @@
                 item.country = res.data.objects[i].areaName,
                 item.continent = res.data.objects[i].earth,
                 item.englishName = res.data.objects[i].englishName,
-                item.pinyin = res.data.objects[i].chineseFull,
+                item.pinyin = (res.data.objects[i].chineseFull).toLowerCase(),
                 item.initials = res.data.objects[i].firstChar,
                 item.code = res.data.objects[i].areaCode,
                 item.value = res.data.objects[i].areaName,
@@ -426,7 +502,7 @@
         this.addState = false;
 
       },
-      // 添加 编辑 地区保存成功
+      // 添加 编辑 地区保存成功 点击确定
       countryForm(formName) {
         this.$refs[formName].validate(valid => {
           if (valid) {
@@ -435,7 +511,7 @@
                 object: {
                   areaName: this.countryPopup.countryName,
                   englishName: this.countryPopup.englishName,
-                  chineseFull: this.countryPopup.pinyin,
+                  chineseFull: (this.countryPopup.pinyin).toLowerCase(),
                   firstChar: this.countryPopup.initials,
                   areaCode: this.countryPopup.code,
                   parentID: this.countryPopup.parentID,
@@ -443,26 +519,39 @@
                   initial: this.countryPopup.initial,
                   // createTime: "2018-09-11",
                   earth: '-1',
+                  // earth:this.countryPopup.select,
                   markName: this.countryPopup.spareName,
                   url: this.countryPopup.url
                 }
               }).then(res => {
                   if (res.data.isSuccess == false) {
                     this.$message.error('该名称以存在');
+                    return false;
                   } else {
                     this.treeClick(this.data);
                     this.addState = false;
                     this.$message.success('添加成功！');
+                    if(this.node) {
+                      this.getSon(
+                        this.node.key,
+                        this.node.label,
+                        this.node.id,
+                        this.node.isLeaf,
+                        this.resolve,
+                        this.level
+                      );
+                    }else {
+                      this.getSon(
+                        this.node.key,
+                        this.node.label,
+                        this.node.id,
+                        this.node.isLeaf,
+                        this.resolve,
+                        this.level
+                      );
+                    }
 
-                    this.getSon(
-                      this.node.key,
-                      this.node.label,
-                      this.node.id,
-                      this.node.isLeaf,
-                      this.resolve,
-                      this.level
-                    );
-                    this.$refs['countryPopup'].resetFields();
+                    // this.$refs['countryPopup'].resetFields();
                     this.countryPopup.initial = '';
                   }
                 }).catch(err => {
@@ -475,13 +564,14 @@
                   id: this.editCountryPopup.id,
                   areaName: this.editCountryPopup.countryName,
                   englishName: this.editCountryPopup.englishName,
-                  chineseFull: this.editCountryPopup.pinyin,
+                  chineseFull: (this.countryPopup.pinyin).toLowerCase(),
                   firstChar: this.editCountryPopup.initials,
                   areaCode: this.editCountryPopup.code,
                   isLeaf: Number(this.editCountryPopup.isLeaf),
                   initial: this.editCountryPopup.initial,
                   parentID: this.editCountryPopup.parentID,
                   earth: '-1',
+                  // earth:this.editCountryPopup.select,
                   markName: this.editCountryPopup.spareName,
                   url: this.editCountryPopup.url
                 }
@@ -491,8 +581,10 @@
                 } else {
                   this.initData(0, this.input)
                 }
+
                 this.editState = false;
                 this.$message.success('修改成功！');
+                console.log(this.node,11111)
                 this.getSon(
                   this.node.key,
                   this.node.label,
@@ -511,14 +603,19 @@
       },
       // 添加国家弹窗
       addStates(key, data){
+        this.changelable ="所属区域"
         this.countryPopup.select = data.country
         this.countryPopup.parentID = data.id
         this.editCountryPopup.parentID = data.id
-
         this.addState = true
+        //??????
+
+
       },
       // 编辑国家
       handleEdit(key, data){
+        this.changelable ="所属区域"
+        console.log(data,"编辑")
         this.editState = true;
         this.editCountryPopup.parentID = data.parentID
         this.editCountryPopup.id = data.id;
@@ -536,7 +633,9 @@
       },
       // 删除国家
       handleDelete(key, data){
-        this.$confirm('是否删除' + data.areaName, '信息', {
+        this.changelable ="所属区域"
+        console.log(data,521)
+        this.$confirm('是否删除' + data.value, '信息', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           customClass: 'delete_country',
@@ -545,6 +644,8 @@
         }).then(() => {
           // 为2非末级
           if (data.isLeaf == 2) {
+            console.log(data.areaName,5555)
+            this.changeTitle="区域编辑"
             this.$http.post(this.GLOBAL.serverSrc +'/universal/area/api/areainforlist',{
               object: {
                 parentID: data.id
@@ -597,11 +698,17 @@
       },
       // 点击按钮查看下级
       subordinate(data){
+        console.log(data,"层级")
         let table = {}
         table.name = data.country
         table.id = data.id
         table.isLeaf = data.isLeaf
         this.treeClick(table)
+        this.changelable ="所属区域"
+        this.changeTitle="区域编辑"
+        this.earth="所属国家"
+        this.araname ="区域名称:"
+        this.flag3=true
       },
       // 分页显示条数的改变
       pagesizes(page) {

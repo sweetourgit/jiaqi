@@ -62,7 +62,7 @@ export default {
           { required: true, message: '供应商不能为空', trigger: ['blur']},
         ],
         suppliertype: [
-          { required: true, message: '成本类型不能为空', trigger: ['blur']},
+          { required: true, message: '成本类型不能为空', trigger: ['blur', 'change']},
         ],
         money: [
           { required: true, message: '金额不能为空', trigger: ['blur']},

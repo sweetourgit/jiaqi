@@ -4,7 +4,7 @@ $height: 40px;
 .show-panel{
   position: relative;
   height: 940px;
-  padding-top: $height* 5 + 10px;
+  padding-top: $height* 6 + 10px;
   &>header{
     position: absolute;
     width: 100%;
@@ -41,7 +41,7 @@ $height: 40px;
     }
   }
   &>main{
-    height: 940px - $height* 5 - 10px;
+    height: 940px - $height* 6 - 10px;
     overflow: auto;
     .container{
       .card-ground{
@@ -88,8 +88,8 @@ $height: 40px;
           <el-button type="primary" size="small"
             @click="awakeEditForm"
           >编辑</el-button>
-          <el-button type="primary" size="small" v-if="vm.share=== 1">解除共享</el-button>
-          <el-button type="primary" size="small" v-if="vm.share=== 2">删除</el-button>
+          <el-button type="primary" size="small" v-if="vm.share=== 1" @click="deletePlanAction">删除计划</el-button>
+          <el-button type="primary" size="small" v-if="vm.share=== 2" @click="deleteInventoryAction">删除</el-button>
         </div>
       </header>
       <main>
@@ -107,6 +107,11 @@ $height: 40px;
           </span>
         </div>
         <div class="bar">
+          <span>
+            库存均价：{{ vm.average }}
+          </span>
+        </div>
+        <div class="bar">
           {{ vm.share=== 1? '当前剩余': '总库存' }}：{{ vm.count }}
         </div>
         <div class="bar">
@@ -116,7 +121,7 @@ $height: 40px;
     </header>
     <main>
       <div class="container">
-        <el-card style="margin-bottom: 10px; background-color: #f6f6f6;"
+        <el-card style="margin-bottom: 10px;"
           shadow="never"
           v-for="(enroll, i) in enrolls" 
           :key="i">
@@ -131,7 +136,7 @@ $height: 40px;
               同业价：{{ enroll.price_02 }}
             </div>
             <div class="bar">
-              甜橙结算价：{{ enroll.price_03 }}
+              甜程结算价：{{ enroll.price_03 }}
             </div>
             <div class="bar" v-show="enroll.quota">
               配额：{{ enroll.quota }}
@@ -144,12 +149,16 @@ $height: 40px;
 </template>
 
 <script>
-import { getPlan, getInventory } from '../../../../planInventory'
+import { getPlan, getInventory, deleteInventory, deletePlan, getCostList } from '../../../../planInventory'
 import { DAY_STATE } from '../../../../dictionary'
 
 export default {
 
   inject: ['poolManager'],
+
+  props: {
+    parentVm: [Object],
+  },
 
   data(){
     return {
@@ -163,6 +172,9 @@ export default {
         dateHous: '',
         count: 0,
         inventoryID: null,
+        planID: null,
+        average: 0, // 用来和价格比较显示红色
+        averageCost: 0  // 用来传递给编辑表单，保存时带回
       },
       enrolls: [],
     }
@@ -178,15 +190,16 @@ export default {
     setState(state, day){
       if(state=== DAY_STATE.MULTIPLE || state=== DAY_STATE.UNDO) return this.vm.state= false;
       this.vm.state= true;
-      this.dayFactory(day)
+      this.dayFactory(state, day)
     },
 
-    dayFactory(day){
+    dayFactory(state, day){
       let { after, dayInt, vm }= day;
       this.vm.previous= !after;
       this.vm.dateText= this.dayIntToText(dayInt);
       // 均价
       this.vm.average= this.poolManager.getAverage();
+      this.vm.planID= vm.planID;
       this.enrolls.splice(0);
       this.enrolls.push(...vm.plan_Enrolls);
       return this.getInventoryAction(vm.planID);
@@ -199,10 +212,46 @@ export default {
         this.vm.regimentType= regimentType;
         this.vm.inventoryID= inventoryID;
         return getInventory(inventoryID).then(res2 => {
-          let { share, name, count }= res2;
+          let { share, name, count, averageCost }= res2;
           this.vm.share= share;
           this.vm.name= name;
           this.vm.count= count;
+          // 用来传递给编辑表单
+          this.vm.averageCost= averageCost;
+          // 如果是共享库存，则均价需要另行计算
+          if(share=== DAY_STATE.SHARE) this.getShareCost(averageCost)
+        })
+      })
+    },
+
+    deleteInventoryAction(){
+      this.$confirm(`确定要删除当前库存及计划吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteInventory(this.vm.inventoryID).then(res => {
+          this.$message.success('计划删除成功');
+          let day= this.poolManager.currentDay;
+          this.$emit('refresh-date-panel', { sureDate: true, date: day.date });
+        }).catch(err => {
+          this.$message.error('计划删除失败');
+        })
+      })
+    },
+
+    deletePlanAction(){
+      this.$confirm(`确定要删除当前计划吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deletePlan(this.vm.planID).then(res => {
+          this.$message.success('计划删除成功');
+          let day= this.poolManager.currentDay;
+          this.$emit('refresh-date-panel', { sureDate: true, date: day.date });
+        }).catch(err => {
+          this.$message.error('计划删除失败');
         })
       })
     },
@@ -222,14 +271,21 @@ export default {
     // 跳转到共享库存页
     toSharedInventoryPage(){
       let day= this.poolManager.currentDay;
-      this.$router.push({ path: '/sharedInventory', query: { date: day.date.getTime() } });
+      this.$router.push({ 
+        path: '/sharedInventory', 
+        query: { 
+          team_id: parseInt(this.$route.query.id), 
+          timestamp: day.date.getTime(), 
+          inventory_id: this.vm.inventoryID
+        } 
+      });
     },
 
     getPlanData(){
-      let { inventoryID, count, dateHous, name }= this.vm;
+      let { inventoryID, count, dateHous, name, regimentType }= this.vm;
       let planEnroll= this.$deepCopy(this.enrolls);
       return {
-        inventoryID, name, count, dateHous, planEnroll
+        inventoryID, name, count, dateHous, regimentType, planEnroll
       }
     },
 
@@ -237,8 +293,24 @@ export default {
       let payload= this.getPlanData();
       payload.share= this.poolManager.state;
       payload.day= this.poolManager.currentDay;
+      payload.average= this.vm.average;
+      payload.averageCost= this.vm.averageCost;
       this.$emit('awake-edit-form', payload);
     },
+
+    getShareCost(shareAverageCost){
+      let { pacId, rate }= this.parentVm;
+      getCostList(pacId).then(res => {
+        let sum= shareAverageCost;
+        res.forEach(el => {
+          if(el.supplierType=== 2) return;
+          sum+= el.money;
+        })
+        sum= sum/(1- rate/100);
+        this.vm.average= parseFloat(sum.toFixed(2));
+        this.$forceUpdate();
+      })
+    }
   }
 }
 </script>

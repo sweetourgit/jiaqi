@@ -279,7 +279,8 @@
       >
         <div style="float:left;">
           <el-form-item label="汇款户名" prop="accountName">
-            <el-input class="name_input" v-model="ruleForm.accountName"></el-input>
+            <el-input class="
+            " v-model="ruleForm.accountName"></el-input>
           </el-form-item>
           <el-form-item label="开户行" prop="openingBank">
             <el-input class="name_input" v-model="ruleForm.openingBank"></el-input>
@@ -746,7 +747,9 @@ export default {
                   handPhone: this.ruleForm.handlersPhone,
                   billName: this.ruleForm.operator,
                   taxNumber: this.ruleForm.pactNumber,
-                  orgs: [], // 使用部門
+                  orgs: [{
+                    "orgID": 0,
+                    "orgName": "string"}], // 使用部門
                   alias:keepAlias, // 部门其他名 otherSupplier
                   expireTime: moment(this.ruleForm.expireData).format('YYYY-MM-DD'), // 到期日期
                   memo: this.ruleForm.remark,

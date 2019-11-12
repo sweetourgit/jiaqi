@@ -70,9 +70,9 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">审批</el-button>
-          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0">|</span>
-          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0" type="text" size="small" class="table_details">付款账户</el-button>
+          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn">|</span>
+          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn" type="text" size="small" class="table_details">付款账户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -99,19 +99,35 @@
     <el-dialog title="借款申请" :visible.sync="noIncomeShow" width="1100px" custom-class="city_list" @close="cancel">
       <div style="position:absolute; top:8px; right:10px;">
         <el-button @click="CloseNoIncomeShow()">取消</el-button>
-        <el-button type="primary"@click="ensureIncome()">申请</el-button>
+        <el-button type="primary" @click="ensureIncome()">申请</el-button>
       </div>
       <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
         <!-- 基本信息 -->
         <el-form-item label="团期计划" prop="plan" style="float:left;">
 <!--          <el-input class="name_input" @blur="tour_check" v-model="" placeholder=""></el-input>    注意这里面 tour_check 这个方法还需要调用 -->
-          <el-autocomplete class="name_input" v-model="ruleForm.plan" :fetch-suggestions="querySearch3Plan" placeholder="请输入团期计划"  @select="departurePlan" :trigger-on-focus="false"></el-autocomplete>
+          <el-autocomplete
+            class="name_input"
+            v-model="ruleForm.plan"
+            :fetch-suggestions="querySearch3Plan"
+            placeholder="请输入团期计划"
+            @select="departurePlan"
+            @blur="tour_check"
+            :trigger-on-focus="false"
+          >
+          </el-autocomplete>
           <el-input style="width:300px;" disabled v-model="ruleForm.plan_01" placeholder="通过输入团期计划,自动补充产品名称"></el-input>
           <el-button class="name_button" @click="IncomePlan()">选择</el-button>
         </el-form-item>
         <el-form-item label="供应商名称" prop="supplier" style="clear:both;">
-          <el-autocomplete class="name_input" v-model="ruleForm.supplier" :fetch-suggestions="querySearch3" placeholder="请输入供应商名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
+          <el-autocomplete
+            class="name_input"
+            v-model="ruleForm.supplier"
+            :fetch-suggestions="querySearch3"
+            placeholder="请输入供应商名称"
+            :trigger-on-focus="false"
+            @select="departure"
+          ></el-autocomplete>
         </el-form-item>
         <el-form-item label="借款类型" prop="planType">
           <el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
@@ -139,8 +155,9 @@
             class="upload-demo"
             name="files"
             ref="upload"
+            multiple
             :action="this.upload_url"
-            :file-list="ruleForm.accessory"
+            :file-list="fileList"
             :on-error="handleError"
             :on-success="handleSuccess"
             :on-remove="handleRemove"
@@ -153,7 +170,7 @@
         <!-- 基本信息 END -->
         <!-- 相关信息 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>相关信息</el-divider>
-        <el-table :data="tableMoney" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="tableMoney" border :header-cell-style="getRowClass">
           <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
           <el-table-column prop="paymentChecking" label="审批中借款总额" align="center"></el-table-column>
           <el-table-column prop="payment" label="已审批借款总额" align="center"></el-table-column>
@@ -165,7 +182,7 @@
         <!-- 相关信息 END -->
         <!-- 无收入借款明细 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
-        <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
+        <el-table :data="tableIncome" border :header-cell-style="getRowClass">
           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
           <el-table-column prop="checkTypeEX" label="审批状态" align="center"></el-table-column>
           <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
@@ -182,7 +199,7 @@
         <!-- 无收入借款明细 END -->
         <!-- 预付款明细 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
-        <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="tablePayment" border :header-cell-style="getRowClass">
           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
           <el-table-column prop="checkTypeEX" label="审批状态" align="center"></el-table-column>
           <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
@@ -199,7 +216,7 @@
         <!-- 预付款明细 END -->
         <!-- 收入明细 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
-        <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="tableEarning" border :header-cell-style="getRowClass">
           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
           <el-table-column prop="channel" label="订单来源" align="center"></el-table-column>
           <el-table-column prop="person" label="订单联系人" align="center"></el-table-column>
@@ -207,8 +224,8 @@
           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
           <el-table-column prop="priceSum" label="已收金额" align="center"></el-table-column>
           <el-table-column prop="arrears" label="欠款金额" align="center"></el-table-column>
-          <el-table-column prop="arrearsDate" label="欠款日期" align="center"></el-table-column>
-          <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
+          <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' align="center"></el-table-column>
+          <el-table-column prop="repaymentDate" label="应还日期" :formatter='dateFormat' align="center"></el-table-column>
         </el-table>
         <!-- 收入明细 END -->
       </el-form>
@@ -326,7 +343,7 @@
         </el-table>
         <div class="number_button">
           <el-button @click="accountCancel()">取消</el-button>
-          <el-button @click="accountSure" type="primary">申请</el-button>
+          <el-button @click="accountSure" type="primary">确定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -335,7 +352,7 @@
     <el-dialog width="45%" title="预付款明细" :visible.sync="dialogFormVisible_paymenrt"append-to-body>
       <div class="indialog">
         <el-table :data="tableApprove" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="times" label="审批时间" width="150" align="center"></el-table-column>
+           <el-table-column prop="times" :formatter='dateFormat' label="审批时间" width="150" align="center"></el-table-column>
            <el-table-column prop="people" label="审批人" align="center"></el-table-column>
            <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
            <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
@@ -344,10 +361,10 @@
     </el-dialog>
     <!-- 申请无收入借款中预付款明细查看弹窗 END -->
     <!-- 申请无收入借款中无收入借款明细查看弹窗 -->
-    <el-dialog width="45%" title="无收入借款明细" :visible.sync="dialogFormVisible_Income"append-to-body>
+    <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income"append-to-body>
       <div class="indialog">
         <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="times" label="审批时间" width="150" align="center"></el-table-column>
+           <el-table-column prop="times" :formatter='dateFormat' label="审批时间" width="150" align="center"></el-table-column>
            <el-table-column prop="people" label="审批人" align="center"></el-table-column>
            <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
            <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
@@ -375,7 +392,7 @@
         <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="addAccount()" class="table_details">选择</el-button>
+            <el-button type="text" size="small" @click="addAccount(scope.$index, scope.row)" class="table_details">选择</el-button>
           </template>
         </el-table-column>
         </el-table>
@@ -402,6 +419,7 @@ export default {
       }
     };
     return {
+      ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       ruleFormSeach: {
         groupCode_01:'', // 团号
@@ -485,7 +503,7 @@ export default {
         accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
         accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],
         payment:[{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-        // accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
+        accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
       },
       fileList: [],
       dialogFormVisible1:false, // 无收入借款中借款人弹窗
@@ -514,13 +532,12 @@ export default {
 
       ], // 无收入借款弹窗中无收入借款明细弹窗
       dialogFormVisible_Income:false, // 无收入借款弹窗中预付款明细查看弹窗
-      tableIncomeCheck:[/*{
+      tableIncomeCheck:[{
         times:' 2019-1-14 19:00:00',
         people:'洋洋1',
         result:'通过',
         opinion:'不同意'
-        }*/
-      ],
+        }],
       tableEarning:[], // 无收入借款弹窗中收入明细表格
       checkIncomeShow:false, // 查看无收入借款弹窗
       tableCourse:[/*{ // 查看无收入借款审批过程
@@ -535,7 +552,7 @@ export default {
       planID:'',
       supplier_id:0, // 供应商选择银行账号
       tableData2:[],
-      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture', // 图片上传
+      upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
       uid: 0, // 上传图片缩略图选中项
       status:"",
       SelectAccount:false, // 选择账户弹窗
@@ -558,7 +575,7 @@ export default {
       if(date == undefined) {
         return '';
       }
-      return moment(date).format('YYYY-MM-DD')
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
     // 重置
     emptyButton(formName){
@@ -635,7 +652,7 @@ export default {
         "object": {
           name: queryString3,
           UserState:-1,
-        SupplierType:-1,
+          SupplierType:-1,
         }
       }).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
@@ -854,7 +871,9 @@ export default {
       this.plan_data = '';
       this.tablePlan = ''
     },
+    // 供应商所有关联列表信息
     getPaymentdetails(val) {
+      console.log('借款申请')
       var that = this
       // 预付付款明细
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
@@ -919,6 +938,7 @@ export default {
         }
       }).catch(err => {})
     },
+    // 团期计划输入框失去焦点时
     tour_check() {
       if (this.ruleForm.plan != '') {
         this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
@@ -975,6 +995,8 @@ export default {
     // 查看无收入借款弹窗(列表中的详情)
     checkIncome(row){
       this.checkIncomeShow = true;
+      console.log(this.checkIncomeShow,'this.checkIncomeShow')
+      console.log(row.paymentID,'row')
       this.pid = row.paymentID;
       this.status = row.checkTypeEX;
       this.ruleForm = row;
@@ -1002,6 +1024,7 @@ export default {
         }
      })
     },
+    // 关闭弹窗
     CloseCheckIncomeShow(){
       this.checkIncomeShow = false;
       this.$refs['ruleForm'].resetFields();
@@ -1042,30 +1065,28 @@ export default {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           let pictureList = [];
-          for (let i = 0; i < this.fileList.length; i++) {
-            let picture = {};
-            picture.url = this.fileList[i].url;
-            picture.name = this.fileList[i].name;
-            pictureList.push(picture);
-          }
+
+          this.fileList.forEach(function(item){
+            pictureList.push({ url: item.url.slice(5), name: item.name})
+          })
 
           var _this = this;
           this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insert",
             {
               object: {
-                createUser:sessionStorage.getItem('id'),
-                paymentType: 1, // 借款类型 1无收入借款 2预付款
-                planID: this.tour_id, // 对应计划ID --Plan，不存在传值0
-                supplierID: this.supplier_id, // 对应供应商ID --Supplier，不存在传值0
-                supplierName: this.ruleForm.supplier, // Supplier不存在时补充供应商名称
-                supplierType: this.ruleForm.planType, // 供应商类型 0返款
-                price: this.ruleForm.planAmount, // 金额
-                mark: this.ruleForm.abstract, // 摘要
-                cardNumber: this.ruleForm.account, // 账号
-                bankName: this.ruleForm.accountBank, // 开户行
-                cardName: this.ruleForm.accountOpenName, // 开户名
                 //payway: this.ruleForm.payment, // 付款方
-                files: pictureList, //上传图片
+                "createUser": sessionStorage.getItem('id'),
+                "paymentType": 1, // 借款类型 1无收入借款 2预付款
+                "planID": this.tour_id, // 对应计划ID --Plan，不存在传值0
+                "supplierID": this.supplier_id, // 对应供应商ID --Supplier，不存在传值0
+                "supplierName": this.ruleForm.supplier, // Supplier不存在时补充供应商名称
+                "supplierType": this.ruleForm.planType, // 供应商类型 0返款
+                "price": this.ruleForm.planAmount, // 金额
+                "mark": this.ruleForm.abstract, // 摘要
+                "cardNumber": this.ruleForm.account, // 账号
+                "bankName": this.ruleForm.accountBank, // 开户行
+                "cardName": this.ruleForm.accountOpenName, // 开户名
+                "files": pictureList, //上传图片,
               }
             })
             .then(res => {
@@ -1179,6 +1200,7 @@ export default {
       this.fileList = []
     },
     handleSuccess(res, file, fileList) {
+      console.log(fileList)
       this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
       // 多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { // 多张图片情况只在第一次执行数组操作
@@ -1260,13 +1282,13 @@ export default {
     closeAccount(){
       this.SelectAccount = false;
     },
-    addAccount(){
+    addAccount(index, row){
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",
         {
           "paymentID": this.paymentID,
-          "accountID": this.tableSelect[0].id
+          "accountID": row.id
         }
       )
       .then(function (obj) {})
@@ -1294,6 +1316,13 @@ export default {
     this.planList();
   },
   created(){
+    // 只有是出纳的时候才显示申请人检索
+    console.log(sessionStorage.getItem('hasCashierInfo'),'出纳')
+    if (sessionStorage.getItem('hasCashierInfo')) {
+      this.ifAccountBtn = true
+    } else {
+      this.ifAccountBtn = false
+    }
     this.themeList();
     this.payment();
   }

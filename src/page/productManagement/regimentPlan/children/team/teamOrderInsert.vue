@@ -328,7 +328,7 @@
       <div>
         <el-tabs v-model="activeName">
           <el-tab-pane label="借款" name="first">
-            <el-table :data="tableBorrowing" :header-cell-style="getCostClass" border>
+            <el-table :data="tableBorrowing" ref="multipleTable" class="table" border>
               <el-table-column prop="paymentID" label="ID" min-width="80" align="center"></el-table-column>
               <el-table-column prop="paymentType" label="借款类型" min-width="120" align="center"></el-table-column>
               <el-table-column prop="checkType" label="审批状态" align="center">
@@ -345,7 +345,7 @@
               <el-table-column prop="createUser" label="申请人" min-width="70" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
-                  <span class="cursor blue">查看</span>
+                  <span class="cursor blue" @click="approval(scope.row)">查看</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -407,6 +407,15 @@
           </el-tab-pane>
         </el-tabs>
       </div>
+    </el-dialog>
+    <!--审批过程-->
+    <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px"@close="closeApprova()">
+      <el-table :data="approvalTable" :header-cell-style="getCostClass" border>
+        <el-table-column prop="finishedTime" label="审批时间" min-width="180" align="center"></el-table-column>
+        <el-table-column prop="participantName" label="审批人" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="approvalName" label="审批结果" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="No" label="审批意见" min-width="180" align="center"></el-table-column>
+      </el-table>
     </el-dialog>
     <!-- </div> -->
     <!-- </div> -->
@@ -559,6 +568,12 @@ export default {
       tableCollection:[],//收款表格
       tableOrder:[],//订单表格
       productPos:0,
+      approvalTable:[],//审批过程表格
+      approvalShow:false,//审批过程弹窗
+      guid:'',
+      pid:'',
+      paymentType:'',
+      multipleSelection: [], //选中的list
     };
   },
   filters: {
@@ -775,6 +790,7 @@ export default {
       }
     },
     submitForm(formName,index) {
+      console.log(1)
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
         var blooen = "0";
@@ -887,7 +903,7 @@ export default {
           }
         } else {
           console.log("error submit!!");
-          this.ifOrderInsert = true;
+          this.ifOrderInsert = false;
           return false;
         }
       });
@@ -937,12 +953,11 @@ export default {
           });
           if (res.data.isSuccess == true) {
             this.teampreviewData.regimentType = res.data.object.regimentType;
-            console.log(this.teampreviewData.regimentType)
             if(this.ifOrderInsert===true){
               if(this.teampreviewData.regimentType === 1){//判断是都停售 1正常
                   if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
                      console.log(guest)
-                     //this.ifOrderInsert = true;
+                     this.ifOrderInsert = true;
                      this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
                       object: {
                         id: 0,
@@ -1006,13 +1021,13 @@ export default {
                           //清空表单
                           //this.$refs[formName].resetFields();
                           this.dialogFormOrder = false;
-                          this.ifOrderInsert = false;
-                          // this.startUpWorkFlowForJQ(
-                          //   data.OrderID,
-                          //   data.FlowModel,
-                          //   data.FlowModelName,
-                          //   data.Usercode
-                          // );
+                          this.ifOrderInsert = true;
+                          this.startUpWorkFlowForJQ(
+                            data.OrderID,
+                            data.FlowModel,
+                            data.FlowModelName,
+                            data.Usercode
+                          );
                         } else if(res.data.isSuccess == false){
                           //预留黑名单信息？？？
                           this.$message.success(res.data.result.message + "");
@@ -1020,7 +1035,7 @@ export default {
                         }
                       });
                   }else if(this.ruleForm.orderRadio === '2'){
-                    //this.ifOrderInsert = true;
+                    this.ifOrderInsert = true;
                     this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                       object: {
                         id: 0,
@@ -1083,12 +1098,12 @@ export default {
                         //this.$refs[formName].resetFields();
                         this.dialogFormOrder = false;
                         this.ifOrderInsert = false;
-                        // this.startUpWorkFlowForJQ(
-                        //   data.OrderID,
-                        //   data.FlowModel,
-                        //   data.FlowModelName,
-                        //   data.Usercode
-                        // );
+                        this.startUpWorkFlowForJQ(
+                          data.OrderID,
+                          data.FlowModel,
+                          data.FlowModelName,
+                          data.Usercode
+                        );
                       } else {
                         //预留黑名单信息？？？
                         this.$message.success(res.data.result.message + "");
@@ -1164,29 +1179,6 @@ export default {
       }
       return s;
     },
-    //启动工作流
-    // startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
-    //   this.$http
-    //     .post(this.GLOBAL.jqUrl + "/api/JQ/StartUpWorkFlowForJQ", {
-    //       jQ_ID: OrderID,
-    //       jQ_Type: FlowModel,
-    //       workflowCode: FlowModelName,
-    //       userCode: Usercode
-    //     })
-    //     .then(res => {
-    //       this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
-    //     });
-    // },
-    // //提交工作任务
-    // submitWAForJQ(Usercode, workItemID) {
-    //   this.$http
-    //     .post(this.GLOBAL.jqUrl + "/api/JQ/SubmitWorkAssignmentsForJQ", {
-    //       userCode: Usercode,
-    //       workItemID: workItemID,
-    //       commentText: "测试"
-    //     })
-    //     .then(res => {});
-    // },
     delTravel(type, index){//删除单条表格数据
       this.$confirm("是否删除该条出行人信息?", "提示", {
          confirmButtonText: "确定",
@@ -1442,6 +1434,48 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    //启动工作流
+    startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
+      console.log(OrderID)
+      this.$http.post(this.GLOBAL.jqUrl + "/JQ/StartUpWorkFlowForJQ", {
+        jQ_ID: OrderID,
+        jQ_Type: FlowModel,
+        workflowCode: FlowModelName,
+        userCode: Usercode
+      })
+      .then(res => {
+        this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
+      });
+    },
+    //提交工作任务
+    submitWAForJQ(Usercode, workItemID) {
+      this.$http
+        .post(this.GLOBAL.jqUrl + "/JQ/SubmitWorkAssignmentsForJQ", {
+          userCode: Usercode,
+          workItemID: workItemID,
+          commentText: "测试"
+        })
+        .then(res => {});
+    },
+    approval(row){//点击借款出现弹窗
+      this.pid = row.guid;//
+      this.paymentType = row.paymentType;
+      this.infoForJQ();
+      this.approvalShow = true;
+    },
+    infoForJQ(){//借款获取审批流程
+      var that =this
+      console.log(this.paymentType)
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+        jQ_ID: this.pid,
+        jQ_Type: this.paymentType == '无收入借款' ? 1 : 2,
+      }).then(obj => {
+        that.approvalTable = obj.data.extend.instanceLogInfo;
+      }).catch(obj => {})
+    },
+    closeApprova(){//关闭借款弹窗
+      this.approvalTable = [];
     },
   }
 };

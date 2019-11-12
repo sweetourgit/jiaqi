@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
-    <!--申请预付款-->
+    <!-- 申请预付款 -->
     <el-dialog title="申请预付款" :visible="dialogFormVisible" width=60% :show-close="false" @close="closeAdd">
       <div v-if="this.find == 1" class="sh_style">{{this.infoStatus}}</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
@@ -11,7 +11,7 @@
         </div>
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <!-- 基本信息 -->
-          <el-tab-pane label="预付款申请" name="first">
+          <el-divider content-position="left" class='title-margin'>申请预付款</el-divider>
             <div>
               <!--申请人-->
               <!--<el-form-item label="申请人" prop="user" ref="user" label-width="120px">-->
@@ -34,13 +34,21 @@
               </el-form-item>
               <!-- 供应商 -->
               <el-form-item label="供应商名称" prop="supplier" ref="supplier" label-width="120px" style="clear:both;">
-                <div class="destination-input inputWidth">
-                  <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
-                    {{tag2.label}}
-                  </el-tag>
-                  <el-autocomplete id="input-error" :disabled="change" class="lable_input" v-if="inputVisible2" v-model="ruleForm.supplier" ref="saveTagInput"  placeholder="请输入供应商" @keyup.enter.native="handleInputConfirm2" :fetch-suggestions="querySearch5" :trigger-on-focus="false" @select="dest_01" @blur="handleInputConfirm2">
-                  </el-autocomplete>
-                </div>
+                <el-autocomplete
+                  id="input-error"
+                  :disabled="change"
+                  class="lable_input"
+                  v-if="inputVisible2"
+                  v-model="ruleForm.supplier"
+                  ref="saveTagInput"
+                  placeholder="请输入供应商"
+                  @keyup.enter.native="handleInputConfirm2"
+                  :fetch-suggestions="querySearch5"
+                  :trigger-on-focus="false"
+                  @select="dest_01"
+                >
+                  <!-- @blur="handleInputConfirm2" -->
+                </el-autocomplete>
               </el-form-item>
               <!-- 类型 -->
               <el-form-item label="借款类型" prop="type" label-width="120px">
@@ -81,27 +89,29 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <div style="    color: red;position: absolute;top: 571px;left: 65px;">*</div>
-              <el-form-item label="附件" label-width="120px"  prop="pass">
-                <el-upload class="upload-demo" name="files" ref="upload" :limit="12" multiple :action="this.upload_url" :disabled="change" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview"  list-type="picture" >
-                  <el-button size="small" type="primary">点击上传</el-button>
-                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                </el-upload>
-               <!-- <el-upload
+              <el-form-item label="附件" label-width="120px" prop="pass">
+                <el-upload
                   class="upload-demo"
                   name="files"
                   ref="upload"
                   :limit="12"
-                  :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview"
-                  multiple :action="this.upload_url"
+                  multiple
+                  :action="this.upload_url"
                   :disabled="change"
-                  :file-list="fileList">
+                  :file-list="fileList"
+                  :on-error="handleError"
+                  :on-success="handleSuccess"
+                  :on-remove="handleRemove"
+                  :on-preview="handlePreview"
+                  list-type="picture"
+                >
                   <el-button size="small" type="primary">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                </el-upload>-->
+                </el-upload>
               </el-form-item>
+              <el-divider content-position="left" class='title-margin title-margin-t' v-if="tableData5.length != 0">相关信息</el-divider>
               <el-form-item label="" label-width="120px" label-height="auto" v-if="tableData5.length != 0">
-                <el-table :data="tableData5" border style="width:90%" :header-cell-style="getRowClass2">
+                <el-table :data="tableData5" style="width:100%" border :header-cell-style="getRowClass2">
                   <el-table-column prop="payable" label="订单总额" align="center">
                   </el-table-column>
                   <el-table-column prop="paymentChecking" label="审批中借款总额" align="center">
@@ -118,37 +128,35 @@
                   </el-table-column>
                 </el-table>
               </el-form-item>
-              <el-form-item label="预付款明细" label-width="120px" label-height="auto">
-                <br />
-                <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
-                  <el-table-column prop="paymentID" label="ID" align="center">
-                  </el-table-column>
-                  <el-table-column prop="checkTypeEX" label="审批状态" align="center">
-                  </el-table-column>
-                  <el-table-column label="借款类型" align="center">
-                    <template slot-scope="scope">
-                      <span v-if="scope.row.paymentType==1">无收入借款</span>
-                      <span v-if="scope.row.paymentType==2">预付款</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="supplierName" label="供应商" align="center">
-                  </el-table-column>
-                  <el-table-column prop="price" label="金额" align="center">
-                  </el-table-column>
-                  <el-table-column prop="expensePrice" label="已核销金额" align="center">
-                  </el-table-column>
-                  <el-table-column prop="createName" label="申请人" align="center">
-                  </el-table-column>
-                  <el-table-column label="审批过程" align="center">
-                    <template slot-scope="scope">
-                      <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-form-item>
+              <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
+              <el-table :data="tableData6" border style="width:100%" :header-cell-style="getRowClass2">
+                <el-table-column prop="paymentID" label="ID" align="center">
+                </el-table-column>
+                <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+                </el-table-column>
+                <el-table-column label="借款类型" align="center">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.paymentType==1">无收入借款</span>
+                    <span v-if="scope.row.paymentType==2">预付款</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="supplierName" label="供应商" align="center">
+                </el-table-column>
+                <el-table-column prop="price" label="金额" align="center">
+                </el-table-column>
+                <el-table-column prop="expensePrice" label="已核销金额" align="center">
+                </el-table-column>
+                <el-table-column prop="createName" label="申请人" align="center">
+                </el-table-column>
+                <el-table-column label="审批过程" align="center">
+                  <template slot-scope="scope">
+                    <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
+                  </template>
+                </el-table-column>
+              </el-table>
 
               <el-dialog title="审批过程" class="aaaaa" custom-class="approvalClass" :append-to-body="true" :visible.sync="dialogVisible6" width=900px>
-                <el-table :data="tableData11" border style="800px;" :header-cell-style="getRowClass2">
+                <el-table :data="tableData11" border :header-cell-style="getRowClass2">
                   <el-table-column prop="createTime" label="审批时间" align="center">
                   </el-table-column>
                   <el-table-column prop="user" label="审批人" align="center">
@@ -159,10 +167,8 @@
                   </el-table-column>
                 </el-table>
               </el-dialog>
-
-              <el-form-item label="无收入借款明细" label-width="120px" label-height="auto">
-                <br />
-                <el-table :data="tableData7" border style="width:100%" :header-cell-style="getRowClass2">
+              <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
+                <el-table :data="tableData7" border :header-cell-style="getRowClass2">
                   <el-table-column prop="paymentID" label="ID" align="center">
                   </el-table-column>
                   <el-table-column prop="checkTypeEX" label="审批状态" align="center">
@@ -186,9 +192,7 @@
                       <span style="color:blue;" v-on:click="advanceProcess(scope.row.id)">查看</span>
                     </template>
                   </el-table-column>
-
                 </el-table>
-              </el-form-item>
 
               <el-dialog title="审批过程" class="aaaaa" custom-class="approvalClass" :append-to-body="true" :visible.sync="dialogVisible5" width=900px>
                 <el-table :data="tableData10" border style="800px;" :header-cell-style="getRowClass2">
@@ -203,10 +207,8 @@
                 </el-table>
               </el-dialog>
 
-
-              <el-form-item label="收入明细" label-width="120px" label-height="auto">
-                <br />
-                <el-table :data="tableData8" border style="width:85%" :header-cell-style="getRowClass2">
+              <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
+                <el-table :data="tableData8" border :header-cell-style="getRowClass2">
                   <el-table-column prop="oNo" label="订单编号" align="center">
                   </el-table-column>
                   <el-table-column prop="source" label="订单来源" align="center">
@@ -225,11 +227,8 @@
                   </el-table-column>
                   <el-table-column prop="repaymentTime" label="应还日期" align="center">
                   </el-table-column>
-                  </el-table-column>
                 </el-table>
-              </el-form-item>
             </div>
-          </el-tab-pane>
         </el-tabs>
       </el-form>
     </el-dialog>
@@ -356,7 +355,7 @@ export default {
     change: false,
     pid: '',
     infoStatus: '',
-    typeList: {
+    typeList: {  // 借款类型
       type: Array,
       default: () => []
     },
@@ -366,6 +365,13 @@ export default {
     },
   },
   data() {
+    var validateVoucher = (rule, value, callback) => {
+      if (this.fileCheckVal === 0) {
+        callback(new Error('请上传附件'));
+      } else {
+        callback();
+      }
+    };
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('文件不能为空'));
@@ -377,6 +383,7 @@ export default {
       }
     };
     return {
+      fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       pagesize3:10,
       count3:300,
       currentPage4: 1,
@@ -398,24 +405,13 @@ export default {
       firstTab: true,
       secondTab: false,
       approvalTotal: 0,
-      tableData2: [],
+      tableData2: [], // 团期计划检索联想数组
       tableData3: [],
       tableData4: [],
       tableData5: [],
       tableData6: [],
       tableData7: [],
-      tableData8: [{
-        oNo: '订单编号',
-        source: '来源',
-        user: '联系人',
-        number: '人数',
-        total: '订单金额',
-        accepted: '已收',
-        arrears: '欠款',
-        aNo: '收款单号',
-        arrearsTime: '欠款日期',
-        repaymentTime: '应还日期',
-      }],
+      tableData8: [], // 收入明细
       tableData9: [{
         account: '账户',
         bank: '开户行',
@@ -452,10 +448,9 @@ export default {
         cardName: '',
         payMode: '',
         type: '',
-        pass:'',
+        pass: [],
       }, //文件上传列表
       fileList: [],
-
       fiels:'',
       rules: {
         //user: [{ required: true, message: '申请人不能为空', trigger: 'change' }],
@@ -475,13 +470,12 @@ export default {
         bankName: [{ required: true, message: '开户行不能为空', trigger: 'blur' }],
         cardName: [{ required: true, message: '开户名不能为空', trigger: 'blur' }],
         pass: [
-          { validator: validatePass, trigger: 'blur' }
+          { required: true, trigger: 'change', validator: validateVoucher}
         ],
         fiels:[{ required: true, message: '不能为空', trigger: 'blur' }],
       },
       activeName: 'first',
       inputVisible3: false,
-      dynamicTags2: [],
       noNull: '',
       validaError: '',
       empty: '',
@@ -509,11 +503,13 @@ export default {
       cardNumber_pre: '',
       bankName_pre: '',
       cardName_pre: '',
+      upload:{
+        pass:'',
+      },
       time: 0,
       len: 0,
       uid: 0, //上传图片缩略图选中项
-
-      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',
+      upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
     }
   },
   computed: { // 计算属性的 getter
@@ -538,6 +534,21 @@ export default {
     closeAdd() {
       this.clearForm()
       this.$emit('close', false);
+      this.$confirm("是否取消本次借款申请?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(res => {
+        this.$message.success("借款申请已取消");
+        this.dialogFormVisible =false;
+        this.$refs["ruleForm"].resetFields();
+      })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
     },
     advanceProcess2(num) {
       this.dialogVisible6 = true
@@ -615,6 +626,7 @@ export default {
     handleRemove(file, fileList) {
       this.uid = fileList[0].uid;
       this.fileList = fileList
+      this.fileCheckVal = fileList.length
     },
     //文件上传
     handleChange(file, fileList) {
@@ -626,7 +638,7 @@ export default {
     },
     handleSuccess(res, file, fileList) {
       this.ruleForm.pass = 1
-
+      this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
       //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
         this.time = fileList.length;
@@ -938,15 +950,14 @@ export default {
     },
     // 供应商
     dest_01(item) {
+      console.log(item,'dongzhen')
       this.ruleForm.supplier = item.value;
-      this.inputVisible2 = false;
     },
     handleInputConfirm2() {
       if (this.ruleForm.supplier !== '') {
         setTimeout(res => {
           let inputVal4 = this.ruleForm.supplier;
           if (inputVal4) {
-            this.dynamicTags2.push({ "labelID": 0, "label": inputVal4, "teamID": 0 });
             this.ruleForm.supplier = inputVal4;
           }
           this.inputVisible2 = false;
@@ -982,18 +993,21 @@ export default {
       }
       this.$refs.ruleForm.validateField('supplier')
     },
+    // 供应商联想查询
     querySearch5(queryString5, cb) {
-      this.tableData2 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
         "object": {
-          name: queryString5
+          name: queryString5,
+          UserState:-1,
+          SupplierType:-1,
         }
       }).then(res => {
         if(res.data.objects != null) {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.tableData2.push({
               "value": res.data.objects[i].name,
-              "id": res.data.objects[i].id
+              "id": res.data.objects[i].id,
+              "supplierType": res.data.objects[i].supplierType
             })
             this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
           }
@@ -1004,10 +1018,10 @@ export default {
         }
       })
     },
-    createFilter(queryString) {
+    createFilter(queryString1){
       return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
+        return (restaurant.value);
+      }
     },
     // 提交
     submitForm(formName) {
@@ -1016,12 +1030,10 @@ export default {
         if (valid) {
           this.inputVisible2 = true;
           let pictureList = [];
-          for (let i = 0; i < this.fileList.length; i++) {
-            let picture = {};
-            picture.url = this.fileList[i].url1;
-            picture.name = this.fileList[i].name;
-            pictureList.push(picture);
-          }
+          this.fileList.forEach(function(item){
+            pictureList.push({ url: item.url.slice(5), name: item.name})
+          })
+
           this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/insert', {
             "object": {
               createUser: sessionStorage.getItem('id'),
@@ -1037,7 +1049,7 @@ export default {
               bankName: this.ruleForm.bankName, //开户行
               cardName: this.ruleForm.cardName, //开户名
               payway: this.ruleForm.payMode, //付款方式
-              files: pictureList, //付款方式
+              files: pictureList, //上传图片
             }
           }).then(res => {
             if (res.data.isSuccess == true) {
@@ -1238,7 +1250,6 @@ export default {
       }
       this.supplier_id = 0
       this.supplier = ''
-      this.dynamicTags2.splice(0, 1);
       this.supplierLength = true
       this.tour_id = 0
       this.fileList = []
@@ -1251,12 +1262,20 @@ export default {
     },
   },
   created() {
-
   },
 };
 
 </script>
 <style lang="scss" scoped>
+  .title-margin{
+    margin-bottom: 30px;
+  }
+  .title-margin-t{
+    margin-top: 45px;
+  }
+  .el-divider__text{
+    font-size: 17px !important
+  }
 .el-tabs__nav>>>.el-tabs__item {
   font-size: 30px !important;
 }

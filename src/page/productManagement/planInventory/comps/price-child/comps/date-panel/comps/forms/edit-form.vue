@@ -64,6 +64,7 @@
             v-for="(item, i) in enrollList" 
             :key="i"
             :proto="item"
+            :average="vm.average"
           >
             <el-button style="float: right; padding: 3px 0;" type="text" @click="removeEnrollCard(i)">删除</el-button>
           </enroll-card>
@@ -103,12 +104,13 @@ export default {
       vm: {
         state: false,
         share: SHARE_STATE.NOT_SHARE,
-        enrollName: null,
+        enrollName: null
       },
       submitForm: {
         count: '',
         dateHous: null,
-        inventoryID: null
+        inventoryID: null,
+        averageCost: null,
       },
       rules: {
         inventoryID: { required: true, message: '请选择共享库存', trigger: ['blur']}, 
@@ -130,12 +132,16 @@ export default {
 
   methods: {
     handleOpen(payload){
-      let { share, dateHous, count, inventoryID, planEnroll, day }= payload;
+      let { share, dateHous, count, inventoryID, planEnroll, day, regimentType, name, average, averageCost}= payload;
       // 共享类型
       this.vm.share= share;
+      this.vm.average= average; // 传递给enroll
+      this.submitForm.regimentType= regimentType;
       this.submitForm.dateHous= dateHous;
       this.submitForm.count= count;
       this.submitForm.inventoryID= inventoryID;
+      this.submitForm.name= name;
+      this.submitForm.averageCost= averageCost; // 提交修改时带上
       this.enrollList.push(...planEnroll);
       this.checkProto= this.$deepCopy(this.submitForm);
       this.cacheInit= payload;
@@ -156,16 +162,19 @@ export default {
       this.shareOptions.splice(0);  // 清空共享库存表单
       this.enrollTypeOptions.splice(0);
       this.vm.share= SHARE_STATE.NOT_SHARE; //重置共享状态
-      this.$refs.submitForm.resetFields();  // 重置表单
       this.vm.state= false;
+      this.$refs.submitForm.resetFields();  // 重置表单
     },
     
     // 选择了一条共享库存
     selectShareInventory(shareId){
       let hit= this.shareOptions.find(share => share.id=== shareId);
       if(!hit) return;
-      let { count }= hit;
+      let { count, averageCost, name }= hit;
+      // id绑在v-model上，自动改变
+      this.submitForm.name= name;
       this.submitForm.count= count;
+      this.submitForm.averageCost= averageCost;
     },
 
     // 添加一个报名
@@ -221,13 +230,14 @@ export default {
       }
       let inventory= this.getInventorySave();
       let plan= this.getPlanSave();
+      let { date }= this.cacheInit.day;
       saveInventory(inventory)
       .then(
         () => savePlan(plan)
       )
       .then(() => {
         this.$message.success('修改成功');
-        this.$emit('refresh');
+        this.$emit('refresh', { date, sureDate: true });
         this.handleClose();
       })
       .catch(() => this.$message.success('修改失败'));
@@ -235,6 +245,8 @@ export default {
     
     hasChange(){
       let bol= this.$checkLooseEqual(this.submitForm, this.checkProto);
+      //　报名数发生变化
+      if(bol) bol= (this.cacheInit.planEnroll.length=== this.enrollList.length);
       if(bol) bol= !this.childrenHasChange(); 
       return !bol;
     },
@@ -271,11 +283,12 @@ export default {
     },
 
     getInventorySave(){
-      let { share, dateHous, count, inventoryID, planEnroll, day, name }= this.cacheInit;
+      let { share, day }= this.cacheInit;
       return {
-        id: inventoryID,
-        name: name,
+        id: this.submitForm.inventoryID,
+        name: this.submitForm.name,
         count: this.submitForm.count,
+        averageCost: this.submitForm.averageCost,
         share: share,
         date: day.dayInt
       }
@@ -293,7 +306,7 @@ export default {
         date: dayInt,
         groupCode: `${codePrefix}-${dayInt}-${codeSuffix}`,
         planEnroll: this.getEnrollRefs().map(enrollRef => enrollRef.getData()),
-        regimentType: 1,
+        regimentType: this.submitForm.regimentType,
         createTime: 0,
       }
     },

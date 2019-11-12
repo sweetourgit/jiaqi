@@ -184,7 +184,7 @@
            <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
            <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
            <el-table-column prop="address" label="地址" align="center"></el-table-column>
-           <el-table-column prop="tel" label="手机号" align="center"></el-table-column>
+           <el-table-column prop="tel" label="电话" align="center"></el-table-column>
         </el-table>
         <div style="margin:30px 0 20px 25px; font-size:14pt;">关联欠款</div>
         <!-- <div class="associated">
