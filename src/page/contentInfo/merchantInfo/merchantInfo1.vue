@@ -389,6 +389,7 @@
                   <div
                     style="color: #f5a142;float: left;margin-left: 14px"
                     @click="accountEdit(2,scope.$index,scope.row)"
+                    v-if="btnindex === 2"
                   >编辑</div>
                   <div
                     style="color: #f5a142;float: left;"
