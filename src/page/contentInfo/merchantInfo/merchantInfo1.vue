@@ -72,7 +72,7 @@
         <el-table-column prop="quota" label="额度" width="130" align="center"></el-table-column>
         <el-table-column prop="arrears" label="剩余额度" width="130" align="center"></el-table-column>
         <el-table-column prop="balance" label="总欠款" width="130" align="center"></el-table-column>
-        <el-table-column prop="operation" label="操作" width="160" align="center">
+        <el-table-column prop="operation" label="操作" width="174" align="center">
           <template slot-scope="scope" style="cursor:pointer;">
             <div
               style="color: #f5a142;float:left;margin-left:30px;cursor:pointer;"
@@ -128,6 +128,7 @@
                   style="width: 250px;"
                   placeholder="请输入"
                   :disabled="btnindex == 2"
+                  :title="ruleForm.name"
                 ></el-input>
               </el-form-item>
               <el-form-item label="类别 :" prop="localCompType">
@@ -1018,7 +1019,7 @@ export default {
     },
     // 商户其他名字enter触发的事件
     handleEnterOtherNames() {
-      console.log(this.isOtherSuccess);
+      // console.log(this.isOtherSuccess);
       let obj = {};
       obj.name = this.ruleForm.otherNames;
       if (this.ruleForm.otherNames && this.isOtherSuccess == true) {
@@ -1895,7 +1896,6 @@ export default {
       }
       this.ruleForm.orgs = orgs;
       // 添加账户
-      console.log(25656)
       // jqAdminList 管理和销售人员
       let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
       adminAndSalesArr = adminAndSalesArr.map(item => {

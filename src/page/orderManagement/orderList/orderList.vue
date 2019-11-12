@@ -352,7 +352,8 @@ export default {
       platform: null, //平台 1 ERP系统  2 同业系统
       productType: "", //产品类型  Team = 1 跟团游 Free = 2 自由行
       priceType: null, //价格类型  1直客  2同业价格
-      localCompName: "", //商户名称
+      // localCompName: "", //商户名称
+      orderChannels: "", //商户名称
       contact: "", //订单联系人
       orderChannel: null, //订单来源  1 线上直客 2 线下直客 3 同业系统
       whichStateTab: null, //判断tab是从1 还是2 过来的
@@ -563,7 +564,8 @@ export default {
       beginDate = this.beginDate,
       endDate = this.endDate,
       saler = this.saler,
-      localCompName = this.localCompName, //商户名称
+      // localCompName = this.localCompName, //商户名称
+      orderChannels = this.orderChannels, //商户名称
       // productType = this.productType,
       orderStatus = this.orderStatus,
       refundStatus = this.refundStatus,
@@ -614,7 +616,8 @@ export default {
         refundStatus: this.refundStatus,
         contact: contact,
         podID: podID ? podID : 0,
-        localCompName: localCompName //商户名称
+        // localCompName: localCompName //商户名称
+        orderChannels: orderChannels //商户名称
       };
       if (endDate !== 0 && beginDate !== 0) {
         // object.beginDate = beginDate
