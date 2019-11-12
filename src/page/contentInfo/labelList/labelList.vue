@@ -683,7 +683,7 @@
       },
       deleteProduct(row){
         this.bid = row.id
-        this.$confirm("该标签所有关联产品则解绑?", "提示", {
+        this.$confirm("是否解绑该产品?", "提示", {
            confirmButtonText: "解绑",
            cancelButtonText: "取消",
            type: "warning"
