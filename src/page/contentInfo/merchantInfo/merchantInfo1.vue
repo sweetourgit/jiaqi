@@ -387,15 +387,15 @@
               <el-table-column prop="operation" label="操作" width="108" align="center">
                 <template slot-scope="scope">
                   <div
-                    style="color: #f5a142;float: left;margin-left: 14px"
+                    style="color: #f5a142;float: left;margin-left: 30px"
                     @click="accountEdit(2,scope.$index,scope.row)"
                     v-if="btnindex === 2"
                   >编辑</div>
                   <div
-                    style="color: #f5a142;float: left;"
+                    style="color: #f5a142;float: left;margin-left: 30px"
                     @click="accountDelete(scope.$index,scope.row)"
                     v-if="btnindex !== 2"
-                  >| 删除</div>
+                  >删除</div>
                 </template>
               </el-table-column>
             </el-table>
@@ -762,7 +762,7 @@ export default {
       isInputVisible: false, //商户其他名称tags显示隐藏
       isOtherSuccess: true, //商户其他名称唯一性判断  false则有重复的 则不能添加到businessOtherNamesArr
       tid: 0, //
-      pagesize: 10, //每页显示条数 默认10
+      pageSize: 10, //每页显示条数 默认10
       pageIndex: 1,
       total: 1, //总条数
       currentPage4: 1, //当前页数
@@ -1343,8 +1343,8 @@ export default {
       // jqUserType 1 管理员  2 销售
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-          pageIndex: 1,
-          pageSize: this.pagesize,
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize,
           object: object
         })
         .then(obj => {
@@ -1389,91 +1389,18 @@ export default {
     },
     // pageSize 改变时会触发
     handleSizeChange(val) {
-      this.pagesize = val;
-      this.pageIndex = 1;
+      this.pageSize = val;
       this.pageList(1, val);
-      // var that = this;
-      // this.$http
-      //   .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-      //     pageIndex: 1,
-      //     pageSize: val,
-      //     total: 0,
-      //     object: {}
-      //   })
-      //   .then(function(obj) {
-      //     that.total = obj.data.total;
-      //     that.tableData = obj.data.objects;
-      //     that.tableData.forEach(function(v, k, arr) {
-      //       // arr[k]["department"] = "XXX";
-      //       // arr[k]["manager"] = "阳阳";
-      //       if (arr[k]["state"] == 2) {
-      //         arr[k]["state"] = "正常";
-      //       } else {
-      //         arr[k]["state"] = "停用";
-      //       }
-      //       if (arr[k]["localCompType"] == 1) {
-      //         arr[k]["localCompType"] = "门店";
-      //       } else if (arr[k]["localCompType"] == 2) {
-      //         arr[k]["localCompType"] = "同业";
-      //       } else if (arr[k]["localCompType"] == 3) {
-      //         arr[k]["localCompType"] = "翻盘门店";
-      //       } else if (arr[k]["localCompType"] == 4) {
-      //         arr[k]["localCompType"] = "个体分销";
-      //       }
-      //       if (arr[k]["settlementType"] == 2) {
-      //         arr[k]["settlementType"] = "非月结";
-      //       } else {
-      //         arr[k]["settlementType"] = "月结";
-      //       }
-      //     });
-      //   })
-      //   .catch(function(obj) {
-      //     console.log(obj);
-      //   });
+   
     },
     // currentPage 改变时会触发
     handleCurrentChange(val) {
-      this.pageList(val, this.pageSize);
       this.pageIndex = val;
-      // var that = this;
-      // this.$http
-      //   .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-      //     pageIndex: val,
-      //     pageSize: this.pagesize,
-      //     total: 0,
-      //     object: {}
-      //   })
-      //   .then(function(obj) {
-      //     that.total = obj.data.total;
-      //     that.tableData = obj.data.objects;
-      //     that.tableData.forEach(function(v, k, arr) {
-      //       //arr[k]["department"] = "XXX";
-      //       arr[k]["manager"] = "阳阳";
-      //       if (arr[k]["state"] == 2) {
-      //         arr[k]["state"] = "正常";
-      //       } else {
-      //         arr[k]["state"] = "停用";
-      //       }
-      //       if (arr[k]["localCompType"] == 1) {
-      //         arr[k]["localCompType"] = "门店";
-      //       } else if (arr[k]["localCompType"] == 2) {
-      //         arr[k]["localCompType"] = "同业";
-      //       } else if (arr[k]["localCompType"] == 3) {
-      //         arr[k]["localCompType"] = "翻盘门店";
-      //       } else if (arr[k]["localCompType"] == 4) {
-      //         arr[k]["localCompType"] = "个体分销";
-      //       }
-      //       if (arr[k]["settlementType"] == 2) {
-      //         arr[k]["settlementType"] = "非月结";
-      //       } else {
-      //         arr[k]["settlementType"] = "月结";
-      //       }
-      //     });
-      //   })
-      //   .catch(function(obj) {
-      //     console.log(obj);
-      //   });
+      this.pageList(val, this.pageSize);
+      
+    
     },
+    // 添加按钮
     add_info() {
       this.tid = 0;
       this.clear();
@@ -1498,7 +1425,7 @@ export default {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
           pageIndex: 1,
-          pageSize: this.pagesize,
+          pageSize: this.pageSize,
           // total: 1, //总条数
           object: {
             // isDeleted: 0 //是否删除
@@ -1579,7 +1506,7 @@ export default {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
           pageIndex: 1,
-          pageSize: this.pagesize,
+          pageSize: this.pageSize,
           // total: 1, //总条数
           object: {
             // isDeleted: 0 //是否删除

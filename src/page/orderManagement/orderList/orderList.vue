@@ -50,14 +50,20 @@
         @blur="destinationBlur()"
       ></el-autocomplete>-->
       <!-- <br /> -->
-      <span class="search-title">商户名称</span>
+      <span class="search-title por">
+        商户名称
+        <span v-if="isToast" class="poa">没有数据</span>
+      </span>
       <el-autocomplete
         class="input"
         v-model="orgIDValue"
         :fetch-suggestions="handleBusinessGet"
         :trigger-on-focus="false"
         @select="handleChooseOrgID"
+        ref="orgIDValue"
+        @blur="isToastFun"
       ></el-autocomplete>
+
       <!-- <span class="search-title">销售</span>
       <el-input v-model="saler" class="input" @blur="salerBlur()"></el-input>-->
       <span class="search-title">订单联系人</span>
@@ -393,9 +399,7 @@ export default {
       getListOneMessage: {},
       showContent: null, //list折叠展示的
       businessLists: [], //商户名称下拉列表展示
-      getBusinessLists: [],//商户名称下拉列表选择的展示
-      // timeout: null //商户搜索时的时间设置
-      loading: false, //商户搜索是否正在从远程获取数据
+      isToast: false //商户名称模糊搜索 没有数据然后的提示语显示
     };
   },
   watch: {
@@ -448,19 +452,24 @@ export default {
           }
         })
         .then(res => {
-          for (let i = 0; i < res.data.objects.length; i++) {
-            this.businessLists.push({
-              value: res.data.objects[i].name,
-              id: res.data.objects[i].id
-            });
+          console.log(res, "res");
+          if (res.data.isSuccess == true) {
+            for (let i = 0; i < res.data.objects.length; i++) {
+              this.businessLists.push({
+                value: res.data.objects[i].name,
+                id: res.data.objects[i].id
+              });
+            }
+            let results = queryString3
+              ? this.businessLists.filter(this.createFilter(queryString3))
+              : [];
+
+            cb && cb(results);
+          } else {
+            this.orgIDValue = "";
+            this.isToast = true;
+            cb && cb([]);
           }
-          let results = queryString3
-            ? this.businessLists.filter(this.createFilter(queryString3))
-            : [];
-          clearTimeout(this.timeout);
-          this.timeout = setTimeout(() => {
-            cb&&cb(results);
-          }, 3000 * Math.random());
         })
         .catch(err => {
           console.log(err);
@@ -476,7 +485,11 @@ export default {
       this.orgID = item.id;
       console.log(item);
     },
-    
+    // input失去焦点的时候隐藏提示语
+    isToastFun() {
+      this.isToast = false;
+    },
+
     // 点击list列表中的一个
     handleContentHeader(item, index) {
       // let temp = this.orderpage;
@@ -913,6 +926,18 @@ export default {
 </script>
 
 <style scoped>
+/* 商户名称模糊查询显示 */
+.por {
+  position: relative;
+}
+.poa {
+  position: absolute;
+  left: 70px;
+  top: 30px;
+  width: 100px;
+  color: red;
+  font-size: 12px;
+}
 /* 折叠面板 */
 .contentHeader {
   position: relative;
