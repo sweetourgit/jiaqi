@@ -111,6 +111,7 @@ export default {
         state: false,
         share: SHARE_STATE.NOT_SHARE,
         isMultiple: false,
+        pacId: null,
         average: 0
       },
       // 新增plan
@@ -151,7 +152,8 @@ export default {
   },
 
   methods: {
-    handleOpen(pacId){
+    handleOpen(pack){
+      let { id, rate }= pack;
       // 得到所有选中
       this.selectedList= this.poolManager.getSelected();
       // 判断当前是否是多选状态
@@ -159,6 +161,8 @@ export default {
       getEnrollTypeDictionary().then(res => {
         this.enrollTypeOptions.push(...res);
       });
+      this.vm.rate= rate;
+      this.vm.pacId= id;
       this.vm.average= this.poolManager.getAverage();
       this.vm.state= true;
     },
@@ -173,6 +177,8 @@ export default {
       this.vm.average= 0;
       this.vm.share= SHARE_STATE.NOT_SHARE; //重置共享状态
       this.vm.state= false;
+      this.vm.pacId= null;
+      this.vm.rate= 0;
       this.$refs.submitForm.resetFields();  // 重置表单
     },
 
@@ -181,7 +187,13 @@ export default {
       this.$refs.submitForm.resetFields();
       this.submitForm.share= bol;
       // 从共享到非共享 直接返回
-      if(bol=== SHARE_STATE.NOT_SHARE) return this.vm.share= SHARE_STATE.NOT_SHARE;
+      if(bol=== SHARE_STATE.NOT_SHARE){
+        // 非共享库存重置均价
+        this.setAverage(this.poolManager.getAverage());
+        return this.vm.share= SHARE_STATE.NOT_SHARE;
+      }
+      // 如果切换到共享类型，未选择共享库存时先将均价变为0；
+      this.setAverage(0);
       // 如果已经获取过该天共享库存，则返回
       if(this.shareOptions.length) return this.vm.share= bol;
       let { dayInt }= this.poolManager.currentDay;
@@ -196,8 +208,9 @@ export default {
       let hit= this.shareOptions.find(share => share.id=== shareId);
       if(!hit) return;
       console.log(hit)
-      let { count }= hit;
+      let { count, averageCost }= hit;
       this.submitForm.count= count;
+      this.getCostExceptPlane(averageCost)
     },
 
     // 添加一个报名
@@ -452,20 +465,26 @@ export default {
       day.savingState= state;
     },
 
-    getCostExceptPlane(pacId){
+    getCostExceptPlane(averageCost){
+      let pacId= this.vm.pacId;
+      let rate= this.vm.rate;
       return new Promise((resolve, reject) => {
         getCostList(pacId).then(res => {
-          let sum= 0;
+          let sum= averageCost;
           res.forEach(el => {
             if(el.supplierType=== 2) return;
             sum+= el.money;
           })
           sum= sum/(1- rate/100);
-          this.vm.average= parseFloat(sum.toFixed(2));
-          this.$forceUpdate();
+          this.setAverage(parseFloat(sum.toFixed(2)));
         })
       })
-    }
+    },
+
+    setAverage(average){
+      this.vm.average= average;
+      this.getEnrollRefs().forEach(enrollRef => enrollRef.$forceUpdate());
+    },
   }
 }
 </script>

@@ -353,8 +353,7 @@ export default {
           ]
         }
       }).then(res => {
-        console.log(this.pageIndex)
-          if (res.data.objects.length !=0) { 
+          if (res.data.objects.length !=0) {
             var getUserCode='';
             getUserCode = res.data.objects[0].userCode;
             this.teamQueryList(this.pageIndex == 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);

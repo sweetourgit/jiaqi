@@ -75,6 +75,7 @@ export default {
         id, 
         date: timestamp? new Date(parseInt(timestamp)): null, 
         sureDate: timestamp? true: false, //是否初始化后选择准确日期
+        rate
       });
       this.$refs.showRef.init({ id });
       this.$refs.sliderRef.init(id);
