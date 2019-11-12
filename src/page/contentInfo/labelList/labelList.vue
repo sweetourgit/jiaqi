@@ -5,7 +5,7 @@
    <!--  <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick">
       <el-tab-pane :key="index+''" v-for="(item, index) in editableTabs" :label="item.typeName" :name="index+''"></el-tab-pane>
     </el-tabs> -->
-     <el-tabs v-model="editableTabsValue" type="card" @edit="handleTabsEdit" @tab-click="handleClick">
+     <el-tabs v-model="editableTabsValue" type="card" addable @edit="handleTabsEdit" @tab-click="handleClick">
       <el-tab-pane :key="index+''" v-for="(item, index) in editableTabs" :label="item.typeName" :name="index+''"></el-tab-pane>
     </el-tabs>
     <!--表格-->
@@ -218,29 +218,29 @@
           console.log(this.editableTabsValue)
           }
         }
-        // if (action === 'remove') {
-        //   if(this.deleteGatherShow==false){            
-        //     this.deleteGatherShow=true;
-        //     this.editableTabsValue = targetName;
-        //     return false;
-        //   }
-        //   else{
-        //     let tabs = this.editableTabs;
-        //     let activeName = this.editableTabsValue;
-        //     if (activeName === targetName) {
-        //       tabs.forEach((tab, index) => {
-        //         if (tab.name === targetName) {
-        //           let nextTab = tabs[index + 1] || tabs[index - 1];
-        //           if (nextTab) {
-        //             activeName = nextTab.name;
-        //           }
-        //         }
-        //       });
-        //     }
-        //     this.editableTabsValue = activeName;
-        //     this.editableTabs = tabs.filter(tab => tab.name !== targetName);
-        //   }
-        // }
+        if (action === 'remove') {
+          if(this.deleteGatherShow==false){            
+            this.deleteGatherShow=true;
+            this.editableTabsValue = targetName;
+            return false;
+          }
+          else{
+            let tabs = this.editableTabs;
+            let activeName = this.editableTabsValue;
+            if (activeName === targetName) {
+              tabs.forEach((tab, index) => {
+                if (tab.name === targetName) {
+                  let nextTab = tabs[index + 1] || tabs[index - 1];
+                  if (nextTab) {
+                    activeName = nextTab.name;
+                  }
+                }
+              });
+            }
+            this.editableTabsValue = activeName;
+            this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+          }
+        }
       },
       //清空搜索框
       emptyButton(){
