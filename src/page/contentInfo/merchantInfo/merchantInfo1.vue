@@ -72,7 +72,7 @@
         <el-table-column prop="quota" label="额度" width="130" align="center"></el-table-column>
         <el-table-column prop="arrears" label="剩余额度" width="130" align="center"></el-table-column>
         <el-table-column prop="balance" label="总欠款" width="130" align="center"></el-table-column>
-        <el-table-column prop="operation" label="操作" width="160" align="center">
+        <el-table-column prop="operation" label="操作" width="174" align="center">
           <template slot-scope="scope" style="cursor:pointer;">
             <div
               style="color: #f5a142;float:left;margin-left:30px;cursor:pointer;"
@@ -128,6 +128,7 @@
                   style="width: 250px;"
                   placeholder="请输入"
                   :disabled="btnindex == 2"
+                  :title="ruleForm.name"
                 ></el-input>
               </el-form-item>
               <el-form-item label="类别 :" prop="localCompType">
@@ -388,6 +389,7 @@
                   <div
                     style="color: #f5a142;float: left;margin-left: 14px"
                     @click="accountEdit(2,scope.$index,scope.row)"
+                    v-if="btnindex === 2"
                   >编辑</div>
                   <div
                     style="color: #f5a142;float: left;"
@@ -760,7 +762,8 @@ export default {
       isInputVisible: false, //商户其他名称tags显示隐藏
       isOtherSuccess: true, //商户其他名称唯一性判断  false则有重复的 则不能添加到businessOtherNamesArr
       tid: 0, //
-      pagesize: 10, //每页显示条数 默认10
+      pageSize: 10, //每页条数 默认10
+      pageIndex: 1,//每页
       total: 1, //总条数
       currentPage4: 1, //当前页数
       accountForm: {
@@ -1018,7 +1021,7 @@ export default {
     },
     // 商户其他名字enter触发的事件
     handleEnterOtherNames() {
-      console.log(this.isOtherSuccess);
+      // console.log(this.isOtherSuccess);
       let obj = {};
       obj.name = this.ruleForm.otherNames;
       if (this.ruleForm.otherNames && this.isOtherSuccess == true) {
@@ -1189,7 +1192,7 @@ export default {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
             this.useList.push(this.accountForm);
-            console.log(this.useList,"弹窗上面的添加按钮")
+            // console.log(this.useList,"弹窗上面的添加按钮")
             if (this.accountForm.state == 2) {
               this.accountForm.state = "正常";
             } else {
@@ -1297,10 +1300,14 @@ export default {
         peerUserType: null //职位
         //id:"",
       };
-      this.$nextTick((accountForm) => {
-        this.$refs["addForm"].resetFields();
-      });
+      // if (this.$refs["addForm"] !== undefined) {
+      //   this.$refs["addForm"].resetFields();
+      // }
+      // this.$nextTick((accountForm) => {
+      //   this.$refs["addForm"].resetFields();
+      // });
     },
+    
     handlePreview(file) {
       // console.log(file);
     },
@@ -1312,13 +1319,40 @@ export default {
     closeDialog() {
       this.btnindex = 0;
     },
-
+   // 重置
+    handleReset() {
+      this.pageIndex = 1;
+      this.input = "";
+      this.statesValue = "";
+      this.payValue = "";
+      // this.list();
+      this.pageList(1, this.pageSize);
+      this.currentPage4 = 1;
+    },
+    // pageSize 改变时会触发
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.pageList(1, val);
+   
+    },
+    // currentPage 改变时会触发
+    handleCurrentChange(val) {
+      console.log(val);
+      this.pageIndex = val;
+      this.pageList(val, this.pageSize);
+     
+      
+    },
     // 搜索
     handleSearch() {
-      this.pageList();
+      this.pageIndex = 1;
+      this.pageList(1, this.pageSize);
+      this.currentPage4 = 1;
     },
     //查询列表
     pageList(
+      pageIndex = this.pageIndex,
+      pageSize = this.pageSize,
       input = this.input,
       statesValue = this.statesValue,
       settlementType = this.payValue
@@ -1334,8 +1368,8 @@ export default {
       // jqUserType 1 管理员  2 销售
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-          pageIndex: 1,
-          pageSize: this.pagesize,
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize,
           object: object
         })
         .then(obj => {
@@ -1369,97 +1403,7 @@ export default {
           console.log(obj);
         });
     },
-    // 重置
-    handleReset() {
-      this.input = "";
-      this.statesValue = "";
-      this.payValue = "";
-      this.list();
-      this.currentPage4 = 1;
-    },
-    // pageSize 改变时会触发
-    handleSizeChange(val) {
-      this.pagesize = val;
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-          pageIndex: 1,
-          pageSize: val,
-          total: 0,
-          object: {}
-        })
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            // arr[k]["department"] = "XXX";
-            // arr[k]["manager"] = "阳阳";
-            if (arr[k]["state"] == 2) {
-              arr[k]["state"] = "正常";
-            } else {
-              arr[k]["state"] = "停用";
-            }
-            if (arr[k]["localCompType"] == 1) {
-              arr[k]["localCompType"] = "门店";
-            } else if (arr[k]["localCompType"] == 2) {
-              arr[k]["localCompType"] = "同业";
-            } else if (arr[k]["localCompType"] == 3) {
-              arr[k]["localCompType"] = "翻盘门店";
-            } else if (arr[k]["localCompType"] == 4) {
-              arr[k]["localCompType"] = "个体分销";
-            }
-            if (arr[k]["settlementType"] == 2) {
-              arr[k]["settlementType"] = "非月结";
-            } else {
-              arr[k]["settlementType"] = "月结";
-            }
-          });
-        })
-        .catch(function(obj) {
-          console.log(obj);
-        });
-    },
-    // currentPage 改变时会触发
-    handleCurrentChange(val) {
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-          pageIndex: val,
-          pageSize: this.pagesize,
-          total: 0,
-          object: {}
-        })
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            //arr[k]["department"] = "XXX";
-            arr[k]["manager"] = "阳阳";
-            if (arr[k]["state"] == 2) {
-              arr[k]["state"] = "正常";
-            } else {
-              arr[k]["state"] = "停用";
-            }
-            if (arr[k]["localCompType"] == 1) {
-              arr[k]["localCompType"] = "门店";
-            } else if (arr[k]["localCompType"] == 2) {
-              arr[k]["localCompType"] = "同业";
-            } else if (arr[k]["localCompType"] == 3) {
-              arr[k]["localCompType"] = "翻盘门店";
-            } else if (arr[k]["localCompType"] == 4) {
-              arr[k]["localCompType"] = "个体分销";
-            }
-            if (arr[k]["settlementType"] == 2) {
-              arr[k]["settlementType"] = "非月结";
-            } else {
-              arr[k]["settlementType"] = "月结";
-            }
-          });
-        })
-        .catch(function(obj) {
-          console.log(obj);
-        });
-    },
+ 
     add_info() {
       this.tid = 0;
       this.clear();
@@ -1564,8 +1508,8 @@ export default {
       var that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-          pageIndex: 1,
-          pageSize: this.pagesize,
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize,
           // total: 1, //总条数
           object: {
             // isDeleted: 0 //是否删除
@@ -1891,7 +1835,6 @@ export default {
       }
       this.ruleForm.orgs = orgs;
       // 添加账户
-
       // jqAdminList 管理和销售人员
       let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
       adminAndSalesArr = adminAndSalesArr.map(item => {
@@ -1905,24 +1848,23 @@ export default {
       });
 
       // useList
-      // this.useList.forEach((val, idx, arr) => {
-      //   if (arr[idx].peerUserType == "管理员") {
-      //     arr[idx].peerUserType = 1;
-      //   } else {
-      //     arr[idx].peerUserType = 2;
-      //   }
-      //   if (arr[idx].sex == "男") {
-      //     arr[idx].sex = 1;
-      //   } else {
-      //     arr[idx].sex = 2;
-      //   }
-      //   if (arr[idx].state == "正常") {
-      //     arr[idx].state = 2;
-      //   } else {
-      //     arr[idx].state = 3;
-      //   }
-      // });
-      // console.log(this.useList,"修改的账号信息")
+      this.useList.forEach((val, idx, arr) => {
+        if (arr[idx].peerUserType == "管理员") {
+          arr[idx].peerUserType = 1;
+        } else {
+          arr[idx].peerUserType = 2;
+        }
+        if (arr[idx].sex == "男") {
+          arr[idx].sex = 1;
+        } else {
+          arr[idx].sex = 2;
+        }
+        if (arr[idx].state == "正常") {
+          arr[idx].state = 2;
+        } else {
+          arr[idx].state = 3;
+        }
+      });
 
       this.ruleForm.expTime = moment(this.ruleForm.expTime).format("YYYYMMDD");
       this.ruleForm.id = this.tid;

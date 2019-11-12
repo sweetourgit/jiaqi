@@ -69,7 +69,8 @@ export const getCostList= function(packageID){
       object: { packageID }
     }).then((res) => {
       let { isSuccess, objects }= res.data;
-      if(!isSuccess) return reject('获取成本列表失败');
+      // 0条返回的是isSuccess是false
+      if(!isSuccess) return resolve([]);
       return resolve(objects);
     }).catch((err) => {
       reject(err);
