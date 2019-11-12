@@ -2,7 +2,10 @@
 <div class="labelList">
   <div>
     <!--tabs切换-->
-    <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick">
+   <!--  <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick">
+      <el-tab-pane :key="index+''" v-for="(item, index) in editableTabs" :label="item.typeName" :name="index+''"></el-tab-pane>
+    </el-tabs> -->
+     <el-tabs v-model="editableTabsValue" type="card" @edit="handleTabsEdit" @tab-click="handleClick">
       <el-tab-pane :key="index+''" v-for="(item, index) in editableTabs" :label="item.typeName" :name="index+''"></el-tab-pane>
     </el-tabs>
     <!--表格-->
@@ -215,29 +218,29 @@
           console.log(this.editableTabsValue)
           }
         }
-        if (action === 'remove') {
-          if(this.deleteGatherShow==false){            
-            this.deleteGatherShow=true;
-            this.editableTabsValue = targetName;
-            return false;
-          }
-          else{
-            let tabs = this.editableTabs;
-            let activeName = this.editableTabsValue;
-            if (activeName === targetName) {
-              tabs.forEach((tab, index) => {
-                if (tab.name === targetName) {
-                  let nextTab = tabs[index + 1] || tabs[index - 1];
-                  if (nextTab) {
-                    activeName = nextTab.name;
-                  }
-                }
-              });
-            }
-            this.editableTabsValue = activeName;
-            this.editableTabs = tabs.filter(tab => tab.name !== targetName);
-          }
-        }
+        // if (action === 'remove') {
+        //   if(this.deleteGatherShow==false){            
+        //     this.deleteGatherShow=true;
+        //     this.editableTabsValue = targetName;
+        //     return false;
+        //   }
+        //   else{
+        //     let tabs = this.editableTabs;
+        //     let activeName = this.editableTabsValue;
+        //     if (activeName === targetName) {
+        //       tabs.forEach((tab, index) => {
+        //         if (tab.name === targetName) {
+        //           let nextTab = tabs[index + 1] || tabs[index - 1];
+        //           if (nextTab) {
+        //             activeName = nextTab.name;
+        //           }
+        //         }
+        //       });
+        //     }
+        //     this.editableTabsValue = activeName;
+        //     this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+        //   }
+        // }
       },
       //清空搜索框
       emptyButton(){
@@ -386,10 +389,14 @@
       },
       //修改主题方法
       editTheme(){
+        if(this.ruleForm_01.highlightWords01 === this.clickTab){
+          this.editGatherShow = false;
+          return;
+        }
         if(this.editableTabs.filter(v => this.ruleForm_01.highlightWords01 == v.typeName).length != 0) {
           this.$message.error("名字重复,已存在该名称集合");
           return;
-          }
+        }
         if(this.ruleForm_01.highlightWords01 != ''){
           var that = this
           this.$http.post(
@@ -552,11 +559,11 @@
              "id": this.multipleSelection[i].id
             }).then(res => {
                 if(res.data.isSuccess == true){
-                   this.$message.success("删除成功");
                    this.pageList();
                 }
               })
           }
+          this.$message.success("删除成功");
         }).catch(() => {
               this.$message({
               type: "info",
