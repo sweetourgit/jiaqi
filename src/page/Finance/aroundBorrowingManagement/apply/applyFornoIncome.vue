@@ -10,7 +10,11 @@
         <el-divider content-position="left">基本信息</el-divider>
         <div>
           <el-form-item label="供应商名称：" prop="supplier" label-width="140px">
-            <el-autocomplete class="inputWidth" v-model="ruleForm.supplier" :fetch-suggestions="querySearchD" placeholder="请输入供应商" @select="handleSelectD" @blur="blurHand"></el-autocomplete>
+            <el-autocomplete class="inputWidth" v-model="ruleForm.supplier" :fetch-suggestions="querySearchD" placeholder="请输入供应商" @select="handleSelectD" @blur="blurHand">
+              <template slot-scope="{ item }">
+                <div>{{ item.valueName }}</div>
+              </template>
+            </el-autocomplete>
           </el-form-item>
           <el-form-item label="借款类型：" prop="type" label-width="140px">
             <el-select v-model="ruleForm.type" placeholder="请选择" class="inputWidth">
@@ -344,14 +348,14 @@
 
       // 供应商选择
       querySearchD(queryString, cb){
-        const supplierList = this.supplierList;
-        var results = queryString ? supplierList.filter(this.createFilter1(queryString)) : supplierList;
+        let supplierList = this.supplierList;
+        let results = queryString ? supplierList.filter(this.createFilter1(queryString)) : supplierList;
         // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilter1(queryString) {
         return (supplierList) => {
-          return (supplierList.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          return (supplierList.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
         };
       },
       handleSelectD(item){
@@ -381,19 +385,16 @@
       // 加载供应商信息
       loadSupplier(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
-          object: {
-            "name": '',
-            "isDeleted": 0
-          }
-        }).then(function(obj) {
+        this.$http.post(this.GLOBAL.serverSrc + "/alias/supplier/api/all").then(function(obj) {
           console.log('获取供应商',obj);
           if(obj.data.isSuccess){
             let supplierObj = [];
             obj.data.objects.forEach(function (item, index, arr) {
+              const valName = item.allName.split(',')[0];
               const supplier = {
-                'value' : item.name,
-                'id' : item.id
+                'value' : item.allName,
+                'id' : item.id,
+                'valueName': valName
               };
               supplierObj.push(supplier);
             });
