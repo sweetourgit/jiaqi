@@ -431,6 +431,7 @@
                       sessionStorage.setItem('id',res.data.id)
                       sessionStorage.setItem('orgID',res.data.orgID)
                       sessionStorage.setItem('topID',res.data.topID)
+                      sessionStorage.setItem('name',res.data.name)
                       //sessionStorage.setItem('account',this.ruleForm.user)//刚掉account
                       sessionStorage.setItem('userCode',res.data.userCode)
 

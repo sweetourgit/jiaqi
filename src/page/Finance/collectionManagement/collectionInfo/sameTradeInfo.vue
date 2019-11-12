@@ -858,6 +858,7 @@ export default {
           this.arrearsList.forEach(function(item){ // 转换关联欠款表格数据结构
             needArrearData.push({
               "id": 0,
+              'planID':item.planID,
               "collectionID": 0, // 收款id
               "orderCode": item.orderCode,
               "productName": item.proName,
@@ -875,16 +876,16 @@ export default {
             "checkType": 0, // 审批状态
             "collectionTime":  moment(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间,
             "groupCode": this.ruleForm.groupCode, // 团号,
-            "planID": this.ruleForm.planID, // 团期计划的ID,
-            "orderID": this.ruleForm.orderID, // 订单ID,
+            "orderID": 0, // 订单ID,
+            "planID": 0, // 计划id,
             "orderNumber": this.indent, // 订单号
             "collectionNumber":  this.ruleForm.collectionNumber, // 收款账户
             "price": this.ruleForm.price, // 金额,
             "dept": this.org, // 组织部门 this.dept
-            "createUser": localStorage.getItem('name'), // 创建者
+            "createUser": sessionStorage.getItem('userCode'), // 创建者
             "createTime": newDate, // 申请时间
             "code": "",
-            "serialNumber": this.ruleForm.serialNumber, // 流水号
+            "serialNumber": Number(this.ruleForm.serialNumber), // 流水号
             "abstract": this.ruleForm.abstract, // 摘要
             "files": [], // 文件
             // files: pictureList, // 图片

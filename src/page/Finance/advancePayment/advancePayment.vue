@@ -383,6 +383,7 @@ export default {
         console.log(err);
       })
     },
+    // 时间转换
     formatDate1(dates){
      var dateee = new Date(dates).toJSON();
      var date = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')

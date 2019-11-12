@@ -160,7 +160,7 @@
       <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
       <el-table-column prop="process" label="审批过程" align="center">
         <template slot-scope="scope">
-          <div @click="processIncome2(scope.row)">查看</div>
+          <div @click="processIncome(scope.row)">查看</div>
         </template>
       </el-table-column>
     </el-table>
@@ -274,7 +274,7 @@ export default {
   },
   filters: {
     formatDate: function (value) {
-      return moment(value).format('YYYY-MM-DD')
+      return moment(value).format('YYYY-MM-DD HH:mm:ss')
     }
   },
   methods: {
@@ -562,9 +562,7 @@ export default {
       })
       // 收入明细
       that.$http.post(this.GLOBAL.serverSrc + '/orderquery/api/income/detail', {
-        "object": {
-          "id": val,
-        }
+        "id": val,
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableEarning = res.data.objects

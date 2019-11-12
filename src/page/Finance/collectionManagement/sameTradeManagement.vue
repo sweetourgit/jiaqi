@@ -135,7 +135,7 @@
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">同业社名称:</div></el-col>
-            <el-col :span="18"><div class="grid-del">{{ fundamental.localCompID }}</div></el-col>
+            <el-col :span="18"><div class="grid-del">{{ fundamental.localCompName }}</div></el-col>
           </el-col>
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">收款账户:</div></el-col>
@@ -261,7 +261,7 @@ export default {
       tableData: [], // 收款管理表格
       find: 0,
       change: false,
-      dialogFormVisible: false,
+      dialogFormVisible: false, // 申请同业收款开关
       detailstShow:false, // 查看详情弹窗（是否显示）
       fundamental:{}, // 查看详情基本信息数组
       tableAudit:[], // 审核结果表格
@@ -320,6 +320,7 @@ export default {
       .catch(function(obj) {
       })
     },
+    // 关闭申请同业收款弹窗
     closeAdd() {
       this.dialogFormVisible = false;
     },
@@ -434,14 +435,14 @@ export default {
       }).catch(obj => {})
     },
     // 获取同业社列表
-    getLcList (paramsLcID) {
+    /*getLcList (paramsLcID) {
       var that =this
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getArrearsList', {
         lcID: paramsLcID
       }).then(obj => {
         that.tableAudit = obj.data.extend.instanceLogInfo;
       }).catch(obj => {})
-    },
+    },*/
     // 获取一条信息查看详情
     getLabel(paramsPaymentID){
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/get',{
@@ -449,7 +450,9 @@ export default {
       }).then(res => {
         if(res.data.isSuccess == true){
            this.fundamental=res.data.object;
-           this.getLcList(res.data.object.id)
+           // this.getLcList(res.data.object.id)
+          this.tableInvoice = res.data.object.invoiceTable
+          this.tableAssociated = res.data.object.arrears
           // this.auditResult(res.data.object.guid); 此接口没返回guid 查不了审批流程，跟后台碰下
         }
      })
@@ -506,6 +509,7 @@ export default {
         }
       )
       .then(function(obj) {
+        console.log(obj, '董振')
         _this.total = obj.data.total;
         _this.tableData = obj.data.objects;
         _this.tableData.forEach(function(v, k, arr) {

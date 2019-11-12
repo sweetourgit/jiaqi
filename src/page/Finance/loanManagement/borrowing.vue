@@ -106,12 +106,28 @@
         <!-- 基本信息 -->
         <el-form-item label="团期计划" prop="plan" style="float:left;">
 <!--          <el-input class="name_input" @blur="tour_check" v-model="" placeholder=""></el-input>    注意这里面 tour_check 这个方法还需要调用 -->
-          <el-autocomplete class="name_input" v-model="ruleForm.plan" :fetch-suggestions="querySearch3Plan" placeholder="请输入团期计划"  @select="departurePlan" @blur="tour_check" :trigger-on-focus="false"></el-autocomplete>
+          <el-autocomplete
+            class="name_input"
+            v-model="ruleForm.plan"
+            :fetch-suggestions="querySearch3Plan"
+            placeholder="请输入团期计划"
+            @select="departurePlan"
+            @blur="tour_check"
+            :trigger-on-focus="false"
+          >
+          </el-autocomplete>
           <el-input style="width:300px;" disabled v-model="ruleForm.plan_01" placeholder="通过输入团期计划,自动补充产品名称"></el-input>
           <el-button class="name_button" @click="IncomePlan()">选择</el-button>
         </el-form-item>
         <el-form-item label="供应商名称" prop="supplier" style="clear:both;">
-          <el-autocomplete class="name_input" v-model="ruleForm.supplier" :fetch-suggestions="querySearch3" placeholder="请输入供应商名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
+          <el-autocomplete
+            class="name_input"
+            v-model="ruleForm.supplier"
+            :fetch-suggestions="querySearch3"
+            placeholder="请输入供应商名称"
+            :trigger-on-focus="false"
+            @select="departure"
+          ></el-autocomplete>
         </el-form-item>
         <el-form-item label="借款类型" prop="planType">
           <el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
@@ -208,8 +224,8 @@
           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
           <el-table-column prop="priceSum" label="已收金额" align="center"></el-table-column>
           <el-table-column prop="arrears" label="欠款金额" align="center"></el-table-column>
-          <el-table-column prop="arrearsDate" label="欠款日期" align="center"></el-table-column>
-          <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
+          <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' align="center"></el-table-column>
+          <el-table-column prop="repaymentDate" label="应还日期" :formatter='dateFormat' align="center"></el-table-column>
         </el-table>
         <!-- 收入明细 END -->
       </el-form>
@@ -336,7 +352,7 @@
     <el-dialog width="45%" title="预付款明细" :visible.sync="dialogFormVisible_paymenrt"append-to-body>
       <div class="indialog">
         <el-table :data="tableApprove" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="times" label="审批时间" width="150" align="center"></el-table-column>
+           <el-table-column prop="times" :formatter='dateFormat' label="审批时间" width="150" align="center"></el-table-column>
            <el-table-column prop="people" label="审批人" align="center"></el-table-column>
            <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
            <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
@@ -348,7 +364,7 @@
     <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income"append-to-body>
       <div class="indialog">
         <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="times" label="审批时间" width="150" align="center"></el-table-column>
+           <el-table-column prop="times" :formatter='dateFormat' label="审批时间" width="150" align="center"></el-table-column>
            <el-table-column prop="people" label="审批人" align="center"></el-table-column>
            <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
            <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
@@ -516,13 +532,12 @@ export default {
 
       ], // 无收入借款弹窗中无收入借款明细弹窗
       dialogFormVisible_Income:false, // 无收入借款弹窗中预付款明细查看弹窗
-      tableIncomeCheck:[/*{
+      tableIncomeCheck:[{
         times:' 2019-1-14 19:00:00',
         people:'洋洋1',
         result:'通过',
         opinion:'不同意'
-        }*/
-      ],
+        }],
       tableEarning:[], // 无收入借款弹窗中收入明细表格
       checkIncomeShow:false, // 查看无收入借款弹窗
       tableCourse:[/*{ // 查看无收入借款审批过程
@@ -560,7 +575,7 @@ export default {
       if(date == undefined) {
         return '';
       }
-      return moment(date).format('YYYY-MM-DD')
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
     // 重置
     emptyButton(formName){
@@ -856,6 +871,7 @@ export default {
       this.plan_data = '';
       this.tablePlan = ''
     },
+    // 供应商所有关联列表信息
     getPaymentdetails(val) {
       console.log('借款申请')
       var that = this
