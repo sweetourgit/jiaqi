@@ -762,6 +762,7 @@ export default {
       isOtherSuccess: true, //商户其他名称唯一性判断  false则有重复的 则不能添加到businessOtherNamesArr
       tid: 0, //
       pagesize: 10, //每页显示条数 默认10
+      pageIndex: 1,
       total: 1, //总条数
       currentPage4: 1, //当前页数
       accountForm: {
@@ -1320,10 +1321,12 @@ export default {
 
     // 搜索
     handleSearch() {
-      this.pageList();
+      this.pageList(1, this.pageSize);
     },
     //查询列表
     pageList(
+      pageIndex = this.pageIndex,
+      pageSize = this.pageSize,
       input = this.input,
       statesValue = this.statesValue,
       settlementType = this.payValue
@@ -1379,91 +1382,96 @@ export default {
       this.input = "";
       this.statesValue = "";
       this.payValue = "";
-      this.list();
+      // this.list();
+      this.pageList(1, this.pageSize);
       this.currentPage4 = 1;
     },
     // pageSize 改变时会触发
     handleSizeChange(val) {
       this.pagesize = val;
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-          pageIndex: 1,
-          pageSize: val,
-          total: 0,
-          object: {}
-        })
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            // arr[k]["department"] = "XXX";
-            // arr[k]["manager"] = "阳阳";
-            if (arr[k]["state"] == 2) {
-              arr[k]["state"] = "正常";
-            } else {
-              arr[k]["state"] = "停用";
-            }
-            if (arr[k]["localCompType"] == 1) {
-              arr[k]["localCompType"] = "门店";
-            } else if (arr[k]["localCompType"] == 2) {
-              arr[k]["localCompType"] = "同业";
-            } else if (arr[k]["localCompType"] == 3) {
-              arr[k]["localCompType"] = "翻盘门店";
-            } else if (arr[k]["localCompType"] == 4) {
-              arr[k]["localCompType"] = "个体分销";
-            }
-            if (arr[k]["settlementType"] == 2) {
-              arr[k]["settlementType"] = "非月结";
-            } else {
-              arr[k]["settlementType"] = "月结";
-            }
-          });
-        })
-        .catch(function(obj) {
-          console.log(obj);
-        });
+      this.pageIndex = 1;
+      this.pageList(1, val);
+      // var that = this;
+      // this.$http
+      //   .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
+      //     pageIndex: 1,
+      //     pageSize: val,
+      //     total: 0,
+      //     object: {}
+      //   })
+      //   .then(function(obj) {
+      //     that.total = obj.data.total;
+      //     that.tableData = obj.data.objects;
+      //     that.tableData.forEach(function(v, k, arr) {
+      //       // arr[k]["department"] = "XXX";
+      //       // arr[k]["manager"] = "阳阳";
+      //       if (arr[k]["state"] == 2) {
+      //         arr[k]["state"] = "正常";
+      //       } else {
+      //         arr[k]["state"] = "停用";
+      //       }
+      //       if (arr[k]["localCompType"] == 1) {
+      //         arr[k]["localCompType"] = "门店";
+      //       } else if (arr[k]["localCompType"] == 2) {
+      //         arr[k]["localCompType"] = "同业";
+      //       } else if (arr[k]["localCompType"] == 3) {
+      //         arr[k]["localCompType"] = "翻盘门店";
+      //       } else if (arr[k]["localCompType"] == 4) {
+      //         arr[k]["localCompType"] = "个体分销";
+      //       }
+      //       if (arr[k]["settlementType"] == 2) {
+      //         arr[k]["settlementType"] = "非月结";
+      //       } else {
+      //         arr[k]["settlementType"] = "月结";
+      //       }
+      //     });
+      //   })
+      //   .catch(function(obj) {
+      //     console.log(obj);
+      //   });
     },
     // currentPage 改变时会触发
     handleCurrentChange(val) {
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-          pageIndex: val,
-          pageSize: this.pagesize,
-          total: 0,
-          object: {}
-        })
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            //arr[k]["department"] = "XXX";
-            arr[k]["manager"] = "阳阳";
-            if (arr[k]["state"] == 2) {
-              arr[k]["state"] = "正常";
-            } else {
-              arr[k]["state"] = "停用";
-            }
-            if (arr[k]["localCompType"] == 1) {
-              arr[k]["localCompType"] = "门店";
-            } else if (arr[k]["localCompType"] == 2) {
-              arr[k]["localCompType"] = "同业";
-            } else if (arr[k]["localCompType"] == 3) {
-              arr[k]["localCompType"] = "翻盘门店";
-            } else if (arr[k]["localCompType"] == 4) {
-              arr[k]["localCompType"] = "个体分销";
-            }
-            if (arr[k]["settlementType"] == 2) {
-              arr[k]["settlementType"] = "非月结";
-            } else {
-              arr[k]["settlementType"] = "月结";
-            }
-          });
-        })
-        .catch(function(obj) {
-          console.log(obj);
-        });
+      this.pageList(val, this.pageSize);
+      this.pageIndex = val;
+      // var that = this;
+      // this.$http
+      //   .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
+      //     pageIndex: val,
+      //     pageSize: this.pagesize,
+      //     total: 0,
+      //     object: {}
+      //   })
+      //   .then(function(obj) {
+      //     that.total = obj.data.total;
+      //     that.tableData = obj.data.objects;
+      //     that.tableData.forEach(function(v, k, arr) {
+      //       //arr[k]["department"] = "XXX";
+      //       arr[k]["manager"] = "阳阳";
+      //       if (arr[k]["state"] == 2) {
+      //         arr[k]["state"] = "正常";
+      //       } else {
+      //         arr[k]["state"] = "停用";
+      //       }
+      //       if (arr[k]["localCompType"] == 1) {
+      //         arr[k]["localCompType"] = "门店";
+      //       } else if (arr[k]["localCompType"] == 2) {
+      //         arr[k]["localCompType"] = "同业";
+      //       } else if (arr[k]["localCompType"] == 3) {
+      //         arr[k]["localCompType"] = "翻盘门店";
+      //       } else if (arr[k]["localCompType"] == 4) {
+      //         arr[k]["localCompType"] = "个体分销";
+      //       }
+      //       if (arr[k]["settlementType"] == 2) {
+      //         arr[k]["settlementType"] = "非月结";
+      //       } else {
+      //         arr[k]["settlementType"] = "月结";
+      //       }
+      //     });
+      //   })
+      //   .catch(function(obj) {
+      //     console.log(obj);
+      //   });
     },
     add_info() {
       this.tid = 0;
