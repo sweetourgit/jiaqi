@@ -51,9 +51,13 @@
       ></el-autocomplete>-->
       <!-- <br /> -->
       <span class="search-title">商户名称</span>
-      <!-- <el-input v-model="localCompName" class="input" @blur="localCompNameBlur()"></el-input> -->
-      <el-input v-model="orderChannels" class="input" @blur="localCompNameBlur()"></el-input>
-
+      <el-autocomplete
+        class="input"
+        v-model="orgIDValue"
+        :fetch-suggestions="handleBusinessGet"
+        :trigger-on-focus="false"
+        @select="handleChooseOrgID"
+      ></el-autocomplete>
       <!-- <span class="search-title">销售</span>
       <el-input v-model="saler" class="input" @blur="salerBlur()"></el-input>-->
       <span class="search-title">订单联系人</span>
@@ -353,7 +357,9 @@ export default {
       productType: "", //产品类型  Team = 1 跟团游 Free = 2 自由行
       priceType: null, //价格类型  1直客  2同业价格
       // localCompName: "", //商户名称
-      orderChannels: "", //商户名称
+      // orderChannels: "", //商户名称
+      orgID: null, //商户名称搜索传给后台的id
+      orgIDValue: "", //商户名称 搜索时显示的字段
       contact: "", //订单联系人
       orderChannel: null, //订单来源  1 线上直客 2 线下直客 3 同业系统
       whichStateTab: null, //判断tab是从1 还是2 过来的
@@ -385,7 +391,11 @@ export default {
       orderCode: "", //订单编号
       orderStateAllNum: {}, //订单状态 每个按钮的数量下标
       getListOneMessage: {},
-      showContent: null //list折叠展示的
+      showContent: null, //list折叠展示的
+      businessLists: [], //商户名称下拉列表展示
+      getBusinessLists: [],//商户名称下拉列表选择的展示
+      // timeout: null //商户搜索时的时间设置
+      loading: false, //商户搜索是否正在从远程获取数据
     };
   },
   watch: {
@@ -397,6 +407,7 @@ export default {
   },
   created() {
     this.orderPage();
+    this.handleBusinessGet();
   },
   methods: {
     moment,
@@ -425,6 +436,47 @@ export default {
           console.log(err);
         });
     },
+
+    //商户名称模糊查询
+    handleBusinessGet(queryString3, cb) {
+      this.businessLists = [];
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
+          object: {
+            name: queryString3,
+            isDeleted: 0
+          }
+        })
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.businessLists.push({
+              value: res.data.objects[i].name,
+              id: res.data.objects[i].id
+            });
+          }
+          let results = queryString3
+            ? this.businessLists.filter(this.createFilter(queryString3))
+            : [];
+          clearTimeout(this.timeout);
+          this.timeout = setTimeout(() => {
+            cb&&cb(results);
+          }, 3000 * Math.random());
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    createFilter(queryString1) {
+      return restaurant => {
+        return restaurant.value;
+      };
+    },
+    // 搜索商户名称下拉选择事件
+    handleChooseOrgID(item) {
+      this.orgID = item.id;
+      console.log(item);
+    },
+    
     // 点击list列表中的一个
     handleContentHeader(item, index) {
       // let temp = this.orderpage;
@@ -565,7 +617,8 @@ export default {
       endDate = this.endDate,
       saler = this.saler,
       // localCompName = this.localCompName, //商户名称
-      orderChannels = this.orderChannels, //商户名称
+      // orderChannels = this.orderChannels, //商户名称
+      orgID = this.orgID, //商户名称 搜索时的字段
       // productType = this.productType,
       orderStatus = this.orderStatus,
       refundStatus = this.refundStatus,
@@ -617,7 +670,8 @@ export default {
         contact: contact,
         podID: podID ? podID : 0,
         // localCompName: localCompName //商户名称
-        orderChannels: orderChannels //商户名称
+        // orderChannels: orderChannels //商户名称
+        orgID: orgID ? orgID : 0 //商户名称搜索时的字段
       };
       if (endDate !== 0 && beginDate !== 0) {
         // object.beginDate = beginDate
