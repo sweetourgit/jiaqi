@@ -52,7 +52,7 @@
       <!-- <br /> -->
       <span class="search-title por">
         商户名称
-        <span v-if="isToast" class="poa">没有数据</span>
+        <span v-if="isToast" class="poa">没有该商户名称</span>
       </span>
       <el-autocomplete
         class="input"
@@ -452,8 +452,8 @@ export default {
           }
         })
         .then(res => {
-          console.log(res, "res");
           if (res.data.isSuccess == true) {
+            this.isToast = false;
             for (let i = 0; i < res.data.objects.length; i++) {
               this.businessLists.push({
                 value: res.data.objects[i].name,
@@ -483,11 +483,12 @@ export default {
     // 搜索商户名称下拉选择事件
     handleChooseOrgID(item) {
       this.orgID = item.id;
-      console.log(item);
     },
-    // input失去焦点的时候隐藏提示语
+    // 商户名称input失去焦点的时候隐藏提示语 没有数据
     isToastFun() {
       this.isToast = false;
+      this.orgIDValue = "";
+      this.orgID = 0
     },
 
     // 点击list列表中的一个
@@ -932,7 +933,7 @@ export default {
 }
 .poa {
   position: absolute;
-  left: 70px;
+  left: 76px;
   top: 30px;
   width: 100px;
   color: red;

@@ -387,15 +387,15 @@
               <el-table-column prop="operation" label="操作" width="108" align="center">
                 <template slot-scope="scope">
                   <div
-                    style="color: #f5a142;float: left;margin-left: 30px"
+                    style="color: #f5a142;float: left;margin-left: 14px"
                     @click="accountEdit(2,scope.$index,scope.row)"
                     v-if="btnindex === 2"
                   >编辑</div>
                   <div
-                    style="color: #f5a142;float: left;margin-left: 30px"
+                    style="color: #f5a142;float: left;"
                     @click="accountDelete(scope.$index,scope.row)"
                     v-if="btnindex !== 2"
-                  >删除</div>
+                  >| 删除</div>
                 </template>
               </el-table-column>
             </el-table>
@@ -762,8 +762,8 @@ export default {
       isInputVisible: false, //商户其他名称tags显示隐藏
       isOtherSuccess: true, //商户其他名称唯一性判断  false则有重复的 则不能添加到businessOtherNamesArr
       tid: 0, //
-      pageSize: 10, //每页显示条数 默认10
-      pageIndex: 1,
+      pageSize: 10, //每页条数 默认10
+      pageIndex: 1,//每页
       total: 1, //总条数
       currentPage4: 1, //当前页数
       accountForm: {
@@ -1319,10 +1319,35 @@ export default {
     closeDialog() {
       this.btnindex = 0;
     },
-
+   // 重置
+    handleReset() {
+      this.pageIndex = 1;
+      this.input = "";
+      this.statesValue = "";
+      this.payValue = "";
+      // this.list();
+      this.pageList(1, this.pageSize);
+      this.currentPage4 = 1;
+    },
+    // pageSize 改变时会触发
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.pageList(1, val);
+   
+    },
+    // currentPage 改变时会触发
+    handleCurrentChange(val) {
+      console.log(val);
+      this.pageIndex = val;
+      this.pageList(val, this.pageSize);
+     
+      
+    },
     // 搜索
     handleSearch() {
+      this.pageIndex = 1;
       this.pageList(1, this.pageSize);
+      this.currentPage4 = 1;
     },
     //查询列表
     pageList(
@@ -1378,29 +1403,7 @@ export default {
           console.log(obj);
         });
     },
-    // 重置
-    handleReset() {
-      this.input = "";
-      this.statesValue = "";
-      this.payValue = "";
-      // this.list();
-      this.pageList(1, this.pageSize);
-      this.currentPage4 = 1;
-    },
-    // pageSize 改变时会触发
-    handleSizeChange(val) {
-      this.pageSize = val;
-      this.pageList(1, val);
-   
-    },
-    // currentPage 改变时会触发
-    handleCurrentChange(val) {
-      this.pageIndex = val;
-      this.pageList(val, this.pageSize);
-      
-    
-    },
-    // 添加按钮
+ 
     add_info() {
       this.tid = 0;
       this.clear();
@@ -1425,7 +1428,7 @@ export default {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
           pageIndex: 1,
-          pageSize: this.pageSize,
+          pageSize: this.pagesize,
           // total: 1, //总条数
           object: {
             // isDeleted: 0 //是否删除
@@ -1505,7 +1508,7 @@ export default {
       var that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
-          pageIndex: 1,
+          pageIndex: this.pageIndex,
           pageSize: this.pageSize,
           // total: 1, //总条数
           object: {
