@@ -318,13 +318,10 @@ export default {
       this.$refs.costTable.toggleRowSelection(row);
     },
     operation(i) {
-      if (new Date().getTime() > new Date(this.teamqueryList[i].dateFormat).getTime()) {
-        this.$message.error('该团期出行日期已过,不能再进行下单');
-        return;
-      }else {
-        this.variable++;
-        this.dialogType = i;
-      }
+      // if(this.dialogType == 1 && new Date().getTime() > new Date(this.teamqueryList[i].dateFormat).getTime()){
+      //   this.$message.error('该团期出行日期已过,不能再进行下单');
+      //   return;
+      // }
       // var remindTime = this.teamqueryList[i].dateFormat;// 列表显示的时间
       // var str = remindTime.toString(); // toString
       // str = str.replace('/-/g','/');//去空格字符等
@@ -336,8 +333,8 @@ export default {
       //   this.variable++;
       //   this.dialogType = i;
       // }
-      // this.variable++;
-      // this.dialogType = i;
+      this.variable++;
+      this.dialogType = i;
     },
     search(val) {
       var that = this
