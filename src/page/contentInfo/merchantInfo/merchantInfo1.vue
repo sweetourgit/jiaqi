@@ -47,12 +47,7 @@
     <!--end-->
     <!--商户信息-->
     <div class="info_table">
-      <el-table
-        :data="tableData"
-        border
-        :highlight-current-row="true"
-        @row-click="handleClick"
-      >
+      <el-table :data="tableData" border :highlight-current-row="true" @row-click="handleClick">
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
         <el-table-column prop="name" label="商户名字" align="center" width="250"></el-table-column>
         <el-table-column prop="state" label="状态" align="center">
@@ -227,16 +222,23 @@
               <el-form-item label="公司logo :" prop="companyLogo" style="width:360px;">
                 <el-upload
                   class="upload-demo"
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  action="http://test.dayuntong.com/upload/obs/api/picture/"
                   :on-preview="handlePreview"
                   :on-remove="handleRemove"
                   :file-list="fileList2"
                   :limit="1"
+                  list-type="picture"
+                  :on-error="handleError"
+                  :on-success="handleSuccess"
+                  name="files"
                   style="width: 220px;"
                 >
                   <el-button size="small" type="primary">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
+                <div v-if=" this.imgnum == 2">
+                  <img width="100%" height="12%" :src="ruleForm.imgUrl" />
+                </div>
               </el-form-item>
             </div>
             <div class="ty" style="float: left; margin-left: 60px">
@@ -483,7 +485,10 @@
             <br />
             <tr>
               <td class="tr">公司logo：&nbsp;&nbsp;</td>
-              <td class="longWeight"></td>
+              <td class="longWeight">
+                <!-- {{ruleForm.imgUrl}} -->
+                <img width="100%" height="12%" :src="ruleForm.imgUrl" />
+              </td>
               <div class="BodyTableCenter">
                 <td class="tr">商户编码：&nbsp;&nbsp;</td>
                 <td class="longWeight">{{ruleForm.localCompCode}}</td>
@@ -754,6 +759,7 @@ export default {
       adminArr: [], //管理人员tag列表
       salesArr: [], //销售人员tag列表
       fileList: [], //上传图片
+      imgnum: 1, //图片位置显示
       btnindex: 0, //编辑还是详情判断弹窗按钮的字段
       readonly: true, // 点击表单修改然后只读
       statesValue: "", //搜索状态字段
@@ -1196,27 +1202,27 @@ export default {
         this.$refs[accountForm].validate(valid => {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
-            this.useList.push(this.accountForm);
-            // console.log(this.useList,"弹窗上面的添加按钮")
-            if (this.accountForm.state == 2) {
-              this.accountForm.state = "正常";
-            } else {
-              this.accountForm.state = "停用";
-            }
-            if (this.accountForm.sex == 1) {
-              this.accountForm.sex = "男";
-            } else {
-              this.accountForm.sex = "女";
-            }
-            if (this.accountForm.peerUserType == 1) {
-              this.accountForm.peerUserType = "管理员";
-            } else {
-              this.accountForm.peerUserType = "销售";
-            }
-            this.isAddAccount = false;
+
             this.accountValidator().then(obj => {
               if (obj == true) {
-                console.log(2);
+                this.useList.push(this.accountForm);
+                // console.log(this.useList,"弹窗上面的添加按钮")
+                if (this.accountForm.state == 2) {
+                  this.accountForm.state = "正常";
+                } else {
+                  this.accountForm.state = "停用";
+                }
+                if (this.accountForm.sex == 1) {
+                  this.accountForm.sex = "男";
+                } else {
+                  this.accountForm.sex = "女";
+                }
+                if (this.accountForm.peerUserType == 1) {
+                  this.accountForm.peerUserType = "管理员";
+                } else {
+                  this.accountForm.peerUserType = "销售";
+                }
+                this.isAddAccount = false;
                 this.$message({
                   message: "添加成功",
                   type: "success"
@@ -1232,26 +1238,26 @@ export default {
         this.$refs[accountForm].validate(valid => {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
-            this.useList.push(this.accountForm);
-            if (this.accountForm.state == "正常") {
-              this.accountForm.state = 2;
-            } else {
-              this.accountForm.state = 3;
-            }
-            if (this.accountForm.sex == "男") {
-              this.accountForm.sex = 1;
-            } else {
-              this.accountForm.sex = 2;
-            }
-            if (this.accountForm.peerUserType == "管理员") {
-              this.accountForm.peerUserType = 1;
-            } else {
-              this.accountForm.peerUserType = 2;
-            }
             this.accountValidator().then(obj => {
               this.accountForm.localCompID = this.tid;
               console.log(this.accountForm, "this.accountForm");
               if (obj == true) {
+                this.useList.push(this.accountForm);
+                if (this.accountForm.state == "正常") {
+                  this.accountForm.state = 2;
+                } else {
+                  this.accountForm.state = 3;
+                }
+                if (this.accountForm.sex == "男") {
+                  this.accountForm.sex = 1;
+                } else {
+                  this.accountForm.sex = 2;
+                }
+                if (this.accountForm.peerUserType == "管理员") {
+                  this.accountForm.peerUserType = 1;
+                } else {
+                  this.accountForm.peerUserType = 2;
+                }
                 this.$http
                   .post(
                     this.GLOBAL.serverSrc +
@@ -1372,10 +1378,10 @@ export default {
               message: "修改成功",
               type: "success"
             });
-            this.isAddAccount = false
+            this.isAddAccount = false;
           }
         })
-        .catch( err => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -2065,7 +2071,10 @@ export default {
             orgs,
             useList
           } = obj.data.object;
+          object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
+          console.log(this.imgnum, "this.imgnum");
           this.ruleForm.name = object.name;
+          this.ruleForm.imgUrl = object.imgUrl;
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID
           this.businewwInfPageId = object.id;
@@ -2247,7 +2256,23 @@ export default {
       }, []);
       return arrData;
     },
-
+    //图片上传失败
+    handleError(err, file) {
+      this.$message.error("图片上传失败重新上传");
+      this.fileList2 = [];
+      this.imgnum = 2;
+    },
+    //图片上传成功
+    handleSuccess(response, file, fileList2) {
+      //console.log(file);
+      if (file.status == "success") {
+        this.imgnum = 1;
+        let T_img = JSON.parse(response);
+        this.ruleForm.imgUrl = T_img.paths[0].Url;
+      } else {
+        this.$message.error("图片上传失败重新上传");
+      }
+    },
     //删除
     // rowDelete() {
     //   var that = this;
@@ -2284,7 +2309,22 @@ export default {
     //       });
     //     });
     // },
-    handleClick(row, event, column) {
+    //选中待上传的图片
+    handlePreview(file) {
+        this.uid=file.uid;
+    },
+      //删除待上传的图片
+    handleRemove(file, fileList) {
+        this.uid=fileList[0].uid;
+        for(let i=0;i<this.fileList.length;i++){
+           if(file.uid==this.fileList[i].uid){
+             this.fileList.splice(i,1);
+           }
+        }       
+        this.time=this.fileList.length;       
+    },
+    // 商户信息
+    handleClick(row, event, column) { 
       this.tid = row.id;
     },
     // dialog中区域可见获取数据
