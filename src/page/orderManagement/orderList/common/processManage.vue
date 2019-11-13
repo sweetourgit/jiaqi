@@ -734,6 +734,7 @@ export default {
       }
     },
     peoNum(index, enrollID, enrollName) {
+      console.log(this.salePriceNum[index],"this.salePriceNum[index]")
       // this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
       //填写报名人数
       let arrLength; //报名人数
@@ -904,15 +905,15 @@ export default {
               this.enrolNum.push(this.tour[i].length);
             }
             for (let i = 0; i < data.length; i++) {
+                //如果配额为0或者配额大于库存，余位显示总库存
               if (
                 data[i].quota == 0 ||
                 data[i].quota > this.teampreviewData.remaining
               ) {
-                //如果配额为0或者配额大于库存，余位显示总库存
                 data[i].quota = this.teampreviewData.remaining;
               } else {
-                data[i].quota =
-                  parseInt(data[i].quota) + parseInt(this.enrolNum[i]);
+                // data[i].quota =
+                //   parseInt(data[i].quota) + parseInt(this.enrolNum[i]);
               }
             }
             this.salePrice = data;
