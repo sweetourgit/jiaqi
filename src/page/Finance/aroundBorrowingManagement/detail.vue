@@ -13,16 +13,16 @@
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.approval_status == 3">通过</el-button>
       <div class="stepDv">
         <p class="inputLabel"><span>ID：</span>{{baseInfo.id}}</p>
-        <p class="inputLabel"><span>申请人：</span>{{baseInfo.create_uid}}</p>
+        <p class="inputLabel"><span>申请人：</span>{{baseInfo.orgName}}--{{baseInfo.create_uid}}</p>
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
         <p class="inputLabel"><span>供应商：</span>{{baseInfo.supplier}}</p>
         <p class="inputLabel"><span>借款类型：</span>{{periphery_type[baseInfo.type]}}</p>
-        <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p>
+        <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.remark}}</p>
-        <p class="inputLabel"><span>账号：</span>{{baseInfo.account}}</p>
-        <p class="inputLabel"><span>开户行：</span>{{baseInfo.accountBank}}</p>
-        <p class="inputLabel"><span>开户名：</span>{{baseInfo.accountName}}</p>
-        <p class="inputLabel"><span>支付账户：</span>{{baseInfo.accountPay}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>账号：</span>{{baseInfo.account}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户行：</span>{{baseInfo.accountBank}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户名：</span>{{baseInfo.accountName}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>支付账户：</span>{{baseInfo.accountPay}}</p>
         <p class="inputLabel"><span>已报销金额：</span>{{baseInfo.reimbursed_money}}</p>
 
         <div class="inputLabel">
@@ -99,10 +99,12 @@
         baseInfo: {
           id: '',
           create_uid: '',
+          orgName: '',
           created_at: '',
           supplier: '',
           type: '',
           money: '',
+          number: '',
           remark: '',
           account: '',
           accountBank: '',
@@ -152,22 +154,21 @@
       // 关闭弹窗
       closeAdd(){
         this.baseInfo = {
-          status_rece: '',
-          rece_code: '',
+          id: '',
           create_uid: '',
+          orgName: '',
           created_at: '',
-          receivables_at: '',
-          account_id: '',
-          account: '',
-          rece_money: '',
-          remain_money: '',
+          supplier: '',
+          type: '',
+          money: '',
+          number: '',
           remark: '',
-          explain: '',
-          rec_mode: '',
-          rec_uid: '',
-          rec_created_at: '',
-          distributor: '',
-          distributor_code: ''
+          account: '',
+          accountBank: '',
+          accountName: '',
+          accountPay: '',
+          reimbursed_money: '',
+          approval_status: ''
         };
 
         this.$emit('close', false);
@@ -232,10 +233,12 @@
             that.baseInfo = {
               id: response.data.data.info.id,
               create_uid: response.data.data.info.create_uid,
+              orgName: '',
               created_at: response.data.data.info.created_at,
               supplier: response.data.data.info.supplier_code,
               type: response.data.data.info.periphery_type,
               money: response.data.data.info.loan_money,
+              number: response.data.data.info.number,
               remark: response.data.data.info.mark,
               account: response.data.data.info.remittance_account,
               accountBank: response.data.data.info.opening_bank,
@@ -257,8 +260,13 @@
 
             // 根据ID获取人名
             that.getName(response.data.data.info.create_uid).then(res => {
-              console.log(res);
+//              console.log(res);
               that.baseInfo.create_uid = res;
+            });
+            // 获取所属部门
+            that.getOrgName(response.data.data.info.create_uid).then(res => {
+//              console.log(res);
+              that.baseInfo.orgName = res;
             });
 
 
@@ -354,6 +362,27 @@
         }).catch(function(error) {
           console.log(error);
           return '';
+        });
+      },
+      // 根据id获取所属部门
+      getOrgName(ID){
+        const that = this;
+        return this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+          "id": ID
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(function(response) {
+//        console.log(ID,'组织名称',response);
+          if (response.data.isSuccess) {
+            return response.data.objects[0].name
+          } else {
+            return '';
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
         });
       },
 
