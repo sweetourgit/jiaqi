@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <!-- 申请预付款 -->
-    <el-dialog title="申请预付款" :visible="dialogFormVisible" width=60% :show-close="false" @close="closeAdd">
+    <el-dialog title="申请预付款" :visible="dialogFormVisible" width=60% :show-close="false">
       <div v-if="this.find == 1" class="sh_style">{{this.infoStatus}}</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="btn" style="position:absolute;z-index:9;top:20px;right:1%;">
@@ -110,7 +110,7 @@
                 </el-upload>
               </el-form-item>
               <el-divider content-position="left" class='title-margin title-margin-t' v-if="tableData5.length != 0">相关信息</el-divider>
-              <el-form-item label="" label-width="120px" label-height="auto" v-if="tableData5.length != 0">
+              <el-form-item label-height="auto" v-if="tableData5.length != 0">
                 <el-table :data="tableData5" style="width:100%" border :header-cell-style="getRowClass2">
                   <el-table-column prop="payable" label="订单总额" align="center">
                   </el-table-column>
@@ -195,7 +195,7 @@
                 </el-table>
 
               <el-dialog title="审批过程" class="aaaaa" custom-class="approvalClass" :append-to-body="true" :visible.sync="dialogVisible5" width=900px>
-                <el-table :data="tableData10" border style="800px;" :header-cell-style="getRowClass2">
+                <el-table :data="tableData10" border style="width:800px" :header-cell-style="getRowClass2">
                   <el-table-column prop="createTime" label="审批时间" align="center">
                   </el-table-column>
                   <el-table-column prop="user" label="审批人" align="center">
@@ -1053,9 +1053,13 @@ export default {
             }
           }).then(res => {
             if (res.data.isSuccess == true) {
-              this.closeAdd()
-              this.sendBPM(res.data.object)
+              // console.log(res.data.object, 'test --  sendBPM')
+              // this.sendBPM(res.data.object)
               this.$emit('searchHandList', false);
+              this.$message({
+                type: 'success',
+                message: '创建成功!'
+              });
             } else {
               console.log('有错误!');
               console.log(res.data);
@@ -1063,10 +1067,6 @@ export default {
           }).catch(err => {
             console.log(err);
           })
-          this.$message({
-            type: 'success',
-            message: '创建成功!'
-          });
         } else {
           console.log('error submit!!');
           return false;
@@ -1074,6 +1074,7 @@ export default {
       });
     },
     sendBPM(result) {
+      console.log(result, 'sendBPM')
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/StartUpWorkFlowForJQ', {
         jQ_ID: result.guid,
         jQ_Type: result.flowModel,
@@ -1114,7 +1115,7 @@ export default {
                 type: 'success',
                 message: '撤销成功!'
               });
-              thua.closeAdd()
+              that.closeAdd()
             } else {
               that.$message.error(obj.data.result.message);
               console.log(obj.data.result.message)
@@ -1221,9 +1222,7 @@ export default {
       })
       //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
       that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
-        "object": {
-          "id": val,
-        }
+        "id": val,
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableData5 = []

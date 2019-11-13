@@ -277,7 +277,9 @@ export default {
         })
     },
     //搜索
-    searchHand() {
+    searchHand(params) {
+      this.dialogFormVisible = params
+      console.log(params,'传过来的弹窗参数')
       this.pageNum = 1;
       this.pageshow = false
       let objectRequest = {}
