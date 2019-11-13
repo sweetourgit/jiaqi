@@ -273,7 +273,7 @@
           this.$message.warning("请先选择供应商~");
         }else{
           this.dialogFormVisible1 = true;
-          this.ruleForm.supplierID = 6;//暂时替代，获取全部的接口没出
+//          this.ruleForm.supplierID = 6;//暂时替代，获取全部的接口没出
           this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
             "id": this.ruleForm.supplierID
           },).then(function (obj) {
