@@ -278,21 +278,11 @@ import moment from 'moment'
       guid:'',
       transitShow:false, // 通过驳回弹窗
       title:"",
-      commentText:'',
-      setJqType: null, // 依据上级路由设置JQType
+      commentText:''
     }
   },
   created(){
-
     this.pageList();
-  },
-  mounted(){
-    if( this.$route.path == '/loanManagement'){
-      this.setJqType = 1
-    } else if(this.$route.path == '/advancePayment'){
-      this.setJqType = 2
-    }
-    console.log(this.setJqType,'this.setJqType')
   },
   methods: {
     // 起始时间格式转换
@@ -413,18 +403,6 @@ import moment from 'moment'
           })
         })
       },
-      // 审核结果
-      auditResult(result) {
-      console.log(this.setJqType,'审核结果')
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
-          jQ_ID: result,
-          jQ_Type: this.setJqType,
-        }).then(obj => {
-          that.tableCourse = obj.data.objects;
-        }).catch(obj => {
-          console.log(obj);
-        })
-      },
       // 删除
       repeal(){
         this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
@@ -497,7 +475,7 @@ import moment from 'moment'
         })
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',{
           "jq_id":this.guid,
-          "jQ_Type": this.setJqType
+          "jQ_Type": 1
         })
       },
       // 驳回成功通过guid将checktype修改成2
@@ -513,7 +491,8 @@ import moment from 'moment'
       },
       // 详情弹窗
       checkIncome(index, row){
-      console.log(row)
+        this.paymentID=row.paymentID;
+        console.log(this.paymentID, '详情弹窗 ----  paymentID')
         this.pid = row.paymentID;
         this.detailstShow = true;
         this.getLabel();
@@ -527,8 +506,7 @@ import moment from 'moment'
             "id":this.pid
         }).then(res => {
           if(res.data.isSuccess == true){
-             this.guid = res.data.object.guid
-            console.log(this.guid)
+            this.guid = res.data.object.guid
           }
        })
       },
