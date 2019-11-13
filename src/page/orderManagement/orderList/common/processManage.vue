@@ -734,7 +734,6 @@ export default {
       }
     },
     peoNum(index, enrollID, enrollName) {
-      console.log(this.salePriceNum[index],"this.salePriceNum[index]")
       // this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
       //填写报名人数
       let arrLength; //报名人数
