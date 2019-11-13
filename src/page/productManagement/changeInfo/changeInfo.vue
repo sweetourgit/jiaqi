@@ -367,7 +367,9 @@ export default {
     },
 
     removeTabAction(id, index){
-      let successFunc= () => {
+      let successFunc= (res) => {
+        let { isSuccess, result }= res.data;
+        if(!isSuccess) return this.$message.error(result.message);
         this.packages.splice(index, 1);
         this.$message.success('删除成功');
         this.$nextTick(() => {
@@ -380,7 +382,8 @@ export default {
       if(!id) return successFunc();
       this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagedelete", {
         id
-      }).then(successFunc);
+      })
+      .then(successFunc);
     },
 
     showValidateError(){
