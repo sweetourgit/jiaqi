@@ -1157,8 +1157,6 @@ export default {
     },
     //编辑账户信息按钮
     accountEdit(idx, index, row) {
-      console.log(index);
-      console.log(row);
       if (row.peerUserType == "销售") {
         row.peerUserType = 2;
       } else {
@@ -1206,7 +1204,6 @@ export default {
             this.accountValidator().then(obj => {
               if (obj == true) {
                 this.useList.push(this.accountForm);
-                // console.log(this.useList,"弹窗上面的添加按钮")
                 if (this.accountForm.state == 2) {
                   this.accountForm.state = "正常";
                 } else {
@@ -1240,7 +1237,6 @@ export default {
             this.accountForm.createTime = new Date().getTime();
             this.accountValidator().then(obj => {
               this.accountForm.localCompID = this.tid;
-              console.log(this.accountForm, "this.accountForm");
               if (obj == true) {
                 this.useList.push(this.accountForm);
                 if (this.accountForm.state == "正常") {
@@ -1349,7 +1345,6 @@ export default {
     editAccountAddBtn() {
       // this.accountForm.id = this.editAccouontScopeid;
       this.accountForm.localCompID = this.tid;
-      console.log(this.accountForm, "this.accountForm");
       if (this.accountForm.state == "正常") {
         this.accountForm.state = 2;
       } else {
@@ -1409,12 +1404,12 @@ export default {
       // });
     },
 
-    handlePreview(file) {
+    // handlePreview(file) {
       // console.log(file);
-    },
-    handleRemove(file, fileList) {
+    // },
+    // handleRemove(file, fileList) {
       // console.log(file, fileList);
-    },
+    // },
 
     // dialog关闭的回调
     closeDialog() {
@@ -1437,7 +1432,6 @@ export default {
     },
     // currentPage 改变时会触发
     handleCurrentChange(val) {
-      // console.log(val);
       this.pageIndex = val;
       this.pageList(val, this.pageSize);
     },
@@ -1646,7 +1640,6 @@ export default {
     },
     //添加
     addMerchan(ruleForm) {
-      //console.log("提交的数据1",this.ruleForm);
       //判断商户其他名称是否具有唯一性 并且输个个数不可超过五十个
       if (this.businessOtherNamesArr.length !== 0) {
         if (this.businessOtherNamesArr.length > 50) {
@@ -2072,7 +2065,6 @@ export default {
             useList
           } = obj.data.object;
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
-          console.log(this.imgnum, "this.imgnum");
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
           // this.ruleForm.localCompType = String(object.localCompType);
@@ -2311,17 +2303,17 @@ export default {
     // },
     //选中待上传的图片
     handlePreview(file) {
-        this.uid=file.uid;
+        // this.uid=file.uid;
     },
-      //删除待上传的图片
+    //删除待上传的图片
     handleRemove(file, fileList) {
-        this.uid=fileList[0].uid;
-        for(let i=0;i<this.fileList.length;i++){
-           if(file.uid==this.fileList[i].uid){
-             this.fileList.splice(i,1);
-           }
-        }       
-        this.time=this.fileList.length;       
+        // this.uid=fileList[0].uid;
+        // for(let i=0;i<this.fileList.length;i++){
+          //  if(file.uid==this.fileList[i].uid){
+            //  this.fileList.splice(i,1);
+          //  }
+        // }
+        // this.time=this.fileList.length;       
     },
     // 商户信息
     handleClick(row, event, column) { 
