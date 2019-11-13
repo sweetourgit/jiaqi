@@ -2,29 +2,42 @@
   <div class="distributor-content">
     <!-- 检索 -->
     <div class="plan">
-      <!-- <div class="fl">
-        <span class="emptyPlan">团期计划</span>
-        <el-input v-model="empty_01" class="empty" clearable placeholder="请输入团期计划"></el-input>
-      </div>
-      <div class="fl">
-        <span class="emptyPlan">申请人</span>
-        <el-input v-model="people_01" class="empty" clearable placeholder="请输入申请人"></el-input>
-      </div> -->
       <el-row type="flex" class="row-bg">
-        <el-col :span="8">
-          <div class="fl">
-            <span class="emptyPlan">发起时间：</span>
-            <el-date-picker v-model="planTime_01" type="date" class="planTime" placeholder="开始天数"></el-date-picker>
-            <span class="time">-</span>
-            <el-date-picker v-model="planData_01" type="date" class="planTime" placeholder="结束天数"></el-date-picker>
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="fl">
-            <el-button type="primary" @click="planSelect()" >搜索</el-button>
-            <el-button @click="emptyButton_01()" type="primary">重置</el-button>
-          </div>
-        </el-col>
+        <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="80px" id="form-content" style="margin-top: 20px">
+          <el-row type="flex" class="row-bg">
+            <el-col :span="8">
+              <el-form-item label="团期计划:" prop="empty_01">
+                <el-input v-model="ruleFormSeach.empty_01" placeholder="请输入团期计划"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="借款人:" prop="people_01">
+                <el-input v-model="ruleFormSeach.people_01" placeholder="请输入借款人"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+              <el-form-item label="申请时间:">
+                <el-col :span="11">
+                  <el-form-item prop="planTime_01">
+                    <el-date-picker type="date" placeholder="选择开始日期" v-model="ruleFormSeach.planTime_01" style="width: 100%;"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col style="text-align: center" :span="2">-</el-col>
+                <el-col :span="11">
+                  <el-form-item prop="planData_01">
+                    <el-date-picker type="date" placeholder="选择结束日期" v-model="ruleFormSeach.planData_01" style="width: 100%;"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+              </el-form-item>
+            </el-col>
+            <el-col :span="7" style="text-align: right">
+              <el-form-item>
+                <el-button @click="planSelect()" type="primary">搜索</el-button>
+                <el-button @click="emptyButton_01('ruleFormSeach')" type="primary">重置</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </el-row>
     </div>
     <!-- 检索 END -->
@@ -39,7 +52,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+          <el-button @click="checkIncome(scope.$index, scope.row)" type="text" size="small" class="table_details">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -234,12 +247,16 @@ import moment from 'moment'
   },
   data(){
     return {
+      ruleFormSeach: {
+        empty_01: '',
+        people_01: '',
+        planTime_01:'',
+        planData_01:'', //借款表格
+      },
       paymentID:0,
       groupCode:'', //表头切换
       empty_01:'',
       people_01:'',
-      planTime_01:'',
-      planData_01:'', //借款表格
       tableData:[], // 需要审批表格数据
       currentPage: 1,
       total:0,
@@ -262,10 +279,20 @@ import moment from 'moment'
       transitShow:false, // 通过驳回弹窗
       title:"",
       commentText:'',
+      setJqType: null, // 依据上级路由设置JQType
     }
   },
   created(){
+
     this.pageList();
+  },
+  mounted(){
+    if( this.$route.path == '/loanManagement'){
+      this.setJqType = 1
+    } else if(this.$route.path == '/advancePayment'){
+      this.setJqType = 2
+    }
+    console.log(this.setJqType,'this.setJqType')
   },
   methods: {
     // 起始时间格式转换
@@ -388,9 +415,10 @@ import moment from 'moment'
       },
       // 审核结果
       auditResult(result) {
+      console.log(this.setJqType,'审核结果')
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jQ_ID: result,
-          jQ_Type: 1,
+          jQ_Type: this.setJqType,
         }).then(obj => {
           that.tableCourse = obj.data.objects;
         }).catch(obj => {
@@ -469,7 +497,7 @@ import moment from 'moment'
         })
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',{
           "jq_id":this.guid,
-          "jQ_Type": 1
+          "jQ_Type": this.setJqType
         })
       },
       // 驳回成功通过guid将checktype修改成2
@@ -484,7 +512,8 @@ import moment from 'moment'
         })
       },
       // 详情弹窗
-      checkIncome(row){
+      checkIncome(index, row){
+      console.log(row)
         this.pid = row.paymentID;
         this.detailstShow = true;
         this.getLabel();
@@ -594,14 +623,6 @@ import moment from 'moment'
       background: #f7f7f7;
       padding: 20px 10px;
       margin: 20px 10px;
-      .emptyPlan{
-        margin: 0 0 0 30px;
-      }
-      .planTime{
-        width: 135px;
-        line-height: 30px;
-        margin: 0 0 0 10px;
-      }
       .time{
         margin: 0 0 0 10px;
       }
@@ -615,6 +636,7 @@ import moment from 'moment'
       margin: 40px auto 10px;
     }
   }
+
 
   /*分页*/
   .pageList{float:right; margin: 0 0 20px 0;}

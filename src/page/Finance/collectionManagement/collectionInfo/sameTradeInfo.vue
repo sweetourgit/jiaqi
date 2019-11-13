@@ -565,7 +565,6 @@ export default {
     handleRemove(file, fileList) {
       this.fileList = fileList
       this.fileCheckVal = fileList.length
-      this.fileCheckVal = fileList.length
     },
     // 文件上传
     handleChange(file, fileList) {
@@ -844,13 +843,9 @@ export default {
         if (valid) {
           let pictureList = [];
           let newDate = moment(new Date(), 'yyyy-MM-dd hh:mm:ss')
-          for (let i = 0; i < this.fileList.length; i++) {
-            let picture = {};
-            picture.url = this.fileList[i].url1;
-            picture.name = this.fileList[i].name;
-            picture.createTime = newDate
-            pictureList.push(picture);
-          }
+          this.fileList.forEach(function(item){
+            pictureList.push({ url: item.url.slice(5), name: item.name})
+          })
 
           let objectRequest = {}
 
@@ -873,6 +868,11 @@ export default {
           })
 
           objectRequest = {
+            "GroupCode":"",
+            "OrderNumber":"",
+            "Dept":sessionStorage.getItem('orgID'),
+            "LocalCompName":this.originPlace,
+            "ProductName":"暂无",
             "checkType": 0, // 审批状态
             "collectionTime":  moment(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间,
             "groupCode": this.ruleForm.groupCode, // 团号,
@@ -881,21 +881,20 @@ export default {
             "orderNumber": this.indent, // 订单号
             "collectionNumber":  this.ruleForm.collectionNumber, // 收款账户
             "price": this.ruleForm.price, // 金额,
-            "dept": this.org, // 组织部门 this.dept
+            // "dept": this.org, // 组织部门 this.dept
             "createUser": sessionStorage.getItem('userCode'), // 创建者
             "createTime": newDate, // 申请时间
             "code": "",
-            "serialNumber": Number(this.ruleForm.serialNumber), // 流水号
+            "serialNumber": 0, // 流水号
             "abstract": this.ruleForm.abstract, // 摘要
-            "files": [], // 文件
-            // files: pictureList, // 图片
+            "files": pictureList, // 文件
             "invoice": this.ruleForm.isInvoice, // 是否发票,
             "isDeleted": 0,
             "collectionType": 2, // 直客1.同业2
             "localCompID": this.productPos, // 直客0，同业变成同业社id
             "arrears": needArrearData, // 收款 - 关联欠款列表
             "isEBS": 0,
-            "accountID": this.accountCredited, // 银行账号ID
+            "accountID": this.accountCredited == null ? 0 : this.accountCredited, // 银行账号ID
             "moneyExplain": "string", // 款项说明
             "distributor": "string", // 分销商
             "payarr": [], // 付款 欠款关联订单
