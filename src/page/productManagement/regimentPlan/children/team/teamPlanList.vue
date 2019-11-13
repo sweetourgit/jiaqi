@@ -317,10 +317,42 @@ export default {
       this.$refs.costTable.toggleRowSelection(row);
     },
     operation(i) {
+<<<<<<< HEAD
+=======
+      // if(i === 1){
+      //   if(new Date().getTime() > new Date(this.teamqueryList[i].dateFormat).getTime()){
+      //     this.$message.error('该团期出行日期已过,不能再进行下单');
+      //     return;
+      //   }
+      // }
+      
+      // var remindTime = this.teamqueryList[i].dateFormat;// 列表显示的时间
+      // var str = remindTime.toString(); // toString
+      // str = str.replace('/-/g','/');//去空格字符等
+      // var oldTime = new Date(str).getTime();//装date
+      // if ( oldTime <= new Date().getTime()) {
+      //   this.$message.error('该团期出行日期已过,不能再进行下单');
+      //   return;
+      // }else {
+      //   this.variable++;
+      //   this.dialogType = i;
+      // }
+>>>>>>> c56945850d93016b9c8d6e63b9e16a598f973f79
       this.variable++;
       this.dialogType = i;
     },
     search() {
+<<<<<<< HEAD
+=======
+      if(this.op == ''){
+        this.teamQueryList();
+      } else {
+        this.aaa();
+      }
+      
+    },
+    aaa(){
+>>>>>>> c56945850d93016b9c8d6e63b9e16a598f973f79
       var that = this
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
         object: {

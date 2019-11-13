@@ -137,7 +137,7 @@
       <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
       <el-table-column prop="process" label="审批过程" align="center">
         <template slot-scope="scope">
-          <div @click="processIncome(scope.$index, scope.row)">查看</div>
+          <div @click="processIncome(scope.$index, scope.row,1)">查看</div>
         </template>
       </el-table-column>
     </el-table>
@@ -160,7 +160,7 @@
       <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
       <el-table-column prop="process" label="审批过程" align="center">
         <template slot-scope="scope">
-          <div @click="processIncome(scope.$index, scope.row)">查看</div>
+          <div @click="processIncome(scope.$index, scope.row,2)">查看</div>
         </template>
       </el-table-column>
     </el-table>
@@ -327,10 +327,11 @@ export default {
       this.dialogFormVisible_paymenrt = true;
     },
     // 审批过程-查看
-    processIncome(index,row){
+    processIncome(index,row, type){
+      console.log(row)
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
         jQ_ID: row.guid,
-        jQ_Type: this.keepPaymentType,
+        jQ_Type: type,
       }).then(obj => {
         this.tableIncomeCheck = obj.data.extend.instanceLogInfo;
         this.dialogFormVisible_Income = true;

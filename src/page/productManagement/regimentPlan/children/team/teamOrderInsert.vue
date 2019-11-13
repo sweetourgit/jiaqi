@@ -484,7 +484,7 @@ export default {
         //credTOV: "",
         orderID: 0,
         orderCode: "string",
-        orgID: sessionStorage.getItem("orgID"),
+        orgID: sessionStorage.getItem("id"),
         userID: sessionStorage.getItem("id")
       },
       //下单成功弹窗
@@ -995,7 +995,7 @@ export default {
                         endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
                         orderChannel: Number(this.ruleForm.orderRadio),
                         priceType: Number(this.ruleForm.price),
-                        orgID: sessionStorage.getItem("orgID"),
+                        orgID: sessionStorage.getItem("id"),
                         userID: sessionStorage.getItem("id"),
                         remark: JSON.stringify([
                           {
