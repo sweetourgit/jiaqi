@@ -336,52 +336,64 @@ export default {
       this.variable++;
       this.dialogType = i;
     },
-    search(val) {
+    search() {
+      if(this.op == ''){
+        this.teamQueryList(this.pageIndex,this.pageSize,this.title,this.groupCode,this.data,this.op,);
+      } else {
+        this.getUserCode();
+      }
+      
+    },
+    getUserCode(){
       var that = this
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
-        object: {
-          id: 0,
-          createTime: "2019-08-23T03:03:10.386Z",
-          isDeleted: 0,
-          code: "",
-          mobile: "",
-          name: this.op,
-          email: "",
-          userCode: "",
-          passWord: "",
-          iDcard: "",
-          tourGuide: "",
-          sex: 0,
-          userType: 0,
-          userState: 0,
-          orgID: 0,
-          orgName: "",
-          user_Position: [
-            {
-              id: 0,
-              userID: 0,
-              positionID: 0,
-              positionName: "",
-              isDefault: 0,
-              orgID: 0,
-              orgName: ""
-            }
-          ]
-        }
-      }).then(res => {
-          if (res.data.objects.length !=0) {
-            var getUserCode='';
-            getUserCode = res.data.objects[0].userCode;
-            this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
-          } else {
-            that.teamqueryList = [];
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
+          object: {
+            id: 0,
+            createTime: "2019-08-23T03:03:10.386Z",
+            isDeleted: 0,
+            code: "",
+            mobile: "",
+            name: this.op,
+            email: "",
+            userCode: "",
+            passWord: "",
+            iDcard: "",
+            tourGuide: "",
+            sex: 0,
+            userType: 0,
+            userState: 0,
+            orgID: 0,
+            orgName: "",
+            user_Position: [
+              {
+                id: 0,
+                userID: 0,
+                positionID: 0,
+                positionName: "",
+                isDefault: 0,
+                orgID: 0,
+                orgName: ""
+              }
+            ]
           }
-        }).catch(function(error) {
-          console.log(error);
-        })
-      this.$nextTick(() => {
-        this.pageshow = true;
-      });
+        }).then(res => {
+            if (res.data.objects.length !=0) {
+              // let getUserCode = res.data.objects.map((item) =>{
+              //   return item.userCode
+              // })
+              var getUserCode='';
+              getUserCode = res.data.objects[0].userCode;
+              console.log(res.data.objects[0].userCode)
+              this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
+            } else {
+              that.teamqueryList = [];
+            }
+          }).catch(function(error) {
+            console.log(error);
+          })
+        this.$nextTick(() => {
+          this.pageshow = true;
+        });
     },
     reset(curPage) {
       console.log(this.pageIndex)
