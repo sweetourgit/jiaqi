@@ -50,13 +50,12 @@
       <el-table
         :data="tableData"
         border
-        style="width: 83%"
         :highlight-current-row="true"
         @row-click="handleClick"
       >
-        <el-table-column prop="id" label="ID" width="50" align="center"></el-table-column>
-        <el-table-column prop="name" label="商户名字" width="280" align="center"></el-table-column>
-        <el-table-column prop="state" label="状态" align="center" width="110">
+        <el-table-column prop="id" label="ID" align="center"></el-table-column>
+        <el-table-column prop="name" label="商户名字" align="center"></el-table-column>
+        <el-table-column prop="state" label="状态" align="center">
           <template slot-scope="scope">
             <template v-if="scope.row.state == '停用'">
               <div style="color: red">{{scope.row.state}}</div>
@@ -66,16 +65,16 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column prop="localCompType" label="类别" align="center" width="110"></el-table-column>
-        <el-table-column prop="settlementType" label="结算方式" width="120" align="center"></el-table-column>
-        <el-table-column prop="linker" label="联系人" align="center" width="120"></el-table-column>
-        <el-table-column prop="quota" label="额度" width="130" align="center"></el-table-column>
-        <el-table-column prop="arrears" label="剩余额度" width="130" align="center"></el-table-column>
-        <el-table-column prop="balance" label="总欠款" width="130" align="center"></el-table-column>
-        <el-table-column prop="operation" label="操作" width="174" align="center">
-          <template slot-scope="scope" style="cursor:pointer;">
+        <el-table-column prop="localCompType" label="类别" align="center"></el-table-column>
+        <el-table-column prop="settlementType" label="结算方式" align="center"></el-table-column>
+        <el-table-column prop="linker" label="联系人" align="center"></el-table-column>
+        <el-table-column prop="quota" label="额度" align="center"></el-table-column>
+        <el-table-column prop="arrears" label="剩余额度" align="center"></el-table-column>
+        <el-table-column prop="balance" label="总欠款" align="center"></el-table-column>
+        <el-table-column prop="operation" label="操作" align="center">
+          <template slot-scope="scope" style="cursor:pointer;margin:0 auto;">
             <div
-              style="color: #f5a142;float:left;margin-left:30px;cursor:pointer;"
+              style="color: #f5a142;float:left;margin-left:70px;cursor:pointer;"
               @click="edit_info(1,scope.row.id)"
             >详情 |</div>
             <div
