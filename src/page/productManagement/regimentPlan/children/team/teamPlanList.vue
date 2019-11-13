@@ -338,7 +338,7 @@ export default {
     },
     search() {
       if(this.op == ''){
-        this.teamQueryList(this.pageIndex,this.pageSize,this.title,this.groupCode,this.data,this.op,);
+        this.teamQueryList();
       } else {
         this.getUserCode();
       }
