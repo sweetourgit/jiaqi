@@ -24,8 +24,9 @@
     <header>
       <div v-if="hasDeleteBtn">
         <span>标题：</span>
-        <el-input size="small" style="width: 300px;"
+        <el-input size="small" style="width: 300px;" maxlength="20" 
           v-model="editor.title"
+          :show-word-limit="true"
         ></el-input>
       </div>
       <span v-else class="title">{{ editor.title }}</span>
