@@ -57,7 +57,10 @@
             </el-table-column>
             <el-table-column prop="income" label="订单金额" align="center">
             </el-table-column>
-            <el-table-column prop="reimbursed_money" label="已报销金额" align="center" hidden>
+            <el-table-column prop="reimbursed_money" label="已报销金额" align="center">
+              <template slot-scope="scope">
+                <span>0.00</span>
+              </template>
             </el-table-column>
           </el-table>
         </div>
