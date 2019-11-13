@@ -68,7 +68,6 @@
           <el-table-column prop="opinion" label="操作" align="center" width="150">
             <template slot-scope="scope">
               <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-              <el-button @click="chooseAccount(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.approval_status == 3 && scope.row.pay_type == null">选择付款账户</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -87,22 +86,19 @@
       </div>
       <applyForBalance :dialogFormVisible="dialogFormVisible" @close="closeAdd"></applyForBalance>
       <detail :dialogFormVisible1="dialogFormVisible1" :info="info" @close="closeAdd"></detail>
-      <chooseAccount  :dialogFormVisible2="dialogFormVisible2" :info="info" @close="closeAdd"></chooseAccount>
     </div>
   </div>
 </template>
 
 <script>
   import applyForBalance from '@/page/Finance/aroundBorrowingManagement/apply/applyForBalance.vue'// 添加
-  import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'// 选择收款账户
   import detail from '@/page/Finance/aroundBorrowingManagement/detail.vue'// 详情
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "tradeList",
     components:{
       applyForBalance,
-      detail,
-      chooseAccount
+      detail
     },
     data() {
       return {
@@ -134,7 +130,6 @@
 
         dialogFormVisible: false,// 添加-显示，隐藏
         dialogFormVisible1: false,// 详情-显示，隐藏
-        dialogFormVisible2: false,// 选择账户-显示，隐藏
         info: '',// 详情传值字段
 
         // 时间限制
@@ -195,16 +190,10 @@
         this.info = row.id;
         this.dialogFormVisible1 = true;
       },
-      // 选择付款账户
-      chooseAccount(row){
-        this.info = row.id;
-        this.dialogFormVisible2 = true;
-      },
       // 关闭弹窗
       closeAdd() {
         this.dialogFormVisible = false;
         this.dialogFormVisible1 = false;
-        this.dialogFormVisible2 = false;
         this.info = '';
         this.loadData();
         const that = this;
