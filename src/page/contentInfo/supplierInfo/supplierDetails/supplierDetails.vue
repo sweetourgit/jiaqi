@@ -1,8 +1,12 @@
 <template>
-  <div>
-    <el-dialog title="详情" :visible.sync="supplierDialog" custom-class="city_list dialogOrder" width="1200px">
+  <div v-if="flag" class="dialog">
+    <el-dialog title="详情"
+               :visible.sync="supplierDialog"
+               custom-class="city_list dialogOrder"
+               width="1200px"
+               :close-on-click-modal="false">
       <div class="supplierButton">
-        <el-button>关 闭</el-button>
+        <el-button @click="hideFlag">关 闭</el-button>
         <el-button type="primary">编 辑</el-button>
       </div>
       <div class="title">基本信息</div>
@@ -138,6 +142,26 @@
 
 <script>
   export default {
+    props:{
+      msg:{
+        type:[String,Number],
+        default(){
+          return ''
+        }
+      },
+      flag:{
+        type:Boolean,
+        default() {
+          return false
+        }
+      }
+    },
+    watch:{
+      msg:function (val,oldval) {
+        console.log('val', val);
+        this.teamGetDetails(val);
+      }
+    },
     data(){
       return{
         supplierDialog:true,//详情弹窗
@@ -157,11 +181,15 @@
           return "";
         }
       },
+      hideFlag(){
+        this.$emit("update:flag",false)
+      },
       //详情弹窗获取详情数据
-      teamGetDetails(){
+      teamGetDetails(id){
         this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
-          id: 1
+          id: id
         }).then(res => {
+          console.log(res,4444)
             if (res.data.isSuccess == true) {
               this.teampreviewData = res.data.object;// 获取基本信息数据
               this.accountTable = res.data.object.banks;//获取账户信息数据
@@ -172,14 +200,15 @@
           });
       },
     },
-    
+
     mounted(){
 
     },
     created(){
-      this.teamGetDetails();
-    },
- 
+      console.log('msg====', this.msg);
+      // this.teamGetDetails();
+  },
+
   }
 </script>
 
