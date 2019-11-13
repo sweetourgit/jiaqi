@@ -54,7 +54,7 @@
         @row-click="handleClick"
       >
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
-        <el-table-column prop="name" label="商户名字" align="center"></el-table-column>
+        <el-table-column prop="name" label="商户名字" align="center" width="250"></el-table-column>
         <el-table-column prop="state" label="状态" align="center">
           <template slot-scope="scope">
             <template v-if="scope.row.state == '停用'">
@@ -74,7 +74,7 @@
         <el-table-column prop="operation" label="操作" align="center">
           <template slot-scope="scope" style="cursor:pointer;margin:0 auto;">
             <div
-              style="color: #f5a142;float:left;margin-left:70px;cursor:pointer;"
+              style="color: #f5a142;float:left;margin-left:30px;cursor:pointer;"
               @click="edit_info(1,scope.row.id)"
             >详情 |</div>
             <div
@@ -2324,9 +2324,9 @@ export default {
   font-weight: bold;
   vertical-align: top;
 }
-.el-pagination {
+/* .el-pagination {
   margin-right: 300px !important;
-}
+} */
 .addAccountBtn {
   margin-top: -44px;
 }
