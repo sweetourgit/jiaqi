@@ -241,10 +241,12 @@ export default {
       this.pageSize = val;
       this.pageIndex = 1;
       this.teamQueryList(this.pageIndex,val);
+      this.getUserCode();
     },
     handleCurrentChange(val) {
       this.pageIndex = val;
       this.teamQueryList(val,this.pageSize);
+      this.getUserCode();
     },
     //计划list
     teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op) {
@@ -341,13 +343,13 @@ export default {
     },
     search() {
       if(this.op == ''){
-        this.teamQueryList();
+        this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
       } else {
-        this.aaa();
+        this.getUserCode();
       }
       
     },
-    aaa(){
+    getUserCode(){
       var that = this
         this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
           object: {
@@ -381,12 +383,8 @@ export default {
           }
         }).then(res => {
             if (res.data.objects.length !=0) {
-              // let getUserCode = res.data.objects.map((item) =>{
-              //   return item.userCode
-              // })
               var getUserCode='';
               getUserCode = res.data.objects[0].userCode;
-              console.log(res.data.objects[0].userCode)
               this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
             } else {
               that.teamqueryList = [];
