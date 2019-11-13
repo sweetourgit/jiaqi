@@ -361,7 +361,19 @@
       handleSelectD(item){
         console.log(item);
         this.ruleForm.supplierID = item.id;
-
+        this.ruleForm.supplier = item.valueName;
+        let nameArr = item.value.split(',');
+        let nameStr = '';
+        nameArr.forEach(function (item, index, arr) {
+          if(index > 0){
+            nameStr += item + ',';
+          }
+        });
+        if(nameStr.substr(nameStr.length-1,1) === ','){
+          nameStr = nameStr.substr(0, nameStr.length - 1);
+        }
+//        const name = 2;
+        this.ruleForm.supplierName = nameStr;
       },
       blurHand(){
         const that = this;
@@ -372,6 +384,18 @@
           this.supplierList.forEach(function (item, index, arr) {
             if(that.ruleForm.supplier == item.value){
               ida = item.id;
+              that.ruleForm.supplier = item.valueName;
+              let nameArr = item.value.split(',');
+              let nameStr = '';
+              nameArr.forEach(function (item, index, arr) {
+                if(index > 0){
+                  nameStr += item + ',';
+                }
+              });
+              if(nameStr.substr(nameStr.length-1,1) === ','){
+                nameStr = nameStr.substr(0, nameStr.length - 1);
+              }
+              this.ruleForm.supplierName = nameStr;
             }
           });
           if(ida){

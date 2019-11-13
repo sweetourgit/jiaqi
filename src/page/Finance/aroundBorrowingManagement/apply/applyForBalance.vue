@@ -228,7 +228,7 @@
               return;
             }
 //            this.ruleForm.supplierID = 6;
-            this.ruleForm.supplierName = 3;
+//            this.ruleForm.supplierName = 3;
             this.getCode().then(code => {
               if(code !== ''){
                 this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
@@ -342,12 +342,24 @@
       handleSelectD(item){
         console.log(item);
         this.ruleForm.supplierID = item.id;
+        this.ruleForm.supplier = item.valueName;
+        let nameArr = item.value.split(',');
+        let nameStr = '';
+        nameArr.forEach(function (item, index, arr) {
+          if(index > 0){
+            nameStr += item + ',';
+          }
+        });
+        if(nameStr.substr(nameStr.length-1,1) === ','){
+          nameStr = nameStr.substr(0, nameStr.length - 1);
+        }
 //        const name = 2;
+        this.ruleForm.supplierName = nameStr;
         this.loadRelatedData();
       },
       blurHand(){
         const that = this;
-        let ida = '';
+        let ida = '', namea = '';
         if(that.ruleForm.supplier == ''){
           that.ruleForm.supplierID = '';
           that.tableDataXG = [];
@@ -355,10 +367,23 @@
           this.supplierList.forEach(function (item, index, arr) {
             if(that.ruleForm.supplier == item.value){
               ida = item.id;
+              namea = item.value;
+              that.ruleForm.supplier = item.valueName;
             }
           });
           if(ida){
             that.ruleForm.supplierID = ida;
+            let nameArr = namea.split(',');
+            let nameStr = '';
+            nameArr.forEach(function (item, index, arr) {
+              if(index > 0){
+                nameStr += item + ',';
+              }
+            });
+            if(nameStr.substr(nameStr.length-1,1) === ','){
+              nameStr = nameStr.substr(0, nameStr.length - 1);
+            }
+            that.ruleForm.supplierName = nameStr;
 //            const name = 2;
             this.loadRelatedData();
           }else{
@@ -395,7 +420,7 @@
       loadRelatedData(){
         const that = this;
         this.loading = true;
-        this.ruleForm.supplierName = 3;
+//        this.ruleForm.supplierName = 3;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/getorder", {
           "supplier_name": this.ruleForm.supplierName,
           "buy_type": 1,
