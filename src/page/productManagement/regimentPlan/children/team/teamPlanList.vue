@@ -318,6 +318,19 @@ export default {
       this.$refs.costTable.toggleRowSelection(row);
     },
     operation(i) {
+      // var remindTime = this.teamqueryList[i].dateFormat;
+      // var str = remindTime.toString();
+      // str = str.replace('/-/g','/');
+      // var oldTime = new Date(str).getTime();
+      // if ( oldTime <= new Date().getTime()) {
+      //   this.$message.error('该产品的出行日期已经');
+      //   return;
+      // }else {
+      //   this.variable++;
+      //   this.dialogType = i;
+      // }
+      // console.log(this.teamqueryList[i].dateFormat)
+      // console.log(remindTime)
       this.variable++;
       this.dialogType = i;
     },
