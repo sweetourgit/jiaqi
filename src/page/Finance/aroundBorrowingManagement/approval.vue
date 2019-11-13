@@ -339,6 +339,31 @@
               });
             }
 
+            // 获取供应商名称
+            if(response.data.data.info.supplier_code){
+
+              that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
+                "id": response.data.data.info.supplier_code
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }).then(function(response) {
+                console.log(response);
+                if (response.data.isSuccess) {
+                  that.baseInfo.supplier = response.data.object.name
+                } else {
+                  if(response.data.result.message){
+                    that.$message.warning(response.data.result.message);
+                  }else{
+                    that.$message.warning("获取供应商名称失败~");
+                  }
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
+            }
+
             // 根据账户ID获取账户名称
             that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
               {

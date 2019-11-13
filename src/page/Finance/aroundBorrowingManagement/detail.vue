@@ -261,42 +261,30 @@
               that.baseInfo.create_uid = res;
             });
 
-            // 根据分销商ID获取名称
-            if(response.data.data.info.supplier_code){
-              that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
-                "id": response.data.data.info.supplier_code
-              }).then(function(obj) {
-                console.log('获取分销商',obj);
-                if(obj.data.isSuccess){
-                  that.baseInfo.supplier = obj.data.object.name;
-                }else{
-                  that.$message.warning("加载数据失败~");
-                }
-              }).catch(function(obj) {
-                console.log(obj);
-              });
 
-//              获取供应商的，先注释
-//              that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
-//                "id": response.data.data.info.supplier_code
-//              },{
-//                headers: {
-//                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
-//                }
-//              }).then(function(response) {
-//                console.log(response);
-//                if (response.data.isSuccess) {
-//                  that.baseInfo.supplier = response.data.object.name
-//                } else {
-//                  if(response.data.result.message){
-//                    that.$message.warning(response.data.result.message);
-//                  }else{
-//                    that.$message.warning("获取供应商名称失败~");
-//                  }
-//                }
-//              }).catch(function(error) {
-//                console.log(error);
-//              });
+            if(response.data.data.info.supplier_code){
+
+              // 获取供应商名称
+              that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
+                "id": response.data.data.info.supplier_code
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }).then(function(response) {
+                console.log(response);
+                if (response.data.isSuccess) {
+                  that.baseInfo.supplier = response.data.object.name
+                } else {
+                  if(response.data.result.message){
+                    that.$message.warning(response.data.result.message);
+                  }else{
+                    that.$message.warning("获取供应商名称失败~");
+                  }
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
             }
 
             // 根据账户ID获取账户名称

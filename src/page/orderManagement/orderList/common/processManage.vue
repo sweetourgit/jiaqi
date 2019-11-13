@@ -904,15 +904,15 @@ export default {
               this.enrolNum.push(this.tour[i].length);
             }
             for (let i = 0; i < data.length; i++) {
+                //如果配额为0或者配额大于库存，余位显示总库存
               if (
                 data[i].quota == 0 ||
                 data[i].quota > this.teampreviewData.remaining
               ) {
-                //如果配额为0或者配额大于库存，余位显示总库存
                 data[i].quota = this.teampreviewData.remaining;
               } else {
-                data[i].quota =
-                  parseInt(data[i].quota) + parseInt(this.enrolNum[i]);
+                // data[i].quota =
+                //   parseInt(data[i].quota) + parseInt(this.enrolNum[i]);
               }
             }
             this.salePrice = data;

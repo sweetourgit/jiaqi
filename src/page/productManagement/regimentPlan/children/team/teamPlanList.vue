@@ -265,7 +265,8 @@ export default {
         endDate = 0;
       }
       this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/page", {
-        pageIndex: (this.title !== '' || this.groupCode !== '' || this.date !== '' || this.op !== '' || this.financeState !== '') ? 1 : pageIndex,
+        // pageIndex: (this.title !== '' || this.groupCode !== '' || this.date !== '' || this.op !== '' || this.financeState !== '') ? 1 : pageIndex,
+        pageIndex:pageIndex,
         pageSize: pageSize,
         object: {
           title: title,
@@ -317,10 +318,28 @@ export default {
       this.$refs.costTable.toggleRowSelection(row);
     },
     operation(i) {
-      this.variable++;
-      this.dialogType = i;
+      if (new Date().getTime() > new Date(this.teamqueryList[i].dateFormat).getTime()) {
+        this.$message.error('该团期出行日期已过,不能再进行下单');
+        return;
+      }else {
+        this.variable++;
+        this.dialogType = i;
+      }
+      // var remindTime = this.teamqueryList[i].dateFormat;// 列表显示的时间
+      // var str = remindTime.toString(); // toString
+      // str = str.replace('/-/g','/');//去空格字符等
+      // var oldTime = new Date(str).getTime();//装date
+      // if ( oldTime <= new Date().getTime()) {
+      //   this.$message.error('该团期出行日期已过,不能再进行下单');
+      //   return;
+      // }else {
+      //   this.variable++;
+      //   this.dialogType = i;
+      // }
+      // this.variable++;
+      // this.dialogType = i;
     },
-    search() {
+    search(val) {
       var that = this
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
         object: {
@@ -356,7 +375,7 @@ export default {
           if (res.data.objects.length !=0) {
             var getUserCode='';
             getUserCode = res.data.objects[0].userCode;
-            this.teamQueryList(this.pageIndex == 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
+            this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
           } else {
             that.teamqueryList = [];
           }
@@ -368,11 +387,13 @@ export default {
       });
     },
     reset(curPage) {
+      console.log(this.pageIndex)
       this.title = "";
       this.groupCode = "";
       this.date = "";
       this.op = "";
       this.financeState = "";
+      this.pageIndex = 1 ? 1 : 1;
       this.current = curPage;
       this.teamQueryList();
     },

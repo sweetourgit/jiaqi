@@ -5,7 +5,7 @@
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
         <!--<el-button type="primary" @click="editBtn">修改</el-button>-->
-        <el-button type="primary" @click="editBtn">撤销</el-button>
+        <el-button type="primary" @click="editBtn" v-if="baseInfo.status_rece != 2">撤销</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>

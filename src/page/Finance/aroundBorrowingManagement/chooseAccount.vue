@@ -100,7 +100,9 @@
           "account": row.title,
           "card": row.cardNum,
           "bank": row.openingBank,
-          "user": row.openingName
+          "user": row.openingName,
+          "subject_value": row.subject,
+          "service_charge": row.ratio
         },{
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -122,7 +124,7 @@
             }else{
               that.$message({
                 type: 'warning',
-                message: '创建失败'
+                message: '提交失败'
               });
             }
           }
