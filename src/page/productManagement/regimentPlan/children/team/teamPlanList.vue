@@ -318,21 +318,26 @@ export default {
       this.$refs.costTable.toggleRowSelection(row);
     },
     operation(i) {
-      // var remindTime = this.teamqueryList[i].dateFormat;
-      // var str = remindTime.toString();
-      // str = str.replace('/-/g','/');
-      // var oldTime = new Date(str).getTime();
+      if (new Date().getTime() > new Date(this.teamqueryList[i].dateFormat).getTime()) {
+        this.$message.error('该团期出行日期已过,不能再进行下单');
+        return;
+      }else {
+        this.variable++;
+        this.dialogType = i;
+      }
+      // var remindTime = this.teamqueryList[i].dateFormat;// 列表显示的时间
+      // var str = remindTime.toString(); // toString
+      // str = str.replace('/-/g','/');//去空格字符等
+      // var oldTime = new Date(str).getTime();//装date
       // if ( oldTime <= new Date().getTime()) {
-      //   this.$message.error('该产品的出行日期已经');
+      //   this.$message.error('该团期出行日期已过,不能再进行下单');
       //   return;
       // }else {
       //   this.variable++;
       //   this.dialogType = i;
       // }
-      // console.log(this.teamqueryList[i].dateFormat)
-      // console.log(remindTime)
-      this.variable++;
-      this.dialogType = i;
+      // this.variable++;
+      // this.dialogType = i;
     },
     search(val) {
       var that = this
