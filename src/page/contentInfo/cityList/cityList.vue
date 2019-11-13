@@ -564,7 +564,7 @@
                   id: this.editCountryPopup.id,
                   areaName: this.editCountryPopup.countryName,
                   englishName: this.editCountryPopup.englishName,
-                  chineseFull: (this.countryPopup.pinyin).toLowerCase(),
+                  chineseFull: this.editCountryPopup.pinyin,
                   firstChar: this.editCountryPopup.initials,
                   areaCode: this.editCountryPopup.code,
                   isLeaf: Number(this.editCountryPopup.isLeaf),
