@@ -420,18 +420,19 @@
                       }
 
                     }).then(res => {
-
                       // 因为申请人检索（财务）那块对操作是隐藏的
                       let keepUserPosition = res.data.user_Position
                       keepUserPosition.forEach(function(item){
-                        if(item.orgName === '出纳'){
+                        if(item.positionName === '出纳'){
                           sessionStorage.setItem('hasCashierInfo', true)
                         }
                       })
 
                       sessionStorage.setItem('id',res.data.id)
                       sessionStorage.setItem('orgID',res.data.orgID)
+                      sessionStorage.setItem('orgID',res.data.orgName)
                       sessionStorage.setItem('topID',res.data.topID)
+                      sessionStorage.setItem('name',res.data.name)
                       //sessionStorage.setItem('account',this.ruleForm.user)//刚掉account
                       sessionStorage.setItem('userCode',res.data.userCode)
 

@@ -23,6 +23,7 @@
     <div v-show="geography == 1" class="address-big">
          <div class="address-img" v-for="img in albumList">
               <div class="marterialist-img" @click="getAlbum(img.id)">
+                <!-- <img width="100%" height="100%" src="https://jiaqi-server.obs.cn-north-1.myhuaweicloud.com/c6f6585f-e674-4f26-a232-01a8e124ca88.jpg" v-if="img.pictures.length>0"/> -->
                  <img width="100%" height="100%" :src="picSrc+img.pictures[0].url" v-if="img.pictures.length>0"/>
                  <img width="100%" height="100%" :src="'../../../static/materialList/nopic.jpg'" v-else/> 
               </div>

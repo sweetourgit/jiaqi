@@ -375,25 +375,14 @@
               that.tableDatanoIncome = response.data.data.list;
               that.pageCountnoIncome = response.data.data.total - 0;
               that.tableDatanoIncome.forEach(function (item, index, arr) {
-//              item.receivables_at = formatDate(new Date(item.receivables_at*1000));
-//              item.receivables_at = item.receivables_at.split(" ")[0];
                 item.created_at = formatDate(new Date(item.created_at*1000));
-//              item.created_at = item.created_at.split(" ")[0];
-                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
-                  "id": item.create_uid
-                },{
-                  headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                  }
-                }).then(function(response) {
-//                console.log(response);
-                  if (response.data.isSuccess) {
-                    item.create_uid = response.data.object.name
-                  } else {
-                    that.$message.success("获取申请人失败~");
-                  }
-                }).catch(function(error) {
-                  console.log(error);
+                // 根据ID获取人名
+                that.getName(item.create_uid).then(res => {
+                  item.create_uid = res;
+                });
+                // 根据code获取供应商名称
+                that.getSupplier(item.supplier_code).then(res => {
+                  item.supplier_code = res;
                 });
               })
             }else if(periphery_type == 2){
@@ -401,25 +390,14 @@
               that.tableDataAdvance = response.data.data.list;
               that.pageCountAdvance = response.data.data.total - 0;
               that.tableDataAdvance.forEach(function (item, index, arr) {
-//              item.receivables_at = formatDate(new Date(item.receivables_at*1000));
-//              item.receivables_at = item.receivables_at.split(" ")[0];
                 item.created_at = formatDate(new Date(item.created_at*1000));
-//              item.created_at = item.created_at.split(" ")[0];
-                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
-                  "id": item.create_uid
-                },{
-                  headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                  }
-                }).then(function(response) {
-//                console.log(response);
-                  if (response.data.isSuccess) {
-                    item.create_uid = response.data.object.name
-                  } else {
-                    that.$message.success("获取申请人失败~");
-                  }
-                }).catch(function(error) {
-                  console.log(error);
+                // 根据ID获取人名
+                that.getName(item.create_uid).then(res => {
+                  item.create_uid = res;
+                });
+                // 根据code获取供应商名称
+                that.getSupplier(item.supplier_code).then(res => {
+                  item.supplier_code = res;
                 });
               })
             }else if(periphery_type == 3){
@@ -427,31 +405,72 @@
               that.tableDataBalance = response.data.data.list;
               that.pageCountBalance = response.data.data.total - 0;
               that.tableDataBalance.forEach(function (item, index, arr) {
-//              item.receivables_at = formatDate(new Date(item.receivables_at*1000));
-//              item.receivables_at = item.receivables_at.split(" ")[0];
                 item.created_at = formatDate(new Date(item.created_at*1000));
-//              item.created_at = item.created_at.split(" ")[0];
-                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
-                  "id": item.create_uid
-                },{
-                  headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                  }
-                }).then(function(response) {
-//                console.log(response);
-                  if (response.data.isSuccess) {
-                    item.create_uid = response.data.object.name
-                  } else {
-                    that.$message.success("获取申请人失败~");
-                  }
-                }).catch(function(error) {
-                  console.log(error);
+                // 根据ID获取人名
+                that.getName(item.create_uid).then(res => {
+                  item.create_uid = res;
+                });
+                // 根据code获取供应商名称
+                that.getSupplier(item.supplier_code).then(res => {
+                  item.supplier_code = res;
                 });
               })
             }
             return response.data.data.list.length;
           } else {
             that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+
+      // 根据id获取操作人
+      getName(id){
+        const that = this;
+        return that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+          "id": id
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(function(response) {
+          console.log('名字',response.data.object.name);
+          if (response.data.isSuccess) {
+            return response.data.object.name;
+          } else {
+            if(response.data.result.message){
+              that.$message.warning(response.data.result.message);
+            }else{
+              that.$message.warning("申请人获取失败~");
+            }
+            return '';
+          }
+        }).catch(function(error) {
+          console.log(error);
+          return '';
+        });
+      },
+
+      getSupplier(code){
+        const that = this;
+        return that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
+          "id": code
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(function(response) {
+          console.log(response);
+          if (response.data.isSuccess) {
+            return response.data.object.name;
+          } else {
+            if(response.data.result.message){
+              that.$message.warning(response.data.result.message);
+            }else{
+              that.$message.warning("获取供应商名称失败~");
+            }
+            return '';
           }
         }).catch(function(error) {
           console.log(error);

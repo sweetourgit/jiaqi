@@ -77,12 +77,12 @@
             ></el-button>
           </span>
         </div>
-        <div>
+        <!-- <div>
           <span style="line-height: 32px;">
             <span>人均结算价：</span>
             <span>{{ vm.average }}</span>
           </span>
-        </div>
+        </div> -->
       </div>
       <div>
         <el-button type="info" size="small"
@@ -354,7 +354,7 @@ export default {
       if(state=== DAY_STATE.SHARE || state=== DAY_STATE.NOT_SHARE) return this.$message.error('计划已存在');
       // 如果空选，或者不是多选的情况下day过期
       if(state=== DAY_STATE.UNDO || (state!== DAY_STATE.MULTIPLE && !day.after)) return this.$message.error('无效日期（未指定或已过期）不能新增计划');
-      this.$refs.addRef.handleOpen();
+      this.$refs.addRef.handleOpen(this.initCache);
     },
 
     // 编辑计划

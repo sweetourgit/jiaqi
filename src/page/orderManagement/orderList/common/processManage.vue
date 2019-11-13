@@ -43,7 +43,7 @@
         active-color="#409eff"
         inactive-color="#dcdfe6"
         @change="priceChangeEvent(isPricechange)"
-        :disabled="orderget.orderStatus == 4"
+        :disabled="orderget.orderStatus===4||orderget.orderStatus===6||orderget.orderStatus===9"
       ></el-switch>
       <!-- switch 更改价格(直客价和同业价) end-->
       <!--报名人数-->
@@ -83,7 +83,7 @@
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
               @input="compPrice(2,index)"
             ></el-input>
           </el-form-item>
@@ -92,7 +92,7 @@
               v-model="item.mark"
               placeholder="请输入摘要"
               class="input1"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
             ></el-input>
           </el-form-item>
         </div>
@@ -141,7 +141,7 @@
         <!-- 出行人表格后加 begin -->
         <div class="travelMessage">出行人信息</div>
         <table
-          :class="['costList',orderget.orderStatus == 4 || orderget.orderStatus == 6 ? 'disableColor':'']"
+          :class="['costList',orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9 ? 'disableColor':'']"
           v-for="(item,indexPrice) in salePrice"
           :key="item.id + indexPrice"
           border="1"
@@ -405,6 +405,7 @@ export default {
       this.compPrice(1);
     }
   },
+  
   methods: {
     //流程管理
     processManage(orderId) {
@@ -903,15 +904,15 @@ export default {
               this.enrolNum.push(this.tour[i].length);
             }
             for (let i = 0; i < data.length; i++) {
+                //如果配额为0或者配额大于库存，余位显示总库存
               if (
                 data[i].quota == 0 ||
                 data[i].quota > this.teampreviewData.remaining
               ) {
-                //如果配额为0或者配额大于库存，余位显示总库存
                 data[i].quota = this.teampreviewData.remaining;
               } else {
-                data[i].quota =
-                  parseInt(data[i].quota) + parseInt(this.enrolNum[i]);
+                // data[i].quota =
+                //   parseInt(data[i].quota) + parseInt(this.enrolNum[i]);
               }
             }
             this.salePrice = data;

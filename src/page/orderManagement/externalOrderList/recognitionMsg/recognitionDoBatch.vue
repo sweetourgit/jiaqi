@@ -246,9 +246,18 @@
       // 获取收款明细
       getReceiptDetail(){
         const that = this;
-        console.log(this.$refs.multipleTable);
+//        console.log(this.$refs.multipleTable);
 //        console.log(this.$refs.multipleTable1);
-        this.date = formatDate(new Date(this.item.rece_start*1000))+'--'+formatDate(new Date(this.item.rece_end*1000));
+        if(this.item.rece_start == null) {
+          const timeToday = new Date();
+          const year = timeToday.getFullYear();
+          const month = timeToday.getMonth() + 1;
+          const day = timeToday.getDate();
+          this.date = (year - 1) + '-' + month + '-' + day +'--'+(year + 1) + '-' + month + '-' + day;
+        } else {
+          this.date = formatDate(new Date(this.item.rece_start*1000))+'--'+formatDate(new Date(this.item.rece_end*1000));
+        }
+//        this.date = formatDate(new Date(this.item.rece_start*1000))+'--'+formatDate(new Date(this.item.rece_end*1000));
         this.distributor = this.item.distributor;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/receiptdetail", {
           "rec_id": this.item.id,
@@ -282,7 +291,7 @@
       doSubmit(row){
 //        console.log(row);
         const that = this;
-        if(that.totalMoney > row.rece_money){
+        if(parseFloat(that.totalMoney) > parseFloat(row.rece_money)){
           that.$message.warning("待认收款金额小于收入，不能提交认款");
         }else{
           let order_sns = '';

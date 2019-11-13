@@ -4,7 +4,7 @@ $height: 40px;
 .show-panel{
   position: relative;
   height: 940px;
-  padding-top: $height* 5 + 10px;
+  padding-top: $height* 6 + 10px;
   &>header{
     position: absolute;
     width: 100%;
@@ -41,7 +41,7 @@ $height: 40px;
     }
   }
   &>main{
-    height: 940px - $height* 5 - 10px;
+    height: 940px - $height* 6 - 10px;
     overflow: auto;
     .container{
       .card-ground{
@@ -107,6 +107,11 @@ $height: 40px;
           </span>
         </div>
         <div class="bar">
+          <span>
+            库存均价：{{ vm.average }}
+          </span>
+        </div>
+        <div class="bar">
           {{ vm.share=== 1? '当前剩余': '总库存' }}：{{ vm.count }}
         </div>
         <div class="bar">
@@ -116,7 +121,7 @@ $height: 40px;
     </header>
     <main>
       <div class="container">
-        <el-card style="margin-bottom: 10px; background-color: #f6f6f6;"
+        <el-card style="margin-bottom: 10px;"
           shadow="never"
           v-for="(enroll, i) in enrolls" 
           :key="i">
@@ -144,12 +149,16 @@ $height: 40px;
 </template>
 
 <script>
-import { getPlan, getInventory, deleteInventory, deletePlan } from '../../../../planInventory'
+import { getPlan, getInventory, deleteInventory, deletePlan, getCostList } from '../../../../planInventory'
 import { DAY_STATE } from '../../../../dictionary'
 
 export default {
 
   inject: ['poolManager'],
+
+  props: {
+    parentVm: [Object],
+  },
 
   data(){
     return {
@@ -164,6 +173,8 @@ export default {
         count: 0,
         inventoryID: null,
         planID: null,
+        average: 0, // 用来和价格比较显示红色
+        averageCost: 0  // 用来传递给编辑表单，保存时带回
       },
       enrolls: [],
     }
@@ -179,10 +190,10 @@ export default {
     setState(state, day){
       if(state=== DAY_STATE.MULTIPLE || state=== DAY_STATE.UNDO) return this.vm.state= false;
       this.vm.state= true;
-      this.dayFactory(day)
+      this.dayFactory(state, day)
     },
 
-    dayFactory(day){
+    dayFactory(state, day){
       let { after, dayInt, vm }= day;
       this.vm.previous= !after;
       this.vm.dateText= this.dayIntToText(dayInt);
@@ -201,10 +212,14 @@ export default {
         this.vm.regimentType= regimentType;
         this.vm.inventoryID= inventoryID;
         return getInventory(inventoryID).then(res2 => {
-          let { share, name, count }= res2;
+          let { share, name, count, averageCost }= res2;
           this.vm.share= share;
           this.vm.name= name;
           this.vm.count= count;
+          // 用来传递给编辑表单
+          this.vm.averageCost= averageCost;
+          // 如果是共享库存，则均价需要另行计算
+          if(share=== DAY_STATE.SHARE) this.getShareCost(averageCost)
         })
       })
     },
@@ -278,8 +293,24 @@ export default {
       let payload= this.getPlanData();
       payload.share= this.poolManager.state;
       payload.day= this.poolManager.currentDay;
+      payload.average= this.vm.average;
+      payload.averageCost= this.vm.averageCost;
       this.$emit('awake-edit-form', payload);
     },
+
+    getShareCost(shareAverageCost){
+      let { pacId, rate }= this.parentVm;
+      getCostList(pacId).then(res => {
+        let sum= shareAverageCost;
+        res.forEach(el => {
+          if(el.supplierType=== 2) return;
+          sum+= el.money;
+        })
+        sum= sum/(1- rate/100);
+        this.vm.average= parseFloat(sum.toFixed(2));
+        this.$forceUpdate();
+      })
+    }
   }
 }
 </script>

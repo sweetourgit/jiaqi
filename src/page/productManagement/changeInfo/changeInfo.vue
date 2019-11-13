@@ -198,7 +198,7 @@ export default {
       }).then(() => {
         this.removeTabAction(id, index);
       }).catch(() => {
-        this.$message.error('删除失败');        
+        this.$message.info('取消删除');        
       });
     },
 

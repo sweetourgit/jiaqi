@@ -14,7 +14,7 @@
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.approval_status == 3">通过</el-button>
       <div class="stepDv">
         <p class="inputLabel"><span>ID：</span>{{baseInfo.id}}</p>
-        <p class="inputLabel"><span>申请人：</span>{{baseInfo.create_uid}}</p>
+        <p class="inputLabel"><span>申请人：</span>{{baseInfo.orgName}}--{{baseInfo.create_uid}}</p>
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
         <p class="inputLabel"><span>供应商：</span>{{baseInfo.supplier}}</p>
         <p class="inputLabel"><span>借款类型：</span>{{periphery_type[baseInfo.type]}}</p>
@@ -117,6 +117,7 @@
         baseInfo: {
           id: '',
           create_uid: '',
+          orgName: '',
           created_at: '',
           supplier: '',
           type: '',
@@ -173,22 +174,19 @@
       // 关闭弹窗
       closeAdd(){
         this.baseInfo = {
-          status_rece: '',
-          rece_code: '',
+          id: '',
           create_uid: '',
+          orgName: '',
           created_at: '',
-          receivables_at: '',
-          account_id: '',
-          account: '',
-          rece_money: '',
-          remain_money: '',
+          supplier: '',
+          type: '',
+          money: '',
           remark: '',
-          explain: '',
-          rec_mode: '',
-          rec_uid: '',
-          rec_created_at: '',
-          distributor: '',
-          distributor_code: ''
+          account: '',
+          accountBank: '',
+          accountName: '',
+          accountCode: '',
+          reimbursed_money: ''
         };
 
         this.$emit('close', false);
@@ -304,6 +302,7 @@
             that.baseInfo = {
               id: response.data.data.info.id,
               create_uid: response.data.data.info.create_uid,
+              orgName: '',
               created_at: response.data.data.info.created_at,
               supplier: response.data.data.info.supplier_code,
               type: response.data.data.info.periphery_type,
@@ -322,6 +321,11 @@
               console.log(res);
               that.baseInfo.create_uid = res;
             });
+            // 获取所属部门
+            that.getOrgName(response.data.data.info.create_uid).then(res => {
+//              console.log(res);
+              that.baseInfo.orgName = res;
+            });
 
             // 根据分销商ID获取名称
             if(response.data.data.distributor_code){
@@ -336,6 +340,31 @@
                 }
               }).catch(function(obj) {
                 console.log(obj);
+              });
+            }
+
+            // 获取供应商名称
+            if(response.data.data.info.supplier_code){
+
+              that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
+                "id": response.data.data.info.supplier_code
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }).then(function(response) {
+                console.log(response);
+                if (response.data.isSuccess) {
+                  that.baseInfo.supplier = response.data.object.name
+                } else {
+                  if(response.data.result.message){
+                    that.$message.warning(response.data.result.message);
+                  }else{
+                    that.$message.warning("获取供应商名称失败~");
+                  }
+                }
+              }).catch(function(error) {
+                console.log(error);
               });
             }
 
@@ -405,6 +434,28 @@
         }).catch(function(error) {
           console.log(error);
           return '';
+        });
+      },
+
+      // 根据id获取所属部门
+      getOrgName(ID){
+        const that = this;
+        return this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+          "id": ID
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(function(response) {
+//        console.log(ID,'组织名称',response);
+          if (response.data.isSuccess) {
+            return response.data.objects[0].name
+          } else {
+            return '';
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
         });
       },
 

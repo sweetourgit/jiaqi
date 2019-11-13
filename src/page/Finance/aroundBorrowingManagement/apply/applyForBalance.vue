@@ -10,7 +10,11 @@
         <el-divider content-position="left">基本信息</el-divider>
         <div>
           <el-form-item label="供应商名称：" prop="supplier" label-width="140px">
-            <el-autocomplete class="inputWidth" v-model="ruleForm.supplier" :fetch-suggestions="querySearchD" placeholder="请输入供应商" @select="handleSelectD" @blur="blurHand"></el-autocomplete>
+            <el-autocomplete class="inputWidth" v-model="ruleForm.supplier" :fetch-suggestions="querySearchD" placeholder="请输入供应商" @select="handleSelectD" @blur="blurHand">
+              <template slot-scope="{ item }">
+                <div>{{ item.valueName }}</div>
+              </template>
+            </el-autocomplete>
           </el-form-item>
           <el-form-item label="借款类型：" prop="type" label-width="140px">
             <el-select v-model="ruleForm.type" placeholder="请选择" class="inputWidth">
@@ -53,7 +57,10 @@
             </el-table-column>
             <el-table-column prop="income" label="订单金额" align="center">
             </el-table-column>
-            <el-table-column prop="reimbursed_money" label="已报销金额" align="center" hidden>
+            <el-table-column prop="reimbursed_money" label="已报销金额" align="center">
+              <template slot-scope="scope">
+                <span>0.00</span>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -224,7 +231,7 @@
               return;
             }
 //            this.ruleForm.supplierID = 6;
-            this.ruleForm.supplierName = 3;
+//            this.ruleForm.supplierName = 3;
             this.getCode().then(code => {
               if(code !== ''){
                 this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
@@ -332,18 +339,30 @@
       },
       createFilter1(queryString) {
         return (supplierList) => {
-          return (supplierList.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          return (supplierList.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
         };
       },
       handleSelectD(item){
         console.log(item);
         this.ruleForm.supplierID = item.id;
+        this.ruleForm.supplier = item.valueName;
+        let nameArr = item.value.split(',');
+        let nameStr = '';
+        nameArr.forEach(function (item, index, arr) {
+          if(index > 0){
+            nameStr += item + ',';
+          }
+        });
+        if(nameStr.substr(nameStr.length-1,1) === ','){
+          nameStr = nameStr.substr(0, nameStr.length - 1);
+        }
 //        const name = 2;
+        this.ruleForm.supplierName = nameStr;
         this.loadRelatedData();
       },
       blurHand(){
         const that = this;
-        let ida = '';
+        let ida = '', namea = '';
         if(that.ruleForm.supplier == ''){
           that.ruleForm.supplierID = '';
           that.tableDataXG = [];
@@ -351,10 +370,23 @@
           this.supplierList.forEach(function (item, index, arr) {
             if(that.ruleForm.supplier == item.value){
               ida = item.id;
+              namea = item.value;
+              that.ruleForm.supplier = item.valueName;
             }
           });
           if(ida){
             that.ruleForm.supplierID = ida;
+            let nameArr = namea.split(',');
+            let nameStr = '';
+            nameArr.forEach(function (item, index, arr) {
+              if(index > 0){
+                nameStr += item + ',';
+              }
+            });
+            if(nameStr.substr(nameStr.length-1,1) === ','){
+              nameStr = nameStr.substr(0, nameStr.length - 1);
+            }
+            that.ruleForm.supplierName = nameStr;
 //            const name = 2;
             this.loadRelatedData();
           }else{
@@ -367,19 +399,16 @@
       // 加载供应商信息
       loadSupplier(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
-          object: {
-            "name": '',
-            "isDeleted": 0
-          }
-        }).then(function(obj) {
+        this.$http.post(this.GLOBAL.serverSrc + "/alias/supplier/api/all").then(function(obj) {
           console.log('获取供应商',obj);
           if(obj.data.isSuccess){
             let supplierObj = [];
             obj.data.objects.forEach(function (item, index, arr) {
+              const valName = item.allName.split(',')[0];
               const supplier = {
-                'value' : item.name,
-                'id' : item.id
+                'value' : item.allName,
+                'id' : item.id,
+                'valueName': valName
               };
               supplierObj.push(supplier);
             });
@@ -394,7 +423,7 @@
       loadRelatedData(){
         const that = this;
         this.loading = true;
-        this.ruleForm.supplierName = 3;
+//        this.ruleForm.supplierName = 3;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/getorder", {
           "supplier_name": this.ruleForm.supplierName,
           "buy_type": 1,

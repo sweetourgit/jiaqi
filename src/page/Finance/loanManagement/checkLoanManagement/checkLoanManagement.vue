@@ -120,7 +120,7 @@
     </el-table>
     <!-- 相关信息 END -->
     <!-- 无收入借款明细 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>审批过程</el-divider>
+    <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
     <el-table :data="tableIncome" border :header-cell-style="getRowClass">
       <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
       <el-table-column prop="checkType" label="审批状态" align="center">
@@ -160,7 +160,7 @@
       <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
       <el-table-column prop="process" label="审批过程" align="center">
         <template slot-scope="scope">
-          <div @click="processIncome2(scope.row)">查看</div>
+          <div @click="processIncome(scope.$index, scope.row)">查看</div>
         </template>
       </el-table-column>
     </el-table>
@@ -186,10 +186,10 @@
     <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income"append-to-body>
       <div class="indialog">
         <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-          <el-table-column prop="createTime" label="审批时间" width="150" align="center"></el-table-column>
-          <el-table-column prop="createName" label="审批人" align="center"></el-table-column>
-          <el-table-column prop="checkTypeEX" label="审批结果" align="center"></el-table-column>
-          <el-table-column prop="mark" label="审批意见" align="center"></el-table-column>
+          <el-table-column prop="finishedTime" label="审批时间" width="150" align="center"></el-table-column>
+          <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
+          <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
+          <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
     </el-dialog>
@@ -270,11 +270,12 @@ export default {
       tableCourse:[], // 查看无收入借款审批过程
       planID:'',
       tour_id:0,
+      keepPaymentType: null, // 弹窗中调用获取一条详情，保存paymentType类型
     }
   },
   filters: {
     formatDate: function (value) {
-      return moment(value).format('YYYY-MM-DD')
+      return moment(value).format('YYYY-MM-DD HH:mm:ss')
     }
   },
   methods: {
@@ -327,10 +328,13 @@ export default {
     },
     // 审批过程-查看
     processIncome(index,row){
-      let dataProcessLook = []
-      dataProcessLook.push(row)
-      this.tableIncomeCheck = dataProcessLook
-      this.dialogFormVisible_Income = true;
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+        jQ_ID: row.guid,
+        jQ_Type: this.keepPaymentType,
+      }).then(obj => {
+        this.tableIncomeCheck = obj.data.extend.instanceLogInfo;
+        this.dialogFormVisible_Income = true;
+      }).catch(obj => {})
     },
     // 查看无收入借款弹窗
     checkIncome(){
@@ -339,11 +343,12 @@ export default {
     CloseCheckIncomeShow(){
       this.checkIncomeShow = false;
     },
-    auditResult(result) {
+    // 审核结果
+    auditResult(result, paramJqType) {
       var that =this
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
         jQ_ID: result,
-        jQ_Type: 1,
+        jQ_Type: paramJqType, // 无收入1 预付款2
       }).then(obj => {
         that.tableCourse = obj.data.extend.instanceLogInfo;
       }).catch(obj => {})
@@ -354,54 +359,25 @@ export default {
           "id":this.paymentID
       }).then(res => {
         if(res.data.isSuccess == true){
+          let getPaymentType = res.data.object.paymentType
+          this.keepPaymentType = getPaymentType
           this.fundamental=res.data.object;
           //this.tour_id = res.data.object.planID;
+          this.auditResult(res.data.object.guid, getPaymentType);
           if(res.data.object.planID>0){
             this.getPaymentdetails(res.data.object.planID);
           }else{
             this.bbb();
           }
-          this.auditResult(res.data.object.guid);
         }
      })
     },
-    /*getLabel(){
-      this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
-         "id":this.paymentID
-        }).then(res => {
-            if(res.data.isSuccess == true){
-               let data = res.data.object;
-               this.ruleForm.createUser=data.createUser;
-               this.ruleForm.groupCode=data.groupCode;
-               this.ruleForm.plan_01=data.plan_01;
-               this.ruleForm.supplierName=data.supplierName;
-               this.ruleForm.supplierTypeEX=data.supplierTypeEX;
-               this.ruleForm.price=data.price;
-               this.ruleForm.mark=data.mark;
-               this.ruleForm.cardNumber=data.cardNumber;
-               this.ruleForm.bankName=data.bankName;
-               this.ruleForm.cardName=data.cardName;
-               this.ruleForm.payway=data.payway;
-               this.ruleForm.files=data.files;
-               this.tour_id = data.planID;
-               this.getTourByPlanId(res.data.object.planID);
-               this.getPaymentdetails(res.data.object.planID);
-               res.data.object.files.forEach(function(v, k, arr) {
-                that.fileList.push({
-                  "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
-                  "name": arr[k]['name'],
-                });
-              })
-
-            }
-      }) .catch(err => {});
-    },*/
     // 无收入没有订单号根据登录人员查询无收入借款明细
     bbb(){
       var that = this
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
         "object": {
-          "paymentType": 1,
+          "paymentType": 1, // 1 无收入 2 预付款
           "createUser": sessionStorage.getItem('userCode'),
         }
       }).then(res => {
@@ -468,38 +444,6 @@ export default {
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tablePayment = res.data.objects
-  /*          that.tablePayment.forEach(function (v,k,arr) {
-              if(arr[k]['checkType'] == 0){
-                arr[k]['checkType'] = '审批中'
-              }else if(arr[k]['checkType'] == 1) {
-                arr[k]['checkType'] = '通过'
-              }else if(arr[k]['checkType'] == 2) {
-                arr[k]['checkType'] = '驳回'
-              }
-              if(arr[k]['supplierType'] == 1){
-                arr[k]['supplierType'] = '地接'
-              }else if(arr[k]['supplierType'] == 2) {
-                arr[k]['supplierType'] = '机票（本公司）'
-              }else if(arr[k]['supplierType'] == 3) {
-                arr[k]['supplierType'] = '机票（非本公司）'
-              }else if(arr[k]['supplierType'] == 4) {
-                arr[k]['supplierType'] = '小费'
-              }else if(arr[k]['supplierType'] == 5) {
-                arr[k]['supplierType'] = '地接（其他）'
-              }else if(arr[k]['supplierType'] == 6) {
-                arr[k]['supplierType'] = '火车票'
-              }else if(arr[k]['supplierType'] == 7) {
-                arr[k]['supplierType'] = '汽车票'
-              }else if(arr[k]['supplierType'] == 8) {
-                arr[k]['supplierType'] = '船票'
-              }else if(arr[k]['supplierType'] == 9) {
-                arr[k]['supplierType'] = '其他'
-              }else if(arr[k]['supplierType'] == 10) {
-                arr[k]['supplierType'] = '机票押金'
-              }else if(arr[k]['supplierType'] == 11) {
-                arr[k]['supplierType'] = '火车票押金'
-              }
-          })*/
         }
       }).catch(err => {
         console.log(err)
@@ -562,9 +506,7 @@ export default {
       })
       // 收入明细
       that.$http.post(this.GLOBAL.serverSrc + '/orderquery/api/income/detail', {
-        "object": {
-          "id": val,
-        }
+        "id": val,
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableEarning = res.data.objects

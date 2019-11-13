@@ -34,26 +34,21 @@
               </el-form-item>
               <!-- 供应商 -->
               <el-form-item label="供应商名称" prop="supplier" ref="supplier" label-width="120px" style="clear:both;">
-                <div class="destination-input inputWidth">
-                  <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
-                    {{tag2.label}}
-                  </el-tag>
-                  <el-autocomplete
-                    id="input-error"
-                    :disabled="change"
-                    class="lable_input"
-                    v-if="inputVisible2"
-                    v-model="ruleForm.supplier"
-                    ref="saveTagInput"
-                    placeholder="请输入供应商"
-                    @keyup.enter.native="handleInputConfirm2"
-                    :fetch-suggestions="querySearch5"
-                    :trigger-on-focus="false"
-                    @select="dest_01"
-                    @blur="handleInputConfirm2"
-                  >
-                  </el-autocomplete>
-                </div>
+                <el-autocomplete
+                  id="input-error"
+                  :disabled="change"
+                  class="lable_input"
+                  v-if="inputVisible2"
+                  v-model="ruleForm.supplier"
+                  ref="saveTagInput"
+                  placeholder="请输入供应商"
+                  @keyup.enter.native="handleInputConfirm2"
+                  :fetch-suggestions="querySearch5"
+                  :trigger-on-focus="false"
+                  @select="dest_01"
+                >
+                  <!-- @blur="handleInputConfirm2" -->
+                </el-autocomplete>
               </el-form-item>
               <!-- 类型 -->
               <el-form-item label="借款类型" prop="type" label-width="120px">
@@ -410,24 +405,13 @@ export default {
       firstTab: true,
       secondTab: false,
       approvalTotal: 0,
-      tableData2: [],
+      tableData2: [], // 团期计划检索联想数组
       tableData3: [],
       tableData4: [],
       tableData5: [],
       tableData6: [],
       tableData7: [],
-      tableData8: [{
-        oNo: '订单编号',
-        source: '来源',
-        user: '联系人',
-        number: '人数',
-        total: '订单金额',
-        accepted: '已收',
-        arrears: '欠款',
-        aNo: '收款单号',
-        arrearsTime: '欠款日期',
-        repaymentTime: '应还日期',
-      }],
+      tableData8: [], // 收入明细
       tableData9: [{
         account: '账户',
         bank: '开户行',
@@ -492,7 +476,6 @@ export default {
       },
       activeName: 'first',
       inputVisible3: false,
-      dynamicTags2: [],
       noNull: '',
       validaError: '',
       empty: '',
@@ -551,6 +534,21 @@ export default {
     closeAdd() {
       this.clearForm()
       this.$emit('close', false);
+      this.$confirm("是否取消本次借款申请?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(res => {
+        this.$message.success("借款申请已取消");
+        this.dialogFormVisible =false;
+        this.$refs["ruleForm"].resetFields();
+      })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
     },
     advanceProcess2(num) {
       this.dialogVisible6 = true
@@ -952,15 +950,14 @@ export default {
     },
     // 供应商
     dest_01(item) {
+      console.log(item,'dongzhen')
       this.ruleForm.supplier = item.value;
-      this.inputVisible2 = false;
     },
     handleInputConfirm2() {
       if (this.ruleForm.supplier !== '') {
         setTimeout(res => {
           let inputVal4 = this.ruleForm.supplier;
           if (inputVal4) {
-            this.dynamicTags2.push({ "labelID": 0, "label": inputVal4, "teamID": 0 });
             this.ruleForm.supplier = inputVal4;
           }
           this.inputVisible2 = false;
@@ -996,11 +993,13 @@ export default {
       }
       this.$refs.ruleForm.validateField('supplier')
     },
+    // 供应商联想查询
     querySearch5(queryString5, cb) {
-      this.tableData2 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
         "object": {
-          name: queryString5
+          name: queryString5,
+          UserState:-1,
+          SupplierType:-1,
         }
       }).then(res => {
         if(res.data.objects != null) {
@@ -1019,10 +1018,10 @@ export default {
         }
       })
     },
-    createFilter(queryString) {
+    createFilter(queryString1){
       return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
+        return (restaurant.value);
+      }
     },
     // 提交
     submitForm(formName) {
@@ -1251,7 +1250,6 @@ export default {
       }
       this.supplier_id = 0
       this.supplier = ''
-      this.dynamicTags2.splice(0, 1);
       this.supplierLength = true
       this.tour_id = 0
       this.fileList = []

@@ -115,7 +115,7 @@
       <!-- 需要您审批 -->
       <el-tab-pane :label="'需要您审批'+msg" name="second">
         <div class="distributor-content">
-          <NeedApproval v-on:headCallBack="headCall"></NeedApproval>
+          <approvalToBorrow v-on:headCallBack="headCall"></approvalToBorrow>
         </div>
       </el-tab-pane>
       <!-- 需要您审批 END -->
@@ -128,19 +128,20 @@
           <el-button @click="CloseCheckIncomeShow()">取消</el-button>
           <el-button @click="repeal()" type="danger" plain>撤销借款</el-button>
         </div>
+      <!-- 好像是和无收入借款共用一个 -->
       <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
     </el-dialog>
   </div>
 </template>
 <script>
-import NeedApproval from '@/page/Finance/advancePayment/needApproval'
+import approvalToBorrow from '@/page/Finance/loanManagement/approvalToBorrow'
 import AdvanceInfo from '@/page/Finance/advancePayment/advanceInfo/advanceInfo'
 import moment from 'moment'
 import checkLoanManagement from '@/page/Finance/loanManagement/checkLoanManagement/checkLoanManagement'
 export default {
   name: "advancePayment",
   components: {
-    NeedApproval,
+    approvalToBorrow,
     AdvanceInfo,
     checkLoanManagement,
   },
@@ -235,7 +236,6 @@ export default {
     },
     // 报销弹窗
     dialogchange() {
-      console.log('报销弹窗')
       this.find = 0;
       this.change = false
       this.dialogFormVisible = true;
@@ -384,6 +384,7 @@ export default {
         console.log(err);
       })
     },
+    // 时间转换
     formatDate1(dates){
      var dateee = new Date(dates).toJSON();
      var date = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')

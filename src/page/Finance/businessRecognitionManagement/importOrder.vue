@@ -278,9 +278,11 @@
           this.tableDataQK.forEach(function (item, index, arr) {
             item[1] = formatDate(new Date(item[1]*1000));
           });
-          if(file.response.data.money != this.baseInfo.rece_money){
+          if(parseFloat(file.response.data.money) != parseFloat(this.baseInfo.rece_money)){
             this.$message.warning('收款金额和收款明细总金额不相等，不可提交！');
             this.isEqual = false;
+          }else{
+            this.isEqual = true;
           }
         }else{
           if(response.message){
