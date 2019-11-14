@@ -247,19 +247,19 @@
               </tr>
             </table>
             <el-breadcrumb separator="|" class="confirm-time">
-              <el-breadcrumb-item class="breadCrumbPointer">联系客人</el-breadcrumb-item>
+              <!-- <el-breadcrumb-item class="breadCrumbPointer">联系客人</el-breadcrumb-item> -->
               <el-breadcrumb-item
                 class="breadCrumbPointer"
                 @click.native="operation(item.id,2,item.orderCode)"
               >备注</el-breadcrumb-item>
-              <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item>
+              <!-- <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,4)">转团</el-breadcrumb-item> -->
               <el-breadcrumb-item
                 class="breadCrumbPointer"
                 @click.native="operation(item.id,1,item.orderCode)"
               >流程管理</el-breadcrumb-item>
-              <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item>
-              <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item>
+              <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
+              <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
             </el-breadcrumb>
             <div class="but-row">
               <span class="dotFather">
