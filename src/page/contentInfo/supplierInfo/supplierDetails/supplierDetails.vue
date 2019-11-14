@@ -7,7 +7,7 @@
                :close-on-click-modal="false">
       <div class="supplierButton">
         <el-button @click="hideFlag">关 闭</el-button>
-        <el-button type="primary">编 辑</el-button>
+        <el-button type="primary" @click="fatherMethod">编 辑</el-button>
       </div>
       <div class="title">基本信息</div>
       <div class="pro-info">
@@ -184,6 +184,9 @@
       hideFlag(){
         this.$emit("update:flag",false)
       },
+      fatherMethod(){
+        this.$parent.editClick()
+      },
       //详情弹窗获取详情数据
       teamGetDetails(id){
         this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
@@ -196,6 +199,9 @@
               this.alias= res.data.object.alias;//获取供应商其他名称数组
               this.types = res.data.object.types;//获取类别数组
               this.orgs = res.data.object.orgs;//获取使用部门数组
+              // if(res.data.object){
+              //
+              // }
             }
           });
       },
@@ -223,6 +229,6 @@
 .fl{float: left;}
 .ml13{margin: 0 0 0 13px;}
 .teampreview{ text-align:right; width: 120px;overflow: hidden;float: left;}
-.tableData{margin: 30px 0 0 0; width: 752px;}
+.tableData{margin: 30px 0 0 150px; width: 752px;}
 
 </style>
