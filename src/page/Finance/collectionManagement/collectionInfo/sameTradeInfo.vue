@@ -870,7 +870,7 @@ export default {
           objectRequest = {
             "GroupCode":"",
             "OrderNumber":"",
-            "Dept":sessionStorage.getItem('orgID'),
+            "Dept":sessionStorage.getItem('orgName'),
             "LocalCompName":this.originPlace,
             "ProductName":"暂无",
             "checkType": 0, // 审批状态
