@@ -551,7 +551,7 @@
               <el-table-column prop="qk_price" label="欠款金额" width="120" align="center"></el-table-column>
               <el-table-column prop="yh_price" label="已还金额" width="120" align="center"></el-table-column>
               <el-table-column prop="CreateTime" label="欠款日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="RepaymentDate" label="应还日期" width="120" align="center"></el-table-column>
+              <el-table-column prop="RepaymentDate" label="应还日期"  align="center"></el-table-column>
             </el-table>
           </div>
         </div>
