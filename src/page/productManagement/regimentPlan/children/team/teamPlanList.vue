@@ -320,25 +320,11 @@ export default {
     },
     operation(i) {
       if(i === 1){
-        console.log(new Date().getTime())
-        console.log(new Date(this.teamqueryList[0].dateFormat).getTime()+24*24*60*1000)
-        // if( new Date(this.teamqueryList[0].dateFormat).getTime() < new Date().getTime()){
         if(new Date().getTime() > new Date(this.teamqueryList[0].dateFormat).getTime()+24*24*60*1000){
           this.$message.error('该团期出行日期已过,不能再进行下单');
           return;
         }
       }
-      // var remindTime = this.teamqueryList[i].dateFormat;// 列表显示的时间
-      // var str = remindTime.toString(); // toString
-      // str = str.replace('/-/g','/');//去空格字符等
-      // var oldTime = new Date(str).getTime();//装date
-      // if ( oldTime <= new Date().getTime()) {
-      //   this.$message.error('该团期出行日期已过,不能再进行下单');
-      //   return;
-      // }else {
-      //   this.variable++;
-      //   this.dialogType = i;
-      // }
       this.variable++;
       this.dialogType = i;
     },
@@ -350,7 +336,7 @@ export default {
       }
       
     },
-    getUserCode(){
+    getUserCode(){//op输入名字获取usercode
       var that = this
         this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
           object: {
