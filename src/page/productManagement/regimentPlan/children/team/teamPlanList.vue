@@ -246,7 +246,6 @@ export default {
     handleCurrentChange(val) {
       this.pageIndex = val;
       this.teamQueryList(val,this.pageSize);
-      this.getUserCode();
     },
     //计划list
     teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op) {
@@ -267,7 +266,8 @@ export default {
         endDate = 0;
       }
       this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/page", {
-        pageIndex: (this.title !== '' || this.groupCode !== '' || this.date !== '' || this.op !== '' || this.financeState !== '') ? 1 : pageIndex,
+        // pageIndex: (this.title !== '' || this.groupCode !== '' || this.date !== '' || this.op !== '' || this.financeState !== '') ? 1 : pageIndex,
+        pageIndex:pageIndex,
         pageSize: pageSize,
         object: {
           title: title,
@@ -349,57 +349,60 @@ export default {
       
     },
     getUserCode(){
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
-        object: {
-          id: 0,
-          createTime: "2019-08-23T03:03:10.386Z",
-          isDeleted: 0,
-          code: "",
-          mobile: "",
-          name: this.op,
-          email: "",
-          userCode: "",
-          passWord: "",
-          iDcard: "",
-          tourGuide: "",
-          sex: 0,
-          userType: 0,
-          userState: 0,
-          orgID: 0,
-          orgName: "",
-          user_Position: [
-            {
-              id: 0,
-              userID: 0,
-              positionID: 0,
-              positionName: "",
-              isDefault: 0,
-              orgID: 0,
-              orgName: ""
-            }
-          ]
-        }
-      }).then(res => {
-          if (res.data.objects.length !=0) {
-            var getUserCode='';
-            getUserCode = res.data.objects[0].userCode;
-            this.teamQueryList(this.pageIndex == 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
-          } else {
-            that.teamqueryList = [];
+      var that = this
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
+          object: {
+            id: 0,
+            createTime: "2019-08-23T03:03:10.386Z",
+            isDeleted: 0,
+            code: "",
+            mobile: "",
+            name: this.op,
+            email: "",
+            userCode: "",
+            passWord: "",
+            iDcard: "",
+            tourGuide: "",
+            sex: 0,
+            userType: 0,
+            userState: 0,
+            orgID: 0,
+            orgName: "",
+            user_Position: [
+              {
+                id: 0,
+                userID: 0,
+                positionID: 0,
+                positionName: "",
+                isDefault: 0,
+                orgID: 0,
+                orgName: ""
+              }
+            ]
           }
-        }).catch(function(error) {
-          console.log(error);
-        })
-      this.$nextTick(() => {
-        this.pageshow = true;
-      });
+        }).then(res => {
+            if (res.data.objects.length !=0) {
+              var getUserCode='';
+              getUserCode = res.data.objects[0].userCode;
+              this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode);
+            } else {
+              that.teamqueryList = [];
+            }
+          }).catch(function(error) {
+            console.log(error);
+          })
+        this.$nextTick(() => {
+          this.pageshow = true;
+        });
     },
     reset(curPage) {
+      console.log(this.pageIndex)
       this.title = "";
       this.groupCode = "";
       this.date = "";
       this.op = "";
       this.financeState = "";
+      this.pageIndex = 1 ? 1 : 1;
       this.current = curPage;
       this.teamQueryList();
     },
