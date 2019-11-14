@@ -319,13 +319,15 @@ export default {
       this.$refs.costTable.toggleRowSelection(row);
     },
     operation(i) {
-      // if(i === 1){
-      //   if(new Date().getTime() > new Date(this.teamqueryList[i].dateFormat).getTime()){
-      //     this.$message.error('该团期出行日期已过,不能再进行下单');
-      //     return;
-      //   }
-      // }
-      
+      if(i === 1){
+        console.log(new Date().getTime())
+        console.log(new Date(this.teamqueryList[0].dateFormat).getTime()+24*24*60*1000)
+        // if( new Date(this.teamqueryList[0].dateFormat).getTime() < new Date().getTime()){
+        if(new Date().getTime() > new Date(this.teamqueryList[0].dateFormat).getTime()+24*24*60*1000){
+          this.$message.error('该团期出行日期已过,不能再进行下单');
+          return;
+        }
+      }
       // var remindTime = this.teamqueryList[i].dateFormat;// 列表显示的时间
       // var str = remindTime.toString(); // toString
       // str = str.replace('/-/g','/');//去空格字符等
