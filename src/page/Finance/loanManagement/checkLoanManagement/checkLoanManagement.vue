@@ -153,7 +153,7 @@
           <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="supplierType" label="借款类型" align="center"></el-table-column>
+      <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
       <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
       <el-table-column prop="price" label="金额" align="center"></el-table-column>
       <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>

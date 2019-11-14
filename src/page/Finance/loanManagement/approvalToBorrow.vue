@@ -294,11 +294,8 @@ import moment from 'moment'
       return moment(date).format('YYYY-MM-DD')
     },
     // 重置
-    emptyButton_01(){
-      this.empty_01 = '';
-      this.people_01 = '';
-      this.planTime_01 = '';
-      this.planData_01 = '';
+    emptyButton_01(formName){
+      this.$refs[formName].resetFields();
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -314,10 +311,10 @@ import moment from 'moment'
         .then(obj => {
           this.$http.post('http://test.dayuntong.com/h3wf/JQ/GettingUnfinishedTasksForJQ', {
             "userCode": sessionStorage.getItem('userCode'),
-            "startTime": this.planTime_01 ? moment(this.planTime_01).format('YYYY-MM-DD') : '',
-            "endTime": this.planData_01 ? moment(this.planData_01).format('YYYY-MM-DD') : '',
-            "startIndex": this.currentPage,
-            "endIndex": this.pagesize,
+            "startTime": this.ruleFormSeach.planTime_01 ? moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD') : '',
+            "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD') : '',
+            "startIndex": -1,
+            "endIndex": -1,
             "workflowCode": obj.data.objects[0].name
           }).then(res => {
             let keepRes = res.data
@@ -374,10 +371,10 @@ import moment from 'moment'
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),
               "userCode": sessionStorage.getItem('userCode'),
-              "startTime": this.startTime?this.startTime:"1970-07-23T01:30:54.452Z",
-              "endTime": this.endTime?this.endTime:new Date(),
-              "startIndex": this.currentPage,  // 页码
-              "endIndex": this.pagesize ,  // 每页条数
+              "startTime": this.ruleFormSeach.planTime_01 ? this.ruleFormSeach.planTime_01 : "1970-07-23T01:30:54.452Z",
+              "endTime": this.ruleFormSeach.planData_01 ? this.ruleFormSeach.planData_01 : new Date(),
+              "startIndex": -1,  // 页码
+              "endIndex": -1 ,  // 每页条数
               "workflowCode": obj.data.objects[0].name
             }).then(obj => {
              obj.data.forEach(v=>{
