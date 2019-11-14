@@ -172,8 +172,8 @@
               "userCode": sessionStorage.getItem('userCode'),
               "startTime": this.planTime_01 ? moment(this.planTime_01).format('YYYY-MM-DD') : '',
               "endTime": this.planData_01 ? moment(this.planData_01).format('YYYY-MM-DD') : '',
-              "startIndex": this.currentPage,
-              "endIndex": this.pagesize,
+              "startIndex": -1,
+              "endIndex": -1,
               "workflowCode": obj.data.objects[0].name
             }).then(res => {
               let keepRes = res.data
@@ -230,10 +230,10 @@
             this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),
               "userCode": sessionStorage.getItem('userCode'),
-              "startTime": this.startTime?this.startTime:"1970-07-23T01:30:54.452Z",
+              "startTime": this.startTime ? this.startTime : "1970-07-23T01:30:54.452Z",
               "endTime": this.endTime?this.endTime:new Date(),
-              "startIndex": this.currentPage,  // 页码
-              "endIndex": this.pagesize ,  // 每页条数
+              "startIndex": -1,  // 页码
+              "endIndex": -1 ,  // 每页条数
               "workflowCode": obj.data.objects[0].name
             }).then(obj => {
               obj.data.forEach(v=>{

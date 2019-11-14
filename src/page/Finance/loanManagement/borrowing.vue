@@ -185,7 +185,7 @@
         <el-table :data="tableIncome" border :header-cell-style="getRowClass">
           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
           <el-table-column prop="checkTypeEX" label="审批状态" align="center"></el-table-column>
-          <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
+          <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
           <el-table-column prop="price" label="金额" align="center"></el-table-column>
           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
@@ -202,7 +202,7 @@
         <el-table :data="tablePayment" border :header-cell-style="getRowClass">
           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
           <el-table-column prop="checkTypeEX" label="审批状态" align="center"></el-table-column>
-          <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
+          <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
           <el-table-column prop="price" label="金额" align="center"></el-table-column>
           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
@@ -497,7 +497,7 @@ export default {
         ],
         abstract:[
           { required: true, message: '请输入摘要', trigger: 'change' },
-          { min: 0, max: 30, message: '摘要字数不能超过80字', trigger: 'change' }
+          { min: 0, max: 80, message: '摘要字数不能超过80字', trigger: 'change' }
         ],
         account:[{ required: true, message: '请输入汇款账号', trigger: 'blur' }],
         accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
@@ -521,32 +521,13 @@ export default {
       tableMoney:[], // 无收入借款金额表格
       tablePayment:[], // 无收入借款弹窗预付款明细表格
       dialogFormVisible_paymenrt:false, // 无收入借款弹窗中预付款明细查看弹窗
-      tableApprove:[/*{
-        times:' 2019-1-14 19:00:00',
-        people:'洋洋',
-        result:'通过',
-        opinion:'不同意'
-        }*/
-      ],
-      tableIncome:[
-
-      ], // 无收入借款弹窗中无收入借款明细弹窗
+      tableApprove:[],
+      tableIncome:[], // 无收入借款弹窗中无收入借款明细弹窗
       dialogFormVisible_Income:false, // 无收入借款弹窗中预付款明细查看弹窗
-      tableIncomeCheck:[{
-        times:' 2019-1-14 19:00:00',
-        people:'洋洋1',
-        result:'通过',
-        opinion:'不同意'
-        }],
+      tableIncomeCheck:[],
       tableEarning:[], // 无收入借款弹窗中收入明细表格
       checkIncomeShow:false, // 查看无收入借款弹窗
-      tableCourse:[/*{ // 查看无收入借款审批过程
-        people:'1',
-        result:'通过',
-        opinion:'同意',
-        times:'2019-04-25'
-        }*/
-      ],
+      tableCourse:[],
       tour_name_pre: '',
       product_name_pre:'',
       planID:'',
