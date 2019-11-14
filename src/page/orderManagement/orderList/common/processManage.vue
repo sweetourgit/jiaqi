@@ -742,6 +742,12 @@ export default {
       arrLength = this.enrolNum[index]; //获取当前报名人数
       this.preLength[index] = this.enrolNum[index]; //记录上一次报名人数为当前报名人数
       let len;
+      // 如果报名类型有配额 则输入的数字不可超过配额
+      if(this.salePriceNum[index].quota !== 0) {
+        if(this.enrolNum[index] == this.salePriceNum[index].quota){
+          this.enrolNum[index] = this.salePriceNum[index].quota
+        }
+      }
       if (arrLength > preLength) {
         //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
         len = arrLength - preLength;
@@ -865,7 +871,6 @@ export default {
           id: planId
         })
         .then(res => {
-          // console.log("获取报名类型列表数据", res);
           if (res.data.isSuccess == true) {
             this.preLength = []; //记录上一次报名人数[1,3]形式
             this.enrolNum = []; //报名人数[1,3]形式
@@ -892,6 +897,7 @@ export default {
             for (let g = 0; g < data.length; g++) {
               for (let i = 0; i < guest.length; i++) {
                 if (guest[i].enrollName == data[g].enrollName) {
+                  // console.log(g,"g")
                   this.tour[g].push(guest[i]);
                 } else {
                   this.tour.push();
@@ -913,6 +919,8 @@ export default {
               } else {
                 // data[i].quota =
                 //   parseInt(data[i].quota) + parseInt(this.enrolNum[i]);
+               data[i].quota =
+                  parseInt(data[i].quota) - parseInt(this.preLength[i]);
               }
             }
             this.salePrice = data;

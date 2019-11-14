@@ -129,6 +129,7 @@
           <!--总计-->
           <el-form-item label="总价" prop="totalPrice" class="cb">
             <div class="ml13">{{ruleForm.totalPrice}}</div>
+            <div v-if="ruleForm.orderRadio == 2 && this.payment == 1" style="clear: both; margin:0 0 0 10px;">剩余预存款和额度:￥{{lines}}</div>
           </el-form-item>
           <!--下单方式-->
           <!-- <el-form-item label="下单方式" prop="type">
@@ -568,6 +569,8 @@ export default {
       tableCollection:[],//收款表格
       tableOrder:[],//订单表格
       productPos:0,
+      lines:0,
+      payment:0,
       approvalTable:[],//审批过程表格
       approvalShow:false,//审批过程弹窗
       guid:'',
@@ -1253,14 +1256,19 @@ export default {
           isDeleted: 0
         }
       }).then(res => {
-        for (let i = 0; i < res.data.objects.length; i++) {
-          this.tableData2.push({
-            "value": res.data.objects[i].name,
-            "id": res.data.objects[i].id,
-            "supplierType": res.data.objects[i].supplierType
-          })
-          this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+        if (res.data.isSuccess == true) {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.tableData2.push({
+              "value": res.data.objects[i].name,
+              "id": res.data.objects[i].id,
+              "supplierType": res.data.objects[i].supplierType,
+              "quota": res.data.objects[i].quota,
+              "settlementType": res.data.objects[i].settlementType,
+            })
+            this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+          }
         }
+        
         var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
         cb(results)
       }).catch(err => {
@@ -1275,6 +1283,8 @@ export default {
     departure(item){
       console.log(item)
       this.productPos = item.id;//获取供应商的id传给下单接口的orgID
+      this.lines = item.quota;//获取额度
+      this.payment = item.settlementType ;//获取结算方式
       this.originPlace = item.value;
     },
     //订单来源切换清空相应下的文本框内容
