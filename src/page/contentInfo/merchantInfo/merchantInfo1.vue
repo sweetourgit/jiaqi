@@ -551,7 +551,7 @@
               <el-table-column prop="qk_price" label="欠款金额" width="120" align="center"></el-table-column>
               <el-table-column prop="yh_price" label="已还金额" width="120" align="center"></el-table-column>
               <el-table-column prop="CreateTime" label="欠款日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="RepaymentDate" label="应还日期"  align="center"></el-table-column>
+              <el-table-column prop="RepaymentDate" label="应还日期" align="center"></el-table-column>
             </el-table>
           </div>
         </div>
@@ -922,8 +922,8 @@ export default {
             max: 10,
             trigger: "blur",
             validator: localCompCode
-          },
-          { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: "请输入数字" }
+          }
+          // { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: "请输入数字" }
         ]
       },
       dialogFormVisible: false,
@@ -1190,6 +1190,30 @@ export default {
       this.isAddAccount = false;
       this.isAddAccountBtn = 0;
     },
+    // 点击添加按钮的大保存时 账户信息添加 tid为0时的
+    bigSaveAccount() {
+      this.useList.push(this.accountForm);
+      if (this.accountForm.state == 2) {
+        this.accountForm.state = "正常";
+      } else {
+        this.accountForm.state = "停用";
+      }
+      if (this.accountForm.sex == 1) {
+        this.accountForm.sex = "男";
+      } else {
+        this.accountForm.sex = "女";
+      }
+      if (this.accountForm.peerUserType == 1) {
+        this.accountForm.peerUserType = "管理员";
+      } else {
+        this.accountForm.peerUserType = "销售";
+      }
+      this.isAddAccount = false;
+      this.$message({
+        message: "添加成功",
+        type: "success"
+      });
+    },
     //添加账户信息弹窗的添加账户按钮事件
     addAccountAddBtn(accountForm) {
       // debugger
@@ -1200,30 +1224,19 @@ export default {
         this.$refs[accountForm].validate(valid => {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
-
             this.accountValidator().then(obj => {
               if (obj == true) {
-                this.useList.push(this.accountForm);
-                if (this.accountForm.state == 2) {
-                  this.accountForm.state = "正常";
+                if (this.useList.length > 0) {
+                  this.useList.forEach(item => {
+                    if (item.phone !== this.accountForm.phone) {
+                      this.bigSaveAccount();
+                    } else {
+                      this.$message.error("手机号重复");
+                    }
+                  });
                 } else {
-                  this.accountForm.state = "停用";
+                  this.bigSaveAccount();
                 }
-                if (this.accountForm.sex == 1) {
-                  this.accountForm.sex = "男";
-                } else {
-                  this.accountForm.sex = "女";
-                }
-                if (this.accountForm.peerUserType == 1) {
-                  this.accountForm.peerUserType = "管理员";
-                } else {
-                  this.accountForm.peerUserType = "销售";
-                }
-                this.isAddAccount = false;
-                this.$message({
-                  message: "添加成功",
-                  type: "success"
-                });
               }
             });
           } else {
@@ -1405,10 +1418,10 @@ export default {
     },
 
     // handlePreview(file) {
-      // console.log(file);
+    // console.log(file);
     // },
     // handleRemove(file, fileList) {
-      // console.log(file, fileList);
+    // console.log(file, fileList);
     // },
 
     // dialog关闭的回调
@@ -1998,6 +2011,9 @@ export default {
           this.list();
           this.$message.success("修改成功");
           this.currentPage4 = 1;
+          this.input = "";
+          this.statesValue = "";
+          this.payValue = "";
         })
         .catch(obj => {
           console.log("error");
@@ -2303,20 +2319,20 @@ export default {
     // },
     //选中待上传的图片
     handlePreview(file) {
-        // this.uid=file.uid;
+      // this.uid=file.uid;
     },
     //删除待上传的图片
     handleRemove(file, fileList) {
-        // this.uid=fileList[0].uid;
-        // for(let i=0;i<this.fileList.length;i++){
-          //  if(file.uid==this.fileList[i].uid){
-            //  this.fileList.splice(i,1);
-          //  }
-        // }
-        // this.time=this.fileList.length;       
+      // this.uid=fileList[0].uid;
+      // for(let i=0;i<this.fileList.length;i++){
+      //  if(file.uid==this.fileList[i].uid){
+      //  this.fileList.splice(i,1);
+      //  }
+      // }
+      // this.time=this.fileList.length;
     },
     // 商户信息
-    handleClick(row, event, column) { 
+    handleClick(row, event, column) {
       this.tid = row.id;
     },
     // dialog中区域可见获取数据

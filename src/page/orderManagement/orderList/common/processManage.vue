@@ -913,6 +913,7 @@ export default {
               } else {
                 // data[i].quota =
                 //   parseInt(data[i].quota) + parseInt(this.enrolNum[i]);
+               
               }
             }
             this.salePrice = data;
