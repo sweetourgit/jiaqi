@@ -278,10 +278,13 @@ import moment from 'moment'
       guid:'',
       transitShow:false, // 通过驳回弹窗
       title:"",
-      commentText:''
+      commentText:'',
+      presentRouter: null // 当前路由
     }
   },
   created(){
+    this.presentRouter = this.$route.name
+    console.log(this.presentRouter)
     this.pageList();
   },
   methods: {
@@ -368,6 +371,17 @@ import moment from 'moment'
       var arr = []
       this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
+
+          let getWorkflowCode
+          if(this.presentRouter == '无收入借款管理') {
+            getWorkflowCode = 'loan_noIncome2'
+          } else if(this.presentRouter == '预付款管理') {
+            getWorkflowCode = 'borrow_Moneys2'
+          }else {}
+
+          console.log(this.presentRouter)
+          console.log(getWorkflowCode)
+
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),
               "userCode": sessionStorage.getItem('userCode'),
@@ -375,7 +389,7 @@ import moment from 'moment'
               "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
               "startIndex": -1,  // 页码
               "endIndex": -1 ,  // 每页条数
-              "workflowCode": obj.data.objects[0].name
+              "workflowCode": getWorkflowCode
             }).then(obj => {
              obj.data.forEach(v=>{
                arr.push(v.jq_ID)
@@ -585,8 +599,8 @@ import moment from 'moment'
         this.tour_id = row['planID'];
         this.id = row.id;
       },
+    }
   }
-}
 </script>
 <style lang="scss" scoped>
   .distributor-content {
