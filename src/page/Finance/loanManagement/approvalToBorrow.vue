@@ -311,8 +311,8 @@ import moment from 'moment'
         .then(obj => {
           this.$http.post('http://test.dayuntong.com/h3wf/JQ/GettingUnfinishedTasksForJQ', {
             "userCode": sessionStorage.getItem('userCode'),
-            "startTime": this.ruleFormSeach.planTime_01 ? moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD') : '',
-            "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD') : '',
+            "startTime": this.ruleFormSeach.planTime_01 ? moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : '',
+            "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD HH:mm:ss') : '',
             "startIndex": -1,
             "endIndex": -1,
             "workflowCode": obj.data.objects[0].name
@@ -371,8 +371,8 @@ import moment from 'moment'
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),
               "userCode": sessionStorage.getItem('userCode'),
-              "startTime": this.ruleFormSeach.planTime_01 ? this.ruleFormSeach.planTime_01 : "1970-07-23T01:30:54.452Z",
-              "endTime": this.ruleFormSeach.planData_01 ? this.ruleFormSeach.planData_01 : new Date(),
+              "startTime": this.ruleFormSeach.planTime_01 ?  moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
+              "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
               "startIndex": -1,  // 页码
               "endIndex": -1 ,  // 每页条数
               "workflowCode": obj.data.objects[0].name
