@@ -150,6 +150,7 @@
                     名称：<el-input v-model="pictInfo.name" placeholder="请输入素材名称" :disabled="picDisabled"></el-input>
                     <span class="empty" v-if="picNameEmpty">名称不能为空</span>
                 </div>
+
                 <div class="album-info">
                   <div>
                       <p class="per-title">权限：</p>
@@ -201,7 +202,8 @@
              </div>
              <div class="album-form" v-for="(item,index) in fileList" v-show="uid==item.uid">
                 <div class="album-name1">
-                    名称：<el-input placeholder="请输入素材名称" v-model="item.name"></el-input>
+                    名称：<el-input placeholder="请输入素材名称" v-model="item.name" value="value"></el-input>
+                    <span class="empty" v-show="pictureName">名称不能为空</span>
                 </div>
                 <div class="album-info">
                   <div>
@@ -315,7 +317,8 @@
           destination: [
             { required: true, message: '请选择目的地',trigger: 'blur' }
           ]        
-        }
+        },
+        pictureName:false,
       }
     },
     created(){
@@ -732,6 +735,9 @@
       },
       //添加素材
       pictureInsert(){
+        // if(value.length > 20) {
+        //   this.pictureName = true;
+        // }
         let pictureList=[];  //图片数据字段转换
         let fileList=this.fileList;
         for(let i=0;i<fileList.length;i++){
