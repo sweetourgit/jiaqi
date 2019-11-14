@@ -171,7 +171,7 @@
     </el-dialog>
    
     <!-- 3.添加素材弹窗 -->
-    <el-dialog title="添加照片" :visible.sync="getPictureForm" custom-class="city_list" :append-to-body="true" width="1350px" @close="pictureFormClose" class="clearfix">  
+    <el-dialog title="添加照片" :visible.sync="getPictureForm" custom-class="city_list" :append-to-body="true" width="1350px" @close="pictureFormClose" class="clearfix" :rules="rules">  
       <div class="add-address-imgpic">
         <div class="left-imgpic">
           <!--图片上传-->
@@ -203,7 +203,7 @@
              <div class="album-form" v-for="(item,index) in fileList" v-show="uid==item.uid">
                 <div class="album-name1">
                     名称：<el-input placeholder="请输入素材名称" v-model="item.name" value="value"></el-input>
-                    <span class="empty" v-show="pictureName">名称不能为空</span>
+                    <!-- <span class="empty" v-show="pictureName">名称不能为空</span> -->
                 </div>
                 <div class="album-info">
                   <div>
