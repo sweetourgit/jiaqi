@@ -115,7 +115,7 @@
             class="demo-ruleForm clearfix"
             :disabled="readonly"
           >
-            <div class="saf" style="float: left">
+            <div class="saf" style="float: left;">
               <el-form-item label="商户名称 :" prop="name">
                 <el-input
                   v-model="ruleForm.name"
@@ -123,6 +123,33 @@
                   placeholder="请输入"
                   :disabled="btnindex == 2"
                   :title="ruleForm.name"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="商户其他名称" prop="otherNames" style="width: 350px;">
+                <el-tag
+                  :key="index"
+                  v-for="(tag,index) in businessOtherNamesArr"
+                  closable
+                  :disable-transitions="false"
+                  @close="businessHandleClose(tag)"
+                >{{tag.name}}</el-tag>
+                <el-input
+                  style="width: 90%"
+                  v-if="isInputVisible"
+                  v-model="ruleForm.otherNames"
+                  ref="saveTagInput"
+                  size="small"
+                  @keyup.enter.native="handleEnterOtherNames"
+                  @blur="handleEnterOtherNames"
+                ></el-input>
+                <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 点我添加商户名称</el-button>
+              </el-form-item>
+              <el-form-item label="商户编码:" prop="localCompCode">
+                <el-input
+                  v-model="ruleForm.localCompCode"
+                  style="width: 250px;"
+                  placeholder="请输入"
+                  :disabled="btnindex == 2"
                 ></el-input>
               </el-form-item>
               <el-form-item label="类别 :" prop="localCompType">
@@ -171,34 +198,6 @@
                   <el-option key="2" label="加盟门市" value="2"></el-option>
                   <el-option key="3" label="第三方门市" value="3"></el-option>
                 </el-select>
-              </el-form-item>
-              <el-form-item label="管理人员 :" prop="administrative">
-                <el-autocomplete
-                  v-model="ruleForm.administrative"
-                  :fetch-suggestions="querySearchAsync"
-                  placeholder="请输入"
-                  @focus="handleFocusAdminNames"
-                  @select="handleSelectAdminNames"
-                  @blur="handleBlurAdminNames"
-                  :trigger-on-focus="false"
-                  style="width: 250px"
-                >
-                  <template slot-scope="{ item }">
-                    <div class="name">{{ item.warn }}</div>
-                    <div class="name">{{ item.name=item.value }}</div>
-                  </template>
-                </el-autocomplete>
-                <div style="margin-top: 10px;">
-                  <el-tag
-                    :key="tag.id"
-                    v-for="tag in adminArr"
-                    class="tag"
-                    closable
-                    :disable-transitions="false"
-                    @close="handleAdminClose(tag, adminArr)"
-                    style="margin-botton: 5px;"
-                  >{{tag.name}}</el-tag>
-                </div>
               </el-form-item>
               <el-form-item label="地址 :" prop="address">
                 <el-input
@@ -283,6 +282,34 @@
                     >{{item.orgName}}</el-checkbox>
                   </el-checkbox-group>
                 </el-form-item>
+                <el-form-item label="管理人员 :" prop="administrative">
+                  <el-autocomplete
+                    v-model="ruleForm.administrative"
+                    :fetch-suggestions="querySearchAsync"
+                    placeholder="请输入"
+                    @focus="handleFocusAdminNames"
+                    @select="handleSelectAdminNames"
+                    @blur="handleBlurAdminNames"
+                    :trigger-on-focus="false"
+                    style="width: 250px"
+                  >
+                    <template slot-scope="{ item }">
+                      <div class="name">{{ item.warn }}</div>
+                      <div class="name">{{ item.name=item.value }}</div>
+                    </template>
+                  </el-autocomplete>
+                  <div style="margin-top: 10px;">
+                    <el-tag
+                      :key="tag.id"
+                      v-for="tag in adminArr"
+                      class="tag"
+                      closable
+                      :disable-transitions="false"
+                      @close="handleAdminClose(tag, adminArr)"
+                      style="margin-botton: 5px;"
+                    >{{tag.name}}</el-tag>
+                  </div>
+                </el-form-item>
                 <el-form-item label="销售人员 :" prop="salesman">
                   <el-autocomplete
                     v-model="ruleForm.salesman"
@@ -311,14 +338,7 @@
                     >{{tag.name}}</el-tag>
                   </div>
                 </el-form-item>
-                <el-form-item label="商户编码:" prop="localCompCode">
-                  <el-input
-                    v-model="ruleForm.localCompCode"
-                    style="width: 250px;"
-                    placeholder="请输入"
-                    :disabled="btnindex == 2"
-                  ></el-input>
-                </el-form-item>
+
                 <!-- <el-form-item label="商户其他名称 " prop="otherNames" class="business">
                   <el-input
                     v-model="ruleForm.otherNames"
@@ -341,30 +361,6 @@
                 <!-- <el-form-item label="商户其他名称" prop="otherNames">
                   <el-input class="name_input" v-model="ruleForm.otherNames"></el-input>
                 </el-form-item>-->
-                <el-form-item label="商户其他名称" prop="otherNames">
-                  <el-tag
-                    :key="index"
-                    v-for="(tag,index) in businessOtherNamesArr"
-                    closable
-                    :disable-transitions="false"
-                    @close="businessHandleClose(tag)"
-                  >{{tag.name}}</el-tag>
-                  <el-input
-                    style="width: 90%"
-                    v-if="isInputVisible"
-                    v-model="ruleForm.otherNames"
-                    ref="saveTagInput"
-                    size="small"
-                    @keyup.enter.native="handleEnterOtherNames"
-                    @blur="handleEnterOtherNames"
-                  ></el-input>
-                  <el-button
-                    v-else
-                    class="button-new-tag"
-                    size="small"
-                    @click="showInput"
-                  >+ 点我添加商户名称</el-button>
-                </el-form-item>
               </div>
             </div>
           </el-form>
@@ -404,6 +400,7 @@
           </div>
         </template>
         <!-- 点击页面的详情出现的dialog是table -->
+        <!-- 点击页面的详情出现的dialog是table -->
         <div class="dialogTable" v-if="btnindex == 1">
           <!-- 点击详情基本信息 -->
           <table>
@@ -422,6 +419,17 @@
               <td class="tr">商户名称：&nbsp;&nbsp;</td>
               <td class="longWeight">{{ruleForm.name}}</td>
               <div class="BodyTableCenter">
+                <td class="tr">商户其他名称&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.otherNames}}</td>
+              </div>
+              <td class="tr">商户编码：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.localCompCode}}</td>
+            </tr>
+            <br />
+            <tr>
+              <td class="tr">商户角色：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.localCompRole}}</td>
+              <div class="BodyTableCenter">
                 <td class="tr">类别：&nbsp;&nbsp;</td>
                 <td class="longWeight">{{ruleForm.localCompType}}</td>
               </div>
@@ -430,19 +438,8 @@
             </tr>
             <br />
             <tr>
-              <td class="tr">商户角色：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.localCompRole}}</td>
-              <div class="BodyTableCenter">
-                <td class="tr">到期日期：&nbsp;&nbsp;</td>
-                <td class="longWeight">{{ruleForm.expTime}}</td>
-              </div>
               <td class="tr">门市类型：&nbsp;&nbsp;</td>
               <td class="longWeight">{{ruleForm.storeType}}</td>
-            </tr>
-            <br />
-            <tr>
-              <td class="tr">管理人员：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.administrative}}</td>
               <div class="BodyTableCenter">
                 <td class="tr">地址：&nbsp;&nbsp;</td>
                 <td class="longWeight">{{ruleForm.address}}</td>
@@ -455,33 +452,35 @@
               <td class="tr">联系人电话：&nbsp;&nbsp;</td>
               <td class="longWeight">{{ruleForm.phone}}</td>
               <div class="BodyTableCenter">
+                <td class="tr">到期日期：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.expTime}}</td>
+              </div>
+              <td class="tr">管理人员：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.administrative}}</td>
+            </tr>
+            <br />
+            <tr>
+              <td class="tr">销售人员：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.salesman}}</td>
+
+              <div class="BodyTableCenter">
                 <td class="tr">对公户名：&nbsp;&nbsp;</td>
                 <td class="longWeight">{{ruleForm.publicName}}</td>
               </div>
-              <td class="tr">开户行：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.bankName}}</td>
+              <td class="tr">对公账号：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.bankcardNo}}</td>
             </tr>
             <br />
             <tr>
-              <td class="tr">对公账号：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.bankcardNo}}</td>
+              <td class="tr">开户行：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.bankName}}</td>
+
               <div class="BodyTableCenter">
-                <td class="tr">经营范围：&nbsp;&nbsp;</td>
-                <td class="longWeight">{{ruleForm.scopeExt}}</td>
+                <td class="tr">预存款：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.deposit}}</td>
               </div>
               <td class="tr">额度：&nbsp;&nbsp;</td>
               <td class="longWeight">{{ruleForm.quota}}</td>
-            </tr>
-            <br />
-            <tr>
-              <td class="tr">预存款：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.Deposit}}</td>
-              <div class="BodyTableCenter">
-                <td class="tr">销售人员：&nbsp;&nbsp;</td>
-                <td class="longWeight">{{ruleForm.salesman}}</td>
-              </div>
-              <td class="tr">商户其他名称&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.otherNames}}</td>
             </tr>
             <br />
             <tr>
@@ -491,8 +490,8 @@
                 <img width="100%" height="12%" :src="ruleForm.imgUrl" />
               </td>
               <div class="BodyTableCenter">
-                <td class="tr">商户编码：&nbsp;&nbsp;</td>
-                <td class="longWeight">{{ruleForm.localCompCode}}</td>
+                <td class="tr">经营范围：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.scopeExt}}</td>
               </div>
             </tr>
           </table>
@@ -1032,12 +1031,25 @@ export default {
     handleEnterOtherNames() {
       // console.log(this.isOtherSuccess);
       let obj = {};
+      let istrue = true;
       obj.name = this.ruleForm.otherNames;
-      if (this.ruleForm.otherNames && this.isOtherSuccess == true) {
+      this.businessOtherNamesArr.some(item => {
+        if (item.name == obj.name) {
+          this.$message.error("该商户名称以重复");
+          istrue = false;
+          return istrue;
+        }
+      });
+      if (
+        this.ruleForm.otherNames &&
+        this.isOtherSuccess == true &&
+        istrue == true
+      ) {
         this.businessOtherNamesArr.push(obj);
+        this.isInputVisible = false;
+        this.ruleForm.otherNames = "";
       }
-      this.isInputVisible = false;
-      this.ruleForm.otherNames = "";
+
       //   this.otherNamesObj = {};
       //   this.otherNamesObj["name"] = this.ruleForm.otherNames;
       //   if (
@@ -1166,7 +1178,8 @@ export default {
       }
       // this.editAccouontScopeid = index;
       this.isAddAccount = true;
-      this.accountForm = row;
+      let accountForm = row
+      this.accountForm = accountForm;
       this.isAddAccountBtn = idx;
     },
     // 从编辑按钮进入的弹窗的取消按钮
@@ -1622,7 +1635,7 @@ export default {
       this.adminArr = [];
       this.salesArr = [];
       this.businessOtherNamesArr = [];
-      this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
+      // this.$refs.uploadImg.clearFiles(); // 上传图片隐藏 要不报错先影藏
       // this.orgsAddArr = []
     },
     // 修改
@@ -2048,19 +2061,19 @@ export default {
           }
         })
         .then(obj => {
-          if(obj.data.isSuccess == true){
+          if (obj.data.isSuccess == true) {
             // console.log("修改成功",obj);
             this.dialogFormVisible = false;
             this.input = "";
             this.statesValue = "";
             this.payValue = "";
             //this.pageSize= 10;
-            this.pageIndex=this.pageIndex
+            this.pageIndex = this.pageIndex;
             this.currentPage4 = this.currentPage4;
             this.list();
             this.$message.success("修改成功");
             this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
-           }else{
+          } else {
             this.$message.error("修改失败");
             this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
           }
@@ -2118,6 +2131,9 @@ export default {
     },
     //获取一条信心
     getOneMess(id) {
+      if (this.btnindex == 1) {
+        this.rimResidue(id);
+      }
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
           id: id
@@ -2130,6 +2146,7 @@ export default {
             orgs,
             useList
           } = obj.data.object;
+
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
@@ -2197,7 +2214,6 @@ export default {
           }
           this.adminArr = [];
           this.salesArr = [];
-
           jqAdminList.forEach((val, idx, arr) => {
             if (arr[idx].jqUserType === 1) {
               this.adminArr.push(val);
@@ -2281,6 +2297,7 @@ export default {
           } else if (object.settlementType == 1) {
             this.ruleForm.settlementType = "月结";
           }
+
           this.ruleForm.quota = object.quota;
           //todo    部门和人员 预留
           // this.ruleForm.department = "1";
@@ -2295,6 +2312,7 @@ export default {
           this.ruleForm.bankName = object.bankName;
           this.ruleForm.bankcardNo = object.bankcardNo;
           this.ruleForm.localCompCode = object.localCompCode;
+          this.ruleForm.deposit = object.deposit;
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
@@ -2302,6 +2320,24 @@ export default {
         })
         .catch(obj => {
           console.log(obj);
+        });
+    },
+    // 周边剩余授信额度接口请求 tid就是此id
+    rimResidue(id) {
+      this.$http
+        .post(
+          this.GLOBAL.serverSrcPhp +
+            "/api/v1/predeposit/predeposit/peripherycredit",
+          {
+            id: id
+          }
+        )
+        .then(res => {
+          let AbouBalance = Number(res.data.data.surplus_amount);
+          this.AbouBalance = this.toDecimal2(AbouBalance);
+        })
+        .catch(err => {
+          console.log(err);
         });
     },
     // 数组里面对象去重方法
@@ -2403,7 +2439,7 @@ export default {
   },
   created() {
     this.currentPage4 = 1;
-     this.list();
+    this.list();
     this.areaAxios();
   }
 };
