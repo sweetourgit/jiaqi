@@ -258,8 +258,8 @@
           }
         }
         this.getAlbumForm = false; 
-        this.$emit('closeButton', false);
         this.$emit('checkList', this.checkList);
+        this.$emit('closeButton', false);
       },
       handleSizeChange(val){
         this.pageSize = val;
