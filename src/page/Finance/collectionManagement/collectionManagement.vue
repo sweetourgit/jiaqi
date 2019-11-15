@@ -25,7 +25,7 @@
 <script type="text/javascript">
 import StraightGuestManagement from '@/page/Finance/collectionManagement/straightGuestManagement'
 import SameTradeManagement from '@/page/Finance/collectionManagement/sameTradeManagement'
-import PendingApprovalManagement from '@/page/Finance/collectionManagement/pendingApprovalManagement'
+import PendingApprovalManagement from '@/page/Finance/collectionManagement/pendingApproval/pendingApprovalManagement.vue'
 import externalOrder from '@/page/Finance/collectionManagement/externalOrder/externalOrderManagement.vue'
 import distributorsInfo from '@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo.vue'
 import recognitionWait from '@/page/Finance/collectionManagement/recognitionWait/recognitionWait.vue'
