@@ -906,7 +906,8 @@ export default {
           }
         } else {
           console.log("error submit!!");
-          this.ifOrderInsert = false;
+          //this.ifOrderInsert = false;
+          this.ifOrderInsert = true;
           return false;
         }
       });
