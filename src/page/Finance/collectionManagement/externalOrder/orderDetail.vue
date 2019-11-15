@@ -12,7 +12,7 @@
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 2">已认完</el-button>
       <div class="stepDv">
         <p class="inputLabel"><span>ID：</span>{{baseInfo.ID}}</p>
-        <p class="inputLabel"><span>申请人：</span>{{applicant}}</p>
+        <p class="inputLabel"><span>申请人：</span>{{orgName}}--{{applicant}}</p>
         <p class="inputLabel"><span>创建时间：</span>{{baseInfo.creatTime}}</p>
         <p class="inputLabel"><span>收款明细说明：</span>{{baseInfo.mark}}</p>
         <p class="inputLabel"><span>收款账户：</span>{{baseInfo.payAccount}}</p>
@@ -27,7 +27,7 @@
           <!--</el-upload>-->
 
           <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
-            <li v-for="item in fileList">
+            <li v-for="item in fileList" :key="item.index">
               <a :href="item.url" target="_blank">{{item.name}}</a>
             </li>
           </ul>
@@ -38,7 +38,7 @@
       <el-divider content-position="left" v-if="showSK">收款明细</el-divider>
       <div class="stepDv" style="margin-bottom: 50px;" v-if="showSK">
         <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-        <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+        <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" maxHeight="700">
           <el-table-column prop="rece_at" label="入账时间" align="center">
           </el-table-column>
           <el-table-column prop="order_sn" label="订单编号" align="center">
@@ -76,7 +76,7 @@
       <!--<p class="stepTitle" v-if="showXQ">订单详情</p>-->
       <el-divider content-position="left" v-if="showXQ">订单详情</el-divider>
       <div class="stepDv" style="margin-bottom: 50px;" v-if="showXQ">
-        <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+        <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" maxHeight="700">
           <el-table-column prop="order_sn" label="订单ID" align="center" >
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
@@ -213,6 +213,7 @@
           status_rece: ''
         },
         applicant: '',// 创建人
+        orgName: '',// 所属部门
         fileList: [],// 附件凭证
         tableDataSK: [],// 收款明细table
         tableDataXQ: [],// 订单详情table
@@ -391,6 +392,7 @@
               approved: response.data.data.approved,
               status_rece: response.data.data.status_rece
             };
+            //根据id获取人名
             that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
               "id": response.data.data.create_uid
             },{
@@ -406,6 +408,11 @@
               }
             }).catch(function(error) {
               console.log(error);
+            });
+
+            // 获取所属部门
+            that.getOrgName(response.data.data.create_uid).then(res => {
+              that.orgName = res;
             });
 
             if(response.data.data.file != '' && response.data.data.type == 1){
@@ -558,6 +565,27 @@
             console.log(error);
           });
         })
+      },
+      // 根据id获取所属部门
+      getOrgName(ID){
+        const that = this;
+        return this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+          "id": ID
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(function(response) {
+//        console.log(ID,'组织名称',response);
+          if (response.data.isSuccess) {
+            return response.data.objects[0].name
+          } else {
+            return '';
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       }
     },
     created() {

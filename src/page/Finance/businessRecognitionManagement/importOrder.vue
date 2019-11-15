@@ -57,7 +57,7 @@
           </el-upload>
           <p class="stepTitle">收款明细</p>
           <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTimeTable}}--{{endTimeTable}}</div>
-          <el-table ref="singleTable" :data="tableDataQK" border :header-cell-style="getRowClass" height="700">
+          <el-table ref="singleTable" :data="tableDataQK" border :header-cell-style="getRowClass" maxHeight="700">
             <el-table-column prop="1" label="入账时间" align="center">
             </el-table-column>
             <el-table-column prop="2" label="订单编号" align="center">

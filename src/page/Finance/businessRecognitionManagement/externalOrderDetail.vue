@@ -40,7 +40,7 @@
       <el-divider content-position="left" v-if="showSK">收款明细</el-divider>
       <div class="stepDv" style="margin-bottom: 50px;" v-if="showSK">
         <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-        <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+        <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" maxHeight="700">
           <el-table-column prop="rece_at" label="入账时间" align="center">
           </el-table-column>
           <el-table-column prop="order_sn" label="订单编号" align="center">
@@ -78,7 +78,7 @@
       <!--<p class="stepTitle" v-if="showXQ">订单详情</p>-->
       <el-divider content-position="left" v-if="showXQ">订单详情</el-divider>
       <div class="stepDv" style="margin-bottom: 50px;" v-if="showXQ">
-        <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+        <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" maxHeight="700">
           <el-table-column prop="order_sn" label="订单ID" align="center" >
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">

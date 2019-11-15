@@ -22,8 +22,8 @@
             </el-select>
           </el-form-item>
           <el-form-item label="借款金额：" prop="money" label-width="140px">
-            <el-input v-model="ruleForm.money" placeholder="请输入借款金额" class="inputWidthHalf" :readonly="readOnly"></el-input>
-            <el-input v-model="ruleForm.number" placeholder="请输入人数" class="inputWidthHalf" :readonly="readOnly"></el-input>
+            <el-input v-model="ruleForm.money" placeholder="请输入借款金额" class="inputWidthHalf" :disabled="readOnly"></el-input>
+            <el-input v-model="ruleForm.number" placeholder="请输入人数" class="inputWidthHalf" :disabled="readOnly"></el-input>
           </el-form-item>
           <el-form-item label="摘要：" prop="abstract" label-width="140px">
             <el-input v-model="ruleForm.abstract" class="inputWidth" placeholder="请输入摘要信息"></el-input>
