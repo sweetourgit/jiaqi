@@ -48,11 +48,23 @@
         </el-tab-pane>
       </el-tabs>
     </main>
+
+    <footer>
+      <material-list
+        ref="materialListRef"
+        :proto="list"
+        @submit-list="emitSubmitList"
+      ></material-list>
+      <preview-dialog
+        ref="previewDialogRef"
+      ></preview-dialog>
+    </footer>
       
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { 
   getTeamScheduleDTOList, 
   TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, 
@@ -60,10 +72,12 @@ import {
   PRODUCT_LIST_ROUTE
 } from './dictionary'
 import changeinfoPackage from './comps/changeinfo-package'
+import materialList from './comps/material-list'
+import previewDialog from './comps/preview-dialog'
 
 export default {
   components: {
-    changeinfoPackage
+    changeinfoPackage, materialList, previewDialog
   },
 
   provide: {
@@ -86,6 +100,25 @@ export default {
         el.name!== name && this.vm.nameChecker.push(el.name);
       });
     },
+
+    materialShowState: function(nval){
+      if(!nval) return;
+      this.$refs.materialListRef.wakeup(this.materialIdList, this.materialSelectCb);
+    },
+
+    previewItem: function(nval){
+      if(!nval) return;
+      this.$refs.previewDialogRef.wakeup(nval);
+    }
+  },
+
+  computed: {
+    ...mapState({
+      materialShowState: (state) => state.changeInfo.materialShowState,
+      materialSelectCb: (state) => state.changeInfo.materialSelectCb,
+      materialIdList: (state) => state.changeInfo.materialIdList,
+      previewItem: (state) => state.changeInfo.previewItem
+    })
   },
 
   data() {
@@ -400,6 +433,8 @@ export default {
         ERROR_QUEUE.splice(0);
       })
     },
+
+    emitSubmitList(){}
   }
 }
 </script>

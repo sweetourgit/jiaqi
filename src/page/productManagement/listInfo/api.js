@@ -139,3 +139,21 @@ export const getThemelistAction= function(){
     })
   })
 }
+
+export const getPictureAction= function(id){
+  return new Promise((resolve, reject) => {
+    this.$http.post(this.GLOBAL.serverSrc + "/tpk/picture/api/get", {
+      id
+    },{
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      }
+    }).then(res => {
+      let { isSuccess, object }= res.data;
+      if(!isSuccess) return reject('获取图片失败');
+      return resolve(object);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}

@@ -205,11 +205,11 @@ export const deletePlan= function(id){
     $http.post(GLOBAL.serverSrc + "/team/plan/api/delete", {
       id
     }).then((res) => {
-      let { isSuccess }= res.data;
-      if(!isSuccess) return reject('删除指定计划失败');
+      let { isSuccess, result }= res.data;
+      if(!isSuccess) return reject(result.message || '删除指定计划失败');
       return resolve();
     }).catch((err) => {
-      reject(err);
+      reject(err.toString());
     })
   })
 }

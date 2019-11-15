@@ -8,7 +8,7 @@
     :visible.sync="state"
     :before-close="handleClose"
   >
-    <MaterialList :imgData="list" v-on:checkList="emitCheckList" v-on:closeButton="state= false"></MaterialList>
+    <MaterialList :imgData="list" v-on:checkList="emitCheckList" v-on:closeButton="handleClose"></MaterialList>
   </el-dialog>
 </template>
 
@@ -47,8 +47,8 @@ export default {
     // 初始化
     wakeup(idList, cb){
       this.list.push(...idList);
-      this.state= true;
       this.cb= cb;
+      this.state= true;
     },
     
     // 提交选中的数据
@@ -57,9 +57,9 @@ export default {
     },
 
     handleClose(){
-      this.state= false;
-      this.cb= null;
       this.list.splice(0);
+      this.cb= null;
+      this.state= false;
     }
   }
 }

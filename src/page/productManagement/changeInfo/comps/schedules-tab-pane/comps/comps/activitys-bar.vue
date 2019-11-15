@@ -64,10 +64,14 @@
           ></el-input>       
         </el-form-item>
 
-        <el-form-item label="图片：" prop="day" style="width: 670px;">
-          <el-input type="textarea" placeholder="详细说明" size="small" :disabled="true"
-            v-model="submitForm.subject" 
-          ></el-input>       
+        <el-form-item label="图片：" prop="picture" style="width: 670px;">
+          <image-input
+            :proto="submitForm.picture"
+            :numLimit="3"
+            @wakeup-material="wakeupMaterialHandler"
+            @wakeup-preview="wakeupPreviewHandler"
+            @remove-handler="removePictureHandler"
+          ></image-input>    
         </el-form-item>
 
         <el-form-item label="详情：" prop="memo" style="width: 670px;">
@@ -89,10 +93,12 @@
 <script>
 // 第三方组件
 import { VueEditor } from 'vue2-editor'
+import imageInput from './image-input'
+
 import { getActivityDTO } from '../../../../dictionary'
 
 export default {
-  components: { VueEditor },
+  components: { VueEditor, imageInput },
 
   props: {
     proto: Object
@@ -134,6 +140,31 @@ export default {
         newActivity.activityType= nval;
         Object.assign(this.submitForm, newActivity);
       }
+    },
+
+    wakeupMaterialHandler(idList){
+      let cb= (list) => {
+        if(list.length> 3){
+          this.$message.error(`最多上传3张图片`);
+          list= list.splice(0, 3);
+        }
+        this.submitForm.picture= JSON.stringify(this.$deepCopy(list.map(el => {
+          return {
+            ID: el
+          }
+        })));
+      }
+      this.$store.commit('changeInfo/wakeupMaterial', { idList, cb });
+    },
+
+    wakeupPreviewHandler(item){
+      this.$store.commit('changeInfo/wakeupPreview', item);
+    },
+
+    removePictureHandler(i){
+      let arr= JSON.parse(this.submitForm.picture);
+      arr.splice(i, 1);
+      this.submitForm.picture= JSON.stringify(arr);
     }
   },
 

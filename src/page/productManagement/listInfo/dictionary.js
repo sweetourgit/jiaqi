@@ -12,7 +12,7 @@ export const getTeamProDTO= function(){
     strengths: [],
     // 运营标签
     label: [],
-    pictureID: 100,
+    pictureID: null,
     vedioID: 100,
     pepeatpic: [],
     crowdID: null,

@@ -13,7 +13,7 @@
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 12">已认完</el-button>
       <div class="stepDv">
         <p class="inputLabel"><span>收款单号：</span>{{baseInfo.rece_code}}</p>
-        <p class="inputLabel"><span>申请人：</span>{{baseInfo.create_uid}}</p>
+        <p class="inputLabel"><span>申请人：</span>{{baseInfo.orgName}}--{{baseInfo.create_uid}}</p>
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
         <p class="inputLabel"><span>收款时间：</span>{{baseInfo.receivables_at}}</p>
         <p class="inputLabel"><span>收款账户：</span>{{baseInfo.account}}</p>
@@ -106,7 +106,7 @@
           <el-divider content-position="left" v-if="showSK">收款明细</el-divider>
           <div class="stepDv" style="margin-bottom: 50px;" v-if="showSK">
             <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-            <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+            <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" maxHeight="700">
               <el-table-column prop="rece_at" label="入账时间" align="center">
               </el-table-column>
               <el-table-column prop="order_sn" label="订单编号" align="center">
@@ -144,7 +144,7 @@
           <!--<p class="stepTitle" v-if="showXQ">订单详情</p>-->
           <el-divider content-position="left" v-if="showXQ">订单详情</el-divider>
           <div class="stepDv" style="margin-bottom: 50px;" v-if="showXQ">
-            <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+            <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" maxHeight="700">
               <el-table-column prop="order_sn" label="订单ID" align="center" >
               </el-table-column>
               <el-table-column prop="distributor" label="分销商" align="center">
@@ -274,6 +274,7 @@
           status_rece: '',
           rece_code: '',
           create_uid: '',
+          orgName: '',
           created_at: '',
           receivables_at: '',
           account_id: '',
@@ -462,6 +463,7 @@
               status_rece: response.data.data.status_rece,
               rece_code: response.data.data.rece_code,
               create_uid: response.data.data.create_uid,
+              orgName: '',
               created_at: response.data.data.created_at,
               receivables_at: response.data.data.receivables_at,
               account_id: response.data.data.account_id,
@@ -486,8 +488,11 @@
 
             // 根据ID获取人名
             that.getName(response.data.data.create_uid).then(res => {
-              console.log(res);
               that.baseInfo.create_uid = res;
+            });
+            // 获取所属部门
+            that.getOrgName(response.data.data.create_uid).then(res => {
+              that.baseInfo.orgName = res;
             });
             if(response.data.data.rec_uid){
               that.getName(response.data.data.rec_uid).then(res => {
@@ -561,6 +566,27 @@
         }).catch(function(error) {
           console.log(error);
           return '';
+        });
+      },
+      // 根据id获取所属部门
+      getOrgName(ID){
+        const that = this;
+        return this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+          "id": ID
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(function(response) {
+//        console.log(ID,'组织名称',response);
+          if (response.data.isSuccess) {
+            return response.data.objects[0].name
+          } else {
+            return '';
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
         });
       },
       // 获取认款订单
