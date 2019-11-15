@@ -35,11 +35,13 @@
           prop="id"
           label="景点ID"
           min-width="60"
+          align="center"
           header-align="center">
         </el-table-column>
         <el-table-column
           label="景点名称"
           min-width="180"
+          align="center"
           header-align="center">
           <template slot-scope="scope">
               <el-button v-if="scope.row.chineseName" type="text">{{ scope.row.chineseName }}</el-button>
@@ -50,6 +52,7 @@
           prop="areaName"
           label="所属地区"
           min-width="180"
+          align="center"
           header-align="center">
         </el-table-column>
       </el-table>
@@ -63,7 +66,7 @@
       <AddScenic @close='handleclose'
                  v-on:closeButton="dialogFormVisible = false" 
                  v-on:callInit="callInit"
-                 :referenceTime="referenceTime" 
+                 :referenceTime="referenceTime"
                  :seasons="seasons" :crowds="crowds" 
                  :handleEditDate="handleEditDate"></AddScenic>
     </el-dialog>

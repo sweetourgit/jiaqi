@@ -320,7 +320,7 @@ export default {
     },
     operation(i) {
       if(i === 1){
-        if(new Date().getTime() > new Date(this.teamqueryList[0].dateFormat).getTime()+24*24*60*1000){
+        if(new Date().getTime() > new Date(this.teamqueryList[0].dateFormat).getTime()+24*24*60*1000*2){
           this.$message.error('该团期出行日期已过,不能再进行下单');
           return;
         }

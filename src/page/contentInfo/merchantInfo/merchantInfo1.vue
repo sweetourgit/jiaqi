@@ -97,7 +97,7 @@
     <!--end-->
     <!--弹窗-->
     <el-dialog
-      title="基本信息1"
+      title="基本信息"
       :visible.sync="dialogFormVisible"
       :show-close="false"
       @close="closeDialog"
@@ -221,6 +221,7 @@
               </el-form-item>
               <el-form-item label="公司logo :" prop="companyLogo" style="width:360px;">
                 <el-upload
+                  ref="uploadImg"
                   class="upload-demo"
                   action="http://test.dayuntong.com/upload/obs/api/picture/"
                   :on-preview="handlePreview"
@@ -474,7 +475,7 @@
             <br />
             <tr>
               <td class="tr">预存款：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.bankcardNo}}</td>
+              <td class="longWeight">{{ruleForm.Deposit}}</td>
               <div class="BodyTableCenter">
                 <td class="tr">销售人员：&nbsp;&nbsp;</td>
                 <td class="longWeight">{{ruleForm.salesman}}</td>
@@ -570,6 +571,7 @@
       class="addAccount"
       :close-on-click-modal="false"
       width="500px"
+      @close="addAccountCancelBtn('accountForm')"
     >
       <h3>手机号和邮箱可作为用户名进行登录</h3>
       <el-form ref="accountForm" :model="accountForm" :rules="accountFormRules" label-width="80px">
@@ -1214,6 +1216,7 @@ export default {
         type: "success"
       });
     },
+
     //添加账户信息弹窗的添加账户按钮事件
     addAccountAddBtn(accountForm) {
       // debugger
@@ -1224,7 +1227,7 @@ export default {
         this.$refs[accountForm].validate(valid => {
           if (valid) {
             this.accountForm.createTime = new Date().getTime();
-            this.accountValidator().then(obj => {
+            this.bigSaveAccountValidator().then(obj => {
               if (obj == true) {
                 if (this.useList.length > 0) {
                   this.useList.forEach(item => {
@@ -1338,7 +1341,30 @@ export default {
           {
             phone: this.accountForm.phone,
             email: this.accountForm.email,
-            id: 0
+            id: this.tid
+          }
+        )
+        .then(obj => {
+          const { isSuccess } = obj.data;
+          if (isSuccess == false) {
+            this.$message.error("该手机号，邮箱已注册过");
+          }
+          // this.isAccountValidator = isSuccess;
+          return isSuccess;
+        })
+        .catch(err => {
+          console.log(err);
+          return "";
+        });
+    },
+    // 大保存的时候验证手机号和邮箱的接口的接口 此时没有id走这个验证接口
+    bigSaveAccountValidator() {
+      return this.$http
+        .post(
+          this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistpeeruserno",
+          {
+            phone: this.accountForm.phone,
+            email: this.accountForm.email
           }
         )
         .then(obj => {
@@ -1387,6 +1413,7 @@ export default {
               type: "success"
             });
             this.isAddAccount = false;
+            this.getOneMess(this.tid);
           }
         })
         .catch(err => {
@@ -1532,7 +1559,7 @@ export default {
     getDebitTable() {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
-          pageIndex: 1,
+          pageIndex: this.pageIndex,
           pageSize: this.pagesize,
           // total: 1, //总条数
           object: {
@@ -1595,6 +1622,7 @@ export default {
       this.adminArr = [];
       this.salesArr = [];
       this.businessOtherNamesArr = [];
+      this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
       // this.orgsAddArr = []
     },
     // 修改
@@ -1819,19 +1847,32 @@ export default {
           }
         })
         .then(obj => {
-          this.dialogFormVisible = false;
-          this.list();
-          this.currentPage4 = 1;
-          this.$message({
-            message: "添加成功",
-            type: "success"
-          });
+          if (obj.data.isSuccess == true) {
+            this.dialogFormVisible = false;
+            // console.log("添加成功",obj);
+            // this.pageSize = this.pageSize;
+            this.pageIndex = 1;
+            this.currentPage4 = 1;
+            this.list();
+            this.$message({
+              message: "添加成功",
+              type: "success"
+            });
+            this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
+          } else {
+            this.$message({
+              message: "添加失败",
+              type: "error"
+            });
+            this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
+          }
         })
         .catch(obj => {
           this.$message({
             message: "添加失败",
             type: "error"
           });
+          this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
         });
     },
     //修改
@@ -2007,13 +2048,22 @@ export default {
           }
         })
         .then(obj => {
-          this.dialogFormVisible = false;
-          this.list();
-          this.$message.success("修改成功");
-          this.currentPage4 = 1;
-          this.input = "";
-          this.statesValue = "";
-          this.payValue = "";
+          if(obj.data.isSuccess == true){
+            // console.log("修改成功",obj);
+            this.dialogFormVisible = false;
+            this.input = "";
+            this.statesValue = "";
+            this.payValue = "";
+            //this.pageSize= 10;
+            this.pageIndex=this.pageIndex
+            this.currentPage4 = this.currentPage4;
+            this.list();
+            this.$message.success("修改成功");
+            this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
+           }else{
+            this.$message.error("修改失败");
+            this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
+          }
         })
         .catch(obj => {
           console.log("error");
@@ -2352,8 +2402,8 @@ export default {
     }
   },
   created() {
-    this.list();
     this.currentPage4 = 1;
+     this.list();
     this.areaAxios();
   }
 };

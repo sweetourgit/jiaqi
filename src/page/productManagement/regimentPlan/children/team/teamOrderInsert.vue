@@ -30,7 +30,7 @@
                 </td>
               </tr>
               <tr>
-                <td width="33%">
+                <td width="33%"> 
                   <div width="80" class="fl">产品名称:</div>
                   <div class="fl ml13">{{teampreviewData.title}}</div>
                 </td>
@@ -1015,7 +1015,7 @@ export default {
                         console.log(typeof res.data.result.message)
                         if (res.data.isSuccess == true) {
                           this.$message.success("提交成功");
-                          this.$parent.teamQueryList();
+                          this.$parent.teamQueryList(this.pageIndex == 1 ? this.pageIndex : 1);
                           let data = JSON.parse(res.data.result.details);
                           this.orderCode = data.OrderCode;
                           //需再次存储备注信息

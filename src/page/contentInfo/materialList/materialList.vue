@@ -66,15 +66,15 @@
             <el-option :key="item.id" v-for="item in albumtype" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="目的地:" prop="destination" :label-width="formLabelWidth">
+        <!-- <el-form-item label="目的地:" prop="destination" :label-width="formLabelWidth">
           <el-button plain @click="leftTree1 = leftTree1 == true?false:true" style="width: 270px;" :class="isDest">{{picForm.destination}}</el-button>
         </el-form-item>
-          <span v-show="isDest == 'destint'" style="float: left;color: #F56C6C; margin: -20px 0 0 100px;">请选择目的地</span>
+        <span v-show="isDest == 'destint'" style="float: left;color: #F56C6C; margin: -20px 0 0 100px;">请选择目的地</span> -->
 
         <!--添加相册目的地-->
-        <div class="left-tree1" v-if="leftTree1">
+        <!-- <div class="left-tree1" v-if="leftTree1">
              <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
-        </div> 
+        </div> --> 
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="albumClose">取 消</el-button>
@@ -171,7 +171,7 @@
     </el-dialog>
    
     <!-- 3.添加素材弹窗 -->
-    <el-dialog title="添加照片" :visible.sync="getPictureForm" custom-class="city_list" :append-to-body="true" width="1350px" @close="pictureFormClose" class="clearfix">  
+    <el-dialog title="添加照片" :visible.sync="getPictureForm" custom-class="city_list" :append-to-body="true" width="1350px" @close="pictureFormClose" class="clearfix" :rules="rules">  
       <div class="add-address-imgpic">
         <div class="left-imgpic">
           <!--图片上传-->
@@ -203,7 +203,7 @@
              <div class="album-form" v-for="(item,index) in fileList" v-show="uid==item.uid">
                 <div class="album-name1">
                     名称：<el-input placeholder="请输入素材名称" v-model="item.name" value="value"></el-input>
-                    <span class="empty" v-show="pictureName">名称不能为空</span>
+                    <!-- <span class="empty" v-show="pictureName">名称不能为空</span> -->
                 </div>
                 <div class="album-info">
                   <div>
@@ -372,6 +372,8 @@
                 if(res.data.isSuccess == true){
                     this.addAlbum = false;
                     this.$refs[formName].resetFields();
+                    //添加完刷新列表
+                    this.albumPage(this.pageIndex,this.pageSize,this.data.id?this.data.id:0,this.searchName);
                     this.$message({
                     message: '添加相册成功',
                     type: 'success'
@@ -452,21 +454,21 @@
         });
       },
       // 单击tree节点
-      treeClick(data,node){     
+      treeClick(data,node){  
+      console.log(data)
         if (data.isLeaf == 1) {
-          if(this.addAlbum == true){
               //添加相册tree
               this.picForm.destination=data.name;
               this.picForm.destinationId=data.id;
               // 选中后赋值样式
               this.isDest = 'destints';
-              this.leftTree1=false;             
-          }else if(this.getAlbumForm == true){
+              this.leftTree1=false; 
+            if(this.getAlbumForm == true){
              //修改相册tree
               this.albumInfo.areaName=data.name;
               this.albumInfo.areaID=data.id;
               this.leftTree2=false;
-          }else{
+           }else{
               this.data = data;
              //左侧导航tree
               this.geography = 1;
@@ -475,6 +477,30 @@
           }
         }
       },
+      // treeClick(data,node){  
+      // console.log(data)
+      //   if (data.isLeaf == 1) {
+      //     if(this.addAlbum == true){
+      //         //添加相册tree
+      //         this.picForm.destination=data.name;
+      //         this.picForm.destinationId=data.id;
+      //         // 选中后赋值样式
+      //         this.isDest = 'destints';
+      //         this.leftTree1=false;             
+      //     }else if(this.getAlbumForm == true){
+      //        //修改相册tree
+      //         this.albumInfo.areaName=data.name;
+      //         this.albumInfo.areaID=data.id;
+      //         this.leftTree2=false;
+      //     }else{
+      //         this.data = data;
+      //        //左侧导航tree
+      //         this.geography = 1;
+      //         this.searchName = "";
+      //         this.albumPage(this.pageIndex,this.pageSize,this.data.id?this.data.id:0,this.searchName);
+      //     }
+      //   }
+      // },
       sealbumPage(){
         this.geography = 1;
         this.albumPage(this.pageIndex,this.pageSize,0,this.searchName);
