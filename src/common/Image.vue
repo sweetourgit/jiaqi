@@ -371,7 +371,7 @@
       },
       //相册list
       albumPage(pageIndex=this.pageIndex,pageSize=this.pageSize,areaID=0,name=""){
-        this.$http.post('http://192.168.2.65:3024' + '/album/api/page',{
+        this.$http.post(this.GLOBAL.serverSrc + '/tpk/album/api/page',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object": {
