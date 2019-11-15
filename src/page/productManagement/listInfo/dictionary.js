@@ -13,7 +13,7 @@ export const getTeamProDTO= function(){
     // 运营标签
     label: [],
     pictureID: null,
-    vedioID: null,
+    vedioID: 100,
     pepeatpic: [],
     crowdID: null,
     themeID: null,
