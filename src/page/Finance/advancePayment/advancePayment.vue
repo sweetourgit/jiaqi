@@ -84,9 +84,11 @@
             </el-table-column>
             <el-table-column prop="opinion" label="审批意见" align="center">
             </el-table-column>
-            <el-table-column prop="opinion" label="操作" align="center" width="100">
+            <el-table-column prop="opinion" label="操作" align="center">
                <template slot-scope="scope">
-                  <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+                 <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+                 <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn">|</span>
+                 <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn" type="text" size="small" class="table_details">付款账户</el-button>
                </template>
             </el-table-column>
           </el-table>
@@ -131,6 +133,23 @@
       <!-- 好像是和无收入借款共用一个 -->
       <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
     </el-dialog>
+    <!-- 付款账户弹窗 -->
+    <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
+      <div class="close" @click="closeAccount()">×</div>
+      <el-table :data="tableSelect" border :header-cell-style="getRowClass">
+        <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+        <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+        <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
+        <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+        <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="addAccount(scope.$index, scope.row)" class="table_details">选择</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+    <!-- 付款账户弹窗 END -->
   </div>
 </template>
 <script>
@@ -147,6 +166,9 @@ export default {
   },
   data() {
     return {
+      tableSelect:[], // 选择弹窗表格
+      SelectAccount:false, // 选择账户弹窗
+      ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       ruleForm: {
         planID: '', // 团期计划输入框
@@ -193,13 +215,64 @@ export default {
       return this.approvalTotal > 0 ? '您需要审批(' + this.approvalTotal + ')' : '您需要审批'
     },
   },
+  created () {
+    // 只有是出纳的时候才显示申请人检索
+    if (sessionStorage.getItem('hasCashierInfo')) {
+      this.ifAccountBtn = true
+    } else {
+      this.ifAccountBtn = false
+    }
+    this.querySearch6()
+    this.querySearch7()
+    this.searchHand()
+    if (!sessionStorage.getItem('hasCashierInfo')) { // 只有是出纳的时候才显示申请人检索
+      this.ifShowProposer = true
+    }
+  },
   methods: {
     moment,
-    headCall: function (msg) { //回调方法，接收子组件传的参数
-        this.msg = '(' + msg + ')';
+    // 选择账户弹窗
+    bankAccount() {
+      this.SelectAccount = true;
+      this.selectList();
+    },
+    // 选择账户指定弹窗之后，选择指定的账户
+    addAccount(index, row) {
+      var that = this
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",
+        {
+          "paymentID": that.paymentID,
+          "accountID": row.id
+        }
+      ).then(function (obj) {
+      }).catch(function (obj) {
+      })
+      this.SelectAccount = false
+    },
+    // 选择账户表格查询
+    selectList() {
+      var that = this
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
+        {
+          "object": {
+            "isDeleted": 0
+          }
+        }).then(function (obj) {
+        that.tableSelect = obj.data.objects
+      }).catch(function (obj) {
+      })
+    },
+    // 关闭选择账户弹窗
+    closeAccount() {
+      this.SelectAccount = false;
+    },
+    // 回调方法，接收子组件传的参数
+    headCall: function (msg) {
+      this.msg = '(' + msg + ')';
     },
     // 重置
-    resetHand(formName){
+    resetHand(formName) {
       this.$refs[formName].resetFields();
     },
     closeAdd() {
@@ -212,7 +285,7 @@ export default {
       this.reable = false;
     },
     // 表格头部背景颜色
-    getRowClass({ row, column, rowIndex, columnIndex }) {
+    getRowClass({row, column, rowIndex, columnIndex}) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'
       } else {
@@ -250,64 +323,88 @@ export default {
       this.pageSize = val
       let objectRequest = {}
       objectRequest.paymentType = 2;
-      if (this.planID) { objectRequest.planID = this.planID; }
-      if (this.user) { objectRequest.createUser = this.user; }
-      if (this.startTime) { objectRequest.beginTime = moment(this.startTime).format('YYYY-MM-DD HH:mm:ss'); }
-      if (this.endTime) { objectRequest.endTime = moment(this.endTime).format('YYYY-MM-DD HH:mm:ss'); }
-      if (this.checkType) { objectRequest.checkType = this.checkType; }else{objectRequest.checkType='-1'}
+      if (this.planID) {
+        objectRequest.planID = this.planID;
+      }
+      if (this.user) {
+        objectRequest.createUser = this.user;
+      }
+      if (this.startTime) {
+        objectRequest.beginTime = moment(this.startTime).format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (this.endTime) {
+        objectRequest.endTime = moment(this.endTime).format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (this.checkType) {
+        objectRequest.checkType = this.checkType;
+      } else {
+        objectRequest.checkType = '-1'
+      }
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/payment/api/page", {
-            "pageIndex": 1,
-            "pageSize": val,
-            "object": objectRequest
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
+        this.GLOBAL.serverSrc + "/finance/payment/api/page", {
+          "pageIndex": 1,
+          "pageSize": val,
+          "object": objectRequest
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
-        )
-        .then(function(obj) {
+        }
+      )
+        .then(function (obj) {
           // console.log(obj.data);
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
         })
-        .catch(function(obj) {
+        .catch(function (obj) {
           // console.log(obj)
         })
     },
     //搜索
     searchHand(params) {
       this.dialogFormVisible = params
-      console.log(params,'传过来的弹窗参数')
+      console.log(params, '传过来的弹窗参数')
       this.pageNum = 1;
       this.pageshow = false
       let objectRequest = {}
       objectRequest.paymentType = 2;
-      if (this.ruleForm.planID) { objectRequest.groupCode = this.ruleForm.planID; }
-      if (this.ruleForm.user) { objectRequest.createUser = this.ruleForm.user; }
-      if (this.ruleForm.startTime) { objectRequest.beginTime = moment(this.ruleForm.startTime).format('YYYY-MM-DD HH:mm:ss'); }
-      if (this.ruleForm.endTime) { objectRequest.endTime = moment(this.ruleForm.endTime).format('YYYY-MM-DD HH:mm:ss');}
-      if (this.ruleForm.checkType) { objectRequest.checkType = this.ruleForm.checkType; }else{objectRequest.checkType='-1'}
+      if (this.ruleForm.planID) {
+        objectRequest.groupCode = this.ruleForm.planID;
+      }
+      if (this.ruleForm.user) {
+        objectRequest.createUser = this.ruleForm.user;
+      }
+      if (this.ruleForm.startTime) {
+        objectRequest.beginTime = moment(this.ruleForm.startTime).format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (this.ruleForm.endTime) {
+        objectRequest.endTime = moment(this.ruleForm.endTime).format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (this.ruleForm.checkType) {
+        objectRequest.checkType = this.ruleForm.checkType;
+      } else {
+        objectRequest.checkType = '-1'
+      }
 
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/payment/api/page", {
-            "pageIndex": this.pageNum,
-            "pageSize": this.pageSize,
-            "object": objectRequest,
-          }
-        )
-        .then(function(obj) {
+        this.GLOBAL.serverSrc + "/finance/payment/api/page", {
+          "pageIndex": this.pageNum,
+          "pageSize": this.pageSize,
+          "object": objectRequest,
+        }
+      )
+        .then(function (obj) {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
         })
-        .catch(function(obj) {
+        .catch(function (obj) {
           // console.log(obj)
         })
-        this.$nextTick(() => {
-             this.pageshow = true
-        })
+      this.$nextTick(() => {
+        this.pageshow = true
+      })
     },
     handleCurrentChange(val) {
       this.pageNum = val;
@@ -319,29 +416,41 @@ export default {
       }
       let objectRequest = {}
       objectRequest.paymentType = 2;
-      if (this.planID) { objectRequest.planID = this.planID; }
-      if (this.user) { objectRequest.createUser = this.user; }
-      if (this.startTime) { objectRequest.beginTime = this.startTime}
-      if (this.endTime) { objectRequest.endTime = this.endTime}
-      if (this.checkType) { objectRequest.checkType = this.checkType; }else{objectRequest.checkType='-1'}
+      if (this.planID) {
+        objectRequest.planID = this.planID;
+      }
+      if (this.user) {
+        objectRequest.createUser = this.user;
+      }
+      if (this.startTime) {
+        objectRequest.beginTime = this.startTime
+      }
+      if (this.endTime) {
+        objectRequest.endTime = this.endTime
+      }
+      if (this.checkType) {
+        objectRequest.checkType = this.checkType;
+      } else {
+        objectRequest.checkType = '-1'
+      }
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/payment/api/page", {
-            "pageIndex": val,
-            "pageSize": this.pageSize,
-            "total": 0,
-            "object": objectRequest,
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
+        this.GLOBAL.serverSrc + "/finance/payment/api/page", {
+          "pageIndex": val,
+          "pageSize": this.pageSize,
+          "total": 0,
+          "object": objectRequest,
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
-        )
-        .then(function(obj) {
+        }
+      )
+        .then(function (obj) {
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
         })
-        .catch(function(obj) {
+        .catch(function (obj) {
           console.log(obj)
         })
     },
@@ -387,59 +496,50 @@ export default {
       })
     },
     // 时间转换
-    formatDate1(dates){
-     var dateee = new Date(dates).toJSON();
-     var date = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')
-     return date;
+    formatDate1(dates) {
+      var dateee = new Date(dates).toJSON();
+      var date = new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+      return date;
     },
     //查看无收入借款弹窗
-    checkIncome(row){
+    checkIncome(row) {
       this.paymentID = row.paymentID // 设置 paymentID 给子组件，子组件会根据这个值的变化进行页面渲染。子组件目前设置的是0，本页的也是0
       console.log(this.paymentID)
       this.checkIncomeShow = true;
       // this.ruleForm = row;
       //this.getLabel();
     },
-    repeal(){
+    repeal() {
       this.$confirm("是否需要撤销该笔借款?", "提示", {
-         confirmButtonText: "确定",
-         cancelButtonText: "取消",
-         type: "warning"
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-      .then(() => {
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
-        {
-          "id": this.paymentID
+        .then(() => {
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
+            {
+              "id": this.paymentID
+            })
+            .then(res => {
+              if (res.data.isSuccess == true) {
+                this.$message.success("撤销成功");
+                this.searchHand();
+                this.checkIncomeShow = false;
+              }
+            })
         })
-        .then(res => {
-          if(res.data.isSuccess == true){
-             this.$message.success("撤销成功");
-             this.searchHand();
-             this.checkIncomeShow = false;
-
-            }
-         })
-      })
-      .catch(() => {
-        this.$message({
-          type: "info",
-          message: "撤销借款已取消"
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "撤销借款已取消"
+          });
         });
-      });
     },
-    CloseCheckIncomeShow(){
+    CloseCheckIncomeShow() {
       this.checkIncomeShow = false;
-    },
-  },
-  created() {
-    this.querySearch6()
-    this.querySearch7()
-    this.searchHand()
-    if (!sessionStorage.getItem('hasCashierInfo')) { // 只有是出纳的时候才显示申请人检索
-      this.ifShowProposer = true
     }
-  },
-};
+  }
+}
 
 </script>
 <style lang="scss" scoped>

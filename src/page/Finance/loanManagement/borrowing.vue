@@ -197,7 +197,7 @@
           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
           <el-table-column prop="process" label="审批过程" align="center">
             <template slot-scope="scope">
-              <div @click="processIncome(scope.row)">查看</div>
+              <div @click="processIncome(scope.$index, scope.row,1)">查看</div>
             </template>
           </el-table-column>
         </el-table>
@@ -214,7 +214,7 @@
           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
           <el-table-column prop="process" label="审批过程" align="center">
             <template slot-scope="scope">
-              <div @click="processIncome(scope.row)">查看</div>
+              <div @click="processIncome(scope.$index, scope.row,2)">查看</div>
             </template>
           </el-table-column>
         </el-table>
@@ -354,7 +354,7 @@
     </el-dialog>
     <!-- 申请无收入借款中账号选择弹窗 END -->
     <!-- 申请无收入借款中预付款明细查看弹窗 -->
-    <el-dialog width="45%" title="预付款明细" :visible.sync="dialogFormVisible_paymenrt"append-to-body>
+    <el-dialog width="45%" title="预付款明细" :visible.sync="dialogFormVisible_paymenrt" append-to-body>
       <div class="indialog">
         <el-table :data="tableApprove" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
            <el-table-column prop="times" :formatter='dateFormat' label="审批时间" width="150" align="center"></el-table-column>
@@ -366,13 +366,13 @@
     </el-dialog>
     <!-- 申请无收入借款中预付款明细查看弹窗 END -->
     <!-- 申请无收入借款中无收入借款明细查看弹窗 -->
-    <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income"append-to-body>
+    <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income" append-to-body>
       <div class="indialog">
-        <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="times" :formatter='dateFormat' label="审批时间" width="150" align="center"></el-table-column>
-           <el-table-column prop="people" label="审批人" align="center"></el-table-column>
-           <el-table-column prop="result" label="审批结果" align="center"></el-table-column>
-           <el-table-column prop="opinion" label="审批意见" align="center"></el-table-column>
+        <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
+           <el-table-column prop="finishedTime" :formatter='dateFormat' label="审批时间" width="150" align="center"></el-table-column>
+           <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
+           <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
+           <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
     </el-dialog>
@@ -1048,14 +1048,20 @@ export default {
     processPaymenrt(scope,row){
       this.dialogFormVisible_paymenrt = true;
     },
-    processIncome(scope,row){
-      this.dialogFormVisible_Income = true;
+    // 参看无收入借款明细审批过程弹窗
+    processIncome(index,row, type){
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+        jQ_ID: row.guid,
+        jQ_Type: type,
+      }).then(obj => {
+        this.tableIncomeCheck = obj.data.extend.instanceLogInfo;
+        this.dialogFormVisible_Income = true;
+      }).catch(obj => {})
+
     },
     // 查看无收入借款弹窗(列表中的详情)
     checkIncome(row){
       this.checkIncomeShow = true;
-      console.log(this.checkIncomeShow,'this.checkIncomeShow')
-      console.log(row.paymentID,'row')
       this.pid = row.paymentID;
       this.status = row.checkTypeEX;
       this.ruleForm = row;

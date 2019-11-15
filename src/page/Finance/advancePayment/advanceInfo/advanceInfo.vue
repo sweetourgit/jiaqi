@@ -9,7 +9,7 @@
           <el-button style="right: 1%;float: right;" v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
           <el-button style="right: 1%;float: right;" v-if="this.find == 1 && this.infoStatus=='审批中'" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销申请</el-button>
         </div>
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tabs v-model="activeName">
           <!-- 基本信息 -->
           <el-divider content-position="left" class='title-margin'>申请预付款</el-divider>
             <div>
@@ -134,11 +134,7 @@
                 </el-table-column>
                 <el-table-column prop="checkTypeEX" label="审批状态" align="center">
                 </el-table-column>
-                <el-table-column label="借款类型" align="center">
-                  <template slot-scope="scope">
-                    <span v-if="scope.row.paymentType==1">无收入借款</span>
-                    <span v-if="scope.row.paymentType==2">预付款</span>
-                  </template>
+                <el-table-column prop="supplierTypeEX" label="借款类型" align="center">
                 </el-table-column>
                 <el-table-column prop="supplierName" label="供应商" align="center">
                 </el-table-column>
@@ -150,20 +146,20 @@
                 </el-table-column>
                 <el-table-column label="审批过程" align="center">
                   <template slot-scope="scope">
-                    <span style="color:blue;" v-on:click="advanceProcess2(scope.row.id)">查看</span>
+                    <span style="color:blue;" v-on:click="advanceProcess2(scope.$index, scope.row,2)">查看</span>
                   </template>
                 </el-table-column>
               </el-table>
 
               <el-dialog title="审批过程" class="aaaaa" custom-class="approvalClass" :append-to-body="true" :visible.sync="dialogVisible6" width=900px>
                 <el-table :data="tableData11" border :header-cell-style="getRowClass2">
-                  <el-table-column prop="createTime" label="审批时间" align="center">
+                  <el-table-column prop="finishedTime" label="审批时间" align="center">
                   </el-table-column>
-                  <el-table-column prop="user" label="审批人" align="center">
+                  <el-table-column prop="participantName" label="审批人" align="center">
                   </el-table-column>
-                  <el-table-column prop="status" label="审批结果" align="center">
+                  <el-table-column prop="approvalName" label="审批结果" align="center">
                   </el-table-column>
-                  <el-table-column prop="abstract" label="审批意见" align="center">
+                  <el-table-column prop="No" label="审批意见" align="center">
                   </el-table-column>
                 </el-table>
               </el-dialog>
@@ -173,11 +169,7 @@
                   </el-table-column>
                   <el-table-column prop="checkTypeEX" label="审批状态" align="center">
                   </el-table-column>
-                  <el-table-column label="借款类型" align="center">
-                    <template slot-scope="scope">
-                      <span v-if="scope.row.paymentType==1">无收入借款</span>
-                      <span v-if="scope.row.paymentType==2">预付款</span>
-                    </template>
+                  <el-table-column prop="supplierTypeEX" label="借款类型" align="center">
                   </el-table-column>
                   <el-table-column prop="supplierName" label="供应商" align="center">
                   </el-table-column>
@@ -189,23 +181,10 @@
                   </el-table-column>
                   <el-table-column label="审批过程" align="center">
                     <template slot-scope="scope">
-                      <span style="color:blue;" v-on:click="advanceProcess(scope.row.id)">查看</span>
+                      <span style="color:blue;" v-on:click="advanceProcess2(scope.$index, scope.row,1)">查看</span>
                     </template>
                   </el-table-column>
                 </el-table>
-
-              <el-dialog title="审批过程" class="aaaaa" custom-class="approvalClass" :append-to-body="true" :visible.sync="dialogVisible5" width=900px>
-                <el-table :data="tableData10" border style="width:800px" :header-cell-style="getRowClass2">
-                  <el-table-column prop="createTime" label="审批时间" align="center">
-                  </el-table-column>
-                  <el-table-column prop="user" label="审批人" align="center">
-                  </el-table-column>
-                  <el-table-column prop="status" label="审批结果" align="center">
-                  </el-table-column>
-                  <el-table-column prop="abstract" label="审批意见" align="center">
-                  </el-table-column>
-                </el-table>
-              </el-dialog>
 
               <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
                 <el-table :data="tableData8" border :header-cell-style="getRowClass2">
@@ -262,12 +241,19 @@
               </el-table-column>
               <el-table-column prop="status" label="状态" align="center" width="110%">
               </el-table-column>
-              </el-table-column>
             </el-table>
           </div>
           <!--分页-->
           <div class="block" style="margin-top: 30px;text-align:center;">
-            <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="currentPage2" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total>
+            <el-pagination
+              @size-change="handleSizeChange2"
+              @current-change="handleCurrentChange2"
+              :current-page.sync="currentPage2"
+              :page-sizes="[5, 10, 50, 100]"
+              :page-size="10"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total=total
+            >
             </el-pagination>
           </div>
           <!--分页-->
@@ -288,10 +274,10 @@
             <el-input placeholder="产品名称" v-model="product_name" class="group-no" style="width:20%"></el-input>
             <el-date-picker v-model="startTime2" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
            <!-- <el-date-picker v-model="endTime2" type="date" placeholder="终止日期"></el-date-picker>-->
-            <el-button type="primary" icon="el-icon-search" class="search" @click="searchHand4()"></el-button>
+            <el-button type="primary" icon="el-icon-search" class="search" @click="getList()"></el-button>
           </div>
           <div class="table_trip" style=" width: 100%;">
-            <el-table :data="tableData4" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle4" :header-cell-style="getRowClass4">
+            <el-table :data="tableData4" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle4" :header-cell-style="getRowClass4" v-loading="listLoading">
               <el-table-column prop="groupCode" label="团号"></el-table-column>
               <el-table-column prop="title" label="产品名称"></el-table-column>
               <el-table-column prop="destination" label="目的地"></el-table-column>
@@ -301,7 +287,18 @@
             </el-table>
           </div>
           <!--分页-->
-          <div class="block">
+          <el-row type="flex" class="paging">
+            <el-col :span="8" :offset="13">
+              <pagination
+                v-show="total>0"
+                :total="total"
+                :page.sync="ruleFormSeach.page"
+                :limit.sync="ruleFormSeach.limit"
+                @pagination="getList"
+              />
+            </el-col>
+          </el-row>
+          <!--<div class="block">
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
@@ -311,7 +308,7 @@
               layout="total, sizes, prev, pager, next, jumper"
               :total=count3>
             </el-pagination>
-          </div>
+          </div>-->
           <!--分页-->
         </div>
       </div>
@@ -321,7 +318,7 @@
         </span>
     </el-dialog>
     <el-dialog style="text-align: left" title="选择账户:" :visible.sync="dialogVisible3" width="50%">
-      <el-tabs v-model="activeName2" type="border-card" @tab-click="handleClick">
+      <el-tabs v-model="activeName2" type="border-card">
         <el-tab-pane label="供应商" name="three">
           <el-table :data="tableData9" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle5" :header-cell-style="getRowClass4">
             <el-table-column prop="cardNumber" label="账户"></el-table-column>
@@ -346,9 +343,10 @@
 </template>
 <script type="text/javascript">
 import { formatDate } from '@/js/libs/formatDate.js'
+import Pagination from '@/components/Pagination'
 export default {
   name: "advanceInfo",
-  components: {},
+  components: {Pagination},
   props: {
     dialogFormVisible: false,
     find: 0,
@@ -383,10 +381,17 @@ export default {
       }
     };
     return {
+      listLoading: true,
+      ruleFormSeach: {
+        groupCode_01:'', // 团号
+        createTime:'', // 创建时间
+        endTime:'', // 结束时间
+        checkType:'', // 状态
+        borrower: '', // 借款人
+        page: 1,
+        limit: 10,
+      },
       fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
-      pagesize3:10,
-      count3:300,
-      currentPage4: 1,
       activeName: 'first',
       activeName2: 'three',
       //付款搜索
@@ -394,7 +399,6 @@ export default {
       endTime2: '',
       pageSize2: 5, // 设定默认分页每页显示数 todo 具体看需求
       total: 0,
-      total2: 0,
       pageIndex2: 1, // 设定当前页数
       currentPage2: 1,
       arr: [],
@@ -417,20 +421,7 @@ export default {
         bank: '开户行',
         name: '名称',
       }],
-      tableData10: [{
-        id: '1',
-        createTime: '2019-01-14 18:00:00',
-        user: '阳阳',
-        status: '通过',
-        abstract: '',
-      }],
-      tableData11: [{
-        id: '1',
-        createTime: '2019-01-14 18:00:00',
-        user: '阳阳',
-        status: '通过',
-        abstract: '',
-      }],
+      tableData11: [],
       supplier: '',
       supplier_id: 0,
       type: '',
@@ -485,7 +476,6 @@ export default {
       inputVisible2: true,
       dialogVisible3: false,
       dialogVisible4: false,
-      dialogVisible5: false,
       dialogVisible6: false,
       dialogVisible2: false,
       dialogVisible: false,
@@ -525,6 +515,30 @@ export default {
     },
   },
   methods: {
+    // 渲染团期计划列表
+    getList(){
+      let _this = this
+      // this.pageNum = 1;
+      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+        "pageIndex": _this.ruleFormSeach.page,
+        "pageSize": _this.ruleFormSeach.limit,
+        "total": 0,
+        "object": {
+          "groupCode": _this.tour_name, //团号
+          "title": _this.product_name, //产品名称
+          "beginDate": _this.startTime2 ? formatDate(this.startTime2, 'yyyyMMdd') : 0, //搜索用开始日期
+          "endDate": _this.endTime2 ? formatDate(this.endTime2, 'yyyyMMdd') : 0, //搜索用结束日期
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          _this.tableData4 = res.data.objects;
+          _this.total = res.data.total;
+          _this.listLoading = false
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
@@ -533,29 +547,31 @@ export default {
     },
     closeAdd() {
       this.clearForm()
-      this.$emit('close', false);
       this.$confirm("是否取消本次借款申请?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
         this.$message.success("借款申请已取消");
-        this.dialogFormVisible =false;
+        // this.dialogFormVisible =false;
+        this.$emit('close', false);
         this.$refs["ruleForm"].resetFields();
       })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消"
         });
+      });
     },
-    advanceProcess2(num) {
-      this.dialogVisible6 = true
-    },
-    advanceProcess(num) {
-      console.log(num)
-      this.dialogVisible5 = true
+    advanceProcess2(index,row, type) {
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+        jQ_ID: row.guid,
+        jQ_Type: type,
+      }).then(obj => {
+        this.tableData11 = obj.data.extend.instanceLogInfo;
+        this.dialogVisible6 = true;
+      }).catch(obj => {})
     },
     getRowClass2({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -662,7 +678,6 @@ export default {
       }
       this.uid = fileList[0].uid;
     },
-
     searchHand2() {
       this.pageNum = 1;
       var that = this
@@ -776,20 +791,6 @@ export default {
       this.startTime = ''
       this.endTime = ''
     },
-    handleClick(tab, event) {
-      // if (tab.name == 'first') {
-      //   this.firstTab = true
-      //   this.secondTab = false
-      //   this.pageIndex = this.firstIndex;
-      //   this.currentPage4 = this.firstIndex;
-      // }
-      // if (tab.name == 'second') {
-      //   this.firstTab = false
-      //   this.secondTab = true
-      //   this.pageIndex = this.secondIndex;
-      //   this.currentPage4 = this.secondIndex;
-      // }
-    },
     routerHandle4() { //团期计划
       this.ruleForm.tour = this.tour_name_pre
       this.ruleForm.productName = this.product_name_pre
@@ -863,68 +864,6 @@ export default {
         this.ruleForm.productName = ''
       }
     },
-    searchHand4() {
-      this.pageNum = 1;
-      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
-        "pageIndex": this.currentPage4,
-        "pageSize": this.pagesize3,
-        "object": {
-          "groupCode": this.tour_name, //团号
-          "title": this.product_name, //产品名称
-          "beginDate": this.startTime2 ? formatDate(this.startTime2, 'yyyyMMdd') : 0, //搜索用开始日期
-          "endDate": this.endTime2 ? formatDate(this.endTime2, 'yyyyMMdd') : 0, //搜索用结束日期
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          this.tableData4 = res.data.objects;
-          this.total = res.data.total;
-          this.count3 = res.data.objects.length-1
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-
-    },
-    handleCurrentChange4(val) {
-      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
-        "pageIndex": val,
-        "pageSize": this.pageSize2,
-        "object": {
-          "groupCode": this.tour_name, //团号
-          "title": this.product_name, //产品名称
-          "beginDate": this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0, //搜索用开始日期
-          "endDate": this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0, //搜索用结束日期
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-
-          this.tableData4 = res.data.objects;
-          this.total = res.data.total;
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    handleSizeChange4(val) {
-      this.pageSize = val
-      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
-        "pageIndex": 1,
-        "pageSize": this.pageSize2,
-        "object": {
-          "groupCode": this.tour_name, //团号
-          "title": this.product_name, //产品名称
-          "beginDate": this.startTime ? formatDate(this.startTime, 'yyyyMMdd') : 0, //搜索用开始日期
-          "endDate": this.endTime ? formatDate(this.endTime, 'yyyyMMdd') : 0, //搜索用结束日期
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          this.tableData4 = res.data.objects;
-          this.total = res.data.total;
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-    },
     showInput5() {
       if (this.supplier_id) {
         this.dialogVisible3 = true;
@@ -941,9 +880,10 @@ export default {
         this.$message.error('供应商未匹配后台数据,请手动输入银行信息!');
       }
     },
+    // 点击选择团期计划，渲染团期计划列表
     showInput4() {
       this.dialogVisible2 = true;
-      this.searchHand4()
+      this.getList()
     },
     showInput3() {
       this.dialogVisible = true

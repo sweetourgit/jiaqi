@@ -146,12 +146,12 @@
     <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
     <el-table :data="tablePayment" border :header-cell-style="getRowClass">
       <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-      <el-table-column prop="checkType" label="审批状态" align="center">
-        <template slot-scope="scope">
+      <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+        <!--<template slot-scope="scope">
           <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
           <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
           <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
-        </template>
+        </template>-->
       </el-table-column>
       <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
       <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
@@ -183,9 +183,9 @@
     </el-table>
     <!-- 收入明细 END -->
     <!-- 审批过程-查看弹窗 -->
-    <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income"append-to-body>
+    <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income" append-to-body>
       <div class="indialog">
-        <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;":header-cell-style="getRowClass">
+        <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
           <el-table-column prop="finishedTime" label="审批时间" width="150" align="center"></el-table-column>
           <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
           <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
@@ -328,7 +328,6 @@ export default {
     },
     // 审批过程-查看
     processIncome(index,row, type){
-      console.log(row)
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
         jQ_ID: row.guid,
         jQ_Type: type,

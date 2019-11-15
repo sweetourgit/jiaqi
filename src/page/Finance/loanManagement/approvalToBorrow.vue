@@ -5,7 +5,7 @@
       <el-row type="flex" class="row-bg">
         <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="80px" id="form-content" style="margin-top: 20px">
           <el-row type="flex" class="row-bg">
-            <el-col :span="8">
+            <!--<el-col :span="8">
               <el-form-item label="团期计划:" prop="empty_01">
                 <el-input v-model="ruleFormSeach.empty_01" placeholder="请输入团期计划"></el-input>
               </el-form-item>
@@ -14,8 +14,8 @@
               <el-form-item label="借款人:" prop="people_01">
                 <el-input v-model="ruleFormSeach.people_01" placeholder="请输入借款人"></el-input>
               </el-form-item>
-            </el-col>
-            <el-col :span="10">
+            </el-col>-->
+            <el-col :span="15">
               <el-form-item label="申请时间:">
                 <el-col :span="11">
                   <el-form-item prop="planTime_01">
@@ -30,7 +30,7 @@
                 </el-col>
               </el-form-item>
             </el-col>
-            <el-col :span="7" style="text-align: right">
+            <el-col :span="8" style="text-align: right">
               <el-form-item>
                 <el-button @click="planSelect()" type="primary">搜索</el-button>
                 <el-button @click="emptyButton_01('ruleFormSeach')" type="primary">重置</el-button>
@@ -503,7 +503,6 @@ import moment from 'moment'
       // 详情弹窗
       checkIncome(index, row){
         this.paymentID=row.paymentID;
-        console.log(this.paymentID, '详情弹窗 ----  paymentID')
         this.pid = row.paymentID;
         this.detailstShow = true;
         this.getLabel();
