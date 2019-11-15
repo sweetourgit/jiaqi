@@ -147,7 +147,7 @@
         if(date == undefined) {
           return '';
         }
-        return moment(date).format('YYYY-MM-DD')
+        return moment(date).format('YYYY-MM-DD HH:mm:ss')
       },
       // 重置
       emptyButton_01(){
@@ -170,8 +170,8 @@
           .then(obj => {
             this.$http.post('http://test.dayuntong.com/h3wf/JQ/GettingUnfinishedTasksForJQ', {
               "userCode": sessionStorage.getItem('userCode'),
-              "startTime": this.planTime_01 ? moment(this.planTime_01).format('YYYY-MM-DD') : '',
-              "endTime": this.planData_01 ? moment(this.planData_01).format('YYYY-MM-DD') : '',
+              "startTime": this.planTime_01 ? moment(this.planTime_01).format('YYYY-MM-DD HH:mm:ss') : '',
+              "endTime": this.planData_01 ? moment(this.planData_01).format('YYYY-MM-DD HH:mm:ss') : '',
               "startIndex": -1,
               "endIndex": -1,
               "workflowCode": obj.data.objects[0].name

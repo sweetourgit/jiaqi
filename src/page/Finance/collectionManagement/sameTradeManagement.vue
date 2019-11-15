@@ -60,7 +60,7 @@
       </div>
     <!-- 添加 END -->
     <!-- 同业数据列表 -->
-    <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" id="table-content">
+    <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" id="table-content" v-loading="listLoading" >
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" width="80" align="center">
         <template slot-scope="scope">
@@ -85,7 +85,14 @@
     <!-- 同业数据列表 END -->
     <!-- 翻页 -->
     <div class="block">
-      <el-pagination
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="ruleForm.page"
+        :limit.sync="ruleForm.limit"
+        @pagination="getList"
+      />
+      <!--<el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
@@ -95,7 +102,7 @@
         :total=total
         background
       >
-      </el-pagination>
+      </el-pagination>-->
     </div>
     <!-- 翻页 END -->
     <!-- 添加同业数据弹窗 -->
@@ -237,11 +244,13 @@
 <script type="text/javascript">
 import SameTradeInfo from '@/page/Finance/collectionManagement/collectionInfo/sameTradeInfo'
 import moment from 'moment'
+import Pagination from '@/components/Pagination'
 
 export default {
   name: "sameTradeManagement",
   components: {
-    SameTradeInfo // 添加同业信息弹窗
+    SameTradeInfo, // 添加同业信息弹窗
+    Pagination
   },
   data() {
     return {
@@ -252,7 +261,10 @@ export default {
         checkType: '', // 状态
         dateStart: '', // 收款开始时间
         dateEnd: '', // 收款结束时间
+        page: 1,
+        limit: 20
       },
+      listLoading: true,
       reable: true,
       currentPage: 1,
       total: 0,
@@ -272,13 +284,58 @@ export default {
   },
   created(){
     this.getTableData();
+    this.getList()
   },
   filters: {
     formatDate: function (value) {
-      return moment(value).format('YYYY-MM-DD')
+      return moment(value).format('YYYY-MM-DD HH:mm:ss')
     }
   },
   methods: {
+    getList() {
+      this.listLoading = true
+      var that = this
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/team/api/teamsearch", {
+          "pageIndex": this.ruleForm.page,
+          "pageSize": this.ruleForm.limit,
+          "total": 0,
+          "object": {
+            "id": 0,
+            "title": '',
+            "createUser": '',
+            "minPrice": 0,
+            "maxPrice": 0,
+            "podID": 0,
+            "destinationID": 0
+          }
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+      .then(function(obj) {
+        that.listLoading = false
+        that.total = obj.data.total;
+        that.tableData = obj.data.objects;
+        /*that.tableData.forEach(function(v, k, arr) {
+          arr[k]['number'] = arr[k]['id']
+          arr[k]['status'] = "状态"
+          arr[k]['createTime'] = '2016-05-03-收款时间'
+          arr[k]['plan'] = '团期计划'
+          arr[k]['orderNum'] = '订单号'
+          arr[k]['sameTrade'] = '同业社名称'
+          arr[k]['collectionAccount'] = "收款账户"
+          arr[k]['money'] = "金额"
+          arr[k]['orinaze'] = '申请组织:国内部'
+          arr[k]['accpter'] = 'tester申请人'
+          arr[k]['opinion'] = '同意'
+          arr[k]['applyTime'] = '2016-05-03-申请时间'
+        })*/
+      })
+      .catch(function(obj) {})
+    },
     moment,
     // 重置
     emptyButtonInside () {
@@ -290,7 +347,7 @@ export default {
       if(date == undefined) {
         return '';
       }
-      return moment(date).format('YYYY-MM-DD')
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
     // 表单搜索
     searchHandInside () {
@@ -414,7 +471,6 @@ export default {
     },
     // 查询详情
     dialogFind(row) {
-      console.log(row,'row')
       this.getLabel(row.id)
       //this.find = 1;
       //this.change = true
@@ -487,8 +543,8 @@ export default {
             "id": 0,
             "checkType": this.settlement_01 ? this.settlement_01 : -1,
             "collectionTime": "2019-05-16",
-            "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd') : "2000-05-16",
-            "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd') : "2099-05-16",
+            "startTime": this.startTime ? formatDate(this.startTime, 'YYYY-MM-DD HH:mm:ss') : "2000-05-16",
+            "endTime": this.endTime ? formatDate(this.endTime, 'YYYY-MM-DD HH:mm:ss') : "2099-05-16",
             "groupCode": this.plan ? this.plan : '',
             "planID": 0,
             "orderID": 0,
@@ -509,7 +565,6 @@ export default {
         }
       )
       .then(function(obj) {
-        console.log(obj, '董振')
         _this.total = obj.data.total;
         _this.tableData = obj.data.objects;
         _this.tableData.forEach(function(v, k, arr) {

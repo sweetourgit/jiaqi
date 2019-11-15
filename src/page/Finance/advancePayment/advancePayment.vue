@@ -252,8 +252,8 @@ export default {
       objectRequest.paymentType = 2;
       if (this.planID) { objectRequest.planID = this.planID; }
       if (this.user) { objectRequest.createUser = this.user; }
-      if (this.startTime) { objectRequest.beginTime = moment(this.startTime).format('YYYY-MM-DD'); }
-      if (this.endTime) { objectRequest.endTime = moment(this.endTime).format('YYYY-MM-DD'); }
+      if (this.startTime) { objectRequest.beginTime = moment(this.startTime).format('YYYY-MM-DD HH:mm:ss'); }
+      if (this.endTime) { objectRequest.endTime = moment(this.endTime).format('YYYY-MM-DD HH:mm:ss'); }
       if (this.checkType) { objectRequest.checkType = this.checkType; }else{objectRequest.checkType='-1'}
       var that = this
       this.$http.post(
@@ -286,8 +286,8 @@ export default {
       objectRequest.paymentType = 2;
       if (this.ruleForm.planID) { objectRequest.groupCode = this.ruleForm.planID; }
       if (this.ruleForm.user) { objectRequest.createUser = this.ruleForm.user; }
-      if (this.ruleForm.startTime) { objectRequest.beginTime = moment(this.ruleForm.startTime).format('YYYY-MM-DD'); }
-      if (this.ruleForm.endTime) { objectRequest.endTime = moment(this.ruleForm.endTime).format('YYYY-MM-DD');}
+      if (this.ruleForm.startTime) { objectRequest.beginTime = moment(this.ruleForm.startTime).format('YYYY-MM-DD HH:mm:ss'); }
+      if (this.ruleForm.endTime) { objectRequest.endTime = moment(this.ruleForm.endTime).format('YYYY-MM-DD HH:mm:ss');}
       if (this.ruleForm.checkType) { objectRequest.checkType = this.ruleForm.checkType; }else{objectRequest.checkType='-1'}
 
       var that = this

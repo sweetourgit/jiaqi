@@ -514,7 +514,7 @@ export default {
           // console.log("请求一条数据的",res)
           this.getListOneMessage = res.data.object;
           let date = res.data.object.date.toString();
-          this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
+          this.getListOneMessage.date = moment(date).format("YYYY-MM-DD HH:mm:ss");
           this.orderCodeSon = res.data.object.orderCode;
           this.priceType = res.data.object.priceType;
           //订单来源

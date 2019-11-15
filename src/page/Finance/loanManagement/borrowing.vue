@@ -11,7 +11,17 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="借款人:" prop="borrower">
-            <el-input v-model="ruleFormSeach.borrower" placeholder="请输入借款人"></el-input>
+            <el-autocomplete
+              style="width: 100%"
+              class="name_input"
+              v-model="ruleFormSeach.borrower"
+              :fetch-suggestions="querySearchBorrower"
+              placeholder="请输入借款人"
+              :trigger-on-focus="false"
+              @select="departureBorrower"
+              @blur="departureBorrowerBlur"
+              @focus="departureBorrowerFocus"
+            ></el-autocomplete>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -40,7 +50,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item>
-            <el-button @click="search()" type="primary">搜索</el-button>
+            <el-button @click="search()" type="primary" :disabled="ifShowsearch">搜索</el-button>
             <el-button @click="emptyButton('ruleFormSeach')" type="primary">重置</el-button>
           </el-form-item>
         </el-col>
@@ -52,7 +62,7 @@
     <!-- 申请按钮 END -->
     <!-- <el-button plain @click="checkIncome()" :disabled="forbidden">查看借款</el-button> -->
     <!-- 借款列表 -->
-    <el-table :data="tableData" ref="multipleTable" :header-cell-style="getRowClass" :highlight-current-row="true" border :row-style="rowClass" :stripe="true" @row-click="clickRow" id="table-content">
+    <el-table :data="tableData" ref="multipleTable" :header-cell-style="getRowClass" :highlight-current-row="true" border :row-style="rowClass" :stripe="true" @row-click="clickRow" id="table-content" v-loading="listLoading">
       <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeEX" label="状态" align="center">
         <template slot-scope="scope">
@@ -80,18 +90,13 @@
     <!-- 分页 -->
     <el-row type="flex" class="paging">
       <el-col :span="8" :offset="13">
-        <el-pagination
-          v-if="pageshow"
-          :page-sizes="[5,10,50,100]"
-          background
-          @size-change="handleSizeChange"
-          :page-size="pagesize"
-          :current-page.sync="currentPage"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next, jumper"
+        <pagination
+          v-show="total>0"
           :total="total"
-        >
-        </el-pagination>
+          :page.sync="ruleFormSeach.page"
+          :limit.sync="ruleFormSeach.limit"
+          @pagination="getList"
+        />
       </el-col>
     </el-row>
     <!-- 分页 END -->
@@ -405,10 +410,13 @@
 <script>
 import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
 import moment from 'moment'
+import Pagination from '@/components/Pagination'
+
 export default {
   name: "borrowing",
   components: {
-    checkLoanManagement,
+    Pagination,
+    checkLoanManagement
   },
   data(){
     var validateVoucher = (rule, value, callback) => {
@@ -419,6 +427,8 @@ export default {
       }
     };
     return {
+      ifShowsearch: false,
+      listLoading: true,
       ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       ruleFormSeach: {
@@ -426,7 +436,9 @@ export default {
         createTime:'', // 创建时间
         endTime:'', // 结束时间
         checkType:'', // 状态
-        borrower: '' // 借款人
+        borrower: '', // 借款人
+        page: 1,
+        limit: 10,
       },
       settlement:[{ // 表头切换
         value: '0',
@@ -533,6 +545,7 @@ export default {
       planID:'',
       supplier_id:0, // 供应商选择银行账号
       tableData2:[],
+      tableDataBorrower:[],
       upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
       uid: 0, // 上传图片缩略图选中项
       status:"",
@@ -541,10 +554,38 @@ export default {
       pageshow:true,
       pid:'',
       countItemInfo: null, // 选择账户表格选中行时，行的信息
-      querySearchPlanData: [] // 团期计划检索联想数组
+      querySearchPlanData: [], // 团期计划检索联想数组
+      keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
     }
   },
   methods: {
+    // 借款记录列表
+    getList() {
+      this.listLoading = true
+      let objectRequest = {}
+      let _this = this
+      objectRequest.paymentType = 1;
+      objectRequest.checkType = -1;
+
+      if (this.ruleFormSeach.groupCode_01) { objectRequest.groupCode = this.ruleFormSeach.groupCode_01; }
+      if (this.ruleFormSeach.beginTime) { objectRequest.beginTime =  moment(this.ruleFormSeach.beginTime).format('YYYY-MM-DD HH:mm:ss'); }
+      if (this.ruleFormSeach.endTime) { objectRequest.endTime = moment(this.ruleFormSeach.endTime).format('YYYY-MM-DD HH:mm:ss'); }
+      if (this.ruleFormSeach.borrower) { objectRequest.createUser = this.keepBorrowerUserCode; }
+      if (this.ruleFormSeach.checkType) { objectRequest.checkType = this.ruleFormSeach.checkType;}else{objectRequest.checkType='-1'}
+      //if (this.checkTypeEX) { objectRequest.checkTypeEX = this.checkTypeEX; }
+      this.$http.post( this.GLOBAL.serverSrc + "/finance/payment/api/page", {
+        "pageIndex":_this.ruleFormSeach.page,
+        "pageSize":_this.ruleFormSeach.limit,
+        "total": 0,
+        "object": objectRequest,
+      }).then(function (obj) {
+        _this.total = obj.data.total
+        _this.tableData = obj.data.objects
+        _this.listLoading = false
+      }).catch(function (obj) {
+        console.log(obj)
+      })
+    },
     moment,
     // 表头点击切换
     handleClick(tab, event) {
@@ -648,6 +689,24 @@ export default {
         cb(results)
       }).catch(err => {})
     },
+    // 借款人模糊检索
+    querySearchBorrower(queryBorrowerString, cb) {
+      this.tableDataBorrower = []
+      this.$http.post(this.GLOBAL.serverSrc + '/org/api/userlist', {
+        "object": {
+          name: queryBorrowerString
+        }
+      }).then(res => {
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.tableDataBorrower.push({
+            "value": res.data.objects[i].name,
+            "userCode": res.data.objects[i].userCode
+          })
+        }
+        var results = queryBorrowerString ? this.tableDataBorrower.filter(this.createFilteBorrowerr(queryBorrowerString)) : [];
+        cb(results)
+      }).catch(err => {})
+    },
     // 团号搜索联想
     querySearch3Plan(queryStringPlan, cb) {
       this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
@@ -658,7 +717,6 @@ export default {
           "endDate": 0, // 搜索用结束日期
         }
       }).then(res => {
-        console.log(res, '团号搜索联想 res')
         for (let i = 0; i < res.data.objects.length; i++) {
           this.querySearchPlanData.push({
             "value": res.data.objects[i].groupCode,
@@ -669,15 +727,23 @@ export default {
         cb(results)
       }).catch(err => {})
     },
+    // 团期计划选中
     departurePlan(item) {
       this.tour_id = item.planID
-      console.log(item, 'departurePlan')
     },
+    // 模糊查询返回下拉选中项 - 查询返回value的
     createFilter(queryString1){
       return (restaurant) => {
         return (restaurant.value);
       }
     },
+    // 模糊查询返回下拉选中项 - 查询返回userCode的（借款人）
+    createFilteBorrowerr(queryString1){
+      return (restaurant) => {
+        return (restaurant.userCode);
+      }
+    },
+    // 供应商选中
     departure(item){
       //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
       /*this.productPos = item.id;
@@ -685,21 +751,33 @@ export default {
       this.productPos = item.id;
       this.originPlace = item.value;
     },
-    // 分页
-    handleSizeChange(page) {
-      this.currentPage = 1;
-      this.pagesize = page;
-      this.pageList();
+    // 借款人选中
+    departureBorrower (item) {
+      this.keepBorrowerUserCode = item.userCode
+    },
+    // 借款人 失焦
+    departureBorrowerBlur(){
+      if(this.ruleFormSeach.borrower == ''){
+        this.ifShowsearch = false
+      }else {
+        if(this.keepBorrowerUserCode == null){
+          this.ifShowsearch = false
+          this.ruleFormSeach.borrower = ''
+          this.$message.success("无相关借款人");
+        } else {
+          this.ifShowsearch = true
+        }
+      }
+    },
+    // 借款人 获得焦点
+    departureBorrowerFocus(){
+      this.ifShowsearch = true
     },
     // 分页（计划列表）
     handleSizeChangePlan(page) {
       this.currentPage = 1;
       this.pagesize = page;
       this.planList();
-    },
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage;
-      this.pageList();
     },
     // 选择账户弹窗的表格选择事件
     handleCurrentChangeAcount(currentPage) {
@@ -1011,35 +1089,9 @@ export default {
       this.$refs['ruleForm'].resetFields();
       this.clearPlan();
     },
-    // 查询列表
-    pageList() {
-      let objectRequest = {}
-      objectRequest.paymentType = 1;
-      objectRequest.checkType = -1;
-      if (this.ruleFormSeach.groupCode_01) { objectRequest.groupCode = this.ruleFormSeach.groupCode_01; }
-      if (this.ruleFormSeach.beginTime) { objectRequest.beginTime =  moment(this.ruleFormSeach.beginTime).format('YYYY-MM-DD'); }
-      if (this.ruleFormSeach.endTime) { objectRequest.endTime = moment(this.ruleFormSeach.endTime).format('YYYY-MM-DD'); }
-      if (this.ruleFormSeach.borrower) { objectRequest.createUser = this.ruleFormSeach.borrower; }
-      if (this.ruleFormSeach.checkType) { objectRequest.checkType = this.ruleFormSeach.checkType;}else{objectRequest.checkType='-1'}
-      //if (this.checkTypeEX) { objectRequest.checkTypeEX = this.checkTypeEX; }
-      var that = this
-      this.$http.post( this.GLOBAL.serverSrc + "/finance/payment/api/page", {
-        "pageSize":this.pagesize,
-        "pageIndex":this.currentPage,
-        "total": 0,
-        "object": objectRequest,
-      })
-      .then(function (obj) {
-        that.total = obj.data.total
-        that.tableData = obj.data.objects
-      })
-      .catch(function (obj) {
-        console.log(obj)
-      })
-    },
     // 搜索
     search(){
-      this.pageList()
+      this.getList()
     },
     // 申请无收入借款
     ensureIncome(){
@@ -1072,7 +1124,7 @@ export default {
             })
             .then(res => {
               if(res.data.isSuccess == true){
-                 this.pageList();
+                 this.getList();
                  this.clearPlan();
                  //this.sendBPM(res.data.object)
                  this.noIncomeShow = false;
@@ -1251,7 +1303,7 @@ export default {
         "id": this.paymentID
       })
       .then(res => {
-        this.pageList();
+        this.getList();
       })
       .catch(() => {});
     },
@@ -1293,12 +1345,11 @@ export default {
     },
   },
   mounted(){
-    this.pageList();
+    this.getList()
     this.planList();
   },
   created(){
     // 只有是出纳的时候才显示申请人检索
-    console.log(sessionStorage.getItem('hasCashierInfo'),'出纳')
     if (sessionStorage.getItem('hasCashierInfo')) {
       this.ifAccountBtn = true
     } else {
