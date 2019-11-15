@@ -61,7 +61,7 @@ $image-margin: 15px;
     <div class="image-ground">
       <div class="img-outer"
         v-for="(item, i) in list"
-        :key="item.pictureID"
+        :key="item.ID"
       >
         <!-- onerror="javascript:this.src='images/logoError.png';" -->
         <img :src="item.picturePath" alt="">
@@ -79,20 +79,19 @@ $image-margin: 15px;
       </div>
     </div>
     <el-button type="primary" size="small" icon="el-icon-plus" circle
-      v-show="numLimit>0 && list.length< numLimit"
+      v-show="list.length< numLimit || numLimit=== -1"
       @click="$emit('wakeup-material', getIdList())"
     ></el-button>
   </div>
 </template>
 
 <script>
-import { getPictureAction } from '../../../api'
 
 export default {
   
   props: {
     // 初始化数据
-    proto: [Number, Array],
+    proto: String,
     // 最大数量限制, -1为不限制数量
     numLimit: {
       type: Number,
@@ -103,25 +102,19 @@ export default {
   watch:{
     proto: {
       handler(nval){
+        console.log(nval)
         if(!nval) return this.list.splice(0);
-        // 统一数据格式
-        if(typeof nval=== 'number'){
-          nval= [{
-            id: null,
-            pictureID: nval,
-            picturePath: null
-          }];
-        }
-        if(typeof nval!== 'object') return console.error('image-input get wrong proto for init');
+        nval= this.$deepCopy(JSON.parse(nval));
         nval.forEach(el => {
-          if(el.picturePath && el.picturePath!== this.ERROR_URL) return;
-          getPictureAction.bind(this)(el.pictureID).then(res => {
+          this.getPictureAction(el.ID).then(res => {
             el.picturePath= res.url;
+            this.$forceUpdate();
           }).catch(err => {
             el.picturePath= this.ERROR_URL;
           })
         })
-        this.list= nval;
+        this.list.splice(0);
+        this.list.push(...nval);
       },
       immediate: true
     }
@@ -136,7 +129,25 @@ export default {
 
   methods: {
     getIdList(){
-      return this.list.map(el => el.pictureID);
+      return this.list.map(el => el.ID);
+    },
+
+    getPictureAction(id){
+      return new Promise((resolve, reject) => {
+        this.$http.post(this.GLOBAL.serverSrc + "/tpk/picture/api/get", {
+          id
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(res => {
+          let { isSuccess, object }= res.data;
+          if(!isSuccess) return reject('获取图片失败');
+          return resolve(object);
+        }).catch((err) => {
+          reject(err);
+        })
+      })
     }
   }
 

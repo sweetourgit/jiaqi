@@ -107,16 +107,30 @@
       </el-form-item>
 
       <el-form-item label="头图：" prop="pictureID">
-        <!-- <image-input></image-input> -->
-        <el-button type="primary" size="small" icon="el-icon-plus" circle></el-button>
+        <image-input
+          :proto="submitForm.pictureID"
+          :numLimit="1"
+          @wakeup-material="pictureSelectHandler"
+          @wakeup-preview="wakeupPreviewHandler"
+          @remove-handler="removePictureHandler"
+        ></image-input>
       </el-form-item>
+
+      <!--
       <el-form-item label="视频：" prop="pictureID">
-        <!-- <image-input></image-input> -->
+        <image-input></image-input> 
         <el-button type="primary" size="small" icon="el-icon-plus" circle></el-button>
       </el-form-item>
-      <el-form-item label="轮播图：" prop="pictureID">
-        <!-- <image-input></image-input> -->
-        <el-button type="primary" size="small" icon="el-icon-plus" circle></el-button>
+      -->
+
+      <el-form-item label="轮播图：" prop="pepeatpic">
+        <image-input
+          :proto="submitForm.pepeatpic"
+          :numLimit="PEPEAT_PIC_MAX"
+          @wakeup-material="pepeatpicSelectHandler"
+          @wakeup-preview="wakeupPreviewHandler"
+          @remove-handler="removePepeatpicHandler"
+        ></image-input>
       </el-form-item>
 
       <el-form-item label="出游人群：" prop="crowdID">
@@ -152,6 +166,16 @@
       </el-form-item>         
 
     </el-form>
+    <footer>
+      <material-list
+        ref="materialListRef"
+        :proto="list"
+        @submit-list="emitSubmitList"
+      ></material-list>
+      <preview-dialog
+        ref="previewDialogRef"
+      ></preview-dialog>
+    </footer>
   </div>
 </template>
 
@@ -166,6 +190,9 @@ import { VueEditor } from 'vue2-editor'
 
 import labelInput from './comps/label-input/index'
 import imageInput from './comps/image-input'
+import materialList from './comps/material-list'
+import previewDialog from './comps/preview-dialog'
+
 import { 
   getFuzzyAction, 
   getGlabelfuzzyAction, 
@@ -175,7 +202,7 @@ import {
 export default {
   mixins: [ValidateMsgMixin],
 
-  components: { VueEditor, labelInput, imageInput },
+  components: { VueEditor, labelInput, imageInput, materialList, previewDialog },
   
   inject: ['PROVIDE_TEAM_ID'],
 
@@ -197,7 +224,7 @@ export default {
   },
 
   data(){
-    return {
+    return Object.assign({
       vm: {
         // label-input中给普通输入框传入的props，和elementUI文档中的一样
         strengthsInputProps:{ 
@@ -296,14 +323,30 @@ export default {
             trigger: 'blur'
           }
         ],
+        pictureID: { 
+          required: true, 
+          validator: this.simpleValidator, 
+          message: '头图不能为空', 
+          trigger: 'change' 
+        },
+        pepeatpic: {
+          required: true,
+          validator: this.pepeatpicValidator,
+          trigger: 'blur'
+        }
         // 选填
         // label:{}
-        // pictureID: null,
         // vedioID: null,
         // pepeatpic: [],
         // mark: ''
       }
-    }
+    },
+      // config
+      {
+        PEPEAT_PIC_MAX: 6, // 轮播图最大数
+        PEPEAT_PIC_MIN: 3
+      }
+    )
   },
 
   methods: {
@@ -414,10 +457,17 @@ export default {
       if(reg.test(val)) return cb();
       return cb(this.makeErrorQueueMsg(message));
     },
+
     notNullArrayValidator(rule, val, cb){
       let { message, numLimit }= rule;
       if(!val || val.length=== 0) return cb(this.makeErrorQueueMsg(message));
       if(numLimit && val.length> numLimit) return cb(this.makeErrorQueueMsg(message)); 
+      return cb();
+    },
+
+    pepeatpicValidator(rule, val, cb){
+      if(!val || (val.length> this.PEPEAT_PIC_MAX || val.length< this.PEPEAT_PIC_MIN)) 
+        return cb(this.makeErrorQueueMsg(`请选择${this.PEPEAT_PIC_MIN}到${this.PEPEAT_PIC_MAX}张轮播图`));
       return cb();
     },
 
@@ -431,16 +481,7 @@ export default {
 
     checkHasChange(){
       let bol= false;
-      bol= !this.$checkLooseEqual(this.submitForm, this.proto);
-      bol && console.warn('basic-pane change');
-
-      // bug 每次保存，destinations， pod，strengths 的id都会自增 
-      // this.submitForm.destinations.forEach((el, i) => {
-      //   Object.keys(this.submitForm.destinations[i]).forEach(attr => {
-      //     console.log(attr, this.submitForm.destinations[i][attr], this.proto.destinations[i][attr]);
-      //   })
-      // })
-      
+      bol= !this.$checkLooseEqual(this.submitForm, this.proto);      
       bol && console.log('basic-pane has changed');
       return bol;
     },
@@ -452,6 +493,54 @@ export default {
       copy.night= parseInt(copy.night);
       return copy
     },
+
+    // 头图选择
+    pictureSelectHandler(idList){
+      let cb= (list) => {
+        if(list.length> 1){
+          this.$message.error(`头图数量限制为1张，当前选择${list.length}张，将截取第一张`);
+          list= list.splice(0, 1);
+        }
+        this.submitForm.pictureID= list[0];
+        this.validate();
+      }
+      this.$refs.materialListRef.wakeup(idList, cb);
+    },
+    
+    // 头图删除
+    removePictureHandler(){
+      this.submitForm.pictureID= null;
+    },
+
+    // 轮播图选择
+    pepeatpicSelectHandler(idList){
+      let cb= (list) => {
+        if(list.length> this.PEPEAT_PIC_MAX){
+          this.$message.error(`轮播图数量限制为${this.PEPEAT_PIC_MIN}到${this.PEPEAT_PIC_MAX}张，当前选择${list.length}张，将截取前${this.PEPEAT_PIC_MAX}张`);
+          list= list.splice(0, this.PEPEAT_PIC_MAX);
+        }
+        this.submitForm.pepeatpic.splice(0)
+        this.submitForm.pepeatpic.push(...this.$deepCopy(list.map(el => {
+          return {
+            pictureID: el,
+            picturePath: ''
+          }
+        })));
+        this.validate();
+      }
+      this.$refs.materialListRef.wakeup(idList, cb);
+    },
+
+    // 轮播图删除
+    removePepeatpicHandler(i){
+      console.log(i)
+      this.submitForm.pepeatpic.splice(i, 1);
+    },
+
+    // 预览
+    wakeupPreviewHandler(item){
+      this.$refs.previewDialogRef.wakeup(item);
+    }
   }
 }
 </script>
