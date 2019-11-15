@@ -625,12 +625,24 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="选择人员"
+      :visible.sync="isChooseAccount"
+      :show-close="false"
+      class="addAccount"
+      :close-on-click-modal="false"
+      width="500px"
+    >
+      <childAccount></childAccount>
+    </el-dialog>
     <!--end-->
   </div>
 </template>
 
 <script>
 import state from "../../../store/state";
+import childAccount from "./comps/chooseAccount"
 import moment from "moment";
 
 export default {
@@ -768,6 +780,7 @@ export default {
       isInputVisible: false, //商户其他名称tags显示隐藏
       isOtherSuccess: true, //商户其他名称唯一性判断  false则有重复的 则不能添加到businessOtherNamesArr
       isAccountValidator: null, //账户信息添加时验证唯一性 后台返回false则重复
+      isChooseAccount:true, //选择人员的dialog是否显示
       tid: 0, //
       pageSize: 10, //每页条数 默认10
       pageIndex: 1, //每页
@@ -953,6 +966,9 @@ export default {
       ],
       fileList2: []
     };
+  },
+  components: {
+    childAccount:childAccount
   },
   methods: {
     moment,
@@ -1178,8 +1194,7 @@ export default {
       }
       // this.editAccouontScopeid = index;
       this.isAddAccount = true;
-      let accountForm = row
-      this.accountForm = accountForm;
+      this.accountForm = Object.assign({},row);
       this.isAddAccountBtn = idx;
     },
     // 从编辑按钮进入的弹窗的取消按钮
