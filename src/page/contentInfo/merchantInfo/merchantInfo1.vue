@@ -570,7 +570,7 @@
       class="addAccount"
       :close-on-click-modal="false"
       width="500px"
-      @close="addAccountCancelBtn('accountForm')"
+     
     >
       <h3>手机号和邮箱可作为用户名进行登录</h3>
       <el-form ref="accountForm" :model="accountForm" :rules="accountFormRules" label-width="80px">
@@ -1222,7 +1222,6 @@ export default {
     },
     // 点击添加按钮的大保存时 账户信息添加 tid为0时的
     bigSaveAccount() {
-      this.useList.push(this.accountForm);
       if (this.accountForm.state == 2) {
         this.accountForm.state = "正常";
       } else {
@@ -1238,6 +1237,9 @@ export default {
       } else {
         this.accountForm.peerUserType = "销售";
       }
+      // console.log(this.accountForm)
+      this.useList.push(this.accountForm);
+      // console.log(this.useList,"this.userlist")
       this.isAddAccount = false;
       this.$message({
         message: "添加成功",
@@ -1464,11 +1466,13 @@ export default {
         peerUserType: null //职位
         //id:"",
       };
-      // if (this.$refs["addForm"] !== undefined) {
-      //   this.$refs["addForm"].resetFields();
+      // if (this.$refs[this.addForm] !== undefined) {
+      //   console.log(1)
+      //   this.$refs[this.addForm].resetFields();
       // }
       // this.$nextTick((accountForm) => {
-      //   this.$refs["addForm"].resetFields();
+      //   console.log(1)
+      //   this.$refs[this.addForm].resetFields();
       // });
     },
 

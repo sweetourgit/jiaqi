@@ -59,13 +59,12 @@ export default {
       };
   },
   methods: {
-      getCheckedNodes() {
+      getCheckedNodes(one,two) {
+          console.log(one,two,1111)
         console.log(this.$refs.tree.getCheckedNodes());
       },
-      getCheckedKeys() {
-        console.log(this.$refs.tree.getCheckedKeys());
-      },
-      setCheckedNodes() {
+      setCheckedNodes(nodes) {
+          console.log(nodes,"nodes")
         this.$refs.tree.setCheckedNodes([{
           id: 5,
           label: '二级 2-1'
@@ -74,9 +73,7 @@ export default {
           label: '三级 1-1-1'
         }]);
       },
-      setCheckedKeys() {
-        this.$refs.tree.setCheckedKeys([3]);
-      },
+    //   清空
       resetChecked() {
         this.$refs.tree.setCheckedKeys([]);
       }
