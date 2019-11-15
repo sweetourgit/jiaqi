@@ -11,7 +11,7 @@
       <el-button type="warning" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 10">未认款</el-button>
       <el-button type="info" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 11">待认收款</el-button>
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 12">已认完</el-button>
-      <div class="stepDv">
+      <div class="stepDv" v-if="baseInfo.create_type == 1">
         <p class="inputLabel"><span>收款单号：</span>{{baseInfo.rece_code}}</p>
         <p class="inputLabel"><span>申请人：</span>{{baseInfo.orgName}}--{{baseInfo.create_uid}}</p>
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
@@ -21,6 +21,29 @@
         <p class="inputLabel"><span>剩余认款金额：</span>{{baseInfo.remain_money}}</p>
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.remark}}</p>
         <p class="inputLabel"><span>款项说明：</span>{{baseInfo.explain}}</p>
+
+        <div class="inputLabel">
+          <span style="vertical-align: top;">凭证：</span>
+          <!--<el-upload ref="upload1" class="upload-demo" action="" :file-list="fileList" :disabled="disabled">-->
+          <!--<el-button size="small" type="primary" :disabled="disabled">点击上传</el-button>-->
+          <!--</el-upload>-->
+
+          <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
+            <li v-for="item in fileList">
+              <a :href="item.url" target="_blank">{{item.name}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="stepDv" v-if="baseInfo.create_type == 2">
+        <p class="inputLabel"><span>收款单号：</span>{{baseInfo.rece_code}}</p>
+        <p class="inputLabel"><span>申请人：</span>{{baseInfo.orgName}}--{{baseInfo.create_uid}}</p>
+        <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
+        <p class="inputLabel"><span>收款时间：</span>{{baseInfo.receivables_at}}</p>
+        <p class="inputLabel"><span>借款单号：</span>{{baseInfo.loan_id}}</p>
+        <p class="inputLabel"><span>收款金额：</span>{{baseInfo.rece_money}}</p>
+        <p class="inputLabel"><span>剩余认款金额：</span>{{baseInfo.remain_money}}</p>
+        <p class="inputLabel"><span>收款明细说明：</span>{{baseInfo.explain}}</p>
 
         <div class="inputLabel">
           <span style="vertical-align: top;">凭证：</span>
@@ -288,7 +311,9 @@
           rec_created_at: '',
           distributor: '',
           distributor_code: '',
-          dateQuantun: ''
+          dateQuantun: '',
+          create_type: '',
+          loan_id: ''
         },
         // 认款方式array
         recModeList: {
@@ -477,7 +502,9 @@
               rec_created_at: response.data.data.rec_created_at,
               distributor: response.data.data.distributor,
               distributor_code: response.data.data.distributor_code,
-              dateQuantun: startToend
+              dateQuantun: startToend,
+              create_type: response.data.data.create_type,
+              loan_id: response.data.data.loan_id
             };
             // 获取订单信息
             if(response.data.data.rec_mode === '1' || response.data.data.rec_mode === '2'){

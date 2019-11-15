@@ -20,10 +20,10 @@
         <p class="inputLabel"><span>借款类型：</span>{{periphery_type[baseInfo.type]}}</p>
         <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p>
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.remark}}</p>
-        <p class="inputLabel"><span>账号：</span>{{baseInfo.account}}</p>
-        <p class="inputLabel"><span>开户行：</span>{{baseInfo.accountBank}}</p>
-        <p class="inputLabel"><span>开户名：</span>{{baseInfo.accountName}}</p>
-        <p class="inputLabel"><span>支付账户：</span>{{baseInfo.accountCode}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>账号：</span>{{baseInfo.account}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户行：</span>{{baseInfo.accountBank}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户名：</span>{{baseInfo.accountName}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>支付账户：</span>{{baseInfo.accountCode}}</p>
         <p class="inputLabel"><span>已报销金额：</span>{{baseInfo.reimbursed_money}}</p>
 
         <div class="inputLabel">

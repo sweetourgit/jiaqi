@@ -331,10 +331,10 @@ export default {
     },
     closeApprove(){
       this.customerApproval = false;//审批弹窗取消
-    },
-    created(){
-      this.getTableData();
     }
+  },
+  created(){
+    this.getTableData();
   }
 }
 </script>
