@@ -5,7 +5,7 @@
     width="50%"
     :before-close="handleClose">
     <div style="width: 100%; line-height: 0;">
-      <img :src="url" alt="">
+      <img :src="url" alt="" style="width: 100%;height: 100%;">
     </div>
   </el-dialog>
 </template>
