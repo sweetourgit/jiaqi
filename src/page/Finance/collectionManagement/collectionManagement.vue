@@ -16,8 +16,8 @@
       <el-tab-pane label="待认款收款" name="six">
         <recognitionWait></recognitionWait>
       </el-tab-pane>
-      <el-tab-pane label="需要您审批" name="third">
-        <PendingApprovalManagement></PendingApprovalManagement>
+      <el-tab-pane :label="'需要您审批('+ totalNum +')'" name="third">
+        <PendingApprovalManagement ref="pendingApproval"></PendingApprovalManagement>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -42,10 +42,19 @@ export default {
   data() {
     return {
       activeName: 'first', // 当前tab选项卡默认状态
-      clickTab:'' // 点击切换获取当前值
+      clickTab:'', // 点击切换获取当前值
+      totalNum: 0
     }
   },
   computed: {},
+  watch: {
+//    numZK: {
+//      handler:function(){
+//        this.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
+////          this.$parent.label = "需要您审批("+this.$parent.totalNum+")";
+//      }
+//    }
+  },
   methods: {
     // 获取当前项的标题
     handleClick(tab, event) {// 点击切换获取当前值
@@ -130,6 +139,7 @@ export default {
     if(this.$route.params.tabStatus){
       this.activeName = this.$route.params.tabStatus
     }
+
   }
 }
 
