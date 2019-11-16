@@ -420,6 +420,13 @@
     </el-dialog>
     <!-- </div> -->
     <!-- </div> -->
+    <!--报账单弹窗-->
+    <el-dialog title="报账单" :visible.sync="checkSheetDialog" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"@close="closeCheckSheet()">
+      <div class="w1000 mau">
+        <div class="chesktltle">黑龙江大运嘉国际旅行社有限公司旅游团队报账单</div>
+        <div class="fr lh30">报账日期：2019年03月19日</div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -577,6 +584,7 @@ export default {
       pid:'',
       paymentType:'',
       multipleSelection: [], //选中的list
+      checkSheetDialog:false,//报账单弹窗
     };
   },
   filters: {
@@ -1488,6 +1496,10 @@ export default {
     closeApprova(){//关闭借款弹窗
       this.approvalTable = [];
     },
+    //报账单关闭弹窗
+    closeCheckSheet(){
+
+    },
   }
 };
 </script>
@@ -1626,4 +1638,10 @@ export default {
 .input-num {
   margin: 10px 0;
 }
+/*报账单弹窗*/
+.w1000{width:1000px;}
+.mau{margin-left:auto; margin-right:auto;}
+.fr{float: right;}
+.lh30{line-height: 30px;}
+.chesktltle{ text-align: center; line-height: 50px; font-size: 18pt; color: #000; font-weight: bold;}
 </style>
