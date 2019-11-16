@@ -18,11 +18,19 @@
             <el-date-picker v-model="endTime" type="date" placeholder="结束日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="7">
+            <span class="search_style">收款单号：</span>
+            <el-input v-model="orderNum" placeholder="请输入收款单号" class="search_input"></el-input>
+          </el-col>
+          <el-col :span="9" :offset="7">
+            <div class="buttonDv">
+              <el-button type="primary" @click="resetFun" plain>重置</el-button>
+              <el-button type="primary" @click="searchFun">搜索</el-button>
+            </div>
+          </el-col>
+        </el-row>
 
-        <div class="buttonDv">
-          <el-button type="primary" @click="resetFun" plain>重置</el-button>
-          <el-button type="primary" @click="searchFun">搜索</el-button>
-        </div>
       </div>
       <div class="table_style">
         <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
@@ -82,6 +90,7 @@
         endTime: '',
         reimbursementPerID: '',
         operatorList: [],
+        orderNum: '',
 
         pageSize: 10,
         currentPage: 1,
@@ -162,6 +171,7 @@
         this.startTime = '';
         this.endTime = '';
         this.reimbursementPerID = '';
+        this.orderNum = '';
         this.loadData();
       },
       handleSizeChange(val) {
@@ -183,7 +193,8 @@
           "create_uid": this.reimbursementPerID,
           "apply_start": this.startTime,
           "apply_end": this.endTime,
-          "create_type": '2'
+          "create_type": '2',
+          "rece_code": this.orderNum
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log('自动列表',response);

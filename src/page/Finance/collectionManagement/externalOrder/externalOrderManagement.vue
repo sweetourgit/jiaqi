@@ -29,15 +29,20 @@
             </el-select>
           </el-col>
           <el-col :span="7">
+            <span class="search_style">收款单号：</span>
+            <el-input v-model="orderNum" placeholder="请输入收款单号" class="search_input"></el-input>
+          </el-col>
+          <el-col :span="9">
             <span class="search_style">收款明细说明：</span>
             <el-input v-model="explain" placeholder="请输入内容" class="search_input"></el-input>
           </el-col>
-          <el-col :span="9" class="buttonCol">
+        </el-row>
+        <el-row>
+          <el-col :span="9" :offset="14" class="buttonCol">
             <el-button type="primary" @click="resetFun" plain>重置</el-button>
             <el-button type="primary" @click="searchFun">搜索</el-button>
           </el-col>
         </el-row>
-
       </div>
       <!--添加-->
       <div class="search" style="background-color: transparent;padding: 0;">
@@ -111,6 +116,7 @@
         startTime: '',// 收款时间 -- 开始
         endTime: '',// 收款时间 -- 结束
         status: '',// 状态（待认收款，已认完）
+        orderNum: '',// 收款单号
         explain: '',// 收款明细说明
         reimbursementPerID: '',// 申请人ID
         operatorList: [],// 申请人list
@@ -201,6 +207,7 @@
         this.reimbursementPerID = '';
         this.status = '';
         this.explain = '';
+        this.orderNum = '';
         this.loadData();
       },
       // 添加
@@ -272,6 +279,7 @@
           "rece_end": this.endTime,
           "status_rece": this.status,
           "explain": this.explain,
+          "rece_code": this.orderNum,
           "limit": 0
         }, ).then(function(response) {
           if (response.data.code == '200') {

@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <div class="demo-input-suffix ">
-      <span class="search-title">报账团期：</span>
+      <span class="search-title">报账团号：</span>
       <el-input v-model="activeForm.tour" class="input" placeholder="请输入"></el-input>
       <span class="search-title">操作人：</span>
       <!--<el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>-->

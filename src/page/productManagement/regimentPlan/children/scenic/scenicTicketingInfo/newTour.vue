@@ -234,9 +234,10 @@ export default {
         "limit": 0,
         "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
+//        console.log('产品列表',response);
         if (response.data.code == '200') {
           const productList = response.data.data.list;
-          var proArr = [];
+          let proArr = [];
           productList.forEach(function (item, index, arr) {
             const obj = {
                 "value": item.product_name,

@@ -283,7 +283,7 @@
                   item.supplier_code = response.data.object.name
                 } else {
                   if(response.data.result.message){
-                    that.$message.warning(response.data.result.message);
+                    that.$message.warning('供应商：'+response.data.result.message);
                   }else{
                     that.$message.warning("获取供应商名称失败~");
                   }
