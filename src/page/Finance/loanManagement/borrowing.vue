@@ -304,18 +304,14 @@
         </el-table>
         <!-- 分页 -->
         <el-row type="flex" class="paging">
-          <el-col :span="8" :offset="9">
-            <el-pagination
-              :page-sizes="[10,50,100]"
-              background
-              @size-change="handleSizeChangePlan"
-              :page-size="pagesize"
-              :current-page.sync="currentPage"
-              @current-change="handleCurrentChangePlan"
-              layout="total, sizes, prev, pager, next, jumper"
+          <el-col :span="8" :offset="8">
+            <pagination
+              v-show="total>0"
               :total="total"
-            >
-            </el-pagination>
+              :page.sync="ruleFormSeach.page"
+              :limit.sync="ruleFormSeach.limit"
+              @pagination="planList"
+            />
           </el-col>
         </el-row>
         <!-- 分页 END -->
@@ -764,12 +760,6 @@ export default {
     departureBorrowerFocus(){
       this.ifShowsearch = true
     },
-    // 分页（计划列表）
-    handleSizeChangePlan(page) {
-      this.currentPage = 1;
-      this.pagesize = page;
-      this.planList();
-    },
     // 选择账户弹窗的表格选择事件
     handleCurrentChangeAcount(currentPage) {
       this.countItemInfo = currentPage
@@ -782,11 +772,6 @@ export default {
         this.ruleForm.accountBank = this.countItemInfo.bankName
         this.dialogFormVisible_account = false;
       }
-    },
-    // 分页页数改变的时候（计划列表）
-    handleCurrentChangePlan(currentPage) {
-      this.currentPage = currentPage;
-      this.planList();
     },
     // 无收入借款弹窗
     noIncome(){
@@ -881,8 +866,8 @@ export default {
       this.$http.post(
         this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancepage",
         {
-          "pageSize":this.pagesize,
-          "pageIndex":this.currentPage,
+          "pageSize":this.ruleFormSeach.limit,
+          "pageIndex":this.ruleFormSeach.page,
           "total": 0,
           "object": {
             "groupCode": this.plan_stage, // 团号
@@ -892,6 +877,7 @@ export default {
           }
         })
         .then(res => {
+          this.total = res.data.total
           this.tablePlan = res.data.objects;
         })
         .catch(function (obj) {})

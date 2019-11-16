@@ -75,7 +75,7 @@
       <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
       <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-      <el-table-column prop="" label="审批意见" align="center"></el-table-column>
+<!--      <el-table-column prop="" label="审批意见" align="center"></el-table-column>-->
       <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
           <el-button @click="dialogFind(scope.row)" type="text" size="small">详情</el-button>

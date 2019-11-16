@@ -89,8 +89,19 @@
         </el-table-column>
       </el-table>
       <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total=total background>
-        </el-pagination>
+        <!-- 分页 -->
+        <el-row type="flex" class="paging">
+          <el-col :span="8" :offset="13">
+            <pagination
+              v-show="total>0"
+              :total="total"
+              :page.sync="page"
+              :limit.sync="limit"
+              @pagination="getStraightGuestManagement"
+            />
+          </el-col>
+        </el-row>
+        <!-- 分页 END -->
       </div>
     </div>
     <StraightGuestInfo :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid" :change="change" :org="org" @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList" @close="closeAdd" :dept="dept"></StraightGuestInfo>
@@ -218,16 +229,21 @@
 </template>
 <script type="text/javascript">
 import StraightGuestInfo from '@/page/Finance/collectionManagement/collectionInfo/straightGuestInfo'
+import Pagination from '@/components/Pagination'
 import moment from 'moment'
 
 export default {
   name: "straightGuestManagement",
   components: {
     moment,
+    Pagination,
     StraightGuestInfo,
   },
   data() {
     return {
+      listLoading: true,
+      page: 1,
+      limit: 10,
       ruleForm: {
         createUser: '',
         distributor: '',
@@ -247,10 +263,7 @@ export default {
       reable: true,
       dialogFormVisible: false,
       change: false,
-      currentPage: 1,
       total: 0,
-      pageSize: 10,
-      pageNum: 1,
       find: 0,
       org: '',
       pid: '',
@@ -290,7 +303,6 @@ export default {
     },
     changeInvoice() {
       this.ruleForm.invoiceList.forEach(function(v, k, arr) {
-        console.log(arr[k]['date'])
       })
     },
     handleEdit(index, row) {
@@ -301,102 +313,6 @@ export default {
       if (this.ruleForm.invoiceList.length == 0) {
         this.ruleForm.invoiceList.push({})
       }
-    },
-    handleSizeChange(val) {
-      this.pageSize = val
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/collection/api/page", {
-            "pageIndex": 1,
-            "pageSize": val,
-            "object": {
-              "id": 0,
-              "checkType": this.settlement_01?this.settlement_01:-1,
-              "collectionTime": "2019-05-16T01:02:40.816Z",
-              "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd hh:mm:ss') : "2001-01-01 01:02:40",
-              "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd hh:mm:ss') : "2099-05-16 01:02:40",
-              "groupCode": this.plan ? this.plan : '',
-              "planID": 0,
-              "orderID": 0,
-              "orderNumber": "",
-              "collectionNumber": "",
-              "price": 0,
-              "dept": 0,
-              "createUser": this.accepter ? this.accepter : '',
-              "createTime": "2019-05-16 01:02:40",
-              "code": "",
-              "serialNumber": "",
-              "abstract": "",
-              "isDeleted": 0,
-            }
-
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
-            arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
-            arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
-            arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
-    },
-    handleCurrentChange(val) {
-      this.pageNum = val;
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/collection/api/page", {
-            "pageIndex": val,
-            "pageSize": this.pageSize,
-            "object": {
-              "id": 0,
-              "checkType": this.settlement_01?this.settlement_01:-1,
-              "collectionTime": "2019-05-16T01:02:40.816Z",
-              "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd hh:mm:ss') : "2000-01-01 01:02:40",
-              "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd hh:mm:ss') : "2099-05-16 01:02:40",
-              "groupCode": this.plan ? this.plan : '',
-              "planID": 0,
-              "orderID": 0,
-              "orderNumber": "",
-              "collectionNumber": "",
-              "price": 0,
-              "dept": 0,
-              "createUser": this.accepter ? this.accepter : '',
-              "createTime": "2019-05-16 01:02:40",
-              "code": "",
-              "serialNumber": "",
-              "abstract": "",
-              "isDeleted": 0,
-            }
-
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          that.tableData.forEach(function(v, k, arr) {
-            arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
-            arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
-            arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
-            arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
     },
     //查询详情
     dialogFind(row) {
@@ -491,10 +407,10 @@ export default {
     },*/
     getStraightGuestManagement() {
       var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/collection/api/page", {
-            "pageIndex": 1,
-            "pageSize": that.pageSize,
+      this.listLoading = true
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+            "pageIndex": that.page,
+            "pageSize": that.limit,
             "object": {
               "id": 0,
               "checkType": this.settlement_01?this.settlement_01:-1,
@@ -533,6 +449,7 @@ export default {
             arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
             arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
           })
+          this.listLoading = false
         })
         .catch(function(obj) {
         })
