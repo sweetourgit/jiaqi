@@ -174,11 +174,17 @@
           payAccountID: '',
           money: '',
           abstract: '',
-          supplier: '',
-          supplierID: ''
+          supplier: '',// 选择的供应商
+          supplierName: '',
+          supplierID: '',// 选择的供应商ID
+          number: '',
+          buy_type: '',
+          timeStart: '',
+          timeEnd: ''
         };
 //        this.rece_code = '';
         this.fileList = [];
+        this.tableDataXG = [];
         this.$emit('close', false);
       },
       // 取消按钮事件

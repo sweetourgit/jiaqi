@@ -213,10 +213,17 @@
           payAccountID: '',
           money: '',
           abstract: '',
-          supplier: '',
-          supplierID: ''
+          supplier: '',// 选择的供应商
+          supplierName: '',
+          supplierID: '',// 选择的供应商ID
+          number: '',
+          buy_type: '',
+          account_type: '',
+          timeStart: '',
+          timeEnd: ''
         };
         this.fileList = [];
+        this.tableDataXG = [];
         this.$emit('close', false);
       },
       // 取消添加

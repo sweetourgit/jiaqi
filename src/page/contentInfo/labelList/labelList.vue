@@ -273,7 +273,7 @@
         //this.$refs.multipleTable.clearSelection(); //清空用户的选择  
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass({row, rowIndex}){ //选中行样式改变
        for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
              return { "background-color": "#ecf5ff" }
@@ -313,10 +313,11 @@
         //this.ruleForm.highlightWords='';
       },
       //删除主题弹窗关闭、确定删除
-      deleteGatherClose(){
+      deleteGatherClose(e){
         this.deleteGatherShow = false;
+        //this.cycleId();
       },
-      deleteGather(ensure){
+      deleteGather(ensure,tab, event){
         this.deleteGatherShow = false;
         if(this.tableData.length == 0){
           this.handleTabsEdit(this.tabIndex, "remove");

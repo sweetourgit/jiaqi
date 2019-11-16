@@ -9,9 +9,9 @@
           </el-table-column>
           <el-table-column prop="checkTypeStatus" label="状态" align="center">
             <template slot-scope="scope">
-              <div v-if="scope.row.checkTypeStatus=='0'" style="color: #7F7F7F">审批中</div>
-              <div v-if="scope.row.checkTypeStatus=='2'" style="color: #FF4A3D">驳回</div>
-              <div v-if="scope.row.checkTypeStatus=='1'" style="color: #33D174">通过</div>
+              <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F">审批中</div>
+              <div v-if="scope.row.checkType=='2'" style="color: #FF4A3D">驳回</div>
+              <div v-if="scope.row.checkType=='1'" style="color: #33D174">通过</div>
             </template>
           </el-table-column>
           <el-table-column prop="collectionTime" label="收款时间" align="center">
@@ -30,8 +30,8 @@
           </el-table-column>
           <!-- <el-table-column prop="createTime" label="申请时间" align="center">
           </el-table-column> -->
-          <!-- <el-table-column prop="" label="审批意见" align="center">
-          </el-table-column> -->
+          <!--<el-table-column prop="" label="审批意见" align="center">-->
+          <!--</el-table-column>-->
           <el-table-column label="操作" width="100" align="center">
             <template slot-scope="scope">
               <el-button @click="approvalZK(scope.row.id)" type="text" size="small" class="table_details">审批</el-button>
@@ -49,11 +49,11 @@
         <!-- 同业表格 -->
         <el-table :data="tableDataTY" border class="tableData" :highlight-current-row="true" :header-cell-style="getRowClass" id="table-content2" v-loading="loadingTY" >
           <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
-          <el-table-column prop="checkTypeStatus" label="状态" width="80" align="center">
+          <el-table-column prop="checkTypeStatus" label="状态" align="center">
             <template slot-scope="scope">
-              <div v-if="scope.row.checkTypeStatus=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeStatus}}</div>
-              <div v-if="scope.row.checkTypeStatus=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeStatus}}</div>
-              <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174" >{{scope.row.checkTypeStatus}}</div>
+              <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F" >审批中</div>
+              <div v-if="scope.row.checkType=='2'" style="color: #FF4A3D" >驳回</div>
+              <div v-if="scope.row.checkType=='1'" style="color: #33D174" >通过</div>
             </template>
           </el-table-column>
           <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
@@ -62,10 +62,10 @@
           <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
           <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
           <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-          <el-table-column prop="" label="审批意见" align="center"></el-table-column>
+          <!--<el-table-column prop="" label="审批意见" align="center"></el-table-column>-->
           <el-table-column label="操作" width="100" align="center">
             <template slot-scope="scope">
-              <el-button @click="approvalTY(scope.row)" type="text" size="small">详情</el-button>
+              <el-button @click="approvalTY(scope.row.id)" type="text" size="small">审批</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -75,16 +75,55 @@
         <!-- 同业表格 END -->
       </el-tab-pane>
       <!-- 同业模块 END -->
+      <!-- 内部收款模块 -->
+      <el-tab-pane :label="'内部收款(' + numNBSK + ')'" name="third">
+        <!-- 内部收款表格 -->
+        <el-table :data="tableDataNBSK" border class="tableData" :highlight-current-row="true" :header-cell-style="getRowClass" id="table-content3" v-loading="loadingNBSK" >
+          <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
+          <el-table-column prop="checkTypeStatus" label="状态" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F" >审批中</div>
+              <div v-if="scope.row.checkType=='2'" style="color: #FF4A3D" >驳回</div>
+              <div v-if="scope.row.checkType=='1'" style="color: #33D174" >通过</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
+          <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+          <el-table-column prop="orderNumber" label="订单号" align="center"></el-table-column>
+          <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
+          <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
+          <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+          <!--<el-table-column prop="" label="审批意见" align="center"></el-table-column>-->
+          <el-table-column label="操作" width="100" align="center">
+            <template slot-scope="scope">
+              <el-button @click="approvalNBSK(scope.row.id)" type="text" size="small">审批</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination class="pageList" :page-sizes="[10,20,30,50]" background @size-change="handleSizeChangeNBSK" :page-size="pagesizeNBSK" :current-page.sync="currentPageNBSK" @current-change="handleCurrentChangeNBSK" layout="total, sizes, prev, pager, next, jumper" :total="totalNBSK"></el-pagination>
+        </div>
+        <!-- 内部收款表格 END -->
+      </el-tab-pane>
+      <!-- 内部收款模块 END -->
     </el-tabs>
+    <approval :dialogFormVisible="dialogFormVisible" :info="info" @close="closeAdd"></approval>
   </div>
 </template>
 <script type="text/javascript">
   import moment from 'moment'
+  import approval from '@/page/Finance/collectionManagement/pendingApproval/approval.vue'
   export default {
+    components:{
+      approval
+    },
     data() {
       return {
         tabPosition:  'left',//左侧导航
         activeName: 'first',//当前tab项
+        // 审批页面显示隐藏
+        dialogFormVisible: false,
+        info: '',
 
         // 直客
         numZK: 0, // 直客待审批
@@ -102,12 +141,40 @@
         currentPageTY: 1,// 分页，当前页数
         totalTY: 0,// 分页，总条数
         sid: 0,
+
+        // 内部收款
+        numNBSK: 0,// 内部收款待审批
+        tableDataNBSK: [],// 内部收款待审批列表
+        loadingNBSK: true,// 内部收款列表loading
+        pagesizeNBSK: 10,// 分页，每页条数
+        currentPageNBSK: 1,// 分页，当前页数
+        totalNBSK: 0,// 分页，总条数
       }
     },
     filters: {
       formatDate: function (value) {
         return moment(value).format('YYYY-MM-DD HH:mm:ss')
       }
+    },
+    watch: {
+      numZK: {
+        handler:function(){
+          this.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
+//          this.$parent.label = "需要您审批("+this.$parent.totalNum+")";
+        }
+      },
+      numTY: {
+        handler:function(){
+          this.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
+//          this.$parent.label = "需要您审批("+this.$parent.totalNum+")";
+        }
+      },
+      numNBSK: {
+        handler:function(){
+          this.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
+//          this.$parent.label = "需要您审批("+this.$parent.totalNum+")";
+        }
+      },
     },
     methods: {
       moment,
@@ -120,11 +187,26 @@
         }
       },
       // 直客审批
-      approvalZK(row){
-
+      approvalZK(id){
+        this.info = id;
+        this.dialogFormVisible = true;
       },
       // 同业审批
-      approvalTY(row){
+      approvalTY(id){
+        this.info = id;
+        this.dialogFormVisible = true;
+      },
+      // 内部收款审批
+      approvalNBSK(id){
+        this.info = id;
+        this.dialogFormVisible = true;
+      },
+      // 关闭弹框
+      closeAdd(str){
+        this.dialogFormVisible = false;
+        this.loadDataZK();
+        this.loadDataTY();
+        this.loadDataNBSK();
 
       },
       // 加载直客信息及处理分页
@@ -169,7 +251,7 @@
             }
           }
         ).then(function(obj) {
-          console.log(obj);
+          console.log('ZK',obj);
           if(obj.data.isSuccess){
             that.totalZK = obj.data.total;
             that.numZK = obj.data.total;
@@ -180,6 +262,7 @@
 
         })
       },
+
       // 加载同业信息及处理分页
       handleSizeChangeTY(val){
         this.pagesizeTY = val;
@@ -222,7 +305,7 @@
             }
           }
         ).then(function(obj) {
-          console.log(obj);
+          console.log('TY',obj);
           if(obj.data.isSuccess){
             that.totalTY = obj.data.total;
             that.numTY = obj.data.total;
@@ -241,10 +324,48 @@
         }
         return moment(date).format('YYYY-MM-DD HH:mm:ss')
       },
+
+      // 加载内部收款信息及处理分页
+      handleSizeChangeNBSK(val){
+        this.pagesizeNBSK = val;
+        this.loadingNBSK = true;
+        this.loadDataNBSK();
+      },
+      handleCurrentChangeNBSK(val){
+        this.currentPageNBSK = val;
+        this.loadingNBSK = true;
+        this.loadDataNBSK();
+      },
+      loadDataNBSK(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+          "pageIndex": this.currentPageNBSK,
+          "pageSize": this.pagesizeNBSK,
+          "object": {
+            "startTime": this.startTime ? formatDate(this.startTime, 'YYYY-MM-DD HH:mm:ss') : "2000-05-16",
+            "endTime": this.endTime ? formatDate(this.endTime, 'YYYY-MM-DD HH:mm:ss') : "2099-05-16",
+            "collectionType": 5,
+            "checkType": 0
+          }
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }).then(function (obj) {
+          console.log('NBSK',obj);
+          if(obj.data.isSuccess){
+            that.totalNBSK = obj.data.total;
+            that.numNBSK = obj.data.total;
+            that.tableDataNBSK = obj.data.objects;
+            that.loadingNBSK = false;
+          }
+        })
+      },
     },
     created() {
       this.loadDataZK();
       this.loadDataTY();
+      this.loadDataNBSK();
     }
   }
 </script>

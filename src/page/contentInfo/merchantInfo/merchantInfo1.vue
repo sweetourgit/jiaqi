@@ -570,7 +570,6 @@
       class="addAccount"
       :close-on-click-modal="false"
       width="500px"
-     
     >
       <h3>手机号和邮箱可作为用户名进行登录</h3>
       <el-form ref="accountForm" :model="accountForm" :rules="accountFormRules" label-width="80px">
@@ -642,7 +641,7 @@
 
 <script>
 import state from "../../../store/state";
-import childAccount from "./comps/chooseAccount"
+import childAccount from "./comps/chooseAccount";
 import moment from "moment";
 
 export default {
@@ -780,8 +779,9 @@ export default {
       isInputVisible: false, //商户其他名称tags显示隐藏
       isOtherSuccess: true, //商户其他名称唯一性判断  false则有重复的 则不能添加到businessOtherNamesArr
       isAccountValidator: null, //账户信息添加时验证唯一性 后台返回false则重复
-      isChooseAccount:false, //选择人员的dialog是否显示
-      tid: 0, //
+      isChooseAccount: false, //选择人员的dialog是否显示
+      isHavePhoneOrEmail: null, //tid为0的时候（大保存）添加账户信息手机号和邮箱的判断
+      tid: 0, //tid为0新大保存的添加 不为0则是编辑页的添加账户信息（目前我的理解）
       pageSize: 10, //每页条数 默认10
       pageIndex: 1, //每页
       total: 1, //总条数
@@ -968,7 +968,7 @@ export default {
     };
   },
   components: {
-    childAccount:childAccount
+    childAccount: childAccount
   },
   methods: {
     moment,
@@ -1194,7 +1194,7 @@ export default {
       }
       // this.editAccouontScopeid = index;
       this.isAddAccount = true;
-      this.accountForm = Object.assign({},row);
+      this.accountForm = Object.assign({}, row);
       this.isAddAccountBtn = idx;
     },
     // 从编辑按钮进入的弹窗的取消按钮
@@ -1252,6 +1252,7 @@ export default {
       // debugger
       // isAddAccountBtn == 1 是第一次添加保存到本地
       // isAddAccountBtn == 2 是此时没有删除按钮 只可编辑 掉接口
+      // 现在判断的依据是tid为0则是大保存的添加 不是则是编辑进入的添加
       // if (this.isAddAccountBtn == 1) {
       if (this.tid === 0) {
         this.$refs[accountForm].validate(valid => {
@@ -1259,15 +1260,39 @@ export default {
             this.accountForm.createTime = new Date().getTime();
             this.bigSaveAccountValidator().then(obj => {
               if (obj == true) {
+                let istype;
+                // 长度为0时直接走后台接口验证，大于0本地验证
                 if (this.useList.length > 0) {
-                  this.useList.forEach(item => {
-                    if (item.phone !== this.accountForm.phone) {
-                      this.bigSaveAccount();
-                    } else {
-                      this.$message.error("手机号重复");
+                  // 邮箱为空只验证手机号，不为空则手机号和邮箱验证
+                  let [phone, email] = [false, false];
+                  if (this.accountForm.email == "") {
+                    this.useList.some(item => {
+                      phone = item.phone == this.accountForm.phone;
+                      return (this.isHavePhoneOrEmail =
+                        item.phone == this.accountForm.phone);
+                    });
+                  } else {
+                    this.useList.some(item => {
+                      phone = item.phone == this.accountForm.phone;
+                      email = item.email == this.accountForm.email;
+                      return (this.isHavePhoneOrEmail =
+                        item.phone == this.accountForm.phone ||
+                        item.email == this.accountForm.email);
+                    });
+                  }
+                  if (this.isHavePhoneOrEmail) {
+                    if (phone) {
+                      this.$message.error("该手机号已注册过");
+                    } else if (email) {
+                      this.$message.error("该邮箱已注册过");
+                    } else if (phone && email) {
+                      this.$message.error("该手机号或邮箱已注册过");
                     }
-                  });
+                  } else {
+                    this.bigSaveAccount();
+                  }
                 } else {
+                  console.log("此时第一条");
                   this.bigSaveAccount();
                 }
               }
@@ -1377,7 +1402,7 @@ export default {
         .then(obj => {
           const { isSuccess } = obj.data;
           if (isSuccess == false) {
-            this.$message.error("该手机号，邮箱已注册过");
+            this.$message.error("该手机号或邮箱已注册过");
           }
           // this.isAccountValidator = isSuccess;
           return isSuccess;
@@ -1400,7 +1425,7 @@ export default {
         .then(obj => {
           const { isSuccess } = obj.data;
           if (isSuccess == false) {
-            this.$message.error("该手机号，邮箱已注册过");
+            this.$message.error("该手机号或邮箱已注册过");
           }
           // this.isAccountValidator = isSuccess;
           return isSuccess;
