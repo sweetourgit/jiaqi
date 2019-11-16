@@ -17,7 +17,9 @@
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
         <p class="inputLabel"><span>供应商：</span>{{baseInfo.supplier}}</p>
         <p class="inputLabel"><span>借款类型：</span>{{periphery_type[baseInfo.type]}}</p>
-        <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
+        <p class="inputLabel" v-if="baseInfo.type != 1"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
+        <p class="inputLabel" v-if="baseInfo.type == 1"><span>借款金额：</span>{{baseInfo.money}}</p>
+        <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p>
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.remark}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>账号：</span>{{baseInfo.account}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户行：</span>{{baseInfo.accountBank}}</p>
