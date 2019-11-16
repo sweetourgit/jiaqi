@@ -4,7 +4,7 @@
       <div class="search">
         <el-row>
           <el-col :span="7">
-            <span class="search_style">收款详细说明：</span>
+            <span class="search_style">款项说明：</span>
             <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
           </el-col>
           <el-col :span="7">
@@ -28,7 +28,11 @@
               <el-option key="3" label="已认完" value="12"></el-option>
             </el-select>
           </el-col>
-          <el-col :span="9" :offset="7">
+          <el-col :span="7">
+            <span class="search_style">收款单号：</span>
+            <el-input v-model="orderNum" placeholder="请输入收款单号" class="search_input"></el-input>
+          </el-col>
+          <el-col :span="9">
             <div class="buttonDv">
               <el-button type="primary" @click="resetFun" plain>重置</el-button>
               <el-button type="primary" @click="searchFun">搜索</el-button>
@@ -106,6 +110,7 @@
         reimbursementPerID: '',// 申请人ID
         operatorList: [],// 申请人list
         collectionStatus: '',// 待认款收款状态[10:未认款;11:待认收款;12:已认完]
+        orderNum: '',// 收款单号
 
         // 页数，页码，条数
         pageSize: 10,
@@ -204,6 +209,7 @@
         this.endTime = '';
         this.reimbursementPerID = '';
         this.collectionStatus = '';
+        this.orderNum = '';
         this.loadData();
       },
       // 每页条数操作
@@ -229,7 +235,8 @@
           "apply_start": this.startTime,
           "apply_end": this.endTime,
           "status_rece": this.collectionStatus,
-          "create_type": '1'
+          "create_type": '1',
+          "rece_code": this.orderNum
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log('手动列表',response);

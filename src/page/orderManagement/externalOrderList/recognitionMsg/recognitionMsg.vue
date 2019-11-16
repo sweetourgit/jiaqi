@@ -336,7 +336,8 @@
               item.check_at = item.check_at.split(" ")[0];
               item.import_at = formatDate(new Date(item.import_at*1000));
               item.import_at = item.import_at.split(" ")[0];
-            })
+            });
+            that.selectTypeFunction();
           } else {
             that.$message.success("加载数据失败~");
           }

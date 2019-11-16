@@ -114,6 +114,7 @@
   import moment from 'moment'
   import approval from '@/page/Finance/collectionManagement/pendingApproval/approval.vue'
   export default {
+    name: "PendingApprovalManagement",
     components:{
       approval
     },
@@ -159,20 +160,17 @@
     watch: {
       numZK: {
         handler:function(){
-          this.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
-//          this.$parent.label = "需要您审批("+this.$parent.totalNum+")";
+          this.$parent.$parent.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
         }
       },
       numTY: {
         handler:function(){
-          this.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
-//          this.$parent.label = "需要您审批("+this.$parent.totalNum+")";
+          this.$parent.$parent.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
         }
       },
       numNBSK: {
         handler:function(){
-          this.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
-//          this.$parent.label = "需要您审批("+this.$parent.totalNum+")";
+          this.$parent.$parent.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
         }
       },
     },

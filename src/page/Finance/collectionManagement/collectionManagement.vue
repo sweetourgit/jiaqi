@@ -17,7 +17,7 @@
         <recognitionWait></recognitionWait>
       </el-tab-pane>
       <el-tab-pane :label="'需要您审批('+ totalNum +')'" name="third">
-        <PendingApprovalManagement ref="pendingApproval"></PendingApprovalManagement>
+        <PendingApprovalManagement ref="PendingApprovalManagement"></PendingApprovalManagement>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -131,7 +131,7 @@ export default {
     if(this.$route.params.tabStatus){
       this.activeName = this.$route.params.tabStatus
     }
-
+//    this.totalNum = 12;
   }
 }
 
