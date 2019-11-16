@@ -47,14 +47,6 @@ export default {
     }
   },
   computed: {},
-  watch: {
-//    numZK: {
-//      handler:function(){
-//        this.$parent.totalNum = this.numZK + this.numTY + this.numNBSK;
-////          this.$parent.label = "需要您审批("+this.$parent.totalNum+")";
-//      }
-//    }
-  },
   methods: {
     // 获取当前项的标题
     handleClick(tab, event) {// 点击切换获取当前值

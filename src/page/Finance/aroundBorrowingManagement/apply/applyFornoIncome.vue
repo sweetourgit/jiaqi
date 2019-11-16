@@ -172,8 +172,12 @@
           payAccountID: '',
           money: '',
           abstract: '',
-          supplier: '',
-          supplierID: ''
+          supplier: '',// 选择的供应商
+          supplierName: '',
+          supplierID: '',// 选择的供应商ID
+          number: '',
+          buy_type: '',
+          account_type: ''
         };
         this.fileList = [];
         this.$emit('close', false);
