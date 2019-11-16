@@ -33,10 +33,10 @@
           <el-input style="width:200px;" v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
           <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
-        <!-- <el-form-item label="收款金额" prop="price" label-width="120px">
+         <el-form-item label="收款金额" prop="price" label-width="120px">
           <el-input type="number" v-model="ruleForm.price" class="bright inputWidth" placeholder="收款金额" :disabled="change"></el-input>
         </el-form-item>
-        <el-form-item label="订单号" prop="orderNumber" label-width="120px">
+        <!--<el-form-item label="订单号" prop="orderNumber" label-width="120px">
           <el-input v-model="ruleForm.orderNumber" class="bright inputWidth" placeholder="订单号" maxlength="20" :disabled="change" @blur='receiptorder'></el-input>
         </el-form-item> -->
         <!-- 订单信息 -->
@@ -245,42 +245,44 @@
       </el-dialog> -->
       <!--驳回意见弹窗end-->
       <!--驳回意见弹窗-->
-      <!--<el-dialog title="请填写审批意见" :visible.sync="dialogFormVisible2" width="30%">
-        <textarea style="width: 90%; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="rejectHandle2()">确 定</el-button>
-      </span>
-        </el-dialog> -->
-        <!--驳回意见弹窗end-->
-        <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible" width="50%">
-          <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
-          <div>
-            <img :src="imgBig" alt="图片" style="width: 95%;" :alt="imgBigName"/>
-            <br /><span>{{imgBigName}}</span>
-          </div>
-        </el-dialog>
-        <!--收款账户选择弹窗-->
-          <el-dialog title="选择账户" :visible.sync="accountShow" width="70%" custom-class="city_list">
-            <div style="overflow:hidden;">
-              <el-table :data="accountTable" border style="width: 100%" :header-cell-style="getRowClass" @row-click="clickPlan">
-                <el-table-column prop="id" label="ID" align="center"></el-table-column>
-                <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
-                <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
-                <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
-                <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
-                <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
-                <el-table-column prop="operation" label="操作" align="center">
-                  <template slot-scope="scope">
-                    <el-button type="text" size="small" @click="routerHandle4()" class="table_details">选择</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </el-dialog>
+    <!--<el-dialog title="请填写审批意见" :visible.sync="dialogFormVisible2" width="30%">
+      <textarea style="width: 90%; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="rejectHandle2()">确 定</el-button>
+    </span>
+    </el-dialog> -->
+    <!--驳回意见弹窗end-->
+    <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible" width="50%">
+      <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
+      <div>
+        <img :src="imgBig" alt="图片" style="width: 95%;" :alt="imgBigName"/>
+        <br /><span>{{imgBigName}}</span>
+      </div>
+    </el-dialog>
+    <!--收款账户选择弹窗-->
+    <el-dialog title="选择账户" :visible.sync="accountShow" width="70%" custom-class="city_list">
+      <div style="overflow:hidden;">
+        <el-table :data="accountTable" border style="width: 100%" :header-cell-style="getRowClass" @row-click="clickPlan">
+          <el-table-column prop="id" label="ID" align="center"></el-table-column>
+          <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+          <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+          <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
+          <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+          <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
+          <el-table-column prop="operation" label="操作" align="center">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="routerHandle4(scope.$index, scope.row)" class="table_details">选择</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
 import { formatDate } from '@/js/libs/formatDate.js'
+import moment from 'moment'
+
 export default {
   name: "StraightGuestInfo",
   components: {},
@@ -309,6 +311,7 @@ export default {
       }
     };
     return {
+      accountCredited: null, // 收款账户选择
       fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       a: false,
       user_id: '',
@@ -427,6 +430,7 @@ export default {
     }
   },
   methods: {
+    moment,
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -458,7 +462,8 @@ export default {
       this.accountShow = false;
     },
     //收款账户选择
-    routerHandle4() {
+    routerHandle4(index,row ) {
+      this.accountCredited = row.id
       setTimeout(v => {
         this.ruleForm.collectionNumber = this.tour_name_pre
         this.accountShow = false
@@ -552,47 +557,98 @@ export default {
     },
     // 提交
     submitForm(formName) {
-      console.log(this.org)
-      console.log(this.collectionAccountList)
+      let _this = this
       this.a = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let pictureList = [];
-          let newDate = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss')
-          for (let i = 0; i < this.fileList.length; i++) {
-            let picture = {};
-            picture.url = this.fileList[i].url1;
-            picture.name = this.fileList[i].name;
-            picture.createTime = newDate
-            pictureList.push(picture);
-          }
+          let newDate = moment(new Date(), 'YYYY-MM-DD HH:mm:ss')
+          this.fileList.forEach(function(item){
+            pictureList.push({ url: item.url.slice(5), name: item.name})
+          })
+
           let objectRequest = {}
+
+          let needArrearData = [] // 转变关联欠款数据格式之后的数据模型
+          this.arrearsList.forEach(function(item){ // 转换关联欠款表格数据结构
+            needArrearData.push({
+              "id": 0,
+              'planID':item.planID,
+              "collectionID": 0, // 收款id
+              "orderCode": item.orderCode,
+              // "productName": item.proName,
+              "productName": item.title,
+              "groupCode": item.groupCode,
+              "date": item.departure,
+              "payablePrice": item.payable, // 订单金额
+              "arrearsPrice": item.arrears_Amount, // 欠款金额
+              "repaidPrice": item.repayment_Amount, // 已还金额
+              "amountPrice": item.audited_Amount, // 待审核金额  orderCode title groupCode date payable uncollectedMoney collectedMoney examineMoney repaymentMoney
+              "matchingPrice": item.matchingMoney // 匹配收款金额
+            })
+          })
+
           objectRequest = {
-            collectionTime: formatDate(this.ruleForm.collectionTime, 'yyyy-MM-dd'), //收款时间
+            GroupCode:"",
+            OrderNumber:"",
+            LocalCompName:"",
+            Dept:sessionStorage.getItem('orgName'),
+            ProductName:"暂无",
+            checkType: 0, // 审批状态
+            collectionTime: moment(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间
             groupCode: this.ruleForm.groupCode, //团号
-            planID: this.ruleForm.planID, //团期计划的ID
-            orderID: this.ruleForm.orderID, //订单ID
+            planID: 0, //团期计划的ID
+            orderID: 0, //订单ID
             orderNumber: this.indent, //订单号
             collectionNumber: this.ruleForm.collectionNumber, //收款账户
-            //price: this.ruleForm.price, //金额
-            dept: this.dept, //this.org, //组织部门
-            createUser: localStorage.getItem('name'), //
+            price: this.ruleForm.price, //金额
+            // dept: this.dept, //this.org, //组织部门
+            createUser: sessionStorage.getItem('userCode'), // 创建者
             createTime: newDate, //申请时间
             serialNumber: this.ruleForm.serialNumber, //流水号
             abstract: this.ruleForm.abstract, //摘要
             files: pictureList, //图片
             invoice: this.ruleForm.invoice, //是否发票
+            isDeleted: 0,
             collectionType:1,//直客1.同业2
             localCompID:0,//直客0，同业变成同业社id
+            arrears: needArrearData, // 收款 - 关联欠款列表
+            isEBS: 0,
+            accountID: this.accountCredited == null ? 0 : this.accountCredited, // 银行账号ID
+            moneyExplain: "string", // 款项说明
+            distributor: "string", // 分销商
+            payarr: [], // 付款 欠款关联订单
             //invoiceTable:this.ruleForm.invoiceTable,
           }
-          if (this.ruleForm.invoice == '1') {
-            objectRequest.invoiceTable = this.ruleForm.invoice ? this.ruleForm.invoiceTable : [] //发票表格}
+          if (_this.ruleForm.invoice == '1') {
+            let needInvoiceData = []
+            _this.ruleForm.invoiceList.forEach(function(item){
+              needInvoiceData.push({
+                "id": 0,
+                "createTime": "2019-11-11T02:43:05.258Z",
+                "code": "string",
+                "invoiceID": item.type, // 发票类型 – 纸质发票
+                "invoiceType": item.userType, // 个人/单位
+                "invoiceNumber": item.taxesNumber, // 纳税人识别号
+                "invoiceHeaderOrTel": item.titleOrMobile, // 发票抬头/手机号
+                "invoiceItem": item.project, // 发票项目–旅游费
+                "invoicePrice": item.money, // 金额
+                "cardNumber": item.account, // 账号
+                "bankName": item.bank, // 开户行
+                "address": item.address, // 地址
+                "tel": item.mobile, // 电话
+                "collectionID": 0
+              })
+            })
+            objectRequest.invoiceTable = needInvoiceData
+          }else {
+            objectRequest.invoiceTable = []
           }
+
+
           this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/insert', {
             "object": objectRequest
           }).then(res => {
-            console.log(res.data);
             if (res.data.isSuccess == true) {
               this.$emit('searchHand', '')
               this.$message({
@@ -937,7 +993,6 @@ export default {
         .catch(function(obj) {
           console.log(obj)
         })
-
     },
     handleSizeChange2(val) {
       this.pagesize = val

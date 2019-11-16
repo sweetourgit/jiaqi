@@ -197,7 +197,7 @@
           <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
           <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
           <el-table-column prop="address" label="地址" align="center"></el-table-column>
-          <el-table-column prop="tel" label="手机号" align="center"></el-table-column>
+          <el-table-column prop="tel" label="电话" align="center"></el-table-column>
         </el-table>
         <!-- 关联欠款 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
@@ -207,8 +207,8 @@
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
           <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
           <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
-          <el-table-column prop="arrearsPrice" label="欠款金额" align="center"></el-table-column>
-          <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
+          <el-table-column prop="arrearsPrice" label="未收金额" align="center"></el-table-column>
+          <el-table-column prop="repaidPrice" label="已收金额" align="center"></el-table-column>
           <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
           <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
         </el-table>
@@ -560,6 +560,7 @@ export default {
     },
     // 获取直客收款的一条详情信息
     getLabel(id){
+      this.tableAssociated = [];
       var that = this
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/coll',{
           "id":id

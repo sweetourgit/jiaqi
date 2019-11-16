@@ -751,6 +751,7 @@ export default {
         if(obj.data.objects == null){
           this.ifShowApply = true
           this.$message.success('该同业社下无关联欠款，无法申请同业收款');
+          this.arrearsList = []
         } else {
           this.arrearsList = obj.data.objects;
           this.ifShowApply = false
@@ -787,7 +788,6 @@ export default {
     //收款账户选择
     routerHandle4(index, row) {
       this.accountCredited = row.id
-      console.log(row, '收款账户选择')
       setTimeout(v => {
         this.ruleForm.collectionNumber = this.tourNamePre
         this.accountShow = false
@@ -900,7 +900,6 @@ export default {
             "payarr": [], // 付款 欠款关联订单
           }
 
-          console.log(_this.ruleForm.isInvoice)
           if(_this.ruleForm.isInvoice == 1) { // 发票列表，如果选择发票则添加该对象
             let needInvoiceData = []
             _this.ruleForm.invoiceList.forEach(function(item){
