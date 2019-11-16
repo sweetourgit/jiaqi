@@ -64,9 +64,9 @@
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" width="80" align="center">
         <template slot-scope="scope">
-          <div v-if="scope.row.checkTypeStatus=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeStatus}}</div>
-          <div v-if="scope.row.checkTypeStatus=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeStatus}}</div>
-          <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174" >{{scope.row.checkTypeStatus}}</div>
+          <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F" >审批中</div>
+          <div v-else="scope.row.checkType=='1'" style="color: #FF4A3D" >通过</div>
+          <div v-else-if="scope.row.checkType=='2'" style="color: #33D174" >驳回</div>
         </template>
       </el-table-column>
       <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
@@ -85,34 +85,27 @@
     <!-- 同业数据列表 END -->
     <!-- 翻页 -->
     <div class="block">
-      <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="ruleForm.page"
-        :limit.sync="ruleForm.limit"
-        @pagination="getList"
-      />
-      <!--<el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
-        :page-sizes="[5, 10, 50, 100]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total=total
-        background
-      >
-      </el-pagination>-->
+      <el-row type="flex" class="paging">
+        <el-col :span="8" :offset="12">
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="ruleForm.page"
+            :limit.sync="ruleForm.limit"
+            @pagination="getList"
+          />
+        </el-col>
+      </el-row>
     </div>
     <!-- 翻页 END -->
     <!-- 添加同业数据弹窗 -->
     <SameTradeInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></SameTradeInfo>
     <!-- 添加同业数据弹窗 END -->
-    <!-- 查看详情 -->
+    <!-- 查看详情 弹窗 -->
     <el-dialog title="详情" :visible.sync="detailstShow" width="80%" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'>
       <div style="position:absolute; top:8px; right:10px;">
         <el-button @click="closeDetailstShow()">取消</el-button>
-        <el-button type="danger" plain>撤销</el-button>
+        <el-button type="danger" @click="repealDetailstShow" plain>撤销</el-button>
       </div>
       <div>
         <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
@@ -159,7 +152,7 @@
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">收款时间:</div></el-col>
             <el-col :span="18">
-              <div class="grid-del">{{ fundamental.collectionTime }}</div>
+              <div class="grid-del">{{ fundamental.collectionTime | formatDate }}</div>
             </el-col>
           </el-col>
           <el-col :span="6">
@@ -168,7 +161,7 @@
           </el-col>
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">开发票:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.invoice }}</div></el-col>
+            <el-col :span="18"><div class="grid-del ">{{ fundamental.invoice == 1 ?  '是' : '否' }}</div></el-col>
           </el-col>
         </el-row>
         <!-- 第三行 END -->
@@ -195,25 +188,25 @@
         <!-- 审核结果 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
         <el-table :data="tableAudit" border :header-cell-style="getRowClass">
-           <el-table-column prop="auditTime" label="审批时间" align="center"></el-table-column>
-           <el-table-column prop="auditPeople" label="审批人" align="center"></el-table-column>
-           <el-table-column prop="auditResult" label="审批结果" align="center"></el-table-column>
-           <el-table-column prop="auditIdea" label="审批意见" align="center"></el-table-column>
+           <el-table-column prop="createTime" label="审批时间" align="center"></el-table-column>
+           <el-table-column prop="spName" label="审批人" align="center"></el-table-column>
+           <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
+           <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
         </el-table>
         <!-- 审核结果 END -->
         <!-- 发票 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>发票</el-divider>
         <el-table :data="tableInvoice" border :header-cell-style="getRowClass">
-           <el-table-column prop="invoiceType" label="发票类型" align="center"></el-table-column>
-           <el-table-column prop="invoiceUnit" label="个人/单位" align="center"></el-table-column>
+           <el-table-column prop="invoiceID" label="发票类型" align="center"></el-table-column>
+           <el-table-column prop="invoiceType" label="个人/单位" align="center"></el-table-column>
            <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
-           <el-table-column prop="invoiceTitle" label="发票抬头" align="center"></el-table-column>
-           <el-table-column prop="invoiceProject" label="发票项目" align="center"></el-table-column>
-           <el-table-column prop="invoiceMoney" label="金额" align="center"></el-table-column>
-           <el-table-column prop="invoiceAccount" label="账号" align="center"></el-table-column>
-           <el-table-column prop="invoiceBank" label="开户行" align="center"></el-table-column>
-           <el-table-column prop="invoiceAddress" label="地址" align="center"></el-table-column>
-           <el-table-column prop="invoicePhone" label="手机号" align="center"></el-table-column>
+           <el-table-column prop="invoiceHeaderOrTel" label="发票抬头" align="center"></el-table-column>
+           <el-table-column prop="invoiceItem" label="发票项目" align="center"></el-table-column>
+           <el-table-column prop="invoicePrice" label="金额" align="center"></el-table-column>
+           <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
+           <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
+           <el-table-column prop="address" label="地址" align="center"></el-table-column>
+           <el-table-column prop="tel" label="手机号" align="center"></el-table-column>
         </el-table>
         <!-- 发票 END -->
         <!-- 关联欠款 -->
@@ -224,15 +217,15 @@
           <div class="associatedMoney">总计：1200.00元</div>
         </div>
         <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
-           <el-table-column prop="productID" label="订单编号" align="center"></el-table-column>
-           <el-table-column prop="productPlan" label="产品名称" align="center"></el-table-column>
-           <el-table-column prop="planID" label="团期计划" align="center"></el-table-column>
-           <el-table-column prop="departTime" label="出发日期" align="center"></el-table-column>
-           <el-table-column prop="orderMoney" label="订单金额" align="center"></el-table-column>
-           <el-table-column prop="arrearsMoney" label="欠款金额" align="center"></el-table-column>
-           <el-table-column prop="alsoMoney" label="已还金额" align="center"></el-table-column>
-           <el-table-column prop="auditMoney" label="待审核金额" align="center"></el-table-column>
-           <el-table-column prop="collectionMoney" label="本次收款金额" align="center"></el-table-column>
+           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+           <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+           <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
+           <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
+           <el-table-column prop="arrearsPrice" label="欠款金额" align="center"></el-table-column>
+           <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
+           <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
+           <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
         </el-table>
       </div>
     </el-dialog>
@@ -262,7 +255,7 @@ export default {
         dateStart: '', // 收款开始时间
         dateEnd: '', // 收款结束时间
         page: 1,
-        limit: 20
+        limit: 10
       },
       listLoading: true,
       reable: true,
@@ -280,10 +273,10 @@ export default {
       tableInvoice:[],  // 发票表格
       tableAssociated:[],  // 发票关联表格
       sid:0,
+      currentRowId: null // 当前行id
     }
   },
   created(){
-    this.getTableData();
     this.getList()
   },
   filters: {
@@ -292,49 +285,50 @@ export default {
     }
   },
   methods: {
+    // 获取同业关联列表
     getList() {
       this.listLoading = true
-      var that = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teamsearch", {
+      let _this = this
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
           "pageIndex": this.ruleForm.page,
           "pageSize": this.ruleForm.limit,
           "total": 0,
           "object": {
             "id": 0,
-            "title": '',
-            "createUser": '',
-            "minPrice": 0,
-            "maxPrice": 0,
-            "podID": 0,
-            "destinationID": 0
-          }
-        }, {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
+            "checkType": this.settlement_01 ? this.settlement_01 : -1,
+            "collectionTime": "2019-05-16",
+            "startTime": this.startTime ? formatDate(this.startTime, 'YYYY-MM-DD HH:mm:ss') : "2000-05-16",
+            "endTime": this.endTime ? formatDate(this.endTime, 'YYYY-MM-DD HH:mm:ss') : "2099-05-16",
+            "groupCode": this.plan ? this.plan : '',
+            "planID": 0,
+            "orderID": 0,
+            "orderNumber": "",
+            "collectionNumber": "",
+            "price": 0,
+            "dept": 0,
+            "createUser": this.accepter ? this.accepter : '',
+            "createTime": "2019-05-16 01:02:40",
+            "code": "",
+            "serialNumber": "",
+            "abstract": "",
+            "isDeleted": 0,
+            "collectionType":2, // 直客1.同业2
+            "localCompID":this.sid, // 直客0,同业变成同业社id
+            //"localCompName":""
           }
         }
-      )
-      .then(function(obj) {
-        that.listLoading = false
-        that.total = obj.data.total;
-        that.tableData = obj.data.objects;
-        /*that.tableData.forEach(function(v, k, arr) {
-          arr[k]['number'] = arr[k]['id']
-          arr[k]['status'] = "状态"
-          arr[k]['createTime'] = '2016-05-03-收款时间'
-          arr[k]['plan'] = '团期计划'
-          arr[k]['orderNum'] = '订单号'
-          arr[k]['sameTrade'] = '同业社名称'
-          arr[k]['collectionAccount'] = "收款账户"
-          arr[k]['money'] = "金额"
-          arr[k]['orinaze'] = '申请组织:国内部'
-          arr[k]['accpter'] = 'tester申请人'
-          arr[k]['opinion'] = '同意'
-          arr[k]['applyTime'] = '2016-05-03-申请时间'
-        })*/
-      })
-      .catch(function(obj) {})
+      ).then(function(obj) {
+        console.log(obj, '收款管理')
+        _this.total = obj.data.total;
+        _this.tableData = obj.data.objects;
+        _this.listLoading = false
+        _this.tableData.forEach(function(v, k, arr) {
+          arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
+          arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
+          arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
+          arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
+        })
+      }).catch(function(obj) {})
     },
     moment,
     // 重置
@@ -381,96 +375,9 @@ export default {
     closeAdd() {
       this.dialogFormVisible = false;
     },
-    // pageSize 改变时会触发
-    handleSizeChange(val) {
-      this.pagesize = val
-      var that = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-          "pageIndex": 1,
-          "pageSize": val,
-          "total": 0,
-          "object": {
-            "id": 0,
-            "title": '',
-            "createUser": '',
-            "minPrice": 0,
-            "maxPrice": 0,
-            "podID": 0,
-            "destinationID": 0
-          }
-        }, {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
-        }
-      )
-      .then(function(obj) {
-        that.total = obj.data.total;
-        that.tableData = obj.data.objects;
-        that.tableData.forEach(function(v, k, arr) {
-          arr[k]['number'] = arr[k]['id']
-          arr[k]['status'] = "状态"
-          arr[k]['createTime'] = '2016-05-03-收款时间'
-          arr[k]['plan'] = '团期计划'
-          arr[k]['orderNum'] = '订单号'
-          arr[k]['sameTrade'] = '同业社名称'
-          arr[k]['collectionAccount'] = "收款账户"
-          arr[k]['money'] = "金额"
-          arr[k]['orinaze'] = '申请组织:国内部'
-          arr[k]['accpter'] = 'tester申请人'
-          arr[k]['opinion'] = '同意'
-          arr[k]['applyTime'] = '2016-05-03-申请时间'
-        })
-      })
-      .catch(function(obj) {})
-    },
-    // currentPage 改变时会触发
-    handleCurrentChange(val) {
-      this.pageNum = val;
-      var that = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/team/api/teamsearch", {
-          "pageIndex": val,
-          "pageSize": this.pageSize,
-          "total": 0,
-          "object": {
-            "id": 0,
-            "title": '',
-            "createUser": '',
-            "minPrice": 0,
-            "maxPrice": 0,
-            "podID": 0,
-            "destinationID": 0
-          }
-        }, {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
-        }
-      )
-      .then(function(obj) {
-        that.total = obj.data.total;
-        that.tableData = obj.data.objects;
-        that.tableData.forEach(function(v, k, arr) {
-          arr[k]['number'] = arr[k]['id']
-          arr[k]['status'] = "状态"
-          arr[k]['createTime'] = '2016-05-03-收款时间'
-          arr[k]['plan'] = '团期计划'
-          arr[k]['orderNum'] = '订单号'
-          arr[k]['sameTrade'] = '同业社名称'
-          arr[k]['collectionAccount'] = "收款账户"
-          arr[k]['money'] = "金额"
-          arr[k]['orinaze'] = '申请组织:国内部'
-          arr[k]['accpter'] = 'tester申请人'
-          arr[k]['opinion'] = '同意'
-          arr[k]['applyTime'] = '2016-05-03-申请时间'
-        })
-      })
-      .catch(function(obj) {})
-    },
     // 查询详情
     dialogFind(row) {
+      this.currentRowId = row.id
       this.getLabel(row.id)
       //this.find = 1;
       //this.change = true
@@ -480,15 +387,28 @@ export default {
     closeDetailstShow(){
       this.detailstShow = false;
     },
-    // 获取审核结果数据
-    auditResult(result) {
-      var that =this
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
-        jQ_ID: result,
-        jQ_Type: 1,
-      }).then(obj => {
-        that.tableAudit = obj.data.extend.instanceLogInfo;
-      }).catch(obj => {})
+    // 撤销同业收款详情填写
+    repealDetailstShow(){
+      this.$confirm("是否需要撤销该笔收款?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/delete',{
+        "id":this.currentRowId
+      }).then(res => {
+        if(res.data.isSuccess == true){
+          this.$message.success("撤销成功")
+          this.tableData=res.data.object;
+          this.detailstShow = false;
+          this.getList()
+        }
+      })
+      }).catch(() => {
+        this.$message({
+          type: "info",
+          message: "撤销收款已取消"
+        });
+      });
     },
     // 获取同业社列表
     /*getLcList (paramsLcID) {
@@ -501,15 +421,15 @@ export default {
     },*/
     // 获取一条信息查看详情
     getLabel(paramsPaymentID){
-      this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/get',{
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/coll',{
           "id":paramsPaymentID
       }).then(res => {
         if(res.data.isSuccess == true){
            this.fundamental=res.data.object;
            // this.getLcList(res.data.object.id)
+          this.tableAudit = res.data.object.spw
           this.tableInvoice = res.data.object.invoiceTable
           this.tableAssociated = res.data.object.arrears
-          // this.auditResult(res.data.object.guid); 此接口没返回guid 查不了审批流程，跟后台碰下
         }
      })
     },
@@ -531,50 +451,6 @@ export default {
       } else {
         return ''
       }
-    },
-    // 渲染列表数据
-    getTableData () {
-      let _this = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/finance/collection/api/page", {
-          "pageIndex": 1,
-          "pageSize": 10,
-          "object": {
-            "id": 0,
-            "checkType": this.settlement_01 ? this.settlement_01 : -1,
-            "collectionTime": "2019-05-16",
-            "startTime": this.startTime ? formatDate(this.startTime, 'YYYY-MM-DD HH:mm:ss') : "2000-05-16",
-            "endTime": this.endTime ? formatDate(this.endTime, 'YYYY-MM-DD HH:mm:ss') : "2099-05-16",
-            "groupCode": this.plan ? this.plan : '',
-            "planID": 0,
-            "orderID": 0,
-            "orderNumber": "",
-            "collectionNumber": "",
-            "price": 0,
-            "dept": 0,
-            "createUser": this.accepter ? this.accepter : '',
-            "createTime": "2019-05-16 01:02:40",
-            "code": "",
-            "serialNumber": "",
-            "abstract": "",
-            "isDeleted": 0,
-            "collectionType":2, // 直客1.同业2
-            "localCompID":this.sid, // 直客0,同业变成同业社id
-            //"localCompName":""
-          }
-        }
-      )
-      .then(function(obj) {
-        _this.total = obj.data.total;
-        _this.tableData = obj.data.objects;
-        _this.tableData.forEach(function(v, k, arr) {
-          arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
-          arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
-          arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
-          arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
-        })
-      })
-      .catch(function(obj) {})
     }
   }
 }
@@ -635,8 +511,6 @@ export default {
     }
     .block {
       margin-top: 30px;
-      margin-left:-30%;
-      text-align:center;
     }
   }
 

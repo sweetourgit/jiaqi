@@ -1,5 +1,5 @@
 <template>
-  <!-- 申请同业收款-弹窗 -->
+  <!-- 申请填写同业收款表单-弹窗 -->
   <div class="content">
     <el-dialog
       :title="title"
@@ -64,7 +64,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisibleInvoice">
-          <el-button style="margin: 5px 0 10px 0;" type="primary"@click="handleEdit()">添加</el-button>
+          <el-button style="margin: 5px 0 10px 0;" type="primary" @click="handleEdit()">添加</el-button>
           <!-- 发票表格 -->
           <el-table :data="ruleForm.invoiceList" border style="width: 100%;">
             <el-table-column label="发票类型" width="120" align="center">

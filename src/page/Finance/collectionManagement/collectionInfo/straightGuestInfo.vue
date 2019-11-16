@@ -1,6 +1,16 @@
 <template>
-  <div class="vivo" style="position:relative">
-    <el-dialog :title="title" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" width=1100px :show-close="false" class="addReceivables" @close="closeAdd" custom-class="city_list">
+  <!-- 申请直客收款-弹窗 -->
+  <div class="content">
+    <el-dialog
+      :title="title"
+      :visible="dialogFormVisible"
+      style="margin:-80px 0 0 0;"
+      width=1100px
+      :show-close="false"
+      class="addReceivables"
+      @close="closeAdd"
+      custom-class="city_list"
+    >
       <div v-if="this.find == 1 || this.find == 2" class="sh_style">审核中</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="btn" style="position:absolute;z-index:9;top:8px;right:1%;">
@@ -11,19 +21,14 @@
           <el-button v-if="this.find == 2" type="primary" @click="adoptForm('ruleForm')">通过</el-button>
           <el-button v-if="this.find == 2" type="danger" @click="boSubmit('ruleForm')">驳回</el-button>
         </div>
-        <div style="margin:10px 0 20px 25px; font-size:14pt;">基本信息</div>
+        <!-- 表单基本信息 -->
+        <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
         <el-form-item label="收款时间" prop="collectionTime" label-width="120px">
           <el-date-picker v-model="ruleForm.collectionTime" type="date" class="inputWidth" placeholder="收款时间" :disabled="change"></el-date-picker>
         </el-form-item>
         <el-form-item label="交易流水号" prop="serialNumber" label-width="120px">
           <el-input v-model="ruleForm.serialNumber" class="bright inputWidth" placeholder="交易流水" :disabled="change"></el-input>
         </el-form-item>
-        <!-- <el-form-item label="收款账户" prop="collectionNumber" label-width="120px">
-          <el-select style="float: left;" class="inputWidth" v-model="ruleForm.collectionNumber" placeholder="请选择" :disabled="change">
-            <el-option v-for="item in collectionAccountList" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item> -->
         <el-form-item label="收款账户" prop="collectionNumber" label-width="120px">
           <el-input style="width:200px;" v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
           <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
@@ -58,27 +63,32 @@
         <el-form-item label="摘要" prop="abstract" label-width="120px">
           <el-input v-model="ruleForm.abstract" style="width:600px;" placeholder="摘要" :disabled="change"></el-input>
         </el-form-item>
-        <el-form-item label="凭证" label-width="120px">
-          <el-upload class="upload-demo" name="files" ref="upload" :limit="12" multiple :action="this.upload_url" :disabled="change" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview" list-type="picture">
+        <el-form-item label="凭证" prop="voucher" label-width="120px" ref="voucher">
+          <el-upload
+            class="upload-demo"
+            name="files"
+            multiple
+            :action="this.upload_url"
+            :disabled="change"
+            :file-list="fileList"
+            :on-error="handleError"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove"
+            :on-preview="handlePreview"
+            list-type="picture"
+          >
             <el-button size="small" type="primary">上传文件</el-button>
           </el-upload>
         </el-form-item>
-        <!-- <el-form-item label="是否开发票" prop="invoice" label-width="120px">
-          <el-radio-group v-model="ruleForm.invoice" :disabled="change" @change="isInvoiceChange">
-            <el-radio value='1' label='1' key='1'>是</el-radio>
-            <el-radio value='0' label='0' key='0'>否</el-radio>
-          </el-radio-group>
-        </el-form-item> -->
-        <el-form-item label=""  prop="invoice">
-          <div style="font-size:14pt; float:left; margin:0 20px 0 30px;">开发票</div>
+        <el-form-item label="是否选择发票" prop="invoice" label-width="130px">
           <el-radio-group v-model="ruleForm.invoice" :disabled="change" @change="isInvoiceChange">
             <el-radio value='1' label='1' key='1'>是</el-radio>
             <el-radio value='0' label='0' key='0'>否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <!-- 发票信息 -->
+        <!-- 发票表格 -->
         <el-form-item label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible2">
-          <el-button style="margin: 5px 0 10px 0;" type="primary"@click="handleEdit()">添加</el-button>
+          <el-button style="margin: 5px 0 10px 0;" type="primary" @click="handleEdit()">添加</el-button>
           <el-table :data="ruleForm.invoiceTable" border style="width: 100%;" size="mini">
             <el-table-column label="发票类型" width="120" align="center">
               <template slot-scope="scope">
@@ -160,15 +170,10 @@
             </el-table-column>
           </el-table>
         </el-form-item>
-        <!--关联欠款-->
-        <div style="margin:30px 0 20px 25px; font-size:14pt;">关联欠款</div>
-        <!-- <div class="associated">
-          <div class="associatedIcon"><i class="el-icon-warning"></i></div>
-          <div class="associatedItems">已关联<span style="margin:0 5px; font-weight: bold;">1</span>项</div>
-          <div class="associatedMoney">总计：1000.00元</div>
-        </div> -->
+        <!-- 关联欠款 -->
+        <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
         <div>
-          <el-form-item label="订单" prop="indent" label-width="60px" style="float:left; margin:0 30px 20px 0;">
+          <el-form-item label="订单：" prop="indent" label-width="80px" style="float:left; margin:0 30px 20px 0;">
             <el-input placeholder="请输入" v-model="indent" :disabled="change"></el-input>
           </el-form-item>
           <!-- <el-form-item label="订单联系人" prop="indentPeople" label-width="120px" style="float:left; margin:0 50px 20px 0;">
@@ -296,7 +301,15 @@ export default {
     },
   },
   data() {
+    var validateVoucher = (rule, value, callback) => {
+      if (this.fileCheckVal === 0) {
+        callback(new Error('请上传凭证'));
+      } else {
+        callback();
+      }
+    };
     return {
+      fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       a: false,
       user_id: '',
       user_name: '',
@@ -312,7 +325,7 @@ export default {
       dialogVisible2: false,
       dialogFormVisible1: false,
       dialogFormVisible2: false,
-      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',
+      upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 上传凭证
       time: 0,
       len: 0,
       uid: 0, //上传图片缩略图选中项
@@ -326,6 +339,7 @@ export default {
         label: '旅游费'
       }, ],
       ruleForm: {
+        voucher: [], // 凭证
         collectionTime: '',
         groupCode: '',
         planID: '',
@@ -353,6 +367,8 @@ export default {
         }],
       },
       rules: {
+        invoice: [{ required: true, message: '是否开发票不能为空', trigger: 'blur' }],
+        voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         collectionNumber: [{ required: true, message: '收款账户不能为空', trigger: 'change' }],
         invoiceID: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
@@ -492,8 +508,6 @@ export default {
             message: "已取消"
           });
         });
-
-
     },
     receiptorder() { //通过订单号获取直客收款订单详情
       this.arrearsList = []
@@ -834,11 +848,14 @@ export default {
       window.open(this.imgBig);
       // this.downloadIamge(this.imgBig, this.imgBigName)
     },
+    // 上传文件-移除
     handleRemove(file, fileList) {
       this.uid = fileList[0].uid;
       this.fileList = fileList
+      this.fileCheckVal = fileList.length
     },
     handleSuccess(res, file, fileList) {
+      this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
       //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
         this.time = fileList.length;
@@ -861,14 +878,12 @@ export default {
         this.$set(this.fileList[i], "name", paths.Name);
       }
       this.uid = fileList[0].uid;
-      console.log(this.fileList)
     },
     //文件上传
     handleChange(file, fileList) {
       this.fileList = fileList.slice(-3);
     },
     handleError(err, file) {
-      console.log('失败')
       this.fileList = []
     },
     isInvoiceChange(value) {
@@ -1129,6 +1144,21 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+  .content{
+    position: relative;
+    .el-divider__text{
+      font-size: 17px !important
+    }
+    .title-margin{
+      margin-bottom: 30px;
+    }
+    .title-margin-t{
+      margin-top: 45px;
+    }
+    .invoice{
+      margin-left: 30px;
+    }
+  }
 .sh_style {
   background: #eaeaea;
   position: absolute;

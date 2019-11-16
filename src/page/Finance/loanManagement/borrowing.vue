@@ -300,14 +300,13 @@
           <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
           <el-table-column prop="destination" label="目的地" align="center"></el-table-column>
           <el-table-column prop="date" label="出行日期" align="center"></el-table-column>
-          <!-- <el-table-column prop="orgName" label="部门" align="center"></el-table-column> -->
           <el-table-column prop="name" label="产品录入人" align="center"></el-table-column>
         </el-table>
         <!-- 分页 -->
         <el-row type="flex" class="paging">
-          <el-col :span="8" :offset="13">
+          <el-col :span="8" :offset="9">
             <el-pagination
-              :page-sizes="[5,10,50,100]"
+              :page-sizes="[10,50,100]"
               background
               @size-change="handleSizeChangePlan"
               :page-size="pagesize"
@@ -644,14 +643,6 @@ export default {
       this.$refs.multipleTableBank.clearSelection(); // 清空用户的选择
       this.$refs.multipleTableBank.toggleRowSelection(row);
     },
-    // 选中行样式改变
-    rowClassBank({row, rowIndex}){
-     for(var i=0;i<this.multipleSelectionBank.length;i++){
-        if(this.multipleSelectionBank[i].planID==row.planID){
-           return { "background-color": "#ecf5ff" }
-        }
-      }
-    },
     // 供应商选择银行账号
     IncomeAccount() {
       if (this.supplier_id) {
@@ -879,6 +870,9 @@ export default {
     },*/
     // 无收入借款中团期计划弹窗（）
     IncomePlan(){
+      this.plan_stage = '';
+      this.plan_name = '';
+      this.plan_data = '';
       this.planList();
       this.dialogFormVisible_plan = true;
     },
@@ -1196,41 +1190,6 @@ export default {
         console.log(err);
       })*/
     },
-    // 供应商类型
-    /*themeList(){
-      this.borrowingType = [];
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {}).then(res => {
-        for (let i = 0; i < res.data.objects.length; i++) {
-          this.borrowingType.push({
-            "value": res.data.objects[i].id,
-            "label": res.data.objects[i].name
-          })
-        }
-      })
-      .then(res =>{
-        this.borrowingType =  res.data.objects;
-      }).catch(function(err){
-        console.log(err);
-      })
-    },*/
-    /*themeList(){
-      this.borrowingType = [];
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierget', {
-        id:0
-      }).then(res => {
-        for (let i = 0; i < res.data.objects.length; i++) {
-          this.borrowingType.push({
-            "value": res.data.objects[i].id,
-            "label": res.data.objects[i].name
-          })
-        }
-      })
-      .then(res =>{
-        this.borrowingType =  res.data.objects;
-      }).catch(function(err){
-        console.log(err);
-      })
-    },*/
     // 文件上传
     handleChange(file, fileList) {
       this.fileList = fileList.slice(-3);
@@ -1321,6 +1280,7 @@ export default {
     closeAccount(){
       this.SelectAccount = false;
     },
+    // 选择账户弹窗，选择对应的选项事件
     addAccount(index, row){
       var that = this
       this.$http.post(
@@ -1330,7 +1290,10 @@ export default {
           "accountID": row.id
         }
       )
-      .then(function (obj) {})
+      .then(function (obj) {
+        // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
+        that.getList()
+      })
       .catch(function (obj) {})
       this.SelectAccount = false
     },

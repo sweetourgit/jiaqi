@@ -341,25 +341,23 @@ export default {
         objectRequest.checkType = '-1'
       }
       var that = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/finance/payment/api/page", {
-          "pageIndex": 1,
-          "pageSize": val,
-          "object": objectRequest
-        }, {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/page", {
+        "pageIndex": 1,
+        "pageSize": val,
+        "object": objectRequest
+      }, {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
         }
-      )
-        .then(function (obj) {
-          // console.log(obj.data);
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-        })
-        .catch(function (obj) {
-          // console.log(obj)
-        })
+      })
+      .then(function (obj) {
+        // console.log(obj.data);
+        that.total = obj.data.total;
+        that.tableData = obj.data.objects;
+      })
+      .catch(function (obj) {
+        // console.log(obj)
+      })
     },
     //搜索
     searchHand(params) {
@@ -441,18 +439,17 @@ export default {
           "total": 0,
           "object": objectRequest,
         }, {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
         }
-      )
-        .then(function (obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
         })
-        .catch(function (obj) {
-          console.log(obj)
-        })
+      .then(function (obj) {
+        that.total = obj.data.total;
+        that.tableData = obj.data.objects;
+      })
+      .catch(function (obj) {
+        console.log(obj)
+      })
     },
     //获取供应商类型
     querySearch6() {
@@ -514,26 +511,22 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
+      }).then(() => {this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',{
+        "id": this.paymentID
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          this.$message.success("撤销成功");
+          this.searchHand();
+          this.checkIncomeShow = false;
+        }
       })
-        .then(() => {
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
-            {
-              "id": this.paymentID
-            })
-            .then(res => {
-              if (res.data.isSuccess == true) {
-                this.$message.success("撤销成功");
-                this.searchHand();
-                this.checkIncomeShow = false;
-              }
-            })
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "撤销借款已取消"
-          });
+      })
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "撤销借款已取消"
         });
+      });
     },
     CloseCheckIncomeShow() {
       this.checkIncomeShow = false;

@@ -268,27 +268,42 @@
       <div style="text-align: center">
         <div style="width: 100%">
           <div class="button_select" style="margin-bottom: 30px;margin-top: -30px;">
-            <span class="search-title" >团期计划</span>
-            <el-input placeholder="团期计划" v-model="tour_name" class="group-no" style="width:20%"></el-input>
-            <span class="search-title" >产品名称</span>
-            <el-input placeholder="产品名称" v-model="product_name" class="group-no" style="width:20%"></el-input>
-            <el-date-picker v-model="startTime2" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
-           <!-- <el-date-picker v-model="endTime2" type="date" placeholder="终止日期"></el-date-picker>-->
-            <el-button type="primary" icon="el-icon-search" class="search" @click="getList()"></el-button>
+            <div class="plan_indialog">
+              <span class="search-title" >团期计划</span>
+              <el-input placeholder="团期计划" v-model="plan_stage" class="group-no"></el-input>
+            </div>
+            <div class="plan_indialog">
+              <span class="search-title" >产品名称</span>
+              <el-input placeholder="产品名称" v-model="plan_name" class="group-no"></el-input>
+            </div>
+            <div class="plan_indialog">
+              <span class="indialog_plan">出行日期</span>
+              <el-date-picker
+                class="indialog_input"
+                style="width: 80%"
+                v-model="plan_data"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="请选择开始日期"
+                end-placeholder="请选择结束日期"
+              >
+              </el-date-picker>
+            </div>
+            <el-button type="primary" class="search" @click="getList()">搜索</el-button>
+            <el-button class="indialog_button" @click="planStage()" type="primary">重置</el-button>
           </div>
           <div class="table_trip" style=" width: 100%;">
             <el-table :data="tableData4" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle4" :header-cell-style="getRowClass4" v-loading="listLoading">
-              <el-table-column prop="groupCode" label="团号"></el-table-column>
-              <el-table-column prop="title" label="产品名称"></el-table-column>
-              <el-table-column prop="destination" label="目的地"></el-table-column>
-              <el-table-column prop="date" label="出行日期"></el-table-column>
-              <el-table-column prop="orgName" label="部门"></el-table-column>
-              <el-table-column prop="name" label="操作"></el-table-column>
+              <el-table-column align="center" prop="groupCode" label="团期计划"></el-table-column>
+              <el-table-column align="center" prop="title" label="产品名称"></el-table-column>
+              <el-table-column align="center" prop="destination" label="目的地"></el-table-column>
+              <el-table-column align="center" prop="date" label="出行日期"></el-table-column>
+              <el-table-column align="center" prop="name" label="产品录入人"></el-table-column>
             </el-table>
           </div>
           <!--分页-->
           <el-row type="flex" class="paging">
-            <el-col :span="8" :offset="13">
+            <el-col :span="8" :offset="8">
               <pagination
                 v-show="total>0"
                 :total="total"
@@ -298,18 +313,6 @@
               />
             </el-col>
           </el-row>
-          <!--<div class="block">
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="currentPage4"
-              :page-sizes="[10, 20, 30, 50]"
-              :page-size=pagesize3
-              layout="total, sizes, prev, pager, next, jumper"
-              :total=count3>
-            </el-pagination>
-          </div>-->
-          <!--分页-->
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -343,6 +346,7 @@
 </template>
 <script type="text/javascript">
 import { formatDate } from '@/js/libs/formatDate.js'
+import moment from 'moment'
 import Pagination from '@/components/Pagination'
 export default {
   name: "advanceInfo",
@@ -391,6 +395,7 @@ export default {
         page: 1,
         limit: 10,
       },
+      plan_data: '', // 团期计划，事件检索输入框
       fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       activeName: 'first',
       activeName2: 'three',
@@ -480,12 +485,12 @@ export default {
       dialogVisible2: false,
       dialogVisible: false,
       apply_user_input: '',
-      tour_name: '',
+      plan_stage: '',
       tour_name_pre: '',
       tour_id: 0,
       planID: '',
       product_name_pre: '',
-      product_name: '',
+      plan_name: '',
       dynamicTags3: [],
       imgBig: '',
       imgBigName: '',
@@ -515,19 +520,26 @@ export default {
     },
   },
   methods: {
+    moment,
+    // 重置团期计划 搜索框
+    planStage(){
+      this.plan_stage = '';
+      this.plan_name = '';
+      this.plan_data = '';
+    },
     // 渲染团期计划列表
     getList(){
       let _this = this
       // this.pageNum = 1;
-      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+      this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancepage', {
         "pageIndex": _this.ruleFormSeach.page,
         "pageSize": _this.ruleFormSeach.limit,
         "total": 0,
         "object": {
-          "groupCode": _this.tour_name, //团号
-          "title": _this.product_name, //产品名称
-          "beginDate": _this.startTime2 ? formatDate(this.startTime2, 'yyyyMMdd') : 0, //搜索用开始日期
-          "endDate": _this.endTime2 ? formatDate(this.endTime2, 'yyyyMMdd') : 0, //搜索用结束日期
+          "groupCode": _this.plan_stage, //团号
+          "title": _this.plan_name, //产品名称
+          "beginDate": this.plan_data[0] ? moment(this.plan_data[0]).format('YYYYMMDD') : 0, // 搜索用开始日期
+          "endDate": this.plan_data[1] ? moment(this.plan_data[1]).format('YYYYMMDD') : 0, // 搜索用结束日期
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
@@ -882,6 +894,7 @@ export default {
     },
     // 点击选择团期计划，渲染团期计划列表
     showInput4() {
+      this.planStage()
       this.dialogVisible2 = true;
       this.getList()
     },
@@ -1315,5 +1328,8 @@ export default {
   width: 800px !important;
   color: red;
 }
-
+  .plan_indialog{float:left; line-height: 40px;}
+  .indialog_plan{float:left; margin: 0 5px 0 10px;}
+  .indialog_input{float:left; width: 160px;}
+  .plan_indialog span{float:left; margin: 0 10px 0 10px;}
 </style>
