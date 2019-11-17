@@ -44,7 +44,7 @@
           </el-table-column>
           <el-table-column prop="explain" label="款项说明" align="center"></el-table-column>
           <el-table-column prop="rece_money" label="收款金额" align="center"></el-table-column>
-          <el-table-column prop="rece_money" label="剩余确认金额" align="center"></el-table-column>
+          <el-table-column prop="leave_match_money" label="剩余确认金额" align="center"></el-table-column>
           <el-table-column prop="receivables_at" label="收款时间" width="120" align="center"></el-table-column>
           <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
           <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
