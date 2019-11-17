@@ -92,7 +92,7 @@
           <el-table :data="ruleForm.invoiceTable" border style="width: 100%;" size="mini">
             <el-table-column label="发票类型" width="120" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.invoiceID" placeholder="请选择" :disabled="change">
+                <el-select v-model="scope.row.type" placeholder="请选择" :disabled="change">
                   <el-option v-for="item in invoiceType" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
@@ -102,10 +102,10 @@
             </el-table-column>
             <el-table-column label="个人/单位" width="120" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.invoiceType" placeholder="请选择" :disabled="change">
-                  <el-option key="1" label="个人" value="1">
+                <el-select v-model="scope.row.userType" placeholder="请选择" :disabled="change">
+                  <el-option key="个人" label="个人" value="1">
                   </el-option>
-                  <el-option key="2" label="单位" value="2">
+                  <el-option key="单位" label="单位" value="2">
                   </el-option>
                 </el-select>
                 <div style="color:red; text-align:left;" v-if="scope.row.invoiceType == '' && a != false">不能为空</div>
@@ -113,40 +113,40 @@
             </el-table-column>
             <el-table-column label="纳税人识别号" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.invoiceNumber" required placeholder="纳税人识别号"></el-input>
-                <div style="color:red; text-align:left;" v-if="scope.row.invoiceNumber == '' && a != false" disabled="change">不能为空</div>
+                <el-input v-model="scope.row.taxesNumber" required placeholder="纳税人识别号"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.taxesNumber == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="发票抬头" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.invoiceHeaderOrTel" placeholder="发票抬头" :disabled="change"></el-input>
-                <div style="color:red; text-align:left;" v-if="scope.row.invoiceHeaderOrTel == '' && a != false" disabled="change">不能为空</div>
+                <el-input v-model="scope.row.titleOrMobile" placeholder="发票抬头" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.titleOrMobile == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="发票项目" width="120" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.invoiceItem" placeholder="发票项目" :disabled="change">
+                <el-select v-model="scope.row.project" placeholder="发票项目" :disabled="change">
                   <el-option v-for="item in invoiceProject" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
-                <div style="color:red; text-align:left;" v-if="scope.row.invoiceItem == '' && a != false">不能为空</div>
+                <div style="color:red; text-align:left;" v-if="scope.row.project == '' && a != false">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="金额" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.invoicePrice" placeholder="金额" :disabled="change"></el-input>
-                <div style="color:red; text-align:left;" v-if="scope.row.invoicePrice == '' && a != false" disabled="change">不能为空</div>
+                <el-input v-model="scope.row.money" placeholder="金额" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.money == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="帐号" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.cardNumber" placeholder="帐号" :disabled="change"></el-input>
-                <div style="color:red; text-align:left;" v-if="scope.row.cardNumber == '' && a != false" disabled="change">不能为空</div>
+                <el-input v-model="scope.row.account" placeholder="帐号" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.account == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="开户行" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.bankName" placeholder="开户行" :disabled="change"></el-input>
-                <div style="color:red; text-align:left;" v-if="scope.row.bankName == '' && a != false" disabled="change">不能为空</div>
+                <el-input v-model="scope.row.bank" placeholder="开户行" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.bank == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="地址" align="center">
@@ -157,8 +157,8 @@
             </el-table-column>
             <el-table-column label="电话" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.tel" placeholder="电话" :disabled="change"></el-input>
-                <div style="color:red; text-align:left;" v-if="scope.row.tel == '' && a != false" disabled="change">不能为空</div>
+                <el-input v-model="scope.row.mobile" placeholder="电话" :disabled="change"></el-input>
+                <div style="color:red; text-align:left;" v-if="scope.row.mobile == '' && a != false" disabled="change">不能为空</div>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="70" align="center">
@@ -583,7 +583,7 @@ export default {
               "payablePrice": item.payable, // 订单金额
               "arrearsPrice": item.arrears_Amount, // 欠款金额
               "repaidPrice": item.repayment_Amount, // 已还金额
-              "amountPrice": item.audited_Amount, // 待审核金额  orderCode title groupCode date payable uncollectedMoney collectedMoney examineMoney repaymentMoney
+              "amountPrice": item.audited_Amount, // 待审核金额   title groupCode date payable uncollectedMoney collectedMoney examineMoney repaymentMoney
               "matchingPrice": item.matchingMoney // 匹配收款金额
             })
           })
@@ -622,7 +622,7 @@ export default {
           }
           if (_this.ruleForm.invoice == '1') {
             let needInvoiceData = []
-            _this.ruleForm.invoiceList.forEach(function(item){
+            _this.ruleForm.invoiceTable.forEach(function(item){
               needInvoiceData.push({
                 "id": 0,
                 "createTime": "2019-11-11T02:43:05.258Z",

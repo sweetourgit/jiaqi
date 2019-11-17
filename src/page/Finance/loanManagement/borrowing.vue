@@ -1269,18 +1269,14 @@ export default {
     // 选择账户弹窗，选择对应的选项事件
     addAccount(index, row){
       var that = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",
-        {
-          "paymentID": this.paymentID,
-          "accountID": row.id
-        }
-      )
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
+        "paymentID": this.paymentID,
+        "accountID": row.id
+      })
       .then(function (obj) {
         // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
         that.getList()
-      })
-      .catch(function (obj) {})
+      }).catch(function (obj) {})
       this.SelectAccount = false
     },
     // 选择账户表格查询

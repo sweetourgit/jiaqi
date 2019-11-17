@@ -412,8 +412,12 @@ export default {
       this.reable = false;
     },
     // 子组件触发事件
-    closeAdd(){
-      this.$emit('close', false);
+    closeAdd(addSuc){
+      if(addSuc){
+        this.$emit('close', addSuc);
+      } else {
+        this.$emit('close', false);
+      }
     },
     // 取消事件（顶部）
     canelHandle(){
@@ -935,7 +939,7 @@ export default {
                 type: 'success',
                 message: '创建成功!'
               });
-              this.closeAdd()
+              this.closeAdd(true)
             } else {}
           }).catch(err => {})
         } else {

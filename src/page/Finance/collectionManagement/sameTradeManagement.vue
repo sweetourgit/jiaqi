@@ -65,8 +65,8 @@
       <el-table-column prop="checkTypeStatus" label="状态" width="80" align="center">
         <template slot-scope="scope">
           <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F" >审批中</div>
-          <div v-else="scope.row.checkType=='1'" style="color: #FF4A3D" >通过</div>
-          <div v-else-if="scope.row.checkType=='2'" style="color: #33D174" >驳回</div>
+          <div v-else="scope.row.checkType=='1'" style="color: #33D174" >通过</div>
+          <div v-else-if="scope.row.checkType=='2'" style="color: #FF4A3D" >驳回</div>
         </template>
       </el-table-column>
       <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
@@ -105,7 +105,7 @@
     <el-dialog title="详情" :visible.sync="detailstShow" width="80%" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'>
       <div style="position:absolute; top:8px; right:10px;">
         <el-button @click="closeDetailstShow()">取消</el-button>
-        <el-button type="danger" @click="repealDetailstShow" plain>撤销</el-button>
+        <el-button type="danger" @click="repealDetailstShow" plain v-if="getRowCheckType == 0 || getRowCheckType == 2 ">撤销</el-button>
       </div>
       <div>
         <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
@@ -247,6 +247,7 @@ export default {
   },
   data() {
     return {
+      getRowCheckType: null, // 获取当前审批状态
       ruleForm: {
         proposer: '', // 申请人
         plan: '', // 团期计划
@@ -372,11 +373,15 @@ export default {
       })
     },
     // 关闭申请同业收款弹窗
-    closeAdd() {
+    closeAdd(data) {
+      if(data){
+        this.getList()
+      }
       this.dialogFormVisible = false;
     },
     // 查询详情
     dialogFind(row) {
+      this.getRowCheckType = row.checkType
       this.currentRowId = row.id
       this.getLabel(row.id)
       //this.find = 1;

@@ -128,7 +128,7 @@
       <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
         <div style="position:absolute; top:8px; right:10px;">
           <el-button @click="CloseCheckIncomeShow()">取消</el-button>
-          <el-button @click="repeal()" type="danger" plain>撤销借款</el-button>
+          <el-button @click="repeal()" type="danger" plain v-if="getRowCheckType != 1">撤销</el-button>
         </div>
       <!-- 好像是和无收入借款共用一个 -->
       <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
@@ -188,6 +188,7 @@ export default {
         label: '驳回'
       }],
       checkIncomeShow:false,//详情弹窗
+      getRowCheckType: null, // 获取当前审批状态
       paymentID:0,
       groupCode:0,
       pageshow:true,
@@ -246,6 +247,8 @@ export default {
           "accountID": row.id
         }
       ).then(function (obj) {
+        // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
+        that.searchHand()
       }).catch(function (obj) {
       })
       this.SelectAccount = false
@@ -500,6 +503,7 @@ export default {
     },
     //查看无收入借款弹窗
     checkIncome(row) {
+      this.getRowCheckType = row.checkType
       this.paymentID = row.paymentID // 设置 paymentID 给子组件，子组件会根据这个值的变化进行页面渲染。子组件目前设置的是0，本页的也是0
       console.log(this.paymentID)
       this.checkIncomeShow = true;

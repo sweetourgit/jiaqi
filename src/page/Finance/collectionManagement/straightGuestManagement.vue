@@ -109,7 +109,7 @@
     <el-dialog title="详情" :visible.sync="detailstShow" width="80%" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'>
       <div style="position:absolute; top:8px; right:10px;">
         <el-button @click="closeDetailstShow()">取消</el-button>
-        <el-button type="danger" @click="repealDetailstShow" plain>撤销</el-button>
+        <el-button type="danger" @click="repealDetailstShow" plain v-if="getRowCheckType != 1">撤销</el-button>
       </div>
       <div>
         <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
@@ -241,6 +241,7 @@ export default {
   },
   data() {
     return {
+      getRowCheckType: null, // 获取当前审批状态
       listLoading: true,
       page: 1,
       limit: 10,
@@ -316,6 +317,7 @@ export default {
     },
     //查询详情
     dialogFind(row) {
+      this.getRowCheckType = row.checkType
       this.currentRowId = row.id
       //this.find = 1;
       //this.change = true
