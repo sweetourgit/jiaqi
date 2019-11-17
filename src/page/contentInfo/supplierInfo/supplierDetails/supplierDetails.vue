@@ -158,8 +158,7 @@
     },
     watch:{
       msg:function (val,oldval) {
-        console.log('val', val);
-        this.teamGetDetails(val);
+        this.teamGetDetails(this.msg);
       }
     },
     data(){
@@ -229,6 +228,6 @@
 .fl{float: left;}
 .ml13{margin: 0 0 0 13px;}
 .teampreview{ text-align:right; width: 120px;overflow: hidden;float: left;}
-.tableData{margin: 30px 0 0 150px; width: 752px;}
+.tableData{margin: 30px 0 0 0; width: 752px;}
 
 </style>
