@@ -245,6 +245,11 @@ import moment from 'moment'
   components: {
     checkLoanManagement,
   },
+  props:{
+    refreshAproveData:{
+      type: Boolean
+    }
+  },
   data(){
     return {
       ruleFormSeach: {
@@ -286,6 +291,13 @@ import moment from 'moment'
     this.presentRouter = this.$route.name
     console.log(this.presentRouter)
     this.pageList();
+  },
+  watch:{
+    refreshAproveData:function(newV, oldV){
+      console.log(newV, oldV)
+      this.pageList()
+    },
+    deep:true
   },
   methods: {
     // 起始时间格式转换
@@ -378,10 +390,6 @@ import moment from 'moment'
           } else if(this.presentRouter == '预付款管理') {
             getWorkflowCode = 'borrow_Moneys2'
           }else {}
-
-          console.log(this.presentRouter)
-          console.log(getWorkflowCode)
-
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),
               "userCode": sessionStorage.getItem('userCode'),
@@ -459,12 +467,12 @@ import moment from 'moment'
         {
           //"userCode": "rbop01",
           "userCode":sessionStorage.getItem('userCode'),
-          "workItemID": this.arr1[0],
+          "workItemID": this.guid,
           "commentText": this.commentText
         }).then(res =>{
-            that.transitShow = false;
-            that.detailstShow = false;
-            that.pageList();
+          that.transitShow = false;
+          that.detailstShow = false;
+          that.pageList();
             //that.repeal();
         })
       },
@@ -475,7 +483,7 @@ import moment from 'moment'
         {
           //"userCode": "rbop01",
           "userCode":sessionStorage.getItem('userCode'),
-          "workItemID": this.arr1[0],
+          "workItemID": this.guid,
           "commentText": this.commentText
         }).then(res =>{
             that.transitShow = false;

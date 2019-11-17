@@ -2,10 +2,10 @@
   <div class="vivo" style="position:relative">
     <el-tabs v-model="activeName">
       <el-tab-pane label="借款记录" name="first">
-        <borrowing></borrowing>
+        <borrowing v-on:aprovalNum="getNum"></borrowing>
       </el-tab-pane>
        <el-tab-pane :label="examine + msg" name="second">
-        <approvalToBorrow v-on:headCallBack="headCall"></approvalToBorrow>
+        <approvalToBorrow v-on:headCallBack="headCall" :refreshAprove="refreshAproveData"></approvalToBorrow>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -25,6 +25,7 @@ import approvalToBorrow from '@/page/Finance/loanManagement/approvalToBorrow'
       	activeName: 'first',
         examine:'需要您审批',
         msg:'',
+        refreshAproveData: false // 如果申请借款记录成功 则该字段变为 false
       }
     },
     computed: {
@@ -35,6 +36,11 @@ import approvalToBorrow from '@/page/Finance/loanManagement/approvalToBorrow'
       },
     },
     methods: {
+      getNum: function(msg){
+        if(msg == true) {
+          this.refreshAproveData = true
+        }
+      },
       headCall: function (msg) { //回调方法，接收子组件传的参数
         this.msg = '(' + msg + ')';
       }

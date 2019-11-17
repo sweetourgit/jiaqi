@@ -1112,6 +1112,7 @@ export default {
               if(res.data.isSuccess == true){
                  this.getList();
                  this.clearPlan();
+                 this.$emit('aprovalNum',true) // 如果已经成功申请无收入借款，传回true，给父组件，父组件将值传给无需要您审批的组件对该列表进行刷新
                  //this.sendBPM(res.data.object)
                  this.noIncomeShow = false;
                  //this.$refs["ruleForm"].resetFields();
