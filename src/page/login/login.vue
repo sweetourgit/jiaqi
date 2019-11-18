@@ -16,7 +16,7 @@
         <span class="forget-title">嘉麒应用管理中心</span>
         <div class="forget-group">
           <div class="forget-account">用户登录</div>
-          <div class="forget-border"></div> 
+          <div class="forget-border"></div>
         </div>
 
 
@@ -30,7 +30,7 @@
           <el-input type="password"  v-model="ruleForm.password" placeholder="密码" @keyup.enter.native="loginForm('ruleForm')"></el-input>
         </el-form-item>
 
-<!-- 
+<!--
         <div class="verify-box">
           <el-form-item class="verification-input">
             <el-input id="er"  v-model="ruleForm.verification" placeholder="验证码" @focus="aaa()" @keyup.enter.native="loginForm('ruleForm')"></el-input>
@@ -323,10 +323,6 @@
         this.emailShow = false;
         // this.time = 60;
         // this.time = 0;
-        // console.log(this.show)
-
-        // console.log(this.show)
-        // console.log(this.phoneShow)
       },
       //  邮箱验证验证
       submitForm(formName) {
@@ -377,7 +373,6 @@
             this.passwordruleForm.newpassword = '';
             this.passwordruleForm.repassword = '';
           } else {
-            console.log('验证失败');
             return false;
           }
         });
@@ -385,11 +380,11 @@
 
       //登录
       loginForm(formName) {
-        
+
         this.$refs['ruleForm'].validate(valid => {
           if(valid){
             this.pop1=false
-           
+
             // 把这些注释解开验证码就可以重新用
 
             // this.$http.post(this.GLOBAL.serverSrc+'/code/api/check ',this.qs.stringify({
@@ -405,10 +400,9 @@
                 }).then(res => {
                   if(res.data == ''){
                     this.$message.error('账号或密码错误');
-                    console.log("出错了")
                     this.ruleForm.password = "";
                     this.ruleForm.verification = "";
-                     
+
                       // this.$http.post(this.GLOBAL.serverSrc+'/code/api/getguid',{
 
                       // }).then(res => {
@@ -417,22 +411,19 @@
                       // }).catch(err => {
 
                       // })
-                    
-                          console.log(localStorage.getItem('token'));
-                    
                   } else {
                     store.save('token',res.data)
-                    // console.log(token);
                     this.$http.post(this.GLOBAL.serverSrc+'/org/api/userinfo',{
                     },{
                       headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('token'),
                       }
-                      
+
                     }).then(res => {
                       sessionStorage.setItem('id',res.data.id)
                       sessionStorage.setItem('orgID',res.data.orgID)
-                      sessionStorage.setItem('account',this.ruleForm.user)
+                      sessionStorage.setItem('topID',res.data.topID)
+                      //sessionStorage.setItem('account',this.ruleForm.user)//刚掉account
                       sessionStorage.setItem('userCode',res.data.userCode)
                       store.save('name',res.data.name)
                       this.$router.push('/userList')
@@ -446,7 +437,7 @@
 
                 })
 
-              //这两段代码千万别删除 
+              //这两段代码千万别删除
 
               // } else {
               //   document.getElementById("er").style ='border-color: #f56c6c;'
@@ -472,13 +463,13 @@
                   this.pop1=true;
 
                 },90)
- 
+
             }
-            
+
 
           }
         })
-        
+
       },
 
 

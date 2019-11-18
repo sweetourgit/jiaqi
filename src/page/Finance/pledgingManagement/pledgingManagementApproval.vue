@@ -2,19 +2,19 @@
   <div class="vivo" style="position:relative">
     <div class="demo-input-suffix ">
       <div class="button_select">
-        <el-button @click="cancel()" size="medium">取消</el-button>
-        <el-button type="primary" @click="save()" size="medium">保存</el-button>
-        <el-button type="warning" @click="reject()" size="medium">一键驳回</el-button>
-        <el-button type="success" @click="submit()" size="medium">审核提交</el-button>
+        <el-button type="primary" @click="cancel()" size="medium" plain>取消</el-button>
+        <!--<el-button type="primary" @click="save()" size="medium" plain>保存</el-button>-->
+        <el-button type="primary" @click="reject()" size="medium" plain>一键驳回</el-button>
+        <el-button type="primary" @click="submit()" size="medium">审批提交</el-button>
+        <el-button type="primary" @click="toHistory()" size="medium">审批历史</el-button>
       </div>
     </div>
-    <StartNumber :dialogFormVisible="dialogFormVisible" @close="close" :frameTitle1="frameTitle1" :frameTitle2="frameTitle2"></StartNumber>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="收款编码" name="one">
-        <Receivables @selection="selection" :reable="reable" :pid="pid" :transmit="transmit"></Receivables>
+        <Receivables ref="receivables"></Receivables>
       </el-tab-pane>
       <el-tab-pane label="发票" name="two">
-        <Invoice @selection="selection" :reable="reable" :pid="pid" :transmit="transmit"></Invoice>
+        <Invoice ref="invoice"></Invoice>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -33,12 +33,6 @@ export default {
   data() {
     return {
       activeName: 'one',
-      reable: true,
-      pid: '',
-      frameTitle1: '',
-      frameTitle2: '',
-      transmit: false,
-      dialogFormVisible: false,
     }
   },
   computed: {
@@ -46,33 +40,54 @@ export default {
   },
   watch: {},
   methods: {
-    selection(reable, pid) {
-      this.reable = reable
-      this.pid = pid
-    },
     handleClick() {
       this.reable = true
       this.transmit = !this.transmit
       this.pid = ''
     },
-    startNumber(title, name) {
-      this.frameTitle1 = title
-      this.frameTitle2 = name
-      this.dialogFormVisible = true
-    },
     close() {
       this.dialogFormVisible = false
     },
+    toHistory(){
+      this.$router.push({
+        path: "/pledgingHistory",
+        name: "财务管理   / 财务认款管理   / 审批历史",
+        query: {
+          tour_no: this.paramTour
+        }
+      });
+    },
     reject() {
+      const that = this;
       this.$confirm('是否一键驳回所有认款记录?', '提示', {
         confirmButtonText: '驳回',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '驳回成功!'
+//      alert(this.$parent.$parent.$parent.paramTour);
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/recognition/recognition/reconereject", {
+          "tour_no": this.paramTour,
+          "approval_uid": sessionStorage.getItem('id')
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log(response);
+            that.$message({
+              type: 'success',
+              message: '驳回成功!'
+            });
+            that.$refs.receivables.loadData();
+            that.$refs.invoice.loadData();
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("驳回失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
         });
+
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -100,16 +115,33 @@ export default {
     cancel() {
       this.$router.push({ path: "/pledgingManagement" });
     },
-    //搜索
+    //审批提交
     submit() {
+      const that = this;
       this.$confirm('是否审核提交?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '保存成功!'
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/recognition/recognition/examine", {
+          "tour_no": this.paramTour
+        }, ).then(function(response) {
+          if (response.data.code == '200') {
+            console.log(response);
+            that.$message({
+              type: 'success',
+              message: '审核提交成功!'
+            });
+            that.cancel();
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("审核提交失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
         });
       }).catch(() => {
         this.$message({
@@ -117,10 +149,17 @@ export default {
           message: '已取消保存'
         });
       });
-    },
-    resetHand() {}
+    }
   },
-  created() {}
+  created() {
+//    alert(JSON.stringify(this.$route.params));
+//    this.paramTour = this.$route.params.tour_no;
+    if(this.$route.query.tour_no){
+      this.paramTour = this.$route.query.tour_no;
+    }else{
+      this.cancel();
+    }
+  }
 
 }
 

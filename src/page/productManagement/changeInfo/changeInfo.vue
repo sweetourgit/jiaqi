@@ -1,15 +1,16 @@
 <template>
+<!--11-->
   <div class="vivo" style="position:relative">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
       <div class="btn" style="width:200px;position:absolute;z-index:99;top:0px;left:50%;">
         <el-button plain class="btn-button" @click="cancel()">取消</el-button>
         <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">保存</el-button>
       </div>
-      {{changeobj}}
+      <!-- {{changeobj}} -->
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <!-- 行程信息 -->
+        <!-- 行程信息begin -->
         <el-tab-pane label="行程信息" name="second">
-          {{chuxian}}
+          <!-- {{chuxian}} -->
           <!-- <TripInfo :inputravelDays="travelDays"></TripInfo> -->
           <div class="tripInfo">
             <!-- <div class="btn">
@@ -57,18 +58,20 @@
                           <!--描述方式-->
                           <div class="describe_way">描述方式</div>
                           <ul class="description">
-                            <li v-for="(item,index) in describe" :key="index" :class="{active:index == num}" @click="tab(index)">
-                        <span v-if="index=='0'">
-                          <el-radio  label="0" v-model="matter_radio" checked>{{item}}</el-radio>
-                        </span>
+                            <li v-for="(item,index) in describe" :key="index" :class="{active:index == num}" @click="tab(index)" @change="changeTab(index)">
+                              <span v-if="index=='0'">
+                                <el-radio  label="0" v-model="matter_radio" checked>{{item}}</el-radio>
+                              </span>
                               <span v-if="index=='1'">
-                          <el-radio label="1" v-model="matter_radio">{{item}}</el-radio>
-                        </span>
+                                <el-radio label="1" v-model="matter_radio">{{item}}</el-radio>
+                              </span>
                             </li>
                           </ul>
+                            
                           <!--描述方式结束-->
                           <div v-for="(itemCon,index) in pattern" :key="index" v-show="index == num">
                             <!--详细说明-->
+                            <!-- <div v-if="index ==0 || isShowBriefDetail === 1" class="traffic_border"> -->
                             <div v-if="index ==0" class="traffic_border">
                               <div>
                                 <div class="traffic_button">去程</div>
@@ -79,7 +82,7 @@
                               <!--去程-->
                               <div class="plane" v-for="(item, index) in ruleForm.plane" :key="item.index">
                                 <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
-                                  <el-cascader style="width: 105px" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficClear(index)"></el-cascader>
+                                  <el-cascader style="width: 105px" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0];trafficClear(index)}" placeholder="飞机"></el-cascader>
                                   <span class="plane_text"><span style="color:red">*</span>第</span>
                                   <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                                     <el-option v-for="(day,index) in item.arrDay" :key="day.value" :label="day.label" :value="day.value"></el-option>
@@ -155,9 +158,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
 
                                     <!--添加经停-->
                                     <div closable>
@@ -243,9 +246,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <!--第三行结束-->
@@ -290,9 +293,9 @@
                                     <el-form-item label="到达时间" label-width="100px" :prop="'plane.'+index+'.arriveTime'" :rules="rules.arriveTime" style="float:left">
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <div class="stop">
@@ -361,9 +364,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <div class="addTab" v-show="deleteTransit">
@@ -374,13 +377,13 @@
                               <!--返程-->
                               <div style="clear:both;">
                                 <div class="traffic_button">返程</div>
-                                <div class="traffic_button">
+                                <!-- <div class="traffic_button">
                                   <el-button @click="addRTransit" type="primary">添加中转</el-button>
-                                </div>
+                                </div> -->
                               </div>
                               <div class="plane" v-for="(item, index) in ruleForm.nackPlane" :key="item.index">
                                 <div class="" style=" clear:both; margin:0 0 0 0; position:relative;">
-                                  <el-cascader style="width: 105px" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0]}" placeholder="飞机" @blur="trafficGoClear(index)"></el-cascader>
+                                  <el-cascader style="width: 105px" class="plane_type" v-model="item.trafficMode" :options="index == 0 ? goRoad : goRoads" @change="(v)=>{item.trafficMode=v[0];trafficGoClear(index)}" placeholder="飞机"></el-cascader>
                                   <span class="plane_text"><span style="color:red">*</span>第</span>
                                   <el-select class="plane_type" v-model="item.day" collapse-tags style="margin-left: 20px;" placeholder="1">
                                     <el-option v-for="(day,index) in item.arrDay" :key="day.value" :label="day.label" :value="day.value"></el-option>
@@ -462,9 +465,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                     <!--添加经停-->
                                     <div closable>
                                       <div class="transit_border" v-show="Returnline"></div>
@@ -478,7 +481,7 @@
                                           </el-input>
                                         </el-form-item>
                                         <div class="minutes">分钟</div>
-                                        <div class="delete" @click="deleteItem(p,index)">删除</div>
+                                        <div class="delete" @click="reDeleteItem(p,index)">删除</div>
                                       </div>
                                     </div>
 
@@ -547,9 +550,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <!--第三行结束-->
@@ -614,9 +617,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <!--第三行结束-->
@@ -689,9 +692,9 @@
                                       <el-input class="inputBox" v-model="item.arriveTime" @input="myInput" clearable placeholder="请输入到达时间"></el-input>
 
                                     </el-form-item>
-                                    <!-- <el-select class="day" v-model="item.planeDay" placeholder="当日">
+                                    <el-select class="day" v-model="item.planeDay" placeholder="当日">
                                       <el-option v-for="item in goDay" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                    </el-select> -->
+                                    </el-select>
                                   </div>
                                   <!--第三行结束-->
                                   <div class="addTab" v-show="deleteTransit">
@@ -702,7 +705,8 @@
                             </div>
                             <!--详细说明结束-->
                             <!--简要说明-->
-                            <div class="traffic_border" v-if="index ==1">
+                            <!-- <div class="traffic_border" v-if="index ==1 || isShowBriefDetail === 2">  -->
+                            <div class="traffic_border" v-if="index ==1"> 
                               <div class="cost_content" style="background: #FFFFFF">
                                 <vue-editor v-model="content"></vue-editor>
                               </div>
@@ -860,29 +864,46 @@
                                 </div>
                                 <div class="aviation">
                                   <!--住宿-->
-                                  <div class="aviation_first">
+                                  <!--<div class="aviation_first">
                                     <div class="aviation_textday"><span>*</span>住宿</div>
                                     <div class="type_radio" style="margin:27px 0 0 0;">
                                       <div>
                                         <span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>
                                         <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>
                                         <div class="explain">
-                                          <!--    <div v-show="myradio[index].lable=='0'">
+                                              <div v-show="myradio[index].lable=='0'">
                                       <span v-for="(itemCon,p) in tabContents" style="margin-right:10px">
                                       <el-button @click="baocun(itemCon.id,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
                                       </span>
-                                              </div>-->
+                                              </div>
                                   <el-form-item v-if="myradio[index].lable=='1'" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details">
                                     <el-input class="inputBox" v-model="item.ext_Hotel.Details" type="text" placeholder="住宿说明"></el-input>
                                   </el-form-item>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  </div>-->
+                                  <el-form-item class="aviation_first">
+                                    <div class="aviation_textday"><span>*</span>住宿</div>
+                                    <div class="type_radio">
+                                      <div>
+                                        <!--<span><el-radio v-model="myradio[index].lable" label="0">酒店</el-radio></span>-->
+                                        <span><el-radio v-model="myradio[index].lable" label="1">其他</el-radio></span>
+                                         <!--<div v-show="myradio[index].lable=='0'">
+                                          <span v-for="(itemCon,p) in tabContents" style="margin-right:10px">
+                                          <el-button @click="baocun(itemCon.id,index)" :class="{mybuttonac:itemCon.iu ==1}">{{itemCon.name}}</el-button>
+                                          </span>
+                                         </div>-->
+                                        <el-form-item v-if="myradio[index].lable=='1'" :prop="'schedules.'+index+'.ext_Hotel.Details'" :rules="rules.Details">
+                                          <el-input class="inputBox" v-model="item.ext_Hotel.Details" type="text" placeholder="住宿说明"></el-input>
+                                        </el-form-item>
+                                      </div>
+                                    </div>
+                                  </el-form-item>
                                 </div>
                                 <div class="aviation">
                                   <!--餐饮-->
-                                  <div class="food_text">餐饮</div>
+                                  <div class="food_text"><span class="focusOn">*</span>餐饮</div>
                                 </div>
                                 <!--餐饮循环-->
                                 <div class="aviation" style="margin-top:-100px;" v-for="(it,p) in item.ext_Meals" :key="p">
@@ -1196,10 +1217,35 @@
               </div>
             </div>
             <!--酒店弹窗结束-->
+            <!--切换套餐后弹窗提示-->
+            <el-dialog title="保存提示" :visible.sync="switchShow" class="city_list" width="500px" @close="cancelSwitch()">
+              <div class="switchTitle">信息已经进行修改，是否需要保存？</div>
+              <div class="switchButton">
+                <el-button @click="noSave()">不保存</el-button>
+                <el-button type="primary">保存</el-button>
+              </div>
+            </el-dialog>
+            <!--验证提示弹窗-->
+             <el-dialog title="提示信息" :visible.sync="dialogVadi" class="city_list tips" width="400px">
+                  <div>
+                     <ul v-for="item in validaError">
+                       <li>{{item}}</li>
+                     </ul>
+                  </div>
+             </el-dialog>
           </div>
         </el-tab-pane>
       </el-tabs>
     </el-form>
+    <!--验证提示弹窗-->
+     <el-dialog title="提示信息" :visible.sync="dialogVadi" class="city_list tips" width="400px">
+          <div>
+             <ul v-for="item in validaError">
+               <li>{{item}}</li>
+             </ul>
+          </div>
+     </el-dialog>
+
   </div>
 </template>
 
@@ -1216,6 +1262,9 @@
     },
     data() {
       return {
+        validaError:[],
+        dialogVadi:false,//验证提示弹窗
+        isShowBriefDetail: 1, // 1-显示详细说明， 2-显示简要说明
         chuxian:'',
         qqqq: '3',
         schedulesId:'',
@@ -1275,7 +1324,7 @@
         inputVisible1: false,
         inputValue1: '',
         //简要说明
-        content: '',
+        content: '1',
         content1: '<h1>Some initial content111</h1>',
         //切换主题
         editableTabsValue: '1',
@@ -1518,31 +1567,36 @@
           schedules: []
         },
         rules: {
-          productNamel: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { min: 0, max: 30, message: '字数超过30汉字限制', trigger: 'blur' },
-            { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
+          productNamel: [{ required: true, message: '产品名称不能为空', trigger: 'blur' },
+                         { min: 0, max: 30, message: '产品名称字数超过30汉字限制', trigger: 'blur' },
+                         { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
           travelType: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          orderConfirmationType: [{ required: true, message: '不能为空', trigger: 'change' }],
-          advanceRegistrationDays: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
-          highlightWords1: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords2: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords3: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords4: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          travelDays: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
-          travelNight: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数'}],
-          timeHour: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
-          timeMinute: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
+          // avatarImages:[{ required: true, message: '头图不能为空', trigger: 'change' }],
+          orderConfirmationType: [{ required: true, message: '订单确认类型不能为空', trigger: 'change' }],
+          advanceRegistrationDays: [{ required: true, message: '提前报名天数不能为空', trigger: 'blur' },
+            { pattern: /^[1-9]\d*$/, message: '提前报名天数需为正整数', trigger: 'blur' }],
+          highlightWords1: [{ required: true, message: '亮点词不能为空', trigger: 'blur' },
+                            { min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords2: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords3: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords4: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          travelDays: [{ required: true, message: '行程天数不能为空', trigger: 'change' },
+            { pattern: /^[1-9]\d*$/, message: '行程天数需为正整数' },
+             /* { min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' },*/],
+          travelNight: [{ required: true, message: '行程晚数不能为空', trigger: 'change' },
+            { pattern: /^[1-9]\d*$/, message: '行程晚数需为正整数' },
+            /*{ min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' }*/],
+          stopDate:[{required: true, message: '经停时间不能为空', trigger: 'change'}],
+          stopCity:[{required: true, message: '经停城市不能为空', trigger: 'change'}],
+          // timeHour: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
+          //            { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
+          timeMinute: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
+                       { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
           operationLabel: [{ pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/, message: '不能有标点符号' }],
-          highlightWords: [{ required: true, message: '不能为空'},
-            { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' }],
-          origin: [{ required: true, message: '不能为空', trigger: 'change' }],
-          bourn: [{ required: true, message: '不能为空', trigger: 'change' }],
+          highlightWords: [{ required: true, message: '套餐名不能为空', trigger: 'blur' },
+                           { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' }],
+          origin: [{ required: true, message: '行程出发地不能为空', trigger: 'change' }],
+          bourn: [{ required: true, message: '行程目的地不能为空', trigger: 'change' }],
           hotelAuto: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelChinese: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelEnglish: [{ required: true, message: '不能为空', trigger: 'blur' }],
@@ -1552,34 +1606,32 @@
           hotelHouse: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelBed: [{ required: true, message: '不能为空', trigger: 'blur' }],
           pod: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          company: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          theNumber: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podCity:[{ required: true, message: '不能为空', trigger: 'blur' }],
-          pod: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podPlace: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podTime: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arriveCity: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arrivePlace: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arriveTime: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          company: [{ required: true, message: '航空公司/邮轮公司不能为空', trigger: 'blur' }],
+          theNumber: [{ required: true, message: '航班号/车次/邮轮号不能为空', trigger: 'blur' }],
+          podCity:[{ required: true, message: '出发城市不能为空', trigger: 'blur' }],
+          podPlace: [{ required: true, message: '出发机场/出发车站/出发码头不能为空', trigger: 'blur' }],
+          podTime: [{ required: true, message: '出发时间不能为空', trigger: 'blur' }],
+          arriveCity: [{ required: true, message: '到达城市不能为空', trigger: 'blur' }],
+          arrivePlace: [{ required: true, message: '到达机场/到达车站/到达码头不能为空', trigger: 'blur' }],
+          arriveTime: [{ required: true, message: '到达时间不能为空', trigger: 'blur' }],
           planeDay: [{ required: true, message: '不能为空', trigger: 'blur' }],
           trafficMode: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          day: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          day: [{ required: true, message: '请选择天数'}],
           typeExt: [{ required: true, message: '不能为空', trigger: 'blur' }],
           time: [{ required: true, message: '不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '不能为空', trigger: 'blur' }],
           details: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          // slideshow:[{ required: true, message: '不能为空', trigger: 'blur' }],
+          //slideshow:[{ validator: areaIdRule}],
           memo: [{ required: true, message: '不能为空', trigger: 'blur' }],
           Details: [{ required: true, message: '住宿说明不能为空', trigger: 'blur' }],
-          picture: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          subject: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          pictureID: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          subject: [{ required: true, message: '日程信息主题不能为空', trigger: 'blur' },
+                    { min: 0, max: 20, message: '字数超过20汉字限制', trigger: 'blur' }],
           mealDetails: [{ required: true, message: '餐饮说明不能为空', trigger: 'blur' }],
           typeExtPrice: [{ pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '参考价格输入不正确'},
-                        { pattern: /^(\d+|\d+\.\d{1,2})$/, message: '参考价格输入不正确'}],
+                        { pattern: /^(\d+|\d+\.\d{1,2})$/, message: '参考价格输入不正确'}
+          ],
           activeTime: [{ pattern: /^[0-9]+$/, message: '活动时间需为正整数'}],
-          stopDate: [{ required: true, message: '经停时间不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '经停时间需为正整数' }],
-          stopCity: [{ required: true, message: '经停城市不能为空', trigger: 'blur' }],
         },
         //上传图片
         fileList2: [],
@@ -1692,7 +1744,8 @@
         dynamicTags4: [],
         inputVisible4: false,
         inputVal4: '',
-        errorNull: ''
+        errorNull: '',
+        switchShow:false,
       }
     },
     watch:{ //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
@@ -1762,8 +1815,10 @@
                   createTime: this.formatDate(new Date())
                 }],
                 }],
-                ext_Hotel: [
-                  {IsHotel:0,Details:""}
+                ext_Hotel: [{
+                  Details:''
+                }
+                  // {IsHotel:0,Details:""}
                 ]
               });
               this.myradio.push({'lable':'1'});   //保存行程里面酒店信息单选值
@@ -1797,10 +1852,11 @@
             }
 
           }
-        )
-          .then(function (obj) {
 
-            console.log(obj.data.object);
+        )
+
+          .then(function (obj) {
+            console.log(obj.data.object.package);
             that.ruleForm.travelDays = obj.data.object.day//行程天数
             that.ruleForm.travelNight = obj.data.object.night//行程晚数
             that.dynamicTags3 = obj.data.object.pods//出发地
@@ -1810,6 +1866,13 @@
             that.ruleForm.bourn = obj.data.object.package[0].destination //行程信息目的地
             that.ruleForm.podID = obj.data.object.package[0].podID //行程信息出发地ID
             that.ruleForm.destinationID = obj.data.object.package[0].destinationID//行程信息目的地ID
+            that.content = String(obj.data.object.package[0].briefMark)//其他说明
+            //that.ext_Stopover = JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
+            let keepContentLength = that.content.length
+            if (keepContentLength > 0){
+              that.isShowBriefDetail = 2
+              console.log('that.isShowBriefDetail', that.isShowBriefDetail)
+            }
             that.packLen = obj.data.object.package.length
             for(let j = 0; j < obj.data.object.package.length; j++){
               let newTabName = ++that.tabIndex + '';
@@ -1827,7 +1890,7 @@
               if(obj.data.object.package[0].traffic[i].goOrBack == 1){
                 obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
                 obj.data.object.package[0].traffic[i].arrDay = [];
-                for(let k = 0; k < obj.data.object.package[0].traffic[i].day; k++) {
+                for(let k = 0; k < obj.data.object.day; k++) {
                   obj.data.object.package[0].traffic[i].arrDay.push({
                     value: k+1,
                     lable: k+1
@@ -1840,7 +1903,7 @@
                 obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
                 obj.data.object.package[0].traffic[i].arrDay = [];
 
-                for(let k = 0; k < obj.data.object.package[0].traffic[i].day; k++) {
+                for(let k = 0; k < obj.data.object.day; k++) {
                   obj.data.object.package[0].traffic[i].arrDay.push({
                     value: k+1,
                     lable: k+1
@@ -1981,6 +2044,7 @@
       },
       //保存
       addsave(formName) {
+        console.log(object)
         if(this.changeIndex < this.packLen){
           this.changeAction = "update";
         }
@@ -2034,10 +2098,13 @@
             traffic: traff,
             schedules:sche,
             loadPackage: true,
-            briefMark: "string",
+            briefMark:this.content,
+            //briefMark: "string",
             loadPlan: true,
-            codePrefix: "LKCO",
-            codeSuffix:"US621",
+            codePrefix: "",
+            codeSuffix:"",
+            // codePrefix: "LKCO",
+            // codeSuffix:"US621",
           }
           this.$refs[formName].validate((valid) => {
             if(valid){
@@ -2048,6 +2115,7 @@
               ).then(function(response) {
                 if(response.data.isSuccess==true){
                   _this.$message.success("添加成功");
+                  _this.$router.push({path: "/productList/packageTour"});
                 }else{
                   _this.$message.success("添加失败");
                 }
@@ -2058,7 +2126,6 @@
           })
         }
         else {
-
           //修改套餐
           //经停信息转字符串
           let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
@@ -2112,13 +2179,14 @@
             traffic: traff,
             schedules:sche,
             loadPackage: true,
-            briefMark: "string",
+             briefMark:this.content,
+            //briefMark: "string",
             loadPlan: true,
             codePrefix: "LKCO",
             codeSuffix:"US621",
 
           }
-          this.chuxian = object
+          //this.chuxian = object
           console.log(object)
           this.$refs[formName].validate((valid) => {
             if(valid){
@@ -2129,22 +2197,45 @@
               ).then(function(response) {
                 if(response.data.isSuccess==true){
                   _this.$message.success("修改成功");
+                  _this.$router.push({path: "/productList/packageTour"});
                 }else{
                   _this.$message.success("修改失败");
                 }
               }).catch(function(error) {
                 console.log(error);
               });
+            }else{
+
+              this.errors();
+
             }
           })
-
         }
 
 
       },
+      errors(){
+        this.dialogVadi = true;
+        let _this=this;
+        setTimeout(function(){
+          const validaError1=[];
+          var errors = $(".el-form-item__error");
+          for(var i=0;i<errors.length;i++){
+            validaError1.push(errors.eq(i).html().trim());
+          }
+          _this.validaError=[...new Set(validaError1)];
+          // if(_this.dynamicTags3.length==0){
+          //    _this.validaError.unshift("基本信息出发地不能为空");
+          // }
+          // if(_this.dynamicTags4.length==0){
+          //    _this.validaError.unshift("基本信息目的地不能为空");
+          // }if(_this.ruleForm.avatarImages.length==0){
+          //    _this.validaError.unshift("头图不能为空");
+          // }
+        },500);
+      },
       //保存套餐信息
       handleSetMeal(formName){
-
         //经停信息转字符串
         let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
         let traff=JSON.parse(traff1);
@@ -2184,7 +2275,8 @@
           createTime:this.formatDate(new Date()),
           traffic: traff,
           loadPackage: true,
-          briefMark: "string",
+           briefMark:this.content,
+          //briefMark: "string",
           loadPlan: true,
           codePrefix: "string",
           codeSuffix: "string"
@@ -2209,6 +2301,7 @@
       },
       //修改日程信息
       handleNote(formName){
+        console.log(object)
         //行程餐食信息转字符串
         let sche1=JSON.stringify(this.ruleForm.schedules);
         let sche=JSON.parse(sche1);
@@ -2262,7 +2355,7 @@
       },
       // 取消
       cancel(){
-        this.$router.push({path: "productList"});
+        this.$router.push({path: "/productList/packageTour"});
       },
       handleClick(tab, event) {
         if(event.target.getAttribute('id')=='tab-second'){
@@ -2302,7 +2395,7 @@
         this.ruleForm.plane[index].ext_Stopover.splice(p, 1)
       },
       deletePanel(index) {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        this.$confirm('是否删除该交通信息?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -2647,6 +2740,12 @@
                 that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
                 that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
                 that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
+                that.content = String(obj.data.object.package[0].briefMark)
+                let keepContentLength = that.content.length
+                  if (keepContentLength > 0){
+                    that.isShowBriefDetail = 2
+                    console.log('that.isShowBriefDetail', that.isShowBriefDetail)
+                  }
                 that.packLen = obj.data.object.package.length
                 that.ruleForm.plane = []
                 that.ruleForm.nackPlane = []
@@ -2782,7 +2881,7 @@
 
       },
       tab(index) {
-        this.num = index;
+        //this.num = index;
       },
       tab1(index) {
         this.num1 = index;
@@ -3005,17 +3104,18 @@
       handlePoint(targetName){
         var aaa = this.qqqq;
         if(this.changeIndex >= this.packLen){
-          this.$confirm('套餐未保存切换将丢失数据, 是否继续?', '提示', {
+          this.$confirm('信息已经进行修改, 是否需要保存?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
-          }).then(() => {
+          })
+        .then(() => {
             this.qqqq = this.editableTabsValue;
             // this.editableTabsValue = this.editableTabsValue;
             // console.log(this.editableTabsValue)
 
             // console.log(this.editableTabsValue = String(parseInt(this.editableTabsValue)+1))
-            if(targetName.label == 'New Tab') {
+            if(targetName.label == 'New Tab') {8
               this.$message({
                 type: 'success',
                 message: '删除成功!'
@@ -3072,10 +3172,11 @@
           highlightWords: '',
           theme: '',
           subject:'',
-          origin:'',
-          podID:'',
-          destinationID:'',
-          bourn:'',
+          // origin:'',
+          // podID:'',
+          // destinationID:'',
+          // bourn:'',
+
           //交通工具
           //去程
           plane: [{
@@ -3121,7 +3222,7 @@
             } else {
             this.$message({
               type: 'success',
-              message: '删除成功!'
+              message: '切换成功!'
             });
             this.changeIndex = targetName.index
             var that = this
@@ -3146,6 +3247,12 @@
                 that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
                 that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
                 that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
+                that.content = String(obj.data.object.package[0].briefMark)
+                let keepContentLength = that.content.length
+                if (keepContentLength > 0){
+                  that.isShowBriefDetail = 2
+                  console.log('that.isShowBriefDetail', that.isShowBriefDetail)
+                }
                 that.packLen = obj.data.object.package.length
                 that.ruleForm.plane = []
                 that.ruleForm.nackPlane = []
@@ -3319,10 +3426,10 @@
           highlightWords: '',
           theme: '',
           subject:'',
-          origin:'',
-          podID:'',
-          destinationID:'',
-          bourn:'',
+          // origin:'',
+          // podID:'',
+          // destinationID:'',
+          // bourn:'',
           //交通工具
           //去程
           plane: [{
@@ -3392,6 +3499,12 @@
                 that.ruleForm.bourn = obj.data.object.package[that.changeIndex].destination //行程信息目的地
                 that.ruleForm.podID = obj.data.object.package[that.changeIndex].podID //行程信息出发地ID
                 that.ruleForm.destinationID = obj.data.object.package[that.changeIndex].destinationID//行程信息目的地ID
+                that.content = String(obj.data.object.package[0].briefMark)
+                let keepContentLength = that.content.length
+                if (keepContentLength > 0){
+                  that.isShowBriefDetail = 2
+                  console.log('that.isShowBriefDetail', that.isShowBriefDetail)
+                }
                 that.packLen = obj.data.object.package.length
                 that.ruleForm.plane = []
                 that.ruleForm.nackPlane = []
@@ -3494,6 +3607,16 @@
           }
 
         }
+      },
+      noSave(){
+        this.switchShow = false;
+
+      },
+      handlePoint01(targetName){
+        this.switchShow = true;
+      },
+      cancelSwitch(){
+        this.switchShow = false;
       },
       querySearch(queryString, cb) {
         var restaurants = this.restaurants;
@@ -3843,7 +3966,61 @@
       },
       handleadd() {
         this.qqqq = String(this.editableTabs.length + 2);
-      }
+      },
+      changeTab(data) {
+        this.$confirm('切换之后会清空交通信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          console.log('dz', this.ruleForm)
+          this.num = data;
+          //去程
+          this.ruleForm.plane = [{
+            pod: '',
+            id: 0,
+            goOrBack:1,
+            company: '',
+            theNumber: '',
+            podCity: '',
+            podPlace: '',
+            podTime: '',
+            arriveCity: '',
+            arrivePlace: '',
+            arriveTime: '',
+            planeDay: '',
+            trafficMode: '1',
+            day: '1',
+            ext_Stopover: []
+          }];
+          //返程
+          this.ruleForm.nackPlane = [{
+            pod: '',  //套餐id
+            id: 0,
+            goOrBack:2,   //1去程 2返程
+            company: '',  //航空公司
+            theNumber: '',   //航班号
+            podCity: '',           //出发城市
+            podPlace: '',   //出发机场
+            podTime: '',    //出发时间
+            arriveCity: '',    //到达城市
+            arrivePlace: '',     //到达机场
+            arriveTime: '',      //到达时间
+            planeDay: '',       //到达天数
+            trafficMode: '1',  //出行方式
+            // day:'1',
+            day: this.ruleForm.travelDays,      //第几天
+            ext_Stopover: []
+          }];
+        }).catch(() => {
+          if(data == 0) {
+            this.matter_radio = '1';
+          } else if(data == 1) {
+            this.matter_radio = '0';
+          }
+        });
+      },
+
     }
   }
 </script>
@@ -3884,12 +4061,12 @@
   .textarea { float: left; width: 60%; }
   .date { padding: 20px 0 0 30px; font-size: 18px; font-weight: bold; clear: both; }
   .radio_input { float: left; margin: 10px 0 0 0; }
-  .food_text { width: 85px; text-align: right; margin: 0 15px 0 0; line-height: 40px; }
+  .food_text { width: 85px; text-align: right; margin: 0 15px 0 0; line-height: 40px;}
   .food_radio { margin: 0 0 0 100px; float: left; }
   .repast { float: left; width: 60px; }
   .state { margin: 0 0 0 20px; }
   .text_input { padding: 0 0 20px 0; overflow: hidden; width: 100%; }
-  .type_radio { float: left; }
+  .type_radio { float: left; margin: 15px 0 0 0; }
   ul { padding: 0px; margin: 10px 0 0 0; margin: 0 0 0 0; }
   ul .type_list { float: left; list-style-type: none; margin: 0 10px 0 0; text-align: left; }
   .tabCon { clear: both; padding: 20px 0 0 0; }
@@ -4092,4 +4269,16 @@
     border: solid 1px #E4E7ED;
     background-color: #f5f7fa;
   }
+  /*套餐切换弹窗样式*/
+  .switchTitle{line-height: 50px; font-size:13pt;}
+  .switchButton{margin: 15px 0 0 0;}
+
+
+  .focusOn{color:red; margin:0 5px 0 0;}
+
+  /*验证提示弹窗*/
+  .tips ul{text-align: left;margin:-20px 0 30px 10px;line-height: 25px;padding: 0;}
+  .tips ul li{margin: 10px 0 10px 50px;height: 20px;}
+
+
 </style>

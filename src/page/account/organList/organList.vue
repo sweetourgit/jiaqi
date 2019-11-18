@@ -206,7 +206,12 @@ export default {
       updata: {
         radio: "1",
         lastStage: "2",
-        value: ''
+        value: '',
+        departmentCode: '',
+        sort: '',
+        phone: '',
+        fax: '',
+        note: ''
       },
       updata1: {},
       updataLabelWidth: "90px",
@@ -434,6 +439,7 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(res => {
+        console.log(res)
         if (res.data.objects !== "") {
           for (var i = 0; i < res.data.objects.length; i++) {
             this.remove1(res.data.objects[i].id);
@@ -518,6 +524,7 @@ export default {
     },
     // 单击tree节点
     treeClick(a, b, c) {
+      console.log(a)
       this.data = [];
       this.org = a.id;
       this.tableData = [];
@@ -536,6 +543,7 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(response => {
+        console.log(response)
         for (let i = 0; i < response.data.objects.length; i++) {
           if (response.data.objects[i].isDeleted !== 1) {
             _this.tableData.push({
@@ -557,6 +565,8 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(res => {
+        console.log("部门人员")
+        console.log(res)
         for(let i = 0;i<res.data.objects.length;i++){
           if(res.data.objects[i].sex == 1){
             res.data.objects[i].sex = '男'
@@ -651,6 +661,7 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(response => {
+        console.log(response)
         for (let i = 0; i < response.data.objects.length; i++) {
           if (response.data.objects[i].isDeleted !== 1) {
             if (response.data.objects[i].isLeaf == 1) {
@@ -702,7 +713,13 @@ export default {
     editDepartment1(id) {
       this.updata = {
         radio: "1",
-        lastStage: "2"
+        lastStage: "2",
+        value: '',
+        departmentCode: '',
+        sort: '',
+        phone: '',
+        fax: '',
+        note: ''
       }
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptget",{
         id: id
@@ -733,8 +750,7 @@ export default {
             this.updata.value = res.data.object.orgName
         }
         this.editDepartment = true;
-      }).catch(err => {})
-        console.log(err)
+        }).catch(err => {})
       }).catch(err => {});
     },
     handleCurrentChange(currentPage) {

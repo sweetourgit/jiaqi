@@ -1,99 +1,114 @@
 <template>
   <div class="supplierList">
-    <el-form :model="ruleForm" label-width="120px">
-      <div>
-        <el-form-item label="供应商名称" prop="supplierName" style="float:left;">
-          <el-input class="name_input" v-model="ruleForm.supplierName"placeholder="请输入供应商名称"></el-input>
-        </el-form-item>
-        <el-form-item label="ID" prop="supplierCard" style="float:left; margin:0 90px 0 90px;">
-          <el-input class="name_input" v-model="ruleForm.supplierCard"></el-input>
-        </el-form-item>
-        <el-form-item label="结算方式" prop="settlement" style="float:left;">
-          <!-- <el-input class="name_input" v-model="ruleForm.settlement"></el-input> -->
-          
-          <el-cascader :options="settlement" v-model="ruleForm.settlement" clearable></el-cascader>
-        </el-form-item>
+    <!--搜索栏-->
+    <div class="plan">
+      <div style="width:1140px;">
+        <div class="fl">
+          <span class="emptyPlan">供应商名称</span>
+          <el-input v-model="supplierName" class="empty" clearable placeholder="请输入团期计划"clearable></el-input>
+        </div>
+        <div class="fl" style="margin:0 90px 0 90px;">
+          <span class="emptyPlan">ID</span>
+          <el-input v-model="supplierCard" class="empty" clearable placeholder="请输入申请人"clearable></el-input>
+        </div>
+        <div class="fl">
+          <span class="emptyPlan">结算方式</span>
+          <el-select v-model="settlement" placeholder="请输入类型" class="empty"clearable>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlementType" :key="item.value"/>
+          </el-select>
+        </div>
       </div>
-      <div>
-        <el-form-item label="状态" prop="condition" style="float:left;">
-          <!-- <el-input class="name_input" v-model="ruleForm.condition"></el-input> -->
-          <el-select v-model="ruleForm.condition" placeholder="请选择结算方式">
-            <el-option v-for="item in condition" :key="item.value":label="item.label":value="item.value"></el-option>
+      <div style="width:1140px;">
+        <div class="fl">
+          <span class="emptyPlan">状态</span>
+          <el-select v-model="condition" placeholder="请输入类型" class="empty"clearable>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of conditionType" :key="item.value" />
           </el-select>
-        </el-form-item>
-        <el-form-item label="类别" prop="category" style="float:left; margin:0 90px 0 90px;">
-          <!-- <el-input class="name_input" v-model="ruleForm.category"></el-input> -->
-           <el-cascader :options="borrowingType" v-model="ruleForm.category" clearable></el-cascader>
-        </el-form-item>
-        <el-form-item label="可见区域" prop="visibleArea" style="float:left;">
-          <!-- <el-input class="name_input" v-model="ruleForm.visibleArea"></el-input> -->
-          <el-select v-model="ruleForm.visibleArea" placeholder="请选择结算方式">
-            <el-option v-for="item in condition" :key="item.value":label="item.label":value="item.value"></el-option>
+        </div>
+        <div class="fl" style="margin:0 90px 0 90px;">
+          <span class="emptyPlan">类别</span>
+          <el-select v-model="category" placeholder="请输入类型" class="empty"clearable>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of borrowingType" :key="item.value"/>
           </el-select>
-        </el-form-item>
+        </div>
+        <div class="fl">
+          <span class="emptyPlan">可见区域</span>
+          <el-select v-model="visibleArea" placeholder="请输入类型" class="empty"clearable>
+            <el-option :label="item.label" :value="item.value" v-for="(item,index) of visibleType" :key="item.value"/>
+          </el-select>
+        </div>
       </div>
       <div style="float:right; margin:0 0 30px 0;">
-        <el-button type="primary">搜索</el-button>
+        <el-button type="primary" @click="searchButton()">搜索</el-button>
         <el-button type="primary" plain @click="reset()">重置</el-button>
       </div>
-    </el-form>
+    </div>
+    <!--添加按钮-->
     <div style="clear:both;"><el-button type="primary" @click="addSupplier">添加</el-button></div>
     <!--表格-->
-    <el-table :data="tableData" border class="tableData">
+    <el-table :data="tableData" border class="tableData" :header-cell-style="getRowClass">
       <el-table-column prop="id" label="ID" width="150"align="center"></el-table-column>
       <el-table-column prop="name" label="供应商名称" width="230"align="center"></el-table-column>
-      <el-table-column prop="userState" label="状态" width="100" align="center">
+      <el-table-column prop="userStateEX" label="状态" width="100" align="center">
         <template slot-scope="scope">
-          <div v-if="scope.row.userState=='正常'" style="color: #7F7F7F" >{{scope.row.userState}}</div>
-          <div v-if="scope.row.userState=='停用'" style="color: #FF4A3D" >{{scope.row.userState}}</div>
-          <div v-if="scope.row.userState=='待审核'" style="color: #33D174" >{{scope.row.userState}}</div>
+          <div v-if="scope.row.userStateEX=='正常'" style="color: #7F7F7F" >{{scope.row.userStateEX}}</div>
+          <div v-if="scope.row.userStateEX=='停用'" style="color: #FF4A3D" >{{scope.row.userStateEX}}</div>
+          <div v-if="scope.row.userStateEX=='待审核'" style="color: #33D174" >{{scope.row.userStateEX}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="supplierType" label="类型" width="150"align="center"></el-table-column>
-      <el-table-column prop="isMonthly" label="结算方式" width="150"align="center"></el-table-column>
-      <el-table-column prop="destinationID" label="所属部门" width="200"align="center"></el-table-column>
+      <el-table-column prop="supplierTypeEX" label="类型" width="150"align="center"></el-table-column>
+      <el-table-column prop="isMonthlyEX" label="结算方式" width="150"align="center"></el-table-column>
+      <el-table-column prop="orgName" label="所属部门" width="200"align="center"></el-table-column>
       <el-table-column label="操作" width="159" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-          <div class="table_line">|</div>
-          <el-button type="text" class="table_details" size="small">编辑</el-button>
-          <div class="table_line">|</div>
-          <el-button type="text" class="table_editor" size="small">删除</el-button>
+          <span class="cursor" @click="handleClick(scope.row.id)">详情</span>
+          <span>|</span>
+          <span class="cursor">编辑</span>
         </template>
       </el-table-column>
     </el-table>
-    <!--分页-->
-    <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+    <el-pagination class="pagination" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
+     </el-pagination>
     <!--添加弹窗-->
-    <el-dialog title="添加供应商" :visible.sync="supplierShow" width="1100px" custom-class="city_list" :show-close='false'> 
-      <div class="" style="position:absolute; top:8px; right:10px;">
-        <el-button @click="cancelAddSupplier()">取消</el-button>
-        <el-button type="primary">添加</el-button>
-      </div> 
+    <el-dialog :title="title" :visible.sync="supplierShow" width="1100px" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'> 
+      <div class="addButton">
+        <el-button @click="closeSupplier()">取消</el-button>
+        <el-button @click="saveModule('rformA')" type="primary">确定</el-button>
+      </div>
       <div class="basic">基本信息</div>
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" style="overflow:hidden; margin:20px 0 0 0;">
+      <el-form :model="ruleForm" :rules="rules" ref="rformA" label-width="120px" style="overflow:hidden; margin:20px 0 0 0;">
         <div style="float:left;">
           <el-form-item label="供应商名称" prop="name">
             <el-input class="name_input" v-model="ruleForm.name"></el-input>
           </el-form-item>
           <el-form-item label="公司可见性" prop="visible">
-            <el-cascader :options="visibles" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>
+            <el-select v-model="ruleForm.visible" placeholder="请选择" @change="companyList">
+              <el-option v-for="item in visibleType" :key="item.value":label="item.label":value="item.value"></el-option>
+            </el-select>
+            <!-- <el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader> -->
           </el-form-item>
           <el-form-item label="状态" prop="supplierState">
             <el-select v-model="ruleForm.supplierState" placeholder="请选择">
-              <el-option v-for="item in state" :key="item.value":label="item.label":value="item.value"></el-option>
+              <el-option v-for="item in conditionType" :key="item.value":label="item.label":value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="线路" prop="routeType">
+            <el-select v-model="ruleForm.routeType" placeholder="请选择">
+              <el-option v-for="item in pathType" :key="item.value":label="item.label":value="item.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="类别" prop="supplierType">
-            <el-cascader :options="borrowingType" v-model="ruleForm.supplierType" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>
+            <el-select v-model="ruleForm.supplierType" placeholder="请选择">
+              <el-option v-for="item in borrowingType" :key="item.value":label="item.label":value="item.value"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="结算方式" prop="supplierWay">
             <el-select v-model="ruleForm.supplierWay" placeholder="请选择">
-              <el-option v-for="item in visibles" :key="item.value":label="item.label":value="item.value"></el-option>
+              <el-option v-for="item in settlementType" :key="item.value":label="item.label":value="item.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="使用部门" prop="userDepartment">
-            <el-cascader :options="branch" v-model="ruleForm.userDepartment" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>
+            <el-cascader v-model="ruleForm.userDepartment" :options="options" :props="{ multiple: true }" clearable></el-cascader>
           </el-form-item>
           <el-form-item label="产品主要方向" prop="orientation">
             <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
@@ -103,8 +118,8 @@
           </el-form-item>
           <el-form-item label="附件" prop="supplierUpload">
             <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :file-list="fileList">
-    		  		<el-button size="small" type="primary">选择文件</el-button>
-    			  </el-upload>
+              <el-button size="small">上传文件</el-button>
+            </el-upload>
           </el-form-item>
         </div>
         <div style="float:right; margin:0 200px 0 0; overflow:hidden;">
@@ -131,7 +146,7 @@
           </el-form-item>
           <el-form-item label="供应商协议" prop="agreement">
             <el-select v-model="ruleForm.agreement" placeholder="请选择">
-              <el-option v-for="item in visibles" :key="item.value":label="item.label":value="item.value"></el-option>
+              <el-option v-for="item in agreement" :key="item.value":label="item.label":value="item.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="备注" prop="remark">
@@ -140,94 +155,92 @@
         </div>
       </el-form>
       <div class="basic" style="margin:15px 0 0 0;">账户信息</div>
-      <el-form :model="ruleForm_01" :rules="rules" ref="ruleForm" label-width="120px" style="overflow:hidden; margin:20px 0 0 0;">
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" style="overflow:hidden; margin:20px 0 0 0;">
         <div style="float:left;">
           <el-form-item label="汇款户名" prop="accountName">
-            <el-input class="name_input" v-model="ruleForm_01.accountName"></el-input>
+            <el-input class="name_input" v-model="ruleForm.accountName"></el-input>
           </el-form-item>
           <el-form-item label="开户行" prop="openingBank">
-            <el-input class="name_input" v-model="ruleForm_01.openingBank"></el-input>
+            <el-input class="name_input" v-model="ruleForm.openingBank"></el-input>
           </el-form-item>
         </div>
         <div style="float:right; margin:0 200px 0 0; overflow:hidden;">
           <el-form-item label="账号" prop="account">
-            <el-input class="name_input" v-model="ruleForm_01.account"></el-input>
+            <el-input class="name_input" v-model="ruleForm.account"></el-input>
           </el-form-item>
           <el-form-item label="备注" prop="note">
-            <el-input class="name_input" v-model="ruleForm_01.note"></el-input>
+            <el-input class="name_input" v-model="ruleForm.note"></el-input>
           </el-form-item>
         </div>
       </el-form>
-	  <div style="float:right; margin:0 200px 30px 0;">
-	  	<el-button type="primary" plain @click="emptyForm()">清空表单</el-button>
-	  	<el-button type="primary">添加账户</el-button>
-	  </div>
-      <el-table :data="tableDataBank" border class="tableDataBank">
-	      <el-table-column prop="cardName" label="汇款户名" width="109"align="center"></el-table-column>
-	      <el-table-column prop="bankName" label="开户行" width="150"align="center"></el-table-column>
-	      <el-table-column prop="cardNumber" label="账号" width="200"align="center"></el-table-column>
-	      <el-table-column prop="memo" label="备注" width="150"align="center"></el-table-column>
-	      <el-table-column label="操作" width="200" align="center">
-	        <template slot-scope="scope">
-	          <el-button @click="handleClick(scope.row)" type="text" size="small" class="balk_details">编辑</el-button>
-	          <div class="table_line">|</div>
-	          <el-button type="text" class="table_editor" size="small">删除</el-button>
-	        </template>
-	      </el-table-column>
-	    </el-table>
+      <div style="float:right; margin:0 200px 30px 0;">
+        <el-button type="primary" plain @click="emptyForm()">清空表单</el-button>
+        <el-button type="primary" @click="addEmty()">添加账户</el-button>
+      </div>
+      <el-table :data="tableDataBank" border class="tableDataBank" :header-cell-style="getRowClass">
+        <el-table-column prop="cardName" label="汇款户名" width="109"align="center"></el-table-column>
+        <el-table-column prop="bankName" label="开户行" width="150"align="center"></el-table-column>
+        <el-table-column prop="cardNumber" label="账号" width="200"align="center"></el-table-column>
+        <el-table-column prop="memo" label="备注" width="150"align="center"></el-table-column>
+        <el-table-column label="操作" width="200" align="center">
+          <template slot-scope="scope">
+            <el-button @click="handleClick(scope.row)" type="text" size="small" class="balk_details">编辑</el-button>
+            <div class="table_line">|</div>
+            <el-button type="text" @click.native.prevent="deleteEmty(scope.$index, tableDataBank)" class="table_editor" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-dialog>
+
   </div>
 </template>
 
 <script>
+  let id = 0;
   export default {
     data(){
       return{
-        //表格数据
-        tableData: [],
-        //银行表格
-        tableDataBank:[{
-        	cardName:'1',
-        	bankName:'建行',
-        	cardNumber:'1234 1234 1234 1234 123',
-        	memo:'1'
-        }],
-        settlement: [{//结算方式
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-        condition:[{//状态
-          value:'正常',
-          label:'正常'
-        },{
-          value:'停用',
-          label:'停用'
-        },{
-          value:'待审核',
-          label:'待审核'
-        }],
-        //分页
-        currentPage: 1,
-        total:0,
-        pagesize:10,
-        //添加弹窗
-        supplierShow:false,
+        aaa: 1, 
+        props:{},     
+        /*props: {
+          lazy: true,
+          _this: this,
+          multiple: true, checkStrictly: true,
+          lazyLoad(node, resolve) {
+            const { level } = node;
+            let nId =204;
+            if (level > 0) {
+               nId = node.value;              
+            }
+            console.log(nId);
+            this._this.$http
+            .post(this._this.GLOBAL.serverSrc + "/org/api/deptlist", {
+              object: {
+                ParentID: nId
+              }
+            })
+            .then(res => {
+            let data = res.data.objects.map(v => {
+              return {
+                label: v.orgName,
+                value: v.id,
+              };
+            });
+            resolve(data);
+            });
+          }
+        },*/
+        supplierName:'',//搜索框供应商名称
+        supplierCard:'',//搜索框ID
+        settlement:'',//搜索框结算名称
+        condition:'',//搜索框状态
+        category:'',//搜索框类别
+        visibleArea:'',//搜索框可见区域
         ruleForm:{
           name:'',
           visible:'',
           supplierState:'',
+          routeType:'',
           supplierType:'',
           supplierWay:'',
           userDepartment:'',
@@ -243,332 +256,333 @@
           operator:'',
           agreement:'',
           remark:'',
-          supplierName:'',
-          supplierCard:'',
-          settlement:'',
-          condition:'',
-          category:'',
-          visibleArea:'',
+          accountName:'',
+          openingBank:'',
+          account:'',
+          note:''
         },
+        conditionType:[{//状态
+          value:'1',
+          label:'正常'
+        },{
+          value:'2',
+          label:'停用'
+        },{
+          value:'0',
+          label:'待审核'
+        }],
         ruleForm_01:{
-        	accountName:'',
-        	openingBank:'',
-        	account:'',
-        	note:''
+          accountName:'',
+          openingBank:'',
+          account:'',
+          note:''
         },
-        rules:{
-          name: [{ required: true, message: '请输入借款人名字', trigger: 'blur' }],
-          visible:[{ required: true, message: '请选择可共享的部门', trigger: 'blur' }],
-          supplierState: [{ required: true, message: '请输入借款人名字', trigger: 'blur' }],
-          supplierType:[{ required: true, message: '请选择可共享的部门', trigger: 'blur' }],
-          supplierWay: [{ required: true, message: '请输入借款人名字', trigger: 'blur' }],
-          userDepartment:[{ required: true, message: '请选择可共享的部门', trigger: 'blur' }],
-          accountName:[{ required: true, message: '请输入汇款户名', trigger: 'blur' }],
-          openingBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
-          account:[{ required: true, message: '请输入账号', trigger: 'blur' }]
+        rules:{//验证
+          name: [{ required: true, message: '供应商名称不能为空', trigger: 'blur' },
+                 { min: 0, max: 40, message: '供应商名称字数不能超过40字', trigger: 'change' },],
+          visible:[{ required: true, message: '公司可见性不能为空', trigger: 'blur' }],
+          supplierState:[{ required: true, message: '状态不能为空', trigger: 'blur' }],
+          routeType:[{ required: true, message: '线路不能为空', trigger: 'blur' }],
+          supplierType:[{ required: true, message: '类别不能为空', trigger: 'blur' }],
+          supplierWay:[{ required: true, message: '结算方式不能为空', trigger: 'blur' }],
+          userDepartment:[{ required: true, message: '使用部门不能为空', trigger: 'blur' }],
         },
-        visibles:[{//公司可见选择器
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-        state:[{
-        	value:'0',
-        	label:'等待审核'
+        //0settlement: [],//结算方式
+        condition:[{//状态
+          value:'正常',
+          label:'正常'
         },{
-        	value:'1',
-        	label:'正常'
+          value:'停用',
+          label:'停用'
         },{
-        	value:'2',
-        	label:'停用'
-        },],
-        borrowingType:[],//供应商类别
-        branch: [{//使用部门选择器
-          value: 'zhinan',
-          label: '指南',
-          children: [{
-            value: 'shejiyuanze',
-            label: '设计原则',
-            children: [{
-              value: 'yizhi',
-              label: '一致'
-            }, {
-              value: 'fankui',
-              label: '反馈'
-            }, {
-              value: 'xiaolv',
-              label: '效率'
-            }, {
-              value: 'kekong',
-              label: '可控'
-            }]
-          }, {
-            value: 'daohang',
-            label: '导航',
-            children: [{
-              value: 'cexiangdaohang',
-              label: '侧向导航'
-            }, {
-              value: 'dingbudaohang',
-              label: '顶部导航'
-            }]
-          }]
-        }, {
-          value: 'zujian',
-          label: '组件',
-          children: [{
-            value: 'basic',
-            label: 'Basic',
-            children: [{
-              value: 'layout',
-              label: 'Layout 布局'
-            }, {
-              value: 'color',
-              label: 'Color 色彩'
-            }, {
-              value: 'typography',
-              label: 'Typography 字体'
-            }, {
-              value: 'icon',
-              label: 'Icon 图标'
-            }, {
-              value: 'button',
-              label: 'Button 按钮'
-            }]
-          }, {
-            value: 'form',
-            label: 'Form',
-            children: [{
-              value: 'radio',
-              label: 'Radio 单选框'
-            }, {
-              value: 'checkbox',
-              label: 'Checkbox 多选框'
-            }, {
-              value: 'input',
-              label: 'Input 输入框'
-            }, {
-              value: 'input-number',
-              label: 'InputNumber 计数器'
-            }, {
-              value: 'select',
-              label: 'Select 选择器'
-            }, {
-              value: 'cascader',
-              label: 'Cascader 级联选择器'
-            }, {
-              value: 'switch',
-              label: 'Switch 开关'
-            }, {
-              value: 'slider',
-              label: 'Slider 滑块'
-            }, {
-              value: 'time-picker',
-              label: 'TimePicker 时间选择器'
-            }, {
-              value: 'date-picker',
-              label: 'DatePicker 日期选择器'
-            }, {
-              value: 'datetime-picker',
-              label: 'DateTimePicker 日期时间选择器'
-            }, {
-              value: 'upload',
-              label: 'Upload 上传'
-            }, {
-              value: 'rate',
-              label: 'Rate 评分'
-            }, {
-              value: 'form',
-              label: 'Form 表单'
-            }]
-          }, {
-            value: 'data',
-            label: 'Data',
-            children: [{
-              value: 'table',
-              label: 'Table 表格'
-            }, {
-              value: 'tag',
-              label: 'Tag 标签'
-            }, {
-              value: 'progress',
-              label: 'Progress 进度条'
-            }, {
-              value: 'tree',
-              label: 'Tree 树形控件'
-            }, {
-              value: 'pagination',
-              label: 'Pagination 分页'
-            }, {
-              value: 'badge',
-              label: 'Badge 标记'
-            }]
-          }, {
-            value: 'notice',
-            label: 'Notice',
-            children: [{
-              value: 'alert',
-              label: 'Alert 警告'
-            }, {
-              value: 'loading',
-              label: 'Loading 加载'
-            }, {
-              value: 'message',
-              label: 'Message 消息提示'
-            }, {
-              value: 'message-box',
-              label: 'MessageBox 弹框'
-            }, {
-              value: 'notification',
-              label: 'Notification 通知'
-            }]
-          }, {
-            value: 'navigation',
-            label: 'Navigation',
-            children: [{
-              value: 'menu',
-              label: 'NavMenu 导航菜单'
-            }, {
-              value: 'tabs',
-              label: 'Tabs 标签页'
-            }, {
-              value: 'breadcrumb',
-              label: 'Breadcrumb 面包屑'
-            }, {
-              value: 'dropdown',
-              label: 'Dropdown 下拉菜单'
-            }, {
-              value: 'steps',
-              label: 'Steps 步骤条'
-            }]
-          }, {
-            value: 'others',
-            label: 'Others',
-            children: [{
-              value: 'dialog',
-              label: 'Dialog 对话框'
-            }, {
-              value: 'tooltip',
-              label: 'Tooltip 文字提示'
-            }, {
-              value: 'popover',
-              label: 'Popover 弹出框'
-            }, {
-              value: 'card',
-              label: 'Card 卡片'
-            }, {
-              value: 'carousel',
-              label: 'Carousel 走马灯'
-            }, {
-              value: 'collapse',
-              label: 'Collapse 折叠面板'
-            }]
-          }]
-        }, {
-          value: 'ziyuan',
-          label: '资源',
-          children: [{
-            value: 'axure',
-            label: 'Axure Components'
-          }, {
-            value: 'sketch',
-            label: 'Sketch Templates'
-          }, {
-            value: 'jiaohu',
-            label: '组件交互文档'
-          }]
+          value:'待审核',
+          label:'待审核'
         }],
-        fileList: [{//申请无收入借款中附件信息
-          name: 'food.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-         }, {
-          name: 'food2.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-         }],
-         sid:0,
+        settlementType:[],//搜索框结算方式数字
+        borrowingType:[],//搜索框供应商类别数组
+        visibleType:[],//搜索框可见区域数组
+        pathType:[],//添加弹窗中线路数组
+        tableData:[],//表格
+        supplierShow:false,//添加弹窗
+        branch: [],//使用部门选择器
+        fileList: [],//添加供应商上传附件
+        agreement:[{//供应商协议
+          value:'1',
+          label:'是'
+          },{
+            value:'2',
+            label:'否'
+          }],
+        tableDataBank:[],//账户信息表格
+        title:"",//标题
+        //分页
+        currentPage: 1,
+        pagesize: 10, // 设定默认分页每页显示数
+        pageIndex: 1, // 设定当前页数
+        total: 0,
+        options:[],
       }
     },
     methods:{
-      handleClick(row) {//表格查看编辑
-        console.log(row);
+      //表格颜色
+      getRowClass({ row, column, rowIndex, columnIndex }) {
+        if (rowIndex == 0) {
+          return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+        } else {
+          return ''
+        }
+      },
+      //搜索框重置
+      reset(){
+        this.supplierName = "",//搜索框供应商名称
+        this.supplierCard = "",//搜索框ID
+        this.settlement = "",//搜索框结算名称
+        this.condition = "",//搜索框状态
+        this.category = "",//搜索框类别
+        this.visibleArea = ""//搜索框可见区域
+      },
+      //结算方式
+      settlemen(){
+        this.settlementType = [];
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=IsMonthly')
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.settlementType.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].name,
+            })
+          }
+        })
+        .then(res =>{
+          //that.settlementType =  res.data.objects;
+        }).catch(function(err){
+          console.log(err);
+        })
+      },
+      //供应商类别
+      themeList(){
+        this.borrowingType = [];
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=SupplierType')
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.borrowingType.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].name
+            })
+          }
+        })
+        .then(res =>{
+          //this.borrowingType =  res.data.objects;
+        }).catch(function(err){
+          console.log(err);
+        })
+      },
+      //可见区域
+      visible(){
+        this.visibleType = [];
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=CompanyArea')
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.visibleType.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].name
+            })
+          }
+        })
+        .then(res =>{
+          //this.borrowingType =  res.data.objects;
+        }).catch(function(err){
+          console.log(err);
+        })
+      },
+      companyList(){
+        this.userDeparType = [];
+        let sid = this.ruleForm.visible
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/companyarealist', {
+            "id":sid
+        })
+        .then(res => {
+          console.log(res)
+        }) 
+        this.aaaa();
+      },
+      aaaa(node, resolve){
+        this.options = [];
+        this.$http.post(this.GLOBAL.serverSrc + '/org/api/deptlist', {
+            "object": {
+              "ParentID": 210,
+              "isDeleted": 0
+            },
+        }).then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.options.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].orgName,
+              //"children":[res.data.objects[i].id,res.data.objects[i].orgName]
+            })
+          }
+
+          console.log(this.options)
+          
+         
+            /*let data = res.data.objects.map(v => {
+              return {
+                label: v.orgName,
+                value: v.id,
+              };         
+          })*/
+        //resolve(data);
+        });
+      },
+      /*visible(node, resolve){
+        this.visibleType = [];
+        let nId = 204;
+        this.$http.post(this.GLOBAL.serverSrc + '/org/api/deptlist', {
+          "object": {
+            "ParentID": nId,
+            "isDeleted": 0
+          },
+        })
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.visibleType.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].orgName
+            })
+          }
+        }).then(res =>{
+          //this.visibleType =  res.data.objects;
+        })
+      },*/
+
+      //线路
+      trails(){
+        this.pathType = [];
+        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=ProductArea')
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.pathType.push({
+              "value": res.data.objects[i].id,
+              "label": res.data.objects[i].name
+            })
+          }
+        })
+        .then(res =>{
+          //this.pathType =  res.data.objects;
+        }).catch(function(err){
+          console.log(err);
+        })
+      },
+      //添加供应商按钮
+      addSupplier(){
+        this.title="添加供应商";
+        this.supplierShow = true;
+      },
+      closeSupplier(){
+        this.supplierShow = false;
+      },
+      saveModule(formName){ //判断显示编辑或者添加弹窗
+         if(this.title == "添加供应商"){
+            this.addLabelTheme(formName);
+         }else{
+            this.editLabelTheme(formName);
+         }
+      },
+      addLabelTheme(formName){//添加一条供应商
+        let types = [];
+        types.push({
+          "id": 0,
+          "supplierType": this.ruleForm.supplierType,
+          "supplierID": 0
+        })
+         this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var _this = this;
+            this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierinsert",
+              {
+                "object": {
+                  "id": 0,
+                  "createTime": 0,
+                  "isDeleted": 0,
+                  "userState": this.ruleForm.supplierState,
+                  "name": this.ruleForm.name,
+                  "types":types,
+                  "productDirection": this.ruleForm.orientation,
+                  "isMonthly": this.ruleForm.supplierWay,
+                  "isAgree": this.ruleForm.agreement,
+                  "companyArea": this.ruleForm.visible,
+                  "productArea": this.ruleForm.routeType,
+                  "leader": this.ruleForm.principal,
+                  "phone": this.ruleForm.principalPhone,
+                  "legalPerson": this.ruleForm.legalPerson,
+                  "handPerson": this.ruleForm.handlers,
+                  "handPhone": this.ruleForm.handlersPhone,
+                  "billName": this.ruleForm.operator,
+                  "taxNumber": this.ruleForm.pactNumber,
+                  "expireTime": "2019-08-28",
+                  "memo": this.ruleForm.remark,
+                  "banks": [],
+                  "files": [],
+                }
+              })
+              .then(res => {
+                if(res.data.isSuccess == true){
+                   this.supplierPage();
+                   this.supplierShow = false
+                   this.$refs[formName].resetFields();
+                }else{
+                   this.$message.success("添加失败");
+                }
+            })
+          } else {
+            return false;
+          }
+        });
+      },
+      //申请
+      confirmSupplier(){
+
       },
       //分页
       handleSizeChange(page) {
         this.currentPage = 1;
         this.pagesize = page;
-        this.queryList();
+        this.supplierPage();
       },
       handleCurrentChange(currentPage) {
         this.currentPage = currentPage;
-        this.queryList();
+        this.supplierPage();
+      },
+      //搜索
+      searchButton(){
+        this.supplierPage();
       },
       //查询表格
-      queryList(){
+      supplierPage(supplierName=this.supplierName,supplierCard=this.supplierCard,settlement=this.settlement,condition=this.condition,category=this.category,visibleArea=this.visibleArea){
         var that = this
         this.$http.post(
           this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage",
           {
             "object": {
               "isDeleted": 0,
+              "name":supplierName,
+              "id":supplierCard == '' ? 0 : supplierCard,
+              "isMonthly":settlement == '' ? 0 : settlement,
+              "supplierType": category == '' ? -1 : category,
+              "UserState":condition == '' ? -1 : condition,
+              "companyArea":visibleArea == '' ? 1 : visibleArea
+              /*"isDeleted": 0,
+              "supplierType": -1,
+              "UserState":-1,*/
             },
             "pageSize":this.pagesize,
             "pageIndex": this.currentPage,
             "isGetAll": true,
-            "id": 0
+            "id": 0,
           },)
           .then(function (obj) {
             that.total = obj.data.total
             that.tableData = obj.data.objects
-            that.tableData.forEach(function (v,k,arr) {
-              let types='';
-              for(let i=0;i< arr[k].types.length;i++){
-                 types+=arr[k].types[i].supplierTypeEX;
-                 if(i!=arr[k].types.length-1){
-                  types+=','
-                 }
-              }
-              arr[k]['supplierType']=types;
-
-              if(arr[k]['userState'] == 0){
-                arr[k]['userState'] = '等待审核'
-              }else if(arr[k]['userState'] == 1) {
-                arr[k]['userState'] = '正常'
-              }else if(arr[k]['userState'] == 2) {
-                arr[k]['userState'] = '停用'
-              }
-              
-            })
-            console.log(obj.data.objects)
-          })
-          .catch(function (obj) {
-            console.log(obj)
-          })
-      },
-      //查询银行表格
-      banklist(){
-      	var that = this
-        this.$http.post(
-          this.GLOBAL.serverSrc + "/universal/supplier/api/banklist",
-          {
-            "object": {
-              "supplierID":this.sid,
-            }
-          },)
-          .then(function (obj) {
-            that.total = obj.data.total
-            that.tableDataBank = obj.data.objects
-            console.log(obj.data.objects)
           })
           .catch(function (obj) {
             console.log(obj)
@@ -576,100 +590,77 @@
       },
       //清空表单
       emptyForm(){
-      	this.ruleForm_01.accountName = "",
-      	this.ruleForm_01.openingBank = "",
-      	this.ruleForm_01.account = "",
-      	this.ruleForm_01.note = ""
+        this.ruleForm.accountName = "",
+        this.ruleForm.openingBank = "",
+        this.ruleForm.account = "",
+        this.ruleForm.note = ""
       },
-      //添加银行账户
-      addBank(){
+      //添加账户
+      addEmty(index, row){
+        if(this.ruleForm.accountName != '' && this.ruleForm.openingBank != '' && this.ruleForm.account != '' && this.ruleForm.note != ''){
+          this.tableDataBank.push({
+              "cardName" : this.ruleForm.accountName,
+              "bankName" : this.ruleForm.openingBank,
+              "cardNumber" : this.ruleForm.account,
+              "memo" : this.ruleForm.note
+          });
+          this.emptyForm();
+        }
+      },
+      //编辑账户
+      handleClick(index,rows){
+        /*this.ruleForm_01.accountName = this.cardName;
+        this.ruleForm_01.openingBank = this.bankName;
+        this.ruleForm_01.account = this.cardNumber;
+        this.ruleForm_01.note = this.memo;*/
+      },
+      //删除账户
+      deleteEmty(index, rows){
+        rows.splice(index, 1);
+      },
 
-      },
-      //供应商类型
-      themeList(){
-	      this.borrowingType = [];
-	      this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {}).then(res => {
-	        for (let i = 0; i < res.data.objects.length; i++) {
-	          this.borrowingType.push({
-	            "value": res.data.objects[i].id,
-	            "label": res.data.objects[i].name
-	          })
-	        }
-	      })
-	      .then(res =>{
-	        this.borrowingType =  res.data.objects;
-	      }).catch(function(err){
-	        console.log(err);
-	      })
-       },
-      //点击添加显示弹窗
-      addSupplier(){
-        this.supplierShow = true;
-        //this.banklist();
-        this.clear();
-      },
-      cancelAddSupplier(){//关闭添加弹窗
-        this.supplierShow = false;
-        this.clear();
-      },
-      clear(){//取消弹窗文本框清空
-      	this.ruleForm.name = "";
-	      this.ruleForm.visible = "";
-	      this.ruleForm.supplierState = "";
-	      this.ruleForm.supplierType = "";
-	      this.ruleForm.supplierWay = "";
-	      this.ruleForm.userDepartment = "";
-	      this.ruleForm.orientation = "";
-	      this.ruleForm.expireData = "";
-	      this.ruleForm.supplierUpload = "";
-	      this.ruleForm.legalPerson = "";
-	      this.ruleForm.pactNumber = "";
-	      this.ruleForm.handlers = "";
-	      this.ruleForm.handlersPhone = "";
-	      this.ruleForm.principal = "";
-	      this.ruleForm.principalPhone = "";
-	      this.ruleForm.operator = "";
-	      this.ruleForm.agreement = "";
-	      this.ruleForm.remark = "";
-      },
-      //搜索重置
-      reset(){
-        this.ruleForm.supplierName = "",
-        this.ruleForm.supplierCard = "",
-        this.ruleForm.settlement = "",
-        this.ruleForm.condition = "",
-        this.ruleForm.category = "",
-        this.ruleForm.visibleArea = ""
-      },
+
+      
+      
+      
     },
     
     mounted(){
-      this.queryList();
+      this.supplierPage();
     },
     created(){
       this.themeList();//供应商类别
+      this.settlemen();//结算方式
+      this.visible();//可见区域
+      this.trails();//线路
+      //this.companyList();
     },
- 
   }
 </script>
 
 <style scoped lang='stylus'>
   .supplierList{width:1140px;}
-  .tableData{width:1140px; margin:20px 0 0 0;}
-  /*表格操作*/
-  .table_details{float:left; margin:0 0 0 5px; color:#000;}
-  .table_line{float:left; margin:3px 10px 0 10px;}
-  .table_editor{float:left;}
-  /*分页*/
-  .pageList{float:right; margin:30px 0 30px 0;}
-  /*添加弹窗*/
-  .basic{font-size:12pt;}
+  /*搜索框样式*/
   .name_input{width:200px;}
-  
-  .upload-demo{width: 200px;}
-  .upload-demo>>>.el-upload-list__item{clear:both; margin:10px 0 0 0; width:100%;}
+  .empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; }
+  .fl{float:left; margin: 0 0 20px 0;}
+  .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
+  .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
+  .time{margin: 0 0 0 10px;}
+  .plan{font-size:14px;}
 
+  /*表格样式*/
+  .tableData{width:1140px; margin:20px 0 0 0;}
+  .cursor{cursor: pointer}
+  /*添加弹窗样式*/
+  .addButton{position:absolute; top:8px; right:10px;}
+  .basic{font-size:12pt;}
   /*银行表格*/
   .tableDataBank{width:810px;margin:15px 0 0 50px;overflow:hidden;}
   .balk_details{float:left; margin:0 0 0 50px; color:#000;}
+  .table_line{float:left; margin:3px 10px 0 10px;}
+  .table_editor{float:left;}
+  /*分页*/
+  .pagination{text-align:right;margin:30px 0 50px 0}
+
 </style>

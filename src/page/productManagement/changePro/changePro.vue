@@ -32,6 +32,7 @@
                 <el-button v-else class="input-new-tag" size="small" @click="showInput3">请输入出发地</el-button>
               </div>
               <span id="isNull" v-show="noNull">不能为空</span>
+              <span v-if="this.dynamicTags3 == '' && a != false" style="color: #f56c6c;font-size: 12px; position: absolute;top:30px;left: 10px;">不能为空</span>
             </el-form-item>
             <!-- 目的地 -->
             <el-form-item label="目的地" ref="destinations" style="clear:both;" label-width="120px">
@@ -45,6 +46,7 @@
                 <el-button v-else class="input-new-tag" size="small" @click="showInput4">请输入目的地</el-button>
               </div>
               <span id="zero" v-show="errorNull">不能为空</span>
+              <span v-if="this.dynamicTags4 == '' && a != false" style="color: #f56c6c;font-size: 12px; position: absolute;top:30px;left: 10px;">不能为空</span>
             </el-form-item>
             <!-- 行程天數 -->
             <div style="overflow:hidden">
@@ -95,9 +97,9 @@
                 <el-button v-else class="operation_Label" size="small" @click="showInput2">请输入运营标签</el-button>
               </div>
               <span id="empty" v-show="empty">不能为空</span>
-            </el-form-item>            
+            </el-form-item>
             <!-- 头图 -->
-            <el-form-item label="头图" prop="avatarImages" label-width="120px">
+            <!-- <el-form-item label="头图" prop="avatarImages" label-width="120px">
               <el-input v-model="ruleForm.avatarImages" disabled style="width:110px;float:left;margin-left:10px;position:relative">
               </el-input>
               <el-upload :on-preview="handleImgClick" class="upload-demo uploadimage" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit='1' accept=".jpg,.png,.gif" :on-remove="handleRemove">
@@ -108,7 +110,26 @@
                   上传
                 </el-button>
               </el-upload>
+            </el-form-item> -->
+            <!-- 头图 -->
+            <el-form-item label="头图" prop="avatarImages" label-width="120px">
+              <div class="img_upload">
+                <template v-for="(item, index) in ruleForm.avatarImages">
+                  <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
+                  <div class="img_div" :key="index" @click="imgDelete(item)">x</div>
+                </template>
+              </div>
+              <el-button class="img_button" type="info" @click="handleImgUpload">上传</el-button>
+              <div v-show="isImgUrlShow" class="show_div">
+                <img class="show_img" :src="imgUrlShow" alt="">
+              </div>
+              <span v-if="this.ruleForm.avatarImages == '' && a != false" style="position: absolute; top: 30px; left: 10px; font-size: 12px; color: #f56c6c;">头图不能为空</span>
             </el-form-item>
+            <!--头图弹窗-->           
+            <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
+              <MaterialList :imgData="imgData" v-on:checkList="checkList" v-on:closeButton="imgUpload = false"></MaterialList>
+            </el-dialog>
+
             <!-- 视频 -->
             <el-form-item label="视频" prop="video" label-width="120px">
               <el-input v-model="ruleForm.video" disabled style="width:110px;float:left;margin-left:10px;position:relative">
@@ -118,18 +139,29 @@
               </el-upload>
             </el-form-item>
             <!-- 轮播图 -->
-            <el-form-item label="轮播图" prop="slideshow" label-width="120px">
-              <el-input v-model="ruleForm.slideshow" disabled class="banner" placeholder="3-6张图片">
-              </el-input>
-              <el-upload :on-preview="slideshowClick" style="float:left;" method="post" action="http://192.168.1.168:6012/universal/supplier/api/upload" list-type="picture" :limit='6' accept=".jpg,.png,.gif" :on-remove="handleRemove2" :multiple="true">
-                <el-button type="info">
-                  <div v-show="isSlideshow" class="upload_div">
-                    <img class="upload_img" :src="this.slideshowUrl" alt="">
-                  </div>
-                  上传</el-button>
-              </el-upload>
-              <input id="fileItem" type="file" multiple style="float:left; margin-left:10px;">
+            <el-form-item label="轮播图" ref="slideshow" prop="slideshow" label-width="120px">
+              <span class="redStar">*</span>
+              <!-- <div class="img_upload_slideshow" :style="isInfo ? 'border: solid 1px #f56c6c;' : ''"> -->
+              <div class="img_upload_slideshow">
+                <template v-for="(item, index) in ruleForm.slideshow">
+                  <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShowAvatar(item)">
+                  <div class="img_div" :key="index" @click="imgDeleteAvatar(item)">x</div>
+                </template>
+              </div>
+              <el-button class="img_button" type="info" @click="handleImgUploadAvatar">上传</el-button>
+              <div v-show="isImgUrlShowAvatar" class="show_div">
+                <img class="show_img" :src="imgUrlShowAvatar" alt="">
+              </div>
+              <span v-if="isInfo" style="position: absolute; top: 30px; left: 10px; font-size: 12px; color: #f56c6c;">请选择3-6张图片</span>
+              <!-- <span v-if="this.ruleForm.slideshow == '' && a != false " style="position: absolute; top: 30px; left: 10px; font-size: 12px; color: #f56c6c;">请选择3-6张图片</span> -->
             </el-form-item>
+
+
+            <!--轮播图弹窗-->
+            <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUploadAvatar" custom-class="city_list">
+              <MaterialList :imgData="imgDataAvatar" :isType="true" v-on:isInfo="isInfoAvatar" v-on:checkList="checkListAvatar" v-on:closeButton="imgUploadAvatar = false"></MaterialList>
+            </el-dialog>
+
             <!-- 出游人群 -->
             <el-form-item label="出游人群" prop="Excursion" label-width="120px">
               <el-select v-model="ruleForm.Excursion" placeholder="请选择" class="Excursion-select">
@@ -195,7 +227,6 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="其他信息" name="fourth">
-
           <div class="cost">预订须知</div>
           <div>
             <div class="cost_button">
@@ -231,16 +262,15 @@
               </div>
             </div>
           </div>
-
         </el-tab-pane>
       </el-tabs>
     </el-form>
     <el-dialog title="提示信息" :visible.sync="dialogVadi" class="city_list tips" width="400px">
-          <div>
-             <ul v-for="item in validaError">
-               <li>{{item}}</li>
-             </ul>
-          </div>
+        <div>
+           <ul v-for="item in validaError">
+             <li>{{item}}</li>
+           </ul>
+        </div>
      </el-dialog>
   </div>
 </template>
@@ -248,14 +278,28 @@
 <script>
   // import BaseInfo from '@/page/productManagement/baseInfo/baseInfo'
   import {VueEditor} from 'vue2-editor'
+  import MaterialList from '@/common/Image'
   export default {
-    name: "listInfo",
+    name: "changePro",
     components: {
       // BaseInfo,
-      VueEditor
+      VueEditor,
+      MaterialList
     },
     data() {
+      var areaIdRule = (rule, value, callback) => {
+        console.log(value.length)
+        if(value.length == 0 || value.length < 3 || value.length > 6) {
+          this.isInfo = true;
+          callback();
+          //return callback(new Error('请选择3-6张图片'));
+        } else {
+          this.isInfo = false;
+          callback();
+        }
+      };
       return {
+        a: false,//头图不能为空
         validaError:[],
         dialogVadi:false,//验证提示弹窗
         qqq:[],
@@ -269,11 +313,13 @@
         tabIndex: 2,
         notes:[{
           title:'',
-          content:''
+          content:'',
+          menutype:2
         }],
         instructions:[{
           title:'',
-          content:''
+          content:'',
+          menutype:3
         }],
         explain:[{
           title:'费用包含',
@@ -323,6 +369,19 @@
         items: {
           text: ''
         },
+        //头图上传 ========
+        isImgUrlShow: false,
+        imgUrlShow: '', // 点击查看图片
+        imgUpload: false,     // 上传弹窗
+        imgData: [],
+        avatarImages: [], // 图片
+        // 轮播图上传 =======
+        isImgUrlShowAvatar: false,
+        imgUrlShowAvatar: '', // 点击查看图片
+        imgUploadAvatar: false,     // 上传弹窗
+        imgDataAvatar: [],
+        isInfo: false, // 验证
+        // 轮播图END =======
         //去程交通工具切换
         goRoad: [{
           value: '1',
@@ -437,8 +496,8 @@
           highlightWords2: '',
           highlightWords3: '',
           highlightWords4: '',
-          avatarImages: '',
-          slideshow: '',
+          avatarImages: [],
+          slideshow: [],
           hotelAuto: '',
           hotelChinese: '',
           hotelEnglish: '',
@@ -515,31 +574,36 @@
           schedules: []
         },
         rules: {
-          productNamel: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { min: 0, max: 30, message: '字数超过30汉字限制', trigger: 'blur' },
-            { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
+          productNamel: [{ required: true, message: '产品名称不能为空', trigger: 'blur' },
+                         { min: 0, max: 30, message: '产品名称字数超过30汉字限制', trigger: 'blur' },
+                         { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9【】，+/（]{1,29}([\u4e00-\u9fa5a-zA-Z0-9【】，+/）]{0,1})$/, message: '请输入正确产品名称，含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾' , trigger: 'blur'}],
           travelType: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          orderConfirmationType: [{ required: true, message: '不能为空', trigger: 'change' }],
+          // avatarImages:[{ required: true, message: '头图不能为空', trigger: 'change' }],
+          orderConfirmationType: [{ required: true, message: '订单确认类型不能为空', trigger: 'change' }],
           advanceRegistrationDays: [{ required: true, message: '提前报名天数不能为空', trigger: 'blur' },
             { pattern: /^[1-9]\d*$/, message: '提前报名天数需为正整数', trigger: 'blur' }],
-          highlightWords1: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords2: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords3: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          highlightWords4: [{ min: 0, max: 8, message: '字数超过8汉字限制', trigger: 'blur' }],
-          travelDays: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
-          travelNight: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数'}],
-          timeHour: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
-          timeMinute: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }],
+          highlightWords1: [{ required: true, message: '亮点词不能为空', trigger: 'blur' },
+                            { min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords2: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords3: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          highlightWords4: [{ min: 0, max: 8, message: '亮点词字数超过8汉字限制', trigger: 'blur' }],
+          travelDays: [{ required: true, message: '行程天数不能为空', trigger: 'change' },
+            { pattern: /^[1-9]\d*$/, message: '行程天数需为正整数' },
+             /* { min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' },*/],
+          travelNight: [{ required: true, message: '行程晚数不能为空', trigger: 'change' },
+            { pattern: /^[1-9]\d*$/, message: '行程晚数需为正整数' },
+            /*{ min: 0, max: 2, message: '字数超过2汉字限制', trigger: 'change' }*/],
+          stopDate:[{required: true, message: '经停时间不能为空', trigger: 'change'}],
+          stopCity:[{required: true, message: '经停城市不能为空', trigger: 'change'}],
+          // timeHour: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
+          //            { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
+          timeMinute: [{ required: true, message: '最晚收客时间不能为空', trigger: 'blur' },
+                       { pattern: /^[+]{0,1}(\d+)$/, message: '最晚收客时间需为正整数' }],
           operationLabel: [{ pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{1,300}$/, message: '不能有标点符号' }],
-          highlightWords: [{ required: true, message: '不能为空', trigger: 'blur' },
-            { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' }],
-          origin: [{ required: true, message: '不能为空', trigger: 'change' }],
-          bourn: [{ required: true, message: '不能为空', trigger: 'change' }],
+          highlightWords: [{ required: true, message: '套餐名不能为空', trigger: 'blur' },
+                           { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' }],
+          origin: [{ required: true, message: '行程出发地不能为空', trigger: 'change' }],
+          bourn: [{ required: true, message: '行程目的地不能为空', trigger: 'change' }],
           hotelAuto: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelChinese: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelEnglish: [{ required: true, message: '不能为空', trigger: 'blur' }],
@@ -549,27 +613,32 @@
           hotelHouse: [{ required: true, message: '不能为空', trigger: 'blur' }],
           hotelBed: [{ required: true, message: '不能为空', trigger: 'blur' }],
           pod: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          company: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          theNumber: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podCity:[{ required: true, message: '不能为空', trigger: 'blur' }],
-          pod: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podPlace: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          podTime: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arriveCity: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arrivePlace: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          arriveTime: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          company: [{ required: true, message: '航空公司/邮轮公司不能为空', trigger: 'blur' }],
+          theNumber: [{ required: true, message: '航班号/车次/邮轮号不能为空', trigger: 'blur' }],
+          podCity:[{ required: true, message: '出发城市不能为空', trigger: 'blur' }],
+          podPlace: [{ required: true, message: '出发机场/出发车站/出发码头不能为空', trigger: 'blur' }],
+          podTime: [{ required: true, message: '出发时间不能为空', trigger: 'blur' }],
+          arriveCity: [{ required: true, message: '到达城市不能为空', trigger: 'blur' }],
+          arrivePlace: [{ required: true, message: '到达机场/到达车站/到达码头不能为空', trigger: 'blur' }],
+          arriveTime: [{ required: true, message: '到达时间不能为空', trigger: 'blur' }],
           planeDay: [{ required: true, message: '不能为空', trigger: 'blur' }],
           trafficMode: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          day: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          day: [{ required: true, message: '请选择天数'}],
           typeExt: [{ required: true, message: '不能为空', trigger: 'blur' }],
           time: [{ required: true, message: '不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '不能为空', trigger: 'blur' }],
           details: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          // slideshow:[{ required: true, message: '不能为空', trigger: 'blur' }],
+          //slideshow:[{ validator: areaIdRule}],
           memo: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          details: [{ required: true, message: '不能为空', trigger: 'blur' }],
+          Details: [{ required: true, message: '住宿说明不能为空', trigger: 'blur' }],
           pictureID: [{ required: true, message: '不能为空', trigger: 'blur' }],
-          subject: [{ required: true, message: '不能为空', trigger: 'blur' }]
+          subject: [{ required: true, message: '日程信息主题不能为空', trigger: 'blur' },
+                    { min: 0, max: 20, message: '字数超过20汉字限制', trigger: 'blur' }],
+          mealDetails: [{ required: true, message: '餐饮说明不能为空', trigger: 'blur' }],
+          typeExtPrice: [{ pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/, message: '参考价格输入不正确'},
+                        { pattern: /^(\d+|\d+\.\d{1,2})$/, message: '参考价格输入不正确'}
+          ],
+          activeTime: [{ pattern: /^[0-9]+$/, message: '活动时间需为正整数'}],
         },
         //上传图片
         fileList2: [],
@@ -793,9 +862,9 @@
               that.ruleForm.highlightWords4 = obj.data.object.strengths[3].strength    //亮点词
             }
             that.dynamicTags2 = obj.data.object.label  //TODO 运营标签暂时不好使
-            that.ruleForm.avatarImages = obj.data.object.pictureID //TODO 基本信息头图不好使
+            //that.ruleForm.avatarImages = obj.data.object.pictureID //TODO 基本信息头图不好使
             that.ruleForm.video = obj.data.object.vedioID    //TODO 基本信息视频不好使
-            that.ruleForm.slideshow = "" //TODO 基本信息轮播不好使obj.data.object.pepeatpic
+            //that.ruleForm.slideshow = "" //TODO 基本信息轮播不好使obj.data.object.pepeatpic
             that.ruleForm.Excursion = obj.data.object.crowdID,//基本信息出游人群
             that.ruleForm.theme  =obj.data.object.themeID,//基本信息主题
             that.content_01 = obj.data.object.mark,
@@ -870,12 +939,16 @@
               that.explain.push(obj.data.object.instructions[t])
             }
             that.notes = []
-            for (let t = 0; t < obj.data.object.instructions.length; t++ ){
-              that.notes.push(obj.data.object.instructions[t])
+            for (let t = 0; t < obj.data.object.others.length; t++ ){
+              if(obj.data.object.others[t].menuType === 2){
+                that.notes.push(obj.data.object.others[t])
+              }
             }
             that.instructions = []
-            for (let t = 0; t < obj.data.object.instructions.length; t++ ){
-              that.notes.push(obj.data.object.instructions[t])
+            for (let t = 0; t < obj.data.object.others.length; t++ ){
+              if(obj.data.object.others[t].menuType === 3){
+                that.instructions.push(obj.data.object.others[t])
+              }
             }
           })
           .catch(function (obj) {
@@ -896,13 +969,15 @@
       getUEContent0(){
         this.notes.push({
           title: '',
-          content:''
+          content:'',
+          menutype:2
         });
       },
       getUEContent1(){
         this.instructions.push({
           title: '',
-          content:''
+          content:'',
+          menutype:3
         });
       },
       //删除预订须知
@@ -959,6 +1034,7 @@
       },
       //保存
       addsave(formName) {
+        this.a = true
         //基本信息亮点词
         let strengths=[];
         if(this.ruleForm.highlightWords1!=""){
@@ -1041,11 +1117,11 @@
             }
           ],*/
           instructions:this.explain.concat(this.domains), //费用说明
-          others:this.notes,
+          others:this.notes.concat(this.instructions),
           /*instructions1:this.notes, //预订须知,预留接口无字段？
           instructions2:this.instructions, //使用说明,预留接口无字段？*/
           loadPackage: true
-          
+
         }
         if(this.dynamicTags3.length==0||this.dynamicTags4.length==0){
            this.errors();
@@ -1060,16 +1136,13 @@
             ).then(function(response) {
               if(response.data.isSuccess==true){
                 _this.$message.success("修改成功");
-                _this.$router.push({path: "productList"});
+                _this.$router.push({path: "/productList/packageTour"});
               }else{
                 _this.$message.success("修改失败");
               }
-
-
             }).catch(function(error) {
               console.log(error);
             });
-
           }
           else{
             this.errors();
@@ -1091,6 +1164,8 @@
           }
           if(_this.dynamicTags4.length==0){
              _this.validaError.unshift("基本信息目的地不能为空");
+          }if(_this.ruleForm.avatarImages.length==0){
+             _this.validaError.unshift("头图不能为空");
           }
         },500);
       },
@@ -1112,7 +1187,7 @@
         for(var i=0;i<sche.length;i++){
           sche[i].ext_Hotel=JSON.stringify(sche[i].ext_Hotel);
         }
-      if(this.ruleForm.bourn.destination == undefined){ 
+      if(this.ruleForm.bourn.destination == undefined){
 
         this.ruleForm.mudidi = this.ruleForm.bourn
       }else{
@@ -1146,7 +1221,7 @@
             var _this = this;
             this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagesave", {
                 object: object
-              }, 
+              },
             ).then(function(response) {
               if(response.data.isSuccess==true){
                 _this.$message.success("修改成功");
@@ -1214,9 +1289,10 @@
       },
       // 取消
       cancel(){
-        this.$router.push({path: "productList"});
+        this.$router.push({path: "/productList/packageTour"});
       },
       handleClick(tab, event) {
+        this.ruleForm.nackPlane[0].day = this.ruleForm.travelDays
         if(event.target.getAttribute('id')=='tab-second'){
           //this.goDate.length = this.ruleForm.travelDays;
           this.goDate=[];
@@ -1241,6 +1317,81 @@
       tabTravel(myindex) {
         this.mynumber = myindex;
       },
+      //上传按钮
+      handleList(a) {
+        if (a.target.id != 'showDiv') {
+          this.isImgUrlShow = false;
+          this.isImgUrlShowAvatar = false;
+          this.isImgUrlShowImg = false;
+        }
+      },
+      // 点击图片查看
+      imgClickShow(data) {
+        this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
+            "id": data.img_ID,
+        }).then(res => {
+          this.isImgUrlShow = true;
+          this.imgUrlShow = "http://192.168.2.65:3009/upload" + res.data.object.url;
+        })
+      },
+      // 上传按钮
+      handleImgUpload(data){
+        console.log(this.ruleForm.avatarImages)
+        console.log(this.imgData)
+        this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
+        this.imgUpload = true;
+      },
+      // 点击删除图片
+      imgDelete(data) {
+        this.ruleForm.avatarImages.splice(this.ruleForm.avatarImages.indexOf(data), 1);
+      },
+      // 图片添加
+      checkList(data) {
+        this.ruleForm.avatarImages = data.map(v => {
+          return {
+            img_ID: v,
+          }
+        })
+      },
+      // 轮播图上传=================
+      // 点击图片查看
+      imgClickShowAvatar(data) {
+        this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
+            "id": data.img_ID,
+        }).then(res => {
+          this.isImgUrlShowAvatar = true;
+          this.imgUrlShowAvatar = "http://192.168.2.65:3009/upload" + res.data.object.url;
+        })
+      },
+      // 上传按钮
+      handleImgUploadAvatar() {
+        this.imgDataAvatar = this.ruleForm.slideshow.map(v => v.img_ID);
+        this.imgUploadAvatar = true;
+      },
+      // 点击删除图片
+      imgDeleteAvatar(data) {
+        this.ruleForm.slideshow.splice(this.ruleForm.slideshow.indexOf(data), 1);
+        if(this.ruleForm.slideshow.length >= 3 && this.ruleForm.slideshow.length <= 6){
+          this.isInfo = false;
+        }else{
+          this.isInfo = true;
+        }
+      },
+      // 图片添加
+      checkListAvatar(data) {
+        this.ruleForm.slideshow = data.map(v => {
+          return {
+            img_ID: v,
+          }
+        })
+      },
+      isInfoAvatar(data) {
+        this.isInfo = data;
+        if(!data) {
+          this.$refs.slideshow.clearValidate();
+        }
+      },
+      // 轮播图上传END=========
       //去程添加经停、删除经停
       stopping(index) {
         {
@@ -2015,5 +2166,49 @@
   .delete_button button:hover{color:#f56c6c; border: 1px solid #f56c6c;}
   .tab_size>>>.el-tabs__item{
     font-size: 25px;
+  }
+  .img_upload {
+    float: left;
+    min-width: 110px;
+    height: 40px;
+    margin-left: 10px;
+    border: solid 1px #E4E7ED;
+    background-color: #f5f7fa;
+  }
+  .img_button {
+    float: left;
+  }
+  .img_list {
+    float: left;
+    margin: 5px 0 0 10px;
+    width: 30px;
+    height: 30px;
+    user-select:none;
+  }
+  .img_list:hover {
+    cursor:pointer;
+  }
+  .img_div {
+    float: left;
+    margin: 9px 0 0 0;
+    border: solid 2px #717171;
+    width: 10px;
+    height: 18px;
+    text-align: center;
+    line-height: 16px;
+    font-size: 18px;
+    background: #FFFFFF;
+    user-select:none;
+  }
+  .img_div:hover {
+    cursor:pointer;
+  }
+  .img_upload_slideshow {
+    float: left;
+    min-width: 540px;
+    height: 38px;
+    margin-left: 10px;
+    border: solid 1px #E4E7ED;
+    background-color: #f5f7fa;
   }
 </style>

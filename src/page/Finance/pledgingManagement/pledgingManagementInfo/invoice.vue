@@ -2,33 +2,48 @@
   <div class="vivo" style="position:relative">
     <div class="table_trip" style="width: 90%;">
       <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
-        <el-table-column prop="invoice" label="发票" align="center">
+        <el-table-column prop="rec_sn" label="发票" align="center">
         </el-table-column>
         <el-table-column prop="invoiceInfo" label="发票信息" align="center">
+          <template slot-scope="scope">
+            <span>发票抬头：{{scope.row.title}}</span><br>
+            <span>纳税人识别号：{{scope.row.pay_taxes_no}}</span><br>
+            <span>手机号：{{scope.row.phone}}</span><br>
+            <span>地址：{{scope.row.address}}</span><br>
+            <span>开户行：{{scope.row.bank}}</span>
+          </template>
         </el-table-column>
         <el-table-column prop="voucher" label="凭证" align="center">
+          <template slot-scope="scope">
+            <p v-for="item in scope.row.file">
+              <a :href="item.url" target="_blank">{{item.name}}</a>
+            </p>
+          </template>
         </el-table-column>
-        <el-table-column prop="status" label="审批状态" align="">
+        <el-table-column prop="status" label="审批状态" align="center">
+          <template slot-scope="scope">
+            {{status[scope.row.approval_status]}}
+          </template>
         </el-table-column>
-        <el-table-column prop="approvalOpinions" label="审批意见" align="center">
+        <el-table-column prop="approval_comments" label="审批意见" align="center">
         </el-table-column>
-        <el-table-column prop="approvalAmount" label="审批金额" align="center">
+        <el-table-column prop="approval_money" label="审批金额" align="center">
         </el-table-column>
         <el-table-column prop="option" label="操作" align="center" width="300">
           <template slot-scope="scope">
             <el-button @click="details(scope.row)" size="small" class="table_details">详情</el-button>
-            <el-button @click="revoke(scope.row)" type="danger" size="small" class="table_details">撤销</el-button>
-            <el-button @click="adopt(scope.row)" type="success" size="small" class="table_details">通过</el-button>
-            <el-button @click="reject(scope.row)" type="warning" size="small" class="table_details">驳回</el-button>
+            <el-button @click="revoke(scope.row)" type="danger" size="small" class="table_details" v-if="scope.row.approval_status != 1 && noReimbursement">撤销</el-button>
+            <el-button @click="adopt(scope.row)" type="success" size="small" class="table_details" v-if="scope.row.approval_status == 1 && noReimbursement">通过</el-button>
+            <el-button @click="reject(scope.row)" type="warning" size="small" class="table_details" v-if="scope.row.approval_status == 1 && noReimbursement">驳回</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <!--分页-->
-    <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>
-      </el-pagination>
-    </div>
+    <!--<div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">-->
+      <!--<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>-->
+      <!--</el-pagination>-->
+    <!--</div>-->
     <el-dialog title="审批通过" :visible.sync="dialogVisible" width="500px" height="100%">
       <div class="header">
         <el-form>
@@ -38,7 +53,7 @@
         </el-form>
       </div>
       <div class="footer">
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="passSubmit">确 定</el-button>
         <el-button @click="dialogVisible = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -51,7 +66,7 @@
         </el-form>
       </div>
       <div class="footer">
-        <el-button type="primary" @click="dialogVisible2 = false">确 定</el-button>
+        <el-button type="primary" @click="rejectSubmit">确 定</el-button>
         <el-button @click="dialogVisible2 = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -65,17 +80,7 @@ export default {
   components: {
     InvoiceDetails
   },
-  props: {
-    reable: {
-      type: Boolean
-    },
-    transmit: {
-      type: Boolean
-    },
-    activeForm: {
-      type: Object
-    }
-  },
+  props: {},
   data() {
     return {
       total: 10, //总条数
@@ -88,57 +93,56 @@ export default {
       explain: '',
       content: '',
       pid: '',
-      tableData: [{
-        id: '1',
-        invoice: '发票1',
-        invoiceInfo: '发票抬头：国旅 纳税人识别号：123456 手机号：13988888888 地址：沈阳市和平区 开户行：建行',
-        voucher: '凭证1 凭证2',
-        status: '驳回',
-        approvalOpinions: '重新确认金额',
-        approvalAmount: '222.00',
-      }, {
-        id: '2',
-        invoice: '311234',
-        invoiceInfo: '发票抬头：国旅 纳税人识别号：123456 手机号：13988888888 地址：沈阳市和平区 开户行：建行',
-        voucher: '凭证1 凭证2',
-        status: '通过',
-        approvalOpinions: '重新确认金额',
-        approvalAmount: '222.00',
-      }, {
-        id: '3',
-        invoice: '311235',
-        invoiceInfo: '发票抬头：国旅 纳税人识别号：123456 手机号：13988888888 地址：沈阳市和平区 开户行：建行',
-        voucher: '凭证1 凭证2',
-        status: '驳回',
-        approvalOpinions: '重新确认金额',
-        approvalAmount: '222.00',
-      }, ],
+      tableData: [],
       form: {},
       currentRow: true,
+      status: {
+        1: '审批中',
+        2: '驳回',
+        3: '通过',
+      },
+      noReimbursement: true
     }
   },
   watch: {
-    transmit: function(val) {
-      this.currentRow = false
-    },
+
   },
   computed: {
     // 计算属性的 getter
   },
   methods: {
     details(row) {
-      this.pid = row['id']
-      this.dialogVisible3 = true
+      this.pid = row['id'];
+      this.dialogVisible3 = true;
     },
     revoke(row) {
+      const that = this;
       this.$confirm('是否撤销审批?', '提示', {
         confirmButtonText: '撤销',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '撤销成功!'
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/recstatus", {
+          "id": row['id'],
+          "approval_uid": sessionStorage.getItem('id'),
+          "status": "1",
+          "approval_comments": ''
+        }, ).then(function(response) {
+          console.log(response);
+          if (response.data.code == '200') {
+//        console.log(response);
+            that.$message.success("已撤销~");
+            that.dialogVisible = false;
+            that.loadData();
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("撤销失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
         });
       }).catch(() => {
         this.$message({
@@ -148,23 +152,77 @@ export default {
       });
     },
     reject(row) {
-      this.pid = row['id']
-      this.dialogVisible2 = true
+      this.pid = row['id'];
+      this.dialogVisible2 = true;
+    },
+    rejectSubmit(){
+      const that = this;
+//      alert(this.$parent.$parent.$parent.paramTour);
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/recstatus", {
+        "id": that.pid,
+        "approval_uid": sessionStorage.getItem('id'),
+        "status": "2",
+        "approval_comments": this.content
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+//        console.log(response);
+          that.$message.success("已驳回~");
+          that.dialogVisible2 = false;
+          that.loadData();
+          that.content = '';
+        } else {
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("驳回失败~");
+          }
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     },
     adopt(row) {
-      this.pid = row['id']
-      this.dialogVisible = true
+      this.pid = row['id'];
+      this.dialogVisible = true;
+    },
+    passSubmit(){
+      const that = this;
+//      alert(this.$parent.$parent.$parent.paramTour);
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/recstatus", {
+        "id": that.pid,
+        "approval_uid": sessionStorage.getItem('id'),
+        "status": "3",
+        "approval_comments": this.explain
+      }, ).then(function(response) {
+        console.log('shenhe通过',response);
+        if (response.data.code == '200') {
+//        console.log(response);
+          that.$message.success("审核通过~");
+          that.dialogVisible = false;
+          that.loadData();
+          that.explain = '';
+        } else {
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("审核失败~");
+          }
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     },
     closeAdd() {
-      this.pid = ''
-      this.dialogVisible = false
-      this.dialogVisible2 = false
-      this.dialogVisible3 = false
+      this.pid = '';
+      this.dialogVisible = false;
+      this.dialogVisible2 = false;
+      this.dialogVisible3 = false;
+      this.loadData();
     },
     //获取id
     clickBanle(row, event, column) {
-      this.currentRow = true
-      this.$emit('selection', false, row['oid'])
+      this.currentRow = true;
+      this.$emit('selection', false, row['oid']);
     },
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -174,18 +232,49 @@ export default {
         return ''
       }
     },
-    handleSizeChange(val) {
-      this.tableData = this.tableData
-      this.total = this.total
-    },
-
-    handleCurrentChange(val) {
-      this.tableData = this.tableData
-      this.total = this.total
-    },
+//    handleSizeChange(val) {
+//      this.tableData = this.tableData
+//      this.total = this.total
+//    },
+//    handleCurrentChange(val) {
+//      this.tableData = this.tableData
+//      this.total = this.total
+//    },
+//    数据加载 发票
+    loadData(){
+      const that = this;
+//      alert(this.$parent.$parent.$parent.paramTour);
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/receiptlist", {
+        "tour_no": this.$parent.$parent.$parent.paramTour,
+        "apply_type": 2,
+        "is_temp": 1,
+        "limit": 0
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log(response);
+          that.tableData = response.data.data.list;//还没渲染到页面
+          that.tableData.forEach(function (item, index, arr) {
+            item.file = JSON.parse(item.file);
+            console.log(item.file);
+            for(var i = 0; i < item.file.length; i++){
+              item.file[i].url = that.GLOBAL.serverSrcPhp + item.file[i].url;
+            }
+          })
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
   },
   created() {
-    this.$emit('getNumber', 12)
+//    this.$emit('getNumber', 12)
+    this.loadData();
+//    alert(this.$route.query.bill_status);
+    if(this.$route.query.bill_status == 5 || this.$route.query.bill_status == 6 || this.$route.query.bill_status == 7){
+      this.noReimbursement = false;
+    }
   }
 }
 

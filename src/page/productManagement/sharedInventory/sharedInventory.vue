@@ -5,7 +5,7 @@
     <div class="month">
         <ul class="date">
             <!--点击会触发pickpre函数，重新刷新当前日期 @click -->
-            <li class="arrow" @click="pickPre(currentYear,currentMonth)"><</li>
+            <li class="arrow" @click="pickPre(currentYear,currentMonth)"> < </li>
             <li class="year-month" >
                {{currentYear}}-{{currentMonth}}月
             </li>
@@ -38,7 +38,7 @@
                   <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                   <span v-else>{{ dayobject.day.getDate() }}</span>
                   
-                  <div class='person' v-for="(data,index) in dayobject.data.person" :key="index">  
+                  <div style="cursor:pointer;" class='person persons' v-for="(data,index) in dayobject.data.person" :key="index" @click="countClick(dayobject.data.person[index], false, dayobject.day)">  
                     <p class="more-breaking">{{data.name}}</p>
                     <p style="width:113px">库存余位:{{data.count}}/100</p>
                     <p>关联团期:{{data.relaInventory}}</p>
@@ -60,7 +60,7 @@
                   <span v-else>{{ dayobject.day.getDate() }}</span>
                   <!-- {{dayobject}} -->
                   <!--  -->
-                  <div class='person persons' v-for="(data,index) in dayobject.data.person" :key="index" @click="countClick(dayobject.data.person[index])">  
+                  <div class='person persons' v-for="(data,index) in dayobject.data.person" :key="index" @click="countClick(dayobject.data.person[index], true, dayobject.day)">  
                       <!-- v-show="dayobject.data.person.price" -->
                     <p class="more-breaking">{{data.name}}</p>
                     <p style="width:113px">库存余位:{{data.count}}/100</p>
@@ -124,6 +124,15 @@
       </div>
 
 
+      <div class="frameBottom">
+        <el-button v-show="isType" class="frameBottom-delete" type="danger" plain @click="handDelete">删除库存</el-button>
+        <div class="frameBottom-right ">
+          <el-button v-show="isType" plain @click="handSave">保存</el-button>
+          <el-button plain @click="dialogStock = false">取消</el-button>
+        </div>
+      </div>
+
+
 
       <!-- 计划信息 -->
       <div class="proList" :style="index != 0 ? 'margin-top: 20px;' : ''" v-for="(item, index) in planningInfo" :key="index">
@@ -146,15 +155,15 @@
             <span style="margin-left: -10px;">库存</span>
             <el-input v-if="data.checked" style="width: 120px;margin-left:30px" v-model="data.quota"></el-input>
             <el-input v-else style="width: 120px;margin-left:30px" v-model="data.quota" disabled></el-input>
-            <el-checkbox style="margin-left:30px;" v-model="data.checked">配额</el-checkbox>
+            <el-checkbox style="margin-left:30px;" v-model="data.checked" disabled>配额</el-checkbox>
           </div>
           <div>
             <span>销售价格</span>
-            <el-input style="width: 120px;margin-left:20px" v-model="data.price_01"></el-input>
+            <el-input :class="data.price_01 < addStocks.averageCost ? 'isAverage' : ''" style="width: 120px;margin-left:20px" v-model="data.price_01" disabled></el-input>
           </div>
           <div>
             <span>同业价格</span>
-            <el-input style="width: 120px;margin-left:20px" v-model="data.price_02"></el-input>
+            <el-input style="width: 120px;margin-left:20px" v-model="data.price_02" disabled></el-input>
           </div>
         </div>
         <!-- 报名类型信息ENG -->
@@ -164,13 +173,7 @@
 
 
 
-      <div class="frameBottom">
-        <el-button class="frameBottom-delete" type="danger" plain @click="handDelete">删除库存</el-button>
-        <div class="frameBottom-right ">
-          <el-button plain @click="dialogStock = false">取消</el-button>
-          <el-button plain @click="handSave">保存</el-button>
-        </div>
-      </div>
+      
     </el-dialog>
     <!-- 共享库存信息展示ENG -->
   </div>
@@ -184,6 +187,7 @@ export default {
   },
   data() {
     return {
+      isType: true,
       input: '',
       checked: true,
       checkeds: false,
@@ -477,11 +481,20 @@ export default {
       }
     },
     // 点击库存的时候
-    countClick(data){
+    countClick(data, isType, day){
+      this.isType = isType;
       this.dialogStock = true;
       this.addStocks.id = data.id;
       this.addStocks.name = data.name;
       this.addStocks.count = data.count;
+
+      let str = this.formatDates(
+            day.getFullYear(),
+            day.getMonth() + 1,
+            day.getDate()
+          )
+      this.addStocks.date = str;
+      
       this.addStocks.averageCost = data.averageCost;
       this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/list', {
         "object": {
@@ -498,11 +511,28 @@ export default {
       })
     },
     handSave() {
-      console.log(this.checked)
+      this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorysave', {
+        'object': {
+          'id': this.addStocks.id,
+          'name': this.addStocks.name,
+          'count': this.addStocks.count,
+          'averageCost': this.addStocks.averageCost == '' ? 0 : this.addStocks.averageCost,
+          "date": this.addStocks.date,
+          "share": 1,
+          "orgID": 0,
+        }
+      }).then(res => {
+        this.dialogStock = false;
+        this.handList();
+        this.$message({
+          message: '更改成功',
+          type: 'success'
+        });
+      })
     },
     /* 库存删除 */
     handDelete(){
-      if(this.planningInfo.length == 0){
+      if(this.planningInfo.length == 0){  
         this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorydelete', {
           "id":this.addStocks.id,
         }).then(res => {
@@ -734,14 +764,14 @@ body {
 }
 .frameBottom{
   height: 40px;
-  margin-top: 50px;
+  margin: 10px 0 20px 0;
 }
 .frameBottom-delete{
   margin-left: 10px;
 }
 .frameBottom-right{
   float: right;
-  margin-right: 10px;
+  margin-right: 70px;
 }
 .frameBottom-right button{
   width: 100px;
@@ -773,4 +803,7 @@ body {
     -webkit-box-orient: vertical;
     line-height: 15px;
 }
+.isAverage>>>.el-input__inner {
+    color: red !important;
+  }
 </style>

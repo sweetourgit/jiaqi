@@ -62,7 +62,7 @@ html{
 .router{float:left;margin:50px;font-size:25px;}
 .page-header{height:auto !important;padding:0px !important}
 .container{height: 100%;}
-.navigation{width:222px !important;}
+.navigation{width:222px !important;margin: 0 0 60px 0;}
 .content-body{margin-left: -22px; background: #F7F7F7; line-height: 100%; }
 .content-body1{margin: 18px 0 0 3px; background: #FFF; line-height: 100%; min-height: 94%;width:99.6%;}
 .content-position{border-left: 3px solid #F38F00; text-align: left; padding-left: 20px; font-size: 16px;height: 23px;line-height: 23px;margin: -3px 0 0 3px;}
@@ -82,4 +82,5 @@ body .el-table th.gutter{ display: table-cell!important; } /* 表格头部固定
 /*select下拉框样式*/
 .el-select-dropdown__item.hover, .el-select-dropdown__item:hover{background-color: #3095fa !important;color: #fff !important}
 .el-select-dropdown{background-color: #e9eaea !important}
+.navigation::-webkit-scrollbar { width: 0 !important } /* 隐藏导航栏滚动条 */
 </style>

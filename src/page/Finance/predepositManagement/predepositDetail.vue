@@ -5,41 +5,42 @@
            <div class="button">
              <el-button size="medium" @click="dialogFormDetail=false">取消</el-button>
              <el-button type="primary" size="medium">撤销</el-button>
-             <el-button type="primary" size="medium">编辑</el-button>
+             <!-- <el-button type="primary" size="medium">编辑</el-button> -->
            </div>
            <h1 class="title">基本信息</h1>
            <table class="essinfo">
              <tr>
                <td width="85">ID：</td>
-               <td width="250">123456</td>
+               <td width="250">{{formDate.id}}</td>
                <td width="85">创建人：</td>
-               <td width="250">阳阳</td>
+               <td width="250">{{formDate.createUser}}</td>
                <td width="85">创建时间：</td>
-               <td width="250">2019-12-23 12:23:23</td>
+               <td width="250">{{formDate.createTime}}</td>
              </tr>
              <tr>
                <td>客商名称：</td>
-               <td>竹园</td>
+               <td>{{formDate.name}}</td>
                <td>销售：</td>
-               <td>阳阳</td>
+               <td>{{formDate.saler}}</td>
                <td>收款方式：</td>
-               <td>账号收款</td>
+               <td v-show="formDate.collectionTypeEX == 1">账号收款</td>
+               <td v-show="formDate.collectionTypeEX == 2">现金收款</td>
              </tr>
              <tr>             
                <td>收款账号：</td>
-               <td>54651</td>
+               <td>{{formDate.accounts.cardNum}}</td>
                <td>开户名：</td>
-               <td>大运通</td>
+               <td>{{formDate.accounts.openingName}}</td>
                <td>开户行：</td>
-               <td>中国银行</td>
+               <td>{{formDate.accounts.openingBank}}</td>
              </tr>
              <tr>
                <td>金额：</td>
-               <td>123.12</td>
+               <td>{{formDate.cardNum}}</td>
                <td>剩余金额：</td>
-               <td>123.12</td>
+               <td></td>
                <td>储值卡：</td>
-               <td>12312</td>
+               <td>{{formDate.cardYesOrNo}}</td>
              </tr>
            </table>
            <h1 class="title">收款信息</h1>
@@ -62,6 +63,11 @@ export default {
   data() {
     return {
        dialogFormDetail:false,
+       formDate: {
+         accounts: {
+           cardNum: ''
+         }
+       },
        preList:[{
         "orderId":15151651,
         "orderCode":"asv-19990202-123",
@@ -84,7 +90,11 @@ export default {
         this.dialogFormDetail=false;
       },
       getDetail(predepositId){
-        console.log("查询...");
+         this.$http.post(this.GLOBAL.serverSrc + '/finance/introducingbroker/api/get', {
+            "id": predepositId
+         }).then(res => {
+           this.formDate = res.data.object;
+         })
       },
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {

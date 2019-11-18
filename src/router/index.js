@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import userList from '@/page/account/userList/userList'
+import userList1 from '@/page/account/userList/userList1'//临时文件
 import organList from '@/page/account/organList/organList'
 import role from '@/page/account/role/role'
 import perList from '@/page/account/perList/perList'
@@ -31,12 +32,19 @@ import sharedInventory from '@/page/productManagement/sharedInventory/sharedInve
 import changePro from '@/page/productManagement/changePro/changePro'
 import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
 import blacklist from '@/page/contentInfo/blacklist/blacklist'
+import workFlowList from '@/page/contentInfo/workFlowList/workFlowList'//工作流接口查询管理test
 import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
+import merchantInfo1 from '@/page/contentInfo/merchantInfo/merchantInfo1'
 import controlList from '@/page/contentInfo/priManagement/controlList'
 import priList from '@/page/contentInfo/priManagement/priList'
 import proList from '@/page/contentInfo/proList/proList'
 import orderList from '@/page/orderManagement/orderList/orderList'
 import externalOrderList from '@/page/orderManagement/externalOrderList/externalOrderList'
+import canRecognition from '@/page/orderManagement/externalOrderList/canRecognition'
+import noRecognition from '@/page/orderManagement/externalOrderList/noRecognition'
+import noCost from '@/page/orderManagement/externalOrderList/noCost'
+import recognitionMsg from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionMsg'
+// import recognitionDo from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionDo'
 import importHistory from '@/page/orderManagement/externalOrderList/importHistory'
 import loanManagement from '@/page/Finance/loanManagement/loanManagement'
 import advancePayment from '@/page/Finance/advancePayment/advancePayment'
@@ -48,10 +56,17 @@ import bankAccount from '@/page/Finance/bankAccount/bankAccount'
 import pledgingManagement from '@/page/Finance/pledgingManagement/pledgingManagement'
 import pledgingManagementApproval from '@/page/Finance/pledgingManagement/pledgingManagementApproval'
 import pledgingManagementSee from '@/page/Finance/pledgingManagement/pledgingManagementSee'
+import pledgingHistory from '@/page/Finance/pledgingManagement/pledgingHistory'
 import enrollTypeA from '@/page/contentInfo/enrollType/enrollTypeA'
 import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
-import checkSheet from '@/page/Finance/checkSheet/checkSheet' //报账单  by  张伊
-
+import checkSheet from '@/page/Finance/checkSheet/checkSheet'
+import packageTour from '@/page/productManagement/productList/tab/packageTour'
+import scenicOrTicketList from '@/page/productManagement/productList/tab/scenicOrTicketList'
+import listInfoEdit from '@/page/productManagement/listInfoScenic/listInfoEdit'
+import balanceOrder from '@/page/Finance/balanceOrder/balanceOrder'
+import distributorsInfo from'@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo'
+import gatheringDel from'@/page/Finance/collectionManagement/distributorsInfo/gatheringDel'
+import businessRecognitionManagement from'@/page/Finance/businessRecognitionManagement/businessRecognitionManagement.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -62,6 +77,13 @@ export default new Router({
       path: '/userList',
       component: userList,
       name: '用户列表',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
+      path: '/userList1',
+      component: userList1,
       meta: {
         keepAlive: true,
         auth: true
@@ -202,6 +224,14 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/merchantInfo1',
+      component: merchantInfo1,
+      name: '商户信息1',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
       path: '/priList',
       component: priList,
       name: '功能列表',
@@ -241,6 +271,14 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
+    },{
+      path: '/workFlowList',
+      component: workFlowList,
+      name: '工作流接口查询管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
     },
     {
       path: '/controlList',
@@ -254,10 +292,25 @@ export default new Router({
       path: '/productList',
       component: productList,
       name: '产品列表',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
+      children: [{
+        path: 'packageTour',
+        name: '跟团游',
+        component: packageTour,
+        meta: {
+          keepAlive: true,
+          auth: true
+        },
+      },
+        {
+          path: 'scenicOrTicketList',
+          name: '景区/票务',
+          component: scenicOrTicketList,
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+      ]
     }, {
       path: '/listInfo',
       component: baseInfo,
@@ -270,6 +323,14 @@ export default new Router({
       path: '/listInfoScenic',
       component: listInfoScenic,
       name: '添加景区/票务',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/listInfoEdit',
+      component: listInfoEdit,
+      name: '编辑景区/票务',
       meta: {
         keepAlive: true,
         auth: true
@@ -343,10 +404,32 @@ export default new Router({
       path: '/externalOrderList',
       component: externalOrderList,
       name: '外部订单',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
+      children: [{
+        path: 'canRecognition',
+        name: '外部订单  /可认款报账',
+        component: canRecognition,
+        meta: {
+          keepAlive: true,
+          auth: true
+        },
+      }, {
+          path: 'noRecognition',
+          name: '外部订单  /未认收款',
+          component: noRecognition,
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }, {
+          path: 'noCost',
+          name: '外部订单  /无成本',
+          component: noCost,
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+      ]
     }, {
       path: '/importHistory',
       component: importHistory,
@@ -356,6 +439,22 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/recognitionMsg',
+      component: recognitionMsg,
+      name: '订单管理/外部订单/认收款信息',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, /*{
+      path: '/recognitionDo',
+      component: recognitionDo,
+      name: '订单管理/外部订单/认收款信息/认收款',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },*/ {
       path: '/sharedInventory',
       component: sharedInventory,
       name: '共享库存',
@@ -417,9 +516,27 @@ export default new Router({
       }
     },
     {
+      path: '/gatheringDel',
+      component: gatheringDel,
+      name: ' 收款管理/详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path:'distributorsInfo',
+      component:distributorsInfo,
+      name:'分销商收款',
+      meta:{
+        keepAlive:true,
+        auth:true
+      }
+    },
+    {
       path: '/arrearsManagement',
       component: arrearsManagement,
-      name: '欠款管理',
+      name: '供应商欠款管理',
       meta: {
         keepAlive: true,
         auth: true
@@ -450,6 +567,14 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
+    },{
+      path: '/balanceOrder',
+      component: balanceOrder,
+      name: '欠款订单管理',
+      meta:{
+        keepAlive:true,
+        auth:true
+      }
     },
     {
       path: '/pledgingManagementApproval',
@@ -468,6 +593,14 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/pledgingHistory',
+      component: pledgingHistory,
+      name: '财务管理   / 财务认款管理   / 审批历史',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '/checkSheet',
       component: checkSheet,
       name: '报账单',
@@ -475,8 +608,15 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    },
-    {
+    }, {
+      path: '/businessRecognitionManagement',
+      component: businessRecognitionManagement,
+      name: '业务待认款管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '*',
       redirect: '/userList'
     }

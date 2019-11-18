@@ -11,6 +11,7 @@
         <!--清空-->
         <div style="float:left">
           <el-input placeholder="搜索标签名称" v-model="empty" class="empty" clearable></el-input>
+          <el-button class="primary" @click="search()" type="primary">搜索</el-button>
           <el-button class="primary" @click="emptyButton()" type="primary">重置</el-button>
         </div>
         <!--编辑删除主题-->
@@ -20,7 +21,8 @@
         </div>
         <div class="actionButton">
           <el-button @click="addLabel()">添加标签</el-button>
-          <el-button @click="editLabel()" :disabled="forbidden">编辑标签</el-button>
+          <!-- <el-button @click="editLabel()" :disabled="forbidden">编辑标签</el-button> -->
+          <el-button disabled>编辑标签</el-button>
           <el-button disabled>转移集合</el-button>
           <el-button @click="deleteLabel()" :disabled="forbidden">删除标签</el-button>
         </div>
@@ -49,6 +51,7 @@
           <el-form-item prop="highlightWords">
             <el-input style="width:180px;" maxlength=10 v-model="ruleForm.highlightWords" placeholder="10个字以内"></el-input>
             <span class="span1">{{ruleForm.highlightWords.length}}/10字</span>
+            <div style="text-align:left; color:red;line-height:25px;" v-if="this.ruleForm.highlightWords =='' && a !=false">不能为空</div>
           </el-form-item>
         </el-form>
       </div>
@@ -89,6 +92,8 @@
         <div class="gatherTitle">删除集合</div>
         <div class="gatherClose" @click="deleteGatherClose()">×</div>
       </div>
+      <div style="line-height:40px; text-align:center;margin:50px 0 0 0;">是否删除该集合</div>
+      <div style="line-height:40px; text-align:center;" v-if="this.tableData.length != 0">当前集合存在有标签,不能删除集合</div>
       <div class="judgeDelete">
         <el-button @click="deleteGatherClose()">取消</el-button>
         <el-button @click="deleteGather(ensure)" type="primary">确定</el-button>
@@ -127,7 +132,7 @@
   export default {
     data() {  
        return {
-        
+        a:false,
         editableTabsValue: '0',
         editableTabs: [],
         tabIndex: 0,
@@ -136,6 +141,7 @@
         tableData: [],
         multipleSelection: [],
         forbidden:true,
+        forbidden1:true,
         //分页
         currentPage: 1,
         total:0,
@@ -153,10 +159,10 @@
           highlightWords01:'',
         },
         rules:{
-          highlightWords:[
+          /*highlightWords:[
             { required: true, message: '不能为空', trigger: 'blur' },
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
-          ],
+          ],*/
           highlightWords01:[
             { required: true, message: '不能为空', trigger: 'blur' },
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
@@ -172,6 +178,8 @@
         editGatherShow:false,//编辑主题弹窗
         clickTab:'',//点击切换获取当前值
         sid:'',
+        typeName:'',
+        labelName:'',
        };   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         
@@ -243,11 +251,11 @@
         }else{
           this.forbidden=true;
         };
-        /*if(this.multipleSelection.length>0){
+        if(this.multipleSelection.length>0){//删除多选
           this.forbidden1=false;
         }else{
           this.forbidden1=true;
-        }*/
+        }
         //event.cancelBubble = true;//row-click和selection-change耦合事件
       },
       clickRow(row){    //选中行复选框勾选
@@ -273,12 +281,24 @@
       },
       //添加主题弹窗关闭、确定添加
       gatherClose(){
+        this.a = false;
         this.gatherShow = false;
         this.ruleForm.highlightWords='';
       },
       addGather() {
-        this.handleTabsEdit(this.tabIndex, "add");
-        this.addTheme();
+        this.a = true;
+        if(this.editableTabs.filter(v => this.ruleForm.highlightWords == v.typeName).length != 0) {
+          this.$message.error("添加失败,该标签已存在");
+          return;
+        }
+        if(this.ruleForm.highlightWords!=''){
+          this.handleTabsEdit(this.tabIndex, "add");
+          this.addTheme();
+        }else{
+          return 
+        }
+        // this.handleTabsEdit(this.tabIndex, "add");
+        // this.addTheme();
         //this.ruleForm.highlightWords='';
       },
       //删除主题弹窗关闭、确定删除
@@ -286,8 +306,12 @@
         this.deleteGatherShow = false;
       },
       deleteGather(ensure){
-        this.handleTabsEdit(this.tabIndex, "remove");
-        this.deleteTheme();
+        if(this.tableData.length == 0){
+          this.handleTabsEdit(this.tabIndex, "remove");
+          this.deleteTheme();
+        }else{
+          return 
+        }
       },
       deleteGatherTheme(){
         this.deleteGatherShow = true;
@@ -315,6 +339,7 @@
                     type:"success",
                     message:"添加成功"
                   })
+                  _this.editableTabsValue = String(_this.editableTabs.length - 1);
                   _this.ruleForm.highlightWords = '';
                   _this.gatherShow = false;
                   _this.pageList();
@@ -342,6 +367,7 @@
               type: "success",
               message: "删除成功!"
             });
+            _this.editableTabsValue = String(_this.editableTabs.length - 2);
             _this.deleteGatherShow = false;
             _this.pageList();
           })
@@ -351,7 +377,12 @@
       },
       //修改主题方法
       editTheme(){
-        var that = this
+        if(this.editableTabs.filter(v => this.ruleForm_01.highlightWords01 == v.typeName).length != 0) {
+          this.$message.error("修改失败,该标签已存在");
+          return;
+          }
+        if(this.ruleForm_01.highlightWords01 != ''){
+          var that = this
           this.$http.post(
             this.GLOBAL.serverSrc + "/universal/labletype/api/save",
             {
@@ -364,22 +395,22 @@
               }
             },
           )
-          .then(function (response) {
-            if(response.data.isSuccess == false){
-              _this.$message.error("修改失败,该标签已存在");
-            }
-            else{
-              _this.$message({
+          .then(res => {
+            if(res.data.isSuccess == false){
+              that.$message.error("修改失败,该标签已存在");
+            }else{
+              that.$message({
                 type:"success",
                 message:"修改成功"
               })
-              _this.editGatherShow = false;
-              _this.pageList();
+              that.editGatherShow = false;
+              that.pageList();
             }  
             })
-            .catch(function (obj) {
-              console.log(obj)
+            .catch(res => {
+              console.log(res)
             })
+       }
       },
       //关闭编辑主题弹窗
       editGatherClose(){
@@ -400,12 +431,17 @@
       //循环主题ID
       cycleId(){
         console.log("cycleId")
-        for(var i =0; i<this.editableTabs.length; i++){
-          if(i== this.editableTabsValue){
-            this.clickTab = this.editableTabs[i].typeName;
-            this.sid = this.editableTabs[i].id;            
-          }
-        }
+        // for(var i =0; i<this.editableTabs.length; i++){
+        //   if(i== this.editableTabsValue){
+        //     this.clickTab = this.editableTabs[i].typeName;
+        //     this.sid = this.editableTabs[i].id;            
+        //   }
+        // }
+        // let i = this.editableTabs.length;
+        // this.clickTab = this.editableTabs[i].typeName;
+        // this.sid = this.editableTabs[i].id;
+        this.clickTab = this.editableTabs[this.editableTabsValue].typeName;
+        this.sid = this.editableTabs[this.editableTabsValue].id; 
       },
       //添加、编辑列表弹窗
       saveModule(formName){ //判断显示编辑或者添加弹窗
@@ -435,6 +471,10 @@
         }) 
       },
       addLabelTheme(formName){//添加一条列表
+        if(this.tableData.filter(v => this.rformA.labelList == v.labelName).length != 0) {
+          this.$message.error("添加失败,该标签名称已存在");
+          return;
+        }
          this.$refs[formName].validate((valid) => {
           if (valid) {
             var _this = this;
@@ -464,7 +504,12 @@
         });
       },
       editLabelTheme(formName){//编辑一条列表
-        var that = this
+        if(this.tableData.filter(v => this.rformA.labelList == v.labelName).length != 0) {
+          this.$message.error("编辑失败,该标签名称已存在");
+          return;
+        }
+        if(this.rformA.labelList != ''){
+          var that = this
           this.$http.post(
             this.GLOBAL.serverSrc + "/universal/olabel/api/olabelsave",
             {
@@ -487,9 +532,10 @@
               this.$message.success(res.data.result.message);
          }
           })
-            .catch(function (obj) {
-              console.log(obj)
-            })
+        .catch(function (obj) {
+          console.log(obj)
+        })
+        }
       },
       deleteLabel(){ //删除Module
         this.$confirm("确认删除?", "提示", {
@@ -552,8 +598,11 @@
             console.log(obj)
           })
       },
+      search(){
+        this.themeList();
+      },
       //产品列表显示
-      themeList() {
+      themeList(empty=this.empty) {
         this.cycleId();
         var that = this
         this.$http.post(
@@ -564,7 +613,7 @@
             "total": 0,
             "object": {
               "id": 0,
-              "labelName": "",
+              "labelName": empty,
               "tagType": this.sid,
               "createTime": 0,
               "code": "string",
@@ -573,12 +622,13 @@
           },)
           .then(function (obj) {
             that.total = obj.data.total
-            that.tableData = obj.data.objects
+            //that.tableData = obj.data.objects
+            that.tableData = obj.data.objects == null ? [] : obj.data.objects 
             that.tabIndex = that.tableData.length
           //  that.editableTabsValue = that.editableTabs.length
           })
           .catch(function (obj) {
-            console.log(obj)
+            //console.log(obj)
           })
       },
     }
@@ -628,8 +678,8 @@
 .gatherClose{float:right; margin: 0 20px 0 0; font-size: 16pt; cursor:pointer; }
 .labelName{width: 400px; margin-left:auto; margin-right:auto; margin: 50px 0 0 0; text-align: center; }
 .el-form>>>.el-form-item{margin-bottom:0px;}
-.judge { padding: 30px 0 0 0; clear: both; text-align: center;}
-.judgeDelete { padding: 70px 0 0 0; clear: both; text-align: center;}
+.judge { padding: 15px 0 0 0; clear: both; text-align: center;}
+.judgeDelete { padding: 20px 0 0 0; clear: both; text-align: center;}
 /**/
 .actionButton .el-button{width:80px;padding: 0;line-height: 35px}
 .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}

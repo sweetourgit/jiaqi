@@ -68,7 +68,7 @@ export default {
       form: {
         positionName: ""
       },
-      formLabelWidth: "92px",
+      formLabelWidth: "102px",
       rules: {
         positionName: [{ required: true, message: '不能为空', trigger: 'blur' },
                       { pattern: /^[\u4e00-\u9fa5a-zA-Z0-9]{0,10}$/,message:'请输入10字以内的正确名称,含汉字、字母和数字' }]

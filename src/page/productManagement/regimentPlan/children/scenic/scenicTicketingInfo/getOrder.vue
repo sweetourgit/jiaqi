@@ -5,21 +5,25 @@
       <div class="totalMoney"><i class="el-icon-info"></i>总计：{{totalMoney}}元 </div>
       <div class="table_trip">
         <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
-          <el-table-column prop="oid" label="订单ID" align="center" width="80%">
+          <el-table-column prop="order_sn" label="订单ID" align="center">
           </el-table-column>
-          <el-table-column prop="title" label="产品名称" align="center">
+          <el-table-column prop="product_name" label="产品名称" align="center">
           </el-table-column>
-          <el-table-column prop="platform" label="分销商" align="center">
+          <el-table-column prop="distributor" label="分销商" align="center">
           </el-table-column>
           <el-table-column prop="cost" label="成本" align="center">
           </el-table-column>
           <el-table-column prop="income" label="收入" align="center">
           </el-table-column>
           <el-table-column prop="guestInformation" label="客人信息" align="center">
+            <template slot-scope="scope">
+              <span>取票人:{{scope.row.contact_name}}</span><br>
+              <span>手机:{{scope.row.contact_phone}}</span>
+            </template>
           </el-table-column>
-          <el-table-column prop="number" label="数量" align="center">
+          <el-table-column prop="quantity" label="数量" align="center">
           </el-table-column>
-          <el-table-column prop="money" label="申请金额" align="center">
+          <el-table-column prop="approval_money" label="申请金额" align="center">
             <!--<template slot-scope="scope">-->
               <!--<el-input v-model="scope.row.money" placeholder="申请金额"></el-input>-->
             <!--</template>-->
@@ -27,7 +31,7 @@
         </el-table>
       </div>
       <div class="footer">
-        <el-button @click="submitForm" type="primary" size="small" class="table_details">确定</el-button>
+        <!--<el-button @click="submitForm" type="primary" size="small" class="table_details">确定</el-button>-->
         <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
       </div>
     </el-dialog>
@@ -43,39 +47,23 @@ export default {
   },
   data() {
     return {
-      totalMoney: '222.00',
+      totalMoney: '0',
       receiptCode: '收款编码1', //收款编码
       approval: '未审批', //审批
       approvalOpinions: '',
       currentRow: true,
-      tableData: [{
-        id: '1',
-        oid: '311123',
-        title: '丹东百瀑峡门票（成人票）',
-        platform: '途牛',
-        cost: '111.00',
-        income: '111.00',
-        guestInformation: '取票人：阳阳 手机：1388888883',
-        number: '2',
-        money: '111.00',
-      }, {
-        id: '2',
-        oid: '311124',
-        title: '丹东百瀑峡门票（成人票）',
-        platform: '途牛',
-        cost: '111.00',
-        income: '111.00',
-        guestInformation: '取票人：阳阳 手机：1388888883',
-        number: '2',
-        money: '111.00',
-      }, ],
+      tableData: [],
     }
   },
   computed: {
     // 计算属性的 getter
   },
   watch: {
-
+    info: {
+      handler:function(){
+        this.loadData()
+      }
+    }
   },
   methods: {
     //获取id
@@ -99,7 +87,29 @@ export default {
         message: '提交成功!'
       });
     },
-
+    loadData(){
+      console.log(this.info);
+      const id = this.info.id;
+//      alert(id);
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/recognitioninfo", {
+        "id": id
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log(response);
+          that.tableData = response.data.data.order_list;
+          let total = 0;
+          response.data.data.order_list.forEach(function (item, index, arr) {
+            total += parseFloat(item.approval_money);
+          });
+          that.totalMoney = total;
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
   },
   created() {},
   mounted() {}

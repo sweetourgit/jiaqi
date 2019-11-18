@@ -8,15 +8,29 @@
               <span class="search_style">报销单号：</span> <el-input v-model="number" placeholder="请输入内容" class="search_input"></el-input>
               <span class="search_style">团期计划：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
               <span class="search_style">申请人：</span> <el-input v-model="accepter" placeholder="请输入内容" class="search_input"></el-input>
-              <span class="search_style">发起时间：</span> <el-input v-model="createtime1" placeholder="请输入内容" style="float: left; width: 100px"></el-input>
-              <span class="search__">—</span> <el-input v-model="createtime2" placeholder="请输入内容" style="float: left; width: 100px"></el-input>
+              <span class="search_style">发起时间：</span> 
+               <!-- <el-input v-model="createtime1" placeholder="请输入内容" ></el-input> -->
+                <el-date-picker
+                  style="float: left; width: 140px"
+                  v-model="createtime1"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
+              <span class="search__">—</span>
+                <el-date-picker
+                  style="float: left; width: 140px"
+                  v-model="createtime2"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
             </div>
             <div class="reform">
               <el-button type="primary">重置</el-button>
+              <el-button type="primary">搜索</el-button>
             </div>
             <div class="reform">
            <!--   <el-button type="primary" plain @click="dialogchange">申请报销</el-button>-->
-              <el-button type="primary" @click="dialogFind" plain>审批</el-button>
+              <!-- <el-button type="primary" @click="dialogFind" plain>审批</el-button> -->
             </div>
           </div>
           <div class="table_style">
@@ -48,16 +62,15 @@
                 align="center">
               </el-table-column>
               <el-table-column
-                prop="orinaze"
-                label="申请组织"
-                width="180"
-                align="center">
-              </el-table-column>
-              <el-table-column
                 prop="accpter"
                 label="申请人"
                 width="180"
                 align="center">
+              </el-table-column>
+              <el-table-column prop="qq" label="操作" width="180" align="center">
+                <template slot-scope="scope">
+                  <div @click="dialogFind" style="color: #f5a142">详情</div>
+                </template>
               </el-table-column>
             </el-table>
           </div>
@@ -95,7 +108,7 @@
           </el-form-item>
           <!--多报销-->
           <div>
-            <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" style="border: 1px solid #E4E7ED">
+            <el-tabs :editable="change ? false : true" v-model="editableTabsValue" type="card" @edit="handleTabsEdit" style="border: 1px solid #E4E7ED">
               <el-tab-pane
                 :key="item.name"
                 v-for="(item, index) in editableTabs"
@@ -112,21 +125,22 @@
                   <el-input v-model="ruleForm.monkey.count" placeholder="请输入或者选择报销金额" style="width: 240px;" :disabled="change"></el-input>
                 </el-form-item>
                 <el-form-item label="摘要" prop="contents">
-                  <el-input v-model="ruleForm.content" placeholder="请输入或者选择报销类型" style="width: 480px;" ></el-input>
+                  <el-input v-model="ruleForm.content" placeholder="请输入或者选择报销类型" style="width: 480px;" :disabled="change"></el-input>
                 </el-form-item>
                 <el-form-item label="附件" >
                   <el-upload
                     class="upload-demo"
                     action="https://jsonplaceholder.typicode.com/posts/"
                     :on-change="handleChange"
+                    :disabled="change"
                     :file-list="fileList">
                     <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
                   </el-upload>
                 </el-form-item>
-                <div class="re_style">
+                <!-- <div class="re_style">
                   <el-radio v-model="radio" label="1">关联单据</el-radio>
                   <el-radio v-model="radio" label="2">手添报销单据</el-radio>
-                </div>
+                </div> -->
                 <div v-if="radio==1">
                   <div class="re_style" style="margin-top: 20px">
                     <el-button @click="addbx" v-if="find==0">增加</el-button>
@@ -137,16 +151,17 @@
                     <el-table
                       :data="joinData"
                       border
+                      :header-cell-style="getRowClass"
                       style="width: 100%; margin-top: 30px">
                       <el-table-column
                         prop="id"
-                        label="关联单号"
+                        label="无收入借款或预付款ID"
                         width="80"
                       >
                       </el-table-column>
                       <el-table-column
                         prop="type"
-                        label="类型"
+                        label="借款类型"
                         width="90"
                       >
                       </el-table-column>
@@ -156,28 +171,21 @@
                         width="100"
                       >
                       </el-table-column>
-                      <el-table-column
-                        prop="bm"
-                        label="部门"
-                      >
-                      </el-table-column>
+                      
                       <el-table-column
                         prop="accpeter"
                         label="申请人"
                         width="80"
                       >
                       </el-table-column>
-                      <el-table-column
-                        prop="time"
-                        label="发起日期">
-                      </el-table-column>
+                      
                       <el-table-column
                         prop="content"
                         label="摘要">
                       </el-table-column>
                       <el-table-column
                         prop="count"
-                        label="金额">
+                        label="借款金额">
                       </el-table-column>
                       <el-table-column
                         prop="wcount"
@@ -187,9 +195,13 @@
                         prop="bcount"
                         label="报销金额">
                       </el-table-column>
+                      <el-table-column
+                        prop="bcount"
+                        label="人数">
+                      </el-table-column>
                     </el-table>
                   </div>
-                  <div class="re_style" style="margin-top: 30px; margin-bottom: 30px">报销金额：100.00</div>
+                  <!-- <div class="re_style" style="margin-top: 30px; margin-bottom: 30px">报销金额：100.00</div> -->
                 </div>
                 <div v-if="radio==2">
                   <div class="re_style" style="margin-top: 20px" >
@@ -238,9 +250,9 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button v-if="this.find == 1" type="primary"  @click="Transfer ('ruleForm')">转办</el-button>
-          <el-button v-if="this.find == 1" type="success"  @click="submitForm('ruleForm')">确 定</el-button>
-          <el-button  v-if="this.find == 1"  type="danger" @click="boSubmit('ruleForm')">驳回</el-button>
+          <!-- <el-button v-if="this.find == 1" type="primary"  @click="Transfer ('ruleForm')">转办</el-button> -->
+          <el-button v-if="this.find == 1" type="success"  @click="submitForm('ruleForm')">通 过</el-button>
+          <el-button  v-if="this.find == 1"  type="danger" @click="boSubmit('ruleForm')">驳 回</el-button>
         </div>
       </el-dialog>
       <!--报销弹窗end-->
@@ -404,14 +416,15 @@
       <!--添加报销弹窗end-->
       <!--驳回意见弹窗-->
       <el-dialog
-        title="请填写审批意见"
+        title="申请驳回"
         :visible.sync="dialogFormVisible4"
         width="30%"
       >
-       <textarea style="width: 500px; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
+      <span style="height: 132px;float:left;">驳回意见:</span>
+       <textarea style=" width: 400px; height: 132px; resize:none;margin-left: 13px;" placeholder="选填" >123123</textarea>
         <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
+        </span>
       </el-dialog>
       <!--驳回意见弹窗end-->
 
@@ -659,6 +672,13 @@
       };
     },
     methods: {
+      getRowClass({ row, column, rowIndex, columnIndex }) {
+        if(columnIndex == 7 || columnIndex == 8) {
+          return 'background:#FFFF00'
+        } else {
+          return ''
+        }
+      },
       //删除
       removeDomain(item) {
         var index = this.domains.indexOf(item)

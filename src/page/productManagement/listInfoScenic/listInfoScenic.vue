@@ -1,5 +1,5 @@
 <template>
-  <div class="vivo" style="position:relative;width:100%;">
+  <div class="vivo" style="position:relative;width:100%;" id="productDo">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
       <div class="btn" style="z-index:99;right:10%;height:50px;width: 100%;">
         <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">添加</el-button>
@@ -61,7 +61,7 @@ export default {
   methods: {
     // 取消
     cancel() {
-      this.$router.push({ path: "productList" });
+      this.$router.push({ path: "/productList/scenicOrTicketList" });
     },
     showInput() {
       this.errorNull = false
@@ -127,32 +127,33 @@ export default {
     },
     //保存
     addsave(formName) {
-      var object = []
+      let object = [];
       this.dynamicTags.forEach(function(v, k, arr) {
         object.push({
           "destination_id": arr[k]['destinationID'],
           "destination_name": arr[k]['destination']
         });
-      })
+      });
       this.$refs[formName].validate((valid) => {
 
         if (this.dynamicTags.length <= 0) {
-          this.errorNull = true
+          this.errorNull = true;
           return false;
         }
 
         if (valid) {
-          var _this = this;
+          var that = this;
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/product/product/add", {
             "product_name": this.ruleForm.productNamel, //基本信息产品名称,
             "create_uid": sessionStorage.getItem('id'),
             "destinations": object,
+            "org_id": sessionStorage.getItem('orgID')
           }, ).then(function(response) {
             if (response.data.code == '200') {
-              _this.$message.success("添加成功");
-              _this.$router.push({ path: "productList" });
+              that.$message.success("添加成功");
+              that.$router.push({ path: "productList/scenicOrTicketList" });
             } else {
-              _this.$message.success("添加失败");
+              that.$message.warning(response.data.message);
             }
           }).catch(function(error) {
             console.log(error);
@@ -167,22 +168,26 @@ export default {
 }
 
 </script>
-<style scoped>
-.address {
+<style>
+#productDo .address {
   display: none;
 }
 
-#zero {
+#productDo #zero {
   color: red;
 }
 
-.productName {
+#productDo .productName {
   width: 30%;
 }
 
-.btn-button {
+#productDo .btn-button {
   float: right;
   margin-left: 10px;
+}
+
+#productDo .destination-input .el-tag{
+  margin-right: 15px;
 }
 
 </style>

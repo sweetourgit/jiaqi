@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+
     <div class="leftSku" >
       <div style="font-size:20px;margin-left:40px;">Sku</div>
       <el-button style="margin-top:10px;margin-left:40px;width:220px;height: 64px;" :class="{'selectSku': ccc.includes(data.id)}" plain v-for="(data,index) in msgFather" :key="index"  @click="setMeal(data)">{{data.ddd}}</el-button>
@@ -10,13 +10,13 @@
     <div id="calendar" >
       <div style="margin-bottom: 10px;">
         <span>结算参考</span>
-        <span style="margin-left: 5px;color: red;">{{average}}</span>
+        <span style="margin-left: 5px;color: red;">{{average | numFilter}}</span>
       </div>
       <!-- 年份 月份 -->
       <div class="month">
         <ul class="date">
           <!--点击会触发pickpre函数，重新刷新当前日期 @click(vue v-on:click缩写) -->
-          <li class="arrow" @click="pickPre(currentYear,currentMonth)"><</li>
+          <li class="arrow" @click="pickPre(currentYear,currentMonth)" v-text="'<'"></li>
           <li class="year-month" >
             {{currentYear}}-{{currentMonth}}月
           </li>
@@ -28,7 +28,7 @@
           <span @click="handleWeekClick" style="float:left;padding:10px 20px;margin-left:8px;cursor: pointer;">周一 ~ 周五</span>
           <span @click="clearchecked" style="float:left;padding:10px 20px;margin-left:8px;cursor: pointer;">全部清除</span>
           <template v-if="rightTable">
-            <i style="float:left;padding:10px 10px;margin-left:25px;font-size:15px;font-style: normal;">已选{{n.length}}天</i>            
+            <i style="float:left;padding:10px 10px;margin-left:25px;font-size:15px;font-style: normal;">已选{{n.length}}天</i>
           </template>
         </div>
       </div>
@@ -60,7 +60,7 @@
                 <!--今天  同年同月同日-->
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
-                
+
                 <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index">
                   <p class='old'>{{data.name}}</p>
                   <p>销售价：{{data.salePrice}}</p>
@@ -85,11 +85,13 @@
                 <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                 <span v-else>{{ dayobject.day.getDate() }}</span>
                 <!--  -->
-                  <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index" v-if="index<=2">
+                  <div class='person' v-for="(data, index) in dayobject.data.person.planEnroll" :key="index" >
+                    <template v-if="index<=2">
                     <p class='old'>{{data.name}}</p>
                     <p>销售价：{{data.salePrice}}</p>
                     <p>同业价：{{data.traderPrice}}</p>
                     <!-- <p>已售/库存：0/0</p> -->
+                    </template>
                   </div>
               </div>
               <!--显示剩余多少数量-->
@@ -110,7 +112,7 @@
       <!-- 表单 -->
       <el-form :model="Rform" :rules="RformRuler" ref="Rform">
         <el-form-item label="报名类型:">
-          <el-select v-model="Rform.region" filterable placeholder="请选择" style="width:180px">
+          <el-select v-model="Rform.region" filterable placeholder="请选择" style="width:180px;margin:0 0 0 33px;">
             <el-option
               v-for="(item, index) in typeSelect"
               :label="item.name"
@@ -121,7 +123,7 @@
           <el-button size="mini" type="primary" @click="AddType">添加</el-button>
         </el-form-item>
         <el-form-item ref="resource" label="库存类型:" prop="resource">
-          <el-radio-group v-model="Rform.resource" @change="xuanze('2')">
+          <el-radio-group v-model="Rform.resource" @change="xuanze('2')" style="margin:0 0 0 22px;">
             <el-radio :disabled="forbidden" label="1">共享</el-radio>
             <el-radio  label="2">非共享</el-radio>
           </el-radio-group>
@@ -139,12 +141,12 @@
         </template>
         <!-- 非共享库存 -->
         <el-form-item label="总库存:" v-show='Rform.resource == "2"' prop="sumNum" style="margin-top:-15px;" >
-          <el-input v-model="Rform.sumNum" style="width:200px;" ></el-input>
+          <el-input v-model="Rform.sumNum" style="width:200px; margin:0 0 0 33px;" ></el-input>
         </el-form-item>
-        <el-form-item label="订单保留:" style="margin-top:20px">
-          <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:180px">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+        <el-form-item label="订单预留时长:" style="margin-top:20px">
+          <el-select v-model="Rform.orderRetain" placeholder="请选择" style="width:200px">
+            <el-option label="0-1" value="shanghai"></el-option>
+            <el-option label="1-2" value="beijing"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -239,7 +241,7 @@
         arr:[], // 右侧报名类型表单
         ccc: [], // sku套餐选择
         clickData: '', // 当前点击的日期
-        // 非共享库存验证 
+        // 非共享库存验证
         RformRuler: {
           sumNum: [
             { required: true, message: '请填写库存'},
@@ -270,6 +272,14 @@
         typeSelect: [], // 报名类型选择
         signUptypeSelect:[] // 共享库存数据
       };
+    },
+    // 结算参考保留小数点后两位
+    filters: {
+      numFilter (value) {
+        // 截取当前数据到小数点后两位
+        let realVal = parseFloat(value).toFixed(2)
+        return realVal
+      }
     },
     watch: {
       msgFather() {
@@ -656,6 +666,7 @@
             "packageID": id
           }
         }).then(res => {
+          console.log(res)
           this.days.forEach(item => {
             let str = this.formatDates(
               item.day.getFullYear(),
@@ -701,7 +712,7 @@
         //   this.days.forEach(item => {
         //     // if(item.day.getTime() > new Date().getTime() || item.day.getDate() == new Date().getDate()){
         //     //   if(item.day.getMonth() + 1 == this.currentMonth){
-                
+
         //     //   }
         //     // }
         //     let str = this.formatDates(
@@ -829,15 +840,25 @@
           })
         }
         // 查到非共享库存后执行修改计划
-        this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/save', {
+        this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorysave', {
           "object": {
-            "id": this.Rform.id,
-            "inventoryID": inventoryID,
-            "packageID": this.ccc[0],
-            "planEnroll": planEnroll,
-            "date": this.Rform.date,
-            "groupCode": this.msgFather[0].codePrefix + '-' + list.data.person.date + '-' + this.msgFather[0].codeSuffix,
+            "name": '',
+            "count": this.Rform.sumNum,
+            "share": 2,
+            "date": this.Rform.date
           }
+        })
+        .then(resSave =>{
+          this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/save', {
+            "object": {
+              "id": this.Rform.id,
+              "inventoryID": inventoryID,
+              "packageID": this.ccc[0],
+              "planEnroll": planEnroll,
+              "date": this.Rform.date,
+              "groupCode": this.msgFather[0].codePrefix + '-' + list.data.person.date + '-' + this.msgFather[0].codeSuffix,
+            }
+          })
         }).then(resSave => {
           let planEnrolls = [];
           planEnroll.forEach(delid => {
@@ -886,7 +907,7 @@
             this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorydelete', {
               "id": sumId
             }).then(resDelete => {
-              
+
             }).catch(errDelete => {
               console.log('删除非共享库存失败');
             })
@@ -1470,7 +1491,7 @@
       // 单击日历赋值调用
       selectType(day) {
         // 给选中类型赋值
-        let _planEnroll = day.data.person.planEnroll; 
+        let _planEnroll = day.data.person.planEnroll;
         for (let i = 0; i < _planEnroll.length; i++) {
           this.Rform.region = _planEnroll[i].enrollID + '-' + _planEnroll[i].name;
           this.AddType();
@@ -1485,7 +1506,7 @@
               this.arr[i].quota = true;
               this.arr[i].quotaPrice = _planEnroll[i].quotaPrice;
             }
-            
+
           }
         }
       },
@@ -1698,13 +1719,13 @@
             type: 'warning'
           });
         }
-        
+
       },
       // 删除卡片
       delect(item, index) {
         let _n = this.n[0];
         if (item.isModify) {
-          if (_n.data.person.planEnroll.length <= 1) {
+          if (_n.data.person.planEnroll.length <= 0) {
             console.log('剩一个类型时');
             // 删除最后一个类型时删除该计划
             this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/delete', {
@@ -1762,8 +1783,70 @@
             this.days[_n.index].data.person.share = '';
           }
         }
-        // this.arr.splice(index,1);
       },
+      // delect(item, index) {
+      //   let _n = this.n[0];
+      //   if (item.isModify) {
+      //     if (_n.data.person.planEnroll.length <= 1) {
+      //       console.log('剩一个类型时');
+      //       // 删除最后一个类型时删除该计划
+      //       this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/delete', {
+      //           "id": this.Rform.id
+      //       }).then(res => {
+      //         console.log(res);
+      //       })
+      //     } else {
+      //       this.arr.splice(index,1);
+      //       let planEnroll = [];
+      //       this.arr.forEach(data => {
+      //         let quotaPrice = '';
+      //         // 判断是否填写配额
+      //         if (data.quotaPrice == '') {
+      //           quotaPrice = 0;
+      //         } else {
+      //           quotaPrice = data.quotaPrice;
+      //         }
+      //         planEnroll.push({
+      //           'enrollID': data.id,
+      //           'enrollName': data.name,
+      //           'price_01': data.salePrice,
+      //           'price_02': data.traderPrice,
+      //           'quota': quotaPrice
+      //         })
+      //       })
+      //       // 有两个及以上的值删除调用修改接口
+      //       this.$http.post(this.GLOBAL.serverSrc + '/team/plan/api/save', {
+      //         "object": {
+      //           "id": this.Rform.id,
+      //           "inventoryID": _n.data.person.inventoryID,
+      //           "packageID": this.ccc[0],
+      //           "date": this.Rform.date,
+      //           "planEnroll": planEnroll
+      //         }
+      //       }).then(res => {
+      //         this.days[_n.index].data.person.planEnroll.splice(index,1);
+      //         let n = [];
+      //         n = this.days[_n.index];
+      //         this.n = [];
+      //         this.n.push(n);
+      //         this.$message.success('删除成功');
+      //       }).catch(err => {
+      //         console.log('删除(修改)计划失败');
+      //       })
+      //     }
+      //   } else {
+      //     this.arr.splice(index,1);
+      //     this.days[_n.index].data.person.planEnroll.splice(index,1);
+      //     let n = [];
+      //     n = this.days[_n.index]
+      //     this.n = [];
+      //     this.n.push(n);
+      //     if (_n.data.person.planEnroll.length <= 1) {
+      //       this.days[_n.index].data.person.share = '';
+      //     }
+      //   }
+      //   // this.arr.splice(index,1);
+      // },
       // 添加配额
       AddQuotas(index){
         this.arr[index].quota = true;
@@ -1856,6 +1939,7 @@
           this.n = [];
           this.rightTable = false;
           this.$message.success('添加成功');
+          this.$emit("merchandises", false);
         }
       },
       // 点击套餐Sku
@@ -1891,7 +1975,7 @@
             type: 'warning'
           });
         }
-        
+
       },
       // 获取报名类型
       initTypeSelect() {
@@ -1927,7 +2011,7 @@
   .person {
     width:100px;
     margin-top: 10px;
-    background: #f6f6f6; 
+    background: #f6f6f6;
   }
   .person p {
     color: #2c3e50;
@@ -2127,7 +2211,7 @@
     margin-top: 35px;
     margin-left: 35px;
     /* right: -360px; */
-    width: 339px;
+    width: 360px;
   }
   .clearfix{
     width:310px;
@@ -2161,6 +2245,6 @@
     margin-right: 3px;
   }
   .isAverage>>>.el-input__inner {
-    color: red;
+    color: red !important;
   }
 </style>

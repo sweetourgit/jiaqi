@@ -348,10 +348,6 @@ import Permission from '@/page/account/userList/addUser/permission'
             object: {
               ParentID: id
             }
-          },{
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            }
           }).then(response => {
             for (let i = 0; i < response.data.objects.length; i++) {
               if (response.data.objects[i].isDeleted !== 1) {

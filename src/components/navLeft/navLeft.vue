@@ -18,7 +18,8 @@
           <span class="actionName">{{item.name}}</span>
         </template>
         <template v-for="(data,index1) in item.items">
-          <el-menu-item class="suboptions" :index="data.value" :route="{path:data.router}"  :key="index1">{{data.value}}</el-menu-item>
+          <el-menu-item :class="{'is-active': $route.path.split('/')[1] == data.router.split('/')[1], 'suboptions' : true}" :index="data.value" :route="{path:data.router}"  :key="index1">{{data.value}}</el-menu-item>
+          <!--<el-menu-item class="suboptions" :index="data.value" :route="{path:data.router}"  :key="index1">{{data.value}}</el-menu-item>-->
         </template>
       </el-submenu>
     </el-menu>
@@ -105,6 +106,9 @@
                 },{
                   value:'报名类型B',
                   router:'/enrollTypeB'
+                },{
+                  value:'工作流接口查询管理',
+                  router:'/workFlowList'
                 }
               ]
             },
@@ -114,7 +118,7 @@
               items: [
                 {
                   value: '产品列表',
-                  router:'/productList'
+                  router:'/productList/packageTour',
                 },
                 {
                   value: '出行模板',
@@ -140,52 +144,60 @@
                 },
                 {
                   value: '外部订单',
-                  router:'/externalOrderList'
+                  router:'/externalOrderList/canRecognition'
                 },
               ],
             },
-          {
-            name: '财务管理',
-            img: 'order.png',
-            items: [
-              {
-                value: '无收入借款管理',
-                router:'/loanManagement'
-              },
-              {
-                value: '预付款管理',
-                router:'/advancePayment'
-              },
-              {
-                value: '收款管理',
-                router:'/collectionManagement'
-              },
-              {
-                value: '报销管理',
-                router:'/reimburseManagement'
-              },
-              {
-                value: '报账单',
-                router:'/checkSheet'
-              },
-              {
-                value: '欠款管理',
-                router:'/arrearsManagement'
-              },
-              {
-                value: '银行账号管理',
-                router:'/bankAccount'
-              },
-              {
-                value: '客商预存款管理',
-                router:'/predepositManagement'
-              },
-              {
-                value: '财务认款管理',
-                router:'/pledgingManagement'
-              },
-            ],
-          }
+            {
+              name: '财务管理',
+              img: 'order.png',
+              items: [
+                {
+                  value: '无收入借款管理',
+                  router:'/loanManagement'
+                },
+                {
+                  value: '预付款管理',
+                  router:'/advancePayment'
+                },
+                {
+                  value: '收款管理',
+                  router:'/collectionManagement'
+                },
+                {
+                  value: '报销管理',
+                  router:'/reimburseManagement'
+                },
+                {
+                  value: '报账单',
+                  router:'/checkSheet'
+                },
+                {
+                  value: '供应商欠款管理',
+                  router:'/arrearsManagement'
+                },
+                {
+                  value: '银行账号管理',
+                  router:'/bankAccount'
+                },
+                {
+                  value: '客商预存款管理',
+                  router:'/predepositManagement'
+                },
+                {
+                  value: '财务认款管理',
+                  router:'/pledgingManagement'
+                },
+                {
+                  value: '欠款订单管理',
+                  router:'/balanceOrder'
+                },
+                {
+                  value: '业务待认款管理',
+                  router:'/businessRecognitionManagement'
+                },
+              ],
+            }
         ],
         isRouter:true,
         menuNumber:[],
@@ -206,7 +218,7 @@
           }
         }
       }
-    },
+    }
   }
 }
 </script>
@@ -246,5 +258,8 @@
   background:#3095FA;
   display:block;
 }
+  .is-active{
+    color: #fff!important;
+  }
 </style>
 

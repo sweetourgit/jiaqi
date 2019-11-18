@@ -18,11 +18,24 @@
           </div>
           <div class="search_league">
             <span class="keyword">起始时间</span>
-            <el-input class="search_date_left" clearable v-model="dateLeft" placeholder="日期"></el-input>
+            <el-date-picker
+              class="search_date_left"
+              v-model="dateLeft"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+            <!-- <el-input class="search_date_left" clearable v-model="dateLeft" placeholder="日期"></el-input> -->
             <span class="search_date_span">——</span>
-            <el-input class="search_date" clearable v-model="dateRight" placeholder="日期"></el-input>
+            <el-date-picker
+              class="search_date"
+              v-model="dateRight"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+            <!-- <el-input class="search_date" clearable v-model="dateRight" placeholder="日期"></el-input> -->
           </div>
-          <el-button class="search_button" type="primary">重置</el-button>
+          <el-button class="search_button" type="primary">搜索</el-button>
+          <el-button class="search_button" type="primary" @click="reset">重置</el-button>
         </div>
         <el-button plain v-if="currentRow == ''" disabled class="see_button">查看关联单据</el-button>
         <el-button plain style="border:1px solid #3095fa;color:#3095fa;" v-else class="see_button" @click="handelList">查看关联单据</el-button>
@@ -55,6 +68,7 @@
         <!-- <detailsForm v-on:closeButton="dialogFormVisible = false" :currentRow="currentRow"></detailsForm> -->
         <AdvanceInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" :pid="pid" :typeList="typeList" :payModeList="payModeList" @close="closeAdd" :searchHandList="searchHand"></AdvanceInfo>
         <el-dialog width='1200px' top='10vh' title="无收入借款详情" :visible.sync="ischeckLoanManagement" :show-close="false">
+          <el-button style="position:absolute; top:8px; right:15px;" @click="closeCheck()">取消</el-button>
 	        <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
         </el-dialog>
 
@@ -70,7 +84,10 @@
           <span class="keyword">供应商</span>
           <el-input class="search_input" clearable v-model="supplier" placeholder="请输入供应商"></el-input>
         </div>
-        <div><el-button class="search_button" type="primary">重置</el-button></div>
+        <div>
+          <el-button class="search_button" type="primary">搜索</el-button>
+          <el-button class="search_button" type="primary" @click="handeleReset">重置</el-button>
+        </div>
         <el-button plain style="width: 100px;" v-if="supplierCurrentRow == ''" disabled class="see_button">查看</el-button>
         <el-button plain style="width: 100px;border:1px solid #3095fa;color:#3095fa;" v-else class="see_button" @click="handelSupplierList">查看</el-button>
 
@@ -215,6 +232,17 @@ export default {
         console.log(err);
       })
     },
+    formatDate: function(year, month, day, h, i, s) {
+      var y = year;
+      var m = month;
+      if (m < 10) m = "0" + m;
+      var d = day;
+      if (d < 10) d = "0" + d;
+      if (h < 10) h = "0" + h;
+      if (i < 10) i = "0" + i;
+      if (s < 10) s = "0" + s;
+      return y + "-" + m + "-" + d + " " + h + ':' + i + ':' + s;
+    },
     // 欠款列表页
     getData() {
       // 获取欠款列表
@@ -223,6 +251,11 @@ export default {
           "pageSize": this.pagesize,
           "object": {}
       }).then(res => {
+        console.log(res)
+        res.data.objects.map(v => {
+          let d = new Date(v.createTime);
+          v.createTime = this.formatDate(d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds());
+        })
         this.checkLabelList = res.data.objects;
         this.total = res.data.total;
       })
@@ -288,7 +321,23 @@ export default {
     supplierCurrentChange(currentPage) {
       this.supplierPage = currentPage;
       this.getData();
-    }
+    },
+    // 重置
+    reset() {
+      this.supplier = '';        // 搜索供应商
+      this.league = '';          // 搜索团期计划
+      this.handle = '';          // 搜索操作
+      this.dateLeft = '';        // 搜索起始时间左
+      this.dateRight = '';       // 搜索起始时间右
+    },
+    // 供应商欠款重置
+    handeleReset() {
+      this.supplier = '';
+    },
+    //关闭无收入窗口弹窗
+    closeCheck(){
+      this.ischeckLoanManagement = false;
+    },
   }
 }
 </script>
@@ -298,7 +347,7 @@ export default {
   /* width: 167px; */
 }
 .search_dom {
-  width: 1330px;
+  width: 1370px;
   margin: 30px 0 0 0;
 }
 .keyword {
@@ -317,10 +366,10 @@ export default {
   margin-left: 30px;
 }
 .search_date {
-  width: 90px;
+  width: 150px;
 }
 .search_date_left {
-  width: 90px;
+  width: 150px;
   margin-left: 10px;
 }
 .search_date_span {
