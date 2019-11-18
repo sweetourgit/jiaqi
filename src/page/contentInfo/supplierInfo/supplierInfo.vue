@@ -1088,7 +1088,6 @@ export default {
     //       //this.visibleType =  res.data.objects;
     //     })
     //   },
-
     //线路
     trails() {
       this.pathType = [];
@@ -1315,10 +1314,10 @@ export default {
       };
       if (this.editForm.agreement == "是"){
           this.editForm.agreement1 =1
-
-      } else if(this.editForm.agreement == "否"){
+      } else {
           this.editForm.agreement1 =2
       };
+
       if(this.editForm.visible == '集团共享'){
         this.editForm.visible1 = 1
       }else if(this.editForm.visible == '沈阳专享'){
