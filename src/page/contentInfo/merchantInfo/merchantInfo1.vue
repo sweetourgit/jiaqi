@@ -480,7 +480,7 @@
                 <td class="longWeight">{{ruleForm.deposit}}</td>
               </div>
               <td class="tr">额度：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.quota}}</td>
+              <td class="longWeight">{{AbouQuota}} <span v-if="ruleForm.quota !== 0">(剩余：{{toDecimal2(ruleForm.quota)}})</span></td>
             </tr>
             <br />
             <tr>
@@ -1761,7 +1761,7 @@ export default {
     addMerchan(ruleForm) {
       //判断商户其他名称是否具有唯一性 并且输个个数不可超过五十个
       if (this.businessOtherNamesArr.length !== 0) {
-        if (this.businessOtherNamesArr.length > 50) {
+        if (this.businessOtherNamesArr.length > 50) { 
           this.$message.error("商户其他名称不可超过50个");
           this.dialogFormVisible = true;
           return;
@@ -2215,6 +2215,7 @@ export default {
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
+          this.AbouQuota = object.abouQuota
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID
           this.businewwInfPageId = object.id;
