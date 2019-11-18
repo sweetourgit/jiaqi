@@ -73,12 +73,13 @@
 
       <div>
         <el-divider content-position="left">关联欠款</el-divider>
-        <div class="stepDv bottomDis">
+        <!--同业/直客 关联欠款-->
+        <div class="stepDv bottomDis" v-if="info.collectionType == 2 || info.collectionType == 1">
           <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
             <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
             <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
             <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-            <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
+            <el-table-column prop="date" label="出团日期" align="center"></el-table-column>
             <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
             <el-table-column prop="arrearsPrice" label="欠款金额" align="center"></el-table-column>
             <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
@@ -86,6 +87,23 @@
             <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
           </el-table>
         </div>
+        <!--同业/直客 end-->
+        <!--内部收款 关联欠款-->
+        <div class="stepDv bottomDis" v-if="info.collectionType == 5">
+          <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
+            <el-table-column prop="id" label="订单编号" align="center"></el-table-column>
+            <!--没有这个字段 suppliers 待解决-->
+            <el-table-column prop="suppliers" label="分销商" width="80" align="center"></el-table-column>
+            <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+            <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+            <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
+            <el-table-column prop="arrearsPrice" label="欠款金额" align="center"></el-table-column>
+            <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
+            <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
+            <el-table-column prop="matchingPrice" label="本次收款" align="center"></el-table-column>
+          </el-table>
+        </div>
+        <!--内部收款 end-->
       </div>
 
       <!--审批弹窗-->
