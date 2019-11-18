@@ -397,13 +397,7 @@ export default {
       uncollectedMoney: 0,
       examineMoney: 0,
       accountShow:false,//选择账户弹窗
-      accountTable:[{
-        accountType:'收款',
-        accountID:'洋洋',
-        accountCard:'123.00',
-        openingBank:'123.00',
-        accountHolder:'阳阳',
-      }],
+      accountTable:[],
       arrearsList: [],//关联欠款
       indent:'',//关联欠款订单号搜索
       indentPeople:'',//订单关联订单联系人搜索
@@ -452,7 +446,13 @@ export default {
           },)
           .then(function (obj) {
             that.accountTable = obj.data.objects
-            console.log(obj.data.objects)
+            that.accountTable.forEach(function (v,k,arr) {
+              if(arr[k]['cardType'] == 1){
+                arr[k]['cardType'] = '收款账户'
+              }else if(arr[k]['cardType'] == 2) {
+                arr[k]['cardType'] = '付款账户'
+              }
+            })
           })
           .catch(function (obj) {
             console.log(obj)

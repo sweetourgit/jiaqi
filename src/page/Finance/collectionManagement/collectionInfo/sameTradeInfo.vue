@@ -782,6 +782,13 @@ export default {
           },)
           .then(function (obj) {
             that.accountTable = obj.data.objects
+            that.accountTable.forEach(function (v,k,arr) {
+              if(arr[k]['cardType'] == 1){
+                arr[k]['cardType'] = '收款账户'
+              }else if(arr[k]['cardType'] == 2) {
+                arr[k]['cardType'] = '付款账户'
+              }
+            })
           })
           .catch(function (obj) {})
     },

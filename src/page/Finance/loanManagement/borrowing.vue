@@ -714,6 +714,39 @@ export default {
         cb(results)
       }).catch(err => {})
     },
+    // 团期计划输入框失去焦点时
+    tour_check() {
+      if (this.ruleForm.plan != '') {
+        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+          "pageIndex": 1,
+          "pageSize": 1,
+          "object": {
+            "groupCode": this.ruleForm.plan, // 团号
+            "title": '', // 产品名称
+            "beginDate": 0, // 搜索用开始日期
+            "endDate": 0, // 搜索用结束日期
+          }
+        }).then(res => {
+          if (res.data.isSuccess == true) {
+            this.product_name_pre = res.data.objects[0].title
+            this.ruleForm.plan_01 = res.data.objects[0].title
+            this.tour_id = res.data.objects[0].planID
+            this.getPaymentdetails(res.data.objects[0].planID)
+          }
+        }).catch(err => {
+          console.log(err)
+          this.product_name_pre = ''
+          this.ruleForm.plan_01 = ''
+        })
+      } else {
+        this.tableMoney = [];
+        this.tableIncome = [];
+        this.tablePayment = [];
+        this.tableEarning = [];
+        this.product_name_pre = ''
+        this.ruleForm.plan_01 = ''
+      }
+    },
     // 团期计划选中
     departurePlan(item) {
       this.tour_id = item.planID
@@ -976,34 +1009,6 @@ export default {
           //that.tableEarning.push(res.data.object)
         }
       }).catch(err => {})
-    },
-    // 团期计划输入框失去焦点时
-    tour_check() {
-      if (this.ruleForm.plan != '') {
-        this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
-          "pageIndex": 1,
-          "pageSize": 1,
-          "object": {
-            "groupCode": this.ruleForm.plan, // 团号
-            "title": '', // 产品名称
-            "beginDate": 0, // 搜索用开始日期
-            "endDate": 0, // 搜索用结束日期
-          }
-        }).then(res => {
-          if (res.data.isSuccess == true) {
-            this.product_name_pre = res.data.objects[0].title
-            this.ruleForm.plan_01 = res.data.objects[0].title
-            this.getPaymentdetails(res.data.objects[0].planID)
-          }
-        }).catch(err => {
-          console.log(err)
-          this.product_name_pre = ''
-          this.ruleForm.plan_01 = ''
-        })
-      } else {
-        this.product_name_pre = ''
-        this.ruleForm.plan_01 = ''
-      }
     },
     changeFunPlan(val) {
       this.multipleSelectionPlan=val;

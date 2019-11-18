@@ -83,7 +83,7 @@
                 <el-input v-model="ruleForm.cardName" class="bright inputWidth" placeholder="请输入开户名" :disabled="change"></el-input>
               </el-form-item>
               <!-- 付款方式 -->
-              <el-form-item label="付款方式" prop="payMode" label-width="120px">
+              <el-form-item label="付款方式" prop="payMode" label-width="120px" >
                 <el-select style="float: left;" class="inputWidth" v-model="ruleForm.payMode" placeholder="请选择" :disabled="change">
                   <el-option v-for="item in payModeList" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
@@ -146,7 +146,7 @@
                 </el-table-column>
                 <el-table-column label="审批过程" align="center">
                   <template slot-scope="scope">
-                    <span style="color:blue;" v-on:click="advanceProcess2(scope.$index, scope.row,2)">查看</span>
+                    <span v-on:click="advanceProcess2(scope.$index, scope.row,2)">查看</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -181,7 +181,7 @@
                   </el-table-column>
                   <el-table-column label="审批过程" align="center">
                     <template slot-scope="scope">
-                      <span style="color:blue;" v-on:click="advanceProcess2(scope.$index, scope.row,1)">查看</span>
+                      <span v-on:click="advanceProcess2(scope.$index, scope.row,1)">查看</span>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -385,6 +385,7 @@ export default {
       }
     };
     return {
+      ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       listLoading: true,
       ruleFormSeach: {
         groupCode_01:'', // 团号
@@ -1216,6 +1217,12 @@ export default {
     },
   },
   created() {
+    // 只有是出纳的时候才显示申请人检索
+    if (sessionStorage.getItem('hasCashierInfo')) {
+      this.ifAccountBtn = true
+    } else {
+      this.ifAccountBtn = false
+    }
   },
 };
 
