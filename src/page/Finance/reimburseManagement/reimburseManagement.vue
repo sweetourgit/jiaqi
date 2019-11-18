@@ -7,23 +7,35 @@
           <div>
             <div class="search">
               <span class="search_style">报销单号：</span>
-              <el-input v-model="number" placeholder="请输入内容" class="search_input"></el-input>
+              <el-input v-model="expenseID" placeholder="请输入内容" class="search_input"></el-input>
               <span class="search_style">团期计划：</span>
-              <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
+              <el-input v-model="groupCode" placeholder="请输入内容" class="search_input"></el-input>
               <span class="search_style">申请人：</span>
-              <el-input v-model="accepter" placeholder="请输入内容" class="search_input"></el-input>
+              <el-input v-model="createUser" placeholder="请输入内容" class="search_input"></el-input>
               <span class="search_style">发起时间：</span>
               <div style="float: left">
-                <el-date-picker v-model="value1" type="date" placeholder="开始时间"></el-date-picker>
+                <el-date-picker 
+                v-model="beginDate" 
+                type="date" 
+                @change="endDateChange()" 
+                @blur="beginDateBlur()"
+                placeholder="开始时间"
+                ></el-date-picker>
               </div>
               <span class="search__">—</span>
               <div style="float: left">
-                <el-date-picker v-model="value2" type="date" placeholder="结束时间"></el-date-picker>
+                <el-date-picker 
+                v-model="endDate" 
+                type="date"
+                @blur="endDateBlur()"
+                @change="endDateChange()" 
+                placeholder="结束时间"
+                ></el-date-picker>
               </div>
             </div>
             <div class="reform">
-              <el-button type="primary">搜索</el-button>
-              <el-button type="primary">重置</el-button>
+              <el-button type="primary"  @click="handleSearch">搜索1</el-button>
+              <el-button type="primary"  @click="handleReset">重置1</el-button>
             </div>
             <div class="reform">
               <el-button type="primary" plain @click="dialogchange">申请</el-button>
@@ -109,15 +121,15 @@
                 :name="item.name"
               >
                 <div style="color: red; position: absolute;left: 20px;top: 15px;">*</div>
-                <el-form-item label="团期计划" prop="plan">
+                <el-form-item label="团期计划" prop="groupCode">
                   <el-input
-                    v-model="ruleForm.plan.planId"
+                    v-model="ruleForm.groupCode.planId"
                     placeholder="请输入"
                     style="width: 240px;"
                     :disabled="change"
                   ></el-input>
                   <el-input
-                    v-model="ruleForm.plan.planName"
+                    v-model="ruleForm.groupCode.planName"
                     placeholder="请输入或者选择团期计划"
                     style="width: 240px;"
                     :disabled="change"
@@ -150,7 +162,7 @@
                   <el-radio v-model="radio" label="2">手添报销明细</el-radio>
                 </div>
                 <div v-if="radio==1" class="re_style" style="margin-top: 20px">
-                  <el-button @click="addbx" v-if="find==0">增加</el-button>
+                  <el-button @click="addbx('ruleForm')" v-if="find==0">增加1</el-button>
                   <!-- <el-button @click="addbx" v-if="find==0">修改</el-button> -->
                   <!-- <el-button type="danger" v-if="find==0">删除</el-button> -->
                 </div>
@@ -253,7 +265,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
           <el-button @click="chanceSubmit('ruleForm')">取 消</el-button>
-          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">确 定3</el-button>
           <el-button
             v-if="this.find == 1"
             type="danger"
@@ -274,8 +286,8 @@
       >
         <div class="indialog">
           <div style=" position: absolute;right: 67px;top: 22px;">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addplan">确 定</el-button>
+            <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+            <el-button type="primary" @click="addplan">确 定1</el-button>
           </div>
           <div class="indialog_search">
             <span class="search_style">团期单号：</span>
@@ -330,6 +342,14 @@
       <!--团期计划弹窗end-->
       <!--添加报销弹窗-->
       <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body>
+              <span class="search_style">申请人：</span>
+              <el-input v-model="t_plan" placeholder="请输入内容" class="search_input"></el-input>
+              <span class="search_style">供应商：</span>
+              <el-input v-model="t_supplier" placeholder="请输入内容" class="search_input"></el-input>
+          <div class="reform_s">
+            <el-button @click="T_check" type="primary">搜索2</el-button>
+            <el-button @click="T_update" type="primary">重置2</el-button>
+          </div>
         <el-table :data="joinData1" border style="width: 100%; margin-top: 30px">
           <el-table-column prop="id" label="关联单号" width="80"></el-table-column>
           <el-table-column prop="type" label="类型" width="70"></el-table-column>
@@ -352,8 +372,8 @@
           </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="text('joinData1')">确 定</el-button>
+          <el-button @click="dialogFormVisible3 = false">取 消</el-button>
+          <el-button type="primary" @click="text('joinData1')">确 定2</el-button>
         </div>
       </el-dialog>
       <!--添加报销弹窗end-->
@@ -369,6 +389,7 @@
 <script>
 import NeedApproval from "@/page/Finance/reimburseManagement/needApproval";
 import { formatDate } from "@/js/libs/formatDate.js";
+import moment from "moment";
 export default {
   name: "reimburseManagement",
   components: {
@@ -378,8 +399,8 @@ export default {
     var areaIdRule = (rule, value, callback) => {
       console.log(this.ruleForm);
       if (
-        this.ruleForm.plan.planId == "" ||
-        this.ruleForm.plan.planName == ""
+        this.ruleForm.groupCode.planId == "" ||
+        this.ruleForm.groupCode.planName == ""
       ) {
         return callback(new Error("团期计划不能为空"));
       } else {
@@ -404,6 +425,8 @@ export default {
         planName: "2",
         pid: ""
       },
+      beginDate: "",//报销开始时间+
+      endDate: "",//报销结束时间+
       planTotal: 100,
       userSize: 10,
       userTotal: 100,
@@ -444,7 +467,7 @@ export default {
       },
       //报销表单
       ruleForm: {
-        plan: {
+        groupCode: {
           planId: "",
           planName: ""
         },
@@ -458,13 +481,13 @@ export default {
       //报销表单验证
       rules: {
         name: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
-        plan: [{ validator: areaIdRule, trigger: "blur" }],
+        groupCode: [{ validator: areaIdRule, trigger: "blur" }],
         image: [{ validator: imageIdRule, trigger: "blur" }],
         content: [
           { required: true, message: "请输入摘要", trigger: "change" },
           {
             min: 0,
-            max: 30,
+            max: 80,
             message: "摘要字数不能超过80字",
             trigger: "change"
           }
@@ -482,38 +505,40 @@ export default {
       formLabelWidth: "120px",
       currentPage4: 1,
       activeName: "first",
-      number: "",
-      plan: "",
-      accepter: "",
+      expenseID: "",
+      groupCode: "",
+      t_plan: "",// 添加报销申请人
+      t_supplier:"",//添加报销供应商
+      createUser: "",
       createtime1: "",
       createtime2: "",
       //报销table
       tableData: [
         {
-          number: "1",
+          expenseID: "1",
           type: "申请中",
           createtime: "2016-05-02",
-          plan: "TC-GTY-1001-01-180806-01",
+          groupCode: "TC-GTY-1001-01-180806-01",
           monkey: "国旅",
           orinaze: "辽宁大运通-国内部",
           accpter: "阳阳",
           info: ""
         },
         {
-          number: "1",
+          expenseID: "1",
           type: "驳回",
           createtime: "2016-05-02",
-          plan: "TC-GTY-1001-01-180806-01",
+          groupCode: "TC-GTY-1001-01-180806-01",
           monkey: "国旅",
           orinaze: "辽宁大运通-国内部",
           accpter: "阳阳",
           info: "郑总：信息补全"
         },
         {
-          number: "1",
+          expenseID: "1",
           type: "通过",
           createtime: "2016-05-02",
-          plan: "TC-GTY-1001-01-180806-01",
+          groupCode: "TC-GTY-1001-01-180806-01",
           monkey: "国旅",
           orinaze: "辽宁大运通-国内部",
           accpter: "阳阳",
@@ -583,10 +608,11 @@ export default {
             console.log("报销"+info)
 
           },*/
+    moment,
     //切换时候，换内容
     tabClick() {
       this.ruleForm = {
-        plan: {
+        groupCode: {
           planId: "",
           planName: ""
         },
@@ -602,7 +628,7 @@ export default {
     chanceSubmit(ruleForm) {
       console.log(ruleForm);
       this.ruleForm = {
-        plan: {
+        groupCode: {
           planId: "",
           planName: ""
         },
@@ -617,8 +643,8 @@ export default {
       this.$refs[ruleForm].resetFields();
     },
     addplan() {
-      this.ruleForm.plan.planId = this.plans.planNum;
-      this.ruleForm.plan.planName = this.plans.planName;
+      this.ruleForm.groupCode.planId = this.plans.planNum;
+      this.ruleForm.groupCode.planName = this.plans.planName;
       this.Associated(this.plans.pid);
       this.dialogFormVisible2 = false;
     },
@@ -688,13 +714,15 @@ export default {
     },
     //添加
     addDomain() {
+
       this.domains.push({
         mark: "",
         price: ""
       });
     },
-    // 提交
+    // 报销申请提交
     submitForm(formName) {
+      console.log(formName);
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.hand = [];
@@ -781,6 +809,7 @@ export default {
             type: "success",
             message: "撤销成功!"
           });
+          this.dialogFormVisible = false;
         })
         .catch(() => {
           this.$message({
@@ -806,8 +835,20 @@ export default {
       this.dialogFormVisible = true;
     },
     //添加报销
-    addbx() {
-      this.dialogFormVisible3 = true;
+    addbx(formName) {
+      console.log(formName);
+       this.$refs[formName].validate(valid => {
+        if (valid) {
+        this.dialogFormVisible3 = true;
+        } else {
+          this.$message({
+          message: '请先填写团期计划',
+          type: 'warning'
+        });
+        return false;
+        }
+      });
+     
     },
     //报销人选择弹窗
     adddialog() {
@@ -876,6 +917,8 @@ export default {
     },
     //添加报销和删除
     handleTabsEdit(targetName, action) {
+      console.log(action);
+      console.log(targetName);
       if (action === "add") {
         let newTabName = ++this.tabIndex + "";
         this.editableTabs.push({
@@ -886,6 +929,7 @@ export default {
         this.editableTabsValue = newTabName;
       }
       if (action === "remove") {
+        console.log(this.editableTabs.length);
         if (this.editableTabs.length == 1) {
           console.log(123);
         } else {
@@ -893,7 +937,7 @@ export default {
         }
         console.log("报销" + targetName);
         console.log(this.editableTabs);
-        /*let tabs = this.editableTabs;
+        let tabs = this.editableTabs;
             let activeName = this.editableTabsValue;
             if (activeName === targetName) {
               tabs.forEach((tab, index) => {
@@ -907,7 +951,7 @@ export default {
             }
 
             this.editableTabsValue = activeName;
-            this.editableTabs = tabs.filter(tab => tab.name !== targetName);*/
+            this.editableTabs = tabs.filter(tab => tab.name !== targetName);
       }
     },
 
@@ -929,11 +973,103 @@ export default {
         .catch(function(obj) {
           console.log(obj);
         });
-    }
+    },
+     T_check(){//添加报销搜索
+  console.log("我是搜索2");
+  
+  },
+  T_update(){//添加报销重置
+  console.log("我是重置2");
+ 
+
+  },
+  beginDateBlur() {//开始时间
+      if (this.beginDate == "" && this.endDate == "") {
+        this.pageList(1, this.pageSize);
+      }
+    },
+  endDateBlur() {//结束时间
+      if (this.beginDate == "" && this.endDate == "") {
+        this.pageList(1, this.pageSize);
+      }
+    },
+  handleSearch() {// 搜索1
+   console.log("我是搜索1");
+      this.pageIndex = 1;
+      this.pageList(1, this.pageSize);
+      this.currentPage4 = 1;
+    },
+    handleReset() { // 重置
+      this.pageIndex = 1;
+      this.expenseID = "";
+      this.groupCode = "";
+      this.createUser = "";
+      this.beginDate = "";
+      this.endDate = "";
+      this.pageList(1, this.pageSize);
+      this.currentPage4 = 1;
+    },
+      //查询列表
+    pageList(
+      pageIndex = this.pageIndex,
+      pageSize = this.pageSize,
+      expenseID = this.expenseID,//单号
+      groupCode = this.groupCode,//计划
+      createUser = this.createUser,//申请人
+      beginDate= this.beginDate,//开始时间
+      endDate = this.endDate,//结束时间
+   ) {
+      let object = {};
+        expenseID !== "" ? (object.expenseID = expenseID) : expenseID,
+        groupCode !== "" ? (object.groupCode = groupCode) : groupCode,
+        createUser !== ""? (object.createUser = createUser): createUser;
+        beginDate !== ""? (object.beginDate = beginDate): beginDate;
+        endDate !== ""? (object.endDate = endDate): endDate;
+        
+        if (endDate !== "" && beginDate !== "") {
+        object.beginDate = moment(beginDate).format("YYYY-MM-DD");
+        object.endDate = moment(endDate).format("YYYY-MM-DD");
+      } 
+       //console.log("查询1",object);
+       var that = this;
+      this.$http
+        .post(that.GLOBAL.serverSrc + "/finance/expense/api/page", {
+          pageIndex: that.currentPage4,
+          pageSize: that.pageSize,
+          total: 0,
+          object: object
+        })
+        .then(function(obj) {
+           console.log("查询2",obj.data.objects);
+            that.pageCount = obj.data.total;
+            that.tableData = obj.data.objects;
+          
+        })
+        .catch(function(obj) {
+          console.log(obj);
+        });
+    },
+     //判断结束时间不能在开始时间之前
+    endDateChange() {
+      let beginTime = moment(this.beginDate).format("YYYYMMDD");
+      let entTime = moment(this.endDate).format("YYYYMMDD");
+      if (this.beginDate !== "") {
+        if (entTime < beginTime) {
+          this.$message.error("结束时间不能早于开始时间");
+          this.endDate = "";
+        }
+      }
+    },
+    beginDateBlur() {
+      if (this.beginDate == "" && this.endDate == "") {
+        this.pageList(1, this.pageSize);
+      }
+    },
   },
   created() {
     this.reimList();
-  }
+  },
+ 
 };
 </script>
 
@@ -968,6 +1104,11 @@ export default {
   margin-left: 20px;
   margin-top: 20px;
 }
+.reform_s {
+  float: right;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
 .table_style {
   width: 1500px;
   margin-left: 20px;
@@ -990,9 +1131,9 @@ export default {
 .indialog {
   min-height: 300px;
 }
-.indialog_search {
-}
-.all >>> .el-upload-list__item {
+/* .indialog_search {
+} */
+.all .el-upload-list__item {
   clear: both;
 }
 .re_style {

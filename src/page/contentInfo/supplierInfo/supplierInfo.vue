@@ -132,17 +132,28 @@
             <el-input class="name_input" v-model="ruleForm.supplierCode"></el-input>
           </el-form-item>
           <!--12号改过-->
-          <!--<el-form-item label="公司可见性" prop="visible">-->
-            <!--<el-select v-model="ruleForm.visible" placeholder="请选择" @change="companyList">-->
-              <!--<el-option-->
-                <!--v-for="item in visibleType"-->
-                <!--:key="item.value"-->
-                <!--:label="item.label"-->
-                <!--:value="item.value"-->
-              <!--&gt;</el-option>-->
-            <!--</el-select>-->
-             <!--<el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>-->
+          <el-form-item label="公司可见性" prop="visible">
+            <!--<el-cascader-->
+              <!--class="name_input"-->
+              <!--:options="visibleType"-->
+              <!--:props="{ multiple: true, checkStrictly: true }"-->
+              <!--v-model="ruleForm.visible"-->
+              <!--@change="companyList"-->
+              <!--clearable-->
+              <!--collapse-tags-->
+              <!--clearable></el-cascader>-->
           <!--</el-form-item>-->
+
+          <el-select v-model="ruleForm.visible" placeholder="请选择" @change="companyList">
+          <el-option
+          v-for="item in visibleType"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+          ></el-option>
+          </el-select>
+          <!--<el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>-->
+          </el-form-item>
           <el-form-item label="状态"  prop="supplierState">
             <el-select v-model="ruleForm.supplierState"
                        clearable placeholder="请选择"
@@ -261,7 +272,7 @@
           <!--<el-form-item label="供应商其他名称" prop="otherSupplier">-->
             <!--<el-input class="name_input" v-model="ruleForm.otherSupplier"></el-input>-->
           <!--</el-form-item>-->
-          <el-form-item label="供应商其他名称" prop="" style="width: 90%">
+          <el-form-item label="供应商其他名称" prop=""  style="width: 90%">
             <el-tag
               :key="tag"
               v-for="tag in dynamicTags"
@@ -349,22 +360,26 @@
     >
       <div class="addButton">
         <el-button @click="closeSupplier()">取消</el-button>
-        <el-button @click="saveModule('rformA')" type="primary">确定</el-button>
+        <el-button @click="saveModule('rformB')" type="primary">确定</el-button>
       </div>
       <div class="basic">基本信息</div>
       <el-form
         :model="editForm"
         :rules="rules"
-        ref="rformA"
+        ref="rformB"
         label-width="120px"
         style="overflow:hidden; margin:20px 0 0 0;"
       >
         <div style="float:left;">
           <el-form-item label="供应商名称" prop="name">
-            <el-input class="name_input" v-model="editForm.name"></el-input>
+            <el-input class="name_input"
+                      v-model="editForm.name"
+                      :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="供应商编码" prop="supplierCode">
-            <el-input class="name_input" v-model="editForm.supplierCode" ></el-input>
+            <el-input class="name_input"
+                      v-model="editForm.supplierCode"
+                      :disabled="true"></el-input>
           </el-form-item>
           <!--<el-form-item label="公司可见性" prop="visible">
             <el-select v-model="ruleForm.visible" placeholder="请选择" @change="companyList">
@@ -377,6 +392,28 @@
             </el-select>
             <!-- <el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader> -->
           <!--</el-form-item>&ndash;&gt;-->
+          <el-form-item label="公司可见性" prop="visible">
+            <!--<el-cascader-->
+            <!--class="name_input"-->
+            <!--:options="visibleType"-->
+            <!--:props="{ multiple: true, checkStrictly: true }"-->
+            <!--v-model="ruleForm.visible"-->
+            <!--@change="companyList"-->
+            <!--clearable-->
+            <!--collapse-tags-->
+            <!--clearable></el-cascader>-->
+            <!--</el-form-item>-->
+
+            <el-select v-model="editForm.visible" placeholder="请选择" @change="companyList">
+              <el-option
+                v-for="item in visibleType"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+            <!--<el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>-->
+          </el-form-item>
           <el-form-item label="状态"  prop="supplierState">
             <el-select
               v-model="editForm.supplierState"
@@ -429,14 +466,14 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <!--          <el-form-item label="使用部门" prop="userDepartment">
-                      <el-cascader
-                        v-model="ruleForm.userDepartment"
-                        :options="options"
-                        :props="{ multiple: true }"
-                        clearable
-                      ></el-cascader>
-                    </el-form-item>-->
+                <!--<el-form-item label="使用部门" prop="userDepartment">-->
+                      <!--<el-cascader-->
+                        <!--v-model="ruleForm.userDepartment"-->
+                        <!--:options="options"-->
+                        <!--:props="{ multiple: true }"-->
+                        <!--clearable-->
+                      <!--&gt;</el-cascader>-->
+                    <!--</el-form-item>-->
           <el-form-item label="产品主要方向" prop="orientation">
             <el-input class="name_input" v-model="editForm.orientation"></el-input>
           </el-form-item>
@@ -588,7 +625,8 @@ import SupplierDetails from "./supplierDetails/supplierDetails"
 export default {
   data() {
     return {
-      dynamicTags: [],
+      dynamicTags: [],//供应商其他名称
+      flags:true,//编辑页面的input框
       inputVisible: false,
       inputValue: '',
       // aaa: 1,
@@ -627,6 +665,7 @@ export default {
         }
       },
       pid:"",
+      userindex:0,//编辑的index
       supplierName: "", //搜索框供应商名称
       supplierCard: "", //搜索框ID
       settlement: "", //搜索框结算名称
@@ -637,6 +676,7 @@ export default {
       ruleForm: {
         name: "", //供应商名称
         visible: "", //公司可见性
+        visible1:"",//公司可见性代码
         supplierState: "正常", //状态
         routeType: "", //线路
         supplierType: "", //类别
@@ -664,7 +704,9 @@ export default {
       editForm: {
         name: "", //供应商名称
         visible: "", //公司可见性
+        visible1:"",//公司可见性代码
         supplierState: "正常", //状态
+        supplierState1:'',//状态数值
         routeType: "", //线路
         supplierType: "", //类别
         supplierWay: "", //结算方式
@@ -680,13 +722,15 @@ export default {
         principalPhone: "", //负责人电话
         operator: "", //操作负责人
         agreement: "", //供应商协议
+        agreement1:"",//供应商协议数字
         remark: "", //备注
         accountName: "", //汇款户名
         openingBank: "", //开户行
         account: "", //账号
         note: "", //备注
         supplierCode:"",//供应商编码
-        editbanks:''//银行信息
+        editbanks:'',//银行信息
+        supplierWay1:''//结算方式编号
       },
       //状态
       conditionType: [
@@ -997,7 +1041,7 @@ export default {
         }
       })
       .then(res => {
-        // console.log(res,"部门请求")
+        console.log(res,"部门请求")
         for (let i = 0; i < res.data.objects.length; i++) {
           this.options.push({
             value: res.data.objects[i].id,
@@ -1005,16 +1049,16 @@ export default {
             //"children":[res.data.objects[i].id,res.data.objects[i].orgName]
           });
         }
-        /*let data = res.data.objects.map(v => {
+        let data = res.data.objects.map(v => {
             return {
               label: v.orgName,
               value: v.id,
             };
-        })*/
+        })
         //resolve(data);
       });
     },
-    /*visible(node, resolve){
+    visible(node, resolve){
         this.visibleType = [];
         let nId = 204;
         this.$http.post(this.GLOBAL.serverSrc + '/org/api/deptlist', {
@@ -1033,7 +1077,7 @@ export default {
         }).then(res =>{
           //this.visibleType =  res.data.objects;
         })
-      },*/
+      },
 
     //线路
     trails() {
@@ -1071,6 +1115,7 @@ export default {
       this.ruleForm={
         name: "", //供应商名称
         visible: "", //公司可见性
+        companyAreaEX:"",//公司可见性数字
         supplierState: "正常", //状态
         routeType: "", //线路
         supplierType: "", //类别
@@ -1112,7 +1157,13 @@ export default {
     //判断显示编辑或者添加弹窗
     saveModule(formName) {
       if (this.title == "添加供应商") {
-        this.addLabelTheme(formName);
+        this.$confirm("确定保存该条信息保存后名称和编码将不能改变, 是否继续?",'提示',{
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+          this.addLabelTheme(formName);
+        })
       } else {
         this.editLabelTheme(formName);
       }
@@ -1121,7 +1172,19 @@ export default {
     //添加一条供应商
     addLabelTheme(formName) {
       console.log(formName,456)
+      console.log(this.visibleType,'供应商可见性')
       console.log(this.ruleForm.expireData,6666)
+      if(this.ruleForm.visible == '集团共享'){
+       this.ruleForm.visible1 = 1
+      }else if(this.ruleForm.visible == '沈阳共享'){
+       this.ruleForm.visible1 = 2
+      }else if(this.ruleForm.visible == '吉林共享'){
+         this.ruleForm.visible1 = 3
+      }else if(this.ruleForm.visible == '大连共享'){
+         this.ruleForm.visible1 = 4
+      }else if(this.ruleForm.visible == '哈尔滨共享'){
+        this.ruleForm.visible1 = 5
+      }
       let types = [];
       let keepAlias = [] // 给alias赋值用
       let banks =[];
@@ -1180,7 +1243,7 @@ export default {
                         isMonthly: this.ruleForm.supplierWay,
                         isAgree: this.ruleForm.agreement,
                         // companyArea: this.ruleForm.visible,
-                        companyArea: 0, // 公司可見性
+                        companyArea: this.ruleForm.visible1, // 公司可見性
                         productArea: this.ruleForm.routeType,
                         leader: this.ruleForm.principal,
                         phone: this.ruleForm.principalPhone,
@@ -1191,11 +1254,12 @@ export default {
                         taxNumber: this.ruleForm.pactNumber,
                         orgs: [{
                           "orgID": 0,
-                          "orgName": "string"}], // 使用部門
+                          "orgName": 'string'}], // 使用部門
                         alias:keepAlias, // 部门其他名 otherSupplier
                         expireTime: moment(this.ruleForm.expireData).format('YYYY-MM-DD'), // 到期日期
                         memo: this.ruleForm.remark,
                         banks: banks,
+                        //附件
                         files: [{
                           "id": 0,
                           "createTime": 0,
@@ -1206,6 +1270,7 @@ export default {
                           "name": "string"
                         }]
                       }
+
                     }
                   )
                   .then(res => {
@@ -1229,7 +1294,63 @@ export default {
     },
     // 编辑时的保存
     editLabelTheme(formName){
-      let types = [];
+      console.log(this.pid,'每条数据的id值')
+      console.log(this.editForm,1314)
+      if (this.editForm.supplierState == "正常"){
+        this.editForm.supplierState1 =1
+      } else if(this.editForm.supplierState == "停用"){
+        this.editForm.supplierState1 =2
+      }else if(this.editForm.supplierState == "待审核"){
+        this.editForm.supplierState1 =0
+      };
+      if (this.editForm.agreement == "是"){
+          this.editForm.agreement1 =1
+
+      } else if(this.editForm.agreement == "否"){
+          this.editForm.agreement1 =2
+      };
+
+      if(this.editForm.supplierType == '船票'){
+        this.editForm.supplierType =0
+      }else if(this.editForm.supplierType == '地接社'){
+        this.editForm.supplierType =1
+      }else if(this.editForm.supplierType == '机票'){
+        this.editForm.supplierType =2
+      }else if(this.editForm.supplierType == '拼票'){
+        this.editForm.supplierType =3
+      }else if (this.editForm.supplierType == '酒店'){
+        this.editForm.supplierType =4
+      } else if (this.editForm.supplierType == '签证'){
+        this.editForm.supplierType =5
+      } else if(this.editForm.supplierType == '合作拼团社'){
+        this.editForm.supplierType =6
+      }else if (this.editForm.supplierType == '邮轮'){
+        this.editForm.supplierType =7
+      } else if (this.editForm.supplierType == '火车票'){
+        this.editForm.supplierType =8
+      } else if (this.editForm.supplierType == '汽车票'){
+        this.editForm.supplierType =9
+      };
+      if (this.editForm.supplierWay =="一团一结"){
+        this.editForm.supplierWay1 =1
+      }else if (this.editForm.supplierWay =="走团后结款") {
+        this.editForm.supplierWay1 =2
+      }else if (this.editForm.supplierWay =="月结") {
+        this.editForm.supplierWay1 =3
+      }else if (this.editForm.supplierWay =="预付款") {
+        this.editForm.supplierWay1 =4
+      }else if (this.editForm.supplierWay =="走团前80%走团后20%") {
+        this.editForm.supplierWay1 =5
+      }else if (this.editForm.supplierWay =="走团前50%走团后月结") {
+        this.editForm.supplierWay1 =6
+      }else if (this.editForm.supplierWay =="走团前80%走团后月结") {
+        this.editForm.supplierWay1 =7
+      }else if (this.editForm.supplierWay =="走团前50%走团后50") {
+        this.editForm.supplierWay1 =8
+      }
+
+
+    let types = [];
       let keepAlias = [] // 给alias赋值用
       let banks =[];
       for (let i=0;i<this.tableDataBank.length;i++){
@@ -1257,13 +1378,6 @@ export default {
         console.log(keepAlias,'this.dynamicTags')
       }
       this.$refs[formName].validate(valid => {
-        // if (this.editForm.supplierState == "正常"){
-        //   this.editForm.supplierState ==1
-        // } else if(this.editForm.supplierState == "停用"){
-        //   this.editForm.supplierState ==2
-        // }else if(this.editForm.supplierState == "待审核"){
-        //   this.editForm.supplierState ==0
-        // }
         if (valid) {
           var _this = this;
           this.$http
@@ -1271,18 +1385,19 @@ export default {
               this.GLOBAL.serverSrc + "/universal/supplier/api/suppliersave",
               {
                 object: {
-                  id: 0,
+                  id: this.userindex,
                   createTime: 0,
                   isDeleted: 0,
-                  userState: this.editForm.supplierState,
+                  code:null,
+                  userState: this.editForm.supplierState1,
                   name: this.editForm.name,
                   types: types,
                   productDirection: this.editForm.orientation,
-                  supplierCode: this.editForm.supplierState =="正常"?1:this.editForm.supplierState, // 供应商编码
-                  isMonthly: this.editForm.supplierWay,
-                  isAgree: this.editForm.agreement,
-                  // companyArea: this.ruleForm.visible,
-                  companyArea: 0, // 公司可見性
+                  supplierCode: this.editForm.supplierCode,
+                  isMonthly: this.editForm.supplierWay1,
+                  isAgree: this.editForm.agreement1,
+                  // companyArea: this.editForm.visible,
+                  companyArea: 1, // 公司可見性
                   productArea: this.editForm.routeType,
                   leader: this.editForm.principal,
                   phone: this.editForm.principalPhone,
@@ -1291,30 +1406,102 @@ export default {
                   handPhone: this.editForm.handlersPhone,
                   billName: this.editForm.operator,
                   taxNumber: this.editForm.pactNumber,
-                  orgs: [{
-                    "orgID": 0,
-                    "orgName": "string"}], // 使用部門
+                  orgs: [
+                  //   {
+                  //   "id": 0,
+                  //   "orgName": "string"
+                  // }
+                  ], // 使用部門
                   alias:keepAlias, // 部门其他名 otherSupplier
                   expireTime: moment(this.editForm.expireData).format('YYYY-MM-DD'), // 到期日期
                   memo: this.editForm.remark,
                   banks:banks,
-                  files: [{
-                    "id": 0,
-                    "createTime": 0,
-                    "code": "string",
-                    "isDeleted": 0,
-                    "url": "string",
-                    "supplierID": 0,
-                    "name": "string"
-                  }]
+                  files: [
+                  //   {
+                  //   "id": 0,
+                  //   "createTime": 0,
+                  //   "code": "string",
+                  //   "isDeleted": 0,
+                  //   "url": "string",
+                  //   "supplierID": 0,
+                  //   "name": "string"
+                  // }
+                  ],
+                  manageType: 1
                 }
-              }
+              },
+              // 好使的数据格式
+              // {
+              //   "object": {
+              //     id: 40,
+              //     createTime: 0,
+              //     code: null,
+              //     isDeleted: 0,
+              //     userState: 1,
+              //     userStateEX: "Normal",
+              //     name: "海南环游假期国际旅行社有限公司",
+              //     types: [
+              //       {
+              //         id: 59,
+              //         supplierType: 1,
+              //         supplierTypeEX: "地接社",
+              //         supplierID: 40
+              //       }
+              //     ],
+              //     productDirection: null,
+              //     isMonthly: 3,
+              //     isMonthlyEX: "月结",
+              //     isAgree: 0,
+              //     companyArea: 1,
+              //     companyAreaEX: "集团共享",
+              //     productArea: 1,
+              //     productAreaEX: "国内",
+              //     leader: null,
+              //     phone: "1.89766e+010",
+              //     legalPerson: "秦兵",
+              //     handPerson: null,
+              //     handPhone: null,
+              //     billName: null,
+              //     taxNumber: null,
+              //     expireTime: "0001-01-01T00:00:00",
+              //     memo: null,
+              //     banks: [],
+              //     files: [],
+              //     createUser: null,
+              //     orgs: [
+              //       {
+              //         id: 426,
+              //         supplierID: 40,
+              //         orgID: 0,
+              //         orgName: "集团"
+              //       }
+              //     ],
+              //     supplierCode: "SP00000086",
+              //     alias: [
+              //       {
+              //         id: 73,
+              //         supplierID: 40,
+              //         name: "别名40"
+              //       }
+              //     ],
+              //     manageType: 1
+              //   }
+              // },
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token")
+            }
+          }
             )
             .then(res => {
+              console.log(this.editForm,521)
               if (res.data.isSuccess == true) {
+                // this.tabledata=this.editForm
                 this.supplierPage();
                 this.editShow = false;
-                this.$refs[formName].resetFields();
+                // Vue.set(this.tableData,this.userindex,this.editForm)
+                // this.$refs[formName].resetFields();
+                this.$message.success('修改成功')
               } else {
                 this.$message.success("编辑失败");
               }
@@ -1438,20 +1625,22 @@ export default {
     },
     //编辑按钮
     editClick(index,data){
-      console.log(1111,index)
-      console.log(222,data)
+      this.userindex=index
       this.title = "编辑供应商";
       this.editShow = true;
+      this.flags = false;
+      // this.editForm = Object.assign({}, data)
       this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
         id: index
       }).then(res => {
-        console.log(res,8888)
+        console.log(res,"获取单条商品信息")
         this.editForm.name=res.data.object.name,
-          this.editForm.visible=res.data.object.companyAreaEX, //公司可见性
+          this.editForm.visible=res.data.object.companyArea, //公司可见性
           // this.editForm.supplierState=res.data.object.userStateEX,
           this.editForm.routeType= res.data.object.productArea, //线路
           this.editForm.supplierType= res.data.object.types[0].supplierTypeEX, //类别
           this.editForm.supplierWay= res.data.object.isMonthlyEX, //结算方式
+          // this.editForm.supplierWay1 =res.data.object.isMonthly,
           this.editForm.userDepartment= data.supplierTypeEX, //使用部门
           this.editForm.orientation= res.data.object.productDirection, //产品主要方向
           this.editForm.expireData=res.data.object.expireTime , //到期日期
@@ -1468,9 +1657,10 @@ export default {
           this.editForm.accountName= "", //汇款户名
           this.editForm.openingBank= "", //开户行
           this.editForm.account= "", //账号
-          this.editForm.note= "" //备注
-          this.editForm.supplierCode =res.data.object.supplierCode//供应商编码
-          this.tableDataBank =res.data.object.banks//保存银行的信息
+          this.editForm.note= "", //备注
+          this.editForm.supplierCode =res.data.object.supplierCode,//供应商编码
+          this.tableDataBank =res.data.object.banks,//保存银行的信息
+          this.editForm.supplierState1 =res.data.object.userState
         // 判断是否
         if(res.data.object.isAgree==1) {
           this.editForm.agreement= "是";
@@ -1499,20 +1689,17 @@ export default {
       rows.splice(index, 1);
     }
   },
-  // loadtime(){
-  //   var date = new Date();
-  //   var year = date.getFullYear();
-  //   var month = date.getMonth();
-  //   var day = date.getDate();
-  //   var hours = date.getHours();
-  //   var minutes = date.getMinutes();
-  //   var seconds = date.getSeconds();
-  //   this.time = [new Date(year, month, day, 0, 0, 0), new Date(year, month, day, hours, minutes, seconds)];
-  //   this.editForm.expireData = this.time;
-  // },
   mounted() {
     this.supplierPage();
   },
+  init(){
+
+  },
+  // watch:{
+  //   editForm:function (val,oldval) {
+  //     console.log('val', val);
+  //   }
+  // },
   created() {
     this.themeList(); //供应商类别
     this.settlemen(); //结算方式

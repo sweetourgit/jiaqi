@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative" id="collectionDetail">
-    <el-dialog title="详情" :visible="dialogFormVisible" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
+    <el-dialog title="审批" :visible="dialogFormVisible" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
@@ -16,6 +16,7 @@
         <p class="inputLabel"><span>创建时间：</span>{{baseInfo.createTime}}</p>
         <p class="inputLabel" v-if="baseInfo.collectionType == 2"><span>同业社名称：</span>{{baseInfo.distributor}}</p>
         <p class="inputLabel" v-if="baseInfo.collectionType == 1"><span>交易流水号：</span>{{baseInfo.orderNumber}}</p>
+        <p class="inputLabel" v-if="baseInfo.collectionType == 5"><span>分销商：</span>{{baseInfo.distributor}}</p>
         <p class="inputLabel"><span>收款账户：</span>{{baseInfo.localCompName}}</p>
         <p class="inputLabel"><span>收款金额：</span>{{baseInfo.price}}</p>
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.abstract}}</p>
@@ -54,7 +55,7 @@
                 <div>{{invoiceType[scope.row.invoiceType]}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="invoiceUnit" label="个人/单位" align="center"></el-table-column>
+            <el-table-column prop="invoiceType" label="个人/单位" align="center"></el-table-column>
             <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
             <el-table-column prop="invoiceHeaderOrTel" label="发票抬头" align="center"></el-table-column>
             <el-table-column prop="invoiceItem" label="发票项目" align="center"></el-table-column>

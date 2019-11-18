@@ -131,7 +131,9 @@ export default {
     if(this.$route.params.tabStatus){
       this.activeName = this.$route.params.tabStatus
     }
-//    this.totalNum = 12;
+  },
+  mounted(){
+//    console.log(this.$refs.PendingApprovalManagement);
   }
 }
 
