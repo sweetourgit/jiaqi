@@ -1292,7 +1292,7 @@ export default {
                     this.bigSaveAccount();
                   }
                 } else {
-                  console.log("此时第一条");
+                  // console.log("此时第一条");
                   this.bigSaveAccount();
                 }
               }
@@ -1390,7 +1390,7 @@ export default {
     },
     // 修改验证手机号和邮箱的接口的接口
     accountValidator() {
-      console.log(this.accountForm.id,"this.accountForm.id")
+      // console.log(this.accountForm.id,"this.accountForm.id")
       return this.$http
         .post(
           this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistpeeruser",

@@ -1211,6 +1211,7 @@ export default {
       this.enrolNums = false;
       this.$refs["ruleForm"].resetFields();
       this.dialogFormProcess = false;
+      this.isLowPrice = false
     }
   }
 };
