@@ -158,7 +158,7 @@
     },
     watch:{
       msg:function (val,oldval) {
-        this.teamGetDetails(this.msg);
+        this.teamGetDetails(val);
       }
     },
     data(){
@@ -191,7 +191,7 @@
         this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
           id: id
         }).then(res => {
-          console.log(res,4444)
+          console.log(res,'详情里面的数据')
             if (res.data.isSuccess == true) {
               this.teampreviewData = res.data.object;// 获取基本信息数据
               this.accountTable = res.data.object.banks;//获取账户信息数据

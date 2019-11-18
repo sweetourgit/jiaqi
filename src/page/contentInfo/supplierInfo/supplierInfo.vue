@@ -144,7 +144,11 @@
               <!--clearable></el-cascader>-->
           <!--</el-form-item>-->
 
-          <el-select v-model="ruleForm.visible" placeholder="请选择" @change="companyList">
+          <el-select
+            v-model="ruleForm.visible"
+            placeholder="请选择"
+            @change="companyList"
+            class="name_input">
           <el-option
           v-for="item in visibleType"
           :key="item.value"
@@ -203,13 +207,14 @@
             </el-select>
           </el-form-item>
                <!--<el-form-item label="使用部门" prop="userDepartment">-->
-            <!--<el-cascader-->
-              <!--v-model="ruleForm.userDepartment"-->
-              <!--:options="options"-->
-              <!--:props="{ multiple: true }"-->
-              <!--clearable-->
-            <!--&gt;</el-cascader>-->
-          <!--</el-form-item>-->
+          <!--<el-cascader-->
+            <!--v-model="ruleForm.userDepartment"-->
+            <!--:options="options"-->
+            <!--:props="{ multiple: true }"-->
+            <!--class="name_input"-->
+            <!--clearable-->
+          <!--&gt;</el-cascader>-->
+        <!--</el-form-item>-->
           <el-form-item label="产品主要方向" prop="orientation">
             <el-input class="name_input" v-model="ruleForm.orientation"></el-input>
           </el-form-item>
@@ -404,7 +409,11 @@
             <!--clearable></el-cascader>-->
             <!--</el-form-item>-->
 
-            <el-select v-model="editForm.visible" placeholder="请选择" @change="companyList">
+            <el-select
+              v-model="editForm.visible"
+              placeholder="请选择"
+              @change="companyList"
+              class="name_input">
               <el-option
                 v-for="item in visibleType"
                 :key="item.value"
@@ -468,10 +477,11 @@
           </el-form-item>
                 <!--<el-form-item label="使用部门" prop="userDepartment">-->
                       <!--<el-cascader-->
-                        <!--v-model="ruleForm.userDepartment"-->
+                        <!--v-model="editForm.userDepartment"-->
                         <!--:options="options"-->
                         <!--:props="{ multiple: true }"-->
                         <!--clearable-->
+                        <!--class="name_input"-->
                       <!--&gt;</el-cascader>-->
                     <!--</el-form-item>-->
           <el-form-item label="产品主要方向" prop="orientation">
@@ -1046,38 +1056,38 @@ export default {
           this.options.push({
             value: res.data.objects[i].id,
             label: res.data.objects[i].orgName
-            //"children":[res.data.objects[i].id,res.data.objects[i].orgName]
+            // "children":[res.data.objects[i].id,res.data.objects[i].orgName]
           });
         }
-        let data = res.data.objects.map(v => {
-            return {
-              label: v.orgName,
-              value: v.id,
-            };
-        })
+        // let data = res.data.objects.map(v => {
+        //     return {
+        //       label: v.orgName,
+        //       value: v.id,
+        //     };
+        // })
         //resolve(data);
       });
     },
-    visible(node, resolve){
-        this.visibleType = [];
-        let nId = 204;
-        this.$http.post(this.GLOBAL.serverSrc + '/org/api/deptlist', {
-          "object": {
-            "ParentID": nId,
-            "isDeleted": 0
-          },
-        })
-        .then(res => {
-          for (let i = 0; i < res.data.objects.length; i++) {
-            this.visibleType.push({
-              "value": res.data.objects[i].id,
-              "label": res.data.objects[i].orgName
-            })
-          }
-        }).then(res =>{
-          //this.visibleType =  res.data.objects;
-        })
-      },
+    // visible(node, resolve){
+    //     this.visibleType = [];
+    //     let nId = 204;
+    //     this.$http.post(this.GLOBAL.serverSrc + '/org/api/deptlist', {
+    //       "object": {
+    //         "ParentID": nId,
+    //         "isDeleted": 0
+    //       },
+    //     })
+    //     .then(res => {
+    //       for (let i = 0; i < res.data.objects.length; i++) {
+    //         this.visibleType.push({
+    //           "value": res.data.objects[i].id,
+    //           "label": res.data.objects[i].orgName
+    //         })
+    //       }
+    //     }).then(res =>{
+    //       //this.visibleType =  res.data.objects;
+    //     })
+    //   },
 
     //线路
     trails() {
@@ -1207,8 +1217,8 @@ export default {
         supplierID: 0
       });
       if(this.dynamicTags.length > 0){
-        this.dynamicTags.forEach(function (item) {
-          keepAlias.push({'name': item})
+        this.dynamicTags.forEach((item)=> {
+          keepAlias.push({'name': item,'id':0})
         })
         console.log(keepAlias,'this.dynamicTags')
       }
@@ -1309,7 +1319,17 @@ export default {
       } else if(this.editForm.agreement == "否"){
           this.editForm.agreement1 =2
       };
-
+      if(this.editForm.visible == '集团共享'){
+        this.editForm.visible1 = 1
+      }else if(this.editForm.visible == '沈阳专享'){
+        this.editForm.visible1 = 2
+      }else if(this.editForm.visible == '吉林专享'){
+        this.editForm.visible1 = 3
+      }else if(this.editForm.visible == '大连专享'){
+        this.editForm.visible1 = 4
+      }else if(this.editForm.visible == '哈尔滨专享'){
+        this.editForm.visible1 = 5
+      }
       if(this.editForm.supplierType == '船票'){
         this.editForm.supplierType =0
       }else if(this.editForm.supplierType == '地接社'){
@@ -1372,8 +1392,8 @@ export default {
         supplierID: 0
       });
       if(this.dynamicTags.length > 0){
-        this.dynamicTags.forEach(function (item) {
-          keepAlias.push({'name': item})
+        this.dynamicTags.forEach( (item)=> {
+          keepAlias.push({'name': item,'id':this.userindex})
         })
         console.log(keepAlias,'this.dynamicTags')
       }
@@ -1397,7 +1417,7 @@ export default {
                   isMonthly: this.editForm.supplierWay1,
                   isAgree: this.editForm.agreement1,
                   // companyArea: this.editForm.visible,
-                  companyArea: 1, // 公司可見性
+                  companyArea: this.editForm.visible1, // 公司可見性
                   productArea: this.editForm.routeType,
                   leader: this.editForm.principal,
                   phone: this.editForm.principalPhone,
@@ -1494,7 +1514,6 @@ export default {
           }
             )
             .then(res => {
-              console.log(this.editForm,521)
               if (res.data.isSuccess == true) {
                 // this.tabledata=this.editForm
                 this.supplierPage();
@@ -1626,6 +1645,7 @@ export default {
     //编辑按钮
     editClick(index,data){
       this.userindex=index
+      console.log(this.userindex,"当前的编辑的id")
       this.title = "编辑供应商";
       this.editShow = true;
       this.flags = false;
@@ -1635,7 +1655,7 @@ export default {
       }).then(res => {
         console.log(res,"获取单条商品信息")
         this.editForm.name=res.data.object.name,
-          this.editForm.visible=res.data.object.companyArea, //公司可见性
+          this.editForm.visible=res.data.object.companyAreaEX, //公司可见性
           // this.editForm.supplierState=res.data.object.userStateEX,
           this.editForm.routeType= res.data.object.productArea, //线路
           this.editForm.supplierType= res.data.object.types[0].supplierTypeEX, //类别
@@ -1678,10 +1698,8 @@ export default {
       });
     },
     detailsClick(id){
-      console.log(this.editForm,2222)
-      console.log(id,222)
+      console.log(id,'详情时的id')
       this.pid=id
-      console.log(this.pid)
       this.flag = true
     },
     //删除账户
