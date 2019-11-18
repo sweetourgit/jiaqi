@@ -1425,7 +1425,7 @@ export default {
         .then(obj => {
           const { isSuccess } = obj.data;
           if (isSuccess == false) {
-            this.$message.error("该手机号或邮箱已注册过");
+            this.$message.error(obj.result.message);
           }
           // this.isAccountValidator = isSuccess;
           return isSuccess;

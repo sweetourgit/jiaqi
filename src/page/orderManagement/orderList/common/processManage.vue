@@ -405,7 +405,7 @@ export default {
       this.compPrice(1);
     }
   },
-  
+
   methods: {
     //流程管理
     processManage(orderId) {
@@ -534,10 +534,14 @@ export default {
           url += "/signcontract";
           break;
       }
+      // 订单工作流状态更新-作废订单
       if (cancle == 0) {
         this.dialogVisible = false;
         url = "/order/stat/api/invalid";
+        // url = "/order/all/api/orderdelete";
       }
+      console.log(this.orderget.id, "this.orderget.id");
+
       this.$http
         .post(this.GLOBAL.serverSrc + url, {
           object: {
@@ -556,6 +560,19 @@ export default {
             }
             if (status === 10) {
               this.ordersave(1);
+            }
+            // 取消订单按钮
+            if (cancle === 0) {
+              this.$http
+                .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
+                  id: this.orderget.id
+                })
+                .then(res => {
+                  console.log(res);
+                })
+                .catch(err => {
+                  console.log(err);
+                });
             }
             this.$emit("orderPage");
             this.cancle();
@@ -743,9 +760,9 @@ export default {
       this.preLength[index] = this.enrolNum[index]; //记录上一次报名人数为当前报名人数
       let len;
       // 如果报名类型有配额 则输入的数字不可超过配额
-      if(this.salePriceNum[index].quota !== 0) {
-        if(this.enrolNum[index] == this.salePriceNum[index].quota){
-          this.enrolNum[index] = this.salePriceNum[index].quota
+      if (this.salePriceNum[index].quota !== 0) {
+        if (this.enrolNum[index] == this.salePriceNum[index].quota) {
+          this.enrolNum[index] = this.salePriceNum[index].quota;
         }
       }
       if (arrLength > preLength) {
@@ -910,7 +927,7 @@ export default {
               this.enrolNum.push(this.tour[i].length);
             }
             for (let i = 0; i < data.length; i++) {
-                //如果配额为0或者配额大于库存，余位显示总库存
+              //如果配额为0或者配额大于库存，余位显示总库存
               if (
                 data[i].quota == 0 ||
                 data[i].quota > this.teampreviewData.remaining
@@ -919,7 +936,7 @@ export default {
               } else {
                 // data[i].quota =
                 //   parseInt(data[i].quota) + parseInt(this.enrolNum[i]);
-               data[i].quota =
+                data[i].quota =
                   parseInt(data[i].quota) - parseInt(this.preLength[i]);
               }
             }
@@ -1168,7 +1185,7 @@ export default {
     // 当订单来源为线下直客，订单总额不等于已付金额的时候 补充资料下方出现提示语
     replenishInfoToastFun(orderChannel) {
       if (this.orderSourceFun(orderChannel) == true) {
-        if (this.payable !== this.paid) {
+        if (this.payable > this.paid) {
           this.isLowPrice = true;
         }
       }
