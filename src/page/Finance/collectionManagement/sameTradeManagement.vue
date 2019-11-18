@@ -321,7 +321,6 @@ export default {
           }
         }
       ).then(function(obj) {
-        console.log(obj, '收款管理')
         _this.total = obj.data.total;
         _this.tableData = obj.data.objects;
         _this.listLoading = false
@@ -408,6 +407,9 @@ export default {
           this.tableData=res.data.object;
           this.detailstShow = false;
           this.getList()
+          if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
+            this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
+          };
         }
       })
       }).catch(() => {

@@ -343,6 +343,9 @@ export default {
           this.tableData=res.data.object;
           this.detailstShow = false;
           this.getStraightGuestManagement()
+          if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
+            this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataZK();
+          };
         }
       })
       }).catch(() => {
