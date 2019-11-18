@@ -1390,19 +1390,20 @@ export default {
     },
     // 修改验证手机号和邮箱的接口的接口
     accountValidator() {
+      console.log(this.accountForm.id,"this.accountForm.id")
       return this.$http
         .post(
           this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistpeeruser",
           {
             phone: this.accountForm.phone,
             email: this.accountForm.email,
-            id: this.tid
+            id: this.accountForm.id
           }
         )
         .then(obj => {
           const { isSuccess } = obj.data;
           if (isSuccess == false) {
-            this.$message.error("该手机号或邮箱已注册过");
+            this.$message.error(obj.data.result.message);
           }
           // this.isAccountValidator = isSuccess;
           return isSuccess;
@@ -1425,7 +1426,7 @@ export default {
         .then(obj => {
           const { isSuccess } = obj.data;
           if (isSuccess == false) {
-            this.$message.error(obj.result.message);
+            this.$message.error(obj.data.result.message);
           }
           // this.isAccountValidator = isSuccess;
           return isSuccess;
@@ -1454,26 +1455,46 @@ export default {
       } else {
         this.accountForm.peerUserType = 2;
       }
-      this.$http
-        .post(
-          this.GLOBAL.serverSrc + "/universal/localcomp/api/PeerUserUpdate",
-          {
-            object: this.accountForm
-          }
-        )
-        .then(obj => {
-          if (obj.data.isSuccess == true) {
-            this.$message({
-              message: "修改成功",
-              type: "success"
+      this.accountValidator().then(res => {
+        if (res === true) {
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc + "/universal/localcomp/api/PeerUserUpdate",
+              {
+                object: this.accountForm
+              }
+            )
+            .then(obj => {
+              if (obj.data.isSuccess == true) {
+                this.$message({
+                  message: "修改成功",
+                  type: "success"
+                });
+                this.isAddAccount = false;
+                this.getOneMess(this.tid);
+              }
+            })
+            .catch(err => {
+              console.log(err);
             });
-            this.isAddAccount = false;
-            this.getOneMess(this.tid);
+        } else {
+          if (this.accountForm.peerUserType == 1) {
+            this.accountForm.peerUserType = "管理员";
+          } else {
+            this.accountForm.peerUserType = "销售";
           }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+          if (this.accountForm.state == 2) {
+            this.accountForm.state = "正常";
+          } else {
+            this.accountForm.state = "停用";
+          }
+          if (this.accountForm.sex == 1) {
+            this.accountForm.sex = "男";
+          } else {
+            this.accountForm.sex = "女";
+          }
+        }
+      });
     },
     // 点击添加商户或者编辑出现的dialog上的添加账户信息
     addAccount(index) {
@@ -2197,7 +2218,7 @@ export default {
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID
           this.businewwInfPageId = object.id;
-          if(this.btnindex == 1) this.getDebitTable();
+          if (this.btnindex == 1) this.getDebitTable();
           this.useList = useList;
           this.useList.forEach((val, idx, arr) => {
             if (arr[idx].state == 2) {
