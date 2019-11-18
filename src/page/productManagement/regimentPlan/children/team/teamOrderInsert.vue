@@ -67,11 +67,23 @@
               <el-radio label="2" class="radiomar" v-model="ruleForm.orderRadio">商户(同业、门店)</el-radio>
             </div>
           </el-form-item>
-          <!--选择商户按钮，显示商户名称文本框-->
-          <div v-if="ruleForm.orderRadio==2">
-              <el-form-item label="商户名称" prop="travel" class="fl">
+          <!--选择线下直客按钮，显示销售文本框-->
+          <!-- <div v-if="ruleForm.orderRadio==1">
+              <el-form-item label="销售" prop="travel">
                 <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
               </el-form-item>
+          </div> -->
+          <!--选择商户按钮，显示商户名称和商户销售文本框-->
+          <div v-if="ruleForm.orderRadio==2">
+              <!-- <el-form-item label="销售" prop="travel">
+                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+              </el-form-item> -->
+              <el-form-item label="商户名称" prop="travel">
+                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+              </el-form-item>
+              <!-- <el-form-item label="商户销售" prop="merchantsSell">
+                <el-autocomplete class="optionw" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+              </el-form-item> -->
           </div>
           <el-form-item label="价格选择" prop="price" class="cb price">
             <!-- <el-radio-group v-model="ruleForm.price" class="salesPrice"> -->
@@ -449,6 +461,7 @@ export default {
         orderRadio: "1",
         sale: "",
         travel: "",
+        merchantsSell:"",//商户销售
         price: "1",
         price1: "",
         price2: "",
@@ -509,6 +522,9 @@ export default {
         travel: [
           { required: true, message: "请输入商户名称", trigger: "blur" }
         ],
+        merchantsSell: [
+          { required: true, message: "请输入商户销售", trigger: "blur" }
+        ],
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
         price1: [{ pattern: /^[+]{0,1}(\d+)$/, message: "价格必须为数字值" }],
         price2: [{ pattern: /^[+]{0,1}(\d+)$/, message: "价格必须为数字值" }],
@@ -533,12 +549,12 @@ export default {
         type: [
           { required: true, message: "请选择下单方式", trigger: "change" }
         ],
-        contactName: [
-          { required: true, message: "请输入联系人姓名", trigger: "blur" }
-        ],
-        contactPhone: [
-          { required: true, message: "请输入联系人电话", trigger: "blur" }
-        ],
+        // contactName: [
+        //   { required: true, message: "请输入联系人姓名", trigger: "blur" }
+        // ],
+        // contactPhone: [
+        //   { required: true, message: "请输入联系人电话", trigger: "blur" }
+        // ],
         //游客信息
         cnName: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         enName: [
