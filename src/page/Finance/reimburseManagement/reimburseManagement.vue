@@ -11,7 +11,7 @@
               <span class="search_style">团期计划：</span>
               <el-input v-model="groupCode" placeholder="请输入内容" class="search_input"></el-input>
               <span class="search_style">申请人：</span>
-              <el-input v-model="createUser" placeholder="请输入内容" class="search_input"></el-input>
+              <el-input v-model="createUser" placeholder="请输入内容" class="search_input" :disabled="ifShowProposer"></el-input>
               <span class="search_style">发起时间：</span>
               <div style="float: left">
                 <el-date-picker 
@@ -145,11 +145,12 @@
                   ></el-input>
                 </el-form-item>
                 <div style="color: red; color: red; position: absolute;top: 140px;left: 48px;">*</div>
+                
                 <el-form-item label="附件" prop="image" ref="againimage">
                   <el-upload
                     name="files"
                     class="upload-demo"
-                    action="http://192.168.1.186:3009/upload/api/picture"
+                    action="http://test.dayuntong.com/upload/obs/api/picture/"
                     :on-change="handleChange"
                     :on-success="handleSucess"
                     :file-list="fileList"
@@ -379,7 +380,8 @@
       <!--添加报销弹窗end-->
       <!--需要你审批-->
       <el-tab-pane label="需要您审批" name="second">
-        <NeedApproval></NeedApproval>
+        <!-- <NeedApproval></NeedApproval> -->
+        <approvalToBorrow></approvalToBorrow>
       </el-tab-pane>
       <!--审批end-->
     </el-tabs>
@@ -387,13 +389,15 @@
 </template>
 
 <script>
-import NeedApproval from "@/page/Finance/reimburseManagement/needApproval";
+// import NeedApproval from "@/page/Finance/reimburseManagement/needApproval";
+import approvalToBorrow from "@/page/Finance/loanManagement/approvalToBorrow";
 import { formatDate } from "@/js/libs/formatDate.js";
 import moment from "moment";
 export default {
   name: "reimburseManagement",
   components: {
-    NeedApproval
+    //NeedApproval
+    approvalToBorrow
   },
   data() {
     var areaIdRule = (rule, value, callback) => {
@@ -419,6 +423,7 @@ export default {
       image: 0,
       value1: "",
       value2: "",
+      ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       hand: [],
       plans: {
         planNum: "1",
@@ -912,8 +917,8 @@ export default {
         this.$set(this.fileList[i], "name", paths.Name);
       }
       this.image = 1;
-      this.clearValidate("againimage");
-      console.log(fileList);
+      //this.clearValidate("image");
+      console.log(this.fileList);
     },
     //添加报销和删除
     handleTabsEdit(targetName, action) {
@@ -1068,6 +1073,14 @@ export default {
   },
   created() {
     this.reimList();
+    if (sessionStorage.getItem('hasCashierInfo')) {
+      this.ifAccountBtn = true
+    } else {
+      this.ifAccountBtn = false
+    }
+    if (!sessionStorage.getItem('hasCashierInfo')) { // 只有是出纳的时候才显示申请人检索
+      this.ifShowProposer = true
+    }
   },
  
 };

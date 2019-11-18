@@ -57,7 +57,20 @@
           <el-input v-model="ruleForm.abstract" class="bright2 inputWidth" placeholder="摘要" :disabled="change"></el-input>
         </el-form-item>
         <el-form-item label="凭证" label-width="120px">
-          <el-upload class="upload-demo" name="files" ref="upload" :limit="12" multiple :action="this.upload_url" :disabled="change" :file-list="fileList" :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview" list-type="picture">
+          <el-upload 
+          class="upload-demo" 
+          name="files" 
+          ref="upload" 
+          :limit="12" 
+          multiple 
+          :action="this.upload_url" 
+          :disabled="change" 
+          :file-list="fileList" 
+          :on-error="handleError" 
+          :on-success="handleSuccess" 
+          :on-remove="handleRemove" 
+          :on-preview="handlePreview" 
+          list-type="picture">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
@@ -244,7 +257,7 @@ export default {
       dialogVisible2: false,
       dialogFormVisible1: false,
       dialogFormVisible2: false,
-      upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',
+     // upload_url: this.GLOBAL.imgUrl + '/upload/api/picture',
       time: 0,
       len: 0,
       uid: 0, //上传图片缩略图选中项
@@ -687,10 +700,7 @@ export default {
       window.open(this.imgBig);
       // this.downloadIamge(this.imgBig, this.imgBigName)
     },
-    handleRemove(file, fileList) {
-      this.uid = fileList[0].uid;
-      this.fileList = fileList
-    },
+ 
     handleSuccess(res, file, fileList) {
       //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
