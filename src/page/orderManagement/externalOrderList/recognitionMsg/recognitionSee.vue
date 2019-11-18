@@ -57,7 +57,7 @@
         </div>
         <div class="backgroundDv" v-if="type == 2">
           <div class="titleDv">
-            <p class="textP" v-if="distributor_code != '' && tableData1[0].pay_type != 5">商户名称：{{distributor_code}}</p>
+            <p class="textP" v-if="distributor_code != '' && tableData[0].pay_type != 5">商户名称：{{distributor_code}}</p>
             <p class="textP">收款单号：{{rece_code}}</p>
           </div>
         </div>

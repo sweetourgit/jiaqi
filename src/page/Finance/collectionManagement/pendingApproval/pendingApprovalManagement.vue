@@ -14,7 +14,7 @@
               <div v-if="scope.row.checkType=='1'" style="color: #33D174">通过</div>
             </template>
           </el-table-column>
-          <el-table-column prop="collectionTime" label="收款时间" align="center">
+          <el-table-column prop="collectionTime" label="收款时间" :formatter='dateFormat' align="center">
           </el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center">
           </el-table-column>
