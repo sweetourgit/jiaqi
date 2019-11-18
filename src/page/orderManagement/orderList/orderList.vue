@@ -488,7 +488,7 @@ export default {
     isToastFun() {
       this.isToast = false;
       this.orgIDValue = "";
-      this.orgID = 0
+      this.orgID = 0;
     },
 
     // 点击list列表中的一个
@@ -514,7 +514,9 @@ export default {
           // console.log("请求一条数据的",res)
           this.getListOneMessage = res.data.object;
           let date = res.data.object.date.toString();
-          this.getListOneMessage.date = moment(date).format("YYYY-MM-DD HH:mm:ss");
+          this.getListOneMessage.date = moment(date).format(
+            "YYYY-MM-DD HH:mm:ss"
+          );
           this.orderCodeSon = res.data.object.orderCode;
           this.priceType = res.data.object.priceType;
           //订单来源
@@ -599,8 +601,8 @@ export default {
       this.orderCode = ""; //订单ID
       this.teamID = ""; //产品ID
       this.groupCode = null; //团期计划ID
-      this.beginDate = "";
-      this.endDate = "";
+      this.beginDate = ""; //开始日期
+      this.endDate = "";//结束日期
       this.name = ""; //产品名称
       this.pod = ""; //出发地
       this.podID = ""; //出发地
@@ -610,7 +612,8 @@ export default {
       (this.otherPrice = ""), //其他费用名称
         (this.platform = null), //平台
         (this.productType = ""); //产品类型
-      this.localCompName = ""; //商户名称
+      this.orgIDValue = ""; //商户名称
+      this.orgID = 0, //商户名称搜索的id
       this.contact = ""; //订单联系人
       // this.orderChannel = null; //订单来源
       this.showContent = null; //折叠按钮
@@ -641,6 +644,8 @@ export default {
       pod = this.pod,
       podID = this.podID //出发地
     ) {
+      // 每次搜索都折叠 要不折叠的数据显示不对 因为点击折叠的位置需要调取另一个接口
+      this.showContent = null;
       if (beginDate) {
         let y = beginDate.getFullYear();
         let m =
@@ -809,7 +814,7 @@ export default {
       }
     },
     localCompNameBlur() {
-      if (this.localCompName == "") {
+      if (this.orgIDValue == "") {
         this.orderPage(1, this.pageSize);
       }
     },

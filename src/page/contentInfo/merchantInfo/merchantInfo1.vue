@@ -779,7 +779,7 @@ export default {
       isInputVisible: false, //商户其他名称tags显示隐藏
       isOtherSuccess: true, //商户其他名称唯一性判断  false则有重复的 则不能添加到businessOtherNamesArr
       isAccountValidator: null, //账户信息添加时验证唯一性 后台返回false则重复
-      isChooseAccount: false, //选择人员的dialog是否显示
+      isChooseAccount: false, //选择人员的dialog tree是否显示
       isHavePhoneOrEmail: null, //tid为0的时候（大保存）添加账户信息手机号和邮箱的判断
       tid: 0, //tid为0新大保存的添加 不为0则是编辑页的添加账户信息（目前我的理解）
       pageSize: 10, //每页条数 默认10

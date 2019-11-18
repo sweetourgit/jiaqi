@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative" id="applyFor">
     <!--申请预付款-->
-    <el-dialog title="申请" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="closeAdd">
+    <el-dialog title="无收入借款申请" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="buttonDv">
           <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">申 请</el-button>

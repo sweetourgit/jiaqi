@@ -196,7 +196,7 @@
           type="primary"
           v-if="orderget.orderStatus==0||orderget.orderStatus==10||orderget.orderStatus==1"
           @click="orderModification(orderget.orderStatus,orderget.occupyStatus)"
-          disabled="isChangeNumber || isLowPrice"
+          :disabled="isChangeNumber || isLowPrice"
           class="confirm fr"
         >{{statusNext}}</el-button>
         <!--保存游客信息按钮-->
@@ -307,7 +307,7 @@ export default {
       priceChange: "", //同业价格好还是直客价格
       isPricechange: null, //true为直客   false为同业价格
       isChangeNumber: false, //判断动态按钮是否可点击 数量和价格有变化的时候为true
-      isLowPrice: null, //确认订单状态时 已付金额低于订单总价时为true
+      isLowPrice: false, //确认订单状态时 已付金额低于订单总价时为true
       //游客信息
       quota: [], //余位信息负数红色提示
       endTimeStamp: "00天00时00分00秒", //倒计时
