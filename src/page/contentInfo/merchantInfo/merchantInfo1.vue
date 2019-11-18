@@ -2197,7 +2197,7 @@ export default {
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID
           this.businewwInfPageId = object.id;
-          this.getDebitTable();
+          if(this.btnindex == 1) this.getDebitTable();
           this.useList = useList;
           this.useList.forEach((val, idx, arr) => {
             if (arr[idx].state == 2) {
