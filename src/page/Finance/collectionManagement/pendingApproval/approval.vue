@@ -14,9 +14,9 @@
         <p class="inputLabel"><span>ID：</span>{{baseInfo.id}}</p>
         <p class="inputLabel"><span>申请人：</span>{{baseInfo.createUser}}</p>
         <p class="inputLabel"><span>创建时间：</span>{{baseInfo.createTime}}</p>
-        <p class="inputLabel" v-if="baseInfo.collectionType == 2"><span>同业社名称：</span>{{baseInfo.distributor}}</p>
-        <p class="inputLabel" v-if="baseInfo.collectionType == 1"><span>交易流水号：</span>{{baseInfo.orderNumber}}</p>
-        <p class="inputLabel" v-if="baseInfo.collectionType == 5"><span>分销商：</span>{{baseInfo.distributor}}</p>
+        <p class="inputLabel" v-if="info.collectionType == 2"><span>同业社名称：</span>{{baseInfo.distributor}}</p>
+        <p class="inputLabel" v-if="info.collectionType == 1"><span>交易流水号：</span>{{baseInfo.orderNumber}}</p>
+        <p class="inputLabel" v-if="info.collectionType == 5"><span>分销商：</span>{{baseInfo.distributor}}</p>
         <p class="inputLabel"><span>收款账户：</span>{{baseInfo.localCompName}}</p>
         <p class="inputLabel"><span>收款金额：</span>{{baseInfo.price}}</p>
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.abstract}}</p>
@@ -72,15 +72,25 @@
         <el-divider content-position="left">关联欠款</el-divider>
         <div class="stepDv bottomDis">
           <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
-            <el-table-column prop="id" label="订单编号" align="center"></el-table-column>
+            <!--<el-table-column prop="id" label="订单编号" align="center"></el-table-column>-->
+            <!--<el-table-column prop="productName" label="产品名称" align="center"></el-table-column>-->
+            <!--<el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>-->
+            <!--<el-table-column prop="date" label="出团日期" align="center"></el-table-column>-->
+            <!--<el-table-column prop="amountPrice" label="订单金额" align="center"></el-table-column>-->
+            <!--<el-table-column prop="arrearsMoney" label="未收金额" align="center"></el-table-column>-->
+            <!--<el-table-column prop="payablePrice" label="已收金额" align="center"></el-table-column>-->
+            <!--<el-table-column prop="repaidPrice" label="待审核金额" align="center"></el-table-column>-->
+            <!--<el-table-column prop="collectionMoney" label="本次收款金额" align="center"></el-table-column>-->
+
+            <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
             <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
             <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-            <el-table-column prop="date" label="出团日期" align="center"></el-table-column>
-            <el-table-column prop="amountPrice" label="订单金额" align="center"></el-table-column>
-            <el-table-column prop="arrearsMoney" label="未收金额" align="center"></el-table-column>
-            <el-table-column prop="payablePrice" label="已收金额" align="center"></el-table-column>
-            <el-table-column prop="repaidPrice" label="待审核金额" align="center"></el-table-column>
-            <el-table-column prop="collectionMoney" label="本次收款金额" align="center"></el-table-column>
+            <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
+            <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
+            <el-table-column prop="arrearsPrice" label="欠款金额" align="center"></el-table-column>
+            <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
+            <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
+            <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
           </el-table>
         </div>
       </div>
@@ -240,7 +250,7 @@
 //        const
         // 获取基本信息
         this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/coll", {
-          "id": this.info
+          "id": this.info.id
         }, ).then(function(response) {
           console.log('审批详情',response);
           if (response.data.isSuccess) {

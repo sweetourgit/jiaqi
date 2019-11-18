@@ -34,7 +34,7 @@
           <!--</el-table-column>-->
           <el-table-column label="操作" width="100" align="center">
             <template slot-scope="scope">
-              <el-button @click="approvalZK(scope.row.id)" type="text" size="small" class="table_details">审批</el-button>
+              <el-button @click="approvalZK(scope.row)" type="text" size="small" class="table_details">审批</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -65,7 +65,7 @@
           <!--<el-table-column prop="" label="审批意见" align="center"></el-table-column>-->
           <el-table-column label="操作" width="100" align="center">
             <template slot-scope="scope">
-              <el-button @click="approvalTY(scope.row.id)" type="text" size="small">审批</el-button>
+              <el-button @click="approvalTY(scope.row)" type="text" size="small">审批</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -96,7 +96,7 @@
           <!--<el-table-column prop="" label="审批意见" align="center"></el-table-column>-->
           <el-table-column label="操作" width="100" align="center">
             <template slot-scope="scope">
-              <el-button @click="approvalNBSK(scope.row.id)" type="text" size="small">审批</el-button>
+              <el-button @click="approvalNBSK(scope.row)" type="text" size="small">审批</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -185,18 +185,18 @@
         }
       },
       // 直客审批
-      approvalZK(id){
-        this.info = id;
+      approvalZK(row){
+        this.info = row;
         this.dialogFormVisible = true;
       },
       // 同业审批
-      approvalTY(id){
-        this.info = id;
+      approvalTY(row){
+        this.info = row;
         this.dialogFormVisible = true;
       },
       // 内部收款审批
-      approvalNBSK(id){
-        this.info = id;
+      approvalNBSK(row){
+        this.info = row;
         this.dialogFormVisible = true;
       },
       // 关闭弹框

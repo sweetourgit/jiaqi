@@ -197,7 +197,7 @@
           <el-table-column prop="bill_status" label="认收款信息" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="showBtn(scope.row)">查看</el-button>
-              <el-button type="text" @click="undoBtn(scope.row)" v-if="scope.row.pay_type != 5">撤销</el-button>
+              <el-button type="text" @click="undoBtn(scope.row)" v-if="scope.row.pay_type != 5 || (scope.row.pay_type == 5 && scope.row.rec_id == null)  ">撤销</el-button>
             </template>
           </el-table-column>
         </el-table>
