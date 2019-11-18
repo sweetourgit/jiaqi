@@ -848,8 +848,8 @@ export default {
     },
     // 申请-提交表单
     submitForm(formName) {
-      let _this = this
-      this.a = true
+      let _this = this;
+      this.a = true;
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let pictureList = [];
@@ -941,8 +941,9 @@ export default {
           }).then(res => {
             // console.log(res.data);
             if (res.data.isSuccess == true) {
-              if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
-                this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
+              
+              if(this.$parent.$parent.$parent.$parent.$refs.PendingApprovalManagement){
+                this.$parent.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
               };
               this.$emit('searchHand', '')
               this.$message({

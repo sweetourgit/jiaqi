@@ -20,7 +20,10 @@
         <p class="inputLabel"><span>收款账户：</span>{{baseInfo.localCompName}}</p>
         <p class="inputLabel"><span>收款金额：</span>{{baseInfo.price}}</p>
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.abstract}}</p>
-        <p class="inputLabel"><span>开发票：</span>{{baseInfo.invoice}}</p>
+        <p class="inputLabel" v-if="info.collectionType != 5"><span>开发票：</span>{{baseInfo.invoice}}</p>
+        <p class="inputLabel" v-if="info.collectionType == 5"><span>收款时间：</span>{{baseInfo.collectionTime}}</p>
+        <p class="inputLabel" v-if="info.collectionType == 5"><span>款项说明：</span>{{baseInfo.moneyExplain}}</p>
+
 
         <div class="inputLabel">
           <span>凭证：</span>
@@ -72,16 +75,6 @@
         <el-divider content-position="left">关联欠款</el-divider>
         <div class="stepDv bottomDis">
           <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
-            <!--<el-table-column prop="id" label="订单编号" align="center"></el-table-column>-->
-            <!--<el-table-column prop="productName" label="产品名称" align="center"></el-table-column>-->
-            <!--<el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>-->
-            <!--<el-table-column prop="date" label="出团日期" align="center"></el-table-column>-->
-            <!--<el-table-column prop="amountPrice" label="订单金额" align="center"></el-table-column>-->
-            <!--<el-table-column prop="arrearsMoney" label="未收金额" align="center"></el-table-column>-->
-            <!--<el-table-column prop="payablePrice" label="已收金额" align="center"></el-table-column>-->
-            <!--<el-table-column prop="repaidPrice" label="待审核金额" align="center"></el-table-column>-->
-            <!--<el-table-column prop="collectionMoney" label="本次收款金额" align="center"></el-table-column>-->
-
             <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
             <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
             <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
@@ -137,7 +130,9 @@
           localCompName: '',
           price: '',
           abstract: '',
-          invoice: ''
+          invoice: '',
+          collectionTime: '',
+          moneyExplain: ''
         },
 
         // 基础信息凭证
@@ -265,7 +260,9 @@
               localCompName: response.data.object.collectionNumber,
               price: response.data.object.price,
               abstract: response.data.object.abstract,
-              invoice: hasInvoice
+              invoice: hasInvoice,
+              collectionTime: response.data.object.collectionTime,
+              moneyExplain: response.data.object.moneyExplain
             };
 
             // id为105有数据  数据字段待确认

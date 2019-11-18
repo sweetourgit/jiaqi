@@ -120,8 +120,8 @@
     },
     data() {
       return {
-        tabPosition:  'left',//左侧导航
-        activeName: 'first',//当前tab项
+        tabPosition:  'left',// 左侧导航
+        activeName: 'first',// 当前tab项
         // 审批页面显示隐藏
         dialogFormVisible: false,
         info: '',
