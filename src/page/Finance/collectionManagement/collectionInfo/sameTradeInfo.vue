@@ -941,6 +941,9 @@ export default {
           }).then(res => {
             // console.log(res.data);
             if (res.data.isSuccess == true) {
+              if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
+                this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
+              };
               this.$emit('searchHand', '')
               this.$message({
                 type: 'success',

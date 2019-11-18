@@ -650,6 +650,9 @@ export default {
             "object": objectRequest
           }).then(res => {
             if (res.data.isSuccess == true) {
+              if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
+                this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataZK();
+              };
               this.$emit('searchHand', '')
               this.$message({
                 type: 'success',

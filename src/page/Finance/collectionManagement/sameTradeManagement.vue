@@ -213,8 +213,8 @@
         <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
         <div class="associated">
           <div class="associatedIcon"><i class="el-icon-warning"></i></div>
-          <div class="associatedItems">已关联<span style="margin:0 5px; font-weight: bold;">1</span>项</div>
-          <div class="associatedMoney">总计：1200.00元</div>
+          <div class="associatedItems">已关联<span style="font-weight: bold;">{{ tableManyRow }}</span>项</div>
+          <div class="associatedMoney">总计：{{ getCollectionPriceTotal }}元</div>
         </div>
         <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
            <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
@@ -247,6 +247,8 @@ export default {
   },
   data() {
     return {
+      tableManyRow: null, // 关联欠款表格共多少行
+      getCollectionPriceTotal: 0, // 当前收款总额（合计）
       getRowCheckType: null, // 获取当前审批状态
       ruleForm: {
         proposer: '', // 申请人
@@ -430,11 +432,17 @@ export default {
           "id":paramsPaymentID
       }).then(res => {
         if(res.data.isSuccess == true){
+          const resObj = res.data.object
            this.fundamental=res.data.object;
+          const keepDebtItem = resObj.arrears
            // this.getLcList(res.data.object.id)
           this.tableAudit = res.data.object.spw
           this.tableInvoice = res.data.object.invoiceTable
+          this.tableManyRow = resObj.arrears.length
           this.tableAssociated = res.data.object.arrears
+          keepDebtItem.forEach( item => {
+            this.getCollectionPriceTotal += item.matchingPrice
+          })
         }
      })
     },
