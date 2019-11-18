@@ -141,7 +141,8 @@
           <!--总计-->
           <el-form-item label="总价" prop="totalPrice" class="cb">
             <div class="ml13">{{ruleForm.totalPrice}}</div>
-            <div v-if="ruleForm.orderRadio == 2 && this.payment == 1" style="clear: both; margin:0 0 0 10px;">剩余预存款和额度:￥{{amount}}</div>
+            <div v-if="ruleForm.orderRadio == 2 && payment == 1" style="clear: both; margin:0 0 0 10px;">剩余预存款和额度:￥{{amount}}</div>
+            <div v-if="ruleForm.orderRadio == 2 && payment == 2 && deposit !==0 " style="clear: both; margin:0 0 0 10px;">剩余预存款:￥{{deposit}}</div>
           </el-form-item>
           <!--下单方式-->
           <!-- <el-form-item label="下单方式" prop="type">
@@ -1067,58 +1068,59 @@ export default {
                         }
                       });
                   }else if(this.ruleForm.orderRadio === '2'){
-                    this.ifOrderInsert = true;
-                    this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
-                      object: {
-                        id: 0,
-                        isDeleted: 0,
-                        code: "",
-                        orderCode: "",
-                        proID: this.teampreviewData.teamID,
-                        planID: this.planId,
-                        orderStatus: 0, //订单状态  7未确认
-                        refundStatus: 0, //退款状态
-                        occupyStatus: index, //占位状态
-                        payable: this.ruleForm.totalPrice, //应付款
-                        platform: 2, //1是erp，2是同业
-                        favourable: [
-                          //优惠
-                          {
-                            id: 0,
-                            orderID: 0,
-                            price: this.ruleForm.otherCost,
-                            title: "其他费用",
-                            favMode: 1,
-                            mark: this.ruleForm.otherCostRemark
-                          },
-                          {
-                            id: 0,
-                            orderID: 0,
-                            price: this.ruleForm.allDiscount,
-                            title: "整体优惠",
-                            favMode: 2,
-                            mark: this.ruleForm.allDisRemark
-                          }
-                        ],
-                        contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
-                        endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
-                        orderChannel: Number(this.ruleForm.orderRadio),
-                        priceType: Number(this.ruleForm.price),
-                        orgID:this.productPos,
-                        // orgID: sessionStorage.getItem("orgID"),
-                        userID: sessionStorage.getItem("id"),
-                        remark: JSON.stringify([
-                          {
-                            OrderCode: "",
-                            Mark: this.ruleForm.remark,
-                            CreateTime: formatDate(new Date())
-                          }
-                        ]),
-                        guests: guest,
-                        number: number,
-                        enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
-                      }
-                    }).then(res => {
+                    if(this.ruleForm.totalPrice <= this.amount){//判断订单金额与剩余预存款和额度对比
+                      this.ifOrderInsert = true;
+                      this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
+                        object: {
+                          id: 0,
+                          isDeleted: 0,
+                          code: "",
+                          orderCode: "",
+                          proID: this.teampreviewData.teamID,
+                          planID: this.planId,
+                          orderStatus: 0, //订单状态  7未确认
+                          refundStatus: 0, //退款状态
+                          occupyStatus: index, //占位状态
+                          payable: this.ruleForm.totalPrice, //应付款
+                          platform: 2, //1是erp，2是同业
+                          favourable: [
+                            //优惠
+                            {
+                              id: 0,
+                              orderID: 0,
+                              price: this.ruleForm.otherCost,
+                              title: "其他费用",
+                              favMode: 1,
+                              mark: this.ruleForm.otherCostRemark
+                            },
+                            {
+                              id: 0,
+                              orderID: 0,
+                              price: this.ruleForm.allDiscount,
+                              title: "整体优惠",
+                              favMode: 2,
+                              mark: this.ruleForm.allDisRemark
+                            }
+                          ],
+                          contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                          endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                          orderChannel: Number(this.ruleForm.orderRadio),
+                          priceType: Number(this.ruleForm.price),
+                          orgID:this.productPos,
+                          // orgID: sessionStorage.getItem("orgID"),
+                          userID: sessionStorage.getItem("id"),
+                          remark: JSON.stringify([
+                            {
+                              OrderCode: "",
+                              Mark: this.ruleForm.remark,
+                              CreateTime: formatDate(new Date())
+                            }
+                          ]),
+                          guests: guest,
+                          number: number,
+                          enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                        }
+                      }).then(res => {
                       if (res.data.isSuccess == true) {
                         this.$message.success("提交成功");
                         let data = JSON.parse(res.data.result.details);
@@ -1142,6 +1144,21 @@ export default {
                         this.ifOrderInsert = true;
                       }
                     });
+                    }else {
+                      this.$confirm("该订单金额已经超过剩余预存款和额度?", "提示", {
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        type: "warning"
+                      }).then(res =>{
+                        this.$parent.teamQueryList();
+                      }).catch(() => {
+                        this.$message({
+                          type: "info",
+                          message: "已取消"
+                        });
+                      });
+                    }
+                    
                   }
               }else if(this.teampreviewData.regimentType === 2){//2停售
                   this.$confirm("该团号已停售?", "提示", {
