@@ -641,6 +641,8 @@ export default {
       pod = this.pod,
       podID = this.podID //出发地
     ) {
+      // 每次搜索都折叠 要不折叠的数据显示不对 因为点击折叠的位置需要调取另一个接口
+      this.showContent = null
       if (beginDate) {
         let y = beginDate.getFullYear();
         let m =
