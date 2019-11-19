@@ -425,13 +425,13 @@ export default {
   },
   methods: {
    // 后台返这个接口目前有问题 缺后两个字段
-   /* priceChangeHandel (){
-      this.arrearsList.forEach(function (v,k,arr) {   //this.ruleForm.price
-        // arr[k]['repaymentMoney'] = 2
-        console.log(arr)
-      })
-      // console.log(this.arrearsList)
-    },*/
+   priceChangeHandel (){
+     /* this.arrearsList.forEach(function (v,k,arr) {   //this.ruleForm.price
+       // arr[k]['repaymentMoney'] = 2
+       console.log(arr)
+     })
+     // console.log(this.arrearsList)*/
+   },
     moment,
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {

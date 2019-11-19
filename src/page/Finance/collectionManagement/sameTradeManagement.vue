@@ -11,7 +11,17 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="申请人:" prop="proposer">
-            <el-input v-model="ruleForm.proposer" placeholder="请输入申请人"></el-input>
+            <el-autocomplete
+              style="width: 100%"
+              class="name_input"
+              v-model="ruleForm.proposer"
+              :fetch-suggestions="querySearchBorrower"
+              placeholder="请输入申请人"
+              :trigger-on-focus="false"
+              @select="departureBorrower"
+              @blur="departureBorrowerBlur"
+              @focus="departureBorrowerFocus"
+            ></el-autocomplete>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -47,7 +57,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item>
-            <el-button @click="searchHandInside()" type="primary">搜索</el-button>
+            <el-button @click="searchHandInside()" type="primary" :disabled="ifShowsearch">搜索</el-button>
             <el-button @click="emptyButtonInside('ruleForm')" type="primary">重置</el-button>
           </el-form-item>
         </el-col>
@@ -65,8 +75,9 @@
       <el-table-column prop="checkTypeStatus" label="状态" width="80" align="center">
         <template slot-scope="scope">
           <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F" >审批中</div>
-          <div v-else="scope.row.checkType=='1'" style="color: #33D174" >通过</div>
           <div v-else-if="scope.row.checkType=='2'" style="color: #FF4A3D" >驳回</div>
+          <div v-else-if="scope.row.checkType=='3'" style="color: #FF4A3D" >已认款</div>
+          <div v-else="scope.row.checkType=='1'" style="color: #33D174" >通过</div>
         </template>
       </el-table-column>
       <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
@@ -122,6 +133,7 @@
           <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
           <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
           <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
+          <el-tag type="success" v-if="fundamental.checkType=='3'" class="distributor-status">已认款</el-tag>
         </div>
         <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
@@ -255,6 +267,7 @@ export default {
   },
   data() {
     return {
+      tableDataBorrower:[],
       tableManyRow: null, // 关联欠款表格共多少行
       getCollectionPriceTotal: 0, // 当前收款总额（合计）
       getRowCheckType: null, // 获取当前审批状态
@@ -284,7 +297,9 @@ export default {
       tableInvoice:[],  // 发票表格
       tableAssociated:[],  // 发票关联表格
       sid:0,
-      currentRowId: null // 当前行id
+      currentRowId: null, // 当前行id
+      keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
+      ifShowsearch: false,
     }
   },
   created(){
@@ -296,6 +311,52 @@ export default {
     }
   },
   methods: {
+    // 借款人模糊检索
+    querySearchBorrower(queryBorrowerString, cb) {
+      this.tableDataBorrower = []
+      this.$http.post(this.GLOBAL.serverSrc + '/org/api/userlist', {
+        "object": {
+          name: queryBorrowerString
+        }
+      }).then(res => {
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.tableDataBorrower.push({
+            "value": res.data.objects[i].name,
+            "userCode": res.data.objects[i].userCode
+          })
+        }
+        var results = queryBorrowerString ? this.tableDataBorrower.filter(this.createFilteBorrowerr(queryBorrowerString)) : [];
+        cb(results)
+      }).catch(err => {})
+    },
+    // 借款人选中
+    departureBorrower (item) {
+      this.keepBorrowerUserCode = item.userCode
+    },
+    // 借款人 失焦
+    departureBorrowerBlur(){
+      if(this.ruleForm.proposer == ''){
+        this.ifShowsearch = false
+      }else {
+        if(this.keepBorrowerUserCode == null){
+          this.ifShowsearch = false
+          this.ruleForm.proposer = ''
+          // this.$message.success("无相关借款人");
+        } else {
+          this.ifShowsearch = true
+        }
+      }
+    },
+    // 借款人 获得焦点
+    departureBorrowerFocus(){
+      this.ifShowsearch = true
+    },
+    // 模糊查询返回下拉选中项 - 查询返回userCode的（借款人）
+    createFilteBorrowerr(queryString1){
+      return (restaurant) => {
+        return (restaurant.userCode);
+      }
+    },
     // 获取同业关联列表
     getList() {
       this.listLoading = true
@@ -317,7 +378,7 @@ export default {
             "collectionNumber": "",
             "price": 0,
             "dept": 0,
-            "createUser": this.accepter ? this.accepter : '',
+            "createUser": this.keepBorrowerUserCode ? this.keepBorrowerUserCode : '',
             "createTime": "2019-05-16 01:02:40",
             "code": "",
             "serialNumber": "",
@@ -353,7 +414,7 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
-    // 表单搜索
+    // 表单搜索收款时间
     searchHandInside () {
       let _this = this
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
@@ -367,7 +428,7 @@ export default {
             "orderNumber": _this.ruleForm.order ? _this.ruleForm.order : '',
             "startTime": _this.ruleForm.dateStart ? moment(_this.ruleForm.dateStart).format('YYYY-MM-DD'): "2000-01-01",
             "endTime":  _this.ruleForm.dateEnd ? moment(_this.ruleForm.dateEnd) .format('YYYY-MM-DD'): "2019-09-26",
-            'createUser': _this.ruleForm.proposer ? _this.ruleForm.proposer : "",
+            'createUser': _this.keepBorrowerUserCode ? _this.keepBorrowerUserCode : "",
             'checkType': _this.ruleForm.checkType ? _this.ruleForm.checkType : -1,
             "collectionType": 2,
           }
