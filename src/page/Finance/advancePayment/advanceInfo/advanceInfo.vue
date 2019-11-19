@@ -988,7 +988,7 @@ export default {
           this.inputVisible2 = true;
           let pictureList = [];
           this.fileList.forEach(function(item){
-            pictureList.push({ url: item.url.slice(5), name: item.name})
+            pictureList.push({url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })
 
           this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/insert', {
