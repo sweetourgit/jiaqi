@@ -176,11 +176,11 @@
                   ></i>
                   <div style="float: left;margin-left: 30px;margin-top: 7px;">
                     已选择
-                    <span style="color: #249BEB">0</span>项
+                    <span style="color: #249BEB">{{t_sum}}</span>项
                   </div>
                   <div style="float: left; margin-left: 30px;margin-top: 7px;">
                     报销总计：
-                    <span style="font-weight:bold">0.00</span>元
+                    <span style="font-weight:bold">{{t_price}}</span>元
                   </div>
                 </div>
                 <div v-if="radio==1">
@@ -434,6 +434,8 @@ export default {
       value2: "",
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       hand: [],
+      t_sum:0,//一共多少项
+      t_price:0,//一共多少钱
       plans: {
         planNum: "1",
         planName: "2",
@@ -728,7 +730,7 @@ export default {
           this.hand.push(this.ruleForm.monkeys);
           var createUser = this.ruleForm.name[0].peo;
           var pid = this.plans.pid;
-          var price = this.ruleForm.monkey.price;
+          var price = t_price;
           var mark = this.ruleForm.content;
           var files = this.fileList;
           var check = 0;
@@ -816,13 +818,21 @@ export default {
     },
     t_text(formName) {//确认添加
     this.joinData_s = [];
+    var sss;
       for(let i in this.joinData){
             if(this.joinData[i].bcount!= "0" ){
                 this.joinData_s.push(this.joinData[i]);
+                //sss = this.joinData[i].bcount + [i];
+                 
             }
           }
+
       //console.log("筛",this.joinData_s);
-      this. dialogFormVisible3 = false;
+      //t_sum t_price
+      this.t_sum = this.joinData_s.length;
+      //this.t_price = sss;
+      this.dialogFormVisible3 = false;
+
      
     },
     // 报销弹窗
