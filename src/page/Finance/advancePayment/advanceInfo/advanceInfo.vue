@@ -548,6 +548,8 @@ export default {
           _this.total = res.data.total;
           _this.listLoading = false
         } else if(res.data.isSuccess == false && res.data.objects.length == 0){
+          _this.tableData4 = []
+          _this.total = 0
           _this.listLoading = false
         }
       }).catch(err => {

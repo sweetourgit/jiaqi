@@ -225,7 +225,7 @@
     </el-dialog>
     <!-- 借款申请详情 END -->
     <!-- 通过、驳回弹框 -->
-    <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close='false'>
+    <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close='false' style="overflow: hidden">
       <div class="transit" @click="closeTransit()">×</div>
       <textarea rows="8" v-model="commentText" style="overflow: hidden; width:99%;margin:0 0 20px 0;"></textarea>
       <div style="float:right; margin:0 0 30px 0;">
