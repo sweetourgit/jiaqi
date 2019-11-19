@@ -222,7 +222,7 @@
         this.dialogFormVisible = true;
       },
       // 关闭弹框
-      closeAdd(str){
+      closeAdd(){
         this.dialogFormVisible = false;
         this.loadDataZK();
         this.loadDataTY();
