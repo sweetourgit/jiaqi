@@ -271,6 +271,7 @@
             }
           }
         ).then(function(obj) {
+
           console.log('ZK',obj);
           if(obj.data.isSuccess){
             that.totalZK = obj.data.total;

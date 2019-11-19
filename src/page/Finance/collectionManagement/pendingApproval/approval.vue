@@ -238,6 +238,7 @@
           "checktype": this.approval_status,
           "id": this.info.id
         }, ).then(function(response) {
+            
 //          console.log('审批操作',response);
           if (response.data.isSuccess) {
             that.$message.success("审批提交成功~");
