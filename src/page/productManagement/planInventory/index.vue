@@ -31,7 +31,6 @@
       ref="child" 
       :is="vm.currentChild+ 'Child'"
       @emit-handler="emitHandler"
-      @change-child="emitChangeChild"
     ></component>
   </div>
 </template>
@@ -77,7 +76,6 @@ export default {
   },
 
   methods: {
-    emitChangeChild(){},
     // TODO记录
     todoWarn(){
       console.warn('TODO: /cost-child/edit-form 尚未获取编辑用户，接口提交的是假值');

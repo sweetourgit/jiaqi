@@ -517,7 +517,7 @@
 
             that.tableDataXG.forEach(function (item, index, arr) {
               item.check_at = formatDate(new Date(item.check_at * 1000));
-              totalMoney += parseFloat(item.income);
+              totalMoney += parseFloat(item.cost);
               totalNum += parseInt(item.quantity);
             });
 
