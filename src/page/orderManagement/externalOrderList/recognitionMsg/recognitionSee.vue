@@ -32,7 +32,7 @@
         <div class="backgroundDv" v-if="type == 1">
           <div class="titleDv" style="width: 90%;margin: 10px auto;">
             <p class="textP">收款明细说明：{{instructions}}</p>
-            <p class="textP">新款入账时间：{{data}}</p>
+            <p class="textP">款项入账时间：{{data}}</p>
             <p class="textP">分销商：{{distributors}}</p>
           </div>
           <el-table ref="singleTable" :data="tableData1" border style="width: 90%;margin: 10px auto;" :highlight-current-row="true" :header-cell-style="getRowClass">
@@ -143,7 +143,16 @@
             if(response.data.data.type === 1){
               response.data.data.rece_at = formatDate(new Date(response.data.data.info.rece_at*1000));
               that.instructions = response.data.data.info.explain;
-              that.data = formatDate(new Date(response.data.data.info.rece_start*1000)).split(" ")[0] + '--' + formatDate(new Date(response.data.data.info.rece_end*1000)).split(" ")[0];
+              if(response.data.data.info.rece_start == null) {
+                const timeToday = new Date();
+                const year = timeToday.getFullYear();
+                const month = timeToday.getMonth() + 1;
+                const day = timeToday.getDate();
+                that.data = (year - 1) + '-' + month + '-' + day +'--'+(year + 1) + '-' + month + '-' + day;
+              } else {
+//                that.date = formatDate(new Date(response.data.data.info.rece_start*1000))+'--'+formatDate(new Date(response.data.data.info.rece_end*1000));
+                that.data = formatDate(new Date(response.data.data.info.rece_start*1000)).split(" ")[0] + '--' + formatDate(new Date(response.data.data.info.rece_end*1000)).split(" ")[0];
+              }
               that.distributors = response.data.data.info.rec_distributor;
               that.tableData1 = [];
               response.data.data.info.rece_at = formatDate(new Date(response.data.data.info.rece_at*1000));

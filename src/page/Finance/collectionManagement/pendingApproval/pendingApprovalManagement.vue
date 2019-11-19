@@ -17,8 +17,14 @@
           <el-table-column prop="collectionTime" label="收款时间" :formatter='dateFormat' align="center">
           </el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center">
+            <template slot-scope="scope">
+              <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.groupCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+            </template>
           </el-table-column>
           <el-table-column prop="orderNumber" label="订单号" align="center">
+            <template slot-scope="scope">
+              <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.orderCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+            </template>
           </el-table-column>
           <!-- <el-table-column prop="collectionNumber" label="收款账户" align="center">
           </el-table-column> -->
@@ -57,8 +63,16 @@
             </template>
           </el-table-column>
           <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
-          <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-          <el-table-column prop="orderNumber" label="订单号" align="center"></el-table-column>
+          <el-table-column prop="groupCode" label="团期计划" align="center">
+            <template slot-scope="scope">
+              <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.groupCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="orderNumber" label="订单号" align="center">
+            <template slot-scope="scope">
+              <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.orderCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+            </template>
+          </el-table-column>
           <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
           <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
           <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
@@ -88,8 +102,16 @@
             </template>
           </el-table-column>
           <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
-          <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-          <el-table-column prop="orderNumber" label="订单号" align="center"></el-table-column>
+          <el-table-column prop="groupCode" label="团期计划" align="center">
+            <template slot-scope="scope">
+              <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.groupCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="orderNumber" label="订单号" align="center">
+            <template slot-scope="scope">
+              <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.orderCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+            </template>
+          </el-table-column>
           <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
           <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
           <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>

@@ -432,9 +432,7 @@ export default {
       }).finally(() => {
         ERROR_QUEUE.splice(0);
       })
-    },
-
-    emitSubmitList(){}
+    }
   }
 }
 </script>

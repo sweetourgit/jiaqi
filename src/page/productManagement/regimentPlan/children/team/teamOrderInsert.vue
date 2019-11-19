@@ -79,10 +79,10 @@
                 <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
               </el-form-item> -->
               <el-form-item label="商户名称" prop="travel">
-                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+                <el-autocomplete class="optionw" v-model="ruleForm.travel" @blur="travelName()" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
               </el-form-item>
               <el-form-item label="商户销售" prop="merchantsSell">
-                <el-autocomplete class="optionw" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false"@select="departure1"></el-autocomplete>
+                <el-autocomplete class="optionw" :disabled = "forbidden" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false"@select="departure1"></el-autocomplete>
               </el-form-item>
           </div>
           <el-form-item label="价格选择" prop="price" class="cb price">
@@ -141,7 +141,8 @@
           <!--总计-->
           <el-form-item label="总价" prop="totalPrice" class="cb">
             <div class="ml13">{{ruleForm.totalPrice}}</div>
-            <div v-if="ruleForm.orderRadio == 2 && this.payment == 1" style="clear: both; margin:0 0 0 10px;">剩余预存款和额度:￥{{lines}}</div>
+            <div v-if="ruleForm.orderRadio == 2 && payment == 1" style="clear: both; margin:0 0 0 10px;">剩余预存款和额度:￥{{amount}}</div>
+            <div v-if="ruleForm.orderRadio == 2 && payment == 2 && deposit !==0 " style="clear: both; margin:0 0 0 10px;">剩余预存款:￥{{deposit}}</div>
           </el-form-item>
           <!--下单方式-->
           <!-- <el-form-item label="下单方式" prop="type">
@@ -593,7 +594,9 @@ export default {
       tableCollection:[],//收款表格
       tableOrder:[],//订单表格
       productPos:0,
-      lines:0,
+      lines:0,//获取剩余额度
+      deposit:0,//获取预存款
+      amount:0,//剩余额度加预存款
       payment:0,
       approvalTable:[],//审批过程表格
       approvalShow:false,//审批过程弹窗
@@ -602,6 +605,7 @@ export default {
       paymentType:'',
       multipleSelection: [], //选中的list
       checkSheetDialog:false,//报账单弹窗
+      forbidden:true,//商户销售在没有商户名称的时候禁止状态
     };
   },
   filters: {
@@ -1064,58 +1068,59 @@ export default {
                         }
                       });
                   }else if(this.ruleForm.orderRadio === '2'){
-                    this.ifOrderInsert = true;
-                    this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
-                      object: {
-                        id: 0,
-                        isDeleted: 0,
-                        code: "",
-                        orderCode: "",
-                        proID: this.teampreviewData.teamID,
-                        planID: this.planId,
-                        orderStatus: 0, //订单状态  7未确认
-                        refundStatus: 0, //退款状态
-                        occupyStatus: index, //占位状态
-                        payable: this.ruleForm.totalPrice, //应付款
-                        platform: 2, //1是erp，2是同业
-                        favourable: [
-                          //优惠
-                          {
-                            id: 0,
-                            orderID: 0,
-                            price: this.ruleForm.otherCost,
-                            title: "其他费用",
-                            favMode: 1,
-                            mark: this.ruleForm.otherCostRemark
-                          },
-                          {
-                            id: 0,
-                            orderID: 0,
-                            price: this.ruleForm.allDiscount,
-                            title: "整体优惠",
-                            favMode: 2,
-                            mark: this.ruleForm.allDisRemark
-                          }
-                        ],
-                        contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
-                        endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
-                        orderChannel: Number(this.ruleForm.orderRadio),
-                        priceType: Number(this.ruleForm.price),
-                        orgID:this.productPos,
-                        // orgID: sessionStorage.getItem("orgID"),
-                        userID: sessionStorage.getItem("id"),
-                        remark: JSON.stringify([
-                          {
-                            OrderCode: "",
-                            Mark: this.ruleForm.remark,
-                            CreateTime: formatDate(new Date())
-                          }
-                        ]),
-                        guests: guest,
-                        number: number,
-                        enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
-                      }
-                    }).then(res => {
+                    if(this.ruleForm.totalPrice <= this.amount){//判断订单金额与剩余预存款和额度对比
+                      this.ifOrderInsert = true;
+                      this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
+                        object: {
+                          id: 0,
+                          isDeleted: 0,
+                          code: "",
+                          orderCode: "",
+                          proID: this.teampreviewData.teamID,
+                          planID: this.planId,
+                          orderStatus: 0, //订单状态  7未确认
+                          refundStatus: 0, //退款状态
+                          occupyStatus: index, //占位状态
+                          payable: this.ruleForm.totalPrice, //应付款
+                          platform: 2, //1是erp，2是同业
+                          favourable: [
+                            //优惠
+                            {
+                              id: 0,
+                              orderID: 0,
+                              price: this.ruleForm.otherCost,
+                              title: "其他费用",
+                              favMode: 1,
+                              mark: this.ruleForm.otherCostRemark
+                            },
+                            {
+                              id: 0,
+                              orderID: 0,
+                              price: this.ruleForm.allDiscount,
+                              title: "整体优惠",
+                              favMode: 2,
+                              mark: this.ruleForm.allDisRemark
+                            }
+                          ],
+                          contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
+                          endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                          orderChannel: Number(this.ruleForm.orderRadio),
+                          priceType: Number(this.ruleForm.price),
+                          orgID:this.productPos,
+                          // orgID: sessionStorage.getItem("orgID"),
+                          userID: sessionStorage.getItem("id"),
+                          remark: JSON.stringify([
+                            {
+                              OrderCode: "",
+                              Mark: this.ruleForm.remark,
+                              CreateTime: formatDate(new Date())
+                            }
+                          ]),
+                          guests: guest,
+                          number: number,
+                          enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                        }
+                      }).then(res => {
                       if (res.data.isSuccess == true) {
                         this.$message.success("提交成功");
                         let data = JSON.parse(res.data.result.details);
@@ -1139,6 +1144,21 @@ export default {
                         this.ifOrderInsert = true;
                       }
                     });
+                    }else {
+                      this.$confirm("该订单金额已经超过剩余预存款和额度?", "提示", {
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        type: "warning"
+                      }).then(res =>{
+                        this.$parent.teamQueryList();
+                      }).catch(() => {
+                        this.$message({
+                          type: "info",
+                          message: "已取消"
+                        });
+                      });
+                    }
+                    
                   }
               }else if(this.teampreviewData.regimentType === 2){//2停售
                   this.$confirm("该团号已停售?", "提示", {
@@ -1288,7 +1308,8 @@ export default {
               "value": res.data.objects[i].name,
               "id": res.data.objects[i].id,
               "supplierType": res.data.objects[i].supplierType,
-              "quota": res.data.objects[i].quota,
+              "balance": res.data.objects[i].balance,
+              "deposit": res.data.objects[i].deposit,
               "settlementType": res.data.objects[i].settlementType,
             })
             this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
@@ -1309,30 +1330,38 @@ export default {
     departure(item){
       console.log(item)
       this.productPos = item.id;//获取供应商的id传给下单接口的orgID
-      this.lines = item.quota;//获取额度
+      this.lines = item.balance;//获取剩余额度
+      this.deposit = item.deposit;//获取预存款
       this.payment = item.settlementType ;//获取结算方式
       this.originPlace = item.value;
+      this.amount = this.lines + this.deposit;
+    },
+    travelName(){//商户名称添加时，商户销售可以填写
+      if(this.ruleForm.travel != ''){
+        this.forbidden=false;
+      }
     },
     //商户销售模糊查询
     querySearch4(queryString4, cb) {
-      this.useList = []
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/get', {
-        id:this.productPos,
-      })
-      .then(res => {
-        if (res.data.isSuccess == true) {
-          for (let i = 0; i < res.data.objects.length; i++) {
-            this.useList.push({
-              "value": res.data.objects[i].name,
-              "id": res.data.objects[i].id
-            })
+        this.useList = []
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/get', {
+          id:this.productPos,
+        })
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            console.log(res.data.object.useList)
+            for (let i = 0; i < res.data.object.useList.length; i++) {
+              this.useList.push({
+                "value": res.data.object.useList[i].name,
+                "id": res.data.object.useList[i].id
+              })
+            }
           }
-        }
-        var results = queryString4 ? this.useList.filter(this.createFilter(queryString4)) : [];
-        cb(results)
-      }).catch(err => {
-        //console.log(err);
-      })
+          var results = queryString4 ? this.useList.filter(this.createFilter(queryString4)) : [];
+          cb(results)
+        }).catch(err => {
+          //console.log(err);
+        })
     },
     departure1(item){
       console.log(item)

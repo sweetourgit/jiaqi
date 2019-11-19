@@ -21,13 +21,6 @@ export default {
   props: {
     proto: Array,
   },
-  
-  // watch:{
-  //   proto(){
-  //     this.list.splice(0);
-  //     this.list.push(...this.proto);
-  //   }
-  // },
 
   data(){
     return Object.assign(
