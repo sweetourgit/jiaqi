@@ -34,8 +34,8 @@
           <el-input v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
           <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
-        <el-form-item label="收款金额" prop="money" label-width="120px">
-          <el-input v-model="ruleForm.money" placeholder="收款金额" :disabled="change"></el-input>
+        <el-form-item label="收款金额" prop="price" label-width="120px">
+          <el-input v-model="ruleForm.price" placeholder="收款金额" :disabled="change"></el-input>
         </el-form-item>
         <el-form-item label="摘要" prop="abstract" label-width="120px">
           <el-input v-model="ruleForm.abstract" placeholder="摘要" :disabled="change"></el-input>

@@ -225,13 +225,15 @@
     </el-dialog>
     <!-- 借款申请详情 END -->
     <!-- 通过、驳回弹框 -->
-    <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close='false' style="overflow: hidden">
+    <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close='false'>
       <div class="transit" @click="closeTransit()">×</div>
       <textarea rows="8" v-model="commentText" style="overflow: hidden; width:99%;margin:0 0 20px 0;"></textarea>
-      <div style="float:right; margin:0 0 30px 0;">
-        <el-button @click="closeTransit()">取消</el-button>
-        <el-button @click="confirm()" type="primary">确定</el-button>
-      </div>
+      <el-row type="flex" class="row-bg">
+        <el-col :span="8" :offset="18">
+          <el-button @click="closeTransit()">取消</el-button>
+          <el-button @click="confirm()" type="primary">确定</el-button>
+        </el-col>
+      </el-row>
     </el-dialog>
     <!-- 通过、驳回弹框 END -->
   </div>

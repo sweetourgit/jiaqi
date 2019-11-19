@@ -592,7 +592,7 @@ export default {
       }).then(res => {
         //console.log(res.data.object.invoiceTable)
         if(res.data.isSuccess == true){
-           this.tableAssociated = res.data.object
+           this.tableAssociated = res.data.object.arrears
            this.fundamental=res.data.object;
            this.tableInvoice = res.data.object.invoiceTable;
            this.tableAudit = res.data.object.spw
