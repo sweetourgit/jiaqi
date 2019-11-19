@@ -533,7 +533,6 @@ export default {
 
     // 轮播图删除
     removePepeatpicHandler(i){
-      console.log(i)
       this.submitForm.pepeatpic.splice(i, 1);
     },
 

@@ -68,11 +68,15 @@ $image-margin: 15px;
         <div class="interceptor">
           <ul>
             <!-- 关闭 -->
-            <li @click="$emit('wakeup-preview', item)">
-              <i class="el-icon-view" style="font-size: 18px;"></i>
+            <li>
+              <i class="el-icon-view" style="font-size: 18px;"
+                @click="$emit('wakeup-preview', item)"
+              ></i>
             </li>
-            <li @click="$emit('remove-handler', i)">
-              <i class="el-icon-delete" style="font-size: 18px;"></i>
+            <li>
+              <i class="el-icon-delete" style="font-size: 18px;"
+                @click="$emit('remove-handler', i)"
+              ></i>
             </li>
           </ul>
         </div>
