@@ -51,7 +51,7 @@
               <p v-if="scope.row.bill_status == 5">报账中</p>
               <p v-if="scope.row.bill_status == 6">报账驳回</p>
               <p v-if="scope.row.bill_status == 7">已报账</p>
-              <p v-if="scope.row.bill_status == 8">已回冲</p>
+              <p v-if="scope.row.bill_status == 8">已报账</p>
             </template>
           </el-table-column>
           <el-table-column prop="created_at" label="创建时间" align="center">

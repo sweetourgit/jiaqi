@@ -68,21 +68,21 @@
             </div>
           </el-form-item>
           <!--选择线下直客按钮，显示销售文本框-->
-          <!-- <div v-if="ruleForm.orderRadio==1">
-              <el-form-item label="销售" prop="travel">
-                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+          <div v-if="ruleForm.orderRadio==1">
+              <el-form-item label="销售" prop="market">
+                <el-autocomplete class="optionw" v-model="ruleForm.market" :fetch-suggestions="querySearch1" placeholder="请输入销售名称" :trigger-on-focus="false"@select="departure1"></el-autocomplete>
               </el-form-item>
-          </div> -->
+          </div>
           <!--选择商户按钮，显示商户名称和商户销售文本框-->
           <div v-if="ruleForm.orderRadio==2">
-              <!-- <el-form-item label="销售" prop="travel">
-                <el-autocomplete class="optionw" v-model="ruleForm.travel" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
-              </el-form-item> -->
+              <el-form-item label="销售" prop="travelSales">
+                <el-autocomplete class="optionw" v-model="ruleForm.travelSales" :fetch-suggestions="querySearch1" placeholder="请输入销售名称" :trigger-on-focus="false"@select="departure1"></el-autocomplete>
+              </el-form-item>
               <el-form-item label="商户名称" prop="travel">
                 <el-autocomplete class="optionw" v-model="ruleForm.travel" @blur="travelName()" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
               </el-form-item>
               <el-form-item label="商户销售" prop="merchantsSell">
-                <el-autocomplete class="optionw" :disabled = "forbidden" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false"@select="departure1"></el-autocomplete>
+                <el-autocomplete class="optionw" :disabled = "forbidden" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false"@select="departure4"></el-autocomplete>
               </el-form-item>
           </div>
           <el-form-item label="价格选择" prop="price" class="cb price">
@@ -463,6 +463,8 @@ export default {
         orderRadio: "1",
         sale: "",
         travel: "",
+        market:"",//线下直客销售
+        travelSales:"",//商户下的销售
         merchantsSell:"",//商户销售
         price: "1",
         price1: "",
@@ -526,6 +528,12 @@ export default {
         ],
         merchantsSell: [
           { required: true, message: "请输入商户销售", trigger: "blur" }
+        ],
+        market: [
+          { required: true, message: "请输入销售", trigger: "blur" }
+        ],
+        travelSales: [
+          { required: true, message: "请输入销售", trigger: "blur" }
         ],
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
         price1: [{ pattern: /^[+]{0,1}(\d+)$/, message: "价格必须为数字值" }],
@@ -1293,6 +1301,49 @@ export default {
         this.ruleForm.allDiscount ? this.ruleForm.allDiscount : 0
       );
     },
+    //线下直客销售模糊查询
+    querySearch1(queryString1, cb) {
+      this.marketList = []
+      this.$http.post(this.GLOBAL.serverSrc + '/org/api/userlist', {
+        "object": {
+          name: queryString1,
+          isDeleted: 0
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.marketList.push({
+              "value": res.data.objects[i].name,
+              "id": res.data.objects[i].id,
+              "supplierType": res.data.objects[i].supplierType,
+              "balance": res.data.objects[i].balance,
+              "deposit": res.data.objects[i].deposit,
+              "settlementType": res.data.objects[i].settlementType,
+            })
+            this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+          }
+        }
+        
+        var results = queryString1 ? this.marketList.filter(this.createFilter(queryString1)) : [];
+        cb(results)
+      }).catch(err => {
+        //console.log(err);
+      })
+    },
+    createFilter(queryString1){
+      return (restaurant) => {
+        return (restaurant.value);
+      }
+    },
+    departure1(item){
+      // console.log(item)
+      // this.productPos = item.id;//获取供应商的id传给下单接口的orgID
+      // this.lines = item.balance;//获取剩余额度
+      // this.deposit = item.deposit;//获取预存款
+      // this.payment = item.settlementType ;//获取结算方式
+      // this.originPlace = item.value;
+      // this.amount = this.lines + this.deposit;
+    },
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
       this.tableData2 = []
@@ -1363,14 +1414,18 @@ export default {
           //console.log(err);
         })
     },
-    departure1(item){
+    departure4(item){
       console.log(item)
       //this.productPos = item.id;//获取供应商的id传给下单接口的orgID
     },
     //订单来源切换清空相应下的文本框内容
     changeTab(){
       if(this.ruleForm.orderRadio==1){
+        this.ruleForm.travelSales = '';
         this.ruleForm.travel = '';
+        this.ruleForm.merchantsSell = '';
+      } else {
+        this.ruleForm.market = '';
       }
     },
     //详情四个表格查询
