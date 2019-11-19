@@ -167,7 +167,6 @@
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :on-preview="handlePreview"
-            list-type="picture"
           >
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
@@ -1220,7 +1219,8 @@ export default {
       this.fileList = fileList
       this.fileCheckVal = fileList.length
     },
-    handlePreview(file, fileList) {
+    handlePreview(file) {
+      console.log(file)
       this.uid = file.uid
       this.dialogVisible4 = true
       this.imgBig = file.url
