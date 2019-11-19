@@ -67,7 +67,7 @@
               <el-table-column prop="groupCode" label="团期计划" width="250" align="center"></el-table-column>
               <el-table-column prop="price" label="报销金额" width="180" align="center"></el-table-column>
               <el-table-column prop="createUser" label="申请人" width="150" align="center"></el-table-column>
-              <el-table-column prop="info" label="审批意见" width="180" align="center"></el-table-column>
+              <!-- <el-table-column prop="info" label="审批意见" width="180" align="center"></el-table-column> -->
               <el-table-column prop="qq" label="操作" width="180" align="center">
                 <template slot-scope="scope">
                   <div @click="dialogFind" style="color: #f5a142">详情</div>
@@ -190,10 +190,10 @@
                         <div style="float: left; margin-left: 30px;margin-top: 7px;">报销总计：<span style="font-weight:bold">0.00</span>元</div>
                   </div>-->
                   <div class="re_style">
-                    <el-table :data="joinData" border style="width: 100%; margin-top: 30px">
-                      <el-table-column prop="id" label="无收入借款或预付款ID" width="110"></el-table-column>
-                      <el-table-column prop="paymentType" label="借款类型" width="90"></el-table-column>
-                      <el-table-column prop="supplierType" label="供应商" width="100"></el-table-column>
+                    <el-table :data="joinData_s" border style="width: 100%; margin-top: 30px">
+                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="110"></el-table-column>
+                      <el-table-column prop="supplierTypeEX" label="借款类型" width="90"></el-table-column>
+                      <el-table-column prop="supplierName" label="供应商" width="100"></el-table-column>
                       <el-table-column prop="createUser" label="申请人" width="80"></el-table-column>
                       <el-table-column prop="mark" label="摘要"></el-table-column>
                       <el-table-column prop="price" label="借款金额"></el-table-column>
@@ -210,7 +210,7 @@
                       </el-table-column>
                       <el-table-column prop="peopleCount" label="操作">
                         <template slot-scope="scope">
-                          <div @click style="color: #f5a142">删除</div>
+                          <div @click="t_delete" style="color: #f5a142">删除</div>
                         </template>
                       </el-table-column>
                     </el-table>
@@ -257,7 +257,7 @@
               <el-table :data="reimData" border style="width: 100%">
                 <el-table-column prop="reier" label="审批人" width="180"></el-table-column>
                 <el-table-column prop="reisult" label="审批结果" width="180"></el-table-column>
-                <el-table-column prop="info" label="审批意见"></el-table-column>
+                <!-- <el-table-column prop="info" label="审批意见"></el-table-column> -->
                 <el-table-column prop="time" label="审批时间"></el-table-column>
               </el-table>
             </div>
@@ -300,13 +300,13 @@
               v-model="startTime2"
               type="date"
               placeholder="开始日期"
-              style="float: left;width: 150px;"
+              style="float: left;width: 140px;"
             ></el-date-picker>
             <el-date-picker
               v-model="endTime2"
               type="date"
               placeholder="终止日期"
-              style="float: left;width: 150px;"
+              style="float: left;width: 140px;"
             ></el-date-picker>
             <el-button
               type="primary"
@@ -315,6 +315,14 @@
               round
               style="margin-top: 5px; margin-left: 10px"
             >搜索</el-button>
+            <el-button 
+            @click="T_update_btn" 
+            type="primary"
+            size="mini"
+            round
+            style="margin-top: 5px; margin-left: 10px"
+            >重置</el-button>
+            
           </div>
           <el-table
             :data="planData"
@@ -343,38 +351,39 @@
       <!--团期计划弹窗end-->
       <!--添加报销弹窗-->
       <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body>
-              <span class="search_style">申请人：</span>
-              <el-input v-model="t_plan" placeholder="请输入内容" class="search_input"></el-input>
+              <!-- <span class="search_style">申请人：</span>
+              <el-input v-model="t_plan" placeholder="请输入内容" class="search_input"></el-input> -->
               <span class="search_style">供应商：</span>
               <el-input v-model="t_supplier" placeholder="请输入内容" class="search_input"></el-input>
           <div class="reform_s">
             <el-button @click="T_check" type="primary">搜索2</el-button>
             <el-button @click="T_update" type="primary">重置2</el-button>
           </div>
-        <el-table :data="joinData1" border style="width: 100%; margin-top: 30px">
-          <el-table-column prop="id" label="关联单号" width="80"></el-table-column>
-          <el-table-column prop="type" label="类型" width="70"></el-table-column>
-          <el-table-column prop="gys" label="供应商" width="60"></el-table-column>
-          <el-table-column prop="bm" label="部门"></el-table-column>
-          <el-table-column prop="accpeter" label="申请人" width="80"></el-table-column>
-          <el-table-column prop="time" label="发起日期"></el-table-column>
-          <el-table-column prop="content" label="摘要"></el-table-column>
-          <el-table-column prop="count" label="金额" width="100"></el-table-column>
-          <el-table-column prop="wcount" label="未报销金额"></el-table-column>
-          <el-table-column prop="bcount" width="130" label="报销金额">
+        <el-table :data="joinData" border style="width: 100%; margin-top: 30px">
+          <el-table-column prop="paymentID" label="关联单号" width="60"></el-table-column>
+          <el-table-column prop="supplierTypeEX" label="类型" width="80"></el-table-column>
+          <el-table-column prop="supplierName" label="供应商" width="90"></el-table-column>
+          <!-- <el-table-column prop="supplierName" label="供应商" v-if="this.supplier == 1"></el-table-column> -->
+          <el-table-column prop="orgName" label="部门" width="60"></el-table-column>
+          <el-table-column prop="createUser" label="申请人" width="80"></el-table-column>
+          <el-table-column prop="createTime" label="发起日期" width="130"></el-table-column>
+          <el-table-column prop="mark" label="摘要" width="130"></el-table-column>
+          <el-table-column prop="price" label="金额" width="90"></el-table-column>
+          <el-table-column prop="wcount" label="未报销金额" width="90"></el-table-column>
+          <el-table-column prop="bcount" width="120" label="报销金额">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.bcount" style="width:100px;"></el-input>
+              <el-input v-model="scope.row.bcount" style="width:90px;"></el-input>
             </template>
           </el-table-column>
-          <el-table-column prop="bcount" width="130" label="人数">
+          <el-table-column prop="peopleCount" width="120" label="人数">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.bcount" style="width:100px;"></el-input>
+              <el-input v-model="scope.row.peopleCount" style="width:90px;"></el-input>
             </template>
           </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible3 = false">取 消</el-button>
-          <el-button type="primary" @click="text('joinData1')">确 定2</el-button>
+          <el-button type="primary" @click="t_text('joinData')">确 定2</el-button>
         </div>
       </el-dialog>
       <!--添加报销弹窗end-->
@@ -435,6 +444,7 @@ export default {
       planTotal: 100,
       userSize: 10,
       userTotal: 100,
+      supplier:0,//供应商没有的时候显示这个
       startTime2: "",
       endTime2: "",
       //每页偏移量
@@ -529,71 +539,12 @@ export default {
           accpter: "阳阳",
           info: ""
         },
-        {
-          expenseID: "1",
-          type: "驳回",
-          createtime: "2016-05-02",
-          groupCode: "TC-GTY-1001-01-180806-01",
-          monkey: "国旅",
-          orinaze: "辽宁大运通-国内部",
-          accpter: "阳阳",
-          info: "郑总：信息补全"
-        },
-        {
-          expenseID: "1",
-          type: "通过",
-          createtime: "2016-05-02",
-          groupCode: "TC-GTY-1001-01-180806-01",
-          monkey: "国旅",
-          orinaze: "辽宁大运通-国内部",
-          accpter: "阳阳",
-          info: ""
-        }
-      ],
+        ],
       //团期计划表格
       planData: [],
       //关联单据表单
-      joinData: [
-        {
-          id: "1",
-          type: "地接",
-          gys: "国旅",
-          bm: "辽宁大运通-北美部",
-          accpeter: "阳阳",
-          time: "2019-01-09 09:37",
-          content: "",
-          count: "17800.00",
-          wcount: "17800.00",
-          bcount: "200.0",
-          peopleCount: 12
-        }
-      ],
-      joinData1: [
-        {
-          id: "1",
-          type: "地接",
-          gys: "国旅",
-          bm: "辽宁大运通-北美部",
-          accpeter: "阳阳",
-          time: "2019-01-09 09:37",
-          content: "",
-          count: "17800.00",
-          wcount: "17800.00",
-          bcount: ""
-        },
-        {
-          id: "1",
-          type: "地接",
-          gys: "国旅",
-          bm: "辽宁大运通-北美部",
-          accpeter: "阳阳",
-          time: "2019-01-09 09:37",
-          content: "",
-          count: "17800.00",
-          wcount: "17800.00",
-          bcount: ""
-        }
-      ],
+      joinData:[],
+      joinData_s:[],
       file: [],
       //文件上传列表
       fileList: [],
@@ -650,20 +601,56 @@ export default {
     addplan() {
       this.ruleForm.groupCode.planId = this.plans.planNum;
       this.ruleForm.groupCode.planName = this.plans.planName;
-      this.Associated(this.plans.pid);
+      //this.Associated(this.plans.pid);
       this.dialogFormVisible2 = false;
     },
     //获取关联单据
-    Associated(val) {
+    Associated(
+      planID,
+      suppliername = this.t_supplier,
+     // createUser = this.t_plan
+  ) {
+    let object = {};
+        suppliername !== "" ? (object.suppliername = suppliername) : suppliername,
+        planID !=="" ? (object.planID = planID) : planID,
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/payment/api/checklist", {
-          object: {
-            planID: val
-          }
+          object:object,
         })
         .then(res => {
-          this.joinData = res.data.objects;
-          console.log(res);
+          var object = res.data.objects;
+          var wcount; //未报销金额
+            for (let i = 0; i < object.length; i++) {
+              if(object[i].orgName==null){
+                  object[i].orgName="无";
+                }
+                //  if(object[i].paymentType==1){
+              //      object[i].paymentType = "无收入借款";
+              //   }else if(object[i].paymentType==2){
+              //      object[i].paymentType = "预付款";
+              //   }
+                // if(object[i].supplierType==0){
+                //   this.supplier=1;
+                // }else{
+                //   this.supplier=0;
+                // }
+                this.joinData.push({
+                  paymentID:  object[i].paymentID,
+                  supplierTypeEX:object[i].supplierTypeEX,
+                  groupCode:object[i].groupCode,
+                  createUser:object[i].createUser,
+                  mark:object[i].mark,
+                  price:object[i].price,
+                  wcount:object[i].wcount,
+                  bcount:0,
+                  createTime:object[i].createTime,
+                  supplierName:object[i].supplierName,
+                  peopleCount:object[i].peopleCount,
+                  orgName:object[i].orgName,
+                  wcount :object[i].price - object[i].collectionPrice
+              });
+             }
+          //console.log("添加数据",this.joinData);
         })
         .catch(err => {
           console.log(err);
@@ -688,7 +675,7 @@ export default {
       this.people.tt = row.orgName;
     },
     //
-    searchHand4(val) {
+    searchHand4(val) { //团期计划搜索
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancelist", {
           pageIndex: val,
@@ -696,9 +683,7 @@ export default {
           object: {
             groupCode: this.tour_name, //团号
             title: this.product_name, //产品名称
-            beginDate: this.startTime2
-              ? formatDate(this.startTime2, "yyyyMMdd")
-              : 0, //搜索用开始日期
+            beginDate: this.startTime2? formatDate(this.startTime2, "yyyyMMdd"): 0, //搜索用开始日期
             endDate: this.endTime2 ? formatDate(this.endTime2, "yyyyMMdd") : 0 //搜索用结束日期
           }
         })
@@ -710,6 +695,13 @@ export default {
           console.log(err);
         });
     },
+     T_update_btn(){//团期计划重置
+      this.tour_name=""; //团号
+      this.product_name="" //产品名称
+      this.startTime2="" ;//搜索用开始日期
+      this.endTime2 ="";//搜索用结束日期
+      this.searchHand4(1)
+    },
     //删除
     removeDomain(item) {
       var index = this.domains.indexOf(item);
@@ -719,8 +711,7 @@ export default {
     },
     //添加
     addDomain() {
-
-      this.domains.push({
+    this.domains.push({
         mark: "",
         price: ""
       });
@@ -823,8 +814,16 @@ export default {
           });
         });
     },
-    text(formName) {
-      console.log(this.joinData1);
+    t_text(formName) {//确认添加
+    this.joinData_s = [];
+      for(let i in this.joinData){
+            if(this.joinData[i].bcount!= "0" ){
+                this.joinData_s.push(this.joinData[i]);
+            }
+          }
+      //console.log("筛",this.joinData_s);
+      this. dialogFormVisible3 = false;
+     
     },
     // 报销弹窗
     dialogchange() {
@@ -841,13 +840,15 @@ export default {
     },
     //添加报销
     addbx(formName) {
-      console.log(formName);
+     // console.log("增加报销",formName);
+       this.joinData = [];
        this.$refs[formName].validate(valid => {
         if (valid) {
+        this.Associated(this.plans.pid);
         this.dialogFormVisible3 = true;
         } else {
           this.$message({
-          message: '请先填写团期计划',
+          message: '请填写必填项',
           type: 'warning'
         });
         return false;
@@ -960,35 +961,35 @@ export default {
       }
     },
 
-    //获取报销列表数据
-    reimList() {
-      var that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/expense/api/page", {
-          pageIndex: this.currentPage4,
-          pageSize: this.pageSize,
-          total: 0,
-          object: {}
-        })
-        .then(function(obj) {
-          that.pageCount = obj.data.total;
-          console.log(obj.data.objects);
-          that.tableData = obj.data.objects;
-        })
-        .catch(function(obj) {
-          console.log(obj);
-        });
-    },
-     T_check(){//添加报销搜索
-  console.log("我是搜索2");
-  
+  //获取报销列表数据
+  reimList() {
+    var that = this;
+    this.$http
+      .post(this.GLOBAL.serverSrc + "/finance/expense/api/page", {
+        pageIndex: this.currentPage4,
+        pageSize: this.pageSize,
+        total: 0,
+        object: {}
+      })
+      .then(function(obj) {
+        that.pageCount = obj.data.total;
+        console.log(obj.data.objects);
+        that.tableData = obj.data.objects;
+      })
+      .catch(function(obj) {
+        console.log(obj);
+      });
+  },
+  T_check(){//添加报销搜索
+    this.Associated(this.plans.pid);
   },
   T_update(){//添加报销重置
-  console.log("我是重置2");
- 
-
-  },
-  beginDateBlur() {//开始时间
+  //console.log("我是重置2");
+  this.t_plan = "";
+  this.t_supplier = "";
+  this.Associated(this.plans.pid);
+ },
+ beginDateBlur() {//开始时间
       if (this.beginDate == "" && this.endDate == "") {
         this.pageList(1, this.pageSize);
       }
@@ -1070,6 +1071,10 @@ export default {
         this.pageList(1, this.pageSize);
       }
     },
+    t_delete(){// 添加数据删除
+    
+
+    }
   },
   created() {
     this.reimList();

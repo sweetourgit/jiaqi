@@ -499,7 +499,8 @@ export default {
         planType:[{ required: true, message: '请选择借款类型', trigger: 'change' }],
         planAmount:[
           { required: true, message: '请输入借款金额', trigger: 'blur' },
-          { pattern: /^(([1-9]+)|([0-9]+\.[0-9]{1,2}))$/, message: '请正确输入借款金额（若有小数点，其后面不应超过两位）' }
+//          { pattern: /^(([1-9]+)|([0-9]+\.[0-9]{1,2}))$/, message: '请正确输入借款金额（若有小数点，其后面不应超过两位）' }
+          { pattern: /(^[1-9](\d+)?(\.\d{1,2})?$)|(^\d\.\d{1,2}$)/, message: '请正确输入借款金额（若有小数点，其后面不应超过两位）' }
         ],
         abstract:[
           { required: true, message: '请输入摘要', trigger: 'change' },

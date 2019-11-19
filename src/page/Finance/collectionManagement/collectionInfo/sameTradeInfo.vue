@@ -302,6 +302,7 @@ export default {
         collectionAccount: '', // 收款账户
         sameTrade: '', // 同业社
         money: '',  // 收款金额
+        price: '',
         abstract: '', // 摘要
         isInvoice: '0', // 发票
         collectionNumber:'', // 收款账户
@@ -328,7 +329,13 @@ export default {
         sameTrade: [{ required: true, message: '同业社不能为空', trigger: 'change' }],
         money: [
           { required: true, message: '收款金额不能为空', trigger: 'blur' },
-          { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
+//          { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
+          { pattern: /(?!0\.00)(\d+\.\d{2}$)/, message: '收款金额需为正数,最多两位小数' }
+        ],
+        price: [
+          { required: true, message: '收款金额不能为空', trigger: 'blur' },
+//          { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
+          { pattern: /(^[1-9](\d+)?(\.\d{1,2})?$)|(^\d\.\d{1,2}$)/, message: '收款金额需为正数,最多两位小数' }
         ],
         abstract: [{ required: true, message: '摘要不能为空', trigger: 'blur' }],
         taxesNumber: [{ required: true, message: '纳税人识别号不能为空', trigger: 'blur' },
