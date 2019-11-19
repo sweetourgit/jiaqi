@@ -7,12 +7,12 @@
           <span class="emptyPlan">供应商名称</span>
           <el-input v-model="supplierName" class="empty" clearable placeholder="请输入团期计划"></el-input>
         </div>
+        <!--<div class="fl" style="margin:0 90px 0 90px;">-->
+          <!--<span class="emptyPlan">ID</span>-->
+          <!--<el-input v-model="supplierCard" class="empty" clearable placeholder="请输入申请人"></el-input>-->
+        <!--</div>-->
         <div class="fl" style="margin:0 90px 0 90px;">
-          <span class="emptyPlan">ID</span>
-          <el-input v-model="supplierCard" class="empty" clearable placeholder="请输入申请人"></el-input>
-        </div>
-        <div class="fl">
-          <span class="emptyPlan">结算方式</span>
+          <span class="emptyPlan" >结算方式</span>
           <el-select v-model="settlement" placeholder="请输入类型" class="empty" clearable>
             <el-option
               :label="item.label"
@@ -35,7 +35,7 @@
             />
           </el-select>
         </div>
-        <div class="fl" style="margin:0 90px 0 90px;">
+        <div class="fl" style="width: 100%">
           <span class="emptyPlan">类别</span>
           <el-select v-model="category" placeholder="请输入类型" class="empty" clearable>
             <el-option
@@ -46,17 +46,17 @@
             />
           </el-select>
         </div>
-        <div class="fl">
-        <span class="emptyPlan">可见区域</span>
-        <el-select v-model="visibleArea" placeholder="请输入类型" class="empty" clearable>
-          <el-option
-            :label="item.label"
-            :value="item.value"
-            v-for="item of visibleType"
-            :key="item.value"
-          />
-        </el-select>
-      </div>
+        <!--<div class="fl">-->
+        <!--<span class="emptyPlan">可见区域</span>-->
+        <!--<el-select v-model="visibleArea" placeholder="请输入类型" class="empty" clearable>-->
+          <!--<el-option-->
+            <!--:label="item.label"-->
+            <!--:value="item.value"-->
+            <!--v-for="item of visibleType"-->
+            <!--:key="item.value"-->
+          <!--/>-->
+        <!--</el-select>-->
+      <!--</div>-->
 
       </div>
       <div style="float:right; margin:0 0 30px 0;">
@@ -91,7 +91,10 @@
       </el-table-column>
     </el-table>
     <!--详情弹窗-->
-    <SupplierDetails :flag.sync="flag" :msg="pid"></SupplierDetails>
+    <SupplierDetails
+      :flag.sync="flag"
+      :msg="pid"
+    ref="mychild"></SupplierDetails>
     <el-pagination
       class="pagination"
       :page-sizes="[10,1,30,50]"
@@ -132,7 +135,7 @@
             <el-input class="name_input" v-model="ruleForm.supplierCode"></el-input>
           </el-form-item>
           <!--12号改过-->
-          <el-form-item label="公司可见性" prop="visible">
+          <!--<el-form-item label="公司可见性" prop="visible">-->
             <!--<el-cascader-->
               <!--class="name_input"-->
               <!--:options="visibleType"-->
@@ -144,18 +147,18 @@
               <!--clearable></el-cascader>-->
           <!--</el-form-item>-->
 
-          <el-select
-            v-model="ruleForm.visible"
-            placeholder="请选择"
-            @change="companyList"
-            class="name_input">
-          <el-option
-          v-for="item in visibleType"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-          ></el-option>
-          </el-select>
+          <!--<el-select-->
+            <!--v-model="ruleForm.visible"-->
+            <!--placeholder="请选择"-->
+            <!--@change="companyList"-->
+            <!--class="name_input">-->
+          <!--<el-option-->
+          <!--v-for="item in visibleType"-->
+          <!--:key="item.value"-->
+          <!--:label="item.label"-->
+          <!--:value="item.value"-->
+          <!--&gt;</el-option>-->
+          <!--</el-select>-->
           <!--<el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>-->
           </el-form-item>
           <el-form-item label="状态"  prop="supplierState">
@@ -182,7 +185,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="类别" prop="supplierType">
+          <el-form-item label="类别" prop="supplierType" >
             <el-select v-model="ruleForm.supplierType"
                        clearable placeholder="请选择"
                        class="name_input">
@@ -194,7 +197,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="结算方式" prop="supplierWay">
+          <el-form-item label="结算方式" prop="supplierWay" >
             <el-select v-model="ruleForm.supplierWay"
                        clearable placeholder="请选择"
                        class="name_input">
@@ -397,7 +400,9 @@
             </el-select>
             <!-- <el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader> -->
           <!--</el-form-item>&ndash;&gt;-->
-          <el-form-item label="公司可见性" prop="visible">
+
+          <!--<el-form-item label="公司可见性" prop="visible">-->
+
             <!--<el-cascader-->
             <!--class="name_input"-->
             <!--:options="visibleType"-->
@@ -408,26 +413,27 @@
             <!--collapse-tags-->
             <!--clearable></el-cascader>-->
             <!--</el-form-item>-->
-
-            <el-select
-              v-model="editForm.visible"
-              placeholder="请选择"
-              @change="companyList"
-              class="name_input">
-              <el-option
-                v-for="item in visibleType"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+            <!--公司可见性-->
+            <!--<el-select-->
+              <!--v-model="editForm.visible"-->
+              <!--placeholder="请选择"-->
+              <!--@change="companyList"-->
+              <!--class="name_input">-->
+              <!--<el-option-->
+                <!--v-for="item in visibleType"-->
+                <!--:key="item.value"-->
+                <!--:label="item.label"-->
+                <!--:value="item.value"-->
+              <!--&gt;</el-option>-->
+            <!--</el-select>-->
             <!--<el-cascader :options="visibleType" v-model="ruleForm.visible" :props="{ multiple: true, checkStrictly: true }" clearable></el-cascader>-->
           </el-form-item>
           <el-form-item label="状态"  prop="supplierState">
             <el-select
               v-model="editForm.supplierState"
               clearable placeholder="请选择"
-              class="name_input">
+              class="name_input"
+            @change="handClick">
               <el-option
                 v-for="item in conditionType"
                 :key="item.value"
@@ -440,7 +446,8 @@
             <el-select
               v-model="editForm.routeType"
               clearable placeholder="请选择"
-              class="name_input">
+              class="name_input"
+              @change="handClick">
               <el-option
                 v-for="item in pathType"
                 :key="item.value"
@@ -453,7 +460,8 @@
             <el-select
               v-model="editForm.supplierType"
               clearable placeholder="请选择"
-              class="name_input">
+              class="name_input"
+              @change="handClick">
               <el-option
                 v-for="item in borrowingType"
                 :key="item.value"
@@ -466,7 +474,8 @@
             <el-select
               v-model="editForm.supplierWay"
               clearable placeholder="请选择"
-              class="name_input">
+              class="name_input"
+              @change="handClick">
               <el-option
                 v-for="item in settlementType"
                 :key="item.value"
@@ -495,6 +504,7 @@
               :editable="false"
               :picker-options="pickerOptions0"
               placeholder="选择日期"
+              @change="handClick"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="附件" prop="supplierUpload">
@@ -533,7 +543,8 @@
             <el-select
               v-model="editForm.agreement"
               placeholder="请选择"
-              class="name_input">
+              class="name_input"
+              @change="handClick">
               <el-option
                 v-for="item in agreement"
                 :key="item.value"
@@ -581,15 +592,15 @@
         style="overflow:hidden; margin:20px 0 0 0;"
       >
         <div style="float:left;">
-          <el-form-item label="汇款户名" prop="accountName">
+          <el-form-item label="*汇款户名" prop="accountName">
             <el-input class="name_input" v-model="editForm.accountName"></el-input>
           </el-form-item>
-          <el-form-item label="开户行" prop="openingBank">
+          <el-form-item label="*开户行" prop="openingBank">
             <el-input class="name_input" v-model="editForm.openingBank"></el-input>
           </el-form-item>
         </div>
         <div style="float:right; margin:0 200px 0 0; overflow:hidden;">
-          <el-form-item label="账号" prop="account">
+          <el-form-item label="*账号" prop="account">
             <el-input class="name_input" v-model="editForm.account"></el-input>
           </el-form-item>
           <el-form-item label="备注" prop="note">
@@ -715,10 +726,11 @@ export default {
         name: "", //供应商名称
         visible: "", //公司可见性
         visible1:"",//公司可见性代码
-        supplierState: "正常", //状态
+        supplierState: "", //状态
         supplierState1:'',//状态数值
         routeType: "", //线路
         supplierType: "", //类别
+        supplierType1:"",//类别的编码
         supplierWay: "", //结算方式
         userDepartment: "", //使用部门
         orientation: "", //产品主要方向
@@ -791,16 +803,16 @@ export default {
           { required: true, message: "状态不能为空", trigger: "blur" }
         ],
         routeType: [
-          { required: true, message: "线路不能为空", trigger: "blur" }
+          { required: true, message: "线路不能为空", trigger: ["blur","change"] }
         ],
         supplierType: [
-          { required: true, message: "类别不能为空", trigger: "blur" }
+          { required: true, message: "类别不能为空", trigger: ["blur","change"] }
         ],
         supplierCode: [
           { required: true, message: "供应商编码不能为空", trigger: "blur" }
         ],
         supplierWay: [
-          { required: true, message: "结算方式不能为空", trigger: "blur" }
+          { required: true, message: "结算方式不能为空", trigger: ["blur","change"] }
         ],
         expireData: [
           { required: true, message: "到期日期不能为空", trigger: "blur" }
@@ -808,9 +820,9 @@ export default {
         userDepartment: [
           { required: true, message: "使用部门不能为空", trigger: "blur" }
         ],
-        agreement:[
-          {required: true, message: "请选择供应商协议", trigger: "blur" }
-        ],
+        // agreement:[
+        //   {required: true, message: "请选择供应商协议", trigger: ["blur","change"] }
+        // ],
         accountName: [
           { required: true, message: "汇款账户不能为空", trigger: "blur" }
         ],
@@ -845,7 +857,7 @@ export default {
           { required: true, message: "状态不能为空", trigger: "blur" }
         ],
         routeType: [
-          { required: true, message: "线路不能为空", trigger: "blur" }
+          { required: true, message: "线路不能为空", trigger: "change" }
         ],
         supplierType: [
           { required: true, message: "类别不能为空", trigger: "blur" }
@@ -862,9 +874,9 @@ export default {
         userDepartment: [
           { required: true, message: "使用部门不能为空", trigger: "blur" }
         ],
-        agreement:[
-          {required: true, message: "请选择供应商协议", trigger: "blur" }
-        ],
+        // agreement:[
+        //   {required: true, message: "请选择供应商协议", trigger: "blur" }
+        // ],
         accountName: [
           { required: true, message: "汇款账户不能为空", trigger: "blur" }
         ],
@@ -918,7 +930,7 @@ export default {
       pagesize: 10, // 设定默认分页每页显示数
       pageIndex: 1, // 设定当前页数
       total: 0, //总条目数
-      options: [] //
+      options: [] //部门的数据
     };
   },
   components:{
@@ -992,6 +1004,7 @@ export default {
           "http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=SupplierType"
         )
         .then(res => {
+          console.log(res,"供应商类别")
           for (let i = 0; i < res.data.objects.length; i++) {
             this.borrowingType.push({
               value: res.data.objects[i].id,
@@ -1032,12 +1045,13 @@ export default {
     // 把公司可见性传给后端
     companyList(item) {
       this.userDeparType = [];
-      let sid = this.ruleForm.visible;
-      this.$http.post("http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=CompanyArea",{
+      let sid = item;
+      this.$http.post("http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=CompanyArea", {
         id: sid
       }).then(res => {
         console.log(res, '把公司可见性传给后端');
         console.log(item, '获取选中的项')
+        console.log(this.visibleType, '可见部门')
         this.aaaa();
       });
     },
@@ -1050,15 +1064,17 @@ export default {
           isDeleted: 0
         }
       })
-      .then(res => {
-        console.log(res,"部门请求")
-        for (let i = 0; i < res.data.objects.length; i++) {
-          this.options.push({
-            value: res.data.objects[i].id,
-            label: res.data.objects[i].orgName
-            // "children":[res.data.objects[i].id,res.data.objects[i].orgName]
-          });
-        }
+        .then(res => {
+          console.log(res, "部门请求")
+          console.log(res.data.objects.id, '获取当前数据下的id')
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.options.push({
+              value: res.data.objects[i].id,
+              label: res.data.objects[i].orgName,
+              // children:[res.data.objects[i].id,res.data.objects[i].orgName]
+            });
+          }
+
         // let data = res.data.objects.map(v => {
         //     return {
         //       label: v.orgName,
@@ -1118,13 +1134,13 @@ export default {
     // 取消按钮关闭弹窗
     closeSupplier() {
       this.supplierShow = false;
-      this.editShow =false
+      this.editShow = false
       this.emptyForm()
-      this.tableDataBank=[]
-      this.ruleForm={
+      this.tableDataBank = []
+      this.ruleForm = {
         name: "", //供应商名称
         visible: "", //公司可见性
-        companyAreaEX:"",//公司可见性数字
+        companyAreaEX: "",//公司可见性数字
         supplierState: "正常", //状态
         routeType: "", //线路
         supplierType: "", //类别
@@ -1145,34 +1161,14 @@ export default {
         accountName: "", //汇款户名
         openingBank: "", //开户行
         account: "", //账号
-        note: "" ,//备注
-        supplierCode:""//供应商编码
+        note: "",//备注
+        supplierCode: ""//供应商编码
       }
     },
-    //判断日期是否超出
-    // dealDisabledDate (time) {
-    //   // 一天的毫秒数 = 8.64e7  判断时在return处可进行加减
-    //   let curDate = (new Date()).getTime();
-    //   let day = 24 * 3600 * 1000;
-    //   let dateRegion = curDate - day;
-    //   return time.getTime() > Date.now() || time.getTime() < dateRegion;
-    // },
-    // disabledDate (value) {
-    //   if (Date.now() <= value) {
-    //     return true
-    //   }
-    //   return false
-    // },
     //判断显示编辑或者添加弹窗
     saveModule(formName) {
       if (this.title == "添加供应商") {
-        this.$confirm("确定保存该条信息保存后名称和编码将不能改变, 是否继续?",'提示',{
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(()=>{
           this.addLabelTheme(formName);
-        })
       } else {
         this.editLabelTheme(formName);
       }
@@ -1183,27 +1179,28 @@ export default {
       console.log(formName,456)
       console.log(this.visibleType,'供应商可见性')
       console.log(this.ruleForm.expireData,6666)
-      if(this.ruleForm.visible == '集团共享'){
-       this.ruleForm.visible1 = 1
-      }else if(this.ruleForm.visible == '沈阳共享'){
-       this.ruleForm.visible1 = 2
-      }else if(this.ruleForm.visible == '吉林共享'){
-         this.ruleForm.visible1 = 3
-      }else if(this.ruleForm.visible == '大连共享'){
-         this.ruleForm.visible1 = 4
-      }else if(this.ruleForm.visible == '哈尔滨共享'){
-        this.ruleForm.visible1 = 5
-      }
+      //公司可见性的判断
+      // if (this.ruleForm.visible == '集团共享') {
+      //   this.ruleForm.visible1 = 1
+      // } else if (this.ruleForm.visible == '沈阳专享') {
+      //   this.ruleForm.visible1 = 2
+      // } else if (this.ruleForm.visible == '吉林专享') {
+      //   this.ruleForm.visible1 = 3
+      // } else if (this.ruleForm.visible == '大连专享') {
+      //   this.ruleForm.visible1 = 4
+      // } else if (this.ruleForm.visible == '哈尔滨专享') {
+      //   this.ruleForm.visible1 = 5
+      // }
       let types = [];
       let keepAlias = [] // 给alias赋值用
       let banks =[];
-      for (let i=0;i<this.tableDataBank.length;i++){
+      for (let i = 0; i < this.tableDataBank.length; i++) {
         banks.push({
           "id": 0,
           "createTime": 0,
           "code": "string",
           "isDeleted": 0,
-          "cardNumber":this.tableDataBank[i].cardNumber,
+          "cardNumber": this.tableDataBank[i].cardNumber,
           "bankName": this.tableDataBank[i].bankName,
           "cardName": this.tableDataBank[i].cardName,
           "memo": this.tableDataBank[i].memo,
@@ -1215,11 +1212,11 @@ export default {
         supplierType: this.ruleForm.supplierType,
         supplierID: 0
       });
-      if(this.dynamicTags.length > 0){
-        this.dynamicTags.forEach((item)=> {
-          keepAlias.push({'name': item,'id':0})
+      if (this.dynamicTags.length > 0) {
+        this.dynamicTags.forEach((item) => {
+          keepAlias.push({'name': item, 'id': 0})
         })
-        console.log(keepAlias,'this.dynamicTags')
+        console.log(keepAlias, 'this.dynamicTags')
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -1244,7 +1241,7 @@ export default {
                         createTime: 0,
                         isDeleted: 0,
                         //这个地方有问题
-                        userState: this.ruleForm.supplierState =="正常"?1:this.ruleForm.supplierState ,
+                        userState: this.ruleForm.supplierState == "正常" ? 1 : this.ruleForm.supplierState,
                         name: this.ruleForm.name,
                         types: types,
                         productDirection: this.ruleForm.orientation,
@@ -1252,7 +1249,7 @@ export default {
                         isMonthly: this.ruleForm.supplierWay,
                         isAgree: this.ruleForm.agreement,
                         // companyArea: this.ruleForm.visible,
-                        companyArea: this.ruleForm.visible1, // 公司可見性
+                        companyArea: 1, // 公司可見性
                         productArea: this.ruleForm.routeType,
                         leader: this.ruleForm.principal,
                         phone: this.ruleForm.principalPhone,
@@ -1263,8 +1260,9 @@ export default {
                         taxNumber: this.ruleForm.pactNumber,
                         orgs: [{
                           "orgID": 0,
-                          "orgName": 'string'}], // 使用部門
-                        alias:keepAlias, // 部门其他名 otherSupplier
+                          "orgName": '集团'
+                        }], // 使用部門
+                        alias: keepAlias, // 部门其他名 otherSupplier
                         expireTime: moment(this.ruleForm.expireData).format('YYYY-MM-DD'), // 到期日期
                         memo: this.ruleForm.remark,
                         banks: banks,
@@ -1302,6 +1300,9 @@ export default {
       });
     },
     // 编辑时的保存
+    handClick(){
+
+    },
     editLabelTheme(formName){
       console.log(this.pid,'每条数据的id值')
       console.log(this.editForm,1314)
@@ -1312,6 +1313,17 @@ export default {
       }else if(this.editForm.supplierState == "待审核"){
         this.editForm.supplierState1 =0
       };
+      // switch (this.editForm.supplierState){
+      //   case "正常":
+      //     this.editForm.supplierState1 =1;
+      //     break;
+      //   case "停用":
+      //     this.editForm.supplierState1 =2;
+      //     break;
+      //   case "待审核":
+      //     this.editForm.supplierState1 =0;
+      //     break;
+      // }
       if (this.editForm.agreement == "是"){
           this.editForm.agreement1 =1
       } else {
@@ -1367,8 +1379,6 @@ export default {
       }else if (this.editForm.supplierWay =="走团前50%走团后50") {
         this.editForm.supplierWay1 =8
       }
-
-
     let types = [];
       let keepAlias = [] // 给alias赋值用
       let banks =[];
@@ -1390,14 +1400,40 @@ export default {
         supplierType: this.editForm.supplierType,
         supplierID: 0
       });
-      if(this.dynamicTags.length > 0){
-        this.dynamicTags.forEach( (item)=> {
-          keepAlias.push({'name': item,'id':this.userindex})
+      if (this.dynamicTags.length > 0) {
+        this.dynamicTags.forEach((item) => {
+          keepAlias.push({'name': item, 'supplierID': this.userindex})
         })
-        console.log(keepAlias,'this.dynamicTags')
+        console.log(keepAlias, 'this.dynamicTags')
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
+          // debugger;
+          if (this.editForm.supplierState == "正常") {
+            this.editForm.supplierState1 = 1
+          } else if (this.editForm.supplierState == "停用") {
+            this.editForm.supplierState1 = 2
+          } else if (this.editForm.supplierState == "待审核") {
+            this.editForm.supplierState1 = 0
+          }
+          ;
+          // switch (this.editForm.supplierState){
+          //   case "正常":
+          //     this.editForm.supplierState1 =1;
+          //     break;
+          //   case "停用":
+          //     this.editForm.supplierState1 =2;
+          //     break;
+          //   case "待审核":
+          //     this.editForm.supplierState1 =0;
+          //     break;
+          // }
+          if (this.editForm.agreement == "是") {
+            this.editForm.agreement1 = 1
+          } else {
+            this.editForm.agreement1 = 2
+          }
+          ;
           var _this = this;
           this.$http
             .post(
@@ -1416,7 +1452,7 @@ export default {
                   isMonthly: this.editForm.supplierWay1,
                   isAgree: this.editForm.agreement1,
                   // companyArea: this.editForm.visible,
-                  companyArea: this.editForm.visible1, // 公司可見性
+                  companyArea: 1, // 公司可見性
                   productArea: this.editForm.routeType,
                   leader: this.editForm.principal,
                   phone: this.editForm.principalPhone,
@@ -1426,10 +1462,10 @@ export default {
                   billName: this.editForm.operator,
                   taxNumber: this.editForm.pactNumber,
                   orgs: [
-                  //   {
-                  //   "id": 0,
-                  //   "orgName": "string"
-                  // }
+                    {
+                    "id": 0,
+                    "orgName": "集团"
+                  }
                   ], // 使用部門
                   alias:keepAlias, // 部门其他名 otherSupplier
                   expireTime: moment(this.editForm.expireData).format('YYYY-MM-DD'), // 到期日期
@@ -1449,63 +1485,6 @@ export default {
                   manageType: 1
                 }
               },
-              // 好使的数据格式
-              // {
-              //   "object": {
-              //     id: 40,
-              //     createTime: 0,
-              //     code: null,
-              //     isDeleted: 0,
-              //     userState: 1,
-              //     userStateEX: "Normal",
-              //     name: "海南环游假期国际旅行社有限公司",
-              //     types: [
-              //       {
-              //         id: 59,
-              //         supplierType: 1,
-              //         supplierTypeEX: "地接社",
-              //         supplierID: 40
-              //       }
-              //     ],
-              //     productDirection: null,
-              //     isMonthly: 3,
-              //     isMonthlyEX: "月结",
-              //     isAgree: 0,
-              //     companyArea: 1,
-              //     companyAreaEX: "集团共享",
-              //     productArea: 1,
-              //     productAreaEX: "国内",
-              //     leader: null,
-              //     phone: "1.89766e+010",
-              //     legalPerson: "秦兵",
-              //     handPerson: null,
-              //     handPhone: null,
-              //     billName: null,
-              //     taxNumber: null,
-              //     expireTime: "0001-01-01T00:00:00",
-              //     memo: null,
-              //     banks: [],
-              //     files: [],
-              //     createUser: null,
-              //     orgs: [
-              //       {
-              //         id: 426,
-              //         supplierID: 40,
-              //         orgID: 0,
-              //         orgName: "集团"
-              //       }
-              //     ],
-              //     supplierCode: "SP00000086",
-              //     alias: [
-              //       {
-              //         id: 73,
-              //         supplierID: 40,
-              //         name: "别名40"
-              //       }
-              //     ],
-              //     manageType: 1
-              //   }
-              // },
           {
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token")
@@ -1564,7 +1543,7 @@ export default {
         name: supplierName,
         id: supplierCard == "" ? 0 : supplierCard,
         isMonthly: settlement == "" ? 0 : settlement,
-        supplierType: category == "" ? -1 : category,
+        supplierType: category == "" ? 0 : category,
         UserState: condition == "" ? -1 : condition,
         companyArea: visibleArea == "" ? 1 : visibleArea
         /*"isDeleted": 0,
@@ -1700,6 +1679,7 @@ export default {
       console.log(id,'详情时的id')
       this.pid=id
       this.flag = true
+      this.$refs.mychild.teamGetDetails(id);
     },
     //删除账户
     deleteEmty(index, rows) {
@@ -1709,14 +1689,34 @@ export default {
   mounted() {
     this.supplierPage();
   },
-  init(){
-
-  },
   // watch:{
-  //   editForm:function (val,oldval) {
-  //     console.log('val', val);
-  //   }
+  //     conditionType:{
+  //       handler(newValue,oldValue){
+  //         deep:true
+  //       }
+  //     },
+  //   pathType:{
+  //     handler(newValue,oldValue){
+  //       deep:true
+  //     }
+  //   },
+  //   borrowingType:{
+  //     handler(newValue,oldValue){
+  //       deep:true
+  //     }
+  //   },
+  //   settlementType:{
+  //     handler(newValue,oldValue){
+  //       deep:true
+  //     }
+  //   },
+  //   agreement:{
+  //     handler(newValue,oldValue){
+  //       deep:true
+  //     }
+  //   },
   // },
+
   created() {
     this.themeList(); //供应商类别
     this.settlemen(); //结算方式

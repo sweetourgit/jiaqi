@@ -158,8 +158,9 @@
     },
     watch:{
       msg:function (val,oldval) {
-        this.teamGetDetails(val);
-      }
+        this.teamGetDetails(this.msg);
+      },
+      deep:true
     },
     data(){
       return{
