@@ -70,8 +70,16 @@
         </template>
       </el-table-column>
       <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
-      <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-      <el-table-column prop="orderNumber" label="订单号" align="center"></el-table-column>
+      <el-table-column prop="groupCode" label="团期计划" align="center">
+        <template slot-scope="scope">
+          <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.groupCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="orderCode" label="订单号" align="center">
+        <template slot-scope="scope">
+          <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.orderCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+        </template>
+      </el-table-column>
       <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
       <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
@@ -348,30 +356,28 @@ export default {
     // 表单搜索
     searchHandInside () {
       let _this = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
           "pageIndex": 1,
           "pageSize": this.pageSize,
+          "total": 0,
           "object": {
-            "startTime": _this.ruleForm.dateStart ? moment(_this.ruleForm.dateStart, 'YYYY-MM-DD HH:mm:ss') : "2000-01-01",
-            "endTime":  _this.ruleForm.dateEnd ? moment(_this.ruleForm.dateEnd, 'YYYY-MM-DD HH:mm:ss') : "2019-09-26",
-            'CreateUser': _this.ruleForm.proposer ? _this.ruleForm.proposer : "",
-            'planID': _this.ruleForm.plan ? _this.ruleForm.plan : "",
-            'orderID': _this.ruleForm.order ? _this.ruleForm.order : "",
+            "id": 0,
+            // "collectionTime": "2019-11-18",
+            "groupCode": _this.ruleForm.plan ? _this.ruleForm.plan : '',
+            "orderNumber": _this.ruleForm.order ? _this.ruleForm.order : '',
+            "startTime": _this.ruleForm.dateStart ? moment(_this.ruleForm.dateStart).format('YYYY-MM-DD'): "2000-01-01",
+            "endTime":  _this.ruleForm.dateEnd ? moment(_this.ruleForm.dateEnd) .format('YYYY-MM-DD'): "2019-09-26",
+            'createUser': _this.ruleForm.proposer ? _this.ruleForm.proposer : "",
             'checkType': _this.ruleForm.checkType ? _this.ruleForm.checkType : -1,
             "collectionType": 2,
           }
         }, {
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
-        }
-      )
-      .then(function(obj) {
-        _this.tableData = obj.data.objects;
-      })
-      .catch(function(obj) {
-      })
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }})
+        .then(function(obj) {
+          _this.tableData = obj.data.objects;
+        }).catch(function(obj) {})
     },
     // 关闭申请同业收款弹窗
     closeAdd(data) {

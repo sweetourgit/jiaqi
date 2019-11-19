@@ -299,6 +299,49 @@ export default {
   },
   methods: {
     moment,
+    // 重置
+    emptyButtonInside () {
+      this.$refs['ruleForm'].resetFields()
+    },
+    // 搜索
+    searchHandInside(){
+      var that = this
+      this.listLoading = true
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+          "pageIndex": that.page,
+          "pageSize": that.limit,
+          "total": 0,
+          "object": {
+            "id": 0,
+            "checkType": this.settlement_01 ? this.settlement_01 : -1,
+            "collectionTime": "2019-05-16",
+            "startTime": this.ruleForm.dateStart ? moment(this.ruleForm.dateStart).format('YYYY-MM-DD') : "2001-01-01",
+            "endTime": this.ruleForm.dateEnd ? moment(this.ruleForm.dateEnd).format('YYYY-MM-DD') : "2099-05-16",
+            // "groupCode": this.plan ? this.plan : '',
+            "createUser": this.ruleForm.createUser ? this.ruleForm.createUser : '',
+            "orderNumber": this.ruleForm.distributor ? this.ruleForm.distributor : '',
+            "collectionType":1,//直客1.同业2
+            "localCompID":0,//直客0,同业变成同业社id
+          }
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+      .then(function(obj) {
+        that.total = obj.data.total;
+        that.tableData = obj.data.objects;
+        that.tableData.forEach(function(v, k, arr) {
+          arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
+          arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
+          arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
+          arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
+        })
+        this.listLoading = false
+      })
+      .catch(function(obj) {})
+    },
     closeAdd() {
       this.dialogFormVisible = false;
     },
@@ -489,6 +532,7 @@ export default {
       }).then(res => {
         //console.log(res.data.object.invoiceTable)
         if(res.data.isSuccess == true){
+           this.tableAssociated = res.data.object
            this.fundamental=res.data.object;
            this.tableInvoice = res.data.object.invoiceTable;
            this.tableAudit = res.data.object.spw
@@ -516,7 +560,7 @@ export default {
                res.data.object.collectedMoney = that.collectedMoney
                res.data.object.uncollectedMoney = res.data.object.payable - res.data.object.collectedMoney
                //res.data.object.collectedMoney = that.examineMoney
-               that.tableAssociated.push(res.data.object)
+               // that.tableAssociated.push(res.data.object) 临时改动
             })
             .catch(function(res) {
             })

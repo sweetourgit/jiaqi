@@ -280,11 +280,13 @@ import moment from 'moment'
       multipleSelection: [],
       pid:'',
       arr1:[],
+      arr2:[],
       guid:'',
       transitShow:false, // 通过驳回弹窗
       title:"",
       commentText:'',
-      presentRouter: null // 当前路由
+      presentRouter: null, // 当前路由
+      getWorkItemId: null // 保存匹配的guid
     }
   },
   created(){
@@ -402,6 +404,7 @@ import moment from 'moment'
              obj.data.forEach(v=>{
                arr.push(v.jq_ID)
               that.arr1.push(v.workItemID)
+              that.arr2.push(v)
              })
              this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', { // 通过GUID查找无收入/预付款列表
                 "guid": arr
@@ -467,8 +470,8 @@ import moment from 'moment'
         {
           //"userCode": "rbop01",
           "userCode":sessionStorage.getItem('userCode'),
-          "workItemID": this.guid,
-          "commentText": this.commentText
+          "workItemID": that.getWorkItemId,
+          "commentText": that.commentText
         }).then(res =>{
           that.transitShow = false;
           that.detailstShow = false;
@@ -483,8 +486,8 @@ import moment from 'moment'
         {
           //"userCode": "rbop01",
           "userCode":sessionStorage.getItem('userCode'),
-          "workItemID": this.guid,
-          "commentText": this.commentText
+          "workItemID": that.getWorkItemId,
+          "commentText": that.commentText
         }).then(res =>{
             that.transitShow = false;
             that.detailstShow = false;
@@ -510,6 +513,12 @@ import moment from 'moment'
       },
       // 详情弹窗
       checkIncome(index, row){
+        let _this = this
+        this.arr2.forEach(function (item) {
+          if (row.guid == item.jq_ID){
+            _this.getWorkItemId = item.workItemID
+          }
+        })
         this.paymentID=row.paymentID;
         this.pid = row.paymentID;
         this.detailstShow = true;

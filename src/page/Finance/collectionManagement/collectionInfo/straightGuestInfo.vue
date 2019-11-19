@@ -34,7 +34,7 @@
           <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
          <el-form-item label="收款金额" prop="price" label-width="120px">
-          <el-input type="number" v-model="ruleForm.price" class="bright inputWidth" placeholder="收款金额" :disabled="change"></el-input>
+          <el-input type="number" v-model="ruleForm.price" class="bright inputWidth" placeholder="收款金额" :disabled="change" @blur="priceChangeHandel"></el-input>
         </el-form-item>
         <!--<el-form-item label="订单号" prop="orderNumber" label-width="120px">
           <el-input v-model="ruleForm.orderNumber" class="bright inputWidth" placeholder="订单号" maxlength="20" :disabled="change" @blur='receiptorder'></el-input>
@@ -424,6 +424,14 @@ export default {
     }
   },
   methods: {
+   // 后台返这个接口目前有问题 缺后两个字段
+   /* priceChangeHandel (){
+      this.arrearsList.forEach(function (v,k,arr) {   //this.ruleForm.price
+        // arr[k]['repaymentMoney'] = 2
+        console.log(arr)
+      })
+      // console.log(this.arrearsList)
+    },*/
     moment,
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
