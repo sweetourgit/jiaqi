@@ -529,10 +529,10 @@ export default {
         merchantsSell: [
           { required: true, message: "请输入商户销售", trigger: "blur" }
         ],
-        market: [
-          { required: true, message: "请输入销售", trigger: "blur" }
-        ],
-        travelSales: [
+        // market: [//直客下单销售
+        //   { required: true, message: "请输入销售", trigger: "blur" }
+        // ],
+        travelSales: [//商户下单销售
           { required: true, message: "请输入销售", trigger: "blur" }
         ],
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
@@ -602,6 +602,7 @@ export default {
       tableCollection:[],//收款表格
       tableOrder:[],//订单表格
       productPos:0,
+      ReplacesaleId:0,//获取直客销售id
       lines:0,//获取剩余额度
       deposit:0,//获取预存款
       amount:0,//剩余额度加预存款
@@ -1038,6 +1039,7 @@ export default {
                         priceType: Number(this.ruleForm.price),
                         orgID: sessionStorage.getItem("id"),
                         userID: sessionStorage.getItem("id"),
+                        replacesale:this.ruleForm.market = '' ? 0 : this.ReplacesaleId,//直客下单销售id
                         remark: JSON.stringify([
                           {
                             OrderCode: "",
@@ -1315,10 +1317,6 @@ export default {
             this.marketList.push({
               "value": res.data.objects[i].name,
               "id": res.data.objects[i].id,
-              "supplierType": res.data.objects[i].supplierType,
-              "balance": res.data.objects[i].balance,
-              "deposit": res.data.objects[i].deposit,
-              "settlementType": res.data.objects[i].settlementType,
             })
             this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
           }
@@ -1336,6 +1334,7 @@ export default {
       }
     },
     departure1(item){
+      this.ReplacesaleId = item.id
       // console.log(item)
       // this.productPos = item.id;//获取供应商的id传给下单接口的orgID
       // this.lines = item.balance;//获取剩余额度
