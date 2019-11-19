@@ -32,7 +32,7 @@
       </el-col>
       <el-col :span="6">
         <el-col :span="6"><div class="grid-del label-color">产品名称:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.plan_01 }}</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
       </el-col>
       <el-col :span="6">
         <el-col :span="6"><div class="grid-del label-color">供应商:</div></el-col>

@@ -317,7 +317,8 @@
         this.deleteGatherShow = false;
         //this.cycleId();
       },
-      deleteGather(ensure,tab, event){
+      deleteGather(ensure){
+        this.cycleId();
         this.deleteGatherShow = false;
         if(this.tableData.length == 0){
           this.handleTabsEdit(this.tabIndex, "remove");

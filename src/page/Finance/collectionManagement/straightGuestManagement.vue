@@ -5,7 +5,17 @@
       <el-row type="flex" class="row-bg">
         <el-col :span="8">
           <el-form-item label="申请人:" prop="createUser">
-            <el-input v-model="ruleForm.createUser" placeholder="请输入申请人"></el-input>
+            <el-autocomplete
+              style="width: 100%"
+              class="name_input"
+              v-model="ruleForm.createUser"
+              :fetch-suggestions="querySearchBorrower"
+              placeholder="请输入申请人"
+              :trigger-on-focus="false"
+              @select="departureBorrower"
+              @blur="departureBorrowerBlur"
+              @focus="departureBorrowerFocus"
+            ></el-autocomplete>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -41,7 +51,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item>
-            <el-button @click="searchHandInside()" type="primary">搜索</el-button>
+            <el-button @click="searchHandInside()" type="primary" :disabled="ifShowsearch">搜索</el-button>
             <el-button @click="emptyButtonInside('ruleForm')" type="primary">重置</el-button>
           </el-form-item>
         </el-col>
@@ -283,7 +293,10 @@ export default {
       tableAssociated:[],//发票关联表
       paymentID:0,
       tour_id:0,
-      currentRowId: null // 当前行id
+      currentRowId: null, // 当前行id
+      tableDataBorrower:[],
+      keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
+      ifShowsearch: false,
     }
   },
   computed: {
@@ -298,7 +311,96 @@ export default {
     }
   },
   methods: {
+    // 借款人模糊检索
+    querySearchBorrower(queryBorrowerString, cb) {
+      this.tableDataBorrower = []
+      this.$http.post(this.GLOBAL.serverSrc + '/org/api/userlist', {
+        "object": {
+          name: queryBorrowerString
+        }
+      }).then(res => {
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.tableDataBorrower.push({
+            "value": res.data.objects[i].name,
+            "userCode": res.data.objects[i].userCode
+          })
+        }
+        var results = queryBorrowerString ? this.tableDataBorrower.filter(this.createFilteBorrowerr(queryBorrowerString)) : [];
+        cb(results)
+      }).catch(err => {})
+    },
+    // 模糊查询返回下拉选中项 - 查询返回userCode的（借款人）
+    createFilteBorrowerr(queryString1){
+      return (restaurant) => {
+        return (restaurant.userCode);
+      }
+    },
+    // 借款人选中
+    departureBorrower (item) {
+      this.keepBorrowerUserCode = item.userCode
+    },
+    // 借款人 失焦
+    departureBorrowerBlur(){
+      if(this.ruleForm.createUser == ''){
+        this.ifShowsearch = false
+      }else {
+        if(this.keepBorrowerUserCode == null){
+          this.ifShowsearch = false
+          this.ruleForm.createUser = ''
+          // this.$message.success("无相关借款人");
+        } else {
+          this.ifShowsearch = true
+        }
+      }
+    },
+    // 借款人 获得焦点
+    departureBorrowerFocus(){
+      this.ifShowsearch = true
+    },
     moment,
+    // 重置
+    emptyButtonInside () {
+      this.$refs['ruleForm'].resetFields()
+    },
+    // 搜索
+    searchHandInside(){
+      var that = this
+      this.listLoading = true
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+          "pageIndex": that.page,
+          "pageSize": that.limit,
+          "total": 0,
+          "object": {
+            "id": 0,
+            "checkType": this.ruleForm.checkType ? this.ruleForm.checkType : -1,
+            "collectionTime": "2019-05-16",
+            "startTime": this.ruleForm.dateStart ? moment(this.ruleForm.dateStart).format('YYYY-MM-DD') : "2001-01-01",
+            "endTime": this.ruleForm.dateEnd ? moment(this.ruleForm.dateEnd).format('YYYY-MM-DD') : "2099-05-16",
+            // "groupCode": this.plan ? this.plan : '',
+            "createUser": this.keepBorrowerUserCode ? this.keepBorrowerUserCode : '',
+            "orderNumber": this.ruleForm.distributor ? this.ruleForm.distributor : '',
+            "collectionType":1,//直客1.同业2
+            "localCompID":0,//直客0,同业变成同业社id
+          }
+        }, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+      .then(function(obj) {
+        that.total = obj.data.total;
+        that.tableData = obj.data.objects;
+        that.tableData.forEach(function(v, k, arr) {
+          arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
+          arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
+          arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
+          arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
+        })
+        this.listLoading = false
+      })
+      .catch(function(obj) {})
+    },
     closeAdd() {
       this.dialogFormVisible = false;
     },
@@ -363,6 +465,7 @@ export default {
     },
     //重置搜索条件
     resetHand() {
+      this.keepBorrowerUserCode = null
       this.plan = '';
       this.accepter = '';
       this.startTime = '';
@@ -429,7 +532,7 @@ export default {
               "collectionNumber": "",
               "price": 0,
               "dept": 0,
-              "createUser": this.accepter ? this.accepter : '',
+              "createUser": this.keepBorrowerUserCode ? this.keepBorrowerUserCode : '',
               "createTime": "2019-05-16 01:02:40",
               "code": "",
               "serialNumber": "",
@@ -489,6 +592,7 @@ export default {
       }).then(res => {
         //console.log(res.data.object.invoiceTable)
         if(res.data.isSuccess == true){
+           this.tableAssociated = res.data.object
            this.fundamental=res.data.object;
            this.tableInvoice = res.data.object.invoiceTable;
            this.tableAudit = res.data.object.spw
@@ -516,7 +620,7 @@ export default {
                res.data.object.collectedMoney = that.collectedMoney
                res.data.object.uncollectedMoney = res.data.object.payable - res.data.object.collectedMoney
                //res.data.object.collectedMoney = that.examineMoney
-               that.tableAssociated.push(res.data.object)
+               // that.tableAssociated.push(res.data.object) 临时改动
             })
             .catch(function(res) {
             })

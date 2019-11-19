@@ -783,7 +783,7 @@ export default {
         if(this.keepBorrowerUserCode == null){
           this.ifShowsearch = false
           this.ruleFormSeach.borrower = ''
-          this.$message.success("无相关借款人");
+          // this.$message.success("无相关借款人");
         } else {
           this.ifShowsearch = true
         }

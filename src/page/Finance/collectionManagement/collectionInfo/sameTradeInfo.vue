@@ -859,9 +859,11 @@ export default {
           })
 
           let objectRequest = {}
+          let getMatchingMoney = 0
 
           let needArrearData = [] // 转变关联欠款数据格式之后的数据模型
           this.arrearsList.forEach(function(item){ // 转换关联欠款表格数据结构
+            getMatchingMoney +=  Number(item.matchingMoney)
             needArrearData.push({
               "id": 0,
               'planID':item.planID,
@@ -877,6 +879,13 @@ export default {
               "matchingPrice": item.matchingMoney // 匹配收款金额
             })
           })
+          if(getMatchingMoney != this.ruleForm.money){
+            this.$message({
+              type: "info",
+              message: "收款金额与匹配收款金额不相等，请重新填写"
+            });
+            return ;
+          }
 
           objectRequest = {
             "GroupCode":"",
