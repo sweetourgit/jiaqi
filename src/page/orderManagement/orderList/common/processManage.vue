@@ -100,7 +100,7 @@
         <!--总价-->
         <div class="price">
           <p class="totle">总价：￥{{toDecimal2(payable)}}</p>
-          <p class="surplus" v-if="false">剩余额度：￥400,000.00</p>
+          <p class="surplus">剩余预存款和额度：￥400,000.00</p>
         </div>
         <hr />
         <!--订单联系人-->
