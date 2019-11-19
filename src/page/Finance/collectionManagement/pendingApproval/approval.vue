@@ -110,7 +110,7 @@
       <div>
         <el-dialog style="text-align: left;" :title="approvalTitle" :visible.sync="dialogVisibleApproval" width="30%" top="20vh" append-to-body>
           <div>
-            <p class="areaP" v-if="approval_status == 3">通过说明：</p>
+            <p class="areaP" v-if="approval_status == 1">通过说明：</p>
             <p class="areaP" v-if="approval_status == 2">驳回意见：</p>
             <el-input class="areaIn" type="textarea" :rows="3" placeholder="请输入内容(选填)" v-model="approvalMark"></el-input>
           </div>
@@ -235,9 +235,11 @@
           "spname": sessionStorage.getItem('name'),
           "spstate": this.approval_status,
           "spcontent": this.approvalMark,
-          "id": this.info
+          "checktype": this.approval_status,
+          "id": this.info.id
         }, ).then(function(response) {
-          console.log('审批操作',response);
+            
+//          console.log('审批操作',response);
           if (response.data.isSuccess) {
             that.$message.success("审批提交成功~");
             that.dialogVisibleApproval = false;
