@@ -67,7 +67,7 @@
               :min="0"
               :max="salePriceNum[index].quota"
               size="medium"
-              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9 || isPaid"
+              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
             ></el-input-number>
           </div>
           <!-- <div> -->
@@ -84,7 +84,7 @@
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9 || isPaid"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
               @input="compPrice(2,index)"
             ></el-input>
           </el-form-item>
@@ -93,7 +93,7 @@
               v-model="item.mark"
               placeholder="请输入摘要"
               class="input1"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9 || isPaid"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
             ></el-input>
           </el-form-item>
         </div>
@@ -110,7 +110,7 @@
             v-model="ruleForm.contactName"
             placeholder="请输入"
             class="input"
-            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9 || isPaid"
+            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
         <el-form-item label="联系电话" class="contact" prop="contactPhone">
@@ -119,7 +119,7 @@
             v-model="ruleForm.contactPhone"
             placeholder="请输入"
             class="input"
-            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9 || isPaid"
+            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
         <hr />
@@ -309,7 +309,6 @@ export default {
       isPricechange: null, //true为直客   false为同业价格
       isChangeNumber: false, //判断动态按钮是否可点击 数量和价格有变化的时候为true
       isLowPrice: false, //确认订单状态时 已付金额低于订单总价时为true
-      isPaid: false, //已付金额是否为0 不为零则除了出行人信息以外所有的都禁止
       //游客信息
       quota: [], //余位信息负数红色提示
       endTimeStamp: "00天00时00分00秒", //倒计时
@@ -450,10 +449,6 @@ export default {
             this.orderSourceFun(res.data.object.orderChannel);
             this.dialogFormProcess = true;
             this.teampreview(res.data.object.planID);
-            //如果已付金额不为零 则除了出行人信息以外的都要禁用
-            if (this.paid !== 0) {
-              this.isPaid = true;
-            }
           }
         })
         .catch(err => {
@@ -1223,7 +1218,6 @@ export default {
       this.$refs["ruleForm"].resetFields();
       this.dialogFormProcess = false;
       this.isLowPrice = false;
-      this.isPaid = false;
     }
   }
 };

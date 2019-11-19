@@ -519,10 +519,6 @@ export default {
           );
           this.orderCodeSon = res.data.object.orderCode;
           this.priceType = res.data.object.priceType;
-          // 判断已付金额是否大于订单总额 如是 则订单总额等于已付金额
-          if(this.getListOneMessage.paid >= this.getListOneMessage.payable) {
-            this.getListOneMessage.payable = this.getListOneMessage.paid
-          }
           //订单来源
           // if (this.getListOneMessage.orderChannel == 1) {
           //   this.getListOneMessage.orderChannel = "同业";
