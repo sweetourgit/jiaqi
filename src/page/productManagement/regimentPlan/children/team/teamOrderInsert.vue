@@ -1079,7 +1079,8 @@ export default {
                         }
                       });
                   }else if(this.ruleForm.orderRadio === '2'){
-                    if((this.payment == 1 && this.ruleForm.totalPrice) <= this.amount){//判断订单金额与剩余预存款和额度对比
+                    console.log(this.payment)
+                    if(this.ruleForm.totalPrice <= this.amount && this.payment == '1'){//判断订单金额与剩余预存款和额度对比
                       this.ifOrderInsert = true;
                       this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                         object: {
@@ -1160,7 +1161,7 @@ export default {
                         this.ifOrderInsert = true;
                       }
                     });
-                    }else {
+                    }else if(this.payment != '2'){
                       this.$confirm("该订单金额已经超过剩余预存款和额度?", "提示", {
                         confirmButtonText: "确定",
                         cancelButtonText: "取消",
