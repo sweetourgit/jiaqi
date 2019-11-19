@@ -860,8 +860,9 @@ export default {
         if (valid) {
           let pictureList = [];
           let newDate = moment(new Date(), 'yyyy-MM-dd hh:mm:ss')
+          console.log(this.fileList,'this.fileList')
           this.fileList.forEach(function(item){
-            pictureList.push({ url: item.url.slice(5), name: item.name})
+            pictureList.push({ url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })
 
           let objectRequest = {}
