@@ -59,6 +59,7 @@
           <span v-show="priceType==1">{{item.price_01}}*{{enrolNum[index]}}</span>
           <span v-show="priceType==2">{{item.price_02}}*{{enrolNum[index]}}</span>
           <div>
+            <!-- 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数  :max="paidMaxEnrolNum[index]"-->
             <el-input-number
               class="input-num"
               v-model="enrolNum[index]"
@@ -66,7 +67,7 @@
               :min="0"
               :max="salePriceNum[index].quota"
               size="medium"
-              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
+              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9 || isPaid"
             ></el-input-number>
           </div>
           <!-- <div> -->
@@ -83,7 +84,7 @@
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9 || isPaid"
               @input="compPrice(2,index)"
             ></el-input>
           </el-form-item>
@@ -92,7 +93,7 @@
               v-model="item.mark"
               placeholder="请输入摘要"
               class="input1"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9 || isPaid"
             ></el-input>
           </el-form-item>
         </div>
@@ -109,7 +110,7 @@
             v-model="ruleForm.contactName"
             placeholder="请输入"
             class="input"
-            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
+            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9 || isPaid"
           ></el-input>
         </el-form-item>
         <el-form-item label="联系电话" class="contact" prop="contactPhone">
@@ -118,7 +119,7 @@
             v-model="ruleForm.contactPhone"
             placeholder="请输入"
             class="input"
-            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
+            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9 || isPaid"
           ></el-input>
         </el-form-item>
         <hr />
@@ -308,10 +309,12 @@ export default {
       isPricechange: null, //true为直客   false为同业价格
       isChangeNumber: false, //判断动态按钮是否可点击 数量和价格有变化的时候为true
       isLowPrice: false, //确认订单状态时 已付金额低于订单总价时为true
+      isPaid: false, //已付金额是否为0 不为零则除了出行人信息以外所有的都禁止
       //游客信息
       quota: [], //余位信息负数红色提示
       endTimeStamp: "00天00时00分00秒", //倒计时
       enrolNum: [], //报名人数[1,3]形式
+      // paidMaxEnrolNum: [], //已经金额后显示的 输入框的max
       enrolNums: false, //报名人数是否为空提示
       enrolNumsWarn: "",
       number: 0, //报名总人数
@@ -393,6 +396,7 @@ export default {
     };
   },
   created() {},
+
   watch: {
     variable() {
       if (this.dialogType == 1) {
@@ -427,6 +431,7 @@ export default {
               this.orderget.occupyStatus,
               this.orderget.orderChannel
             );
+
             this.priceType == 1
               ? (this.isPricechange = true)
               : (this.isPricechange = false);
@@ -445,6 +450,10 @@ export default {
             this.orderSourceFun(res.data.object.orderChannel);
             this.dialogFormProcess = true;
             this.teampreview(res.data.object.planID);
+            //如果已付金额不为零 则除了出行人信息以外的都要禁用
+            if (this.paid !== 0) {
+              this.isPaid = true;
+            }
           }
         })
         .catch(err => {
@@ -926,6 +935,8 @@ export default {
               this.preLength.push(this.tour[i].length);
               this.enrolNum.push(this.tour[i].length);
             }
+            // 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数
+            // this.paidMaxEnrolNum = [...this.enrolNum];
             for (let i = 0; i < data.length; i++) {
               //如果配额为0或者配额大于库存，余位显示总库存
               if (
@@ -1211,7 +1222,8 @@ export default {
       this.enrolNums = false;
       this.$refs["ruleForm"].resetFields();
       this.dialogFormProcess = false;
-      this.isLowPrice = false
+      this.isLowPrice = false;
+      this.isPaid = false;
     }
   }
 };
