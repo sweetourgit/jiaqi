@@ -997,7 +997,7 @@ export default {
           if (res.data.isSuccess == true) {
             this.teampreviewData.regimentType = res.data.object.regimentType;
             if(this.ifOrderInsert===true){
-              if(this.teampreviewData.regimentType === 1){//判断是都停售 1正常
+              if(this.teampreviewData.regimentType === 1){//判断是否停售 1正常
                   if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
                      console.log(guest)
                      this.ifOrderInsert = true;
