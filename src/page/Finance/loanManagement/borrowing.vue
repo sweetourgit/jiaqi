@@ -1221,11 +1221,12 @@ export default {
       this.fileCheckVal = fileList.length
     },
     handlePreview(file) {
-      console.log(file)
-      this.uid = file.uid
       this.dialogVisible4 = true
-      this.imgBig = file.url
-      this.imgBigName = file.name
+      /*let getUrl = JSON.parse(file.response)
+      console.log(getUrl.paths[0].Url)
+      this.uid = file.uid
+      this.imgBig = getUrl.paths[0].Url
+      this.imgBigName = file.name*/
     },
     // 结束工作流程
     repeal(){

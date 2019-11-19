@@ -52,7 +52,6 @@
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :on-preview="handlePreview"
-            list-type="picture"
           >
             <el-button size="small" type="primary">上传文件</el-button>
           </el-upload>
@@ -588,8 +587,8 @@ export default {
     // 点击文件列表中已上传的文件时的钩子
     handlePreview(file, fileList) {
       this.dialogVisible = true
-      this.imgBig = file.url
-      this.imgBigName = file.name
+      /*this.imgBig = file.url
+      this.imgBigName = file.name*/
     },
     // 协办弹窗-搜索
     searchHand2() {
@@ -886,7 +885,9 @@ export default {
               "matchingPrice": item.matchingMoney // 匹配收款金额
             })
           })
-          if(getMatchingMoney != this.ruleForm.money){
+          console.log(getMatchingMoney,'getMatchingMoney')
+          console.log(this.ruleForm.price,'this.ruleForm.price')
+          if(getMatchingMoney != this.ruleForm.price){
             this.$message({
               type: "info",
               message: "收款金额与匹配收款金额不相等，请重新填写"

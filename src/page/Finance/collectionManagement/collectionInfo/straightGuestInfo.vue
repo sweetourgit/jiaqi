@@ -75,7 +75,6 @@
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :on-preview="handlePreview"
-            list-type="picture"
           >
             <el-button size="small" type="primary">上传文件</el-button>
           </el-upload>
@@ -571,7 +570,7 @@ export default {
        });
        return;
      }
-      if(this.arrearsList[0].matchingPrice < 0) {
+      if(this.arrearsList[0].matchingPrice > 0) {
         this.$message({
           type: 'info',
           message: '请填写匹配收款金额'
@@ -886,8 +885,8 @@ export default {
     },
     handlePreview(file, fileList) {
       this.dialogVisible = true
-      this.imgBig = file.url
-      this.imgBigName = file.name
+      /*this.imgBig = file.url
+      this.imgBigName = file.name*/
     },
     handleEdit(index, row) {
       this.ruleForm.invoiceTable.push({})
