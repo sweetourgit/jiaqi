@@ -570,7 +570,8 @@ export default {
        });
        return;
      }
-      if(this.arrearsList[0].matchingPrice > 0) {
+     console.log(this.arrearsList[0].matchingPrice)
+      if(this.arrearsList[0].matchingPrice <= 0) {
         this.$message({
           type: 'info',
           message: '请填写匹配收款金额'
@@ -594,7 +595,7 @@ export default {
           let pictureList = [];
           let newDate = moment(new Date(), 'YYYY-MM-DD HH:mm:ss')
           this.fileList.forEach(function(item){
-            pictureList.push({ url: item.url.slice(5), name: item.name})
+            pictureList.push({ url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })
 
           let objectRequest = {}
