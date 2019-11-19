@@ -1183,9 +1183,9 @@ export default {
       }
     },
 
-    // 监听订单来源是同业社还是直客下单  是直客则返回true
+    // 监听订单来源是同业社还是直客下单  是直客则返回true 等于1就是同业 
     orderSourceFun(orderChannel) {
-      if (orderChannel == 3) return true;
+      if (orderChannel !== 1) return true;
     },
 
     // 当订单来源为线下直客，订单总额不等于已付金额的时候 补充资料下方出现提示语
