@@ -59,6 +59,7 @@
           <span v-show="priceType==1">{{item.price_01}}*{{enrolNum[index]}}</span>
           <span v-show="priceType==2">{{item.price_02}}*{{enrolNum[index]}}</span>
           <div>
+            <!-- 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数  :max="paidMaxEnrolNum[index]"-->
             <el-input-number
               class="input-num"
               v-model="enrolNum[index]"
@@ -312,6 +313,7 @@ export default {
       quota: [], //余位信息负数红色提示
       endTimeStamp: "00天00时00分00秒", //倒计时
       enrolNum: [], //报名人数[1,3]形式
+      // paidMaxEnrolNum: [], //已经金额后显示的 输入框的max
       enrolNums: false, //报名人数是否为空提示
       enrolNumsWarn: "",
       number: 0, //报名总人数
@@ -393,6 +395,7 @@ export default {
     };
   },
   created() {},
+
   watch: {
     variable() {
       if (this.dialogType == 1) {
@@ -427,6 +430,7 @@ export default {
               this.orderget.occupyStatus,
               this.orderget.orderChannel
             );
+
             this.priceType == 1
               ? (this.isPricechange = true)
               : (this.isPricechange = false);
@@ -926,6 +930,8 @@ export default {
               this.preLength.push(this.tour[i].length);
               this.enrolNum.push(this.tour[i].length);
             }
+            // 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数
+            // this.paidMaxEnrolNum = [...this.enrolNum];
             for (let i = 0; i < data.length; i++) {
               //如果配额为0或者配额大于库存，余位显示总库存
               if (
@@ -1177,9 +1183,9 @@ export default {
       }
     },
 
-    // 监听订单来源是同业社还是直客下单  是直客则返回true
+    // 监听订单来源是同业社还是直客下单  是直客则返回true 等于1就是同业 
     orderSourceFun(orderChannel) {
-      if (orderChannel == 3) return true;
+      if (orderChannel !== 1) return true;
     },
 
     // 当订单来源为线下直客，订单总额不等于已付金额的时候 补充资料下方出现提示语
@@ -1211,7 +1217,7 @@ export default {
       this.enrolNums = false;
       this.$refs["ruleForm"].resetFields();
       this.dialogFormProcess = false;
-      this.isLowPrice = false
+      this.isLowPrice = false;
     }
   }
 };

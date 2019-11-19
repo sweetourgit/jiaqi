@@ -93,6 +93,21 @@ export const saveRate= function(object){
   })
 }
 
+// 模糊查询供应商
+export const getSupplierlist= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + "/universal/supplier/api/supplierlist",{
+      object
+    }).then((res) => {
+      let { isSuccess, objects }= res.data;
+      if(!isSuccess) return reject('模糊查询供应商失败');
+      return resolve(objects);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
 // 新增成本
 export const addCost= function(object){
   return new Promise((resolve, reject) => {

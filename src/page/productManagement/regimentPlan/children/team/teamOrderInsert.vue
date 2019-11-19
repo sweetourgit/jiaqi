@@ -75,8 +75,8 @@
           </div>
           <!--选择商户按钮，显示商户名称和商户销售文本框-->
           <div v-if="ruleForm.orderRadio==2">
-              <el-form-item label="销售" prop="travelSales">
-                <el-autocomplete class="optionw" v-model="ruleForm.travelSales" :fetch-suggestions="querySearch1" placeholder="请输入销售名称" :trigger-on-focus="false"@select="departure1"></el-autocomplete>
+              <el-form-item label="同业销售" prop="travelSales">
+                <el-autocomplete class="optionw" v-model="ruleForm.travelSales" :fetch-suggestions="querySearch2" placeholder="请输入销售名称" :trigger-on-focus="false"@select="departure2"></el-autocomplete>
               </el-form-item>
               <el-form-item label="商户名称" prop="travel">
                 <el-autocomplete class="optionw" v-model="ruleForm.travel" @blur="travelName()" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
@@ -529,10 +529,10 @@ export default {
         merchantsSell: [
           { required: true, message: "请输入商户销售", trigger: "blur" }
         ],
-        market: [
-          { required: true, message: "请输入销售", trigger: "blur" }
-        ],
-        travelSales: [
+        // market: [//直客下单销售
+        //   { required: true, message: "请输入销售", trigger: "blur" }
+        // ],
+        travelSales: [//商户下单销售
           { required: true, message: "请输入销售", trigger: "blur" }
         ],
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
@@ -602,6 +602,8 @@ export default {
       tableCollection:[],//收款表格
       tableOrder:[],//订单表格
       productPos:0,
+      ReplacesaleId:0,//获取直客销售id
+      userID:0,//获取同业销售id
       lines:0,//获取剩余额度
       deposit:0,//获取预存款
       amount:0,//剩余额度加预存款
@@ -1038,6 +1040,7 @@ export default {
                         priceType: Number(this.ruleForm.price),
                         orgID: sessionStorage.getItem("id"),
                         userID: sessionStorage.getItem("id"),
+                        replacesale:this.ruleForm.market = '' ? 0 : this.ReplacesaleId,//直客下单销售id
                         remark: JSON.stringify([
                           {
                             OrderCode: "",
@@ -1076,7 +1079,7 @@ export default {
                         }
                       });
                   }else if(this.ruleForm.orderRadio === '2'){
-                    if(this.ruleForm.totalPrice <= this.amount){//判断订单金额与剩余预存款和额度对比
+                    if((this.payment == 1 && this.ruleForm.totalPrice) <= this.amount){//判断订单金额与剩余预存款和额度对比
                       this.ifOrderInsert = true;
                       this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                         object: {
@@ -1115,8 +1118,9 @@ export default {
                           orderChannel: Number(this.ruleForm.orderRadio),
                           priceType: Number(this.ruleForm.price),
                           orgID:this.productPos,
+                          userID:this.userID,
                           // orgID: sessionStorage.getItem("orgID"),
-                          userID: sessionStorage.getItem("id"),
+                          //userID: sessionStorage.getItem("id"),
                           remark: JSON.stringify([
                             {
                               OrderCode: "",
@@ -1131,6 +1135,10 @@ export default {
                       }).then(res => {
                       if (res.data.isSuccess == true) {
                         this.$message.success("提交成功");
+                        this.amount = 0 ;
+                        this.ruleForm.orderRadio = 1;
+                        this.payment = 0;
+                        this.$parent.teamQueryList();
                         let data = JSON.parse(res.data.result.details);
                         this.orderCode = data.OrderCode;
                         //需再次存储备注信息
@@ -1139,7 +1147,7 @@ export default {
                         //清空表单
                         //this.$refs[formName].resetFields();
                         this.dialogFormOrder = false;
-                        this.ifOrderInsert = false;
+                        this.ifOrderInsert = true;
                         this.startUpWorkFlowForJQ(
                           data.OrderID,
                           data.FlowModel,
@@ -1315,10 +1323,6 @@ export default {
             this.marketList.push({
               "value": res.data.objects[i].name,
               "id": res.data.objects[i].id,
-              "supplierType": res.data.objects[i].supplierType,
-              "balance": res.data.objects[i].balance,
-              "deposit": res.data.objects[i].deposit,
-              "settlementType": res.data.objects[i].settlementType,
             })
             this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
           }
@@ -1336,6 +1340,7 @@ export default {
       }
     },
     departure1(item){
+      this.ReplacesaleId = item.id
       // console.log(item)
       // this.productPos = item.id;//获取供应商的id传给下单接口的orgID
       // this.lines = item.balance;//获取剩余额度
@@ -1343,6 +1348,39 @@ export default {
       // this.payment = item.settlementType ;//获取结算方式
       // this.originPlace = item.value;
       // this.amount = this.lines + this.deposit;
+    },
+    //同业销售模糊查询
+    querySearch2(queryString2, cb) {
+      this.marketList = []
+      this.$http.post(this.GLOBAL.serverSrc + '/org/api/userlist', {
+        "object": {
+          name: queryString2,
+          isDeleted: 0
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.marketList.push({
+              "value": res.data.objects[i].name,
+              "id": res.data.objects[i].id,
+            })
+            this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+          }
+        }
+        
+        var results = queryString2 ? this.marketList.filter(this.createFilter(queryString2)) : [];
+        cb(results)
+      }).catch(err => {
+        //console.log(err);
+      })
+    },
+    createFilter(queryString2){
+      return (restaurant) => {
+        return (restaurant.value);
+      }
+    },
+    departure2(item){
+      //this.userID = item.id
     },
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
@@ -1416,7 +1454,7 @@ export default {
     },
     departure4(item){
       console.log(item)
-      //this.productPos = item.id;//获取供应商的id传给下单接口的orgID
+      this.userID = item.id
     },
     //订单来源切换清空相应下的文本框内容
     changeTab(){
