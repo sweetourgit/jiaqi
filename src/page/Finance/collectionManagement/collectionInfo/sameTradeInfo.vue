@@ -153,6 +153,7 @@
            <el-table-column prop="departure" label="出发日期" align="center"></el-table-column>
            <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
            <el-table-column prop="arrears_Amount" label="欠款金额" align="center"></el-table-column>
+           <el-table-column prop="audited_Amount" label="待审金额" align="center"></el-table-column>
            <el-table-column prop="repayment_Amount" label="已还金额" align="center"></el-table-column>
            <el-table-column label="匹配收款金额" align="center">
               <template slot-scope="scope">
@@ -860,7 +861,6 @@ export default {
         if (valid) {
           let pictureList = [];
           let newDate = moment(new Date(), 'yyyy-MM-dd hh:mm:ss')
-          console.log(this.fileList,'this.fileList')
           this.fileList.forEach(function(item){
             pictureList.push({ url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })

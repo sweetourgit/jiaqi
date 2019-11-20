@@ -83,6 +83,7 @@
               class="upload-demo"
               name="files"
               :file-list="fundamental.files"
+              :show-file-list=true
               action="test"
               :disabled=true
               :on-preview="handlePreview"
@@ -282,9 +283,7 @@ export default {
   methods: {
     // 点击图片钩子
     handlePreview(file) {
-      let getUrl = JSON.parse(file.response)
-      console.log(getUrl.paths[0].Url)
-      window.open(getUrl.paths[0].Url);
+      window.open(file.url);
     },
     // 表格表头颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
