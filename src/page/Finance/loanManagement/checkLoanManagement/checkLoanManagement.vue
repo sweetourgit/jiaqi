@@ -85,6 +85,7 @@
               :file-list="fundamental.files"
               action="test"
               :disabled=true
+              :on-preview="handlePreview"
             >
             </el-upload>
         </el-col>
@@ -279,6 +280,12 @@ export default {
     }
   },
   methods: {
+    // 点击图片钩子
+    handlePreview(file) {
+      let getUrl = JSON.parse(file.response)
+      console.log(getUrl.paths[0].Url)
+      window.open(getUrl.paths[0].Url);
+    },
     // 表格表头颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -604,7 +611,9 @@ export default {
 	.upload-demo>>>.el-upload-list__item{ width: 300px; }
 
 	.el-dialog__wrapper{top:-10%;}
-
+  .upload-demo>>>.el-upload-list__item:first-child {
+    margin-top: 5px;
+  }
   /*基本信息*/
   .basictable{margin:0 0 0 25px;}
   .basictd{width:400px; padding:15px 0 0 0;}
