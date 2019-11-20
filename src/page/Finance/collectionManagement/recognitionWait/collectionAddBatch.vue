@@ -89,6 +89,7 @@
           payAccount: '',
           payAccountID: '',
         },
+        payAccountObj: {},
         rece_code: [],
         rules: {
           explain: [{ required: true, message: '款项说明不能为空!', trigger: 'blur' }],
@@ -136,6 +137,7 @@
           payAccount: '',
           payAccountID: '',
         };
+        this.payAccountObj = {};
         this.rece_code = '';
         this.fileList = [];
         this.tableDataDD = [];
@@ -266,7 +268,8 @@
               "account_id": that.ruleForm.payAccountID,
               "file": fileArr,
               "create_uid": sessionStorage.getItem('id'),
-              "org_id": sessionStorage.getItem('orgID')
+              "org_id": sessionStorage.getItem('orgID'),
+              "rec_account": this.payAccountObj
             }
           }else{
             data = {
@@ -276,7 +279,8 @@
               "file": fileArr,
               "del_rec": that.deleteStr,
               "create_uid": sessionStorage.getItem('id'),
-              "org_id": sessionStorage.getItem('orgID')
+              "org_id": sessionStorage.getItem('orgID'),
+              "rec_account": this.payAccountObj
             }
           }
           this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/predeposit/predeposit/batchaddrec', data).then(res => {
@@ -333,6 +337,16 @@
       chooseBtn(row){
         this.ruleForm.payAccount = row.title;
         this.ruleForm.payAccountID = row.id;
+        this.payAccountObj = {
+          "account_id": row.id,
+          "type": row.cardType,
+          "account": row.title,
+          "card": row.cardNum,
+          "bank": row.openingBank,
+          "user": row.openingName,
+          "subject_value": row.subject,
+          "service_charge": row.ratio
+        };
         this.close();
       },
       // 上传凭证function

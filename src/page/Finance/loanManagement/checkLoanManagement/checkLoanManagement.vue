@@ -77,24 +77,27 @@
     <!-- 第五行 -->
     <el-row type="flex" class="row-bg" justify="space-around">
       <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">附件:</div></el-col>
+        <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
         <el-col :span="18">
-            <el-upload
-              class="upload-demo"
-              name="files"
-              :file-list="fundamental.files"
-              action="test"
-              :disabled=true
-            >
-            </el-upload>
+          <div class="grid-del" v-if="fundamental.checkType=='1'">{{ fundamental.cardName }}</div>
+          <div class="grid-del" v-else>暂无</div>
         </el-col>
       </el-col>
-      <el-col :span="6" v-if="fundamental.checkType=='1'">
-        <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
-        <el-col :span="18"><div class="grid-del">{{ fundamental.cardName }}</div></el-col>
+      <el-col :span="12">
+        <el-col :span="6"><div class="grid-del label-color">附件:</div></el-col>
+        <el-col :span="18">
+          <el-upload
+            class="upload-demo"
+            name="files"
+            :file-list="fundamental.files"
+            :show-file-list=true
+            action="test"
+            :disabled=true
+            :on-preview="handlePreview"
+          >
+          </el-upload>
+        </el-col>
       </el-col>
-      <el-col :span="6" v-if="fundamental.checkType!=='1'"></el-col>
-      <el-col :span="6"></el-col>
     </el-row>
     <!-- 第五行 END -->
     <!-- 基本信息 END -->
@@ -279,6 +282,10 @@ export default {
     }
   },
   methods: {
+    // 点击图片钩子
+    handlePreview(file) {
+      window.open(file.url);
+    },
     // 表格表头颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -604,7 +611,9 @@ export default {
 	.upload-demo>>>.el-upload-list__item{ width: 300px; }
 
 	.el-dialog__wrapper{top:-10%;}
-
+  .upload-demo>>>.el-upload-list__item:first-child {
+    margin-top: 5px;
+  }
   /*基本信息*/
   .basictable{margin:0 0 0 25px;}
   .basictd{width:400px; padding:15px 0 0 0;}

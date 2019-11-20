@@ -50,13 +50,13 @@
       <el-dialog title="选择账户" :visible="dialogFormVisible1" width=60% @close="close" append-to-body>
         <div class="table_trip" style="width: 100%;">
           <el-table ref="singleTable" :data="tableDataZH" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass">
-            <el-table-column prop="linker" label="汇款户名" align="center">
+            <el-table-column prop="cardName" label="汇款户名" align="center">
             </el-table-column>
-            <el-table-column prop="bankcardNo" label="账号" align="center" width="70%">
+            <el-table-column prop="cardNumber" label="账号" align="center">
             </el-table-column>
             <el-table-column prop="bankName" label="开户行" align="center">
             </el-table-column>
-            <el-table-column prop="name" label="备注" align="center">
+            <el-table-column prop="memo" label="备注" align="center">
             </el-table-column>
             <el-table-column prop="option" label="操作" align="center" width="100">
               <template slot-scope="scope">
@@ -283,7 +283,7 @@
           },).then(function (obj) {
             console.log(obj);
             if(obj.data.isSuccess){
-              that.tableDataZH = obj.data.objects;
+              that.tableDataZH = obj.data.object.banks;
             }else{
               if(obj.data.result.message){
                 that.$message.warning(obj.data.result.message);
@@ -301,8 +301,8 @@
         this.dialogFormVisible1 = false;
       },
       chooseBtn(row){
-        this.ruleForm.payNumber = row.bankcardNo;
-        this.ruleForm.payName = row.linker;
+        this.ruleForm.payNumber = row.cardNumber;
+        this.ruleForm.payName = row.cardName;
         this.ruleForm.payAccount = row.bankName;
         this.ruleForm.payAccountID = row.id;
         this.close();

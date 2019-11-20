@@ -81,6 +81,7 @@
           money: '',
           abstract: ''
         },
+        payAccountObj: {},
         rece_code: '',
         rules: {
           explain: [{ required: true, message: '款项说明不能为空!', trigger: 'blur' }],
@@ -131,6 +132,7 @@
           money: '',
           abstract: ''
         };
+        this.payAccountObj = {};
         this.rece_code = '';
         this.fileList = [];
         this.$emit('close', false);
@@ -177,7 +179,8 @@
               "remark": that.ruleForm.abstract,
               "file": fileArr,
               "create_uid": sessionStorage.getItem('id'),
-              "org_id": sessionStorage.getItem('orgID')
+              "org_id": sessionStorage.getItem('orgID'),
+              "rec_account": this.payAccountObj
             }).then(res => {
               console.log(res.data);
               if (res.data.code == 200) {
@@ -239,6 +242,16 @@
       chooseBtn(row){
         this.ruleForm.payAccount = row.title;
         this.ruleForm.payAccountID = row.id;
+        this.payAccountObj = {
+          "account_id": row.id,
+          "type": row.cardType,
+          "account": row.title,
+          "card": row.cardNum,
+          "bank": row.openingBank,
+          "user": row.openingName,
+          "subject_value": row.subject,
+          "service_charge": row.ratio
+        };
         this.close();
       },
 //      上传凭证function

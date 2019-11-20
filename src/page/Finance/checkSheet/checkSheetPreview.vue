@@ -18,25 +18,25 @@
         <p class="dateP">报账日期：<span>{{topData}}</span></p>
         <section>
           <el-row>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               部门
             </el-col>
             <el-col :span="3" class="content">
               {{org_name}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               操作人
             </el-col>
             <el-col :span="3" class="content">
               {{create_uid}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               导陪
             </el-col>
             <el-col :span="3" class="content">
               {{msg.guide}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               接团社
             </el-col>
             <el-col :span="7" class="content">
@@ -44,13 +44,13 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               团号
             </el-col>
             <el-col :span="8" class="content">
               {{msg.tour_no}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               线路名称
             </el-col>
             <el-col :span="12" class="content">
@@ -58,31 +58,31 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               团队人数
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="2" class="content">
               {{msg.team_num}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               减免人数
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="2" class="content">
               {{msg.reduce_num}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               出发日期
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="4" class="content">
               {{msg.startTime}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               返回日期
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="4" class="content">
               {{msg.endTime}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               全程天数
             </el-col>
             <el-col :span="2" class="content">
@@ -90,30 +90,30 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="24" class="title">
+            <el-col :span="24" class="title1">
               团队收入成本结算
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               总收入
             </el-col>
             <el-col :span="3" class="content">
               {{msg.total_income}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               总支出
             </el-col>
             <el-col :span="3" class="content">
               {{msg.total_cost}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               毛利额
             </el-col>
             <el-col :span="3" class="content">
               {{msg.gross_profit}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               毛利率
             </el-col>
             <el-col :span="7" class="content">
@@ -125,25 +125,25 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               序号
             </el-col>
-            <el-col :span="5" class="title">
+            <el-col :span="5" class="title1">
               收入来源
             </el-col>
-            <el-col :span="5" class="title">
+            <el-col :span="5" class="title1">
               经手人
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               人数
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               实收款
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               发票号码
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               备注
             </el-col>
           </el-row>
@@ -173,7 +173,7 @@
             </el-row>
           </template>
           <el-row>
-            <el-col :span="12" class="title">
+            <el-col :span="12" class="title1">
               合计：
             </el-col>
             <el-col :span="3" class="content">
@@ -190,33 +190,33 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="24" class="title">
+            <el-col :span="24" class="title1">
               团队成本明细
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               序号
             </el-col>
-            <el-col :span="4" class="title">
+            <el-col :span="4" class="title1">
               成本项目
             </el-col>
             <!--<el-col :span="4" class="title">-->
               <!--供应商-->
             <!--</el-col>-->
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               人数
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               成本合计
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               已支付
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               挂账
             </el-col>
-            <el-col :span="6" class="title">
+            <el-col :span="6" class="title1">
               备注
             </el-col>
           </el-row>
@@ -249,60 +249,60 @@
             </el-row>
           </template>
           <el-row>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               合计
             </el-col>
-            <el-col :span="4" class="title">
+            <el-col :span="4" class="title1">
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               {{costTotalNumber}}
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               {{costTotalCost}}
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               {{costPaymented}}
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               <!--挂账-->
             </el-col>
-            <el-col :span="6" class="title">
+            <el-col :span="6" class="title1">
               <!--备注-->
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               审批人
             </el-col>
-            <el-col :span="3" class="title" style="">
+            <el-col :span="3" class="title1" style="">
               <div style="position:relative;z-index: 99;top: 16px;">计调</div>
             </el-col>
             <el-col :span="4" class="">
             </el-col>
-            <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
+            <el-col :span="3" class="title1" style="border-bottom:0px solid #ccc;z-index: 99">
               <div style="position:relative;z-index: 99;top: 16px;">财务部</div>
             </el-col>
             <el-col :span="4" class="">
             </el-col>
-            <el-col :span="3" class="title" style="">
+            <el-col :span="3" class="title1" style="">
               <div style="position:relative;z-index: 99;top: 16px;">总经理</div>
             </el-col>
             <el-col :span="4" class="">
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               签字
             </el-col>
-            <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="3" class="title1" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
             <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
-            <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="3" class="title1" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
             <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
-            <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="3" class="title1" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
             <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
@@ -807,9 +807,10 @@ export default {
   margin: 0 auto 20px;
   overflow: hidden;
 }
-.title {
+.title1 {
   background-color: #CCCCCC;
   color: black;
+  font-size: 14px;
 }
 .content {
   background-color: white;

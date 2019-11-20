@@ -193,9 +193,12 @@
               <el-upload
                 class="upload-demo"
                 name="files"
+                ref="upload"
                 :file-list="fundamental.files"
+                :show-file-list=true
                 action="test"
                 :disabled=true
+                :on-preview="handlePreview"
               >
               </el-upload>
             </el-col>
@@ -311,6 +314,10 @@ export default {
     }
   },
   methods: {
+    // 点击图片钩子
+    handlePreview(file) {
+      window.open(file.url);
+    },
     // 借款人模糊检索
     querySearchBorrower(queryBorrowerString, cb) {
       this.tableDataBorrower = []
@@ -596,7 +603,13 @@ export default {
     }
   }
 
+  .upload-demo{width: 400px;}
+  .upload-demo>>>.el-upload-list__item{ width: 300px; }
 
+  .el-dialog__wrapper{top:-10%;}
+  .upload-demo>>>.el-upload-list__item:first-child {
+    margin-top: 5px;
+  }
   /*关联欠款*/
   .associated{ line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc; border-radius: 5px;overflow: hidden; }
   .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}

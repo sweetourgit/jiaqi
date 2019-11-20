@@ -110,7 +110,6 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
         <!-- 基本信息 -->
         <el-form-item label="团期计划" prop="plan" style="float:left;">
-<!--          <el-input class="name_input" @blur="tour_check" v-model="" placeholder=""></el-input>    注意这里面 tour_check 这个方法还需要调用 -->
           <el-autocomplete
             class="name_input"
             v-model="ruleForm.plan"
@@ -167,7 +166,6 @@
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :on-preview="handlePreview"
-            list-type="picture"
           >
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
@@ -500,7 +498,8 @@ export default {
         planType:[{ required: true, message: '请选择借款类型', trigger: 'change' }],
         planAmount:[
           { required: true, message: '请输入借款金额', trigger: 'blur' },
-          { pattern: /^(([1-9]+)|([0-9]+\.[0-9]{1,2}))$/, message: '请正确输入借款金额（若有小数点，其后面不应超过两位）' }
+//          { pattern: /^(([1-9]+)|([0-9]+\.[0-9]{1,2}))$/, message: '请正确输入借款金额（若有小数点，其后面不应超过两位）' }
+          { pattern: /(^[1-9](\d+)?(\.\d{1,2})?$)|(^\d\.\d{1,2}$)/, message: '请正确输入借款金额（若有小数点，其后面不应超过两位）' }
         ],
         abstract:[
           { required: true, message: '请输入摘要', trigger: 'change' },
@@ -1091,7 +1090,7 @@ export default {
           let pictureList = [];
 
           this.fileList.forEach(function(item){
-            pictureList.push({ url: item.url.slice(5), name: item.name})
+            pictureList.push({ url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })
 
           var _this = this;
@@ -1190,7 +1189,6 @@ export default {
       this.fileList = []
     },
     handleSuccess(res, file, fileList) {
-      console.log(fileList)
       this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
       // 多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { // 多张图片情况只在第一次执行数组操作
@@ -1220,11 +1218,14 @@ export default {
       this.fileList = fileList
       this.fileCheckVal = fileList.length
     },
-    handlePreview(file, fileList) {
+    handlePreview(file) {
+      // this.dialogVisible4 = true
+      let getUrl = JSON.parse(file.response)
       this.uid = file.uid
-      this.dialogVisible4 = true
-      this.imgBig = file.url
+      window.open(getUrl.paths[0].Url);
       this.imgBigName = file.name
+      // this.imgBig = getUrl.paths[0].Url
+
     },
     // 结束工作流程
     repeal(){
@@ -1355,6 +1356,9 @@ export default {
     .el-divider__text{
       font-size: 17px !important
     }
+  }
+  .upload-demo>>>.el-upload-list__item:first-child {
+    margin-top: 5px;
   }
 	/*分页*/
 	.name_input{width: 200px;}

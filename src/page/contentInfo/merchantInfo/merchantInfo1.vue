@@ -64,8 +64,8 @@
         <el-table-column prop="settlementType" label="结算方式" align="center"></el-table-column>
         <el-table-column prop="linker" label="联系人" align="center"></el-table-column>
         <el-table-column prop="quota" label="额度" align="center"></el-table-column>
-        <el-table-column prop="arrears" label="剩余额度" align="center"></el-table-column>
-        <el-table-column prop="balance" label="总欠款" align="center"></el-table-column>
+        <el-table-column prop="balance" label="剩余额度" align="center"></el-table-column>
+        <el-table-column prop="arrears" label="总欠款" align="center"></el-table-column>
         <el-table-column prop="operation" label="操作" align="center">
           <template slot-scope="scope" style="cursor:pointer;margin:0 auto;">
             <div
@@ -480,7 +480,7 @@
                 <td class="longWeight">{{ruleForm.deposit}}</td>
               </div>
               <td class="tr">额度：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{AbouQuota}} <span v-if="ruleForm.quota !== 0">(剩余：{{toDecimal2(ruleForm.quota)}})</span></td>
+              <td class="longWeight">{{toDecimal2(ruleForm.quota)}} <span v-if="ruleForm.quota !== 0">(剩余：{{toDecimal2(ruleForm.balance)}})</span></td>
             </tr>
             <br />
             <tr>
@@ -2216,6 +2216,7 @@ export default {
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
           this.AbouQuota = object.abouQuota
+          this.ruleForm.balance = object.balance
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID
           this.businewwInfPageId = object.id;

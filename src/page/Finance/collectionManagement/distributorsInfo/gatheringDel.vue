@@ -64,9 +64,16 @@
       <el-col :span="6">
         <el-col :span="4"><div class="grid-del label-color">凭证:</div></el-col>
         <el-col :span="20">
-          <div class="grid-del doc-mt-3" v-for="itemFiles in valFilesNum">
-            {{ itemFiles.name }}
-          </div>
+          <el-upload
+            class="upload-demo"
+            name="files"
+            ref="upload"
+            :file-list="valFilesNum"
+            :show-file-list=true
+            action="test"
+            :disabled=true
+            :on-preview="handlePreview"
+          />
         </el-col>
       </el-col>
       <el-col :span="6">
@@ -143,6 +150,10 @@
       this.getDelData()
     },
     methods: {
+      // 点击图片钩子
+      handlePreview(file) {
+        window.open(file.url);
+      },
       // 行点击事件
       clickBanle () {
 

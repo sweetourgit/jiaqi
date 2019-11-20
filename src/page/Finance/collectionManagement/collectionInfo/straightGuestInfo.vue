@@ -33,9 +33,9 @@
           <el-input style="width:200px;" v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
           <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
-         <el-form-item label="收款金额" prop="price" label-width="120px">
-          <el-input type="number" v-model="ruleForm.price" class="bright inputWidth" placeholder="收款金额" :disabled="change" @blur="priceChangeHandel"></el-input>
-        </el-form-item>
+        <!-- <el-form-item label="收款金额" prop="price" label-width="120px">
+          <el-input type="number" v-model="ruleForm.price" class="bright inputWidth" placeholder="收款金额" :disabled="change" disabled></el-input>
+        </el-form-item>-->
         <!--<el-form-item label="订单号" prop="orderNumber" label-width="120px">
           <el-input v-model="ruleForm.orderNumber" class="bright inputWidth" placeholder="订单号" maxlength="20" :disabled="change" @blur='receiptorder'></el-input>
         </el-form-item> -->
@@ -75,7 +75,6 @@
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :on-preview="handlePreview"
-            list-type="picture"
           >
             <el-button size="small" type="primary">上传文件</el-button>
           </el-upload>
@@ -171,8 +170,8 @@
           </el-table>
         </el-form-item>
         <!-- 关联欠款 -->
-        <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
         <div>
+          <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
           <el-form-item label="订单：" prop="indent" label-width="80px" style="float:left; margin:0 30px 20px 0;">
             <el-input placeholder="请输入" v-model="indent" :disabled="change"></el-input>
           </el-form-item>
@@ -183,18 +182,22 @@
             <el-button type="primary" @click="receiptorder()">搜索</el-button>
             <el-button type="primary" @click="resetIndent()">重置</el-button>
           </div>
+          <el-table :data="arrearsList" border style="width: 1030px; margin:10px 0 20px 25px;":header-cell-style="getRowClass">
+             <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+             <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
+             <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+             <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
+             <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
+             <el-table-column prop="uncollectedMoney" label="未收金额" align="center"></el-table-column> <!-- 订单减已收-->
+             <el-table-column prop="collPrice" label="已收金额" align="center"></el-table-column>
+             <el-table-column prop="audited" label="待审批金额" align="center"></el-table-column>
+             <el-table-column prop="matchingPrice" label="匹配收款金额" align="center">
+               <template slot-scope="scope">
+                 <el-input v-model="scope.row.matchingPrice" placeholder="匹配收款金额" :disabled="change"></el-input>
+               </template>
+             </el-table-column>
+          </el-table>
         </div>
-        <el-table :data="arrearsList" border style="width: 1030px; margin:10px 0 20px 25px;":header-cell-style="getRowClass">
-           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-           <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
-           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-           <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
-           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
-           <el-table-column prop="uncollectedMoney" label="未收金额" align="center"></el-table-column>
-           <el-table-column prop="collectedMoney" label="已收金额" align="center"></el-table-column>
-           <el-table-column prop="examineMoney" label="待审批金额" align="center"></el-table-column>
-           <el-table-column prop="repaymentMoney" label="匹配收款金额" align="center"></el-table-column>
-        </el-table>
         <!-- 审批过程 -->
         <!--  <el-form-item v-if="this.find == 1" label="审批过程" label-width="120px" label-height="auto">
         </el-form-item>
@@ -349,7 +352,7 @@ export default {
         orderID: '',
         orderNumber: '',
         collectionNumber: '',
-        price: '',
+        // price: '',
         dept: '',
         createUser: '',
         serialNumber: '',
@@ -376,10 +379,10 @@ export default {
         collectionNumber: [{ required: true, message: '收款账户不能为空', trigger: 'change' }],
         invoiceID: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
         /*serialNumber: [{ required: true, message: '交易流水号不能为空', trigger: 'blur' }],*/
-        price: [
+        /*price: [
           { required: true, message: '收款金额不能为空', trigger: 'blur' },
           { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
-        ],
+        ],*/
         abstract: [{ required: true, message: '请输入摘要', trigger: 'blur' },
                 { min: 0, max: 30, message: '摘要字数不能超过80字', trigger: 'change' },],
         orderNumber: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
@@ -394,8 +397,8 @@ export default {
       }],
       tableData3: [],
       collectedMoney: 0,
-      uncollectedMoney: 0,
-      examineMoney: 0,
+      uncollectedMoney: 0, // 未收金额
+      examineMoney: 0, // 待审批金额
       accountShow:false,//选择账户弹窗
       accountTable:[],
       arrearsList: [],//关联欠款
@@ -424,14 +427,6 @@ export default {
     }
   },
   methods: {
-   // 后台返这个接口目前有问题 缺后两个字段
-   priceChangeHandel (){
-     /* this.arrearsList.forEach(function (v,k,arr) {   //this.ruleForm.price
-       // arr[k]['repaymentMoney'] = 2
-       console.log(arr)
-     })
-     // console.log(this.arrearsList)*/
-   },
     moment,
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -478,7 +473,8 @@ export default {
       }, 200)
 
     },
-    clickPlan(row){//收款账户点击
+    //收款账户点击
+    clickPlan(row){
       // console.log(row)
       this.tour_name_pre = row['title'];
       this.planID = row['planID'];
@@ -522,12 +518,13 @@ export default {
           });
         });
     },
-    receiptorder() { //通过订单号获取直客收款订单详情
+    //通过订单号获取直客收款订单详情
+    receiptorder() {
       this.arrearsList = []
       this.ruleForm.planID = ''
       this.ruleForm.orderID = ''
       this.ruleForm.groupCode = ''
-      this.getnumber()
+      // this.getnumber()
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/teamquery/get/api/receiptorder", {
@@ -535,10 +532,10 @@ export default {
           }
         )
         .then(function(obj) {
-          obj.data.object.collectedMoney = that.collectedMoney
-          obj.data.object.uncollectedMoney = obj.data.object.payable - obj.data.object.collectedMoney
-          obj.data.object.collectedMoney = that.examineMoney
-          //obj.data.object.examineMoney = that.examineMoney
+          // obj.data.object.collectedMoney = that.collectedMoney 暂时没用上
+          obj.data.object.uncollectedMoney = obj.data.object.payable - obj.data.object.collPrice // 订单金额 - 已收金额
+          // obj.data.object.collectedMoney = that.examineMoney 暂时没用上
+          obj.data.object.matchingPrice = 0
           that.arrearsList.push(obj.data.object)
           that.ruleForm.planID = obj.data.object.planID
           that.ruleForm.orderID = obj.data.object.id
@@ -547,9 +544,9 @@ export default {
         .catch(function(obj) {
           console.log(obj)
         })
-
     },
-    getnumber() { //通过订单号获取直客收款订单详情
+    //通过订单号获取直客收款订单详情
+    getnumber() {
       var that = this
       that.$http.post(
           that.GLOBAL.serverSrc + "/finance/collection/api/getnumber", {
@@ -565,6 +562,32 @@ export default {
     },
     // 提交
     submitForm(formName) {
+      // 如果没有关联相关欠款则阻止继续提交表单
+     if(this.arrearsList.length == 0) {
+        this.$message({
+         type: 'info',
+         message: '请选择关联欠款单号'
+       });
+       return;
+     }
+     console.log(this.arrearsList[0].matchingPrice)
+      if(this.arrearsList[0].matchingPrice <= 0) {
+        this.$message({
+          type: 'info',
+          message: '请填写匹配收款金额'
+        });
+        return;
+      }
+     console.log(this.arrearsList[0].uncollectedMoney - this.arrearsList[0].audited >= this.arrearsList[0].matchingPrice)
+      console.log(this.arrearsList[0].matchingPrice)
+      if(!(this.arrearsList[0].uncollectedMoney - this.arrearsList[0].audited >= this.arrearsList[0].matchingPrice)){
+        this.$message({
+          type: 'info',
+          message: '未收金额 - 待审批金额 >=  匹配收款金额'
+        });
+        return;
+      }
+
       let _this = this
       this.a = true
       this.$refs[formName].validate((valid) => {
@@ -572,7 +595,7 @@ export default {
           let pictureList = [];
           let newDate = moment(new Date(), 'YYYY-MM-DD HH:mm:ss')
           this.fileList.forEach(function(item){
-            pictureList.push({ url: item.url.slice(5), name: item.name})
+            pictureList.push({ url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })
 
           let objectRequest = {}
@@ -580,19 +603,19 @@ export default {
           let needArrearData = [] // 转变关联欠款数据格式之后的数据模型
           this.arrearsList.forEach(function(item){ // 转换关联欠款表格数据结构
             needArrearData.push({
-              "id": 0,
+              "id": item.id,
               'planID':item.planID,
               "collectionID": 0, // 收款id
               "orderCode": item.orderCode,
               // "productName": item.proName,
               "productName": item.title,
               "groupCode": item.groupCode,
-              "date": item.departure,
+              "date": item.date,
               "payablePrice": item.payable, // 订单金额
-              "arrearsPrice": item.arrears_Amount, // 欠款金额
-              "repaidPrice": item.repayment_Amount, // 已还金额
-              "amountPrice": item.audited_Amount, // 待审核金额   title groupCode date payable uncollectedMoney collectedMoney examineMoney repaymentMoney
-              "matchingPrice": item.matchingMoney // 匹配收款金额
+              "arrearsPrice": item.uncollectedMoney, // 欠款金额
+              "repaidPrice": item.collPrice, // 已还金额
+              "amountPrice": item.audited, // 待审核金额   title groupCode date payable uncollectedMoney collectedMoney examineMoney repaymentMoney
+              "matchingPrice": item.matchingPrice // 匹配收款金额
             })
           })
 
@@ -603,13 +626,13 @@ export default {
             Dept:sessionStorage.getItem('orgName'),
             ProductName:"暂无",
             checkType: 0, // 审批状态
-            collectionTime: moment(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间
+            collectionTime: moment(this.ruleForm.collectionTime).format('YYYY-MM-DD HH:mm:ss'), // 收款时间
             groupCode: this.ruleForm.groupCode, //团号
             planID: 0, //团期计划的ID
             orderID: 0, //订单ID
             orderNumber: this.indent, //订单号
             collectionNumber: this.ruleForm.collectionNumber, //收款账户
-            price: this.ruleForm.price, //金额
+            price: this.arrearsList[0].matchingPrice, //金额
             // dept: this.dept, //this.org, //组织部门
             createUser: sessionStorage.getItem('userCode'), // 创建者
             createTime: newDate, //申请时间
@@ -862,9 +885,13 @@ export default {
       this.dialogFormVisible2 = false
     },
     handlePreview(file, fileList) {
-      this.dialogVisible = true
-      this.imgBig = file.url
+      // this.dialogVisible = true
+      let getUrl = JSON.parse(file.response)
+      this.uid = file.uid
+      window.open(getUrl.paths[0].Url);
       this.imgBigName = file.name
+      /*this.imgBig = file.url
+      this.imgBigName = file.name*/
     },
     handleEdit(index, row) {
       this.ruleForm.invoiceTable.push({})
@@ -1263,6 +1290,12 @@ export default {
 .inputWidth {
   width: 200px;
 }
+
+  .upload-demo>>>.el-upload-list__item:first-child {
+    margin-top: 5px;
+  }
+  .upload-demo{width: 400px;}
+  .upload-demo>>>.el-upload-list__item{ width: 300px; }
 .collection{background:#eaeaea; color:#a4a4a4;}
 .accountButton{float:right; margin:20px 0 0 0; overflow: hidden;}
 /*关联欠款*/

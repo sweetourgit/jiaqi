@@ -34,9 +34,9 @@
           <el-input v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
           <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
-        <el-form-item label="收款金额" prop="money" label-width="120px">
-          <el-input v-model="ruleForm.money" placeholder="收款金额" :disabled="change"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="收款金额" prop="price" label-width="120px">
+          <el-input v-model="ruleForm.price" placeholder="收款金额" :disabled="change"></el-input>
+        </el-form-item>-->
         <el-form-item label="摘要" prop="abstract" label-width="120px">
           <el-input v-model="ruleForm.abstract" placeholder="摘要" :disabled="change"></el-input>
         </el-form-item>
@@ -47,12 +47,10 @@
             name="files"
             multiple
             :action="this.uploadUrl"
-            :disabled="change"
             :on-error="handleError"
             :on-success="handleSuccess"
             :on-remove="handleRemove"
             :on-preview="handlePreview"
-            list-type="picture"
           >
             <el-button size="small" type="primary">上传文件</el-button>
           </el-upload>
@@ -154,6 +152,7 @@
            <el-table-column prop="departure" label="出发日期" align="center"></el-table-column>
            <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
            <el-table-column prop="arrears_Amount" label="欠款金额" align="center"></el-table-column>
+           <el-table-column prop="audited_Amount" label="待审金额" align="center"></el-table-column>
            <el-table-column prop="repayment_Amount" label="已还金额" align="center"></el-table-column>
            <el-table-column label="匹配收款金额" align="center">
               <template slot-scope="scope">
@@ -302,6 +301,7 @@ export default {
         collectionAccount: '', // 收款账户
         sameTrade: '', // 同业社
         money: '',  // 收款金额
+        // price: '',
         abstract: '', // 摘要
         isInvoice: '0', // 发票
         collectionNumber:'', // 收款账户
@@ -328,8 +328,12 @@ export default {
         sameTrade: [{ required: true, message: '同业社不能为空', trigger: 'change' }],
         money: [
           { required: true, message: '收款金额不能为空', trigger: 'blur' },
-          { pattern: /^\d+(\.\d+)?$/, message: '收款金额需为正数' }
+          { pattern: /(?!0\.00)(\d+\.\d{2}$)/, message: '收款金额需为正数,最多两位小数' }
         ],
+        /*price: [
+          { required: true, message: '收款金额不能为空', trigger: 'blur' },
+          { pattern: /(^[1-9](\d+)?(\.\d{1,2})?$)|(^\d\.\d{1,2}$)/, message: '收款金额需为正数,最多两位小数' }
+        ],*/
         abstract: [{ required: true, message: '摘要不能为空', trigger: 'blur' }],
         taxesNumber: [{ required: true, message: '纳税人识别号不能为空', trigger: 'blur' },
           { pattern: /^[+]{0,1}(\d+)$/, message: '纳税人识别号需为正整数' }
@@ -579,9 +583,13 @@ export default {
       this.dialogVisibleInvoice = value == '1' ? true : false
     },
     // 点击文件列表中已上传的文件时的钩子
-    handlePreview(file, fileList) {
-      this.dialogVisible = true
-      this.imgBig = file.url
+    handlePreview(file) {
+      // this.dialogVisible = true
+      /*this.imgBig = file.url
+      this.imgBigName = file.name*/
+      let getUrl = JSON.parse(file.response)
+      this.uid = file.uid
+      window.open(getUrl.paths[0].Url);
       this.imgBigName = file.name
     },
     // 协办弹窗-搜索
@@ -855,7 +863,17 @@ export default {
           let pictureList = [];
           let newDate = moment(new Date(), 'yyyy-MM-dd hh:mm:ss')
           this.fileList.forEach(function(item){
-            pictureList.push({ url: item.url.slice(5), name: item.name})
+            pictureList.push({ url: JSON.parse(item.response).paths[0].Url, name: item.name})
+          })
+
+          this.arrearsList.forEach(function(item){
+            if(!(item.uncollectedMoney - item.audited >= item.matchingPrice)){
+              _this.$message({
+                type: 'info',
+                message: '未收金额 - 待审批金额 >=  匹配收款金额'
+              });
+              return;
+            }
           })
 
           let objectRequest = {}
@@ -864,28 +882,23 @@ export default {
           let needArrearData = [] // 转变关联欠款数据格式之后的数据模型
           this.arrearsList.forEach(function(item){ // 转换关联欠款表格数据结构
             getMatchingMoney +=  Number(item.matchingMoney)
-            needArrearData.push({
-              "id": 0,
-              'planID':item.planID,
-              "collectionID": 0, // 收款id
-              "orderCode": item.orderCode,
-              "productName": item.proName,
-              "groupCode": item.groupCode,
-              "date": item.departure,
-              "payablePrice": item.payable, // 订单金额
-              "arrearsPrice": item.arrears_Amount, // 欠款金额
-              "repaidPrice": item.repayment_Amount, // 已还金额
-              "amountPrice": item.audited_Amount, // 待审核金额
-              "matchingPrice": item.matchingMoney // 匹配收款金额
-            })
+            if(item.matchingMoney != '' && item.matchingMoney > 0){
+              needArrearData.push({
+                "id": 0,
+                'planID':item.planID,
+                "collectionID": 0, // 收款id
+                "orderCode": item.orderCode,
+                "productName": item.proName,
+                "groupCode": item.groupCode,
+                "date": item.departure,
+                "payablePrice": item.payable, // 订单金额
+                "arrearsPrice": item.arrears_Amount, // 欠款金额
+                "repaidPrice": item.repayment_Amount, // 已还金额
+                "amountPrice": item.audited_Amount, // 待审核金额
+                "matchingPrice": item.matchingMoney // 匹配收款金额
+              })
+            }
           })
-          if(getMatchingMoney != this.ruleForm.money){
-            this.$message({
-              type: "info",
-              message: "收款金额与匹配收款金额不相等，请重新填写"
-            });
-            return ;
-          }
 
           objectRequest = {
             "GroupCode":"",
@@ -900,7 +913,7 @@ export default {
             "planID": 0, // 计划id,
             "orderNumber": this.indent, // 订单号
             "collectionNumber":  this.ruleForm.collectionNumber, // 收款账户
-            "price": this.ruleForm.price, // 金额,
+            "price": getMatchingMoney, // 金额,
             // "dept": this.org, // 组织部门 this.dept
             "createUser": sessionStorage.getItem('userCode'), // 创建者
             "createTime": newDate, // 申请时间
@@ -1008,6 +1021,11 @@ export default {
   .el-input {
     width: auto
   }
+  .upload-demo>>>.el-upload-list__item:first-child {
+    margin-top: 5px;
+  }
+  .upload-demo{width: 400px;}
+  .upload-demo>>>.el-upload-list__item{ width: 300px; }
   .accountButton{float:right; margin:20px 0 0 0; overflow: hidden;}
   .associated{ line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc; border-radius: 5px;overflow: hidden; }
   .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}

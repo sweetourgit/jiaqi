@@ -89,24 +89,21 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="附件" label-width="120px" prop="pass">
+              <el-form-item label="附件" style="clear:both;" label-width="120px" prop="pass">
                 <el-upload
                   class="upload-demo"
                   name="files"
                   ref="upload"
-                  :limit="12"
                   multiple
                   :action="this.upload_url"
-                  :disabled="change"
                   :file-list="fileList"
                   :on-error="handleError"
                   :on-success="handleSuccess"
                   :on-remove="handleRemove"
                   :on-preview="handlePreview"
-                  list-type="picture"
                 >
                   <el-button size="small" type="primary">点击上传</el-button>
-                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+<!--                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
                 </el-upload>
               </el-form-item>
               <el-divider content-position="left" class='title-margin title-margin-t' v-if="tableData5.length != 0">相关信息</el-divider>
@@ -610,11 +607,14 @@ export default {
       }
       this.$refs.ruleForm.validateField('user')
     },
-    handlePreview(file, fileList) {
+    handlePreview(file) {
+      let getUrl = JSON.parse(file.response)
       this.uid = file.uid
-      this.dialogVisible4 = true
-      this.imgBig = file.url
+      window.open(getUrl.paths[0].Url);
       this.imgBigName = file.name
+      // this.dialogVisible4 = true
+     /* this.imgBig = file.url
+      this.imgBigName = file.name*/
     },
     downloadIamge(imgsrc, name) { //下载图片地址和图片名
       var image = new Image();
@@ -989,7 +989,7 @@ export default {
           this.inputVisible2 = true;
           let pictureList = [];
           this.fileList.forEach(function(item){
-            pictureList.push({ url: item.url.slice(5), name: item.name})
+            pictureList.push({url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })
 
           this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/insert', {
@@ -1230,6 +1230,11 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+  .upload-demo>>>.el-upload-list__item:first-child {
+    margin-top: 5px;
+  }
+  .upload-demo{width: 400px;}
+  .upload-demo>>>.el-upload-list__item{ width: 300px; }
   .title-margin{
     margin-bottom: 30px;
   }
@@ -1335,12 +1340,9 @@ export default {
 .inputWidth {
   width: 200px;
 }
-.vivo>>>.el-upload-list__item {
-  width: 800px !important;
-  color: red;
-}
-  .plan_indialog{float:left; line-height: 40px;}
-  .indialog_plan{float:left; margin: 0 5px 0 10px;}
-  .indialog_input{float:left; width: 160px;}
-  .plan_indialog span{float:left; margin: 0 10px 0 10px;}
+
+.plan_indialog{float:left; line-height: 40px;}
+.indialog_plan{float:left; margin: 0 5px 0 10px;}
+.indialog_input{float:left; width: 160px;}
+.plan_indialog span{float:left; margin: 0 10px 0 10px;}
 </style>

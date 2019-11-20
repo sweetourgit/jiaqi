@@ -231,6 +231,7 @@ import AddScenic from './components/Addscenic'
       searchFormVisible() {
         this.areaNames = this.areaName;
         this.names = this.name;
+        this.currentPage = 1;
         this.initData(this.areaNames, this.names);
       },
       // 区域联想
