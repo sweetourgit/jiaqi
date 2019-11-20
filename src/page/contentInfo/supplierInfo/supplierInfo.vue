@@ -129,7 +129,9 @@
       >
         <div style="float:left;">
           <el-form-item label="供应商名称" prop="name">
-            <el-input class="name_input" v-model="ruleForm.name"></el-input>
+            <el-input class="name_input"
+                      v-model="ruleForm.name"
+            ></el-input>
           </el-form-item>
           <el-form-item label="供应商编码" prop="supplierCode">
             <el-input class="name_input" v-model="ruleForm.supplierCode"></el-input>
@@ -280,10 +282,10 @@
           <!--<el-form-item label="供应商其他名称" prop="otherSupplier">-->
             <!--<el-input class="name_input" v-model="ruleForm.otherSupplier"></el-input>-->
           <!--</el-form-item>-->
-          <el-form-item label="供应商其他名称" prop=""  style="width: 90%">
+          <el-form-item label="供应商其他名称" prop="otherSupplier"  style="width: 90%">
             <el-tag
-              :key="tag"
-              v-for="tag in dynamicTags"
+              :key="index"
+              v-for="(tag,index) in  dynamicTags"
               closable
               :disable-transitions="false"
               @close="handleClose(tag)">
@@ -382,7 +384,8 @@
           <el-form-item label="供应商名称" prop="name">
             <el-input class="name_input"
                       v-model="editForm.name"
-                      :disabled="true"></el-input>
+                      :disabled="true"
+            ></el-input>
           </el-form-item>
           <el-form-item label="供应商编码" prop="supplierCode">
             <el-input class="name_input"
@@ -561,16 +564,16 @@
           <!--</el-form-item>-->
           <el-form-item label="供应商其他名称" prop="" style="width: 90%">
             <el-tag
-              :key="tag"
+              :key="index"
               class="name_input"
-              v-for="tag in dynamicTags"
+              v-for="(tag,index) in dynamicTags"
               closable
               :disable-transitions="false"
               @close="handleClose(tag)">
               {{tag}}
             </el-tag>
             <el-input
-              style="width: 90%"
+              style="width: 90%;overflow:hidden; white-space:nowrap; text-overflow:ellipsis"
               v-if="inputVisible"
               v-model="inputValue"
               ref="saveTagInput"
@@ -874,9 +877,9 @@ export default {
         userDepartment: [
           { required: true, message: "使用部门不能为空", trigger: "blur" }
         ],
-        // agreement:[
-        //   {required: true, message: "请选择供应商协议", trigger: "blur" }
-        // ],
+        agreement:[
+          {required: true, message: "请选择供应商协议", trigger: "blur" }
+        ],
         accountName: [
           { required: true, message: "汇款账户不能为空", trigger: "blur" }
         ],
@@ -1215,7 +1218,7 @@ export default {
       });
       if (this.dynamicTags.length > 0) {
         this.dynamicTags.forEach((item) => {
-          keepAlias.push({'name': item, 'id': 0})
+          keepAlias.push({'name': item, 'id': 0,'supplierID':0})
         })
         console.log(keepAlias, 'this.dynamicTags')
       }
@@ -1284,14 +1287,15 @@ export default {
                   .then(res => {
                     if (res.data.isSuccess == true) {
                       this.supplierPage();
+                      this.tableDataBank = []
                       this.supplierShow = false;
                       this.$refs[formName].resetFields();
                     } else {
-                      this.$message.success("编码重复");
+                      this.$message.success("已存在该编码的供应商");
                     }
                   });
               } else {
-                this.$message.success("供应编码重复请重新填写");
+                this.$message.success("已存在该编码的供应商");
               }
             });
 
@@ -1511,8 +1515,7 @@ export default {
                 // this.tabledata=this.editForm
                 this.supplierPage();
                 this.editShow = false;
-                // Vue.set(this.tableData,this.userindex,this.editForm)
-                // this.$refs[formName].resetFields();
+                this.$refs.mychild.teamGetDetails(this.userindex)
                 this.$message.success('修改成功')
               } else {
                 this.$message.success("编辑失败");
@@ -1546,11 +1549,14 @@ export default {
       supplierCard = this.supplierCard,
       settlement = this.settlement,
       condition = this.condition,
-      category = this.category,
+      category = this.category == "船票" ? 0 :this.category,
       visibleArea = this.visibleArea,
 
     ) {
       var that = this;
+      if(this.category =='船票'){
+        category =0
+      }
       this.$http
     .post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierpage", {
       object: {
@@ -1654,7 +1660,7 @@ export default {
           this.editForm.supplierType= res.data.object.types[0].supplierTypeEX, //类别
           this.editForm.supplierWay= res.data.object.isMonthlyEX, //结算方式
           // this.editForm.supplierWay1 =res.data.object.isMonthly,
-          this.editForm.userDepartment= data.supplierTypeEX, //使用部门
+          // this.editForm.userDepartment= data.supplierTypeEX, //使用部门
           this.editForm.orientation= res.data.object.productDirection, //产品主要方向
           this.editForm.expireData=res.data.object.expireTime , //到期日期
           this.editForm.supplierUpload= "", //附件
@@ -1721,8 +1727,15 @@ export default {
 /* 搜索框样式 */
 .name_input {
   width: 200px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
 }
-
+>>>.el-input__inner{
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
 .empty {
   width: 200px;
   line-height: 30px;

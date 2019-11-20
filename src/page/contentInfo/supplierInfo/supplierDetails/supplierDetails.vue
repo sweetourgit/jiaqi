@@ -185,7 +185,7 @@
         this.$emit("update:flag",false)
       },
       fatherMethod(){
-        this.$parent.editClick()
+        this.$parent.editClick(this.msg)
       },
       //详情弹窗获取详情数据
       teamGetDetails(id){
