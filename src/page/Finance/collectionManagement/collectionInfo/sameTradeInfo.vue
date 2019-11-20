@@ -882,20 +882,22 @@ export default {
           let needArrearData = [] // 转变关联欠款数据格式之后的数据模型
           this.arrearsList.forEach(function(item){ // 转换关联欠款表格数据结构
             getMatchingMoney +=  Number(item.matchingMoney)
-            needArrearData.push({
-              "id": 0,
-              'planID':item.planID,
-              "collectionID": 0, // 收款id
-              "orderCode": item.orderCode,
-              "productName": item.proName,
-              "groupCode": item.groupCode,
-              "date": item.departure,
-              "payablePrice": item.payable, // 订单金额
-              "arrearsPrice": item.arrears_Amount, // 欠款金额
-              "repaidPrice": item.repayment_Amount, // 已还金额
-              "amountPrice": item.audited_Amount, // 待审核金额
-              "matchingPrice": item.matchingMoney // 匹配收款金额
-            })
+            if(item.matchingMoney != '' && item.matchingMoney > 0){
+              needArrearData.push({
+                "id": 0,
+                'planID':item.planID,
+                "collectionID": 0, // 收款id
+                "orderCode": item.orderCode,
+                "productName": item.proName,
+                "groupCode": item.groupCode,
+                "date": item.departure,
+                "payablePrice": item.payable, // 订单金额
+                "arrearsPrice": item.arrears_Amount, // 欠款金额
+                "repaidPrice": item.repayment_Amount, // 已还金额
+                "amountPrice": item.audited_Amount, // 待审核金额
+                "matchingPrice": item.matchingMoney // 匹配收款金额
+              })
+            }
           })
 
           objectRequest = {
