@@ -12,11 +12,10 @@
         </div>
       </div>
 
-      <!--左侧导航-->
+      <!--左侧导航 :default-expanded-keys="[1,12,474]"-->
       <div class="left-tree">
         <el-tree
           :props="props1"
-          :default-expanded-keys="[1,12,474]"
           :load="loadNode1"
           class="treeDemo"
           lazy
