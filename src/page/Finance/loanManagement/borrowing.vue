@@ -110,7 +110,6 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
         <!-- 基本信息 -->
         <el-form-item label="团期计划" prop="plan" style="float:left;">
-<!--          <el-input class="name_input" @blur="tour_check" v-model="" placeholder=""></el-input>    注意这里面 tour_check 这个方法还需要调用 -->
           <el-autocomplete
             class="name_input"
             v-model="ruleForm.plan"
@@ -1190,7 +1189,6 @@ export default {
       this.fileList = []
     },
     handleSuccess(res, file, fileList) {
-      console.log(fileList)
       this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
       // 多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
       if (this.time != fileList.length) { // 多张图片情况只在第一次执行数组操作
@@ -1223,11 +1221,11 @@ export default {
     handlePreview(file) {
       // this.dialogVisible4 = true
       let getUrl = JSON.parse(file.response)
-      console.log(getUrl.paths[0].Url)
       this.uid = file.uid
-      // this.imgBig = getUrl.paths[0].Url
       window.open(getUrl.paths[0].Url);
       this.imgBigName = file.name
+      // this.imgBig = getUrl.paths[0].Url
+
     },
     // 结束工作流程
     repeal(){

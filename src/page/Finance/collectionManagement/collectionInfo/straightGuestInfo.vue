@@ -885,7 +885,11 @@ export default {
       this.dialogFormVisible2 = false
     },
     handlePreview(file, fileList) {
-      this.dialogVisible = true
+      // this.dialogVisible = true
+      let getUrl = JSON.parse(file.response)
+      this.uid = file.uid
+      window.open(getUrl.paths[0].Url);
+      this.imgBigName = file.name
       /*this.imgBig = file.url
       this.imgBigName = file.name*/
     },
@@ -1286,6 +1290,12 @@ export default {
 .inputWidth {
   width: 200px;
 }
+
+  .upload-demo>>>.el-upload-list__item:first-child {
+    margin-top: 5px;
+  }
+  .upload-demo{width: 400px;}
+  .upload-demo>>>.el-upload-list__item{ width: 300px; }
 .collection{background:#eaeaea; color:#a4a4a4;}
 .accountButton{float:right; margin:20px 0 0 0; overflow: hidden;}
 /*关联欠款*/

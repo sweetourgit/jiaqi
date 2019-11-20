@@ -184,11 +184,14 @@
             <el-col :span="6"><div class="grid-del label-color">凭证:</div></el-col>
             <el-col :span="18">
               <el-upload
+
                 class="upload-demo"
                 name="files"
                 :file-list="fundamental.files"
+                :show-file-list=true
                 action="test"
                 :disabled=true
+                :on-preview="handlePreview"
               >
               </el-upload>
             </el-col>
@@ -311,6 +314,10 @@ export default {
     }
   },
   methods: {
+    // 点击图片钩子
+    handlePreview(file) {
+      window.open(file.url);
+    },
     // 借款人模糊检索
     querySearchBorrower(queryBorrowerString, cb) {
       this.tableDataBorrower = []
