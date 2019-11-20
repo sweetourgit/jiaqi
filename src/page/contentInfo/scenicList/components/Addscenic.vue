@@ -355,6 +355,7 @@
       <MaterialList
         :imgData="imgData"
         :chineseName="form.chineseName"
+        :imageAreaId="imageAreaId"
         v-on:checkList="checkList"
         v-on:closeButton="imgUpload = false"
       ></MaterialList>
@@ -431,6 +432,7 @@ export default {
       }
     };
     return {
+      imageAreaId: 0, //传给image公共组件的  所属地区的id  为了是image里面的tree展开（前提所属地区已填写）
       formLabelWidth: "90px",
       isImgUrlShow: false,
       imgUrlShow: "", // 点击查看图片
@@ -718,6 +720,7 @@ export default {
     },
     // 区域选择
     handleSelect(item) {
+      this.imageAreaId = item.name;
       this.form.areaId = item;
       this.isSelect = true;
     },

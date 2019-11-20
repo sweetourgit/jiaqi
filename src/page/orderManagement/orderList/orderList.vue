@@ -294,6 +294,8 @@
         :paid="getListOneMessage.paid"
         :priceType="priceType"
         :settlementType="getListOneMessage.settlementType"
+        :balance="getListOneMessage.balance"
+        :deposit="getListOneMessage.deposit"
         @orderPage="orderPage"
         @childByValue="childByValue"
       ></process-manage>

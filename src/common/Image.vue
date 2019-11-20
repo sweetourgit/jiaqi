@@ -160,7 +160,7 @@
 import Swiper from "swiper";
 import "swiper/dist/css/swiper.min.css";
 export default {
-  props: ["chineseName", "imgData", "isType", "isImg"],
+  props: ["chineseName", "imgData", "isType", "isImg", "imageAreaId"],
   data() {
     return {
       isTypes: false, // 是否是轮播图
@@ -322,6 +322,7 @@ export default {
                 Hierarchy: 0 // 层级
               });
             }
+            
             resolve(this.list);
           })
           .catch(obj => {
@@ -374,6 +375,7 @@ export default {
 
     // 单击tree节点
     treeClick(data, node) {
+      // console.log(node,"node")
       if (data.isLeaf == 1) {
         if (this.getAlbumForm == true) {
           //修改相册tree
