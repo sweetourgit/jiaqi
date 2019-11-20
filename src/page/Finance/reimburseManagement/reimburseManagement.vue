@@ -435,7 +435,7 @@ export default {
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       hand: [],
       t_sum:0,//一共多少项
-      t_price:0,//一共多少钱
+      t_price:10,//一共多少钱
       plans: {
         planNum: "1",
         planName: "2",
@@ -473,8 +473,8 @@ export default {
       //手添报销
       domains: [
         {
-          mark: "",
-          price: ""
+          mark: "0",
+          price: "0"
         }
       ],
       // 选中报销人字段
@@ -490,8 +490,8 @@ export default {
         },
 
         monkeys: {
-          mark: "",
-          price: ""
+          mark: "0",
+          price: "0"
         },
         content: ""
       },
@@ -611,53 +611,53 @@ export default {
       planID,
       suppliername = this.t_supplier,
      // createUser = this.t_plan
-  ) {
-    let object = {};
-        suppliername !== "" ? (object.suppliername = suppliername) : suppliername,
-        planID !=="" ? (object.planID = planID) : planID,
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/payment/api/checklist", {
-          object:object,
-        })
-        .then(res => {
-          var object = res.data.objects;
-          var wcount; //未报销金额
-            for (let i = 0; i < object.length; i++) {
-              if(object[i].orgName==null){
-                  object[i].orgName="无";
+      ) {
+        let object = {};
+            suppliername !== "" ? (object.suppliername = suppliername) : suppliername,
+            planID !=="" ? (object.planID = planID) : planID,
+          this.$http
+            .post(this.GLOBAL.serverSrc + "/finance/payment/api/checklist", {
+              object:object,
+            })
+            .then(res => {
+              var object = res.data.objects;
+              var wcount; //未报销金额
+                for (let i = 0; i < object.length; i++) {
+                  if(object[i].orgName==null){
+                      object[i].orgName="无";
+                    }
+                    //  if(object[i].paymentType==1){
+                  //      object[i].paymentType = "无收入借款";
+                  //   }else if(object[i].paymentType==2){
+                  //      object[i].paymentType = "预付款";
+                  //   }
+                    // if(object[i].supplierType==0){
+                    //   this.supplier=1;
+                    // }else{
+                    //   this.supplier=0;
+                    // }
+                    this.joinData.push({
+                      paymentID:  object[i].paymentID,
+                      supplierTypeEX:object[i].supplierTypeEX,
+                      groupCode:object[i].groupCode,
+                      createUser:object[i].createUser,
+                      mark:object[i].mark,
+                      price:object[i].price,
+                      wcount:object[i].wcount,
+                      bcount:0,
+                      createTime:object[i].createTime,
+                      supplierName:object[i].supplierName,
+                      peopleCount:object[i].peopleCount,
+                      orgName:object[i].orgName,
+                      wcount :object[i].price - object[i].collectionPrice
+                  });
                 }
-                //  if(object[i].paymentType==1){
-              //      object[i].paymentType = "无收入借款";
-              //   }else if(object[i].paymentType==2){
-              //      object[i].paymentType = "预付款";
-              //   }
-                // if(object[i].supplierType==0){
-                //   this.supplier=1;
-                // }else{
-                //   this.supplier=0;
-                // }
-                this.joinData.push({
-                  paymentID:  object[i].paymentID,
-                  supplierTypeEX:object[i].supplierTypeEX,
-                  groupCode:object[i].groupCode,
-                  createUser:object[i].createUser,
-                  mark:object[i].mark,
-                  price:object[i].price,
-                  wcount:object[i].wcount,
-                  bcount:0,
-                  createTime:object[i].createTime,
-                  supplierName:object[i].supplierName,
-                  peopleCount:object[i].peopleCount,
-                  orgName:object[i].orgName,
-                  wcount :object[i].price - object[i].collectionPrice
-              });
-             }
-          //console.log("添加数据",this.joinData);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
+              //console.log("添加数据",this.joinData);
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        },
     //获取团号和name
     planChange(row) {
       console.log(row);
@@ -714,13 +714,13 @@ export default {
     //添加
     addDomain() {
     this.domains.push({
-        mark: "",
-        price: ""
+        mark: "0",
+        price: "0"
       });
     },
     // 报销申请提交
     submitForm(formName) {
-      console.log(formName);
+      console.log( this.ruleForm);
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.hand = [];
@@ -728,13 +728,14 @@ export default {
             this.hand.push(this.domains[i]);
           }
           this.hand.push(this.ruleForm.monkeys);
-          var createUser = this.ruleForm.name[0].peo;
+          var createUser = sessionStorage.getItem('id');
           var pid = this.plans.pid;
-          var price = t_price;
+          var price = this.t_price;
           var mark = this.ruleForm.content;
           var files = this.fileList;
           var check = 0;
           var others = this.hand;
+          var payments = this.joinData_s;
 
           this.$http
             .post(this.GLOBAL.serverSrc + "/finance/expense/api/insertlist", {
@@ -746,7 +747,7 @@ export default {
                   mark: mark,
                   files: files,
                   checkType: check,
-                  payments: [],
+                  payments: payments,
                   others: others
                 }
               ]
