@@ -403,7 +403,7 @@
               <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="80" align="center">
                 <template slot-scope="scope">
-                  <span class="cursor blue">查看</span>
+                  <span class="cursor blue" @click="collection(scope.row)">查看</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -422,13 +422,22 @@
         </el-tabs>
       </div>
     </el-dialog>
-    <!--审批过程-->
+    <!--借款审批过程-->
     <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px"@close="closeApprova()">
       <el-table :data="approvalTable" :header-cell-style="getCostClass" border>
         <el-table-column prop="finishedTime" label="审批时间" min-width="180" align="center"></el-table-column>
         <el-table-column prop="participantName" label="审批人" min-width="120" align="center"></el-table-column>
         <el-table-column prop="approvalName" label="审批结果" min-width="120" align="center"></el-table-column>
         <el-table-column prop="No" label="审批意见" min-width="180" align="center"></el-table-column>
+      </el-table>
+    </el-dialog>
+    <!--收款审批过程-->
+    <el-dialog title="审批过程" :visible.sync="collectionShow" width="800px" @close="closeCollection()">
+      <el-table :data="collectionTable" :header-cell-style="getCostClass" border>
+        <el-table-column prop="" label="审批时间" min-width="180" align="center"></el-table-column>
+        <el-table-column prop="" label="审批人" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="" label="审批结果" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="" label="审批意见" min-width="180" align="center"></el-table-column>
       </el-table>
     </el-dialog>
     <!-- </div> -->
@@ -608,14 +617,16 @@ export default {
       deposit:0,//获取预存款
       amount:0,//剩余额度加预存款
       payment:0,
-      approvalTable:[],//审批过程表格
-      approvalShow:false,//审批过程弹窗
+      approvalTable:[],//借款审批过程表格
+      approvalShow:false,//借款审批过程弹窗
       guid:'',
       pid:'',
       paymentType:'',
       multipleSelection: [], //选中的list
       checkSheetDialog:false,//报账单弹窗
       forbidden:true,//商户销售在没有商户名称的时候禁止状态
+      collectionShow:false,//收款审批过程弹窗
+      collectionTable:[],//收款过程表格
     };
   },
   filters: {
@@ -1743,6 +1754,12 @@ export default {
     },
     closeApprova(){//关闭借款弹窗
       this.approvalTable = [];
+    },
+    closeCollection(){//关闭收款弹窗
+      this.collectionTable = [] ;
+    },
+    collection(row){
+
     },
     //报账单关闭弹窗
     closeCheckSheet(){
