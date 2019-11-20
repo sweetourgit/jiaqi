@@ -431,8 +431,6 @@ export default {
               this.orderget.occupyStatus,
               this.orderget.orderChannel
             );
-            console.log(this.orderget.orderChannel,this.orderget.orderChannel===1)
-            console.log(this.settlementType,this.settlementType===1)
             this.priceType == 1
               ? (this.isPricechange = true)
               : (this.isPricechange = false);
