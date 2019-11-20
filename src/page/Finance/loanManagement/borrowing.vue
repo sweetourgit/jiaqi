@@ -1222,11 +1222,12 @@ export default {
     },
     handlePreview(file) {
       this.dialogVisible4 = true
-      /*let getUrl = JSON.parse(file.response)
+      let getUrl = JSON.parse(file.response)
       console.log(getUrl.paths[0].Url)
       this.uid = file.uid
-      this.imgBig = getUrl.paths[0].Url
-      this.imgBigName = file.name*/
+      // this.imgBig = getUrl.paths[0].Url
+      window.open(getUrl.paths[0].Url);
+      this.imgBigName = file.name
     },
     // 结束工作流程
     repeal(){
@@ -1357,6 +1358,9 @@ export default {
     .el-divider__text{
       font-size: 17px !important
     }
+  }
+  .upload-demo>>>.el-upload-list__item:first-child {
+    margin-top: 5px;
   }
 	/*分页*/
 	.name_input{width: 200px;}
