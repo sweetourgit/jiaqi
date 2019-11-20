@@ -1221,7 +1221,7 @@ export default {
       this.fileCheckVal = fileList.length
     },
     handlePreview(file) {
-      this.dialogVisible4 = true
+      // this.dialogVisible4 = true
       let getUrl = JSON.parse(file.response)
       console.log(getUrl.paths[0].Url)
       this.uid = file.uid
