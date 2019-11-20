@@ -433,7 +433,7 @@
               v-model="editForm.supplierState"
               clearable placeholder="请选择"
               class="name_input"
-            @change="handClick">
+            @change="handState">
               <el-option
                 v-for="item in conditionType"
                 :key="item.value"
@@ -447,7 +447,7 @@
               v-model="editForm.routeType"
               clearable placeholder="请选择"
               class="name_input"
-              @change="handClick">
+              @change="handRoute">
               <el-option
                 v-for="item in pathType"
                 :key="item.value"
@@ -461,7 +461,7 @@
               v-model="editForm.supplierType"
               clearable placeholder="请选择"
               class="name_input"
-              @change="handClick">
+              @change="handType">
               <el-option
                 v-for="item in borrowingType"
                 :key="item.value"
@@ -475,7 +475,7 @@
               v-model="editForm.supplierWay"
               clearable placeholder="请选择"
               class="name_input"
-              @change="handClick">
+              @change="handWay">
               <el-option
                 v-for="item in settlementType"
                 :key="item.value"
@@ -544,7 +544,7 @@
               v-model="editForm.agreement"
               placeholder="请选择"
               class="name_input"
-              @change="handClick">
+              @change="handAgree">
               <el-option
                 v-for="item in agreement"
                 :key="item.value"
@@ -1143,6 +1143,7 @@ export default {
         companyAreaEX: "",//公司可见性数字
         supplierState: "正常", //状态
         routeType: "", //线路
+        routeType1:'',
         supplierType: "", //类别
         supplierWay: "", //结算方式
         userDepartment: "", //使用部门
@@ -1303,9 +1304,30 @@ export default {
     handClick(){
 
     },
+    handState(val){
+      console.log(val,'获取改变的值')
+      this.editForm.supplierState1=val
+    },
+    handRoute(val){
+      console.log(val,"获取路线的值")
+      this.editForm.routeType1 =val
+    },
+    handType(val){
+      console.log(val,"获取类别的值")
+      this.editForm.supplierType1 =val
+    },
+    handWay(val){
+      console.log(val,"获取结算方式的值")
+      this.editForm.supplierWay1 =val
+    },
+    handAgree(val){
+      console.log(val,"获取供应商协议的值")
+      this.editForm.agreement1 =val
+    },
     editLabelTheme(formName){
       console.log(this.pid,'每条数据的id值')
-      console.log(this.editForm,1314)
+      // console.log(this.editForm,1314)
+      // debugger;
       if (this.editForm.supplierState == "正常"){
         this.editForm.supplierState1 =1
       } else if(this.editForm.supplierState == "停用"){
@@ -1330,17 +1352,17 @@ export default {
           this.editForm.agreement1 =2
       };
 
-      if(this.editForm.visible == '集团共享'){
-        this.editForm.visible1 = 1
-      }else if(this.editForm.visible == '沈阳专享'){
-        this.editForm.visible1 = 2
-      }else if(this.editForm.visible == '吉林专享'){
-        this.editForm.visible1 = 3
-      }else if(this.editForm.visible == '大连专享'){
-        this.editForm.visible1 = 4
-      }else if(this.editForm.visible == '哈尔滨专享'){
-        this.editForm.visible1 = 5
-      }
+      // if(this.editForm.visible == '集团共享'){
+      //   this.editForm.visible1 = 1
+      // }else if(this.editForm.visible == '沈阳专享'){
+      //   this.editForm.visible1 = 2
+      // }else if(this.editForm.visible == '吉林专享'){
+      //   this.editForm.visible1 = 3
+      // }else if(this.editForm.visible == '大连专享'){
+      //   this.editForm.visible1 = 4
+      // }else if(this.editForm.visible == '哈尔滨专享'){
+      //   this.editForm.visible1 = 5
+      // }
       if(this.editForm.supplierType == '船票'){
         this.editForm.supplierType =0
       }else if(this.editForm.supplierType == '地接社'){
@@ -1368,7 +1390,7 @@ export default {
         this.editForm.supplierWay1 =2
       }else if (this.editForm.supplierWay =="月结") {
         this.editForm.supplierWay1 =3
-      }else if (this.editForm.supplierWay =="预付款") {
+      }else if (this.editForm.supplierWay =="预存款") {
         this.editForm.supplierWay1 =4
       }else if (this.editForm.supplierWay =="走团前80%走团后20%") {
         this.editForm.supplierWay1 =5
@@ -1378,6 +1400,25 @@ export default {
         this.editForm.supplierWay1 =7
       }else if (this.editForm.supplierWay =="走团前50%走团后50") {
         this.editForm.supplierWay1 =8
+      }
+      if(this.editForm.routeType == '国内'){
+        this.editForm.routeType1 =1
+      }else if(this.editForm.routeType == '长航线'){
+        this.editForm.routeType1 =2
+      }else if(this.editForm.routeType == '东南亚'){
+        this.editForm.routeType1 =3
+      }else if(this.editForm.routeType == '日韩'){
+        this.editForm.routeType1 =4
+      }else if(this.editForm.routeType == '港澳台'){
+        this.editForm.routeType1 =5
+      }else if(this.editForm.routeType == '邮轮'){
+        this.editForm.routeType1 =6
+      }else if(this.editForm.routeType == '集团'){
+        this.editForm.routeType1 =7
+      }else if(this.editForm.routeType == '省内周边游'){
+        this.editForm.routeType1 =8
+      }else if(this.editForm.routeType == '本公司通用'){
+        this.editForm.routeType1 =9
       }
     let types = [];
       let keepAlias = [] // 给alias赋值用
@@ -1408,32 +1449,6 @@ export default {
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // debugger;
-          if (this.editForm.supplierState == "正常") {
-            this.editForm.supplierState1 = 1
-          } else if (this.editForm.supplierState == "停用") {
-            this.editForm.supplierState1 = 2
-          } else if (this.editForm.supplierState == "待审核") {
-            this.editForm.supplierState1 = 0
-          }
-          ;
-          // switch (this.editForm.supplierState){
-          //   case "正常":
-          //     this.editForm.supplierState1 =1;
-          //     break;
-          //   case "停用":
-          //     this.editForm.supplierState1 =2;
-          //     break;
-          //   case "待审核":
-          //     this.editForm.supplierState1 =0;
-          //     break;
-          // }
-          if (this.editForm.agreement == "是") {
-            this.editForm.agreement1 = 1
-          } else {
-            this.editForm.agreement1 = 2
-          }
-          ;
           var _this = this;
           this.$http
             .post(
@@ -1453,7 +1468,7 @@ export default {
                   isAgree: this.editForm.agreement1,
                   // companyArea: this.editForm.visible,
                   companyArea: 1, // 公司可見性
-                  productArea: this.editForm.routeType,
+                  productArea: this.editForm.routeType1,
                   leader: this.editForm.principal,
                   phone: this.editForm.principalPhone,
                   legalPerson: this.editForm.legalPerson,
@@ -1543,7 +1558,7 @@ export default {
         name: supplierName,
         id: supplierCard == "" ? 0 : supplierCard,
         isMonthly: settlement == "" ? 0 : settlement,
-        supplierType: category == "" ? 0 : category,
+        supplierType: category == "" ? -1 : category,
         UserState: condition == "" ? -1 : condition,
         companyArea: visibleArea == "" ? 1 : visibleArea
         /*"isDeleted": 0,
@@ -1635,7 +1650,7 @@ export default {
         this.editForm.name=res.data.object.name,
           this.editForm.visible=res.data.object.companyAreaEX, //公司可见性
           // this.editForm.supplierState=res.data.object.userStateEX,
-          this.editForm.routeType= res.data.object.productArea, //线路
+          this.editForm.routeType= res.data.object.productAreaEX, //线路
           this.editForm.supplierType= res.data.object.types[0].supplierTypeEX, //类别
           this.editForm.supplierWay= res.data.object.isMonthlyEX, //结算方式
           // this.editForm.supplierWay1 =res.data.object.isMonthly,
@@ -1689,34 +1704,6 @@ export default {
   mounted() {
     this.supplierPage();
   },
-  // watch:{
-  //     conditionType:{
-  //       handler(newValue,oldValue){
-  //         deep:true
-  //       }
-  //     },
-  //   pathType:{
-  //     handler(newValue,oldValue){
-  //       deep:true
-  //     }
-  //   },
-  //   borrowingType:{
-  //     handler(newValue,oldValue){
-  //       deep:true
-  //     }
-  //   },
-  //   settlementType:{
-  //     handler(newValue,oldValue){
-  //       deep:true
-  //     }
-  //   },
-  //   agreement:{
-  //     handler(newValue,oldValue){
-  //       deep:true
-  //     }
-  //   },
-  // },
-
   created() {
     this.themeList(); //供应商类别
     this.settlemen(); //结算方式

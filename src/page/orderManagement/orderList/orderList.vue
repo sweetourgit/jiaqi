@@ -293,6 +293,7 @@
         :orderCode="orderCode"
         :paid="getListOneMessage.paid"
         :priceType="priceType"
+        :settlementType="getListOneMessage.settlementType"
         @orderPage="orderPage"
         @childByValue="childByValue"
       ></process-manage>
@@ -367,7 +368,7 @@ export default {
       orgID: null, //商户名称搜索传给后台的id
       orgIDValue: "", //商户名称 搜索时显示的字段
       contact: "", //订单联系人
-      orderChannel: null, //订单来源  1 线上直客 2 线下直客 3 同业系统
+      orderChannel: null, //订单来源  
       whichStateTab: null, //判断tab是从1 还是2 过来的
       // breadcrumbSelectValue: "更多", //面包屑更多默认
       // breadcrumbOptions: [

@@ -100,7 +100,7 @@
         <!--总价-->
         <div class="price">
           <p class="totle">总价：￥{{toDecimal2(payable)}}</p>
-          <p class="surplus">剩余预存款和额度：￥400,000.00</p>
+          <p class="surplus" v-if="orderget.orderChannel===1&&settlementType===1">剩余预存款和额度：￥400,000.00</p>
         </div>
         <hr />
         <!--订单联系人-->
@@ -285,7 +285,8 @@ export default {
     dialogType: 0,
     orderCode: "",
     paid: 0, //已付金额
-    priceType: 0 //价格类型
+    priceType: 0, //价格类型
+    settlementType: 0 //同业社的结算方式 1为月结 2为非月结
   },
   data() {
     return {
@@ -430,7 +431,6 @@ export default {
               this.orderget.occupyStatus,
               this.orderget.orderChannel
             );
-
             this.priceType == 1
               ? (this.isPricechange = true)
               : (this.isPricechange = false);
@@ -544,7 +544,6 @@ export default {
         url = "/order/stat/api/invalid";
         // url = "/order/all/api/orderdelete";
       }
-      console.log(this.orderget.id, "this.orderget.id");
 
       this.$http
         .post(this.GLOBAL.serverSrc + url, {
@@ -1183,7 +1182,7 @@ export default {
       }
     },
 
-    // 监听订单来源是同业社还是直客下单  是直客则返回true 等于1就是同业 
+    // 监听订单来源是同业社还是直客下单  是直客则返回true 等于1就是同业
     orderSourceFun(orderChannel) {
       if (orderChannel !== 1) return true;
     },
