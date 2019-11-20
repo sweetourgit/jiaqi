@@ -319,6 +319,12 @@
           <div class="table_trip" style="width: 100%;">
             <el-table ref="singleTable" :data="tableDataZH" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass">
               <el-table-column prop="cardType" label="类型" align="center" >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.cardType===1">收款</span>
+                  <span v-if="scope.row.cardType===2">付款</span>
+                  <span v-if="scope.row.cardType===3">应收</span>
+                  <span v-if="scope.row.cardType===4">应付</span>
+                </template>
               </el-table-column>
               <el-table-column prop="title" label="账号名称" align="center">
               </el-table-column>
@@ -482,6 +488,7 @@
           startTime: '',
           endTime: ''
         },
+        payAccountObj: {},
         rules:{ // 验证规则 -- 必填项
           creditTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
           payAccount: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
@@ -619,6 +626,7 @@
           startTime: '',
           endTime: ''
         };
+        this.payAccountObj = {};
         this.pft_list = [];
 
         this.PFT_num = 0;
@@ -985,7 +993,8 @@
             "file":fileArr,
             "org_id":sessionStorage.getItem('orgID'),
             "create_uid":sessionStorage.getItem('id'),
-            "get_order":getOrder
+            "get_order":getOrder,
+            "rec_account":this.payAccountObj
           }
         }else{
           if(this.deleteStr.substr(this.deleteStr.length-1,1) === ','){
@@ -1005,7 +1014,8 @@
             "org_id":sessionStorage.getItem('orgID'),
             "create_uid":sessionStorage.getItem('id'),
             "del_order":this.deleteStr,
-            "get_order":getOrder
+            "get_order":getOrder,
+            "rec_account":this.payAccountObj
           }
         }
         if(flag){
@@ -1302,7 +1312,8 @@
             "org_id": sessionStorage.getItem('orgID'),
             "create_uid": sessionStorage.getItem('id'),
             "detailed_id": this.deleteStr,
-            "get_order": getOrder
+            "get_order": getOrder,
+            "rec_account":this.payAccountObj
           }, ).then(function(response) {
             console.log(response);
             if (response.data.code == '200') {
@@ -1377,8 +1388,19 @@
       },
       // 选择账户后关闭账户弹窗
       chooseBtn(row){
+        // console.log(row);
         this.ruleForm.payAccount = row.title;
         this.ruleForm.payAccountID = row.id;
+        this.payAccountObj = {
+          "account_id": row.id,
+          "type": row.cardType,
+          "account": row.title,
+          "card": row.cardNum,
+          "bank": row.openingBank,
+          "user": row.openingName,
+          "subject_value": row.subject,
+          "service_charge": row.ratio
+        };
         this.close();
       },
 
