@@ -379,7 +379,7 @@
               <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
-                  <span class="cursor blue">查看</span>
+                  <span class="cursor blue" @click="expense(scope.row)">查看</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -1445,13 +1445,6 @@ export default {
     },
     departure1(item){
       this.ReplacesaleId = item.id
-      // console.log(item)
-      // this.productPos = item.id;//获取供应商的id传给下单接口的orgID
-      // this.lines = item.balance;//获取剩余额度
-      // this.deposit = item.deposit;//获取预存款
-      // this.payment = item.settlementType ;//获取结算方式
-      // this.originPlace = item.value;
-      // this.amount = this.lines + this.deposit;
     },
     //同业销售模糊查询
     querySearch2(queryString2, cb) {
@@ -1488,6 +1481,7 @@ export default {
     },
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
+      this.ruleForm.merchantsSell = '';
       this.tableData2 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
@@ -1515,7 +1509,7 @@ export default {
         //console.log(err);
       })
     },
-    createFilter(queryString1){
+    createFilter(queryString3){
       return (restaurant) => {
         return (restaurant.value);
       }
@@ -1544,10 +1538,13 @@ export default {
           if (res.data.isSuccess == true) {
             console.log(res.data.object.useList)
             for (let i = 0; i < res.data.object.useList.length; i++) {
-              this.useList.push({
-                "value": res.data.object.useList[i].name,
-                "id": res.data.object.useList[i].id
-              })
+              if(res.data.object.useList[i].name.indexOf(this.ruleForm.merchantsSell)!=-1){
+                this.useList.push({
+                  "value": res.data.object.useList[i].name,
+                  "id": res.data.object.useList[i].id
+                })
+              }
+              
             }
           }
           var results = queryString4 ? this.useList.filter(this.createFilter(queryString4)) : [];
@@ -1555,6 +1552,11 @@ export default {
         }).catch(err => {
           //console.log(err);
         })
+    },
+    createFilter(queryString4){
+      return (restaurant) => {
+        return (restaurant.value);
+      }
     },
     departure4(item){
       console.log(item)
@@ -1757,6 +1759,21 @@ export default {
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
         jQ_ID: this.pid,
         jQ_Type: this.paymentType == '无收入借款' ? 1 : 2,
+      }).then(obj => {
+        that.approvalTable = obj.data.extend.instanceLogInfo;
+      }).catch(obj => {})
+    },
+    expense(row){//点击报销曲线弹窗并且获取guid
+      this.pid = row.guid;
+      this.expenserJQ();
+      this.approvalShow = true;
+    },
+    expenserJQ(){//报销获取审批流程
+      var that =this
+      console.log(this.paymentType)
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+        jQ_ID: this.pid,
+        jQ_Type: 3,
       }).then(obj => {
         that.approvalTable = obj.data.extend.instanceLogInfo;
       }).catch(obj => {})
