@@ -4,46 +4,36 @@
        <ul id="tree" class="ztree"></ul>
      </div>
      <div class="tree-list">
+     <div v-if="showList">
      <el-row class="button">
-       <el-button @click="insertModuleO">新增</el-button>
-       <el-button :disabled="forbidden" @click="delModule">删除</el-button>
-       <el-button :disabled="forbidden" @click="editModuleO">编辑</el-button>
-       <el-button :disabled="forbidden" @click="controlList">权限配置</el-button>
+       <el-button @click="openMenu('添加菜单')">新增</el-button>
+       <el-button :disabled="forbidden" @click="delMenu">删除</el-button>
+       <el-button :disabled="forbidden" @click="openMenu('编辑菜单')">编辑</el-button>
+       <el-button :disabled="forbidden" @click="operation">页面权限</el-button>
      </el-row>
     <!--list-->
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
-       <el-table-column  prop="id" label="ID" min-width="60"></el-table-column>
+       <el-table-column  prop="id" label="ID" min-width="60" align="center"></el-table-column>
        <el-table-column  prop="name" label="功能名称" min-width="150" align="center"></el-table-column>
-       <el-table-column  prop="url" label="页面地址" min-width="280" align="center"></el-table-column>
+       <el-table-column  prop="uri" label="页面地址" min-width="280" align="center"></el-table-column>
        <!--<el-table-column  prop="guid" label="唯一标识" min-width="250" align="center"></el-table-column>-->
        <el-table-column  prop="isLeaf" label="是否末级" min-width="150" align="center"></el-table-column>
      </el-table>
-     <div style="width:800px;overflow:hidden">
-     <el-pagination class="pagination"
-        @size-change="handleSizeChange"
-        background
-        @current-change="handleCurrentChange"
-        :current-page="1"
-        :page-sizes="[10, 30, 50, 100]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination> 
-      </div>
+     </div>
       <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformA" :rules="rules" ref="rformA" label-width="100px" class="demo-ruleForm">
              <el-form-item label="名称" prop="name">
                  <el-input v-model="rformA.name"></el-input>
              </el-form-item>
-             <el-form-item label="地址" prop="url">
-                 <el-input v-model="rformA.url"></el-input>
+             <el-form-item label="地址" prop="uri">
+                 <el-input v-model="rformA.uri"></el-input>
              </el-form-item>
              <el-form-item label="排序" prop="sort">
                  <el-input v-model="rformA.sort"></el-input>
              </el-form-item>
-             <el-form-item label="公开" prop="open">
-                 <el-radio-group v-model="rformA.open">
+             <el-form-item label="公开" prop="overt">
+                 <el-radio-group v-model="rformA.overt">
                    <el-radio label="1">是</el-radio>
                    <el-radio label="2">否</el-radio>
                  </el-radio-group>
@@ -60,9 +50,10 @@
           </el-form>
           <div slot="footer">
             <el-button @click="cancel">取 消</el-button>
-            <el-button type="primary" @click="saveModule('rformA')" class="confirm">确 定</el-button>
+            <el-button type="primary" @click="saveMenu('rformA')" class="confirm">确 定</el-button>
           </div>
       </el-dialog>
+      <act-list :menuId="menuId" :variable="variable"></act-list>
       </div>
    </div>
 </template>
@@ -72,13 +63,19 @@ import {formatDate} from '../../../js/libs/publicMethod.js'
 import '../../../../static/ztree/zTreeStyle/zTreeStyle.css'
 import '../../../../static/ztree/jquery-1.4.4.min.js'
 import '../../../../static/ztree/jquery.ztree.core.js'
+import actList from './actList'
 export default {
+  components:{
+    "act-list":actList
+  },
   data() {
     return {
+        menuId:0,
+        variable:0, //设置一个变量展示弹窗,每次点开都重新加载数据
         setting: {
           async: {
               enable: true,
-              url: "http://117.78.20.162:3001" + "/org/menu/api/ztreelist",
+              url: this.GLOBAL.serverSrc + "/org/menu/api/ztreelist",
               autoParam: ["id", "name=n", "level=lv"],
               type: 'get',
               checkable: true,
@@ -89,27 +86,25 @@ export default {
           }
         },
         zNodes: [],
-        guid:"",
         groupList: [],
         multipleSelection: [],   //选中的list
         forbidden:true,         //按钮是否禁用
-        pageSize: 10, // 设定默认分页每页显示数
-        pageIndex: 1, // 设定当前页数
-        total: 0,
         title:"",
         dialogFormVisible:false,
+        showList:false,
+        parentID:0,
         rformA: {
           name: "",
-          url: "#",
-          open: "2",
+          uri: "#",
+          overt: "2",
           sort: "0",
           isLeaf: "2",
           remarks: ""
         },
         rules: {
           name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
-          url: [{ required: true, message: '地址不能为空', trigger: 'blur' }],
-          open: [{ required: true, message: '公开不能为空', trigger: 'blur' }],
+          uri: [{ required: true, message: '地址不能为空', trigger: 'blur' }],
+          overt: [{ required: true, message: '公开不能为空', trigger: 'blur' }],
           sort: [{ required: true, message: '排序不能为空', trigger: 'blur' }],
           isLeaf: [{ required: true, message: '末级不能为空', trigger: 'blur' }],
         }
@@ -142,34 +137,16 @@ export default {
           this.removeNode();
         }
       },
-      // 获取目录
-      freshArea(id){
-        this.$http.get(this.GLOBAL.serverSrc + "/org/menu/api/ztreelist", this.qs.stringify({
-            "id": id,
-          })).then(res => {
-            this.zNodes = res.data;
-            $.fn.zTree.init($("#tree"), this.setting, this.zNodes);
-            if (!this.zNodes) {
-              return
-            }
-          }).catch(function(error) {
-            this.tipMsg('目录获取失败！', 'error')
-          });
-      },
       // 单击选中目录
       onNodeClick(e, treeId, treeNode) {
-       alert(treeNode.id);
-
+        console.log(treeNode)
+        this.parentID = treeNode.id;
+        if(treeNode.isParent === true){
+          this.menuList();
+        }else{
+          console.log("末级");
+        }
       },
-      // 提示
-      tipMsg: function (msg, type) {
-        this.$message({
-          message: msg,
-          type: type
-        });
-      },
-
-
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
@@ -178,7 +155,7 @@ export default {
         }
       },
       changeFun(val) {  //保存选中项的数据
-        this.multipleSelection=val;
+        this.multipleSelection=val;  
         if(this.multipleSelection.length>0){
            this.forbidden=false;
         }else{
@@ -187,7 +164,8 @@ export default {
       },
       clickRow(row){    //选中行复选框勾选
         this.$refs.multipleTable.clearSelection(); //清空用户的选择  
-        this.$refs.multipleTable.toggleRowSelection(row)
+        this.$refs.multipleTable.toggleRowSelection(row);
+        this.menuId = this.multipleSelection[0].id;
       },
       rowClass({row, rowIndex}){  //选中行样式改变
        for(var i=0;i<this.multipleSelection.length;i++){
@@ -196,21 +174,24 @@ export default {
           }
         }
       },
-      moduleList(){  //获取Module
-        this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/page',{
-             "pageIndex": this.pageIndex,
-             "pageSize": this.pageSize,
+      operation(){
+          this.variable++;        
+      },
+      menuList(){  //获取菜单列表
+        this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/list',{
              "object": {
-               "isDeleted": 0,
+               "parentID": this.parentID,
               }
             }).then(res => {
                 if(res.data.isSuccess == true){
                    this.groupList=res.data.objects;
-                   this.total=res.data.total;
+                   this.showList=true;
+                }else{
+                   this.groupList=[];
                 }
         })
       },
-      delModule(){ //删除Module
+      delMenu(){ //删除Module
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
@@ -222,7 +203,7 @@ export default {
                   }).then(res => {
                       if(res.data.isSuccess == true){
                          this.$message.success("删除成功");
-                         this.moduleList();
+                         this.menuList();
                   }
                })
           })
@@ -233,31 +214,18 @@ export default {
           });
         });
       },
-      controlList(){
-        this.$router.push({path: "/controlList?guid="+this.multipleSelection[0].guid});
+      openMenu(title){  //弹窗
+        this.title=title;
+        this.dialogFormVisible = true;
       },
-      handleSizeChange(val){
-        this.pageSize = val;
-        this.pageIndex = 1;
-        this.moduleList();
-      },
-      handleCurrentChange(val){
-        this.pageIndex = val;
-        this.moduleList();
-      },
-      saveModule(formName){ 
-         if(this.title == "增加模块"){
-            this.insertModule(formName);
+      saveMenu(formName){ 
+         if(this.title == "添加菜单"){
+            this.insertMenu(formName);
          }else{
-            this.editModule(formName);
+            this.editMenu(formName);
          }
       },
-      editModuleO(){   //编辑弹窗
-        this.getModule();
-        this.title="编辑模块";
-        this.dialogFormVisible = true;        
-      },
-      getModule(){   //获取一条Module
+      getMenu(){   //获取一条Module
         this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/get',{
            "id":this.multipleSelection[0].id
           }).then(res => {
@@ -267,24 +235,24 @@ export default {
               }
         }) 
       },
-      editModule(formName){  //编辑保存
+      editMenu(formName){  //编辑保存
          this.$refs[formName].validate((valid) => {
           if(valid){
              this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/save',{
                "object": {
                 "id": this.multipleSelection[0].id,
-                "createTime": formatDate(new Date()),
+                "createTime": 0,//formatDate(new Date())
                 "isDeleted": 0,
                 "code": "string",
                 "name": this.rformA.name,
-                "uri": this.rformA.url,
+                "uri": this.rformA.uri,
                 "guid": this.multipleSelection[0].guid,
                 "isLeaf": this.rformA.isLeaf,
                 "leaf": 0
               }
             }).then(res => {
                 if(res.data.isSuccess == true){                
-                  this.moduleList();
+                  this.menuList();
                   this.dialogFormVisible = false
                   this.$refs[formName].resetFields();
               }else{
@@ -297,43 +265,31 @@ export default {
           }
         })
       },
-      insertModuleO(){  //新增弹窗
-        this.title="增加模块";
-        this.dialogFormVisible = true;
-      },
-      insertModule(formName) {  //新增保存
+      insertMenu(formName) {  //新增保存
         this.$refs[formName].validate((valid) => {
           if(valid){
-             this.$http.post(this.GLOBAL.serverSrc + '/universal/utinity/api/getguid',{
-               "object": true
-            }).then(res => {
-                if(res.data.isSuccess == true){
-                   this.guid = res.data.object;
-                   this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/insert',{
+                   this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/insert',{
                      "object": {
                       "id": 0,
-                      "createTime": formatDate(new Date()),
-                      "isDeleted": 0,
-                      "code": "string",
                       "name": this.rformA.name,
-                      "uri": this.rformA.url,
-                      "guid": this.guid,
+                      "uri": this.rformA.uri,
+                      "guid": "",
+                      "createTime": 0,
+                      "parentID": this.parentID,
+                      "sort": this.rformA.sort,
+                      "overt": this.rformA.overt,
+                      "remarks": this.rformA.remarks,
                       "isLeaf": this.rformA.isLeaf,
-                      "leaf": 0
                     }
                   }).then(res => {
                       if(res.data.isSuccess == true){
-                         this.moduleList();
+                         this.menuList();
                          this.dialogFormVisible = false
                          this.$refs[formName].resetFields();
                       }else{
                          this.$message.success(res.data.result.message);
                       }
-                  })  
-              }else{
-                  this.$message.success(res.data.result.message);
-             }
-          })
+                  })
           } else {
             console.log('error submit!!');
             return false;
@@ -346,22 +302,23 @@ export default {
       }
   }
 }
-
+$(document).ajaxSend(function(event, jqxhr, settings){
+    jqxhr.setRequestHeader("Authorization",'Bearer ' + localStorage.getItem('token'));
+})
 </script>
 
 <style scoped>
        .tree-list{float: left;margin-left: 20px}
        .table{border:1px solid #e6e6e6;width:800px;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 8px}
        .el-table tr{background: #f6f6f6 !important}
-       .button{margin:25px 0 0 8px}
+       .button{margin:20px 0 0 8px}
        .button .el-button{border:1px solid #3095fa;color:#3095fa;width:80px;padding: 0;line-height: 35px}
        .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}
        .el-table--enable-row-hover .el-table__body tr:hover>td{background-color: #f5f7fa !important}
-       .pagination{float:right;margin:70px 0 50px 0}
        .confirm{margin:0 140px 0 20px}
        .demo-ruleForm{margin:20px}
        .demo-ruleForm .el-input{width:300px}
        /*ztree*/
-       .ztree-bg{float: left;width: 230px;height:600px;margin-top: 25px;background-color: #eee}
+       .ztree-bg{float: left;width: 230px;height:600px;margin-top: 20px;background-color: #eee}
 </style>
 </style>

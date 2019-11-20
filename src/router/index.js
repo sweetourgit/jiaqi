@@ -166,8 +166,8 @@ export default new Router({
         auth: true
       }
     },{
-      path: '/priList',
-      component: () => import('@/page/contentInfo/priManagement/priList'),
+      path: '/actList',
+      component: () => import('@/page/contentInfo/priManagement/actList'),
       name: '功能列表',
       meta: {
         keepAlive: true,
@@ -215,8 +215,8 @@ export default new Router({
       }
     },
     {
-      path: '/controlList',
-      component: () => import('@/page/contentInfo/priManagement/controlList'),
+      path: '/menuList',
+      component: () => import('@/page/contentInfo/priManagement/menuList'),
       name: '权限配置',
       meta: {
         keepAlive: true,
