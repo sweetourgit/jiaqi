@@ -1481,7 +1481,7 @@ export default {
     },
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
-      this.ruleForm.merchantsSell = '';
+      this.ruleForm.merchantsSell = '';//商户名称发生改变时，商户销售清空
       this.tableData2 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
