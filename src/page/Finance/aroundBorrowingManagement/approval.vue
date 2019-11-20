@@ -328,20 +328,20 @@
             });
 
             // 根据分销商ID获取名称
-            if(response.data.data.distributor_code){
-              that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
-                "id": response.data.data.distributor_code
-              }).then(function(obj) {
-//              console.log('获取分销商',obj);
-                if(obj.data.isSuccess){
-                  that.baseInfo.distributor_code = obj.data.object.name;
-                }else{
-                  that.$message.warning("加载数据失败~");
-                }
-              }).catch(function(obj) {
-                console.log(obj);
-              });
-            }
+//            if(response.data.data.distributor_code){
+//              that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+//                "id": response.data.data.distributor_code
+//              }).then(function(obj) {
+////              console.log('获取分销商',obj);
+//                if(obj.data.isSuccess){
+//                  that.baseInfo.distributor_code = obj.data.object.name;
+//                }else{
+//                  that.$message.warning("加载数据失败~");
+//                }
+//              }).catch(function(obj) {
+//                console.log(obj);
+//              });
+//            }
 
             // 获取供应商名称
             if(response.data.data.info.supplier_code){
@@ -369,21 +369,21 @@
             }
 
             // 根据账户ID获取账户名称
-            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
-              {
-                "id": response.data.data.account_id
-              },{
-                headers: {
-                  'Authorization': 'Bearer ' + localStorage.getItem('token')
-                }
-              }).then(function (obj) {
-//              console.log('账户查询',obj);
-              if(obj.data.isSuccess){
-                that.baseInfo.account = obj.data.object.title;
-              }
-            }).catch(function (obj) {
-              console.log(obj)
-            });
+//            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
+//              {
+//                "id": response.data.data.account_id
+//              },{
+//                headers: {
+//                  'Authorization': 'Bearer ' + localStorage.getItem('token')
+//                }
+//              }).then(function (obj) {
+////              console.log('账户查询',obj);
+//              if(obj.data.isSuccess){
+//                that.baseInfo.account = obj.data.object.title;
+//              }
+//            }).catch(function (obj) {
+//              console.log(obj)
+//            });
             // 凭证
             that.fileList = JSON.parse(response.data.data.info.file);
             for(let i = 0; i < that.fileList.length; i++){
