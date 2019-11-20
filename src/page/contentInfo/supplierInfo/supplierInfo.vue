@@ -1326,8 +1326,8 @@ export default {
     },
     editLabelTheme(formName){
       console.log(this.pid,'每条数据的id值')
-      console.log(this.editForm,1314)
-      debugger;
+      // console.log(this.editForm,1314)
+      // debugger;
       if (this.editForm.supplierState == "正常"){
         this.editForm.supplierState1 =1
       } else if(this.editForm.supplierState == "停用"){
