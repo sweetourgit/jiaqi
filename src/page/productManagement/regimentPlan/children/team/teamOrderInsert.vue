@@ -379,7 +379,7 @@
               <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="70" align="center">
                 <template slot-scope="scope">
-                  <span class="cursor blue">查看</span>
+                  <span class="cursor blue" @click="expense(scope.row)">查看</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -403,7 +403,7 @@
               <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="80" align="center">
                 <template slot-scope="scope">
-                  <span class="cursor blue">查看</span>
+                  <span class="cursor blue" @click="collection(scope.row)">查看</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -422,13 +422,22 @@
         </el-tabs>
       </div>
     </el-dialog>
-    <!--审批过程-->
+    <!--借款审批过程-->
     <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px"@close="closeApprova()">
       <el-table :data="approvalTable" :header-cell-style="getCostClass" border>
-        <el-table-column prop="finishedTime" label="审批时间" min-width="180" align="center"></el-table-column>
+        <el-table-column prop="finishedTime" :formatter='dateFormat' label="审批时间" min-width="180" align="center"></el-table-column>
         <el-table-column prop="participantName" label="审批人" min-width="120" align="center"></el-table-column>
         <el-table-column prop="approvalName" label="审批结果" min-width="120" align="center"></el-table-column>
         <el-table-column prop="No" label="审批意见" min-width="180" align="center"></el-table-column>
+      </el-table>
+    </el-dialog>
+    <!--收款审批过程-->
+    <el-dialog title="审批过程" :visible.sync="collectionShow" width="800px" @close="closeCollection()">
+      <el-table :data="collectionTable" :header-cell-style="getCostClass" border>
+        <el-table-column prop="createTime" :formatter='dateFormat' label="审批时间" min-width="180" align="center"></el-table-column>
+        <el-table-column prop="spName" label="审批人" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="spState" label="审批结果" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="spContent" label="审批意见" min-width="180" align="center"></el-table-column>
       </el-table>
     </el-dialog>
     <!-- </div> -->
@@ -608,14 +617,17 @@ export default {
       deposit:0,//获取预存款
       amount:0,//剩余额度加预存款
       payment:0,
-      approvalTable:[],//审批过程表格
-      approvalShow:false,//审批过程弹窗
+      approvalTable:[],//借款审批过程表格
+      approvalShow:false,//借款审批过程弹窗
       guid:'',
       pid:'',
       paymentType:'',
       multipleSelection: [], //选中的list
       checkSheetDialog:false,//报账单弹窗
       forbidden:true,//商户销售在没有商户名称的时候禁止状态
+      collectionShow:false,//收款审批过程弹窗
+      collectionTable:[],//收款过程表格
+      collectionID:'',//收款管理获取该条ID
     };
   },
   filters: {
@@ -668,6 +680,14 @@ export default {
   },
   methods: {
     moment,
+    // 起始时间格式转换
+    dateFormat: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined) {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD')
+    },
     detailsCancel(){//详情取消弹窗
       this.detailsDialog = false;
       this.tableBorrowing = [];//借款表格
@@ -1425,13 +1445,6 @@ export default {
     },
     departure1(item){
       this.ReplacesaleId = item.id
-      // console.log(item)
-      // this.productPos = item.id;//获取供应商的id传给下单接口的orgID
-      // this.lines = item.balance;//获取剩余额度
-      // this.deposit = item.deposit;//获取预存款
-      // this.payment = item.settlementType ;//获取结算方式
-      // this.originPlace = item.value;
-      // this.amount = this.lines + this.deposit;
     },
     //同业销售模糊查询
     querySearch2(queryString2, cb) {
@@ -1468,6 +1481,7 @@ export default {
     },
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
+      this.ruleForm.merchantsSell = '';
       this.tableData2 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
@@ -1495,7 +1509,7 @@ export default {
         //console.log(err);
       })
     },
-    createFilter(queryString1){
+    createFilter(queryString3){
       return (restaurant) => {
         return (restaurant.value);
       }
@@ -1524,10 +1538,13 @@ export default {
           if (res.data.isSuccess == true) {
             console.log(res.data.object.useList)
             for (let i = 0; i < res.data.object.useList.length; i++) {
-              this.useList.push({
-                "value": res.data.object.useList[i].name,
-                "id": res.data.object.useList[i].id
-              })
+              if(res.data.object.useList[i].name.indexOf(this.ruleForm.merchantsSell)!=-1){
+                this.useList.push({
+                  "value": res.data.object.useList[i].name,
+                  "id": res.data.object.useList[i].id
+                })
+              }
+              
             }
           }
           var results = queryString4 ? this.useList.filter(this.createFilter(queryString4)) : [];
@@ -1535,6 +1552,11 @@ export default {
         }).catch(err => {
           //console.log(err);
         })
+    },
+    createFilter(queryString4){
+      return (restaurant) => {
+        return (restaurant.value);
+      }
     },
     departure4(item){
       console.log(item)
@@ -1741,8 +1763,40 @@ export default {
         that.approvalTable = obj.data.extend.instanceLogInfo;
       }).catch(obj => {})
     },
+    expense(row){//点击报销曲线弹窗并且获取guid
+      this.pid = row.guid;
+      this.expenserJQ();
+      this.approvalShow = true;
+    },
+    expenserJQ(){//报销获取审批流程
+      var that =this
+      console.log(this.paymentType)
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+        jQ_ID: this.pid,
+        jQ_Type: 3,
+      }).then(obj => {
+        that.approvalTable = obj.data.extend.instanceLogInfo;
+      }).catch(obj => {})
+    },
     closeApprova(){//关闭借款弹窗
       this.approvalTable = [];
+    },
+    closeCollection(){//关闭收款弹窗
+      this.collectionTable = [] ;
+    },
+    collection(row){//收款审批过程查看获取ID
+      this.collectionID = row.id;
+      this.gathering();
+      this.collectionShow = true ;
+    },
+    gathering(){//获取收款审批过程数据
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/coll', {
+        "id": this.collectionID
+      }).then(res =>{
+        if(res.data.isSuccess == true){
+          this.collectionTable = res.data.object.spw;//获取账户信息数据
+        }
+      })
     },
     //报账单关闭弹窗
     closeCheckSheet(){
