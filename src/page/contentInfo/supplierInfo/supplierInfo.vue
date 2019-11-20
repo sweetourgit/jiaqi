@@ -1558,7 +1558,7 @@ export default {
         name: supplierName,
         id: supplierCard == "" ? 0 : supplierCard,
         isMonthly: settlement == "" ? 0 : settlement,
-        supplierType: category == "" ? 0 : category,
+        supplierType: category == "" ? -1 : category,
         UserState: condition == "" ? -1 : condition,
         companyArea: visibleArea == "" ? 1 : visibleArea
         /*"isDeleted": 0,
@@ -1704,34 +1704,6 @@ export default {
   mounted() {
     this.supplierPage();
   },
-  // watch:{
-  //     conditionType:{
-  //       handler(newValue,oldValue){
-  //         deep:true
-  //       }
-  //     },
-  //   pathType:{
-  //     handler(newValue,oldValue){
-  //       deep:true
-  //     }
-  //   },
-  //   borrowingType:{
-  //     handler(newValue,oldValue){
-  //       deep:true
-  //     }
-  //   },
-  //   settlementType:{
-  //     handler(newValue,oldValue){
-  //       deep:true
-  //     }
-  //   },
-  //   agreement:{
-  //     handler(newValue,oldValue){
-  //       deep:true
-  //     }
-  //   },
-  // },
-
   created() {
     this.themeList(); //供应商类别
     this.settlemen(); //结算方式
