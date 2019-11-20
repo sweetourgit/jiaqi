@@ -93,7 +93,7 @@
                 },
                 {
                   value: '功能管理',
-                  router:'/priList'
+                  router:'/menuList'
                 },{
                   value: '权限列表',
                   router:'/proList'

@@ -100,7 +100,10 @@
         <!--总价-->
         <div class="price">
           <p class="totle">总价：￥{{toDecimal2(payable)}}</p>
-          <p class="surplus" v-if="orderget.orderChannel===1&&settlementType===1">剩余预存款和额度：￥400,000.00</p>
+          <p
+            class="surplus"
+            v-if="orderget.orderChannel===1&&settlementType===1"
+          >剩余预存款和额度：￥{{toDecimal2(this.deposit+this.balance)}}</p>
         </div>
         <hr />
         <!--订单联系人-->
@@ -286,7 +289,9 @@ export default {
     orderCode: "",
     paid: 0, //已付金额
     priceType: 0, //价格类型
-    settlementType: 0 //同业社的结算方式 1为月结 2为非月结
+    settlementType: 0, //同业社的结算方式 1为月结 2为非月结
+    balance: 0, //剩余额度
+    deposit: 0 //剩余预存款
   },
   data() {
     return {
@@ -495,92 +500,100 @@ export default {
     },
 
     orderModification(status, cancle) {
-      // console.log(status)
-      //订单修改保存
-      let url = "/order/stat/api";
-      switch (status) {
-        case 0:
-        case 7:
-          switch (cancle) {
-            case 1:
-              this.ordersave(this.orderget.id, cancle);
-              break;
-              retrun;
-            case 2:
-              url = "";
-              this.ordersave(this.orderget.id, cancle);
-              break;
-              retrun;
-            // case 3:
-            //   url += "/material";
-            //   break;
-            //   retrun;
-          }
-          break;
-        case 10:
-          url += "/material";
-          break;
-        case 1:
-          for (let i = 0; i < this.salePrice.length; i++) {
-            for (let j = 0; j < this.tour[i].length; j++) {
-              if (this.tour[i][j].cnName == "") {
-                this.$message.error("请补全出行人信息");
-                // this.isChangeNumber = true;
-                return;
-              } else {
-                url = "/order/stat/api/econtract";
+      if (
+        this.orderget.orderChannel === 1 &&
+        this.settlementType === 1 &&
+        this.payable < this.balance + this.deposit
+      ) {
+        this.$message.error("总价超过剩余预存款和额度");
+      } else {
+        // console.log(status)
+        //订单修改保存
+        let url = "/order/stat/api";
+        switch (status) {
+          case 0:
+          case 7:
+            switch (cancle) {
+              case 1:
+                this.ordersave(this.orderget.id, cancle);
+                break;
+                retrun;
+              case 2:
+                url = "";
+                this.ordersave(this.orderget.id, cancle);
+                break;
+                retrun;
+              // case 3:
+              //   url += "/material";
+              //   break;
+              //   retrun;
+            }
+            break;
+          case 10:
+            url += "/material";
+            break;
+          case 1:
+            for (let i = 0; i < this.salePrice.length; i++) {
+              for (let j = 0; j < this.tour[i].length; j++) {
+                if (this.tour[i][j].cnName == "") {
+                  this.$message.error("请补全出行人信息");
+                  // this.isChangeNumber = true;
+                  return;
+                } else {
+                  url = "/order/stat/api/econtract";
+                }
               }
             }
-          }
-          // url += "/econtract";
-          break;
-        case 2:
-          url += "/signcontract";
-          break;
-      }
-      // 订单工作流状态更新-作废订单
-      if (cancle == 0) {
-        this.dialogVisible = false;
-        url = "/order/stat/api/invalid";
-        // url = "/order/all/api/orderdelete";
-      }
+            // url += "/econtract";
+            break;
+          case 2:
+            url += "/signcontract";
+            break;
+        }
+        // 订单工作流状态更新-作废订单
+        if (cancle == 0) {
+          this.dialogVisible = false;
+          url = "/order/stat/api/invalid";
+          // url = "/order/all/api/orderdelete";
+        }
 
-      this.$http
-        .post(this.GLOBAL.serverSrc + url, {
-          object: {
-            id: this.orderget.id,
-            occupyStatus: this.orderget.occupyStatus
-          }
-        })
-        .then(res => {
-          if (res.data.isSuccess == true) {
-            this.$message({
-              message: "提交成功",
-              type: "success"
-            });
-            if (status === 1) {
-              this.ordersave(3);
+        this.$http
+          .post(this.GLOBAL.serverSrc + url, {
+            object: {
+              id: this.orderget.id,
+              occupyStatus: this.orderget.occupyStatus
             }
-            if (status === 10) {
-              this.ordersave(1);
+          })
+          .then(res => {
+            if (res.data.isSuccess == true) {
+              this.$message({
+                message: "提交成功",
+                type: "success"
+              });
+              if (status === 1) {
+                this.ordersave(3);
+              }
+              if (status === 10) {
+                this.ordersave(1);
+              }
+              // 取消订单按钮
+              if (cancle === 0) {
+                this.$http
+                  .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
+                    id: this.orderget.id
+                  })
+                  .then(res => {
+                    console.log(res);
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              }
+              this.$emit("orderPage");
+              this.cancle();
             }
-            // 取消订单按钮
-            if (cancle === 0) {
-              this.$http
-                .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
-                  id: this.orderget.id
-                })
-                .then(res => {
-                  console.log(res);
-                })
-                .catch(err => {
-                  console.log(err);
-                });
-            }
-            this.$emit("orderPage");
-            this.cancle();
-          }
-        });
+          });
+      }
     },
     //列表订单状态显示
     getOrderStatus(status, endTime, occupyStatus, orderChannel) {
