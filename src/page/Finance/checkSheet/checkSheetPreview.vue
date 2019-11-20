@@ -61,25 +61,25 @@
             <el-col :span="2" class="title1">
               团队人数
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="2" class="content">
               {{msg.team_num}}
             </el-col>
             <el-col :span="2" class="title1">
               减免人数
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="2" class="content">
               {{msg.reduce_num}}
             </el-col>
             <el-col :span="2" class="title1">
               出发日期
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="4" class="content">
               {{msg.startTime}}
             </el-col>
             <el-col :span="2" class="title1">
               返回日期
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="4" class="content">
               {{msg.endTime}}
             </el-col>
             <el-col :span="2" class="title1">
