@@ -106,7 +106,8 @@
             </div>
           </div>
           <!---->
-          <i class="el-icon-circle-close-outline" @click="delPic"></i>
+          <!-- <i class="el-icon-circle-close-outline" @click="delPic"></i> -->
+          <i class="el-icon-close" style="cloor:#000;" @click="delPic"></i>
         </div>
          <div class="right-form">
            <div class="album-message">
@@ -906,5 +907,7 @@ opacity: 0.4;
 .gallery-thumbs .swiper-slide-thumb-active {
   opacity: 1;
 }
+.left-img i{color:#000;}
+.icon{color:#000;}
 
 </style>

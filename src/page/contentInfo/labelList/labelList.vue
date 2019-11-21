@@ -322,7 +322,7 @@
         this.deleteGatherShow = false;
         if(this.tableData.length == 0){
           this.handleTabsEdit(this.tabIndex, "remove");
-          this.deleteTheme();
+          //this.deleteTheme();
         }else{
           return 
         }
