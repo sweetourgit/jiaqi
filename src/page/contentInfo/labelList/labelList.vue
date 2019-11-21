@@ -318,11 +318,10 @@
         //this.cycleId();
       },
       deleteGather(ensure){
-        this.cycleId();
         this.deleteGatherShow = false;
         if(this.tableData.length == 0){
-          this.handleTabsEdit(this.tabIndex, "remove");
-          //this.deleteTheme();
+          //this.handleTabsEdit(this.tabIndex, "remove");
+          this.deleteTheme();
         }else{
           return 
         }
@@ -332,6 +331,7 @@
       },
       //添加主题方法
       addTheme(){
+        this.a = false;
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
             var _this = this;
