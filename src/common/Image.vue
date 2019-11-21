@@ -233,7 +233,9 @@ export default {
         destination: [
           { required: true, message: "请选择目的地", trigger: "blur" }
         ]
-      }
+      },
+      // 景点列表
+      parentPath:[] //用来接收所选地区的id以及他的父级节点的id 为tree自动展开
     };
   },
   watch: {
@@ -242,6 +244,7 @@ export default {
     },
     imgData() {
       this.checkList = this.imgData;
+      this.getParentId();
     },
     isType() {
       this.isTypes = this.isType;
@@ -256,8 +259,10 @@ export default {
     this.isTypes = this.isType;
     this.isImgs = this.isImg;
     this.albumtypeget();
+    this.getParentId();
   },
   methods: {
+    
     handleSave() {
       if (this.isTypes) {
         if (this.checkList.length < 3 || this.checkList.length > 6) {
@@ -313,6 +318,7 @@ export default {
             }
           })
           .then(obj => {
+            console.log(obj, "objareainforlist");
             for (let i = 0; i < obj.data.objects.length; i++) {
               this.list.push({
                 name: obj.data.objects[i].areaName,
@@ -322,7 +328,7 @@ export default {
                 Hierarchy: 0 // 层级
               });
             }
-            
+
             resolve(this.list);
           })
           .catch(obj => {
@@ -339,6 +345,18 @@ export default {
           node.level
         );
       }
+
+      // 后改的begin
+      // this.$http
+      //     .post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist", {
+      //       object: {
+      //         isLeaf:2
+      //       }
+      //     })
+      //     .then(obj => {
+      //       console.log(obj,"0")
+      //     })
+      // 后改的end
     },
     /*获取子集的方法*/
     getSon(key, label, id, isLeaf, resolve, level) {
@@ -371,6 +389,22 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+
+    // 景点信息带过来的地区id  根据这个id去找他的父级节点id
+    getParentId() {
+      console.log(this.imageAreaId, 1111);
+      if (this.imageAreaId !== 0) {
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/universal/area/api/getpa", {
+            id: this.imageAreaId
+          })
+          .then(obj => {
+            this.parentPath=obj.data.parentPath.split(",")
+            console.log(this.parentPath, "父级id");
+          })
+          .catch(err => {});
+      }
     },
 
     // 单击tree节点

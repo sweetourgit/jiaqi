@@ -330,8 +330,10 @@ export default {
     },
     search() {
       if(this.op == ''){
+        this.current = 1;
         this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
       } else {
+        this.current = 1;
         this.getUserCode();
       }
       

@@ -11,7 +11,12 @@
            <el-table-column  prop="characteristic" label="标识" min-width="60" align="center"></el-table-column>
            <el-table-column  prop="uri" label="地址" min-width="150" align="center"></el-table-column>
            <el-table-column  prop="name" label="名称" min-width="280" align="center"></el-table-column>
-           <el-table-column  prop="overt" label="公开" min-width="150" align="center"></el-table-column>
+           <el-table-column  prop="overt" label="公开" min-width="150" align="center">
+               <template slot-scope="scope">
+                  <div v-if="scope.row.overt == '1'">是</div>
+                  <div v-else>否</div>
+               </template>
+           </el-table-column>
            <el-table-column  prop="remarks" label="备注" min-width="150" align="center"></el-table-column>
          </el-table>
          

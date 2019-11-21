@@ -255,7 +255,9 @@
                   "create_uid": sessionStorage.getItem('id'),
                   "org_id": sessionStorage.getItem('orgID'),
                   "buy_type": 1,
-                  "rece_code": code
+                  "rece_code": code,
+                  "time_start": this.ruleForm.timeStart,
+                  "time_end": this.ruleForm.timeEnd
                 }).then(res => {
                   console.log(res);
                   if (res.data.code == 200) {

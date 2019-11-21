@@ -423,7 +423,7 @@
                       // 因为申请人检索（财务）那块对操作是隐藏的
                       let keepUserPosition = res.data.user_Position
                       keepUserPosition.forEach(function(item){
-                        if(item.positionName === '出纳'){
+                        if(item.positionName === '财务复核'){
                           sessionStorage.setItem('hasCashierInfo', true)
                         }
                       })

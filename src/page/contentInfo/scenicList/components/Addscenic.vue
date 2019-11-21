@@ -716,11 +716,11 @@ export default {
         return { img_ID: v.img_ID };
       });
       this.dateTime.desc = data.openingHourExplain;
-      console.log(data);
+      // console.log(data);
     },
     // 区域选择
     handleSelect(item) {
-      this.imageAreaId = item.name;
+      this.imageAreaId = item.id;
       this.form.areaId = item;
       this.isSelect = true;
     },
