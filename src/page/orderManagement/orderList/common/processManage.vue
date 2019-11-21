@@ -103,7 +103,7 @@
           <p
             class="surplus"
             v-if="orderget.orderChannel===1&&settlementType===1"
-          >剩余预存款和额度：￥{{toDecimal2(this.deposit+this.balance)}}</p>
+          >剩余预存款和额度：￥{{toDecimal2(deposit+balance)}}</p>
         </div>
         <hr />
         <!--订单联系人-->
@@ -208,7 +208,7 @@
           type="primary"
           v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9"
           @click="ordersave"
-          :disabled="payable-prePayable > this.deposit+this.balance"
+          :disabled="payable-prePayable > deposit+balance"
           class="confirm fr"
         >保存更改</el-button>
         <!--取消按钮-->
@@ -324,7 +324,7 @@ export default {
       enrolNums: false, //报名人数是否为空提示
       enrolNumsWarn: "",
       number: 0, //报名总人数
-      prePayable:0,//记录最开始的订单总价
+      prePayable: 0, //记录最开始的订单总价
       payable: 0, //总价
       dialogFormTour: false,
       salePrice: [], //报名类型价格列表数据
@@ -427,7 +427,7 @@ export default {
         })
         .then(res => {
           // console.log(res, "get");
-          // console.log("getorderStatus", res.data.object.orderStatus);
+          // console.log("settlementType", this.settlementType);
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -456,6 +456,10 @@ export default {
             this.orderSourceFun(res.data.object.orderChannel);
             this.dialogFormProcess = true;
             this.teampreview(res.data.object.planID);
+            //同业的订单（月结的）记录以前的订单总价 改变后的总价和剩余预存款和额度作对比 超过则不可保存更改
+            if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
+              this.prePayable = this.orderget.payable
+            }
           }
         })
         .catch(err => {
@@ -752,7 +756,7 @@ export default {
         }
       }
     },
-    
+
     // 订单是否需要跳转回确认占位的状态
     isEqualityFun() {
       // get的总价不等于更改后的总价时
@@ -842,10 +846,6 @@ export default {
         // } else {
         //   this.tour[index].splice(arrLength - preLength, preLength - arrLength);
         // }
-      }
-      //同业的订单（月结的）记录以前的订单总价 改变后的总价和剩余预存款和额度作对比 超过则不可保存更改
-      if(this.orderget.orderChannel === 1 && this.orderget.settlementType === 1) {
-        this.prePayable = this.payable
       }
       this.isEqualityFun();
     },
@@ -1045,7 +1045,7 @@ export default {
             : 0
         );
       }
-      
+
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
