@@ -221,7 +221,7 @@
         <el-button @click="through()" type="danger" plain>通过</el-button>
         <el-button @click="rejected()" type="danger" plain>驳回</el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo"></checkLoanManagement>
     </el-dialog>
     <!-- 借款申请详情 END -->
     <!-- 通过、驳回弹框 -->
@@ -261,6 +261,7 @@ import moment from 'moment'
         planData_01:'', //借款表格
       },
       paymentID:0,
+      acoutInfo: null, // 传到子组件弹窗内的值 row
       groupCode:'', //表头切换
       empty_01:'',
       people_01:'',
@@ -523,6 +524,7 @@ import moment from 'moment'
         })
         this.paymentID=row.paymentID;
         this.pid = row.paymentID;
+        this.acoutInfo = row
         this.detailstShow = true;
         this.getLabel();
       },

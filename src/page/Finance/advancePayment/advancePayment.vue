@@ -65,10 +65,7 @@
                 <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
               </template>
             </el-table-column>
-            <el-table-column label="发起时间" align="center" width="190">
-              <template slot-scope="scope">
-                {{formatDate1(scope.row.createTime)}}
-              </template>
+            <el-table-column label="发起时间" :formatter='dateFormat' align="center" width="190" prop="createTime">
             </el-table-column>
             <el-table-column prop="groupCode" label="团期计划" align="center" width="180">
             </el-table-column>
@@ -231,6 +228,14 @@ export default {
     }
   },
   methods: {
+    // 起始时间格式转换
+    dateFormat: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined) {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD')
+    },
     moment,
     // 选择账户弹窗
     bankAccount() {
@@ -494,12 +499,6 @@ export default {
       }).catch(err => {
         console.log(err);
       })
-    },
-    // 时间转换
-    formatDate1(dates) {
-      var dateee = new Date(dates).toJSON();
-      var date = new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
-      return date;
     },
     //查看无收入借款弹窗
     checkIncome(row) {

@@ -881,8 +881,8 @@ export default {
 
           let needArrearData = [] // 转变关联欠款数据格式之后的数据模型
           this.arrearsList.forEach(function(item){ // 转换关联欠款表格数据结构
-            getMatchingMoney +=  Number(item.matchingMoney)
             if(item.matchingMoney != '' && item.matchingMoney > 0){
+              getMatchingMoney +=  Number(item.matchingMoney)
               needArrearData.push({
                 "id": 0,
                 'planID':item.planID,

@@ -5,6 +5,9 @@
     <!-- 基本信息 -->
     <div class="item-content">
       <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
+      <div v-if="presentRouter == '无收入借款管理'">
+        <el-tag type="danger" @click="bankAccount(acoutInfo)" v-if="acoutInfo.checkTypeEX=='通过' && acoutInfo.isEBS == 0 && ifAccountBtn" class="distributor-status">支付账户</el-tag>
+      </div>
       <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
       <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
     </div>
@@ -146,7 +149,7 @@
     </el-table>
     <!-- 无收入借款明细 END -->
     <!-- 预付款明细 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
+    <el-divider content-position="" class='title-margin title-margin-t'>预付款明细</el-divider>
     <el-table :data="tablePayment" border :header-cell-style="getRowClass">
       <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
       <el-table-column prop="checkTypeEX" label="审批状态" align="center">
@@ -197,6 +200,23 @@
       </div>
     </el-dialog>
     <!-- 审批过程-查看弹窗 END -->
+    <!-- 付款账户弹窗 -->
+    <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
+      <div class="close" @click="closeAccount()">×</div>
+      <el-table :data="tableSelect" border :header-cell-style="getRowClass">
+        <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+        <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+        <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
+        <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+        <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="addAccount(scope.$index, scope.row)" class="table_details">选择</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+    <!-- 付款账户弹窗 END -->
   </div>
 </template>
 
@@ -207,9 +227,14 @@ export default {
    paymentID:0,
    groupCode:'',
    title:'',
+   acoutInfo: null // 父组件传过来的值-row信息
   },
   data(){
     return {
+      presentRouter: null, // 当前路由
+      SelectAccount:false, // 选择账户弹窗
+      tableSelect:[], // 选择弹窗表格
+      ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       tableIncomeCheck: null, // 审批过程-查看弹窗-数据
       empty:'', // 表头切换
       people:'',
@@ -281,7 +306,42 @@ export default {
       return moment(value).format('YYYY-MM-DD HH:mm:ss')
     }
   },
+  mounted(){
+    console.log(this.acoutInfo,'ceshi acoutInfo')
+  },
   methods: {
+    // 选择账户弹窗
+    bankAccount(){
+      this.SelectAccount = true;
+      this.selectList();
+    },
+    // 选择账户弹窗，选择对应的选项事件
+    addAccount(index, row){
+      var that = this
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
+        "paymentID": this.paymentID,
+        "accountID": row.id
+      }).then(function (obj) {
+          // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
+          that.getList()
+      }).catch(function (obj) {})
+      this.SelectAccount = false
+    },
+    // 关闭选择账户弹窗
+    closeAccount(){
+      this.SelectAccount = false;
+    },
+    // 选择账户表格查询
+    selectList(){
+      var that = this
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",{
+          "object": {
+            "isDeleted": 0
+          }
+        }).then(function (obj) {
+          that.tableSelect = obj.data.objects
+        }).catch(function (obj) {})
+    },
     // 点击图片钩子
     handlePreview(file) {
       window.open(file.url);
@@ -535,7 +595,14 @@ export default {
     }
   },
   created() {
-    console.log(this.paymentID,'子组件')
+    // 判断当前旅游
+    this.presentRouter = this.$route.name
+    // 只有是出纳的时候才显示申请人检索
+    if (sessionStorage.getItem('hasCashierInfo')) {
+      this.ifAccountBtn = true
+    } else {
+      this.ifAccountBtn = false
+    }
   }
 }
 </script>
