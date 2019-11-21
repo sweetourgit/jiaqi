@@ -242,6 +242,7 @@ export default {
     },
     imgData() {
       this.checkList = this.imgData;
+      console.log(2)
     },
     isType() {
       this.isTypes = this.isType;
@@ -313,6 +314,7 @@ export default {
             }
           })
           .then(obj => {
+            console.log(obj, "objareainforlist");
             for (let i = 0; i < obj.data.objects.length; i++) {
               this.list.push({
                 name: obj.data.objects[i].areaName,
@@ -322,7 +324,7 @@ export default {
                 Hierarchy: 0 // 层级
               });
             }
-            
+
             resolve(this.list);
           })
           .catch(obj => {

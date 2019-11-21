@@ -17,7 +17,12 @@
        <el-table-column  prop="name" label="功能名称" min-width="150" align="center"></el-table-column>
        <el-table-column  prop="uri" label="页面地址" min-width="280" align="center"></el-table-column>
        <!--<el-table-column  prop="guid" label="唯一标识" min-width="250" align="center"></el-table-column>-->
-       <el-table-column  prop="isLeaf" label="是否末级" min-width="150" align="center"></el-table-column>
+       <el-table-column  prop="isLeaf" label="是否末级" min-width="150" align="center">
+           <template slot-scope="scope">
+              <div v-if="scope.row.isLeaf == '1'">是</div>
+              <div v-else>否</div>
+           </template>
+       </el-table-column> 
      </el-table>
      </div>
       <!-- 新增、编辑弹框界面 -->
@@ -123,19 +128,6 @@ export default {
               childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
           }
           return childNodes;
-      },
-      // 点击管理目录预留
-      handleCommand: function (command) {
-        alert(command);
-        if (command == 1) {
-          this.addFolder(1);
-        } else if (command == 2) {
-          this.addFolder(2);
-        } else if (command == 3) {
-          this.editNode();
-        } else if (command == 4) {
-          this.removeNode();
-        }
       },
       // 单击选中目录
       onNodeClick(e, treeId, treeNode) {
@@ -319,6 +311,6 @@ $(document).ajaxSend(function(event, jqxhr, settings){
        .demo-ruleForm{margin:20px}
        .demo-ruleForm .el-input{width:300px}
        /*ztree*/
-       .ztree-bg{float: left;width: 230px;height:600px;margin-top: 20px;background-color: #eee}
+       .ztree-bg{float: left;width: 220px;height:600px;margin-top: 20px;padding: 10px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;}
 </style>
 </style>

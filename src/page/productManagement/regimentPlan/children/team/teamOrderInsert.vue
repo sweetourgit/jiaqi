@@ -70,19 +70,20 @@
           <!--选择线下直客按钮，显示销售文本框-->
           <div v-if="ruleForm.orderRadio==1">
               <el-form-item label="销售" prop="market">
-                <el-autocomplete class="optionw" v-model="ruleForm.market" :fetch-suggestions="querySearch1" placeholder="请输入销售名称" :trigger-on-focus="false"@select="departure1"></el-autocomplete>
+                <el-autocomplete class="optionw" v-model="ruleForm.market" :fetch-suggestions="querySearch1" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure1"></el-autocomplete>
               </el-form-item>
           </div>
           <!--选择商户按钮，显示商户名称和商户销售文本框-->
           <div v-if="ruleForm.orderRadio==2">
               <el-form-item label="同业销售" prop="travelSales">
-                <el-autocomplete class="optionw" v-model="ruleForm.travelSales" :fetch-suggestions="querySearch2" placeholder="请输入销售名称" :trigger-on-focus="false"@select="departure2"></el-autocomplete>
+                <el-autocomplete class="optionw" v-model="ruleForm.travelSales" :fetch-suggestions="querySearch2" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure2"></el-autocomplete>
               </el-form-item>
               <el-form-item label="商户名称" prop="travel">
-                <el-autocomplete class="optionw" v-model="ruleForm.travel" @blur="travelName()" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false"@select="departure"></el-autocomplete>
+                <el-autocomplete class="optionw" v-model="ruleForm.travel" @blur="travelName()" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
               </el-form-item>
               <el-form-item label="商户销售" prop="merchantsSell">
-                <el-autocomplete class="optionw" :disabled = "forbidden" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false"@select="departure4"></el-autocomplete>
+                <el-autocomplete class="optionw" :disabled = "forbidden" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false" @select="departure4"></el-autocomplete>
+                <div v-if="nullShow" style="color:red;">请输入有效的商户销售</div>
               </el-form-item>
           </div>
           <el-form-item label="价格选择" prop="price" class="cb price">
@@ -628,6 +629,7 @@ export default {
       collectionShow:false,//收款审批过程弹窗
       collectionTable:[],//收款过程表格
       collectionID:'',//收款管理获取该条ID
+      nullShow:false,//如果商户销售输入的不是有效的提示
     };
   },
   filters: {
@@ -1104,6 +1106,12 @@ export default {
                       console.log(1)
                       if(this.ruleForm.totalPrice <= this.amount){//判断订单金额与剩余预存款和额度对比
                         this.ifOrderInsert = true;
+                        if(this.userID == 0){
+                          this.nullShow = true;
+                          return;
+                        }else{
+                          this.nullShow= false;
+                        }
                         this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                           object: {
                             id: 0,
@@ -1198,6 +1206,12 @@ export default {
                         });
                       }
                     }else if(this.payment == '2'){
+                        if(this.userID === 0){
+                          this.nullShow = true;
+                          return;
+                        }else{
+                          this.nullShow= false;
+                        }
                         this.ifOrderInsert = true;
                         this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                           object: {
@@ -1444,7 +1458,7 @@ export default {
       }
     },
     departure1(item){
-      this.ReplacesaleId = item.id
+      this.ReplacesaleId = item.id;
     },
     //同业销售模糊查询
     querySearch2(queryString2, cb) {
@@ -1530,13 +1544,13 @@ export default {
     },
     //商户销售模糊查询
     querySearch4(queryString4, cb) {
+      console.log(queryString4)
         this.useList = []
         this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/get', {
           id:this.productPos,
         })
         .then(res => {
           if (res.data.isSuccess == true) {
-            console.log(res.data.object.useList)
             for (let i = 0; i < res.data.object.useList.length; i++) {
               if(res.data.object.useList[i].name.indexOf(this.ruleForm.merchantsSell)!=-1){
                 this.useList.push({
