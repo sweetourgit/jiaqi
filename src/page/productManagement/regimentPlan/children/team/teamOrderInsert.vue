@@ -80,6 +80,7 @@
               </el-form-item>
               <el-form-item label="商户名称" prop="travel">
                 <el-autocomplete class="optionw" v-model="ruleForm.travel" @blur="travelName()" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
+                <div v-show="nullShowName" style="color:red;">请输入有效的商户名称</div>
               </el-form-item>
               <el-form-item label="商户销售" prop="merchantsSell">
                 <el-autocomplete class="optionw" :disabled = "forbidden" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false" @select="departure4"></el-autocomplete>
@@ -375,7 +376,7 @@
                   <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
                 </template>
               </el-table-column>
-              <el-table-column prop="createTime" label="发起时间" min-width="150" align="center"></el-table-column>
+              <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" min-width="150" align="center"></el-table-column>
               <el-table-column prop="price" label="该团期的报销金额" min-width="150" align="center"></el-table-column>
               <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="70" align="center">
@@ -397,9 +398,18 @@
                   <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
                 </template>
               </el-table-column>
-              <el-table-column prop="collectionTime" label="收款时间" min-width="150" align="center"></el-table-column>
-              <el-table-column prop="groupCode" label="团期计划" min-width="150" align="center"></el-table-column>
-              <el-table-column prop="orderNumber" label="订单号" min-width="120" align="center"></el-table-column>
+              <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" min-width="150" align="center"></el-table-column>
+              <el-table-column prop="groupCode" label="团期计划" min-width="150" align="center">
+                <template slot-scope="scope">
+                  <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.groupCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="orderCode" label="订单号" min-width="120" align="center">
+                <template slot-scope="scope">
+                  <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.orderCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+                </template>
+              </el-table-column>
+              <!-- <el-table-column prop="orderNumber" label="订单号" min-width="120" align="center"></el-table-column> -->
               <el-table-column prop="price" label="收款金额" min-width="80" align="center"></el-table-column>
               <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="80" align="center">
@@ -630,6 +640,7 @@ export default {
       collectionTable:[],//收款过程表格
       collectionID:'',//收款管理获取该条ID
       nullShow:false,//如果商户销售输入的不是有效的提示
+      nullShowName:false,//商户名称输入的不是有效的提示
     };
   },
   filters: {
@@ -1496,7 +1507,7 @@ export default {
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
       this.ruleForm.merchantsSell = '';//商户名称发生改变时，商户销售清空
-      this.tableData2 = []
+      this.tableData2 = [];
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
           name: queryString3,
@@ -1515,6 +1526,11 @@ export default {
             })
             this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
           }
+        }
+        if(res.data.objects){
+          this.nullShowName = false;
+        }else {
+          this.nullShowName = true;
         }
         
         var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
@@ -1561,6 +1577,11 @@ export default {
               
             }
           }
+          // if(res.data.object.useList){
+          //   this.nullShow = false;
+          // }else {
+          //   this.nullShow = true;
+          // }
           var results = queryString4 ? this.useList.filter(this.createFilter(queryString4)) : [];
           cb(results)
         }).catch(err => {

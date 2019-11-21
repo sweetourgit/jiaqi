@@ -107,7 +107,7 @@
           </div>
           <!---->
           <!-- <i class="el-icon-circle-close-outline" @click="delPic"></i> -->
-          <i class="el-icon-close" style="cloor:#000;" @click="delPic"></i>
+          <i v-show="closeShow" class="el-icon-close" style="cloor:#000;" @click="delPic"></i>
         </div>
          <div class="right-form">
            <div class="album-message">
@@ -320,6 +320,7 @@
           ]        
         },
         pictureName:false,
+        closeShow:false,
       }
     },
     created(){
@@ -347,6 +348,7 @@
       // 关闭相册弹窗
       albumClose(){
         this.$refs["picForm"].resetFields();
+        this.albumPage(this.pageIndex,this.pageSize,this.data.id?this.data.id:0,this.searchName);
         this.addAlbum = false;
         this.leftTree1=false; 
         this.isDest = '';
@@ -529,7 +531,7 @@
           })
       },
       //获取一个相册信息
-      getAlbum(id){       
+      getAlbum(id){ 
         this.$http.post('http://test.dayuntong.com' + '/tpk/album/api/get',{
             "id": id,
           }).then(res => {
@@ -541,6 +543,11 @@
                setTimeout(()=>{
                 this.mySwiper(0);
                },100)
+               if(res.data.object.pictures.length>0){
+                  this.closeShow = true;
+               }else{
+                  this.closeShow = false;
+               }
                if(res.data.object.pictures.length!=0){
                  this.getPicture(0);
                  this.picInfoShow=true;
@@ -580,7 +587,8 @@
           })          
         }        
       },
-      albumInfoClose(){
+      albumInfoClose(){//关闭相册弹窗
+        this.albumPage(this.pageIndex,this.pageSize,this.data.id?this.data.id:0,this.searchName);
         this.getAlbumForm = false;
         this.leftTree2=false; 
         this.albumDisabled=true;
@@ -650,7 +658,7 @@
            type: "warning"
         })
         .then(() => {
-              this.$http.post('http://test.dayuntong.com' + '/picture/api/delete',{
+              this.$http.post('http://test.dayuntong.com' + '/tpk/picture/api/delete',{
                     "id": this.pictInfo.id
                   }).then(res => {
                       if(res.data.isSuccess == true){
