@@ -102,7 +102,7 @@
           </el-form-item>
           <el-form-item label="末级区域:" :label-width="formLabelWidth">
             <el-radio-group class="virtualDepartment" v-model="countryPopup.isLeaf">
-              <el-radio label="1">是</el-radio>
+              <el-radio label="1">是不是</el-radio>
               <el-radio label="2">否</el-radio>
             </el-radio-group>
           </el-form-item>

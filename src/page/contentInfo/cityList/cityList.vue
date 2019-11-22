@@ -129,9 +129,7 @@ export default {
         markName: null, // 备用名
         url: null,
       }
-    },
-
-    test(){}
+    }
   }
 }
 </script>
