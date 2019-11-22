@@ -47,7 +47,8 @@
         @refresh="refresh"
       ></edit-form>
       <add-form ref="addFormRef"
-        @refresh="refresh"></add-form>
+        @refresh="refresh"
+      ></add-form>
     </footer>
   </div>
 </template>
@@ -128,7 +129,9 @@ export default {
         markName: null, // 备用名
         url: null,
       }
-    }
+    },
+
+    test(){}
   }
 }
 </script>
