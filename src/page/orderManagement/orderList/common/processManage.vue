@@ -470,6 +470,8 @@ export default {
       if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
         if (this.payable - this.prePayable > this.deposit + this.balance) {
           return (this.isSaveBtn = true);
+        } else {
+          this.isSaveBtn = false
         }
         if (this.payable === this.prePayable) {
           return (this.isSaveBtn = false);
@@ -1058,6 +1060,7 @@ export default {
             : 0
         );
       }
+      this.isSaveBtnClick();
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {

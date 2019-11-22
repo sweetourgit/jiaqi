@@ -17,6 +17,7 @@
         <el-tree
           :props="props1"
           :load="loadNode1"
+          :default-expanded-keys="parentPath"
           class="treeDemo"
           lazy
           @node-click="treeClick"
@@ -235,7 +236,8 @@ export default {
         ]
       },
       // 景点列表
-      parentPath:[] //用来接收所选地区的id以及他的父级节点的id 为tree自动展开
+      parentPath: [], //用来接收所选地区的id以及他的父级节点的id 为tree自动展开
+      expandedKeys: [] //tree 自动展开的属性赋值
     };
   },
   watch: {
@@ -262,7 +264,6 @@ export default {
     this.getParentId();
   },
   methods: {
-    
     handleSave() {
       if (this.isTypes) {
         if (this.checkList.length < 3 || this.checkList.length > 6) {
@@ -318,7 +319,6 @@ export default {
             }
           })
           .then(obj => {
-            console.log(obj, "objareainforlist");
             for (let i = 0; i < obj.data.objects.length; i++) {
               this.list.push({
                 name: obj.data.objects[i].areaName,
@@ -367,6 +367,7 @@ export default {
           }
         })
         .then(res => {
+          console.log(res, "zouzhemei");
           this.lists = [];
           if (res.data.isSuccess == true) {
             for (var i = 0; i < res.data.objects.length; i++) {
@@ -382,9 +383,11 @@ export default {
               }
             }
           }
+
           setTimeout(() => {
             resolve(this.lists);
           }, 200);
+          
         })
         .catch(error => {
           console.log(error);
@@ -393,23 +396,29 @@ export default {
 
     // 景点信息带过来的地区id  根据这个id去找他的父级节点id
     getParentId() {
-      console.log(this.imageAreaId, 1111);
       if (this.imageAreaId !== 0) {
         this.$http
           .post(this.GLOBAL.serverSrc + "/universal/area/api/getpa", {
             id: this.imageAreaId
           })
           .then(obj => {
-            this.parentPath=obj.data.parentPath.split(",")
-            console.log(this.parentPath, "父级id");
+            this.parentPath = obj.data.parentPath.split(",");
+            for (let i = 0; i < this.parentPath.length; i++) {
+              this.getSon(this.parentPath[i], resolve).then(res => {
+                this.lists.some(item => {
+                  if (item.id === this.parentPath[i]) {
+                    this.parentPath.splice(i + 1, i, item.key);
+                  }
+                });
+              })
+            }
           })
-          .catch(err => {});
       }
     },
 
     // 单击tree节点
     treeClick(data, node) {
-      // console.log(node,"node")
+      console.log(node,"node")
       if (data.isLeaf == 1) {
         if (this.getAlbumForm == true) {
           //修改相册tree
