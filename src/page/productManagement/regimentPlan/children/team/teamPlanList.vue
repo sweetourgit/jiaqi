@@ -18,7 +18,6 @@
       <el-select v-model="financeState" placeholder="请选择" class="group-no" style="width:200px">
         <el-option v-for="item in financeType" :key="item.value" :label="item.label":value="item.value"></el-option>
       </el-select>
-      
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
       <el-button type="primary" plain @click="reset">重置</el-button>
     </div>
