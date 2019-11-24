@@ -208,7 +208,7 @@
           type="primary"
           v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9"
           @click="ordersave"
-          :disabled="payable-prePayable > deposit+balance"
+          :disabled="isSaveBtn"
           class="confirm fr"
         >保存更改</el-button>
         <!--取消按钮-->
@@ -316,6 +316,7 @@ export default {
       isPricechange: null, //true为直客   false为同业价格
       isChangeNumber: false, //判断动态按钮是否可点击 数量和价格有变化的时候为true
       isLowPrice: false, //确认订单状态时 已付金额低于订单总价时为true
+      isSaveBtn: false, //同业月结总价大于剩余额度和预存款时为true
       //游客信息
       quota: [], //余位信息负数红色提示
       endTimeStamp: "00天00时00分00秒", //倒计时
@@ -456,15 +457,26 @@ export default {
             this.orderSourceFun(res.data.object.orderChannel);
             this.dialogFormProcess = true;
             this.teampreview(res.data.object.planID);
-            //同业的订单（月结的）记录以前的订单总价 改变后的总价和剩余预存款和额度作对比 超过则不可保存更改
-            if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
-              this.prePayable = this.orderget.payable
-            }
+            // 记录最开始的总价 isSaveBtnClick需要
+            this.prePayable = this.orderget.payable;
           }
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    //同业的订单（月结的）记录以前的订单总价 改变后的总价差和剩余预存款和额度作对比 超过则不可保存更改
+    isSaveBtnClick() {
+      if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
+        if (this.payable - this.prePayable > this.deposit + this.balance) {
+          return (this.isSaveBtn = true);
+        } else {
+          this.isSaveBtn = false
+        }
+        if (this.payable === this.prePayable) {
+          return (this.isSaveBtn = false);
+        }
+      }
     },
     //唐时间转换
     timeFormat(param) {
@@ -847,6 +859,9 @@ export default {
         //   this.tour[index].splice(arrLength - preLength, preLength - arrLength);
         // }
       }
+      setTimeout(() => {
+        this.isSaveBtnClick();
+      }, 100);
       this.isEqualityFun();
     },
     fillTour(type, index) {
@@ -1045,7 +1060,7 @@ export default {
             : 0
         );
       }
-
+      this.isSaveBtnClick();
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
@@ -1238,6 +1253,7 @@ export default {
       this.$refs["ruleForm"].resetFields();
       this.dialogFormProcess = false;
       this.isLowPrice = false;
+      this.isSaveBtn = false;
     }
   }
 };

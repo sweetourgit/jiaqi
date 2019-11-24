@@ -35,3 +35,20 @@ export const getSonListAction= function(object, pageIndex, pageSize){
     })
   })
 }
+
+// 保存
+export const putAreaAction= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(baseUrl + "/universal/area/api/areainforsave",{
+      object
+    }).then((res) => {
+      console.log(res);
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject('信息保存失败');
+      return resolve();
+    }).catch((err) => {
+      console.error(err);
+      reject('信息保存失败');
+    })
+  })
+}

@@ -95,6 +95,7 @@
 
         distributorType: '无',// 订单收款分销商
 
+        localCompCode: ''// 客商编码--分销商的编码
       }
     },
     computed: {
@@ -154,7 +155,8 @@
           "rec_mode": this.rec_type,
           "distributor_code": this.distributorID,
           "distributor": this.distributorType,
-          "rec_uid": sessionStorage.getItem('id')
+          "rec_uid": sessionStorage.getItem('id'),
+          "oracle_distributor_code": this.localCompCode
         }, ).then(function(response) {
 //          console.log('认款结果',response);
           if (response.data.code == '200') {
@@ -196,6 +198,8 @@
       handleSelectD(item){
         console.log(item);
         this.distributorID = item.id;
+        this.getLocalCompCode(item.id);
+
       },
       blurHand(){
         const that = this;
@@ -210,10 +214,34 @@
           });
           if(ida){
             that.distributorID = ida;
+            this.getLocalCompCode(ida);
           }else{
             that.distributorID = '';
           }
         }
+      },
+      // 获取客商编码，必须有！
+      getLocalCompCode(id){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+          id: id
+        }).then(function(obj) {
+          console.log('获取客商编码',obj);
+          if(obj.data.isSuccess){
+
+            if(obj.data.object.localCompCode && obj.data.object.localCompCode != '-1'){
+              that.localCompCode = obj.data.object.localCompCode;
+            }else{
+              that.$message.warning("获取商户编码失败~");
+            }
+
+          }else{
+            that.$message.warning("获取商户编码失败~");
+          }
+        }).catch(function(obj) {
+          console.log(obj);
+          that.$message.warning("商户编码接口请求失败~");
+        });
       },
 
       // 加载基础数据

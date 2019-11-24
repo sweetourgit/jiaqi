@@ -17,6 +17,7 @@
         <el-tree
           :props="props1"
           :load="loadNode1"
+          :default-expanded-keys="parentPath"
           class="treeDemo"
           lazy
           @node-click="treeClick"
@@ -233,7 +234,10 @@ export default {
         destination: [
           { required: true, message: "请选择目的地", trigger: "blur" }
         ]
-      }
+      },
+      // 景点列表
+      parentPath: [], //用来接收所选地区的id以及他的父级节点的id 为tree自动展开
+      expandedKeys: [] //tree 自动展开的属性赋值
     };
   },
   watch: {
@@ -242,7 +246,7 @@ export default {
     },
     imgData() {
       this.checkList = this.imgData;
-      console.log(2)
+      this.getParentId();
     },
     isType() {
       this.isTypes = this.isType;
@@ -257,6 +261,7 @@ export default {
     this.isTypes = this.isType;
     this.isImgs = this.isImg;
     this.albumtypeget();
+    this.getParentId();
   },
   methods: {
     handleSave() {
@@ -314,7 +319,6 @@ export default {
             }
           })
           .then(obj => {
-            console.log(obj, "objareainforlist");
             for (let i = 0; i < obj.data.objects.length; i++) {
               this.list.push({
                 name: obj.data.objects[i].areaName,
@@ -341,6 +345,18 @@ export default {
           node.level
         );
       }
+
+      // 后改的begin
+      // this.$http
+      //     .post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist", {
+      //       object: {
+      //         isLeaf:2
+      //       }
+      //     })
+      //     .then(obj => {
+      //       console.log(obj,"0")
+      //     })
+      // 后改的end
     },
     /*获取子集的方法*/
     getSon(key, label, id, isLeaf, resolve, level) {
@@ -351,6 +367,7 @@ export default {
           }
         })
         .then(res => {
+          console.log(res, "zouzhemei");
           this.lists = [];
           if (res.data.isSuccess == true) {
             for (var i = 0; i < res.data.objects.length; i++) {
@@ -366,18 +383,42 @@ export default {
               }
             }
           }
+
           setTimeout(() => {
             resolve(this.lists);
           }, 200);
+          
         })
         .catch(error => {
           console.log(error);
         });
     },
 
+    // 景点信息带过来的地区id  根据这个id去找他的父级节点id
+    getParentId() {
+      if (this.imageAreaId !== 0) {
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/universal/area/api/getpa", {
+            id: this.imageAreaId
+          })
+          .then(obj => {
+            this.parentPath = obj.data.parentPath.split(",");
+            for (let i = 0; i < this.parentPath.length; i++) {
+              this.getSon(this.parentPath[i], resolve).then(res => {
+                this.lists.some(item => {
+                  if (item.id === this.parentPath[i]) {
+                    this.parentPath.splice(i + 1, i, item.key);
+                  }
+                });
+              })
+            }
+          })
+      }
+    },
+
     // 单击tree节点
     treeClick(data, node) {
-      // console.log(node,"node")
+      console.log(node,"node")
       if (data.isLeaf == 1) {
         if (this.getAlbumForm == true) {
           //修改相册tree

@@ -480,7 +480,10 @@
                 <td class="longWeight">{{ruleForm.deposit}}</td>
               </div>
               <td class="tr">额度：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{toDecimal2(ruleForm.quota)}} <span v-if="ruleForm.quota !== 0">(剩余：{{toDecimal2(ruleForm.balance)}})</span></td>
+              <td class="longWeight">
+                {{toDecimal2(ruleForm.quota)}}
+                <span v-if="ruleForm.quota !== 0">(剩余：{{toDecimal2(ruleForm.balance)}})</span>
+              </td>
             </tr>
             <br />
             <tr>
@@ -543,15 +546,15 @@
               </p>
             </div>
             <el-table :data="tableRelevanceDeptInfo" border style="width: 100%;margin-top: 20px;">
-              <el-table-column prop="OrderCode" label="订单编号" width="120" align="center"></el-table-column>
-              <el-table-column prop="Title" label="产品名称" width="120" align="center"></el-table-column>
-              <el-table-column prop="GroupCode" label="团期计划" width="120" align="center"></el-table-column>
-              <el-table-column prop="CF_Date" label="出团日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="Payable" label="订单金额" width="80" align="center"></el-table-column>
-              <el-table-column prop="qk_price" label="欠款金额" width="120" align="center"></el-table-column>
-              <el-table-column prop="yh_price" label="已还金额" width="120" align="center"></el-table-column>
-              <el-table-column prop="CreateTime" label="欠款日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="RepaymentDate" label="应还日期" align="center"></el-table-column>
+              <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+              <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
+              <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+              <el-table-column prop="cF_Date" label="出团日期" align="center"></el-table-column>
+              <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
+              <el-table-column prop="qk_price" label="欠款金额" align="center"></el-table-column>
+              <el-table-column prop="yh_price" label="已还金额" align="center"></el-table-column>
+              <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
+              <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
             </el-table>
           </div>
         </div>
@@ -1634,19 +1637,25 @@ export default {
       this.dialogFormVisible = true;
     },
     // 关联欠款表格的接口
-    getDebitTable() {
+    getDebitTable(id) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
           pageIndex: this.pageIndex,
-          pageSize: this.pagesize,
+          pageSize: this.pageSize,
           // total: 1, //总条数
           object: {
             // isDeleted: 0 //是否删除
-            orgID: this.businewwInfPageId
+            orgID: id
           }
         })
         .then(obj => {
           this.tableRelevanceDeptInfo = obj.data.objects;
+          this.tableRelevanceDeptInfo.forEach((item,index,arr)=> {
+            item.cF_Date = moment(item.cF_Date.toString()).format("YYYY-MM-DD")
+            item.createTime = moment(item.createTime).format("YYYY-MM-DD")
+            item.repaymentDate = moment(item.repaymentDate).format("YYYY-MM-DD HH:mm:ss")
+          })
+          console.log(this.tableRelevanceDeptInfo,"table")
           this.page_order_total = obj.data.total;
         })
         .catch(err => {
@@ -1761,7 +1770,7 @@ export default {
     addMerchan(ruleForm) {
       //判断商户其他名称是否具有唯一性 并且输个个数不可超过五十个
       if (this.businessOtherNamesArr.length !== 0) {
-        if (this.businessOtherNamesArr.length > 50) { 
+        if (this.businessOtherNamesArr.length > 50) {
           this.$message.error("商户其他名称不可超过50个");
           this.dialogFormVisible = true;
           return;
@@ -2215,12 +2224,12 @@ export default {
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
-          this.AbouQuota = object.abouQuota
-          this.ruleForm.balance = object.balance
+          this.AbouQuota = object.abouQuota;
+          this.ruleForm.balance = object.balance;
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID
           this.businewwInfPageId = object.id;
-          if (this.btnindex == 1) this.getDebitTable();
+          if (this.btnindex == 1) this.getDebitTable(id);
           this.useList = useList;
           this.useList.forEach((val, idx, arr) => {
             if (arr[idx].state == 2) {
