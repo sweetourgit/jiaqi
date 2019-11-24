@@ -369,30 +369,30 @@ export default {
       this.listLoading = true
       let _this = this
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
-          "pageIndex": this.ruleForm.page,
-          "pageSize": this.ruleForm.limit,
+          "pageIndex": _this.ruleForm.page,
+          "pageSize": _this.ruleForm.limit,
           "total": 0,
           "object": {
             "id": 0,
-            "checkType": this.settlement_01 ? this.settlement_01 : -1,
+            "checkType": _this.ruleForm.checkType ? _this.ruleForm.checkType : -1,
             "collectionTime": "2019-05-16",
-            "startTime": this.startTime ? formatDate(this.startTime, 'YYYY-MM-DD HH:mm:ss') : "2000-05-16",
-            "endTime": this.endTime ? formatDate(this.endTime, 'YYYY-MM-DD HH:mm:ss') : "2099-05-16",
-            "groupCode": this.plan ? this.plan : '',
+            "startTime": _this.ruleForm.dateStart ? moment(_this.ruleForm.dateStart).format('YYYY-MM-DD') : "2000-05-16",
+            "endTime": _this.ruleForm.dateEnd ? moment(_this.ruleForm.dateEnd).format('YYYY-MM-DD') : "2099-05-16",
+            "groupCode": _this.ruleForm.plan ? _this.ruleForm.plan : '',
             "planID": 0,
             "orderID": 0,
-            "orderNumber": "",
+            "orderNumber":  _this.ruleForm.order ? _this.ruleForm.order : '',
             "collectionNumber": "",
             "price": 0,
             "dept": 0,
-            "createUser": this.keepBorrowerUserCode ? this.keepBorrowerUserCode : '',
+            "createUser": _this.keepBorrowerUserCode ? _this.keepBorrowerUserCode : '',
             "createTime": "2019-05-16 01:02:40",
             "code": "",
             "serialNumber": "",
             "abstract": "",
             "isDeleted": 0,
             "collectionType":2, // 直客1.同业2
-            "localCompID":this.sid, // 直客0,同业变成同业社id
+            "localCompID":_this.sid, // 直客0,同业变成同业社id
             //"localCompName":""
           }
         }
@@ -423,6 +423,7 @@ export default {
     },
     // 表单搜索收款时间
     searchHandInside () {
+      this.listLoading = true
       let _this = this
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
           "pageIndex": 1,
@@ -445,6 +446,8 @@ export default {
         }})
         .then(function(obj) {
           _this.tableData = obj.data.objects;
+          _this.listLoading = false
+          _this.total = obj.data.total
         }).catch(function(obj) {})
     },
     // 关闭申请同业收款弹窗
