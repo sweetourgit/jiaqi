@@ -1373,6 +1373,6 @@ export default {
 	.indialog_button{margin: 0 0 0 10px;}
 	/*申请无收入借款中附件*/
 	.upload-demo{width: 400px;}
-	.upload-demo>>>.el-upload-list__item{ width: 300px; }
+	/*.upload-demo>>>.el-upload-list__item{ width: 300px; }*/
 	.close{position: absolute; top: 15px; right: 15px; font-size: 20pt; cursor:pointer;}
 </style>

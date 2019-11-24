@@ -74,7 +74,7 @@
             <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174">{{scope.row.checkTypeStatus}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="collectionTime" label="收款时间" align="center">
+        <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center">
         </el-table-column>
         <el-table-column prop="groupCode" label="团期计划" align="center">
         </el-table-column>
@@ -310,10 +310,18 @@ export default {
   },
   filters: {
     formatDate: function (value) {
-      return moment(value).format('YYYY-MM-DD HH:mm:ss')
+      return moment(value).format('YYYY-MM-DD')
     }
   },
   methods: {
+    // 起始时间格式转换
+    dateFormat: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined) {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD')
+    },
     // 点击图片钩子
     handlePreview(file) {
       window.open(file.url);

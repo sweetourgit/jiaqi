@@ -419,7 +419,7 @@ export default {
       if(date == undefined) {
         return '';
       }
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+      return moment(date).format('YYYY-MM-DD')
     },
     // 表单搜索收款时间
     searchHandInside () {

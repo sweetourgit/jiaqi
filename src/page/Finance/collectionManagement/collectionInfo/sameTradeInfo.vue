@@ -34,9 +34,9 @@
           <el-input v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
           <el-button class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
-        <!--<el-form-item label="收款金额" prop="price" label-width="120px">
+        <el-form-item label="收款金额" prop="price" label-width="120px">
           <el-input v-model="ruleForm.price" placeholder="收款金额" :disabled="change"></el-input>
-        </el-form-item>-->
+        </el-form-item>
         <el-form-item label="摘要" prop="abstract" label-width="120px">
           <el-input v-model="ruleForm.abstract" placeholder="摘要" :disabled="change"></el-input>
         </el-form-item>
@@ -154,9 +154,9 @@
            <el-table-column prop="arrears_Amount" label="欠款金额" align="center"></el-table-column>
            <el-table-column prop="audited_Amount" label="待审金额" align="center"></el-table-column>
            <el-table-column prop="repayment_Amount" label="已还金额" align="center"></el-table-column>
-           <el-table-column label="匹配收款金额" align="center">
+           <el-table-column label="匹配收款金额" align="center" width="180">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.matchingMoney" placeholder="匹配收款金额" :disabled="change"></el-input>
+                <el-input-number :controls="false" size="small" v-model="scope.row.matchingMoney" placeholder="匹配收款金额" @blur="handleCollectionPrice"></el-input-number>
               </template>
            </el-table-column>
         </el-table>
@@ -301,7 +301,7 @@ export default {
         collectionAccount: '', // 收款账户
         sameTrade: '', // 同业社
         money: '',  // 收款金额
-        // price: '',
+        price: '',
         abstract: '', // 摘要
         isInvoice: '0', // 发票
         collectionNumber:'', // 收款账户
@@ -330,10 +330,10 @@ export default {
           { required: true, message: '收款金额不能为空', trigger: 'blur' },
           { pattern: /(?!0\.00)(\d+\.\d{2}$)/, message: '收款金额需为正数,最多两位小数' }
         ],
-        /*price: [
+        price: [
           { required: true, message: '收款金额不能为空', trigger: 'blur' },
           { pattern: /(^[1-9](\d+)?(\.\d{1,2})?$)|(^\d\.\d{1,2}$)/, message: '收款金额需为正数,最多两位小数' }
-        ],*/
+        ],
         abstract: [{ required: true, message: '摘要不能为空', trigger: 'blur' }],
         taxesNumber: [{ required: true, message: '纳税人识别号不能为空', trigger: 'blur' },
           { pattern: /^[+]{0,1}(\d+)$/, message: '纳税人识别号需为正整数' }
@@ -399,6 +399,23 @@ export default {
     },
   },
   methods: {
+    // 计算匹配金额的总价
+    handleCollectionPrice(event){
+      let filterCount = null
+      let filterPriceCount = 0
+      filterCount = this.arrearsList.filter(function (item) {
+        return (typeof item.matchingMoney == 'number' && item.matchingMoney > 0)
+      })
+      filterCount.forEach(function (item) {
+        filterPriceCount += item.matchingMoney
+      })
+      console.log(filterCount,'filterCount')
+      this.tableManyRow = filterCount.length
+      this.getCollectionPriceTotal = filterPriceCount
+      console.log(this.arrearsList)
+      console.log(this.getCollectionPriceTotal)
+
+    },
     // 时间插件
     moment,
     // 表格头部背景颜色
@@ -426,19 +443,22 @@ export default {
     // 取消事件（顶部）
     canelHandle(){
       this.$confirm("是否取消本次收款申请?", "提示", {
-           confirmButtonText: "确定",
-           cancelButtonText: "取消",
-           type: "warning"
-        }).then(() => {
-         this.$message.success("收款申请已取消");
-         //this.dialogFormVisible =false;
-         this.closeAdd();
-         this.$refs["ruleForm"].resetFields();
-         this.arrearsList = [];
-         this.indent = '';
-         this.dialogVisibleInvoice = false;
-         this.a = false;
-         //this.clearPlan();
+       confirmButtonText: "确定",
+       cancelButtonText: "取消",
+       type: "warning"
+      }).then(() => {
+        this.$message.success("收款申请已取消");
+        //this.dialogFormVisible =false;
+        this.tableManyRow = 0
+        this.fileList = []
+        this.getCollectionPriceTotal = 0
+        this.closeAdd();
+        this.$refs["ruleForm"].resetFields();
+        this.arrearsList = [];
+        this.indent = '';
+        this.dialogVisibleInvoice = false;
+        this.a = false;
+        //this.clearPlan();
        })
       .catch(() => {
         this.$message({
@@ -767,12 +787,6 @@ export default {
         } else {
           this.arrearsList = obj.data.objects;
           this.ifShowApply = false
-          this.tableManyRow = obj.data.objects.length
-          let getPriceTotal = 0
-          obj.data.objects.forEach(function(item){
-            getPriceTotal += item.arrears_Amount
-          })
-          this.getCollectionPriceTotal = getPriceTotal
         }
 
       }).catch(obj => {})
@@ -865,16 +879,56 @@ export default {
           this.fileList.forEach(function(item){
             pictureList.push({ url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })
-
-          this.arrearsList.forEach(function(item){
-            if(!(item.uncollectedMoney - item.audited >= item.matchingPrice)){
+          console.log(this.arrearsList,'this.arrearsList')
+          // 对表格数据进行相关校验
+          // 如果所有表格都没有填写关联欠款数据，则提示必填一项
+          let getNoWriteData  = this.arrearsList.some(function (item) {
+            return (item.matchingMoney != undefined && item.matchingMoney != '' && Number(item.matchingMoney) > 0)
+          })
+          if(!getNoWriteData){
+            _this.$message({
+              type: 'info',
+              message: '请填写匹配收款金额，并且匹配收款金额应大于0'
+            });
+            return
+          } else {
+            // 对已填写匹配金额的行进行如下公式校验
+            let getCompareData = this.arrearsList.some(function (item) {
+              console.log(item.arrears_Amount,'item.arrears_Amount')
+              console.log(item.audited_Amount,'item.audited_Amount')
+              console.log(item.matchingMoney,'item.matchingMoney')
+              if(item.matchingMoney != undefined){
+                return (!(item.arrears_Amount - item.audited_Amount >= item.matchingMoney))
+              }
+            })
+            console.log(getCompareData,'getCompareData')
+            if(getCompareData){
               _this.$message({
                 type: 'info',
-                message: '未收金额 - 待审批金额 >=  匹配收款金额'
+                message: '需遵循此公式：未收金额 - 待审批金额 >=  匹配收款金额'
               });
-              return;
+              return
+            } else {
+              // 每一项匹配收款金额累计与输入框的数据进行比对，相等才可以通过
+              let matchingMoneyAll = 0
+              this.arrearsList.forEach(function (item) {
+                if(typeof item.matchingMoney == "number") {
+                  matchingMoneyAll += item.matchingMoney
+                }
+              })
+              console.log(matchingMoneyAll,'matchingMoneyAll')
+              console.log(Number(this.ruleForm.price),'Number(this.ruleForm.price)')
+              console.log(matchingMoneyAll != Number(this.ruleForm.price),'比较后的结果')
+              if(matchingMoneyAll != Number(this.ruleForm.price)){
+                _this.$message({
+                  type: 'info',
+                  message: '收款金额要与匹配收款金额相等'
+                });
+                return
+              }
             }
-          })
+          }
+          console.log(this.arrearsList,'this.arrearsList下面')
 
           let objectRequest = {}
           let getMatchingMoney = 0
@@ -963,7 +1017,14 @@ export default {
           }).then(res => {
             // console.log(res.data);
             if (res.data.isSuccess == true) {
-
+              this.tableManyRow = 0
+              this.fileList = []
+              this.getCollectionPriceTotal = 0
+              this.$refs["ruleForm"].resetFields();
+              this.arrearsList = [];
+              this.indent = '';
+              this.dialogVisibleInvoice = false;
+              // this.a = false;
               if(this.$parent.$parent.$parent.$parent.$refs.PendingApprovalManagement){
                 this.$parent.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
               };
