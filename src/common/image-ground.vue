@@ -273,7 +273,7 @@
       },
       //获取景点类型
       albumtypeget(){
-        this.$http.post('http://test.dayuntong.com' + '/tpk/album/api/albumtypeget').then(res => {
+        this.$http.post(this.GLOBAL.serverSrc + '/tpk/album/api/albumtypeget').then(res => {
             if(res.data.isSuccess == true){
                this.albumtype=res.data.objects
             }
@@ -373,7 +373,7 @@
       },
       //相册list
       albumPage(pageIndex=this.pageIndex,pageSize=this.pageSize,areaID=0,name=""){
-        this.$http.post('http://test.dayuntong.com' + '/tpk/album/api/page',{
+        this.$http.post(this.GLOBAL.serverSrc + '/tpk/album/api/page',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object": {
@@ -395,7 +395,7 @@
       },
       //获取一个相册信息
       getAlbum(id){       
-        this.$http.post('http://test.dayuntong.com' + '/tpk/album/api/get',{
+        this.$http.post(this.GLOBAL.serverSrc + '/tpk/album/api/get',{
             "id": id,
           }).then(res => {
             if(res.data.isSuccess == true){
@@ -457,7 +457,7 @@
       getPicture(index){
         this.picDisabled=true;
         this.savPicBut="修改属性";
-        this.$http.post('http://test.dayuntong.com' + '/tpk/picture/api/get',{
+        this.$http.post(this.GLOBAL.serverSrc + '/tpk/picture/api/get',{
              id:this.albumInfo.pictures[index].id
           }).then(res => {
             if(res.data.isSuccess == true){
@@ -474,7 +474,7 @@
 
       //获取公司
       getCompany(){
-        this.$http.post('http://test.dayuntong.com' + '/tpk/picture/api/companyget')
+        this.$http.post(this.GLOBAL.serverSrc + '/tpk/picture/api/companyget')
         .then(res => {
             this.insertCheCompany=[];
             this.companyList=res.data.objects;
