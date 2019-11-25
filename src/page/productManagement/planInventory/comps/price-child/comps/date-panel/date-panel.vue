@@ -206,7 +206,8 @@ export default {
       let newDate= new Date(this.current[0], monthVal, max);
       // 没有放到init里调用的原因在于，dateRef先于showRef初始化，而clearAll里
       this.poolManager.clearAll();
-      this.init({ id:this.initCache.id, date: newDate });
+      let { id, rate }= this.initCache;
+      this.init({ id, rate, date: newDate });
     },
 
     getCalendarAction(pacId){
@@ -222,7 +223,6 @@ export default {
         let selected= this.dayArrayPreFull(res);
         if(this.initCache.sureDate){
           this.initCache.sureDate= false;
-          console.log(this.initCache.sureDate)
           this.emitSelectDay(selected);
         }
       })

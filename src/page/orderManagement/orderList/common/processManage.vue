@@ -358,15 +358,17 @@ export default {
         //变更数量
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
         contactName: [
-          { required: true, message: "联系人不能为空", trigger: "blur" }
+          { message: "联系人不能为空", trigger: "blur" },
+          { max:20,message: "不能超过20位长度", trigger: "blur" },
         ],
         contactPhone: [
-          { required: true, message: "联系电话不能为空", trigger: "blur" },
+          { message: "联系电话不能为空", trigger: "blur" },
           {
             pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/,
             message: "电话号格式不正确",
             trigger: "blur"
-          }
+          },
+          { max:20,message: "不能超过20位长度", trigger: "blur" },
         ],
         otherCost: [
           {
