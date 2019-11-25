@@ -1219,25 +1219,23 @@ export default {
                           }
                       });
                       }else if(this.ruleForm.totalPrice >= this.amount){
-                        if(this.nullShow == false && this. nullShowName==false && nullShowOp==false&&nullShowGuest==false){
-                          this.$confirm("该订单金额已经超过剩余预存款和额度?", "提示", {
-                            confirmButtonText: "确定",
-                            cancelButtonText: "取消",
-                            type: "warning"
-                          }).then(res =>{
-                            this.$parent.teamQueryList();
-                          }).catch(() => {
-                            this.$message({
-                              type: "info",
-                              message: "已取消"
-                            });
+                        this.$confirm("该订单金额已经超过剩余预存款和额度?", "提示", {
+                          confirmButtonText: "确定",
+                          cancelButtonText: "取消",
+                          type: "warning"
+                        }).then(res =>{
+                          this.$parent.teamQueryList();
+                        }).catch(() => {
+                          this.$message({
+                            type: "info",
+                            message: "已取消"
                           });
-                        }
+                        });
                       }
                       }
-                      
                     }else if(this.payment == '2'){
-                        this.ifOrderInsert = true;
+                      this.ifOrderInsert = true;
+                      if(this.nullShow == false && this. nullShowName==false && nullShowOp==false&&nullShowGuest==false){
                         this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                           object: {
                             id: 0,
@@ -1316,7 +1314,8 @@ export default {
                           this.$message.success(res.data.result.message + "");
                           this.ifOrderInsert = true;
                         }
-                      });
+                        });
+                      }
                     }
                   }
               }else if(this.teampreviewData.regimentType === 2){//2停售
