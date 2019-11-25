@@ -1741,7 +1741,7 @@ export default {
     getDebitTable(id) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
-          pageIndex: this.pageIndex,
+          pageIndex: 1,
           pageSize: this.pageSize,
           // total: 1, //总条数
           object: {
