@@ -237,7 +237,9 @@ export default {
       },
       // 景点列表
       parentPath: [], //用来接收所选地区的id以及他的父级节点的id 为tree自动展开
-      expandedKeys: [] //tree 自动展开的属性赋值
+      expandedKeys: [], //tree 自动展开的属性赋值
+      number: 0, //getTreeParentLists走几次然后在调用getTreeKey
+      TreeParentLists: [] //请求到的所有的tree
     };
   },
   watch: {
@@ -367,7 +369,6 @@ export default {
           }
         })
         .then(res => {
-          console.log(res, "zouzhemei");
           this.lists = [];
           if (res.data.isSuccess == true) {
             for (var i = 0; i < res.data.objects.length; i++) {
@@ -387,13 +388,50 @@ export default {
           setTimeout(() => {
             resolve(this.lists);
           }, 200);
-          
         })
         .catch(error => {
           console.log(error);
         });
     },
-
+    // 豆包加 begin
+    // 获取tree的key 为景点输入地区后 自动展开
+    getTreeParentLists(id) {
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist", {
+          object: {
+            parentID: id
+          }
+        })
+        .then(obj => {
+          this.number += 1;
+          for (let i = 0; i < obj.data.objects.length; i++) {
+            this.TreeParentLists.push({
+              name: obj.data.objects[i].areaName,
+              key: i,
+              id: obj.data.objects[i].id,
+              isLeaf: obj.data.objects[i].isLeaf, // 是否是末级
+              Hierarchy: 0 // 层级
+            });
+          }
+          this.getTreeKey();
+        })
+        .catch(obj => {
+          console.log(obj);
+        });
+    },
+    getTreeKey() {
+      if (this.number === this.parentPath.length) {
+        for (let i = 0; i < this.parentPath.length; i++) {
+          this.lists.some(item => {
+            //1 7 252
+           console.log(item.id)
+            if (item.id === this.parentPath[i]) {
+              this.parentPath.splice(i + 1, i, item.key);
+            }
+          });
+        }
+      }
+    },
     // 景点信息带过来的地区id  根据这个id去找他的父级节点id
     getParentId() {
       if (this.imageAreaId !== 0) {
@@ -403,22 +441,18 @@ export default {
           })
           .then(obj => {
             this.parentPath = obj.data.parentPath.split(",");
+            this.parentPath.splice(-1, 1);
             for (let i = 0; i < this.parentPath.length; i++) {
-              this.getSon(this.parentPath[i], resolve).then(res => {
-                this.lists.some(item => {
-                  if (item.id === this.parentPath[i]) {
-                    this.parentPath.splice(i + 1, i, item.key);
-                  }
-                });
-              })
+              this.getTreeParentLists(Number(this.parentPath[i]));
             }
-          })
+          });
       }
     },
+    // 豆包加 end
 
     // 单击tree节点
     treeClick(data, node) {
-      console.log(node,"node")
+      console.log(node, "node");
       if (data.isLeaf == 1) {
         if (this.getAlbumForm == true) {
           //修改相册tree

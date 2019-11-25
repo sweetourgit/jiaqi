@@ -218,6 +218,18 @@
                   @focus="dataPickerFocus()"
                 ></el-date-picker>
               </el-form-item>
+              <el-form-item label="地区 :" prop="areaInformationID">
+                <el-autocomplete
+                  style="width:250px;"
+                  clearable
+                  placeholder="请输入地区名称"
+                  :fetch-suggestions="querySearchdiqu"
+                  @blur="handleBlurdiqu"
+                  @select="handleSelectdiqu"
+                  v-model="ruleForm.areaInformation"
+                  :trigger-on-focus="false"
+                ></el-autocomplete>
+              </el-form-item>
               <el-form-item label="公司logo :" prop="companyLogo" style="width:360px;">
                 <el-upload
                   ref="uploadImg"
@@ -234,10 +246,32 @@
                   style="width: 220px;"
                 >
                   <el-button size="small" type="primary">点击上传</el-button>
-                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                  <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
                 <div v-if=" this.imgnum == 2">
                   <img width="100%" height="12%" :src="ruleForm.imgUrl" />
+                </div>
+              </el-form-item>
+              <el-form-item label="附件 :" prop="companyLogo" style="width:360px;">
+                <el-upload
+                  ref="uploadImg"
+                  class="upload-demo"
+                  action="http://test.dayuntong.com/upload/obs/api/picture/"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :file-list="fileList2"
+                  :limit="1"
+                  list-type="picture"
+                  :on-error="handleErrorFileUrl"
+                  :on-success="handleSuccessFileUrl"
+                  name="files"
+                  style="width: 220px;"
+                >
+                  <el-button size="small" type="primary">点击上传</el-button>
+                  <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                </el-upload>
+                <div v-if=" this.imgnum == 2">
+                  <img width="100%" height="12%" :src="ruleForm.fileUrl" />
                 </div>
               </el-form-item>
             </div>
@@ -482,7 +516,9 @@
               <td class="tr">额度：&nbsp;&nbsp;</td>
               <td class="longWeight">
                 {{toDecimal2(ruleForm.quota)}}
-                <span v-if="ruleForm.quota !== 0">(剩余：{{toDecimal2(ruleForm.balance)}})</span>
+                <span
+                  v-if="ruleForm.quota !== 0"
+                >(剩余：{{toDecimal2(ruleForm.balance)}})</span>
               </td>
             </tr>
             <br />
@@ -493,9 +529,14 @@
                 <img width="100%" height="12%" :src="ruleForm.imgUrl" />
               </td>
               <div class="BodyTableCenter">
-                <td class="tr">经营范围：&nbsp;&nbsp;</td>
-                <td class="longWeight">{{ruleForm.scopeExt}}</td>
+                <td class="tr">附件：&nbsp;&nbsp;</td>
+                <td class="longWeight">
+                  <!-- {{ruleForm.fileUrl}} -->
+                  <img width="100%" height="12%" :src="ruleForm.fileUrl" />
+                </td>
               </div>
+              <td class="tr">经营范围：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.scopeExt}}</td>
             </tr>
           </table>
           <!-- 点击详情账户信息 -->
@@ -764,6 +805,7 @@ export default {
       // editAdmin: [], //点击编辑页的admin 用来接收修改之前的
       businewwInfPageId: "", //商户信息详情页的ID 同时也是商户其他名称添加接口的localCompID
       vague: [], //模糊搜索的数组
+      vagueDiQu: [], // 地区模糊搜索数组
       // cascaderArr: [],
       isAddAccountBtn: 0, //判断账户信息弹窗是从添加按钮进入还是编辑进入
       accountArr: [], //用来接收本地添加账户的字段
@@ -816,26 +858,26 @@ export default {
         email: [
           { type: "email", message: "请输入正确格式的邮箱", trigger: "blur" }
         ],
-        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        // sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         // rules中 正则
-        wx: [{ validator: wechatvalidator, trigger: "blur" }],
-        qq: [
-          {
-            min: 5,
-            max: 11,
-            pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/,
-            message: "请输入正确格式",
-            trigger: "blur"
-          }
-        ],
-        state: [{ required: true, message: "请选择状态", trigger: "change" }],
-        passWord: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, max: 30, message: "请输入6-30位密码", trigger: "blur" }
-        ],
-        peerUserType: [
-          { required: true, message: "请选择职务", trigger: "change" }
-        ]
+        wx: [{ validator: wechatvalidator, trigger: "blur" }]
+        // qq: [
+        //   {
+        //     min: 5,
+        //     max: 11,
+        //     pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/,
+        //     message: "请输入正确格式",
+        //     trigger: "blur"
+        //   }
+        // ],
+        // state: [{ required: true, message: "请选择状态", trigger: "change" }],
+        // passWord: [
+        //   { required: true, message: "请输入密码", trigger: "blur" },
+        //   { min: 6, max: 30, message: "请输入6-30位密码", trigger: "blur" }
+        // ],
+        // peerUserType: [
+        //   { required: true, message: "请选择职务", trigger: "change" }
+        // ]
       },
       ruleForm: {
         name: "", //
@@ -843,6 +885,7 @@ export default {
         localCompType: "", //类别
         state: null, //状态默认是正常
         expTime: "", //到期时间
+        areaInformationID: null, //地区id
         settlementType: null, //结算方式
         quota: "", //额度
         //department: "",
@@ -860,14 +903,18 @@ export default {
         administrative: "", //管理人员
         otherNames: "", //商户其他名字
         localCompCode: "", //商户编码
-        ImgUrl: "" //logo
+        ImgUrl: "", //logo
+        fileUrl: "" //附件
       },
       rules: {
-        expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
+        // expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
         name: [
-          // { required: true, message: "请输入名称", trigger: "blur" },
+          { required: true, message: "请输入名称", trigger: "blur" },
           // { max: 40, message: "不要超过40个字符", trigger: "blur" }
           { validator: nameValidator, trigger: "blur" }
+        ],
+        areaInformationID: [
+          { required: true, message: "请选择地区", trigger: "blur" }
         ],
         localCompType: [
           { required: true, message: "请选择类型", trigger: "change" }
@@ -876,14 +923,14 @@ export default {
         settlementType: [
           { required: true, message: "请选择结算方式", trigger: "change" }
         ],
-        localCompRole: [
-          { required: true, message: "请选择商户角色", trigger: "change" }
-        ],
-        storeType: [
-          { required: true, message: "请选择门市类型", trigger: "blur" }
-        ],
+        // localCompRole: [
+        //   { required: true, message: "请选择商户角色", trigger: "change" }
+        // ],
+        // storeType: [
+        //   { required: true, message: "请选择门市类型", trigger: "blur" }
+        // ],
         administrative: [
-          { required: true, message: "请选择管理人员", trigger: "change" }
+          // { required: true, message: "请选择管理人员", trigger: "change" }
         ],
         quota: [
           { required: true, message: "请输入额度", trigger: "blur" },
@@ -903,34 +950,34 @@ export default {
           { min: 11, max: 11, message: "请输入11位数字", trigger: "blur" },
           { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: "请输入数字" }
         ],
-        publicName: [
-          { required: true, message: "请输入对公户名", trigger: "blur" },
-          { max: 40, message: "不要超过40个字符", trigger: "blur" }
-        ],
-        bankName: [
-          { required: true, message: "请输入开户行", trigger: "blur" },
-          { max: 80, message: "不要超过80个字符", trigger: "blur" }
-        ],
-        bankcardNo: [
-          { required: true, message: "请输入对公账号", trigger: "blur" },
-          { max: 30, message: "不要超过30个字符", trigger: "blur" }
-        ],
-        scopeExt: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个经营",
-            trigger: "change"
-          }
-        ],
-        orgs: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个区域",
-            trigger: "change"
-          }
-        ],
+        // publicName: [
+        //   { required: true, message: "请输入对公户名", trigger: "blur" },
+        //   { max: 40, message: "不要超过40个字符", trigger: "blur" }
+        // ],
+        // bankName: [
+        //   { required: true, message: "请输入开户行", trigger: "blur" },
+        //   { max: 80, message: "不要超过80个字符", trigger: "blur" }
+        // ],
+        // bankcardNo: [
+        //   { required: true, message: "请输入对公账号", trigger: "blur" },
+        //   { max: 30, message: "不要超过30个字符", trigger: "blur" }
+        // ],
+        // scopeExt: [
+        //   {
+        //     type: "array",
+        //     required: true,
+        //     message: "请至少选择一个经营",
+        //     trigger: "change"
+        //   }
+        // ],
+        // orgs: [
+        //   {
+        //     type: "array",
+        //     required: true,
+        //     message: "请至少选择一个区域",
+        //     trigger: "change"
+        //   }
+        // ],
         salesman: [{ required: true, message: "请输入", trigger: "change" }],
         otherNames: [{ validator: otherNamesValidator, trigger: "change" }],
         localCompCode: [
@@ -967,7 +1014,10 @@ export default {
           label: "非月结"
         }
       ],
-      fileList2: []
+      fileList2: [], //图片
+      fileList1: [], //附件
+      isSelect: false, // 判断是否进入select
+      areaInformation: "" //地区value
     };
   },
   components: {
@@ -993,6 +1043,55 @@ export default {
           );
         }
       }
+    },
+    // 地区的远程获取数据
+    querySearchdiqu(queryString, cb) {
+      this.vagueDiQu = [];
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/area/api/fuzzy", {
+          object: {
+            name: queryString
+          }
+        })
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.vagueDiQu.push({
+              id: res.data.objects[i].id,
+              value: res.data.objects[i].areaName
+            });
+          }
+          var results = queryString
+            ? this.vagueDiQu.filter(this.createFilter(queryString))
+            : [];
+          cb(results);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 地区选择失去焦点
+    handleBlurdiqu() {
+      setTimeout(() => {
+        if (this.isSelect === false) {
+          this.areaInformation = ""
+          this.ruleForm.areaInformationID = null;
+        } else {
+          this.isSelect = false;
+        }
+      }, 200);
+    },
+    // 地区选择
+    handleSelectdiqu(item) {
+      this.ruleForm.areaInformationID = item.id;
+      // this.form.areaId = item;
+      this.areaInformation = item.value;
+      this.isSelect = true;
+    },
+    // 搜索方法
+    createFilter(queryString) {
+      return restaurant => {
+        return restaurant.value;
+      };
     },
     // 管理人员的模糊查询
     querySearchAsync(queryString, cb) {
@@ -1650,12 +1749,14 @@ export default {
         })
         .then(obj => {
           this.tableRelevanceDeptInfo = obj.data.objects;
-          this.tableRelevanceDeptInfo.forEach((item,index,arr)=> {
-            item.cF_Date = moment(item.cF_Date.toString()).format("YYYY-MM-DD")
-            item.createTime = moment(item.createTime).format("YYYY-MM-DD")
-            item.repaymentDate = moment(item.repaymentDate).format("YYYY-MM-DD HH:mm:ss")
-          })
-          console.log(this.tableRelevanceDeptInfo,"table")
+          this.tableRelevanceDeptInfo.forEach((item, index, arr) => {
+            item.cF_Date = moment(item.cF_Date.toString()).format("YYYY-MM-DD");
+            item.createTime = moment(item.createTime).format("YYYY-MM-DD");
+            item.repaymentDate = moment(item.repaymentDate).format(
+              "YYYY-MM-DD HH:mm:ss"
+            );
+          });
+          console.log(this.tableRelevanceDeptInfo, "table");
           this.page_order_total = obj.data.total;
         })
         .catch(err => {
@@ -2131,7 +2232,8 @@ export default {
             localCompAliasList: this.businessOtherNamesArr,
             abouQuota: this.AbouQuota, //周边授信额度
             localCompCode: this.localCompCode,
-            useList: this.useList
+            useList: this.useList,
+            areaInformationID: this.ruleForm.areaInformationID.id
           }
         })
         .then(obj => {
@@ -2432,6 +2534,12 @@ export default {
       this.fileList2 = [];
       this.imgnum = 2;
     },
+    // 附件上传失败
+    handleErrorFileUrl(err, file) {
+      this.$message.error("附件上传失败重新上传");
+      this.fileList1 = [];
+      this.fileUrl = 2;
+    },
     //图片上传成功
     handleSuccess(response, file, fileList2) {
       //console.log(file);
@@ -2441,6 +2549,17 @@ export default {
         this.ruleForm.imgUrl = T_img.paths[0].Url;
       } else {
         this.$message.error("图片上传失败重新上传");
+      }
+    },
+    //附件上传成功
+    handleSuccessFileUrl(response, file, fileList1) {
+      //console.log(file);
+      if (file.status == "success") {
+        this.fileUrl = 1;
+        let T_fileUrl = JSON.parse(response);
+        this.ruleForm.fileUrl = T_fileUrl.paths[0].Url;
+      } else {
+        this.$message.error("附件上传失败重新上传");
       }
     },
     //删除
