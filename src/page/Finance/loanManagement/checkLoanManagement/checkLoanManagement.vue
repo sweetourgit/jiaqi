@@ -20,7 +20,7 @@
       </el-col>
       <el-col :span="6">
         <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime }}</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
       </el-col>
     </el-row>
     <!-- 第一行 END -->
@@ -79,8 +79,7 @@
       <el-col :span="6">
         <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
         <el-col :span="12">
-          <div class="grid-del" v-if="fundamental.checkType=='1'">{{ fundamental.cardName }}</div>
-          <div class="grid-del" v-else>暂无</div>
+          <div class="grid-del">{{ fundamental.accountsName }}</div>
         </el-col>
       </el-col>
       <el-col :span="14">

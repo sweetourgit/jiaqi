@@ -841,6 +841,7 @@ export default {
     },
     // 清除申请无收入借款弹窗内容
     clearPlan(){
+      this.fileList = []
       this.ruleForm.plan = '';
       this.ruleForm.plan_01 = '';
       this.ruleForm.supplier = '';
@@ -1167,7 +1168,7 @@ export default {
     // 借款类型
     themeList(){
       this.borrowingType = [];
-      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=PaymentType')
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=PaymentType')
       .then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
           this.borrowingType.push({

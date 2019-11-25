@@ -462,7 +462,7 @@ export default {
     //获取供应商类型
     querySearch6() {
       this.typeList = []
-      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=PaymentType')
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=PaymentType')
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.typeList.push({
