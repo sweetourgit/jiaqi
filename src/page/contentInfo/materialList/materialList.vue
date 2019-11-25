@@ -326,6 +326,14 @@
     created(){
       this.albumtypeget();
     },
+    // watch:{
+    //   "item.name": function() {
+    //     if(this.item.name.length >20){
+    //       this.pictureName = true;
+    //     }
+        
+    //   },
+    // },
     methods: {
       handleSizeChange(val){
         this.pageSize = val;

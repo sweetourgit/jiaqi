@@ -86,6 +86,7 @@
               class="input"
               :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
               @input="compPrice(2,index)"
+              @blur="comPriceBlur(item,index)"
             ></el-input>
           </el-form-item>
           <el-form-item class="otherCost-mark" v-if="index == 0">
@@ -1014,6 +1015,12 @@ export default {
         this.priceChange = "同业";
         this.priceType = 2;
         this.compPrice();
+      }
+    },
+    //什么都不填写然后失去光标变为0
+    comPriceBlur(item,index){
+      if(item.price == "") {
+        item.price = 0
       }
     },
 

@@ -229,14 +229,16 @@
                   <td class="longWeight" valign="top">{{getListOneMessage.op}}</td>
                 </div>
                 <td class="tr">商户销售&nbsp;&nbsp;</td>
-                <td class="longWeight" valign="top"></td>
+                <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel == 1">{{getListOneMessage.saler}}</td>
+                <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel !== 1"></td>
               </tr>
               <tr>
                 <td class="tr">平台&nbsp;&nbsp;</td>
                 <td class="longWeight" valign="top">{{getListOneMessage.platform}}</td>
                 <div class="BodyTableCenter">
                   <td class="tr">销售&nbsp;&nbsp;</td>
-                  <td class="longWeight" valign="top">{{getListOneMessage.saler}}</td>
+                  <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel !== 1">{{getListOneMessage.saler}}</td>
+                  <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel == 1"></td>
                 </div>
                 <td class="tr">订单总额&nbsp;&nbsp;</td>
                 <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.payable)}}</td>
@@ -370,7 +372,7 @@ export default {
       orgID: null, //商户名称搜索传给后台的id
       orgIDValue: "", //商户名称 搜索时显示的字段
       contact: "", //订单联系人
-      orderChannel: null, //订单来源  
+      orderChannel: null, //订单来源
       whichStateTab: null, //判断tab是从1 还是2 过来的
       // breadcrumbSelectValue: "更多", //面包屑更多默认
       // breadcrumbOptions: [
@@ -605,7 +607,7 @@ export default {
       this.teamID = ""; //产品ID
       this.groupCode = null; //团期计划ID
       this.beginDate = ""; //开始日期
-      this.endDate = "";//结束日期
+      this.endDate = ""; //结束日期
       this.name = ""; //产品名称
       this.pod = ""; //出发地
       this.podID = ""; //出发地
@@ -616,8 +618,8 @@ export default {
         (this.platform = null), //平台
         (this.productType = ""); //产品类型
       this.orgIDValue = ""; //商户名称
-      this.orgID = 0, //商户名称搜索的id
-      this.contact = ""; //订单联系人
+      (this.orgID = 0), //商户名称搜索的id
+        (this.contact = ""); //订单联系人
       // this.orderChannel = null; //订单来源
       this.showContent = null; //折叠按钮
       this.isSeach = null; //是否点击
