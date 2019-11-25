@@ -610,7 +610,7 @@ export default {
   .upload-demo{width: 400px;}
   .upload-demo>>>.el-upload-list__item{ width: 300px; }
 
-  .el-dialog__wrapper{top:-10%;}
+  .el-dialog__wrapper{top:5%;}
   .upload-demo>>>.el-upload-list__item:first-child {
     margin-top: 5px;
   }
