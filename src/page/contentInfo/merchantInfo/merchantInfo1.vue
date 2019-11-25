@@ -218,7 +218,7 @@
                   @focus="dataPickerFocus()"
                 ></el-date-picker>
               </el-form-item>
-              <el-form-item label="地区 :" prop="areaInformationID">
+              <el-form-item label="地区 :" prop="areaInformationName">
                 <el-autocomplete
                   style="width:250px;"
                   clearable
@@ -226,7 +226,7 @@
                   :fetch-suggestions="querySearchdiqu"
                   @blur="handleBlurdiqu"
                   @select="handleSelectdiqu"
-                  v-model="ruleForm.areaInformation"
+                  v-model="ruleForm.areaInformationName"
                   :trigger-on-focus="false"
                 ></el-autocomplete>
               </el-form-item>
@@ -886,6 +886,7 @@ export default {
         state: null, //状态默认是正常
         expTime: "", //到期时间
         areaInformationID: null, //地区id
+        areaInformationName: "", //地区
         settlementType: null, //结算方式
         quota: "", //额度
         //department: "",
@@ -913,7 +914,7 @@ export default {
           // { max: 40, message: "不要超过40个字符", trigger: "blur" }
           { validator: nameValidator, trigger: "blur" }
         ],
-        areaInformationID: [
+        areaInformationName: [
           { required: true, message: "请选择地区", trigger: "blur" }
         ],
         localCompType: [
@@ -1017,7 +1018,7 @@ export default {
       fileList2: [], //图片
       fileList1: [], //附件
       isSelect: false, // 判断是否进入select
-      areaInformation: "" //地区value
+      areaInformationName: "" //地区value
     };
   },
   components: {
@@ -1073,7 +1074,7 @@ export default {
     handleBlurdiqu() {
       setTimeout(() => {
         if (this.isSelect === false) {
-          this.areaInformation = ""
+          this.areaInformationName = "";
           this.ruleForm.areaInformationID = null;
         } else {
           this.isSelect = false;
@@ -1083,8 +1084,9 @@ export default {
     // 地区选择
     handleSelectdiqu(item) {
       this.ruleForm.areaInformationID = item.id;
+      console.log(this.ruleForm.areaInformationID,111111)
       // this.form.areaId = item;
-      this.areaInformation = item.value;
+      this.areaInformationName = item.value;
       this.isSelect = true;
     },
     // 搜索方法
@@ -1887,14 +1889,14 @@ export default {
       // }
 
       // 商户角色
-      //console.log("商户角色",this.ruleForm.localCompRole)
-      // if ((this.ruleForm.localCompRole = "旅游组团社")) {
-      //   this.ruleForm.localCompRole = 1;
-      // } else if ((this.ruleForm.localCompRole = "独立旅行社")) {
-      //   this.ruleForm.localCompRole = 2;
-      // } else {
-      //   this.ruleForm.localCompRole = 3;
-      // }
+      console.log("商户角色", this.ruleForm.localCompRole);
+      if ((this.ruleForm.localCompRole = "旅游组团社")) {
+        this.ruleForm.localCompRole = 1;
+      } else if ((this.ruleForm.localCompRole = "独立旅行社")) {
+        this.ruleForm.localCompRole = 2;
+      } else {
+        this.ruleForm.localCompRole = 3;
+      }
       // 类别
       // console.log("类别",this.ruleForm.localCompType)
       // if ((this.ruleForm.localCompType = "门店")) {
@@ -1998,6 +2000,11 @@ export default {
       }
       if (this.ruleForm.quota == "") {
         this.ruleForm.quota = 0;
+      }
+
+      // 到期时间
+      if (this.ruleForm.expTime == "") {
+        this.ruleForm.expTime = 0;
       }
 
       this.$http
@@ -2156,6 +2163,17 @@ export default {
       // 经营范围
       let scopeExt = this.ruleForm.scopeExt.join(",");
 
+      // 到期时间
+      // console.log(this.ruleForm.expTime, 22);
+      if (this.ruleForm.expTime == "Invalid Date") {
+        this.ruleForm.expTime = 0;
+      } else {
+        this.ruleForm.expTime = moment(this.ruleForm.expTime).format(
+          "YYYYMMDD"
+        );
+      }
+      // console.log(this.ruleForm.expTime);
+
       // 区域可见
       let orgs = [];
 
@@ -2199,7 +2217,6 @@ export default {
         }
       });
 
-      this.ruleForm.expTime = moment(this.ruleForm.expTime).format("YYYYMMDD");
       this.ruleForm.id = this.tid;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/save", {
@@ -2233,7 +2250,7 @@ export default {
             abouQuota: this.AbouQuota, //周边授信额度
             localCompCode: this.localCompCode,
             useList: this.useList,
-            areaInformationID: this.ruleForm.areaInformationID.id
+            areaInformationID: this.ruleForm.areaInformationID
           }
         })
         .then(obj => {
@@ -2384,6 +2401,10 @@ export default {
           } else {
             this.ruleForm.storeType = "第三方门市";
           }
+          // 到期时间 详情为1 编辑 为2
+          if (object.expTime === 0) {
+            this.ruleForm.expTime = "";
+          }
           // 经营范围
           if (this.btnindex == 1) {
             this.ruleForm.scopeExt = object.scopeExt;
@@ -2455,9 +2476,11 @@ export default {
 
           // console.log("get",this.businessOtherNamesArr)
           if (this.btnindex == 1) {
-            this.ruleForm.expTime = moment(object.expTime.toString()).format(
-              "YYYY-MM-DD"
-            );
+            if (object.expTime !== 0) {
+              this.ruleForm.expTime = moment(object.expTime.toString()).format(
+                "YYYY-MM-DD"
+              );
+            }
           } else {
             let year = "";
             let month = "";
@@ -2491,6 +2514,8 @@ export default {
           this.ruleForm.bankcardNo = object.bankcardNo;
           this.ruleForm.localCompCode = object.localCompCode;
           this.ruleForm.deposit = object.deposit;
+          this.ruleForm.areaInformationName = object.areaInformationName
+          this.ruleForm.areaInformationID = object.areaInformationID
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
