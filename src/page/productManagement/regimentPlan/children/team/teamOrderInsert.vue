@@ -1136,7 +1136,7 @@ export default {
                   }else if(this.ruleForm.orderRadio === '2'){
                     console.log(this.payment)
                     if(this.payment == '1'){
-                      if(this.nullShow == false && this. nullShowName==false && nullShowOp==false&&nullShowGuest==false){
+                      if(this.nullShow == false && this. nullShowName==false && this.nullShowOp==false&&this.nullShowGuest==false){
                         if(this.ruleForm.totalPrice <= this.amount){//判断订单金额与剩余预存款和额度对比
                           this.ifOrderInsert = true;
                           this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
@@ -1235,7 +1235,7 @@ export default {
                       }
                     }else if(this.payment == '2'){
                       this.ifOrderInsert = true;
-                      if(this.nullShow == false && this. nullShowName==false && nullShowOp==false&&nullShowGuest==false){
+                      if(this.nullShow == false && this. nullShowName==false && this.nullShowOp==false&&this.nullShowGuest==false){
                         this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
                           object: {
                             id: 0,
