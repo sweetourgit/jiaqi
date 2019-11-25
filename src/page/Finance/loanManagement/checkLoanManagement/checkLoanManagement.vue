@@ -368,6 +368,10 @@ export default {
           "id":this.paymentID
       }).then(res => {
         if(res.data.isSuccess == true){
+          this.tablePayment = []
+          this.tableIncome = []
+          this.tableMoney = []
+          this.tableEarning = []
           let getPaymentType = res.data.object.paymentType
           this.keepPaymentType = getPaymentType
           this.fundamental=res.data.object;

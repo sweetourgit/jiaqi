@@ -655,7 +655,6 @@ export default {
     },
     // 供应商联想查询
     querySearch3(queryString3, cb) {
-      this.tableData2 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
         "object": {
           name: queryString3,
@@ -663,6 +662,7 @@ export default {
           SupplierType:-1,
         }
       }).then(res => {
+        this.tableData2 = []
         for (let i = 0; i < res.data.objects.length; i++) {
           this.tableData2.push({
             "value": res.data.objects[i].name,

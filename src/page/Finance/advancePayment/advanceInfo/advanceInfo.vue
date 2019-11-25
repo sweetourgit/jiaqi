@@ -957,6 +957,7 @@ export default {
         }
       }).then(res => {
         if(res.data.objects != null) {
+          this.tableData2 = []
           for (let i = 0; i < res.data.objects.length; i++) {
             this.tableData2.push({
               "value": res.data.objects[i].name,
