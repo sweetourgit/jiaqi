@@ -29,6 +29,7 @@ export default {
     handleClose(){
       this.url= 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
       this.state= false;
+      this.$store.commit('changeInfo/wakeupPreview', false);
     }
   }
 }

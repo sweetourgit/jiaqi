@@ -53,6 +53,7 @@ export default {
       this.list.splice(0);
       this.cb= null;
       this.state= false;
+      this.$store.commit('changeInfo/materialShowState', false);
     }
   }
 }
