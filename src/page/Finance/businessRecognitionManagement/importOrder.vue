@@ -1,6 +1,6 @@
 <template>
-  <div class="vivo" style="position:relative" id="tradeDetail">
-    <el-dialog title="详情" :visible="dialogFormVisible3" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
+  <div class="vivo" style="position:relative">
+    <el-dialog title="详情" :visible="dialogFormVisible3" @close="close" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;" appendToBody id="tradeDetail">
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
@@ -561,7 +561,7 @@
 </script>
 <style lang="scss">
   #tradeDetail .el-dialog{
-    width: 90%;
+    width: 90%!important;
   }
   #tradeDetail .buttonDv{
     position: absolute;
