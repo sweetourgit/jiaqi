@@ -78,12 +78,12 @@
     <el-row type="flex" class="row-bg" justify="space-around">
       <el-col :span="6">
         <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
-        <el-col :span="18">
+        <el-col :span="12">
           <div class="grid-del" v-if="fundamental.checkType=='1'">{{ fundamental.cardName }}</div>
           <div class="grid-del" v-else>暂无</div>
         </el-col>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="14">
         <el-col :span="6"><div class="grid-del label-color">附件:</div></el-col>
         <el-col :span="18">
           <el-upload

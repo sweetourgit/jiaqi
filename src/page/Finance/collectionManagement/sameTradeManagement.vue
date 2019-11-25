@@ -519,6 +519,7 @@ export default {
           this.tableInvoice = res.data.object.invoiceTable
           this.tableManyRow = resObj.arrears.length
           this.tableAssociated = res.data.object.arrears
+          this.getCollectionPriceTotal = 0
           keepDebtItem.forEach( item => {
             this.getCollectionPriceTotal += item.matchingPrice
           })

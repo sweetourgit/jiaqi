@@ -220,7 +220,7 @@
         <el-button @click="closeDetailstShow()">取消</el-button>
         <el-button @click="through()" type="danger" plain>通过</el-button>
         <el-button @click="rejected()" type="danger" plain>驳回</el-button>
-        <el-button type="danger" :disabled="ifClick" @click="bankAccount(acoutInfo)" v-if="getCheckTypeEX=='审批中' && ifAccountBtn && presentRouter == '无收入借款管理' && getAccountID != 0">支付账户</el-button>
+        <el-button type="danger" :disabled="ifClick" @click="bankAccount(acoutInfo)" v-if="getCheckTypeEX=='审批中' && ifAccountBtn && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && getAccountID != 0">支付账户</el-button>
       </div>
       <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
     </el-dialog>

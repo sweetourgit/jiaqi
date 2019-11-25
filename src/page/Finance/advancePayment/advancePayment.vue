@@ -84,8 +84,8 @@
             <el-table-column prop="opinion" label="操作" align="center">
                <template slot-scope="scope">
                  <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-                 <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn">|</span>
-                 <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn" type="text" size="small" class="table_details">付款账户</el-button>
+<!--                 <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn">|</span>-->
+<!--                 <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn" type="text" size="small" class="table_details">付款账户</el-button>-->
                </template>
             </el-table-column>
           </el-table>
@@ -165,7 +165,7 @@ export default {
     return {
       tableSelect:[], // 选择弹窗表格
       SelectAccount:false, // 选择账户弹窗
-      ifAccountBtn: false, // 只有出纳的时候才显示付款账户
+      // ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       ruleForm: {
         planID: '', // 团期计划输入框
@@ -215,11 +215,11 @@ export default {
   },
   created () {
     // 只有是出纳的时候才显示申请人检索
-    if (sessionStorage.getItem('hasCashierInfo')) {
-      this.ifAccountBtn = true
-    } else {
-      this.ifAccountBtn = false
-    }
+    // if (sessionStorage.getItem('hasCashierInfo')) {
+    //   this.ifAccountBtn = true
+    // } else {
+    //   this.ifAccountBtn = false
+    // }
     this.querySearch6()
     this.querySearch7()
     this.searchHand()

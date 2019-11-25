@@ -588,7 +588,7 @@ export default {
     // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
-      if(date == undefined) {
+      if(date == undefined || date == '') {
         return '';
       }
       return moment(date).format('YYYY-MM-DD')
