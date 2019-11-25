@@ -583,7 +583,7 @@ export default {
       if(!(this.arrearsList[0].uncollectedMoney - this.arrearsList[0].audited >= this.arrearsList[0].matchingPrice)){
         this.$message({
           type: 'info',
-          message: '未收金额 - 待审批金额 >=  匹配收款金额'
+          message: '需遵循此公式：未收金额 - 待审批金额 >=  匹配收款金额'
         });
         return;
       }

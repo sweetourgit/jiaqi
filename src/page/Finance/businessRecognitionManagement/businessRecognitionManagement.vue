@@ -81,7 +81,7 @@
               <el-button @click="detailExternalOrder(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.rece_type == '1'">详情</el-button>
               <el-button @click="detailRecognition(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.status_rece!='10' && scope.row.rece_type == '2'">详情</el-button>
               <el-button @click="recogintion(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.rece_type == '2' && scope.row.status_rece == '10' && scope.row.rec_mode != '2'">去认款</el-button>
-              <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.rece_type == '2' && scope.row.rec_mode == '3' && scope.row.can_match == '2'">导入订单明细</el-button>
+              <!--<el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.rece_type == '2' && scope.row.rec_mode == '3' && scope.row.can_match == '2'">导入订单明细</el-button>-->
             </template>
           </el-table-column>
         </el-table>
@@ -101,7 +101,7 @@
       <recognitionDo :dialogFormVisible="dialogFormVisible" :info="info" @close="closeAdd"></recognitionDo>
       <externalOrderDetail :dialogFormVisible1="dialogFormVisible1" :info="info" @close="closeAdd"></externalOrderDetail>
       <recognitionDetail :dialogFormVisible2="dialogFormVisible2" :info="info" @close="closeAdd"></recognitionDetail>
-      <importOrder :dialogFormVisible3="dialogFormVisible3" :info="info" @close="closeAdd"></importOrder>
+      <!--<importOrder :dialogFormVisible3="dialogFormVisible3" :info="info" @close="closeAdd"></importOrder>-->
     </div>
   </div>
 </template>
@@ -110,7 +110,7 @@
   import externalOrderDetail from '@/page/Finance/businessRecognitionManagement/externalOrderDetail.vue'
   import recognitionDetail from '@/page/Finance/businessRecognitionManagement/recognitionDetail.vue'
   import recognitionDo from '@/page/Finance/businessRecognitionManagement/recognitionDo.vue'
-  import importOrder from '@/page/Finance/businessRecognitionManagement/importOrder.vue'
+//  import importOrder from '@/page/Finance/businessRecognitionManagement/importOrder.vue'
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "business",
@@ -118,7 +118,7 @@
       externalOrderDetail,
       recognitionDo,
       recognitionDetail,
-      importOrder
+//      importOrder
     },
     data() {
       return {

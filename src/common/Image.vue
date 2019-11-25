@@ -296,7 +296,7 @@ export default {
     //获取景点类型
     albumtypeget() {
       this.$http
-        .post("http://test.dayuntong.com" + "/tpk/album/api/albumtypeget")
+        .post(this.GLOBAL.serverSrc + "/tpk/album/api/albumtypeget")
         .then(res => {
           if (res.data.isSuccess == true) {
             this.albumtype = res.data.objects;
@@ -510,7 +510,7 @@ export default {
     //获取一个相册信息
     getAlbum(id) {
       this.$http
-        .post("http://test.dayuntong.com" + "/tpk/album/api/get", {
+        .post(this.GLOBAL.serverSrc + "/tpk/album/api/get", {
           id: id
         })
         .then(res => {
@@ -573,7 +573,7 @@ export default {
       this.picDisabled = true;
       this.savPicBut = "修改属性";
       this.$http
-        .post("http://test.dayuntong.com" + "/tpk/picture/api/get", {
+        .post(this.GLOBAL.serverSrc + "/tpk/picture/api/get", {
           id: this.albumInfo.pictures[index].id
         })
         .then(res => {
@@ -591,7 +591,7 @@ export default {
     //获取公司
     getCompany() {
       this.$http
-        .post("http://test.dayuntong.com" + "/tpk/picture/api/companyget")
+        .post(this.GLOBAL.serverSrc + "/tpk/picture/api/companyget")
         .then(res => {
           this.insertCheCompany = [];
           this.companyList = res.data.objects;

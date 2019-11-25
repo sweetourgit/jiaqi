@@ -218,7 +218,8 @@
         <!-- <el-button @click="CloseCheckIncomeShow()">取消</el-button>
         <el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button> -->
         <el-button @click="closeDetailstShow()">取消</el-button>
-        <el-button @click="through()" type="danger" plain>通过</el-button>
+        <el-button @click="through()" type="danger" plain :disabled="ifPassClick" v-if="getCheckTypeEX=='审批中' && ifAccountBtn && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && getAccountID != 0">通过</el-button>
+        <el-button @click="through()" type="danger" plain v-else>通过</el-button>
         <el-button @click="rejected()" type="danger" plain>驳回</el-button>
         <el-button type="danger" :disabled="ifClick" @click="bankAccount(acoutInfo)" v-if="getCheckTypeEX=='审批中' && ifAccountBtn && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && getAccountID != 0">支付账户</el-button>
       </div>
@@ -273,6 +274,7 @@ import moment from 'moment'
   data(){
     return {
       ifClick: false, // 如果点击选择账户之后这个按钮会禁止点击
+      ifPassClick: true, // 点击选择账户之后才可以点击通过
       getCheckTypeEX: null, // 审批状态
       getIsEBS: null, // 与审批状态一起判断 付款账户
       acoutInfo: null,
@@ -351,6 +353,7 @@ import moment from 'moment'
       }).then(function (obj) {
         if(obj.data.isSuccess == true) {
           that.ifClick = true
+          that.ifPassClick = false
         }
         // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
         // that.getList()
@@ -395,9 +398,9 @@ import moment from 'moment'
     // 检索
     planSelect(){
       let getJqId = []
-      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
-          this.$http.post('http://test.dayuntong.com/h3wf/JQ/GettingUnfinishedTasksForJQ', {
+          this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
             "userCode": sessionStorage.getItem('userCode'),
             "startTime": this.ruleFormSeach.planTime_01 ? moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : '',
             "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -454,7 +457,7 @@ import moment from 'moment'
     pageList(){
       var that = this
       var arr = []
-      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
 
           let getWorkflowCode

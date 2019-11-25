@@ -231,10 +231,10 @@
                 ></el-autocomplete>
               </el-form-item>
               <el-form-item label="公司logo :" prop="companyLogo" style="width:360px;">
-                <el-upload
+                <!-- <el-upload
                   ref="uploadImg"
                   class="upload-demo"
-                  action="http://test.dayuntong.com/upload/obs/api/picture/"
+                  :action="imgUpload()"
                   :on-preview="handlePreview"
                   :on-remove="handleRemove"
                   :file-list="fileList2"
@@ -245,18 +245,33 @@
                   name="files"
                   style="width: 220px;"
                 >
-                  <el-button size="small" type="primary">点击上传</el-button>
+                <el-button size="small" type="primary">点击上传</el-button>-->
+                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                <!-- </el-upload> -->
+                <el-upload
+                  ref="uploadImg"
+                  class="avatar-uploader"
+                  :action="imgUpload()"
+                  :limit="1"
+                  :show-file-list="false"
+                  :on-error="handleError"
+                  :on-success="handleSuccess"
+                >
+                  <img v-if="ruleForm.imgUrl" :src="ruleForm.imgUrl" class="avatar" />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  <!-- <el-button size="small" type="primary">点击上传</el-button> -->
                   <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
                 <div v-if=" this.imgnum == 2">
                   <img width="100%" height="12%" :src="ruleForm.imgUrl" />
                 </div>
               </el-form-item>
+              <!-- action="http://test.dayuntong.com/upload/obs/api/picture/" -->
               <el-form-item label="附件 :" prop="companyLogo" style="width:360px;">
-                <el-upload
+                <!-- <el-upload
                   ref="uploadImg"
                   class="upload-demo"
-                  action="http://test.dayuntong.com/upload/obs/api/picture/"
+                  :action="imgUpload()"
                   :on-preview="handlePreview"
                   :on-remove="handleRemove"
                   :file-list="fileList2"
@@ -266,8 +281,19 @@
                   :on-success="handleSuccessFileUrl"
                   name="files"
                   style="width: 220px;"
+                >-->
+                <el-upload
+                  ref="uploadImg"
+                  class="avatar-uploader"
+                  :action="imgUpload()"
+                  :limit="1"
+                  :show-file-list="false"
+                  :on-error="handleErrorFileUrl"
+                  :on-success="handleSuccessFileUrl"
                 >
-                  <el-button size="small" type="primary">点击上传</el-button>
+                  <img v-if="ruleForm.fileUrl" :src="ruleForm.fileUrl" class="avatar" />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  <!-- <el-button size="small" type="primary">点击上传</el-button> -->
                   <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
                 <div v-if=" this.imgnum == 2">
@@ -1026,6 +1052,11 @@ export default {
   },
   methods: {
     moment,
+    // 图片上传
+    imgUpload() {
+      return this.GLOBAL.serverSrc + "/upload/obs/api/picture";
+      // return this.GLOBAL.jqUrl + '/upload/obs/api/picture'
+    },
     // 点击添加商户其他名称事件
     showInput() {
       this.isInputVisible = true;
@@ -1084,9 +1115,8 @@ export default {
     // 地区选择
     handleSelectdiqu(item) {
       this.ruleForm.areaInformationID = item.id;
-      console.log(this.ruleForm.areaInformationID,111111)
       // this.form.areaId = item;
-      this.areaInformationName = item.value;
+      this.ruleForm.areaInformationName = item.value;
       this.isSelect = true;
     },
     // 搜索方法
@@ -1328,18 +1358,26 @@ export default {
     bigSaveAccount() {
       if (this.accountForm.state == 2) {
         this.accountForm.state = "正常";
-      } else {
+      } else if (this.accountForm.state == 1) {
         this.accountForm.state = "停用";
+      } else {
+        this.accountForm.state = "";
       }
+
       if (this.accountForm.sex == 1) {
         this.accountForm.sex = "男";
-      } else {
+      } else if (this.accountForm.sex == 2) {
         this.accountForm.sex = "女";
+      } else {
+        this.accountForm.sex = "";
       }
+
       if (this.accountForm.peerUserType == 1) {
         this.accountForm.peerUserType = "管理员";
-      } else {
+      } else if (this.accountForm.state == 2) {
         this.accountForm.peerUserType = "销售";
+      } else {
+        this.accountForm.peerUserType = "";
       }
       // console.log(this.accountForm)
       this.useList.push(this.accountForm);
@@ -1414,20 +1452,29 @@ export default {
               this.accountForm.localCompID = this.tid;
               if (obj == true) {
                 this.useList.push(this.accountForm);
+
                 if (this.accountForm.state == "正常") {
                   this.accountForm.state = 2;
-                } else {
+                } else if (this.accountForm.state == "停用") {
                   this.accountForm.state = 3;
+                } else {
+                  this.accountForm.state = 0;
                 }
+
                 if (this.accountForm.sex == "男") {
                   this.accountForm.sex = 1;
-                } else {
+                } else if (this.accountForm.sex == "女") {
                   this.accountForm.sex = 2;
+                } else {
+                  this.accountForm.sex = 0;
                 }
+
                 if (this.accountForm.peerUserType == "管理员") {
                   this.accountForm.peerUserType = 1;
-                } else {
+                } else if (this.accountForm.peerUserType == "销售") {
                   this.accountForm.peerUserType = 2;
+                } else {
+                  this.accountForm.peerUserType = 0;
                 }
                 this.$http
                   .post(
@@ -1544,20 +1591,32 @@ export default {
     editAccountAddBtn() {
       // this.accountForm.id = this.editAccouontScopeid;
       this.accountForm.localCompID = this.tid;
-      if (this.accountForm.state == "正常") {
-        this.accountForm.state = 2;
-      } else {
-        this.accountForm.state = 3;
+      if (this.accountForm.state !== "") {
+        console.log(this.accountForm.state, 1);
+        if (this.accountForm.state == "2") {
+          this.accountForm.state = 2;
+        } else {
+          this.accountForm.state = 3;
+        }
+        // console.log(this.accountForm.state,2);
       }
-      if (this.accountForm.sex == "男") {
-        this.accountForm.sex = 1;
-      } else {
-        this.accountForm.sex = 2;
+
+      if (this.accountForm.sex !== "") {
+        console.log(this.accountForm.sex, 1);
+        if (this.accountForm.sex == "1") {
+          this.accountForm.sex = 1;
+        } else {
+          this.accountForm.sex = 2;
+        }
       }
-      if (this.accountForm.peerUserType == "管理员") {
-        this.accountForm.peerUserType = 1;
-      } else {
-        this.accountForm.peerUserType = 2;
+
+      if (this.accountForm.peerUserType !== "") {
+        console.log(this.accountForm.peerUserType, 1);
+        if (this.accountForm.peerUserType == "1") {
+          this.accountForm.peerUserType = 1;
+        } else {
+          this.accountForm.peerUserType = 2;
+        }
       }
       this.accountValidator().then(res => {
         if (res === true) {
@@ -1741,7 +1800,7 @@ export default {
     getDebitTable(id) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
-          pageIndex: this.pageIndex,
+          pageIndex: 1,
           pageSize: this.pageSize,
           // total: 1, //总条数
           object: {
@@ -1804,7 +1863,9 @@ export default {
         bankcardNo: "",
         localCompRole: "", //商户角色
         salesman: "", //销售人员
-        administrative: "" //管理人员
+        administrative: "", //管理人员
+        ImgUrl: "", //logo
+        fileUrl: "" //附件
       };
       if (this.btnindex !== 1) this.$refs["ruleForm"].resetFields();
       this.dialogFormVisible = false;
@@ -1889,7 +1950,7 @@ export default {
       // }
 
       // 商户角色
-      console.log("商户角色", this.ruleForm.localCompRole);
+      // console.log("商户角色", this.ruleForm.localCompRole);
       if ((this.ruleForm.localCompRole = "旅游组团社")) {
         this.ruleForm.localCompRole = 1;
       } else if ((this.ruleForm.localCompRole = "独立旅行社")) {
@@ -2353,18 +2414,24 @@ export default {
           this.useList.forEach((val, idx, arr) => {
             if (arr[idx].state == 2) {
               arr[idx].state = "正常";
-            } else {
+            } else if (arr[idx].state == 3) {
               arr[idx].state = "停用";
+            } else {
+              arr[idx].state = null;
             }
             if (arr[idx].sex == 1) {
               arr[idx].sex = "男";
-            } else {
+            } else if (arr[idx].sex == 2) {
               arr[idx].sex = "女";
+            } else {
+              arr[idx].sex = "";
             }
             if (arr[idx].peerUserType == 1) {
               arr[idx].peerUserType = "管理员";
-            } else {
+            } else if (arr[idx].peerUserType == 2) {
               arr[idx].peerUserType = "销售";
+            } else {
+              arr[idx].peerUserType = null;
             }
           });
           // 状态
@@ -2514,8 +2581,8 @@ export default {
           this.ruleForm.bankcardNo = object.bankcardNo;
           this.ruleForm.localCompCode = object.localCompCode;
           this.ruleForm.deposit = object.deposit;
-          this.ruleForm.areaInformationName = object.areaInformationName
-          this.ruleForm.areaInformationID = object.areaInformationID
+          this.ruleForm.areaInformationName = object.areaInformationName;
+          this.ruleForm.areaInformationID = object.areaInformationID;
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
@@ -2567,22 +2634,24 @@ export default {
     },
     //图片上传成功
     handleSuccess(response, file, fileList2) {
-      //console.log(file);
+      console.log(file, "logo");
       if (file.status == "success") {
         this.imgnum = 1;
         let T_img = JSON.parse(response);
-        this.ruleForm.imgUrl = T_img.paths[0].Url;
+        // this.ruleForm.imgUrl = T_img.paths[0].Url;
+        this.ruleForm.imgUrl = URL.createObjectURL(file.raw);
       } else {
         this.$message.error("图片上传失败重新上传");
       }
     },
     //附件上传成功
     handleSuccessFileUrl(response, file, fileList1) {
-      //console.log(file);
+      console.log(file, "附件");
       if (file.status == "success") {
         this.fileUrl = 1;
         let T_fileUrl = JSON.parse(response);
-        this.ruleForm.fileUrl = T_fileUrl.paths[0].Url;
+        // this.ruleForm.fileUrl = T_fileUrl.paths[0].Url;
+        this.ruleForm.fileUrl = URL.createObjectURL(file.raw);
       } else {
         this.$message.error("附件上传失败重新上传");
       }
@@ -2666,6 +2735,29 @@ export default {
 </script>
 
 <style scoped>
+/* 图片上传 */
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  display: block;
+}
+/* 图片end */
 .BodyTableCenter {
   margin: 0 60px 0 100px;
 }

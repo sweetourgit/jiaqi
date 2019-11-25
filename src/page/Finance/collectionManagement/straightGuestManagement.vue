@@ -385,7 +385,7 @@ export default {
           "object": {
             "id": 0,
             "checkType": that.ruleForm.checkType ? that.ruleForm.checkType : -1,
-            "collectionTime": "2019-05-16",
+            // "collectionTime": "2019-05-16",
             "startTime": that.ruleForm.dateStart ? moment(that.ruleForm.dateStart).format('YYYY-MM-DD') : "2001-01-01",
             "endTime": that.ruleForm.dateEnd ? moment(that.ruleForm.dateEnd).format('YYYY-MM-DD') : "2099-05-16",
             // "groupCode": that.plan ? that.plan : '',
