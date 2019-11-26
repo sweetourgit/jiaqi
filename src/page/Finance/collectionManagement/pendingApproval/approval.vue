@@ -75,6 +75,11 @@
         <el-divider content-position="left">关联欠款</el-divider>
         <!--同业/直客 关联欠款-->
         <div class="stepDv bottomDis" v-if="info.collectionType == 2 || info.collectionType == 1">
+          <div class="associated" v-if="info.collectionType == 2">
+            <div class="associatedIcon"><i class="el-icon-warning"></i></div>
+            <div class="associatedItems">已关联<span style="font-weight: bold;">{{ tableManyRow }}</span>项</div>
+            <div class="associatedMoney">总计：{{ getCollectionPriceTotal }}元</div>
+          </div>
           <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
             <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
             <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
@@ -169,7 +174,10 @@
         approvalTitle: '',
         dialogVisibleApproval: false,
         approval_status: '',
-        approvalMark: ''
+        approvalMark: '',
+
+        tableManyRow: 0,
+        getCollectionPriceTotal: 0
       }
     },
     computed: {
@@ -289,6 +297,11 @@
             that.tableAssociated = response.data.object.arrears;
             that.tableDataResult = response.data.object.spw;
 
+            that.tableManyRow = that.tableAssociated.length;
+            that.getCollectionPriceTotal = 0;
+            that.tableAssociated.forEach( item => {
+              that.getCollectionPriceTotal += item.matchingPrice
+            });
             // 凭证
             that.fileList = response.data.object.files;
 //            for(let i = 0; i < that.fileList.length; i++){
@@ -394,7 +407,7 @@
   #collectionDetail .el-upload-list__item{
     width: 100%!important;
   }
-  .lineTitle{
+  #collectionDetail .lineTitle{
     width: 100%;
     margin: 10px auto;
     background-color: #E6F3FC;
@@ -403,4 +416,9 @@
     box-sizing: border-box;
     padding: 0 10px;
   }
+
+  /*关联欠款*/
+  #collectionDetail .associated{ display:block;width:100%;height: 40px;line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc; border-radius: 5px;overflow: hidden; }
+  #collectionDetail .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}
+  #collectionDetail .associatedItems{float:left; margin: 0 0 0 10px;}
 </style>
