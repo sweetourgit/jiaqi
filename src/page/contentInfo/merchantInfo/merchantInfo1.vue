@@ -226,6 +226,7 @@
                   :fetch-suggestions="querySearchdiqu"
                   @blur="handleBlurdiqu"
                   @select="handleSelectdiqu"
+                  @focus="handleFocesdiqu"
                   v-model="ruleForm.areaInformationName"
                   :trigger-on-focus="false"
                 ></el-autocomplete>
@@ -1100,6 +1101,10 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    handleFocesdiqu () {
+      // let areaInformationName 
+      // this.ruleForm.areaInformationName = ""
     },
     // 地区选择失去焦点
     handleBlurdiqu() {
@@ -2040,18 +2045,24 @@ export default {
       this.useList.forEach((val, idx, arr) => {
         if (arr[idx].peerUserType == "管理员") {
           arr[idx].peerUserType = 1;
-        } else {
+        } else if(arr[idx].peerUserType == "销售"){
           arr[idx].peerUserType = 2;
+        } else {
+          arr[idx].peerUserType = 0;
         }
         if (arr[idx].sex == "男") {
           arr[idx].sex = 1;
-        } else {
+        } else if (arr[idx].sex == "女"){
           arr[idx].sex = 2;
-        }
+        } else {
+          arr[idx].sex = 0;
+        } 
         if (arr[idx].state == "正常") {
           arr[idx].state = 2;
-        } else {
+        } else if(arr[idx].state == "停用"){
           arr[idx].state = 3;
+        } else {
+          arr[idx].state = 0
         }
       });
       // console.log(this.useList, "上传的账号信息");
@@ -2099,7 +2110,9 @@ export default {
             localCompAliasList: this.businessOtherNamesArr, //商户其他名称
             abouQuota: this.AbouQuota, //周边授信额度
             localCompCode: this.ruleForm.localCompCode, //商户编码
-            localCompAliasList: this.businessOtherNamesArr
+            localCompAliasList: this.businessOtherNamesArr,
+            areaInformationID: this.ruleForm.areaInformationID,
+            areaInformationName: this.ruleForm.areaInformationName
           }
         })
         .then(obj => {
