@@ -115,7 +115,13 @@
         </div>
         <!--总价-->
         <div class="price">
-          <p class="totle">总价：￥{{toDecimal2(payable)}}</p>
+          <!-- <p class="totle">总价：￥{{toDecimal2(payable)}}</p> -->
+          <p class="totle">
+            总价：￥
+            <span v-if="payable-prePayable > 0" >{{prePayable}} + {{payable-prePayable}}</span>
+            <span v-if="payable-prePayable == 0" >{{prePayable}}</span>
+            <span v-if="payable-prePayable < 0" >{{prePayable}} - {{prePayable-payable}}</span>
+          </p>
           <p
             class="surplus"
             v-if="orderget.orderChannel===1&&settlementType===1"
@@ -349,7 +355,7 @@ export default {
       tourType: 0, //报名类型索引
       fillIndex: 0, //报名类型下游客list索引
       preLength: [], //记录上一次报名人数[1,3]形式
-      applyInfomations:[],
+      applyInfomations: [], //报名信息
       tour: [], //总游客信息,二维数组
       winTitle: "", //弹窗标题
       conForm: {
@@ -484,7 +490,7 @@ export default {
           console.log(err);
         });
     },
-   
+
     //同业的订单（月结的）记录以前的订单总价 改变后的总价差和剩余预存款和额度作对比 超过则不可保存更改
     isSaveBtnClick() {
       if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
@@ -985,7 +991,6 @@ export default {
               this.preLength.push(this.tour[i].length);
               this.enrolNum.push(this.tour[i].length);
             }
-            console.log(this.applyInfomations,"applyInfomations")
             // 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数
             // this.paidMaxEnrolNum = [...this.enrolNum];
             for (let i = 0; i < data.length; i++) {
@@ -1002,7 +1007,7 @@ export default {
                   parseInt(data[i].quota) - parseInt(this.preLength[i]);
               }
             }
-            
+
             this.salePrice = data;
             this.salePriceNum = data;
             for (let i = 0; i < this.salePriceNum.length; i++) {
@@ -1283,7 +1288,7 @@ export default {
       this.dialogFormProcess = false;
       this.isLowPrice = false;
       this.isSaveBtn = false;
-      this.applyInfomations = []
+      this.applyInfomations = [];
     }
   }
 };
