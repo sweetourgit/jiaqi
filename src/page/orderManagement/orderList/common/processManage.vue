@@ -10,7 +10,7 @@
       style="margin-top:-50px"
       @close="cancle"
     >
-      <!--订单状态-->
+      <!--订单状态begin-->
       <div style="position:relative;height:50px">
         <el-button type="primary" plain icon="el-icon-check" circle size="medium"></el-button>
         <span class="sta-title">{{statusNow}}</span>
@@ -35,7 +35,21 @@
           <span class="sta-title">{{statusEnd}}</span>
         </span>
       </div>
+      <!--订单状态end-->
+
+      <!--报名信息begin-->
+      <ul class="clearfix applyinfoParent">
+        <li class="fl applyinfo">报名信息：</li>
+        <li class="fl applyinfo" v-for="(item,index) in salePrice" :key="index">
+          <span
+            v-show="applyInfomations[index] !== 0 ? true: false"
+          >{{item.enrollName}}￥{{item.price_01}}*{{applyInfomations[index]}}</span>
+        </li>
+      </ul>
+      <!--报名信息end-->
+
       <p class="yuwei">余位：{{teampreviewData.remaining}}</p>
+
       <!-- switch 更改价格(直客价和同业价) beign-->
       <p>当前使用{{priceChange}}价格</p>
       <el-switch
@@ -46,6 +60,7 @@
         :disabled="orderget.orderStatus===4||orderget.orderStatus===6||orderget.orderStatus===9"
       ></el-switch>
       <!-- switch 更改价格(直客价和同业价) end-->
+
       <!--报名人数-->
       <el-form :model="ruleForm" ref="ruleForm" class="demo-ruleForm cb" :rules="rules">
         <div>
@@ -334,6 +349,7 @@ export default {
       tourType: 0, //报名类型索引
       fillIndex: 0, //报名类型下游客list索引
       preLength: [], //记录上一次报名人数[1,3]形式
+      applyInfomations:[],
       tour: [], //总游客信息,二维数组
       winTitle: "", //弹窗标题
       conForm: {
@@ -359,7 +375,7 @@ export default {
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
         contactName: [
           { message: "联系人不能为空", trigger: "blur" },
-          { max:20,message: "不能超过20位长度", trigger: "blur" },
+          { max: 20, message: "不能超过20位长度", trigger: "blur" }
         ],
         contactPhone: [
           { message: "联系电话不能为空", trigger: "blur" },
@@ -368,7 +384,7 @@ export default {
             message: "电话号格式不正确",
             trigger: "blur"
           },
-          { max:20,message: "不能超过20位长度", trigger: "blur" },
+          { max: 20, message: "不能超过20位长度", trigger: "blur" }
         ],
         otherCost: [
           {
@@ -468,13 +484,14 @@ export default {
           console.log(err);
         });
     },
+   
     //同业的订单（月结的）记录以前的订单总价 改变后的总价差和剩余预存款和额度作对比 超过则不可保存更改
     isSaveBtnClick() {
       if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
         if (this.payable - this.prePayable > this.deposit + this.balance) {
           return (this.isSaveBtn = true);
         } else {
-          this.isSaveBtn = false
+          this.isSaveBtn = false;
         }
         if (this.payable === this.prePayable) {
           return (this.isSaveBtn = false);
@@ -964,9 +981,11 @@ export default {
             }
             //设置报名人数
             for (let i = 0; i < this.tour.length; i++) {
+              this.applyInfomations.push(this.tour[i].length);
               this.preLength.push(this.tour[i].length);
               this.enrolNum.push(this.tour[i].length);
             }
+            console.log(this.applyInfomations,"applyInfomations")
             // 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数
             // this.paidMaxEnrolNum = [...this.enrolNum];
             for (let i = 0; i < data.length; i++) {
@@ -983,6 +1002,7 @@ export default {
                   parseInt(data[i].quota) - parseInt(this.preLength[i]);
               }
             }
+            
             this.salePrice = data;
             this.salePriceNum = data;
             for (let i = 0; i < this.salePriceNum.length; i++) {
@@ -1020,9 +1040,9 @@ export default {
       }
     },
     //什么都不填写然后失去光标变为0
-    comPriceBlur(item,index){
-      if(item.price == "") {
-        item.price = 0
+    comPriceBlur(item, index) {
+      if (item.price == "") {
+        item.price = 0;
       }
     },
 
@@ -1263,12 +1283,23 @@ export default {
       this.dialogFormProcess = false;
       this.isLowPrice = false;
       this.isSaveBtn = false;
+      this.applyInfomations = []
     }
   }
 };
 </script>
 
 <style scoped>
+/* 报名信息 */
+.applyinfoParent {
+  margin-top: 30px;
+}
+
+.applyinfo {
+  margin-right: 10px;
+  list-style: none;
+}
+
 /*订单状态*/
 .line {
   display: inline-block;
@@ -1301,7 +1332,7 @@ export default {
 
 /* 余位 */
 .yuwei {
-  margin-bottom: 10px;
+  margin: 20px 0;
 }
 /*报名人数*/
 .demo-ruleForm {
@@ -1450,11 +1481,26 @@ hr {
   overflow: hidden;
 }
 /*通用*/
+ul {
+  margin: 0;
+  padding: 0;
+}
 .fl {
   float: left;
 }
 .fr {
   float: right;
+}
+.clearfix:after,
+.clearfix:before {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  *zoom: 1;
 }
 .cb {
   clear: both;

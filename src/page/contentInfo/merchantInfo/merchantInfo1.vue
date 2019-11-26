@@ -1102,8 +1102,8 @@ export default {
           console.log(err);
         });
     },
-    handleFocesdiqu () {
-      // let areaInformationName 
+    handleFocesdiqu() {
+      // let areaInformationName
       // this.ruleForm.areaInformationName = ""
     },
     // 地区选择失去焦点
@@ -1592,21 +1592,28 @@ export default {
     editAccountAddBtn() {
       // this.accountForm.id = this.editAccouontScopeid;
       this.accountForm.localCompID = this.tid;
-      if (this.accountForm.state !== "") {
+      console.log(
+        this.accountForm.state,
+        this.accountForm.sex,
+        this.accountForm.peerUserType
+      );
+      if (this.accountForm.state !== null) {
         if (this.accountForm.state == "2") {
           this.accountForm.state = 2;
         } else {
           this.accountForm.state = 3;
         }
-        // console.log(this.accountForm.state,2);
+      } else {
+        this.accountForm.state = 0;
       }
-
       if (this.accountForm.sex !== "") {
         if (this.accountForm.sex == "1") {
           this.accountForm.sex = 1;
         } else {
           this.accountForm.sex = 2;
         }
+      } else {
+        this.accountForm.sex = 0;
       }
 
       if (this.accountForm.peerUserType !== "") {
@@ -2040,20 +2047,20 @@ export default {
           arr[idx].peerUserType = 1;
         } else {
           arr[idx].peerUserType = 2;
-        } 
+        }
         if (arr[idx].sex == "男") {
           arr[idx].sex = 1;
-        } else if (arr[idx].sex == "女"){
+        } else if (arr[idx].sex == "女") {
           arr[idx].sex = 2;
         } else {
           arr[idx].sex = 0;
-        } 
+        }
         if (arr[idx].state == "正常") {
           arr[idx].state = 2;
-        } else if(arr[idx].state == "停用"){
+        } else if (arr[idx].state == "停用") {
           arr[idx].state = 3;
         } else {
-          arr[idx].state = 0
+          arr[idx].state = 0;
         }
       });
       // console.log(this.useList, "上传的账号信息");
