@@ -3,8 +3,8 @@
     <el-dialog title="详情" :visible="dialogFormVisible2" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
-        <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
-        <el-button type="primary" @click="backoutBtn" v-if="baseInfo.status_rece != 12">撤销</el-button>
+        <el-button type="primary" @click="importOrder" v-if="baseInfo.rece_type == '2' && baseInfo.rec_mode == '订单收款' && baseInfo.can_match == '2'">导入订单明细</el-button>
+        <el-button type="primary" @click="backoutBtn" v-if="baseInfo.status_rece != '12'">撤销</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -237,15 +237,17 @@
           <!--<el-button class="el-button" type="primary" @click="">确 认</el-button>-->
         </div>
       </el-dialog>
-
+      <importOrder :dialogFormVisible3="dialogFormVisible3" :info="info" @close="closeImport"></importOrder>
     </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
+  import importOrder from '@/page/Finance/businessRecognitionManagement/importOrder.vue'
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "tradeAdd",
     components: {
+      importOrder
     },
     props: {
       dialogFormVisible2: false,
@@ -273,7 +275,10 @@
           rec_created_at: '',
           distributor: '',
           distributor_code: '',
-          dateQuantun: ''
+          dateQuantun: '',
+          can_match: '',
+          rece_type: '',
+
         },
 
         // 认款方式array
@@ -309,7 +314,9 @@
           '5': '余额支付',
           '6': '支付宝',
           '7': '自采'
-        }
+        },
+
+        dialogFormVisible3: false
       }
     },
     computed: {
@@ -352,7 +359,10 @@
           rec_uid: '',
           rec_created_at: '',
           distributor: '',
-          distributor_code: ''
+          distributor_code: '',
+          dateQuantun: '',
+          can_match: '',
+          rece_type: '',
         };
 
         this.$emit('close', false);
@@ -389,7 +399,13 @@
           });
         });
       },
-
+      importOrder(){
+//        this.info = row.id;
+        this.dialogFormVisible3 = true;
+      },
+      closeImport(){
+        this.dialogFormVisible3 = false;
+      },
       // 撤销操作
       backoutBtn(){
         const that = this;
@@ -453,6 +469,7 @@
       // 关闭订单详情
       close(){
         this.dialogFormVisible = false;
+
       },
       // 加载数据
       loadData(){
@@ -495,7 +512,10 @@
               rec_created_at: response.data.data.rec_created_at,
               distributor: response.data.data.distributor,
               distributor_code: response.data.data.distributor_code,
-              dateQuantun: dateQuantun
+              dateQuantun: dateQuantun,
+              can_match: response.data.data.can_match,
+              rece_type: response.data.data.rece_type
+
             };
             // 获取订单信息
             if(response.data.data.rec_mode === '1'){

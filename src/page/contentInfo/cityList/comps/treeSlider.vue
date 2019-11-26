@@ -35,7 +35,7 @@
     <main>
       <el-tree lazy node-key="id"
         :data="treeProto"
-        :props="{ label: 'areaName', children: 'children' }"
+        :props="treeProps"
         :load="loadNode"
         :expand-on-click-node="false"
         @node-click="nodeClick"
@@ -53,6 +53,7 @@ export default {
       // 视图
       {
         inited: false,
+        treeProps: { label: 'areaName', children: 'children' }
       },
       // 数据
       {
@@ -91,8 +92,8 @@ export default {
       return arr.map(el => {
         if(el.standard) return el;
         el.children? el.children.splice(0): el.children= [];
-        el.inited= false; // 是否已在tree中初始化
-        el.standard= true; // 是否已标准化
+        el.inited= false; // 是否已在tree中初始化， 初始化的证明子树已经完全加载
+        el.standard= true; // 是否已标准化，标准化主要是level和parent的挂载
         el.parent= parent;
         el.level= parent? parent.level+ 1: 1;
         return el;

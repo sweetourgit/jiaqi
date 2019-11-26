@@ -318,15 +318,12 @@
         </span>
     </el-dialog>
     <el-dialog style="text-align: left" title="选择账户:" :visible.sync="dialogVisible3" width="50%">
-      <el-tabs v-model="activeName2" type="border-card">
-        <el-tab-pane label="供应商" name="three">
-          <el-table :data="tableData9" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle5" :header-cell-style="getRowClass4">
-            <el-table-column prop="cardNumber" label="账户"></el-table-column>
-            <el-table-column prop="bankName" label="开户行"></el-table-column>
-            <el-table-column prop="cardName" label="名称"></el-table-column>
-          </el-table>
-        </el-tab-pane>
-      </el-tabs>
+      <el-table :data="tableData9" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle5" :header-cell-style="getRowClass4">
+        <el-table-column prop="cardNumber" label="账户"></el-table-column>
+        <el-table-column prop="bankName" label="开户行"></el-table-column>
+        <el-table-column prop="cardName" label="名称"></el-table-column>
+        <el-table-column prop="memo" label="备注"></el-table-column>
+      </el-table>
       <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible3 = false">取 消</el-button>
           <el-button type="primary" @click="routerHandle5()">确 定</el-button>
@@ -396,7 +393,6 @@ export default {
       plan_data: '', // 团期计划，事件检索输入框
       fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       activeName: 'first',
-      activeName2: 'three',
       //付款搜索
       startTime2: '',
       endTime2: '',
@@ -961,6 +957,7 @@ export default {
         }
       }).then(res => {
         if(res.data.objects != null) {
+          this.tableData2 = []
           for (let i = 0; i < res.data.objects.length; i++) {
             this.tableData2.push({
               "value": res.data.objects[i].name,

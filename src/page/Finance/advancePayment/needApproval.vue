@@ -166,9 +166,9 @@
       // 检索
       planSelect(){
         let getJqId = []
-        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
           .then(obj => {
-            this.$http.post('http://test.dayuntong.com/h3wf/JQ/GettingUnfinishedTasksForJQ', {
+            this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
               "userCode": sessionStorage.getItem('userCode'),
               "startTime": this.planTime_01 ? moment(this.planTime_01).format('YYYY-MM-DD HH:mm:ss') : '',
               "endTime": this.planData_01 ? moment(this.planData_01).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -225,7 +225,7 @@
       pageList(){
         var that = this
         var arr = []
-        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
           .then(obj => {
             this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),

@@ -132,7 +132,9 @@
         dialogFormVisible1: false,
         tableDataZH: [],
 
-        fileList: []
+        fileList: [],
+
+        supplierCode: ''
       }
     },
     computed: {
@@ -234,7 +236,8 @@
               "create_uid": sessionStorage.getItem('id'),
               "org_id": sessionStorage.getItem('orgID'),
               "buy_type": this.ruleForm.buy_type,
-              "account_type": this.ruleForm.account_type
+              "account_type": this.ruleForm.account_type,
+              "oracle_supplier_code": this.supplierCode
             }).then(res => {
               console.log(res);
               if (res.data.code == 200) {
@@ -365,6 +368,7 @@
       handleSelectD(item){
         console.log(item);
         this.ruleForm.supplierID = item.id;
+        this.getSupplierCode(item.id);
         this.ruleForm.supplier = item.valueName;
         let nameArr = item.value.split(',');
         let nameStr = '';
@@ -404,10 +408,34 @@
           });
           if(ida){
             that.ruleForm.supplierID = ida;
+            this.getSupplierCode(ida);
           }else{
             that.ruleForm.dsupplierID = '';
           }
         }
+      },
+
+      // 加载供应商的
+      getSupplierCode(id){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierget",{
+          id: id
+        }).then(function(obj) {
+          console.log('获取供应商编码',obj);
+          if(obj.data.isSuccess){
+
+            if(obj.data.object.supplierCode && obj.data.object.supplierCode != '-1'){
+              that.supplierCode = obj.data.object.supplierCode;
+            }else{
+              that.$message.warning("获取供应商编码失败~");
+            }
+          }else{
+            that.$message.warning("获取供应商编码失败~");
+          }
+        }).catch(function(obj) {
+          console.log(obj);
+          that.$message.warning("供应商编码接口请求失败~");
+        });
       },
 
       // 加载供应商信息
@@ -458,8 +486,9 @@
             "itemValue": this.ruleForm.account_type
           }]
         }).then(res => {
-//          console.log('工作流',res);
+          console.log('工作流',res);
           let result = JSON.parse(res.data);
+//          let result = res.data;
           if (result.code == '0') {
             console.log('启动工作流成功');
             that.closeAdd();

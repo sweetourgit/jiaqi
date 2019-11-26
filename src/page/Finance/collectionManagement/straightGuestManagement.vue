@@ -74,7 +74,7 @@
             <div v-if="scope.row.checkTypeStatus=='通过'" style="color: #33D174">{{scope.row.checkTypeStatus}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="collectionTime" label="收款时间" align="center">
+        <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center">
         </el-table-column>
         <el-table-column prop="groupCode" label="团期计划" align="center">
         </el-table-column>
@@ -268,10 +268,7 @@ export default {
       },
       activeName: 'first',
       activeName2: 'three',
-      plan: '',
       accepter: '',
-      startTime: '',
-      endTime: '',
       settlement_01:'',
       tableData: [],
       reable: true,
@@ -310,10 +307,18 @@ export default {
   },
   filters: {
     formatDate: function (value) {
-      return moment(value).format('YYYY-MM-DD HH:mm:ss')
+      return moment(value).format('YYYY-MM-DD')
     }
   },
   methods: {
+    // 起始时间格式转换
+    dateFormat: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined) {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD')
+    },
     // 点击图片钩子
     handlePreview(file) {
       window.open(file.url);
@@ -379,13 +384,13 @@ export default {
           "total": 0,
           "object": {
             "id": 0,
-            "checkType": this.ruleForm.checkType ? this.ruleForm.checkType : -1,
-            "collectionTime": "2019-05-16",
-            "startTime": this.ruleForm.dateStart ? moment(this.ruleForm.dateStart).format('YYYY-MM-DD') : "2001-01-01",
-            "endTime": this.ruleForm.dateEnd ? moment(this.ruleForm.dateEnd).format('YYYY-MM-DD') : "2099-05-16",
-            // "groupCode": this.plan ? this.plan : '',
-            "createUser": this.keepBorrowerUserCode ? this.keepBorrowerUserCode : '',
-            "orderNumber": this.ruleForm.distributor ? this.ruleForm.distributor : '',
+            "checkType": that.ruleForm.checkType ? that.ruleForm.checkType : -1,
+            // "collectionTime": "2019-05-16",
+            "startTime": that.ruleForm.dateStart ? moment(that.ruleForm.dateStart).format('YYYY-MM-DD') : "2001-01-01",
+            "endTime": that.ruleForm.dateEnd ? moment(that.ruleForm.dateEnd).format('YYYY-MM-DD') : "2099-05-16",
+            // "groupCode": that.plan ? that.plan : '',
+            "createUser": that.keepBorrowerUserCode ? that.keepBorrowerUserCode : '',
+            "orderNumber": that.ruleForm.distributor ? that.ruleForm.distributor : '',
             "collectionType":1,//直客1.同业2
             "localCompID":0,//直客0,同业变成同业社id
           }
@@ -470,15 +475,6 @@ export default {
       this.change = false
       this.dialogFormVisible = true;
     },
-    //重置搜索条件
-    resetHand() {
-      this.keepBorrowerUserCode = null
-      this.plan = '';
-      this.accepter = '';
-      this.startTime = '';
-      this.endTime = '';
-      this.settlement_01 = '';
-    },
     //搜索按钮
     searchHand() {
       this.getStraightGuestManagement()
@@ -528,18 +524,18 @@ export default {
             "pageSize": that.limit,
             "object": {
               "id": 0,
-              "checkType": this.settlement_01?this.settlement_01:-1,
+              "checkType": that.ruleForm.checkType ? that.ruleForm.checkType : -1,
               "collectionTime": "2019-05-16",
-              "startTime": this.startTime ? formatDate(this.startTime, 'yyyy-MM-dd') : "2001-01-01",
-              "endTime": this.endTime ? formatDate(this.endTime, 'yyyy-MM-dd') : "2099-05-16",
-              "groupCode": this.plan ? this.plan : '',
+              "startTime": that.ruleForm.dateStart ? moment(that.ruleForm.dateStart).format('YYYY-MM-DD') : "2001-01-01",
+              "endTime": that.ruleForm.dateEnd ? moment(that.ruleForm.dateEnd).format('YYYY-MM-DD') : "2099-05-16",
+              // "groupCode": this.plan ? this.plan : '',
               "planID": 0,
               "orderID": 0,
               "orderNumber": "",
               "collectionNumber": "",
               "price": 0,
               "dept": 0,
-              "createUser": this.keepBorrowerUserCode ? this.keepBorrowerUserCode : '',
+              "createUser": that.keepBorrowerUserCode ? that.keepBorrowerUserCode : '',
               "createTime": "2019-05-16 01:02:40",
               "code": "",
               "serialNumber": "",

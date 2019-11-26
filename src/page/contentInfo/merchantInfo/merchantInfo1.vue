@@ -218,11 +218,24 @@
                   @focus="dataPickerFocus()"
                 ></el-date-picker>
               </el-form-item>
+              <el-form-item label="地区 :" prop="areaInformationName">
+                <el-autocomplete
+                  style="width:250px;"
+                  clearable
+                  placeholder="请输入地区名称"
+                  :fetch-suggestions="querySearchdiqu"
+                  @blur="handleBlurdiqu"
+                  @select="handleSelectdiqu"
+                  @focus="handleFocesdiqu"
+                  v-model="ruleForm.areaInformationName"
+                  :trigger-on-focus="false"
+                ></el-autocomplete>
+              </el-form-item>
               <el-form-item label="公司logo :" prop="companyLogo" style="width:360px;">
-                <el-upload
+                <!-- <el-upload
                   ref="uploadImg"
                   class="upload-demo"
-                  action="http://test.dayuntong.com/upload/obs/api/picture/"
+                  :action="imgUpload()"
                   :on-preview="handlePreview"
                   :on-remove="handleRemove"
                   :file-list="fileList2"
@@ -233,11 +246,59 @@
                   name="files"
                   style="width: 220px;"
                 >
-                  <el-button size="small" type="primary">点击上传</el-button>
-                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                <el-button size="small" type="primary">点击上传</el-button>-->
+                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                <!-- </el-upload> -->
+                <el-upload
+                  ref="uploadImg"
+                  class="avatar-uploader"
+                  :action="imgUpload()"
+                  :limit="1"
+                  :show-file-list="false"
+                  :on-error="handleError"
+                  :on-success="handleSuccess"
+                >
+                  <img v-if="ruleForm.imgUrl" :src="ruleForm.imgUrl" class="avatar" />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  <!-- <el-button size="small" type="primary">点击上传</el-button> -->
+                  <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
                 <div v-if=" this.imgnum == 2">
                   <img width="100%" height="12%" :src="ruleForm.imgUrl" />
+                </div>
+              </el-form-item>
+              <!-- action="http://test.dayuntong.com/upload/obs/api/picture/" -->
+              <el-form-item label="附件 :" prop="companyLogo" style="width:360px;">
+                <!-- <el-upload
+                  ref="uploadImg"
+                  class="upload-demo"
+                  :action="imgUpload()"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :file-list="fileList2"
+                  :limit="1"
+                  list-type="picture"
+                  :on-error="handleErrorFileUrl"
+                  :on-success="handleSuccessFileUrl"
+                  name="files"
+                  style="width: 220px;"
+                >-->
+                <el-upload
+                  ref="uploadImg"
+                  class="avatar-uploader"
+                  :action="imgUpload()"
+                  :limit="1"
+                  :show-file-list="false"
+                  :on-error="handleErrorFileUrl"
+                  :on-success="handleSuccessFileUrl"
+                >
+                  <img v-if="ruleForm.fileUrl" :src="ruleForm.fileUrl" class="avatar" />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  <!-- <el-button size="small" type="primary">点击上传</el-button> -->
+                  <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                </el-upload>
+                <div v-if=" this.imgnum == 2">
+                  <img width="100%" height="12%" :src="ruleForm.fileUrl" />
                 </div>
               </el-form-item>
             </div>
@@ -480,7 +541,12 @@
                 <td class="longWeight">{{ruleForm.deposit}}</td>
               </div>
               <td class="tr">额度：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{toDecimal2(ruleForm.quota)}} <span v-if="ruleForm.quota !== 0">(剩余：{{toDecimal2(ruleForm.balance)}})</span></td>
+              <td class="longWeight">
+                {{toDecimal2(ruleForm.quota)}}
+                <span
+                  v-if="ruleForm.quota !== 0"
+                >(剩余：{{toDecimal2(ruleForm.balance)}})</span>
+              </td>
             </tr>
             <br />
             <tr>
@@ -490,9 +556,14 @@
                 <img width="100%" height="12%" :src="ruleForm.imgUrl" />
               </td>
               <div class="BodyTableCenter">
-                <td class="tr">经营范围：&nbsp;&nbsp;</td>
-                <td class="longWeight">{{ruleForm.scopeExt}}</td>
+                <td class="tr">附件：&nbsp;&nbsp;</td>
+                <td class="longWeight">
+                  <!-- {{ruleForm.fileUrl}} -->
+                  <img width="100%" height="12%" :src="ruleForm.fileUrl" />
+                </td>
               </div>
+              <td class="tr">经营范围：&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.scopeExt}}</td>
             </tr>
           </table>
           <!-- 点击详情账户信息 -->
@@ -543,15 +614,15 @@
               </p>
             </div>
             <el-table :data="tableRelevanceDeptInfo" border style="width: 100%;margin-top: 20px;">
-              <el-table-column prop="OrderCode" label="订单编号" width="120" align="center"></el-table-column>
-              <el-table-column prop="Title" label="产品名称" width="120" align="center"></el-table-column>
-              <el-table-column prop="GroupCode" label="团期计划" width="120" align="center"></el-table-column>
-              <el-table-column prop="CF_Date" label="出团日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="Payable" label="订单金额" width="80" align="center"></el-table-column>
-              <el-table-column prop="qk_price" label="欠款金额" width="120" align="center"></el-table-column>
-              <el-table-column prop="yh_price" label="已还金额" width="120" align="center"></el-table-column>
-              <el-table-column prop="CreateTime" label="欠款日期" width="120" align="center"></el-table-column>
-              <el-table-column prop="RepaymentDate" label="应还日期" align="center"></el-table-column>
+              <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+              <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
+              <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+              <el-table-column prop="cF_Date" label="出团日期" align="center"></el-table-column>
+              <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
+              <el-table-column prop="qk_price" label="欠款金额" align="center"></el-table-column>
+              <el-table-column prop="yh_price" label="已还金额" align="center"></el-table-column>
+              <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
+              <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
             </el-table>
           </div>
         </div>
@@ -761,6 +832,7 @@ export default {
       // editAdmin: [], //点击编辑页的admin 用来接收修改之前的
       businewwInfPageId: "", //商户信息详情页的ID 同时也是商户其他名称添加接口的localCompID
       vague: [], //模糊搜索的数组
+      vagueDiQu: [], // 地区模糊搜索数组
       // cascaderArr: [],
       isAddAccountBtn: 0, //判断账户信息弹窗是从添加按钮进入还是编辑进入
       accountArr: [], //用来接收本地添加账户的字段
@@ -813,26 +885,26 @@ export default {
         email: [
           { type: "email", message: "请输入正确格式的邮箱", trigger: "blur" }
         ],
-        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        // sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         // rules中 正则
-        wx: [{ validator: wechatvalidator, trigger: "blur" }],
-        qq: [
-          {
-            min: 5,
-            max: 11,
-            pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/,
-            message: "请输入正确格式",
-            trigger: "blur"
-          }
-        ],
-        state: [{ required: true, message: "请选择状态", trigger: "change" }],
-        passWord: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, max: 30, message: "请输入6-30位密码", trigger: "blur" }
-        ],
-        peerUserType: [
-          { required: true, message: "请选择职务", trigger: "change" }
-        ]
+        wx: [{ validator: wechatvalidator, trigger: "blur" }]
+        // qq: [
+        //   {
+        //     min: 5,
+        //     max: 11,
+        //     pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/,
+        //     message: "请输入正确格式",
+        //     trigger: "blur"
+        //   }
+        // ],
+        // state: [{ required: true, message: "请选择状态", trigger: "change" }],
+        // passWord: [
+        //   { required: true, message: "请输入密码", trigger: "blur" },
+        //   { min: 6, max: 30, message: "请输入6-30位密码", trigger: "blur" }
+        // ],
+        // peerUserType: [
+        //   { required: true, message: "请选择职务", trigger: "change" }
+        // ]
       },
       ruleForm: {
         name: "", //
@@ -840,6 +912,8 @@ export default {
         localCompType: "", //类别
         state: null, //状态默认是正常
         expTime: "", //到期时间
+        areaInformationID: null, //地区id
+        areaInformationName: "", //地区
         settlementType: null, //结算方式
         quota: "", //额度
         //department: "",
@@ -857,14 +931,18 @@ export default {
         administrative: "", //管理人员
         otherNames: "", //商户其他名字
         localCompCode: "", //商户编码
-        ImgUrl: "" //logo
+        ImgUrl: "", //logo
+        fileUrl: "" //附件
       },
       rules: {
-        expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
+        // expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
         name: [
-          // { required: true, message: "请输入名称", trigger: "blur" },
+          { required: true, message: "请输入名称", trigger: "blur" },
           // { max: 40, message: "不要超过40个字符", trigger: "blur" }
           { validator: nameValidator, trigger: "blur" }
+        ],
+        areaInformationName: [
+          { required: true, message: "请选择地区", trigger: "blur" }
         ],
         localCompType: [
           { required: true, message: "请选择类型", trigger: "change" }
@@ -873,14 +951,14 @@ export default {
         settlementType: [
           { required: true, message: "请选择结算方式", trigger: "change" }
         ],
-        localCompRole: [
-          { required: true, message: "请选择商户角色", trigger: "change" }
-        ],
-        storeType: [
-          { required: true, message: "请选择门市类型", trigger: "blur" }
-        ],
+        // localCompRole: [
+        //   { required: true, message: "请选择商户角色", trigger: "change" }
+        // ],
+        // storeType: [
+        //   { required: true, message: "请选择门市类型", trigger: "blur" }
+        // ],
         administrative: [
-          { required: true, message: "请选择管理人员", trigger: "change" }
+          // { required: true, message: "请选择管理人员", trigger: "change" }
         ],
         quota: [
           { required: true, message: "请输入额度", trigger: "blur" },
@@ -900,34 +978,34 @@ export default {
           { min: 11, max: 11, message: "请输入11位数字", trigger: "blur" },
           { pattern: /(^[\-0-9][0-9]*(.[0-9]+)?)$/, message: "请输入数字" }
         ],
-        publicName: [
-          { required: true, message: "请输入对公户名", trigger: "blur" },
-          { max: 40, message: "不要超过40个字符", trigger: "blur" }
-        ],
-        bankName: [
-          { required: true, message: "请输入开户行", trigger: "blur" },
-          { max: 80, message: "不要超过80个字符", trigger: "blur" }
-        ],
-        bankcardNo: [
-          { required: true, message: "请输入对公账号", trigger: "blur" },
-          { max: 30, message: "不要超过30个字符", trigger: "blur" }
-        ],
-        scopeExt: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个经营",
-            trigger: "change"
-          }
-        ],
-        orgs: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个区域",
-            trigger: "change"
-          }
-        ],
+        // publicName: [
+        //   { required: true, message: "请输入对公户名", trigger: "blur" },
+        //   { max: 40, message: "不要超过40个字符", trigger: "blur" }
+        // ],
+        // bankName: [
+        //   { required: true, message: "请输入开户行", trigger: "blur" },
+        //   { max: 80, message: "不要超过80个字符", trigger: "blur" }
+        // ],
+        // bankcardNo: [
+        //   { required: true, message: "请输入对公账号", trigger: "blur" },
+        //   { max: 30, message: "不要超过30个字符", trigger: "blur" }
+        // ],
+        // scopeExt: [
+        //   {
+        //     type: "array",
+        //     required: true,
+        //     message: "请至少选择一个经营",
+        //     trigger: "change"
+        //   }
+        // ],
+        // orgs: [
+        //   {
+        //     type: "array",
+        //     required: true,
+        //     message: "请至少选择一个区域",
+        //     trigger: "change"
+        //   }
+        // ],
         salesman: [{ required: true, message: "请输入", trigger: "change" }],
         otherNames: [{ validator: otherNamesValidator, trigger: "change" }],
         localCompCode: [
@@ -964,7 +1042,10 @@ export default {
           label: "非月结"
         }
       ],
-      fileList2: []
+      fileList2: [], //图片
+      fileList1: [], //附件
+      isSelect: false, // 判断是否进入select
+      areaInformationName: "" //地区value
     };
   },
   components: {
@@ -972,6 +1053,11 @@ export default {
   },
   methods: {
     moment,
+    // 图片上传
+    imgUpload() {
+      return this.GLOBAL.serverSrc + "/upload/obs/api/picture";
+      // return this.GLOBAL.jqUrl + '/upload/obs/api/picture'
+    },
     // 点击添加商户其他名称事件
     showInput() {
       this.isInputVisible = true;
@@ -990,6 +1076,59 @@ export default {
           );
         }
       }
+    },
+    // 地区的远程获取数据
+    querySearchdiqu(queryString, cb) {
+      this.vagueDiQu = [];
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/area/api/fuzzy", {
+          object: {
+            name: queryString
+          }
+        })
+        .then(res => {
+          for (let i = 0; i < res.data.objects.length; i++) {
+            this.vagueDiQu.push({
+              id: res.data.objects[i].id,
+              value: res.data.objects[i].areaName
+            });
+          }
+          var results = queryString
+            ? this.vagueDiQu.filter(this.createFilter(queryString))
+            : [];
+          cb(results);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    handleFocesdiqu () {
+      // let areaInformationName 
+      // this.ruleForm.areaInformationName = ""
+    },
+    // 地区选择失去焦点
+    handleBlurdiqu() {
+      setTimeout(() => {
+        if (this.isSelect === false) {
+          this.areaInformationName = "";
+          this.ruleForm.areaInformationID = null;
+        } else {
+          this.isSelect = false;
+        }
+      }, 200);
+    },
+    // 地区选择
+    handleSelectdiqu(item) {
+      this.ruleForm.areaInformationID = item.id;
+      // this.form.areaId = item;
+      this.ruleForm.areaInformationName = item.value;
+      this.isSelect = true;
+    },
+    // 搜索方法
+    createFilter(queryString) {
+      return restaurant => {
+        return restaurant.value;
+      };
     },
     // 管理人员的模糊查询
     querySearchAsync(queryString, cb) {
@@ -1224,14 +1363,20 @@ export default {
     bigSaveAccount() {
       if (this.accountForm.state == 2) {
         this.accountForm.state = "正常";
-      } else {
+      } else if (this.accountForm.state == 1) {
         this.accountForm.state = "停用";
+      } else {
+        this.accountForm.state = "";
       }
+
       if (this.accountForm.sex == 1) {
         this.accountForm.sex = "男";
-      } else {
+      } else if (this.accountForm.sex == 2) {
         this.accountForm.sex = "女";
+      } else {
+        this.accountForm.sex = "";
       }
+
       if (this.accountForm.peerUserType == 1) {
         this.accountForm.peerUserType = "管理员";
       } else {
@@ -1310,16 +1455,23 @@ export default {
               this.accountForm.localCompID = this.tid;
               if (obj == true) {
                 this.useList.push(this.accountForm);
+
                 if (this.accountForm.state == "正常") {
                   this.accountForm.state = 2;
-                } else {
+                } else if (this.accountForm.state == "停用") {
                   this.accountForm.state = 3;
+                } else {
+                  this.accountForm.state = 0;
                 }
+
                 if (this.accountForm.sex == "男") {
                   this.accountForm.sex = 1;
-                } else {
+                } else if (this.accountForm.sex == "女") {
                   this.accountForm.sex = 2;
+                } else {
+                  this.accountForm.sex = 0;
                 }
+
                 if (this.accountForm.peerUserType == "管理员") {
                   this.accountForm.peerUserType = 1;
                 } else {
@@ -1440,20 +1592,29 @@ export default {
     editAccountAddBtn() {
       // this.accountForm.id = this.editAccouontScopeid;
       this.accountForm.localCompID = this.tid;
-      if (this.accountForm.state == "正常") {
-        this.accountForm.state = 2;
-      } else {
-        this.accountForm.state = 3;
+      if (this.accountForm.state !== "") {
+        if (this.accountForm.state == "2") {
+          this.accountForm.state = 2;
+        } else {
+          this.accountForm.state = 3;
+        }
+        // console.log(this.accountForm.state,2);
       }
-      if (this.accountForm.sex == "男") {
-        this.accountForm.sex = 1;
-      } else {
-        this.accountForm.sex = 2;
+
+      if (this.accountForm.sex !== "") {
+        if (this.accountForm.sex == "1") {
+          this.accountForm.sex = 1;
+        } else {
+          this.accountForm.sex = 2;
+        }
       }
-      if (this.accountForm.peerUserType == "管理员") {
-        this.accountForm.peerUserType = 1;
-      } else {
-        this.accountForm.peerUserType = 2;
+
+      if (this.accountForm.peerUserType !== "") {
+        if (this.accountForm.peerUserType == "1") {
+          this.accountForm.peerUserType = 1;
+        } else {
+          this.accountForm.peerUserType = 2;
+        }
       }
       this.accountValidator().then(res => {
         if (res === true) {
@@ -1634,19 +1795,27 @@ export default {
       this.dialogFormVisible = true;
     },
     // 关联欠款表格的接口
-    getDebitTable() {
+    getDebitTable(id) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
-          pageIndex: this.pageIndex,
-          pageSize: this.pagesize,
+          pageIndex: 1,
+          pageSize: this.pageSize,
           // total: 1, //总条数
           object: {
             // isDeleted: 0 //是否删除
-            orgID: this.businewwInfPageId
+            orgID: id
           }
         })
         .then(obj => {
           this.tableRelevanceDeptInfo = obj.data.objects;
+          this.tableRelevanceDeptInfo.forEach((item, index, arr) => {
+            item.cF_Date = moment(item.cF_Date.toString()).format("YYYY-MM-DD");
+            item.createTime = moment(item.createTime).format("YYYY-MM-DD");
+            item.repaymentDate = moment(item.repaymentDate).format(
+              "YYYY-MM-DD HH:mm:ss"
+            );
+          });
+          console.log(this.tableRelevanceDeptInfo, "table");
           this.page_order_total = obj.data.total;
         })
         .catch(err => {
@@ -1692,7 +1861,9 @@ export default {
         bankcardNo: "",
         localCompRole: "", //商户角色
         salesman: "", //销售人员
-        administrative: "" //管理人员
+        administrative: "", //管理人员
+        ImgUrl: "", //logo
+        fileUrl: "" //附件
       };
       if (this.btnindex !== 1) this.$refs["ruleForm"].resetFields();
       this.dialogFormVisible = false;
@@ -1761,7 +1932,7 @@ export default {
     addMerchan(ruleForm) {
       //判断商户其他名称是否具有唯一性 并且输个个数不可超过五十个
       if (this.businessOtherNamesArr.length !== 0) {
-        if (this.businessOtherNamesArr.length > 50) { 
+        if (this.businessOtherNamesArr.length > 50) {
           this.$message.error("商户其他名称不可超过50个");
           this.dialogFormVisible = true;
           return;
@@ -1777,14 +1948,14 @@ export default {
       // }
 
       // 商户角色
-      //console.log("商户角色",this.ruleForm.localCompRole)
-      // if ((this.ruleForm.localCompRole = "旅游组团社")) {
-      //   this.ruleForm.localCompRole = 1;
-      // } else if ((this.ruleForm.localCompRole = "独立旅行社")) {
-      //   this.ruleForm.localCompRole = 2;
-      // } else {
-      //   this.ruleForm.localCompRole = 3;
-      // }
+      // console.log("商户角色", this.ruleForm.localCompRole);
+      if ((this.ruleForm.localCompRole = "旅游组团社")) {
+        this.ruleForm.localCompRole = 1;
+      } else if ((this.ruleForm.localCompRole = "独立旅行社")) {
+        this.ruleForm.localCompRole = 2;
+      } else {
+        this.ruleForm.localCompRole = 3;
+      }
       // 类别
       // console.log("类别",this.ruleForm.localCompType)
       // if ((this.ruleForm.localCompType = "门店")) {
@@ -1869,16 +2040,20 @@ export default {
           arr[idx].peerUserType = 1;
         } else {
           arr[idx].peerUserType = 2;
-        }
+        } 
         if (arr[idx].sex == "男") {
           arr[idx].sex = 1;
-        } else {
+        } else if (arr[idx].sex == "女"){
           arr[idx].sex = 2;
-        }
+        } else {
+          arr[idx].sex = 0;
+        } 
         if (arr[idx].state == "正常") {
           arr[idx].state = 2;
-        } else {
+        } else if(arr[idx].state == "停用"){
           arr[idx].state = 3;
+        } else {
+          arr[idx].state = 0
         }
       });
       // console.log(this.useList, "上传的账号信息");
@@ -1888,6 +2063,11 @@ export default {
       }
       if (this.ruleForm.quota == "") {
         this.ruleForm.quota = 0;
+      }
+
+      // 到期时间
+      if (this.ruleForm.expTime == "") {
+        this.ruleForm.expTime = 0;
       }
 
       this.$http
@@ -1921,7 +2101,9 @@ export default {
             localCompAliasList: this.businessOtherNamesArr, //商户其他名称
             abouQuota: this.AbouQuota, //周边授信额度
             localCompCode: this.ruleForm.localCompCode, //商户编码
-            localCompAliasList: this.businessOtherNamesArr
+            localCompAliasList: this.businessOtherNamesArr,
+            areaInformationID: this.ruleForm.areaInformationID,
+            areaInformationName: this.ruleForm.areaInformationName
           }
         })
         .then(obj => {
@@ -2046,6 +2228,17 @@ export default {
       // 经营范围
       let scopeExt = this.ruleForm.scopeExt.join(",");
 
+      // 到期时间
+      // console.log(this.ruleForm.expTime, 22);
+      if (this.ruleForm.expTime == "Invalid Date") {
+        this.ruleForm.expTime = 0;
+      } else {
+        this.ruleForm.expTime = moment(this.ruleForm.expTime).format(
+          "YYYYMMDD"
+        );
+      }
+      // console.log(this.ruleForm.expTime);
+
       // 区域可见
       let orgs = [];
 
@@ -2089,7 +2282,6 @@ export default {
         }
       });
 
-      this.ruleForm.expTime = moment(this.ruleForm.expTime).format("YYYYMMDD");
       this.ruleForm.id = this.tid;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/save", {
@@ -2122,7 +2314,8 @@ export default {
             localCompAliasList: this.businessOtherNamesArr,
             abouQuota: this.AbouQuota, //周边授信额度
             localCompCode: this.localCompCode,
-            useList: this.useList
+            useList: this.useList,
+            areaInformationID: this.ruleForm.areaInformationID
           }
         })
         .then(obj => {
@@ -2215,23 +2408,27 @@ export default {
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
-          this.AbouQuota = object.abouQuota
-          this.ruleForm.balance = object.balance
+          this.AbouQuota = object.abouQuota;
+          this.ruleForm.balance = object.balance;
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID
           this.businewwInfPageId = object.id;
-          if (this.btnindex == 1) this.getDebitTable();
+          if (this.btnindex == 1) this.getDebitTable(id);
           this.useList = useList;
           this.useList.forEach((val, idx, arr) => {
             if (arr[idx].state == 2) {
               arr[idx].state = "正常";
-            } else {
+            } else if (arr[idx].state == 3) {
               arr[idx].state = "停用";
+            } else {
+              arr[idx].state = null;
             }
             if (arr[idx].sex == 1) {
               arr[idx].sex = "男";
-            } else {
+            } else if (arr[idx].sex == 2) {
               arr[idx].sex = "女";
+            } else {
+              arr[idx].sex = "";
             }
             if (arr[idx].peerUserType == 1) {
               arr[idx].peerUserType = "管理员";
@@ -2272,6 +2469,10 @@ export default {
             this.ruleForm.storeType = "加盟门市";
           } else {
             this.ruleForm.storeType = "第三方门市";
+          }
+          // 到期时间 详情为1 编辑 为2
+          if (object.expTime === 0) {
+            this.ruleForm.expTime = "";
           }
           // 经营范围
           if (this.btnindex == 1) {
@@ -2344,9 +2545,11 @@ export default {
 
           // console.log("get",this.businessOtherNamesArr)
           if (this.btnindex == 1) {
-            this.ruleForm.expTime = moment(object.expTime.toString()).format(
-              "YYYY-MM-DD"
-            );
+            if (object.expTime !== 0) {
+              this.ruleForm.expTime = moment(object.expTime.toString()).format(
+                "YYYY-MM-DD"
+              );
+            }
           } else {
             let year = "";
             let month = "";
@@ -2380,6 +2583,8 @@ export default {
           this.ruleForm.bankcardNo = object.bankcardNo;
           this.ruleForm.localCompCode = object.localCompCode;
           this.ruleForm.deposit = object.deposit;
+          this.ruleForm.areaInformationName = object.areaInformationName;
+          this.ruleForm.areaInformationID = object.areaInformationID;
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
@@ -2423,15 +2628,34 @@ export default {
       this.fileList2 = [];
       this.imgnum = 2;
     },
+    // 附件上传失败
+    handleErrorFileUrl(err, file) {
+      this.$message.error("附件上传失败重新上传");
+      this.fileList1 = [];
+      this.fileUrl = 2;
+    },
     //图片上传成功
     handleSuccess(response, file, fileList2) {
-      //console.log(file);
+      console.log(file, "logo");
       if (file.status == "success") {
         this.imgnum = 1;
         let T_img = JSON.parse(response);
-        this.ruleForm.imgUrl = T_img.paths[0].Url;
+        // this.ruleForm.imgUrl = T_img.paths[0].Url;
+        this.ruleForm.imgUrl = URL.createObjectURL(file.raw);
       } else {
         this.$message.error("图片上传失败重新上传");
+      }
+    },
+    //附件上传成功
+    handleSuccessFileUrl(response, file, fileList1) {
+      console.log(file, "附件");
+      if (file.status == "success") {
+        this.fileUrl = 1;
+        let T_fileUrl = JSON.parse(response);
+        // this.ruleForm.fileUrl = T_fileUrl.paths[0].Url;
+        this.ruleForm.fileUrl = URL.createObjectURL(file.raw);
+      } else {
+        this.$message.error("附件上传失败重新上传");
       }
     },
     //删除
@@ -2513,6 +2737,29 @@ export default {
 </script>
 
 <style scoped>
+/* 图片上传 */
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  display: block;
+}
+/* 图片end */
 .BodyTableCenter {
   margin: 0 60px 0 100px;
 }

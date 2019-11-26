@@ -20,7 +20,7 @@
       </el-col>
       <el-col :span="6">
         <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime | formatDate }}</div></el-col>
+        <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
       </el-col>
     </el-row>
     <!-- 第一行 END -->
@@ -78,12 +78,11 @@
     <el-row type="flex" class="row-bg" justify="space-around">
       <el-col :span="6">
         <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
-        <el-col :span="18">
-          <div class="grid-del" v-if="fundamental.checkType=='1'">{{ fundamental.cardName }}</div>
-          <div class="grid-del" v-else>暂无</div>
+        <el-col :span="12">
+          <div class="grid-del">{{ fundamental.accountsName }}</div>
         </el-col>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="14">
         <el-col :span="6"><div class="grid-del label-color">附件:</div></el-col>
         <el-col :span="18">
           <el-upload
@@ -146,7 +145,7 @@
     </el-table>
     <!-- 无收入借款明细 END -->
     <!-- 预付款明细 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
+    <el-divider content-position="" class='title-margin title-margin-t'>预付款明细</el-divider>
     <el-table :data="tablePayment" border :header-cell-style="getRowClass">
       <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
       <el-table-column prop="checkTypeEX" label="审批状态" align="center">
@@ -281,6 +280,8 @@ export default {
       return moment(value).format('YYYY-MM-DD HH:mm:ss')
     }
   },
+  mounted(){
+  },
   methods: {
     // 点击图片钩子
     handlePreview(file) {
@@ -366,6 +367,10 @@ export default {
           "id":this.paymentID
       }).then(res => {
         if(res.data.isSuccess == true){
+          this.tablePayment = []
+          this.tableIncome = []
+          this.tableMoney = []
+          this.tableEarning = []
           let getPaymentType = res.data.object.paymentType
           this.keepPaymentType = getPaymentType
           this.fundamental=res.data.object;
@@ -535,7 +540,6 @@ export default {
     }
   },
   created() {
-    console.log(this.paymentID,'子组件')
   }
 }
 </script>

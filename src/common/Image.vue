@@ -17,6 +17,7 @@
         <el-tree
           :props="props1"
           :load="loadNode1"
+          :default-expanded-keys="parentPath"
           class="treeDemo"
           lazy
           @node-click="treeClick"
@@ -233,7 +234,12 @@ export default {
         destination: [
           { required: true, message: "请选择目的地", trigger: "blur" }
         ]
-      }
+      },
+      // 景点列表
+      parentPath: [], //用来接收所选地区的id以及他的父级节点的id 为tree自动展开
+      expandedKeys: [], //tree 自动展开的属性赋值
+      number: 0, //getTreeParentLists走几次然后在调用getTreeKey
+      TreeParentLists: [] //请求到的所有的tree
     };
   },
   watch: {
@@ -242,6 +248,7 @@ export default {
     },
     imgData() {
       this.checkList = this.imgData;
+      this.getParentId();
     },
     isType() {
       this.isTypes = this.isType;
@@ -256,6 +263,7 @@ export default {
     this.isTypes = this.isType;
     this.isImgs = this.isImg;
     this.albumtypeget();
+    this.getParentId();
   },
   methods: {
     handleSave() {
@@ -288,7 +296,7 @@ export default {
     //获取景点类型
     albumtypeget() {
       this.$http
-        .post("http://test.dayuntong.com" + "/tpk/album/api/albumtypeget")
+        .post(this.GLOBAL.serverSrc + "/tpk/album/api/albumtypeget")
         .then(res => {
           if (res.data.isSuccess == true) {
             this.albumtype = res.data.objects;
@@ -322,7 +330,7 @@ export default {
                 Hierarchy: 0 // 层级
               });
             }
-            
+
             resolve(this.list);
           })
           .catch(obj => {
@@ -339,6 +347,18 @@ export default {
           node.level
         );
       }
+
+      // 后改的begin
+      // this.$http
+      //     .post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist", {
+      //       object: {
+      //         isLeaf:2
+      //       }
+      //     })
+      //     .then(obj => {
+      //       console.log(obj,"0")
+      //     })
+      // 后改的end
     },
     /*获取子集的方法*/
     getSon(key, label, id, isLeaf, resolve, level) {
@@ -364,6 +384,7 @@ export default {
               }
             }
           }
+
           setTimeout(() => {
             resolve(this.lists);
           }, 200);
@@ -372,10 +393,66 @@ export default {
           console.log(error);
         });
     },
+    // 豆包加 begin
+    // 获取tree的key 为景点输入地区后 自动展开
+    getTreeParentLists(id) {
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist", {
+          object: {
+            parentID: id
+          }
+        })
+        .then(obj => {
+          this.number += 1;
+          for (let i = 0; i < obj.data.objects.length; i++) {
+            this.TreeParentLists.push({
+              name: obj.data.objects[i].areaName,
+              key: i,
+              id: obj.data.objects[i].id,
+              isLeaf: obj.data.objects[i].isLeaf, // 是否是末级
+              Hierarchy: 0 // 层级
+            });
+          }
+          this.getTreeKey();
+        })
+        .catch(obj => {
+          console.log(obj);
+        });
+    },
+    getTreeKey() {
+      if (this.number === this.parentPath.length) {
+        for (let i = 0; i < this.parentPath.length; i++) {
+          this.lists.some(item => {
+            //1 7 252
+           console.log(item.id)
+            if (item.id === this.parentPath[i]) {
+              this.parentPath.splice(i + 1, i, item.key);
+            }
+          });
+        }
+      }
+    },
+    // 景点信息带过来的地区id  根据这个id去找他的父级节点id
+    getParentId() {
+      if (this.imageAreaId !== 0) {
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/universal/area/api/getpa", {
+            id: this.imageAreaId
+          })
+          .then(obj => {
+            this.parentPath = obj.data.parentPath.split(",");
+            this.parentPath.splice(-1, 1);
+            for (let i = 0; i < this.parentPath.length; i++) {
+              this.getTreeParentLists(Number(this.parentPath[i]));
+            }
+          });
+      }
+    },
+    // 豆包加 end
 
     // 单击tree节点
     treeClick(data, node) {
-      // console.log(node,"node")
+      console.log(node, "node");
       if (data.isLeaf == 1) {
         if (this.getAlbumForm == true) {
           //修改相册tree
@@ -433,7 +510,7 @@ export default {
     //获取一个相册信息
     getAlbum(id) {
       this.$http
-        .post("http://test.dayuntong.com" + "/tpk/album/api/get", {
+        .post(this.GLOBAL.serverSrc + "/tpk/album/api/get", {
           id: id
         })
         .then(res => {
@@ -496,7 +573,7 @@ export default {
       this.picDisabled = true;
       this.savPicBut = "修改属性";
       this.$http
-        .post("http://test.dayuntong.com" + "/tpk/picture/api/get", {
+        .post(this.GLOBAL.serverSrc + "/tpk/picture/api/get", {
           id: this.albumInfo.pictures[index].id
         })
         .then(res => {
@@ -514,7 +591,7 @@ export default {
     //获取公司
     getCompany() {
       this.$http
-        .post("http://test.dayuntong.com" + "/tpk/picture/api/companyget")
+        .post(this.GLOBAL.serverSrc + "/tpk/picture/api/companyget")
         .then(res => {
           this.insertCheCompany = [];
           this.companyList = res.data.objects;

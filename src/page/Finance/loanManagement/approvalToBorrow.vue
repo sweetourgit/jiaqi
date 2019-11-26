@@ -218,8 +218,10 @@
         <!-- <el-button @click="CloseCheckIncomeShow()">取消</el-button>
         <el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button> -->
         <el-button @click="closeDetailstShow()">取消</el-button>
-        <el-button @click="through()" type="danger" plain>通过</el-button>
+        <el-button @click="through()" type="danger" plain :disabled="ifPassClick" v-if="getCheckTypeEX=='审批中' && ifAccountBtn && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && getAccountID != 0">通过</el-button>
+        <el-button @click="through()" type="danger" plain v-else>通过</el-button>
         <el-button @click="rejected()" type="danger" plain>驳回</el-button>
+        <el-button type="danger" :disabled="ifClick" @click="bankAccount(acoutInfo)" v-if="getCheckTypeEX=='审批中' && ifAccountBtn && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && getAccountID != 0">支付账户</el-button>
       </div>
       <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
     </el-dialog>
@@ -236,6 +238,23 @@
       </el-row>
     </el-dialog>
     <!-- 通过、驳回弹框 END -->
+    <!-- 付款账户弹窗 -->
+    <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
+      <div class="close" @click="closeAccount()">×</div>
+      <el-table :data="tableSelect" border :header-cell-style="getRowClass">
+        <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+        <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+        <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
+        <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+        <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="addAccount(scope.$index, scope.row)" class="table_details">选择</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+    <!-- 付款账户弹窗 END -->
   </div>
 </template>
 
@@ -254,12 +273,20 @@ import moment from 'moment'
   },
   data(){
     return {
+      ifClick: false, // 如果点击选择账户之后这个按钮会禁止点击
+      ifPassClick: true, // 点击选择账户之后才可以点击通过
+      getCheckTypeEX: null, // 审批状态
+      getIsEBS: null, // 与审批状态一起判断 付款账户
+      acoutInfo: null,
+      tableSelect:[], // 选择弹窗表格
+      SelectAccount:false, // 选择账户弹窗
       ruleFormSeach: {
         empty_01: '',
         people_01: '',
         planTime_01:'',
         planData_01:'', //借款表格
       },
+      ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       paymentID:0,
       groupCode:'', //表头切换
       empty_01:'',
@@ -288,13 +315,22 @@ import moment from 'moment'
       title:"",
       commentText:'',
       presentRouter: null, // 当前路由
-      getWorkItemId: null // 保存匹配的guid
+      getWorkItemId: null, // 保存匹配的guid
+      getAccountID: null // 是否选过付款账户 等于0 是没有选过
     }
   },
   created(){
     this.presentRouter = this.$route.name
-    console.log(this.presentRouter)
+    console.log(this.presentRouter,'当前路由的名字')
+    console.log(sessionStorage.getItem('hasCashierInfo'),'所在路由')
+
     this.pageList();
+    // 只有是出纳的时候才显示申请人检索
+    if (sessionStorage.getItem('hasCashierInfo')) {
+      this.ifAccountBtn = true
+    } else {
+      this.ifAccountBtn = false
+    }
   },
   watch:{
     refreshAproveData:function(newV, oldV){
@@ -304,6 +340,42 @@ import moment from 'moment'
     deep:true
   },
   methods: {
+    // 关闭选择账户弹窗
+    closeAccount(){
+      this.SelectAccount = false;
+    },
+    // 选择账户弹窗，选择对应的选项事件
+    addAccount(index, row){
+      var that = this
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
+        "paymentID": this.paymentID,
+        "accountID": row.id
+      }).then(function (obj) {
+        if(obj.data.isSuccess == true) {
+          that.ifClick = true
+          that.ifPassClick = false
+        }
+        // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
+        // that.getList()
+      }).catch(function (obj) {})
+      this.SelectAccount = false
+    },
+    // 选择账户弹窗
+    bankAccount(){
+      this.SelectAccount = true;
+      this.selectList();
+    },
+    // 选择账户表格查询
+    selectList(){
+      var that = this
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",{
+        "object": {
+          "isDeleted": 0
+        }
+      }).then(function (obj) {
+        that.tableSelect = obj.data.objects
+      }).catch(function (obj) {})
+    },
     // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
@@ -326,9 +398,9 @@ import moment from 'moment'
     // 检索
     planSelect(){
       let getJqId = []
-      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
-          this.$http.post('http://test.dayuntong.com/h3wf/JQ/GettingUnfinishedTasksForJQ', {
+          this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
             "userCode": sessionStorage.getItem('userCode'),
             "startTime": this.ruleFormSeach.planTime_01 ? moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : '',
             "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -385,7 +457,7 @@ import moment from 'moment'
     pageList(){
       var that = this
       var arr = []
-      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
 
           let getWorkflowCode
@@ -427,26 +499,26 @@ import moment from 'moment'
           })
         })
       },
-      // 删除
-      repeal(){
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
-          {
-            "id": this.paymentID
-          })
-          .then(res => {
-            if(res.data.isSuccess == true){
-               this.$message.success("撤销成功");
-               this.pageList();
-               this.detailstShow = false;
-              }
-           })
-        .then(res =>() => {
-          console.log(res)
+    // 删除
+    repeal(){
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
+        {
+          "id": this.paymentID
         })
-        .catch(res =>() => {
-          console.log(res)
-        });
-      },
+        .then(res => {
+          if(res.data.isSuccess == true){
+             this.$message.success("撤销成功");
+             this.pageList();
+             this.detailstShow = false;
+            }
+         })
+      .then(res =>() => {
+        console.log(res)
+      })
+      .catch(res =>() => {
+        console.log(res)
+      });
+    },
       // 通过
       through(){
         this.title="审批通过";
@@ -515,6 +587,9 @@ import moment from 'moment'
       },
       // 详情弹窗
       checkIncome(index, row){
+        this.getAccountID = row.accountID // 如果为0 则没有选过付款账户
+        console.log(row)
+        this.getCheckTypeEX = row.checkTypeEX
         let _this = this
         this.arr2.forEach(function (item) {
           if (row.guid == item.jq_ID){
@@ -523,6 +598,7 @@ import moment from 'moment'
         })
         this.paymentID=row.paymentID;
         this.pid = row.paymentID;
+        this.acoutInfo = row
         this.detailstShow = true;
         this.getLabel();
       },

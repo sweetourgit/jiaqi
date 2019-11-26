@@ -173,7 +173,9 @@
 
         // 时间限制
         startDatePicker: this.beginDate(),
-        endDatePicker: this.processDate()
+        endDatePicker: this.processDate(),
+
+        supplierCode: ''
       }
     },
     computed: {
@@ -294,7 +296,8 @@
               "buy_type": 2,
               "account_type": this.ruleForm.account_type,
               "time_start": this.ruleForm.timeStart,
-              "time_end": this.ruleForm.timeEnd
+              "time_end": this.ruleForm.timeEnd,
+              "oracle_supplier_code": this.supplierCode
             }).then(res => {
               console.log(res);
               if (res.data.code == 200) {
@@ -425,6 +428,7 @@
       handleSelectD(item){
         console.log(item);
         this.ruleForm.supplierID = item.id;
+        this.getSupplierCode(item.id);
         this.ruleForm.supplier = item.valueName;
         let nameArr = item.value.split(',');
         let nameStr = '';
@@ -456,6 +460,7 @@
           });
           if(ida){
             that.ruleForm.supplierID = ida;
+            that.getSupplierCode(ida);
             let nameArr = namea.split(',');
             let nameStr = '';
             nameArr.forEach(function (item, index, arr) {
@@ -474,6 +479,29 @@
             that.tableDataXG = [];
           }
         }
+      },
+
+      // 加载供应商编码
+      getSupplierCode(id){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierget",{
+          id: id
+        }).then(function(obj) {
+          console.log('获取供应商编码',obj);
+          if(obj.data.isSuccess){
+
+            if(obj.data.object.supplierCode && obj.data.object.supplierCode != '-1'){
+              that.supplierCode = obj.data.object.supplierCode;
+            }else{
+              that.$message.warning("获取供应商编码失败~");
+            }
+          }else{
+            that.$message.warning("获取供应商编码失败~");
+          }
+        }).catch(function(obj) {
+          console.log(obj);
+          that.$message.warning("供应商编码接口请求失败~");
+        });
       },
 
       // 加载供应商信息

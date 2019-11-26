@@ -95,7 +95,7 @@ export default new Router({
       }
     }, {
       path: '/cityList',
-      component: () => import('@/page/contentInfo/cityList/cityList'),
+      component: () => import('@/page/contentInfo/cityList/cityList1'),
       name: '区域列表',
       meta: {
         keepAlive: true,
@@ -536,7 +536,7 @@ export default new Router({
       }
     }, {
       path: '/checkSheet',
-      component: () => import('@/page/Finance/checkSheet/checkSheet'),
+      component: () => import('@/page/Finance/checkSheet/checkSheet1'),
       name: '报账单',
       meta: {
         keepAlive: true,

@@ -52,8 +52,6 @@
     <footer>
       <material-list
         ref="materialListRef"
-        :proto="list"
-        @submit-list="emitSubmitList"
       ></material-list>
       <preview-dialog
         ref="previewDialogRef"
@@ -230,7 +228,8 @@ export default {
         type: 'warning'
       }).then(() => {
         this.removeTabAction(id, index);
-      }).catch(() => {
+      }).catch((err) => {
+        console.log(err)
         this.$message.info('取消删除');        
       });
     },
@@ -412,7 +411,7 @@ export default {
         })
       }
       // 删除的是尚未存入数据库的
-      if(!id) return successFunc();
+      if(!id) return successFunc({ data: { isSuccess: true }});
       this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagedelete", {
         id
       })

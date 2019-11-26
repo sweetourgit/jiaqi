@@ -81,8 +81,8 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn">|</span>
-          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn" type="text" size="small" class="table_details">付款账户</el-button>
+<!--          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0">|</span>-->
+<!--          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0" type="text" size="small" class="table_details">付款账户</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -376,11 +376,11 @@
         <el-button @click="CloseCheckIncomeShow()">取消</el-button>
         <el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo"></checkLoanManagement>
     </el-dialog>
     <!-- 查看无收入借款申请详情弹窗 END -->
 	  <!-- 付款账户弹窗 -->
-	  <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
+	  <!--<el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
 	    <div class="close" @click="closeAccount()">×</div>
 	    <el-table :data="tableSelect" border :header-cell-style="getRowClass">
         <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
@@ -394,7 +394,7 @@
           </template>
         </el-table-column>
         </el-table>
-	  </el-dialog>
+	  </el-dialog>-->
     <!-- 付款账户弹窗 END -->
   </div>
   <!--借款页面 END -->
@@ -420,9 +420,9 @@ export default {
       }
     };
     return {
+      acoutInfo: null, // 传到子组件弹窗内的值 row
       ifShowsearch: false,
       listLoading: true,
-      ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       fileCheckVal: 0, // 上传凭证成功返回的文件数量（验证用）
       ruleFormSeach: {
         groupCode_01:'', // 团号
@@ -543,7 +543,7 @@ export default {
       upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
       uid: 0, // 上传图片缩略图选中项
       status:"",
-      SelectAccount:false, // 选择账户弹窗
+      // SelectAccount:false, // 选择账户弹窗
       tableSelect:[], // 选择弹窗表格
       pageshow:true,
       pid:'',
@@ -588,10 +588,10 @@ export default {
     // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
-      if(date == undefined) {
+      if(date == undefined || date == '') {
         return '';
       }
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+      return moment(date).format('YYYY-MM-DD')
     },
     // 重置
     emptyButton(formName){
@@ -655,7 +655,6 @@ export default {
     },
     // 供应商联想查询
     querySearch3(queryString3, cb) {
-      this.tableData2 = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
         "object": {
           name: queryString3,
@@ -663,6 +662,7 @@ export default {
           SupplierType:-1,
         }
       }).then(res => {
+        this.tableData2 = []
         for (let i = 0; i < res.data.objects.length; i++) {
           this.tableData2.push({
             "value": res.data.objects[i].name,
@@ -841,6 +841,7 @@ export default {
     },
     // 清除申请无收入借款弹窗内容
     clearPlan(){
+      this.fileList = []
       this.ruleForm.plan = '';
       this.ruleForm.plan_01 = '';
       this.ruleForm.supplier = '';
@@ -1047,6 +1048,7 @@ export default {
     checkIncome(row){
       this.checkIncomeShow = true;
       this.pid = row.paymentID;
+      this.acoutInfo = row
       this.status = row.checkTypeEX;
       this.ruleForm = row;
       //this.$refs["ruleForm"].resetFields();
@@ -1166,7 +1168,7 @@ export default {
     // 借款类型
     themeList(){
       this.borrowingType = [];
-      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=PaymentType')
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=PaymentType')
       .then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
           this.borrowingType.push({
@@ -1266,15 +1268,15 @@ export default {
       .catch(() => {});
     },
     // 选择账户弹窗
-    bankAccount(){
+    /*bankAccount(){
       this.SelectAccount = true;
       this.selectList();
-    },
-    closeAccount(){
+    },*/
+    /*closeAccount(){
       this.SelectAccount = false;
-    },
+    },*/
     // 选择账户弹窗，选择对应的选项事件
-    addAccount(index, row){
+/*    addAccount(index, row){
       var that = this
       this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
         "paymentID": this.paymentID,
@@ -1285,9 +1287,9 @@ export default {
         that.getList()
       }).catch(function (obj) {})
       this.SelectAccount = false
-    },
+    },*/
     // 选择账户表格查询
-    selectList(){
+/*    selectList(){
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
@@ -1300,19 +1302,13 @@ export default {
           that.tableSelect = obj.data.objects
         })
         .catch(function (obj) {})
-    },
+    },*/
   },
   mounted(){
     this.getList()
     this.planList();
   },
   created(){
-    // 只有是出纳的时候才显示申请人检索
-    if (sessionStorage.getItem('hasCashierInfo')) {
-      this.ifAccountBtn = true
-    } else {
-      this.ifAccountBtn = false
-    }
     this.themeList();
     this.payment();
   }
@@ -1378,6 +1374,6 @@ export default {
 	.indialog_button{margin: 0 0 0 10px;}
 	/*申请无收入借款中附件*/
 	.upload-demo{width: 400px;}
-	.upload-demo>>>.el-upload-list__item{ width: 300px; }
+	/*.upload-demo>>>.el-upload-list__item{ width: 300px; }*/
 	.close{position: absolute; top: 15px; right: 15px; font-size: 20pt; cursor:pointer;}
 </style>

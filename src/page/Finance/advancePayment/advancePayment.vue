@@ -65,10 +65,7 @@
                 <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
               </template>
             </el-table-column>
-            <el-table-column label="发起时间" align="center" width="190">
-              <template slot-scope="scope">
-                {{formatDate1(scope.row.createTime)}}
-              </template>
+            <el-table-column label="发起时间" :formatter='dateFormat' align="center" width="190" prop="createTime">
             </el-table-column>
             <el-table-column prop="groupCode" label="团期计划" align="center" width="180">
             </el-table-column>
@@ -87,8 +84,8 @@
             <el-table-column prop="opinion" label="操作" align="center">
                <template slot-scope="scope">
                  <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-                 <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn">|</span>
-                 <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn" type="text" size="small" class="table_details">付款账户</el-button>
+<!--                 <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn">|</span>-->
+<!--                 <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn" type="text" size="small" class="table_details">付款账户</el-button>-->
                </template>
             </el-table-column>
           </el-table>
@@ -168,7 +165,7 @@ export default {
     return {
       tableSelect:[], // 选择弹窗表格
       SelectAccount:false, // 选择账户弹窗
-      ifAccountBtn: false, // 只有出纳的时候才显示付款账户
+      // ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       ruleForm: {
         planID: '', // 团期计划输入框
@@ -218,11 +215,11 @@ export default {
   },
   created () {
     // 只有是出纳的时候才显示申请人检索
-    if (sessionStorage.getItem('hasCashierInfo')) {
-      this.ifAccountBtn = true
-    } else {
-      this.ifAccountBtn = false
-    }
+    // if (sessionStorage.getItem('hasCashierInfo')) {
+    //   this.ifAccountBtn = true
+    // } else {
+    //   this.ifAccountBtn = false
+    // }
     this.querySearch6()
     this.querySearch7()
     this.searchHand()
@@ -231,6 +228,14 @@ export default {
     }
   },
   methods: {
+    // 起始时间格式转换
+    dateFormat: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined) {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD')
+    },
     moment,
     // 选择账户弹窗
     bankAccount() {
@@ -457,7 +462,7 @@ export default {
     //获取供应商类型
     querySearch6() {
       this.typeList = []
-      this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=PaymentType')
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=PaymentType')
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.typeList.push({
@@ -494,12 +499,6 @@ export default {
       }).catch(err => {
         console.log(err);
       })
-    },
-    // 时间转换
-    formatDate1(dates) {
-      var dateee = new Date(dates).toJSON();
-      var date = new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
-      return date;
     },
     //查看无收入借款弹窗
     checkIncome(row) {

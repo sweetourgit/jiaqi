@@ -86,6 +86,7 @@
               class="input"
               :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
               @input="compPrice(2,index)"
+              @blur="comPriceBlur(item,index)"
             ></el-input>
           </el-form-item>
           <el-form-item class="otherCost-mark" v-if="index == 0">
@@ -103,7 +104,7 @@
           <p
             class="surplus"
             v-if="orderget.orderChannel===1&&settlementType===1"
-          >剩余预存款和额度：￥{{toDecimal2(this.deposit+this.balance)}}</p>
+          >剩余预存款和额度：￥{{toDecimal2(deposit+balance)}}</p>
         </div>
         <hr />
         <!--订单联系人-->
@@ -208,6 +209,7 @@
           type="primary"
           v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9"
           @click="ordersave"
+          :disabled="isSaveBtn"
           class="confirm fr"
         >保存更改</el-button>
         <!--取消按钮-->
@@ -315,6 +317,7 @@ export default {
       isPricechange: null, //true为直客   false为同业价格
       isChangeNumber: false, //判断动态按钮是否可点击 数量和价格有变化的时候为true
       isLowPrice: false, //确认订单状态时 已付金额低于订单总价时为true
+      isSaveBtn: false, //同业月结总价大于剩余额度和预存款时为true
       //游客信息
       quota: [], //余位信息负数红色提示
       endTimeStamp: "00天00时00分00秒", //倒计时
@@ -323,6 +326,7 @@ export default {
       enrolNums: false, //报名人数是否为空提示
       enrolNumsWarn: "",
       number: 0, //报名总人数
+      prePayable: 0, //记录最开始的订单总价
       payable: 0, //总价
       dialogFormTour: false,
       salePrice: [], //报名类型价格列表数据
@@ -354,15 +358,17 @@ export default {
         //变更数量
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
         contactName: [
-          { required: true, message: "联系人不能为空", trigger: "blur" }
+          { message: "联系人不能为空", trigger: "blur" },
+          { max:20,message: "不能超过20位长度", trigger: "blur" },
         ],
         contactPhone: [
-          { required: true, message: "联系电话不能为空", trigger: "blur" },
+          { message: "联系电话不能为空", trigger: "blur" },
           {
             pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/,
             message: "电话号格式不正确",
             trigger: "blur"
-          }
+          },
+          { max:20,message: "不能超过20位长度", trigger: "blur" },
         ],
         otherCost: [
           {
@@ -425,7 +431,7 @@ export default {
         })
         .then(res => {
           // console.log(res, "get");
-          // console.log("getorderStatus", res.data.object.orderStatus);
+          // console.log("settlementType", this.settlementType);
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -454,11 +460,26 @@ export default {
             this.orderSourceFun(res.data.object.orderChannel);
             this.dialogFormProcess = true;
             this.teampreview(res.data.object.planID);
+            // 记录最开始的总价 isSaveBtnClick需要
+            this.prePayable = this.orderget.payable;
           }
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    //同业的订单（月结的）记录以前的订单总价 改变后的总价差和剩余预存款和额度作对比 超过则不可保存更改
+    isSaveBtnClick() {
+      if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
+        if (this.payable - this.prePayable > this.deposit + this.balance) {
+          return (this.isSaveBtn = true);
+        } else {
+          this.isSaveBtn = false
+        }
+        if (this.payable === this.prePayable) {
+          return (this.isSaveBtn = false);
+        }
+      }
     },
     //唐时间转换
     timeFormat(param) {
@@ -750,6 +771,7 @@ export default {
         }
       }
     },
+
     // 订单是否需要跳转回确认占位的状态
     isEqualityFun() {
       // get的总价不等于更改后的总价时
@@ -840,6 +862,9 @@ export default {
         //   this.tour[index].splice(arrLength - preLength, preLength - arrLength);
         // }
       }
+      setTimeout(() => {
+        this.isSaveBtnClick();
+      }, 100);
       this.isEqualityFun();
     },
     fillTour(type, index) {
@@ -994,6 +1019,12 @@ export default {
         this.compPrice();
       }
     },
+    //什么都不填写然后失去光标变为0
+    comPriceBlur(item,index){
+      if(item.price == "") {
+        item.price = 0
+      }
+    },
 
     compPrice(type, index) {
       //计算总价
@@ -1038,6 +1069,7 @@ export default {
             : 0
         );
       }
+      this.isSaveBtnClick();
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
@@ -1230,6 +1262,7 @@ export default {
       this.$refs["ruleForm"].resetFields();
       this.dialogFormProcess = false;
       this.isLowPrice = false;
+      this.isSaveBtn = false;
     }
   }
 };

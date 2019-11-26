@@ -28,7 +28,10 @@
           <el-button type="primary" size="small">搜索</el-button>
         </el-col>
       </el-row>
-      <el-button type="primary" size="small">添加</el-button>
+      <el-button type="primary" size="small" 
+        v-if="belong"
+        @click="wakeupAddForm"
+      >添加</el-button>
     </header>
     <main>
       <el-table style="width: 100%" border
@@ -68,8 +71,8 @@
         <el-table-column prop="areaCode" label="代码" align="center" width="80px"></el-table-column>
 
         <el-table-column label="操作" align="center">
-          <template>
-            <el-button size="small" type="primary">编辑</el-button>
+          <template slot-scope="scope">
+            <el-button size="small" type="primary" @click="wakeupEditForm(scope.row)">编辑</el-button>
             <el-button size="small" type="danger">删除</el-button>
           </template>
         </el-table-column>
@@ -82,10 +85,10 @@
           :page-sizes="[2, 4, 8, 10]"
           :page-size="pageInfo.pageSize"
           :total="pageInfo.total"
-          @current-change="null"
-          @prev-click="null"
-          @next-click="null"
-          @size-change="null"
+          @current-change="pageActionHandler"
+          @prev-click="pageActionHandler"
+          @next-click="pageActionHandler"
+          @size-change="sizeChangeFunc"
           layout="total, sizes, prev, pager, next, jumper"
         ></el-pagination>
       </div>
@@ -94,7 +97,7 @@
 </template>
 
 <script>
-import { getSonListAction } from '../api'
+import { getSonListAction } from '../../api'
 
 // 获取分页对象
 const getPageInfo= function () {
@@ -126,28 +129,34 @@ export default {
   methods: {
     
     init(nodeProto){
-      console.log(nodeProto)
       // 重置分页信息
       Object.assign(this.pageInfo, getPageInfo());
       // 清空缓存
       this.cache= nodeProto;
-      this.initAction(nodeProto)
+      this.initAction(nodeProto);
+    },
+
+    refresh(parent){
+      parent.inited= false;
+      this.initAction(parent);
+    },
+
+    // 判断是否可以走缓存
+    initAction(nodeProto){
+      new Promise((resolve, reject) => {
+        nodeProto= nodeProto || this.cache;
+        let { id, children, inited }= nodeProto;
+        if(inited) return resolve(this.getSonListFromCache());
+        resolve(this.getSonListAction(nodeProto));
+      })
       .then(res => {
         this.tableData.splice(0);
         let { objects, total }= res;
         if(!total) return;
         this.tableData.push(...this.makeStandardProto(nodeProto, objects));
         this.pageInfo.total= total;
-        this.belong= this.computedBelong();
+        this.belong= this.computedBelong(nodeProto);
       })
-    },
-
-    // 判断是否可以走缓存
-    initAction(nodeProto){
-      let { id, children, inited }= nodeProto;
-      console.log(inited)
-      if(inited) return Promise.resolve(this.getSonListFromCache());
-      return this.getSonListAction(nodeProto);
     },
 
     // 从缓存中以分页方式读取
@@ -155,7 +164,7 @@ export default {
       let list= this.cache.children;
       let { pageNo, pageSize }= this.pageInfo;
       return {
-        objects: list.slice((pageNo- 1)* pageSize, pageSize),
+        objects: list.slice((pageNo- 1)* pageSize, (pageNo- 1)* pageSize+ pageSize),
         total: list.length
       }
     },
@@ -183,7 +192,8 @@ export default {
       })
     },
 
-    computedBelong(){
+    computedBelong(nodeProto){
+      let { level }= nodeProto;
       switch (level) {
         case 1: return '所属大洲'; break;
         case 2: return '所属国家'; break;
@@ -191,6 +201,25 @@ export default {
         default: return '所属地区'; break;
       }
     },
+
+    sizeChangeFunc(num){
+      this.pageInfo.pageSize= num;
+      this.pageActionHandler();
+    },
+
+    pageActionHandler(){
+      this.$nextTick(() => {
+        this.initAction()
+      })
+    },
+
+    wakeupAddForm(){
+      this.$emit('wakeup-add-form', this.cache);
+    },
+    
+    wakeupEditForm(data){
+      this.$emit('wakeup-edit-form', data);
+    }
   }
 
 }
