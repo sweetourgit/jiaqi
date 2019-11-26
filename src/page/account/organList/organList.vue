@@ -88,7 +88,8 @@
       <div slot="footer" class="operation">
         <el-button class="btn_foot" @click="editDepartment = false">取 消</el-button>
         <el-button class="btn_foot" type="primary" @click="updataEditSave(updata)">保存</el-button>
-        <el-button class="btn_foot" type="danger" @click="deleted = false">删除</el-button>
+        <el-button class="btn_foot" type="danger"  @click="deleteOrg(updata)">删除</el-button>
+        <!-- <el-button class="btn_foot" type="danger"  @click="deleted = false">删除</el-button> -->
       </div>
     </el-dialog>
     <!-- 添加子部门弹框 -->
@@ -813,6 +814,40 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
+    },
+    //选中一个部门,s点击编辑部门里的删除
+    deleteOrg(updata){
+      this.$confirm("是否删除该部门，所子部门则自动删除?", "提示", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+      }).then(res =>{
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptdelete", {
+          id:this.updata.id
+        }).then(res => {
+          if (res.data.isSuccess == true){
+            this.$message.success("删除成功");
+            this.editDepartment = false;
+            this.getUser(
+              this.node.key,
+              this.node.label,
+              this.node.id,
+              this.node.isLeaf,
+              this.removes
+            );
+            this.addInput.topDepartment = updata.value;
+          }
+          
+        }).catch(function(error) {
+          console.log(error);
+        });
+      }).catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消"
+        });
+      });
+      
     },
     //职位列表
     optionList(){
