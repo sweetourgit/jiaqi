@@ -79,7 +79,7 @@
       style="margin-top:-50px"
     >
       <div class="add-address-img">
-        <div class="left-img" style="overflow:auto">
+        <div class="left-img" style="overflow:auto; z-index:10000">
           <el-checkbox-group v-model="checkList">
             <div v-for="(item,index) in albumInfo.pictures" :key="index" class="img-div">
               <el-checkbox class="img-div-box" :label="item.id">

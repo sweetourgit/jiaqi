@@ -435,7 +435,7 @@
         </el-tabs>
       </div>
     </el-dialog>
-    <!--借款审批过程-->
+    <!--借款、报销审批过程-->
     <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px"@close="closeApprova()">
       <el-table :data="approvalTable" :header-cell-style="getCostClass" border>
         <el-table-column prop="finishedTime" label="审批时间" min-width="180" align="center">
@@ -468,6 +468,24 @@
       <div class="w1000 mau">
         <div class="chesktltle">黑龙江大运嘉国际旅行社有限公司旅游团队报账单</div>
         <div class="fr lh30">报账日期：2019年03月19日</div>
+        <table class="checksheet-table" border="1"cellspacing="0">
+          <tr>
+            <td class="w80 bc_cc">部门</td>
+            <td class="w100">1</td>
+            <td class="w80 bc_cc">操作人</td>
+            <td class="w100">2</td>
+            <td class="w80 bc_cc">导陪</td>
+            <td class="w100">3</td>
+            <td class="w80 bc_cc">地接社</td>
+            <td class="w320">4</td>
+          </tr>
+          <tr>
+            <td class="w80 bc_cc">团号</td>
+            <td colspan='3'>1</td>
+            <td class="w80 bc_cc">产品名称</td>
+            <td colspan='3'>2</td>
+          </tr>
+        </table>
       </div>
     </el-dialog>
   </div>
@@ -644,7 +662,7 @@ export default {
       pid:'',
       paymentType:'',
       multipleSelection: [], //选中的list
-      checkSheetDialog:false,//报账单弹窗
+      checkSheetDialog:true,//报账单弹窗
       forbidden:true,//商户销售在没有商户名称的时候禁止状态
       collectionShow:false,//收款审批过程弹窗
       collectionTable:[],//收款过程表格
@@ -2010,6 +2028,11 @@ export default {
 .w1000{width:1000px;}
 .mau{margin-left:auto; margin-right:auto;}
 .fr{float: right;}
-.lh30{line-height: 30px;}
+.lh30{line-height: 30px;margin: 0 0 10px 0;}
 .chesktltle{ text-align: center; line-height: 50px; font-size: 18pt; color: #000; font-weight: bold;}
+.checksheet-table{clear: both; width: 1000px; text-align:center;line-height: 30px;}
+.w80{widows: 80px;}
+.w100{width: 100px;}
+.w320{width: 320px;}
+.bc_cc{background: #CCCCCC}
 </style>
