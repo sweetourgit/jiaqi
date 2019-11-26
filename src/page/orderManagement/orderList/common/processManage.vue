@@ -319,6 +319,7 @@ export default {
   data() {
     return {
       //流程管理弹窗
+      propPriceType:this.priceType,//接收父组件传值的priceType，yao不报错
       showContent: null, //保存更改传个父组件的值 为了list折叠
       dialogVisible: false,
       dialogFormProcess: false,
@@ -464,10 +465,10 @@ export default {
               this.orderget.occupyStatus,
               this.orderget.orderChannel
             );
-            this.priceType == 1
+            this.propPriceType == 1
               ? (this.isPricechange = true)
               : (this.isPricechange = false);
-            this.priceType == 1
+            this.propPriceType == 1
               ? (this.priceChange = "直客")
               : (this.priceChange = "同业");
             this.occupyStatus = this.orderget.occupyStatus; // 唐 占位状态
@@ -1036,11 +1037,11 @@ export default {
     priceChangeEvent(val) {
       if (val == true) {
         this.priceChange = "直客";
-        this.priceType = 1;
+        this.propPriceType = 1;
         this.compPrice();
       } else {
         this.priceChange = "同业";
-        this.priceType = 2;
+        this.propPriceType = 2;
         this.compPrice();
       }
     },
@@ -1076,7 +1077,7 @@ export default {
       for (let i = 0; i < this.enrolNum.length; i++) {
         this.payable +=
           this.enrolNum[i] *
-          (this.priceType == 1
+          (this.propPriceType == 1
             ? this.salePrice[i].price_01
             : this.salePrice[i].price_02);
       }
@@ -1204,7 +1205,7 @@ export default {
           }
 
           // 保存的时候用的直客价格还是同业的价格 swatch
-          if (this.priceType == 1) {
+          if (this.propPriceType == 1) {
             obj.priceType = 1;
           } else {
             obj.priceType = 2;

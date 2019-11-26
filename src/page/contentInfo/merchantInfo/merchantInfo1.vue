@@ -2549,6 +2549,9 @@ export default {
             });
             this.ruleForm.otherNames = businessNamesArr.toString();
           }
+          if(this.btnindex == 2) {
+            this.ruleForm.otherNames = ""
+          }
 
           // console.log("get",this.businessOtherNamesArr)
           if (this.btnindex == 1) {
