@@ -2,9 +2,9 @@
   <div>
       <el-dialog title="功能列表" :visible.sync="dialogAct" class="city_list" width="1000px" @close="close">
          <el-row class="button">
-           <el-button @click="openAct('新增动作')">新增</el-button>
+           <el-button @click="openAct(1,'新增动作')">新增</el-button>
            <el-button :disabled="forbidden" @click="delAct">删除</el-button>
-           <el-button :disabled="forbidden" @click="openAct('编辑动作')">编辑</el-button>
+           <el-button :disabled="forbidden" @click="openAct(2,'编辑动作')">编辑</el-button>
          </el-row>
         <!--list-->
          <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
@@ -20,7 +20,7 @@
            <el-table-column  prop="remarks" label="备注" min-width="150" align="center"></el-table-column>
          </el-table>
          
-      </el-dialog>
+      </el-dialog> 
        <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformB" :rules="rules" ref="rformB" label-width="100px" class="demo-ruleForm">
@@ -67,6 +67,7 @@ export default {
         title:"",
         dialogFormVisible:false,
         rformB: {
+          id:0,
           characteristic:"",
           uri: "",
           name: "",
@@ -153,61 +154,35 @@ export default {
       },
       saveAct(formName){
          if(this.title == "新增动作"){
-            this.insertAct(formName);
+            this.insertAct(formName,'/org/act/api/insert');
          }else{
-            this.editAct(formName);
+            this.insertAct(formName,'/org/act/api/save');
          }
       },
-      openAct(title){  //弹窗
+      openAct(index,title){  //弹窗
         this.title=title;
         this.dialogFormVisible = true;
+        if(index===2){
+          this.getAct();
+        }
       },
       getAct(){   //获取一条Act
-        this.$http.post(this.GLOBAL.serverSrc + '/org/Act/api/get',{
+        this.$http.post(this.GLOBAL.serverSrc + '/org/act/api/get',{
            "id":this.multipleSelection[0].id
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
                  this.rformB=data;
+                 this.rformB.overt += '';
               }
         }) 
       },
-      editAct(formName){  //编辑保存
-         this.$refs[formName].validate((valid) => {
-          if(valid){
-             this.$http.post(this.GLOBAL.serverSrc + '/org/Act/api/save',{
-               "object": {
-                "id": this.multipleSelection[0].id,
-                "createTime": formatDate(new Date()),
-                "isDeleted": 0,
-                "code": "string",
-                "name": this.rformB.name,
-                "route": this.rformB.route,
-                "guid": this.multipleSelection[0].guid,
-                "key": this.rformB.key,
-                "leaf": 0
-              }
-            }).then(res => {
-                if(res.data.isSuccess == true){                
-                  this.ActList();
-                  this.dialogFormVisible = false
-                  this.$refs[formName].resetFields();
-              }else{
-                  this.$message.success(res.data.result.message);
-             }
-          })
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        })
-      },
-      insertAct(formName) {  //新增保存
+      insertAct(formName,url) {  //新增保存
         this.$refs[formName].validate((valid) => {
           if(valid){
-                   this.$http.post(this.GLOBAL.serverSrc + '/org/Act/api/insert',{
+                   this.$http.post(this.GLOBAL.serverSrc + url,{
                      "object": {
-                        "id": 0,
+                        "id": this.rformB.id,
                         "characteristic": this.rformB.characteristic,
                         "uri": this.rformB.uri,
                         "name": this.rformB.name,
@@ -222,6 +197,7 @@ export default {
                          this.actList();
                          this.dialogFormVisible = false
                          this.$refs[formName].resetFields();
+                         this.rformB.id=0;
                       }else{
                          this.$message.success(res.data.result.message);
                       }

@@ -6,9 +6,9 @@
      <div class="tree-list">
      <div v-if="showList">
      <el-row class="button">
-       <el-button @click="openMenu('添加菜单')">新增</el-button>
+       <el-button :disabled="forbiddenAdd" @click="openMenu(1,'添加菜单')">新增</el-button>
        <el-button :disabled="forbidden" @click="delMenu">删除</el-button>
-       <el-button :disabled="forbidden" @click="openMenu('编辑菜单')">编辑</el-button>
+       <el-button :disabled="forbidden" @click="openMenu(2,'编辑菜单')">编辑</el-button>
        <el-button :disabled="forbidden" @click="operation">页面权限</el-button>
      </el-row>
     <!--list-->
@@ -94,11 +94,13 @@ export default {
         groupList: [],
         multipleSelection: [],   //选中的list
         forbidden:true,         //按钮是否禁用
+        forbiddenAdd:false,
         title:"",
         dialogFormVisible:false,
         showList:false,
         parentID:0,
         rformA: {
+          id:0,
           name: "",
           uri: "#",
           overt: "2",
@@ -132,10 +134,12 @@ export default {
       // 单击选中目录
       onNodeClick(e, treeId, treeNode) {
         console.log(treeNode)
+        this.forbiddenAdd=false;
         this.parentID = treeNode.id;
         if(treeNode.isParent === true){
           this.menuList();
         }else{
+          this.forbiddenAdd=true;
           console.log("末级");
         }
       },
@@ -169,7 +173,7 @@ export default {
       operation(){
           this.variable++;        
       },
-      menuList(){  //获取菜单列表
+      menuList(type){  //获取菜单列表
         this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/list',{
              "object": {
                "parentID": this.parentID,
@@ -178,6 +182,18 @@ export default {
                 if(res.data.isSuccess == true){
                    this.groupList=res.data.objects;
                    this.showList=true;
+                   if(type==="add"){
+                      //1、获取zTree对象
+                      var treeObj = $.fn.zTree.getZTreeObj("tree");
+                      //2、获取当前选中的节点
+                      var selectedNode = treeObj.getSelectedNodes();
+                      //3、给定一个要添加的新节点
+                      var newNode = this.groupList[this.groupList.length-1];
+                      //4、把这个新节点添加到当前选中的节点下，作为它的子节点
+                      if(selectedNode.length > 0){
+                        newNode = treeObj.addNodes(selectedNode[0], newNode);
+                      }
+                   }
                 }else{
                    this.groupList=[];
                 }
@@ -206,63 +222,38 @@ export default {
           });
         });
       },
-      openMenu(title){  //弹窗
+      openMenu(index,title){  //弹窗
         this.title=title;
         this.dialogFormVisible = true;
+        if(index===2){
+          this.getMenu(); 
+        }
       },
       saveMenu(formName){ 
          if(this.title == "添加菜单"){
-            this.insertMenu(formName);
+            this.insertMenu(formName,'/org/menu/api/insert','add');
          }else{
-            this.editMenu(formName);
+            this.insertMenu(formName,'/org/menu/api/save');
          }
       },
       getMenu(){   //获取一条Module
-        this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/get',{
+        this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/get',{
            "id":this.multipleSelection[0].id
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
                  this.rformA = data;
+                 this.rformA.isLeaf += '';
+                 this.rformA.overt += '';
               }
         }) 
       },
-      editMenu(formName){  //编辑保存
-         this.$refs[formName].validate((valid) => {
-          if(valid){
-             this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/save',{
-               "object": {
-                "id": this.multipleSelection[0].id,
-                "createTime": 0,//formatDate(new Date())
-                "isDeleted": 0,
-                "code": "string",
-                "name": this.rformA.name,
-                "uri": this.rformA.uri,
-                "guid": this.multipleSelection[0].guid,
-                "isLeaf": this.rformA.isLeaf,
-                "leaf": 0
-              }
-            }).then(res => {
-                if(res.data.isSuccess == true){                
-                  this.menuList();
-                  this.dialogFormVisible = false
-                  this.$refs[formName].resetFields();
-              }else{
-                  this.$message.success(res.data.result.message);
-             }
-          })
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        })
-      },
-      insertMenu(formName) {  //新增保存
+      insertMenu(formName,url,type){  //新增保存
         this.$refs[formName].validate((valid) => {
           if(valid){
-                   this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/insert',{
+                   this.$http.post(this.GLOBAL.serverSrc + url,{
                      "object": {
-                      "id": 0,
+                      "id": this.rformA.id,
                       "name": this.rformA.name,
                       "uri": this.rformA.uri,
                       "guid": "",
@@ -275,11 +266,12 @@ export default {
                     }
                   }).then(res => {
                       if(res.data.isSuccess == true){
-                         this.menuList();
+                         this.menuList(type);
                          this.dialogFormVisible = false
                          this.$refs[formName].resetFields();
                       }else{
                          this.$message.success(res.data.result.message);
+                         this.rformA.id=0;
                       }
                   })
           } else {
