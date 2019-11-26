@@ -34,8 +34,22 @@ Print.prototype = {
     for (var i = 0; i < styles.length; i++) {
       str += styles[i].outerHTML;
     }
-    str += "<style>" + (this.options.noPrint ? this.options.noPrint : '.no-print') + "{display:none;}</style>";
-
+    str += `
+      <style>
+        ${(this.options.noPrint ? this.options.noPrint : '.no-print')}{
+          display:none;
+        }
+        @media print {
+          @page {
+            size: 210mm 297mm;
+            size: 297mm 420mm;
+          }
+        }
+        *{
+          font-size: 14px;
+        }
+      </style>
+    `;
     return str;
   },
 
