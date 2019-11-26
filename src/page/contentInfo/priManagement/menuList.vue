@@ -213,7 +213,7 @@ export default {
                          this.$message.success("删除成功");
                          this.menuList();
                   }
-               })
+               }) 
           })
           .catch(() => {
             this.$message({

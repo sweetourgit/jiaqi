@@ -282,7 +282,7 @@
                 for(let i = 0,len = this.authData[index].act.length;i<len;i++){
                     this.authData[index].act[i].isJur = true;
                 }
-            }
+            } 
         }
       },
       actChanged(index){

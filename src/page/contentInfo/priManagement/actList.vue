@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div> 
       <el-dialog title="功能列表" :visible.sync="dialogAct" class="city_list" width="1000px" @close="close">
          <el-row class="button">
            <el-button @click="openAct(1,'新增动作')">新增</el-button>
