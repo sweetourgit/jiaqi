@@ -1379,10 +1379,8 @@ export default {
 
       if (this.accountForm.peerUserType == 1) {
         this.accountForm.peerUserType = "管理员";
-      } else if (this.accountForm.state == 2) {
-        this.accountForm.peerUserType = "销售";
       } else {
-        this.accountForm.peerUserType = "";
+        this.accountForm.peerUserType = "销售";
       }
       // console.log(this.accountForm)
       this.useList.push(this.accountForm);
@@ -1476,10 +1474,8 @@ export default {
 
                 if (this.accountForm.peerUserType == "管理员") {
                   this.accountForm.peerUserType = 1;
-                } else if (this.accountForm.peerUserType == "销售") {
-                  this.accountForm.peerUserType = 2;
                 } else {
-                  this.accountForm.peerUserType = 0;
+                  this.accountForm.peerUserType = 2;
                 }
                 this.$http
                   .post(
@@ -1597,7 +1593,6 @@ export default {
       // this.accountForm.id = this.editAccouontScopeid;
       this.accountForm.localCompID = this.tid;
       if (this.accountForm.state !== "") {
-        console.log(this.accountForm.state, 1);
         if (this.accountForm.state == "2") {
           this.accountForm.state = 2;
         } else {
@@ -1607,7 +1602,6 @@ export default {
       }
 
       if (this.accountForm.sex !== "") {
-        console.log(this.accountForm.sex, 1);
         if (this.accountForm.sex == "1") {
           this.accountForm.sex = 1;
         } else {
@@ -1616,7 +1610,6 @@ export default {
       }
 
       if (this.accountForm.peerUserType !== "") {
-        console.log(this.accountForm.peerUserType, 1);
         if (this.accountForm.peerUserType == "1") {
           this.accountForm.peerUserType = 1;
         } else {
@@ -2045,11 +2038,9 @@ export default {
       this.useList.forEach((val, idx, arr) => {
         if (arr[idx].peerUserType == "管理员") {
           arr[idx].peerUserType = 1;
-        } else if(arr[idx].peerUserType == "销售"){
-          arr[idx].peerUserType = 2;
         } else {
-          arr[idx].peerUserType = 0;
-        }
+          arr[idx].peerUserType = 2;
+        } 
         if (arr[idx].sex == "男") {
           arr[idx].sex = 1;
         } else if (arr[idx].sex == "女"){
@@ -2441,10 +2432,8 @@ export default {
             }
             if (arr[idx].peerUserType == 1) {
               arr[idx].peerUserType = "管理员";
-            } else if (arr[idx].peerUserType == 2) {
-              arr[idx].peerUserType = "销售";
             } else {
-              arr[idx].peerUserType = null;
+              arr[idx].peerUserType = "销售";
             }
           });
           // 状态
