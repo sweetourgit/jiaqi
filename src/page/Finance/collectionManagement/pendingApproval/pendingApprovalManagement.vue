@@ -14,7 +14,7 @@
               <div v-if="scope.row.checkType=='1'" style="color: #33D174">通过</div>
             </template>
           </el-table-column>
-          <el-table-column prop="collectionTime" label="收款时间" :formatter='dateFormat' align="center">
+          <el-table-column prop="collectionTime" label="收款时间" align="center">
           </el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center">
             <template slot-scope="scope">
@@ -62,7 +62,7 @@
               <div v-if="scope.row.checkType=='1'" style="color: #33D174" >通过</div>
             </template>
           </el-table-column>
-          <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
+          <el-table-column prop="collectionTime" label="收款时间" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center">
             <template slot-scope="scope">
               <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.groupCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
@@ -101,7 +101,7 @@
               <div v-if="scope.row.checkType=='1'" style="color: #33D174" >通过</div>
             </template>
           </el-table-column>
-          <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" align="center"></el-table-column>
+          <el-table-column prop="collectionTime" label="收款时间" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center">
             <template slot-scope="scope">
               <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.groupCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
@@ -277,6 +277,9 @@
             that.totalZK = obj.data.total;
             that.numZK = obj.data.total;
             that.tableDataZK = obj.data.objects;
+            that.tableDataZK.forEach(function (item, index, arr) {
+              item.collectionTime = item.collectionTime.split('T')[0];
+            });
             that.loadingZK = false;
           }
         }).catch(function(obj) {
@@ -331,6 +334,9 @@
             that.totalTY = obj.data.total;
             that.numTY = obj.data.total;
             that.tableDataTY = obj.data.objects;
+            that.tableDataTY.forEach(function (item, index, arr) {
+              item.collectionTime = item.collectionTime.split('T')[0];
+            });
             that.loadingTY = false;
           }
         }).catch(function(obj) {
@@ -378,6 +384,9 @@
             that.totalNBSK = obj.data.total;
             that.numNBSK = obj.data.total;
             that.tableDataNBSK = obj.data.objects;
+            that.tableDataNBSK.forEach(function (item, index, arr) {
+              item.collectionTime = item.collectionTime.split('T')[0];
+            });
             that.loadingNBSK = false;
           }
         })
