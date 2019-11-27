@@ -314,7 +314,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible2 = false">取 消</el-button>
-          <el-button type="primary" @click="routerHandle4()">确 定</el-button>
+          <el-button type="primary" @click="routerHandle4()" :disabled="!ifClickRow">确 定</el-button>
         </span>
     </el-dialog>
     <el-dialog style="text-align: left" title="选择账户:" :visible.sync="dialogVisible3" width="50%">
@@ -480,8 +480,9 @@ export default {
       apply_user_input: '',
       plan_stage: '',
       tour_name_pre: '',
-      tour_id: 0,
-      planID: '',
+      ifClickRow: false, // 如果选中团期计划列表的行，则确定按钮可以点击
+      tour_id: 0, // 选中行之后的planID会赋值给这个属性
+      planID: '', // 选中行时，获得的团期计划
       product_name_pre: '',
       plan_name: '',
       dynamicTags3: [],
@@ -803,7 +804,9 @@ export default {
       this.startTime = ''
       this.endTime = ''
     },
-    routerHandle4() { //团期计划
+    // 团期计划弹窗的确定按钮
+    routerHandle4() {
+      this.tour_id = this.planID
       this.ruleForm.tour = this.tour_name_pre
       this.ruleForm.productName = this.product_name_pre
       this.getPaymentdetails(this.planID)
@@ -822,11 +825,10 @@ export default {
       this.user_id = row['id']
       this.user_name = row['name']
       this.reable = false
-
     },
     //获取id
     clickBanle4(row, event, column) {
-      // this.tour_id = row['planID'] // 之所以注释是因为选择团期的时候，不点确定生成的数据也会有团期计划
+      this.ifClickRow = true
       this.tour_name_pre = row['groupCode']
       this.product_name_pre = row['title']
       this.planID = row['planID']

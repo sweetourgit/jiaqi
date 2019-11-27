@@ -44,7 +44,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item>
-                  <el-button @click="searchHand()" type="primary">搜索</el-button>
+                  <el-button @click="searchHandBtn()" type="primary">搜索</el-button>
                   <el-button @click="resetHand('ruleForm')" type="primary">重置</el-button>
                 </el-form-item>
               </el-col>
@@ -92,19 +92,14 @@
           <!-- 表格 END -->
           <!-- 分页 -->
           <el-row type="flex" class="paging">
-            <el-col :span="8" :offset="13">
-              <el-pagination
-                v-if="pageshow"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="1"
-                :page-sizes="[5, 10, 50, 100]"
-                :page-size="10"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total='total'
-                background
-              >
-              </el-pagination>
+            <el-col :span="8" :offset="8">
+              <pagination
+                v-show="total>0"
+                :total="total"
+                :page.sync="ruleFormSeach.page"
+                :limit.sync="ruleFormSeach.limit"
+                @pagination="searchHand"
+              />
             </el-col>
           </el-row>
           <!-- 分页 END -->
@@ -154,19 +149,26 @@ import approvalToBorrow from '@/page/Finance/loanManagement/approvalToBorrow'
 import AdvanceInfo from '@/page/Finance/advancePayment/advanceInfo/advanceInfo'
 import moment from 'moment'
 import checkLoanManagement from '@/page/Finance/loanManagement/checkLoanManagement/checkLoanManagement'
+import Pagination from '@/components/Pagination'
 export default {
   name: "advancePayment",
   components: {
+    Pagination,
     approvalToBorrow,
     AdvanceInfo,
     checkLoanManagement,
   },
   data() {
     return {
+      listLoading: true,
       tableSelect:[], // 选择弹窗表格
       SelectAccount:false, // 选择账户弹窗
       // ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
+      ruleFormSeach: {
+        page: 1,
+        limit: 10
+      },
       ruleForm: {
         planID: '', // 团期计划输入框
         user: '', // 申请人
@@ -228,6 +230,10 @@ export default {
     }
   },
   methods: {
+    // 搜索
+    searchHandBtn(){
+      this.searchHand()
+    },
     // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
@@ -302,14 +308,10 @@ export default {
     },
     handleClick(tab, event) {
       if (tab.name == 'first') {
-        this.firstTab = true
-        this.secondTab = false
         this.pageIndex = this.firstIndex;
         this.currentPage4 = this.firstIndex;
       }
       if (tab.name == 'second') {
-        this.firstTab = false
-        this.secondTab = true
         this.pageIndex = this.secondIndex;
         this.currentPage4 = this.secondIndex;
         this.variable++;
@@ -327,51 +329,12 @@ export default {
       this.change = true
       this.dialogFormVisible = true;
     },
-    handleSizeChange(val) {
-      this.pageSize = val
-      let objectRequest = {}
-      objectRequest.paymentType = 2;
-      if (this.planID) {
-        objectRequest.planID = this.planID;
-      }
-      if (this.user) {
-        objectRequest.createUser = this.user;
-      }
-      if (this.startTime) {
-        objectRequest.beginTime = moment(this.startTime).format('YYYY-MM-DD HH:mm:ss');
-      }
-      if (this.endTime) {
-        objectRequest.endTime = moment(this.endTime).format('YYYY-MM-DD HH:mm:ss');
-      }
-      if (this.checkType) {
-        objectRequest.checkType = this.checkType;
-      } else {
-        objectRequest.checkType = '-1'
-      }
-      var that = this
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/page", {
-        "pageIndex": 1,
-        "pageSize": val,
-        "object": objectRequest
-      }, {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        }
-      })
-      .then(function (obj) {
-        // console.log(obj.data);
-        that.total = obj.data.total;
-        that.tableData = obj.data.objects;
-      })
-      .catch(function (obj) {
-        // console.log(obj)
-      })
-    },
-    //搜索
+    // 渲染列表
     searchHand(params) {
-      this.dialogFormVisible = params
-      console.log(params, '传过来的弹窗参数')
-      this.pageNum = 1;
+      this.listLoading = true
+      if(typeof params == 'boolean'){
+        this.dialogFormVisible = params
+      }
       this.pageshow = false
       let objectRequest = {}
       objectRequest.paymentType = 2;
@@ -396,67 +359,19 @@ export default {
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/finance/payment/api/page", {
-          "pageIndex": this.pageNum,
-          "pageSize": this.pageSize,
+          "pageIndex": this.ruleFormSeach.page,
+          "pageSize": this.ruleFormSeach.limit,
           "object": objectRequest,
         }
-      )
-        .then(function (obj) {
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-        })
-        .catch(function (obj) {
-          // console.log(obj)
-        })
-      this.$nextTick(() => {
-        this.pageshow = true
-      })
-    },
-    handleCurrentChange(val) {
-      this.pageNum = val;
-      if (this.firstTab) {
-        this.firstIndex = val
-      }
-      if (this.secondTab) {
-        this.secondIndex = val
-      }
-      let objectRequest = {}
-      objectRequest.paymentType = 2;
-      if (this.planID) {
-        objectRequest.planID = this.planID;
-      }
-      if (this.user) {
-        objectRequest.createUser = this.user;
-      }
-      if (this.startTime) {
-        objectRequest.beginTime = this.startTime
-      }
-      if (this.endTime) {
-        objectRequest.endTime = this.endTime
-      }
-      if (this.checkType) {
-        objectRequest.checkType = this.checkType;
-      } else {
-        objectRequest.checkType = '-1'
-      }
-      var that = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/finance/payment/api/page", {
-          "pageIndex": val,
-          "pageSize": this.pageSize,
-          "total": 0,
-          "object": objectRequest,
-        }, {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        }
-        })
-      .then(function (obj) {
+      ).then(function (obj) {
         that.total = obj.data.total;
         that.tableData = obj.data.objects;
+        this.listLoading = false
+      }).catch(function (obj) {
+        // console.log(obj)
       })
-      .catch(function (obj) {
-        console.log(obj)
+      this.$nextTick(() => {
+        this.pageshow = true
       })
     },
     //获取供应商类型

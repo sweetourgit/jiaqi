@@ -178,8 +178,8 @@
       <el-table-column prop="priceSum" label="已收金额" align="center"></el-table-column>
       <!-- <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column> -->
       <el-table-column label="欠款金额" align="center" prop="arrears"></el-table-column>
-      <el-table-column prop="arrearsDate" label="欠款日期" align="center"></el-table-column>
-      <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
+      <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' align="center"></el-table-column>
+      <el-table-column prop="repaymentDate" label="应还日期" :formatter='dateFormat' align="center"></el-table-column>
     </el-table>
     <!-- 收入明细 END -->
     <!-- 审批过程-查看弹窗 -->
@@ -281,6 +281,14 @@ export default {
   mounted(){
   },
   methods: {
+    // 起始时间格式转换
+    dateFormat: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined || date == '') {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD')
+    },
     // 点击图片钩子
     handlePreview(file) {
       window.open(file.url);
