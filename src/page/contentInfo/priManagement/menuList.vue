@@ -102,7 +102,7 @@ export default {
         rformA: {
           id:0,
           name: "",
-          uri: "#",
+          uri: "",
           overt: "2",
           sort: "0",
           isLeaf: "2",

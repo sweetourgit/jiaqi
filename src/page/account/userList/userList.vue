@@ -29,6 +29,7 @@
       <div class="add-user">
         <router-link to="/userlist/adduser"><el-button type="primary">添加用户</el-button></router-link>
         <el-button :disabled="forbidden" type="primary" @click="auth">授权</el-button>
+        <el-button :disabled="forbidden" type="primary" @click="dialogFormCopyPer=true">复制权限</el-button>
       </div>
     </div>
     <!--表格-->
@@ -193,8 +194,14 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
           <el-button @click="dialogFormAuth = false">取消</el-button>
-          <el-button type="primary" @click="submit">确 定</el-button>
+          <el-button type="primary" @click="perSubmit">确 定</el-button>
         </div>
+      </div> 
+    </el-dialog>
+    <el-dialog title="复制权限" custom-class="city_list" :visible.sync="dialogFormCopyPer" width="450px" @close="permissionId=''">
+      <div>
+         <el-input v-model="permissionId" style="width:200px;margin:10px 10px 20px 50px"></el-input>
+         <el-button type="primary" @click="copyPerSubmit">确 定</el-button>
       </div> 
     </el-dialog>
   </div>
@@ -256,8 +263,10 @@
         }],
         user: '',
 
-        tableData3: [],
+        tableData3:[],
         dialogFormAuth:false,
+        dialogFormCopyPer:false,
+        permissionId:'',
         multipleSelection:[], //选中的list
         authDiocss:{
 　　　　　　height:'',
@@ -317,23 +326,21 @@
               this.authData=res.data.objects;              
         })
       },
-      submit(){
-       // console.log(this.authData);
-        //var submitDate=[];
-       /*
-        for(let i=0;i<this.authData.length;i++){
-          if(this.authData[i].isJur==true){
-             submitDate.push(this.authData[i]);
-          }
-          for(let j=0;j<this.authData[i].act.length;j++){
-            if(this.authData[i].act[j].isJur==true){
-               submitDate[i].act.push(this.authData[i].act[j]);
-            }
-          }
-        }*/
+      perSubmit(){
         this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/do',{
                "userID": this.multipleSelection[0].id,
                "object": this.authData
+            }).then(res => {         
+              if(res.data.isSuccess == true){
+                 this.$message.success('提交成功');
+                 this.dialogFormAuth = false;
+              }
+        })
+      },
+      copyPerSubmit(){
+        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/copy',{
+               "sourceID": this.multipleSelection[0].id,
+               "objectID": this.permissionId
             }).then(res => {         
               if(res.data.isSuccess == true){
                  this.$message.success('提交成功');
