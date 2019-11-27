@@ -1083,6 +1083,8 @@ export default {
     },
     // 搜索
     search(){
+      this.ruleFormSeach.page = 1
+      this.ruleFormSeach.limit = 10
       this.getList()
     },
     // 申请无收入借款

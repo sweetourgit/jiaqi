@@ -397,13 +397,20 @@ import moment from 'moment'
       let getJqId = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
+          let getWorkflowCode
+          if(this.presentRouter == '无收入借款管理') {
+            getWorkflowCode = 'loan_noIncome2'
+          } else if(this.presentRouter == '预付款管理') {
+            getWorkflowCode = 'borrow_Moneys2'
+          }else {}
           this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
             "userCode": sessionStorage.getItem('userCode'),
             "startTime": this.ruleFormSeach.planTime_01 ? moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : '',
             "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD HH:mm:ss') : '',
             "startIndex": -1,
             "endIndex": -1,
-            "workflowCode": obj.data.objects[0].name
+            // "workflowCode": obj.data.objects[0].name
+            "workflowCode": getWorkflowCode
           }).then(res => {
             let keepRes = res.data
             keepRes.forEach(function (item) {
@@ -456,7 +463,6 @@ import moment from 'moment'
       var arr = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
-
           let getWorkflowCode
           if(this.presentRouter == '无收入借款管理') {
             getWorkflowCode = 'loan_noIncome2'
