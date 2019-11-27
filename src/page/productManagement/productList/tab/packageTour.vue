@@ -997,7 +997,7 @@ export default {
       this.borrowingType = [];
       this.$http
         .post(
-          "http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=SupplierType"
+          this.GLOBAL.serverSrc +"/universal/supplier/api/dictionaryget?enumname=SupplierType"
           // SupplierType 之前的   PaymentType 无收入借款
         )
         .then(res => {
