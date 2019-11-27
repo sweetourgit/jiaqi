@@ -27,8 +27,8 @@
           <el-col style="width: 420px;">
             <el-form-item :label="text.name+ '：'" prop="name">
               <el-input v-model="submitForm.name" :placeholder="text.name" style="width: 300px;" size="small" maxlength="20"
-                :show-word-limit="true"
-              ></el-input>
+                :show-word-limit="true">
+              </el-input>
             </el-form-item>
           </el-col>
 
@@ -48,7 +48,9 @@
         <el-row>
           <el-col style="width: 420px;">
             <el-form-item :label="text.typeExt+ '：'" prop="typeExt">
-              <el-input v-model="submitForm.typeExt" :placeholder="text.typeExt" size="small"></el-input>       
+              <el-input v-model="submitForm.typeExt" :placeholder="text.typeExt" size="small" maxlength="20"
+                :show-word-limit="true">
+              </el-input>       
             </el-form-item>
           </el-col>
           <el-col style="width: 100px;">
