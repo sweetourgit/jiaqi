@@ -312,7 +312,7 @@
       },
       getActs(){
         this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
-             "object": {}
+              "userID":this.multipleSelection[0].id,
             }).then(res => {              
               this.authData=res.data.objects;              
         })
@@ -332,7 +332,7 @@
           }
         }*/
         this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/do',{
-               "userID": sessionStorage.getItem('id'),
+               "userID": this.multipleSelection[0].id,
                "object": this.authData
             }).then(res => {         
               if(res.data.isSuccess == true){
