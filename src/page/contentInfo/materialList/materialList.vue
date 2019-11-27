@@ -666,16 +666,15 @@
            type: "warning"
         })
         .then(() => {
-              this.$http.post(this.GLOBAL.serverSrc + '/tpk/picture/api/delete',{
-                    "id": this.pictInfo.id
-                  }).then(res => {
-                      if(res.data.isSuccess == true){
-                         this.$message.success("删除成功");
-                         this.getAlbum(this.albumId);
-                  }
-               })
-          })
-          .catch(() => {
+          this.$http.post(this.GLOBAL.serverSrc + '/tpk/picture/api/delete',{
+            "id": this.pictInfo.id
+          }).then(res => {
+            if(res.data.isSuccess == true){
+             this.$message.success("删除成功");
+             this.getAlbum(this.albumId);
+            }
+         })
+        }).catch(() => {
             this.$message({
             type: "info",
             message: "已取消"

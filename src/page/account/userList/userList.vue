@@ -27,18 +27,23 @@
       </div>
       <!--搜索end-->
       <div class="add-user">
-        <router-link to="/userlist/adduser"><el-button type="primary" >添加用户</el-button></router-link>
+        <router-link to="/userlist/adduser"><el-button type="primary">添加用户</el-button></router-link>
+        <el-button :disabled="forbidden" type="primary" @click="auth">授权</el-button>
       </div>
     </div>
     <!--表格-->
     <div class="user-table" style="width: 1031px">
       <el-table
+        ref="multipleTable" 
         :data="tableData3"
         border
         :header-row-style="tableHead"
         :cell-style="tableHeight"
         :header-cell-style="getRowClass"
+        :row-style="rowClass"
         style="width: 100%"
+        @row-click="clickRow"
+        @selection-change="changeFun"
       >
         <el-table-column
           prop="id"
@@ -176,7 +181,22 @@
         </div>
       </div>
     </el-dialog>
-
+    <el-dialog title="用户授权" custom-class="city_list" :visible.sync="dialogFormAuth" width="1000px" class="abow_dialog">
+      <div :style="authDiocss">
+        <el-form ref="form" :model="form">           
+             <div v-for="(menuList,index) in authData">
+               <el-checkbox v-model="menuList.isJur" :label="menuList.id" :key="menuList.id" @change="menuChanged(index)">{{menuList.name}}</el-checkbox>
+               <div class="check-list">
+                 <el-checkbox  v-model="actList.isJur" v-for="actList in menuList.act" :label="actList.id" :key="actList.id" @change="actChanged(index)">{{actList.name}}</el-checkbox>
+               </div>
+             </div>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button @click="dialogFormAuth = false">取消</el-button>
+          <el-button type="primary" @click="submit">确 定</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -237,15 +257,93 @@
         user: '',
 
         tableData3: [],
-
+        dialogFormAuth:false,
+        multipleSelection:[], //选中的list
+        authDiocss:{
+　　　　　　height:'',
+            overflowY:'scroll'
+　　　　},
+        authData:[],
+        forbidden:true,  
       }
     },
     methods:{
-      getRowClass({ row, column, rowIndex, columnIndex }) {
-        if (rowIndex == 0) {
+      menuChanged(index){
+        if(this.authData[index].isJur == false){  //一级未选中 则对应的二级都不选中
+            var actArray = this.authData[index].act.length;          
+            if(actArray>0){            
+                for(let i = 0,len = this.authData[index].act.length;i<len;i++){
+                    this.authData[index].act[i].isJur = false;          
+                }
+            }
+        }else if(this.authData[index].isJur = true){  //一级选中  则对应的二级都选中
+            var actArray = this.authData[index].act.length;
+            if(actArray>0){
+                for(let i = 0,len = this.authData[index].act.length;i<len;i++){
+                    this.authData[index].act[i].isJur = true;
+                }
+            } 
+        }
+      },
+      actChanged(index){
+        
+      },
+      auth(){
+        this.dialogFormAuth = true;
+        this.getHeight();
+        this.getActs();
+      },
+      getHeight(){
+        this.authDiocss.height=document.body.clientHeight-200+"px";
+      },
+      getActs(){
+        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
+             "object": {}
+            }).then(res => { 
+              /*
+              let obj=res.data.objects;
+              for(let i=0;i<obj.length;i++){
+                obj[i].isJur=true;
+                for(let j=0;j<obj[i].act.length;j++){
+                  obj[i].act[j].isJur=true;
+                }
+              }
+              this.authData=obj;*/
+              this.authData=res.data.objects;
+        })
+      },
+      submit(){
+
+
+
+      },
+      getRowClass({ row, column, rowIndex, columnIndex }){
+        if (rowIndex == 0){
           return 'background:#F7F7F7'
         } else {
           return ''
+        }
+      },
+      changeFun(val) {
+        //保存选中项的数据
+        this.multipleSelection = val;
+        if(this.multipleSelection.length>0){
+           this.forbidden=false;
+        }else{
+           this.forbidden=true;
+        }
+      },
+      clickRow(row) {
+      //选中行复选框勾选
+        this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
+        this.$refs.multipleTable.toggleRowSelection(row);
+      },
+      rowClass({ row, rowIndex }){
+        //选中行样式改变
+        for (var i = 0; i < this.multipleSelection.length; i++) {
+          if (this.multipleSelection[i].id == row.id) {
+            return { "background-color": "#ecf5ff" };
+          }
         }
       },
       handleSizeChange(val) {
@@ -449,7 +547,6 @@
         console.log();
 
       }
-
     },
     created(){
       //用户列表
@@ -513,7 +610,12 @@
 </script>
 
 <style scoped>
-
+  .abow_dialog {
+     margin:-100px 0 0 0;
+    }
+  .check-list{
+    margin:10px 0 15px 25px;
+  }
   .user-table{
     margin-left:26px;
     margin-top: 70px;

@@ -18,10 +18,6 @@ import MaterialList from '@/common/Image'
 export default {
   components: { MaterialList },
 
-  props: {
-    proto: Array,
-  },
-
   data(){
     return Object.assign(
       // 状态控制

@@ -282,14 +282,14 @@
       },
       // 提交认款
       doSubmit(row){
-        console.log(row);
+        console.log('1',row);
         const that = this;
 //        alert('收入：'+that.tableData[0].income);
 //        alert('待认收款金额：'+row.rece_money);
 //        alert(parseFloat(that.tableData[0].income) > parseFloat(row.rece_money));
-        if(parseFloat(that.tableData[0].income) > parseFloat(row.rece_money)){
-          that.$message.warning("待认收款金额小于收入，不能提交认款");
-        }else {
+//        if(parseFloat(that.tableData[0].income) > parseFloat(row.rece_money)){
+//          that.$message.warning("待认收款金额小于收入，不能提交认款");
+//        }else {
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/submitrec", {
             "order_sn": this.tableData[0].order_sn,
             "rec_detail_id": row.id,
@@ -310,7 +310,7 @@
           }).catch(function(error) {
             console.log(error);
           });
-        }
+//        }
       }
 
     },

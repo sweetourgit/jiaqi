@@ -12,6 +12,7 @@
             <el-button type="warning" round size="mini" v-if="statusBtn == 5">报账中</el-button>
             <el-button type="danger" round size="mini" v-if="statusBtn == 6">报账驳回</el-button>
             <el-button type="success" round size="mini" v-if="statusBtn == 7">已报账</el-button>
+            <el-button type="success" round size="mini" v-if="statusBtn == 8">已报账</el-button>
           </div>
         </el-col>
         <el-col :span="8">
@@ -22,7 +23,7 @@
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
             <el-button class="el-button" type="primary" @click="toPreview">预览报账单</el-button>
             <!--<el-button class="el-button" type="primary" @click="submitForm">保 存</el-button>-->
-            <el-button class="el-button" type="primary" @click="delInfo" v-if="statusBtn != 7">提交报账单</el-button>
+            <el-button class="el-button" type="primary" @click="delInfo" v-if="statusBtn != 7 && statusBtn != 8">提交报账单</el-button>
             <el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 4 || statusBtn == 6">修 改</el-button>
 
           </div>

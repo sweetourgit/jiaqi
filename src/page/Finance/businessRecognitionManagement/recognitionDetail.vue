@@ -4,7 +4,7 @@
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <el-button type="primary" @click="importOrder" v-if="baseInfo.rece_type == '2' && baseInfo.rec_mode == '订单收款' && baseInfo.can_match == '2'">导入订单明细</el-button>
-        <el-button type="primary" @click="backoutBtn" v-if="baseInfo.status_rece != 12">撤销</el-button>
+        <el-button type="primary" @click="backoutBtn" v-if="baseInfo.status_rece != '12' && baseInfo.rec_mode!='票付通余额支付'">撤销</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -237,7 +237,7 @@
           <!--<el-button class="el-button" type="primary" @click="">确 认</el-button>-->
         </div>
       </el-dialog>
-      <importOrder :dialogFormVisible3="dialogFormVisible3" :info="info" @close="close"></importOrder>
+      <importOrder :dialogFormVisible3="dialogFormVisible3" :info="info" @close="closeImport"></importOrder>
     </el-dialog>
   </div>
 </template>
@@ -403,6 +403,9 @@
 //        this.info = row.id;
         this.dialogFormVisible3 = true;
       },
+      closeImport(){
+        this.dialogFormVisible3 = false;
+      },
       // 撤销操作
       backoutBtn(){
         const that = this;
@@ -466,7 +469,7 @@
       // 关闭订单详情
       close(){
         this.dialogFormVisible = false;
-        this.dialogFormVisible3 = false;
+
       },
       // 加载数据
       loadData(){
