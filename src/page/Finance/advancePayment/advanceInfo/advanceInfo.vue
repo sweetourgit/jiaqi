@@ -83,12 +83,12 @@
                 <el-input v-model="ruleForm.cardName" class="bright inputWidth" placeholder="请输入开户名" :disabled="change"></el-input>
               </el-form-item>
               <!-- 付款方式 -->
-              <el-form-item label="付款方式" prop="payMode" label-width="120px" >
+              <!--<el-form-item label="付款方式" prop="payMode" label-width="120px" >
                 <el-select style="float: left;" class="inputWidth" v-model="ruleForm.payMode" placeholder="请选择" :disabled="change">
                   <el-option v-for="item in payModeList" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
-              </el-form-item>
+              </el-form-item>-->
               <el-form-item label="附件" style="clear:both;" label-width="120px" prop="pass">
                 <el-upload
                   class="upload-demo"
@@ -185,23 +185,23 @@
 
               <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
                 <el-table :data="tableData8" border :header-cell-style="getRowClass2">
-                  <el-table-column prop="oNo" label="订单编号" align="center">
+                  <el-table-column prop="orderCode" label="订单编号" align="center">
                   </el-table-column>
-                  <el-table-column prop="source" label="订单来源" align="center">
+                  <el-table-column prop="channel" label="订单来源" align="center">
                   </el-table-column>
-                  <el-table-column prop="user" label="订单联系人" align="center">
+                  <el-table-column prop="person" label="订单联系人" align="center">
                   </el-table-column>
                   <el-table-column prop="number" label="人数" align="center">
                   </el-table-column>
-                  <el-table-column prop="total" label="订单金额" align="center">
+                  <el-table-column prop="payable" label="订单金额" align="center">
                   </el-table-column>
-                  <el-table-column prop="accepted" label="已收金额" align="center">
+                  <el-table-column prop="priceSum" label="已收金额" align="center">
                   </el-table-column>
                   <el-table-column prop="arrears" label="欠款金额" align="center">
                   </el-table-column>
-                  <el-table-column prop="arrearsTime" label="欠款日期" align="center">
+                  <el-table-column prop="arrearsDate" label="欠款日期" align="center">
                   </el-table-column>
-                  <el-table-column prop="repaymentTime" label="应还日期" align="center">
+                  <el-table-column prop="repaymentDate" label="应还日期" align="center">
                   </el-table-column>
                 </el-table>
             </div>
@@ -424,7 +424,6 @@ export default {
       supplier: '',
       supplier_id: 0,
       type: '',
-      payMode: '',
       ruleForm: {
         loanMoney: '',
         loanNumber: '',
@@ -436,7 +435,7 @@ export default {
         cardNumber: '',
         bankName: '',
         cardName: '',
-        payMode: '',
+        // payMode: '',
         type: '',
         pass: [],
       }, //文件上传列表
@@ -445,7 +444,7 @@ export default {
       rules: {
         //user: [{ required: true, message: '申请人不能为空', trigger: 'change' }],
         type: [{ required: true, message: '类型不能为空', trigger: 'change' }],
-        payMode: [{ required: true, message: '付款方式不能为空', trigger: 'change' }],
+        // payMode: [{ required: true, message: '付款方式不能为空', trigger: 'change' }],
         loanMoney: [{ required: true, message: '借款金额不能为空', trigger: 'blur' },
                     { pattern: /^[+-]?\d+(\.\d+)?$|^$|^(\d+|\-){7,}$/, message: '借款金额需为整数或浮点数'} ],
         loanNumber: [{ required: true, message: '借款人数不能为空', trigger: 'blur' },
@@ -827,7 +826,7 @@ export default {
     },
     //获取id
     clickBanle4(row, event, column) {
-      this.tour_id = row['planID']
+      // this.tour_id = row['planID'] // 之所以注释是因为选择团期的时候，不点确定生成的数据也会有团期计划
       this.tour_name_pre = row['groupCode']
       this.product_name_pre = row['title']
       this.planID = row['planID']
@@ -980,7 +979,6 @@ export default {
     },
     // 提交
     submitForm(formName) {
-      //console.log(this.ruleForm.payMode)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.inputVisible2 = true;
@@ -1003,7 +1001,7 @@ export default {
               cardNumber: this.ruleForm.cardNumber, //账号
               bankName: this.ruleForm.bankName, //开户行
               cardName: this.ruleForm.cardName, //开户名
-              payway: this.ruleForm.payMode, //付款方式
+              payway: 0, //付款方式
               files: pictureList, //上传图片
             }
           }).then(res => {
@@ -1088,7 +1086,6 @@ export default {
         this.$emit('searchHandList', false);
       });
     },
-
     getPaymentInfo() {
       var that = this
       that.$http.post(
@@ -1114,7 +1111,7 @@ export default {
           that.ruleForm.cardNumber = obj.data.object.cardNumber
           that.ruleForm.bankName = obj.data.object.bankName
           that.ruleForm.cardName = obj.data.object.cardName
-          that.ruleForm.payMode = obj.data.object.payway
+          // that.ruleForm.payMode = obj.data.object.payway
           //that.fileList = obj.data.object.files
           that.$set(that.dynamicTags2, 0, { "labelID": obj.data.object.supplierID, "label": obj.data.object.supplierName, "teamID": 0 })
           that.getTourByPlanId(obj.data.object.planID)
@@ -1147,6 +1144,7 @@ export default {
         console.log(err)
       })
     },
+    // 申请预付款，渲染当前页面的表格
     getPaymentdetails(val) {
       var that = this
       //预付付款明细
@@ -1186,6 +1184,16 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+      // 收入明细
+      that.$http.post(this.GLOBAL.serverSrc + '/orderquery/api/income/detail', {
+        "id": val,
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableData8 = res.data.objects
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     clearForm() {
       this.ruleForm = {
@@ -1199,7 +1207,7 @@ export default {
         cardNumber: '',
         bankName: '',
         cardName: '',
-        payMode: '',
+        // payMode: '',
         type: '',
       }
       this.supplier_id = 0

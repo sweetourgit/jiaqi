@@ -171,17 +171,15 @@
     <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
     <el-table :data="tableEarning" border :header-cell-style="getRowClass">
       <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-      <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
-      <el-table-column prop="contactName" label="订单联系人" align="center"></el-table-column>
+      <el-table-column prop="channel" label="订单来源" align="center"></el-table-column>
+      <el-table-column prop="person" label="订单联系人" align="center"></el-table-column>
       <el-table-column prop="number" label="人数" align="center"></el-table-column>
       <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
-      <el-table-column prop="paid" label="已收金额" align="center"></el-table-column>
+      <el-table-column prop="priceSum" label="已收金额" align="center"></el-table-column>
       <!-- <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column> -->
-      <el-table-column label="欠款金额" align="center">
-        <template slot-scope="scope">{{scope.row.payable-scope.row.paid}}</template>
-      </el-table-column>
-      <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
-      <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
+      <el-table-column label="欠款金额" align="center" prop="arrears"></el-table-column>
+      <el-table-column prop="arrearsDate" label="欠款日期" align="center"></el-table-column>
+      <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
     </el-table>
     <!-- 收入明细 END -->
     <!-- 审批过程-查看弹窗 -->
@@ -343,13 +341,6 @@ export default {
         this.tableIncomeCheck = obj.data.extend.instanceLogInfo;
         this.dialogFormVisible_Income = true;
       }).catch(obj => {})
-    },
-    // 查看无收入借款弹窗
-    checkIncome(){
-      this.checkIncomeShow = true;
-    },
-    CloseCheckIncomeShow(){
-      this.checkIncomeShow = false;
     },
     // 审核结果
     auditResult(result, paramJqType) {

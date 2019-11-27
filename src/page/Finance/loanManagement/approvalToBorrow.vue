@@ -321,9 +321,6 @@ import moment from 'moment'
   },
   created(){
     this.presentRouter = this.$route.name
-    console.log(this.presentRouter,'当前路由的名字')
-    console.log(sessionStorage.getItem('hasCashierInfo'),'所在路由')
-
     this.pageList();
     // 只有是出纳的时候才显示申请人检索
     if (sessionStorage.getItem('hasCashierInfo')) {
