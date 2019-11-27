@@ -133,7 +133,7 @@
                   :trigger-on-focus="false"
                   placeholder="请输入内容"
                   @select="handleSelectName"
-                  :disabled="this.ruleForm.parentID == -1"
+                  :disabled="this.ruleForm.parentID == -1 && sonList !== []"
                 ></el-autocomplete>
               </el-form-item>
               <el-form-item label="商户其他名称" prop="otherNames" style="width: 350px;">
@@ -1145,7 +1145,7 @@ export default {
     handleSelectName(item) {
       this.ruleForm.parentID = item.id;
       this.ruleForm.parentName = item.value;
-      console.log(item);
+      // console.log(item);
     },
     // 图片上传
     imgUpload() {
@@ -2170,7 +2170,7 @@ export default {
         this.ruleForm.expTime = 0;
       }
       this.ruleForm.parentID == null ? this.ruleForm.parentID = -1 : this.ruleForm.parentID
-      console.log(this.ruleForm.parentID,"this.ruleForm.parentID")
+      // console.log(this.ruleForm.parentID,"this.ruleForm.parentID")
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
           object: {
@@ -2507,7 +2507,7 @@ export default {
             orgs,
             useList
           } = obj.data.object;
-
+          
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
@@ -2675,18 +2675,8 @@ export default {
           }
           if (this.btnindex == 1) {
             this.sonList = object.sonList;
-            for (let i = 0; i < this.sonList.length; i++) {}
-            // this.sonList.jqAdminList = object.jqAdminList
-            // console.log(this.sonList.jqAdminList)
-            // this.somList.jqAdminList.forEach(item => {
-            //   if(item.jqUserType == 1) {
-            //     item.jqUserType = "管理员"
-            //   } else {
-            //     item.jqUserType = "销售"
-            //   }
-            // })
           }
-
+          this.ruleForm.parentID = object.parentID
           this.ruleForm.quota = object.quota;
           //todo    部门和人员 预留
           // this.ruleForm.department = "1";
