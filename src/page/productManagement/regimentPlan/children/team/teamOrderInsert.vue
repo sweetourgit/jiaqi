@@ -70,14 +70,14 @@
           <!--选择线下直客按钮，显示销售文本框-->
           <div v-if="ruleForm.orderRadio==1">
               <el-form-item label="销售" prop="market">
-                <el-autocomplete class="optionw" v-model="ruleForm.market" :fetch-suggestions="querySearch1" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure1"></el-autocomplete>
+                <el-autocomplete class="optionw" @blur="travelGuest()" v-model="ruleForm.market" :fetch-suggestions="querySearch1" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure1"></el-autocomplete>
                 <div v-show="nullShowGuest" style="color:red">请输入有效的直客销售</div>
               </el-form-item>
           </div>
           <!--选择商户按钮，显示商户名称和商户销售文本框-->
           <div v-if="ruleForm.orderRadio==2">
               <el-form-item label="同业销售" prop="travelSales">
-                <el-autocomplete class="optionw" v-model="ruleForm.travelSales" :fetch-suggestions="querySearch2" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure2"></el-autocomplete>
+                <el-autocomplete class="optionw" v-model="ruleForm.travelSales" @blur="travelOp()" :fetch-suggestions="querySearch2" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure2"></el-autocomplete>
                 <div v-show="nullShowOp" style="color:red;">请输入有效的同业销售</div>
               </el-form-item>
               <el-form-item label="商户名称" prop="travel">
@@ -85,7 +85,7 @@
                 <div v-show="nullShowName" style="color:red;">请输入有效的商户名称</div>
               </el-form-item>
               <el-form-item label="商户销售" prop="merchantsSell">
-                <el-autocomplete class="optionw" :disabled = "forbidden" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false" @select="departure4"></el-autocomplete>
+                <el-autocomplete class="optionw" :disabled = "forbidden" @blur="merchants()" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false" @select="departure4"></el-autocomplete>
                 <div v-if="nullShow" style="color:red;">请输入有效的商户销售</div>
               </el-form-item>
           </div>
@@ -1594,9 +1594,26 @@ export default {
       this.originPlace = item.value;
       this.amount = this.lines + this.deposit;
     },
+    travelGuest(){//直客销售清空后输入信息不对的验证取消
+      if(this.ruleForm.market == ''){
+        this.nullShowGuest = false;
+      }
+    },
+    travelOp(){//同业销售清空后输入信息不对的验证取消
+      if(this.ruleForm.travelSales == ''){
+        this.nullShowOp = false;
+      }
+    },
     travelName(){//商户名称添加时，商户销售可以填写
       if(this.ruleForm.travel != ''){
         this.forbidden=false;
+      }else {
+        this.nullShowName = false;
+      }
+    },
+    merchants(){//商户销售清空后输入信息不对的验证取消
+      if(this.ruleForm.merchantsSell == ''){
+        this.nullShow = false;
       }
     },
     //商户销售模糊查询
