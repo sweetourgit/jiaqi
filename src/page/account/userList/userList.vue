@@ -20,7 +20,7 @@
         </div>
         <div class="search-input">
           <el-input v-model="input" placeholder="请输入内容"  clearable></el-input>
-        </div>
+        </div> 
         <div class="button-search">
           <el-button  size="medium" type="primary" icon="el-icon-search" @click="searchSubmit"></el-button>
         </div>
@@ -195,7 +195,7 @@
           <el-button @click="dialogFormAuth = false">取消</el-button>
           <el-button type="primary" @click="submit">确 定</el-button>
         </div>
-      </div>
+      </div> 
     </el-dialog>
   </div>
 </template>
@@ -286,7 +286,21 @@
         }
       },
       actChanged(index){
-        
+        var childrenArray = this.authData[index].act;
+        var tickCount = 0,
+            unTickCount = 0,
+            len = childrenArray.length
+        for(var i = 0; i < len; i++) {
+            if(childrenArray[i].isJur == true){
+                tickCount++;
+            }
+            if(childrenArray[i].isJur == false){
+                unTickCount++;
+            }
+        }
+        if(tickCount == len){ //二级全勾选  一级勾选            
+            this.authData[index].isJur = true;
+        }
       },
       auth(){
         this.dialogFormAuth = true;
@@ -299,23 +313,33 @@
       getActs(){
         this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
              "object": {}
-            }).then(res => { 
-              /*
-              let obj=res.data.objects;
-              for(let i=0;i<obj.length;i++){
-                obj[i].isJur=true;
-                for(let j=0;j<obj[i].act.length;j++){
-                  obj[i].act[j].isJur=true;
-                }
-              }
-              this.authData=obj;*/
-              this.authData=res.data.objects;
+            }).then(res => {              
+              this.authData=res.data.objects;              
         })
       },
       submit(){
-
-
-
+       // console.log(this.authData);
+        //var submitDate=[];
+       /*
+        for(let i=0;i<this.authData.length;i++){
+          if(this.authData[i].isJur==true){
+             submitDate.push(this.authData[i]);
+          }
+          for(let j=0;j<this.authData[i].act.length;j++){
+            if(this.authData[i].act[j].isJur==true){
+               submitDate[i].act.push(this.authData[i].act[j]);
+            }
+          }
+        }*/
+        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/do',{
+               "userID": sessionStorage.getItem('id'),
+               "object": this.authData
+            }).then(res => {         
+              if(res.data.isSuccess == true){
+                 this.$message.success('提交成功');
+                 this.dialogFormAuth = false;
+              }
+        })
       },
       getRowClass({ row, column, rowIndex, columnIndex }){
         if (rowIndex == 0){

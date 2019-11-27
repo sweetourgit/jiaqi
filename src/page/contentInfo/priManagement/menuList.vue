@@ -72,8 +72,8 @@ import actList from './actList'
 export default {
   components:{
     "act-list":actList
-  },
-  data() {
+  }, 
+  data() { 
     return {
         menuId:0,
         variable:0, //设置一个变量展示弹窗,每次点开都重新加载数据
@@ -206,13 +206,13 @@ export default {
            type: "warning"
         })
         .then(() => {
-              this.$http.post(this.GLOBAL.serverSrc + '/org/module/api/delete',{
+              this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/delete',{
                     "id": this.multipleSelection[0].id
                   }).then(res => {
                       if(res.data.isSuccess == true){
                          this.$message.success("删除成功");
                          this.menuList();
-                  }
+                  } 
                }) 
           })
           .catch(() => {
