@@ -116,11 +116,14 @@
         <!--总价-->
         <div class="price">
           <!-- <p class="totle">总价：￥{{toDecimal2(payable)}}</p> -->
-          <p class="totle">
+          <p class="totle" v-if="payable > 0">
             总价：￥
             <span v-if="payable-prePayable > 0" >{{prePayable}} + {{payable-prePayable}}</span>
             <span v-if="payable-prePayable == 0" >{{prePayable}}</span>
             <span v-if="payable-prePayable < 0" >{{prePayable}} - {{prePayable-payable}}</span>
+          </p>
+          <p class="totle" v-if="payable <= 0">
+            总价：￥ 0
           </p>
           <p
             class="surplus"
@@ -441,6 +444,10 @@ export default {
     enrolNum(val) {
       this.changeQuota();
       this.compPrice(1);
+    },
+    priceType() {
+      this.propPriceType = this.priceType
+      console.log(this.propPriceType)
     }
   },
 
@@ -1094,6 +1101,9 @@ export default {
             ? this.orderget.favourable[1].price
             : 0
         );
+      }
+      if(this.payable <= 0) {
+        this.$message.error("总订单金额为0")
       }
       this.isSaveBtnClick();
       this.addInfoFun();

@@ -125,14 +125,17 @@
                   :title="ruleForm.name"
                 ></el-input>
               </el-form-item>
-              <!-- <el-form-item label="所属上级商户 :" prop="name">
+              <el-form-item label="所属上级商户:" prop="parentName">
                 <el-autocomplete
-                  v-model="state"
-                  :fetch-suggestions="querySearchAsync"
+                  style="width: 250px;"
+                  v-model="ruleForm.parentName"
+                  :fetch-suggestions="querySearchAsyncName"
+                  :trigger-on-focus="false"
                   placeholder="请输入内容"
-                  @select="handleSelect"
+                  @select="handleSelectName"
+                  :disabled="this.ruleForm.parentID == -1"
                 ></el-autocomplete>
-              </el-form-item> -->
+              </el-form-item>
               <el-form-item label="商户其他名称" prop="otherNames" style="width: 350px;">
                 <el-tag
                   :key="index"
@@ -641,20 +644,41 @@
             <div class="relevanceDeptWarn">
               <p class="el-icon-warning">
                 所属
-                <span style="color:#108ee9">{{page_order_total}}</span> 项
+                <span style="color:#108ee9">{{sonList.length}}</span> 项
               </p>
             </div>
-            <el-table :data="tableRelevanceDeptInfo" border style="width: 100%;margin-top: 20px;">
-              <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-              <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
-              <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-              <el-table-column prop="cF_Date" label="出团日期" align="center"></el-table-column>
-              <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
-              <el-table-column prop="qk_price" label="欠款金额" align="center"></el-table-column>
-              <el-table-column prop="yh_price" label="已还金额" align="center"></el-table-column>
-              <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
-              <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
-            </el-table>
+            <!-- <el-table :data="sonList" border style="width: 100%;margin-top: 20px;">
+              <el-table-column prop="name" label="商户名称" align="center"></el-table-column>
+              <el-table-column prop="settlementTypeCN" label="结算方式" align="center"></el-table-column>
+              <el-table-column prop="linker" label="联系人姓名" align="center"></el-table-column>
+              <el-table-column prop="phone" label="联系人电话" align="center"></el-table-column>
+              <el-table-column prop="jqAdminList" label="管理人员" align="center"></el-table-column>
+              <el-table-column prop="balance" label="剩余额度" align="center"></el-table-column>
+              <el-table-column prop="deposit" label="预存款" align="center"></el-table-column>
+              <el-table-column prop="peerUserType" label="职务" align="center"></el-table-column>
+            </el-table>-->
+            <table border="1" cellspacing="0" cellpadding="0" bordercolor="#EBEEF5">
+              <tr align="center" style="height: 40px;">
+                <td style="width: 300px;">商户名称</td>
+                <td style="width: 200px;">结算方式</td>
+                <td style="width: 200px;">联系人姓名</td>
+                <td style="width: 200px;">联系人电话</td>
+                <td style="width: 200px;">管理人员</td>
+                <td style="width: 200px;">剩余额度</td>
+                <td style="width: 200px;">预存款</td>
+                <td style="width: 200px;">职务</td>
+              </tr>
+              <tr align="center" v-for="(item,index) in sonList" :key="index">
+                <td class="paddingTd">{{item.name}}</td>
+                <td class="paddingTd">{{item.settlementTypeCN}}</td>
+                <td class="paddingTd">{{item.linker}}</td>
+                <td class="paddingTd">{{item.phone}}</td>
+                <td class="paddingTd"></td>
+                <td class="paddingTd">{{item.balance}}</td>
+                <td class="paddingTd">{{item.deposit}}</td>
+                <td class="paddingTd"></td>
+              </tr>
+            </table>
           </div>
           <!-- 详情页下级商户end -->
         </div>
@@ -938,6 +962,7 @@ export default {
         //   { required: true, message: "请选择职务", trigger: "change" }
         // ]
       },
+      sonList: [],
       ruleForm: {
         name: "", //
         storeType: "", //门市类型默认是无
@@ -964,7 +989,9 @@ export default {
         otherNames: "", //商户其他名字
         localCompCode: "", //商户编码
         ImgUrl: "", //logo
-        fileUrl: "" //附件
+        fileUrl: "", //附件
+        parentID: -1, //所属上级商户id
+        parentName: "" //所属上级商户名字
       },
       rules: {
         // expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
@@ -1077,7 +1104,8 @@ export default {
       fileList2: [], //图片
       fileList1: [], //附件
       isSelect: false, // 判断是否进入select
-      areaInformationName: "" //地区value
+      areaInformationName: "", //地区value
+      superiorMerchants: [] //所属上级商户的集合
     };
   },
   components: {
@@ -1085,6 +1113,40 @@ export default {
   },
   methods: {
     moment,
+    // 所属上级商户
+    querySearchAsyncName(queryString, cb) {
+      console.log(queryString);
+      this.superiorMerchants = [];
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
+          object: {
+            name: queryString,
+            parentID : -1
+          }
+        })
+        .then(res => {
+          console.log(res, "s所属上级商户");
+          for (let i = 0; i < res.data.objects.length; i++) {
+              this.superiorMerchants.push({
+                id: res.data.objects[i].id,
+                value: res.data.objects[i].name
+            })
+          }
+          let results = queryString
+            ? this.superiorMerchants.filter(this.createFilter(queryString))
+            : [];
+          cb && cb(results);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 选择所属上级商户
+    handleSelectName(item) {
+      this.ruleForm.parentID = item.id;
+      this.ruleForm.parentName = item.value;
+      console.log(item);
+    },
     // 图片上传
     imgUpload() {
       return this.GLOBAL.serverSrc + "/upload/obs/api/picture";
@@ -1121,7 +1183,7 @@ export default {
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.vagueDiQu.push({
-              id: res.data.objects[i].id,
+              id: res.data.objects[i].parentID,
               value: res.data.objects[i].areaName
             });
           }
@@ -1644,12 +1706,16 @@ export default {
       }
 
       if (this.accountForm.peerUserType !== "") {
-        if (this.accountForm.peerUserType == 1 || this.accountForm.peerUserType == "管理员") {
+        if (
+          this.accountForm.peerUserType == 1 ||
+          this.accountForm.peerUserType == "管理员"
+        ) {
           this.accountForm.peerUserType = 1;
         } else {
           this.accountForm.peerUserType = 2;
         }
       }
+
       this.accountValidator().then(res => {
         if (res === true) {
           this.$http
@@ -2103,7 +2169,8 @@ export default {
       if (this.ruleForm.expTime == "") {
         this.ruleForm.expTime = 0;
       }
-
+      this.ruleForm.parentID == null ? this.ruleForm.parentID = -1 : this.ruleForm.parentID
+      console.log(this.ruleForm.parentID,"this.ruleForm.parentID")
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
           object: {
@@ -2137,7 +2204,8 @@ export default {
             localCompCode: this.ruleForm.localCompCode, //商户编码
             localCompAliasList: this.businessOtherNamesArr,
             areaInformationID: this.ruleForm.areaInformationID,
-            areaInformationName: this.ruleForm.areaInformationName
+            areaInformationName: this.ruleForm.areaInformationName,
+            parentID: this.ruleForm.parentID
           }
         })
         .then(obj => {
@@ -2349,7 +2417,8 @@ export default {
             abouQuota: this.AbouQuota, //周边授信额度
             localCompCode: this.localCompCode,
             useList: this.useList,
-            areaInformationID: this.ruleForm.areaInformationID
+            areaInformationID: this.ruleForm.areaInformationID,
+            parentID: this.ruleForm.parentID
           }
         })
         .then(obj => {
@@ -2604,6 +2673,19 @@ export default {
           } else if (object.settlementType == 1) {
             this.ruleForm.settlementType = "月结";
           }
+          if (this.btnindex == 1) {
+            this.sonList = object.sonList;
+            for (let i = 0; i < this.sonList.length; i++) {}
+            // this.sonList.jqAdminList = object.jqAdminList
+            // console.log(this.sonList.jqAdminList)
+            // this.somList.jqAdminList.forEach(item => {
+            //   if(item.jqUserType == 1) {
+            //     item.jqUserType = "管理员"
+            //   } else {
+            //     item.jqUserType = "销售"
+            //   }
+            // })
+          }
 
           this.ruleForm.quota = object.quota;
           //todo    部门和人员 预留
@@ -2774,6 +2856,9 @@ export default {
 </script>
 
 <style scoped>
+.paddingTd {
+  padding: 12px 2px;
+}
 /* 图片上传 */
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
@@ -2841,6 +2926,7 @@ export default {
   background-color: #e6f3fc;
   padding-left: 16px;
   border-radius: 5px;
+  margin-bottom: 20px;
 }
 .el-icon-warning:before {
   color: #108ee9;
