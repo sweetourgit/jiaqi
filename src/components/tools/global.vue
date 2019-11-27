@@ -1,5 +1,6 @@
 <script>
-  const serverSrc="http://test.dayuntong.com";
+  //const serverSrc="http://test.dayuntong.com";
+  const serverSrc="http://192.168.2.81:3017";
   // const imgUrl="http://test.dayuntong.com";
   const imgUrl ="https://jiaqi-server.obs.myhwclouds.com";//图片预览地址
   //http://test.dayuntong.com/upload/obs/api/picture  图片上传地址

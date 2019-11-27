@@ -982,7 +982,7 @@ export default {
       this.settlementType = [];
       this.$http
         .post(
-          "http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=IsMonthly"
+          this.GLOBAL.serverSrc +"/universal/supplier/api/dictionaryget?enumname=IsMonthly"
         )
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
@@ -1004,7 +1004,7 @@ export default {
       this.borrowingType = [];
       this.$http
         .post(
-          "http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=SupplierType"
+          this.GLOBAL.serverSrc +"/universal/supplier/api/dictionaryget?enumname=SupplierType"
         )
         .then(res => {
           console.log(res,"供应商类别")
@@ -1026,8 +1026,7 @@ export default {
     visible() {
       this.visibleType = [];
       this.$http
-        .post(
-          "http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=CompanyArea"
+        .post(this.GLOBAL.serverSrc +"/universal/supplier/api/dictionaryget?enumname=CompanyArea"
         )
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
@@ -1049,7 +1048,7 @@ export default {
     companyList(item) {
       this.userDeparType = [];
       let sid = item;
-      this.$http.post("http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=CompanyArea", {
+      this.$http.post(this.GLOBAL.serverSrc +"/universal/supplier/api/dictionaryget?enumname=CompanyArea", {
         id: sid
       }).then(res => {
         console.log(res, '把公司可见性传给后端');
@@ -1112,7 +1111,7 @@ export default {
       this.pathType = [];
       this.$http
         .post(
-          "http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=ProductArea"
+          this.GLOBAL.serverSrc +"/universal/supplier/api/dictionaryget?enumname=ProductArea"
         )
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {

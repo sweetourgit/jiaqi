@@ -136,7 +136,7 @@ export default {
            type: "warning"
         })
         .then(() => {
-              this.$http.post(this.GLOBAL.serverSrc + '/org/Act/api/delete',{
+              this.$http.post(this.GLOBAL.serverSrc + '/org/act/api/delete',{
                     "id": this.multipleSelection[0].id
                   }).then(res => {
                       if(res.data.isSuccess == true){
@@ -144,7 +144,7 @@ export default {
                          this.ActList();
                   }
                })
-          })
+          }) 
           .catch(() => {
             this.$message({
             type: "info",

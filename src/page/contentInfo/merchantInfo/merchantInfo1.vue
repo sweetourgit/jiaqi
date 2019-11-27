@@ -125,6 +125,14 @@
                   :title="ruleForm.name"
                 ></el-input>
               </el-form-item>
+              <!-- <el-form-item label="所属上级商户 :" prop="name">
+                <el-autocomplete
+                  v-model="state"
+                  :fetch-suggestions="querySearchAsync"
+                  placeholder="请输入内容"
+                  @select="handleSelect"
+                ></el-autocomplete>
+              </el-form-item> -->
               <el-form-item label="商户其他名称" prop="otherNames" style="width: 350px;">
                 <el-tag
                   :key="index"
@@ -603,7 +611,7 @@
               </table>
             </div>
           </div>
-          <!-- 点击详情欠款信息 -->
+          <!-- 点击详情欠款信息begin -->
           <div class="relevanceDept">
             <h3>关联欠款</h3>
             <div class="relevanceDeptWarn">
@@ -625,6 +633,30 @@
               <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
             </el-table>
           </div>
+          <!-- 点击详情欠款信息end -->
+
+          <!-- 详情页下级商户begin -->
+          <div class="relevanceDept">
+            <h3>下级商户</h3>
+            <div class="relevanceDeptWarn">
+              <p class="el-icon-warning">
+                所属
+                <span style="color:#108ee9">{{page_order_total}}</span> 项
+              </p>
+            </div>
+            <el-table :data="tableRelevanceDeptInfo" border style="width: 100%;margin-top: 20px;">
+              <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+              <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
+              <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+              <el-table-column prop="cF_Date" label="出团日期" align="center"></el-table-column>
+              <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
+              <el-table-column prop="qk_price" label="欠款金额" align="center"></el-table-column>
+              <el-table-column prop="yh_price" label="已还金额" align="center"></el-table-column>
+              <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
+              <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
+            </el-table>
+          </div>
+          <!-- 详情页下级商户end -->
         </div>
         <div class="ButtonCls">
           <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">确定</el-button>
@@ -1592,13 +1624,8 @@ export default {
     editAccountAddBtn() {
       // this.accountForm.id = this.editAccouontScopeid;
       this.accountForm.localCompID = this.tid;
-      console.log(
-        this.accountForm.state,
-        this.accountForm.sex,
-        this.accountForm.peerUserType
-      );
       if (this.accountForm.state !== null) {
-        if (this.accountForm.state == "2") {
+        if (this.accountForm.state == 2 || this.accountForm.state == "正常") {
           this.accountForm.state = 2;
         } else {
           this.accountForm.state = 3;
@@ -1607,7 +1634,7 @@ export default {
         this.accountForm.state = 0;
       }
       if (this.accountForm.sex !== "") {
-        if (this.accountForm.sex == "1") {
+        if (this.accountForm.sex == 1 || this.accountForm.sex == "男") {
           this.accountForm.sex = 1;
         } else {
           this.accountForm.sex = 2;
@@ -1617,7 +1644,7 @@ export default {
       }
 
       if (this.accountForm.peerUserType !== "") {
-        if (this.accountForm.peerUserType == "1") {
+        if (this.accountForm.peerUserType == 1 || this.accountForm.peerUserType == "管理员") {
           this.accountForm.peerUserType = 1;
         } else {
           this.accountForm.peerUserType = 2;
@@ -2549,8 +2576,8 @@ export default {
             });
             this.ruleForm.otherNames = businessNamesArr.toString();
           }
-          if(this.btnindex == 2) {
-            this.ruleForm.otherNames = ""
+          if (this.btnindex == 2) {
+            this.ruleForm.otherNames = "";
           }
 
           // console.log("get",this.businessOtherNamesArr)

@@ -27,14 +27,12 @@
       <el-tabs v-model="vm.currentPackage" type="card" closable 
         :before-leave="changeTab"
         :v-loading="vm.actionLock"
-        @tab-remove="removeTab"
-      >
+        @tab-remove="removeTab">
         <el-tab-pane
           v-for="item in packages"
           :key="item.name"
           :label="item.name"
-          :name="item.name"
-        >
+          :name="item.name">
           <changeinfo-package
             ref="packageRef"
             v-if="vm.currentPackage=== item.name"
@@ -42,8 +40,7 @@
             :proto="item"
             :pods="pods"
             :destinations="destinations"
-            :name-checker="vm.nameChecker"
-          >
+            :name-checker="vm.nameChecker">
           </changeinfo-package> 
         </el-tab-pane>
       </el-tabs>
@@ -51,11 +48,11 @@
 
     <footer>
       <material-list
-        ref="materialListRef"
-      ></material-list>
+        ref="materialListRef">
+      </material-list>
       <preview-dialog
-        ref="previewDialogRef"
-      ></preview-dialog>
+        ref="previewDialogRef">
+      </preview-dialog>
     </footer>
       
   </div>
