@@ -169,7 +169,7 @@
         this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
           .then(obj => {
             this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
-              "userCode": sessionStorage.getItem('userCode'),
+              "userCode": sessionStorage.getItem('tel'),
               "startTime": this.planTime_01 ? moment(this.planTime_01).format('YYYY-MM-DD HH:mm:ss') : '',
               "endTime": this.planData_01 ? moment(this.planData_01).format('YYYY-MM-DD HH:mm:ss') : '',
               "startIndex": -1,
@@ -229,7 +229,7 @@
           .then(obj => {
             this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),
-              "userCode": sessionStorage.getItem('userCode'),
+              "userCode": sessionStorage.getItem('tel'),
               "startTime": this.startTime ? this.startTime : "1970-07-23T01:30:54.452Z",
               "endTime": this.endTime?this.endTime:new Date(),
               "startIndex": -1,  // 页码
@@ -303,7 +303,7 @@
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
           {
             //"userCode": "rbop01",
-            "userCode":sessionStorage.getItem('userCode'),
+            "userCode":sessionStorage.getItem('tel'),
             "workItemID": this.arr1[0],
             "commentText": this.commentText
           }).then(res =>{
@@ -319,7 +319,7 @@
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ',
           {
             //"userCode": "rbop01",
-            "userCode":sessionStorage.getItem('userCode'),
+            "userCode":sessionStorage.getItem('tel'),
             "workItemID": this.arr1[0],
             "commentText": this.commentText
           }).then(res =>{

@@ -404,7 +404,7 @@ import moment from 'moment'
             getWorkflowCode = 'borrow_Moneys2'
           }else {}
           this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
-            "userCode": sessionStorage.getItem('userCode'),
+            "userCode": sessionStorage.getItem('tel'),
             "startTime": this.ruleFormSeach.planTime_01 ? moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : '',
             "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD HH:mm:ss') : '',
             "startIndex": -1,
@@ -471,7 +471,7 @@ import moment from 'moment'
           }else {}
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),
-              "userCode": sessionStorage.getItem('userCode'),
+              "userCode": sessionStorage.getItem('tel'),
               "startTime": this.ruleFormSeach.planTime_01 ?  moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
               "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
               "startIndex": -1,  // 页码
@@ -546,7 +546,7 @@ import moment from 'moment'
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
         {
           //"userCode": "rbop01",
-          "userCode":sessionStorage.getItem('userCode'),
+          "userCode":sessionStorage.getItem('tel'),
           "workItemID": that.getWorkItemId,
           "commentText": that.commentText
         }).then(res =>{
@@ -562,7 +562,7 @@ import moment from 'moment'
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ',
         {
           //"userCode": "rbop01",
-          "userCode":sessionStorage.getItem('userCode'),
+          "userCode":sessionStorage.getItem('tel'),
           "workItemID": that.getWorkItemId,
           "commentText": that.commentText
         }).then(res =>{

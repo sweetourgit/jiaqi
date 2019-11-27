@@ -461,7 +461,21 @@ export default {
           this.getStraightGuestManagement()
           if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
             this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataZK();
-          };
+          }
+          // 撤销通过同事工作流驳回
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDBH', {
+            "object": {
+              "datetime": moment(new Date().getTime()).format('YYYY-MM-DD'),
+              "spname": sessionStorage.getItem('name'),
+              "spstate": "驳回",
+              "spcontent": "",
+              "id": this.pid
+            }
+          }).then(res => {
+            console.log(res,'通过res')
+          }).catch(err => {
+            console.log(err)
+          })
         }
       })
       }).catch(() => {

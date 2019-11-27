@@ -227,7 +227,12 @@
           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
           <el-table-column prop="priceSum" label="已收金额" align="center"></el-table-column>
           <el-table-column prop="arrears" label="欠款金额" align="center"></el-table-column>
-          <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' align="center"></el-table-column>
+          <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' align="center">
+            <template slot-scope="scope">
+              <div>{{scope.row.orderChannel}}</div>
+<!--              <div>{{scope.row.orderChannel != 1 ? '暂无' : scope.row.arrearsDate }}</div>-->
+            </template>
+          </el-table-column>
           <el-table-column prop="repaymentDate" label="应还日期" :formatter='dateFormat' align="center"></el-table-column>
         </el-table>
         <!-- 收入明细 END -->
@@ -549,6 +554,11 @@ export default {
       countItemInfo: null, // 选择账户表格选中行时，行的信息
       querySearchPlanData: [], // 团期计划检索联想数组
       keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
+    }
+  },
+  filters: {
+    formatDate: function (value) {
+      return moment(value).format('YYYY-MM-DD')
     }
   },
   methods: {

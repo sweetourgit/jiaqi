@@ -429,6 +429,7 @@
                       })
 
                       sessionStorage.setItem('id',res.data.id)
+                      sessionStorage.setItem('tel',res.data.mobile)
                       sessionStorage.setItem('orgID',res.data.orgID)
                       sessionStorage.setItem('orgName',res.data.orgName)
                       sessionStorage.setItem('topID',res.data.topID)
