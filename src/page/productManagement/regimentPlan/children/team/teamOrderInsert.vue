@@ -662,7 +662,7 @@ export default {
       pid:'',
       paymentType:'',
       multipleSelection: [], //选中的list
-      checkSheetDialog:true,//报账单弹窗
+      checkSheetDialog:false,//报账单弹窗
       forbidden:true,//商户销售在没有商户名称的时候禁止状态
       collectionShow:false,//收款审批过程弹窗
       collectionTable:[],//收款过程表格
