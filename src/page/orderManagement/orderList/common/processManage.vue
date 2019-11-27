@@ -71,8 +71,8 @@
           {{item.enrollName}}￥
           <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
           <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
-          <span v-show="priceType==1">{{item.price_01}}*{{enrolNum[index]}}</span>
-          <span v-show="priceType==2">{{item.price_02}}*{{enrolNum[index]}}</span>
+          <span v-show="propPriceType==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+          <span v-show="propPriceType==2">{{item.price_02}}*{{enrolNum[index]}}</span>
           <div>
             <!-- 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数  :max="paidMaxEnrolNum[index]"-->
             <el-input-number
@@ -319,7 +319,7 @@ export default {
   data() {
     return {
       //流程管理弹窗
-      propPriceType:this.priceType,//接收父组件传值的priceType，yao不报错
+      propPriceType:this.priceType,//接收父组件传值的priceType，要不报错
       showContent: null, //保存更改传个父组件的值 为了list折叠
       dialogVisible: false,
       dialogFormProcess: false,
@@ -1035,6 +1035,7 @@ export default {
 
     // switch 开关监听价格显示事件 true为直客价格 false为同业价格  price_01是直客价格 price_01是同业价格
     priceChangeEvent(val) {
+      // console.log(this.propPriceType,this.isPricechange)
       if (val == true) {
         this.priceChange = "直客";
         this.propPriceType = 1;
@@ -1073,7 +1074,6 @@ export default {
         // 原先结束
       }
       this.payable = 0;
-
       for (let i = 0; i < this.enrolNum.length; i++) {
         this.payable +=
           this.enrolNum[i] *
