@@ -672,6 +672,8 @@
             if(res.data.isSuccess == true){
              this.$message.success("删除成功");
              this.getAlbum(this.albumId);
+            } else {
+              this.$message.success("此图片正在使用中，不可删除");
             }
          })
         }).catch(() => {
