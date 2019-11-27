@@ -47,7 +47,11 @@
 
         <el-row>
           <el-col style="width: 420px;">
-            <el-form-item :label="text.typeExt+ '：'" prop="typeExt">
+            <el-form-item v-if="text.suffix" :label="text.typeExt+ '：'" prop="typeExt">
+              <el-input v-model="submitForm.typeExt" :placeholder="text.typeExt" size="small">
+              </el-input>       
+            </el-form-item>
+            <el-form-item v-else :label="text.typeExt+ '：'" prop="typeExt">
               <el-input v-model="submitForm.typeExt" :placeholder="text.typeExt" size="small" maxlength="20"
                 :show-word-limit="true">
               </el-input>       
