@@ -199,9 +199,9 @@
                   </el-table-column>
                   <el-table-column prop="arrears" label="欠款金额" align="center">
                   </el-table-column>
-                  <el-table-column prop="arrearsDate" label="欠款日期" align="center">
+                  <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' align="center">
                   </el-table-column>
-                  <el-table-column prop="repaymentDate" label="应还日期" align="center">
+                  <el-table-column prop="repaymentDate" label="应还日期" :formatter='dateFormat' align="center">
                   </el-table-column>
                 </el-table>
             </div>
@@ -514,6 +514,14 @@ export default {
     },
   },
   methods: {
+    // 起始时间格式转换
+    dateFormat: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined || date == '') {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD')
+    },
     moment,
     // 重置团期计划 搜索框
     planStage(){

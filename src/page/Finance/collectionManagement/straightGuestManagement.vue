@@ -377,6 +377,8 @@ export default {
     // 搜索
     searchHandInside(){
       var that = this
+      that.page = 1
+      that.limit = 10
       this.listLoading = true
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
           "pageIndex": that.page,

@@ -236,7 +236,6 @@
     <!-- 申请无收入借款弹窗 END -->
     <!-- 查看图片文件弹窗 -->
     <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible4" width="50%">
-      <!-- <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button> -->
       <div>
         <img :src="imgBig" style="width: 95%;" alt="图片" :alt="imgBigName"/>
         <br /><span>{{imgBigName}}</span>
