@@ -469,7 +469,7 @@
           "jQ_ID": obj.id,
           "jQ_Type": obj.periphery_type,
           "workflowCode": obj.workflowCode,
-          "userCode": sessionStorage.getItem('userCode'),
+          "userCode": sessionStorage.getItem('tel'),
 //          "userCode": "zb1",// 测试
           "finishStart": "true",
           "paramValues": [{

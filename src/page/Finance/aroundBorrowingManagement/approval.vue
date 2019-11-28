@@ -210,7 +210,7 @@
         const that = this;
         if(this.approval_status == 2){// 驳回
           this.$http.post(this.GLOBAL.jqUrl + "/ZB/RejectionOfWorkTasksForZB", {
-            "userCode": sessionStorage.getItem('userCode'),
+            "userCode": sessionStorage.getItem('tel'),
 //            "userCode": "zb1",
             "workItemID": this.info.workItemID,
             "commentText": this.approvalMark
@@ -240,7 +240,7 @@
 
         }else if(this.approval_status == 3){// 通过
           this.$http.post(this.GLOBAL.jqUrl + "/ZB/SubmitWorkAssignmentsForZB", {
-            "userCode": sessionStorage.getItem('userCode'),
+            "userCode": sessionStorage.getItem('tel'),
 //            "userCode": "zb1",
             "workItemID": this.info.workItemID,
             "commentText": this.approvalMark

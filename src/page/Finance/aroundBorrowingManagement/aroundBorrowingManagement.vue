@@ -36,7 +36,7 @@
       loadData(loan){
         const that = this;
         this.$http.post(this.GLOBAL.jqUrl + "/ZB/GettingUnfinishedTasksForZB", {
-          "userCode": sessionStorage.getItem('userCode'),
+          "userCode": sessionStorage.getItem('tel'),
 //          "userCode": "zb1",
           "startTime": "1970-07-23T01:30:54.452Z",
           "endTime": new Date(),
