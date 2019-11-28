@@ -1003,7 +1003,7 @@ export default {
             this.enrolNum.forEach(function(item){
               sum += item;
             })
-            if(sum !== guest.length){//判断报名人数与出行人信息是否相等
+            if(sum !== guestAll.length){//判断报名人数与出行人信息是否相等
               this.$confirm("报名人数与出行人信息不符?请修改出行人信息", "提示", {
                confirmButtonText: "确定",
                cancelButtonText: "取消",
@@ -1078,7 +1078,6 @@ export default {
             if(this.ifOrderInsert===true){
               if(this.teampreviewData.regimentType === 1){//判断是否停售 1正常
                   if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
-                     console.log(guest)
                      this.ifOrderInsert = true;
                      this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
                       object: {
