@@ -291,7 +291,7 @@
       // 获取工作流未完成任务
       loadUnfinished(loan){
         const that = this;
-        this.$http.post(this.GLOBAL.jqUrl + "/ZB/GettingUnfinishedTasksForZB", {
+        this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/GettingUnfinishedTasksForZB", {
           "userCode": sessionStorage.getItem('tel'),
 //          "userCode": "zb1",
           "startTime": "1970-07-23T01:30:54.452Z",

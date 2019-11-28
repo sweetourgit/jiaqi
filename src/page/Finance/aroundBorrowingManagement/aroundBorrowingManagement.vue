@@ -35,7 +35,7 @@
       // 加载待审批数量（-1，-1 目前看可以获取全部）
       loadData(loan){
         const that = this;
-        this.$http.post(this.GLOBAL.jqUrl + "/ZB/GettingUnfinishedTasksForZB", {
+        this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/GettingUnfinishedTasksForZB", {
           "userCode": sessionStorage.getItem('tel'),
 //          "userCode": "zb1",
           "startTime": "1970-07-23T01:30:54.452Z",

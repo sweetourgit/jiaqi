@@ -224,7 +224,7 @@
 
       // 结束工作流
       endWorking(){
-        this.$http.post(this.GLOBAL.jqUrl + "/ZB/EndProcessForZB", {
+        this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/EndProcessForZB", {
           "jq_id": this.info,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {
@@ -406,7 +406,7 @@
       // 获取审批节点
       getApproval(){
         const that = this;
-        this.$http.post(this.GLOBAL.jqUrl + "/ZB/GetInstanceActityInfoForZB", {
+        this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/GetInstanceActityInfoForZB", {
           "jq_id": this.info,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {
