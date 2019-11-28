@@ -178,6 +178,7 @@ export default {
         }) 
       },
       insertAct(formName,url) {  //新增保存
+        console.log()
         this.$refs[formName].validate((valid) => {
           if(valid){
                    this.$http.post(this.GLOBAL.serverSrc + url,{
@@ -187,7 +188,7 @@ export default {
                         "uri": this.rformB.uri,
                         "name": this.rformB.name,
                         "createTime": 0,
-                        "menuID": this.menuID,
+                        "menuID": this.menuId,
                         "overt": this.rformB.overt,
                         "guid": "",
                         "remarks": this.rformB.remarks
