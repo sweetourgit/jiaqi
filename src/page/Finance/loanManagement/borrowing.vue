@@ -250,30 +250,8 @@
       </div>
     </el-dialog>
     <!-- 查看图片文件弹窗 END -->
-	  <!-- 申请无收入借款中借款人选择弹窗 -->
-	  <!-- <el-dialog width="45%" title="选择报销的人" :visible.sync="dialogFormVisible1"append-to-body>
-	      <div class="indialog">
-	        <div class="indialog_search">
-	          <el-input v-model="number_name" placeholder="请输入内容" class="name_input"></el-input>
-	          <el-button type="primary">搜索</el-button>
-	        </div>
-	        <el-table :data="tableName" border style="width: 100%; margin:30px 0 20px 0;":header-cell-style="getRowClass">
-	          <el-table-column prop="id" label="ID" align="center"></el-table-column>
-	          <el-table-column prop="name" label="姓名" align="center"></el-table-column>
-	          <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
-	          <el-table-column prop="orgName" label="组织" align="center"></el-table-column>
-	          <el-table-column prop="sex" label="性别" align="center"></el-table-column>
-	          <el-table-column prop="userStateCN" label="状态" align="center"></el-table-column>
-	        </el-table>
-	        <div class="number_button">
-	        	<el-button @click="numberCancel()">取消</el-button>
-	      		<el-button type="primary">申请</el-button>
-	        </div>
-	      </div>
-	        </el-dialog> -->
-    <!-- 申请无收入借款中借款人选择弹窗 END -->
     <!-- 申请无收入借款中团期计划选择弹窗 -->
-	  <el-dialog width="70%" title="团期计划" :visible.sync="dialogFormVisible_plan"append-to-body>
+	  <el-dialog width="70%" title="团期计划" :visible.sync="dialogFormVisible_plan" append-to-body>
       <div class="indialog">
         <div class="indialog_search">
           <div class="plan_indialog">
@@ -328,7 +306,7 @@
     </el-dialog>
     <!-- 申请无收入借款中团期计划选择弹窗 END -->
     <!-- 申请无收入借款中账号选择弹窗 -->
-    <el-dialog width="45%" title="选择账户" :visible.sync="dialogFormVisible_account"append-to-body>
+    <el-dialog width="45%" title="选择账户" :visible.sync="dialogFormVisible_account" append-to-body>
       <div class="indialog">
         <el-table
           :data="tableAccount"
@@ -386,23 +364,6 @@
       <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo"></checkLoanManagement>
     </el-dialog>
     <!-- 查看无收入借款申请详情弹窗 END -->
-	  <!-- 付款账户弹窗 -->
-	  <!--<el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
-	    <div class="close" @click="closeAccount()">×</div>
-	    <el-table :data="tableSelect" border :header-cell-style="getRowClass">
-        <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
-        <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
-        <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
-        <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
-        <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
-        <el-table-column label="操作" align="center">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="addAccount(scope.$index, scope.row)" class="table_details">选择</el-button>
-          </template>
-        </el-table-column>
-        </el-table>
-	  </el-dialog>-->
-    <!-- 付款账户弹窗 END -->
   </div>
   <!--借款页面 END -->
 </template>
@@ -961,7 +922,6 @@ export default {
     },
     // 供应商所有关联列表信息
     getPaymentdetails(val) {
-      console.log('借款申请')
       var that = this
       // 预付付款明细
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {

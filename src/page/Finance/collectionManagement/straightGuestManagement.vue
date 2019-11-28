@@ -464,14 +464,12 @@ export default {
           }
           // 撤销通过同时工作流通过
           this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDTG', {
-            "object": {
-              "datetime": moment(new Date().getTime()).format('YYYY-MM-DD'),
-              "spname": sessionStorage.getItem('name'),
-              "spstate": "通过",
-              "spcontent": "",
-              'checktype': 2,
-              "id": this.pid
-            }
+            "datetime": moment(new Date().getTime()).format('YYYYMMDD'),
+            "spname": sessionStorage.getItem('name'),
+            "spstate": "通过",
+            "spcontent": "",
+            'checktype': 2,
+            "id": this.pid
           }).then(res => {
             console.log(res,'通过res')
           }).catch(err => {
