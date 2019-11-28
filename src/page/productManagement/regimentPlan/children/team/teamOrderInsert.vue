@@ -1579,8 +1579,10 @@ export default {
         }
         if(res.data.objects){
           this.nullShowName = false;
+          this.forbidden=false;
         }else {
           this.nullShowName = true;
+          this.forbidden=true;
         }
         
         var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
@@ -1614,9 +1616,7 @@ export default {
       }
     },
     travelName(){//商户名称添加时，商户销售可以填写
-      if(this.ruleForm.travel != ''){
-        this.forbidden=false;
-      }else {
+      if(this.ruleForm.travel == ''){
         this.nullShowName = false;
       }
     },
