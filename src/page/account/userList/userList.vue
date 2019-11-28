@@ -102,7 +102,7 @@
           width="150%"
       >
           <template slot-scope="scope">
-            <el-button  size="small" @click="find(scope.$index, scope.row)">查看</el-button>
+            <el-button size="small" @click="find(scope.$index, scope.row)">查看</el-button>
             <el-button type="primary" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
           </template>
         </el-table-column>
