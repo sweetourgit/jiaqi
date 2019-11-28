@@ -491,6 +491,7 @@ export default {
   background-color: #f7f7f7;
   text-align: center;
   margin: 20px 0 0 0;
+  
 }
 .el-table tr {
   background: #f6f6f6 !important;

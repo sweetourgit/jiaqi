@@ -133,10 +133,10 @@
                   :trigger-on-focus="false"
                   placeholder="请输入内容"
                   @select="handleSelectName"
-                  :disabled="this.ruleForm.parentID == -1 && sonList !== []"
+                  :disabled="ruleForm.parentID == -1 && sonList !== []"
                 ></el-autocomplete>
               </el-form-item>
-              <el-form-item label="商户其他名称" prop="otherNames" style="width: 350px;">
+              <el-form-item label="商户其他名称:" prop="otherNames" style="width: 350px;">
                 <el-tag
                   :key="index"
                   v-for="(tag,index) in businessOtherNamesArr"
@@ -491,11 +491,22 @@
               <td class="tr">商户名称：&nbsp;&nbsp;</td>
               <td class="longWeight">{{ruleForm.name}}</td>
               <div class="BodyTableCenter">
-                <td class="tr">商户其他名称&nbsp;&nbsp;</td>
+                <td class="tr">商户其他名称:&nbsp;&nbsp;</td>
                 <td class="longWeight">{{ruleForm.otherNames}}</td>
               </div>
               <td class="tr">商户编码：&nbsp;&nbsp;</td>
               <td class="longWeight">{{ruleForm.localCompCode}}</td>
+            </tr>
+            <br />
+            <tr>
+              <td class="tr">所属上级商户:&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.parentName}}</td>
+              <div class="BodyTableCenter">
+                <td class="tr">经营范围：&nbsp;&nbsp;</td>
+                <td class="longWeight">{{ruleForm.scopeExt}}</td>
+              </div>
+              <td class="tr">地区:&nbsp;&nbsp;</td>
+              <td class="longWeight">{{ruleForm.areaInformationName}}</td>
             </tr>
             <br />
             <tr>
@@ -573,8 +584,6 @@
                   <img width="100%" height="12%" :src="ruleForm.fileUrl" />
                 </td>
               </div>
-              <td class="tr">经营范围：&nbsp;&nbsp;</td>
-              <td class="longWeight">{{ruleForm.scopeExt}}</td>
             </tr>
           </table>
           <!-- 点击详情账户信息 -->
@@ -1121,16 +1130,16 @@ export default {
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
           object: {
             name: queryString,
-            parentID : -1
+            parentID: -1
           }
         })
         .then(res => {
           console.log(res, "s所属上级商户");
           for (let i = 0; i < res.data.objects.length; i++) {
-              this.superiorMerchants.push({
-                id: res.data.objects[i].id,
-                value: res.data.objects[i].name
-            })
+            this.superiorMerchants.push({
+              id: res.data.objects[i].id,
+              value: res.data.objects[i].name
+            });
           }
           let results = queryString
             ? this.superiorMerchants.filter(this.createFilter(queryString))
@@ -2169,7 +2178,9 @@ export default {
       if (this.ruleForm.expTime == "") {
         this.ruleForm.expTime = 0;
       }
-      this.ruleForm.parentID == null ? this.ruleForm.parentID = -1 : this.ruleForm.parentID
+      this.ruleForm.parentID == null
+        ? (this.ruleForm.parentID = -1)
+        : this.ruleForm.parentID;
       // console.log(this.ruleForm.parentID,"this.ruleForm.parentID")
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
@@ -2507,7 +2518,7 @@ export default {
             orgs,
             useList
           } = obj.data.object;
-          
+
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
@@ -2676,8 +2687,12 @@ export default {
           if (this.btnindex == 1) {
             this.sonList = object.sonList;
           }
-          this.ruleForm.parentID = object.parentID
+          this.ruleForm.parentID = object.parentID;
+          this.ruleForm.parentName = object.parentName;
           this.ruleForm.quota = object.quota;
+          console.log(this.ruleForm.parentID == -1)
+          console.log(this.ruleForm.parentName !== '')
+
           //todo    部门和人员 预留
           // this.ruleForm.department = "1";
           //this.ruleForm.people = "2";

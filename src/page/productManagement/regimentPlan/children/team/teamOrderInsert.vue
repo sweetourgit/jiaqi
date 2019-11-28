@@ -76,13 +76,13 @@
           </div>
           <!--选择商户按钮，显示商户名称和商户销售文本框-->
           <div v-if="ruleForm.orderRadio==2">
-              <el-form-item label="同业销售" prop="travelSales">
-                <el-autocomplete class="optionw" v-model="ruleForm.travelSales" @blur="travelOp()" :fetch-suggestions="querySearch2" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure2"></el-autocomplete>
-                <div v-show="nullShowOp" style="color:red;">请输入有效的同业销售</div>
-              </el-form-item>
               <el-form-item label="商户名称" prop="travel">
                 <el-autocomplete class="optionw" v-model="ruleForm.travel" @blur="travelName()" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
                 <div v-show="nullShowName" style="color:red;">请输入有效的商户名称</div>
+              </el-form-item>
+              <el-form-item label="同业销售" prop="travelSales">
+                <el-autocomplete class="optionw" v-model="ruleForm.travelSales" @blur="travelOp()" :fetch-suggestions="querySearch2" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure2"></el-autocomplete>
+                <div v-show="nullShowOp" style="color:red;">请输入有效的同业销售</div>
               </el-form-item>
               <el-form-item label="商户销售" prop="merchantsSell">
                 <el-autocomplete class="optionw" :disabled = "forbidden" @blur="merchants()" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false" @select="departure4"></el-autocomplete>
@@ -974,24 +974,24 @@ export default {
           });
           this.ifOrderInsert = true;
           //判断出行人信息是否填写完整
-          for(let i = 0; i<guest.length;i++){
-            if(guest[i].sex === ''){
-              this.ifOrderInsert = false;
-              this.$confirm("请完善出行人信息?", "提示", {
-                 confirmButtonText: "确定",
-                 cancelButtonText: "取消",
-                 type: "warning"
-              }).then(res =>{
-                this.ifOrderInsert = true;
-              }).catch(() => {
-                this.ifOrderInsert = true;
-                this.$message({
-                  type: "info",
-                  message: "已取消"
-                });
-              });
-            }
-          }
+          // for(let i = 0; i<guest.length;i++){
+          //   if(guest[i].sex === ''){
+          //     this.ifOrderInsert = false;
+          //     this.$confirm("请完善出行人信息?", "提示", {
+          //        confirmButtonText: "确定",
+          //        cancelButtonText: "取消",
+          //        type: "warning"
+          //     }).then(res =>{
+          //       this.ifOrderInsert = true;
+          //     }).catch(() => {
+          //       this.ifOrderInsert = true;
+          //       this.$message({
+          //         type: "info",
+          //         message: "已取消"
+          //       });
+          //     });
+          //   }
+          // }
           if(this.ifOrderInsert===true){
             let sum =0;//求this.enrolNum的总和
             this.enrolNum.forEach(function(item){
@@ -1064,7 +1064,7 @@ export default {
             }
             //let price = this.toDecimal2(ele.price_01);
             if(this.enrolNum[idx]!==0){
-              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
+              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
             }
           });
           if (res.data.isSuccess == true) {
@@ -1121,7 +1121,8 @@ export default {
                             CreateTime: formatDate(new Date())
                           }
                         ]),
-                        guests: guest,
+                        guests:guest = [] ? [] : guest,
+                        //guests: guest,
                         number: number,
                         enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
                       }
@@ -1204,7 +1205,8 @@ export default {
                                   CreateTime: formatDate(new Date())
                                 }
                               ]),
-                              guests: guest,
+                              guests:guest = [] ? [] : guest,
+                              // guests: guest,
                               number: number,
                               enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
                             }
@@ -1301,7 +1303,8 @@ export default {
                                 CreateTime: formatDate(new Date())
                               }
                             ]),
-                            guests: guest,
+                            guests:guest = [] ? [] : guest,
+                            //guests: guest,
                             number: number,
                             enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
                           }
