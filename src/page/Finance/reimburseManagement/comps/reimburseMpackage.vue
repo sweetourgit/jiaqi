@@ -1,106 +1,15 @@
 <template>
-  <div class="all">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <!--报销-->
-      <el-tab-pane label="报销" name="first">
-        <div class="borders">
-          <div>
-            <div class="search">
-              <span class="search_style">报销单号：</span>
-              <el-input v-model="expenseID" placeholder="请输入内容" class="search_input"></el-input>
-              <span class="search_style">团期计划：</span>
-              <el-input v-model="groupCode" placeholder="请输入内容" class="search_input"></el-input>
-              <span class="search_style">申请人：</span>
-              <el-input v-model="createUser" placeholder="请输入内容" class="search_input" :disabled="ifShowProposer"></el-input>
-              <span class="search_style">发起时间：</span>
-              <div style="float: left">
-                <el-date-picker 
-                v-model="beginDate" 
-                type="date" 
-                @change="endDateChange()" 
-                @blur="beginDateBlur()"
-                placeholder="开始时间"
-                ></el-date-picker>
-              </div>
-              <span class="search__">—</span>
-              <div style="float: left">
-                <el-date-picker 
-                v-model="endDate" 
-                type="date"
-                @blur="endDateBlur()"
-                @change="endDateChange()" 
-                placeholder="结束时间"
-                ></el-date-picker>
-              </div>
-            </div>
-            <div class="reform">
-              <el-button type="primary"  @click="handleSearch">搜索1</el-button>
-              <el-button type="primary"  @click="handleReset">重置1</el-button>
-            </div>
-            <div class="reform">
-              <el-button type="primary" plain @click="dialogchange">申请</el-button>
-              <!--
-                <el-button type="primary" @click="dialogFind" plain>查看</el-button>
-              -->
-            </div>
-          </div>
-          <div class="table_style">
-            <el-table  :data="tableData" border style="width: 100%;">
-              <el-table-column prop="expenseID" label="报销单号" width="180" align="center"></el-table-column>
-              <el-table-column prop="checkTypeEX" label="状态" width="180" align="center">
-                <template slot-scope="scope">
-                  <div
-                    v-if="scope.row.checkTypeEX=='审批中'"
-                    style="color: #7F7F7F"
-                  >{{scope.row.checkTypeEX}}</div>
-                  <div
-                    v-if="scope.row.checkTypeEX=='驳回'"
-                    style="color: #FF4A3D"
-                  >{{scope.row.checkTypeEX}}</div>
-                  <div
-                    v-if="scope.row.checkTypeEX=='通过'"
-                    style="color: #33D174"
-                  >{{scope.row.checkTypeEX}}</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="createTime" label="发起时间" align="center"></el-table-column>
-              <el-table-column prop="groupCode" label="团期计划" width="250" align="center"></el-table-column>
-              <el-table-column prop="price" label="报销金额" width="180" align="center"></el-table-column>
-              <el-table-column prop="createUser" label="申请人" width="150" align="center"></el-table-column>
-              <!-- <el-table-column prop="info" label="审批意见" width="180" align="center"></el-table-column> -->
-              <el-table-column prop="guid" label="操作" width="180" align="center">
-                <template slot-scope="scope">
-                  <div @click="dialogFind(scope)" style="color: #f5a142">详情</div>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-          <div class="block">
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page.sync="currentPage4"
-              :page-sizes="[10, 20, 50, 100]"
-              :page-size="pageSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="pageCount"
-              background
-            ></el-pagination>
-          </div>
-        </div>
-      </el-tab-pane>
-      <!--报销end-->
-      <!--报销弹窗-->
-      <el-dialog title="报销申请" :visible.sync="dialogFormVisible" width="70%" :show-close="false">
-        <el-form
+  <!--多报销-->
+  <div>
+    报销弹框内容
+  <el-form
           :model="ruleForm"
           :rules="rules"
           ref="ruleForm"
           label-width="100px"
           class="demo-ruleForm"
         >
-          <!--多报销-->
-          <div>
+        <div>
             <el-tabs
               v-model="editableTabsValue"
               :rules="rules"
@@ -117,11 +26,12 @@
                 :name="item.name"
               >
               <!-- {{item.content}} -->
-              <div class="handle_div">
-                <div class="handle_id" v-if="find==1"><span>ID:</span><span style="margin-left: 10px;">{{ruleForm.id}}</span></div>
-                <div class="handle_people" v-if="find==1"><span>申请人:</span><span style="margin-left: 10px;">{{ruleForm.createUser}}</span></div>
-                <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;">{{ruleForm.createTime}}</span></div>
-              </div>
+                <div class="handle_div">
+                  <div class="handle_id" v-if="find==1"><span>ID:</span><span style="margin-left: 10px;">{{ruleForm.id}}</span></div>
+                  <div class="handle_people" v-if="find==1"><span>申请人:</span><span style="margin-left: 10px;">{{ruleForm.createUser}}</span></div>
+                  <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;">{{ruleForm.createTime}}</span></div>
+                </div>
+
                 <div style="color: red; position: absolute;left: 20px;top: 115px;">*</div>
                 <el-form-item label="团期计划" prop="groupCode">
                   <el-input
@@ -172,36 +82,18 @@
                   <!-- <el-button type="danger" v-if="find==0">删除</el-button> -->
                 </div>
                 <div  style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 64px;margin-top: 10px; ">
-                  <i
-                    style="float: left; margin-left: 10px;margin-top: 7px;"
-                    class="el-icon-warning"
-                  ></i>
-                  <div style="float: left;margin-left: 30px;margin-top: 7px;">
-                    已选择
-                    <span style="color: #249BEB">{{t_sum}}</span>项
-                  </div>
-                  <div style="float: left; margin-left: 30px;margin-top: 7px;">
-                    报销总计：
-                    <span style="font-weight:bold">{{t_price}}</span>元
-                  </div>
+                    <i style="float: left; margin-left: 10px;margin-top: 7px;" class="el-icon-warning"></i>
+                    <div style="float: left;margin-left: 30px;margin-top: 7px;">
+                      已选择  <span style="color: #249BEB">{{t_sum}}</span>项
+                    </div>
+                    <div style="float: left; margin-left: 30px;margin-top: 7px;">
+                      报销总计： <span style="font-weight:bold">{{t_price}}</span>元
+                    </div>
                 </div>
                 <div v-if="radio==1">
-                  <!-- <div style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 64px;margin-top: 10px; ">
-                        <i style="float: left; margin-left: 10px;margin-top: 7px;" class="el-icon-warning"></i>
-                        <div style="float: left;margin-left: 30px;margin-top: 7px;">已选择<span style="color: #249BEB">0</span>项</div>
-                        <div style="float: left; margin-left: 30px;margin-top: 7px;">报销总计：<span style="font-weight:bold">0.00</span>元</div>
-                  </div>-->
                   <div class="re_style">
                     <el-table :data="joinData_s" border style="width: 100%; margin-top: 30px">
-                      <!-- <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="100"></el-table-column>
-                      <el-table-column prop="supplierTypeEX" label="借款类型" width="90"></el-table-column>
-                      <el-table-column prop="supplierName" label="供应商" width="100"></el-table-column>
-                      <el-table-column prop="createUser" label="申请人" width="100"></el-table-column>
-                      <el-table-column prop="mark" label="摘要" width="120"></el-table-column>
-                      <el-table-column prop="price" label="借款金额" width="100"></el-table-column>
-                      <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column>
-                      <el-table-column prop="bcount" label="报销金额" style="background: yellow" width="140"> -->
-                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="100"></el-table-column>
+                     <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="100"></el-table-column>
                       <el-table-column prop="supplierTypeEX" label="借款类型" width="90"></el-table-column>
                       <el-table-column prop="supplierName" label="供应商" width="100"></el-table-column>
                       <el-table-column prop="createUser" label="申请人" width="100"></el-table-column>
@@ -276,8 +168,8 @@
                 </div>
               </el-tab-pane>
             </el-tabs>
-
-            <div v-if="this.find == 1" class="re_style" style="margin-top: 20px">
+            <!-- 审批人 -->
+            <div v-if="this.find == 1" class="re_style" style="margin-top: 20px"> 
               <el-table :data="reimData" border style="width: 100%">
                 <el-table-column prop="reier" label="审批人" width="180"></el-table-column>
                 <el-table-column prop="reisult" label="审批结果" width="180"></el-table-column>
@@ -285,9 +177,9 @@
                 <el-table-column prop="time" label="审批时间"></el-table-column>
               </el-table>
             </div>
-          </div>
+        </div>
+  </el-form>
           <!--多报销end-->
-        </el-form>
         <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
           <el-button @click="chanceSubmit('ruleForm')">取 消</el-button>
           <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">确 定3</el-button>
@@ -299,139 +191,120 @@
           >撤销申请</el-button>
           <div v-if="this.find == 1" class="sh_style">审核中</div>
         </div>
-      </el-dialog>
+     
       <!--报销弹窗end-->
       <!--团期计划弹窗-->
-      <el-dialog
-        width="60%"
-        title="获取团期计划"
-        :visible.sync="dialogFormVisible2"
-        append-to-body
-        :show-close="false"
-      >
-        <div class="indialog">
-          <div style=" position: absolute;right: 67px;top: 22px;">
-            <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-            <el-button type="primary" @click="addplan">确 定1</el-button>
-          </div>
-          <div class="indialog_search">
-            <span class="search_style">团期单号：</span>
-            <el-input v-model="tour_name" placeholder="请输入内容" class="search_input"></el-input>
-            <span class="search_style">产品名称：</span>
-            <el-input v-model="product_name" placeholder="请输入内容" class="search_input"></el-input>
-            <span class="search_style">出行日期：</span>
-            <el-date-picker
-              v-model="startTime2"
-              type="date"
-              placeholder="开始日期"
-              style="float: left;width: 140px;"
-            ></el-date-picker>
-            <el-date-picker
-              v-model="endTime2"
-              type="date"
-              placeholder="终止日期"
-              style="float: left;width: 140px;"
-            ></el-date-picker>
-            <el-button
-              type="primary"
-              size="mini"
-              @click="searchHand4(1)"
-              round
-              style="margin-top: 5px; margin-left: 10px"
-            >搜索</el-button>
-            <el-button 
-            @click="T_update_btn" 
-            type="primary"
-            size="mini"
-            round
-            style="margin-top: 5px; margin-left: 10px"
-            >重置</el-button>
-            
-          </div>
-          <el-table
-            :data="planData"
-            border
-            :highlight-current-row="true"
-            @row-click="planChange"
-            style="width: 100%; margin-top: 30px"
-          >
-            <el-table-column prop="groupCode" label="团期计划ID"></el-table-column>
-            <el-table-column prop="title" label="产品名称"></el-table-column>
-            <el-table-column prop="destination" label="目的地"></el-table-column>
-            <el-table-column prop="date" label="出行日期"></el-table-column>
-            <el-table-column prop="orgName" label="部门"></el-table-column>
-            <el-table-column prop="name" label="产品录入人"></el-table-column>
-          </el-table>
-          <!--  <el-pagination
-              style="margin-top: 10px;float: right"
-              :page-size="userSize"
-              :pager-count="11"
-              layout="prev, pager, next"
-              @current-change="handleCurrentChange2"
-              :total=planTotal>
-          </el-pagination>-->
-        </div>
-      </el-dialog>
+        <el-dialog
+          width="60%"
+          title="获取团期计划"
+          :visible.sync="dialogFormVisible2"
+          append-to-body
+          :show-close="false"
+        >
+            <div class="indialog">
+                <div style=" position: absolute;right: 67px;top: 22px;">
+                  <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+                  <el-button type="primary" @click="addplan">确 定1</el-button>
+                </div>
+                <div class="indialog_search">
+                  <span class="search_style">团期单号：</span>
+                  <el-input v-model="tour_name" placeholder="请输入内容" class="search_input"></el-input>
+                  <span class="search_style">产品名称：</span>
+                  <el-input v-model="product_name" placeholder="请输入内容" class="search_input"></el-input>
+                  <span class="search_style">出行日期：</span>
+                  <el-date-picker
+                    v-model="startTime2"
+                    type="date"
+                    placeholder="开始日期"
+                    style="float: left;width: 140px;"
+                  ></el-date-picker>
+                  <el-date-picker
+                    v-model="endTime2"
+                    type="date"
+                    placeholder="终止日期"
+                    style="float: left;width: 140px;"
+                  ></el-date-picker>
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    @click="searchHand4(1)"
+                    round
+                    style="margin-top: 5px; margin-left: 10px"
+                  >搜索</el-button>
+                  <el-button 
+                  @click="T_update_btn" 
+                  type="primary"
+                  size="mini"
+                  round
+                  style="margin-top: 5px; margin-left: 10px"
+                  >重置</el-button>
+                </div>
+                <el-table
+                  :data="planData"
+                  border
+                  :highlight-current-row="true"
+                  @row-click="planChange"
+                  style="width: 100%; margin-top: 30px"
+                >
+                  <el-table-column prop="groupCode" label="团期计划ID"></el-table-column>
+                  <el-table-column prop="title" label="产品名称"></el-table-column>
+                  <el-table-column prop="destination" label="目的地"></el-table-column>
+                  <el-table-column prop="date" label="出行日期"></el-table-column>
+                  <el-table-column prop="orgName" label="部门"></el-table-column>
+                  <el-table-column prop="name" label="产品录入人"></el-table-column>
+                </el-table>
+              </div>
+        </el-dialog>
       <!--团期计划弹窗end-->
+
       <!--添加报销弹窗-->
       <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body>
-              <!-- <span class="search_style">申请人：</span>
-              <el-input v-model="t_plan" placeholder="请输入内容" class="search_input"></el-input> -->
-              <span class="search_style">供应商：</span>
-              <el-input v-model="t_supplier" placeholder="请输入内容" class="search_input"></el-input>
-          <div class="reform_s">
-            <el-button @click="T_check" type="primary">搜索2</el-button>
-            <el-button @click="T_update" type="primary">重置2</el-button>
-          </div>
-        <el-table :data="joinData" border style="width: 100%; margin-top: 30px">
-          <el-table-column prop="paymentID" label="关联单号" width="60"></el-table-column>
-          <el-table-column prop="supplierTypeEX" label="类型" width="80"></el-table-column>
-          <el-table-column prop="supplierName" label="供应商" width="90"></el-table-column>
-          <!-- <el-table-column prop="supplierName" label="供应商" v-if="this.supplier == 1"></el-table-column> -->
-          <el-table-column prop="orgName" label="部门" width="60"></el-table-column>
-          <el-table-column prop="createUser" label="申请人" width="80"></el-table-column>
-          <el-table-column prop="createTime" label="发起日期" width="130"></el-table-column>
-          <el-table-column prop="mark" label="摘要" width="130"></el-table-column>
-          <el-table-column prop="price" label="金额" width="90"></el-table-column>
-          <el-table-column prop="wcount" label="未报销金额" width="90"></el-table-column>
-          <el-table-column prop="bcount" width="120" label="报销金额">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.bcount" style="width:90px;"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="peopleCount" width="120" label="人数">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.peopleCount" style="width:90px;"></el-input>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible3 = false">取 消</el-button>
-          <el-button type="primary" @click="t_text('joinData')">确 定2</el-button>
-        </div>
+                  <span class="search_style">供应商：</span>
+                  <el-input v-model="t_supplier" placeholder="请输入内容" class="search_input"></el-input>
+                  <div class="reform_s">
+                    <el-button @click="T_check" type="primary">搜索2</el-button>
+                    <el-button @click="T_update" type="primary">重置2</el-button>
+                  </div>
+              <el-table :data="joinData" border style="width: 100%; margin-top: 30px">
+              <el-table-column prop="paymentID" label="关联单号" width="60"></el-table-column>
+              <el-table-column prop="supplierTypeEX" label="类型" width="80"></el-table-column>
+              <el-table-column prop="supplierName" label="供应商" width="90"></el-table-column>
+              <!-- <el-table-column prop="supplierName" label="供应商" v-if="this.supplier == 1"></el-table-column> -->
+              <el-table-column prop="orgName" label="部门" width="60"></el-table-column>
+              <el-table-column prop="createUser" label="申请人" width="80"></el-table-column>
+              <el-table-column prop="createTime" label="发起日期" width="130"></el-table-column>
+              <el-table-column prop="mark" label="摘要" width="130"></el-table-column>
+              <el-table-column prop="price" label="金额" width="90"></el-table-column>
+              <el-table-column prop="wcount" label="未报销金额" width="90"></el-table-column>
+              <el-table-column prop="bcount" width="120" label="报销金额">
+              <template slot-scope="scope">
+                  <el-input v-model="scope.row.bcount" style="width:90px;"></el-input>
+              </template>
+              </el-table-column>
+              <el-table-column prop="peopleCount" width="120" label="人数">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.peopleCount" style="width:90px;"></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogFormVisible3 = false">取 消</el-button>
+              <el-button type="primary" @click="t_text('joinData')">确 定2</el-button>
+            </div>
       </el-dialog>
       <!--添加报销弹窗end-->
-      <!--需要你审批-->
-      <el-tab-pane label="需要您审批" name="second">
-        <!-- <NeedApproval></NeedApproval> -->
-        <approvalToBorrow></approvalToBorrow>
-      </el-tab-pane>
-      <!--审批end-->
-    </el-tabs>
-  </div>
+ 
+</div> 
 </template>
 
 <script>
 // import NeedApproval from "@/page/Finance/reimburseManagement/needApproval";
-import approvalToBorrow from "@/page/Finance/loanManagement/approvalToBorrow";
+ 
 import { formatDate } from "@/js/libs/formatDate.js";
 import moment from "moment";
 export default {
   name: "reimburseManagement",
-  components: {
-    //NeedApproval
-    approvalToBorrow
-  },
+  components: {  },
   data() {
     var areaIdRule = (rule, value, callback) => {
       if (
