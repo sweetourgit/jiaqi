@@ -489,14 +489,14 @@ export default {
           if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
             this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
           }
-          // 撤销通过同事工作流通过
+          // 撤销通过同时工作流通过
           this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDTG', {
             "object": {
               "datetime": moment(new Date().getTime()).format('YYYY-MM-DD'),
               "spname": sessionStorage.getItem('name'),
               "spstate": "通过",
               "spcontent": "",
-              'checktype': 1,
+              'checktype': 2,
               "id": this.pid
             }
           }).then(res => {
@@ -513,15 +513,6 @@ export default {
         });
       });
     },
-    // 获取同业社列表
-    /*getLcList (paramsLcID) {
-      var that =this
-      this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getArrearsList', {
-        lcID: paramsLcID
-      }).then(obj => {
-        that.tableAudit = obj.data.extend.instanceLogInfo;
-      }).catch(obj => {})
-    },*/
     // 获取一条信息查看详情
     getLabel(paramsPaymentID){
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/coll',{
@@ -531,7 +522,6 @@ export default {
           const resObj = res.data.object
            this.fundamental=res.data.object;
           const keepDebtItem = resObj.arrears
-           // this.getLcList(res.data.object.id)
           this.tableAudit = res.data.object.spw
           this.tableInvoice = res.data.object.invoiceTable
           this.tableManyRow = resObj.arrears.length

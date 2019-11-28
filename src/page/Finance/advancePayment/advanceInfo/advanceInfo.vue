@@ -345,7 +345,6 @@
   </div>
 </template>
 <script type="text/javascript">
-import { formatDate } from '@/js/libs/formatDate.js'
 import moment from 'moment'
 import Pagination from '@/components/Pagination'
 export default {

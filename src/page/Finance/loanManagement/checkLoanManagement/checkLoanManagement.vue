@@ -149,11 +149,6 @@
     <el-table :data="tablePayment" border :header-cell-style="getRowClass">
       <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
       <el-table-column prop="checkTypeEX" label="审批状态" align="center">
-        <!--<template slot-scope="scope">
-          <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
-          <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
-          <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
-        </template>-->
       </el-table-column>
       <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
       <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
@@ -219,14 +214,12 @@ export default {
       fundamental:{},
       fileList: [], // 申请无收入借款中附件信息
       dialogFormVisible1:false, // 无收入借款中借款人弹窗
-      number_name:'',
       tableName: [], // 申请无收入借款中借款人选择弹窗表格
       dialogFormVisible_plan:false, // 无收入借款中团期计划弹窗
       tablePlan:[],// 申请无收入借款中团期计划选择弹窗表格
       tableAccount:[], // 无收入借款中账户弹窗表格
       tableMoney:[], // 无收入借款金额表格
       tablePayment:[], // 无收入借款弹窗预付款明细表格
-      tableApprove:[],
       tableIncome:[], // 无收入借款弹窗中无收入借款明细弹窗
       dialogFormVisible_Income:false, // 无收入借款弹窗中预付款明细查看弹窗
       tableEarning:[], // 无收入借款弹窗中收入明细表格
@@ -236,6 +229,7 @@ export default {
       keepPaymentType: null, // 弹窗中调用获取一条详情，保存paymentType类型
     }
   },
+  // 关于时间的过滤
   filters: {
     formatDate: function (value) {
       return moment(value).format('YYYY-MM-DD HH:mm:ss')
@@ -247,8 +241,6 @@ export default {
         return moment(value).format('YYYY-MM-DD')
       }
     }
-  },
-  mounted(){
   },
   methods: {
     moment,

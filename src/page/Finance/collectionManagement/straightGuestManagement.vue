@@ -462,14 +462,14 @@ export default {
           if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
             this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataZK();
           }
-          // 撤销通过同事工作流通过
+          // 撤销通过同时工作流通过
           this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDTG', {
             "object": {
               "datetime": moment(new Date().getTime()).format('YYYY-MM-DD'),
               "spname": sessionStorage.getItem('name'),
               "spstate": "通过",
               "spcontent": "",
-              'checktype': 1,
+              'checktype': 2,
               "id": this.pid
             }
           }).then(res => {
