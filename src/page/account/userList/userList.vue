@@ -27,7 +27,7 @@
       </div>
       <!--搜索end-->
       <div class="add-user">
-        <router-link to="/userlist/adduser"><el-button type="primary">添加用户</el-button></router-link>
+        <router-link to="/userlist/adduser"><el-button type="primary">添加用户</el-button></router-link>&nbsp;&nbsp;
         <el-button :disabled="forbidden" type="primary" @click="auth">授权</el-button>
         <el-button :disabled="forbidden" type="primary" @click="dialogFormCopyPer=true">复制权限</el-button>
       </div>
