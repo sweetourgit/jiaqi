@@ -425,6 +425,8 @@ export default {
     searchHandInside () {
       this.listLoading = true
       let _this = this
+      /*this.page = 1
+      this.limit = 10*/
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
           "pageIndex": 1,
           "pageSize": this.pageSize,
@@ -486,7 +488,22 @@ export default {
           this.getList()
           if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
             this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
-          };
+          }
+          // 撤销通过同事工作流通过
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDTG', {
+            "object": {
+              "datetime": moment(new Date().getTime()).format('YYYY-MM-DD'),
+              "spname": sessionStorage.getItem('name'),
+              "spstate": "通过",
+              "spcontent": "",
+              'checktype': 1,
+              "id": this.pid
+            }
+          }).then(res => {
+            console.log(res,'通过res')
+          }).catch(err => {
+            console.log(err)
+          })
         }
       })
       }).catch(() => {
