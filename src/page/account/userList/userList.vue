@@ -521,7 +521,11 @@
           }
         )
           .then(function (obj) {
-            that.pageshow = false;
+            if(that.input == ''){
+              that.pageshow = true;
+            }else {
+              that.pageshow = false;
+            }
             // console.log(obj.data.objects)
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
