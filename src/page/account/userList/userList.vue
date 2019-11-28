@@ -390,7 +390,7 @@
               "value":this.value,
               "type":this.type,
               "user":this.user,
-              "input":this.input,
+              "name":this.input,
 
             },
             "pageSize":val,
@@ -449,7 +449,7 @@
               "value":this.value,
               "type":this.type,
               "user":this.user,
-              "input":this.input,
+              "name":this.input,
 
             },
             "pageSize":this.pagesize,
@@ -499,17 +499,14 @@
       searchSubmit(){
         //搜索
         var that = this
-        this.$http.post(
-          this.GLOBAL.serverSrc + "/org/api/userpage",
-          // "http://api.dayuntong.com:3009/api/org/userpage",
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userpage",
           {
             "object": {
               "isDeleted": 0,
               "value":this.value,
               "type":this.type,
               "user":this.user,
-              "input":this.input,
-
+              "name":this.input,
             },
             "pageSize":this.pagesize,
             "pageIndex": 1,

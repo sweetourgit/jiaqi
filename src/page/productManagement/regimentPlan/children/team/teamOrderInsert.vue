@@ -880,7 +880,7 @@ export default {
             code: "string",
             cnName: "",
             enName: "",
-            sex: "",
+            sex: 3,
             idCard: "",
             singlePrice: 0,
             mobile: "",
@@ -893,6 +893,12 @@ export default {
             orgID: 0,
             userID: 0
           });
+          if(this.ruleForm.price == 1){
+            this.tour[index].singlePrice=this.salePrice[index].price_01;
+          } else {
+            this.tour[index].singlePrice=this.salePrice[index].price_02;
+          }
+          
         }
       } else{
         console.log(this.tour[index])
@@ -942,18 +948,17 @@ export default {
               guestAll.push(this.tour[i][j]);
             }
           }
-          let guest = [];
-          console.log(guest)
-          for (let i = 0; i < guestAll.length; i++) {
-            if (guestAll[i].cnName != "") {
-              //过滤掉未填写人员信息
-              guest.push(guestAll[i]);
-              guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
-              //guest[i].credTOV = new Date(guest[i].credTOV).getTime();
-            } else {
-              guest.push(guestAll[i]);
-            }
-          }
+          // let guest = [];
+          // for (let i = 0; i < guestAll.length; i++) {
+          //   if (guestAll[i].cnName != "") {
+          //     //过滤掉未填写人员信息
+          //     guest.push(guestAll[i]);
+          //     guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
+          //     //guest[i].credTOV = new Date(guest[i].credTOV).getTime();
+          //   } else {
+          //     guest.push(guestAll[i]);
+          //   }
+          // }
           //防止重复提交订单判断
           if (this.ifOrderInsert == false) {
              return false;
@@ -1042,18 +1047,18 @@ export default {
               guestAll.push(this.tour[i][j]);
             }
           }
-          let guest = [];
-          console.log(guest)
-          for (let i = 0; i < guestAll.length; i++) {
-            if (guestAll[i].cnName != "") {
-              //过滤掉未填写人员信息
-              guest.push(guestAll[i]);
-              guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
-              //guest[i].credTOV = new Date(guest[i].credTOV).getTime();
-            } else {
-              guest.push(guestAll[i]);
-            }
-          }
+          // let guest = [];
+          // console.log(guest)
+          // for (let i = 0; i < guestAll.length; i++) {
+          //   if (guestAll[i].cnName != "") {
+          //     //过滤掉未填写人员信息
+          //     guest.push(guestAll[i]);
+          //     guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
+          //     //guest[i].credTOV = new Date(guest[i].credTOV).getTime();
+          //   } else {
+          //     guest.push(guestAll[i]);
+          //   }
+          // }
           // 拼接字段 enrollDetail报名类型详情
           let enrollDetail = "";
           this.salePrice.forEach((ele, idx) => {
@@ -1122,7 +1127,7 @@ export default {
                             CreateTime: formatDate(new Date())
                           }
                         ]),
-                        guests:guest = [] ? [] : guest,
+                        guests: guestAll,
                         //guests: guest,
                         number: number,
                         enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
@@ -1207,7 +1212,7 @@ export default {
                                   CreateTime: formatDate(new Date())
                                 }
                               ]),
-                              guests:guest = [] ? [] : guest,
+                              guests:guestAll,
                               // guests: guest,
                               number: number,
                               enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
@@ -1306,7 +1311,7 @@ export default {
                                 CreateTime: formatDate(new Date())
                               }
                             ]),
-                            guests:guest = [] ? [] : guest,
+                            guests:guestAll,
                             //guests: guest,
                             number: number,
                             enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
