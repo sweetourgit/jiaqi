@@ -110,6 +110,7 @@
       <!--分页-->
       <div class="block">
         <el-pagination
+          v-if="pageshow"
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -217,6 +218,7 @@
         qqq: [],
         total:600,
         currentPage:1,
+        pageshow: true,
         input:"",
         dialogFormVisible: false,
         form: {
@@ -519,6 +521,7 @@
           }
         )
           .then(function (obj) {
+            that.pageshow = false;
             // console.log(obj.data.objects)
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
