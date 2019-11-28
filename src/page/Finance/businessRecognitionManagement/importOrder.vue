@@ -1,8 +1,8 @@
 <template>
   <div class="vivo" style="position:relative">
-    <el-dialog title="详情" :visible="dialogFormVisible3" @close="closeImport" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;" appendToBody id="tradeDetail">
+    <el-dialog title="详情" :visible="dialogFormVisible3" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;" appendToBody id="importDetail">
       <div class="buttonDv">
-        <el-button type="primary" @click="closeImport" style="margin-right: 10px" plain>取消</el-button>
+        <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
         <el-button type="primary" @click="submitBtn">确认</el-button>
       </div>
@@ -367,7 +367,7 @@
         });
       },
       // 关闭弹窗
-      closeImport(){
+      closeAdd(){
         this.baseInfo = {
           status_rece: '',
           rece_code: '',
@@ -560,15 +560,15 @@
 
 </script>
 <style lang="scss">
-  #tradeDetail .el-dialog{
+  #importDetail .el-dialog{
     width: 90%!important;
   }
-  #tradeDetail .buttonDv{
+  #importDetail .buttonDv{
     position: absolute;
     top: 8px;
     right: 3%;
   }
-  #tradeDetail .stepDv{
+  #importDetail .stepDv{
     width: 94%;
     margin: 0 auto;
     padding: 10px;
@@ -600,10 +600,10 @@
       margin: 10px auto;
     }
   }
-  #tradeDetail .el-upload-list__item{
+  #importDetail .el-upload-list__item{
     margin-top: 10px !important;
   }
-  #tradeDetail .el-upload-list__item{
+  #importDetail .el-upload-list__item{
     width: 100%!important;
   }
   .lineTitle{
@@ -615,7 +615,7 @@
     box-sizing: border-box;
     padding: 0 10px;
   }
-  #tradeDetail .bottom_dataDv{
+  #importDetail .bottom_dataDv{
     display: block;
     .left_span{
       display: inline-block;
