@@ -571,12 +571,6 @@ export default {
         console.log(err)
       })
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
     closeAdd() {
       this.clearForm()
       this.$confirm("是否取消本次借款申请?", "提示", {
