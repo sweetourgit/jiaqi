@@ -81,7 +81,7 @@
                 <div v-show="nullShowName" style="color:red;">请输入有效的商户名称</div>
               </el-form-item>
               <el-form-item label="同业销售" prop="travelSales">
-                <el-autocomplete class="optionw" v-model="ruleForm.travelSales" @blur="travelOp()" :fetch-suggestions="querySearch2" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure2"></el-autocomplete>
+                <el-autocomplete class="optionw" :disabled = "forbidden" v-model="ruleForm.travelSales" @blur="travelOp()" :fetch-suggestions="querySearch2" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure2"></el-autocomplete>
                 <div v-show="nullShowOp" style="color:red;">请输入有效的同业销售</div>
               </el-form-item>
               <el-form-item label="商户销售" prop="merchantsSell">
@@ -656,6 +656,7 @@ export default {
       deposit:0,//获取预存款
       amount:0,//剩余额度加预存款
       payment:0,
+      tradeSales:0, // 同业销售usercode
       approvalTable:[],//借款审批过程表格
       approvalShow:false,//借款审批过程弹窗
       guid:'',
@@ -1196,6 +1197,7 @@ export default {
                               priceType: Number(this.ruleForm.price),
                               orgID:this.productPos,
                               userID:this.userID,
+                              indirectSale:this.tradeSales,
                               // orgID: sessionStorage.getItem("orgID"),
                               //userID: sessionStorage.getItem("id"),
                               remark: JSON.stringify([
@@ -1294,6 +1296,7 @@ export default {
                             priceType: Number(this.ruleForm.price),
                             orgID:this.productPos,
                             userID:this.userID,
+                            indirectSale:this.tradeSales,
                             // orgID: sessionStorage.getItem("orgID"),
                             //userID: sessionStorage.getItem("id"),
                             remark: JSON.stringify([
@@ -1511,27 +1514,27 @@ export default {
     },
     //同业销售模糊查询
     querySearch2(queryString2, cb) {
-      this.ruleForm.merchantsSell = '';//商户名称发生改变时，商户销售清空
       this.marketList = [];
-      this.$http.post(this.GLOBAL.serverSrc + '/org/api/userlist', {
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/PeerUser_AdminList', {
         "object": {
-          name: queryString2,
-          isDeleted: 0
+          "localCompID": this.productPos,
+          "jqUserType": 2
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
           for (let i = 0; i < res.data.objects.length; i++) {
-            this.marketList.push({
-              "value": res.data.objects[i].name,
-              "id": res.data.objects[i].id,
-            })
-            this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+              this.marketList.push({
+                "value": res.data.objects[i].name,
+                "id": res.data.objects[i].id,
+                "userCode":res.data.objects[i].userCode
+              })
+              this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
           }
         }
-        if(res.data.objects.length === 0){
-          this.nullShowOp = true;
-        }else {
+        if(res.data.objects){
           this.nullShowOp = false;
+        }else {
+          this.nullShowOp = true;
         }
         
         var results = queryString2 ? this.marketList.filter(this.createFilter(queryString2)) : [];
@@ -1546,6 +1549,8 @@ export default {
       }
     },
     departure2(item){
+      this.tradeSales = item.userCode;
+      console.log(this.tradeSales)
       //this.userID = item.id
     },
     //商户名称模糊查询
@@ -1555,7 +1560,8 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
           name: queryString3,
-          isDeleted: 0
+          isDeleted: 0,
+          state: 2
         }
       }).then(res => {
         if (res.data.isSuccess == true) {
