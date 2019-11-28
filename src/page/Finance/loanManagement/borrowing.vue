@@ -227,13 +227,16 @@
           <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
           <el-table-column prop="priceSum" label="已收金额" align="center"></el-table-column>
           <el-table-column prop="arrears" label="欠款金额" align="center"></el-table-column>
-          <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' align="center">
+          <el-table-column prop="arrearsDate" label="欠款日期" align="center">
             <template slot-scope="scope">
-              <div>{{scope.row.orderChannel}}</div>
-<!--              <div>{{scope.row.orderChannel != 1 ? '暂无' : scope.row.arrearsDate }}</div>-->
+              <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.arrearsDate | formatDate }}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="repaymentDate" label="应还日期" :formatter='dateFormat' align="center"></el-table-column>
+          <el-table-column prop="repaymentDate" label="应还日期" align="center">
+            <template slot-scope="scope">
+              <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.repaymentDate | formatDate }}</div>
+            </template>
+          </el-table-column>
         </el-table>
         <!-- 收入明细 END -->
       </el-form>
@@ -558,7 +561,11 @@ export default {
   },
   filters: {
     formatDate: function (value) {
-      return moment(value).format('YYYY-MM-DD')
+      if(typeof value == 'string'){
+        return '暂无'
+      } else {
+        return moment(value).format('YYYY-MM-DD')
+      }
     }
   },
   methods: {

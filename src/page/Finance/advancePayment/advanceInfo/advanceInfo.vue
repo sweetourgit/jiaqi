@@ -199,9 +199,15 @@
                   </el-table-column>
                   <el-table-column prop="arrears" label="欠款金额" align="center">
                   </el-table-column>
-                  <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' align="center">
+                  <el-table-column prop="arrearsDate" label="欠款日期" align="center">
+                    <template slot-scope="scope">
+                      <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.arrearsDate | formatDate }}</div>
+                    </template>
                   </el-table-column>
-                  <el-table-column prop="repaymentDate" label="应还日期" :formatter='dateFormat' align="center">
+                  <el-table-column prop="repaymentDate" label="应还日期" align="center">
+                    <template slot-scope="scope">
+                      <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.repaymentDate | formatDate }}</div>
+                    </template>
                   </el-table-column>
                 </el-table>
             </div>
@@ -512,6 +518,15 @@ export default {
         this.clearForm()
       }
     },
+  },
+  filters: {
+    formatDate: function (value) {
+      if(typeof value == 'string'){
+        return '暂无'
+      } else {
+        return moment(value).format('YYYY-MM-DD')
+      }
+    }
   },
   methods: {
     // 起始时间格式转换
