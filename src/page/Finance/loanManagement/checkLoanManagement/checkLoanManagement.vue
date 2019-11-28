@@ -216,61 +216,16 @@ export default {
   data(){
     return {
       tableIncomeCheck: null, // 审批过程-查看弹窗-数据
-      empty:'', // 表头切换
-      people:'',
-      planTime:'',
-      planData:'',
-      forbidden:true, // 借款表格
-      multipleSelection: [],
-      tableData:[],
       fundamental:{},
-      pagesize: 10, // 设定默认分页每页显示数
-      pageIndex: 1, // 设定当前页数
-      total: 0,
-      currentPage: 1,
-      noIncomeShow:false, // 无收入借款弹窗
-      ruleForm:{
-        createUser:'',
-        groupCode:'',
-        plan_01:'',
-        supplierName:'',
-        supplierTypeEX:'',
-        price:'',
-        mark:'',
-        cardNumber:'',
-        bankName:'',
-        cardName:'',
-        payway:'',
-        files:'',
-      },
-      rules: {
-        name: [{ required: true, message: '请输入借款人名字', trigger: 'blur' }],
-        plan: [{ required: true, message: '请输入团期计划', trigger: 'blur' }],
-        plan_01: [{ required: true, message: '请输入团期计划', trigger: 'blur' }],
-        supplier:[{ required: true, message: '请输入供应商名称', trigger: 'blur' }],
-        planType:[{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-        planAmount:[{ required: true, message: '请输入类型', trigger: 'blur' }],
-        abstract:[{ required: true, message: '请输入摘要', trigger: 'blur' }],
-        account:[{ required: true, message: '请输入账号', trigger: 'blur' }],
-        accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
-        accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],
-        payment:[{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-      },
       fileList: [], // 申请无收入借款中附件信息
       dialogFormVisible1:false, // 无收入借款中借款人弹窗
       number_name:'',
       tableName: [], // 申请无收入借款中借款人选择弹窗表格
       dialogFormVisible_plan:false, // 无收入借款中团期计划弹窗
-      plan_stage:'',
-      plan_name:'',
-      plan_data:'',
-      plan_data01:'',
       tablePlan:[],// 申请无收入借款中团期计划选择弹窗表格
-      dialogFormVisible_account:false, // 无收入借款中账户弹窗
       tableAccount:[], // 无收入借款中账户弹窗表格
       tableMoney:[], // 无收入借款金额表格
       tablePayment:[], // 无收入借款弹窗预付款明细表格
-      dialogFormVisible_paymenrt:false, // 无收入借款弹窗中预付款明细查看弹窗
       tableApprove:[],
       tableIncome:[], // 无收入借款弹窗中无收入借款明细弹窗
       dialogFormVisible_Income:false, // 无收入借款弹窗中预付款明细查看弹窗
@@ -296,6 +251,7 @@ export default {
   mounted(){
   },
   methods: {
+    moment,
     // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
@@ -315,45 +271,6 @@ export default {
       } else {
         return ''
       }
-    },
-    changeFun(val) {
-      this.multipleSelection=val;
-      if(this.multipleSelection.length==1) {
-        this.forbidden=false;
-      }else{
-        this.forbidden=true;
-      };
-      //event.cancelBubble = true;//row-click和selection-change耦合事件
-    },
-    // 选中行复选框勾选
-    clickRow(row){
-      this.$refs.multipleTable.clearSelection(); //清空用户的选择
-      this.$refs.multipleTable.toggleRowSelection(row);
-    },
-    // 选中行样式改变
-    rowClass({row, rowIndex}){
-      for(var i=0;i<this.multipleSelection.length;i++){
-        if(this.multipleSelection[i].paymentID==row.paymentID){
-          return { "background-color": "#ecf5ff" }
-        }
-      }
-    },
-    planStage(){
-      this.plan_stage = '';
-      this.plan_name = '';
-      this.plan_data = '';
-      this.plan_data01 = '';
-    },
-    // 无收入借款中账户弹窗
-    IncomeAccount(){
-      this.dialogFormVisible_account = true;
-    },
-    accountCancel(){
-      this.dialogFormVisible_account = false;
-    },
-    // 无收入借款中预付款明细查看
-    processPaymenrt(scope,row){
-      this.dialogFormVisible_paymenrt = true;
     },
     // 审批过程-查看
     processIncome(index,row, type){
@@ -446,6 +363,7 @@ export default {
         console.log(err)
       })
     },
+    // 获取相关表格信息
     getPaymentdetails(val) {
       var that = this
       //相关信息
@@ -552,8 +470,6 @@ export default {
         // this.getTourByPlanId();
        }
     }
-  },
-  created() {
   }
 }
 </script>

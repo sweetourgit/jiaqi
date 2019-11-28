@@ -201,12 +201,12 @@
                   </el-table-column>
                   <el-table-column prop="arrearsDate" label="欠款日期" align="center">
                     <template slot-scope="scope">
-                      <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.arrearsDate | formatDate }}</div>
+                      <div>{{ scope.row.orderChannel !== 1 ? '' : scope.row.arrearsDate | formatDate }}</div>
                     </template>
                   </el-table-column>
                   <el-table-column prop="repaymentDate" label="应还日期" align="center">
                     <template slot-scope="scope">
-                      <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.repaymentDate | formatDate }}</div>
+                      <div>{{ scope.row.orderChannel !== 1 ? '' : scope.row.repaymentDate | formatDate }}</div>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -522,7 +522,7 @@ export default {
   filters: {
     formatDate: function (value) {
       if(typeof value == 'string'){
-        return '暂无'
+        return ''
       } else {
         return moment(value).format('YYYY-MM-DD')
       }
@@ -746,9 +746,7 @@ export default {
 
     },
     handleCurrentChange2(val) {
-
       this.pageNum = val;
-
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/org/api/userpage", {
@@ -778,7 +776,6 @@ export default {
         })
     },
     handleSizeChange2(val) {
-      this.pagesize2 = val
       var that = this
       this.$http.post(
           this.GLOBAL.serverSrc + "/org/api/userpage", {
@@ -791,7 +788,6 @@ export default {
               "type": 3,
               "user": '',
               "input": this.apply_user_input,
-
             },
           }, {
             headers: {
@@ -807,22 +803,7 @@ export default {
           console.log(obj)
         })
     },
-    handDb() {
-      this.$router.push({
-        path: 'advanceApply',
-        query: {}
-      })
-    },
-    handDb2() {
-      this.$router.push({
-        path: '/changepro',
-        query: {
-          id: this.pid2
-        }
-      })
-    },
     resetHand() {
-      this.groupNo = ''
       this.user = ''
       this.startTime = ''
       this.endTime = ''
@@ -928,7 +909,6 @@ export default {
     },
     // 供应商
     dest_01(item) {
-      console.log(item,'dongzhen')
       this.ruleForm.supplier = item.value;
     },
     handleInputConfirm2() {
@@ -1031,8 +1011,6 @@ export default {
             }
           }).then(res => {
             if (res.data.isSuccess == true) {
-              // console.log(res.data.object, 'test --  sendBPM')
-              // this.sendBPM(res.data.object)
               this.$emit('searchHandList', false);
               this.$message({
                 type: 'success',
@@ -1050,25 +1028,6 @@ export default {
           return false;
         }
       });
-    },
-    sendBPM(result) {
-      console.log(result, 'sendBPM')
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/StartUpWorkFlowForJQ', {
-        jQ_ID: result.guid,
-        jQ_Type: result.flowModel,
-        workflowCode: result.flowModelName,
-        userCode: sessionStorage.getItem('account'), //未指定呢
-      }).then(res => {
-        let result = JSON.parse(res.data);
-        if (result.code == '0') {
-          console.log('启动工作流成功');
-        } else {
-          console.log('启动工作流错误!');
-          console.log(res.data);
-        }
-      }).catch(err => {
-        console.log(err);
-      })
     },
     //撤销申请
     chanelSubmit() {
@@ -1147,12 +1106,10 @@ export default {
               "name": arr[k]['name'],
             });
           })
-          console.log(that.fileList)
         })
         .catch(function(obj) {
           console.log(obj)
         })
-
     },
     getTourByPlanId(val) {
       var that = this
