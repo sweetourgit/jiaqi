@@ -287,7 +287,7 @@ export default {
     },
     formatDateDetails:function (value) {
       if(typeof value == 'string'){
-        return '暂无'
+        return ''
       } else {
         return moment(value).format('YYYY-MM-DD')
       }

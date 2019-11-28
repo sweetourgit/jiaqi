@@ -232,6 +232,8 @@ export default {
   methods: {
     // 搜索
     searchHandBtn(){
+      this.ruleFormSeach.page = 1
+      this.ruleFormSeach.limit = 10
       this.searchHand()
     },
     // 起始时间格式转换
