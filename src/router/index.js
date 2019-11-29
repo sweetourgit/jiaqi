@@ -7,15 +7,7 @@ export default new Router({
   routes: [{
       path: '/',
       redirect: 'login',
-    },{
-      path: '/blankPages',
-      component: () => import('@/page/blank/blankPages/blankPages.vue'),
-        name: '空白页',
-        meta: {
-          keepAlive: true,
-          auth: true
-        }
-    },{
+    }, {
       path: '/userList',
       component: () => import('@/page/account/userList/userList'),
       name: '用户列表',
@@ -544,8 +536,24 @@ export default new Router({
       }
     }, {
       path: '/checkSheet',
-      component: () => import('@/page/Finance/checkSheet/checkSheet1'),
+      component: () => import('@/page/Finance/checkSheet/checkSheet'),
       name: '报账单',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/checkSheetDetail',
+      component: () => import('@/page/Finance/checkSheetDetail/checkSheetDetail'),
+      name: '报账单详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/addCheckSheet',
+      component: () => import('@/page/Finance/checkSheetDetail/checkSheetDetail'),
+      name: '新建报账单',
       meta: {
         keepAlive: true,
         auth: true

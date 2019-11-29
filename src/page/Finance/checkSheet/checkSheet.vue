@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { getCheckSheetList } from './api'
+import { getCheckSheetList, getFlowModel } from './api'
 import allPane from './comps/allPane/allPane'
 import minePane from './comps/minePane/minePane'
 

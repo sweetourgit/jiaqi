@@ -17,7 +17,8 @@
     <main>
       <el-table style="width: 100%" border
         :data="tableData"
-        :highlight-current-row="false">
+        :highlight-current-row="false"
+        :header-cell-style="getRowClass">
         <el-table-column align="center" prop="groupCode" label="团期计划" ></el-table-column>
 
         <el-table-column align="center" label="状态">
@@ -121,6 +122,15 @@ export default {
         this.$nextTick(() => {
           this.getCheckSheetListAction()
         })
+      },
+
+      // 表格头部背景颜色
+      getRowClass({ row, column, rowIndex, columnIndex }) {
+        if (rowIndex == 0) {
+          return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+        } else {
+          return ''
+        }
       },
     },
 
