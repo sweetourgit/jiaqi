@@ -893,12 +893,6 @@ export default {
             orgID: 0,
             userID: 0
           });
-          if(this.ruleForm.price == 1){
-            this.tour[index].singlePrice=this.salePrice[index].price_01;
-          } else {
-            this.tour[index].singlePrice=this.salePrice[index].price_02;
-          }
-          console.log(this.tour[index].singlePrice)
         }
       } else{
         console.log(this.tour[index])
@@ -944,11 +938,14 @@ export default {
         if (valid) {
           for (let i = 0; i < this.tour.length; i++) {
             for (let j = 0; j < this.tour[i].length; j++) {
+              if(this.ruleForm.price == 1){
+                this.tour[i][j].singlePrice=this.salePrice[i].price_01;
+              } else {
+                this.tour[i][j].singlePrice=this.salePrice[i].price_02;
+              }
               guestAll.push(this.tour[i][j]);
             }
           }
-          console.log(this.tour)
-          console.log(guestAll)
           // let guest = [];
           // for (let i = 0; i < guestAll.length; i++) {
           //   if (guestAll[i].cnName != "") {
@@ -1046,6 +1043,11 @@ export default {
           let guestAll = [];
           for (let i = 0; i < this.tour.length; i++) {
             for (let j = 0; j < this.tour[i].length; j++) {
+              if(this.ruleForm.price == 1){
+                this.tour[i][j].singlePrice=this.salePrice[i].price_01;
+              } else {
+                this.tour[i][j].singlePrice=this.salePrice[i].price_02;
+              }
               guestAll.push(this.tour[i][j]);
             }
           }
