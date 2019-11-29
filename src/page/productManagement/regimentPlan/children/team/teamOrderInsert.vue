@@ -904,15 +904,14 @@ export default {
         console.log(this.tour[index])
         for(var i=0;i < this.tour[index].length;i++){
           console.log(this.tour[index][i])
-          if(this.tour[index][i].sex === ''){
+          if(this.tour[index][i].cnName === ''){
             this.tour[index].splice(i, preLength - arrLength);
             break;
           }
         }
       }
     },
-    submitForm(formName,index) {
-      console.log(1)
+    submitForm(formName,index) { 
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
         var blooen = "0";
@@ -948,6 +947,8 @@ export default {
               guestAll.push(this.tour[i][j]);
             }
           }
+          console.log(this.tour)
+          console.log(guestAll)
           // let guest = [];
           // for (let i = 0; i < guestAll.length; i++) {
           //   if (guestAll[i].cnName != "") {
