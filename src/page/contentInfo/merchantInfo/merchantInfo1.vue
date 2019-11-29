@@ -648,7 +648,7 @@
           <!-- 点击详情欠款信息end -->
 
           <!-- 详情页下级商户begin -->
-          <div class="relevanceDept">
+          <div class="relevanceDept" v-if="ruleForm.parentID == -1">
             <h3>下级商户</h3>
             <div class="relevanceDeptWarn">
               <p class="el-icon-warning">
@@ -1134,7 +1134,6 @@ export default {
           }
         })
         .then(res => {
-          console.log(res, "s所属上级商户");
           for (let i = 0; i < res.data.objects.length; i++) {
             this.superiorMerchants.push({
               id: res.data.objects[i].id,
@@ -1182,23 +1181,26 @@ export default {
     },
     // 地区的远程获取数据
     querySearchdiqu(queryString, cb) {
+      console.log("queryString");
       this.vagueDiQu = [];
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/area/api/fuzzy", {
           object: {
-            name: queryString
+            areaName: queryString
           }
         })
         .then(res => {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.vagueDiQu.push({
-              id: res.data.objects[i].parentID,
-              value: res.data.objects[i].areaName
+              id: res.data.objects[i].id,
+              value: res.data.objects[i].markName
             });
           }
           var results = queryString
             ? this.vagueDiQu.filter(this.createFilter(queryString))
             : [];
+
+          console.log(this.vagueDiQu, "vagueDiQu");
           cb(results);
         })
         .catch(err => {
@@ -1213,7 +1215,7 @@ export default {
     handleBlurdiqu() {
       setTimeout(() => {
         if (this.isSelect === false) {
-          this.areaInformationName = "";
+          this.ruleForm.areaInformationName = "";
           this.ruleForm.areaInformationID = null;
         } else {
           this.isSelect = false;
@@ -1921,10 +1923,10 @@ export default {
             item.cF_Date = moment(item.cF_Date.toString()).format("YYYY-MM-DD");
             item.createTime = moment(item.createTime).format("YYYY-MM-DD");
             item.repaymentDate = moment(item.repaymentDate).format(
-              "YYYY-MM-DD HH:mm:ss"
+              "YYYY-MM-DD"
             );
+            this.arrears += item.qk_price
           });
-          console.log(this.tableRelevanceDeptInfo, "table");
           this.page_order_total = obj.data.total;
         })
         .catch(err => {
@@ -2117,8 +2119,9 @@ export default {
       }
 
       // 经营范围
-      let scopeExt = this.ruleForm.scopeExt.join(",");
-
+      if (this.ruleForm.scopeExt.length !== 0) {
+        let scopeExt = this.ruleForm.scopeExt.join(",");
+      }
       // 区域可见
       let orgs = [];
       for (let i = 0; i < this.ruleForm.orgs.length; i++) {
@@ -2202,7 +2205,7 @@ export default {
             bankName: this.ruleForm.bankName,
             bankcardNo: this.ruleForm.bankcardNo,
             balance: this.ruleForm.balance,
-            arrears: this.ruleForm.arrears,
+            // arrears: this.ruleForm.arrears,
             imgUrl: this.ruleForm.imgUrl,
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
@@ -2295,6 +2298,8 @@ export default {
         this.ruleForm.localCompRole == 3
       ) {
         this.ruleForm.localCompRole = 3;
+      } else {
+        this.ruleForm.localCompRole = 0;
       }
       //类别
       if (
@@ -2339,7 +2344,10 @@ export default {
       }
 
       // 经营范围
-      let scopeExt = this.ruleForm.scopeExt.join(",");
+      let scopeExt = ""
+      if (this.ruleForm.scopeExt.length !== 0) {
+        scopeExt = this.ruleForm.scopeExt.join(",");
+      }
 
       // 到期时间
       // console.log(this.ruleForm.expTime, 22);
@@ -2417,7 +2425,7 @@ export default {
             bankName: this.ruleForm.bankName,
             bankcardNo: this.ruleForm.bankcardNo,
             balance: this.ruleForm.balance,
-            arrears: this.ruleForm.arrears,
+            // arrears: this.ruleForm.arrears,
             imgUrl: this.ruleForm.imgUrl,
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
@@ -2481,7 +2489,11 @@ export default {
         bankcardNo: "",
         localCompRole: "", //商户角色
         salesman: "", //销售人员
-        administrative: ""
+        administrative: "",
+        parentID: -1,
+        parentName: "",
+        areaInformationName: "",
+        areaInformationID: null
       };
       if (this.$refs["ruleForm"] !== undefined) {
         this.$refs["ruleForm"].resetFields();
@@ -2589,10 +2601,12 @@ export default {
             this.ruleForm.expTime = "";
           }
           // 经营范围
-          if (this.btnindex == 1) {
-            this.ruleForm.scopeExt = object.scopeExt;
-          } else {
-            this.ruleForm.scopeExt = object.scopeExt.split(",");
+          if (object.scopeExt !== null) {
+            if (this.btnindex == 1) {
+              this.ruleForm.scopeExt = object.scopeExt;
+            } else {
+              this.ruleForm.scopeExt = object.scopeExt.split(",");
+            }
           }
           this.adminArr = [];
           this.salesArr = [];
@@ -2690,8 +2704,6 @@ export default {
           this.ruleForm.parentID = object.parentID;
           this.ruleForm.parentName = object.parentName;
           this.ruleForm.quota = object.quota;
-          console.log(this.ruleForm.parentID == -1)
-          console.log(this.ruleForm.parentName !== '')
 
           //todo    部门和人员 预留
           // this.ruleForm.department = "1";
@@ -2712,7 +2724,9 @@ export default {
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
-          this.arrears = this.toDecimal2(object.arrears);
+          // 欠款总计计算
+
+          // this.arrears = this.toDecimal2(object.arrears);
         })
         .catch(obj => {
           console.log(obj);

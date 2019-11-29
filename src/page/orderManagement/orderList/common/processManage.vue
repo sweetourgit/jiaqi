@@ -118,13 +118,11 @@
           <!-- <p class="totle">总价：￥{{toDecimal2(payable)}}</p> -->
           <p class="totle" v-if="payable > 0">
             总价：￥
-            <span v-if="payable-prePayable > 0" >{{prePayable}} + {{payable-prePayable}}</span>
-            <span v-if="payable-prePayable == 0" >{{prePayable}}</span>
-            <span v-if="payable-prePayable < 0" >{{prePayable}} - {{prePayable-payable}}</span>
+            <span v-if="payable-prePayable > 0">{{prePayable}} + {{payable-prePayable}}</span>
+            <span v-if="payable-prePayable == 0">{{prePayable}}</span>
+            <span v-if="payable-prePayable < 0">{{prePayable}} - {{prePayable-payable}}</span>
           </p>
-          <p class="totle" v-if="payable <= 0">
-            总价：￥ 0
-          </p>
+          <p class="totle" v-if="payable <= 0">总价：￥ 0</p>
           <p
             class="surplus"
             v-if="orderget.orderChannel===1&&settlementType===1"
@@ -322,7 +320,7 @@ export default {
   data() {
     return {
       //流程管理弹窗
-      propPriceType:this.priceType,//接收父组件传值的priceType，要不报错
+      propPriceType: this.priceType, //接收父组件传值的priceType，要不报错
       showContent: null, //保存更改传个父组件的值 为了list折叠
       dialogVisible: false,
       dialogFormProcess: false,
@@ -446,8 +444,8 @@ export default {
       this.compPrice(1);
     },
     priceType() {
-      this.propPriceType = this.priceType
-      console.log(this.propPriceType)
+      this.propPriceType = this.priceType;
+      console.log(this.propPriceType);
     }
   },
 
@@ -460,8 +458,41 @@ export default {
           id: orderId
         })
         .then(res => {
-          // console.log(res, "get");
-          // console.log("settlementType", this.settlementType);
+          //   let str =
+          //     "成人(1323.00*1),成人(5000.00*1),成人(1323.00*1),人(1323.00*1),成人(5000.00*1),哈(1323.00*1),人(1323.00*1)";
+          //   let _arr = str.split(",");
+          //  for( let i = _arr.length - 1;  i > 0;  i--){
+          //    if( _arr[i].indexOf("成人") != -1) {
+          //      _arr.splice(i,1)
+          //      return _arr
+          //    }
+          //  }
+          //  console.log(_arr)
+
+          //   var _res = []; //
+          //   _arr.sort();
+          //   for (var i = 0; i < _arr.length; ) {
+          //     var count = 0;
+          //     for (var j = i; j < _arr.length; j++) {
+          //       if (_arr[i] == _arr[j]) {
+          //         count++;
+          //       }
+          //     }
+          //     _res.push([_arr[i], count]);
+          //     i += count;
+          //   }
+          //   //_res 二维数维中保存了 值和值的重复数
+          //   var _newArr = [];
+          //   for (var i = 0; i < _res.length; i++) {
+          //     // console.log(_res[i])
+          //     // console.log(_res[i][0] + "重复次数:" + _res[i][1]);
+          //     // console.log(_res[i][0])
+          //     let a = _res[i][0].split('*')
+          //     // console.log(a)
+          //     _newArr.push(a[0] + "x" + _res[i][1]+")");
+          //   }
+          // console.log(_newArr)
+
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -555,7 +586,8 @@ export default {
       if (
         this.orderget.orderChannel === 1 &&
         this.settlementType === 1 &&
-        this.payable < this.balance + this.deposit
+        this.payable < this.balance + this.deposit &&
+        status !== 9
       ) {
         this.$message.error("总价超过剩余预存款和额度");
       } else {
@@ -1102,8 +1134,8 @@ export default {
             : 0
         );
       }
-      if(this.payable <= 0) {
-        this.$message.error("总订单金额为0")
+      if (this.payable <= 0) {
+        this.$message.error("总订单金额为0");
       }
       this.isSaveBtnClick();
       this.addInfoFun();
@@ -1200,7 +1232,7 @@ export default {
               price = this.toDecimal2(ele.price_02);
             }
             if (this.enrolNum[idx] !== 0) {
-              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} )`;
+              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
             }
           });
 
