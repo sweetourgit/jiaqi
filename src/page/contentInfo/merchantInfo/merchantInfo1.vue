@@ -132,9 +132,8 @@
                   :fetch-suggestions="querySearchAsyncName"
                   :trigger-on-focus="false"
                   placeholder="请输入内容"
-                  @focus="handleFocusName"
                   @select="handleSelectName"
-                  :disabled="ruleForm.parentID == -1 && sonList !== [] && tid !== 0"
+                  :disabled="ruleForm.parentID == -1 && sonList.length !== 0 && tid !== 0"
                 ></el-autocomplete>
               </el-form-item>
               <el-form-item label="商户其他名称:" prop="otherNames" style="width: 350px;">
@@ -696,7 +695,7 @@
           <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">确定</el-button>
           <el-button type="primary" v-if="btnindex == 1" @click="editBtn(2)">编辑</el-button>
           <el-button type="primary" v-if="btnindex == 2" @click="editorForm('ruleForm')">修改</el-button>
-          <el-button @click="resetForm('ruleForm')">取消</el-button>
+          <el-button @click="resetForm('ruleForm')">取1消</el-button>
         </div>
       </div>
     </el-dialog>
@@ -1125,7 +1124,6 @@ export default {
     moment,
     // 所属上级商户
     querySearchAsyncName(queryString, cb) {
-      console.log(queryString);
       this.superiorMerchants = [];
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
@@ -1149,12 +1147,6 @@ export default {
         .catch(err => {
           console.log(err);
         });
-    },
-    //选择所属上级商户获取光标事件
-    handleFocusName(item) {
-      // this.ruleForm.parentID = item.id;
-      // this.ruleForm.parentName = item.value;
-      console.log(item);
     },
     // 选择所属上级商户
     handleSelectName(item) {
@@ -1188,7 +1180,6 @@ export default {
     },
     // 地区的远程获取数据
     querySearchdiqu(queryString, cb) {
-      console.log("queryString");
       this.vagueDiQu = [];
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/area/api/fuzzy", {
@@ -1207,7 +1198,6 @@ export default {
             ? this.vagueDiQu.filter(this.createFilter(queryString))
             : [];
 
-          console.log(this.vagueDiQu, "vagueDiQu");
           cb(results);
         })
         .catch(err => {
@@ -1811,6 +1801,8 @@ export default {
     // dialog关闭的回调
     closeDialog() {
       this.btnindex = 0;
+      this.arrears = 0
+      this.sonList = []
     },
     // 重置
     handleReset() {
@@ -1981,7 +1973,11 @@ export default {
         salesman: "", //销售人员
         administrative: "", //管理人员
         ImgUrl: "", //logo
-        fileUrl: "" //附件
+        fileUrl: "", //附件
+        parentName: "",
+        parentID: -1,
+        areaInformationName: "",
+        areaInformationID: null
       };
       if (this.btnindex !== 1) this.$refs["ruleForm"].resetFields();
       this.dialogFormVisible = false;
@@ -1989,6 +1985,8 @@ export default {
       this.adminArr = [];
       this.salesArr = [];
       this.businessOtherNamesArr = [];
+      this.sonList = []
+      this.arrears = 0
       // this.$refs.uploadImg.clearFiles(); // 上传图片隐藏 要不报错先影藏
       // this.orgsAddArr = []
     },
@@ -2126,6 +2124,7 @@ export default {
       }
 
       // 经营范围
+      let scopeExt = ""
       if (this.ruleForm.scopeExt.length !== 0) {
         let scopeExt = this.ruleForm.scopeExt.join(",");
       }
@@ -2705,9 +2704,9 @@ export default {
           } else if (object.settlementType == 1) {
             this.ruleForm.settlementType = "月结";
           }
-          if (this.btnindex == 1) {
-            this.sonList = object.sonList;
-          }
+         
+          this.sonList = object.sonList;
+          
           this.ruleForm.parentID = object.parentID;
           this.ruleForm.parentName = object.parentName;
           this.ruleForm.quota = object.quota;
