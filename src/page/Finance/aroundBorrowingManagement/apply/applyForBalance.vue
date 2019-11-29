@@ -489,11 +489,11 @@
       startWork(obj){
 //        alert('执行工作流function！');
         const that = this;
-        this.$http.post(this.GLOBAL.jqUrl + '/ZB/StartUpWorkFlowForZB_V2', {
+        this.$http.post(this.GLOBAL.jqUrlZB + '/ZB/StartUpWorkFlowForZB_V2', {
           "jQ_ID": obj.id,
           "jQ_Type": obj.periphery_type,
           "workflowCode": obj.workflowCode,
-          "userCode": sessionStorage.getItem('userCode'),
+          "userCode": sessionStorage.getItem('tel'),
 //          "userCode": "zb1",// 测试
           "finishStart": "true",
           "paramValues": [{
@@ -526,6 +526,8 @@
             console.log(res.data);
           }
         }).catch(err => {
+          that.cancalLoan(obj.id);
+          that.$message.warning('启动工作流错误!');
           console.log(err);
         })
       },

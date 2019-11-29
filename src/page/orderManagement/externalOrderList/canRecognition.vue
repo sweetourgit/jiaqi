@@ -90,10 +90,10 @@
             <el-option key="" label="全部" value=""></el-option>
             <el-option key="1" label="产品自销" value="1"></el-option>
             <el-option key="2" label="授信支付" value="2"></el-option>
-            <el-option key="3" label="微信支付" value="3"></el-option>
-            <el-option key="4" label="易宝云企付" value="4"></el-option>
+            <!--<el-option key="3" label="微信支付" value="3"></el-option>-->
+            <!--<el-option key="4" label="易宝云企付" value="4"></el-option>-->
             <el-option key="5" label="余额支付" value="5"></el-option>
-            <el-option key="6" label="支付宝" value="6"></el-option>
+            <!--<el-option key="6" label="支付宝" value="6"></el-option>-->
             <el-option key="7" label="自采" value="7"></el-option>
           </el-select>
         </el-col>

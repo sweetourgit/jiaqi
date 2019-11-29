@@ -272,7 +272,7 @@
         <div style="width: 100%">
           <div class="button_select" style="margin-bottom: 30px;margin-top: -30px;">
             <div class="plan_indialog">
-              <span class="search-title" >团期计划</span>
+              <span class="search-title">团期计划</span>
               <el-input placeholder="团期计划" v-model="plan_stage" class="group-no"></el-input>
             </div>
             <div class="plan_indialog">
@@ -803,6 +803,7 @@ export default {
     },
     // 团期计划弹窗的确定按钮
     routerHandle4() {
+      console.log(this.planID)
       this.tour_id = this.planID
       this.ruleForm.tour = this.tour_name_pre
       this.ruleForm.productName = this.product_name_pre

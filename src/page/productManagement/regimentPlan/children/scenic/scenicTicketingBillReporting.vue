@@ -403,6 +403,25 @@ export default {
             startTime = formatDate(new Date(response.data.data.start_at*1000)).split(" ")[0];
             endTime = formatDate(new Date(response.data.data.back_at*1000)).split(" ")[0];
           }
+          that.msg = {
+            tour_no: dataList.tour_no,
+            op_id: dataList.op_id,
+            op_name: '',
+            billTime: billTime,
+            team_num: dataList.team_num,
+            days: dataList.days||'1',
+            total_income: dataList.total_income,
+            total_cost: dataList.total_cost,
+            gross_profit: dataList.gross_profit,
+            gross_rate: dataList.gross_rate,
+            product_name: dataList.product_name,
+            startTime: startTime,
+            endTime: endTime,
+            reduce_num: dataList.reduce_num,
+            guide: dataList.guide,
+            associations: dataList.associations,
+            org_id: dataList.org_id
+          };
           that.getOrgName(dataList.op_id);
           that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
             "id": response.data.data.op_id
@@ -413,25 +432,9 @@ export default {
           }).then(function(response) {
 
             if (response.data.isSuccess) {
-              that.msg = {
-                tour_no: dataList.tour_no,
-                op_id: dataList.op_id,
-                op_name: response.data.object.name,
-                billTime: billTime,
-                team_num: dataList.team_num,
-                days: dataList.days||'1',
-                total_income: dataList.total_income,
-                total_cost: dataList.total_cost,
-                gross_profit: dataList.gross_profit,
-                gross_rate: dataList.gross_rate,
-                product_name: dataList.product_name,
-                startTime: startTime,
-                endTime: endTime,
-                reduce_num: dataList.reduce_num,
-                guide: dataList.guide,
-                associations: dataList.associations,
-                org_id: dataList.org_id
-              };
+              if(response.data.object.name){
+                that.msg.op_name = response.data.object.name;
+              }
             } else {
               that.$message.success("加载数据失败~");
             }

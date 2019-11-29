@@ -37,6 +37,7 @@ import approvalToBorrow from '@/page/Finance/loanManagement/approvalToBorrow'
     },
     methods: {
       getNum: function(msg){
+        console.log(msg)
         if(msg == true) {
           this.refreshAproveData = true
         }

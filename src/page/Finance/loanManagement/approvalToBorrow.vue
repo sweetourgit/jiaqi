@@ -428,35 +428,6 @@ import moment from 'moment'
           console.log(err)
       })
     },
-    // 分页
-    handleSizeChange(page) {
-      this.currentPage = 1;
-      this.pagesize = page;
-      this.pageList();
-    },
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage;
-      this.pageList();
-    },
-    // 启动工作流
-    sendBPM(result) {
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/StartUpWorkFlowForJQ', {
-        jQ_ID: result.guid,
-        jQ_Type: result.flowModel,
-        workflowCode: result.flowModelName,
-        userCode: sessionStorage.getItem('account'), // 未指定呢
-      }).then(res => {
-        let result = JSON.parse(res.data);
-        if (result.code == '0') {
-          console.log('启动工作流成功');
-        } else {
-          console.log('启动工作流错误!');
-          console.log(res.data);
-        }
-      }).catch(err => {
-        console.log(err);
-      })
-    },
     // 请求工作流接口获取未完成的任务
     pageList(){
       var that = this

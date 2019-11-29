@@ -110,6 +110,7 @@
       <!--分页-->
       <div class="block">
         <el-pagination
+          v-if="pageshow"
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -217,6 +218,7 @@
         qqq: [],
         total:600,
         currentPage:1,
+        pageshow: true,
         input:"",
         dialogFormVisible: false,
         form: {
@@ -390,7 +392,7 @@
               "value":this.value,
               "type":this.type,
               "user":this.user,
-              "input":this.input,
+              "name":this.input,
 
             },
             "pageSize":val,
@@ -449,7 +451,7 @@
               "value":this.value,
               "type":this.type,
               "user":this.user,
-              "input":this.input,
+              "name":this.input,
 
             },
             "pageSize":this.pagesize,
@@ -499,17 +501,14 @@
       searchSubmit(){
         //搜索
         var that = this
-        this.$http.post(
-          this.GLOBAL.serverSrc + "/org/api/userpage",
-          // "http://api.dayuntong.com:3009/api/org/userpage",
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userpage",
           {
             "object": {
               "isDeleted": 0,
               "value":this.value,
               "type":this.type,
               "user":this.user,
-              "input":this.input,
-
+              "name":this.input,
             },
             "pageSize":this.pagesize,
             "pageIndex": 1,
@@ -522,6 +521,11 @@
           }
         )
           .then(function (obj) {
+            if(that.input == ''){
+              that.pageshow = true;
+            }else {
+              that.pageshow = false;
+            }
             // console.log(obj.data.objects)
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {

@@ -3,7 +3,6 @@
     <el-dialog title="详情" :visible="dialogFormVisible2" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
-        <el-button type="primary" @click="importOrder" v-if="baseInfo.rece_type == '2' && baseInfo.rec_mode == '订单收款' && baseInfo.can_match == '2'">导入订单明细</el-button>
         <el-button type="primary" @click="backoutBtn" v-if="baseInfo.status_rece != '12' && baseInfo.rec_mode!='票付通余额支付'">撤销</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
@@ -237,17 +236,14 @@
           <!--<el-button class="el-button" type="primary" @click="">确 认</el-button>-->
         </div>
       </el-dialog>
-      <importOrder :dialogFormVisible3="dialogFormVisible3" :info="info" @close="closeImport"></importOrder>
     </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
-  import importOrder from '@/page/Finance/businessRecognitionManagement/importOrder.vue'
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "tradeAdd",
     components: {
-      importOrder
     },
     props: {
       dialogFormVisible2: false,
@@ -398,13 +394,6 @@
             message: "已取消"
           });
         });
-      },
-      importOrder(){
-//        this.info = row.id;
-        this.dialogFormVisible3 = true;
-      },
-      closeImport(){
-        this.dialogFormVisible3 = false;
       },
       // 撤销操作
       backoutBtn(){

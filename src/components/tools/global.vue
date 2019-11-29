@@ -10,7 +10,8 @@
   // const jqUrl="http://192.168.2.6:6019";
   // const jqUrl="http://49.4.10.11:3019"
   // const jqUrl="117.78.20.162:3019"
-  const jqUrl="http://192.168.2.81:3017/h3wf";
+  const jqUrl="http://192.168.2.81:3019/h3wf";
+  const jqUrlZB="http://192.168.2.81:3019/h3wf";
   // const serverSrcPhp="http://www.around.com";
   const serverSrcPhp="http://zb.dayuntong.com";
   const token="";
@@ -24,5 +25,6 @@
   token,//用户token身份
   userId,//用户id
   hasEnter,//用户登录状态
+  jqUrlZB // 周边工作流
   }
 </script>
