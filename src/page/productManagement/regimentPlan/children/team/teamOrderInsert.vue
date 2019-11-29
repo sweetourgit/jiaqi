@@ -898,7 +898,7 @@ export default {
           } else {
             this.tour[index].singlePrice=this.salePrice[index].price_02;
           }
-          
+          console.log(this.tour[index].singlePrice)
         }
       } else{
         console.log(this.tour[index])
@@ -1028,6 +1028,7 @@ export default {
           this.ifOrderInsert = true;
           return false;
         }
+        console.log(guestAll)
       });
     },
     regimentType(ID,index,formName){//获取状态
