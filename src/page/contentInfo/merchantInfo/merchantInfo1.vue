@@ -1925,6 +1925,7 @@ export default {
             item.repaymentDate = moment(item.repaymentDate).format(
               "YYYY-MM-DD"
             );
+            this.arrears += item.qk_price
           });
           this.page_order_total = obj.data.total;
         })
@@ -2204,7 +2205,7 @@ export default {
             bankName: this.ruleForm.bankName,
             bankcardNo: this.ruleForm.bankcardNo,
             balance: this.ruleForm.balance,
-            arrears: this.ruleForm.arrears,
+            // arrears: this.ruleForm.arrears,
             imgUrl: this.ruleForm.imgUrl,
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
@@ -2424,7 +2425,7 @@ export default {
             bankName: this.ruleForm.bankName,
             bankcardNo: this.ruleForm.bankcardNo,
             balance: this.ruleForm.balance,
-            arrears: this.ruleForm.arrears,
+            // arrears: this.ruleForm.arrears,
             imgUrl: this.ruleForm.imgUrl,
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
@@ -2723,7 +2724,9 @@ export default {
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
-          this.arrears = this.toDecimal2(object.arrears);
+          // 欠款总计计算
+
+          // this.arrears = this.toDecimal2(object.arrears);
         })
         .catch(obj => {
           console.log(obj);
