@@ -229,7 +229,11 @@
                   <td class="longWeight" valign="top">{{getListOneMessage.op}}</td>
                 </div>
                 <td class="tr">商户销售&nbsp;&nbsp;</td>
-                <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel == 1">{{getListOneMessage.saler}}</td>
+                <td
+                  class="longWeight"
+                  valign="top"
+                  v-if="getListOneMessage.orderChannel == 1"
+                >{{getListOneMessage.saler}}</td>
                 <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel !== 1"></td>
               </tr>
               <tr>
@@ -237,7 +241,11 @@
                 <td class="longWeight" valign="top">{{getListOneMessage.platform}}</td>
                 <div class="BodyTableCenter">
                   <td class="tr">销售&nbsp;&nbsp;</td>
-                  <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel !== 1">{{getListOneMessage.saler}}</td>
+                  <td
+                    class="longWeight"
+                    valign="top"
+                    v-if="getListOneMessage.orderChannel !== 1"
+                  >{{getListOneMessage.saler}}</td>
                   <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel == 1"></td>
                 </div>
                 <td class="tr">订单总额&nbsp;&nbsp;</td>
@@ -518,6 +526,15 @@ export default {
         .then(res => {
           // console.log("请求一条数据的",res)
           this.getListOneMessage = res.data.object;
+          let enrollDetail = this.getListOneMessage.enrollDetail;
+          console.log();
+          if (enrollDetail.substr(enrollDetail.length - 1, 1) == ",") {
+            this.getListOneMessage.enrollDetail = enrollDetail.substring(
+              0,
+              enrollDetail.length - 1
+            );
+          }
+
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format(
             "YYYY-MM-DD HH:mm:ss"
