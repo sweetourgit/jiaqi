@@ -47,6 +47,14 @@ Vue.prototype.$debounce = function(func, wait, immediate) {
 function isObject (obj) {
   return obj !== null && typeof obj === 'object'
 }
+function isArray (obj) {
+  return Object.prototype.toString.call(obj)=== '[object Array]'
+}
+Vue.prototype.$isObject= isObject;
+Vue.prototype.$isArray= isArray;
+
+
+
 /**
  * @description: 比较两个对象是否宽松相等(不同指针，相同属性)
  */
@@ -82,3 +90,41 @@ Vue.prototype.$checkLooseEqual= function (a, b) {
     return false
   }
 }
+
+/**
+ * @description: 富文本编辑器统一的工具栏
+ */
+Vue.prototype.$defaultToolbar= [
+  // 字体
+  // [{ font: [] }],
+
+  [{ header: [false, 1, 2, 3, 4, 5, 6] }],
+
+  // [{ size: ["small", false, "large", "huge"] }],
+
+  ["bold", "italic", "underline", "strike"],
+
+  [
+    { align: "" },
+    { align: "center" },
+    { align: "right" },
+    { align: "justify" }
+  ],
+
+  // [{ header: 1 }, { header: 2 }],
+
+  // ["blockquote", "code-block"],
+
+  [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+
+  [{ script: "sub" }, { script: "super" }],
+
+  [{ indent: "-1" }, { indent: "+1" }],
+
+  [{ color: [] }, { background: [] }],
+
+  // ["link", "image", "video", "formula"],
+
+  // [{ direction: "rtl" }],
+  // ["clean"]
+];
