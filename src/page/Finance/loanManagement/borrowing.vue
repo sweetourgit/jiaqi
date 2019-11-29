@@ -251,7 +251,8 @@
     </el-dialog>
     <!-- 查看图片文件弹窗 END -->
     <!-- 申请无收入借款中团期计划选择弹窗 -->
-	  <el-dialog width="70%" title="团期计划" :visible.sync="dialogFormVisible_plan" append-to-body>
+    <!-- :visible.sync="dialogFormVisible_plan"  原 -->
+	  <el-dialog width="70%" title="团期计划" :visible="dialogFormVisible_plan" :append-to-body="true" :show-close="false">
       <div class="indialog">
         <div class="indialog_search">
           <div class="plan_indialog">
@@ -300,7 +301,7 @@
         <!-- 分页 END -->
         <div class="number_button" style="margin-top: 30px">
           <el-button @click="planCancel()">取消</el-button>
-          <el-button @click="routerHandle4()" type="primary">确定</el-button>
+          <el-button :disabled="ifShowPlanIdSureBtn" @click="routerHandle4()" type="primary">确定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -388,6 +389,7 @@ export default {
       }
     };
     return {
+      ifShowPlanIdSureBtn: true, // 只有选中任一个团期计划行才取消禁止按钮
       acoutInfo: null, // 传到子组件弹窗内的值 row
       ifShowsearch: false,
       listLoading: true,
@@ -892,14 +894,14 @@ export default {
         })
         .catch(function (obj) {})
     },
-    // 无收入借款团期计划表格
+    // 无收入借款团期计划表格点击行时事件
     clickPlan(row){
+      this.ifShowPlanIdSureBtn = false
       this.$refs.multipleTablePlan.clearSelection(); // 清空用户的选择
       this.$refs.multipleTablePlan.toggleRowSelection(row);
       this.tour_name_pre = row['groupCode'];
       this.product_name_pre = row['title'];
       this.planID = row['planID'];
-      this.tour_id = row['planID']
     },
     // 选中行样式改变
     rowClassPlan({row, rowIndex}){
@@ -909,11 +911,13 @@ export default {
         }
       }
     },
-    // 团期计划
+    // 团期计划选中之后的确定按钮
     routerHandle4() {
+      this.ifShowPlanIdSureBtn = true
+      this.tour_id = this.planID
       this.ruleForm.plan = this.tour_name_pre;
       this.ruleForm.plan_01 = this.product_name_pre;
-      this.getPaymentdetails(this.planID);
+      this.getPaymentdetails(this.tour_id);
       this.dialogFormVisible_plan = false;
       this.plan_stage = '';
       this.plan_name = '';
@@ -990,7 +994,9 @@ export default {
       this.multipleSelectionPlan=val;
       //event.cancelBubble = true;//row-click和selection-change耦合事件
     },
+    // 团期计划取消事件
     planCancel(){
+      this.ifShowPlanIdSureBtn = true
       this.dialogFormVisible_plan = false;
     },
     // 申请无收入借款中团期计划选择弹窗（搜索）
