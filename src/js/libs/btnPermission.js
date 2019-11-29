@@ -23,5 +23,6 @@ Vue.prototype.$_has = function (value) {
       break;
     }
   }
-  return isExist;
+  //return isExist;
+  return true;
 };

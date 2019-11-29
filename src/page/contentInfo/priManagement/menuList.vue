@@ -4,7 +4,7 @@
        <ul id="tree" class="ztree"></ul>
      </div>
      <div class="tree-list">
-     <div v-if="showList">
+     <div v-if="showList" style="padding-bottom:50px">
      <el-row class="button">
        <el-button :disabled="forbiddenAdd" @click="openMenu(1,'添加菜单')">新增</el-button>
        <el-button :disabled="forbidden" @click="delMenu">删除</el-button>
@@ -39,6 +39,12 @@
              </el-form-item>
              <el-form-item label="公开" prop="overt">
                  <el-radio-group v-model="rformA.overt">
+                   <el-radio label="1">是</el-radio>
+                   <el-radio label="2">否</el-radio>
+                 </el-radio-group>
+             </el-form-item>
+             <el-form-item label="是否显示" prop="inmenu">
+                 <el-radio-group v-model="rformA.inmenu">
                    <el-radio label="1">是</el-radio>
                    <el-radio label="2">否</el-radio>
                  </el-radio-group>
@@ -106,7 +112,8 @@ export default {
           overt: "2",
           sort: "0",
           isLeaf: "2",
-          remarks: ""
+          remarks: "",
+          inmenu:"1"
         },
         rules: {
           name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
@@ -263,6 +270,7 @@ export default {
                       "overt": this.rformA.overt,
                       "remarks": this.rformA.remarks,
                       "isLeaf": this.rformA.isLeaf,
+                      "inmenu":this.rformA.inmenu
                     }
                   }).then(res => {
                       if(res.data.isSuccess == true){
@@ -293,7 +301,7 @@ $(document).ajaxSend(function(event, jqxhr, settings){
 
 <style scoped>
        .tree-list{float: left;margin-left: 20px}
-       .table{border:1px solid #e6e6e6;width:800px;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 8px}
+       .table{border:1px solid #e6e6e6;width:800px;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 8px;padding-bottom:30px}
        .el-table tr{background: #f6f6f6 !important}
        .button{margin:20px 0 0 8px}
        .button .el-button{border:1px solid #3095fa;color:#3095fa;width:80px;padding: 0;line-height: 35px}
