@@ -75,7 +75,7 @@
         readOnly: true,
         ruleForm: {
           collectionTime: '',
-          explain: '',
+          explain: '业务待认款',
           payAccount: '',
           payAccountID: '',
           money: '',

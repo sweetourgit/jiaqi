@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative" id="tradeDetail">
-    <el-dialog title="详情" :visible="dialogFormVisible1" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
+    <el-dialog title="导入订单详情" :visible="dialogFormVisible1" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
@@ -577,7 +577,7 @@
   #tradeDetail .el-upload-list__item{
     width: 100%!important;
   }
-  .lineTitle{
+  #tradeDetail .lineTitle{
     width: 100%;
     margin: 10px auto;
     background-color: #E6F3FC;

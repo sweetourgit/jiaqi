@@ -5,6 +5,7 @@
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
         <el-button type="primary" @click="backoutBtn" v-if="baseInfo.approval_status == 1 && showBack == true">撤销</el-button>
+        <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && baseInfo.approval_status == 3 && baseInfo.pay_type == null">选择付款账户</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -78,17 +79,17 @@
           </el-table>
         </div>
       </div>
-
-
-
+      <chooseAccount :dialogFormVisible2="dialogFormVisible2" :info="info" @close="close"></chooseAccount>
     </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
   import {formatDate} from '@/js/libs/publicMethod.js'
+  import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'// 选择付款账户
   export default {
     name: "collectionDetail",
     components: {
+      chooseAccount
     },
     props: {
       dialogFormVisible1: false,
@@ -113,7 +114,8 @@
           accountName: '',
           accountPay: '',
           reimbursed_money: '',
-          approval_status: ''
+          approval_status: '',
+          pay_type: ''
         },
         // 认款方式array
         periphery_type: {
@@ -128,7 +130,9 @@
         // 相关信息，table数据
         tableDataRelated: [],
 
-        showBack: true // 是否显示撤销按钮(当前状态为审批中，并且登录人和申请人相同时，显示按钮，可以撤销)
+        showBack: true, // 是否显示撤销按钮(当前状态为审批中，并且登录人和申请人相同时，显示按钮，可以撤销)
+
+        dialogFormVisible2: false
       }
     },
     computed: {
@@ -170,10 +174,20 @@
           accountName: '',
           accountPay: '',
           reimbursed_money: '',
-          approval_status: ''
+          approval_status: '',
+          pay_type: ''
         };
 
         this.$emit('close', false);
+      },
+      // 选择付款账户
+      chooseAccount(row){
+//        this.info = this.info;
+        this.dialogFormVisible2 = true;
+      },
+
+      close(){
+        this.dialogFormVisible2 = false;
       },
 
       // 撤销操作
@@ -210,7 +224,7 @@
 
       // 结束工作流
       endWorking(){
-        this.$http.post(this.GLOBAL.jqUrl + "/ZB/EndProcessForZB", {
+        this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/EndProcessForZB", {
           "jq_id": this.info,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {
@@ -247,7 +261,8 @@
               accountName: response.data.data.info.account_name,
               accountPay: '',
               reimbursed_money: response.data.data.info.reimbursed_money,
-              approval_status: response.data.data.info.approval_status
+              approval_status: response.data.data.info.approval_status,
+              pay_type: response.data.data.info.pay_type
             };
 
             if(response.data.data.info.pay_type){
@@ -391,7 +406,7 @@
       // 获取审批节点
       getApproval(){
         const that = this;
-        this.$http.post(this.GLOBAL.jqUrl + "/ZB/GetInstanceActityInfoForZB", {
+        this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/GetInstanceActityInfoForZB", {
           "jq_id": this.info,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {

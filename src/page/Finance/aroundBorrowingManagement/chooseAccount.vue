@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
-    <el-dialog title="选择付款账户" :visible="dialogFormVisible2" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="close">
+    <el-dialog title="选择付款账户" :visible="dialogFormVisible2" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="close" appendToBody>
       <div class="buttonDv">
         <el-button class="el-button" type="warning" @click="close">取 消</el-button>
       </div>

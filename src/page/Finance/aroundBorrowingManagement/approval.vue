@@ -209,8 +209,8 @@
       approvalSubmitWorking(){
         const that = this;
         if(this.approval_status == 2){// 驳回
-          this.$http.post(this.GLOBAL.jqUrl + "/ZB/RejectionOfWorkTasksForZB", {
-            "userCode": sessionStorage.getItem('userCode'),
+          this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/RejectionOfWorkTasksForZB", {
+            "userCode": sessionStorage.getItem('tel'),
 //            "userCode": "zb1",
             "workItemID": this.info.workItemID,
             "commentText": this.approvalMark
@@ -225,7 +225,7 @@
             console.log(error);
           });
 
-          this.$http.post(this.GLOBAL.jqUrl + "/ZB/EndProcessForZB", {
+          this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/EndProcessForZB", {
             "jq_id": this.info.id,
             "jQ_Type": this.baseInfo.type
           }, ).then(function(response) {
@@ -239,8 +239,8 @@
           });
 
         }else if(this.approval_status == 3){// 通过
-          this.$http.post(this.GLOBAL.jqUrl + "/ZB/SubmitWorkAssignmentsForZB", {
-            "userCode": sessionStorage.getItem('userCode'),
+          this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/SubmitWorkAssignmentsForZB", {
+            "userCode": sessionStorage.getItem('tel'),
 //            "userCode": "zb1",
             "workItemID": this.info.workItemID,
             "commentText": this.approvalMark
@@ -462,7 +462,7 @@
       // 获取审批节点
       getApproval(){
         const that = this;
-        this.$http.post(this.GLOBAL.jqUrl + "/ZB/GetInstanceActityInfoForZB", {
+        this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/GetInstanceActityInfoForZB", {
           "jq_id": this.info.id,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {

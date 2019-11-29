@@ -82,7 +82,7 @@
           <el-table-column prop="opinion" label="操作" align="center" width="150">
             <template slot-scope="scope">
               <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-              <el-button @click="chooseAccount(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.approval_status == 3 && scope.row.pay_type == null">选择付款账户</el-button>
+              <!--<el-button @click="chooseAccount(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.approval_status == 3 && scope.row.pay_type == null">选择付款账户</el-button>-->
             </template>
           </el-table-column>
         </el-table>
