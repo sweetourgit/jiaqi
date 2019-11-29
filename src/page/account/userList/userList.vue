@@ -183,7 +183,7 @@
         </div>
       </div>
     </el-dialog>
-    <el-dialog title="用户授权" custom-class="city_list" :visible.sync="dialogFormAuth" width="1000px" class="abow_dialog">
+    <el-dialog title="用户授权" custom-class="city_list" :visible.sync="dialogFormAuth" width="1000px" class="abow_dialog" @close="cenclePer">
       <div :style="authDiocss">
         <el-form ref="form" :model="form">           
              <div v-for="(menuList,index) in authData">
@@ -194,7 +194,7 @@
              </div>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
-          <el-button @click="dialogFormAuth = false">取消</el-button>
+          <el-button @click="cenclePer">取消</el-button>
           <el-button type="primary" @click="perSubmit">确 定</el-button>
         </div>
       </div> 
@@ -279,6 +279,10 @@
       }
     },
     methods:{
+      cenclePer(){
+         this.dialogFormAuth = false;
+         this.authData = [];
+      },
       menuChanged(index){
         if(this.authData[index].isJur == false){  //一级未选中 则对应的二级都不选中
             var actArray = this.authData[index].act.length;          
@@ -335,7 +339,7 @@
             }).then(res => {         
               if(res.data.isSuccess == true){
                  this.$message.success('提交成功');
-                 this.dialogFormAuth = false;
+                 this.cenclePer();
               }
         })
       },
