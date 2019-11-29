@@ -40,7 +40,7 @@ export default {
     $route: {
     handler: function(val, oldVal){
           if(val.fullPath != "/login"){
-            this.getPageact();
+           // this.getPageact();
           }
         },
         deep: true
