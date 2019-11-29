@@ -133,7 +133,7 @@
                   :trigger-on-focus="false"
                   placeholder="请输入内容"
                   @select="handleSelectName"
-                  :disabled="ruleForm.parentID == -1 && sonList !== [] && tid !== 0"
+                  :disabled="ruleForm.parentID == -1 && sonList.length !== 0 && tid !== 0"
                 ></el-autocomplete>
               </el-form-item>
               <el-form-item label="商户其他名称:" prop="otherNames" style="width: 350px;">
@@ -1802,6 +1802,7 @@ export default {
     closeDialog() {
       this.btnindex = 0;
       this.arrears = 0
+      this.sonList = []
     },
     // 重置
     handleReset() {
@@ -1984,6 +1985,8 @@ export default {
       this.adminArr = [];
       this.salesArr = [];
       this.businessOtherNamesArr = [];
+      this.sonList = []
+      this.arrears = 0
       // this.$refs.uploadImg.clearFiles(); // 上传图片隐藏 要不报错先影藏
       // this.orgsAddArr = []
     },
@@ -2701,9 +2704,9 @@ export default {
           } else if (object.settlementType == 1) {
             this.ruleForm.settlementType = "月结";
           }
-          if (this.btnindex == 1) {
-            this.sonList = object.sonList;
-          }
+         
+          this.sonList = object.sonList;
+          
           this.ruleForm.parentID = object.parentID;
           this.ruleForm.parentName = object.parentName;
           this.ruleForm.quota = object.quota;
