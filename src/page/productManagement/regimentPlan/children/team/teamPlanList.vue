@@ -183,6 +183,14 @@ export default {
   mounted () {
   },
   methods: {
+    permission(){
+      let orgID = sessionStorage.getItem('orgID');
+      let arr = [492,493,494,545];
+      if(arr.indexOf('orgID')!=-1){
+
+      }
+      
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";

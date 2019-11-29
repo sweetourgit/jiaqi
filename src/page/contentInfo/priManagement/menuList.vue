@@ -183,7 +183,7 @@ export default {
       menuList(type){  //获取菜单列表
         this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/list',{
              "object": {
-               "parentID": this.parentID,
+               "id": this.parentID,
               }
             }).then(res => {
                 if(res.data.isSuccess == true){
