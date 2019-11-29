@@ -132,8 +132,9 @@
                   :fetch-suggestions="querySearchAsyncName"
                   :trigger-on-focus="false"
                   placeholder="请输入内容"
+                  @focus="handleFocusName"
                   @select="handleSelectName"
-                  :disabled="ruleForm.parentID == -1 && sonList !== []"
+                  :disabled="ruleForm.parentID == -1 && sonList !== [] && tid !== 0"
                 ></el-autocomplete>
               </el-form-item>
               <el-form-item label="商户其他名称:" prop="otherNames" style="width: 350px;">
@@ -1148,6 +1149,12 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    //选择所属上级商户获取光标事件
+    handleFocusName(item) {
+      // this.ruleForm.parentID = item.id;
+      // this.ruleForm.parentName = item.value;
+      console.log(item);
     },
     // 选择所属上级商户
     handleSelectName(item) {

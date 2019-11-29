@@ -362,7 +362,9 @@ export default {
                     "iDcard": res.data.object.iDcard,
                     "tourGuide": res.data.object.tourGuide,
                     "sex": res.data.object.sex,
-                    "userType": res.data.object.userType
+                    "userType": res.data.object.userType,
+                    "orgID": res.data.object.orgID,
+                    "userState":res.data.object.userState
                   },
                 },{
                 headers: {
