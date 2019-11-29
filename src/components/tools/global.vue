@@ -1,6 +1,10 @@
 <script>
   //const serverSrc="http://test.dayuntong.com";
+
   const serverSrc="http://192.168.2.81:3017";
+  // 外网可访问的serverSrc
+  // const serverSrc= "http://web.17lvju.com/app/jialv"
+
   // const imgUrl="http://test.dayuntong.com";
   const imgUrl ="https://jiaqi-server.obs.myhwclouds.com";//图片预览地址
   //http://test.dayuntong.com/upload/obs/api/picture  图片上传地址
@@ -10,9 +14,8 @@
   // const jqUrl="http://192.168.2.6:6019";
   // const jqUrl="http://49.4.10.11:3019"
   // const jqUrl="117.78.20.162:3019"
-  const jqUrl="http://192.168.2.81:3019/h3wf";
-  const jqUrlZB="http://192.168.2.81:3019/h3wf";
-  // const serverSrcPhp="http://www.around.com";
+  const jqUrl="http://test.dayuntong.com/h3wf";
+//  const serverSrcPhp="http://www.around.com";
   const serverSrcPhp="http://zb.dayuntong.com";
   const token="";
   const userId="";
@@ -25,6 +28,5 @@
   token,//用户token身份
   userId,//用户id
   hasEnter,//用户登录状态
-  jqUrlZB // 周边工作流
   }
 </script>
