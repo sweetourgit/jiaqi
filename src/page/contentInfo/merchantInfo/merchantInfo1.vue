@@ -133,7 +133,7 @@
                   :trigger-on-focus="false"
                   placeholder="请输入内容"
                   @select="handleSelectName"
-                  :disabled="ruleForm.parentID == -1 && sonList !== [] && tid !== 0"
+                  :disabled="ruleForm.parentID == -1 && sonList.length !== 0 && tid !== 0"
                 ></el-autocomplete>
               </el-form-item>
               <el-form-item label="商户其他名称:" prop="otherNames" style="width: 350px;">
@@ -243,7 +243,7 @@
                 ></el-autocomplete>
               </el-form-item>
               <el-form-item label="公司logo :" prop="companyLogo" style="width:360px;">
-                <!-- <el-upload
+                <el-upload
                   ref="uploadImg"
                   class="upload-demo"
                   :action="imgUpload()"
@@ -251,16 +251,15 @@
                   :on-remove="handleRemove"
                   :file-list="fileList2"
                   :limit="1"
-                  list-type="picture"
                   :on-error="handleError"
                   :on-success="handleSuccess"
                   name="files"
                   style="width: 220px;"
                 >
-                <el-button size="small" type="primary">点击上传</el-button>-->
+                <el-button size="small" type="primary">点击上传</el-button>
                 <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 <!-- </el-upload> -->
-                <el-upload
+                <!-- <el-upload
                   ref="uploadImg"
                   class="avatar-uploader"
                   :action="imgUpload()"
@@ -270,7 +269,7 @@
                   :on-success="handleSuccess"
                 >
                   <img v-if="ruleForm.imgUrl" :src="ruleForm.imgUrl" class="avatar" />
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
                   <!-- <el-button size="small" type="primary">点击上传</el-button> -->
                   <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
@@ -280,7 +279,7 @@
               </el-form-item>
               <!-- action="http://test.dayuntong.com/upload/obs/api/picture/" -->
               <el-form-item label="附件 :" prop="companyLogo" style="width:360px;">
-                <!-- <el-upload
+                <el-upload
                   ref="uploadImg"
                   class="upload-demo"
                   :action="imgUpload()"
@@ -288,13 +287,12 @@
                   :on-remove="handleRemove"
                   :file-list="fileList2"
                   :limit="1"
-                  list-type="picture"
                   :on-error="handleErrorFileUrl"
                   :on-success="handleSuccessFileUrl"
                   name="files"
                   style="width: 220px;"
-                >-->
-                <el-upload
+                >
+                <!-- <el-upload
                   ref="uploadImg"
                   class="avatar-uploader"
                   :action="imgUpload()"
@@ -304,8 +302,8 @@
                   :on-success="handleSuccessFileUrl"
                 >
                   <img v-if="ruleForm.fileUrl" :src="ruleForm.fileUrl" class="avatar" />
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  <!-- <el-button size="small" type="primary">点击上传</el-button> -->
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
+                  <el-button size="small" type="primary">点击上传</el-button>
                   <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
                 <div v-if=" this.imgnum == 2">
@@ -695,7 +693,7 @@
           <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">确定</el-button>
           <el-button type="primary" v-if="btnindex == 1" @click="editBtn(2)">编辑</el-button>
           <el-button type="primary" v-if="btnindex == 2" @click="editorForm('ruleForm')">修改</el-button>
-          <el-button @click="resetForm('ruleForm')">取1消</el-button>
+          <el-button @click="resetForm('ruleForm')">取消</el-button>
         </div>
       </div>
     </el-dialog>
@@ -1802,6 +1800,7 @@ export default {
     closeDialog() {
       this.btnindex = 0;
       this.arrears = 0
+      this.sonList = []
     },
     // 重置
     handleReset() {
@@ -1984,6 +1983,8 @@ export default {
       this.adminArr = [];
       this.salesArr = [];
       this.businessOtherNamesArr = [];
+      this.sonList = []
+      this.arrears = 0
       // this.$refs.uploadImg.clearFiles(); // 上传图片隐藏 要不报错先影藏
       // this.orgsAddArr = []
     },
@@ -2701,9 +2702,9 @@ export default {
           } else if (object.settlementType == 1) {
             this.ruleForm.settlementType = "月结";
           }
-          if (this.btnindex == 1) {
-            this.sonList = object.sonList;
-          }
+         
+          this.sonList = object.sonList;
+          
           this.ruleForm.parentID = object.parentID;
           this.ruleForm.parentName = object.parentName;
           this.ruleForm.quota = object.quota;
@@ -2781,8 +2782,8 @@ export default {
       if (file.status == "success") {
         this.imgnum = 1;
         let T_img = JSON.parse(response);
-        // this.ruleForm.imgUrl = T_img.paths[0].Url;
-        this.ruleForm.imgUrl = URL.createObjectURL(file.raw);
+        this.ruleForm.imgUrl = T_img.paths[0].Url;
+        // this.ruleForm.imgUrl = URL.createObjectURL(file.raw);
       } else {
         this.$message.error("图片上传失败重新上传");
       }
@@ -2793,8 +2794,8 @@ export default {
       if (file.status == "success") {
         this.fileUrl = 1;
         let T_fileUrl = JSON.parse(response);
-        // this.ruleForm.fileUrl = T_fileUrl.paths[0].Url;
-        this.ruleForm.fileUrl = URL.createObjectURL(file.raw);
+        this.ruleForm.fileUrl = T_fileUrl.paths[0].Url;
+        // this.ruleForm.fileUrl = URL.createObjectURL(file.raw);
       } else {
         this.$message.error("附件上传失败重新上传");
       }

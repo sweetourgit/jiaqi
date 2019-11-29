@@ -88,6 +88,7 @@
         <!-- 发票表格 -->
         <el-form-item label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible2">
           <el-button style="margin: 5px 0 10px 0;" type="primary" @click="handleEdit()">添加</el-button>
+          <el-button style="margin: 5px 0 10px 0;" type="primary" @click="handleChecked()">测试</el-button>
           <el-table :data="ruleForm.invoiceTable" border style="width: 100%;" size="mini">
             <el-table-column label="发票类型" width="120" align="center">
               <template slot-scope="scope">
@@ -198,63 +199,8 @@
              </el-table-column>
           </el-table>
         </div>
-        <!-- 审批过程 -->
-        <!--  <el-form-item v-if="this.find == 1" label="审批过程" label-width="120px" label-height="auto">
-        </el-form-item>
-        <el-form-item v-if="this.find == 1" label="" label-width="" label-height="auto">
-          <el-table :data="tableData2" border style="width: 97.8%;margin-left: 30px;margin-top: -25px;">
-            <el-table-column prop="createTime" label="申请日期" align="center">
-            </el-table-column>
-            <el-table-column prop="user" label="申请人" align="center">
-            </el-table-column>
-            <el-table-column prop="status" label="状态" align="center">
-            </el-table-column>
-            <el-table-column prop="abstract" label="摘要" align="center">
-            </el-table-column>
-          </el-table>
-        </el-form-item> -->
-        <!-- <div style="height: 200px;"></div> -->
       </el-form>
     </el-dialog>
-    <!--协办弹窗-->
-    <!--<el-dialog style="text-align: left" title="选择协办人:" :visible.sync="dialogFormVisible1" width="50%">
-      <div style="text-align: center">
-        <div style="width: 100%">
-          <div class="button_select" style="margin-bottom: 30px;margin-top: -30px;">
-            <el-input v-model="apply_user_input" class="input" style='margin-left: 0px;'></el-input>
-            <el-button type="primary" @click="searchHand2()" size="medium">搜索</el-button>
-          </div>
-          <div class="table_trip" style=" width: 100%;">
-            <el-table :data="tableData3" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">
-              <el-table-column prop="id" label="ID" align="center" width="100%">
-              </el-table-column>
-              <el-table-column prop="name" label="姓名" width="120%" align="center">
-              </el-table-column>
-              <el-table-column prop="org" label="组织" align="center">
-              </el-table-column>
-              </el-table-column>
-            </el-table>
-          </div>
-          <div class="block" style="margin-top: 30px;text-align:center;">
-            <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="currentPage" :page-sizes="[5, 10, 50, 100]" :page-size="5" layout="total, sizes, prev, pager, next, jumper" :total=total>
-            </el-pagination>
-          </div>
-        </div>
-      </div>
-      <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible1 = false">取 消</el-button>
-          <el-button type="primary" @click="routerHandle2()">确 定</el-button>
-        </span>
-      </el-dialog> -->
-      <!--驳回意见弹窗end-->
-      <!--驳回意见弹窗-->
-    <!--<el-dialog title="请填写审批意见" :visible.sync="dialogFormVisible2" width="30%">
-      <textarea style="width: 90%; height: 132px; resize:none;margin-left: 13px; ">123123</textarea>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="rejectHandle2()">确 定</el-button>
-    </span>
-    </el-dialog> -->
-    <!--驳回意见弹窗end-->
     <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible" width="50%">
       <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
       <div>
@@ -370,7 +316,7 @@ export default {
           address: '', //地址
           tel: '', //电话
           createTime: formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss'),
-        }],
+        }]
       },
       rules: {
         invoice: [{ required: true, message: '是否开发票不能为空', trigger: 'blur' }],
@@ -389,13 +335,6 @@ export default {
         invoiceID: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
       },
       tableData1: [],
-      tableData2: [{
-        createTime: '2018-05-23',
-        user: '阳阳',
-        status: '通过',
-        abstract: '没啥意见',
-      }],
-      tableData3: [],
       collectedMoney: 0,
       uncollectedMoney: 0, // 未收金额
       examineMoney: 0, // 待审批金额
@@ -570,7 +509,6 @@ export default {
        });
        return;
      }
-     console.log(this.arrearsList[0].matchingPrice)
       if(this.arrearsList[0].matchingPrice <= 0) {
         this.$message({
           type: 'info',
@@ -578,8 +516,6 @@ export default {
         });
         return;
       }
-     console.log(this.arrearsList[0].uncollectedMoney - this.arrearsList[0].audited >= this.arrearsList[0].matchingPrice)
-      console.log(this.arrearsList[0].matchingPrice)
       if(!(this.arrearsList[0].uncollectedMoney - this.arrearsList[0].audited >= this.arrearsList[0].matchingPrice)){
         this.$message({
           type: 'info',
@@ -676,7 +612,6 @@ export default {
             objectRequest.invoiceTable = []
           }
 
-
           this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/insert', {
             "object": objectRequest
           }).then(res => {
@@ -702,9 +637,6 @@ export default {
           return false;
         }
       });
-    }, //转办
-    Transfer() {
-      this.dialogFormVisible1 = true
     },
     //驳回
     boSubmit() {
@@ -824,26 +756,6 @@ export default {
         });
       });
     },
-    //转办确认按钮
-    routerHandle2() {
-      this.$confirm('是否转办该条收款, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '转办成功!'
-        });
-        this.closeAdd()
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消(转办)'
-        });
-      });
-      this.dialogFormVisible1 = false
-    },
     //驳回确定按钮
     rejectHandle2() {
       this.$confirm('是否驳回该条收款, 是否继续?', '提示', {
@@ -896,51 +808,17 @@ export default {
     handleEdit(index, row) {
       this.ruleForm.invoiceTable.push({})
     },
+    handleChecked(){
+      this.a = true
+    },
     handleDelete(index, row) {
       this.ruleForm.invoiceTable.splice(index, 1)
       if (this.ruleForm.invoiceTable.length == 0) {
         this.ruleForm.invoiceTable.push({})
       }
     },
-    downloadIamge(imgsrc, name) { //下载图片地址和图片名
-      var image = new Image();
-      // 解决跨域 Canvas 污染问题
-      image.setAttribute("crossOrigin", "anonymous");
-      image.onload = function() {
-        var canvas = document.createElement("canvas");
-        // 图片原始尺寸
-        var originWidth = image.width;
-        var originHeight = image.height;
-        // 最大尺寸限制
-        let maxWidth = 1080;
-        let maxHeight = 1080;
-        // 图片尺寸超过400x400的限制
-        if (originWidth > maxWidth || originHeight > maxHeight) {
-          if (originWidth / originHeight > maxWidth / maxHeight) {
-            // 更宽，按照宽度限定尺寸
-            image.width = maxWidth;
-            image.height = Math.round(maxWidth * (originHeight / originWidth));
-          } else {
-            image.height = maxHeight;
-            image.width = Math.round(maxHeight * (originWidth / originHeight));
-          }
-        }
-        canvas.width = image.width;
-        canvas.height = image.height;
-        var context = canvas.getContext("2d");
-        context.drawImage(image, 0, 0, image.width, image.height);
-        var url = canvas.toDataURL("image/jpeg"); //得到图片的base64编码数据
-        var a = document.createElement("a"); // 生成一个a元素
-        var event = new MouseEvent("click"); // 创建一个单击事件
-        a.download = name || "photo"; // 设置图片名称
-        a.href = url; // 将生成的URL设置为a.href属性
-        a.dispatchEvent(event); // 触发a的单击事件
-      };
-      image.src = imgsrc;
-    },
     downs() {
       window.open(this.imgBig);
-      // this.downloadIamge(this.imgBig, this.imgBigName)
     },
     // 上传文件-移除
     handleRemove(file, fileList) {
@@ -981,149 +859,8 @@ export default {
       this.fileList = []
     },
     isInvoiceChange(value) {
-      console.log(value)
       this.dialogVisible2 = value == '1' ? true : false;
-
       //this.ruleForm.invoiceTable = [];
-    },
-    searchHand2() {
-      this.pageNum = 1;
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/org/api/userpage", {
-            "pageIndex": this.pageNum,
-            "pageSize": this.pageSize,
-            "total": 0,
-            "object": {
-              "isDeleted": 0,
-              "value": '',
-              "type": 3,
-              "user": '',
-              "input": this.apply_user_input,
-            },
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData3 = obj.data.objects;
-          that.tableData3.forEach(function(v, k, arr) {
-            arr[k]['org'] = '吉林大运通-财务部-会计'
-            if (arr[k]['sex'] == 1) {
-              arr[k]['sex'] = '男'
-            } else {
-              arr[k]['sex'] = '女'
-            }
-            if (arr[k]['userState'] == 0) {
-              arr[k]['status'] = '未选择'
-            } else if (arr[k]['userState'] == 1) {
-              arr[k]['status'] = '等待审核'
-            } else if (arr[k]['userState'] == 2) {
-              arr[k]['status'] = '正常'
-            } else {
-              arr[k]['status'] = '停用'
-            }
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
-    },
-    handleSizeChange2(val) {
-      this.pagesize = val
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/org/api/userpage", {
-            "pageIndex": this.pageNum,
-            "pageSize": this.pageSize,
-            "total": 0,
-            "object": {
-              "isDeleted": 0,
-              "value": '',
-              "type": 3,
-              "user": '',
-              "input": this.apply_user_input,
-            },
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData3 = obj.data.objects;
-          that.tableData3.forEach(function(v, k, arr) {
-            arr[k]['org'] = '吉林大运通-财务部-会计'
-            if (arr[k]['sex'] == 1) {
-              arr[k]['sex'] = '男'
-            } else {
-              arr[k]['sex'] = '女'
-            }
-            if (arr[k]['userState'] == 0) {
-              arr[k]['status'] = '未选择'
-            } else if (arr[k]['userState'] == 1) {
-              arr[k]['status'] = '等待审核'
-            } else if (arr[k]['userState'] == 2) {
-              arr[k]['status'] = '正常'
-            } else {
-              arr[k]['status'] = '停用'
-            }
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
-    },
-    handleCurrentChange2(val) {
-      this.pageNum = val;
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/org/api/userpage", {
-            "pageIndex": this.pageNum,
-            "pageSize": this.pageSize,
-            "total": 0,
-            "object": {
-              "isDeleted": 0,
-              "value": '',
-              "type": 3,
-              "user": '',
-              "input": this.apply_user_input,
-
-            },
-          }, {
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        .then(function(obj) {
-          that.total = obj.data.total;
-          that.tableData3 = obj.data.objects;
-          that.tableData3.forEach(function(v, k, arr) {
-            arr[k]['org'] = '吉林大运通-财务部-会计'
-            if (arr[k]['sex'] == 1) {
-              arr[k]['sex'] = '男'
-            } else {
-              arr[k]['sex'] = '女'
-            }
-            if (arr[k]['userState'] == 0) {
-              arr[k]['status'] = '未选择'
-            } else if (arr[k]['userState'] == 1) {
-              arr[k]['status'] = '等待审核'
-            } else if (arr[k]['userState'] == 2) {
-              arr[k]['status'] = '正常'
-            } else {
-              arr[k]['status'] = '停用'
-            }
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
     },
     getCollectionInfo() {
       var that = this
@@ -1178,24 +915,6 @@ export default {
           console.log(obj)
         })
     },
-    sendBPM(result) {
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/StartUpWorkFlowForJQ', {
-        jQ_ID: result.guid,
-        jQ_Type: result.flowModel,
-        workflowCode: result.flowModelName,
-        userCode: sessionStorage.getItem('account'), //未指定呢
-      }).then(res => {
-        let result = JSON.parse(res.data);
-        if (result.code == '0') {
-          console.log('启动工作流成功');
-        } else {
-          console.log('启动工作流错误!');
-          console.log(res.data);
-        }
-      }).catch(err => {
-        console.log(err);
-      })
-    },
     clearForm() {
       this.ruleForm = {
         abstract: '',
@@ -1228,11 +947,7 @@ export default {
       this.indent = '';
       this.indentPeople = '';
     },
-
-  },
-  created() {
-
-  },
+  }
 }
 
 </script>

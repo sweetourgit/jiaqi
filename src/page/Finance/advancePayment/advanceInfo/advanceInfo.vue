@@ -901,10 +901,6 @@ export default {
     showInput3() {
       this.dialogVisible = true
     },
-    // 供应商
-    dest_01(item) {
-      this.ruleForm.supplier = item.value;
-    },
     handleInputConfirm2() {
       if (this.ruleForm.supplier !== '') {
         setTimeout(res => {
@@ -962,7 +958,7 @@ export default {
               "id": res.data.objects[i].id,
               "supplierType": res.data.objects[i].supplierType
             })
-            this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+            // this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
           }
           var results = queryString5 ? this.tableData2.filter(this.createFilter(queryString5)) : [];
           cb(results)
@@ -970,6 +966,11 @@ export default {
           cb()
         }
       })
+    },
+    // 供应商模糊查询之后选择事件
+    dest_01(item) {
+      this.supplier_id = item.id
+      this.ruleForm.supplier = item.value;
     },
     createFilter(queryString1){
       return (restaurant) => {

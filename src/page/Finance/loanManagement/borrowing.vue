@@ -445,7 +445,6 @@ export default {
         accessory:'',
       },
       tour_id:0, // 无收入弹窗id
-      supplier_id:0, // 无收入供应商id
       borrowingType: [], // 无收入借款类型选择器
       payment_01:[{ // 无收入借款支付方式选择器
         value: '选项1',
@@ -648,11 +647,16 @@ export default {
             "id": res.data.objects[i].id,
             "supplierType": res.data.objects[i].supplierType
           })
-          this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+          //this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
         }
         var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
         cb(results)
       }).catch(err => {})
+    },
+    // 供应商选中
+    departure(item){
+      this.supplier_id = item.id
+      //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
     },
     // 借款人模糊检索
     querySearchBorrower(queryBorrowerString, cb) {
@@ -740,14 +744,6 @@ export default {
       return (restaurant) => {
         return (restaurant.userCode);
       }
-    },
-    // 供应商选中
-    departure(item){
-      //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
-      /*this.productPos = item.id;
-      this.originPlace = item.value;*/
-      this.productPos = item.id;
-      this.originPlace = item.value;
     },
     // 借款人选中
     departureBorrower (item) {
