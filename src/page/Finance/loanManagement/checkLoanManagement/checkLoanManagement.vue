@@ -118,7 +118,7 @@
       <el-table-column prop="expenseChecking" label="报销中总额" align="center"></el-table-column>
       <el-table-column prop="expense" label="已报销总额" align="center"></el-table-column>
       <el-table-column prop="price" label="已收总额" align="center"></el-table-column>
-      <el-table-column prop="supTotal" label="供应商欠款总额" align="center"></el-table-column>
+      <el-table-column prop="paymentChecking" label="供应商欠款总额" align="center"></el-table-column>
     </el-table>
     <!-- 相关信息 END -->
     <!-- 无收入借款明细 -->
