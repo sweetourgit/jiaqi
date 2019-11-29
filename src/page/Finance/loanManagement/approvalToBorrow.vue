@@ -267,8 +267,9 @@ import moment from 'moment'
     checkLoanManagement,
   },
   props:{
-    refreshAproveData:{
-      type: Boolean
+    refreshAprove:{
+      type: Number,
+      default: 0
     }
   },
   data(){
@@ -330,9 +331,13 @@ import moment from 'moment'
     }
   },
   watch:{
-    refreshAproveData:function(newV, oldV){
-      console.log(newV, oldV)
-      this.pageList()
+    refreshAprove:function(newV, oldV){
+      let _this = this
+      if(newV != oldV){
+        setTimeout(function () {
+          _this.pageList()
+        },500)
+      }
     },
     deep:true
   },
