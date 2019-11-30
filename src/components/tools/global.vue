@@ -1,7 +1,7 @@
 <script>
-  const serverSrc="http://api.dayuntong.com";
+  // const serverSrc="http://api.dayuntong.com";
 
-  // const serverSrc="http://192.168.2.81:3017";
+  const serverSrc="http://192.168.2.81:3017";
   // 外网可访问的serverSrc
   // const serverSrc= "http://web.17lvju.com/app/jialv"
 
