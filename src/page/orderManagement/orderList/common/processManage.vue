@@ -928,7 +928,7 @@ export default {
         for (let i = _arr.length - 1; i > 0; i--) {
           if (_arr[i].indexOf(enrollName) != -1) {
             _arr.splice(i, 1);
-            this.enrollDetail = _arr.toString();
+            return this.enrollDetail = _arr.toString();
           }
         }
 
