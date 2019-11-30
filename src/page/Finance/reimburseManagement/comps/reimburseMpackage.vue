@@ -2,7 +2,7 @@
   <!--多报销-->
   <div>
     报销弹框内容
-  <el-form
+  <!-- <el-form
           :model="ruleForm"
           :rules="rules"
           ref="ruleForm"
@@ -24,7 +24,7 @@
                 v-for="(item,index) in editableTabs"
                 :label="item.title"
                 :name="item.name"
-              >
+              > -->
               <!-- {{item.content}} -->
                 <div class="handle_div">
                   <div class="handle_id" v-if="find==1"><span>ID:</span><span style="margin-left: 10px;">{{ruleForm.id}}</span></div>
@@ -167,7 +167,7 @@
                   </div>
                 </div>
               </el-tab-pane>
-            </el-tabs>
+           
             <!-- 审批人 -->
             <div v-if="this.find == 1" class="re_style" style="margin-top: 20px"> 
               <el-table :data="reimData" border style="width: 100%">
@@ -177,8 +177,7 @@
                 <el-table-column prop="time" label="审批时间"></el-table-column>
               </el-table>
             </div>
-        </div>
-  </el-form>
+   
           <!--多报销end-->
         <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
           <el-button @click="chanceSubmit('ruleForm')">取 消</el-button>
