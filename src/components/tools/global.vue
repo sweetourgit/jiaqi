@@ -30,5 +30,6 @@
   token,//用户token身份
   userId,//用户id
   hasEnter,//用户登录状态
+  jqUrlZB // 周边工作流
   }
 </script>
