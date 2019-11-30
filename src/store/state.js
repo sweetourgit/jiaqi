@@ -1,6 +1,6 @@
 export default {
   isLogin:0,
   token:"",
-  name:""
-
+  name:"",
+  advinceData: 0,
 }

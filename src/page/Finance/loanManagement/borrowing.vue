@@ -1029,9 +1029,6 @@ export default {
       this.acoutInfo = row
       this.status = row.checkTypeEX;
       this.ruleForm = row;
-      //this.$refs["ruleForm"].resetFields();
-      //this.getLabel();
-      //this.clearPlan();
     },
     // 获取一条详情
     getLabel(){
@@ -1099,7 +1096,6 @@ export default {
                  this.getList();
                  this.clearPlan();
                  this.$emit('aprovalNum',true) // 如果已经成功申请无收入借款，传回true，给父组件，父组件将值传给无需要您审批的组件对该列表进行刷新
-                 //this.sendBPM(res.data.object)
                  this.noIncomeShow = false;
                  //this.$refs["ruleForm"].resetFields();
                  //this.$refs[formName].resetFields();
@@ -1111,22 +1107,6 @@ export default {
           return false;
         }
       });
-    },
-    sendBPM(result) {
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/StartUpWorkFlowForJQ', {
-        jQ_ID: result.guid,
-        jQ_Type: result.flowModel,
-        workflowCode: result.flowModelName,
-        userCode: sessionStorage.getItem('userCode'), // 未指定呢
-      }).then(res => {
-        let result = JSON.parse(res.data);
-        if (result.code == '0') {
-          console.log('启动工作流成功');
-        } else {
-          console.log('启动工作流错误!');
-          console.log(res.data);
-        }
-      }).catch(err => {})
     },
     // 付款方式
     payment(){
@@ -1217,13 +1197,10 @@ export default {
          type: "warning"
       })
       .then(() => {
-        this.$http.post(
-        this.GLOBAL.jqUrl + "/JQ/EndProcessForJQ",
-        {
+        this.$http.post(this.GLOBAL.jqUrl + "/JQ/EndProcessForJQ",{
           "jq_id": this.guid,
           "jQ_Type": 1
-        })
-        .then(res => {
+        }).then(res => {
           this.$message.success("撤销成功");
           this.checkIncomeShow = false;
           this.deleteBorrow();
