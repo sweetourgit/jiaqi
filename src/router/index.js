@@ -158,6 +158,22 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/supplierAdd',
+      component: () => import('@/page/contentInfo/supplierInfo/supplierEdit/supplierEdit.vue'),
+      name: '新增供应商',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/supplierEdit',
+      component: () => import('@/page/contentInfo/supplierInfo/supplierEdit/supplierEdit.vue'),
+      name: '编辑供应商',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '/supplierDetails',
       component: () => import('@/page/contentInfo/supplierInfo/supplierDetails/supplierDetails'),
       name: '供应商信息详情',
