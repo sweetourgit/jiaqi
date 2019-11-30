@@ -52,6 +52,7 @@
           <el-form-item label="行程天数：" prop="day">
             <el-input size="small" style="width: 100px;" placeholder="请输入天数"
               v-model="submitForm.day"
+              :disabled="vm.isSave"
             ></el-input>        
           </el-form-item>
         </el-col>
@@ -66,6 +67,7 @@
           <el-form-item label-width="0" prop="night">
             <el-input size="small" style="width: 100px;" placeholder="请输入晚数"
               v-model="submitForm.night"
+              :disabled="vm.isSave"
             ></el-input>        
           </el-form-item>
         </el-col>
@@ -227,123 +229,126 @@ export default {
   },
 
   data(){
-    return Object.assign({
-      vm: {
-        // label-input中给普通输入框传入的props，和elementUI文档中的一样
-        strengthsInputProps:{ 
-          showWordLimit: true, 
-          maxlength: 8,
-          factory: this.strengthsFactory 
+    return Object.assign(
+      {
+        vm: {
+          // label-input中给普通输入框传入的props，和elementUI文档中的一样
+          strengthsInputProps:{ 
+            showWordLimit: true, 
+            maxlength: 8,
+            factory: this.strengthsFactory 
+          },
+          crowdlistOptions: [],
+          themelistOptions: [],
+          // 暂时变量，用来禁用天数编辑
+          isSave: false,
         },
-        crowdlistOptions: [],
-        themelistOptions: []
-      },
-      submitForm: {},
-      rules: {
-        title: { 
-          required: true, 
-          validator: this.simpleValidator, 
-          message: '产品名称不能为空', 
-          trigger: 'blur'
-        },
-        isForeign: { 
-          required: true, 
-          validator: this.simpleValidator, 
-          message: '出游类型不能为空', 
-          trigger: 'blur' 
-        },
-        day: [
-          { 
+        submitForm: {},
+        rules: {
+          title: { 
             required: true, 
             validator: this.simpleValidator, 
-            message: '行程天数不能为空', 
-            trigger: 'blur' 
-          },{
-            validator: this.numberValidator, 
-            message: '行程天数必须为正整数', 
+            message: '产品名称不能为空', 
             trigger: 'blur'
-          }
-        ],
-        night: [
-          { 
+          },
+          isForeign: { 
             required: true, 
             validator: this.simpleValidator, 
-            message: '行程晚数不能为空', 
+            message: '出游类型不能为空', 
             trigger: 'blur' 
-          },{
-            validator: this.numberValidator, 
-            message: '行程晚数必须为正整数', 
-            trigger: 'blur'
-          }
-        ],
-        pods: {
-          required: true,
-          validator: this.notNullArrayValidator, 
-          message: '出发地不能为空', 
-          trigger: ['blur', 'change']
-        },
-        destinations: {
-          required: true,
-          validator: this.notNullArrayValidator, 
-          message: '目的地不能为空', 
-          trigger: ['blur', 'change']
-        },
-        confirmType: { 
-          required: true, 
-          validator: this.simpleValidator, 
-          message: '订单确认类型不能为空', 
-          trigger: ['blur', 'change']
-        },
-        // 亮点词
-        strengths: {
-          required: true,
-          validator: this.notNullArrayValidator, 
-          message: '亮点词不能为空，且不能多于四个', 
-          numLimit: 4,
-          trigger: ['blur', 'change']
-        },
-        crowdID: { 
-          required: true, 
-          validator: this.simpleValidator, 
-          message: '出游人群不能为空', 
-          trigger: ['blur', 'change']
-        },
-        themeID: { 
-          required: true, 
-          validator: this.simpleValidator, 
-          message: '主题不能为空', 
-          trigger: ['blur', 'change']
-        },
-        advanceDay: [
-          { 
+          },
+          day: [
+            { 
+              required: true, 
+              validator: this.simpleValidator, 
+              message: '行程天数不能为空', 
+              trigger: 'blur' 
+            },{
+              validator: this.numberValidator, 
+              message: '行程天数必须为正整数', 
+              trigger: 'blur'
+            }
+          ],
+          night: [
+            { 
+              required: true, 
+              validator: this.simpleValidator, 
+              message: '行程晚数不能为空', 
+              trigger: 'blur' 
+            },{
+              validator: this.numberValidator, 
+              message: '行程晚数必须为正整数', 
+              trigger: 'blur'
+            }
+          ],
+          pods: {
+            required: true,
+            validator: this.notNullArrayValidator, 
+            message: '出发地不能为空', 
+            trigger: ['blur', 'change']
+          },
+          destinations: {
+            required: true,
+            validator: this.notNullArrayValidator, 
+            message: '目的地不能为空', 
+            trigger: ['blur', 'change']
+          },
+          confirmType: { 
             required: true, 
             validator: this.simpleValidator, 
-            message: '提前天数不能为空', 
-            trigger: 'blur' 
-          },{
-            validator: this.numberValidator, 
-            message: '提前天数须为正整数', 
+            message: '订单确认类型不能为空', 
+            trigger: ['blur', 'change']
+          },
+          // 亮点词
+          strengths: {
+            required: true,
+            validator: this.notNullArrayValidator, 
+            message: '亮点词不能为空，且不能多于四个', 
+            numLimit: 4,
+            trigger: ['blur', 'change']
+          },
+          crowdID: { 
+            required: true, 
+            validator: this.simpleValidator, 
+            message: '出游人群不能为空', 
+            trigger: ['blur', 'change']
+          },
+          themeID: { 
+            required: true, 
+            validator: this.simpleValidator, 
+            message: '主题不能为空', 
+            trigger: ['blur', 'change']
+          },
+          advanceDay: [
+            { 
+              required: true, 
+              validator: this.simpleValidator, 
+              message: '提前天数不能为空', 
+              trigger: 'blur' 
+            },{
+              validator: this.numberValidator, 
+              message: '提前天数须为正整数', 
+              trigger: 'blur'
+            }
+          ],
+          pictureID: { 
+            required: true, 
+            validator: this.simpleValidator, 
+            message: '头图不能为空', 
+            trigger: 'change' 
+          },
+          pepeatpic: {
+            required: true,
+            validator: this.pepeatpicValidator,
             trigger: 'blur'
           }
-        ],
-        pictureID: { 
-          required: true, 
-          validator: this.simpleValidator, 
-          message: '头图不能为空', 
-          trigger: 'change' 
-        },
-        pepeatpic: {
-          required: true,
-          validator: this.pepeatpicValidator,
-          trigger: 'blur'
+          // 选填
+          // label:{}
+          // vedioID: null,
+          // pepeatpic: [],
+          // mark: ''
         }
-        // 选填
-        // label:{}
-        // vedioID: null,
-        // pepeatpic: [],
-        // mark: ''
-      }
-    },
+      },
       // config
       {
         PEPEAT_PIC_MAX: 6, // 轮播图最大数
@@ -359,13 +364,12 @@ export default {
       this.initCrowdlist();
       // 主题
       this.initThemelist();
-    },
-    isArray(obj){
-      return Object.prototype.toString.call(obj)=== '[object Array]';
+      // 暂时方案
+      this.vm.isSave= this.$route.query.id || false;
     },
     refresh(){
       Object.keys(this.proto).forEach(attr => {
-        if(this.isArray(this.proto[attr])){
+        if(this.$isArray(this.proto[attr])){
           this.submitForm[attr].splice(0);
           this.submitForm[attr].push(...this.$deepCopy(this.proto[attr]));
         }
