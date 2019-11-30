@@ -103,7 +103,6 @@
                   :on-preview="handlePreview"
                 >
                   <el-button size="small" type="primary">点击上传</el-button>
-<!--                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
                 </el-upload>
               </el-form-item>
               <el-divider content-position="left" class='title-margin title-margin-t' v-if="tableData5.length != 0">相关信息</el-divider>
@@ -505,8 +504,6 @@ export default {
       uid: 0, //上传图片缩略图选中项
       upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
     }
-  },
-  computed: { // 计算属性的 getter
   },
   watch: {
     // 如果 `dialogFormVisible` 发生改变，这个函数就会运行
