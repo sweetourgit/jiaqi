@@ -195,6 +195,7 @@ export default {
       }else{
         this.show1 = true ;
       }
+      
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
