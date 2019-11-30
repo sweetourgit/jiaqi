@@ -389,16 +389,6 @@ export default {
             })
           }
         })
-      /*this.$http.post(this.GLOBAL.serverSrc + '/universal/suppliertype/api/get', {}).then(res => {
-        for (let i = 0; i < res.data.objects.length; i++) {
-          this.typeList.push({
-            "value": res.data.objects[i].id,
-            "label": res.data.objects[i].name
-          })
-        }
-      }).catch(err => {
-        console.log(err);
-      })*/
     },
     //付款方式
     querySearch7() {

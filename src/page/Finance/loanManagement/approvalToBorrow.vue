@@ -330,7 +330,20 @@ import moment from 'moment'
       this.ifAccountBtn = false
     }
   },
+  computed: {
+    countTest:function () {
+      return this.$store.state.advinceData
+    }
+  },
   watch:{
+    countTest:function(newV, oldV){
+      let _this = this
+      if(newV != oldV) {
+        setTimeout(function () {
+          _this.pageList()
+        },500)
+      }
+    },
     refreshAprove:function(newV, oldV){
       let _this = this
       if(newV != oldV){
@@ -466,15 +479,6 @@ import moment from 'moment'
                 that.tableData = obj.data.objects;
                 that.$emit('headCallBack',that.tableData.length)
               })
-          // .then(obj =>{
-          //   this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ',
-          //     {
-          //       "jQ_ID": "974fdbc7-2f1d-4e9c-8bf1-e910e3d4ac01",
-          //       "jQ_Type":1
-          //     }).then(obj =>{
-          //       that.tableCourse = obj.data.objects;
-          //     })
-          // })
           })
         })
       },

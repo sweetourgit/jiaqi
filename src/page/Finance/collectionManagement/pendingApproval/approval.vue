@@ -14,10 +14,10 @@
         <p class="inputLabel"><span>ID：</span>{{baseInfo.id}}</p>
         <p class="inputLabel"><span>申请人：</span>{{baseInfo.createUser}}</p>
         <p class="inputLabel"><span>创建时间：</span>{{baseInfo.createTime}}</p>
-        <p class="inputLabel" v-if="info.collectionType == 2"><span>同业社名称：</span>{{baseInfo.distributor}}</p>
+        <p class="inputLabel" v-if="info.collectionType == 2"><span>同业社名称：</span>{{baseInfo.localCompName}}</p>
         <p class="inputLabel" v-if="info.collectionType == 1"><span>交易流水号：</span>{{baseInfo.orderNumber}}</p>
         <p class="inputLabel" v-if="info.collectionType == 5"><span>分销商：</span>{{baseInfo.distributor}}</p>
-        <p class="inputLabel"><span>收款账户：</span>{{baseInfo.localCompName}}</p>
+        <p class="inputLabel"><span>收款账户：</span>{{baseInfo.collectionNumber}}</p>
         <p class="inputLabel"><span>收款金额：</span>{{baseInfo.price}}</p>
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.abstract}}</p>
         <p class="inputLabel" v-if="info.collectionType != 5"><span>开发票：</span>{{baseInfo.invoice}}</p>
@@ -155,7 +155,8 @@
           abstract: '',
           invoice: '',
           collectionTime: '',
-          moneyExplain: ''
+          moneyExplain: '',
+          collectionNumber: ''
         },
 
         // 基础信息凭证
@@ -215,7 +216,8 @@
           localCompName: '',
           price: '',
           abstract: '',
-          invoice: ''
+          invoice: '',
+          collectionNumber: ''
         };
 
         this.$emit('close', false);
@@ -284,12 +286,13 @@
               collectionType: response.data.object.collectionType,
               distributor: response.data.object.distributor,
               orderNumber: response.data.object.orderNumber,
-              localCompName: response.data.object.collectionNumber,
+              collectionNumber: response.data.object.collectionNumber,
               price: response.data.object.price,
               abstract: response.data.object.abstract,
               invoice: hasInvoice,
               collectionTime: response.data.object.collectionTime,
-              moneyExplain: response.data.object.moneyExplain
+              moneyExplain: response.data.object.moneyExplain,
+              localCompName: response.data.object.localCompName
             };
 
             // id为105有数据  数据字段待确认

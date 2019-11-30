@@ -61,69 +61,88 @@
             <el-radio label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisibleInvoice">
+        <div label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisibleInvoice">
           <el-button style="margin: 5px 0 10px 0;" type="primary" @click="handleEdit()">添加</el-button>
           <!-- 发票表格 -->
           <el-table :data="ruleForm.invoiceList" border style="width: 100%;">
             <el-table-column label="发票类型" width="120" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.type" placeholder="请选择" :disabled="change">
-                  <el-option v-for="item in invoiceType" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
+                <el-form-item :prop="'invoiceList.' + scope.$index + '.invoiceID'" :rules="rules.invoiceID">
+                  <el-select v-model="scope.row.invoiceID" placeholder="请选择">
+                    <el-option v-for="item in invoiceTypeData" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column label="个人/单位" width="120" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.userType" placeholder="请选择" :disabled="change">
-                  <el-option key="个人" label="个人" value="1">
-                  </el-option>
-                  <el-option key="单位" label="单位" value="2">
-                  </el-option>
-                </el-select>
+                <el-form-item :prop="'invoiceList.' + scope.$index + '.invoiceType'" :rules="rules.invoiceType">
+                  <el-select v-model="scope.row.invoiceType" placeholder="请选择">
+                    <el-option key="个人" label="个人" value="1">
+                    </el-option>
+                    <el-option key="单位" label="单位" value="2">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column label="纳税人识别号" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.taxesNumber" required placeholder="纳税人识别号" :disabled="change"></el-input>
+                <el-form-item>
+                  <el-input v-model="scope.row.taxesNumber" required placeholder="纳税人识别号"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column label="发票抬头" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.titleOrMobile" placeholder="发票抬头" :disabled="change"></el-input>
+                <el-form-item>
+                  <el-input v-model="scope.row.titleOrMobile" placeholder="发票抬头"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column label="发票项目" width="120" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.project" placeholder="发票项目" :disabled="change">
-                  <el-option v-for="item in invoiceProject" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
+                <el-form-item :prop="'invoiceList.' + scope.$index + '.invoiceItem'" :rules="rules.invoiceItem">
+                  <el-select v-model="scope.row.invoiceItem" placeholder="发票项目">
+                    <el-option v-for="item in invoiceProject" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                  </el-select>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column label="金额" align="center">
               <template slot-scope="scope">
-                <el-input  v-model="scope.row.money" placeholder="金额" :disabled="change"></el-input>
+                <el-form-item>
+                  <el-input  v-model="scope.row.money" placeholder="金额"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column label="帐号" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.account" placeholder="帐号" :disabled="change"></el-input>
+                <el-form-item>
+                  <el-input v-model="scope.row.account" placeholder="帐号"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column label="开户行" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.bank" placeholder="开户行" :disabled="change"></el-input>
+                <el-form-item>
+                  <el-input v-model="scope.row.bank" placeholder="开户行"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column label="地址" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.address" placeholder="地址" :disabled="change"></el-input>
+                <el-form-item>
+                  <el-input v-model="scope.row.address" placeholder="地址"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column label="电话" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.mobile" placeholder="电话" :disabled="change"></el-input>
+                <el-form-item>
+                  <el-input v-model="scope.row.mobile" placeholder="电话"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="70" align="center">
@@ -135,7 +154,7 @@
             </el-table-column>
           </el-table>
           <!-- 发票表格 END -->
-        </el-form-item>
+        </div>
         <!-- 表单校验 END -->
         <!-- 表单基本信息 END -->
         <!-- 关联欠款 -->
@@ -306,11 +325,11 @@ export default {
         isInvoice: '0', // 发票
         collectionNumber:'', // 收款账户
         invoiceList: [{ // 发票相关
-          type: '',
-          userType: '',
+          invoiceID: '',
+          invoiceType: '',
           taxesNumber: '',
           titleOrMobile: '',
-          project: '',
+          invoiceItem: '',
           invoicemoney: '',
           account: '',
           bank: '',
@@ -322,6 +341,9 @@ export default {
         accessory:'',
       },
       rules: {
+        invoiceID: [{ required: true, message: '请选择发票类型', trigger: 'blur' }],
+        invoiceType: [{ required: true, message: '请选择个人或者单位', trigger: 'blur' }],
+        invoiceItem: [{ required: true, message: '请选择发票项目', trigger: 'blur' }],
         voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         createTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
@@ -374,7 +396,7 @@ export default {
       assistTransactionData: [],
       arrearsRelation: '8822.66',
       arrearsList: [], // 关联欠款列表
-      invoiceType: [{
+      invoiceTypeData: [{
         value: '1',
         label: '纸质发票'
       }],
@@ -994,11 +1016,11 @@ export default {
                 "id": 0,
                 "createTime": "2019-11-11T02:43:05.258Z",
                 "code": "string",
-                "invoiceID": item.type, // 发票类型 – 纸质发票
-                "invoiceType": item.userType, // 个人/单位
+                "invoiceID": item.invoiceID, // 发票类型 – 纸质发票
+                "invoiceType": item.invoiceType, // 个人/单位
                 "invoiceNumber": item.taxesNumber, // 纳税人识别号
                 "invoiceHeaderOrTel": item.titleOrMobile, // 发票抬头/手机号
-                "invoiceItem": item.project, // 发票项目–旅游费
+                "invoiceItem": item.invoiceItem, // 发票项目–旅游费
                 "invoicePrice": item.money, // 金额
                 "cardNumber": item.account, // 账号
                 "bankName": item.bank, // 开户行

@@ -114,13 +114,16 @@
                   </el-table-column>
                   <el-table-column prop="payment" label="已审批借款总额" align="center">
                   </el-table-column>
-                  <el-table-column prop="" label="报销中总额" align="center">
+                  <el-table-column prop="expenseChecking" label="报销中总额" align="center">
                   </el-table-column>
-                  <el-table-column prop="" label="已报销总额" align="center">
+                  <el-table-column prop="expense" label="已报销总额" align="center">
                   </el-table-column>
                   <el-table-column prop="price" label="已收总额" align="center">
                   </el-table-column>
-                  <el-table-column prop="supTotal" label="供应商欠款总额" align="center">
+                  <el-table-column prop="paymentChecking" label="供应商欠款总额" align="center">
+                    <template slot-scope="scope">
+                      <div>{{ scope.row.payable - scope.row.price}}</div>
+                    </template>
                   </el-table-column>
                 </el-table>
               </el-form-item>
@@ -372,16 +375,6 @@ export default {
         callback();
       }
     };
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('文件不能为空'));
-      } else {
-        if (this.ruleForm.checkPass !== '') {
-          this.$refs.ruleForm.validateField('checkPass');
-        }
-        callback();
-      }
-    };
     return {
       ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       listLoading: true,
@@ -419,11 +412,7 @@ export default {
       tableData6: [],
       tableData7: [],
       tableData8: [], // 收入明细
-      tableData9: [{
-        account: '账户',
-        bank: '开户行',
-        name: '名称',
-      }],
+      tableData9: [],
       tableData11: [],
       supplier: '',
       supplier_id: 0,
@@ -1003,14 +992,21 @@ export default {
             }
           }).then(res => {
             if (res.data.isSuccess == true) {
-              this.$emit('searchHandList', false);
-              this.$message({
-                type: 'success',
-                message: '创建成功!'
-              });
+              if(res.data.result.failed == true){
+                this.$message({
+                  type: 'success',
+                  message: res.data.result.message
+                });
+              } else {
+                this.$emit('searchHandList', false);
+                this.$store.commit('changeAdvance')
+                this.$message({
+                  type: 'success',
+                  message: '创建成功!'
+                });
+              }
             } else {
-              console.log('有错误!');
-              console.log(res.data);
+              console.log('创建失败');
             }
           }).catch(err => {
             console.log(err);

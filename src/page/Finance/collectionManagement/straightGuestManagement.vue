@@ -418,26 +418,10 @@ export default {
     closeAdd() {
       this.dialogFormVisible = false;
     },
-    changeInvoice() {
-      this.ruleForm.invoiceList.forEach(function(v, k, arr) {
-      })
-    },
-    handleEdit(index, row) {
-      this.ruleForm.invoiceList.push({})
-    },
-    handleDelete(index, row) {
-      this.ruleForm.invoiceList.splice(index, 1)
-      if (this.ruleForm.invoiceList.length == 0) {
-        this.ruleForm.invoiceList.push({})
-      }
-    },
     //查询详情
     dialogFind(row) {
       this.getRowCheckType = row.checkType
       this.currentRowId = row.id
-      //this.find = 1;
-      //this.change = true
-      //this.dialogFormVisible = true;
       this.detailstShow = true;
       this.getLabel(row.id);
     },
@@ -509,28 +493,6 @@ export default {
         return ''
       }
     },
-    /*getCollectionAccount() {
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list", {
-            "object": {
-              "id": 0,
-              "title": 'string',
-              "mark": 'string',
-              "isDeleted": 0,
-            }
-          })
-        .then(function(obj) {
-          that.collectionAccountList = [];
-          obj.data.objects.forEach(function(v, k, arr) {
-            that.accountList[arr[k]['id']] = arr[k]['title']
-            that.collectionAccountList.push({ "value": arr[k]['id'], "label": arr[k]['title'] });
-          })
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
-    },*/
     getStraightGuestManagement() {
       var that = this
       this.listLoading = true
@@ -559,7 +521,6 @@ export default {
               "collectionType":1,//直客1.同业2
               "localCompID":0,//直客0,同业变成同业社id
             }
-
           }, {
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -645,51 +606,9 @@ export default {
            }
         }
      })
-    },
-    /*receiptorder() { //通过订单号获取直客收款订单详情
-      this.arrearsList = []
-      //this.ruleForm.planID = ''
-      this.ruleForm.orderID = ''
-      this.ruleForm.groupCode = ''
-      this.getnumber()
-      var that = this
-      this.$http.post(
-          this.GLOBAL.serverSrc + "/teamquery/get/api/receiptorder", {
-            orderCode: that.indent,
-          }
-        )
-        .then(function(obj) {
-          obj.data.object.collectedMoney = that.collectedMoney
-          obj.data.object.uncollectedMoney = obj.data.object.payable - obj.data.object.collectedMoney
-          obj.data.object.collectedMoney = that.examineMoney
-          //obj.data.object.examineMoney = that.examineMoney
-          that.arrearsList.push(obj.data.object)
-          that.ruleForm.planID = obj.data.object.planID
-          that.ruleForm.orderID = obj.data.object.id
-          that.ruleForm.groupCode = obj.data.object.groupCode
-        })
-        .catch(function(obj) {
-          console.log(obj)
-        })
-
-    },
-    getnumber() { //通过订单号获取直客收款订单详情
-      var that = this
-      that.$http.post(
-          that.GLOBAL.serverSrc + "/finance/collection/api/getnumber", {
-            number: res.data.object.orderNumber,
-          }
-        )
-        .then(function(res) {
-          that.collectedMoney = res.data.isSuccess == true ? res.data.object.price : 0
-        })
-        .catch(function(res) {
-          console.log(res)
-        })
-    },*/
+    }
   },
   created() {
-    //this.getCollectionAccount()
     this.getStraightGuestManagement()
     this.getDept()
   }
