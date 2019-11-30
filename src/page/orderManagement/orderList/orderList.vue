@@ -527,13 +527,35 @@ export default {
           // console.log("请求一条数据的",res)
           this.getListOneMessage = res.data.object;
           let enrollDetail = this.getListOneMessage.enrollDetail;
-          console.log();
-          if (enrollDetail.substr(enrollDetail.length - 1, 1) == ",") {
-            this.getListOneMessage.enrollDetail = enrollDetail.substring(
-              0,
-              enrollDetail.length - 1
-            );
+          // console.log(enrollDetail);
+          // if (enrollDetail.substr(enrollDetail.length - 1, 1) == ",") {
+          //   this.getListOneMessage.enrollDetail = enrollDetail.substring(
+          //     0,
+          //     enrollDetail.length - 1
+          //   );
+          enrollDetail = enrollDetail.replace(/\s*/g, "");
+          let _arr = enrollDetail.split(",");
+          _arr.splice(_arr.length - 1, 1);
+          let _res = [];
+          _arr.sort();
+          for (let i = 0; i < _arr.length; ) {
+            let count = 0;
+            for (let j = i; j < _arr.length; j++) {
+              if (_arr[i] == _arr[j]) {
+                count++;
+              }
+            }
+            _res.push([_arr[i], count]);
+            i += count;
           }
+          //_res 二维数维中保存了 值和值的重复数
+          let _newArr = [];
+          for (let i = 0; i < _res.length; i++) {
+            let a = _res[i][0].split("*");
+            _newArr.push(a[0] + "x" + _res[i][1] + ")");
+          }
+          this.getListOneMessage.enrollDetail = _newArr.toString();
+          // }
 
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format(
