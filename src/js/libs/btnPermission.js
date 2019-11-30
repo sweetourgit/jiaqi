@@ -3,13 +3,11 @@ import Vue from 'vue'
 /**权限指令**/
 Vue.directive('has', {
   bind: function (el, binding) {
-    setTimeout(() => {
     if (!Vue.prototype.$_has(binding.value)) {
        if(el.parentNode!=null){
          el.parentNode.removeChild(el);        
        }
     }
-  },100)
   }
 });
 //权限检查方法

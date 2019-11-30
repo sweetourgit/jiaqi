@@ -22,30 +22,6 @@ export default {
   components: {
     pageHeader,
     navLeft
-  },
-  methods:{
-      getPageact(){
-        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/pageact',{
-            "route": this.$route.path
-          }).then(res => {
-          let butPermission=[];
-          for(let i=0,len=res.data.objects;i<len.length;i++){
-            butPermission.push(len[i].characteristic);
-          }
-          sessionStorage.setItem('butPermission',JSON.stringify(butPermission));
-
-      })
-    }
-  },
-  watch:{
-    $route: {
-    handler: function(val, oldVal){
-          if(val.fullPath != "/login"){
-           // this.getPageact();
-          }
-        },
-        deep: true
-      }
   }
 }
 </script>
