@@ -86,17 +86,19 @@
           </el-radio-group>
         </el-form-item>
         <!-- 发票表格 -->
-        <el-form-item label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible2">
+        <div label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible2">
           <el-button style="margin: 5px 0 10px 0;" type="primary" @click="handleEdit()">添加</el-button>
-          <el-button style="margin: 5px 0 10px 0;" type="primary" @click="handleChecked()">测试</el-button>
+          <el-button style="margin: 5px 0 10px 0;" type="primary" @click="handleChecked('ruleForm')">测试test</el-button>
           <el-table :data="ruleForm.invoiceTable" border style="width: 100%;" size="mini">
             <el-table-column label="发票类型" width="120" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.type" placeholder="请选择" :disabled="change">
-                  <el-option v-for="item in invoiceType" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-                <div style="color:red; text-align:left;" v-if="scope.row.invoiceID !== '1' && a != false">不能为空</div>
+                <el-form-item :prop="'invoiceTable['+ scope.$index +'].invoiceTypeRules'" >
+                  <el-select v-model="scope.row.invoiceTypeRules" placeholder="请选择" :disabled="change">
+                    <el-option v-for="item in invoiceType" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+<!--                <div style="color:red; text-align:left;" v-if="scope.row.invoiceID !== '1' && a != false">不能为空</div>-->
                 <!-- <div style="color:red;" v-show="null11">发票类型不能为空</div> -->
               </template>
             </el-table-column>
@@ -169,7 +171,7 @@
               </template>
             </el-table-column>
           </el-table>
-        </el-form-item>
+        </div>
         <!-- 关联欠款 -->
         <div>
           <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
@@ -200,13 +202,6 @@
           </el-table>
         </div>
       </el-form>
-    </el-dialog>
-    <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible" width="50%">
-      <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
-      <div>
-        <img :src="imgBig" alt="图片" style="width: 95%;" :alt="imgBigName"/>
-        <br /><span>{{imgBigName}}</span>
-      </div>
     </el-dialog>
     <!--收款账户选择弹窗-->
     <el-dialog title="选择账户" :visible.sync="accountShow" width="70%" custom-class="city_list">
@@ -266,16 +261,7 @@ export default {
       user_id: '',
       user_name: '',
       reable: false,
-      apply_user_input: '',
-      total: 0,
-      pageNum: 1,
-      pageSize: 5,
-      currentPage: 1,
-      imgBigName: '',
-      imgBig: '',
-      dialogVisible: false,
       dialogVisible2: false,
-      dialogFormVisible1: false,
       dialogFormVisible2: false,
       upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 上传凭证
       time: 0,
@@ -305,7 +291,7 @@ export default {
         abstract: '',
         invoice: '0',
         invoiceTable: [{
-          invoiceID: '', //发票类型
+          invoiceTypeRules: '', //发票类型
           invoiceType: '', //个人/单位
           invoiceNumber: '', //纳税识别人编号
           invoiceHeaderOrTel: '', //发票抬头/手机号
@@ -319,6 +305,7 @@ export default {
         }]
       },
       rules: {
+        invoiceTypeRules: [{ required: true, message: '请选择发票类型', trigger: 'blur' }],
         invoice: [{ required: true, message: '是否开发票不能为空', trigger: 'blur' }],
         voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
@@ -797,28 +784,25 @@ export default {
       this.dialogFormVisible2 = false
     },
     handlePreview(file, fileList) {
-      // this.dialogVisible = true
       let getUrl = JSON.parse(file.response)
       this.uid = file.uid
       window.open(getUrl.paths[0].Url);
-      this.imgBigName = file.name
-      /*this.imgBig = file.url
-      this.imgBigName = file.name*/
     },
     handleEdit(index, row) {
       this.ruleForm.invoiceTable.push({})
     },
-    handleChecked(){
-      this.a = true
+    handleChecked(formName){
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert(valid)
+        }
+      })
     },
     handleDelete(index, row) {
       this.ruleForm.invoiceTable.splice(index, 1)
       if (this.ruleForm.invoiceTable.length == 0) {
         this.ruleForm.invoiceTable.push({})
       }
-    },
-    downs() {
-      window.open(this.imgBig);
     },
     // 上传文件-移除
     handleRemove(file, fileList) {

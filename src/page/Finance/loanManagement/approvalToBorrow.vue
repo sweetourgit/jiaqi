@@ -331,6 +331,9 @@ import moment from 'moment'
     }
   },
   watch:{
+    'this.$store.state.advinceData':function(newV, oldV){
+      console.log(newV, oldV)
+    },
     refreshAprove:function(newV, oldV){
       let _this = this
       if(newV != oldV){
