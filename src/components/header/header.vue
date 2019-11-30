@@ -11,7 +11,8 @@
         <button ref="clipBtn" data-clipboard-target="#clip" class="clip-btn" style="height: 1px; width: 1px; opacity: 0;"></button>
         <!-- bugReporter -->
         
-        <el-badge :value="100" :max="99" class="icon el-icon-bell">
+        <!-- <el-badge :value="100" :max="99" class="icon el-icon-bell"> -->
+        <el-badge class="icon el-icon-bell">
           <div style="position:absolute;width:30px;height:30px;top:0;" @click="bugReporter"></div>
         </el-badge>
         <div class="vertical-line"></div>
