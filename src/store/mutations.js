@@ -11,7 +11,7 @@ export default {
     state.name = data
   },
   changeAdvance(state, data){
-    console.log(state,data)
-    state.advinceData = data
+    state.advinceData++
+    console.log(state.advinceData)
   }
 }
