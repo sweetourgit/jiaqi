@@ -673,7 +673,6 @@
                 <td style="width: 200px;">管理人员</td>
                 <td style="width: 200px;">剩余额度</td>
                 <td style="width: 200px;">预存款</td>
-                <td style="width: 200px;">职务</td>
               </tr>
               <tr align="center" v-for="(item,index) in sonList" :key="index">
                 <td class="paddingTd">{{item.name}}</td>
@@ -683,7 +682,6 @@
                 <td class="paddingTd"></td>
                 <td class="paddingTd">{{item.balance}}</td>
                 <td class="paddingTd">{{item.deposit}}</td>
-                <td class="paddingTd"></td>
               </tr>
             </table>
           </div>

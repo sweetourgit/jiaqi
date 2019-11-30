@@ -39,12 +39,12 @@
 
       <!--报名信息begin-->
       <ul class="clearfix applyinfoParent">
-        <li class="fl applyinfo">报名信息：</li>
-        <li class="fl applyinfo" v-for="(item,index) in salePrice" :key="index">
+        <li class="fl applyinfo">报名信息：{{enrollDetailShow}}</li>
+        <!-- <li class="fl applyinfo" v-for="(item,index) in salePrice" :key="index">
           <span
             v-show="applyInfomations[index] !== 0 ? true: false"
           >{{item.enrollName}}￥{{item.price_01}}*{{applyInfomations[index]}}</span>
-        </li>
+        </li>-->
       </ul>
       <!--报名信息end-->
 
@@ -78,7 +78,7 @@
             <el-input-number
               class="input-num"
               v-model="enrolNum[index]"
-              @change="peoNum(index,item.enrollID,item.enrollName)"
+              @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02)"
               :min="0"
               :max="salePriceNum[index].quota"
               size="medium"
@@ -360,6 +360,8 @@ export default {
       applyInfomations: [], //报名信息
       tour: [], //总游客信息,二维数组
       winTitle: "", //弹窗标题
+      enrollDetail: "", //报名信息传给后台的格式
+      enrollDetailShow: "", //报名信息展示在页面的格式
       conForm: {
         id: 0,
         isDeleted: 0,
@@ -445,7 +447,6 @@ export default {
     },
     priceType() {
       this.propPriceType = this.priceType;
-      console.log(this.propPriceType);
     }
   },
 
@@ -460,7 +461,7 @@ export default {
         .then(res => {
           //   let str =
           //     "成人(1323.00*1),成人(5000.00*1),成人(1323.00*1),人(1323.00*1),成人(5000.00*1),哈(1323.00*1),人(1323.00*1)";
-          //   let _arr = str.split(",");
+          // let _arr = str.split(",");
           //  for( let i = _arr.length - 1;  i > 0;  i--){
           //    if( _arr[i].indexOf("成人") != -1) {
           //      _arr.splice(i,1)
@@ -469,33 +470,11 @@ export default {
           //  }
           //  console.log(_arr)
 
-          //   var _res = []; //
-          //   _arr.sort();
-          //   for (var i = 0; i < _arr.length; ) {
-          //     var count = 0;
-          //     for (var j = i; j < _arr.length; j++) {
-          //       if (_arr[i] == _arr[j]) {
-          //         count++;
-          //       }
-          //     }
-          //     _res.push([_arr[i], count]);
-          //     i += count;
-          //   }
-          //   //_res 二维数维中保存了 值和值的重复数
-          //   var _newArr = [];
-          //   for (var i = 0; i < _res.length; i++) {
-          //     // console.log(_res[i])
-          //     // console.log(_res[i][0] + "重复次数:" + _res[i][1]);
-          //     // console.log(_res[i][0])
-          //     let a = _res[i][0].split('*')
-          //     // console.log(a)
-          //     _newArr.push(a[0] + "x" + _res[i][1]+")");
-          //   }
-          // console.log(_newArr)
-
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
+            // 报名信息
+            this.enrollDetail = res.data.object.enrollDetail;
             this.ruleForm.favourable = this.orderget.favourable;
             this.getOrderStatus(
               this.orderget.orderStatus,
@@ -523,6 +502,29 @@ export default {
             this.teampreview(res.data.object.planID);
             // 记录最开始的总价 isSaveBtnClick需要
             this.prePayable = this.orderget.payable;
+            this.enrollDetail = this.enrollDetail.replace(/\s*/g,'')
+            let _arr = this.enrollDetail.split(",");
+            // console.log(res.data.object.enrollDetail.split(","),"this.enrolldetail")
+            _arr.splice(_arr.length - 1, 1);
+            let _res = []; //
+            _arr.sort();
+            for (let i = 0; i < _arr.length; ) {
+              let count = 0;
+              for (let j = i; j < _arr.length; j++) {
+                if (_arr[i] == _arr[j]) {
+                  count++;
+                }
+              }
+              _res.push([_arr[i], count]);
+              i += count;
+            }
+            //_res 二维数维中保存了 值和值的重复数
+            let _newArr = [];
+            for (let i = 0; i < _res.length; i++) {
+              let a = _res[i][0].split("*");
+              _newArr.push(a[0] + "x" + _res[i][1] + ")");
+            }
+            this.enrollDetailShow = _newArr.toString();
           }
         })
         .catch(err => {
@@ -851,7 +853,8 @@ export default {
         }
       }
     },
-    peoNum(index, enrollID, enrollName) {
+
+    peoNum(index, enrollID, enrollName, price_01, price_02) {
       // this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
       //填写报名人数
       let arrLength; //报名人数
@@ -894,6 +897,11 @@ export default {
             productType: this.orderget.productTyp
           });
         }
+        // 报名信息增加enrollDetail拼接
+        let price;
+        this.isPricechange == true ? (price = price_01) : (price = price_02);
+        price = this.toDecimal2(price);
+        this.enrollDetail += `${enrollName}(${price} * 1),`;
       } else {
         // 循环判断表格中的出行人信息是否有没填写的如果有则自动删除 没有则提示手动删除
         let isInfNull = this.tour[index].some((item, index, arr) => {
@@ -914,6 +922,14 @@ export default {
           const num = this.tour[index].length.toString();
           this.$set(this.enrolNum, index, num);
           this.$message.error("请手动删除表格中的出行人");
+        }
+        // 报名信息减少enrollDetail拼接
+        let _arr = this.enrollDetail.split(",");
+        for (let i = _arr.length - 1; i > 0; i--) {
+          if (_arr[i].indexOf(enrollName) != -1) {
+            _arr.splice(i, 1);
+            this.enrollDetail = _arr.toString();
+          }
         }
 
         // let tour = this.tour[index];
@@ -1223,18 +1239,18 @@ export default {
           }
 
           // 拼接字段 enrollDetail报名类型详情
-          let enrollDetail = "";
-          let price;
-          this.salePrice.forEach((ele, idx) => {
-            if (this.isPricechange) {
-              price = this.toDecimal2(ele.price_01);
-            } else {
-              price = this.toDecimal2(ele.price_02);
-            }
-            if (this.enrolNum[idx] !== 0) {
-              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
-            }
-          });
+          // let enrollDetail = "";
+          // let price;
+          // this.salePrice.forEach((ele, idx) => {
+          //   if (this.isPricechange) {
+          //     price = this.toDecimal2(ele.price_01);
+          //   } else {
+          //     price = this.toDecimal2(ele.price_02);
+          //   }
+          //   if (this.enrolNum[idx] !== 0) {
+          //     enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
+          //   }
+          // });
 
           // 签署订单按钮
           if (id === 3) {
@@ -1253,7 +1269,7 @@ export default {
             obj.priceType = 2;
           }
 
-          obj.enrollDetail = enrollDetail;
+          obj.enrollDetail = this.enrollDetail;
           obj.guests = guest;
           obj.payable = this.payable;
           this.$http
@@ -1332,6 +1348,7 @@ export default {
       this.isLowPrice = false;
       this.isSaveBtn = false;
       this.applyInfomations = [];
+      this.enrollDetail = "";
     }
   }
 };
