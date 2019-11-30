@@ -63,17 +63,17 @@
 
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales(scope.row.id)">停售</span>
-            <span class="em" v-if="scope.row.regimentType=='1'">|</span>
-            <span class="cursor blue" v-if="scope.row.regimentType=='2'" @click="haltSales_01(scope.row.id)">恢复售卖</span>
-            <span class="em" v-if="scope.row.regimentType=='2'">|</span>
-            <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="operation(1)">下单</span>
-            <span class="em" v-if="scope.row.regimentType=='1'">|</span>
-            <span class="cursor blue" @click="operation(2)">详情</span>
-            <span class="em" v-if="scope.row.regimentType=='3'">|</span>
-            <span class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
-            <span class="em" v-if="scope.row.regimentType=='1'">|</span>
-            <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales_02(scope.row.id)">封团</span>
+            <span v-show="show1" class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales(scope.row.id)">停售</span>
+            <span v-show="show1" class="em" v-if="scope.row.regimentType=='1'">|</span>
+            <span v-show="show1" class="cursor blue" v-if="scope.row.regimentType=='2'" @click="haltSales_01(scope.row.id)">恢复售卖</span>
+            <!-- <span v-show="show2" class="em" v-if="scope.row.regimentType=='2'">|</span> -->
+            <span v-show="show2" class="cursor blue" v-if="scope.row.regimentType=='1'" @click="operation(1)">下单</span>
+            <!-- <span v-show="show2" class="em" v-if="scope.row.regimentType=='1'">|</span> -->
+            <span v-show="show1" class="cursor blue" @click="operation(2)">详情</span>
+            <span v-show="show1" class="em" v-if="scope.row.regimentType=='3'">|</span>
+            <span v-show="show1" class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
+            <span v-show="show1" class="em" v-if="scope.row.regimentType=='1'">|</span>
+            <span v-show="show1" class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales_02(scope.row.id)">封团</span>
           </template>
         </el-table-column>
       </el-table>
@@ -173,16 +173,29 @@ export default {
         }
       ],
       dialogCost: false, //成本弹窗
+      show1:false,
+      show2:false,
       // costSelection: [], //选中的list
       // searchParams: 2 // 2 为翻页，控制名字转code
     };
   },
   created() {
-    this.teamQueryList();    
+    this.teamQueryList();  
+    this.permission();  
   },
   mounted () {
   },
   methods: {
+    permission(){
+      let orgID = sessionStorage.getItem('orgID');
+      let arr = [492,493,494,545];
+      console.log(arr.indexOf("orgID")!=-1)
+      if(arr.indexOf("orgID")!=-1){
+        this.show2 = true;
+      }else{
+        this.show1 = true ;
+      }
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";

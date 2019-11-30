@@ -82,7 +82,10 @@
 
         <el-form-item label="详情：" prop="memo" style="width: 670px;">
           <div style="width: 100%; padding-top: 10px;">
-            <vue-editor v-model="submitForm.memo"></vue-editor>
+            <vue-editor 
+              v-model="submitForm.memo"
+              :editorToolbar='$defaultToolbar'>
+            </vue-editor>
           </div>
         </el-form-item>
 

@@ -31,7 +31,10 @@
       </div>
       <span v-else class="title">{{ editor.title }}</span>
     </header>
-    <vue-editor v-model="editor.content"></vue-editor>
+    <vue-editor 
+      v-model="editor.content"
+      :editorToolbar='$defaultToolbar'>
+    </vue-editor>
     <footer>
       <slot name="delete"></slot>
       <!-- <el-button type="primary" size="small">删除说明</el-button> -->

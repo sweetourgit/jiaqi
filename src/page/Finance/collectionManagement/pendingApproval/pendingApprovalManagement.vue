@@ -227,7 +227,9 @@
         this.loadDataZK();
         this.loadDataTY();
         this.loadDataNBSK();
-
+        this.$parent.$parent.$parent.$refs.SameTradeManagement.getList();
+        this.$parent.$parent.$parent.$refs.StraightGuestManagement.getStraightGuestManagement();
+        this.$parent.$parent.$parent.$refs.distributorsInfo.getDataInside();
       },
       // 加载直客信息及处理分页
       handleSizeChangeZK(val){

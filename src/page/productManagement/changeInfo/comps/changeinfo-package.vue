@@ -123,7 +123,9 @@ export default {
   watch: {
     proto: {
       handler(nval){
-        this.init()
+        this.$nextTick(() => {
+          this.init()
+        })
       },
       immediate: true
     }
@@ -163,10 +165,7 @@ export default {
       // bug 127: 这里记录原始数据
       this.checkProto= this.$deepCopy(this.submitForm);
       this.checkIfLoseInfo();
-
-      this.$nextTick(() => {
-        this._provided.PROVIDE_PACKAGE_ID= this.proto.id;
-      });
+      this._provided.PROVIDE_PACKAGE_ID= this.proto.id;
     },
 
     // bug 127:检查套餐目的地和出发地是否还在产品的池子中

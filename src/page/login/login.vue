@@ -202,8 +202,8 @@
         select: '0',
         value: '',
         ruleForm: {
-          user: 'tester',
-          password: '123456',
+          user: '',
+          password: '',
           // verification: '',
 
 
@@ -438,7 +438,8 @@
                       sessionStorage.setItem('userCode',res.data.userCode)
 
                       store.save('name',res.data.name)
-                      this.$router.push('/userList')
+                      this.$router.push('/blankPages')
+                      // this.$router.push('/userList')
                       this.$message.success('登录成功');
                       localStorage.removeItem("code",res.data)
                     }).catch(err => {

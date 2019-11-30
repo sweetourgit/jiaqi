@@ -161,7 +161,10 @@
 
       <el-form-item label="产品概况：" prop="mark">
         <div style="width: 850px; padding-top: 10px;">
-          <vue-editor v-model="submitForm.mark"></vue-editor>
+          <vue-editor 
+            v-model="submitForm.mark"
+            :editorToolbar='$defaultToolbar'>
+          </vue-editor>
         </div>
       </el-form-item>         
 

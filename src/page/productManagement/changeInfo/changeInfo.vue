@@ -303,7 +303,6 @@ export default {
           this.pods.push(...pods);
           this.destinations.push(...destinations);
           this._provided.PROVIDE_DAY= day;
-          this.proto= object;
           // tab默认指向首页
           if(this.packages.length=== 0) return Promise.resolve();
           // 如果有缓存的新tab

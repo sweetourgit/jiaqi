@@ -33,6 +33,7 @@ export default {
             butPermission.push(len[i].characteristic);
           }
           sessionStorage.setItem('butPermission',JSON.stringify(butPermission));
+
       })
     }
   },

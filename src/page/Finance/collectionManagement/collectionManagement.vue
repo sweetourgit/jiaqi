@@ -2,16 +2,16 @@
   <div class="vivo">
     <el-tabs v-model="activeName" @tab-click="handleClick">
      <el-tab-pane label="同业" name="first">
-        <SameTradeManagement></SameTradeManagement>
+        <SameTradeManagement ref="SameTradeManagement"></SameTradeManagement>
       </el-tab-pane>
       <el-tab-pane label="直客" name="second">
-        <StraightGuestManagement></StraightGuestManagement>
+        <StraightGuestManagement ref="StraightGuestManagement"></StraightGuestManagement>
       </el-tab-pane>
       <el-tab-pane label="外部订单收款" name="fourth">
         <externalOrder></externalOrder>
       </el-tab-pane>
       <el-tab-pane label="内部收款" name="five">
-        <distributorsInfo></distributorsInfo>
+        <distributorsInfo ref="distributorsInfo"></distributorsInfo>
       </el-tab-pane>
       <el-tab-pane label="待认款收款" name="six">
         <recognitionWait></recognitionWait>

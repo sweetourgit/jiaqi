@@ -5,27 +5,9 @@
     label-width="100px"
     style="width: 100%;"
     size="mini">
-    <el-row :gutter="0">
-
-      <el-col :span="4">
-        <el-form-item label="团期计划：" prop="groupCode">
-          <el-input size="small" v-model="submitForm.groupCode" placeholder="团期计划"></el-input>
-        </el-form-item>
-      </el-col> 
-
-      <el-col :span="4">
-        <el-form-item label="报账人：" prop="userName">
-          <el-input size="small" v-model="submitForm.userName" placeholder="报账人"></el-input>
-        </el-form-item>
-      </el-col>
-
-      <el-col :span="4">
-        <el-form-item label="产品名称：" prop="teamProTitle">
-          <el-input size="small" v-model="submitForm.teamProTitle" placeholder="产品名称"></el-input>
-        </el-form-item>
-      </el-col>
-
-      <el-col :span="8"> 
+    <div style="display: flex; justify-content: space-between;">
+      
+      <el-col> 
         <div style="display: flex;">
           <el-form-item label="发起时间：" prop="beginTime" :span="11">
             <el-date-picker
@@ -59,7 +41,8 @@
           </el-button>
         </el-form-item>
       </el-col>
-    </el-row>
+
+    </div>
   </el-form>
 </template>
 
@@ -75,9 +58,6 @@ export default {
       // 数据
       {
         submitForm: {
-          groupCode: null, 
-          userName: null, 
-          teamProTitle: null, 
           beginTime: null, 
           endTime: null,
         }

@@ -350,6 +350,10 @@
         <!--票付通余额，关联订单-->
         <el-dialog title="关联订单" :visible="dialogFormVisible2" width=90% @close="close" append-to-body id="GLDDTable">
           <div class="table_trip" style="width: 100%;">
+            <el-date-picker v-model="startTimeOrder" type="date" placeholder="开始日期" class="start-time baseIn" :picker-options="startGLorder" @change="getListRece"></el-date-picker>
+            <span style="display: inline-block;line-height: 32px;margin:0;">--</span>
+            <el-date-picker v-model="endTimeOrder" type="date" placeholder="结束日期" class="start-time baseIn" :picker-options="endGLorder" @change="getListRece"></el-date-picker>
+            <p class="relaOrder">关联订单总金额：<span>{{searchTotalMoney}}</span></p>
             <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{PFT_num}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{PFT_money}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{PFT_start}}--{{PFT_end}}</div>
             <el-table ref="multipleTable" v-loading="loading" :data="tableDataGLDD" border style="width: 100%;margin-bottom: 28px;" height="700" :highlight-current-row="true" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
               <el-table-column prop="id" label="" fixed type="selection"></el-table-column>
@@ -397,8 +401,8 @@
                   <p v-if="scope.row.is_relate_pro == 2">产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
                 </template>
               </el-table-column>
-              <el-table-column prop="create_uid" label="操作人" align="center">
-              </el-table-column>
+              <!-- <el-table-column prop="create_uid" label="操作人" align="center">
+              </el-table-column> -->
             </el-table>
 
             <div class="block" style="text-align: center;">
@@ -554,12 +558,17 @@
         PFT_money: 0,// 关联订单页面内已选项的总金额
         PFT_start: '',// 关联订单页面内已选项的开始时间
         PFT_end: '',// 关联订单页面内已选项的结束时间
+        startTimeOrder: '',
+        endTimeOrder: '',
+        searchTotalMoney: 0,
 
         // 时间限制
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
         importStartDatePicker: this.beginDate1(),
         importEndDatePicker: this.processDate1(),
+        startGLorder: this.beginDate2(),
+        endGLorder: this.processDate2()
       }
     },
     computed: {
@@ -573,7 +582,7 @@
     watch: {
       dialogFormVisible: {
         handler: function () {
-//          alert(this.dialogFormVisible);
+          //          alert(this.dialogFormVisible);
           if(this.dialogFormVisible && this.info == ''){
             this.getCode()
           }
@@ -645,39 +654,37 @@
       },
       // 票付通余额，关联订单（显示订单列表，加载列表数据）
       chooseDDFun(){
-        let orderStr = '';
-        if(this.chooseTable.length > 0){
-          this.chooseTable.forEach(function (item, index, arr) {
-            orderStr += item.order_sn + ','
-          });
-          orderStr = orderStr.substr(0, orderStr.length - 1);
-        }
-        this.getListRece(orderStr);
+        this.getListRece();
         this.dialogFormVisible2 = true;
       },
       // 关联订单选择（同时计算顶部所选项总数，金额，时间）
       selectionChange(val) {
         const that = this;
-//        console.log(val);
+        console.log(val);
         this.multipleSelection = val;
         if(this.multipleSelection.length != 0){
-          let start = this.multipleSelection[0].sale_at;
-          let end = this.multipleSelection[0].sale_at;
+          let start = this.multipleSelection[0].check_at;
+          let end = this.multipleSelection[0].check_at;
           let totalMoney = 0;
           this.multipleSelection.forEach(function (item, index, arr) {
-            if(new Date(Date.parse(start)) > new Date(Date.parse(item.sale_at))){
-              start = item.sale_at;
+            if(new Date(Date.parse(start)) > new Date(Date.parse(item.check_at))){
+              start = item.check_at;
             }
-            if(new Date(Date.parse(end)) < new Date(Date.parse(item.sale_at))){
-              end = item.sale_at;
+            if(new Date(Date.parse(end)) < new Date(Date.parse(item.check_at))){
+              end = item.check_at;
             }
             totalMoney += parseFloat(item.income);
-//                console.log(totalMoney);
+            // console.log(totalMoney);
           });
           that.PFT_num = this.multipleSelection.length;
           that.PFT_money = totalMoney.toFixed(2);
           that.PFT_start = formatDate(new Date(Date.parse(start))).split(" ")[0];
           that.PFT_end = formatDate(new Date(Date.parse(end))).split(" ")[0];
+        }else{
+          that.PFT_num = 0;
+          that.PFT_money = 0;
+          that.PFT_start = '';
+          that.PFT_end = '';
         }
       },
       // 点击行，执行选择及反选
@@ -692,18 +699,18 @@
         }
         this.chooseTable = table.concat(this.multipleSelection);
         if(this.chooseTable.length != 0){
-          let start = this.chooseTable[0].sale_at;
-          let end = this.chooseTable[0].sale_at;
+          let start = this.chooseTable[0].check_at;
+          let end = this.chooseTable[0].check_at;
           let totalMoney = 0;
           this.chooseTable.forEach(function (item, index, arr) {
-            if(new Date(Date.parse(start)) > new Date(Date.parse(item.sale_at))){
-              start = item.sale_at;
+            if(new Date(Date.parse(start)) > new Date(Date.parse(item.check_at))){
+              start = item.check_at;
             }
-            if(new Date(Date.parse(end)) < new Date(Date.parse(item.sale_at))){
-              end = item.sale_at;
+            if(new Date(Date.parse(end)) < new Date(Date.parse(item.check_at))){
+              end = item.check_at;
             }
             totalMoney += parseFloat(item.income);
-//                console.log(totalMoney);
+            // console.log(totalMoney);
           });
           this.pftForm = {
             payMoney: totalMoney.toFixed(2),
@@ -728,7 +735,7 @@
               end = item.sale_at;
             }
             totalMoney += parseFloat(item.income);
-//                console.log(totalMoney);
+            // console.log(totalMoney);
           });
           this.pftForm = {
             payMoney: totalMoney.toFixed(2),
@@ -759,7 +766,7 @@
                     end = item.sale_at;
                   }
                   totalMoney += parseFloat(item.income);
-//                console.log(totalMoney);
+                  // console.log(totalMoney);
                 });
                 that.pftForm = {
                   payMoney: totalMoney.toFixed(2),
@@ -806,15 +813,15 @@
         const that = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-//            alert(this.totalMoney != '');
+          // alert(this.totalMoney != '');
             if(this.totalMoney == '' && this.startTime == ''){
-//              alert("均为空");
+            // alert("均为空");
               that.subFun();
 
             }else if(this.totalMoney != '' && this.startTime != ''){
-//              alert("均不为空");
+              // alert("均不为空");
               if(parseFloat(this.ruleForm.payMoney).toFixed(2) != parseFloat(this.totalMoney).toFixed(2)) {
-//                alert('金额不等');
+                // alert('金额不等');
                 this.$confirm("收款金额和全部收款明细结算金额总计不符是否继续添加?", "提示", {
                   confirmButtonText: "添加",
                   cancelButtonText: "取消",
@@ -845,7 +852,7 @@
 
                 });
               }else{
-//                alert('金额相等');
+                // alert('金额相等');
                 let start = this.ruleForm.startTime, end = this.ruleForm.endTime;
                 const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
                 if (!reg.test(start)) {
@@ -877,16 +884,16 @@
         let fileArr = [],money = '',startTime = '',endTime = '', flag = true;
         const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
         if(this.PFTYE){
-//          if(this.pft_list.length != 0){
-//            this.pft_list.forEach(function (item, index, arr) {
-////              console.log(item);
-//              let file = {
-//                name: item.name,
-//                url: item.response.data.url
-//              };
-//              fileArr.push(file);
-//            });
-//          }
+        //          if(this.pft_list.length != 0){
+        //            this.pft_list.forEach(function (item, index, arr) {
+        ////              console.log(item);
+        //              let file = {
+        //                name: item.name,
+        //                url: item.response.data.url
+        //              };
+        //              fileArr.push(file);
+        //            });
+        //          }
           if(this.chooseTable.length == 0){
             that.$message.warning('关联订单不能为空');
             flag = false;
@@ -920,7 +927,7 @@
             }else{
               endTime = this.pftForm.endTime;
             }
-//            endTime = this.pftForm.endTime;
+            //            endTime = this.pftForm.endTime;
           }
         }else{
           if(this.fileList.length != 0 && this.tableDataQK != []){
@@ -929,7 +936,7 @@
               url: this.fileList[0].response.data.file_url
             });
           }else{
-//            fileArr = [];
+            //            fileArr = [];
             that.$message.warning('附件不能为空');
             flag = false;
             return;
@@ -951,7 +958,7 @@
             }else{
               startTime = this.ruleForm.startTime;
             }
-//            startTime = this.ruleForm.startTime;
+            //            startTime = this.ruleForm.startTime;
           }
           if(this.ruleForm.endTime == ''){
             that.$message.warning('款项入账时间段不能为空');
@@ -963,22 +970,22 @@
             }else{
               endTime = this.ruleForm.endTime;
             }
-//            endTime = this.ruleForm.endTime;
+            //            endTime = this.ruleForm.endTime;
           }
         }
         let getOrder = '';
         this.chooseTable.forEach(function (item, index, arr) {
           getOrder += item.order_sn + ',';
-//          alert(getOrder);
+          //          alert(getOrder);
         });
         getOrder = getOrder.substr(0, getOrder.length - 1);
-//        alert(getOrder);
+        //        alert(getOrder);
         if (!reg.test(this.ruleForm.creditTime)) {
           this.ruleForm.creditTime = formatDate(this.ruleForm.creditTime);
         }
-//        alert(this.ruleForm.creditTime);
-//        alert(startTime);
-//        alert(endTime);
+        //        alert(this.ruleForm.creditTime);
+        //        alert(startTime);
+        //        alert(endTime);
         let data;
         if(this.deleteStr == ''){
           data = {
@@ -1000,7 +1007,7 @@
           if(this.deleteStr.substr(this.deleteStr.length-1,1) === ','){
             this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
           }
-//          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          //          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
           data = {
             "rece_code":this.rece_code,
             "explain":this.ruleForm.mark,
@@ -1078,7 +1085,7 @@
               that.subFunXG();
             }else{
               if(!this.showSK){
-//                alert("无明细修改");
+                //                alert("无明细修改");
                 let Stime = '', Etime = '';
                 if(this.ruleForm.startTime.toString().split('-')[1]){
                   Stime = this.ruleForm.startTime.split(" ")[0];
@@ -1124,9 +1131,9 @@
                 }
 
               }else if(this.totalMoney != '' && this.startTime != ''){
-//              alert("均不为空");
+                //              alert("均不为空");
                 if(parseFloat(this.ruleForm.payMoney).toFixed(2) != parseFloat(this.totalMoney).toFixed(2)) {
-//                alert('金额不等');
+                  //                alert('金额不等');
                   this.$confirm("收款金额和全部收款明细结算金额总计不符是否继续添加?", "提示", {
                     confirmButtonText: "添加",
                     cancelButtonText: "取消",
@@ -1158,7 +1165,7 @@
 
                   });
                 }else{
-//                alert('金额相等');
+                  //                alert('金额相等');
                   let start = this.ruleForm.startTime, end = this.ruleForm.endTime;
                   const reg = /^(\d{4})(-)(\d{2})(-)(\d{2})/;
                   if (!reg.test(start)) {
@@ -1168,7 +1175,7 @@
                     end = formatDate(this.ruleForm.endTime);
                   }
 
-//                  alert(start.split(' ')[0] == this.startTime && end.split(' ')[0] == this.endTime);
+                  //                  alert(start.split(' ')[0] == this.startTime && end.split(' ')[0] == this.endTime);
                   if (start.split(' ')[0] != this.startTime || end.split(' ')[0] != this.endTime) {
                     this.$confirm("款项入账时间段和全部收款明细入账时间区间不符，是否继续添加?", "提示", {
                       confirmButtonText: "添加",
@@ -1228,7 +1235,7 @@
             flag = false;
             return;
           }else{
-//            startTime = this.pftForm.startTime;
+            //            startTime = this.pftForm.startTime;
             if (!reg.test(this.pftForm.startTime)) {
               startTime = formatDate(this.pftForm.startTime);
             }else{
@@ -1245,7 +1252,7 @@
             }else{
               endTime = this.pftForm.endTime;
             }
-//            endTime = this.pftForm.endTime;
+            //            endTime = this.pftForm.endTime;
           }
         }else{
           if(this.ruleForm.payMoney == ''){
@@ -1260,7 +1267,7 @@
             flag = false;
             return;
           }else{
-//            startTime = this.ruleForm.startTime;
+            //            startTime = this.ruleForm.startTime;
             if (!reg.test(this.ruleForm.startTime)) {
               startTime = formatDate(this.ruleForm.startTime);
             }else{
@@ -1272,7 +1279,7 @@
             flag = false;
             return;
           }else{
-//            endTime = this.ruleForm.endTime;
+            //            endTime = this.ruleForm.endTime;
             if (!reg.test(this.ruleForm.endTime)) {
               endTime = formatDate(this.ruleForm.endTime);
             }else{
@@ -1280,7 +1287,7 @@
             }
           }
         }
-//        alert(getOrder);
+        //        alert(getOrder);
         if(flag){
           let getOrder = '';
           this.chooseTable.forEach(function (item, index, arr) {
@@ -1297,7 +1304,7 @@
           if(this.deleteStr.substr(this.deleteStr.length-1,1) === ','){
             this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
           }
-//          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
+          //          this.deleteStr = this.deleteStr.substr(0, this.deleteStr.length - 1);
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/updrece", {
             "id": this.info,
             "rece_code": this.rece_codeEdit,
@@ -1434,7 +1441,7 @@
           }else{
             this.$message.warning('文件上传失败');
           }
-//          this.fileList = {};
+          //          this.fileList = {};
           this.$refs.upload1.clearFiles();
         }
       },
@@ -1469,24 +1476,24 @@
         console.log('response',response);
         if(response.code == 200){
           this.pft_list = fileList;
-//          this.tableDataQK = file.response.data.list;
-//          this.totalItem = file.response.data.list.length;
-//          this.totalMoney = file.response.data.money;
-////          this.ruleForm.payMoney = file.response.data.money;
-//          this.startTime = formatDate(new Date(file.response.data.start*1000));
-//          this.endTime = formatDate(new Date(file.response.data.end*1000));
-////          this.ruleForm.startTime = formatDate(new Date(file.response.data.start*1000));
-////          this.ruleForm.endTime = formatDate(new Date(file.response.data.end*1000));
-//          this.tableDataQK.forEach(function (item, index, arr) {
-//            item[1] = formatDate(new Date(item[1]*1000));
-//          })
+          //          this.tableDataQK = file.response.data.list;
+          //          this.totalItem = file.response.data.list.length;
+          //          this.totalMoney = file.response.data.money;
+          ////          this.ruleForm.payMoney = file.response.data.money;
+          //          this.startTime = formatDate(new Date(file.response.data.start*1000));
+          //          this.endTime = formatDate(new Date(file.response.data.end*1000));
+          ////          this.ruleForm.startTime = formatDate(new Date(file.response.data.start*1000));
+          ////          this.ruleForm.endTime = formatDate(new Date(file.response.data.end*1000));
+          //          this.tableDataQK.forEach(function (item, index, arr) {
+          //            item[1] = formatDate(new Date(item[1]*1000));
+          //          })
         }else{
           if(response.message){
             this.$message.warning(response.message);
           }else{
             this.$message.warning('文件上传失败');
           }
-//          this.fileList = {};
+          //          this.fileList = {};
           this.$refs.upload2.clearFiles();
         }
       },
@@ -1495,14 +1502,14 @@
       },
       handleRemove2(file, fileList) {
         console.log(file, fileList);
-//        this.tableDataQK = [];
-//        this.totalItem = '';
-//        this.totalMoney = '';
-//        this.ruleForm.payMoney = '';
-//        this.startTime = '';
-//        this.endTime = '';
-//        this.ruleForm.startTime = '';
-//        this.ruleForm.endTime = '';
+        //        this.tableDataQK = [];
+        //        this.totalItem = '';
+        //        this.totalMoney = '';
+        //        this.ruleForm.payMoney = '';
+        //        this.startTime = '';
+        //        this.endTime = '';
+        //        this.ruleForm.startTime = '';
+        //        this.ruleForm.endTime = '';
       },
       handleExceed2(files, fileList) {
         this.$message.warning(`平台订单只支持一个附件上传！`);
@@ -1519,22 +1526,22 @@
           type: "warning"
         }).then(() => {
           console.log(scope.row[2]+'======'+scope.$index);
-//          that.tableDataQK.splice(scope.$index,1);
+          //          that.tableDataQK.splice(scope.$index,1);
           this.$set(that.tableDataQK[scope.$index],'0','已删除');
           if(that.deleteStr.substr(that.deleteStr.length-1,1) === ',' || that.deleteStr === ''){
             that.deleteStr += scope.$index + ',';
           }else{
             that.deleteStr += ',' + scope.$index + ',';
           }
-//          that.deleteStr += scope.$index + ',';
+          //          that.deleteStr += scope.$index + ',';
           let num = parseInt(that.totalItem);
           num--;
           that.totalItem = num;
-//          console.log(num);
+          //          console.log(num);
           let totalMoney = that.totalMoney;
           totalMoney = parseFloat(totalMoney) - parseFloat(scope.row[5]);
           that.totalMoney = totalMoney.toFixed(2);
-//          console.log(parseFloat(totalMoney),parseFloat(scope.row[5]),parseFloat(totalMoney)-parseFloat(scope.row[5]));
+          //          console.log(parseFloat(totalMoney),parseFloat(scope.row[5]),parseFloat(totalMoney)-parseFloat(scope.row[5]));
           let start = that.tableDataQK[0][1];
           let end = that.tableDataQK[0][1];
           that.tableDataQK.forEach(function (item, index, arr) {
@@ -1547,11 +1554,11 @@
               }
             }
           });
-//          console.log(totalMoney.toFixed(2),start,end);
+          //          console.log(totalMoney.toFixed(2),start,end);
           that.totalMoney = totalMoney.toFixed(2);
           that.startTime = start.split(' ')[0];
           that.endTime = end.split(' ')[0];
-//          console.log(that.deleteStr);
+          //          console.log(that.deleteStr);
         }).catch(() => {
 
         });
@@ -1564,7 +1571,7 @@
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-//          console.log(scope.row[2]+'======'+scope.$index);
+          //          console.log(scope.row[2]+'======'+scope.$index);
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/deldetails", {
             "id": scope.row.id
           }, ).then(function(response) {
@@ -1572,7 +1579,7 @@
             if (response.data.code == '200') {
               that.$message.success("删除成功~");
               that.tableDataQK.splice(scope.$index,1);
-//              that.deleteStr += scope.row.id + ',';
+              //              that.deleteStr += scope.row.id + ',';
               if(that.deleteStr.substr(that.deleteStr.length-1,1) === ',' || that.deleteStr === ''){
                 that.deleteStr += scope.$index + ',';
               }else{
@@ -1581,11 +1588,11 @@
               let num = parseInt(that.totalItem);
               num--;
               that.totalItem = num;
-//          console.log(num);
+              //          console.log(num);
               let totalMoney = 0;
-//             totalMoney = parseFloat(totalMoney) - parseFloat(scope.row[rece_money]);
+              //             totalMoney = parseFloat(totalMoney) - parseFloat(scope.row[rece_money]);
               that.totalMoney = totalMoney.toFixed(2);
-//          console.log(parseFloat(totalMoney),parseFloat(scope.row[5]),parseFloat(totalMoney)-parseFloat(scope.row[5]));
+              //          console.log(parseFloat(totalMoney),parseFloat(scope.row[5]),parseFloat(totalMoney)-parseFloat(scope.row[5]));
               let start = that.tableDataQK[0].rece_at;
               let end = that.tableDataQK[0].rece_at;
               that.tableDataQK.forEach(function (item, index, arr) {
@@ -1597,7 +1604,7 @@
                 }
                 totalMoney += parseFloat(item.rece_money);
               });
-//          console.log(totalMoney.toFixed(2),start,end);
+              //          console.log(totalMoney.toFixed(2),start,end);
               that.totalMoney = totalMoney.toFixed(2);
               that.startTime = start;
               that.endTime = end;
@@ -1643,7 +1650,7 @@
       },
       // 明细保存，提示（提示后保存）
       detailSave(){
-//        alert(this.detailForm.money != this.tableDataQK[this.detailForm.indexDetail].rece_money);
+        //        alert(this.detailForm.money != this.tableDataQK[this.detailForm.indexDetail].rece_money);
         if(parseFloat(this.detailForm.money).toFixed(2) != parseFloat(this.tableDataQK[this.detailForm.indexDetail].rece_money).toFixed(2) && this.tableDataQK[this.detailForm.indexDetail].order_sn != ''){
           this.$confirm("结算金额同时修改关联订单的收入，是否修改", "提示", {
             confirmButtonText: "确定",
@@ -1674,9 +1681,9 @@
           "divide_connect_no": this.detailForm.divide_connect_no,
           "invoice_no": this.detailForm.invoice_no
         }, ).then(function(response) {
-//          console.log(response);
+          //          console.log(response);
           if (response.data.code == '200') {
-//            console.log('that.detailForm.enterTime', that.detailForm.enterTime);
+          //            console.log('that.detailForm.enterTime', that.detailForm.enterTime);
 
             if(that.detailForm.enterTime.toString().split('-')[1]){
               that.tableDataQK[that.detailForm.indexDetail].rece_at = that.detailForm.enterTime;
@@ -1716,7 +1723,7 @@
                 end = item.rece_at;
               }
               totalMoney += parseFloat(item.rece_money);
-//              console.log(totalMoney);
+              //              console.log(totalMoney);
             });
 
             that.totalMoney = totalMoney.toFixed(2);
@@ -1766,7 +1773,7 @@
       },
       // 编辑时加载数据
       loadData(){
-//        console.log(this.info);
+        //        console.log(this.info);
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/receive", {
           "id": this.info
@@ -1788,22 +1795,22 @@
               endTime: response.data.data.rece_end
             };
             if(that.ruleForm.distributor == '票付通余额'){
-//              console.log('票付通余额');
+              //              console.log('票付通余额');
               that.isPFT = true;
               that.PFTYE = true;
               if(response.data.data.list != ''){
                 that.chooseTable = response.data.data.list;
-//                console.log(that.chooseTable);
+                //                console.log(that.chooseTable);
                 let start = formatDate(new Date(that.chooseTable[0].sale_at*1000)).split(" ")[0];
                 let end = formatDate(new Date(that.chooseTable[0].sale_at*1000)).split(" ")[0];
                 let totalMoney = 0;
                 that.chooseTable.forEach(function (item, index, arr) {
                   item.sale_at = formatDate(new Date(item.sale_at*1000));
-//                  item.sale_at = item.sale_at.split(" ")[0];
+                  //                  item.sale_at = item.sale_at.split(" ")[0];
                   item.check_at = formatDate(new Date(item.check_at*1000));
-//                  item.check_at = item.check_at.split(" ")[0];
+                  //                  item.check_at = item.check_at.split(" ")[0];
                   item.import_at = formatDate(new Date(item.import_at*1000));
-//                  item.import_at = item.import_at.split(" ")[0];
+                  //                  item.import_at = item.import_at.split(" ")[0];
                   if(new Date(Date.parse(start)) > new Date(Date.parse(item.sale_at))){
                     start = item.sale_at;
                   }
@@ -1811,7 +1818,7 @@
                     end = item.sale_at;
                   }
                   totalMoney += parseFloat(item.income);
-//                console.log(totalMoney);
+                  //                console.log(totalMoney);
                   that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
                     "id": item.create_uid
                   },{
@@ -1865,7 +1872,7 @@
                     end = item.rece_at;
                   }
                   totalMoney += parseFloat(item.rece_money);
-//                  console.log(totalMoney);
+                  //                  console.log(totalMoney);
                 });
 
                 that.totalMoney = totalMoney.toFixed(2);
@@ -1880,7 +1887,7 @@
                 that.endTime = response.data.data.rece_end;
                 that.tableDataQK.forEach(function (item, index, arr) {
                   item.sale_at = formatDate(new Date(item.sale_at*1000));
-//                  console.log(item.check_at);
+                  //                  console.log(item.check_at);
                   item.check_at = formatDate(new Date(item.check_at*1000));
                   item.import_at = formatDate(new Date(item.import_at*1000));
                   that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
@@ -1918,7 +1925,7 @@
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
               }
             }).then(function (obj) {
-//                that.tableDataZH = obj.data.objects;
+              //                that.tableDataZH = obj.data.objects;
               console.log('账户查询',obj);
               if(obj.data.isSuccess){
                 that.ruleForm.payAccount = obj.data.object.title;
@@ -1935,38 +1942,52 @@
         });
       },
       // 获取关联订单（票付通余额时）
-      getListRece(orderStr){
+      getListRece(){
+        let orderStr = '';
+        if(this.chooseTable.length > 0){
+          this.chooseTable.forEach(function (item, index, arr) {
+            orderStr += item.order_sn + ','
+          });
+          orderStr = orderStr.substr(0, orderStr.length - 1);
+        }
+        // alert(JSON.stringify(this.startTimeOrder))
+        // alert(JSON.stringify(this.endTimeOrder))
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/listforrece", {
           "pageIndex": this.currentPageGL,
           "pageSize": this.pageSizeGL,
           "order_sn": orderStr,
-          "type": 1
+          "type": 1,
+          "check_at_start": this.startTimeOrder,
+          "check_at_end": this.endTimeOrder
         }, ).then(function(response) {
           console.log('关联订单',response);
           if (response.data.code == '200') {
+            that.searchTotalMoney = response.data.data.money;
+            // alert(that.searchTotalMoney);
             that.tableDataGLDD = response.data.data.list;
             that.pageCountGL = parseInt(response.data.data.total);
             that.tableDataGLDD.forEach(function (item, index, arr) {
               item.check_at = formatDate(new Date(item.check_at*1000));
               item.import_at = formatDate(new Date(item.import_at*1000));
               item.sale_at = formatDate(new Date(item.sale_at*1000));
-              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
-                "id": item.create_uid
-              },{
-                headers: {
-                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                }
-              }).then(function(response) {
+              // 加载太慢，人员请求取消
+              // that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              //   "id": item.create_uid
+              // },{
+              //   headers: {
+              //     'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              //   }
+              // }).then(function(response) {
 
-                if (response.data.isSuccess) {
-                  item.create_uid = response.data.object.name
-                } else {
-                  that.$message.warning("加载数据失败~");
-                }
-              }).catch(function(error) {
-                console.log(error);
-              });
+              //   if (response.data.isSuccess) {
+              //     item.create_uid = response.data.object.name
+              //   } else {
+              //     that.$message.warning("加载数据失败~");
+              //   }
+              // }).catch(function(error) {
+              //   console.log(error);
+              // });
             });
             that.loading = false;
           } else {
@@ -1993,7 +2014,6 @@
 
       // 时间限制
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -2006,7 +2026,6 @@
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -2019,7 +2038,6 @@
         }
       },
       beginDate1(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -2032,12 +2050,35 @@
         }
       },
       processDate1(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
             if (that.ruleForm.startTime) {  //如果开始时间不为空，则结束时间大于开始时间
               return new Date(that.ruleForm.startTime).getTime() > time.getTime()
+            } else {
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+            }
+          }
+        }
+      },
+      beginDate2(){
+        const that = this;
+        return {
+          disabledDate(time){
+            if (that.endTimeOrder) {  //如果结束时间不为空，则小于结束时间
+              return new Date(that.endTimeOrder).getTime() < time.getTime()
+            } else {
+              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+            }
+          }
+        }
+      },
+      processDate2(){
+        const that = this;
+        return {
+          disabledDate(time) {
+            if (that.startTimeOrder) {  //如果开始时间不为空，则结束时间大于开始时间
+              return new Date(that.startTimeOrder).getTime() > time.getTime()
             } else {
               // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
             }
@@ -2119,5 +2160,9 @@
   }
   #edit_detail .inputWidth{
     width: 80%!important;
+  }
+  #edit_detail .relaOrder{
+    display: inline-block;
+    text-align: right;
   }
 </style>

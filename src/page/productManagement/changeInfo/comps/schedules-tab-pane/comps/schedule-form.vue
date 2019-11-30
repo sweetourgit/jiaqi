@@ -36,7 +36,10 @@
         </el-form-item>
         <el-form-item label="详情：" label-width="80px" prop="info">
           <div style="width: 600px; padding-top: 10px;">
-            <vue-editor v-model="submitForm.info"></vue-editor>
+            <vue-editor 
+              v-model="submitForm.info"
+              :editorToolbar='$defaultToolbar'>
+            </vue-editor>
           </div>
         </el-form-item>
       </el-form>
