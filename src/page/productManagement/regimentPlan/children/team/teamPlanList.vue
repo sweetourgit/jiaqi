@@ -63,17 +63,21 @@
 
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <span v-show="show1" class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales(scope.row.id)">停售</span>
-            <span v-show="show1" class="em" v-if="scope.row.regimentType=='1'">|</span>
-            <span v-show="show1" class="cursor blue" v-if="scope.row.regimentType=='2'" @click="haltSales_01(scope.row.id)">恢复售卖</span>
+            <span v-show="show1">
+              <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales(scope.row.id)">停售</span>
+              <span class="em" v-if="scope.row.regimentType=='1'">|</span>
+              <span class="cursor blue" v-if="scope.row.regimentType=='2'" @click="haltSales_01(scope.row.id)">恢复售卖</span>
+            </span>
             <!-- <span v-show="show2" class="em" v-if="scope.row.regimentType=='2'">|</span> -->
-            <span v-show="show2" class="cursor blue" v-if="scope.row.regimentType=='1'" @click="operation(1)">下单</span>
+            <span v-show="show2"><span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="operation(1)">下单</span></span>
             <!-- <span v-show="show2" class="em" v-if="scope.row.regimentType=='1'">|</span> -->
-            <span v-show="show1" class="cursor blue" @click="operation(2)">详情</span>
-            <span v-show="show1" class="em" v-if="scope.row.regimentType=='3'">|</span>
-            <span v-show="show1" class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
-            <span v-show="show1" class="em" v-if="scope.row.regimentType=='1'">|</span>
-            <span v-show="show1" class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales_02(scope.row.id)">封团</span>
+            <span v-show="show1">
+              <span class="cursor blue" @click="operation(2)">详情</span>
+              <span class="em" v-if="scope.row.regimentType=='3'">|</span>
+              <span class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
+              <span class="em" v-if="scope.row.regimentType=='1'">|</span>
+              <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales_02(scope.row.id)">封团</span>
+            </span>
           </template>
         </el-table-column>
       </el-table>
@@ -188,12 +192,11 @@ export default {
   methods: {
     permission(){
       let orgID = sessionStorage.getItem('orgID');
-      let arr = [492,493,494,545];
-      console.log(arr.indexOf("orgID")!=-1)
-      if(arr.indexOf("orgID")!=-1){
-        this.show2 = true;
-      }else{
+      let arr = ['492','493','494','545'];
+      if(arr.indexOf(orgID)==-1){     
         this.show1 = true ;
+      }else{
+        this.show2 = true;
       }
       
     },

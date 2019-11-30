@@ -120,7 +120,7 @@
       <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
         <div style="position:absolute; top:8px; right:10px;">
           <el-button @click="CloseCheckIncomeShow()">取消</el-button>
-          <el-button @click="repeal()" type="danger" plain v-if="getRowCheckType != 1">撤销</el-button>
+          <el-button @click="repeal()" type="danger" plain v-if="getRowCheckType == 0">撤销</el-button>
         </div>
       <!-- 好像是和无收入借款共用一个 -->
       <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
@@ -206,6 +206,7 @@ export default {
       infoStatus: '',
       dialogFormVisible: false,
       msg:'',
+      guid: null,
     }
   },
   computed: {
@@ -419,13 +420,13 @@ export default {
     },
     //查看无收入借款弹窗
     checkIncome(row) {
+      console.log(row,'row 预付款')
+      this.guid=row.guid;
       this.getRowCheckType = row.checkType
       this.paymentID = row.paymentID // 设置 paymentID 给子组件，子组件会根据这个值的变化进行页面渲染。子组件目前设置的是0，本页的也是0
-      console.log(this.paymentID)
       this.checkIncomeShow = true;
-      // this.ruleForm = row;
-      //this.getLabel();
     },
+    // 撤销该笔借款
     repeal() {
       this.$confirm("是否需要撤销该笔借款?", "提示", {
         confirmButtonText: "确定",
@@ -435,6 +436,15 @@ export default {
         "id": this.paymentID
       }).then(res => {
         if (res.data.isSuccess == true) {
+          this.$http.post(this.GLOBAL.jqUrl + "/JQ/EndProcessForJQ",{
+            "jq_id": this.guid,
+            "jQ_Type": 1
+          }).then(res => {
+            this.$message.success("撤销成功");
+            this.checkIncomeShow = false;
+            this.deleteBorrow();
+            // this.history.go(0); // 刷新页面
+          })
           this.$message.success("撤销成功");
           this.searchHand();
           this.checkIncomeShow = false;

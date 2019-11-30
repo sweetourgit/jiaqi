@@ -9,5 +9,8 @@ export default {
   },
   saveName(state, data){
     state.name = data
+  },
+  changeAdvance(state, data){
+    state.advinceData = data
   }
 }
