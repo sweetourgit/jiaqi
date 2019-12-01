@@ -1207,7 +1207,7 @@ export default {
       // this.imgBig = getUrl.paths[0].Url
 
     },
-    // 撤销（结束工作流程）
+    // 撤销（结束工作流程）预付款要参照这个改，这个是对的
     repeal(){
       this.$confirm("是否需要撤销该笔借款?", "提示", {
          confirmButtonText: "确定",
