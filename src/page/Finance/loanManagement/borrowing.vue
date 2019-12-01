@@ -81,8 +81,6 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-<!--          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0">|</span>-->
-<!--          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0" type="text" size="small" class="table_details">付款账户</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -665,7 +663,7 @@ export default {
     },
     // 供应商失去焦点
     supplierBlurHandle(){
-      console.log(this.supplier_id)
+        console.log(this.supplier_id)
       /*if(this.supplier_id == null){
         this.$refs['supplier'].resetField()
       }*/
@@ -1235,43 +1233,7 @@ export default {
         this.getList();
       })
       .catch(() => {});
-    },
-    // 选择账户弹窗
-    /*bankAccount(){
-      this.SelectAccount = true;
-      this.selectList();
-    },*/
-    /*closeAccount(){
-      this.SelectAccount = false;
-    },*/
-    // 选择账户弹窗，选择对应的选项事件
-/*    addAccount(index, row){
-      var that = this
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
-        "paymentID": this.paymentID,
-        "accountID": row.id
-      })
-      .then(function (obj) {
-        // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
-        that.getList()
-      }).catch(function (obj) {})
-      this.SelectAccount = false
-    },*/
-    // 选择账户表格查询
-/*    selectList(){
-      var that = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
-        {
-          "object": {
-            "isDeleted": 0
-          }
-        })
-        .then(function (obj) {
-          that.tableSelect = obj.data.objects
-        })
-        .catch(function (obj) {})
-    },*/
+    }
   },
   mounted(){
     this.getList()
