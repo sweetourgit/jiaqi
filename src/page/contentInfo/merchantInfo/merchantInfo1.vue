@@ -188,7 +188,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item
-                v-if="(ruleForm.settlementType == '月结'|| ruleForm.settlementType == '1')&& ruleForm.parentName == ''"
+                v-if="(ruleForm.settlementType == '月结'|| ruleForm.settlementType == '1') && parentSettlementType !== 1"
                 label="额度 :"
                 prop="quota"
               >
@@ -1115,7 +1115,8 @@ export default {
       fileList1: [], //附件
       isSelect: false, // 判断是否进入select
       areaInformationName: "", //地区value
-      superiorMerchants: [] //所属上级商户的集合
+      superiorMerchants: [], //所属上级商户的集合
+      parentSettlementType:null //判断所选的父级商户的结算方式是否月月结
     };
   },
   components: {
@@ -1151,6 +1152,9 @@ export default {
     },
     // 选择所属上级商户
     handleSelectName(item) {
+      // console.log(item)
+      // 父级是月结并且子集也是月结 则额度不显示
+      this.parentSettlementType = item.settlementType
       this.ruleForm.parentID = item.id;
       this.ruleForm.parentName = item.value;
       // console.log(item);
@@ -2548,6 +2552,8 @@ export default {
           } = obj.data.object;
 
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
+          // 父级的结算方式
+          this.parentSettlementType = object.parentSettlementType;
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
           (this.ruleForm.fileUrl = object.fileUrl),

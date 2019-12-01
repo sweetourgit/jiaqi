@@ -502,7 +502,7 @@ export default {
             this.teampreview(res.data.object.planID);
             // 记录最开始的总价 isSaveBtnClick需要
             this.prePayable = this.orderget.payable;
-            this.enrollDetail = this.enrollDetail.replace(/\s*/g,'')
+            this.enrollDetail = this.enrollDetail.replace(/\s*/g, "");
             let _arr = this.enrollDetail.split(",");
             // console.log(res.data.object.enrollDetail.split(","),"this.enrolldetail")
             _arr.splice(_arr.length - 1, 1);
@@ -522,9 +522,13 @@ export default {
             let _newArr = [];
             for (let i = 0; i < _res.length; i++) {
               let a = _res[i][0].split("*");
+              console.log(a)
               _newArr.push(a[0] + "x" + _res[i][1] + ")");
             }
             this.enrollDetailShow = _newArr.toString();
+
+            // 计算最开始的总价
+
           }
         })
         .catch(err => {
@@ -928,7 +932,7 @@ export default {
         for (let i = _arr.length - 1; i > 0; i--) {
           if (_arr[i].indexOf(enrollName) != -1) {
             _arr.splice(i, 1);
-            return this.enrollDetail = _arr.toString();
+            return (this.enrollDetail = _arr.toString());
           }
         }
 
@@ -1349,6 +1353,7 @@ export default {
       this.isSaveBtn = false;
       this.applyInfomations = [];
       this.enrollDetail = "";
+      this.isPricechange = null;
     }
   }
 };
