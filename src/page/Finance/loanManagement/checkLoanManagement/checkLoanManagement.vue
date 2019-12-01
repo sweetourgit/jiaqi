@@ -298,7 +298,7 @@ export default {
           this.tableIncome = []
           this.tableMoney = []
           this.tableEarning = []
-          let createUserCode = res.data.object.createUserCode;
+          let createUserCode = res.data.object.creatUserCode;
           let getPaymentType = res.data.object.paymentType
           this.keepPaymentType = getPaymentType
           this.fundamental=res.data.object;
@@ -314,6 +314,7 @@ export default {
     },
     // 无收入没有订单号根据登录人员查询无收入借款明细
     bbb(params){
+      console.log(params)
       var that = this
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
         "object": {
