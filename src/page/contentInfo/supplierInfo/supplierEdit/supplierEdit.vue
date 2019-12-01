@@ -1,41 +1,56 @@
 <style lang="scss" scoped>
 .listinfo{
+  display: flex;
+  position: relative;
   padding-bottom: 80px;
-  header{
-    display: flex;
-    width: 100%;
-    justify-content: flex-end;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+  &>main{
+    width: 1080px;
+  }
+  &>aside{
+    padding-left: 20px;
+    .fixed-outer{
+      position: fixed;
+    }
   }
 }
 </style>
 
 <template>
   <div class="listinfo">
-    <header>
-      <el-button type="primary" size="small">保存</el-button>
-      <el-button type="info" size="small"
-        @click="$router.go(-1)">
-        取消
-      </el-button>
-    </header>
-    
     <main>
-      <el-tabs v-model="currentTabName" >
-        <el-tab-pane label="基本信息" name="first">用户管理</el-tab-pane>
-        <el-tab-pane label="账户信息" name="second">配置管理</el-tab-pane>
+      <el-tabs v-model="currentTabName">
+        <el-tab-pane label="基本信息" name="base">
+          <base-tab ref="baseTab"></base-tab>
+        </el-tab-pane>
+        <el-tab-pane label="账户信息" name="banks">
+          <banks-tab ref="banksTab"></banks-tab>
+        </el-tab-pane>
       </el-tabs>
     </main>
-      
+    <aside>
+      <div class="fixed-outer">
+        <el-button type="primary" size="small"
+          @click="getData">
+          保存
+        </el-button>
+        <el-button type="info" size="small"
+          >
+          取消
+        </el-button>
+      </div>
+    </aside>    
   </div>
 </template>
 
 <script>
 import { getSupplierById } from '../api'
 import { getSupplierDTO } from '../dictionary'
+import baseTab from './subs/baseTab/baseTab'
+import banksTab from './subs/banksTab/banksTab'
 
 export default {
+
+  components: { baseTab, banksTab },
 
   mounted(){
     this.preHandler();
@@ -47,9 +62,8 @@ export default {
       // 状态
       {
         isSave: false, // 是新增还是编辑
-        currentTabName: null,
-      },
-
+        currentTabName: 'base',
+      }
     )
   },
 
@@ -67,6 +81,7 @@ export default {
       protoPromise
       .then(proto => {
         let { baseProto, banksProto }= this.protoSplitHandler(proto);
+        this.$refs.baseTab.init(baseProto);
       })
     },
 
@@ -87,7 +102,23 @@ export default {
         baseProto[attr]= proto[attr];
       })
       return { baseProto, banksProto };
-    }
+    },
+
+    hasChanged(){
+      let bol= false;
+      bol= this.$refs.baseTab.hasChanged();
+      return bol;
+    },
+
+    // 返回的是Promise
+    validate(){
+      return this.$refs.baseTab.validate();
+    },
+
+    getData(){
+      let baseData= this.$refs.baseTab.getData();
+      console.log(baseData);
+    },
   }
 
 }
