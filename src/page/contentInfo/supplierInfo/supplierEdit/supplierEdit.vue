@@ -22,7 +22,10 @@
     </header>
     
     <main>
-
+      <el-tabs v-model="currentTabName" >
+        <el-tab-pane label="基本信息" name="first">用户管理</el-tab-pane>
+        <el-tab-pane label="账户信息" name="second">配置管理</el-tab-pane>
+      </el-tabs>
     </main>
       
   </div>
@@ -44,6 +47,7 @@ export default {
       // 状态
       {
         isSave: false, // 是新增还是编辑
+        currentTabName: null,
       },
 
     )
@@ -60,6 +64,10 @@ export default {
 
     init(){
       let protoPromise= this.getProto();
+      protoPromise
+      .then(proto => {
+        let { baseProto, banksProto }= this.protoSplitHandler(proto);
+      })
     },
 
     // 获取数据原型
@@ -68,6 +76,18 @@ export default {
       if(!id) return Promise.resolve(getSupplierDTO());
       return getSupplierById(id)
     },
+
+    // 拆分数据原型
+    protoSplitHandler(proto){
+      let id= this.$route.query.id;
+      let baseProto= {}; 
+      let banksProto= { id };
+      Object.keys(proto).forEach((attr) => {
+        if(attr=== 'banks') return banksProto[attr]= proto[attr];
+        baseProto[attr]= proto[attr];
+      })
+      return { baseProto, banksProto };
+    }
   }
 
 }
