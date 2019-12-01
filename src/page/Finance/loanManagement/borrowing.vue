@@ -1071,8 +1071,8 @@ export default {
     // 关闭弹窗
     CloseCheckIncomeShow(){
       this.checkIncomeShow = false;
-      this.$refs['ruleForm'].resetFields();
-      this.clearPlan();
+      // this.$refs['ruleForm'].resetFields();
+      // this.clearPlan();
     },
     // 搜索
     search(){
