@@ -448,8 +448,10 @@ import moment from 'moment'
     },
     // 请求工作流接口获取未完成的任务
     pageList(){
+      console.log('请求工作流接口获取未完成的任务')
       var that = this
       var arr = []
+      that.tableData  = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
           let getWorkflowCode
@@ -549,22 +551,37 @@ import moment from 'moment'
             that.transitShow = false;
             that.detailstShow = false;
             that.rejectedSuccess();
-            that.pageList();
             //that.repeal();
-        })
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',{
-          "jq_id":this.guid,
-          "jQ_Type": 1
+            let getWorkflowCode
+            if(this.presentRouter == '无收入借款管理') {
+              getWorkflowCode = 1
+            } else if(this.presentRouter == '预付款管理') {
+              getWorkflowCode = 2
+            }else {}
+            // 结束工作流
+            this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',{
+              "jq_id":this.guid,
+              "jQ_Type": getWorkflowCode
+            }).then(res => {
+              that.pageList();
+              that.$store.commit('changeAparoveState')
+            })
         })
       },
       // 驳回成功通过guid将checktype修改成2
       rejectedSuccess(){
+        let getWorkflowCode
+        if(this.presentRouter == '无收入借款管理') {
+          getWorkflowCode = 1
+        } else if(this.presentRouter == '预付款管理') {
+          getWorkflowCode = 2
+        }else {}
         this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',{
           /*"guid": this.guid,
           "checkType": 2*/
          "object": {
             "guid": this.guid,
-            "checkType": 2
+            "checkType": getWorkflowCode
           }
         })
       },

@@ -3,4 +3,5 @@ export default {
   token:"",
   name:"",
   advinceData: 0,
+  updatAdvancePaymentData: 0,
 }

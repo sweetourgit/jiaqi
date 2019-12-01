@@ -215,6 +215,20 @@ export default {
       // `this` 指向 vm 实例
       return this.approvalTotal > 0 ? '您需要审批(' + this.approvalTotal + ')' : '您需要审批'
     },
+    countTest:function () {
+      return this.$store.state.updatAdvancePaymentData
+    }
+  },
+  watch: {
+    // 如果审批状态被驳回那么刷新预付款列表
+    countTest: function (newV, oldV) {
+      let _this = this
+      if (newV != oldV) {
+        setTimeout(function () {
+          _this.searchHand()
+        }, 500)
+      }
+    }
   },
   created () {
     // 只有是出纳的时候才显示申请人检索
