@@ -188,7 +188,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item
-                v-if="ruleForm.settlementType == '月结'|| ruleForm.settlementType == '1'"
+                v-if="(ruleForm.settlementType == '月结'|| ruleForm.settlementType == '1')&& ruleForm.parentName == ''"
                 label="额度 :"
                 prop="quota"
               >
@@ -256,10 +256,10 @@
                   name="files"
                   style="width: 220px;"
                 >
-                <el-button size="small" type="primary">点击上传</el-button>
-                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-                <!-- </el-upload> -->
-                <!-- <el-upload
+                  <el-button size="small" type="primary">点击上传</el-button>
+                  <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                  <!-- </el-upload> -->
+                  <!-- <el-upload
                   ref="uploadImg"
                   class="avatar-uploader"
                   :action="imgUpload()"
@@ -269,7 +269,7 @@
                   :on-success="handleSuccess"
                 >
                   <img v-if="ruleForm.imgUrl" :src="ruleForm.imgUrl" class="avatar" />
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
                   <!-- <el-button size="small" type="primary">点击上传</el-button> -->
                   <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
@@ -292,7 +292,7 @@
                   name="files"
                   style="width: 220px;"
                 >
-                <!-- <el-upload
+                  <!-- <el-upload
                   ref="uploadImg"
                   class="avatar-uploader"
                   :action="imgUpload()"
@@ -302,7 +302,7 @@
                   :on-success="handleSuccessFileUrl"
                 >
                   <img v-if="ruleForm.fileUrl" :src="ruleForm.fileUrl" class="avatar" />
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
                   <el-button size="small" type="primary">点击上传</el-button>
                   <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
@@ -359,7 +359,6 @@
                     placeholder="请输入"
                     @focus="handleFocusAdminNames"
                     @select="handleSelectAdminNames"
-                    @blur="handleBlurAdminNames"
                     :trigger-on-focus="false"
                     style="width: 250px"
                   >
@@ -368,7 +367,7 @@
                       <div class="name">{{ item.name=item.value }}</div>
                     </template>
                   </el-autocomplete>
-                  <div style="margin-top: 10px;">
+                  <!-- <div style="margin-top: 10px;">
                     <el-tag
                       :key="tag.id"
                       v-for="tag in adminArr"
@@ -378,7 +377,7 @@
                       @close="handleAdminClose(tag, adminArr)"
                       style="margin-botton: 5px;"
                     >{{tag.name}}</el-tag>
-                  </div>
+                  </div>-->
                 </el-form-item>
                 <el-form-item label="销售人员 :" prop="salesman">
                   <el-autocomplete
@@ -679,7 +678,13 @@
                 <td class="paddingTd">{{item.settlementTypeCN}}</td>
                 <td class="paddingTd">{{item.linker}}</td>
                 <td class="paddingTd">{{item.phone}}</td>
-                <td class="paddingTd"></td>
+                <td>
+                  <span
+                    v-for="(ite,index) in item.jqAdminList"
+                    :key="'a'+index"
+                    style="border:none;"
+                  >{{ite.name}}</span>
+                </td>
                 <td class="paddingTd">{{item.balance}}</td>
                 <td class="paddingTd">{{item.deposit}}</td>
               </tr>
@@ -1238,6 +1243,7 @@ export default {
           }
         })
         .then(res => {
+          // if (res.data.objects.length !== 0) {
           for (let i = 0; i < res.data.objects.length; i++) {
             this.vague.push({
               uid: res.data.objects[i].id,
@@ -1249,6 +1255,9 @@ export default {
             ? this.vague.filter(this.createStateFilter(queryString))
             : [];
           cb(results);
+          // } else {
+          //   this.ruleForm.administrative = ""
+          // }
         });
     },
     createStateFilter(queryString) {
@@ -1361,7 +1370,7 @@ export default {
 
     // 管理人员focus触发的事件
     handleFocusAdminNames() {
-      this.ruleForm.administrative = "";
+      // this.ruleForm.administrative = "";
     },
     // 销售人员focus触发的事件
     handleFocusSalesNames() {
@@ -1369,8 +1378,10 @@ export default {
     },
     // 管理人员select触发的事件
     handleSelectAdminNames(item) {
+      item.jqUserType = 1;
+      item.isDeleted = 1;
       this.adminArr.push(item);
-      this.handleBlurAdminNames();
+      // this.handleBlurAdminNames();
     },
     // 销售人员select触发的事件
     handleSelectSalesNames(item) {
@@ -1378,15 +1389,15 @@ export default {
       this.handleBlurSalesNames();
     },
     // 管理人员blur触发的事
-    handleBlurAdminNames() {
-      let arr = [];
-      for (let i = 0; i < this.adminArr.length; i++) {
-        this.adminArr[i].isDeleted = 0;
-        this.adminArr[i].jqUserType = 1;
-        arr.push(this.adminArr[i].name);
-      }
-      this.ruleForm.administrative = arr.join(",");
-    },
+    // handleBlurAdminNames() {
+    // let arr = [];
+    // for (let i = 0; i < this.adminArr.length; i++) {
+    //   this.adminArr[i].isDeleted = 0;
+    //   this.adminArr[i].jqUserType = 1;
+    //   arr.push(this.adminArr[i].name);
+    // }
+    // this.ruleForm.administrative = arr.join(",");
+    // },
     // 销售人员blur触发的事件
     handleBlurSalesNames() {
       let arr = [];
@@ -1398,15 +1409,15 @@ export default {
       this.ruleForm.salesman = arr.join(",");
     },
     // 管理 tag 删除
-    handleAdminClose(tag, arr) {
-      arr.forEach((v, k, arr) => {
-        if (arr[k].name == tag.name) {
-          arr.splice(k, 1);
-        }
-      });
-      this.adminArr = arr;
-      this.handleBlurAdminNames();
-    },
+    // handleAdminClose(tag, arr) {
+    //   arr.forEach((v, k, arr) => {
+    //     if (arr[k].name == tag.name) {
+    //       arr.splice(k, 1);
+    //     }
+    //   });
+    //   this.adminArr = arr;
+    //   this.handleBlurAdminNames();
+    // },
     // 销售 tag 删除
     handleSalesClose(tag, arr) {
       arr.forEach((v, k, arr) => {
@@ -1797,8 +1808,8 @@ export default {
     // dialog关闭的回调
     closeDialog() {
       this.btnindex = 0;
-      this.arrears = 0
-      this.sonList = []
+      this.arrears = 0;
+      this.sonList = [];
     },
     // 重置
     handleReset() {
@@ -1920,7 +1931,7 @@ export default {
             item.repaymentDate = moment(item.repaymentDate).format(
               "YYYY-MM-DD"
             );
-            this.arrears += item.qk_price
+            this.arrears += item.qk_price;
           });
           this.page_order_total = obj.data.total;
         })
@@ -1981,8 +1992,8 @@ export default {
       this.adminArr = [];
       this.salesArr = [];
       this.businessOtherNamesArr = [];
-      this.sonList = []
-      this.arrears = 0
+      this.sonList = [];
+      this.arrears = 0;
       // this.$refs.uploadImg.clearFiles(); // 上传图片隐藏 要不报错先影藏
       // this.orgsAddArr = []
     },
@@ -2120,7 +2131,7 @@ export default {
       }
 
       // 经营范围
-      let scopeExt = ""
+      let scopeExt = "";
       if (this.ruleForm.scopeExt.length !== 0) {
         let scopeExt = this.ruleForm.scopeExt.join(",");
       }
@@ -2137,6 +2148,7 @@ export default {
       // 添加账户
 
       // jqAdminList 管理和销售人员
+      // let adminAndSalesArr = [...this.salesArr];
       let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
       adminAndSalesArr = adminAndSalesArr.map(item => {
         return {
@@ -2209,6 +2221,7 @@ export default {
             balance: this.ruleForm.balance,
             // arrears: this.ruleForm.arrears,
             imgUrl: this.ruleForm.imgUrl,
+            fileUrl: this.ruleForm.fileUrl,
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
             storeType: this.ruleForm.storeType,
@@ -2346,7 +2359,7 @@ export default {
       }
 
       // 经营范围
-      let scopeExt = ""
+      let scopeExt = "";
       if (this.ruleForm.scopeExt.length !== 0) {
         scopeExt = this.ruleForm.scopeExt.join(",");
       }
@@ -2429,6 +2442,7 @@ export default {
             balance: this.ruleForm.balance,
             // arrears: this.ruleForm.arrears,
             imgUrl: this.ruleForm.imgUrl,
+            fileUrl: this.ruleForm.fileUrl,
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
             storeType: this.ruleForm.storeType,
@@ -2536,7 +2550,8 @@ export default {
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
-          this.AbouQuota = object.abouQuota;
+          (this.ruleForm.fileUrl = object.fileUrl),
+            (this.AbouQuota = object.abouQuota);
           this.ruleForm.balance = object.balance;
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID
@@ -2610,29 +2625,30 @@ export default {
               this.ruleForm.scopeExt = object.scopeExt.split(",");
             }
           }
-          this.adminArr = [];
+          // this.adminArr = [];
           this.salesArr = [];
+          this.ruleForm.administrative = "";
           jqAdminList.forEach((val, idx, arr) => {
-            if (arr[idx].jqUserType === 1) {
-              this.adminArr.push(val);
-            } else {
+            if (arr[idx].jqUserType === 2) {
               this.salesArr.push(val);
+            } else {
+              this.ruleForm.administrative = val.name;
             }
           });
-          let adminArr = [],
-            salesArr = [];
+          // let adminArr = [],
+          let salesArr = [];
           // 从商户详情页点击编辑进入编辑页然后管理人员与销售人员去重
           if (this.btnindex == 2) {
-            this.adminArr = this.removalData(this.adminArr);
+            // this.adminArr = this.removalData(this.adminArr);
             this.salesArr = this.removalData(this.salesArr);
           }
-          this.adminArr.forEach((val, idx, arr) => {
-            adminArr.push(this.adminArr[idx].name);
-          });
+          // this.adminArr.forEach((val, idx, arr) => {
+          //   adminArr.push(this.adminArr[idx].name);
+          // });
           this.salesArr.forEach((val, idx, arr) => {
             salesArr.push(this.salesArr[idx].name);
           });
-          this.ruleForm.administrative = adminArr.join(",");
+          // this.ruleForm.administrative = adminArr.join(",");
           this.ruleForm.salesman = salesArr.join(",");
 
           // 区域可见
@@ -2700,9 +2716,9 @@ export default {
           } else if (object.settlementType == 1) {
             this.ruleForm.settlementType = "月结";
           }
-         
+
           this.sonList = object.sonList;
-          
+
           this.ruleForm.parentID = object.parentID;
           this.ruleForm.parentName = object.parentName;
           this.ruleForm.quota = object.quota;
