@@ -896,7 +896,8 @@ export default {
         }
         // 报名信息增加enrollDetail拼接
         let price;
-        this.isPricechange == true ? (price = price_01) : (price = price_02);
+        console.log(this.ruleForm.price,"this.ruleForm.price")
+        this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
         price = this.toDecimal2(price);
         this.enrollDetail += `${enrollName}(${price} * 1),`;
       } else{
@@ -1330,7 +1331,7 @@ export default {
                             guests:guestAll,
                             //guests: guest,
                             number: number,
-                            enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                            enrollDetail: this.enrollDetail //报名类型详情字段拼接  订单管理模块需要
                           }
                         }).then(res => {
                         if (res.data.isSuccess == true) {
