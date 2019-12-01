@@ -1116,7 +1116,7 @@ export default {
       isSelect: false, // 判断是否进入select
       areaInformationName: "", //地区value
       superiorMerchants: [], //所属上级商户的集合
-      parentSettlementType:null //判断所选的父级商户的结算方式是否月月结
+      parentSettlementType: null //判断所选的父级商户的结算方式是否月月结
     };
   },
   components: {
@@ -1154,7 +1154,7 @@ export default {
     handleSelectName(item) {
       // console.log(item)
       // 父级是月结并且子集也是月结 则额度不显示
-      this.parentSettlementType = item.settlementType
+      this.parentSettlementType = item.settlementType;
       this.ruleForm.parentID = item.id;
       this.ruleForm.parentName = item.value;
       // console.log(item);
@@ -1814,6 +1814,7 @@ export default {
       this.btnindex = 0;
       this.arrears = 0;
       this.sonList = [];
+      this.parentSettlementType = null
     },
     // 重置
     handleReset() {
@@ -2556,8 +2557,8 @@ export default {
           this.parentSettlementType = object.parentSettlementType;
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
-          (this.ruleForm.fileUrl = object.fileUrl),
-            (this.AbouQuota = object.abouQuota);
+          this.ruleForm.fileUrl = object.fileUrl;
+          this.AbouQuota = object.abouQuota;
           this.ruleForm.balance = object.balance;
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID

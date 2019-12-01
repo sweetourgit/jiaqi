@@ -459,17 +459,6 @@ export default {
           id: orderId
         })
         .then(res => {
-          //   let str =
-          //     "成人(1323.00*1),成人(5000.00*1),成人(1323.00*1),人(1323.00*1),成人(5000.00*1),哈(1323.00*1),人(1323.00*1)";
-          // let _arr = str.split(",");
-          //  for( let i = _arr.length - 1;  i > 0;  i--){
-          //    if( _arr[i].indexOf("成人") != -1) {
-          //      _arr.splice(i,1)
-          //      return _arr
-          //    }
-          //  }
-          //  console.log(_arr)
-
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -1141,6 +1130,7 @@ export default {
         // }
         // 原先结束
       }
+      // console.log(type,"type")
       this.payable = 0;
       for (let i = 0; i < this.enrolNum.length; i++) {
         this.payable +=
