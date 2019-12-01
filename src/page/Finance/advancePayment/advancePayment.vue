@@ -428,7 +428,7 @@ export default {
         if (res.data.isSuccess == true) {
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/EndProcessForJQ",{
             "jq_id": this.guid,
-            "jQ_Type": 1
+            "jQ_Type": 2
           }).then(res => {
             this.$message.success("撤销成功");
             this.checkIncomeShow = false;

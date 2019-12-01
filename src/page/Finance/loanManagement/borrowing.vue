@@ -534,13 +534,18 @@ export default {
     }
   },
   computed:{
-    supplierIdChange: function () {
-      return this.supplier_id
+    rejectUpadataList:function () {
+      return this.$store.state.updatAdvancePaymentData
     }
   },
   watch:{
-    supplierIdChange: function (oldVal, newVal) {
-      console.log(oldVal, newVal)
+    rejectUpadataList:function (newV, oldV) {
+      let _this = this
+      if(newV != oldV) {
+        setTimeout(function () {
+          _this.getList()
+        },500)
+      }
     }
   },
   methods: {
@@ -1202,7 +1207,7 @@ export default {
       // this.imgBig = getUrl.paths[0].Url
 
     },
-    // 结束工作流程
+    // 撤销（结束工作流程）
     repeal(){
       this.$confirm("是否需要撤销该笔借款?", "提示", {
          confirmButtonText: "确定",

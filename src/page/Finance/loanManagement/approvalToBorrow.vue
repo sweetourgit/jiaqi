@@ -575,18 +575,12 @@ import moment from 'moment'
       },
       // 驳回成功通过guid将checktype修改成2
       rejectedSuccess(){
-        let getWorkflowCode
-        if(this.presentRouter == '无收入借款管理') {
-          getWorkflowCode = 1
-        } else if(this.presentRouter == '预付款管理') {
-          getWorkflowCode = 2
-        }else {}
         this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',{
           /*"guid": this.guid,
           "checkType": 2*/
          "object": {
             "guid": this.guid,
-            "checkType": getWorkflowCode
+            "checkType": 2
           }
         })
       },
