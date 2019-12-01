@@ -158,7 +158,8 @@
                   :on-change="handleChange"
                   :on-remove="handleRemove" 
                   :before-remove="beforeRemove" 
-                  :file-list="fileList">
+                  :on-preview="handlePreview"
+                  :file-list="ruleForm.files">
                     <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
                   </el-upload>
                 </el-form-item>
@@ -186,21 +187,10 @@
                   </div>
                 </div>
                 <div v-if="radio==1">
-                  <!-- <div style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 64px;margin-top: 10px; ">
-                        <i style="float: left; margin-left: 10px;margin-top: 7px;" class="el-icon-warning"></i>
-                        <div style="float: left;margin-left: 30px;margin-top: 7px;">已选择<span style="color: #249BEB">0</span>项</div>
-                        <div style="float: left; margin-left: 30px;margin-top: 7px;">报销总计：<span style="font-weight:bold">0.00</span>元</div>
-                  </div>-->
+                   
                   <div class="re_style">
                     <el-table :data="joinData_s" border style="width: 100%; margin-top: 30px">
-                      <!-- <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="100"></el-table-column>
-                      <el-table-column prop="supplierTypeEX" label="借款类型" width="90"></el-table-column>
-                      <el-table-column prop="supplierName" label="供应商" width="100"></el-table-column>
-                      <el-table-column prop="createUser" label="申请人" width="100"></el-table-column>
-                      <el-table-column prop="mark" label="摘要" width="120"></el-table-column>
-                      <el-table-column prop="price" label="借款金额" width="100"></el-table-column>
-                      <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column>
-                      <el-table-column prop="bcount" label="报销金额" style="background: yellow" width="140"> -->
+                     
                       <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="100"></el-table-column>
                       <el-table-column prop="supplierTypeEX" label="借款类型" width="90"></el-table-column>
                       <el-table-column prop="supplierName" label="供应商" width="100"></el-table-column>
@@ -894,7 +884,7 @@ export default {
                }
             })
             .then(res => {
-              if (res.data.isSuccess == true) {
+              if (res.data.isSuccess == true)  {
                  var d_objects = res.data.objects; //console.log(res.data.objects);
                  var createUser;
                     this.find = 1;
@@ -916,6 +906,7 @@ export default {
                                 paymentPrice:payments[j].paymentPrice,
                                 price:payments[j].price,
                                 peopleCount:payments[j].peopleCount,
+                                files:payments[j].files
 
                             })
                           
@@ -923,7 +914,7 @@ export default {
                         
                      }
                     
-                    //console.log(this.joinData_s);
+                    console.log("我的",this.joinData_s);
                }
             })
             .catch(err => {
@@ -1017,6 +1008,14 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
+    handlePreview(file){ //查看图片
+     // let getUrl = JSON.parse(file.response)
+      console.log(file.Url)
+      window.open(file.Url);
+      // this.uid = file.uid
+      // this.imgBigName = file.name
+    },
+    
     //添加报销和删除
     handleTabsEdit(targetName, action) {
       console.log(action);
