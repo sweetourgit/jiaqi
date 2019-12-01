@@ -509,6 +509,12 @@ export default {
             let _res = []; //
             _arr.sort();
             for (let i = 0; i < _arr.length; ) {
+              // let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1]
+              // let Price,Num;
+              // Price = Number(priceAndNum.substring(0,priceAndNum.indexOf('*')))
+              // Num = Number(priceAndNum.substring(priceAndNum.indexOf('*')+1,priceAndNum.length))
+              // // console.log(Price,Num)
+              // this.prePayable += Price * Num
               let count = 0;
               for (let j = i; j < _arr.length; j++) {
                 if (_arr[i] == _arr[j]) {
@@ -522,13 +528,16 @@ export default {
             let _newArr = [];
             for (let i = 0; i < _res.length; i++) {
               let a = _res[i][0].split("*");
-              console.log(a)
               _newArr.push(a[0] + "x" + _res[i][1] + ")");
             }
             this.enrollDetailShow = _newArr.toString();
 
             // 计算最开始的总价
-
+            // let arr = this.enrollDetailShow.split(",")
+            // console.log(arr)
+            // for (let i = 0; i < arr.length; ) {
+            // }
+            // console.log(this.prePayable)
           }
         })
         .catch(err => {
@@ -1354,6 +1363,7 @@ export default {
       this.applyInfomations = [];
       this.enrollDetail = "";
       this.isPricechange = null;
+      this.prePayable = 0
     }
   }
 };
