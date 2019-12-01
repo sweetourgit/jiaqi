@@ -69,7 +69,7 @@
               <span class="cursor blue" v-if="scope.row.regimentType=='2'" @click="haltSales_01(scope.row.id)">恢复售卖</span>
             </span>
             <!-- <span v-show="show2" class="em" v-if="scope.row.regimentType=='2'">|</span> -->
-            <span v-show="show2"><span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="operation(1)">下单</span></span>
+            <span v-show="show2"><span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="operation(1,scope.$index)">下单</span></span>
             <!-- <span v-show="show2" class="em" v-if="scope.row.regimentType=='1'">|</span> -->
             <span v-show="show1">
               <span class="cursor blue" @click="operation(2)">详情</span>
@@ -309,9 +309,10 @@ export default {
       //this.$refs.multipleTable.clearSelection(); //清空用户的选择
       this.$refs.costTable.toggleRowSelection(row);
     },
-    operation(i) {
+    operation(i,index) {
       if(i === 1){
-        if(new Date().getTime() > new Date(this.teamqueryList[0].dateFormat).getTime()+24*24*60*1000*2){
+        console.log(this.teamqueryList[index].dateFormat)
+        if(new Date().getTime() > new Date(this.teamqueryList[index].dateFormat).getTime()+24*24*60*1000*2){
           this.$message.error('该团期出行日期已过,不能再进行下单');
           return;
         }
