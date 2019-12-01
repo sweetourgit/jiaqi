@@ -54,3 +54,21 @@ export const getSupplierById= function(id){
     })
   })
 }
+
+// 供应商编码是否重复
+export const checkSupplierCode= function(supplierCode){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + `/universal/supplier/api/isexistsuppliercode`, {
+      supplierCode
+    })
+    .then(res => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject();
+      resolve();
+    })
+    .catch(err => {
+      console.error(err);
+      err && $message.error(err.toString());
+    })
+  })
+}
