@@ -124,13 +124,13 @@
         <el-form-item label="供应商名称" prop="supplier" style="clear:both;">
           <el-autocomplete
             class="name_input"
-            v-model="ruleForm.supplier"
             :fetch-suggestions="querySearch3"
+            v-model="ruleForm.supplier"
             placeholder="请输入供应商名称"
             :trigger-on-focus="false"
             @select="departure"
-            @blur="supplierBlurHandle"
           ></el-autocomplete>
+          <!--<el-input style="width:300px;" disabled v-model="ruleForm.supplier" placeholder="请通过模糊查询选择相应供应商"></el-input>-->
         </el-form-item>
         <el-form-item label="借款类型" prop="planType">
           <el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
@@ -466,7 +466,7 @@ export default {
         name: [{ required: true, message: '请输入借款人名字', trigger: 'blur' }],
         //plan: [{ required: true, message: '请输入团期计划', trigger: 'blur' }],
         plan_01: [{ required: true, message: '请输入团期计划', trigger: 'blur' }],
-        supplier:[{ required: true, message: '请输入供应商名称', trigger: 'change' }],
+        supplier:[{ required: true, message: '请选择相应供应商', trigger: 'change' }],
         planType:[{ required: true, message: '请选择借款类型', trigger: 'change' }],
         planAmount:[
           { required: true, message: '请输入借款金额', trigger: 'blur' },
@@ -531,6 +531,16 @@ export default {
       } else {
         return moment(value).format('YYYY-MM-DD')
       }
+    }
+  },
+  computed:{
+    supplierIdChange: function () {
+      return this.supplier_id
+    }
+  },
+  watch:{
+    supplierIdChange: function (oldVal, newVal) {
+      console.log(oldVal, newVal)
     }
   },
   methods: {
@@ -660,13 +670,6 @@ export default {
     departure(item){
       this.supplier_id = item.id
       //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
-    },
-    // 供应商失去焦点
-    supplierBlurHandle(){
-        console.log(this.supplier_id)
-      /*if(this.supplier_id == null){
-        this.$refs['supplier'].resetField()
-      }*/
     },
     // 借款人模糊检索
     querySearchBorrower(queryBorrowerString, cb) {
