@@ -287,7 +287,7 @@ export default {
     change: false, // 相关表单是否可点击
   },
   data() {
-    var validateVoucher = (rule, value, callback) => {
+    let validateVoucher = (rule, value, callback) => {
       if (this.fileCheckVal === 0) {
         callback(new Error('请上传凭证'));
       } else {
@@ -367,32 +367,7 @@ export default {
         value: '1',
         label: '旅游费'
       }],
-      collectionAccountList: [{
-        value: '1',
-        label: '收款账户1'
-      }, {
-        value: '2',
-        label: '收款账户2'
-      }, {
-        value: '3',
-        label: '收款账户3'
-      }],
-      sameTradeList: [{
-        value: '1',
-        label: '同业社1'
-      }, {
-        value: '2',
-        label: '同业社2'
-      }, {
-        value: '3',
-        label: '同业社3'
-      }],
-      approveCourseData: [{
-        createTime: '2018-05-23',
-        user: '阳阳',
-        status: '通过',
-        abstract: '没啥意见',
-      }],
+      approveCourseData: [],
       assistTransactionData: [],
       arrearsRelation: '8822.66',
       arrearsList: [], // 关联欠款列表

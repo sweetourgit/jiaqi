@@ -231,6 +231,7 @@ export default {
     }
   },
   created () {
+    console.log('预付款管理')
     // 只有是出纳的时候才显示申请人检索
     // if (sessionStorage.getItem('hasCashierInfo')) {
     //   this.ifAccountBtn = true

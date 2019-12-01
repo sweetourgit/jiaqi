@@ -131,6 +131,7 @@
             placeholder="请输入供应商名称"
             :trigger-on-focus="false"
             @select="departure"
+            @blur="supplierBlurHandle"
           ></el-autocomplete>
         </el-form-item>
         <el-form-item label="借款类型" prop="planType">
@@ -510,7 +511,7 @@ export default {
       tour_name_pre: '',
       product_name_pre:'',
       planID:'',
-      supplier_id:0, // 供应商选择银行账号
+      supplier_id:null, // 供应商选择之后绑定之后获取相关id
       tableData2:[],
       tableDataBorrower:[],
       upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
@@ -661,6 +662,13 @@ export default {
     departure(item){
       this.supplier_id = item.id
       //this.ruleForm.planType = item.supplierType//供应商名称和借款类型关联
+    },
+    // 供应商失去焦点
+    supplierBlurHandle(){
+      console.log(this.supplier_id)
+      /*if(this.supplier_id == null){
+        this.$refs['supplier'].resetField()
+      }*/
     },
     // 借款人模糊检索
     querySearchBorrower(queryBorrowerString, cb) {

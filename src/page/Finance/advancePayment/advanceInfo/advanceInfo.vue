@@ -992,7 +992,14 @@ export default {
             }
           }).then(res => {
             if (res.data.isSuccess == true) {
-              if(res.data.result.failed == true){
+              this.$emit('searchHandList', false);
+              this.$store.commit('changeAdvance')
+              this.$message({
+                type: 'success',
+                message: '创建成功!'
+              });
+
+              /*if(res.data.result.failed == true){
                 this.$message({
                   type: 'success',
                   message: res.data.result.message
@@ -1004,7 +1011,7 @@ export default {
                   type: 'success',
                   message: '创建成功!'
                 });
-              }
+              }*/
             } else {
               console.log('创建失败');
             }

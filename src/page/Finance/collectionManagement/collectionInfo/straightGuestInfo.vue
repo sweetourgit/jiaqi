@@ -255,7 +255,7 @@ export default {
     },
   },
   data() {
-    var validateVoucher = (rule, value, callback) => {
+    let validateVoucher = (rule, value, callback) => {
       if (this.fileCheckVal === 0) {
         callback(new Error('请上传凭证'));
       } else {

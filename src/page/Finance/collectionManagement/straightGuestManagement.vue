@@ -148,7 +148,7 @@
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">交易流水号:</div></el-col>
-            <el-col :span="18"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
+            <el-col :span="18"><div class="grid-del">{{ fundamental.serialNumber }}</div></el-col>
           </el-col>
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">收款账户:</div></el-col>
@@ -212,11 +212,24 @@
         <!-- 发票 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>发票</el-divider>
         <el-table :data="tableInvoice" border :header-cell-style="getRowClass">
-          <el-table-column prop="invoiceID" label="发票类型" align="center"></el-table-column>
-          <el-table-column prop="invoiceType" label="个人/单位" align="center"></el-table-column>
+          <el-table-column prop="invoiceID" label="发票类型" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.invoiceID == 1">纸质发票</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="invoiceType" label="个人/单位" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.invoiceType == 1">个人</div>
+              <div v-if="scope.row.invoiceType == 2">单位</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
           <el-table-column prop="invoiceHeaderOrTel" label="发票抬头" align="center"></el-table-column>
-          <el-table-column prop="invoiceItem" label="发票项目" align="center"></el-table-column>
+          <el-table-column prop="invoiceItem" label="发票项目" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.invoiceItem == 1">旅游费</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="invoicePrice" label="金额" align="center"></el-table-column>
           <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
           <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
