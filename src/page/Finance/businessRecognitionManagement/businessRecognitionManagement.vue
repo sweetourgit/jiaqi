@@ -66,7 +66,7 @@
           </el-table-column>
           <el-table-column prop="rec_mode" label="认款方式" align="center">
             <template slot-scope="scope">
-              <div v-if="scope.row.rec_mode=='1'">分销商预存款</div>
+              <div v-if="scope.row.rec_mode=='1'">分销商预存款({{scope.row.distributor_code}})</div>
               <div v-if="scope.row.rec_mode=='2'">票付通余额支付</div>
               <div v-if="scope.row.rec_mode=='3'">订单收款</div>
             </template>
@@ -185,6 +185,7 @@
       },
 
       searchFun(){
+        this.currentPage = 1;
         this.loadData();
       },
       resetFun(){
@@ -195,6 +196,7 @@
         this.status = '';
         this.money = '';
         this.rec_mode = '';
+        this.currentPage = 1;
         this.loadData();
       },
       handleSizeChange(val) {
@@ -231,7 +233,21 @@
               item.created_at = formatDate(new Date(item.created_at*1000));
               item.rece_money = parseFloat(item.rece_money).toFixed(2);
               item.leave_match_money = parseFloat(item.leave_match_money).toFixed(2);
-
+              // 根据分销商ID获取名称
+              if(item.distributor_code){
+                that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+                  "id": item.distributor_code
+                }).then(function(obj) {
+                  // console.log('获取分销商',obj);
+                  if(obj.data.isSuccess){
+                    item.distributor_code = obj.data.object.name;
+                  }else{
+                    that.$message.warning("加载数据失败~");
+                  }
+                }).catch(function(obj) {
+                  console.log(obj);
+                });
+              }
             })
           } else {
             that.$message.success("加载数据失败~");

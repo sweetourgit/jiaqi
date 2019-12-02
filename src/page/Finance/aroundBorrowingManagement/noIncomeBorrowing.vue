@@ -231,6 +231,7 @@
 
       // 搜索
       searchFun(){
+        this.currentPage = 1;
         this.loadData();
       },
       // 重置
@@ -243,6 +244,7 @@
         this.reimbursementPerID = '';
         this.borrowStatus = '';
         this.accountType = '';
+        this.currentPage = 1;
         this.loadData();
       },
       // 每页条数操作
