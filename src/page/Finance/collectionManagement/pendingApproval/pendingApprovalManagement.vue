@@ -283,6 +283,8 @@
               item.collectionTime = item.collectionTime.split('T')[0];
             });
             that.loadingZK = false;
+          }else{
+            that.loadingZK = false;
           }
         }).catch(function(obj) {
 
@@ -339,6 +341,8 @@
             that.tableDataTY.forEach(function (item, index, arr) {
               item.collectionTime = item.collectionTime.split('T')[0];
             });
+            that.loadingTY = false;
+          }else{
             that.loadingTY = false;
           }
         }).catch(function(obj) {
