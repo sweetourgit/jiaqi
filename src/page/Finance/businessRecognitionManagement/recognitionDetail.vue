@@ -28,7 +28,7 @@
           <!--</el-upload>-->
 
           <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
-            <li v-for="item in fileList">
+            <li v-for="item in fileList" :key="item.index">
               <a :href="item.url" target="_blank">{{item.name}}</a>
             </li>
           </ul>
@@ -56,7 +56,7 @@
           <div class="inputLabel" v-if="fileListDD.length != 0">
             <span style="vertical-align: top;">凭证：</span>
             <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
-              <li v-for="item in fileListDD">
+              <li v-for="item in fileListDD" :key="item.index">
                 <a :href="item.url" target="_blank">{{item.name}}</a>
               </li>
             </ul>

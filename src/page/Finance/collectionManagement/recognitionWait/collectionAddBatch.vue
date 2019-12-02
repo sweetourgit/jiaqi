@@ -238,6 +238,11 @@
       canSubmit(arr, num){
         const that = this;
         if(arr.length === num){
+          // 收款编码排序
+          arr.sort(function(a,b){
+            return a - b
+          });
+          console.log(arr);
           that.rece_code = arr;
           let fileArr = [];
 //          console.log(that.fileList);
