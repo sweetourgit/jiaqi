@@ -72,3 +72,39 @@ export const checkSupplierCode= function(supplierCode){
     })
   })
 }
+
+// 新增供应商
+export const postSupplier= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + `/universal/supplier/api/supplierinsert`, {
+      object
+    })
+    .then(res => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) throw ('新增供应商失败');
+      resolve($message.success('新增供应商成功'));
+    })
+    .catch(err => {
+      console.log(err);
+      $message.error('新增供应商失败');
+    })
+  })
+}
+
+// 修改供应商
+export const putSupplier= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + `/universal/supplier/api/suppliersave`, {
+      object
+    })
+    .then(res => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) throw ('修改供应商失败');
+      resolve($message.success('修改供应商成功'));
+    })
+    .catch(err => {
+      console.log(err);
+      $message.error('修改供应商失败');
+    })
+  })
+}

@@ -30,7 +30,7 @@
     <aside>
       <div class="fixed-outer">
         <el-button type="primary" size="small"
-          @click="getData">
+          @click="postSupplierAction">
           保存
         </el-button>
         <el-button type="info" size="small"
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getSupplierById } from '../api'
+import { getSupplierById, postSupplier, putSupplier } from '../api'
 import { getSupplierDTO } from '../dictionary'
 import baseTab from './subs/baseTab/baseTab'
 import banksTab from './subs/banksTab/banksTab'
@@ -70,7 +70,7 @@ export default {
   methods: {
     // 进入页面后的预处理
     preHandler(){
-      this.isSave= this.$route.path=== '/supplierAdd';
+      this.isSave= this.$route.path=== '/supplierEdit';
       let { conditions, pageInfo, id }= this.$route.query;
       this.backQuery= { conditions, pageInfo };
       this.$router.replace({ path: this.$route.path, query: { id } });
@@ -82,6 +82,7 @@ export default {
       .then(proto => {
         let { baseProto, banksProto }= this.protoSplitHandler(proto);
         this.$refs.baseTab.init(baseProto);
+        this.$refs.banksTab.init(banksProto);
       })
     },
 
@@ -107,6 +108,7 @@ export default {
     hasChanged(){
       let bol= false;
       bol= this.$refs.baseTab.hasChanged();
+      if(!bol) bol= this.$refs.banksTab.hasChanged();
       return bol;
     },
 
@@ -117,8 +119,37 @@ export default {
 
     getData(){
       let baseData= this.$refs.baseTab.getData();
-      console.log(baseData);
+      let banksData= this.$refs.banksTab.getData();
+      console.log(banksData)
+      return { banks: banksData, ...baseData };
     },
+
+    prePost(){
+      return new Promise((resolve, reject) => {
+        if(!this.hasChanged()) return reject('数据无变化');
+        this.validate().then(resolve).catch(reject);
+      })
+    },
+
+    postSupplierAction(){
+      this.prePost()
+      .then(() => {
+        let data= this.getData();
+        this.isSave? this.putSupplierAction(data): postSupplier(data);
+      })
+      .catch(err => {
+        console.log(err)
+        typeof err=== 'string' && this.$message.error(err);
+      })
+    },
+
+    putSupplierAction(data){
+      putSupplier(data)
+      .then(this.init)
+      .catch(err => { 
+        console.log(err);
+      })
+    }
   }
 
 }

@@ -151,7 +151,7 @@ export default new Router({
       }
     }, {
       path: '/supplierInfo',
-      component: () => import('@/page/contentInfo/supplierInfo/supplierInfo1'),
+      component: () => import('@/page/contentInfo/supplierInfo/supplierList/supplierList.vue'),
       name: '供应商信息',
       meta: {
         keepAlive: true,

@@ -185,10 +185,16 @@
 
     <el-row :gutter="100" class="common-row">
       <el-col :span="12">
-        <el-form-item label="附件：" prop="name">
-          <el-input size="small" placeholder="供应商名称" style="width: 100%;"
-            v-model="submitForm.name">
-          </el-input>
+        <el-form-item label="附件：" prop="files">
+          <el-upload name="files" ref="upload" multiple
+            :action="GLOBAL.serverSrc+ '/upload/obs/api/file'"
+            :file-list="submitForm.files"
+            :on-error="uploadErrorHandler"
+            :on-success="uploadSuccessHandler"
+            :on-remove="uploadRemoveHandler"
+            :on-preview="uploadPreviewHandler">
+            <el-button type="primary" size="small" icon="el-icon-plus" circle></el-button>
+          </el-upload>
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -216,6 +222,9 @@ export default {
 
   mounted(){
     this.makeOptions();
+
+    // 测试用
+    window.vm= this;
   },
 
   data(){
@@ -227,14 +236,10 @@ export default {
         submitForm: {
           id: 0,
           createTime: null,	// integer($int64)
-          isDeleted: 0,
-          userState: 1, // 角色的数据状态 0等待审核 1正常 2停用
           name: null,
           types: [],
           productDirection: null,
           isMonthly: null,
-          isAgree: null,
-          companyArea: null,
           productArea: null,
           leader: null,
           phone: null,
@@ -247,10 +252,21 @@ export default {
           memo: null,
           files: [],
           createUser: null,
-          orgs: [],
           supplierCode: null,
           alias: [],
-          manageType: null
+
+// 几个给定的常量
+          orgs: [
+            {
+              id: 0,
+              orgName: "嘉麒集团"
+            }
+          ], 
+          companyArea: 1,
+          isDeleted: 0,
+          isAgree: 2,
+          userState: 1, // 角色的数据状态 0等待审核 1正常 2停用
+          manageType: 1
         },
         rules: {
           name: { 
@@ -334,17 +350,18 @@ export default {
       init(payload){
         this.isSave= !!(payload.id || false);
         this.initSubmitForm(payload);
+        this.proto= payload;
         this.checkProto= this.$deepCopy(this.submitForm);
       },
 
       hasChanged(){
-        return this.$checkLooseEqual(this.checkProto, this.submitForm);
+        return !this.$checkLooseEqual(this.checkProto, this.submitForm);
       },
 
       validate(){
         return new Promise((resolve, reject) => {
-          this.$refs.submitForm(validate => {
-            return validate? resolve: reject;
+          this.$refs.submitForm.validate(validate => {
+            validate? resolve(): reject();
           })
         })
       },
@@ -353,7 +370,17 @@ export default {
         let data= this.$deepCopy(this.submitForm);
         // 适配types在数据库中的存储格式
         this.typesAdaptor(data.types);
+        data.createTime= Date.now();
         return data;
+      },
+
+      uploadErrorHandler(){},
+      uploadSuccessHandler(response, file, fileList){
+        this.submitForm.files.push(this.fileAdaptor(file));
+      },
+      uploadRemoveHandler(){},
+      uploadPreviewHandler(file){
+        console.log(file)
       },
     },
 
@@ -368,6 +395,8 @@ export default {
           }
           this.submitForm[attr]= payload[attr];
         })
+        // 类型需要特殊处理
+        this.submitForm.types= this.submitForm.types.map(type => type.supplierType);
       },
 
       makeOptions(){
@@ -384,16 +413,21 @@ export default {
               }
             })
           );
+          console.log(this.SupplierTypeOptions)
           this.IsMonthlyOptions.push(...res[1]);
           this.ProductAreaOptions.push(...res[2]);
         })
       },
-
+      
+      // 后台目前是保存一次，那么所有类别重新建立一次联系（删除所有旧的，再插入新的）
       typesAdaptor(types){
         let assignObj= this.isSave? { supplierID: this.submitForm.id }: {};
+        let oldTypes= this.proto.types;
         types.forEach((type, index) => {
           if(this.$isObject(type)) return;
-          let hit= this.SupplierTypeOptions.find(el => el.supplierType=== type);
+          let hit= oldTypes.find(el => el.supplierType=== type)
+          // 看看是否已经保存过
+          if(!hit) hit= this.SupplierTypeOptions.find(el => el.supplierType=== type);
           if(!hit) console.error('data error');
           types[index]= Object.assign({}, hit, assignObj);
         })
@@ -403,6 +437,19 @@ export default {
         if(!expireTime) return;
         this.submitForm.expireTime= expireTime.toISOString();
       },
+
+      fileAdaptor(file){
+        let { name, response }= file;
+        let { Url }= JSON.parse(response).paths[0];
+        let newFile= {
+          createTime: Date.now(),
+          isDeleted: 0,
+          url: Url,
+          name
+        }
+        if(this.isSave) newFile.supplierID= this.submitForm.id;
+        return newFile;
+      }
     },
 
     // 校验
@@ -416,6 +463,7 @@ export default {
       },
 
       supplierCodeValidator(rule, value, cb){
+        if(this.isSave) return cb();
         checkSupplierCode(value)
         .then(cb)
         .catch(cb.bind(null, new Error('供应商编码重复')));
