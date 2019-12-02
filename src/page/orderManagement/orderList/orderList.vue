@@ -561,7 +561,7 @@ export default {
 
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format(
-            "YYYY-MM-DD HH:mm:ss"
+            "YYYY-MM-DD"
           );
           this.orderCodeSon = res.data.object.orderCode;
           this.priceType = res.data.object.priceType;

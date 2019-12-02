@@ -71,8 +71,8 @@
           {{item.enrollName}}￥
           <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
           <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
-          <span v-show="propPriceType==1">{{item.price_01}}*{{enrolNum[index]}}</span>
-          <span v-show="propPriceType==2">{{item.price_02}}*{{enrolNum[index]}}</span>
+          <span v-show="propPriceType==1">{{item.price_01}}</span>
+          <span v-show="propPriceType==2">{{item.price_02}}</span>
           <div>
             <!-- 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数  :max="paidMaxEnrolNum[index]"-->
             <el-input-number
@@ -81,6 +81,7 @@
               @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02)"
               :min="0"
               :max="salePriceNum[index].quota"
+              readonly="readonly"
               size="medium"
               :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
             ></el-input-number>
@@ -880,6 +881,12 @@ export default {
         }
       }
     },
+    // peoNumBlur(num) {
+    //     for(let i = 0;i < num;i++) {
+    //       console.log(1)
+    //       this.peoNum()
+    //     }
+    // },
 
     peoNum(index, enrollID, enrollName, price_01, price_02) {
       // this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
