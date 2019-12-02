@@ -390,6 +390,8 @@
               item.collectionTime = item.collectionTime.split('T')[0];
             });
             that.loadingNBSK = false;
+          }else{
+            that.loadingNBSK = false;
           }
         })
       },
