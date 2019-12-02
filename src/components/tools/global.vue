@@ -6,6 +6,9 @@
   const serverSrc="http://192.168.2.81:3017";
   const jqUrl = 'http://192.168.2.81:3019/h3wf'
 
+  // const serverSrc="/api";
+  // const jqUrl = '/api/h3bpm'
+
   // 周边 - 正式
   // const serverSrcZb="http://api.dayuntong.com"
   // const jqUrlZB = 'http://49.4.28.5:3019/h3wf' // 周边工作流
