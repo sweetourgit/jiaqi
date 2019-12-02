@@ -230,7 +230,7 @@ export default {
           that.total = response.data.data.total - 0;
           that.tableData.forEach(function (item, index, arr) {
             item.import_at = formatDate(new Date(item.import_at*1000));
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": item.create_uid
             },{
               headers: {
@@ -257,7 +257,7 @@ export default {
     },
     loadOper(){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
         "object": {
           "id": 0,
           "createTime": '2019-08-23T03:03:10.386Z',

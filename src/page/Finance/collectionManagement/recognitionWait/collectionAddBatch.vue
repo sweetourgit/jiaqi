@@ -318,7 +318,7 @@
         const that = this;
         this.dialogFormVisible1 = true;
         this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
+          this.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/list",
           {
             "object": {
               "isDeleted": 0
@@ -396,7 +396,7 @@
       // 获取收款编码
       getCode(){
         const that = this;
-        return this.$http.post(this.GLOBAL.serverSrc + "/ong/api/receivable/get", {},
+        return this.$http.post(this.GLOBAL.serverSrcZb + "/ong/api/receivable/get", {},
           {
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')

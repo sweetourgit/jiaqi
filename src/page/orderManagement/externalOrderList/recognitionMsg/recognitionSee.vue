@@ -161,7 +161,7 @@
               that.rece_code = response.data.data.rece_code;
               // 根据分销商ID获取名称
               if(response.data.data.distributor_code){
-                that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+                that.$http.post(that.GLOBAL.serverSrcZb + "/universal/localcomp/api/get", {
                   "id": response.data.data.distributor_code
                 }).then(function(obj) {
                   console.log('获取分销商',obj);

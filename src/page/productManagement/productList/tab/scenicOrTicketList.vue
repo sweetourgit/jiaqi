@@ -138,7 +138,7 @@
       },
       querySearch(queryString2, cb) {
         this.destinationList = [];
-        this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+        this.$http.post(this.GLOBAL.serverSrcZb + '/universal/area/api/fuzzy', {
           "object": {
             areaName: queryString2
           }
@@ -282,7 +282,7 @@
             that.pageCount = response.data.data.total - 0;
             that.tableData.forEach(function (item, index, arr) {
               console.log(item.create_uid);
-              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
               },{
                 headers: {
@@ -308,7 +308,7 @@
       },
       loadOper(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
           "object": {
             "id": 0,
             "createTime": '2019-08-23T03:03:10.386Z',

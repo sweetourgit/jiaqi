@@ -428,7 +428,7 @@
       // 根据id获取操作人
       getName(id){
         const that = this;
-        return that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+        return that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
           "id": id
         },{
           headers: {
@@ -454,7 +454,7 @@
 
       getSupplier(code){
         const that = this;
-        return that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
+        return that.$http.post(that.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget", {
           "id": code
         },{
           headers: {

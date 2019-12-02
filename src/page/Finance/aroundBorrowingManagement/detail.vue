@@ -290,7 +290,7 @@
             if(response.data.data.info.supplier_code){
 
               // 获取供应商名称
-              that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
+              that.$http.post(that.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget", {
                 "id": response.data.data.info.supplier_code
               },{
                 headers: {
@@ -313,7 +313,7 @@
             }
 
             // 根据账户ID获取账户名称
-//            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
+//            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
 //              {
 //                "id": response.data.data.account_id
 //              },{
@@ -362,7 +362,7 @@
       // 根据id获取操作人
       getName(id){
         const that = this;
-        return that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+        return that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
           "id": id
         },{
           headers: {
@@ -384,7 +384,7 @@
       // 根据id获取所属部门
       getOrgName(ID){
         const that = this;
-        return this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+        return this.$http.post(this.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
           "id": ID
         },{
           headers: {

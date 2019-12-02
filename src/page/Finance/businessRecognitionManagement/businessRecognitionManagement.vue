@@ -235,7 +235,7 @@
               item.leave_match_money = parseFloat(item.leave_match_money).toFixed(2);
               // 根据分销商ID获取名称
               if(item.distributor_code){
-                that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+                that.$http.post(that.GLOBAL.serverSrcZb + "/universal/localcomp/api/get", {
                   "id": item.distributor_code
                 }).then(function(obj) {
                   // console.log('获取分销商',obj);

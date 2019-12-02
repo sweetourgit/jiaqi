@@ -328,7 +328,7 @@ export default {
             item.end_at = item.end_at.split(" ")[0];
             item.created_at = formatDate(new Date(item.created_at*1000));
             item.created_at = item.created_at.split(" ")[0];
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": item.create_uid
             },{
               headers: {
@@ -354,7 +354,7 @@ export default {
     },
     loadUser(){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
         "object": {
           "id": 0,
           "createTime": '2019-08-23T03:03:10.386Z',
