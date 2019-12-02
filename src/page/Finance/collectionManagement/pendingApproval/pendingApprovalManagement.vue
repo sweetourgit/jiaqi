@@ -283,6 +283,8 @@
               item.collectionTime = item.collectionTime.split('T')[0];
             });
             that.loadingZK = false;
+          }else{
+            that.loadingZK = false;
           }
         }).catch(function(obj) {
 
@@ -340,6 +342,8 @@
               item.collectionTime = item.collectionTime.split('T')[0];
             });
             that.loadingTY = false;
+          }else{
+            that.loadingTY = false;
           }
         }).catch(function(obj) {
 
@@ -389,6 +393,8 @@
             that.tableDataNBSK.forEach(function (item, index, arr) {
               item.collectionTime = item.collectionTime.split('T')[0];
             });
+            that.loadingNBSK = false;
+          }else{
             that.loadingNBSK = false;
           }
         })

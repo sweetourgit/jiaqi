@@ -332,7 +332,7 @@
             response.data.data.sale_at = formatDate(new Date(response.data.data.sale_at*1000));
             response.data.data.check_at = formatDate(new Date(response.data.data.check_at*1000));
             that.tableDataDD.push(response.data.data);
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": that.tableDataDD[0].create_uid
             },{
               headers: {
@@ -389,7 +389,7 @@
               status_rece: response.data.data.status_rece
             };
             //根据id获取人名
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": response.data.data.create_uid
             },{
               headers: {
@@ -462,7 +462,7 @@
                 item.check_at = formatDate(new Date(item.check_at*1000));
                 item.import_at = formatDate(new Date(item.import_at*1000));
 
-//                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+//                that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
 //                  "id": item.create_uid
 //                },{
 //                  headers: {
@@ -514,7 +514,7 @@
               that.showSK = true;
               that.showXQ = false;
             }
-            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
+            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
               {
                 "id": response.data.data.account_id
               },{
@@ -541,7 +541,7 @@
       getUser(userGetList){
         const that = this;
         userGetList.forEach(function (item, index, arr) {
-          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
             "id": item.id
           },{
             headers: {
@@ -565,7 +565,7 @@
       // 根据id获取所属部门
       getOrgName(ID){
         const that = this;
-        return this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+        return this.$http.post(this.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
           "id": ID
         },{
           headers: {

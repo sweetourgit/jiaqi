@@ -29,7 +29,7 @@
           <!--</el-upload>-->
 
           <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
-            <li v-for="item in fileList">
+            <li v-for="item in fileList" :key="item.index">
               <a :href="item.url" target="_blank">{{item.name}}</a>
             </li>
           </ul>

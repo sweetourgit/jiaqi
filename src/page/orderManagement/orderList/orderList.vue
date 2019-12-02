@@ -556,13 +556,12 @@ export default {
             let a = _res[i][0].split("*");
             _newArr.push(a[0] + "x" + _res[i][1] + ")");
           }
-          console.log( _newArr)
           this.getListOneMessage.enrollDetail = _newArr.toString();
           // }
 
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format(
-            "YYYY-MM-DD HH:mm:ss"
+            "YYYY-MM-DD"
           );
           this.orderCodeSon = res.data.object.orderCode;
           this.priceType = res.data.object.priceType;

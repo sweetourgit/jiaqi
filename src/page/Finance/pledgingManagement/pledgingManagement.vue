@@ -157,7 +157,7 @@ export default {
     },
     loadOper(){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
         "object": {
           "id": 0,
           "createTime": '2019-08-23T03:03:10.386Z',
