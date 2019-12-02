@@ -191,9 +191,10 @@
             :file-list="submitForm.files"
             :on-error="uploadErrorHandler"
             :on-success="uploadSuccessHandler"
+            :before-remove="uploadBeforeRemoveHandler"
             :on-remove="uploadRemoveHandler"
             :on-preview="uploadPreviewHandler">
-            <el-button type="primary" size="small" icon="el-icon-plus" circle></el-button>
+            <el-button type="primary" size="small" icon="el-icon-plus">上传文件</el-button>
           </el-upload>
         </el-form-item>
       </el-col>
@@ -222,9 +223,6 @@ export default {
 
   mounted(){
     this.makeOptions();
-
-    // 测试用
-    window.vm= this;
   },
 
   data(){
@@ -378,9 +376,24 @@ export default {
       uploadSuccessHandler(response, file, fileList){
         this.submitForm.files.push(this.fileAdaptor(file));
       },
+      
+      uploadBeforeRemoveHandler(){
+        return new Promise((resolve, reject) => {
+          this.$confirm(`确定删除这条账户信息吗?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          })
+          .then(resolve)
+          .catch(reject)
+        })
+      },
+
       uploadRemoveHandler(){},
       uploadPreviewHandler(file){
-        console.log(file)
+        window.open(file.url);
+        // let win = window.open();  //打开新的空白窗口
+        // win.document.write ("<h1>这是新打开的窗口</h1>");
       },
     },
 
