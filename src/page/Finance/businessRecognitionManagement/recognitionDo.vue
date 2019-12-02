@@ -26,7 +26,7 @@
           <!--</el-upload>-->
 
           <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
-            <li v-for="item in fileList">
+            <li v-for="item in fileList" :key="item.index">
               <a :href="item.url" target="_blank">{{item.name}}</a>
             </li>
           </ul>
@@ -223,7 +223,7 @@
       // 获取客商编码，必须有！
       getLocalCompCode(id){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/universal/localcomp/api/get", {
           id: id
         }).then(function(obj) {
           console.log('获取客商编码',obj);
@@ -269,7 +269,7 @@
               explain: response.data.data.explain
             };
             // 根据ID获取人名
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": response.data.data.create_uid
             },{
               headers: {
@@ -286,7 +286,7 @@
               console.log(error);
             });
             // 根据账户ID获取账户名称
-            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
+            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
               {
                 "id": response.data.data.account_id
               },{
@@ -320,7 +320,7 @@
       // 加载分销商信息
       loadDistributor(name){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/universal/localcomp/api/list", {
           object: {
             "name": name,
             "isDeleted": 0

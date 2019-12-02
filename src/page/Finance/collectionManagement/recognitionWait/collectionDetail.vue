@@ -29,7 +29,7 @@
           <!--</el-upload>-->
 
           <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
-            <li v-for="item in fileList">
+            <li v-for="item in fileList" :key="item.index">
               <a :href="item.url" target="_blank">{{item.name}}</a>
             </li>
           </ul>
@@ -52,7 +52,7 @@
           <!--</el-upload>-->
 
           <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
-            <li v-for="item in fileList">
+            <li v-for="item in fileList" :key="item.index">
               <a :href="item.url" target="_blank">{{item.name}}</a>
             </li>
           </ul>
@@ -94,7 +94,7 @@
             <!--</el-upload>-->
 
             <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
-              <li v-for="item in fileListDD">
+              <li v-for="item in fileListDD" :key="item.index">
                 <a :href="item.url" target="_blank">{{item.name}}</a>
               </li>
             </ul>
@@ -434,7 +434,7 @@
             response.data.data.sale_at = formatDate(new Date(response.data.data.sale_at*1000));
             response.data.data.check_at = formatDate(new Date(response.data.data.check_at*1000));
             that.tableDataDD.push(response.data.data);
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": that.tableDataDD[0].create_uid
             },{
               headers: {
@@ -530,7 +530,7 @@
 
             // 根据分销商ID获取名称
             if(response.data.data.distributor_code){
-              that.$http.post(that.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+              that.$http.post(that.GLOBAL.serverSrcZb + "/universal/localcomp/api/get", {
                 "id": response.data.data.distributor_code
               }).then(function(obj) {
 //              console.log('获取分销商',obj);
@@ -545,7 +545,7 @@
             }
 
             // 根据账户ID获取账户名称
-            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
+            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
               {
                 "id": response.data.data.account_id
               },{
@@ -576,7 +576,7 @@
       // 根据id获取操作人
       getName(id){
         const that = this;
-        return that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+        return that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
           "id": id
         },{
           headers: {
@@ -598,7 +598,7 @@
       // 根据id获取所属部门
       getOrgName(ID){
         const that = this;
-        return this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+        return this.$http.post(this.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
           "id": ID
         },{
           headers: {
@@ -725,7 +725,7 @@
       getUser(userGetList){
         const that = this;
         userGetList.forEach(function (item, index, arr) {
-          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
             "id": item.id
           },{
             headers: {

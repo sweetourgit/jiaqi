@@ -284,7 +284,7 @@
               item.created_at = formatDate(new Date(item.created_at*1000));
 //              item.created_at = item.created_at.split(" ")[0];
               // 获取申请人
-              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
               },{
                 headers: {
@@ -302,7 +302,7 @@
               });
 
               // 获取供应商名称
-              that.$http.post(that.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
+              that.$http.post(that.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget", {
                 "id": item.supplier_code
               },{
                 headers: {
@@ -334,7 +334,7 @@
       // 加载搜索项中 申请人 list
       loadOper(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
           "object": {
             "id": 0,
             "createTime": '2019-08-23T03:03:10.386Z',
@@ -458,7 +458,7 @@
       // 加载供应商信息
       loadSupplier(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/alias/supplier/api/all").then(function(obj) {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/alias/supplier/api/all").then(function(obj) {
           console.log('获取供应商',obj);
           if(obj.data.isSuccess){
             let supplierObj = [];

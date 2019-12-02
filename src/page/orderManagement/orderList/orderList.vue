@@ -556,7 +556,6 @@ export default {
             let a = _res[i][0].split("*");
             _newArr.push(a[0] + "x" + _res[i][1] + ")");
           }
-          console.log( _newArr)
           this.getListOneMessage.enrollDetail = _newArr.toString();
           // }
 

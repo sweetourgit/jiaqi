@@ -493,33 +493,45 @@ export default {
             this.prePayable = this.orderget.payable;
             this.enrollDetail = this.enrollDetail.replace(/\s*/g, "");
             let _arr = this.enrollDetail.split(",");
-            // console.log(res.data.object.enrollDetail.split(","),"this.enrolldetail")
+
             _arr.splice(_arr.length - 1, 1);
-            let _res = []; //
-            _arr.sort();
-            for (let i = 0; i < _arr.length; ) {
-              // let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1]
-              // let Price,Num;
-              // Price = Number(priceAndNum.substring(0,priceAndNum.indexOf('*')))
-              // Num = Number(priceAndNum.substring(priceAndNum.indexOf('*')+1,priceAndNum.length))
-              // // console.log(Price,Num)
-              // this.prePayable += Price * Num
-              let count = 0;
-              for (let j = i; j < _arr.length; j++) {
-                if (_arr[i] == _arr[j]) {
-                  count++;
-                }
-              }
-              _res.push([_arr[i], count]);
-              i += count;
+            let obj = this.counterArray(_arr);
+            let str = JSON.stringify(obj);
+            let newStr = str.substr(1, str.length - 2);
+            let newArr = newStr.split(",");
+            let endARR = []
+            for (let i = 0; i < newArr.length; i++) {
+              let a = newArr[i].split(":")
+              let b = a[0].split("*")
+              b[0]= b[0].substr(1, str.length - 1)
+              endARR.push(b[0]+"x"+a[1]+")")
             }
-            //_res 二维数维中保存了 值和值的重复数
-            let _newArr = [];
-            for (let i = 0; i < _res.length; i++) {
-              let a = _res[i][0].split("*");
-              _newArr.push(a[0] + "x" + _res[i][1] + ")");
-            }
-            this.enrollDetailShow = _newArr.toString();
+            this.enrollDetailShow = endARR.toString()
+            // let _res = []; //
+            // // _arr.sort();
+            // for (let i = 0; i < _arr.length; ) {
+            //   // let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1]
+            //   // let Price,Num;
+            //   // Price = Number(priceAndNum.substring(0,priceAndNum.indexOf('*')))
+            //   // Num = Number(priceAndNum.substring(priceAndNum.indexOf('*')+1,priceAndNum.length))
+            //   // // console.log(Price,Num)
+            //   // this.prePayable += Price * Num
+            //   let count = 0;
+            //   for (let j = i; j < _arr.length; j++) {
+            //     if (_arr[i] == _arr[j]) {
+            //       count++;
+            //     }
+            //   }
+            //   _res.push([_arr[i], count]);
+            //   i += count;
+            // }
+            // //_res 二维数维中保存了 值和值的重复数
+            // let _newArr = [];
+            // for (let i = 0; i < _res.length; i++) {
+            //   let a = _res[i][0].split("*");
+            //   _newArr.push(a[0] + "x" + _res[i][1] + ")");
+            // }
+            // this.enrollDetailShow = _newArr.toString();
 
             // 计算最开始的总价
             // let arr = this.enrollDetailShow.split(",")
@@ -532,6 +544,19 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+
+    //字符串相同的个数 报名信息需要
+    counterArray(arr) {
+      var obj = {};
+      arr.forEach(function(v, k) {
+        if (obj[v]) {
+          obj[v]++;
+        } else {
+          obj[v] = 1;
+        }
+      });
+      return obj;
     },
 
     //同业的订单（月结的）记录以前的订单总价 改变后的总价差和剩余预存款和额度作对比 超过则不可保存更改
@@ -1353,7 +1378,7 @@ export default {
       this.applyInfomations = [];
       this.enrollDetail = "";
       this.isPricechange = null;
-      this.prePayable = 0
+      this.prePayable = 0;
     }
   }
 };

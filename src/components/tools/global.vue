@@ -28,7 +28,7 @@
   // const jqUrl="http://49.4.10.11:3019"
   // const jqUrl="117.78.20.162:3019"
   // const jqUrl="http://test.dayuntong.com/h3wf";
-//  const serverSrcPhp="http://www.around.com";
+  // const serverSrcPhp="http://www.around.com";
   const serverSrcPhp="http://zb.dayuntong.com";
   const token="";
   const userId="";
@@ -41,6 +41,7 @@
   token,//用户token身份
   userId,//用户id
   hasEnter,//用户登录状态
-  jqUrlZB // 周边工作流
+  jqUrlZB, // 周边工作流
+  serverSrcZb // 周边请求集团业务 接口地址
   }
 </script>

@@ -423,7 +423,7 @@ export default {
             org_id: dataList.org_id
           };
           that.getOrgName(dataList.op_id);
-          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
             "id": response.data.data.op_id
           },{
             headers: {
@@ -452,7 +452,7 @@ export default {
     },
     getOrgName(ID){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
         "id": ID
       },{
         headers: {

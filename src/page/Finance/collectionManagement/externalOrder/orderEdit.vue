@@ -1364,7 +1364,7 @@
         const that = this;
         this.dialogFormVisible1 = true;
         this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
+          this.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/list",
           {
             "object": {
               "isDeleted": 0
@@ -1749,7 +1749,7 @@
       // 获取收款编码
       getCode(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/ong/api/receivable/get", {},
+        this.$http.post(this.GLOBAL.serverSrcZb + "/ong/api/receivable/get", {},
           {
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -1819,7 +1819,7 @@
                   }
                   totalMoney += parseFloat(item.income);
                   //                console.log(totalMoney);
-                  that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                  that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                     "id": item.create_uid
                   },{
                     headers: {
@@ -1890,7 +1890,7 @@
                   //                  console.log(item.check_at);
                   item.check_at = formatDate(new Date(item.check_at*1000));
                   item.import_at = formatDate(new Date(item.import_at*1000));
-                  that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                  that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                     "id": item.create_uid
                   },{
                     headers: {
@@ -1917,7 +1917,7 @@
                 that.showSK = false;
               }
             }
-            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
+            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
             {
               "id": response.data.data.account_id
             },{
@@ -1972,7 +1972,7 @@
               item.import_at = formatDate(new Date(item.import_at*1000));
               item.sale_at = formatDate(new Date(item.sale_at*1000));
               // 加载太慢，人员请求取消
-              // that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              // that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               //   "id": item.create_uid
               // },{
               //   headers: {

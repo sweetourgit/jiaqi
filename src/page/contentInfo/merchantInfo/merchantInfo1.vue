@@ -572,13 +572,15 @@
               <td class="tr">公司logo：&nbsp;&nbsp;</td>
               <td class="longWeight">
                 <!-- {{ruleForm.imgUrl}} -->
-                <img width="100%" height="12%" :src="ruleForm.imgUrl" />
+                <!-- <img width="100%" height="12%" :src="ruleForm.imgUrl" /> -->
+                <a :href="ruleForm.imgUrl">logo</a>
               </td>
               <div class="BodyTableCenter">
                 <td class="tr">附件：&nbsp;&nbsp;</td>
                 <td class="longWeight">
                   <!-- {{ruleForm.fileUrl}} -->
-                  <img width="100%" height="12%" :src="ruleForm.fileUrl" />
+                  <!-- <img width="100%" height="12%" :src="ruleForm.fileUrl" /> -->
+                  <a :href="ruleForm.fileUrl">附件</a>
                 </td>
               </div>
             </tr>

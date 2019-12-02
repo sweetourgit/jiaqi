@@ -130,12 +130,12 @@
                 </el-table-column>
                 <el-table-column prop="collectionCode" label="收款编码" align="center">
                   <template slot-scope="scope">
-                    <p v-for="item in scope.row.receipt_code" @click="turnTab2" style="cursor: pointer">{{item.rec_sn}}</p>
+                    <p v-for="item in scope.row.receipt_code" :key="item.index" @click="turnTab2" style="cursor: pointer">{{item.rec_sn}}</p>
                   </template>
                 </el-table-column>
                 <el-table-column prop="invoice" label="发票" align="center">
                   <template slot-scope="scope">
-                    <p v-for="item in scope.row.invoice" @click="turnTab3" style="cursor: pointer">{{item.rec_sn}}</p>
+                    <p v-for="item in scope.row.invoice" :key="item.index" @click="turnTab3" style="cursor: pointer">{{item.rec_sn}}</p>
                   </template>
                 </el-table-column>
                 <el-table-column prop="option" label="操作" align="center" width="100" v-if="statusBtn == 1 || statusBtn == 3">
@@ -184,7 +184,7 @@
                 </el-table-column>
                 <el-table-column prop="voucher" label="凭证" align="center">
                   <template slot-scope="scope">
-                    <p v-for="item in scope.row.file">
+                    <p v-for="item in scope.row.file" :key="item.index">
                       <a :href="item.url" target="_blank">{{item.name}}</a>
                     </p>
                   </template>
@@ -410,7 +410,7 @@ export default {
           response.data.data.basic_info.end_at = formatDate(new Date(response.data.data.basic_info.end_at*1000));
           response.data.data.basic_info.end_at = response.data.data.basic_info.end_at.split(' ')[0];
           that.baseInfo = response.data.data;
-          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
             "id": that.baseInfo.basic_info.create_uid
           },{
             headers: {
@@ -490,7 +490,7 @@ export default {
     },
     getOrgName(ID){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
         "id": ID
       },{
         headers: {
