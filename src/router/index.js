@@ -637,6 +637,14 @@ export default new Router({
         }
       }]
     }, {
+      path: '/bankStatement',
+      component: () => import('@/page/Finance/bankStatement/index.vue'),
+      name: '银行流水单管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '*',
       redirect: '/userList'
     }

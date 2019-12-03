@@ -203,7 +203,7 @@
               total += parseFloat(item.income);
             });
             that.totalItem = response.data.data.length;
-            that.totalMoney = total;
+            that.totalMoney = total.toFixed(2);
             that.tableData = response.data.data;
           } else {
             that.$message.success("加载数据失败~");
