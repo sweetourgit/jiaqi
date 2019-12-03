@@ -140,7 +140,7 @@
             </el-col>
           </el-row>
           <template v-for="(bill,index) in billReporting">
-            <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+            <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}" :key="index">
               <el-col :span="2" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
                 {{index + 1}}
               </el-col>
@@ -213,7 +213,7 @@
             </el-col>
           </el-row>
           <template v-for="(cost,index) in costDetails">
-            <el-row :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
+            <el-row :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}" :key="index">
               <el-col :span="3" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{index + 1}}
               </el-col>
@@ -430,7 +430,7 @@ export default {
     },
     getOrgName(ID){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
         "id": ID
       },{
         headers: {
@@ -449,7 +449,7 @@ export default {
     },
     getTitleName(id){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/fullpath", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/fullpath", {
           'id': id
       }, {
         headers: {
@@ -522,7 +522,6 @@ export default {
   /*height: 34px;*/
   line-height: 33px;
   /*overflow: hidden;*/
-  &:first-child {}
 
   .el-col {
     border: 1px solid black;

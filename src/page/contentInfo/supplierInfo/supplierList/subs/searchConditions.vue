@@ -3,8 +3,7 @@
     :model="submitForm"
     ref="submitForm"
     label-width="100px"
-    style="width: 100%;"
-    size="mini">
+    style="width: 100%;">
     <el-row :gutter="20">
 
       <el-col :span="6">
@@ -15,7 +14,7 @@
 
       <el-col :span="6">
         <el-form-item label="结算方式：" prop="isMonthly">
-          <el-select v-model="submitForm.isMonthly" placeholder="结算方式" style="width: 100%;">
+          <el-select size="small" v-model="submitForm.isMonthly" placeholder="结算方式" style="width: 100%;">
             <el-option
               v-for="item in IsMonthlyOptions"
               :key="item.id"
@@ -28,7 +27,7 @@
 
       <el-col :span="6">
         <el-form-item label="状态：" prop="UserState">
-          <el-select v-model="submitForm.UserState" placeholder="状态" style="width: 100%;">
+          <el-select size="small" v-model="submitForm.UserState" placeholder="状态" style="width: 100%;">
             <el-option
               v-for="item in ConditionTypeOptions"
               :key="item.value"
@@ -41,7 +40,7 @@
 
       <el-col :span="6">
         <el-form-item label="类别：" prop="supplierType">
-          <el-select v-model="submitForm.supplierType" placeholder="供应类别" style="width: 100%;">
+          <el-select size="small" v-model="submitForm.supplierType" placeholder="供应类别" style="width: 100%;">
             <el-option
               v-for="item in SupplierTypeOptions"
               :key="item.id"

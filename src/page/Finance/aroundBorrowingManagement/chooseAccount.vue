@@ -70,7 +70,7 @@
       // 加载付款账户信息
       loadData(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list", {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/list", {
           "object": {
             "isDeleted": 0
           },

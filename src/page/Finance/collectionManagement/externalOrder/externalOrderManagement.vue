@@ -293,7 +293,7 @@
               item.rece_start = item.rece_start.split(" ")[0];
               item.rece_end = formatDate(new Date(item.rece_end*1000));
               item.rece_end = item.rece_end.split(" ")[0];
-              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
               },{
                 headers: {
@@ -320,7 +320,7 @@
       // 加载申请人list
       loadOper(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
           "object": {
             "id": 0,
             "createTime": '2019-08-23T03:03:10.386Z',

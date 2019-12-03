@@ -148,7 +148,7 @@
             </el-col>
           </el-row>
           <template v-for="(bill,index) in billReporting">
-            <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+            <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}" :key="index">
               <el-col :span="2" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
                 {{index + 1}}
               </el-col>
@@ -221,7 +221,7 @@
             </el-col>
           </el-row>
           <template v-for="(cost,index) in costDetails">
-            <el-row :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
+            <el-row :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}" :key="index">
               <el-col :span="3" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{index + 1}}
               </el-col>
@@ -351,7 +351,7 @@
                 </el-table-column>
                 <el-table-column prop="voucher" label="凭证" align="center">
                   <template slot-scope="scope">
-                    <p v-for="item in scope.row.file">
+                    <p v-for="item in scope.row.file" :key="item.index">
                       <a :href="item.url" target="_blank">{{item.name}}</a>
                     </p>
                   </template>
@@ -535,7 +535,7 @@ export default {
             startTime = formatDate(new Date(response.data.data.start_at*1000)).split(" ")[0];
             endTime = formatDate(new Date(response.data.data.back_at*1000)).split(" ")[0];
           }
-          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
             "id": response.data.data.op_id
           },{
             headers: {
@@ -551,7 +551,7 @@ export default {
           }).catch(function(error) {
             console.log(error);
           });
-          that.$http.post(that.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
             "id": response.data.data.op_id
           },{
             headers: {
@@ -744,7 +744,7 @@ export default {
 
     getTitleName(id){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/fullpath", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/fullpath", {
         'id': id
       }, {
         headers: {
@@ -818,8 +818,6 @@ export default {
 .el-row {
   height: 34px;
   line-height: 33px;
-
-  &:first-child {}
 
   .el-col {
     border: 1px solid black;

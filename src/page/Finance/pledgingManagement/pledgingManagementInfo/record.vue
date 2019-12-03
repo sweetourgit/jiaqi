@@ -160,7 +160,7 @@ export default {
             item.created_at = formatDate(new Date(item.created_at*1000));
             item.created_at = item.created_at.split(" ")[0];
 
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": item.create_uid
             },{
               headers: {

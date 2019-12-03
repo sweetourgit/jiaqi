@@ -204,7 +204,7 @@
               item.receivables_at = formatDate(new Date(item.receivables_at*1000));
               item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));
-              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
               },{
                 headers: {
@@ -230,7 +230,7 @@
       },
       loadOper(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
           "object": {
             "id": 0,
             "createTime": '2019-08-23T03:03:10.386Z',

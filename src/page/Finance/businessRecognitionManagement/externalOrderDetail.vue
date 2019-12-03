@@ -28,7 +28,7 @@
           <!--</el-upload>-->
 
           <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
-            <li v-for="item in fileList">
+            <li v-for="item in fileList" :key="item.index">
               <a :href="item.url" target="_blank">{{item.name}}</a>
             </li>
           </ul>
@@ -338,7 +338,7 @@
             response.data.data.sale_at = formatDate(new Date(response.data.data.sale_at*1000));
             response.data.data.check_at = formatDate(new Date(response.data.data.check_at*1000));
             that.tableDataDD.push(response.data.data);
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": that.tableDataDD[0].create_uid
             },{
               headers: {
@@ -393,7 +393,7 @@
               approved: response.data.data.approved,
               status_rece: response.data.data.status_rece
             };
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": response.data.data.create_uid
             },{
               headers: {
@@ -459,7 +459,7 @@
                 item.sale_at = formatDate(new Date(item.sale_at*1000));
                 item.check_at = formatDate(new Date(item.check_at*1000));
                 item.import_at = formatDate(new Date(item.import_at*1000));
-                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+                that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                   "id": item.create_uid
                 },{
                   headers: {
@@ -490,7 +490,7 @@
               that.showSK = true;
               that.showXQ = false;
             }
-            that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
+            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
               {
                 "id": response.data.data.account_id
               },{

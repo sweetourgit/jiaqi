@@ -112,7 +112,7 @@
               <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
               <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
               <div>
-                <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName)"
+                <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02)"
                   :min="0" :max="salePriceNum[index].quota" size="medium"></el-input-number>
               </div>
               <!-- <div v-bind:class="{red:quota[index]}">
@@ -671,6 +671,7 @@ export default {
       nullShowName:false,//商户名称输入的不是有效的提示
       nullShowOp:false,//同业销售输入的不是有效的提示
       nullShowGuest:false,//直客销售输入的不是有效的提示
+      enrollDetail:""//订单需要
     };
   },
   filters: {
@@ -844,7 +845,7 @@ export default {
           }
         });
     },
-    peoNum(index, enrollID, enrollName) {
+    peoNum(index, enrollID, enrollName,price_01, price_02) {
       console.log(this.enrolNum[index])
       //填写报名人数
       let arrLength; //报名人数
@@ -893,6 +894,12 @@ export default {
             userID: 0
           });
         }
+        // 报名信息增加enrollDetail拼接
+        let price;
+        console.log(this.ruleForm.price,"this.ruleForm.price")
+        this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
+        price = this.toDecimal2(price);
+        this.enrollDetail += `${enrollName}(${price} * 1),`;
       } else{
         console.log(this.tour[index])
         for(var i=0;i < this.tour[index].length;i++){
@@ -900,6 +907,14 @@ export default {
           if(this.tour[index][i].cnName === ''){
             this.tour[index].splice(i, preLength - arrLength);
             break;
+          }
+        }
+        // 报名信息减少enrollDetail拼接
+        let _arr = this.enrollDetail.split(",");
+        for (let i = _arr.length - 1; i > 0; i--) {
+          if (_arr[i].indexOf(enrollName) != -1) {
+            _arr.splice(i, 1);
+            return (this.enrollDetail = _arr.toString());
           }
         }
       }
@@ -1063,19 +1078,19 @@ export default {
           //   }
           // }
           // 拼接字段 enrollDetail报名类型详情
-          let enrollDetail = "";
-          this.salePrice.forEach((ele, idx) => {
-            let price=0;
-            if(this.ruleForm.price == 1){
-              price = this.toDecimal2(ele.price_01);
-            }else{
-              price = this.toDecimal2(ele.price_02);
-            }
-            //let price = this.toDecimal2(ele.price_01);
-            if(this.enrolNum[idx]!==0){
-              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
-            }
-          });
+          // let enrollDetail = "";
+          // this.salePrice.forEach((ele, idx) => {
+          //   let price=0;
+          //   if(this.ruleForm.price == 1){
+          //     price = this.toDecimal2(ele.price_01);
+          //   }else{
+          //     price = this.toDecimal2(ele.price_02);
+          //   }
+          //   //let price = this.toDecimal2(ele.price_01);
+          //   if(this.enrolNum[idx]!==0){
+          //     enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
+          //   }
+          // });
           if (res.data.isSuccess == true) {
             this.teampreviewData.regimentType = res.data.object.regimentType;
             if(this.ifOrderInsert===true){
@@ -1132,7 +1147,7 @@ export default {
                         guests: guestAll,
                         //guests: guest,
                         number: number,
-                        enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                        enrollDetail: this.enrollDetail //报名类型详情字段拼接  订单管理模块需要
                       }
                       }).then(res => {
                         console.log(typeof res.data.result.message)
@@ -1217,7 +1232,7 @@ export default {
                               guests:guestAll,
                               // guests: guest,
                               number: number,
-                              enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                              enrollDetail: this.enrollDetail //报名类型详情字段拼接  订单管理模块需要
                             }
                           }).then(res => {
                           if (res.data.isSuccess == true) {
@@ -1316,7 +1331,7 @@ export default {
                             guests:guestAll,
                             //guests: guest,
                             number: number,
-                            enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                            enrollDetail: this.enrollDetail //报名类型详情字段拼接  订单管理模块需要
                           }
                         }).then(res => {
                         if (res.data.isSuccess == true) {

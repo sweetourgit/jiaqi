@@ -188,7 +188,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item
-                v-if="(ruleForm.settlementType == '月结'|| ruleForm.settlementType == '1')&& ruleForm.parentName == ''"
+                v-if="(ruleForm.settlementType == '月结'|| ruleForm.settlementType == '1') && parentSettlementType !== 1"
                 label="额度 :"
                 prop="quota"
               >
@@ -572,13 +572,15 @@
               <td class="tr">公司logo：&nbsp;&nbsp;</td>
               <td class="longWeight">
                 <!-- {{ruleForm.imgUrl}} -->
-                <img width="100%" height="12%" :src="ruleForm.imgUrl" />
+                <!-- <img width="100%" height="12%" :src="ruleForm.imgUrl" /> -->
+                <a :href="ruleForm.imgUrl">logo</a>
               </td>
               <div class="BodyTableCenter">
                 <td class="tr">附件：&nbsp;&nbsp;</td>
                 <td class="longWeight">
                   <!-- {{ruleForm.fileUrl}} -->
-                  <img width="100%" height="12%" :src="ruleForm.fileUrl" />
+                  <!-- <img width="100%" height="12%" :src="ruleForm.fileUrl" /> -->
+                  <a :href="ruleForm.fileUrl">附件</a>
                 </td>
               </div>
             </tr>
@@ -1115,7 +1117,8 @@ export default {
       fileList1: [], //附件
       isSelect: false, // 判断是否进入select
       areaInformationName: "", //地区value
-      superiorMerchants: [] //所属上级商户的集合
+      superiorMerchants: [], //所属上级商户的集合
+      parentSettlementType: null //判断所选的父级商户的结算方式是否月月结
     };
   },
   components: {
@@ -1151,6 +1154,9 @@ export default {
     },
     // 选择所属上级商户
     handleSelectName(item) {
+      // console.log(item)
+      // 父级是月结并且子集也是月结 则额度不显示
+      this.parentSettlementType = item.settlementType;
       this.ruleForm.parentID = item.id;
       this.ruleForm.parentName = item.value;
       // console.log(item);
@@ -1810,6 +1816,7 @@ export default {
       this.btnindex = 0;
       this.arrears = 0;
       this.sonList = [];
+      this.parentSettlementType = null
     },
     // 重置
     handleReset() {
@@ -2548,10 +2555,12 @@ export default {
           } = obj.data.object;
 
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
+          // 父级的结算方式
+          this.parentSettlementType = object.parentSettlementType;
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
-          (this.ruleForm.fileUrl = object.fileUrl),
-            (this.AbouQuota = object.abouQuota);
+          this.ruleForm.fileUrl = object.fileUrl;
+          this.AbouQuota = object.abouQuota;
           this.ruleForm.balance = object.balance;
           // this.ruleForm.localCompType = String(object.localCompType);
           // 商户信息详情页的ID

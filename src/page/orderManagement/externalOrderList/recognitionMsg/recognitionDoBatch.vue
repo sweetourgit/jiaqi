@@ -38,7 +38,7 @@
         <div class="bottom">
           <!--收款列表-->
           <ul class="leftNav">
-            <li v-for="(item, index) in navData" :data-val="item.id" @click="clickNavHandle(item, index)" :class="{'active':activeIndex==index}">{{item.explain}}</li>
+            <li v-for="(item, index) in navData" :key="index" :data-val="item.id" @click="clickNavHandle(item, index)" :class="{'active':activeIndex==index}">{{item.explain}} -- {{item.rece_money}}</li>
           </ul>
           <!--收款列表  end-->
 
@@ -215,7 +215,7 @@
           "limit": 0
         }, ).then(function(response) {
           if (response.data.code == '200') {
-            console.log(response);
+            // console.log('这里==拼接金额的',response);
             that.navData = response.data.data;
             that.item = that.navData[0];
             that.activeIndex = 0;

@@ -58,7 +58,7 @@
             <el-table-column prop="income" label="订单金额" align="center">
             </el-table-column>
             <el-table-column prop="reimbursed_money" label="已报销金额" align="center">
-              <template slot-scope="scope">
+              <template>
                 <span>0.00</span>
               </template>
             </el-table-column>
@@ -410,7 +410,7 @@
       // 加载供应商编码
       getSupplierCode(id){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierget",{
+        this.$http.post(this.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget",{
           id: id
         }).then(function(obj) {
           console.log('获取供应商编码',obj);
@@ -433,7 +433,7 @@
       // 加载供应商信息
       loadSupplier(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/alias/supplier/api/all").then(function(obj) {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/alias/supplier/api/all").then(function(obj) {
           console.log('获取供应商',obj);
           if(obj.data.isSuccess){
             let supplierObj = [];
@@ -563,7 +563,7 @@
       // 获取收款编码
       getCode(){
         const that = this;
-        return this.$http.post(this.GLOBAL.serverSrc + "/ong/api/receivable/get", {},
+        return this.$http.post(this.GLOBAL.serverSrcZb + "/ong/api/receivable/get", {},
           {
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')

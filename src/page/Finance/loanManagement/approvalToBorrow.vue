@@ -218,10 +218,10 @@
         <!-- <el-button @click="CloseCheckIncomeShow()">取消</el-button>
         <el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button> -->
         <el-button @click="closeDetailstShow()">取消</el-button>
-        <el-button @click="through()" type="danger" plain :disabled="ifPassClick" v-if="getCheckTypeEX=='审批中' && ifAccountBtn && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && getAccountID != 0">通过</el-button>
+        <el-button @click="through()" type="danger" plain :disabled="ifPassClick" v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || ( ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)">通过</el-button>
         <el-button @click="through()" type="danger" plain v-else>通过</el-button>
         <el-button @click="rejected()" type="danger" plain>驳回</el-button>
-        <el-button type="danger" :disabled="ifClick" @click="bankAccount(acoutInfo)" v-if="getCheckTypeEX=='审批中' && ifAccountBtn && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && getAccountID != 0">支付账户</el-button>
+        <el-button type="danger" :disabled="ifClick" @click="bankAccount(acoutInfo)" v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || (ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)">支付账户</el-button>
       </div>
       <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
     </el-dialog>
@@ -274,6 +274,8 @@ import moment from 'moment'
   },
   data(){
     return {
+      ifDY100009: false,
+      ifDY100042: false,
       ifClick: false, // 如果点击选择账户之后这个按钮会禁止点击
       ifPassClick: true, // 点击选择账户之后才可以点击通过
       getCheckTypeEX: null, // 审批状态
@@ -287,7 +289,6 @@ import moment from 'moment'
         planTime_01:'',
         planData_01:'', //借款表格
       },
-      ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       paymentID:0,
       groupCode:'', //表头切换
       empty_01:'',
@@ -312,23 +313,27 @@ import moment from 'moment'
       arr1:[],
       arr2:[],
       guid:'',
+      creatUserOrgID: null, // 用来判断付款账户是否显示
       transitShow:false, // 通过驳回弹窗
       title:"",
       commentText:'',
       presentRouter: null, // 当前路由
       getWorkItemId: null, // 保存匹配的guid
-      getAccountID: null // 是否选过付款账户 等于0 是没有选过
     }
   },
   created(){
+    if(sessionStorage.getItem('userCode') == 'DY100009') {
+      this.ifDY100009 = true
+    }else {
+      this.ifDY100009 = false
+    }
+    if(sessionStorage.getItem('userCode') == 'DY100042') {
+      this.ifDY100042 = true
+    } else {
+      this.ifDY100042 = false
+    }
     this.presentRouter = this.$route.name
     this.pageList();
-    // 只有是出纳的时候才显示申请人检索
-    if (sessionStorage.getItem('hasCashierInfo')) {
-      this.ifAccountBtn = true
-    } else {
-      this.ifAccountBtn = false
-    }
   },
   computed: {
     countTest:function () {
@@ -417,9 +422,9 @@ import moment from 'moment'
         .then(obj => {
           let getWorkflowCode
           if(this.presentRouter == '无收入借款管理') {
-            getWorkflowCode = 'loan_noIncome2'
+            getWorkflowCode = 'loan_noIncome4'
           } else if(this.presentRouter == '预付款管理') {
-            getWorkflowCode = 'borrow_Moneys2'
+            getWorkflowCode = 'borrow_Moneys4'
           }else {}
           this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
             "userCode": sessionStorage.getItem('tel'),
@@ -456,9 +461,9 @@ import moment from 'moment'
         .then(obj => {
           let getWorkflowCode
           if(this.presentRouter == '无收入借款管理') {
-            getWorkflowCode = 'loan_noIncome2'
+            getWorkflowCode = 'loan_noIncome4'
           } else if(this.presentRouter == '预付款管理') {
-            getWorkflowCode = 'borrow_Moneys2'
+            getWorkflowCode = 'borrow_Moneys4'
           }else {}
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),
@@ -570,25 +575,18 @@ import moment from 'moment'
       },
       // 驳回成功通过guid将checktype修改成2
       rejectedSuccess(){
-        let getWorkflowCode
-        if(this.presentRouter == '无收入借款管理') {
-          getWorkflowCode = 1
-        } else if(this.presentRouter == '预付款管理') {
-          getWorkflowCode = 2
-        }else {}
         this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',{
           /*"guid": this.guid,
           "checkType": 2*/
          "object": {
             "guid": this.guid,
-            "checkType": getWorkflowCode
+            "checkType": 2
           }
         })
       },
       // 详情弹窗
       checkIncome(index, row){
-        this.getAccountID = row.accountID // 如果为0 则没有选过付款账户
-        console.log(row)
+        console.log(row,'审批您列表详情弹窗')
         this.getCheckTypeEX = row.checkTypeEX
         let _this = this
         this.arr2.forEach(function (item) {
@@ -612,6 +610,7 @@ import moment from 'moment'
         }).then(res => {
           if(res.data.isSuccess == true){
             this.guid = res.data.object.guid
+            this.creatUserOrgID = res.data.object.creatUserOrgID
           }
        })
       },

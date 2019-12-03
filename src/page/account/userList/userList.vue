@@ -318,41 +318,47 @@
         }
       },
       auth(){
-        this.dialogFormAuth = true;
-        this.getHeight();
-        this.getActs();
+        if(this.multipleSelection[0].id > 0){
+           this.dialogFormAuth = true;
+           this.getHeight();
+           this.getActs();
+        }
       },
       getHeight(){
         this.authDiocss.height=document.body.clientHeight-200+"px";
       },
       getActs(){
-        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
-              "userID":this.multipleSelection[0].id,
-            }).then(res => {              
-              this.authData=res.data.objects;              
-        })
+          this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
+                "userID":this.multipleSelection[0].id,
+              }).then(res => {              
+                this.authData=res.data.objects;              
+          })
       },
       perSubmit(){
-        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/do',{
-               "userID": this.multipleSelection[0].id,
-               "object": this.authData
-            }).then(res => {         
-              if(res.data.isSuccess == true){
-                 this.$message.success('提交成功');
-                 this.cenclePer();
-              }
-        })
+        if(this.multipleSelection[0].id > 0){
+          this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/do',{
+                 "userID": this.multipleSelection[0].id,
+                 "object": this.authData
+              }).then(res => {         
+                if(res.data.isSuccess == true){
+                   this.$message.success('提交成功');
+                   this.cenclePer();
+                }
+          })
+        }
       },
       copyPerSubmit(){
-        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/copy',{
-               "sourceID": this.multipleSelection[0].id,
-               "objectID": this.permissionId
-            }).then(res => {         
-              if(res.data.isSuccess == true){
-                 this.$message.success('提交成功');
-                 this.dialogFormAuth = false;
-              }
-        })
+        if(this.multipleSelection[0].id > 0){
+          this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/copy',{
+                 "sourceID": this.multipleSelection[0].id,
+                 "objectID": this.permissionId
+              }).then(res => {         
+                if(res.data.isSuccess == true){
+                   this.$message.success('提交成功');
+                   this.dialogFormCopyPer = false;
+                }
+          })
+        }
       },
       getRowClass({ row, column, rowIndex, columnIndex }){
         if (rowIndex == 0){

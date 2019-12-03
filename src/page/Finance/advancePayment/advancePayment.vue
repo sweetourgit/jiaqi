@@ -84,8 +84,6 @@
             <el-table-column prop="opinion" label="操作" align="center">
                <template slot-scope="scope">
                  <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-<!--                 <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn">|</span>-->
-<!--                 <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0 && ifAccountBtn" type="text" size="small" class="table_details">付款账户</el-button>-->
                </template>
             </el-table-column>
           </el-table>
@@ -163,7 +161,6 @@ export default {
       listLoading: true,
       tableSelect:[], // 选择弹窗表格
       SelectAccount:false, // 选择账户弹窗
-      // ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       ruleFormSeach: {
         page: 1,
@@ -231,12 +228,6 @@ export default {
     }
   },
   created () {
-    // 只有是出纳的时候才显示申请人检索
-    // if (sessionStorage.getItem('hasCashierInfo')) {
-    //   this.ifAccountBtn = true
-    // } else {
-    //   this.ifAccountBtn = false
-    // }
     this.querySearch6()
     this.querySearch7()
     this.searchHand()
@@ -260,11 +251,6 @@ export default {
       return moment(date).format('YYYY-MM-DD')
     },
     moment,
-    // 选择账户弹窗
-    bankAccount() {
-      this.SelectAccount = true;
-      this.selectList();
-    },
     // 选择账户指定弹窗之后，选择指定的账户
     addAccount(index, row) {
       var that = this
@@ -442,7 +428,7 @@ export default {
         if (res.data.isSuccess == true) {
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/EndProcessForJQ",{
             "jq_id": this.guid,
-            "jQ_Type": 1
+            "jQ_Type": 2
           }).then(res => {
             this.$message.success("撤销成功");
             this.checkIncomeShow = false;

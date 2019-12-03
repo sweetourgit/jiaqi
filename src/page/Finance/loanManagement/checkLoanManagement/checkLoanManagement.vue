@@ -298,6 +298,7 @@ export default {
           this.tableIncome = []
           this.tableMoney = []
           this.tableEarning = []
+          let createUserCode = res.data.object.creatUserCode;
           let getPaymentType = res.data.object.paymentType
           this.keepPaymentType = getPaymentType
           this.fundamental=res.data.object;
@@ -306,18 +307,19 @@ export default {
           if(res.data.object.planID>0){
             this.getPaymentdetails(res.data.object.planID);
           }else{
-            this.bbb();
+            this.bbb(createUserCode);
           }
         }
      })
     },
     // 无收入没有订单号根据登录人员查询无收入借款明细
-    bbb(){
+    bbb(params){
+      console.log(params)
       var that = this
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
         "object": {
           "paymentType": 1, // 1 无收入 2 预付款
-          "createUser": sessionStorage.getItem('userCode'),
+          "createUser": params, // sessionStorage.getItem('userCode')
         }
       }).then(res => {
         if (res.data.isSuccess == true) {

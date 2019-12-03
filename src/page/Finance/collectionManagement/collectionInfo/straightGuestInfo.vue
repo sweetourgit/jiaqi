@@ -88,7 +88,6 @@
         <!-- 发票表格 -->
         <div label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisible2">
           <el-button style="margin: 5px 0 10px 0;" type="primary" @click="handleEdit()">添加</el-button>
-          <el-button style="margin: 5px 0 10px 0;" type="primary" @click="handleChecked('ruleForm')">测试test</el-button>
           <el-table :data="ruleForm.invoiceTable" border style="width: 100%;" size="mini">
             <el-table-column label="发票类型" width="120" align="center">
               <template slot-scope="scope">
@@ -255,7 +254,7 @@ export default {
     },
   },
   data() {
-    var validateVoucher = (rule, value, callback) => {
+    let validateVoucher = (rule, value, callback) => {
       if (this.fileCheckVal === 0) {
         callback(new Error('请上传凭证'));
       } else {
@@ -796,13 +795,6 @@ export default {
     },
     handleEdit(index, row) {
       this.ruleForm.invoiceTable.push({})
-    },
-    handleChecked(formName){
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert(valid)
-        }
-      })
     },
     handleDelete(index, row) {
       this.ruleForm.invoiceTable.splice(index, 1)

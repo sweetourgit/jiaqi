@@ -81,8 +81,6 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-<!--          <span v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0">|</span>-->
-<!--          <el-button @click="bankAccount(scope.row)" v-if="scope.row.checkTypeEX=='通过' && scope.row.isEBS == 0" type="text" size="small" class="table_details">付款账户</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -126,12 +124,13 @@
         <el-form-item label="供应商名称" prop="supplier" style="clear:both;">
           <el-autocomplete
             class="name_input"
-            v-model="ruleForm.supplier"
             :fetch-suggestions="querySearch3"
+            v-model="ruleForm.supplier"
             placeholder="请输入供应商名称"
             :trigger-on-focus="false"
             @select="departure"
           ></el-autocomplete>
+          <!--<el-input style="width:300px;" disabled v-model="ruleForm.supplier" placeholder="请通过模糊查询选择相应供应商"></el-input>-->
         </el-form-item>
         <el-form-item label="借款类型" prop="planType">
           <el-select v-model="ruleForm.planType" placeholder="请选择借款类型">
@@ -467,7 +466,7 @@ export default {
         name: [{ required: true, message: '请输入借款人名字', trigger: 'blur' }],
         //plan: [{ required: true, message: '请输入团期计划', trigger: 'blur' }],
         plan_01: [{ required: true, message: '请输入团期计划', trigger: 'blur' }],
-        supplier:[{ required: true, message: '请输入供应商名称', trigger: 'change' }],
+        supplier:[{ required: true, message: '请选择相应供应商', trigger: 'change' }],
         planType:[{ required: true, message: '请选择借款类型', trigger: 'change' }],
         planAmount:[
           { required: true, message: '请输入借款金额', trigger: 'blur' },
@@ -510,7 +509,7 @@ export default {
       tour_name_pre: '',
       product_name_pre:'',
       planID:'',
-      supplier_id:0, // 供应商选择银行账号
+      supplier_id:null, // 供应商选择之后绑定之后获取相关id
       tableData2:[],
       tableDataBorrower:[],
       upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
@@ -531,6 +530,21 @@ export default {
         return ''
       } else {
         return moment(value).format('YYYY-MM-DD')
+      }
+    }
+  },
+  computed:{
+    rejectUpadataList:function () {
+      return this.$store.state.updatAdvancePaymentData
+    }
+  },
+  watch:{
+    rejectUpadataList:function (newV, oldV) {
+      let _this = this
+      if(newV != oldV) {
+        setTimeout(function () {
+          _this.getList()
+        },500)
       }
     }
   },
@@ -1057,8 +1071,8 @@ export default {
     // 关闭弹窗
     CloseCheckIncomeShow(){
       this.checkIncomeShow = false;
-      this.$refs['ruleForm'].resetFields();
-      this.clearPlan();
+      // this.$refs['ruleForm'].resetFields();
+      // this.clearPlan();
     },
     // 搜索
     search(){
@@ -1193,7 +1207,7 @@ export default {
       // this.imgBig = getUrl.paths[0].Url
 
     },
-    // 结束工作流程
+    // 撤销（结束工作流程）预付款要参照这个改，这个是对的
     repeal(){
       this.$confirm("是否需要撤销该笔借款?", "提示", {
          confirmButtonText: "确定",
@@ -1227,43 +1241,7 @@ export default {
         this.getList();
       })
       .catch(() => {});
-    },
-    // 选择账户弹窗
-    /*bankAccount(){
-      this.SelectAccount = true;
-      this.selectList();
-    },*/
-    /*closeAccount(){
-      this.SelectAccount = false;
-    },*/
-    // 选择账户弹窗，选择对应的选项事件
-/*    addAccount(index, row){
-      var that = this
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
-        "paymentID": this.paymentID,
-        "accountID": row.id
-      })
-      .then(function (obj) {
-        // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
-        that.getList()
-      }).catch(function (obj) {})
-      this.SelectAccount = false
-    },*/
-    // 选择账户表格查询
-/*    selectList(){
-      var that = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
-        {
-          "object": {
-            "isDeleted": 0
-          }
-        })
-        .then(function (obj) {
-          that.tableSelect = obj.data.objects
-        })
-        .catch(function (obj) {})
-    },*/
+    }
   },
   mounted(){
     this.getList()

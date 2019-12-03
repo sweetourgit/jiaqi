@@ -536,6 +536,7 @@ export default {
           enrollDetail = enrollDetail.replace(/\s*/g, "");
           let _arr = enrollDetail.split(",");
           _arr.splice(_arr.length - 1, 1);
+          // console.log(_arr)
           let _res = [];
           _arr.sort();
           for (let i = 0; i < _arr.length; ) {
@@ -548,6 +549,7 @@ export default {
             _res.push([_arr[i], count]);
             i += count;
           }
+          // console.log(_res)
           //_res 二维数维中保存了 值和值的重复数
           let _newArr = [];
           for (let i = 0; i < _res.length; i++) {
@@ -559,7 +561,7 @@ export default {
 
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format(
-            "YYYY-MM-DD HH:mm:ss"
+            "YYYY-MM-DD"
           );
           this.orderCodeSon = res.data.object.orderCode;
           this.priceType = res.data.object.priceType;

@@ -71,8 +71,8 @@
           {{item.enrollName}}￥
           <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
           <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
-          <span v-show="propPriceType==1">{{item.price_01}}*{{enrolNum[index]}}</span>
-          <span v-show="propPriceType==2">{{item.price_02}}*{{enrolNum[index]}}</span>
+          <span v-show="propPriceType==1">{{item.price_01}}</span>
+          <span v-show="propPriceType==2">{{item.price_02}}</span>
           <div>
             <!-- 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数  :max="paidMaxEnrolNum[index]"-->
             <el-input-number
@@ -81,6 +81,7 @@
               @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02)"
               :min="0"
               :max="salePriceNum[index].quota"
+              readonly="readonly"
               size="medium"
               :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
             ></el-input-number>
@@ -459,17 +460,6 @@ export default {
           id: orderId
         })
         .then(res => {
-          //   let str =
-          //     "成人(1323.00*1),成人(5000.00*1),成人(1323.00*1),人(1323.00*1),成人(5000.00*1),哈(1323.00*1),人(1323.00*1)";
-          // let _arr = str.split(",");
-          //  for( let i = _arr.length - 1;  i > 0;  i--){
-          //    if( _arr[i].indexOf("成人") != -1) {
-          //      _arr.splice(i,1)
-          //      return _arr
-          //    }
-          //  }
-          //  console.log(_arr)
-
           if (res.data.isSuccess == true) {
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
@@ -502,34 +492,72 @@ export default {
             this.teampreview(res.data.object.planID);
             // 记录最开始的总价 isSaveBtnClick需要
             this.prePayable = this.orderget.payable;
-            this.enrollDetail = this.enrollDetail.replace(/\s*/g,'')
+            this.enrollDetail = this.enrollDetail.replace(/\s*/g, "");
             let _arr = this.enrollDetail.split(",");
-            // console.log(res.data.object.enrollDetail.split(","),"this.enrolldetail")
+
             _arr.splice(_arr.length - 1, 1);
-            let _res = []; //
-            _arr.sort();
-            for (let i = 0; i < _arr.length; ) {
-              let count = 0;
-              for (let j = i; j < _arr.length; j++) {
-                if (_arr[i] == _arr[j]) {
-                  count++;
-                }
-              }
-              _res.push([_arr[i], count]);
-              i += count;
+            let obj = this.counterArray(_arr);
+            let str = JSON.stringify(obj);
+            let newStr = str.substr(1, str.length - 2);
+            let newArr = newStr.split(",");
+            let endARR = []
+            for (let i = 0; i < newArr.length; i++) {
+              let a = newArr[i].split(":")
+              let b = a[0].split("*")
+              b[0]= b[0].substr(1, str.length - 1)
+              endARR.push(b[0]+"x"+a[1]+")")
             }
-            //_res 二维数维中保存了 值和值的重复数
-            let _newArr = [];
-            for (let i = 0; i < _res.length; i++) {
-              let a = _res[i][0].split("*");
-              _newArr.push(a[0] + "x" + _res[i][1] + ")");
-            }
-            this.enrollDetailShow = _newArr.toString();
+            this.enrollDetailShow = endARR.toString()
+            // let _res = []; //
+            // // _arr.sort();
+            // for (let i = 0; i < _arr.length; ) {
+            //   // let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1]
+            //   // let Price,Num;
+            //   // Price = Number(priceAndNum.substring(0,priceAndNum.indexOf('*')))
+            //   // Num = Number(priceAndNum.substring(priceAndNum.indexOf('*')+1,priceAndNum.length))
+            //   // // console.log(Price,Num)
+            //   // this.prePayable += Price * Num
+            //   let count = 0;
+            //   for (let j = i; j < _arr.length; j++) {
+            //     if (_arr[i] == _arr[j]) {
+            //       count++;
+            //     }
+            //   }
+            //   _res.push([_arr[i], count]);
+            //   i += count;
+            // }
+            // //_res 二维数维中保存了 值和值的重复数
+            // let _newArr = [];
+            // for (let i = 0; i < _res.length; i++) {
+            //   let a = _res[i][0].split("*");
+            //   _newArr.push(a[0] + "x" + _res[i][1] + ")");
+            // }
+            // this.enrollDetailShow = _newArr.toString();
+
+            // 计算最开始的总价
+            // let arr = this.enrollDetailShow.split(",")
+            // console.log(arr)
+            // for (let i = 0; i < arr.length; ) {
+            // }
+            // console.log(this.prePayable)
           }
         })
         .catch(err => {
           console.log(err);
         });
+    },
+
+    //字符串相同的个数 报名信息需要
+    counterArray(arr) {
+      var obj = {};
+      arr.forEach(function(v, k) {
+        if (obj[v]) {
+          obj[v]++;
+        } else {
+          obj[v] = 1;
+        }
+      });
+      return obj;
     },
 
     //同业的订单（月结的）记录以前的订单总价 改变后的总价差和剩余预存款和额度作对比 超过则不可保存更改
@@ -853,6 +881,12 @@ export default {
         }
       }
     },
+    // peoNumBlur(num) {
+    //     for(let i = 0;i < num;i++) {
+    //       console.log(1)
+    //       this.peoNum()
+    //     }
+    // },
 
     peoNum(index, enrollID, enrollName, price_01, price_02) {
       // this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
@@ -928,7 +962,7 @@ export default {
         for (let i = _arr.length - 1; i > 0; i--) {
           if (_arr[i].indexOf(enrollName) != -1) {
             _arr.splice(i, 1);
-            return this.enrollDetail = _arr.toString();
+            return (this.enrollDetail = _arr.toString());
           }
         }
 
@@ -1128,6 +1162,7 @@ export default {
         // }
         // 原先结束
       }
+      // console.log(type,"type")
       this.payable = 0;
       for (let i = 0; i < this.enrolNum.length; i++) {
         this.payable +=
@@ -1349,6 +1384,8 @@ export default {
       this.isSaveBtn = false;
       this.applyInfomations = [];
       this.enrollDetail = "";
+      this.isPricechange = null;
+      this.prePayable = 0;
     }
   }
 };
