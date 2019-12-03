@@ -78,7 +78,7 @@
             <el-input-number
               class="input-num"
               v-model="enrolNum[index]"
-              @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02)"
+              @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02,enrolNum[index])"
               :min="0"
               :max="salePriceNum[index].quota"
               readonly="readonly"
@@ -500,14 +500,14 @@ export default {
             let str = JSON.stringify(obj);
             let newStr = str.substr(1, str.length - 2);
             let newArr = newStr.split(",");
-            let endARR = []
+            let endARR = [];
             for (let i = 0; i < newArr.length; i++) {
-              let a = newArr[i].split(":")
-              let b = a[0].split("*")
-              b[0]= b[0].substr(1, str.length - 1)
-              endARR.push(b[0]+"x"+a[1]+")")
+              let a = newArr[i].split(":");
+              let b = a[0].split("*");
+              b[0] = b[0].substr(1, str.length - 1);
+              endARR.push(b[0] + "x" + a[1] + ")");
             }
-            this.enrollDetailShow = endARR.toString()
+            this.enrollDetailShow = endARR.toString();
             // let _res = []; //
             // // _arr.sort();
             // for (let i = 0; i < _arr.length; ) {
@@ -887,8 +887,9 @@ export default {
     //       this.peoNum()
     //     }
     // },
-
-    peoNum(index, enrollID, enrollName, price_01, price_02) {
+    // num为j计数器手动输入的数字  price_01和price_02是为了拼接enrollDetail
+    peoNum(index, enrollID, enrollName, price_01, price_02, num) {
+      // console.log(index, enrollID, enrollName, num);
       // this.isChangeNumber = true; //数量有变动 则动态按钮不可点击 + 补充信息的时候必须保存后修改
       //填写报名人数
       let arrLength; //报名人数
@@ -932,10 +933,12 @@ export default {
           });
         }
         // 报名信息增加enrollDetail拼接
+        // for (let i = 0; i < num-preLength; i++) {
         let price;
         this.isPricechange == true ? (price = price_01) : (price = price_02);
         price = this.toDecimal2(price);
         this.enrollDetail += `${enrollName}(${price} * 1),`;
+        // }
       } else {
         // 循环判断表格中的出行人信息是否有没填写的如果有则自动删除 没有则提示手动删除
         let isInfNull = this.tour[index].some((item, index, arr) => {
@@ -959,13 +962,12 @@ export default {
         }
         // 报名信息减少enrollDetail拼接
         let _arr = this.enrollDetail.split(",");
-        for (let i = _arr.length - 1; i > 0; i--) {
+        for (let i = _arr.length - 1; i => 0; i--) {
           if (_arr[i].indexOf(enrollName) != -1) {
             _arr.splice(i, 1);
             return (this.enrollDetail = _arr.toString());
           }
         }
-
         // let tour = this.tour[index];
         // if (tour[tour.length - 1].cnName != "") {
         //   const num = this.tour[index].length.toString()
