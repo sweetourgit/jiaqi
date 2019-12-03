@@ -176,7 +176,7 @@ export default new Router({
     }, {
       path: '/supplierDetails',
       component: () => import('@/page/contentInfo/supplierInfo/supplierDetails/supplierDetails'),
-      name: '供应商信息详情',
+      name: '供应商详情',
       meta: {
         keepAlive: true,
         auth: true

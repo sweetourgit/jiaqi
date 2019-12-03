@@ -38,7 +38,10 @@
         <el-table-column prop="orgName" label="所属部门" align="center"></el-table-column>
         <el-table-column label="操作" width="159" align="center">
           <template slot-scope="scope">
-            <el-button size="small" type="text">详情</el-button>
+            <el-button size="small" type="text"
+              @click="routerToDetail(scope.row.id)">
+              详情
+            </el-button>
             <el-button size="small" type="text"
               @click="routerToEdit(scope.row.id)">
               编辑
@@ -98,15 +101,25 @@ export default {
 
   methods: Object.assign(
     {
-      init(payload){
-        payload && this.reappearConditions(payload);
+      init(){
+        let payload= this.routeQueryHandler();
+        this.reappearConditions(payload);
         this.getListAction()
+      },
+
+      routeQueryHandler(){
+        let result= {};
+        let { conditions, pageInfo }= this.$route.query;
+        this.$router.replace({ path: this.$route.path });
+        if(conditions) result.conditions= JSON.parse(conditions);
+        if(pageInfo) result.pageInfo= JSON.parse(pageInfo);
+        return result;
       },
 
       // 重现条件和页数
       reappearConditions(payload){
         let { conditions, pageInfo }= payload;
-        this.$refs.allPaneConditionsRef.init(conditions);
+        this.$refs.searchConditions.init(conditions);
         Object.assign(this.pageInfo, pageInfo);
       },
 
@@ -172,6 +185,11 @@ export default {
         let conditions= JSON.stringify( this.$refs.searchConditions.getConditions() );
         let pageInfo= JSON.stringify( this.pageInfo );
         this.$router.push({ path: '/supplierEdit', query: { conditions, pageInfo, id } });
+      },
+      routerToDetail(id){
+        let conditions= JSON.stringify( this.$refs.searchConditions.getConditions() );
+        let pageInfo= JSON.stringify( this.pageInfo );
+        this.$router.push({ path: '/supplierDetails', query: { conditions, pageInfo, id } });
       }
     }
   )
