@@ -222,7 +222,7 @@
           if(item.is_match == 2){
             orderStr += item.order_sn + ',';
           }else {
-            // isMatch = false;
+            isMatch = false;
           }
         });
         orderStr = orderStr.substr(0, orderStr.length - 1);
