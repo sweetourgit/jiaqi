@@ -98,15 +98,25 @@ export default {
 
   methods: Object.assign(
     {
-      init(payload){
-        payload && this.reappearConditions(payload);
+      init(){
+        let payload= this.routeQueryHandler();
+        this.reappearConditions(payload);
         this.getListAction()
+      },
+
+      routeQueryHandler(){
+        let result= {};
+        let { conditions, pageInfo }= this.$route.query;
+        this.$router.replace({ path: this.$route.path });
+        if(conditions) result.conditions= JSON.parse(conditions);
+        if(pageInfo) result.pageInfo= JSON.parse(pageInfo);
+        return result;
       },
 
       // 重现条件和页数
       reappearConditions(payload){
         let { conditions, pageInfo }= payload;
-        this.$refs.allPaneConditionsRef.init(conditions);
+        this.$refs.searchConditions.init(conditions);
         Object.assign(this.pageInfo, pageInfo);
       },
 
