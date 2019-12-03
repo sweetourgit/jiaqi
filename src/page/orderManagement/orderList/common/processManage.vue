@@ -50,14 +50,14 @@
 
       <p class="yuwei">余位：{{teampreviewData.remaining}}</p>
 
-      <!-- switch 更改价格(直客价和同业价) beign-->
+      <!-- switch 更改价格(直客价和同业价) :disabled="orderget.orderStatus===4||orderget.orderStatus===6||orderget.orderStatus===9"  beign-->
       <p>当前使用{{priceChange}}价格</p>
       <el-switch
         v-model="isPricechange"
         active-color="#409eff"
         inactive-color="#dcdfe6"
         @change="priceChangeEvent(isPricechange)"
-        :disabled="orderget.orderStatus===4||orderget.orderStatus===6||orderget.orderStatus===9"
+        :disabled="true"
       ></el-switch>
       <!-- switch 更改价格(直客价和同业价) end-->
 
@@ -941,38 +941,43 @@ export default {
         }
       } else {
         // 循环判断表格中的出行人信息是否有没填写的如果有则自动删除 没有则提示手动删除
-        let isInfNull = this.tour[index].some((item, index, arr) => {
-          return item.cnName == "";
-        });
-        let isInfNullIndex;
-        if (isInfNull) {
-          for (let i = 0; i < this.tour[index].length; i++) {
-            if (this.tour[index][i].cnName == "") {
-              isInfNullIndex = i;
+
+        for (let i = 0; i < preLength - num; i++) {
+          let isInfNull = this.tour[index].some((item, index, arr) => {
+            return item.cnName == "";
+          });
+          console.log(isInfNull, "isInfNull");
+          let isInfNullIndex;
+          if (isInfNull) {
+            for (let i = 0; i < this.tour[index].length; i++) {
+              if (this.tour[index][i].cnName == "") {
+                isInfNullIndex = i;
+              }
             }
           }
-          // console.log(isInfNullIndex)
+          if (isInfNull) {
+            this.tour[index].splice(isInfNullIndex, 1);
+            // this.tour[index].splice((num-1)==-1?0:(num-1), preLength - num);
+          } else {
+            const num = this.tour[index].length.toString();
+            this.$set(this.enrolNum, index, num);
+            this.$message.error("请手动删除表格中的出行人");
+            break
+          }
         }
-        if (isInfNull) {
-          this.tour[index].splice(isInfNullIndex, 1);
-        } else {
-          const num = this.tour[index].length.toString();
-          this.$set(this.enrolNum, index, num);
-          this.$message.error("请手动删除表格中的出行人");
-        }
+
         // 报名信息减少enrollDetail拼接
-        // console.log(preLength,"preLength",num,"num")
         let _arr = this.enrollDetail.split(",");
-        // for (let i = 0; i < preLength - num; i++) {
-          // console.log(1)
+        for (let j = 0; j < preLength - num; j++) {
           for (let i = _arr.length - 1; i => 0; i--) {
             // console.log(2)
             if (_arr[i].indexOf(enrollName) != -1) {
               _arr.splice(i, 1);
-              return (this.enrollDetail = _arr.toString());
+              this.enrollDetail = _arr.toString();
+              break;
             }
           }
-        // }
+        }
         // let tour = this.tour[index];
         // if (tour[tour.length - 1].cnName != "") {
         //   const num = this.tour[index].length.toString()
