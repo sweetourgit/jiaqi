@@ -27,7 +27,7 @@
                 <el-form-item label="供应商名称：">{{ submitForm.name }}</el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="法人代表：">{{ submitForm.legalPerson }}</el-form-item>
+                <el-form-item label="法人代表：">{{ submitForm.legalPerson | nullFilter }}</el-form-item>
               </el-col>
             </el-row>
 
@@ -78,7 +78,7 @@
 
             <el-row :gutter="100" class="common-row">
               <el-col :span="12">
-                <el-form-item label="产品主要方向：" prop="productDirection">{{ submitForm.productDirection }}</el-form-item>
+                <el-form-item label="产品主要方向：" prop="productDirection">{{ submitForm.productDirection |  }}</el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="操作负责人：" prop="billName">{{ submitForm.billName }}</el-form-item>
@@ -168,6 +168,13 @@ export default {
       IsMonthlyOptions: [],
       ProductAreaOptions: [],
       ConditionTypeOptions: [{ value: 1, label: "正常" },{value: 2, label: "停用"},{value: 0, label: "待审核"}]
+    }
+  },
+
+  filters: {
+    nullFilter(val){
+      if(val) return val;
+      return '（ 未填写 ）';
     }
   },
 
