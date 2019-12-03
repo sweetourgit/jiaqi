@@ -933,12 +933,12 @@ export default {
           });
         }
         // 报名信息增加enrollDetail拼接
-        // for (let i = 0; i < num-preLength; i++) {
-        let price;
-        this.isPricechange == true ? (price = price_01) : (price = price_02);
-        price = this.toDecimal2(price);
-        this.enrollDetail += `${enrollName}(${price} * 1),`;
-        // }
+        for (let i = 0; i < num - preLength; i++) {
+          let price;
+          this.isPricechange == true ? (price = price_01) : (price = price_02);
+          price = this.toDecimal2(price);
+          this.enrollDetail += `${enrollName}(${price} * 1),`;
+        }
       } else {
         // 循环判断表格中的出行人信息是否有没填写的如果有则自动删除 没有则提示手动删除
         let isInfNull = this.tour[index].some((item, index, arr) => {
@@ -961,12 +961,17 @@ export default {
           this.$message.error("请手动删除表格中的出行人");
         }
         // 报名信息减少enrollDetail拼接
+        console.log(preLength,"preLength",num,"num")
         let _arr = this.enrollDetail.split(",");
-        for (let i = _arr.length - 1; i => 0; i--) {
-          if (_arr[i].indexOf(enrollName) != -1) {
-            _arr.splice(i, 1);
-            return (this.enrollDetail = _arr.toString());
-          }
+        for (let i = 0; i < preLength - num; i++) {
+          console.log(1)
+          // for (let i = _arr.length - 1; i => 0; i--) {
+          //   // console.log(2)
+          //   if (_arr[i].indexOf(enrollName) != -1) {
+          //     _arr.splice(i, 1);
+          //     return (this.enrollDetail = _arr.toString());
+          //   }
+          // }
         }
         // let tour = this.tour[index];
         // if (tour[tour.length - 1].cnName != "") {

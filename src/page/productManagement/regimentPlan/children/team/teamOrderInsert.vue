@@ -896,14 +896,14 @@ export default {
         }
         // 报名信息增加enrollDetail拼接
         let price;
-        console.log(this.ruleForm.price,"this.ruleForm.price")
+        // console.log(this.ruleForm.price,"this.ruleForm.price")
         this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
         price = this.toDecimal2(price);
         this.enrollDetail += `${enrollName}(${price} * 1),`;
       } else{
-        console.log(this.tour[index])
+        // console.log(this.tour[index])
         for(var i=0;i < this.tour[index].length;i++){
-          console.log(this.tour[index][i])
+          // console.log(this.tour[index][i])
           if(this.tour[index][i].cnName === ''){
             this.tour[index].splice(i, preLength - arrLength);
             break;
