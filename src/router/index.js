@@ -465,6 +465,15 @@ export default new Router({
       }
     },
     {
+      path: '/invoiceManagement',
+      component: () => import('@/page/Finance/invoiceManagement/invoiceManagement'),
+      name: '发票管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path: '/collectionManagement',
       component: () => import('@/page/Finance/collectionManagement/collectionManagement'),
       name: '收款管理',
