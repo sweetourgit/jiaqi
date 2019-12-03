@@ -946,7 +946,6 @@ export default {
           let isInfNull = this.tour[index].some((item, index, arr) => {
             return item.cnName == "";
           });
-          console.log(isInfNull, "isInfNull");
           let isInfNullIndex;
           if (isInfNull) {
             for (let i = 0; i < this.tour[index].length; i++) {

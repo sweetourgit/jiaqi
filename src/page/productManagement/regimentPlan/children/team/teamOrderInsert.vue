@@ -112,7 +112,7 @@
               <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
               <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
               <div>
-                <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02)"
+                <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02,enrolNum[index])"
                   :min="0" :max="salePriceNum[index].quota" size="medium"></el-input-number>
               </div>
               <!-- <div v-bind:class="{red:quota[index]}">
@@ -845,7 +845,7 @@ export default {
           }
         });
     },
-    peoNum(index, enrollID, enrollName,price_01, price_02) {
+    peoNum(index, enrollID, enrollName,price_01, price_02,num) {
       console.log(this.enrolNum[index])
       //填写报名人数
       let arrLength; //报名人数
@@ -895,11 +895,13 @@ export default {
           });
         }
         // 报名信息增加enrollDetail拼接
-        let price;
-        // console.log(this.ruleForm.price,"this.ruleForm.price")
-        this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
-        price = this.toDecimal2(price);
-        this.enrollDetail += `${enrollName}(${price} * 1),`;
+        for (let i = 0; i < num - preLength; i++) {
+          let price;
+          // console.log(this.ruleForm.price,"this.ruleForm.price")
+          this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
+          price = this.toDecimal2(price);
+          this.enrollDetail += `${enrollName}(${price} * 1),`;
+        }
       } else{
         // console.log(this.tour[index])
         for(var i=0;i < this.tour[index].length;i++){
@@ -911,12 +913,15 @@ export default {
         }
         // 报名信息减少enrollDetail拼接
         let _arr = this.enrollDetail.split(",");
-        for (let i = _arr.length - 1; i > 0; i--) {
+        for (let j = 0; j < preLength - num; j++) {
+          for (let i = _arr.length - 1; i > 0; i--) {
           if (_arr[i].indexOf(enrollName) != -1) {
             _arr.splice(i, 1);
             return (this.enrollDetail = _arr.toString());
+            }
           }
         }
+        
       }
     },
     submitForm(formName,index) { 
