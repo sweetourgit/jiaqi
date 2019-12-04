@@ -5,12 +5,21 @@
   padding-bottom: 80px;
   &>main{
     width: 1080px;
+    .file-outer{
+      cursor: pointer;
+    }
+    .file-outer:hover{
+      color: #409EFF;
+    }
   }
   &>aside{
     padding-left: 20px;
     .fixed-outer{
       position: fixed;
     }
+  }
+  & /deep/ .grey-null{
+    color: grey;
   }
 }
 </style>
@@ -24,10 +33,19 @@
 
             <el-row :gutter="100" class="common-row">
               <el-col :span="12">
-                <el-form-item label="供应商名称：">{{ submitForm.name }}</el-form-item>
+                <el-form-item label="供应商名称：">
+                  <span class="content">
+                    {{ submitForm.name }}
+                  </span>
+                </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="法人代表：">{{ submitForm.legalPerson | nullFilter }}</el-form-item>
+                <el-form-item label="法人代表：">
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.legalPerson | nullFilter }}
+                  </span>
+                </el-form-item>
               </el-col>
             </el-row>
 
@@ -36,7 +54,12 @@
                 <el-form-item label="供应商编码：">{{ submitForm.supplierCode }}</el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="合同编号：">{{ submitForm.taxNumber }}</el-form-item>
+                <el-form-item label="合同编号：">
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.taxNumber | nullFilter }}
+                  </span>
+                </el-form-item>
               </el-col>
             </el-row>
 
@@ -45,16 +68,30 @@
                 <el-form-item label="状态：">{{ submitForm.userState }}</el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="经手人：" prop="handPerson">{{ submitForm.handPerson }}</el-form-item>
+                <el-form-item label="经手人：" prop="handPerson">
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.handPerson | nullFilter }}
+                  </span>
+                </el-form-item>
               </el-col>
             </el-row>
 
             <el-row :gutter="100" class="common-row">
               <el-col :span="12">
-                <el-form-item label="线路：" prop="productArea">{{ submitForm.productArea }}</el-form-item>
+                <el-form-item label="线路：" prop="productArea">
+                  <span class="content">
+                    {{ submitForm.productArea }}
+                  </span>
+                </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="经手人电话：" prop="handPhone">{{ submitForm.handPhone }}</el-form-item>
+                <el-form-item label="经手人电话：" prop="handPhone">
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.handPhone | nullFilter }}
+                  </span>
+                </el-form-item>
               </el-col>
             </el-row>
 
@@ -63,7 +100,12 @@
                 <el-form-item label="类别：" prop="types">{{ submitForm.types }}</el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="负责人：" prop="leader">{{ submitForm.leader }}</el-form-item>
+                <el-form-item label="负责人：" prop="leader">
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.leader | nullFilter }}
+                  </span>
+                </el-form-item>
               </el-col>
             </el-row>
 
@@ -72,34 +114,58 @@
                 <el-form-item label="结算方式：" prop="isMonthly">{{ submitForm.isMonthly }}</el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="负责人电话：" prop="phone">{{ submitForm.phone }}</el-form-item>
+                <el-form-item label="负责人电话：" prop="phone">
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.phone | nullFilter }}
+                  </span>
+                </el-form-item>
               </el-col>
             </el-row>
 
             <el-row :gutter="100" class="common-row">
               <el-col :span="12">
-                <el-form-item label="产品主要方向：" prop="productDirection">{{ submitForm.productDirection |  }}</el-form-item>
+                <el-form-item label="产品主要方向：" prop="productDirection">
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.productDirection | nullFilter }}
+                  </span>
+                </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="操作负责人：" prop="billName">{{ submitForm.billName }}</el-form-item>
+                <el-form-item label="操作负责人：" prop="billName">
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.billName | nullFilter }}
+                  </span>
+                </el-form-item>
               </el-col>
             </el-row>
 
             <el-row :gutter="100" class="common-row">
               <el-col :span="12">
-                <el-form-item label="到期日期：" prop="expireTime">{{ submitForm.expireTime }}</el-form-item>
+                <el-form-item label="到期日期：" prop="expireTime">
+                  <span class="content">
+                    {{ submitForm.expireTime }}
+                  </span>
+                </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="供应商协议：" prop="isAgree">{{ submitForm.isAgree }}</el-form-item>
+                <el-form-item label="供应商协议：" prop="isAgree">
+                  <span class="content">
+                    {{ submitForm.isAgree }}
+                  </span>
+                </el-form-item>
               </el-col>
             </el-row>
 
             <el-row :gutter="100" class="common-row">
               <el-col :span="12" :offset="12">
                 <el-form-item label="备注：" prop="memo">
-                  <div>
-                    {{ submitForm.memo }}
-                  </div>
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.memo | nullFilter }}
+                  </span>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -108,14 +174,22 @@
               <el-col :span="12">
                 <el-form-item label="附件：" prop="files">
                   <div>
-                    <div v-for="(file, i) in submitForm.files" :key="i">
+                    <div class="file-outer" 
+                      v-for="(file, i) in submitForm.files" 
+                      :key="i"
+                      @click="openWindow(file.url)">
                       {{ file.name }}
                     </div>
                   </div>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="供应商别名：" prop="alias">{{ submitForm.alias }}</el-form-item>
+                <el-form-item label="供应商别名：" prop="alias">
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.alias | nullFilter }}
+                  </span>
+                </el-form-item>
               </el-col>
             </el-row>
 
@@ -171,10 +245,19 @@ export default {
     }
   },
 
+  directives: {
+    greyNull: {
+      componentUpdated(el, binding, vnode){
+        if(el.innerText=== '（ 未填写 ）' || el.innerText=== '[]') return el.className+= ' grey-null';
+        el.className= "content"
+      }
+    }
+  },
+
   filters: {
-    nullFilter(val){
+    nullFilter(val, msg){
       if(val) return val;
-      return '（ 未填写 ）';
+      return `（ ${ msg || '未填写' } ）`;
     }
   },
 
@@ -219,6 +302,10 @@ export default {
         //this.submitForm.files= this.filesAdaptor(res.files);
         this.submitForm.alias= this.aliasAdaptor(res.alias);
       })
+    },
+
+    openWindow(url){
+      window.open(url);
     },
 
     typesAdaptor(types){
