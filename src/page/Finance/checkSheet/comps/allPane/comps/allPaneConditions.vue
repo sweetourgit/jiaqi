@@ -1,27 +1,24 @@
 <template>
-  <el-form
-    :model="submitForm"
+  <el-form label-width="100px" style="width: 100%;" size="small"
     ref="submitForm"
-    label-width="100px"
-    style="width: 100%;"
-    size="mini">
+    :model="submitForm">
     <el-row :gutter="0">
 
       <el-col :span="4">
         <el-form-item label="团期计划：" prop="groupCode">
-          <el-input size="small" v-model="submitForm.groupCode" placeholder="团期计划"></el-input>
+          <el-input v-model="submitForm.groupCode" placeholder="团期计划"></el-input>
         </el-form-item>
       </el-col> 
 
       <el-col :span="4">
         <el-form-item label="报账人：" prop="userName">
-          <el-input size="small" v-model="submitForm.userName" placeholder="报账人"></el-input>
+          <el-input v-model="submitForm.userName" placeholder="报账人"></el-input>
         </el-form-item>
       </el-col>
 
       <el-col :span="4">
         <el-form-item label="产品名称：" prop="teamProTitle">
-          <el-input size="small" v-model="submitForm.teamProTitle" placeholder="产品名称"></el-input>
+          <el-input v-model="submitForm.teamProTitle" placeholder="产品名称"></el-input>
         </el-form-item>
       </el-col>
 
