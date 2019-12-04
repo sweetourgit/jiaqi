@@ -202,7 +202,7 @@
               <span class="fl">|</span>
               <el-button
                 class="fl cursor"
-                @click="delTravel(index,indexPrice)"
+                @click="delTravel(index,indexPrice,item.enrollName)"
                 :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
               >删除</el-button>
             </td>
@@ -234,7 +234,7 @@
           @click="ordersave"
           :disabled="isSaveBtn"
           class="confirm fr"
-        >保存11更改</el-button>
+        >保存更改</el-button>
         <!--取消按钮-->
         <el-button class="fr" @click="cancle">取消</el-button>
       </div>
@@ -508,6 +508,18 @@ export default {
               endARR.push(b[0] + "x" + a[1] + ")");
             }
             this.enrollDetailShow = endARR.toString();
+
+            // 根据报名信息求总价
+            // for(let i = 0;i < _arr.length;) {
+            //   let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1]
+            //   let Price,Num;
+            //   Price = Number(priceAndNum.substring(0,priceAndNum.indexOf('*')))
+            //   Num = Number(priceAndNum.substring(priceAndNum.indexOf('*')+1,priceAndNum.length))
+            //   // console.log(Price,Num)
+            //   this.prePayable += Price * Num
+            // }
+            // console.log("this.prePayable")
+
             // let _res = []; //
             // // _arr.sort();
             // for (let i = 0; i < _arr.length; ) {
@@ -550,7 +562,7 @@ export default {
     //字符串相同的个数 报名信息需要
     counterArray(arr) {
       var obj = {};
-      arr.forEach(function(v, k) {
+      arr.forEach((v, k) => {
         if (obj[v]) {
           obj[v]++;
         } else {
@@ -957,6 +969,22 @@ export default {
           if (isInfNull) {
             this.tour[index].splice(isInfNullIndex, 1);
             // this.tour[index].splice((num-1)==-1?0:(num-1), preLength - num);
+            // console.log(this.enrollDetail, "之前的");
+            // 报名信息减少enrollDetail拼接
+
+            // console.log(_arr,"减少")
+            // for (let j = 0; j < preLength - num; j++) {
+            let _arr = this.enrollDetail.split(",");
+            for (let i = _arr.length - 1; i => 0; i--) {
+              if (_arr[i].indexOf(enrollName) != -1) {
+                _arr.splice(i, 1);
+                this.enrollDetail = _arr.toString();
+                break;
+              }
+            }
+            // console.log(this.enrollDetail,"最后的arr")
+            // }
+            // console.log(this.enrollDetail, "之后的");
           } else {
             const num = this.tour[index].length.toString();
             this.$set(this.enrolNum, index, num);
@@ -965,18 +993,6 @@ export default {
           }
         }
 
-        // 报名信息减少enrollDetail拼接
-        let _arr = this.enrollDetail.split(",");
-        for (let j = 0; j < preLength - num; j++) {
-          for (let i = _arr.length - 1; i => 0; i--) {
-            // console.log(2)
-            if (_arr[i].indexOf(enrollName) != -1) {
-              _arr.splice(i, 1);
-              this.enrollDetail = _arr.toString();
-              break;
-            }
-          }
-        }
         // let tour = this.tour[index];
         // if (tour[tour.length - 1].cnName != "") {
         //   const num = this.tour[index].length.toString()
@@ -986,6 +1002,7 @@ export default {
         //   this.tour[index].splice(arrLength - preLength, preLength - arrLength);
         // }
       }
+      // this.compPrice();
       setTimeout(() => {
         this.isSaveBtnClick();
       }, 100);
@@ -1154,6 +1171,7 @@ export default {
     },
 
     compPrice(type, index) {
+      // console.log(type,index)
       //计算总价
       if (type == 2) {
         this.isChangeNumber = true; //数量有变动 则动态按钮不可点击
@@ -1173,6 +1191,26 @@ export default {
         // }
         // 原先结束
       }
+      // begin
+      // 根据报名信息求总价
+      // let _arr = this.enrollDetail.split(",");
+      // _arr = _arr.splice(_arr.length - 1, 1);
+      // for (let i = 0; i < _arr.length; ) {
+      //   let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1];
+      //   let Price, Num;
+      //   Price = Number(priceAndNum.substring(0, priceAndNum.indexOf("*")));
+      //   Num = Number(
+      //     priceAndNum.substring(
+      //       priceAndNum.indexOf("*") + 1,
+      //       priceAndNum.length
+      //     )
+      //   );
+      //   // console.log(Price,Num)
+      //   this.payable += Price * Num;
+      // }
+      // console.log("this.payable",this.payable);
+      // end
+
       // console.log(type,"type")
       this.payable = 0;
       for (let i = 0; i < this.enrolNum.length; i++) {
@@ -1347,7 +1385,7 @@ export default {
     },
 
     // 出行人信息表单中的删除
-    delTravel(type, index) {
+    delTravel(type, index, enrollName) {
       //删除单条表格数据
       if (this.tour[index][type].cnName != "") {
         this.$confirm("是否删除该条出行人信息?", "提示", {
@@ -1358,11 +1396,24 @@ export default {
           this.tour[index].splice(type, 1); //手动删除单条出行人信息
           this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
           this.preLength[index] = this.enrolNum[index];
+          this.applyEnrollDetail(enrollName)
         });
       } else {
         this.tour[index].splice(type, 1); //手动删除单条出行人信息
         this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
         this.preLength[index] = this.enrolNum[index];
+        this.applyEnrollDetail(enrollName)
+      }
+    },
+    // 删除出行人 同步报名信息的字段
+    applyEnrollDetail(enrollName) {
+      let _arr = this.enrollDetail.split(",");
+      for (let i = _arr.length - 1; i => 0; i--) {
+        if (_arr[i].indexOf(enrollName) != -1) {
+          _arr.splice(i, 1);
+          this.enrollDetail = _arr.toString();
+          break;
+        }
       }
     },
 
