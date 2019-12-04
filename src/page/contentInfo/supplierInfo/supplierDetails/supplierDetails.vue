@@ -5,6 +5,12 @@
   padding-bottom: 80px;
   &>main{
     width: 1080px;
+    .file-outer{
+      cursor: pointer;
+    }
+    .file-outer:hover{
+      color: #409EFF;
+    }
   }
   &>aside{
     padding-left: 20px;
@@ -168,7 +174,10 @@
               <el-col :span="12">
                 <el-form-item label="附件：" prop="files">
                   <div>
-                    <div v-for="(file, i) in submitForm.files" :key="i">
+                    <div class="file-outer" 
+                      v-for="(file, i) in submitForm.files" 
+                      :key="i"
+                      @click="openWindow(file.url)">
                       {{ file.name }}
                     </div>
                   </div>
@@ -238,8 +247,7 @@ export default {
 
   directives: {
     greyNull: {
-      update(el, binding, vnode){
-        console.log(el.innerText)
+      componentUpdated(el, binding, vnode){
         if(el.innerText=== '（ 未填写 ）' || el.innerText=== '[]') return el.className+= ' grey-null';
         el.className= "content"
       }
@@ -294,6 +302,10 @@ export default {
         //this.submitForm.files= this.filesAdaptor(res.files);
         this.submitForm.alias= this.aliasAdaptor(res.alias);
       })
+    },
+
+    openWindow(url){
+      window.open(url);
     },
 
     typesAdaptor(types){
