@@ -234,7 +234,7 @@
           @click="ordersave"
           :disabled="isSaveBtn"
           class="confirm fr"
-        >保存更改</el-button>
+        >保存11更改</el-button>
         <!--取消按钮-->
         <el-button class="fr" @click="cancle">取消</el-button>
       </div>
@@ -961,7 +961,7 @@ export default {
             const num = this.tour[index].length.toString();
             this.$set(this.enrolNum, index, num);
             this.$message.error("请手动删除表格中的出行人");
-            break
+            break;
           }
         }
 
@@ -1315,24 +1315,33 @@ export default {
             obj.priceType = 2;
           }
 
-          obj.enrollDetail = this.enrollDetail;
-          obj.guests = guest;
-          obj.payable = this.payable;
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
-              object: obj
-            })
-            .then(res => {
-              if (res.data.isSuccess == true) {
-                this.$message({
-                  message: "更改成功",
-                  type: "success"
-                });
-                this.$emit("orderPage");
-                this.$emit("childByValue", this.showContent);
-                this.cancle();
-              }
-            });
+          // 在加层判断 输入框中的数量与出行人信息的数量不符时 给提示报名人数与出行人信息不符
+          let sum = 0;
+          this.enrolNum.forEach(item => {
+            sum += item;
+          });
+          if (sum !== guest.length) {
+            this.$message.error("报名人数与出行人信息不符，请修改出行人信息");
+          } else {
+            obj.enrollDetail = this.enrollDetail;
+            obj.guests = guest;
+            obj.payable = this.payable;
+            this.$http
+              .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
+                object: obj
+              })
+              .then(res => {
+                if (res.data.isSuccess == true) {
+                  this.$message({
+                    message: "更改成功",
+                    type: "success"
+                  });
+                  this.$emit("orderPage");
+                  this.$emit("childByValue", this.showContent);
+                  this.cancle();
+                }
+              });
+          }
         }
       });
     },
