@@ -34,7 +34,7 @@
           保存
         </el-button>
         <el-button type="info" size="small"
-          >
+          @click="backListWithQuery">
           取消
         </el-button>
       </div>
@@ -72,7 +72,7 @@ export default {
     preHandler(){
       this.isSave= this.$route.path=== '/supplierEdit';
       let { conditions, pageInfo, id }= this.$route.query;
-      this.backQuery= { conditions, pageInfo };
+      if(conditions || pageInfo) this.backQuery= { conditions, pageInfo };
       this.$router.replace({ path: this.$route.path, query: { id } });
     },
 
@@ -84,6 +84,10 @@ export default {
         this.$refs.baseTab.init(baseProto);
         this.$refs.banksTab.init(banksProto);
       })
+    },
+
+    backListWithQuery(){
+      this.$router.replace({ path: '/supplierInfo', query: this.backQuery });
     },
 
     // 获取数据原型

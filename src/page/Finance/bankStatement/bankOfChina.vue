@@ -42,8 +42,11 @@
       </el-row>
     </el-form>
     <!-- 搜索表单 END -->
+    <div class="buttonsDv">
+      <el-button @click="addStatement" type="primary">添加中国银行流水单</el-button>
+    </div>
     <!-- 表格 -->
-    <el-table :data="internalTableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" :stripe="true" id="table-content">
+    <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" :stripe="true" id="table-content">
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
           <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details">查看订单</el-button>
@@ -95,21 +98,25 @@
       <el-table-column prop="price" label="收款人姓名" align="center">
       </el-table-column>
     </el-table>
-    <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
+    <div class="block">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
       </el-pagination>
     </div>
     <!-- 表格 END -->
+    <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
 
 <script type="text/javascript">
-// import moment from 'moment'
+import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
 
 export default {
+  components: {
+    orderDetail
+  },
   data() {
     return {
-      internalTableData: null, // 表格数据
+      tableData: [{}], // 表格数据
       ruleForm: {
         matchType: '', // 匹配状态
         code: '', // 交易流水号
@@ -121,22 +128,40 @@ export default {
       pageSize: 10,
       total: 0,
 
+      info: '',
+      dialogFormVisible: false,
+
       startDatePicker: this.beginDate(),
-      endDatePicker: this.processDate(),
+      endDatePicker: this.processDate()
     }
   },
   created () {
     this.getDataInside()
   },
   methods: {
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+      } else {
+        return ''
+      }
+    },
+    addStatement(){
+
+    },
     searchHandInside(){
 
     },
     emptyButtonInside(){
       this.$refs['ruleForm'].resetFields()
     },
-    orderDetail(){
-
+    orderDetail(row){
+      this.dialogFormVisible = true;
+      this.info = row.id;
+    },
+    close(){
+      this.dialogFormVisible = false;
+      this.info = '';
     },
     deleteFun(){
 
@@ -198,9 +223,21 @@ export default {
         text-align: center;
       }
     }
+    .buttonsDv{
+      width: 98%;
+      margin: 5px auto;
+    }
     #table-content{
       width: 98%;
       margin: 40px auto 20px;
+      th, td{
+        min-width: 60px;
+      }
+    }
+    .block{
+      width: 100%;
+      text-align: center;
+      margin: 30px auto;
     }
   }
 

@@ -42,74 +42,75 @@
       </el-row>
     </el-form>
     <!-- 搜索表单 END -->
+    <div class="buttonsDv">
+      <el-button @click="addStatement" type="primary">添加兴业银行流水单</el-button>
+      <el-button @click="addDetails" type="primary" plain>添加微信支付宝明细</el-button>
+    </div>
     <!-- 表格 -->
-    <el-table :data="internalTableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" :stripe="true" id="table-content">
+    <el-table :data="tableData" border :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass" :stripe="true" id="table-content">
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
           <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details">查看订单</el-button>
+          <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details">查看微信支付宝明细</el-button>
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="id" label="剩余金额" align="center">
       </el-table-column>
-      <el-table-column prop="checkType" label="交易流水号" align="center">
+      <el-table-column prop="price" label="手续费" align="center">
+      </el-table-column>
+      <el-table-column prop="checkType" label="银行流水号" align="center">
+      </el-table-column>
+      <el-table-column prop="price" label="摘要" align="center">
       </el-table-column>
       <el-table-column prop="distributor" label="交易日期" align="center">
       </el-table-column>
       <el-table-column prop="moneyExplain" label="交易时间" align="center">
       </el-table-column>
-      <el-table-column prop="price" label="交易货币" align="center">
+      <el-table-column prop="price" label="用途" align="center">
       </el-table-column>
-      <el-table-column prop="collectionTime" label="交易金额" align="center" :formatter='handleCollectionTime'>
+      <el-table-column prop="collectionTime" label="贷方金额" align="center">
       </el-table-column>
-      <el-table-column prop="createTime" label="起息日期" align="center" :formatter='handleCreateTime'>
+      <el-table-column prop="createTime" label="账号" align="center">
       </el-table-column>
-      <el-table-column prop="createUser" label="汇率" align="center">
+      <el-table-column prop="createUser" label="户名" align="center">
       </el-table-column>
-      <el-table-column prop="payarr.length" label="记录标识号" align="center">
+      <el-table-column prop="payarr.length" label="凭证代号" align="center">
       </el-table-column>
-      <el-table-column prop="checkType" label="摘要" align="center">
+      <el-table-column prop="checkType" label="币种" align="center">
       </el-table-column>
-      <el-table-column prop="distributor" label="用途" align="center">
+      <el-table-column prop="distributor" label="现/转" align="center">
       </el-table-column>
-      <el-table-column prop="moneyExplain" label="交易附言" align="center">
+      <el-table-column prop="moneyExplain" label="借方金额" align="center">
       </el-table-column>
-      <el-table-column prop="price" label="交易类型" align="center">
+      <el-table-column prop="price" label="对方账号" align="center">
       </el-table-column>
-      <el-table-column prop="collectionTime" label="业务类型" align="center">
+      <el-table-column prop="collectionTime" label="对方户名" align="center">
       </el-table-column>
-      <el-table-column prop="createTime" label="付款人开户行号" align="center">
+      <el-table-column prop="createTime" label="对方银行" align="center">
       </el-table-column>
-      <el-table-column prop="createUser" label="付款人开户行名" align="center">
-      </el-table-column>
-      <el-table-column prop="payarr.length" label="付款人账号" align="center">
-      </el-table-column>
-      <el-table-column prop="price" label="付款人姓名" align="center">
-      </el-table-column>
-      <el-table-column prop="createTime" label="收款人开户行号" align="center">
-      </el-table-column>
-      <el-table-column prop="createUser" label="收款人开户行名" align="center">
-      </el-table-column>
-      <el-table-column prop="payarr.length" label="收款人账号" align="center">
-      </el-table-column>
-      <el-table-column prop="price" label="收款人姓名" align="center">
+      <el-table-column prop="createUser" label="备注" align="center">
       </el-table-column>
     </el-table>
-    <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
+    <div class="block">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
       </el-pagination>
     </div>
     <!-- 表格 END -->
+    <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
 
 <script type="text/javascript">
-// import moment from 'moment'
+import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
 
 export default {
+  components: {
+    orderDetail
+  },
   data() {
     return {
-      internalTableData: null, // 表格数据
+      tableData: [{}], // 表格数据
       ruleForm: {
         matchType: '', // 匹配状态
         code: '', // 交易流水号
@@ -121,22 +122,52 @@ export default {
       pageSize: 10,
       total: 0,
 
+      info: '',
+      dialogFormVisible: false,
+
       startDatePicker: this.beginDate(),
-      endDatePicker: this.processDate(),
+      endDatePicker: this.processDate()
     }
   },
   created () {
-    this.getDataInside()
+    this.loadData()
   },
   methods: {
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+      } else {
+        return ''
+      }
+    },
+    addStatement(){
+
+    },
+    addDetails(){
+
+    },
     searchHandInside(){
 
     },
     emptyButtonInside(){
       this.$refs['ruleForm'].resetFields()
     },
-    orderDetail(){
-
+    orderDetail(row){
+      this.dialogFormVisible = true;
+      this.info = row.id;
+    },
+    close(){
+      this.dialogFormVisible = false;
+      this.info = '';
+    },
+    payDetail(row){
+      this.$router.push({
+        path: '/bankStatement/payDetails',
+        name: '银行流水单管理  /微信支付宝明细',
+        query: {
+          id: row.id
+        }
+      });
     },
     deleteFun(){
 
@@ -151,29 +182,29 @@ export default {
 
     },
     beginDate(){
-        const that = this;
-        return {
-          disabledDate(time){
-            if (that.ruleForm.dateEnd) {  //如果结束时间不为空，则小于结束时间
-              return new Date(that.ruleForm.dateEnd).getTime() < time.getTime()
-            } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
-            }
+      const that = this;
+      return {
+        disabledDate(time){
+          if (that.ruleForm.dateEnd) {  //如果结束时间不为空，则小于结束时间
+            return new Date(that.ruleForm.dateEnd).getTime() < time.getTime()
+          } else {
+            // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
           }
         }
-      },
-      processDate(){
-        const that = this;
-        return {
-          disabledDate(time) {
-            if (that.ruleForm.dateStart) {  //如果开始时间不为空，则结束时间大于开始时间
-              return new Date(that.ruleForm.dateStart).getTime() > time.getTime()
-            } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
-            }
+      }
+    },
+    processDate(){
+      const that = this;
+      return {
+        disabledDate(time) {
+          if (that.ruleForm.dateStart) {  //如果开始时间不为空，则结束时间大于开始时间
+            return new Date(that.ruleForm.dateStart).getTime() > time.getTime()
+          } else {
+            // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
           }
         }
-      },
+      }
+    },
   }
 }
 
@@ -198,9 +229,21 @@ export default {
         text-align: center;
       }
     }
+    .buttonsDv{
+      width: 98%;
+      margin: 5px auto;
+      .el-button{
+        margin-right: 10px;
+      }
+    }
     #table-content{
       width: 98%;
       margin: 40px auto 20px;
+    }
+    .block{
+      width: 100%;
+      text-align: center;
+      margin: 30px auto;
     }
   }
 

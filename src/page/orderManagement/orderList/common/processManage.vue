@@ -50,14 +50,14 @@
 
       <p class="yuwei">余位：{{teampreviewData.remaining}}</p>
 
-      <!-- switch 更改价格(直客价和同业价) beign-->
+      <!-- switch 更改价格(直客价和同业价) :disabled="orderget.orderStatus===4||orderget.orderStatus===6||orderget.orderStatus===9"  beign-->
       <p>当前使用{{priceChange}}价格</p>
       <el-switch
         v-model="isPricechange"
         active-color="#409eff"
         inactive-color="#dcdfe6"
         @change="priceChangeEvent(isPricechange)"
-        :disabled="orderget.orderStatus===4||orderget.orderStatus===6||orderget.orderStatus===9"
+        :disabled="true"
       ></el-switch>
       <!-- switch 更改价格(直客价和同业价) end-->
 
@@ -234,7 +234,7 @@
           @click="ordersave"
           :disabled="isSaveBtn"
           class="confirm fr"
-        >保存更改</el-button>
+        >保存11更改</el-button>
         <!--取消按钮-->
         <el-button class="fr" @click="cancle">取消</el-button>
       </div>
@@ -933,39 +933,48 @@ export default {
           });
         }
         // 报名信息增加enrollDetail拼接
-        // for (let i = 0; i < num-preLength; i++) {
-        let price;
-        this.isPricechange == true ? (price = price_01) : (price = price_02);
-        price = this.toDecimal2(price);
-        this.enrollDetail += `${enrollName}(${price} * 1),`;
-        // }
+        for (let i = 0; i < num - preLength; i++) {
+          let price;
+          this.isPricechange == true ? (price = price_01) : (price = price_02);
+          price = this.toDecimal2(price);
+          this.enrollDetail += `${enrollName}(${price} * 1),`;
+        }
       } else {
         // 循环判断表格中的出行人信息是否有没填写的如果有则自动删除 没有则提示手动删除
-        let isInfNull = this.tour[index].some((item, index, arr) => {
-          return item.cnName == "";
-        });
-        let isInfNullIndex;
-        if (isInfNull) {
-          for (let i = 0; i < this.tour[index].length; i++) {
-            if (this.tour[index][i].cnName == "") {
-              isInfNullIndex = i;
+
+        for (let i = 0; i < preLength - num; i++) {
+          let isInfNull = this.tour[index].some((item, index, arr) => {
+            return item.cnName == "";
+          });
+          let isInfNullIndex;
+          if (isInfNull) {
+            for (let i = 0; i < this.tour[index].length; i++) {
+              if (this.tour[index][i].cnName == "") {
+                isInfNullIndex = i;
+              }
             }
           }
-          // console.log(isInfNullIndex)
+          if (isInfNull) {
+            this.tour[index].splice(isInfNullIndex, 1);
+            // this.tour[index].splice((num-1)==-1?0:(num-1), preLength - num);
+          } else {
+            const num = this.tour[index].length.toString();
+            this.$set(this.enrolNum, index, num);
+            this.$message.error("请手动删除表格中的出行人");
+            break;
+          }
         }
-        if (isInfNull) {
-          this.tour[index].splice(isInfNullIndex, 1);
-        } else {
-          const num = this.tour[index].length.toString();
-          this.$set(this.enrolNum, index, num);
-          this.$message.error("请手动删除表格中的出行人");
-        }
+
         // 报名信息减少enrollDetail拼接
         let _arr = this.enrollDetail.split(",");
-        for (let i = _arr.length - 1; i => 0; i--) {
-          if (_arr[i].indexOf(enrollName) != -1) {
-            _arr.splice(i, 1);
-            return (this.enrollDetail = _arr.toString());
+        for (let j = 0; j < preLength - num; j++) {
+          for (let i = _arr.length - 1; i => 0; i--) {
+            // console.log(2)
+            if (_arr[i].indexOf(enrollName) != -1) {
+              _arr.splice(i, 1);
+              this.enrollDetail = _arr.toString();
+              break;
+            }
           }
         }
         // let tour = this.tour[index];
@@ -1306,24 +1315,33 @@ export default {
             obj.priceType = 2;
           }
 
-          obj.enrollDetail = this.enrollDetail;
-          obj.guests = guest;
-          obj.payable = this.payable;
-          this.$http
-            .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
-              object: obj
-            })
-            .then(res => {
-              if (res.data.isSuccess == true) {
-                this.$message({
-                  message: "更改成功",
-                  type: "success"
-                });
-                this.$emit("orderPage");
-                this.$emit("childByValue", this.showContent);
-                this.cancle();
-              }
-            });
+          // 在加层判断 输入框中的数量与出行人信息的数量不符时 给提示报名人数与出行人信息不符
+          let sum = 0;
+          this.enrolNum.forEach(item => {
+            sum += item;
+          });
+          if (sum !== guest.length) {
+            this.$message.error("报名人数与出行人信息不符，请修改出行人信息");
+          } else {
+            obj.enrollDetail = this.enrollDetail;
+            obj.guests = guest;
+            obj.payable = this.payable;
+            this.$http
+              .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
+                object: obj
+              })
+              .then(res => {
+                if (res.data.isSuccess == true) {
+                  this.$message({
+                    message: "更改成功",
+                    type: "success"
+                  });
+                  this.$emit("orderPage");
+                  this.$emit("childByValue", this.showContent);
+                  this.cancle();
+                }
+              });
+          }
         }
       });
     },

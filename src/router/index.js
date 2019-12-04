@@ -176,7 +176,7 @@ export default new Router({
     }, {
       path: '/supplierDetails',
       component: () => import('@/page/contentInfo/supplierInfo/supplierDetails/supplierDetails'),
-      name: '供应商信息详情',
+      name: '供应商详情',
       meta: {
         keepAlive: true,
         auth: true
@@ -655,6 +655,14 @@ export default new Router({
       path: '/bankStatement',
       component: () => import('@/page/Finance/bankStatement/index.vue'),
       name: '银行流水单管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/bankStatement/payDetails',
+      component: () => import('@/page/Finance/bankStatement/payDetails.vue'),
+      name: '银行流水单管理  /微信支付宝明细',
       meta: {
         keepAlive: true,
         auth: true
