@@ -197,7 +197,7 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    }, {
+    }, /*{
       path: '/proList',
       //component: proList,
       name: '权限列表',
@@ -205,7 +205,7 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    }, {
+    },*/ {
       path: '/blacklist',
       component: () => import('@/page/contentInfo/blacklist/blacklist'),
       name: '黑名单',

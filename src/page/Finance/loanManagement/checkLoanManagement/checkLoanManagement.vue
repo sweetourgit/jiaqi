@@ -285,6 +285,7 @@ export default {
         jQ_ID: result,
         jQ_Type: paramJqType, // 无收入1 预付款2
       }).then(obj => {
+        that.tableCourse = []
         that.tableCourse = obj.data.extend.instanceLogInfo;
       }).catch(obj => {})
     },
