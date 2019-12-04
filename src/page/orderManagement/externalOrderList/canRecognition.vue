@@ -107,6 +107,21 @@
           </el-select>
         </el-col>
         <el-col :span="9">
+          <span class="search-title">分销商备注:</span>
+          <el-input v-model="activeForm.distributorMarks" class="input"></el-input>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="7">
+          <span class="search-title">买入支付方式:</span>
+          <el-select v-model="activeForm.typeBuy" placeholder="请选择">
+            <el-option key="" label="全部" value=""></el-option>
+            <el-option key="1" label="余额支付" value="1"></el-option>
+            <el-option key="2" label="授信支付" value="2"></el-option>
+            <el-option key="5" label="成本" value="3"></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="9" :offset="7">
           <div class="button_select">
             <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
             <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
@@ -131,6 +146,8 @@
           <el-table-column prop="order_sn" label="订单ID" align="center">
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
+          </el-table-column>
+          <el-table-column prop="distributor_remark" label="分销商备注" align="center">
           </el-table-column>
           <el-table-column prop="product_name" label="产品名称" align="center">
           </el-table-column>
@@ -250,7 +267,9 @@
           ticketPerson: '',
           ticketPhone: '',
           distributors: '',
-          borrowStatus: ''
+          borrowStatus: '',
+          distributorMarks: '',
+          typeBuy: ''
         },// 筛选项
         reable: true,// 按钮是否可点击
 
@@ -464,6 +483,7 @@
       //搜索
       searchHand() {
         this.loading = true;
+        this.pageIndex = 1;
         this.loadData();
       },
       resetHand() {
@@ -484,7 +504,9 @@
           ticketPerson: '',
           ticketPhone: '',
           distributors: '',
-          borrowStatus: ''
+          borrowStatus: '',
+          distributorMarks: '',
+          typeBuy: ''
         };
         this.loadData();
       },
@@ -544,7 +566,9 @@
           "pay_type": this.activeForm.typePay,
           "borrow_status": this.activeForm.borrowStatus,
           "import_status": 3,
-          "org_id": ''
+          "org_id": '',
+          "buy_type": this.activeForm.typeBuy,
+          "distributor_remark": this.activeForm.distributorMarks
         }, ).then(function(response) {
           console.log(response);
           if (response.data.code == '200') {
