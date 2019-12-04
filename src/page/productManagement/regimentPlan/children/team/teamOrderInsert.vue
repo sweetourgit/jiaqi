@@ -190,9 +190,9 @@
                 <div v-if="item.sex=='1'">女</div>
               </td>
               <td class="tc">
-                <span class="fl blue cursor" style="margin:0 0 0 18px"@click="fillTour(indexPrice,index)">编辑</span>
+                <span class="fl blue cursor" style="margin:0 0 0 18px" @click="fillTour(indexPrice,index)">编辑</span>
                 <span class="fl" style="margin:0 8px 0 8px;">|</span>
-                <span class="fl blue cursor" @click="delTravel(index,indexPrice)">删除</span>
+                <span class="fl blue cursor" @click="delTravel(index,indexPrice,item.enrollName)">删除</span>
               </td>
             </tr>
           </table>
@@ -1437,7 +1437,7 @@ export default {
       }
       return s;
     },
-    delTravel(type, index){//删除单条表格数据
+    delTravel(type, index, enrollName){//删除单条表格数据
       this.$confirm("是否删除该条出行人信息?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
@@ -1446,9 +1446,21 @@ export default {
         this.tour[index].splice(type,1);//手动删除单条出行人信息
         this.enrolNum[index] = this.tour[index].length;//删除出行人信息后，表格长度和报名人数相等
         this.preLength[index] = this.enrolNum[index];
+        this.applyEnrollDetail(enrollName)
         //console.log(this.enrolNum[index])
       })
     },
+    // 删除出行人 同步报名信息的字段
+    applyEnrollDetail(enrollName) {
+      let _arr = this.enrollDetail.split(",");
+      for (let i = _arr.length - 1; i => 0; i--) {
+        if (_arr[i].indexOf(enrollName) != -1) {
+          _arr.splice(i, 1);
+          this.enrollDetail = _arr.toString();
+          break;
+        }
+      }
+    },
     fillTour(type, index) {
       this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
       if (this.tour[type][index].enName != "") {
