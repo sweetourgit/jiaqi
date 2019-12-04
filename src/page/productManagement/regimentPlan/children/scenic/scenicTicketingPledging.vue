@@ -87,12 +87,12 @@
                 </el-table-column>
                 <el-table-column prop="receipt_code" label="收款编码" align="center">
                   <template slot-scope="scope">
-                    <p v-for="item in scope.row.receipt_code" @click="turnTab2" style="cursor: pointer">{{item.rec_sn}}</p>
+                    <p v-for="item in scope.row.receipt_code" :key="item.index" @click="turnTab2" style="cursor: pointer">{{item.rec_sn}}</p>
                   </template>
                 </el-table-column>
                 <el-table-column prop="invoice" label="发票" align="center">
                   <template slot-scope="scope">
-                    <p v-for="item in scope.row.invoice" @click="turnTab3" style="cursor: pointer">{{item.rec_sn}}</p>
+                    <p v-for="item in scope.row.invoice" :key="item.index" @click="turnTab3" style="cursor: pointer">{{item.rec_sn}}</p>
                   </template>
                 </el-table-column>
                 <el-table-column prop="customer" label="客人信息" align="center">
@@ -147,7 +147,7 @@
                 </el-table-column>
                 <el-table-column prop="voucher" label="凭证" align="center">
                   <template slot-scope="scope">
-                    <p v-for="item in scope.row.file">
+                    <p v-for="item in scope.row.file" :key="item.index">
                       <a :href="item.url" target="_blank">{{item.name}}</a>
                     </p>
                   </template>
@@ -184,8 +184,8 @@
       <!--</el-dialog>-->
       <GetOrderCode :dialogFormVisible="dialogFormVisible" @close="close2" :info="detailInfo"></GetOrderCode>
       <GetOrderInvoice :dialogFormVisible="dialogFormVisible4" @close="close2" :info="detailInfo"></GetOrderInvoice>
-      <ReceiptCode :dialogFormVisible="dialogFormVisible2" @close="close2" :info="info"></ReceiptCode>
-      <Invoice :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></Invoice>
+      <ReceiptCode :dialogFormVisible2="dialogFormVisible2" @close="close2" :info="info"></ReceiptCode>
+      <Invoice :dialogFormVisible3="dialogFormVisible3" @close="close2" :info="info"></Invoice>
     </div>
   </div>
 </template>

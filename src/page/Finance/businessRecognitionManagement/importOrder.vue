@@ -238,7 +238,7 @@
               type: 'success',
               message: "导入订单明细成功~"
             });
-            that.closeImport();
+            that.closeAdd();
           } else {
             if(response.data.message){
               that.$message({
