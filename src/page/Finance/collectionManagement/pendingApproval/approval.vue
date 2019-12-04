@@ -259,11 +259,11 @@
         }, ).then(function(response) {
 //          console.log('审批操作',response);
           if (response.data.isSuccess) {
-            that.$message.success("审批提交成功~");
+            // that.$message.success("审批提交成功~");
             that.dialogVisibleApproval = false;
             that.approval_status = '';
             that.approvalMark = '';
-            that.closeAdd();
+            that.insert();
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
@@ -275,6 +275,29 @@
           console.log(error);
         });
 
+
+      },
+      insert(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/insert", {
+          "object": {
+            "collectionID": this.info.id
+          }
+        }, ).then(function(response) {
+          console.log(response);
+          if (response.data.isSuccess) {
+            that.$message.success("审批提交成功~");
+            that.closeAdd();
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.result.message);
+            }else{
+              that.$message.warning("insert失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       },
 
       // 加载数据
