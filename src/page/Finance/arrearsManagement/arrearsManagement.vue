@@ -35,7 +35,12 @@ export default {
       // 深度观察监听
       deep: true
     }
-  }
+  },
+  created() {
+    if (this.$route.path == "/arrearsManagement/supplierArrears") {
+      this.activeName = "2"
+    }
+  },
 };
 
 </script>
