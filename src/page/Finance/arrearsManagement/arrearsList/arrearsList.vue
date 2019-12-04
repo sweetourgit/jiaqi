@@ -3,10 +3,10 @@
     <div class="demo-input-suffix">
       <!--供应商-->
       <span class="search-title">供应商</span>
-      <el-input placeholder="请输入" v-model="supplier" class="group-no"></el-input>
+      <el-input placeholder="请输入" v-model="supplierName" class="group-no"></el-input>
       <!--团期计划-->
       <span class="search-title">团期计划</span>
-      <el-input placeholder="请输入" v-model="groupNo" class="group-no"></el-input>
+      <el-input placeholder="请输入" v-model="groupCode" class="group-no"></el-input>
       <!--操作-->
       <span class="search-title">操作</span>
       <el-input placeholder="请输入" v-model="op" class="group-no"></el-input>
@@ -17,10 +17,41 @@
       <br />
       <!--搜索-->
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
-      <el-button type="primary" plain @click="reset">重置</el-button></div></br>
-      <el-button plain type="primary" disabled>查看关联单据</el-button>
+      <el-button type="primary" plain @click="reset">重置</el-button>
+    </div> 
+      </br></br>
+      <el-button type="primary" :disabled="forbidden">查看关联单据</el-button>
+      <!--list-->
+      <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
+          <el-table-column prop="id" label="欠款单号" min-width="60" header-align="center"></el-table-column>
+          <el-table-column prop="groupCode" label="团期计划" min-width="140" header-align="center"></el-table-column>
+          <el-table-column prop="title" label="产品名称" min-width="180" header-align="center"></el-table-column>
+          <el-table-column label="发起时间" min-width="110" header-align="center">
+             <template slot-scope="scope">{{formatDate(new Date(scope.row.createTime))}}</template> 
+          </el-table-column>
+          <el-table-column prop="supplierName" label="供应商名称" min-width="140" header-align="center"></el-table-column>
+          <el-table-column prop="supplierType" label="类型" min-width="60" header-align="center"></el-table-column>
+          <el-table-column prop="orgName" label="申请组织" min-width="90" header-align="center"></el-table-column>
+          <el-table-column prop="name" label="申请人" min-width="50" header-align="center"></el-table-column>
+          <el-table-column prop="price" label="欠款金额" min-width="60" header-align="center"></el-table-column>
+          <el-table-column prop="id" label="关联单据号" min-width="70" header-align="center"></el-table-column>
+       </el-table>
+       <el-pagination v-if="pageshow" class="pagination"
+              @size-change="handleSizeChange"
+              background
+              @current-change="handleCurrentChange"
+              :current-page="1"
+              :page-sizes="[10, 30, 50, 100]"
+              :page-size="10"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total">
+       </el-pagination>
 
-    </div>
+
+
+
+
+    
   </div>
 </template>
 
@@ -28,25 +59,125 @@
 export default{
   data(){
     return {
-      supplier:"",
-      groupNo:"",
+      supplierName:"",
+      groupCode:"",
       op:"",
-      date: "", 
-
+      date:[],
+      pageshow:true,
+      pageSize: 10, 
+      pageIndex: 1,
+      total: 0,
+      arrearsList: [],
+      multipleSelection: [],
+      forbidden:true,
 
 
 
 
     }
   },
-  created(){
+  mounted(){
+    this.paymentpage();
   },
   methods:{
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
+      } else {
+        return ''
+      }
+    },
+    getCellClass(){
+      return 'textAlign:center'
+    },
+    changeFun(val) {  //保存选中项的数据
+      this.multipleSelection=val;
+      if(this.multipleSelection.length>0){
+         this.forbidden=false;
+      }else{
+         this.forbidden=true;
+      }
+    },
+    clickRow(row){    //选中行复选框勾选
+      this.$refs.multipleTable.clearSelection();
+      this.$refs.multipleTable.toggleRowSelection(row);        
+    },
+    rowClass({row, rowIndex}){  //选中行样式改变
+     for(var i=0;i<this.multipleSelection.length;i++){
+        if(this.multipleSelection[i].id==row.id){
+           return { "background-color": "#ecf5ff" }
+        }
+      }
+    },
+    handleSizeChange(val){
+      this.pageSize = val;
+      this.pageIndex = 1;
+      this.paymentpage(1,val);
+    },
+    handleCurrentChange(val){
+      this.paymentpage(val,this.pageSize);
+    },
     search(){
-
+      this.pageIndex = 1;
+      this.pageshow = false;
+      this.paymentpage();
+      this.$nextTick(() => {
+          this.pageshow = true;
+      })
     },
     reset(){
 
+    },
+    formatDate(date) {
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      m = m < 10 ? "0" + m : m;
+      var d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      var h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      var minute = date.getMinutes();
+      minute = minute < 10 ? "0" + minute : minute;
+      var second = date.getSeconds();
+      second = second < 10 ? "0" + second : second;
+      return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
+    },
+    paymentpage(pageIndex=this.pageIndex,pageSize=this.pageSize,supplierName=this.supplierName,groupCode=this.groupCode,startDate=this.date[0],endDate=this.date[1],op=this.op){
+        if(startDate){
+          let y=startDate.getFullYear();
+          let m=(startDate.getMonth()+1)>9?startDate.getMonth()+1:'0'+(startDate.getMonth()+1);
+          let d=startDate.getDate()>9?startDate.getDate():'0'+startDate.getDate();
+          startDate=''+ y + m + d
+        }else{
+          startDate=0
+        }
+        if(endDate){
+          let y=endDate.getFullYear();
+          let m=(endDate.getMonth()+1)>9?endDate.getMonth()+1:'0'+(endDate.getMonth()+1);
+          let d=endDate.getDate()>9?endDate.getDate():'0'+endDate.getDate();
+          endDate=''+ y + m + d
+        }else{
+          endDate=0
+        }
+        this.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentpage',{
+            "pageIndex": pageIndex,
+            "pageSize": pageSize,
+            "object":{            
+              "supplierName":supplierName,
+              "groupCode": groupCode,
+              "startDate": startDate,
+              "endDate": endDate,
+              //"op":op,
+             }
+          }).then(res => {
+            this.arrearsList=[];
+            this.total=res.data.total;
+            if(res.data.isSuccess == true){
+               this.arrearsList=res.data.objects;              
+            }
+          }).catch(err => {
+            console.log(err)
+          })
     }
   }
 };
@@ -74,5 +205,7 @@ export default{
   margin: 20px 0 15px 0;
   overflow: hidden;
 }
-
+/*list*/
+.table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 0;width:1400px;}
+.pagination{text-align:center;margin:30px 0 50px 0;}
 </style>

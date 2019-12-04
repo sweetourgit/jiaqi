@@ -58,13 +58,18 @@
                 "id": mainMenuId,
               }
             }).then(res => {
-              this.$set(this.menu[key],"items",res.data.objects);         
+              for(let i=0;i<this.menu.length;i++){
+                 if(i == key){
+                    this.$set(this.menu[i],"items",res.data.objects);
+                 }else{
+                    this.$set(this.menu[i],"items",[]);
+                 }
+              }
         })
     },
     handleOpen(key){
       this.getMenuList(key,this.menu[key].id);
       let aa = Number(key)
-      this.menuNumber=[];
       for(let i=0;i<this.menu.length;i++){
         this.menuNumber[i] = i
       }
