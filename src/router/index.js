@@ -645,6 +645,14 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/bankStatement/payDetails',
+      component: () => import('@/page/Finance/bankStatement/payDetails.vue'),
+      name: '银行流水单管理  /微信支付宝明细',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '*',
       redirect: '/userList'
     }
