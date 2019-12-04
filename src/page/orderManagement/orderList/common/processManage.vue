@@ -952,13 +952,11 @@ export default {
           this.enrollDetail += `${enrollName}(${price} * 1),`;
         }
       } else {
-        console.log("preLength", preLength, "nums", nums);
         // 循环判断表格中的出行人信息是否有没填写的如果有则自动删除 没有则提示手动删除
         for (let i = 0; i < preLength - nums; i++) {
           let isInfNull = this.tour[index].some((item, index, arr) => {
             return item.cnName == "";
           });
-          console.log("isInfNull",isInfNull)
           let isInfNullIndex;
           if (isInfNull) {
             for (let i = 0; i < this.tour[index].length; i++) {
@@ -992,7 +990,6 @@ export default {
             const num = this.tour[index].length.toString();
             this.preLength[index] = num
             this.$set(this.enrolNum, index, num);
-            console.log(this.enrolNum[index])
             this.$message.error("请手动删除表格中的出行人");
             break;
           }
