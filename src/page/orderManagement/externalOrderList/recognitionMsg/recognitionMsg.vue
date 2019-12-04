@@ -419,7 +419,7 @@
 
       .button_select {
         /*width: 1300px;*/
-        display: inline-block;
+        // display: inline-block;
         float: right;
         margin-right: 265px;
         overflow: hidden;

@@ -33,7 +33,9 @@ export default {
     }
   },
   created() {
-
+    if(this.$route.params.tabStatus){
+      this.activeName = this.$route.params.tabStatus
+    }
   },
   mounted() {
 
