@@ -64,6 +64,7 @@
     handleOpen(key){
       this.getMenuList(key,this.menu[key].id);
       let aa = Number(key)
+      this.menuNumber=[];
       for(let i=0;i<this.menu.length;i++){
         this.menuNumber[i] = i
       }

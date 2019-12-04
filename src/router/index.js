@@ -504,10 +504,25 @@ export default new Router({
       path: '/arrearsManagement',
       component: () => import('@/page/Finance/arrearsManagement/arrearsManagement'),
       name: '供应商欠款管理',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
+      children: [{
+          path: 'arrearsList',
+          name: '欠款列表',
+          component: () => import('@/page/Finance/arrearsManagement/arrearsList/arrearsList'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'supplierArrears',
+          name: '供应商欠款',
+          component: () => import('@/page/Finance/arrearsManagement/supplierArrears/supplierArrears'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+      ]
     },
     {
       path: '/predepositManagement',
