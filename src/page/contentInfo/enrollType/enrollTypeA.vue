@@ -16,7 +16,7 @@
       <div style="float:left; line-height:40px; margin:0 10px 0 70px;">报名类型名称：</div>
       <el-form :model="rformA" ref="rformA" label-width="100px" class="demo-ruleForm">
         <el-form-item prop="labelList">
-         <el-input style="width:180px;" maxlength=10 v-model="rformA.name" placeholder="10个字以内"></el-input>
+         <el-input style="width:180px;" maxlength=40 v-model="rformA.name" placeholder="40个字以内"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
