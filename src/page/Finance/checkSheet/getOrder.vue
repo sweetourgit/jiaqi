@@ -104,7 +104,7 @@
             response.data.data.order_list.forEach(function (item, index, arr) {
               total += parseFloat(item.approval_money);
             });
-            that.totalMoney = total;
+            that.totalMoney = total.toFixed(2);
           } else {
             that.$message.warning("加载数据失败~");
           }

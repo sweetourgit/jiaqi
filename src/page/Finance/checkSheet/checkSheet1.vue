@@ -418,6 +418,7 @@
   }
   .start-time{
     width: 32.5%;
+    margin: 0;
   }
   .buttonSearch{
     float: right;
