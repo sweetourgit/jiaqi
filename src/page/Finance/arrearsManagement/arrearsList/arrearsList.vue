@@ -20,7 +20,7 @@
       <el-button type="primary" plain @click="reset">重置</el-button>
     </div> 
       </br></br>
-      <el-button type="primary" :disabled="forbidden">查看关联单据</el-button>
+      <el-button type="primary" :disabled="forbidden" @click="operation">查看关联单据</el-button>
       <!--list-->
       <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
           <el-table-column prop="id" label="欠款单号" min-width="60" header-align="center"></el-table-column>
@@ -46,7 +46,7 @@
               layout="total, sizes, prev, pager, next, jumper"
               :total="total">
        </el-pagination>
-
+       <arrears-detail :payId="payId" :variable="variable"></arrears-detail>
 
 
 
@@ -56,7 +56,11 @@
 </template>
 
 <script>
+import arrearsDetail from './comp/arrearsDetail';
 export default{
+  components:{
+    "arrears-detail":arrearsDetail
+  },
   data(){
     return {
       supplierName:"",
@@ -70,7 +74,8 @@ export default{
       arrearsList: [],
       multipleSelection: [],
       forbidden:true,
-
+      payId:0,
+      variable:0,
 
 
 
@@ -178,6 +183,10 @@ export default{
           }).catch(err => {
             console.log(err)
           })
+    },
+    operation(){
+        this.payId = this.multipleSelection[0].id;
+        this.variable++;       
     }
   }
 };
