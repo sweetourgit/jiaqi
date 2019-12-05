@@ -28,8 +28,7 @@ export const getSupplierList= function(object){
     .then(res => {
       let { isSuccess, objects, result, total }= res.data;
       if(!isSuccess) {
-        reject();
-        throw ('供应商查询失败'+ (result.message || '') );
+        return reject();
       }
       resolve({ objects, total });
     })
@@ -63,6 +62,24 @@ export const checkSupplierCode= function(supplierCode){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/universal/supplier/api/isexistsuppliercode`, {
       supplierCode
+    })
+    .then(res => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) return reject();
+      resolve();
+    })
+    .catch(err => {
+      console.error(err);
+      err && $message.error(err.toString());
+    })
+  })
+}
+
+// 供应商名称是否重复
+export const checkSupplierName= function(name){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + `/universal/supplier/api/isexistsuppliername`, {
+      name
     })
     .then(res => {
       let { isSuccess }= res.data;
