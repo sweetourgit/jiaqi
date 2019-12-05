@@ -216,7 +216,7 @@
 <script>
 // this.GLOBAL.serverSrc + '/upload/obs/api/file' 上传路径
 import labelsInput from '../../comps/labelsInput'
-import { getDicOptions, checkSupplierCode, getSupplierList } from '../../../api'
+import { getDicOptions, checkSupplierCode, checkSupplierName } from '../../../api'
 
 export default {
   components: { labelsInput },
@@ -492,16 +492,9 @@ export default {
       // 先利用分页查找接口来验证供应商名字重复
       nameValidator(rule, value, cb){
         if(this.isSave) return cb();
-        getSupplierList({
-          id: 0,
-          isGetAll: true,
-          object: {name: value, isMonthly: 0, UserState: 0, supplierType: -1, isDeleted: 0},
-          pageIndex: 1,
-          pageSize: 10,
-          total: 0
-        })
-        .then(cb.bind(null, new Error('供应商名称重复')))
-        .catch(cb)
+        checkSupplierName(value)
+        .then(cb)
+        .catch(cb.bind(null, new Error('供应商名称重复')));
       }
     }
   )
