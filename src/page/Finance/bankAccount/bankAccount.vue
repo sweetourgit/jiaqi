@@ -70,6 +70,7 @@
       title="收款账号"
       :visible.sync="dialogSupplierVisible"
       :show-close="false"
+      @close="editDialog"
     >
       <el-form ref="Form" :model="handleForm" :rules="rules" label-width="100px">
         <el-form-item label="科目值:" prop="subject">
@@ -79,7 +80,6 @@
           <el-select
             class="item_input"
             v-model="handleForm.orgName"
-            clearable
             placeholder="请选择"
             @change="currentSel"
           >
@@ -92,30 +92,30 @@
           </el-select>
         </el-form-item>
         <el-form-item label="账户名称" prop="title">
-          <el-input class="item_input" v-model="handleForm.title" clearable></el-input>
+          <el-input class="item_input" v-model="handleForm.title"></el-input>
         </el-form-item>
         <el-form-item label="卡号" prop="cardNum">
-          <el-input class="item_input" v-model="handleForm.cardNum" clearable></el-input>
+          <el-input class="item_input" v-model="handleForm.cardNum"></el-input>
         </el-form-item>
         <el-form-item label="开户行" prop="openingBank">
-          <el-input class="item_input" v-model="handleForm.openingBank" clearable></el-input>
+          <el-input class="item_input" v-model="handleForm.openingBank"></el-input>
         </el-form-item>
         <el-form-item label="开户人" prop="openingName">
-          <el-input class="item_input" v-model="handleForm.openingName" clearable></el-input>
+          <el-input class="item_input" v-model="handleForm.openingName"></el-input>
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select class="item_input" v-model="handleForm.cardType" clearable placeholder="请选择">
+        <el-form-item label="类型" prop="cardType">
+          <el-select class="item_input" v-model="handleForm.cardType" placeholder="请选择">
             <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="手续费比率" prop="ratio">
-          <el-input class="item_input" v-model="handleForm.ratio" clearable></el-input>%
+          <el-input class="item_input" v-model="handleForm.ratio"></el-input>%
+        </el-form-item>
+        <el-form-item class="dialog-footer">
+          <el-button @click="dialogSupplierVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleSave('Form')">保 存</el-button>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button style="width: 100px" @click="dialogSupplierVisible = false">取 消</el-button>
-        <el-button style="width: 100px" type="primary" @click="handleSave">保 存</el-button>
-      </div>
     </el-dialog>
     <!-- 编辑弹窗END -->
   </div>
@@ -150,35 +150,56 @@ export default {
         ratio: "" //手续费比率
       },
       rules: {
-        orgName:[
-          { required: true, message: "不能为空" },
-        ],
+        orgName: [{ required: true, message: "不能为空", trigger: "blur"}],
         title: [
-          { required: true, message: "不能为空" },
+          { required: true, message: "不能为空", trigger: "blur"},
           {
             min: 0,
             max: 40,
             message: "长度在 0 到 40 个字符",
-            message: "字数超过限制"
+            message: "字数超过限制",
+            trigger: "blur"
           }
         ],
         cardNum: [
           // { required: true, message: '不能为空' },
-          { min: 0, max: 40, message: '长度在 0 到 40 个字符', message: '字数超过限制' }
+          {
+            min: 0,
+            max: 40,
+            message: "长度在 0 到 40 个字符",
+            message: "字数超过限制",
+            trigger: "blur"
+          }
         ],
         openingBank: [
           // { required: true, message: '不能为空' },
-          { min: 0, max: 80, message: '长度在 0 到 80 个字符', message: '字数超过限制' }
+          {
+            min: 0,
+            max: 80,
+            message: "长度在 0 到 80 个字符",
+            message: "字数超过限制",
+            trigger: "blur"
+          }
         ],
         openingName: [
           // { required: true, message: '不能为空' },
-          { min: 0, max: 40, message: '长度在 0 到 40 个字符', message: '字数超过限制' }
+          {
+            min: 0,
+            max: 40,
+            message: "长度在 0 到 40 个字符",
+            message: "字数超过限制",
+            trigger: "blur"
+          }
         ],
-        type: [
-          { required: true, message: '至少选择一个',trigger: 'blur'  }
+        cardType: [
+          { required: true, message: "至少选择一个", trigger: "blur" }
         ],
         ratio: [
-          { pattern: /^\d+(\.\d{0,2})?$/, message: '只可输入整数或者小数点后两位',trigger: 'change' }
+          {
+            pattern: /^\d+(\.\d{0,2})?$/,
+            message: "只可输入整数或者小数点后两位",
+            trigger: "change"
+          }
         ]
       },
       options: [
@@ -204,6 +225,7 @@ export default {
   },
   created() {
     this.getData();
+    this.getorgID();
   },
   methods: {
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -258,11 +280,16 @@ export default {
             this.handleForm.openingName = data.openingName;
             this.handleForm.cardType = data.cardType;
             this.handleForm.ratio = data.ratio;
-            this.handleForm.orgNameId = data.orgID
-            this.getorgID();
+            this.handleForm.orgNameId = data.orgID;
+            this.getOrgName()
           }
         });
       this.dialogSupplierVisible = true;
+    },
+    //根据orgID获取公司的名字
+    getOrgName() {
+      let index = this.orgNameOptions.findIndex(item => item.id == this.handleForm.orgNameId)
+      this.handleForm.orgName = this.orgNameOptions[index].orgName
     },
     rowClass({ row, rowIndex }) {
       //选中行样式改变
@@ -279,35 +306,49 @@ export default {
       //保存选中项的数据
       this.multipleSelection = val;
     },
+    // 编辑弹窗关闭
+    editDialog () {
+      this.multipleSelection = []
+    },
     // 保存
-    handleSave() {
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/save", {
-          object: {
-            id: this.multipleSelection[0].id,
-            cardType: this.handleForm.cardType,
-            subject: this.handleForm.subject,
-            title: this.handleForm.title,
-            cardNum: this.handleForm.cardNum,
-            openingBank: this.handleForm.openingBank,
-            openingName: this.handleForm.openingName,
-            ratio: this.handleForm.ratio,
-            orgID:this.handleForm.orgNameId,
-            mark: ""
-          }
-        })
-        .then(res => {
-          if (res.data.isSuccess == true) {
-            this.getData();
-            this.dialogSupplierVisible = false;
-            //this.$refs[formName].resetFields();
-          } else {
-            this.$message.success(res.data.result.message);
-          }
-        })
-        .catch(obj=> {
-          console.log(obj);
-        });
+    handleSave(Form) {
+      this.$refs[Form].validate(valid => {
+        if (valid) {
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc + "/finance/collectionaccount/api/save",
+              {
+                object: {
+                  id: this.multipleSelection[0].id,
+                  cardType: this.handleForm.cardType,
+                  subject: this.handleForm.subject,
+                  title: this.handleForm.title,
+                  cardNum: this.handleForm.cardNum,
+                  openingBank: this.handleForm.openingBank,
+                  openingName: this.handleForm.openingName,
+                  ratio: this.handleForm.ratio,
+                  orgID: this.handleForm.orgNameId,
+                  mark: ""
+                }
+              }
+            )
+            .then(res => {
+              if (res.data.isSuccess == true) {
+                this.getData();
+                this.dialogSupplierVisible = false;
+                //this.$refs[formName].resetFields();
+              } else {
+                this.$message.success(res.data.result.message);
+              }
+            })
+            .catch(obj => {
+              console.log(obj);
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     // 请求公司的组织名字
     getorgID() {
@@ -385,5 +426,4 @@ export default {
   padding: 50px;
   text-align: right;
 }
-
 </style>
