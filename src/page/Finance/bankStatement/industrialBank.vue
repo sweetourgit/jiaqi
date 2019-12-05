@@ -110,7 +110,7 @@ export default {
   },
   data() {
     return {
-      tableData: [{}], // 表格数据
+      tableData: [], // 表格数据
       ruleForm: {
         matchType: '', // 匹配状态
         code: '', // 交易流水号

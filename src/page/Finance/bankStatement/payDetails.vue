@@ -80,7 +80,7 @@ export default {
   },
   data() {
     return {
-      tableData: [{}], // 表格数据
+      tableData: [], // 表格数据
 
       pageCurrent: 1,
       pageSize: 10,
