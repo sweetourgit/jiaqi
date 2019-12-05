@@ -80,6 +80,14 @@ export default {
         return !this.$checkLooseEqual(this.tableData, this.checkProto);
       },
 
+      validate(){
+        if(this.tableData.length=== 0){
+          this.$message.error('至少添加一条账户信息');
+          return false;
+        }
+        return true;
+      },
+
       getData(){
         return this.tableData;
       }

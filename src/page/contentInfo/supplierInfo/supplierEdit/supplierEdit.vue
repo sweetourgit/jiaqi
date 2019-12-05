@@ -118,13 +118,18 @@ export default {
 
     // 返回的是Promise
     validate(){
-      return this.$refs.baseTab.validate();
+      return new Promise((resolve, reject) => {
+        let bol= this.$refs.banksTab.validate();
+        if(!bol) return reject();
+        this.$refs.baseTab.validate()
+        .then(resolve)
+        .catch(reject);
+      })
     },
 
     getData(){
       let baseData= this.$refs.baseTab.getData();
       let banksData= this.$refs.banksTab.getData();
-      console.log(banksData)
       return { banks: banksData, ...baseData };
     },
 
@@ -139,7 +144,6 @@ export default {
       this.prePost()
       .then(() => {
         let data= this.getData();
-        console.log(data)
         this.isSave? 
           this.putSupplierAction(data)
             : postSupplier(data).then(this.backListWithQuery);

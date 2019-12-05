@@ -92,7 +92,7 @@
     <el-row :gutter="100" class="common-row">
       <el-col :span="12">
         <el-form-item label="类别：" prop="types">
-          <el-select size="small" placeholder="类别" style="width: 100%;" multiple
+          <el-select size="small" placeholder="类别" style="width: 100%;"
             v-model="submitForm.types">
             <el-option
               v-for="item in SupplierTypeOptions"
@@ -374,7 +374,7 @@ export default {
       getData(){
         let data= this.$deepCopy(this.submitForm);
         // 适配types在数据库中的存储格式
-        this.typesAdaptor(data.types);
+        this.typesAdaptor(data);
         data.createTime= Date.now();
         return data;
       },
@@ -386,7 +386,7 @@ export default {
       
       uploadBeforeRemoveHandler(){
         return new Promise((resolve, reject) => {
-          this.$confirm(`确定删除这条账户信息吗?`, '提示', {
+          this.$confirm(`确定删除附件吗?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -416,7 +416,15 @@ export default {
           this.submitForm[attr]= payload[attr];
         })
         // 类型需要特殊处理
-        this.submitForm.types= this.submitForm.types.map(type => type.supplierType);
+        // 类型多选
+        // this.submitForm.types= this.submitForm.types.map(type => type.supplierType);
+      
+        // 类型单选
+        this.submitForm.types= 
+          this.submitForm.types[0]? 
+            this.submitForm.types[0].supplierType: null;
+        this.$refs.submitForm.clearValidate();
+        // 类型单选结束
       },
 
       makeOptions(){
@@ -433,24 +441,33 @@ export default {
               }
             })
           );
-          console.log(this.SupplierTypeOptions)
           this.IsMonthlyOptions.push(...res[1]);
           this.ProductAreaOptions.push(...res[2]);
         })
       },
       
       // 后台目前是保存一次，那么所有类别重新建立一次联系（删除所有旧的，再插入新的）
-      typesAdaptor(types){
+      // 多选的typesAdaptor
+      // typesAdaptor(types){
+      //   let assignObj= this.isSave? { supplierID: this.submitForm.id }: {};
+      //   let oldTypes= this.proto.types;
+      //   types.forEach((type, index) => {
+      //     if(this.$isObject(type)) return;
+      //     let hit= oldTypes.find(el => el.supplierType=== type)
+      //     // 看看是否已经保存过
+      //     if(!hit) hit= this.SupplierTypeOptions.find(el => el.supplierType=== type);
+      //     if(!hit) console.error('data error');
+      //     types[index]= Object.assign({}, hit, assignObj);
+      //   })
+      // },
+
+      // 单选的typesAdaptor
+      typesAdaptor(data){
+        let { types }= data;
         let assignObj= this.isSave? { supplierID: this.submitForm.id }: {};
-        let oldTypes= this.proto.types;
-        types.forEach((type, index) => {
-          if(this.$isObject(type)) return;
-          let hit= oldTypes.find(el => el.supplierType=== type)
-          // 看看是否已经保存过
-          if(!hit) hit= this.SupplierTypeOptions.find(el => el.supplierType=== type);
-          if(!hit) console.error('data error');
-          types[index]= Object.assign({}, hit, assignObj);
-        })
+        if(this.$isObject(types)) return;
+        let hit= this.SupplierTypeOptions.find(el => el.supplierType=== types);
+        data.types= [Object.assign({}, hit, assignObj)]
       },
 
       expireTimeAdaptor(expireTime){
