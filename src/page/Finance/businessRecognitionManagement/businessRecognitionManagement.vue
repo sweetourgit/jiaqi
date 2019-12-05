@@ -53,6 +53,11 @@
         </el-row>
       </div>
       <div class="table_style">
+        <div class="associated" v-if="showTotal">
+          <div class="associatedIcon"><i class="el-icon-warning"></i></div>
+          <div class="associatedItems">已关联<span style="font-weight: bold;">{{ tableManyRow }}</span>项</div>
+          <div class="associatedMoney">总计：{{ getCollectionPriceTotal }}元</div>
+        </div>
         <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
           <el-table-column prop="rece_code" label="收款单号" align="center"></el-table-column>
           <el-table-column prop="status" label="状态" align="center">
@@ -123,6 +128,10 @@
     data() {
       return {
         disabled: false,
+        // 顶部统计 是否显示及显示字段
+        showTotal: false,
+        tableManyRow: 0,
+        getCollectionPriceTotal: 0,
 
         orderNo: '',
         explain: '',
@@ -185,6 +194,7 @@
       },
 
       searchFun(){
+        this.showTotal = true;
         this.currentPage = 1;
         this.loadData();
       },
@@ -197,6 +207,7 @@
         this.money = '';
         this.rec_mode = '';
         this.currentPage = 1;
+        this.showTotal = false;
         this.loadData();
       },
       handleSizeChange(val) {
@@ -227,6 +238,8 @@
             console.log('业务收款列表',response);
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
+            that.tableManyRow = response.data.data.total - 0;
+            that.getCollectionPriceTotal = response.data.data.total_leave_match_money;
             that.tableData.forEach(function (item, index, arr) {
               item.receivables_at = formatDate(new Date(item.receivables_at*1000));
               item.receivables_at = item.receivables_at.split(" ")[0];
@@ -346,4 +359,7 @@
     margin-top: 70px;
     margin-bottom: 30px;
   }
+  #trade .associated{ display:block;width:100%;height: 40px;line-height: 40px; background: #e3f2fc; border: 1px solid #cfeefc; border-radius: 5px;overflow: hidden;margin-bottom: 8px; }
+  #trade .associatedIcon{font-size:14pt; color: #0b84e6; margin: 0 0 0 15px; float:left;}
+  #trade .associatedItems{float:left; margin: 0 0 0 10px;}
 </style>
