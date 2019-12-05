@@ -46,7 +46,7 @@
               layout="total, sizes, prev, pager, next, jumper"
               :total="total">
        </el-pagination>
-       <arrears-detail :payId="payId" :variable="variable"></arrears-detail>
+       <arrears-detail :paymentID="paymentID" :variable="variable"></arrears-detail>
 
 
 
@@ -74,7 +74,7 @@ export default{
       arrearsList: [],
       multipleSelection: [],
       forbidden:true,
-      payId:0,
+      paymentID:0,
       variable:0,
 
 
@@ -185,7 +185,7 @@ export default{
           })
     },
     operation(){
-        this.payId = this.multipleSelection[0].id;
+        this.paymentID = this.multipleSelection[0].id;
         this.variable++;       
     }
   }
