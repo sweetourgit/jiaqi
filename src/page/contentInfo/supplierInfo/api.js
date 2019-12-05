@@ -27,7 +27,10 @@ export const getSupplierList= function(object){
     })
     .then(res => {
       let { isSuccess, objects, result, total }= res.data;
-      if(!isSuccess) throw ('供应商查询失败'+ (result.message || '') );
+      if(!isSuccess) {
+        reject();
+        throw ('供应商查询失败'+ (result.message || '') );
+      }
       resolve({ objects, total });
     })
     .catch(err => {

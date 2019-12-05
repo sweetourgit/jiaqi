@@ -54,7 +54,7 @@
       <div style="display: flex; justify-content: center; padding-top: 20px;">
         <el-pagination background
           :current-page.sync="pageInfo.pageIndex"
-          :page-sizes="[2, 4, 8, 10]"
+          :page-sizes="[5, 10, 50, 100]"
           :page-size="pageInfo.pageSize"
           :total="pageInfo.total"
           @current-change="pageActionHandler"
@@ -172,6 +172,9 @@ export default {
           this.pageInfo.total= total;
           this.tableData.splice(0);
           this.tableData.push(...objects);
+        })
+        .catch(err => {
+          this.tableData.splice(0);
         })
       },
 

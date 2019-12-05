@@ -4,14 +4,10 @@ export const getSupplierDTO= function(){
     id: 0,
     createTime: null,	// integer($int64)
     // code
-    isDeleted: 0,
-    userState: 1, // 角色的数据状态 0等待审核 1正常 2停用
     name: null,
     types: [],
     productDirection: null,
     isMonthly: null,
-    isAgree: null,
-    companyArea: null,
     productArea: null,
     leader: null,
     phone: null,
@@ -25,9 +21,21 @@ export const getSupplierDTO= function(){
     banks: [],
     files: [],
     createUser: null,
-    orgs: [],
     supplierCode: null,
     alias: [],
-    manageType: null
+    
+    // 暂设常量
+    orgs: [
+      {
+        id: 0,
+        orgName: "嘉麒集团"
+      }
+    ], 
+    companyArea: 1,
+    isDeleted: 0,
+    isAgree: 2,
+    userState: 1, // 角色的数据状态 0等待审核 1正常 2停用
+    manageType: 1
   }
 }
+

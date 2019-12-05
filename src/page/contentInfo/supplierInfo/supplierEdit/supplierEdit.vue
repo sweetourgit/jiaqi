@@ -139,7 +139,10 @@ export default {
       this.prePost()
       .then(() => {
         let data= this.getData();
-        this.isSave? this.putSupplierAction(data): postSupplier(data);
+        console.log(data)
+        this.isSave? 
+          this.putSupplierAction(data)
+            : postSupplier(data).then(this.backListWithQuery);
       })
       .catch(err => {
         console.log(err)
