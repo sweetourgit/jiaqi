@@ -1,20 +1,34 @@
 <template>
   <div>
-    <el-tree
-      :data="data"
-      show-checkbox
-      default-expand-all
-      node-key="id"
-      ref="tree"
-      highlight-current
-      :props="defaultProps"
-    ></el-tree>
+    <el-dialog
+      title="选择人员"
+      :visible.sync="isChooseAccount"
+      :show-close="false"
+      class="addAccount"
+      :close-on-click-modal="false"
+      width="500px"
+    >
+      <el-tree
+        :data="data"
+        show-checkbox
+        default-expand-all
+        node-key="id"
+        ref="tree"
+        highlight-current
+        :props="defaultProps"
+      ></el-tree>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
   name: "chooseAccount",
+  props: {
+    isChooseAccount: {
+      type: Boolean
+    }
+  },
   data() {
     return {
       data: [],

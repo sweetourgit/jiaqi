@@ -764,16 +764,16 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog
+    <!-- <el-dialog
       title="选择人员"
       :visible.sync="isChooseAccount"
       :show-close="false"
       class="addAccount"
       :close-on-click-modal="false"
       width="500px"
-    >
-      <childAccount></childAccount>
-    </el-dialog>
+    > -->
+      <childAccount :isChooseAccount="isChooseAccount"></childAccount>
+    <!-- </el-dialog> -->
     <!--end-->
   </div>
 </template>
