@@ -38,6 +38,7 @@
           <span class="left_span">认款方式：</span>
           <el-select v-model="rec_type" placeholder="请选择" @change="typeChange">
             <el-option key="1" label="分销商预存款" value="1"></el-option>
+            <el-option key="2" label="票付通余额支付" value="2"></el-option>
             <el-option key="3" label="订单收款" value="3"></el-option>
           </el-select>
         </div>

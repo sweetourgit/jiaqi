@@ -26,7 +26,8 @@
               <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
               <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
               <el-radio label="去哪儿">去哪儿</el-radio>
-              <el-radio label="票付通余额">票付通余额</el-radio>
+              <!-- 暂时没有用，注释掉 -->
+              <!-- <el-radio label="票付通余额">票付通余额</el-radio> -->
               <el-radio label="无">无</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -35,7 +36,8 @@
               <el-radio label="美团（团购直连）">美团（团购直连）</el-radio>
               <el-radio label="马蜂窝自由行">马蜂窝自由行</el-radio>
               <el-radio label="去哪儿">去哪儿</el-radio>
-              <el-radio label="票付通余额">票付通余额</el-radio>
+              <!-- 暂时没有用，注释掉 -->
+              <!-- <el-radio label="票付通余额">票付通余额</el-radio> -->
               <el-radio label="无">无</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -2110,9 +2112,9 @@
   #tradeAdd .el-divider__text, #tradeAdd .el-link{
     font-size: 16px;
   }
-  #tradeAdd .el-form-item{
-    /*margin: 0;*/
-  }
+  // #tradeAdd .el-form-item{
+  //   /*margin: 0;*/
+  // }
   #tradeAdd .stepTitle{
     width: 94%;
     line-height: 45px;

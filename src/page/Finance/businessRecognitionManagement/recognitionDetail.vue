@@ -44,6 +44,15 @@
           <p class="inputLabel"><span>分销商：</span>{{baseInfo.distributor_code}}</p>
         </div>
       </div>
+      <div v-if="baseInfo.rec_mode == '票付通余额支付'">
+        <!--<p class="stepTitle">认款信息</p>-->
+        <el-divider content-position="left">认款信息</el-divider>
+        <div class="stepDv">
+          <p class="inputLabel"><span>认款方式：</span>{{baseInfo.rec_mode}}</p>
+          <p class="inputLabel"><span>认款人：</span>{{baseInfo.rec_uid}}</p>
+          <p class="inputLabel"><span>认款时间：</span>{{baseInfo.rec_created_at}}</p>
+        </div>
+      </div>
       <div v-if="baseInfo.rec_mode == '订单收款'">
         <!--<p class="stepTitle">认款信息</p>-->
         <el-divider content-position="left">认款信息</el-divider>
@@ -66,7 +75,7 @@
         </div>
       </div>
 
-      <div v-if="baseInfo.status_rece == 12 && baseInfo.rec_mode == '分销商预存款'">
+      <div v-if="baseInfo.status_rece == 12 && (baseInfo.rec_mode == '分销商预存款' || baseInfo.rec_mode == '票付通余额支付')">
         <!--<p class="stepTitle">认款订单</p>-->
         <el-divider content-position="left">认款订单</el-divider>
         <div class="stepDv" style="margin-bottom: 50px;">
