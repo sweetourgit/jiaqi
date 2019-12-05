@@ -157,8 +157,7 @@
         <el-form-item label="到期日期：" prop="expireTime">
           <el-date-picker type="datetime" placeholder="选择日期时间" style="width: 100%;" size="small"
             v-model="submitForm.expireTime"
-            :picker-options="pickerOptions"
-            @change="expireTimeAdaptor">
+            :picker-options="pickerOptions">
           </el-date-picker>
         </el-form-item>
       </el-col>
@@ -188,7 +187,7 @@
         <el-form-item label="附件：" prop="files">
           <el-upload name="files" ref="upload" multiple
             :action="GLOBAL.serverSrc+ '/upload/obs/api/file'"
-            :file-list="submitForm.files"
+            :file-list="filesList"
             :on-error="uploadErrorHandler"
             :on-success="uploadSuccessHandler"
             :before-remove="uploadBeforeRemoveHandler"
@@ -333,6 +332,7 @@ export default {
         ProductAreaOptions: []
       },
       {
+        filesList: [],
         pickerOptions: {
           disabledDate: (date) =>  date<= Date.now(),
         },
@@ -375,6 +375,7 @@ export default {
         let data= this.$deepCopy(this.submitForm);
         // 适配types在数据库中的存储格式
         this.typesAdaptor(data);
+        this.typesAdaptor(data);
         data.createTime= Date.now();
         return data;
       },
@@ -382,9 +383,10 @@ export default {
       uploadErrorHandler(){},
       uploadSuccessHandler(response, file, fileList){
         this.submitForm.files.push(this.fileAdaptor(file));
+        this.filesList.push(this.fileAdaptor(file));
       },
       
-      uploadBeforeRemoveHandler(){
+      uploadBeforeRemoveHandler(file, fileList){
         return new Promise((resolve, reject) => {
           this.$confirm(`确定删除附件吗?`, '提示', {
             confirmButtonText: '确定',
@@ -396,7 +398,11 @@ export default {
         })
       },
 
-      uploadRemoveHandler(){},
+      uploadRemoveHandler(file, fileList){
+        let index= this.filesList.findIndex(f => f.name=== file.name);
+        this.submitForm.files.splice(index, 1);
+        this.filesList.splice(index, 1);
+      },
       uploadPreviewHandler(file){
         window.open(file.url);
         // let win = window.open();  //打开新的空白窗口
@@ -423,8 +429,15 @@ export default {
         this.submitForm.types= 
           this.submitForm.types[0]? 
             this.submitForm.types[0].supplierType: null;
-        this.$refs.submitForm.clearValidate();
+        this.$nextTick(() => this.$refs.submitForm.clearValidate());
         // 类型单选结束
+
+        // 用filesList来绑定上传组件的file-list，因为上传组件会给file-list的元素添加status属性
+        this.filesList.splice(0);
+        this.filesList.push(...this.$deepCopy(this.submitForm.files));
+
+        // 纠正时间
+        this.submitForm.expireTime= new Date(this.submitForm.expireTime).getTime()+ 8* 3600* 1000;
       },
 
       makeOptions(){
@@ -470,9 +483,8 @@ export default {
         data.types= [Object.assign({}, hit, assignObj)]
       },
 
-      expireTimeAdaptor(expireTime){
-        if(!expireTime) return;
-        this.submitForm.expireTime= expireTime.toISOString();
+      expireTimeAdaptor(data){
+        data.expireTime= new Date(data.expireTime+ 8* 3600* 1000).toISOString();
       },
 
       fileAdaptor(file){
