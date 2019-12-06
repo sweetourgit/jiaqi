@@ -62,7 +62,7 @@
             <span class="em" v-if="scope.row.state =='待开票'">|</span>
             <span class="cursor blue" v-if="scope.row.state =='待开票'"@click="operation(3)">开票</span>
             <span class="em" v-if="scope.row.state =='已开票'">|</span>
-            <span class="cursor blue" v-if="scope.row.state =='已开票'">换发票</span>
+            <span class="cursor blue" v-if="scope.row.state =='已开票'"@click="operation(4)">换发票</span>
             <span class="em" v-if="scope.row.state !='开票驳回'">|</span>
             <span class="cursor blue" v-if="scope.row.state !='开票驳回'"@click="operation(2)">驳回</span>
           </template>
