@@ -1023,7 +1023,6 @@ export default {
         });
     },
     peoNum(index, enrollID, enrollName, price_01, price_02, num) {
-      console.log(this.enrolNum[index]);
       //填写报名人数
       let arrLength; //报名人数
       let preLength; //记录上一次报名人数
@@ -1079,6 +1078,7 @@ export default {
           price = this.toDecimal2(price);
           this.enrollDetail += `${enrollName}(${price} * 1),`;
         }
+        console.log("增加",this.enrollDetail)
       } else {
         // console.log(this.tour[index])
         for (var i = 0; i < this.tour[index].length; i++) {
@@ -1091,13 +1091,15 @@ export default {
         // 报名信息减少enrollDetail拼接
         let _arr = this.enrollDetail.split(",");
         for (let j = 0; j < preLength - num; j++) {
-          for (let i = _arr.length - 1; i > 0; i--) {
+          for (let i = _arr.length - 1; i => 0; i--) {
             if (_arr[i].indexOf(enrollName) != -1) {
               _arr.splice(i, 1);
-              return (this.enrollDetail = _arr.toString());
+              this.enrollDetail = _arr.toString();
+              break
             }
           }
         }
+        console.log("减少",this.enrollDetail)
       }
     },
     submitForm(formName, index) {
@@ -1238,17 +1240,17 @@ export default {
     getTypePrice() {
       // 先去indexof是否有报名类型相等然后找到 （ 和 * 的索引 之后replace替换成 
       let arr = this.enrollDetail.split(",")
+      console.log("this.enrollDetail",this.enrollDetail)
       arr.pop()
       for(let i = 0; i < arr.length; i++) {
         arr[i] = arr[i].replace(/\s*/g, '')
-        console.log(arr[i])
         for(let j = 0; j < this.salePrice.length; j++) {
           if(arr[i].indexOf(this.salePrice[j].enrollName) !== -1) {
             let first = arr[i].indexOf("(")
             let end = arr[i].indexOf("*")
             let str = arr[i].substring(first+1,end)
             let price = null;
-            this.ruleForm.price == 1 ? price = this.salePrice[j].price_01 : price = this.salePrice[j].price_02
+            this.ruleForm.price == 1 ? price = this.toDecimal2(this.salePrice[j].price_01) : this.toDecimal2(price = this.salePrice[j].price_02)
             this.newEnrollDetail += (arr[i].replace(str,price).toString() + ',')
           }
         }
@@ -1783,6 +1785,7 @@ export default {
       this.dialogFormOrder = false;
       this.$refs[formName].resetFields();
       this.costList = [];
+      this.enrollDetail = ""
     },
     compPrice() {
       //计算总价
