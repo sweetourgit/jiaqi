@@ -1555,6 +1555,7 @@ export default {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   width: 150px;
+  min-height: 46.6px;
 }
 /*费用*/
 .input {
