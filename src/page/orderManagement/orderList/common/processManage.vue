@@ -68,7 +68,7 @@
           报名人数
         </div>
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
-          <span class="multi-wrap" :title="item.enrollName">
+          <span class="multi-wrap" :title="item.enrollName +'￥'+item.price_01">
             <span>{{item.enrollName}}￥</span>
             <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
             <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
