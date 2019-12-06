@@ -261,7 +261,6 @@ export default {
         id: ID
       }).then(res => {
         if (res.data.isSuccess == true) {
-          console.log(res.data.object)
           this.guest = res.data.object.invoicePrice;
           this.invoiceList = res.data.object;
           this.tableDate = res.data.object.ordelist;
@@ -271,7 +270,6 @@ export default {
       });
     },
     rejectedIncoice(ID){// 驳回
-      console.log(ID)
       this.$confirm("是否驳回本次发票信息?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
@@ -301,6 +299,7 @@ export default {
       this.openInvoiceShow = false;
       this.invoiceDate = [];
       this.ruleFormSeach.invoicePrice = '';
+      this.a = false;
     },
     openInvoice(ID){ // 在详情弹窗里点击开票按钮
       this.invoiceDate = [];
@@ -308,48 +307,72 @@ export default {
       this.dialogFormOrder = false;
       this.openInvoiceShow = true;
     },
-    invoiceOnly(ID){ // 验证发票号唯一性
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/exisinvoicenumber", {
-        id: ID,
-        invoiceNumber:this.invoiceNumber
-      }).then(res => {
-        if (res.data.isSuccess == false && this.invoiceNumber !== '') {
-          this.$confirm("该发票号码已存在?", "提示", {
-           confirmButtonText: "确定",
-           cancelButtonText: "取消",
-           type: "warning"
-          })
-        }
-      });
-    },
     split(){// 拆分
       if(this.ruleFormSeach.invoicePrice <= 0){
         return;
       }
       let str = Math.ceil(this.guest/this.ruleFormSeach.invoicePrice)
       let remainder =this.guest%this.ruleFormSeach.invoicePrice;
-      console.log(remainder)
       let guestAll = this.invoiceDate[0];
       this.invoiceDate=[];
       for(let i=0; i < str; i++){
         guestAll.invoicePrice = this.ruleFormSeach.invoicePrice;
-        this.invoiceDate.push(guestAll)
+        this.invoiceDate.push(JSON.parse(JSON.stringify(guestAll)))
       }
       if(remainder > 0){
         this.invoiceDate[str-1].invoicePrice = remainder;
       }
-      
-      
+    },
+    invoiceOnly(ID,i){ // 验证发票号唯一性
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/exisinvoicenumber", {
+        id: ID,
+        invoiceNumber:this.invoiceDate[i].invoiceNumber
+      }).then(res => {
+        if (res.data.isSuccess == false && this.invoiceDate[i].invoiceNumber !== '') {
+          this.$message.success("第 "+i+" 条发票号码已存在");
+        }
+        
+      });
     },
     openInvoicement(ID){ // 点击开票按钮
-      this.invoiceOnly(); // 验证发票号唯一方法
+      for(let i =0 ; i < this.invoiceDate.length; i++){
+        this.invoiceOnly(ID,i); // 验证发票号唯一方法
+      }
       this.a = true;
-      // this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/confirmr", {
-      //   "object":{
-      //     receiptList:this.invoiceDate,
-      //     receiptID:ID
-      //   }
-      // })
+      let sum = 0; //求发票金额的总和
+      this.invoiceDate.forEach(function(item) {
+        sum += Number(item.invoicePrice);
+      });
+      let sum_01 = 0; //求关联订单剩余开票金额的总和
+      this.tableDate.forEach(function(item) {
+        sum_01 += Number(item.skPrice);
+      });
+      let aaa = true;
+      for(let i =0 ; i < this.invoiceDate.length; i++){
+        if(this.invoiceDate[i].invoicePrice =='' || this.invoiceDate[i].invoiceNumber==''){
+          aaa = false;
+        }
+      }
+      if(aaa==false){
+        this.$message.success("请填写发票号或者发票金额");
+        return;
+      }
+      if(sum <= sum_01){
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/confirm", {
+          "object":{
+            receiptList:this.invoiceDate,
+            receiptID:ID
+          }
+        }).then(res => {
+          this.$message.success("开票成功");
+          this.openInvoiceShow = false ;
+          this.$parent.pageList();
+        })
+      }else{
+        this.$message.success("该发票金额已超过剩余开票金额");
+      }
+      
+      
     },
   }
 };
