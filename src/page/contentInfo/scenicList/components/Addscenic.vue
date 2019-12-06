@@ -351,8 +351,10 @@
       title="图片选择"
       :visible.sync="imgUpload"
       custom-class="city_list"
+      @close="materialListDialog"
     >
       <MaterialList
+        ref="materialList"
         :imgData="imgData"
         :chineseName="form.chineseName"
         :imageAreaId="imageAreaId"
@@ -535,6 +537,10 @@ export default {
     }
   },
   methods: {
+    // 关闭materialList弹窗 清空子组件materialList
+    materialListDialog() {
+      this.$refs.materialList = []
+    },
     handleList(a) {
       if (a.target.id != "showDiv") {
         this.isImgUrlShow = false;

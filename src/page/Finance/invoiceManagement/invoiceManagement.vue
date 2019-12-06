@@ -36,7 +36,7 @@
     </div>
     <div class="main">
       <!--列表表格-->
-      <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
+      <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun">
         <el-table-column prop="id" label="发票ID" align="center"></el-table-column>
         <el-table-column prop="state" label="状态" align="center"></el-table-column>
         <el-table-column prop="invoiceNumber" label="发票号码" align="center"></el-table-column>
@@ -44,19 +44,27 @@
         <el-table-column prop="taxpayerIDNumber" label="纳税人识别号" align="center"></el-table-column>
         <el-table-column prop="collectionType" label="直客/商户" align="center"></el-table-column>
         <el-table-column prop="localCompName" label="商户名称" align="center"></el-table-column>
-        <el-table-column prop="createTime" label="申请日期" align="center"></el-table-column>
-        <el-table-column prop="endTime" label="开票日期" align="center"></el-table-column>
-        <el-table-column prop="invoicePrice" label="发票金额" align="center"></el-table-column>
+        <el-table-column prop="createTime" :formatter='dateFormat' label="申请日期" align="center"></el-table-column>
+        <el-table-column prop="endTime" label="开票日期" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.endTime !='0'">{{formatDate(new Date(scope.row.endTime))}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="invoicePrice" label="发票金额" align="center">
+          <template slot-scope="scope">
+            <div>{{scope.row.invoicePrice}}</div>
+          </template>
+        </el-table-column>
         <el-table-column prop="ordNum" label="关联订单数" align="center"></el-table-column>
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <span class="cursor blue">详情</span>
+            <span class="cursor blue"@click="operation(1)">详情</span>
             <span class="em" v-if="scope.row.state =='待开票'">|</span>
-            <span class="cursor blue" v-if="scope.row.state =='待开票'">开票</span>
+            <span class="cursor blue" v-if="scope.row.state =='待开票'"@click="operation(3)">开票</span>
             <span class="em" v-if="scope.row.state =='已开票'">|</span>
-            <span class="cursor blue" v-if="scope.row.state =='已开票'">换发票</span>
+            <span class="cursor blue" v-if="scope.row.state =='已开票'"@click="operation(4)">换发票</span>
             <span class="em" v-if="scope.row.state !='开票驳回'">|</span>
-            <span class="cursor blue" v-if="scope.row.state !='开票驳回'">驳回</span>
+            <span class="cursor blue" v-if="scope.row.state !='开票驳回'"@click="operation(2)">驳回</span>
           </template>
         </el-table-column>
       </el-table>
@@ -64,15 +72,24 @@
       <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
+      <invoice-details :invoiceID="invoiceID" :variable="variable" :dialogType="dialogType"></invoice-details>
     </div>
   </div>
 </template>
 
 <script>
+import moment from "moment";
+import invoiceDetails from "./invoiceDetails/invoiceDetails";
 export default {
-  
+  name: "invoiceManagement",
+  components: {
+    invoiceDetails
+  },
   data() {
     return {
+      invoiceID:0,
+      variable: 0, //设置一个变量展示弹窗
+      dialogType: 0, //弹窗类型  1：详情
       //搜索框
       invoiceNumber:'',//发票号码
       merchantsName:'',//商户名称
@@ -98,12 +115,15 @@ export default {
         value:'2',
         label:'商户'
       }],
-      tableDate:[],//表格
+      tableDate:[{
+        endTime:1580428800000 // 2020-01-31
+      }],//表格
       pageshow: true,// 分页
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数
       total: 0,
       current:1,
+      multipleSelection: [], //选中的list
     };
 
   },
@@ -111,11 +131,40 @@ export default {
     this.pageList();
   },
   methods: {
+    moment,
+    formatDate(date) {//时间转化
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      m = m < 10 ? "0" + m : m;
+      var d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      var h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      var minute = date.getMinutes();
+      minute = minute < 10 ? "0" + minute : minute;
+      var second = date.getSeconds();
+      second = second < 10 ? "0" + second : second;
+      return y + "-" + m + "-" + d;
+    },
+    // 起始时间格式转换
+    dateFormat: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined) {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD')
+    },      
     search(){ // 搜索
-
+      this.pageList();
     },
     reset(){ // 重置
-
+      this.invoiceNumber = '';//发票号码
+      this.merchantsName = '';//商户名称
+      this.applyForDate = ''; // 申请日期
+      this.states = '';// 状态
+      this.invoiceTitle = '';// 发票抬头
+      this.invoiceDate = '';// 开票日期
+      this.types = ''; // 直客/商户
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
@@ -127,19 +176,55 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
-    pageList(){
+    pageList(pageIndex = this.pageIndex,pageSize = this.pageSize,invoiceNumber = this.invoiceNumber, merchantsName = this.merchantsName,selStartCreateTime=this.applyForDate[0],selEndCreateTime=this.applyForDate[1],states = this.states, invoiceTitle = this.invoiceTitle,selStartGrantTime = this.invoiceDate[0],selEndGrantTime = this.invoiceDate[1],types = this.types){
+      if(selStartCreateTime){
+        let y=selStartCreateTime.getFullYear();
+        let m=(selStartCreateTime.getMonth()+1)>9?selStartCreateTime.getMonth()+1:'0'+(selStartCreateTime.getMonth()+1);
+        let d=selStartCreateTime.getDate()>9?selStartCreateTime.getDate():'0'+selStartCreateTime.getDate();
+        selStartCreateTime=''+ y + m + d
+      }else{
+        selStartCreateTime=0
+      }if(selEndCreateTime){
+        let y=selEndCreateTime.getFullYear();
+        let m=(selEndCreateTime.getMonth()+1)>9?selEndCreateTime.getMonth()+1:'0'+(selEndCreateTime.getMonth()+1);
+        let d=selEndCreateTime.getDate()>9?selEndCreateTime.getDate():'0'+selEndCreateTime.getDate();
+        selEndCreateTime=''+ y + m + d
+      }else{
+        selEndCreateTime=0
+      }if(selStartGrantTime){
+        let y=selStartGrantTime.getFullYear();
+        let m=(selStartGrantTime.getMonth()+1)>9?selStartGrantTime.getMonth()+1:'0'+(selStartGrantTime.getMonth()+1);
+        let d=selStartGrantTime.getDate()>9?selStartGrantTime.getDate():'0'+selStartGrantTime.getDate();
+        selStartGrantTime=''+ y + m + d
+      }else{
+        selStartGrantTime=0
+      }if(selEndGrantTime){
+        let y=selEndGrantTime.getFullYear();
+        let m=(selEndGrantTime.getMonth()+1)>9?selEndGrantTime.getMonth()+1:'0'+(selEndGrantTime.getMonth()+1);
+        let d=selEndGrantTime.getDate()>9?selEndGrantTime.getDate():'0'+selEndGrantTime.getDate();
+        selEndGrantTime=''+ y + m + d
+      }else{
+        selEndGrantTime=0
+      }
       var that = this
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/page",{
         "object": {
-          "isDeleted": 0
+          "isDeleted": 0,
+          "invoiceNumber":invoiceNumber,
+          "localCompName":merchantsName,
+          "selStartCreateTime":selStartCreateTime,
+          "selEndCreateTime":selEndCreateTime,
+          "state":states == '' ? 0 : states,
+          "invoiceHeader":invoiceTitle,
+          "selStartGrantTime":selStartGrantTime,
+          "selEndGrantTime":selEndGrantTime,
+          "collectionType":types == '' ? 0 : types
         },
         "pageSize":this.pageSize,
         "pageIndex":this.pageIndex,
-      })
-        .then(function (obj) {
-          console.log(obj)
-          that.total = obj.data.total
-          that.tableDate = obj.data.objects
+      }).then(res => {
+          that.total = res.data.total
+          that.tableDate = res.data.objects
           that.tableDate.forEach(function (v,k,arr) {
             if(arr[k]['state'] == 1){
               arr[k]['state'] = '待开票'
@@ -152,11 +237,10 @@ export default {
             }else if(arr[k]['collectionType'] == 2) {
               arr[k]['collectionType'] = '直客'
             }
-            
           })
         })
-        .catch(function (obj) {
-          console.log(obj)
+        .catch(function (res) {
+          console.log(res)
         })
     },
     handleSizeChange(val) {
@@ -167,6 +251,20 @@ export default {
     handleCurrentChange(val) {
       this.pageIndex = val;
       this.pageList();
+    },
+    operation(i) {// 显示详情、开票、换票弹窗
+      this.variable++;
+      this.dialogType = i;
+    },
+    changeFun(val) {
+      //保存选中项的数据
+      this.multipleSelection = val;
+    },
+    clickRow(row) {
+      //选中行复选框勾选
+      this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
+      this.$refs.multipleTable.toggleRowSelection(row);
+      this.invoiceID = this.multipleSelection[0].id;
     },
   }
 };

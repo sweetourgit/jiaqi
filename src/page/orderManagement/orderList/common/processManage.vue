@@ -68,11 +68,13 @@
           报名人数
         </div>
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
-          {{item.enrollName}}￥
-          <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
-          <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
-          <span v-show="propPriceType==1">{{item.price_01}}</span>
-          <span v-show="propPriceType==2">{{item.price_02}}</span>
+          <span class="multi-wrap" :title="item.enrollName +'￥'+item.price_01">
+            <span>{{item.enrollName}}￥</span>
+            <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+            <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
+            <span v-show="propPriceType==1">{{item.price_01}}</span>
+            <span v-show="propPriceType==2">{{item.price_02}}</span>
+          </span>
           <div>
             <!-- 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数  :max="paidMaxEnrolNum[index]"-->
             <el-input-number
@@ -306,6 +308,7 @@
 </template>
 
 <script>
+import { max } from "moment";
 export default {
   props: {
     orderId: 0,
@@ -988,7 +991,7 @@ export default {
             // console.log(this.enrollDetail, "之后的");
           } else {
             const num = this.tour[index].length.toString();
-            this.preLength[index] = num
+            this.preLength[index] = num;
             this.$set(this.enrolNum, index, num);
             this.$message.error("请手动删除表格中的出行人");
             break;
@@ -1127,7 +1130,6 @@ export default {
                   parseInt(data[i].quota) - parseInt(this.preLength[i]);
               }
             }
-
             this.salePrice = data;
             this.salePriceNum = data;
             for (let i = 0; i < this.salePriceNum.length; i++) {
@@ -1197,7 +1199,6 @@ export default {
       // 根据报名信息求总价
       this.payable = 0;
       let _arr = this.enrollDetail.split(",");
-      // _arr = _arr.splice(_arr.length - 1, 1);
       _arr.pop();
       for (let i = 0; i < _arr.length; i++) {
         let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1];
@@ -1399,17 +1400,17 @@ export default {
           this.tour[index].splice(type, 1); //手动删除单条出行人信息
           this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
           this.preLength[index] = this.enrolNum[index];
-          this.applyEnrollDetail(enrollName);
+          this.applyEnrollDetail(enrollName, index);
         });
       } else {
         this.tour[index].splice(type, 1); //手动删除单条出行人信息
         this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
         this.preLength[index] = this.enrolNum[index];
-        this.applyEnrollDetail(enrollName);
+        this.applyEnrollDetail(enrollName, index);
       }
     },
     // 删除出行人 同步报名信息的字段
-    applyEnrollDetail(enrollName) {
+    applyEnrollDetail(enrollName, index) {
       let _arr = this.enrollDetail.split(",");
       for (let i = _arr.length - 1; i => 0; i--) {
         if (_arr[i].indexOf(enrollName) != -1) {
@@ -1418,6 +1419,16 @@ export default {
           break;
         }
       }
+      let salePrice = this.salePrice[index];
+      let enrolNum = this.enrolNum[index];
+      this.peoNum(
+        index,
+        salePrice.enrollID,
+        salePrice.enrollName,
+        salePrice.price_01,
+        salePrice.price_02,
+        enrolNum[index]
+      );
     },
 
     // 监听订单来源是同业社还是直客下单  是直客则返回true 等于1就是同业
@@ -1534,6 +1545,17 @@ export default {
 }
 .ml13 {
   margin-left: 13px;
+}
+.multi-wrap  {
+  text-align: center;
+  display: -webkit-box !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  width: 150px;
+  min-height: 46.6px;
 }
 /*费用*/
 .input {

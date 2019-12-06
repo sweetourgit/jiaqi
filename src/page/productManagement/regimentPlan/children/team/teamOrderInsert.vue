@@ -1,18 +1,26 @@
 <template>
   <div>
     <!--下单弹窗-->
-    <el-dialog title="下单" :visible.sync="dialogFormOrder" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"
-      @close="cancelInfoOrder('ruleForm')">
+    <el-dialog
+      title="下单"
+      :visible.sync="dialogFormOrder"
+      custom-class="city_list dialogOrder"
+      style="margin-top:-100px"
+      width="1200px"
+      @close="cancelInfoOrder('ruleForm')"
+    >
       <div class="dialog-footer">
         <el-button class="ml13" @click="cancelInfoOrder('ruleForm')">取 消</el-button>
         <!-- <el-button class="ml13" @click="submitForm('ruleForm',1)"  type="primary">预订不占</el-button> -->
-        <el-button class="ml13"  type="primary">预订不占</el-button>
+        <el-button class="ml13" type="primary">预订不占</el-button>
         <el-button type="primary" @click="submitForm('ruleForm',3)" class="ml13">确定占位</el-button>
       </div>
       <div class="main1">
         <!--团期信息-->
         <div class="planBorder">
-          <div class="order-title"><span>团期信息</span></div>
+          <div class="order-title">
+            <span>团期信息</span>
+          </div>
           <div class="pro-info">
             <table width="100%">
               <tr>
@@ -30,7 +38,7 @@
                 </td>
               </tr>
               <tr>
-                <td width="33%"> 
+                <td width="33%">
                   <div width="80" class="fl">产品名称:</div>
                   <div class="fl ml13">{{teampreviewData.title}}</div>
                 </td>
@@ -51,7 +59,7 @@
                 <!-- <td width="33%">
                   <div width="80" class="fl">参考结算:</div>
                   <div class="fl ml13">{{average | numFilter}}</div>
-                </td> -->
+                </td>-->
                 <td width="33%">
                   <div width="80" class="fl">订单预留时长:</div>
                   <div class="fl ml13">{{teampreviewData.dateHous}}小时</div>
@@ -60,7 +68,13 @@
             </table>
           </div>
         </div>
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form
+          :model="ruleForm"
+          :rules="rules"
+          ref="ruleForm"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
           <el-form-item label="订单来源" prop="orderRadio">
             <div @change="changeTab()">
               <el-radio label="1" class="radiomar" v-model="ruleForm.orderRadio">线下直客</el-radio>
@@ -69,38 +83,78 @@
           </el-form-item>
           <!--选择线下直客按钮，显示销售文本框-->
           <div v-if="ruleForm.orderRadio==1">
-              <el-form-item label="销售" prop="market">
-                <el-autocomplete class="optionw" @blur="travelGuest()" v-model="ruleForm.market" :fetch-suggestions="querySearch1" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure1"></el-autocomplete>
-                <div v-show="nullShowGuest" style="color:red">请输入有效的直客销售</div>
-              </el-form-item>
+            <el-form-item label="销售" prop="market">
+              <el-autocomplete
+                class="optionw"
+                @blur="travelGuest()"
+                v-model="ruleForm.market"
+                :fetch-suggestions="querySearch1"
+                placeholder="请输入销售名称"
+                :trigger-on-focus="false"
+                @select="departure1"
+              ></el-autocomplete>
+              <div v-show="nullShowGuest" style="color:red">请输入有效的直客销售</div>
+            </el-form-item>
           </div>
           <!--选择商户按钮，显示商户名称和商户销售文本框-->
           <div v-if="ruleForm.orderRadio==2">
-              <el-form-item label="商户名称" prop="travel">
-                <el-autocomplete class="optionw" v-model="ruleForm.travel" @blur="travelName()" :fetch-suggestions="querySearch3" placeholder="请输入商户名称" :trigger-on-focus="false" @select="departure"></el-autocomplete>
-                <div v-show="nullShowName" style="color:red;">请输入有效的商户名称</div>
-              </el-form-item>
-              <el-form-item label="同业销售" prop="travelSales">
-                <el-autocomplete class="optionw" :disabled = "forbidden" v-model="ruleForm.travelSales" @blur="travelOp()" :fetch-suggestions="querySearch2" placeholder="请输入销售名称" :trigger-on-focus="false" @select="departure2"></el-autocomplete>
-                <div v-show="nullShowOp" style="color:red;">请输入有效的同业销售</div>
-              </el-form-item>
-              <el-form-item label="商户销售" prop="merchantsSell">
-                <el-autocomplete class="optionw" :disabled = "forbidden" @blur="merchants()" v-model="ruleForm.merchantsSell" :fetch-suggestions="querySearch4" placeholder="请输入商户销售" :trigger-on-focus="false" @select="departure4"></el-autocomplete>
-                <div v-if="nullShow" style="color:red;">请输入有效的商户销售</div>
-              </el-form-item>
+            <el-form-item label="商户名称" prop="travel">
+              <el-autocomplete
+                class="optionw"
+                v-model="ruleForm.travel"
+                @blur="travelName()"
+                :fetch-suggestions="querySearch3"
+                placeholder="请输入商户名称"
+                :trigger-on-focus="false"
+                @select="departure"
+              ></el-autocomplete>
+              <div v-show="nullShowName" style="color:red;">请输入有效的商户名称</div>
+            </el-form-item>
+            <el-form-item label="同业销售" prop="travelSales">
+              <el-autocomplete
+                class="optionw"
+                :disabled="forbidden"
+                v-model="ruleForm.travelSales"
+                @blur="travelOp()"
+                :fetch-suggestions="querySearch2"
+                placeholder="请输入销售名称"
+                :trigger-on-focus="false"
+                @select="departure2"
+              ></el-autocomplete>
+              <div v-show="nullShowOp" style="color:red;">请输入有效的同业销售</div>
+            </el-form-item>
+            <el-form-item label="商户销售" prop="merchantsSell">
+              <el-autocomplete
+                class="optionw"
+                :disabled="forbidden"
+                @blur="merchants()"
+                v-model="ruleForm.merchantsSell"
+                :fetch-suggestions="querySearch4"
+                placeholder="请输入商户销售"
+                :trigger-on-focus="false"
+                @select="departure4"
+              ></el-autocomplete>
+              <div v-if="nullShow" style="color:red;">请输入有效的商户销售</div>
+            </el-form-item>
           </div>
           <el-form-item label="价格选择" prop="price" class="cb price">
             <!-- <el-radio-group v-model="ruleForm.price" class="salesPrice"> -->
-              <!-- <span v-for="(item,index) in salePrice" :key="index" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span>
-              <br /> -->
-             <el-radio label="1" v-model="ruleForm.price" class="radiomar">直客价格：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_01}}）</span></el-radio>
-             <el-radio label="2" v-model="ruleForm.price" class="radiomar">商户价格(同业、门店)：<span v-for="item in salePrice">{{item.enrollName}}（￥{{item.price_02}}）</span></el-radio>
-             <!-- <el-radio label="自定义" class="radiomar">自定义： 
+            <!-- <span v-for="(item,index) in salePrice" :key="index" style="margin:14px 18px 0 13px">{{item.enrollName}}：￥{{item.price_01}}</span>
+            <br />-->
+            <el-radio label="1" v-model="ruleForm.price" class="radiomar">
+              直客价格：
+              <span v-for="(item,index) in salePrice" :key="index">{{item.enrollName}}（￥{{item.price_01}}）</span>
+            </el-radio>
+            <el-radio label="2" v-model="ruleForm.price" class="radiomar">
+              商户价格(同业、门店)：
+              <span v-for="(item,index) in salePrice" :key="index">{{item.enrollName}}（￥{{item.price_02}}）</span>
+            </el-radio>
+            <!-- <el-radio label="自定义" class="radiomar">自定义： 
                    成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
                    儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
                    老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
                    单房差<el-form-item prop="price4" class="disib"><el-input v-model="ruleForm.price4" class="pricew"></el-input></el-form-item>
-          </el-radio> -->
+            </el-radio>-->
             <!-- </el-radio-group> -->
           </el-form-item>
           <el-form-item label="报名人数" class="fl">
@@ -109,16 +163,24 @@
           <div class="fl">
             <div class="registration" v-for="(item,index) in salePrice" :key="index">
               {{item.enrollName}}￥
-              <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
+              <span
+                v-show="ruleForm.price==1"
+              >{{item.price_01}}*{{enrolNum[index]}}</span>
               <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>
               <div>
-                <el-input-number class="input-num" v-model="enrolNum[index]" @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02,enrolNum[index])"
-                  :min="0" :max="salePriceNum[index].quota" size="medium"></el-input-number>
+                <el-input-number
+                  class="input-num"
+                  v-model="enrolNum[index]"
+                  @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02,enrolNum[index])"
+                  :min="0"
+                  :max="salePriceNum[index].quota"
+                  size="medium"
+                ></el-input-number>
               </div>
               <!-- <div v-bind:class="{red:quota[index]}">
                 余位{{item.quota}}
                 <span v-show="quota[index]">库存不足</span>
-              </div> -->
+              </div>-->
             </div>
             <div class="red ml13" style="margin:0 0 10px 15px;" v-show="enrolNums">{{enrolNumsWarn}}</div>
           </div>
@@ -141,12 +203,18 @@
           <!-- <div class="fl">
             备注
             <el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
-          </div> -->
+          </div>-->
           <!--总计-->
           <el-form-item label="总价" prop="totalPrice" class="cb">
             <div class="ml13">{{ruleForm.totalPrice}}</div>
-            <div v-if="ruleForm.orderRadio == 2 && payment == 1" style="clear: both; margin:0 0 0 10px;">剩余预存款和额度:￥{{amount}}</div>
-            <div v-if="ruleForm.orderRadio == 2 && payment == 2 && deposit !==0 " style="clear: both; margin:0 0 0 10px;">剩余预存款:￥{{deposit}}</div>
+            <div
+              v-if="ruleForm.orderRadio == 2 && payment == 1"
+              style="clear: both; margin:0 0 0 10px;"
+            >剩余预存款和额度:￥{{amount}}</div>
+            <div
+              v-if="ruleForm.orderRadio == 2 && payment == 2 && deposit !==0 "
+              style="clear: both; margin:0 0 0 10px;"
+            >剩余预存款:￥{{deposit}}</div>
           </el-form-item>
           <!--下单方式-->
           <!-- <el-form-item label="下单方式" prop="type">
@@ -157,7 +225,7 @@
               <br />
               <el-radio label="3" class="radiomar">预定不占 （订单保留24小时，到期提醒）</el-radio>
             </el-radio-group>
-          </el-form-item> -->
+          </el-form-item>-->
           <!--订单联系人-->
           <el-form-item label="联系人" prop="contactName">
             <el-input v-model="ruleForm.contactName" class="numw" maxlength="10"></el-input>
@@ -166,12 +234,24 @@
             <el-input v-model="ruleForm.contactPhone" class="numw" maxlength="20"></el-input>
           </el-form-item>
           <el-form-item label="备注" prop>
-            <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容"v-model="ruleForm.remark"
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 3, maxRows: 6}"
+              class="remark"
+              placeholder="请输入内容"
+              v-model="ruleForm.remark"
             ></el-input>
           </el-form-item>
           <!--出行人信息-->
           <div class="travelMessage">出行人信息</div>
-          <table class="costList" v-for="(item,indexPrice) in salePrice" :key="indexPrice" border="1" cellpadding="0" cellspacing="0">
+          <table
+            class="costList"
+            v-for="(item,indexPrice) in salePrice"
+            :key="indexPrice"
+            border="1"
+            cellpadding="0"
+            cellspacing="0"
+          >
             <tr class="costList_01">
               <td width="120">姓名</td>
               <td width="100">报名类型</td>
@@ -190,7 +270,11 @@
                 <div v-if="item.sex=='1'">女</div>
               </td>
               <td class="tc">
-                <span class="fl blue cursor" style="margin:0 0 0 18px" @click="fillTour(indexPrice,index)">编辑</span>
+                <span
+                  class="fl blue cursor"
+                  style="margin:0 0 0 18px"
+                  @click="fillTour(indexPrice,index)"
+                >编辑</span>
                 <span class="fl" style="margin:0 8px 0 8px;">|</span>
                 <span class="fl blue cursor" @click="delTravel(index,indexPrice,item.enrollName)">删除</span>
               </td>
@@ -200,8 +284,13 @@
       </div>
     </el-dialog>
     <!--填写游客信息-->
-    <el-dialog :title="'出行人信息（'+winTitle+'）'" :visible.sync="dialogFormTour" class="city_list" @close="cancelInfo('conForm')"
-      width="700px">
+    <el-dialog
+      :title="'出行人信息（'+winTitle+'）'"
+      :visible.sync="dialogFormTour"
+      class="city_list"
+      @close="cancelInfo('conForm')"
+      width="700px"
+    >
       <el-form :model="conForm" :rules="rules" ref="conForm" style="height:300px;">
         <el-form-item label="中文姓名" prop="cnName" label-width="110px" class="fl">
           <el-input type="text" v-model="conForm.cnName" class="w200"></el-input>
@@ -223,7 +312,12 @@
           <el-input type="text" v-model="conForm.idCard" class="w200"></el-input>
         </el-form-item>
         <el-form-item label="出生日期" prop="bornDate" label-width="110px" class="fl">
-          <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" style="width:200px" ></el-date-picker>
+          <el-date-picker
+            v-model="conForm.bornDate"
+            type="date"
+            placeholder="选择日期"
+            style="width:200px"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
           <el-select v-model="conForm.credType" placeholder="请选择" style="width:200px;">
@@ -238,7 +332,7 @@
         </el-form-item>
         <!-- <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl cb">
           <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" style="width:200px"></el-date-picker>
-        </el-form-item> -->
+        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer cb">
         <el-button @click="cancelInfo('conForm')">取 消</el-button>
@@ -255,14 +349,23 @@
       <el-button type="primary" style="margin:20px 0 10px 200px" @click="orderSuc = false">关闭</el-button>
     </el-dialog>
     <!--详情弹窗-->
-    <el-dialog title="详情" :visible.sync="detailsDialog" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"@close="detailsCancel('ruleForm')">
-      <div class="detail"><el-button @click="detailsCancel('ruleForm')" class="ml13">取 消</el-button></div>
+    <el-dialog
+      title="详情"
+      :visible.sync="detailsDialog"
+      custom-class="city_list dialogOrder"
+      style="margin-top:-100px"
+      width="1200px"
+      @close="detailsCancel('ruleForm')"
+    >
+      <div class="detail">
+        <el-button @click="detailsCancel('ruleForm')" class="ml13">取 消</el-button>
+      </div>
       <div class="detailsTitle">基本信息</div>
       <div>
         <div class="checkType" style="background: #ffa200">报账中</div>
-         <!-- <div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
+        <!-- <div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
          <div class="checkType" v-if="fundamental.checkType=='2'" style="background: #ff0000" >驳回</div>
-         <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500">通过</div> -->
+        <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500">通过</div>-->
       </div>
       <div class="pro-info">
         <table width="100%">
@@ -350,9 +453,18 @@
               <el-table-column prop="paymentType" label="借款类型" min-width="120" align="center"></el-table-column>
               <el-table-column prop="checkType" label="审批状态" align="center">
                 <template slot-scope="scope">
-                  <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
-                  <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
-                  <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+                  <div
+                    v-if="scope.row.checkType=='审批中'"
+                    style="color: #7F7F7F"
+                  >{{scope.row.checkType}}</div>
+                  <div
+                    v-if="scope.row.checkType=='驳回'"
+                    style="color: #FF4A3D"
+                  >{{scope.row.checkType}}</div>
+                  <div
+                    v-if="scope.row.checkType=='通过'"
+                    style="color: #33D174"
+                  >{{scope.row.checkType}}</div>
                 </template>
               </el-table-column>
               <!-- <el-table-column prop="supplierType" label="借款类型" min-width="80" align="center"></el-table-column> -->
@@ -368,16 +480,36 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="报销" name="second">
-            <el-table :data="tableAccount" style="margin:0 1px 0 1px" :header-cell-style="getCostClass" border>
+            <el-table
+              :data="tableAccount"
+              style="margin:0 1px 0 1px"
+              :header-cell-style="getCostClass"
+              border
+            >
               <el-table-column prop="id" label="报销单号" min-width="120" align="center"></el-table-column>
               <el-table-column prop="checkType" label="状态" min-width="120" align="center">
                 <template slot-scope="scope">
-                  <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
-                  <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
-                  <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+                  <div
+                    v-if="scope.row.checkType=='审批中'"
+                    style="color: #7F7F7F"
+                  >{{scope.row.checkType}}</div>
+                  <div
+                    v-if="scope.row.checkType=='驳回'"
+                    style="color: #FF4A3D"
+                  >{{scope.row.checkType}}</div>
+                  <div
+                    v-if="scope.row.checkType=='通过'"
+                    style="color: #33D174"
+                  >{{scope.row.checkType}}</div>
                 </template>
               </el-table-column>
-              <el-table-column prop="createTime" label="发起时间" :formatter='dateFormat1' min-width="150" align="center"></el-table-column>
+              <el-table-column
+                prop="createTime"
+                label="发起时间"
+                :formatter="dateFormat1"
+                min-width="150"
+                align="center"
+              ></el-table-column>
               <el-table-column prop="price" label="该团期的报销金额" min-width="150" align="center"></el-table-column>
               <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
               <el-table-column label="审批过程" min-width="70" align="center">
@@ -394,20 +526,41 @@
               <el-table-column prop="localCompName" label="同业社名称" min-width="100" align="center"></el-table-column>
               <el-table-column prop="checkType" label="状态" min-width="80" align="center">
                 <template slot-scope="scope">
-                  <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F" >{{scope.row.checkType}}</div>
-                  <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D" >{{scope.row.checkType}}</div>
-                  <div v-if="scope.row.checkType=='通过'" style="color: #33D174" >{{scope.row.checkType}}</div>
+                  <div
+                    v-if="scope.row.checkType=='审批中'"
+                    style="color: #7F7F7F"
+                  >{{scope.row.checkType}}</div>
+                  <div
+                    v-if="scope.row.checkType=='驳回'"
+                    style="color: #FF4A3D"
+                  >{{scope.row.checkType}}</div>
+                  <div
+                    v-if="scope.row.checkType=='通过'"
+                    style="color: #33D174"
+                  >{{scope.row.checkType}}</div>
                 </template>
               </el-table-column>
-              <el-table-column prop="collectionTime" :formatter='dateFormat' label="收款时间" min-width="150" align="center"></el-table-column>
+              <el-table-column
+                prop="collectionTime"
+                :formatter="dateFormat"
+                label="收款时间"
+                min-width="150"
+                align="center"
+              ></el-table-column>
               <el-table-column prop="groupCode" label="团期计划" min-width="150" align="center">
                 <template slot-scope="scope">
-                  <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.groupCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+                  <span v-for="(item,index) in scope.row.arrears" :key="index">
+                    {{item.groupCode}}
+                    <i v-if="index != scope.row.arrears.length-1">，</i>
+                  </span>
                 </template>
               </el-table-column>
               <el-table-column prop="orderCode" label="订单号" min-width="120" align="center">
                 <template slot-scope="scope">
-                  <span v-for="(item,index) in scope.row.arrears" :key="index">{{item.orderCode}} <i v-if="index != scope.row.arrears.length-1">，</i> </span>
+                  <span v-for="(item,index) in scope.row.arrears" :key="index">
+                    {{item.orderCode}}
+                    <i v-if="index != scope.row.arrears.length-1">，</i>
+                  </span>
                 </template>
               </el-table-column>
               <!-- <el-table-column prop="orderNumber" label="订单号" min-width="120" align="center"></el-table-column> -->
@@ -435,11 +588,14 @@
       </div>
     </el-dialog>
     <!--借款、报销审批过程-->
-    <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px"@close="closeApprova()">
+    <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px" @close="closeApprova()">
       <el-table :data="approvalTable" :header-cell-style="getCostClass" border>
         <el-table-column prop="finishedTime" label="审批时间" min-width="180" align="center">
           <template slot-scope="scope">
-            <div v-if="scope.row.approvalName !=='等待中'" style="color: #7F7F7F">{{scope.row.finishedTime | formatDate01}}</div>
+            <div
+              v-if="scope.row.approvalName !=='等待中'"
+              style="color: #7F7F7F"
+            >{{scope.row.finishedTime | formatDate01}}</div>
           </template>
         </el-table-column>
         <el-table-column prop="participantName" label="审批人" min-width="120" align="center"></el-table-column>
@@ -463,11 +619,18 @@
     <!-- </div> -->
     <!-- </div> -->
     <!--报账单弹窗-->
-    <el-dialog title="报账单" :visible.sync="checkSheetDialog" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"@close="closeCheckSheet()">
+    <el-dialog
+      title="报账单"
+      :visible.sync="checkSheetDialog"
+      custom-class="city_list dialogOrder"
+      style="margin-top:-100px"
+      width="1200px"
+      @close="closeCheckSheet()"
+    >
       <div class="w1000 mau">
         <div class="chesktltle">黑龙江大运嘉国际旅行社有限公司旅游团队报账单</div>
         <div class="fr lh30">报账日期：2019年03月19日</div>
-        <table class="checksheet-table" border="1"cellspacing="0">
+        <table class="checksheet-table" border="1" cellspacing="0">
           <tr>
             <td class="w80 bc_cc">部门</td>
             <td class="w100">1</td>
@@ -480,9 +643,9 @@
           </tr>
           <tr>
             <td class="w80 bc_cc">团号</td>
-            <td colspan='3'>1</td>
+            <td colspan="3">1</td>
             <td class="w80 bc_cc">产品名称</td>
-            <td colspan='3'>2</td>
+            <td colspan="3">2</td>
           </tr>
         </table>
       </div>
@@ -501,18 +664,18 @@ export default {
   },
   data() {
     return {
-      tableData2:[],
-      tableData3:[],
+      tableData2: [],
+      tableData3: [],
       //下单弹窗
-      average:0,
+      average: 0,
       dialogFormOrder: false,
       ruleForm: {
         orderRadio: "1",
         sale: "",
         travel: "",
-        market:"",//线下直客销售
-        travelSales:"",//商户下的销售
-        merchantsSell:"",//商户销售
+        market: "", //线下直客销售
+        travelSales: "", //商户下的销售
+        merchantsSell: "", //商户销售
         price: "1",
         price1: "",
         price2: "",
@@ -579,7 +742,8 @@ export default {
         // market: [//直客下单销售
         //   { required: true, message: "请输入销售", trigger: "blur" }
         // ],
-        travelSales: [//商户下单销售
+        travelSales: [
+          //商户下单销售
           { required: true, message: "请输入销售", trigger: "blur" }
         ],
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
@@ -632,60 +796,60 @@ export default {
         idCard: [
           { required: true, message: "身份证号不能为空", trigger: "blur" },
           {
-             pattern: /(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+            pattern: /(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
             message: "身份证号格式不正确",
             trigger: "blur"
           }
-        ],
+        ]
         //credTOV:[{ required: true, message: "请选择证件有效期", trigger: "blur" }],
-        
       },
       //出行人信息表格
-      costList:[],
-      detailsDialog:false,//详情弹窗
-      activeName:'first',//财务信息切换
-      tableBorrowing:[],//借款表格
-      tableAccount:[],//报销表格
-      tableCollection:[],//收款表格
-      tableOrder:[],//订单表格
-      productPos:0,
-      ReplacesaleId:0,//获取直客销售id
-      userID:0,//获取同业销售id
-      lines:0,//获取剩余额度
-      deposit:0,//获取预存款
-      amount:0,//剩余额度加预存款
-      payment:0,
-      tradeSales:0, // 同业销售usercode
-      approvalTable:[],//借款审批过程表格
-      approvalShow:false,//借款审批过程弹窗
-      guid:'',
-      pid:'',
-      paymentType:'',
+      costList: [],
+      detailsDialog: false, //详情弹窗
+      activeName: "first", //财务信息切换
+      tableBorrowing: [], //借款表格
+      tableAccount: [], //报销表格
+      tableCollection: [], //收款表格
+      tableOrder: [], //订单表格
+      productPos: 0,
+      ReplacesaleId: 0, //获取直客销售id
+      userID: 0, //获取同业销售id
+      lines: 0, //获取剩余额度
+      deposit: 0, //获取预存款
+      amount: 0, //剩余额度加预存款
+      payment: 0,
+      tradeSales: 0, // 同业销售usercode
+      approvalTable: [], //借款审批过程表格
+      approvalShow: false, //借款审批过程弹窗
+      guid: "",
+      pid: "",
+      paymentType: "",
       multipleSelection: [], //选中的list
-      checkSheetDialog:false,//报账单弹窗
-      forbidden:true,//商户销售在没有商户名称的时候禁止状态
-      collectionShow:false,//收款审批过程弹窗
-      collectionTable:[],//收款过程表格
-      collectionID:'',//收款管理获取该条ID
-      nullShow:false,//如果商户销售输入的不是有效的提示
-      nullShowName:false,//商户名称输入的不是有效的提示
-      nullShowOp:false,//同业销售输入的不是有效的提示
-      nullShowGuest:false,//直客销售输入的不是有效的提示
-      enrollDetail:""//订单需要
+      checkSheetDialog: false, //报账单弹窗
+      forbidden: true, //商户销售在没有商户名称的时候禁止状态
+      collectionShow: false, //收款审批过程弹窗
+      collectionTable: [], //收款过程表格
+      collectionID: "", //收款管理获取该条ID
+      nullShow: false, //如果商户销售输入的不是有效的提示
+      nullShowName: false, //商户名称输入的不是有效的提示
+      nullShowOp: false, //同业销售输入的不是有效的提示
+      nullShowGuest: false, //直客销售输入的不是有效的提示
+      enrollDetail: "", //订单需要
+      newEnrollDetail: "" //传给后台用的
     };
   },
   filters: {
-    numFilter (value) {
+    numFilter(value) {
       // 截取当前数据到小数点后两位
-      let realVal = parseFloat(value).toFixed(2)
-      return realVal
+      let realVal = parseFloat(value).toFixed(2);
+      return realVal;
     },
-    formatDate01: function (value) {//截取收款、报销审批流程的审批时间格式
-      return moment(value).format('YYYY-MM-DD')
+    formatDate01: function(value) {
+      //截取收款、报销审批流程的审批时间格式
+      return moment(value).format("YYYY-MM-DD");
     }
   },
-  created() {
-  },
+  created() {},
   watch: {
     variable: function() {
       if (this.dialogType == 1) {
@@ -697,12 +861,11 @@ export default {
         this.ruleForm.remark = "";
         this.ruleForm.otherCostRemark = "";
         this.ruleForm.allDisRemark = "";
-      }else if(this.dialogType == 2){
+      } else if (this.dialogType == 2) {
         setTimeout(() => {
-          console.log(this.planId)
           this.teamGetDetails(this.planId);
         }, 200);
-        this.detailsDialog =true;
+        this.detailsDialog = true;
       }
     },
     enrolNum: function(val) {
@@ -718,9 +881,9 @@ export default {
     "ruleForm.type": function(val) {
       this.changeQuota();
     },
-    "ruleForm.price": function (val) {
+    "ruleForm.price": function(val) {
       this.compPrice();
-    },
+    }
     // "ruleForm.index":function(val){
     //   this.changeQuota();
     // }
@@ -730,26 +893,28 @@ export default {
     // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
-      if(date == undefined) {
-        return '';
+      if (date == undefined) {
+        return "";
       }
-      return moment(date).format('YYYY-MM-DD')
+      return moment(date).format("YYYY-MM-DD");
     },
     dateFormat1: function(row, column) {
       let date = row[column.property];
-      if(date == undefined) {
-        return '';
+      if (date == undefined) {
+        return "";
       }
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+      return moment(date).format("YYYY-MM-DD HH:mm:ss");
     },
-    detailsCancel(){//详情取消弹窗
+    detailsCancel() {
+      //详情取消弹窗
       this.detailsDialog = false;
-      this.tableBorrowing = [];//借款表格
-      this.tableAccount = [];//报销表格
-      this.tableCollection = [];//收款表格
-      this.tableOrder = [];//订单表格
+      this.tableBorrowing = []; //借款表格
+      this.tableAccount = []; //报销表格
+      this.tableCollection = []; //收款表格
+      this.tableOrder = []; //订单表格
     },
-    getCostClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
+    getCostClass({ row, column, rowIndex, columnIndex }) {
+      //表格头部颜色
       if (rowIndex == 0) {
         return "background:#f6f6f6;height:25px;textAlign:center;fontSize:15px";
       } else {
@@ -764,13 +929,17 @@ export default {
       //下单方式选择确认占位和预定占位，实时减少相关余位信息，提示库存不足
       for (let i = 0; i < this.salePrice.length; i++) {
         //如果下单方式选择预定不占，则不需要同步余位信息，提示库存不足
-        // if (this.ruleForm.type == 3 || this.ruleForm.type == 1) 
+        // if (this.ruleForm.type == 3 || this.ruleForm.type == 1)
         // if (this.ruleForm.type == 1)
-        if (this.ruleForm.index == 3){
-          this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
+        if (this.ruleForm.index == 3) {
+          this.salePrice[i].quota =
+            parseInt(this.salePrice[i].quota) -
+            parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
           salePriceType = this.salePrice[i];
         } else {
-          salePriceType3[i].quota = parseInt(salePriceType3[i].quota) - parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
+          salePriceType3[i].quota =
+            parseInt(salePriceType3[i].quota) -
+            parseInt(this.enrolNum[i] ? parseInt(this.enrolNum[i]) : 0);
           salePriceType = salePriceType3[i];
         }
         if (salePriceType.quota < 0) {
@@ -782,12 +951,13 @@ export default {
       }
     },
     //详情弹窗
-    teamGetDetails(ID){
+    teamGetDetails(ID) {
       //团期计划订单信息预览
-      console.log(ID)
-      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
-        id: ID
-      }).then(res => {
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
+          id: ID
+        })
+        .then(res => {
           if (res.data.isSuccess == true) {
             this.teampreviewData = res.data.object;
             this.getBorrowing(this.planId);
@@ -807,10 +977,11 @@ export default {
     teampreview(ID) {
       //this.getaverage(ID);
       //团期计划订单信息预览
-      console.log(ID)
-      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
-        id: ID
-      }).then(res => {
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
+          id: ID
+        })
+        .then(res => {
           if (res.data.isSuccess == true) {
             this.teampreviewData = res.data.object;
             this.teamEnrolls(this.planId);
@@ -835,7 +1006,10 @@ export default {
               this.enrolNum.push(0);
               this.quota.push(false);
               this.tour.push([]);
-              if (data[i].quota == 0 || data[i].quota > this.teampreviewData.remaining) {
+              if (
+                data[i].quota == 0 ||
+                data[i].quota > this.teampreviewData.remaining
+              ) {
                 //如果配额为0或者配额大于库存，余位显示总库存
                 data[i].quota = this.teampreviewData.remaining;
               }
@@ -845,8 +1019,7 @@ export default {
           }
         });
     },
-    peoNum(index, enrollID, enrollName,price_01, price_02,num) {
-      console.log(this.enrolNum[index])
+    peoNum(index, enrollID, enrollName, price_01, price_02, num) {
       //填写报名人数
       let arrLength; //报名人数
       let preLength; //记录上一次报名人数
@@ -860,13 +1033,12 @@ export default {
       //记录上一次报名人数为当前报名人数
       this.preLength[index] = this.enrolNum[index];
       //报名类型报名人数的总数等于余位，其余的报名类型不允许添加
-      
+
       //去掉报名人数提示
       if (arrLength > 0) {
         this.enrolNums = false;
-      } 
+      }
       var len;
-      console.log(arrLength)
       if (arrLength > preLength) {
         //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
         len = arrLength - preLength;
@@ -897,16 +1069,13 @@ export default {
         // 报名信息增加enrollDetail拼接
         for (let i = 0; i < num - preLength; i++) {
           let price;
-          // console.log(this.ruleForm.price,"this.ruleForm.price")
           this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
           price = this.toDecimal2(price);
           this.enrollDetail += `${enrollName}(${price} * 1),`;
         }
-      } else{
-        // console.log(this.tour[index])
-        for(var i=0;i < this.tour[index].length;i++){
-          // console.log(this.tour[index][i])
-          if(this.tour[index][i].cnName === ''){
+      } else {
+        for (var i = 0; i < this.tour[index].length; i++) {
+          if (this.tour[index][i].cnName === "") {
             this.tour[index].splice(i, preLength - arrLength);
             break;
           }
@@ -914,17 +1083,17 @@ export default {
         // 报名信息减少enrollDetail拼接
         let _arr = this.enrollDetail.split(",");
         for (let j = 0; j < preLength - num; j++) {
-          for (let i = _arr.length - 1; i > 0; i--) {
-          if (_arr[i].indexOf(enrollName) != -1) {
-            _arr.splice(i, 1);
-            return (this.enrollDetail = _arr.toString());
+          for (let i = _arr.length - 1; i => 0; i--) {
+            if (_arr[i].indexOf(enrollName) != -1) {
+              _arr.splice(i, 1);
+              this.enrollDetail = _arr.toString();
+              break
             }
           }
         }
-        
       }
     },
-    submitForm(formName,index) { 
+    submitForm(formName, index) {
       this.$refs[formName].validate(valid => {
         //如果库存不足，不提交订单
         var blooen = "0";
@@ -957,10 +1126,10 @@ export default {
         if (valid) {
           for (let i = 0; i < this.tour.length; i++) {
             for (let j = 0; j < this.tour[i].length; j++) {
-              if(this.ruleForm.price == 1){
-                this.tour[i][j].singlePrice=this.salePrice[i].price_01;
+              if (this.ruleForm.price == 1) {
+                this.tour[i][j].singlePrice = this.salePrice[i].price_01;
               } else {
-                this.tour[i][j].singlePrice=this.salePrice[i].price_02;
+                this.tour[i][j].singlePrice = this.salePrice[i].price_02;
               }
               guestAll.push(this.tour[i][j]);
             }
@@ -978,23 +1147,27 @@ export default {
           // }
           //防止重复提交订单判断
           if (this.ifOrderInsert == false) {
-             return false;
+            return false;
           }
           // 拼接字段 enrollDetail报名类型详情
-          let enrollDetail = "";
-          console.log(this.salePrice)
-          this.salePrice.forEach((ele, idx) => {
-            let price=0;
-            if(this.ruleForm.price == 1){
-              price = this.toDecimal2(ele.price_01);
-            }else{
-              price = this.toDecimal2(ele.price_02);
-            }
-            //let price = this.toDecimal2(ele.price_01);
-            if(this.enrolNum[idx]!==0){
-              enrollDetail += `${ele.enrollName}(${price}*${this.enrolNum[idx]})`;
-            }
-          });
+          // 12.05注释掉begin
+          // let enrollDetail = "";
+          // console.log(this.salePrice)
+          // this.salePrice.forEach((ele, idx) => {
+          //   let price=0;
+          //   if(this.ruleForm.price == 1){
+          //     price = this.toDecimal2(ele.price_01);
+          //   }else{
+          //     price = this.toDecimal2(ele.price_02);
+          //   }
+          //   //let price = this.toDecimal2(ele.price_01);
+          //   if(this.enrolNum[idx]!==0){
+          //     enrollDetail += `${ele.enrollName}(${price}*${this.enrolNum[idx]})`;
+          //   }
+          //   // console.log(enrollDetail)
+          // });
+          // 12.05注释掉end
+
           this.ifOrderInsert = true;
           //判断出行人信息是否填写完整
           // for(let i = 0; i<guest.length;i++){
@@ -1015,29 +1188,35 @@ export default {
           //     });
           //   }
           // }
-          if(this.ifOrderInsert===true){
-            let sum =0;//求this.enrolNum的总和
-            this.enrolNum.forEach(function(item){
+          if (this.ifOrderInsert === true) {
+            let sum = 0; //求this.enrolNum的总和
+            this.enrolNum.forEach(function(item) {
               sum += item;
-            })
-            if(sum !== guestAll.length){//判断报名人数与出行人信息是否相等
-              this.$confirm("报名人数与出行人信息不符?请修改出行人信息", "提示", {
-               confirmButtonText: "确定",
-               cancelButtonText: "取消",
-               type: "warning"
-              }).then(res =>{
-                this.ifOrderInsert = true;
-              }).catch(() => {
-                this.ifOrderInsert = true;
-                this.$message({
-                  type: "info",
-                  message: "已取消"
+            });
+            if (sum !== guestAll.length) {
+              //判断报名人数与出行人信息是否相等
+              this.$confirm(
+                "报名人数与出行人信息不符?请修改出行人信息",
+                "提示",
+                {
+                  confirmButtonText: "确定",
+                  cancelButtonText: "取消",
+                  type: "warning"
+                }
+              )
+                .then(res => {
+                  this.ifOrderInsert = true;
+                })
+                .catch(() => {
+                  this.ifOrderInsert = true;
+                  this.$message({
+                    type: "info",
+                    message: "已取消"
+                  });
                 });
-              });
-            }else{
+            } else {
               this.regimentType(this.planId, index);
             }
-            
           }
         } else {
           console.log("error submit!!");
@@ -1045,13 +1224,35 @@ export default {
           this.ifOrderInsert = true;
           return false;
         }
-        console.log(guestAll)
+        // console.log(guestAll);
       });
     },
-    regimentType(ID,index,formName){//获取状态
-      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
-        id: ID
-      }).then(res => {
+    // 点击确认占位时 取他用的是直客价格还是同业价格然后拼接enrollDetail this.ruleForm.price = 1 取price_01的价格  2就是price_02
+    getTypePrice() {
+      // 先去indexof是否有报名类型相等然后找到 （ 和 * 的索引 之后replace替换成 
+      let arr = this.enrollDetail.split(",")
+      arr.pop()
+      for(let i = 0; i < arr.length; i++) {
+        arr[i] = arr[i].replace(/\s*/g, '')
+        for(let j = 0; j < this.salePrice.length; j++) {
+          if(arr[i].indexOf(this.salePrice[j].enrollName) !== -1) {
+            let first = arr[i].indexOf("(")
+            let end = arr[i].indexOf("*")
+            let str = arr[i].substring(first+1,end)
+            let price = null;
+            this.ruleForm.price == 1 ? price = this.toDecimal2(this.salePrice[j].price_01) : this.toDecimal2(price = this.salePrice[j].price_02)
+            this.newEnrollDetail += (arr[i].replace(str,price).toString() + ',')
+          }
+        }
+      }
+    },
+    regimentType(ID, index, formName) {
+      //获取状态
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
+          id: ID
+        })
+        .then(res => {
           //获取报名总人数
           let number = 0;
           for (let i = 0; i < this.enrolNum.length; i++) {
@@ -1062,10 +1263,10 @@ export default {
           let guestAll = [];
           for (let i = 0; i < this.tour.length; i++) {
             for (let j = 0; j < this.tour[i].length; j++) {
-              if(this.ruleForm.price == 1){
-                this.tour[i][j].singlePrice=this.salePrice[i].price_01;
+              if (this.ruleForm.price == 1) {
+                this.tour[i][j].singlePrice = this.salePrice[i].price_01;
               } else {
-                this.tour[i][j].singlePrice=this.salePrice[i].price_02;
+                this.tour[i][j].singlePrice = this.salePrice[i].price_02;
               }
               guestAll.push(this.tour[i][j]);
             }
@@ -1098,95 +1299,249 @@ export default {
           // });
           if (res.data.isSuccess == true) {
             this.teampreviewData.regimentType = res.data.object.regimentType;
-            if(this.ifOrderInsert===true){
-              if(this.teampreviewData.regimentType === 1){//判断是否停售 1正常
-                  if(this.ruleForm.orderRadio === '1'){//判断是同业下单还是直客下单  1是直客  2是同业
-                     this.ifOrderInsert = true;
-                     this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/orderinsert", {
-                      object: {
-                        id: 0,
-                        isDeleted: 0,
-                        code: "",
-                        orderCode: "",
-                        proID: this.teampreviewData.teamID,
-                        planID: this.planId,
-                        orderStatus: 0, //订单状态  7未确认
-                        refundStatus: 0, //退款状态
-                        occupyStatus: index, //占位状态
-                        payable: this.ruleForm.totalPrice, //应付款
-                        platform: 1, //1是erp，2是同业
-                        favourable: [
-                          //优惠
-                          {
-                            id: 0,
-                            orderID: 0,
-                            price: this.ruleForm.otherCost,
-                            title: "其他费用",
-                            favMode: 1,
-                            mark: this.ruleForm.otherCostRemark
-                          },
-                          {
-                            id: 0,
-                            orderID: 0,
-                            price: this.ruleForm.allDiscount,
-                            title: "整体优惠",
-                            favMode: 2,
-                            mark: this.ruleForm.allDisRemark
-                          }
-                        ],
-                        contact:
-                          '{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
-                        endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
-                        orderChannel: Number(this.ruleForm.orderRadio),
-                        priceType: Number(this.ruleForm.price),
-                        orgID: sessionStorage.getItem("id"),
-                        userID: sessionStorage.getItem("id"),
-                        replacesale:this.ruleForm.market = '' ? 0 : this.ReplacesaleId,//直客下单销售id
-                        remark: JSON.stringify([
-                          {
-                            OrderCode: "",
-                            Mark: this.ruleForm.remark,
-                            CreateTime: formatDate(new Date())
-                          }
-                        ]),
-                        guests: guestAll,
-                        //guests: guest,
-                        number: number,
-                        enrollDetail: this.enrollDetail //报名类型详情字段拼接  订单管理模块需要
-                      }
-                      }).then(res => {
-                        console.log(typeof res.data.result.message)
-                        if (res.data.isSuccess == true) {
-                          this.$message.success("提交成功");
-                          this.$parent.teamQueryList(this.pageIndex == 1 ? this.pageIndex : 1);
-                          let data = JSON.parse(res.data.result.details);
-                          this.orderCode = data.OrderCode;
-                          //需再次存储备注信息
-                          this.addComment(this.orderCode);
-                          this.orderSuc = true;
-                          //清空表单
-                          //this.$refs[formName].resetFields();
-                          this.dialogFormOrder = false;
-                          this.ifOrderInsert = true;
-                          this.startUpWorkFlowForJQ(
-                            data.OrderID,
-                            data.FlowModel,
-                            data.FlowModelName,
-                            data.Usercode
-                          );
-                        } else if(res.data.isSuccess == false){
-                          //预留黑名单信息？？？
-                          this.$message.success(res.data.result.message + "");
-                          this.ifOrderInsert = true;
+            if (this.ifOrderInsert === true) {
+              if (this.teampreviewData.regimentType === 1) {
+                //判断是否停售 1正常
+                this.getTypePrice();
+                if (this.ruleForm.orderRadio === "1") {
+                  //判断是同业下单还是直客下单  1是直客  2是同业
+                  this.ifOrderInsert = true;
+                  this.$http
+                    .post(
+                      this.GLOBAL.serverSrc + "/order/all/api/orderinsert",
+                      {
+                        object: {
+                          id: 0,
+                          isDeleted: 0,
+                          code: "",
+                          orderCode: "",
+                          proID: this.teampreviewData.teamID,
+                          planID: this.planId,
+                          orderStatus: 0, //订单状态  7未确认
+                          refundStatus: 0, //退款状态
+                          occupyStatus: index, //占位状态
+                          payable: this.ruleForm.totalPrice, //应付款
+                          platform: 1, //1是erp，2是同业
+                          favourable: [
+                            //优惠
+                            {
+                              id: 0,
+                              orderID: 0,
+                              price: this.ruleForm.otherCost,
+                              title: "其他费用",
+                              favMode: 1,
+                              mark: this.ruleForm.otherCostRemark
+                            },
+                            {
+                              id: 0,
+                              orderID: 0,
+                              price: this.ruleForm.allDiscount,
+                              title: "整体优惠",
+                              favMode: 2,
+                              mark: this.ruleForm.allDisRemark
+                            }
+                          ],
+                          contact:
+                            '{"Name":"' +
+                            this.ruleForm.contactName +
+                            '","Tel":"' +
+                            this.ruleForm.contactPhone +
+                            '"}',
+                          endTime:
+                            index == 3
+                              ? 0
+                              : new Date().getTime() / 1000 + 24 * 60 * 60,
+                          orderChannel: Number(this.ruleForm.orderRadio),
+                          priceType: Number(this.ruleForm.price),
+                          orgID: sessionStorage.getItem("id"),
+                          userID: sessionStorage.getItem("id"),
+                          replacesale: (this.ruleForm.market = ""
+                            ? 0
+                            : this.ReplacesaleId), //直客下单销售id
+                          remark: JSON.stringify([
+                            {
+                              OrderCode: "",
+                              Mark: this.ruleForm.remark,
+                              CreateTime: formatDate(new Date())
+                            }
+                          ]),
+                          guests: guestAll,
+                          //guests: guest,
+                          number: number,
+                          enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
                         }
-                      });
-                  }else if(this.ruleForm.orderRadio === '2'){
-                    console.log(this.payment)
-                    if(this.payment == '1'){
-                      if(this.nullShow == false && this. nullShowName==false && this.nullShowOp==false&&this.nullShowGuest==false){
-                        if(this.ruleForm.totalPrice <= this.amount){//判断订单金额与剩余预存款和额度对比
-                          this.ifOrderInsert = true;
-                          this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
+                      }
+                    )
+                    .then(res => {
+                      if (res.data.isSuccess == true) {
+                        this.$message.success("提交成功");
+                        this.$parent.teamQueryList(
+                          this.pageIndex == 1 ? this.pageIndex : 1
+                        );
+                        let data = JSON.parse(res.data.result.details);
+                        this.orderCode = data.OrderCode;
+                        //需再次存储备注信息
+                        this.addComment(this.orderCode);
+                        this.orderSuc = true;
+                        //清空表单
+                        //this.$refs[formName].resetFields();
+                        this.dialogFormOrder = false;
+                        this.ifOrderInsert = true;
+                        this.startUpWorkFlowForJQ(
+                          data.OrderID,
+                          data.FlowModel,
+                          data.FlowModelName,
+                          data.Usercode
+                        );
+                      } else if (res.data.isSuccess == false) {
+                        //预留黑名单信息？？？
+                        this.$message.success(res.data.result.message + "");
+                        this.ifOrderInsert = true;
+                      }
+                    });
+                } else if (this.ruleForm.orderRadio === "2") {
+                  if (this.payment == "1") {
+                    if (
+                      this.nullShow == false &&
+                      this.nullShowName == false &&
+                      this.nullShowOp == false &&
+                      this.nullShowGuest == false
+                    ) {
+                      if (this.ruleForm.totalPrice <= this.amount) {
+                        //判断订单金额与剩余预存款和额度对比
+                        this.ifOrderInsert = true;
+                        this.$http
+                          .post(
+                            this.GLOBAL.serverSrc +
+                              "/order/all/api/siorderinsert",
+                            {
+                              object: {
+                                id: 0,
+                                isDeleted: 0,
+                                code: "",
+                                orderCode: "",
+                                proID: this.teampreviewData.teamID,
+                                planID: this.planId,
+                                orderStatus: 0, //订单状态  7未确认
+                                refundStatus: 0, //退款状态
+                                occupyStatus: index, //占位状态
+                                payable: this.ruleForm.totalPrice, //应付款
+                                platform: 2, //1是erp，2是同业
+                                favourable: [
+                                  //优惠
+                                  {
+                                    id: 0,
+                                    orderID: 0,
+                                    price: this.ruleForm.otherCost,
+                                    title: "其他费用",
+                                    favMode: 1,
+                                    mark: this.ruleForm.otherCostRemark
+                                  },
+                                  {
+                                    id: 0,
+                                    orderID: 0,
+                                    price: this.ruleForm.allDiscount,
+                                    title: "整体优惠",
+                                    favMode: 2,
+                                    mark: this.ruleForm.allDisRemark
+                                  }
+                                ],
+                                contact:
+                                  '{"Name":"' +
+                                  this.ruleForm.contactName +
+                                  '","Tel":"' +
+                                  this.ruleForm.contactPhone +
+                                  '"}',
+                                endTime:
+                                  index == 3
+                                    ? 0
+                                    : new Date().getTime() / 1000 +
+                                      24 * 60 * 60,
+                                orderChannel: Number(this.ruleForm.orderRadio),
+                                priceType: Number(this.ruleForm.price),
+                                orgID: this.productPos,
+                                userID: this.userID,
+                                indirectSale: this.tradeSales,
+                                // orgID: sessionStorage.getItem("orgID"),
+                                //userID: sessionStorage.getItem("id"),
+                                remark: JSON.stringify([
+                                  {
+                                    OrderCode: "",
+                                    Mark: this.ruleForm.remark,
+                                    CreateTime: formatDate(new Date())
+                                  }
+                                ]),
+                                guests: guestAll,
+                                // guests: guest,
+                                number: number,
+                                enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
+                              }
+                            }
+                          )
+                          .then(res => {
+                            if (res.data.isSuccess == true) {
+                              this.$message.success("提交成功");
+                              this.amount = 0;
+                              this.ruleForm.orderRadio = 1;
+                              this.payment = 0;
+                              this.$parent.teamQueryList();
+                              let data = JSON.parse(res.data.result.details);
+                              this.orderCode = data.OrderCode;
+                              //需再次存储备注信息
+                              this.addComment(this.orderCode);
+                              this.orderSuc = true;
+                              //清空表单
+                              //this.$refs[formName].resetFields();
+                              this.dialogFormOrder = false;
+                              this.ifOrderInsert = true;
+                              this.startUpWorkFlowForJQ(
+                                data.OrderID,
+                                data.FlowModel,
+                                data.FlowModelName,
+                                data.Usercode
+                              );
+                            } else {
+                              //预留黑名单信息？？？
+                              this.$message.success(
+                                res.data.result.message + ""
+                              );
+                              this.ifOrderInsert = true;
+                            }
+                          });
+                      } else if (this.ruleForm.totalPrice >= this.amount) {
+                        this.$confirm(
+                          "该订单金额已经超过剩余预存款和额度?",
+                          "提示",
+                          {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                          }
+                        )
+                          .then(res => {
+                            this.$parent.teamQueryList();
+                          })
+                          .catch(() => {
+                            this.$message({
+                              type: "info",
+                              message: "已取消"
+                            });
+                          });
+                      }
+                    }
+                  } else if (this.payment == "2") {
+                    this.ifOrderInsert = true;
+                    if (
+                      this.nullShow == false &&
+                      this.nullShowName == false &&
+                      this.nullShowOp == false &&
+                      this.nullShowGuest == false
+                    ) {
+                      this.$http
+                        .post(
+                          this.GLOBAL.serverSrc +
+                            "/order/all/api/siorderinsert",
+                          {
                             object: {
                               id: 0,
                               isDeleted: 0,
@@ -1218,13 +1573,21 @@ export default {
                                   mark: this.ruleForm.allDisRemark
                                 }
                               ],
-                              contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
-                              endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
+                              contact:
+                                '{"Name":"' +
+                                this.ruleForm.contactName +
+                                '","Tel":"' +
+                                this.ruleForm.contactPhone +
+                                '"}',
+                              endTime:
+                                index == 3
+                                  ? 0
+                                  : new Date().getTime() / 1000 + 24 * 60 * 60,
                               orderChannel: Number(this.ruleForm.orderRadio),
                               priceType: Number(this.ruleForm.price),
-                              orgID:this.productPos,
-                              userID:this.userID,
-                              indirectSale:this.tradeSales,
+                              orgID: this.productPos,
+                              userID: this.userID,
+                              indirectSale: this.tradeSales,
                               // orgID: sessionStorage.getItem("orgID"),
                               //userID: sessionStorage.getItem("id"),
                               remark: JSON.stringify([
@@ -1234,15 +1597,17 @@ export default {
                                   CreateTime: formatDate(new Date())
                                 }
                               ]),
-                              guests:guestAll,
-                              // guests: guest,
+                              guests: guestAll,
+                              //guests: guest,
                               number: number,
-                              enrollDetail: this.enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                              enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
                             }
-                          }).then(res => {
+                          }
+                        )
+                        .then(res => {
                           if (res.data.isSuccess == true) {
                             this.$message.success("提交成功");
-                            this.amount = 0 ;
+                            this.amount = 0;
                             this.ruleForm.orderRadio = 1;
                             this.payment = 0;
                             this.$parent.teamQueryList();
@@ -1266,133 +1631,40 @@ export default {
                             this.$message.success(res.data.result.message + "");
                             this.ifOrderInsert = true;
                           }
-                      });
-                      }else if(this.ruleForm.totalPrice >= this.amount){
-                        this.$confirm("该订单金额已经超过剩余预存款和额度?", "提示", {
-                          confirmButtonText: "确定",
-                          cancelButtonText: "取消",
-                          type: "warning"
-                        }).then(res =>{
-                          this.$parent.teamQueryList();
-                        }).catch(() => {
-                          this.$message({
-                            type: "info",
-                            message: "已取消"
-                          });
                         });
-                      }
-                      }
-                    }else if(this.payment == '2'){
-                      this.ifOrderInsert = true;
-                      if(this.nullShow == false && this. nullShowName==false && this.nullShowOp==false&&this.nullShowGuest==false){
-                        this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/siorderinsert", {
-                          object: {
-                            id: 0,
-                            isDeleted: 0,
-                            code: "",
-                            orderCode: "",
-                            proID: this.teampreviewData.teamID,
-                            planID: this.planId,
-                            orderStatus: 0, //订单状态  7未确认
-                            refundStatus: 0, //退款状态
-                            occupyStatus: index, //占位状态
-                            payable: this.ruleForm.totalPrice, //应付款
-                            platform: 2, //1是erp，2是同业
-                            favourable: [
-                              //优惠
-                              {
-                                id: 0,
-                                orderID: 0,
-                                price: this.ruleForm.otherCost,
-                                title: "其他费用",
-                                favMode: 1,
-                                mark: this.ruleForm.otherCostRemark
-                              },
-                              {
-                                id: 0,
-                                orderID: 0,
-                                price: this.ruleForm.allDiscount,
-                                title: "整体优惠",
-                                favMode: 2,
-                                mark: this.ruleForm.allDisRemark
-                              }
-                            ],
-                            contact:'{"Name":"' + this.ruleForm.contactName + '","Tel":"' + this.ruleForm.contactPhone + '"}',
-                            endTime: index == 3 ? 0 : new Date().getTime() / 1000 + 24 * 60 * 60,
-                            orderChannel: Number(this.ruleForm.orderRadio),
-                            priceType: Number(this.ruleForm.price),
-                            orgID:this.productPos,
-                            userID:this.userID,
-                            indirectSale:this.tradeSales,
-                            // orgID: sessionStorage.getItem("orgID"),
-                            //userID: sessionStorage.getItem("id"),
-                            remark: JSON.stringify([
-                              {
-                                OrderCode: "",
-                                Mark: this.ruleForm.remark,
-                                CreateTime: formatDate(new Date())
-                              }
-                            ]),
-                            guests:guestAll,
-                            //guests: guest,
-                            number: number,
-                            enrollDetail: this.enrollDetail //报名类型详情字段拼接  订单管理模块需要
-                          }
-                        }).then(res => {
-                        if (res.data.isSuccess == true) {
-                          this.$message.success("提交成功");
-                          this.amount = 0 ;
-                          this.ruleForm.orderRadio = 1;
-                          this.payment = 0;
-                          this.$parent.teamQueryList();
-                          let data = JSON.parse(res.data.result.details);
-                          this.orderCode = data.OrderCode;
-                          //需再次存储备注信息
-                          this.addComment(this.orderCode);
-                          this.orderSuc = true;
-                          //清空表单
-                          //this.$refs[formName].resetFields();
-                          this.dialogFormOrder = false;
-                          this.ifOrderInsert = true;
-                          this.startUpWorkFlowForJQ(
-                            data.OrderID,
-                            data.FlowModel,
-                            data.FlowModelName,
-                            data.Usercode
-                          );
-                        } else {
-                          //预留黑名单信息？？？
-                          this.$message.success(res.data.result.message + "");
-                          this.ifOrderInsert = true;
-                        }
-                        });
-                      }
                     }
                   }
-              }else if(this.teampreviewData.regimentType === 2){//2停售
-                  this.$confirm("该团号已停售?", "提示", {
-                     confirmButtonText: "确定",
-                     cancelButtonText: "取消",
-                     type: "warning"
-                  }).then(res =>{
+                }
+              } else if (this.teampreviewData.regimentType === 2) {
+                //2停售
+                this.$confirm("该团号已停售?", "提示", {
+                  confirmButtonText: "确定",
+                  cancelButtonText: "取消",
+                  type: "warning"
+                })
+                  .then(res => {
                     //this.ifOrderInsert = true;
                     this.$parent.teamQueryList();
-                  }).catch(() => {
+                  })
+                  .catch(() => {
                     //this.ifOrderInsert = true;
                     this.$message({
                       type: "info",
                       message: "已取消"
                     });
                   });
-              }else if(this.teampreviewData.regimentType === 3){//3封团
-                  this.$confirm("该团号已封团?", "提示", {
-                     confirmButtonText: "确定",
-                     cancelButtonText: "取消",
-                     type: "warning"
-                  }).then(res =>{
+              } else if (this.teampreviewData.regimentType === 3) {
+                //3封团
+                this.$confirm("该团号已封团?", "提示", {
+                  confirmButtonText: "确定",
+                  cancelButtonText: "取消",
+                  type: "warning"
+                })
+                  .then(res => {
                     //this.ifOrderInsert = true;
                     this.$parent.teamQueryList();
-                  }).catch(() => {
+                  })
+                  .catch(() => {
                     //this.ifOrderInsert = true;
                     this.$message({
                       type: "info",
@@ -1406,7 +1678,8 @@ export default {
     },
     // 下单弹窗 的提交按钮成功后  需再把备注信息存到/orderquery/get/api/InserOrderComment
     addComment(orderCode) {
-      this.$http.post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
           object: {
             orderCode: orderCode,
             content: this.ruleForm.remark,
@@ -1416,9 +1689,7 @@ export default {
           }
         })
 
-        .then(res => {
-
-        })
+        .then(res => {})
         .catch(err => {
           console.log(err);
         });
@@ -1437,30 +1708,31 @@ export default {
       }
       return s;
     },
-    delTravel(type, index, enrollName){//删除单条表格数据
+    delTravel(type, index, enrollName) {
+      //删除单条表格数据
       this.$confirm("是否删除该条出行人信息?", "提示", {
-         confirmButtonText: "确定",
-         cancelButtonText: "取消",
-         type: "warning"
-      }).then(res =>{
-        this.tour[index].splice(type,1);//手动删除单条出行人信息
-        this.enrolNum[index] = this.tour[index].length;//删除出行人信息后，表格长度和报名人数相等
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(res => {
+        this.tour[index].splice(type, 1); //手动删除单条出行人信息
+        this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
         this.preLength[index] = this.enrolNum[index];
-        this.applyEnrollDetail(enrollName)
+        this.applyEnrollDetail(enrollName);
         //console.log(this.enrolNum[index])
-      })
+      });
     },
     // 删除出行人 同步报名信息的字段
-    applyEnrollDetail(enrollName) {
-      let _arr = this.enrollDetail.split(",");
-      for (let i = _arr.length - 1; i => 0; i--) {
-        if (_arr[i].indexOf(enrollName) != -1) {
-          _arr.splice(i, 1);
-          this.enrollDetail = _arr.toString();
-          break;
-        }
-      }
-    },
+    applyEnrollDetail(enrollName) {
+      let _arr = this.enrollDetail.split(",");
+      for (let i = _arr.length - 1; i => 0; i--) {
+        if (_arr[i].indexOf(enrollName) != -1) {
+          _arr.splice(i, 1);
+          this.enrollDetail = _arr.toString();
+          break;
+        }
+      }
+    },
     fillTour(type, index) {
       this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
       if (this.tour[type][index].enName != "") {
@@ -1470,14 +1742,13 @@ export default {
       this.fillIndex = index;
       this.dialogFormTour = true;
     },
-    subInfo(formName) {//出行人弹窗添加完保存
+    subInfo(formName) {
+      //出行人弹窗添加完保存
       this.$refs[formName].validate(valid => {
         if (valid) {
           let guest = JSON.parse(JSON.stringify(this.conForm));
           guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
           guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
-          console.log(guest.enrollNum)
-          console.log(this.salePrice[this.tourType].enrolNum)
           //guest.enrollNum = this.salePrice[this.tourType].enrolNum; //填充报名类型数量
           // guest.enrollNum = this.
           // guest.createTime = this.createTime
@@ -1499,13 +1770,18 @@ export default {
     cancelInfoOrder(formName) {
       this.dialogFormOrder = false;
       this.$refs[formName].resetFields();
-      this.costList = [] ;
+      this.costList = [];
+      this.enrollDetail = ""
     },
     compPrice() {
       //计算总价
       this.ruleForm.totalPrice = 0;
       for (let i = 0; i < this.enrolNum.length; i++) {
-        this.ruleForm.totalPrice += (this.enrolNum[i] == undefined ? 0 : this.enrolNum[i]) * (this.ruleForm.price == 1 ? this.salePrice[i].price_01 : this.salePrice[i].price_02);
+        this.ruleForm.totalPrice +=
+          (this.enrolNum[i] == undefined ? 0 : this.enrolNum[i]) *
+          (this.ruleForm.price == 1
+            ? this.salePrice[i].price_01
+            : this.salePrice[i].price_02);
       }
       this.ruleForm.totalPrice += parseInt(
         this.ruleForm.otherCost ? this.ruleForm.otherCost : 0
@@ -1516,366 +1792,416 @@ export default {
     },
     //线下直客销售模糊查询
     querySearch1(queryString1, cb) {
-      this.marketList = []
-      this.$http.post(this.GLOBAL.serverSrc + '/org/api/userlist', {
-        "object": {
-          name: queryString1,
-          isDeleted: 0
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          for (let i = 0; i < res.data.objects.length; i++) {
-            this.marketList.push({
-              "value": res.data.objects[i].name,
-              "id": res.data.objects[i].id,
-            })
-            this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+      this.marketList = [];
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+          object: {
+            name: queryString1,
+            isDeleted: 0
           }
-        }
-        if(res.data.objects.length === 0){
-          this.nullShowGuest = true;
-        }else {
-          this.nullShowGuest = false;
-        }
-        var results = queryString1 ? this.marketList.filter(this.createFilter(queryString1)) : [];
-        cb(results)
-      }).catch(err => {
-        //console.log(err);
-      })
+        })
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            for (let i = 0; i < res.data.objects.length; i++) {
+              this.marketList.push({
+                value: res.data.objects[i].name,
+                id: res.data.objects[i].id
+              });
+              this.supplier_id = res.data.objects[i].id
+                ? res.data.objects[i].id
+                : 0;
+            }
+          }
+          if (res.data.objects.length === 0) {
+            this.nullShowGuest = true;
+          } else {
+            this.nullShowGuest = false;
+          }
+          var results = queryString1
+            ? this.marketList.filter(this.createFilter(queryString1))
+            : [];
+          cb(results);
+        })
+        .catch(err => {
+          //console.log(err);
+        });
     },
-    createFilter(queryString1){
-      return (restaurant) => {
-        return (restaurant.value);
-      }
+    createFilter(queryString1) {
+      return restaurant => {
+        return restaurant.value;
+      };
     },
-    departure1(item){
+    departure1(item) {
       this.ReplacesaleId = item.id;
     },
     //同业销售模糊查询
     querySearch2(queryString2, cb) {
       this.marketList = [];
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/PeerUser_AdminList', {
-        "object": {
-          "localCompID": this.productPos,
-          "jqUserType": 2
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          for (let i = 0; i < res.data.objects.length; i++) {
-              this.marketList.push({
-                "value": res.data.objects[i].name,
-                "id": res.data.objects[i].id,
-                "userCode":res.data.objects[i].userCode
-              })
-              this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+      this.$http
+        .post(
+          this.GLOBAL.serverSrc + "/universal/localcomp/api/PeerUser_AdminList",
+          {
+            object: {
+              localCompID: this.productPos,
+              jqUserType: 2
+            }
           }
-        }
-        if(res.data.objects){
-          this.nullShowOp = false;
-        }else {
-          this.nullShowOp = true;
-        }
-        
-        var results = queryString2 ? this.marketList.filter(this.createFilter(queryString2)) : [];
-        cb(results)
-      }).catch(err => {
-        //console.log(err);
-      })
+        )
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            for (let i = 0; i < res.data.objects.length; i++) {
+              this.marketList.push({
+                value: res.data.objects[i].name,
+                id: res.data.objects[i].id,
+                userCode: res.data.objects[i].userCode
+              });
+              this.supplier_id = res.data.objects[i].id
+                ? res.data.objects[i].id
+                : 0;
+            }
+          }
+          if (res.data.objects) {
+            this.nullShowOp = false;
+          } else {
+            this.nullShowOp = true;
+          }
+
+          var results = queryString2
+            ? this.marketList.filter(this.createFilter(queryString2))
+            : [];
+          cb(results);
+        })
+        .catch(err => {
+          //console.log(err);
+        });
     },
-    createFilter(queryString2){
-      return (restaurant) => {
-        return (restaurant.value);
-      }
+    createFilter(queryString2) {
+      return restaurant => {
+        return restaurant.value;
+      };
     },
-    departure2(item){
+    departure2(item) {
       this.tradeSales = item.userCode;
-      console.log(this.tradeSales)
       //this.userID = item.id
     },
     //商户名称模糊查询
     querySearch3(queryString3, cb) {
-      this.ruleForm.merchantsSell = '';//商户名称发生改变时，商户销售清空
+      this.ruleForm.merchantsSell = ""; //商户名称发生改变时，商户销售清空
       this.tableData2 = [];
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
-        "object": {
-          name: queryString3,
-          isDeleted: 0,
-          state: 2
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          for (let i = 0; i < res.data.objects.length; i++) {
-            this.tableData2.push({
-              "value": res.data.objects[i].name,
-              "id": res.data.objects[i].id,
-              "supplierType": res.data.objects[i].supplierType,
-              "balance": res.data.objects[i].balance,
-              "deposit": res.data.objects[i].deposit,
-              "settlementType": res.data.objects[i].settlementType,
-            })
-            this.supplier_id = res.data.objects[i].id ? res.data.objects[i].id : 0;
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
+          object: {
+            name: queryString3,
+            isDeleted: 0,
+            state: 2
           }
-        }
-        if(res.data.objects){
-          this.nullShowName = false;
-          this.forbidden=false;
-        }else {
-          this.nullShowName = true;
-          this.forbidden=true;
-        }
-        
-        var results = queryString3 ? this.tableData2.filter(this.createFilter(queryString3)) : [];
-        cb(results)
-      }).catch(err => {
-        //console.log(err);
-      })
+        })
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            for (let i = 0; i < res.data.objects.length; i++) {
+              this.tableData2.push({
+                value: res.data.objects[i].name,
+                id: res.data.objects[i].id,
+                supplierType: res.data.objects[i].supplierType,
+                balance: res.data.objects[i].balance,
+                deposit: res.data.objects[i].deposit,
+                settlementType: res.data.objects[i].settlementType
+              });
+              this.supplier_id = res.data.objects[i].id
+                ? res.data.objects[i].id
+                : 0;
+            }
+          }
+          if (res.data.objects) {
+            this.nullShowName = false;
+            this.forbidden = false;
+          } else {
+            this.nullShowName = true;
+            this.forbidden = true;
+          }
+
+          var results = queryString3
+            ? this.tableData2.filter(this.createFilter(queryString3))
+            : [];
+          cb(results);
+        })
+        .catch(err => {
+          //console.log(err);
+        });
     },
-    createFilter(queryString3){
-      return (restaurant) => {
-        return (restaurant.value);
-      }
+    createFilter(queryString3) {
+      return restaurant => {
+        return restaurant.value;
+      };
     },
-    departure(item){
-      console.log(item)
-      this.productPos = item.id;//获取供应商的id传给下单接口的orgID
-      this.lines = item.balance;//获取剩余额度
-      this.deposit = item.deposit;//获取预存款
-      this.payment = item.settlementType ;//获取结算方式
+    departure(item) {
+      this.productPos = item.id; //获取供应商的id传给下单接口的orgID
+      this.lines = item.balance; //获取剩余额度
+      this.deposit = item.deposit; //获取预存款
+      this.payment = item.settlementType; //获取结算方式
       this.originPlace = item.value;
       this.amount = this.lines + this.deposit;
     },
-    travelGuest(){//直客销售清空后输入信息不对的验证取消
-      if(this.ruleForm.market == ''){
+    travelGuest() {
+      //直客销售清空后输入信息不对的验证取消
+      if (this.ruleForm.market == "") {
         this.nullShowGuest = false;
       }
     },
-    travelOp(){//同业销售清空后输入信息不对的验证取消
-      if(this.ruleForm.travelSales == ''){
+    travelOp() {
+      //同业销售清空后输入信息不对的验证取消
+      if (this.ruleForm.travelSales == "") {
         this.nullShowOp = false;
       }
     },
-    travelName(){//商户名称添加时，商户销售可以填写
-      if(this.ruleForm.travel == ''){
+    travelName() {
+      //商户名称添加时，商户销售可以填写
+      if (this.ruleForm.travel == "") {
         this.nullShowName = false;
       }
     },
-    merchants(){//商户销售清空后输入信息不对的验证取消
-      if(this.ruleForm.merchantsSell == ''){
+    merchants() {
+      //商户销售清空后输入信息不对的验证取消
+      if (this.ruleForm.merchantsSell == "") {
         this.nullShow = false;
       }
     },
     //商户销售模糊查询
     querySearch4(queryString4, cb) {
-        this.useList = []
-        this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/get', {
-          id:this.productPos,
+      this.useList = [];
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+          id: this.productPos
         })
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.object.useList.length; i++) {
-              if(res.data.object.useList[i].name.indexOf(this.ruleForm.merchantsSell)!=-1){
+              if (
+                res.data.object.useList[i].name.indexOf(
+                  this.ruleForm.merchantsSell
+                ) != -1
+              ) {
                 this.useList.push({
-                  "value": res.data.object.useList[i].name,
-                  "id": res.data.object.useList[i].id
-                })
+                  value: res.data.object.useList[i].name,
+                  id: res.data.object.useList[i].id
+                });
               }
             }
           }
-          console.log(this.useList)
-          if(this.useList.length === 0){
+          if (this.useList.length === 0) {
             this.nullShow = true;
-          }else {
+          } else {
             this.nullShow = false;
           }
-          
-          var results = queryString4 ? this.useList.filter(this.createFilter(queryString4)) : [];
-          cb(results)
-        }).catch(err => {
-          //console.log(err);
+
+          var results = queryString4
+            ? this.useList.filter(this.createFilter(queryString4))
+            : [];
+          cb(results);
         })
+        .catch(err => {
+          //console.log(err);
+        });
     },
-    createFilter(queryString4){
-      return (restaurant) => {
-        return (restaurant.value);
-      }
+    createFilter(queryString4) {
+      return restaurant => {
+        return restaurant.value;
+      };
     },
-    departure4(item){
+    departure4(item) {
       this.userID = item.id;
     },
     //订单来源切换清空相应下的文本框内容
-    changeTab(){
-      if(this.ruleForm.orderRadio==1){
-        this.ruleForm.travelSales = '';
-        this.ruleForm.travel = '';
-        this.ruleForm.merchantsSell = '';
+    changeTab() {
+      if (this.ruleForm.orderRadio == 1) {
+        this.ruleForm.travelSales = "";
+        this.ruleForm.travel = "";
+        this.ruleForm.merchantsSell = "";
       } else {
-        this.ruleForm.market = '';
+        this.ruleForm.market = "";
       }
     },
     //详情四个表格查询
-    getBorrowing(val){
-      var that = this
-      console.log(this.planId)
+    getBorrowing(val) {
+      var that = this;
       //借款
-      that.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/list', {
-        "object": {
-          "planID": this.planId,
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tableBorrowing = res.data.objects
-          that.tableBorrowing.forEach(function (v,k,arr) {
-              if(arr[k]['checkType'] == 0){
-                arr[k]['checkType'] = '审批中'
-              }else if(arr[k]['checkType'] == 1) {
-                arr[k]['checkType'] = '通过'
-              }else if(arr[k]['checkType'] == 2) {
-                arr[k]['checkType'] = '驳回'
+      that.$http
+        .post(this.GLOBAL.serverSrc + "/finance/payment/api/list", {
+          object: {
+            planID: this.planId
+          }
+        })
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            that.tableBorrowing = res.data.objects;
+            that.tableBorrowing.forEach(function(v, k, arr) {
+              if (arr[k]["checkType"] == 0) {
+                arr[k]["checkType"] = "审批中";
+              } else if (arr[k]["checkType"] == 1) {
+                arr[k]["checkType"] = "通过";
+              } else if (arr[k]["checkType"] == 2) {
+                arr[k]["checkType"] = "驳回";
               }
-              if(arr[k]['supplierType'] == 1){
-                arr[k]['supplierType'] = '地接'
-              }else if(arr[k]['supplierType'] == 2) {
-                arr[k]['supplierType'] = '机票（本公司）'
-              }else if(arr[k]['supplierType'] == 3) {
-                arr[k]['supplierType'] = '机票（非本公司）'
-              }else if(arr[k]['supplierType'] == 4) {
-                arr[k]['supplierType'] = '小费'
-              }else if(arr[k]['supplierType'] == 5) {
-                arr[k]['supplierType'] = '地接（其他）'
-              }else if(arr[k]['supplierType'] == 6) {
-                arr[k]['supplierType'] = '火车票'
-              }else if(arr[k]['supplierType'] == 7) {
-                arr[k]['supplierType'] = '汽车票'
-              }else if(arr[k]['supplierType'] == 8) {
-                arr[k]['supplierType'] = '船票'
-              }else if(arr[k]['supplierType'] == 9) {
-                arr[k]['supplierType'] = '其他'
-              }else if(arr[k]['supplierType'] == 10) {
-                arr[k]['supplierType'] = '机票押金'
-              }else if(arr[k]['supplierType'] == 11) {
-                arr[k]['supplierType'] = '火车票押金'
+              if (arr[k]["supplierType"] == 1) {
+                arr[k]["supplierType"] = "地接";
+              } else if (arr[k]["supplierType"] == 2) {
+                arr[k]["supplierType"] = "机票（本公司）";
+              } else if (arr[k]["supplierType"] == 3) {
+                arr[k]["supplierType"] = "机票（非本公司）";
+              } else if (arr[k]["supplierType"] == 4) {
+                arr[k]["supplierType"] = "小费";
+              } else if (arr[k]["supplierType"] == 5) {
+                arr[k]["supplierType"] = "地接（其他）";
+              } else if (arr[k]["supplierType"] == 6) {
+                arr[k]["supplierType"] = "火车票";
+              } else if (arr[k]["supplierType"] == 7) {
+                arr[k]["supplierType"] = "汽车票";
+              } else if (arr[k]["supplierType"] == 8) {
+                arr[k]["supplierType"] = "船票";
+              } else if (arr[k]["supplierType"] == 9) {
+                arr[k]["supplierType"] = "其他";
+              } else if (arr[k]["supplierType"] == 10) {
+                arr[k]["supplierType"] = "机票押金";
+              } else if (arr[k]["supplierType"] == 11) {
+                arr[k]["supplierType"] = "火车票押金";
               }
-              if(arr[k]['paymentType'] == 1){
-                arr[k]['paymentType'] = '无收入借款'
-              }else if(arr[k]['paymentType'] == 2){
-                arr[k]['paymentType'] = '预付款'
+              if (arr[k]["paymentType"] == 1) {
+                arr[k]["paymentType"] = "无收入借款";
+              } else if (arr[k]["paymentType"] == 2) {
+                arr[k]["paymentType"] = "预付款";
               }
-          })
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
       //报销
-      that.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list', {
-        "object": {
-          "planID": this.planId,
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tableAccount = res.data.objects
-          that.tableAccount.forEach(function (v,k,arr) {
-              if(arr[k]['checkType'] == 0){
-                arr[k]['checkType'] = '审批中'
-              }else if(arr[k]['checkType'] == 1) {
-                arr[k]['checkType'] = '通过'
-              }else if(arr[k]['checkType'] == 2) {
-                arr[k]['checkType'] = '驳回'
+      that.$http
+        .post(this.GLOBAL.serverSrc + "/finance/expense/api/list", {
+          object: {
+            planID: this.planId
+          }
+        })
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            that.tableAccount = res.data.objects;
+            that.tableAccount.forEach(function(v, k, arr) {
+              if (arr[k]["checkType"] == 0) {
+                arr[k]["checkType"] = "审批中";
+              } else if (arr[k]["checkType"] == 1) {
+                arr[k]["checkType"] = "通过";
+              } else if (arr[k]["checkType"] == 2) {
+                arr[k]["checkType"] = "驳回";
               }
-          })
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
       //收款
-      that.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/page', {
-        "pageIndex": 1,
-        "pageSize": 100,
-        "object": {
-          "id": 0,
-          "checkType": -1,
-          "startTime": "2000-01-01",
-          "endTime": "2019-10-21",
-          "planID": this.planId,
-          "collectionType": 0,
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tableCollection = res.data.objects
-          that.tableCollection.forEach(function (v,k,arr) {
-              if(arr[k]['checkType'] == 0){
-                arr[k]['checkType'] = '审批中'
-              }else if(arr[k]['checkType'] == 1) {
-                arr[k]['checkType'] = '通过'
-              }else if(arr[k]['checkType'] == 2) {
-                arr[k]['checkType'] = '驳回'
+      that.$http
+        .post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
+          pageIndex: 1,
+          pageSize: 100,
+          object: {
+            id: 0,
+            checkType: -1,
+            startTime: "2000-01-01",
+            endTime: "2019-10-21",
+            planID: this.planId,
+            collectionType: 0
+          }
+        })
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            that.tableCollection = res.data.objects;
+            that.tableCollection.forEach(function(v, k, arr) {
+              if (arr[k]["checkType"] == 0) {
+                arr[k]["checkType"] = "审批中";
+              } else if (arr[k]["checkType"] == 1) {
+                arr[k]["checkType"] = "通过";
+              } else if (arr[k]["checkType"] == 2) {
+                arr[k]["checkType"] = "驳回";
               }
-              if(arr[k]['collectionType'] == 1){
-                arr[k]['collectionType'] = '直客'
-              }else if(arr[k]['collectionType'] == 2) {
-                arr[k]['collectionType'] = '同业'
-              }else if(arr[k]['collectionType'] == 3) {
-                arr[k]['collectionType'] = '外部'
-              }else if(arr[k]['collectionType'] == 4) {
-                arr[k]['collectionType'] = '分销商收款'
-              }else if(arr[k]['collectionType'] == 5) {
-                arr[k]['collectionType'] = '付款'
+              if (arr[k]["collectionType"] == 1) {
+                arr[k]["collectionType"] = "直客";
+              } else if (arr[k]["collectionType"] == 2) {
+                arr[k]["collectionType"] = "同业";
+              } else if (arr[k]["collectionType"] == 3) {
+                arr[k]["collectionType"] = "外部";
+              } else if (arr[k]["collectionType"] == 4) {
+                arr[k]["collectionType"] = "分销商收款";
+              } else if (arr[k]["collectionType"] == 5) {
+                arr[k]["collectionType"] = "付款";
               }
-          })
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
       //订单
-      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/planordlist', {
-        "object": {
-          "planID": this.planId,
-          "salerID": sessionStorage.getItem("id")
-        }
-      }).then(res => {
-        if (res.data.isSuccess == true) {
-          that.tableOrder = res.data.objects
-          that.tableOrder.forEach(function (v,k,arr) {
-              if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==1)){
-                arr[k]['orderStatus'] = '预订不占'
-              }else if((arr[k]['orderStatus'] == 0 && arr[k]['occupyStatus'] ==2)){
-                arr[k]['orderStatus'] = '预订占位'
-              }else if((arr[k]['orderStatus'] == 10 && arr[k]['occupyStatus'] ==3)){
-                arr[k]['orderStatus'] = '确定占位'
-              }else if(arr[k]['orderStatus'] == 1){
-                arr[k]['orderStatus'] = '补充游客材料'
-              }else if(arr[k]['orderStatus'] == 2) {
-                arr[k]['orderStatus'] = '电子合同'
-              }else if(arr[k]['orderStatus'] == 3) {
-                arr[k]['orderStatus'] = '待出行'
-              }else if(arr[k]['orderStatus'] == 4) {
-                arr[k]['orderStatus'] = '出行中'
-              }else if(arr[k]['orderStatus'] == 5) {
-                arr[k]['orderStatus'] = '待评价'
-              }else if(arr[k]['orderStatus'] == 6) {
-                arr[k]['orderStatus'] = '订单完成'
-              }else if(arr[k]['orderStatus'] == 8) {
-                arr[k]['orderStatus'] = '签署合同'
-              }else if(arr[k]['orderStatus'] == 9) {
-                arr[k]['orderStatus'] = '作废订单'
+      that.$http
+        .post(this.GLOBAL.serverSrc + "/order/all/api/planordlist", {
+          object: {
+            planID: this.planId,
+            salerID: sessionStorage.getItem("id")
+          }
+        })
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            that.tableOrder = res.data.objects;
+            that.tableOrder.forEach(function(v, k, arr) {
+              if (arr[k]["orderStatus"] == 0 && arr[k]["occupyStatus"] == 1) {
+                arr[k]["orderStatus"] = "预订不占";
+              } else if (
+                arr[k]["orderStatus"] == 0 &&
+                arr[k]["occupyStatus"] == 2
+              ) {
+                arr[k]["orderStatus"] = "预订占位";
+              } else if (
+                arr[k]["orderStatus"] == 10 &&
+                arr[k]["occupyStatus"] == 3
+              ) {
+                arr[k]["orderStatus"] = "确定占位";
+              } else if (arr[k]["orderStatus"] == 1) {
+                arr[k]["orderStatus"] = "补充游客材料";
+              } else if (arr[k]["orderStatus"] == 2) {
+                arr[k]["orderStatus"] = "电子合同";
+              } else if (arr[k]["orderStatus"] == 3) {
+                arr[k]["orderStatus"] = "待出行";
+              } else if (arr[k]["orderStatus"] == 4) {
+                arr[k]["orderStatus"] = "出行中";
+              } else if (arr[k]["orderStatus"] == 5) {
+                arr[k]["orderStatus"] = "待评价";
+              } else if (arr[k]["orderStatus"] == 6) {
+                arr[k]["orderStatus"] = "订单完成";
+              } else if (arr[k]["orderStatus"] == 8) {
+                arr[k]["orderStatus"] = "签署合同";
+              } else if (arr[k]["orderStatus"] == 9) {
+                arr[k]["orderStatus"] = "作废订单";
               }
-          })
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     //启动工作流
     startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
-      console.log(OrderID)
-      this.$http.post(this.GLOBAL.jqUrl + "/JQ/StartUpWorkFlowForJQ", {
-        jQ_ID: OrderID,
-        jQ_Type: FlowModel,
-        workflowCode: FlowModelName,
-        userCode: Usercode
-      })
-      .then(res => {
-        this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
-      });
+      this.$http
+        .post(this.GLOBAL.jqUrl + "/JQ/StartUpWorkFlowForJQ", {
+          jQ_ID: OrderID,
+          jQ_Type: FlowModel,
+          workflowCode: FlowModelName,
+          userCode: Usercode
+        })
+        .then(res => {
+          this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
+        });
     },
     //提交工作任务
     submitWAForJQ(Usercode, workItemID) {
@@ -1887,98 +2213,173 @@ export default {
         })
         .then(res => {});
     },
-    approval(row){//点击借款出现弹窗
-      this.pid = row.guid;//
+    approval(row) {
+      //点击借款出现弹窗
+      this.pid = row.guid; //
       this.paymentType = row.paymentType;
       this.infoForJQ();
       this.approvalShow = true;
     },
-    infoForJQ(){//借款获取审批流程
-      var that =this
-      console.log(this.paymentType)
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
-        jQ_ID: this.pid,
-        jQ_Type: this.paymentType == '无收入借款' ? 1 : 2,
-      }).then(obj => {
-        that.approvalTable = obj.data.extend.instanceLogInfo;
-      }).catch(obj => {})
+    infoForJQ() {
+      //借款获取审批流程
+      var that = this;
+      this.$http
+        .post(this.GLOBAL.jqUrl + "/JQ/GetInstanceActityInfoForJQ", {
+          jQ_ID: this.pid,
+          jQ_Type: this.paymentType == "无收入借款" ? 1 : 2
+        })
+        .then(obj => {
+          that.approvalTable = obj.data.extend.instanceLogInfo;
+        })
+        .catch(obj => {});
     },
-    expense(row){//点击报销曲线弹窗并且获取guid
+    expense(row) {
+      //点击报销曲线弹窗并且获取guid
       this.pid = row.guid;
       this.expenserJQ();
       this.approvalShow = true;
     },
-    expenserJQ(){//报销获取审批流程
-      var that =this
-      console.log(this.paymentType)
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
-        jQ_ID: this.pid,
-        jQ_Type: 3,
-      }).then(obj => {
-        that.approvalTable = obj.data.extend.instanceLogInfo;
-      }).catch(obj => {})
+    expenserJQ() {
+      //报销获取审批流程
+      var that = this;
+      this.$http
+        .post(this.GLOBAL.jqUrl + "/JQ/GetInstanceActityInfoForJQ", {
+          jQ_ID: this.pid,
+          jQ_Type: 3
+        })
+        .then(obj => {
+          that.approvalTable = obj.data.extend.instanceLogInfo;
+        })
+        .catch(obj => {});
     },
-    closeApprova(){//关闭借款弹窗
+    closeApprova() {
+      //关闭借款弹窗
       this.approvalTable = [];
     },
-    closeCollection(){//关闭收款弹窗
-      this.collectionTable = [] ;
+    closeCollection() {
+      //关闭收款弹窗
+      this.collectionTable = [];
     },
-    collection(row){//收款审批过程查看获取ID
+    collection(row) {
+      //收款审批过程查看获取ID
       this.collectionID = row.id;
       this.gathering();
-      this.collectionShow = true ;
+      this.collectionShow = true;
     },
-    gathering(){//获取收款审批过程数据
-      this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/coll', {
-        "id": this.collectionID
-      }).then(res =>{
-        if(res.data.isSuccess == true){
-          this.collectionTable = res.data.object.spw;//获取账户信息数据
-          for(var i=0;i < this.collectionTable.length;i++){
-            var str = this.collectionTable[i].createTime
-            var Y = str.toString().substring(0,4);
-            var M = str.toString().substring(4,6);
-            var D = str.toString().substring(6,8);
-            var Time = Y + "-" + M + "-" + D;
-            this.collectionTable[i].createTime = Time;
+    gathering() {
+      //获取收款审批过程数据
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/collection/api/coll", {
+          id: this.collectionID
+        })
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            this.collectionTable = res.data.object.spw; //获取账户信息数据
+            for (var i = 0; i < this.collectionTable.length; i++) {
+              var str = this.collectionTable[i].createTime;
+              var Y = str.toString().substring(0, 4);
+              var M = str.toString().substring(4, 6);
+              var D = str.toString().substring(6, 8);
+              var Time = Y + "-" + M + "-" + D;
+              this.collectionTable[i].createTime = Time;
+            }
           }
-          
-        }
-      })
+        });
     },
     //报账单关闭弹窗
-    closeCheckSheet(){
-
-    },
+    closeCheckSheet() {}
   }
 };
 </script>
 
 <style scoped>
 /*下单弹窗团期信息样式*/
-.planBorder{ border: 1px solid #ebebeb; border-radius: 5px; width: 95%;margin: 0 30px 10px 30px;font-size: 14px;line-height: 25px;}
-.order-title {overflow: hidden;background: #f3f3f3; width: 100%; line-height: 40px;}
-.order-title span{margin: 0 0 0 10px; font-size: 17px; color:#000;}
-.pro-info {font-size: 14px;margin: 20px 30px 10px 10px;line-height: 30px;}
+.planBorder {
+  border: 1px solid #ebebeb;
+  border-radius: 5px;
+  width: 95%;
+  margin: 0 30px 10px 30px;
+  font-size: 14px;
+  line-height: 25px;
+}
+.order-title {
+  overflow: hidden;
+  background: #f3f3f3;
+  width: 100%;
+  line-height: 40px;
+}
+.order-title span {
+  margin: 0 0 0 10px;
+  font-size: 17px;
+  color: #000;
+}
+.pro-info {
+  font-size: 14px;
+  margin: 20px 30px 10px 10px;
+  line-height: 30px;
+}
 /*下单按钮*/
-.dialog-footer {position:absolute;top: 8px; right:15px;}
+.dialog-footer {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+}
 /*下单弹窗价格选择样式*/
-.salesPrice{margin: -3px 0 0 0;}
+.salesPrice {
+  margin: -3px 0 0 0;
+}
 /*出行人信息表格样式*/
-.travelMessage{ line-height: 40px; margin: 0 0 0 10px;font-size: 17px;}
-.blue {color: #2e94f9;}
-.cursor {cursor: pointer;}
-.costTable{width:800px; margin: 0 0 0 2px;}
-.costList{width:800px; line-height: 40px; text-align: center; border:1px solid #ebebeb;border-collapse:collapse;border-spacing:0;}
-.costList_01{background: #f3f3f3;}
-.tc{text-align: center;}
+.travelMessage {
+  line-height: 40px;
+  margin: 0 0 0 10px;
+  font-size: 17px;
+}
+.blue {
+  color: #2e94f9;
+}
+.cursor {
+  cursor: pointer;
+}
+.costTable {
+  width: 800px;
+  margin: 0 0 0 2px;
+}
+.costList {
+  width: 800px;
+  line-height: 40px;
+  text-align: center;
+  border: 1px solid #ebebeb;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.costList_01 {
+  background: #f3f3f3;
+}
+.tc {
+  text-align: center;
+}
 /*详情样式*/
-.detail{ position: absolute;right: 15px; top: 8px; }
-.detailsTitle{font-size: 18px; margin: 20px 0 20px 0;}
-.checkType{padding: 0 5px; width:50px; border-radius:5px; color:#fff; line-height:30px; text-align:center;}
+.detail {
+  position: absolute;
+  right: 15px;
+  top: 8px;
+}
+.detailsTitle {
+  font-size: 18px;
+  margin: 20px 0 20px 0;
+}
+.checkType {
+  padding: 0 5px;
+  width: 50px;
+  border-radius: 5px;
+  color: #fff;
+  line-height: 30px;
+  text-align: center;
+}
 /*下单弹窗*/
-* { font-size: 14px;}
+* {
+  font-size: 14px;
+}
 .main1 {
   overflow: hidden;
   width: 70%;
@@ -2090,14 +2491,43 @@ export default {
   margin: 10px 0;
 }
 /*报账单弹窗*/
-.w1000{width:1000px;}
-.mau{margin-left:auto; margin-right:auto;}
-.fr{float: right;}
-.lh30{line-height: 30px;margin: 0 0 10px 0;}
-.chesktltle{ text-align: center; line-height: 50px; font-size: 18pt; color: #000; font-weight: bold;}
-.checksheet-table{clear: both; width: 1000px; text-align:center;line-height: 30px;}
-.w80{widows: 80px;}
-.w100{width: 100px;}
-.w320{width: 320px;}
-.bc_cc{background: #CCCCCC}
+.w1000 {
+  width: 1000px;
+}
+.mau {
+  margin-left: auto;
+  margin-right: auto;
+}
+.fr {
+  float: right;
+}
+.lh30 {
+  line-height: 30px;
+  margin: 0 0 10px 0;
+}
+.chesktltle {
+  text-align: center;
+  line-height: 50px;
+  font-size: 18pt;
+  color: #000;
+  font-weight: bold;
+}
+.checksheet-table {
+  clear: both;
+  width: 1000px;
+  text-align: center;
+  line-height: 30px;
+}
+.w80 {
+  widows: 80px;
+}
+.w100 {
+  width: 100px;
+}
+.w320 {
+  width: 320px;
+}
+.bc_cc {
+  background: #cccccc;
+}
 </style>
