@@ -128,26 +128,40 @@
       @close="closeOpenInvoice()">
       <div class="controlButton">
         <el-button class="ml13" @click="closeOpenInvoice()">取 消</el-button>
-        <el-button type="primary" @click="openInvoicement(invoiceID)" class="ml13">开票</el-button>
+        <el-button type="primary" @click="openInvoicement(invoiceID)" v-if="title == '开票'" class="ml13">开票</el-button>
+        <el-button type="primary" @click="changeTicket(invoiceID)" v-if="title == '换票'" class="ml13">换票</el-button>
       </div>
-      <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="120px">
+      <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="120px" v-if="title == '开票'">
         <el-form-item label="单张发票金额:" prop="invoicePrice">
           <el-input v-model="ruleFormSeach.invoicePrice" class="w200" placeholder="请输入发票金额"></el-input>
           <el-button type="primary" @click="split()">拆分发票</el-button>
         </el-form-item>
       </el-form>
-      <div class="associated">
+      <div class="associated" v-if="title == '开票'">
         <div class="warning"><i class="el-icon-warning"></i></div>
         <div class="fl">已关联<span class="relateditems">{{invoiceDate.length}}</span>项</div>
         <div class="aggregate">总计:<span>{{guest| numFilter}}</span>元</div>
       </div>
       <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column prop="invoiceHeader" label="发票抬头" align="center"></el-table-column>
-        <el-table-column prop="taxpayerIDNumber" label="纳税人识别号" align="center"></el-table-column>
+        <el-table-column prop="invoiceNumber" v-if="title == '换票'" label="原票号" align="center"></el-table-column>
+        <el-table-column prop="invoiceHeader" v-if="title == '开票'" label="发票抬头" align="center"></el-table-column>
+        <el-table-column prop="taxpayerIDNumber" v-if="title == '开票'" label="纳税人识别号" align="center"></el-table-column>
         <el-table-column prop="tel" label="电话" align="center"></el-table-column>
         <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
         <el-table-column prop="address" label="地址" align="center"></el-table-column>
         <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
+        <el-table-column prop="invoiceHeader" v-if="title == '换票'" label="发票抬头" align="center" min-width="120">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.invoiceHeader" class="w150"></el-input>
+            <div class="validation" v-if="scope.row.invoiceHeader == '' && a == true">发票抬头不能为空</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="taxpayerIDNumber" v-if="title == '换票'" label="纳税人识别号" align="center" min-width="100">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.taxpayerIDNumber" class="w150"></el-input>
+            <div class="validation" v-if="scope.row.taxpayerIDNumber == '' && a == true">纳税人识别号不能为空</div>
+          </template>
+        </el-table-column>
         <el-table-column label="发票金额" align="center" min-width="120">
           <template slot-scope="scope">
             <el-input v-model="scope.row.invoicePrice" class="w150"></el-input>
@@ -195,8 +209,12 @@ export default {
       invoiceDate:[],//发票表格
       invoiceAmount:'',// 输入发票金额
       invoiceNumber:'',// 输入发票号
+      invoiceHeader:'',
+      taxpayerIDNumber:'',
       a:false,
       guest:'',
+      online:0,
+      ifOnly:true,
     };
 
   },
@@ -228,6 +246,12 @@ export default {
           this.getInvoice(this.invoiceID);
           this.openInvoiceShow = true;
           this.title = "开票"
+        }, 200);
+      }else if(this.dialogType == 4){
+        setTimeout(() => {
+          this.getInvoice(this.invoiceID);
+          this.openInvoiceShow = true;
+          this.title = "换票"
         }, 200);
       }
     },
@@ -261,17 +285,16 @@ export default {
         id: ID
       }).then(res => {
         if (res.data.isSuccess == true) {
-          console.log(res.data.object)
           this.guest = res.data.object.invoicePrice;
           this.invoiceList = res.data.object;
           this.tableDate = res.data.object.ordelist;
           this.invoiceDate.push(res.data.object);
           this.invoiceDate[0].invoicePrice = "";
+          //this.invoiceDate[0].invoiceNumber = "";
         }
       });
     },
     rejectedIncoice(ID){// 驳回
-      console.log(ID)
       this.$confirm("是否驳回本次发票信息?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
@@ -301,6 +324,7 @@ export default {
       this.openInvoiceShow = false;
       this.invoiceDate = [];
       this.ruleFormSeach.invoicePrice = '';
+      this.a = false;
     },
     openInvoice(ID){ // 在详情弹窗里点击开票按钮
       this.invoiceDate = [];
@@ -308,49 +332,85 @@ export default {
       this.dialogFormOrder = false;
       this.openInvoiceShow = true;
     },
-    invoiceOnly(ID){ // 验证发票号唯一性
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/exisinvoicenumber", {
-        id: ID,
-        invoiceNumber:this.invoiceNumber
-      }).then(res => {
-        if (res.data.isSuccess == false && this.invoiceNumber !== '') {
-          this.$confirm("该发票号码已存在?", "提示", {
-           confirmButtonText: "确定",
-           cancelButtonText: "取消",
-           type: "warning"
-          })
-        }
-      });
-    },
     split(){// 拆分
       if(this.ruleFormSeach.invoicePrice <= 0){
         return;
       }
       let str = Math.ceil(this.guest/this.ruleFormSeach.invoicePrice)
       let remainder =this.guest%this.ruleFormSeach.invoicePrice;
-      console.log(remainder)
       let guestAll = this.invoiceDate[0];
       this.invoiceDate=[];
       for(let i=0; i < str; i++){
         guestAll.invoicePrice = this.ruleFormSeach.invoicePrice;
-        this.invoiceDate.push(guestAll)
+        this.invoiceDate.push(JSON.parse(JSON.stringify(guestAll)))
       }
       if(remainder > 0){
         this.invoiceDate[str-1].invoicePrice = remainder;
       }
-      
-      
+    },
+    invoiceOnly(ID,i){ // 验证发票号唯一性
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/exisinvoicenumber", {
+        id: ID,
+        invoiceNumber:this.invoiceDate[i].invoiceNumber
+      }).then(res => {
+        this.online++;
+        if (res.data.isSuccess == false && this.invoiceDate[i].invoiceNumber !== '') {
+          this.$message.success("第 "+(i+1)+" 条发票号码已存在");
+          this.ifOnly = false;
+        }
+        
+      });
     },
     openInvoicement(ID){ // 点击开票按钮
-      this.invoiceOnly(); // 验证发票号唯一方法
-      this.a = true;
-      // this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/confirmr", {
-      //   "object":{
-      //     receiptList:this.invoiceDate,
-      //     receiptID:ID
-      //   }
-      // })
+      this.online = 0;
+      this.ifOnly = true;
+      for(let i =0 ; i < this.invoiceDate.length; i++){
+        this.invoiceOnly(ID,i); // 验证发票号唯一方法
+      }
+      if(this.online==this.invoiceDate.length-1 && this.ifOnly == true){
+        this.a = true;
+        let sum = 0; //求发票金额的总和
+        this.invoiceDate.forEach(function(item) {
+          sum += Number(item.invoicePrice);
+        });
+        let sum_01 = 0; //求关联订单剩余开票金额的总和
+        this.tableDate.forEach(function(item) {
+          sum_01 += Number(item.skPrice);
+        });
+        let aaa = true;
+        for(let i =0 ; i < this.invoiceDate.length; i++){
+          if(this.invoiceDate[i].invoicePrice =='' || this.invoiceDate[i].invoiceNumber==''){
+            aaa = false;
+          }
+        }
+        if(aaa==false){
+          this.$message.success("请填写发票号或者发票金额");
+          return;
+        }
+        if(sum <= sum_01){
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/confirm", {
+            "object":{
+              receiptList:this.invoiceDate,
+              receiptID:ID
+            }
+          }).then(res => {
+            this.$message.success("开票成功");
+            this.openInvoiceShow = false ;
+            this.$parent.pageList();
+          })
+        }else{
+          this.$message.success("该发票金额已超过剩余开票金额");
+        }
+      }
     },
+    changeTicket(ID){ // 换票
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/replacereceipt", {
+        object:{
+
+        }
+      })
+    },
+
   }
 };
 </script>
@@ -374,6 +434,6 @@ export default {
 .relateditems{color: #108ee9; margin: 0 5px 0 5px;}
 .aggregate{margin: 0 0 0 15px;float: left;}
 .aggregate span{ margin: 0 0 0 15px;}
-.w150{width: 150px;}
+.w150{width: 100px;}
 .validation{color: red;width: 140px;line-height: 30px;}
 </style>
