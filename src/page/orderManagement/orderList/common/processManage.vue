@@ -68,11 +68,8 @@
           报名人数
         </div>
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
-          <span
-            style="display:inline-block;width: 300px;"
-            v-bind:style="(index+1)%2 !==0?'margin-right:50px;':''"
-          >
-            <span v-bind:style="(index+1)%2 !==0?'margin-left:50px;':''">{{item.enrollName}}￥</span>
+          <span v-bind:style="{display:'inline-block',width: '150px',height:bigHeight}">
+            <span>{{item.enrollName}}￥</span>
             <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
             <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
             <span v-show="propPriceType==1">{{item.price_01}}</span>
@@ -311,6 +308,7 @@
 </template>
 
 <script>
+import { max } from "moment";
 export default {
   props: {
     orderId: 0,
@@ -368,6 +366,7 @@ export default {
       winTitle: "", //弹窗标题
       enrollDetail: "", //报名信息传给后台的格式
       enrollDetailShow: "", //报名信息展示在页面的格式
+      bigHeight:0, //报名类型最长的名字所占的高度
       conForm: {
         id: 0,
         isDeleted: 0,
@@ -1132,8 +1131,8 @@ export default {
                   parseInt(data[i].quota) - parseInt(this.preLength[i]);
               }
             }
-
             this.salePrice = data;
+            this.getBigHeight()
             this.salePriceNum = data;
             for (let i = 0; i < this.salePriceNum.length; i++) {
               this.salePriceNum[i].quota =
@@ -1142,6 +1141,25 @@ export default {
             }
           }
         });
+    },
+      // 求报名类型的名字的最高的高度
+    getBigHeight() {
+      let maxArr = [];
+      this.salePrice.forEach(item => {
+        maxArr.push(item.enrollName.length);
+      });
+      let maxValue = Math.max.apply(null, maxArr);
+      let maxIndex = maxArr.findIndex((value, index, arr) => {
+        return value == maxValue;
+      });
+      let heightNum = 0;
+      let total = this.salePrice[maxIndex].enrollName.length;
+      total % 10 !== 0
+        ? (heightNum = total / 10 + 1)
+        : (heightNum = total / 10);
+      heightNum = parseInt(heightNum);
+      this.bigHeight = heightNum * 17
+      console.log(this.bigHeight)
     },
     teampreview(planId) {
       //团期计划订单信息预览
@@ -1403,17 +1421,17 @@ export default {
           this.tour[index].splice(type, 1); //手动删除单条出行人信息
           this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
           this.preLength[index] = this.enrolNum[index];
-          this.applyEnrollDetail(enrollName,index);
+          this.applyEnrollDetail(enrollName, index);
         });
       } else {
         this.tour[index].splice(type, 1); //手动删除单条出行人信息
         this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
         this.preLength[index] = this.enrolNum[index];
-        this.applyEnrollDetail(enrollName,index);
+        this.applyEnrollDetail(enrollName, index);
       }
     },
     // 删除出行人 同步报名信息的字段
-    applyEnrollDetail(enrollName,index) {
+    applyEnrollDetail(enrollName, index) {
       let _arr = this.enrollDetail.split(",");
       for (let i = _arr.length - 1; i => 0; i--) {
         if (_arr[i].indexOf(enrollName) != -1) {
@@ -1422,9 +1440,16 @@ export default {
           break;
         }
       }
-      let salePrice = this.salePrice[index]
-      let enrolNum = this.enrolNum[index]
-      this.peoNum(index,salePrice.enrollID,salePrice.enrollName,salePrice.price_01,salePrice.price_02,enrolNum[index])
+      let salePrice = this.salePrice[index];
+      let enrolNum = this.enrolNum[index];
+      this.peoNum(
+        index,
+        salePrice.enrollID,
+        salePrice.enrollName,
+        salePrice.price_01,
+        salePrice.price_02,
+        enrolNum[index]
+      );
     },
 
     // 监听订单来源是同业社还是直客下单  是直客则返回true 等于1就是同业
@@ -1530,7 +1555,7 @@ export default {
 }
 .registration {
   float: left;
-  margin: 40px 15px 40px 30px;
+  margin: 40px 15px 40px 3px;
   text-align: center;
 }
 .el-input-number--medium {
