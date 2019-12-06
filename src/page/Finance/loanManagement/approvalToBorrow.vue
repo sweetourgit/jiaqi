@@ -556,7 +556,7 @@ import moment from 'moment'
         var that = this;
         let getWorkflowCode
         if(this.presentRouter == '无收入借款管理') {
-          getWorkflowCode = 'loan_noIncome4' // 1 
+          getWorkflowCode = 'loan_noIncome4' // 1
         } else if(this.presentRouter == '预付款管理') {
           getWorkflowCode = 'borrow_Moneys4' // 2
         }else {}
@@ -600,7 +600,7 @@ import moment from 'moment'
           }
         })
       },
-      // 详情弹窗
+      // 详情弹窗()
       checkIncome(index, row){
         console.log(row,'审批您列表详情弹窗')
         this.getCheckTypeEX = row.checkTypeEX
