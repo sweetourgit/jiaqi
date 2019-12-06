@@ -68,7 +68,10 @@
           报名人数
         </div>
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
-          <span style="display:inline-block;width: 300px;" v-bind:style="(index+1)%2 !==0?'margin-right:50px;':''">
+          <span
+            style="display:inline-block;width: 300px;"
+            v-bind:style="(index+1)%2 !==0?'margin-right:50px;':''"
+          >
             <span v-bind:style="(index+1)%2 !==0?'margin-left:50px;':''">{{item.enrollName}}￥</span>
             <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
             <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
@@ -1199,7 +1202,6 @@ export default {
       // 根据报名信息求总价
       this.payable = 0;
       let _arr = this.enrollDetail.split(",");
-      // _arr = _arr.splice(_arr.length - 1, 1);
       _arr.pop();
       for (let i = 0; i < _arr.length; i++) {
         let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1];
@@ -1401,17 +1403,17 @@ export default {
           this.tour[index].splice(type, 1); //手动删除单条出行人信息
           this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
           this.preLength[index] = this.enrolNum[index];
-          this.applyEnrollDetail(enrollName);
+          this.applyEnrollDetail(enrollName,index);
         });
       } else {
         this.tour[index].splice(type, 1); //手动删除单条出行人信息
         this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
         this.preLength[index] = this.enrolNum[index];
-        this.applyEnrollDetail(enrollName);
+        this.applyEnrollDetail(enrollName,index);
       }
     },
     // 删除出行人 同步报名信息的字段
-    applyEnrollDetail(enrollName) {
+    applyEnrollDetail(enrollName,index) {
       let _arr = this.enrollDetail.split(",");
       for (let i = _arr.length - 1; i => 0; i--) {
         if (_arr[i].indexOf(enrollName) != -1) {
@@ -1420,6 +1422,9 @@ export default {
           break;
         }
       }
+      let salePrice = this.salePrice[index]
+      let enrolNum = this.enrolNum[index]
+      this.peoNum(index,salePrice.enrollID,salePrice.enrollName,salePrice.price_01,salePrice.price_02,enrolNum[index])
     },
 
     // 监听订单来源是同业社还是直客下单  是直客则返回true 等于1就是同业
