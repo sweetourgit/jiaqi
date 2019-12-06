@@ -126,52 +126,50 @@
     <!--开票、换票弹窗-->
     <el-dialog :title="title" :visible.sync="openInvoiceShow" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"
       @close="closeOpenInvoice()">
-      <el-form :model="conForm" :rules="rules" ref="conForm">
-        <div class="controlButton">
-          <el-button class="ml13" @click="closeOpenInvoice()">取 消</el-button>
-          <el-button type="primary" @click="openInvoicement(invoiceID)" class="ml13">开票</el-button>
-        </div>
-        <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="120px">
-          <el-form-item label="单张发票金额:" prop="invoicePrice">
-            <el-input v-model="ruleFormSeach.invoicePrice" class="w200" placeholder="请输入发票金额"></el-input>
-            <el-button type="primary">拆分发票</el-button>
-          </el-form-item>
-        </el-form>
-        <div class="associated">
-          <div class="warning"><i class="el-icon-warning"></i></div>
-          <div class="fl">已关联<span class="relateditems">{{invoiceDate.length}}</span>项</div>
-          <div class="aggregate">总计:<span>{{invoiceList.invoicePrice | numFilter}}</span>元</div>
-        </div>
-        <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-          <el-table-column prop="invoiceHeader" label="发票抬头" align="center"></el-table-column>
-          <el-table-column prop="taxpayerIDNumber" label="纳税人识别号" align="center"></el-table-column>
-          <el-table-column prop="tel" label="电话" align="center"></el-table-column>
-          <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
-          <el-table-column prop="address" label="地址" align="center"></el-table-column>
-          <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
-          <el-table-column label="发票金额" align="center" min-width="120">
-            <template slot-scope="scope">
-              <el-input v-model="invoiceAmount" class="w150"></el-input>
-              <div class="validation" v-if="invoiceAmount == '' && a == true">发票金额不能为空</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="发票号码" align="center" min-width="120">
-            <template slot-scope="scope">
-              <el-input v-model="invoiceNumber" class="w150"></el-input>
-              <div class="validation" v-if="invoiceNumber == '' && a == true">发票号码不能为空</div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="order-title"><span>关联订单</span></div>
-        <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-          <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-          <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
-          <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-          <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center"></el-table-column>
-          <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column>
-          <el-table-column prop="skPrice" label="剩余开票金额" align="center"></el-table-column>
-        </el-table>
+      <div class="controlButton">
+        <el-button class="ml13" @click="closeOpenInvoice()">取 消</el-button>
+        <el-button type="primary" @click="openInvoicement(invoiceID)" class="ml13">开票</el-button>
+      </div>
+      <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="120px">
+        <el-form-item label="单张发票金额:" prop="invoicePrice">
+          <el-input v-model="ruleFormSeach.invoicePrice" class="w200" placeholder="请输入发票金额"></el-input>
+          <el-button type="primary" @click="split()">拆分发票</el-button>
+        </el-form-item>
       </el-form>
+      <div class="associated">
+        <div class="warning"><i class="el-icon-warning"></i></div>
+        <div class="fl">已关联<span class="relateditems">{{invoiceDate.length}}</span>项</div>
+        <div class="aggregate">总计:<span>{{guest| numFilter}}</span>元</div>
+      </div>
+      <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
+        <el-table-column prop="invoiceHeader" label="发票抬头" align="center"></el-table-column>
+        <el-table-column prop="taxpayerIDNumber" label="纳税人识别号" align="center"></el-table-column>
+        <el-table-column prop="tel" label="电话" align="center"></el-table-column>
+        <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
+        <el-table-column prop="address" label="地址" align="center"></el-table-column>
+        <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
+        <el-table-column label="发票金额" align="center" min-width="120">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.invoicePrice" class="w150"></el-input>
+            <div class="validation" v-if="scope.row.invoicePrice == '' && a == true">发票金额不能为空</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="发票号码" align="center" min-width="120">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.invoiceNumber" class="w150"></el-input>
+            <div class="validation" v-if="scope.row.invoiceNumber == '' && a == true">发票号码不能为空</div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="order-title"><span>关联订单</span></div>
+      <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
+        <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+        <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
+        <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+        <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center"></el-table-column>
+        <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column>
+        <el-table-column prop="skPrice" label="剩余开票金额" align="center"></el-table-column>
+      </el-table>
     </el-dialog>
   </div> 
 </template>
@@ -198,8 +196,7 @@ export default {
       invoiceAmount:'',// 输入发票金额
       invoiceNumber:'',// 输入发票号
       a:false,
-      conForm:{},
-      rules:{},
+      guest:'',
     };
 
   },
@@ -265,9 +262,11 @@ export default {
       }).then(res => {
         if (res.data.isSuccess == true) {
           console.log(res.data.object)
+          this.guest = res.data.object.invoicePrice;
           this.invoiceList = res.data.object;
           this.tableDate = res.data.object.ordelist;
           this.invoiceDate.push(res.data.object);
+          this.invoiceDate[0].invoicePrice = "";
         }
       });
     },
@@ -301,6 +300,7 @@ export default {
     closeOpenInvoice(){// 关闭开票、换票弹窗
       this.openInvoiceShow = false;
       this.invoiceDate = [];
+      this.ruleFormSeach.invoicePrice = '';
     },
     openInvoice(ID){ // 在详情弹窗里点击开票按钮
       this.invoiceDate = [];
@@ -322,14 +322,31 @@ export default {
         }
       });
     },
+    split(){// 拆分
+      if(this.ruleFormSeach.invoicePrice <= 0){
+        return;
+      }
+      let str = Math.ceil(this.guest/this.ruleFormSeach.invoicePrice)
+      let remainder =this.guest%this.ruleFormSeach.invoicePrice;
+      console.log(remainder)
+      let guestAll = this.invoiceDate[0];
+      this.invoiceDate=[];
+      for(let i=0; i < str; i++){
+        guestAll.invoicePrice = this.ruleFormSeach.invoicePrice;
+        this.invoiceDate.push(guestAll)
+      }
+      if(remainder > 0){
+        this.invoiceDate[str-1].invoicePrice = remainder;
+      }
+      
+      
+    },
     openInvoicement(ID){ // 点击开票按钮
       this.invoiceOnly(); // 验证发票号唯一方法
       this.a = true;
-      let guest = JSON.parse(JSON.stringify(this.conForm));
-      console.log(guest)
       // this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/confirmr", {
       //   "object":{
-      //     receiptList:0,
+      //     receiptList:this.invoiceDate,
       //     receiptID:ID
       //   }
       // })
