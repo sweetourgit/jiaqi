@@ -68,7 +68,7 @@
           报名人数
         </div>
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
-          <span v-bind:style="{display:'inline-block',width: '150px',height:bigHeight}">
+          <span class="multi-wrap" :title="item.enrollName">
             <span>{{item.enrollName}}￥</span>
             <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
             <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
@@ -366,7 +366,6 @@ export default {
       winTitle: "", //弹窗标题
       enrollDetail: "", //报名信息传给后台的格式
       enrollDetailShow: "", //报名信息展示在页面的格式
-      bigHeight:0, //报名类型最长的名字所占的高度
       conForm: {
         id: 0,
         isDeleted: 0,
@@ -1132,7 +1131,6 @@ export default {
               }
             }
             this.salePrice = data;
-            this.getBigHeight()
             this.salePriceNum = data;
             for (let i = 0; i < this.salePriceNum.length; i++) {
               this.salePriceNum[i].quota =
@@ -1141,25 +1139,6 @@ export default {
             }
           }
         });
-    },
-      // 求报名类型的名字的最高的高度
-    getBigHeight() {
-      let maxArr = [];
-      this.salePrice.forEach(item => {
-        maxArr.push(item.enrollName.length);
-      });
-      let maxValue = Math.max.apply(null, maxArr);
-      let maxIndex = maxArr.findIndex((value, index, arr) => {
-        return value == maxValue;
-      });
-      let heightNum = 0;
-      let total = this.salePrice[maxIndex].enrollName.length;
-      total % 10 !== 0
-        ? (heightNum = total / 10 + 1)
-        : (heightNum = total / 10);
-      heightNum = parseInt(heightNum);
-      this.bigHeight = heightNum * 17
-      console.log(this.bigHeight)
     },
     teampreview(planId) {
       //团期计划订单信息预览
@@ -1566,6 +1545,16 @@ export default {
 }
 .ml13 {
   margin-left: 13px;
+}
+.multi-wrap  {
+  text-align: center;
+  display: -webkit-box !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  width: 150px;
 }
 /*费用*/
 .input {
