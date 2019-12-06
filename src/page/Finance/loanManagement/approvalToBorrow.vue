@@ -530,9 +530,17 @@ import moment from 'moment'
       },
       transit(formName){
         var that = this;
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
+        // this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
+        let getWorkflowCode
+        if(this.presentRouter == '无收入借款管理') {
+          getWorkflowCode = 'loan_noIncome4' // 1
+        } else if(this.presentRouter == '预付款管理') {
+          getWorkflowCode = 'borrow_Moneys4' // 2
+        }else {}
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion',
         {
-          //"userCode": "rbop01",
+          "jQ_ID":that.guid,
+          "jQ_Type": getWorkflowCode,
           "userCode":sessionStorage.getItem('tel'),
           "workItemID": that.getWorkItemId,
           "commentText": that.commentText
@@ -546,9 +554,17 @@ import moment from 'moment'
       // 驳回
       rejected_01(formName){
         var that = this;
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ',
+        let getWorkflowCode
+        if(this.presentRouter == '无收入借款管理') {
+          getWorkflowCode = 'loan_noIncome4' // 1 
+        } else if(this.presentRouter == '预付款管理') {
+          getWorkflowCode = 'borrow_Moneys4' // 2
+        }else {}
+        // this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ',
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion',
         {
-          //"userCode": "rbop01",
+          "jQ_ID": that.guid,
+          "jQ_Type": getWorkflowCode,
           "userCode":sessionStorage.getItem('tel'),
           "workItemID": that.getWorkItemId,
           "commentText": that.commentText
