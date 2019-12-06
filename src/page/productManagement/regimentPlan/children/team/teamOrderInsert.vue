@@ -863,7 +863,6 @@ export default {
         this.ruleForm.allDisRemark = "";
       } else if (this.dialogType == 2) {
         setTimeout(() => {
-          console.log(this.planId);
           this.teamGetDetails(this.planId);
         }, 200);
         this.detailsDialog = true;
@@ -954,7 +953,6 @@ export default {
     //详情弹窗
     teamGetDetails(ID) {
       //团期计划订单信息预览
-      console.log(ID);
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
           id: ID
@@ -979,7 +977,6 @@ export default {
     teampreview(ID) {
       //this.getaverage(ID);
       //团期计划订单信息预览
-      console.log(ID);
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
           id: ID
@@ -1042,7 +1039,6 @@ export default {
         this.enrolNums = false;
       }
       var len;
-      console.log(arrLength);
       if (arrLength > preLength) {
         //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
         len = arrLength - preLength;
@@ -1073,16 +1069,12 @@ export default {
         // 报名信息增加enrollDetail拼接
         for (let i = 0; i < num - preLength; i++) {
           let price;
-          // console.log(this.ruleForm.price,"this.ruleForm.price")
           this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
           price = this.toDecimal2(price);
           this.enrollDetail += `${enrollName}(${price} * 1),`;
         }
-        console.log("增加",this.enrollDetail)
       } else {
-        // console.log(this.tour[index])
         for (var i = 0; i < this.tour[index].length; i++) {
-          // console.log(this.tour[index][i])
           if (this.tour[index][i].cnName === "") {
             this.tour[index].splice(i, preLength - arrLength);
             break;
@@ -1099,7 +1091,6 @@ export default {
             }
           }
         }
-        console.log("减少",this.enrollDetail)
       }
     },
     submitForm(formName, index) {
@@ -1240,7 +1231,6 @@ export default {
     getTypePrice() {
       // 先去indexof是否有报名类型相等然后找到 （ 和 * 的索引 之后replace替换成 
       let arr = this.enrollDetail.split(",")
-      console.log("this.enrollDetail",this.enrollDetail)
       arr.pop()
       for(let i = 0; i < arr.length; i++) {
         arr[i] = arr[i].replace(/\s*/g, '')
@@ -1383,7 +1373,6 @@ export default {
                       }
                     )
                     .then(res => {
-                      console.log(typeof res.data.result.message);
                       if (res.data.isSuccess == true) {
                         this.$message.success("提交成功");
                         this.$parent.teamQueryList(
@@ -1411,7 +1400,6 @@ export default {
                       }
                     });
                 } else if (this.ruleForm.orderRadio === "2") {
-                  console.log(this.payment);
                   if (this.payment == "1") {
                     if (
                       this.nullShow == false &&
@@ -1761,8 +1749,6 @@ export default {
           let guest = JSON.parse(JSON.stringify(this.conForm));
           guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
           guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
-          console.log(guest.enrollNum);
-          console.log(this.salePrice[this.tourType].enrolNum);
           //guest.enrollNum = this.salePrice[this.tourType].enrolNum; //填充报名类型数量
           // guest.enrollNum = this.
           // guest.createTime = this.createTime
@@ -1896,7 +1882,6 @@ export default {
     },
     departure2(item) {
       this.tradeSales = item.userCode;
-      console.log(this.tradeSales);
       //this.userID = item.id
     },
     //商户名称模糊查询
@@ -1950,7 +1935,6 @@ export default {
       };
     },
     departure(item) {
-      console.log(item);
       this.productPos = item.id; //获取供应商的id传给下单接口的orgID
       this.lines = item.balance; //获取剩余额度
       this.deposit = item.deposit; //获取预存款
@@ -2004,7 +1988,6 @@ export default {
               }
             }
           }
-          console.log(this.useList);
           if (this.useList.length === 0) {
             this.nullShow = true;
           } else {
@@ -2041,7 +2024,6 @@ export default {
     //详情四个表格查询
     getBorrowing(val) {
       var that = this;
-      console.log(this.planId);
       //借款
       that.$http
         .post(this.GLOBAL.serverSrc + "/finance/payment/api/list", {
@@ -2210,7 +2192,6 @@ export default {
     },
     //启动工作流
     startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
-      console.log(OrderID);
       this.$http
         .post(this.GLOBAL.jqUrl + "/JQ/StartUpWorkFlowForJQ", {
           jQ_ID: OrderID,
@@ -2242,7 +2223,6 @@ export default {
     infoForJQ() {
       //借款获取审批流程
       var that = this;
-      console.log(this.paymentType);
       this.$http
         .post(this.GLOBAL.jqUrl + "/JQ/GetInstanceActityInfoForJQ", {
           jQ_ID: this.pid,
@@ -2262,7 +2242,6 @@ export default {
     expenserJQ() {
       //报销获取审批流程
       var that = this;
-      console.log(this.paymentType);
       this.$http
         .post(this.GLOBAL.jqUrl + "/JQ/GetInstanceActityInfoForJQ", {
           jQ_ID: this.pid,
