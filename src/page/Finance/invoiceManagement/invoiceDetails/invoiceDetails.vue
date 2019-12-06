@@ -128,7 +128,8 @@
       @close="closeOpenInvoice()">
       <div class="controlButton">
         <el-button class="ml13" @click="closeOpenInvoice()">取 消</el-button>
-        <el-button type="primary" @click="openInvoicement(invoiceID)" class="ml13">开票</el-button>
+        <el-button type="primary" @click="openInvoicement(invoiceID)" v-if="title == '开票'" class="ml13">开票</el-button>
+        <el-button type="primary" @click="changeTicket(invoiceID)" v-if="title == '换票'" class="ml13">换票</el-button>
       </div>
       <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="120px" v-if="title == '开票'">
         <el-form-item label="单张发票金额:" prop="invoicePrice">
@@ -213,6 +214,7 @@ export default {
       a:false,
       guest:'',
       online:0,
+      ifOnly:true,
     };
 
   },
@@ -354,16 +356,18 @@ export default {
         this.online++;
         if (res.data.isSuccess == false && this.invoiceDate[i].invoiceNumber !== '') {
           this.$message.success("第 "+(i+1)+" 条发票号码已存在");
+          this.ifOnly = false;
         }
         
       });
     },
     openInvoicement(ID){ // 点击开票按钮
       this.online = 0;
+      this.ifOnly = true;
       for(let i =0 ; i < this.invoiceDate.length; i++){
         this.invoiceOnly(ID,i); // 验证发票号唯一方法
       }
-      if(this.online==this.invoiceDate.length-1){
+      if(this.online==this.invoiceDate.length-1 && this.ifOnly == true){
         this.a = true;
         let sum = 0; //求发票金额的总和
         this.invoiceDate.forEach(function(item) {
@@ -399,6 +403,14 @@ export default {
         }
       }
     },
+    changeTicket(ID){ // 换票
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/replacereceipt", {
+        object:{
+
+        }
+      })
+    },
+
   }
 };
 </script>
