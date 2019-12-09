@@ -10,6 +10,7 @@
        <el-button :disabled="forbidden" @click="delMenu">删除</el-button>
        <el-button :disabled="forbidden" @click="openMenu(2,'编辑菜单')">编辑</el-button>
        <el-button :disabled="forbidden" @click="operation">页面权限</el-button>
+       
      </el-row>
     <!--list-->
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
