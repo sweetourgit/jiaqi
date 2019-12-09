@@ -25,12 +25,11 @@
 <template>
   <div class="tinymce-container">
     <textarea class="tinymce-textarea" 
-      :id="$vnode.tag" />
-    <div class="editor-custom-btn-container" @click="imageSuccessCBK">
+      :id="'editor'+ _uid" />
+    <div class="editor-custom-btn-container">
       <editorImage color="#1890ff" class="editor-upload-btn" 
         @successCBK="imageSuccessCBK" />
     </div>
-    <button @click="imageSuccessCBK">asdfasdf</button>
   </div>
 </template>
 
@@ -70,7 +69,7 @@ export default {
   },
 
   mounted() {
-    this.init(this.$vnode.tag)
+    this.init()
   },
   beforeDestroy() {
     this.destroy()
@@ -80,7 +79,7 @@ export default {
     value(val) {
       if (!this.hasChange && this.hasInit) {
         this.$nextTick(() =>
-          window.tinymce.get(this.$vnode.tag).setContent(val || ''))
+          window.tinymce.get('editor'+ this._uid).setContent(val || ''))
       }
     }
   },
@@ -95,14 +94,14 @@ export default {
       // 配置
       {
         plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
-      }
+      },
     )
   },
 
   methods: {
-    init(domId){
+    init(){
       const _this = this
-      let id= this.$vnode.tag;
+      let id= `editor${this._uid}`;
       window.tinymce.init({
         selector: `#${id}`,
         language: 'zh_CN',
@@ -142,31 +141,15 @@ export default {
       this.editor.destroy();
     },
 
-    imageSuccessCBK2(arr) {
-      const _this = this
-      // arr.forEach(v => {
-      //   window.tinymce.get(_this.tinymceId).insertContent(`<img class="wscnph" src="${v.url}" >`)
-      // })
-      window.tinymce.get(this.$vnode.tag).insertContent(
-        `
-        <img class="wscnph" src="http://img4.imgtn.bdimg.com/it/u=1540229220,2046462304&fm=26&gp=0.jpg" />
-        <img class="wscnph" src="http://img2.imgtn.bdimg.com/it/u=3105436742,112301016&fm=26&gp=0.jpg" />
-        <img class="wscnph" src="http://img5.imgtn.bdimg.com/it/u=2525202780,1252778177&fm=26&gp=0.jpg />
-        <img class="wscnph" src="http://img5.imgtn.bdimg.com/it/u=2525202780,1252778177&fm=26&gp=0.jpg" />
-        `
-      )
-      // this.$emit('input', window.tinymce.get(this.$vnode.tag).getContent());
-    },
-
     imageSuccessCBK(arr) {
       let result= "";
       arr.forEach(image => {
         let { src, dataSrc }= image;
+        console.log(src, dataSrc);
         // result+= `img src="${src} data-src="${dataSrc}" />
-        result+= `img src="${dataSrc} />
-        `;
+        result+= `<img src="${dataSrc}" style="width: 100%" />`;
       })
-      window.tinymce.get(this.$vnode.tag).insertContent(result);
+      window.tinymce.get('editor'+ this._uid).insertContent(result);
     }
   }
 }

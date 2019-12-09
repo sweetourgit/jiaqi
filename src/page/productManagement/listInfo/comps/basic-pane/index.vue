@@ -164,8 +164,7 @@
       <el-form-item label="产品概况：" prop="mark">
         <div style="width: 850px; padding-top: 10px;">
           <vue-editor 
-            v-model="submitForm.mark"
-            :editorToolbar='$defaultToolbar'>
+            v-model="submitForm.mark">
           </vue-editor>
         </div>
       </el-form-item>         
@@ -191,7 +190,7 @@
 import ValidateMsgMixin from '@/mixin/ValidateMsgMixin'
 
 // 第三方组件
-import { VueEditor } from 'vue2-editor'
+import VueEditor from '@/components/tinymce'
 
 import labelInput from './comps/label-input/index'
 import imageInput from './comps/image-input'
