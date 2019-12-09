@@ -113,82 +113,82 @@
               <el-tab-pane
                 :key="item.name"
                 v-for="item in editableTabs"
-                :label="item.name"
+                :label="item.title"
                 :name="item.name"
               >
-              {{editableTabs.content}}
+              <!-- {{item.content}} -->
               <div class="handle_div">
-                  <div class="handle_id" v-if="find==1"><span>ID:</span><span style="margin-left: 10px;">{{editableTabs.id}}</span></div>
-                  <div class="handle_people" v-if="find==1"><span>申请人:</span><span style="margin-left: 10px;">{{editableTabs.createUser}}</span></div>
-                  <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;">{{editableTabs.createTime}}</span></div>
+                <div class="handle_id" v-if="find==1"><span>ID:</span><span style="margin-left: 10px;">{{ruleForm.id}}</span></div>
+                <div class="handle_people" v-if="find==1"><span>申请人:</span><span style="margin-left: 10px;">{{ruleForm.createUser}}</span></div>
+                <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;">{{ruleForm.createTime}}</span></div>
               </div>
-
-                <div style="color: red; position: absolute;left: 20px;top: 115px;">*</div>
-                  <el-form-item label="团期计划" prop="groupCode">
-                    <el-input
-                      v-model="editableTabs.groupCode"
-                      placeholder="请输入"
-                      style="width: 240px;"
-                      :disabled="change"
-                    ></el-input>
-                    <el-input
-                      v-model="editableTabs.productName"
-                      placeholder="请输入或者选择团期计划"
-                      style="width: 240px;"
-                      :disabled="change"
-                    ></el-input>
-                    <el-button size="mini" @click="planDialog" v-if="find==0">选择</el-button>
-                  </el-form-item>
-                  <el-form-item label="摘要" prop="mark">
-                    <el-input
-                      v-model="editableTabs.mark"
-                      placeholder="请输入"
-                      style="width: 480px;"
-                      :disabled="change"
-                    ></el-input>
-                  </el-form-item>
-                  <div style="color: red; color: red; position: absolute;top:177px;left: 48px;">*</div>
-                  <el-form-item label="附件：" label-width="140px" required>
-                    <el-upload 
-                    ref="upload1" 
-                    prop="image"
-                    class="upload-demo" 
-                    name="files"
-                    action= "this.uploadUrl"
-                    :on-success="handleSucess" 
-                    :on-change="handleChange"
-                    :on-remove="handleRemove" 
-                    :before-remove="beforeRemove" 
-                    :file-list="fileList">
-                      <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
-                    </el-upload>
-                  </el-form-item>
-                  <div class="re_style">
-                    <el-radio v-model="radio" label="1">关联单据</el-radio>
-                    <el-radio v-model="radio" label="2">手添报销明细</el-radio>
+              <div style="color: red; position: absolute;left: 20px;top: 115px;">*</div>
+                <el-form-item label="团期计划" prop="groupCode">
+                  <el-input
+                    v-model="ruleForm.groupCode"
+                    placeholder="请输入"
+                    style="width: 240px;"
+                    :disabled="change"
+                  ></el-input>
+                  <el-input
+                    v-model="ruleForm.productName"
+                    placeholder="请输入或者选择团期计划"
+                    style="width: 240px;"
+                    :disabled="change"
+                  ></el-input>
+                  <el-button size="mini" @click="planDialog" v-if="find==0">选择</el-button>
+                </el-form-item>
+                <el-form-item label="摘要" prop="mark">
+                  <el-input
+                    v-model="ruleForm.mark"
+                    placeholder="请输入"
+                    style="width: 480px;"
+                    :disabled="change"
+                  ></el-input>
+                </el-form-item>
+                <div style="color: red; color: red; position: absolute;top:177px;left: 48px;">*</div>
+                <el-form-item label="附件：" label-width="140px" required>
+                  <el-upload 
+                  ref="upload1" 
+                  prop="image"
+                  class="upload-demo" 
+                  name="files"
+                  action= "this.uploadUrl"
+                  :on-success="handleSucess" 
+                  :on-change="handleChange"
+                  :on-remove="handleRemove" 
+                  :before-remove="beforeRemove" 
+                  :file-list="fileList">
+                    <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
+                  </el-upload>
+                </el-form-item>
+                <div class="re_style">
+                  <el-radio v-model="radio" label="1">关联单据</el-radio>
+                  <el-radio v-model="radio" label="2">手添报销明细</el-radio>
+                </div>
+                <div v-if="radio==1" class="re_style" style="margin-top: 20px">
+                  <el-button @click="addbx('ruleForm')" v-if="find==0">增加1</el-button>
+                  <!-- <el-button @click="addbx" v-if="find==0">修改</el-button> -->
+                  <!-- <el-button type="danger" v-if="find==0">删除</el-button> -->
+                </div>
+                <div  style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 64px;margin-top: 10px; ">
+                  <i
+                    style="float: left; margin-left: 10px;margin-top: 7px;"
+                    class="el-icon-warning"
+                  ></i>
+                  <div style="float: left;margin-left: 30px;margin-top: 7px;">
+                    已选择
+                    <span style="color: #249BEB">{{t_sum}}</span>项
                   </div>
-                  <div v-if="radio==1" class="re_style" style="margin-top: 20px">
-                    <el-button @click="addbx('ruleForm')" v-if="find==0">增加1</el-button>
-                    <!-- <el-button @click="addbx" v-if="find==0">修改</el-button> -->
-                    <!-- <el-button type="danger" v-if="find==0">删除</el-button> -->
+                  <div style="float: left; margin-left: 30px;margin-top: 7px;">
+                    报销总计：
+                    <span style="font-weight:bold">{{t_price}}</span>元
                   </div>
-                  <div  style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 64px;margin-top: 10px; ">
-                    <i
-                      style="float: left; margin-left: 10px;margin-top: 7px;"
-                      class="el-icon-warning"
-                    ></i>
-                    <div style="float: left;margin-left: 30px;margin-top: 7px;">
-                      已选择
-                      <span style="color: #249BEB">{{t_sum}}</span>项
-                    </div>
-                    <div style="float: left; margin-left: 30px;margin-top: 7px;">
-                      报销总计：
-                      <span style="font-weight:bold">{{t_price}}</span>元
-                    </div>
-                  </div>
+                </div>
                 <div v-if="radio==1">
-                  <div class="re_style">
+                   <div class="re_style">
                     <el-table :data="joinData_s" border style="width: 100%; margin-top: 30px">
+                      
                       <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="100"></el-table-column>
                       <el-table-column prop="supplierTypeEX" label="借款类型" width="90"></el-table-column>
                       <el-table-column prop="supplierName" label="供应商" width="100"></el-table-column>
@@ -262,20 +262,17 @@
                     <el-button type="danger" @click="removeDomain(domain)" v-if="find==0">删除</el-button>
                   </div>
                 </div>
-              
-              
               </el-tab-pane>
-             
             </el-tabs>
 
-            <!-- <div v-if="this.find == 1" class="re_style" style="margin-top: 20px">
+            <div v-if="this.find == 1" class="re_style" style="margin-top: 20px">
               <el-table :data="reimData" border style="width: 100%">
                 <el-table-column prop="reier" label="审批人" width="180"></el-table-column>
                 <el-table-column prop="reisult" label="审批结果" width="180"></el-table-column>
                 <el-table-column prop="info" label="审批意见"></el-table-column>
                 <el-table-column prop="time" label="审批时间"></el-table-column>
               </el-table>
-            </div> -->
+            </div>
           </div>
           <!--多报销end-->
         </el-form>
@@ -294,12 +291,12 @@
       <!--报销弹窗end-->
       <!--团期计划弹窗-->
       <el-dialog
-          width="60%"
-          title="获取团期计划"
-          :visible.sync="dialogFormVisible2"
-          append-to-body
-          :show-close="false"
-        >
+        width="60%"
+        title="获取团期计划"
+        :visible.sync="dialogFormVisible2"
+        append-to-body
+        :show-close="false"
+      >
         <div class="indialog">
           <div style=" position: absolute;right: 67px;top: 22px;">
             <el-button @click="dialogFormVisible2 = false">取 消</el-button>
@@ -415,15 +412,13 @@
 <script>
 // import NeedApproval from "@/page/Finance/reimburseManagement/needApproval";
 import approvalToBorrow from "@/page/Finance/loanManagement/approvalToBorrow";
-import reimburseMpackage from "@/page/Finance/reimburseManagement/comps/reimburseMpackage";
 import { formatDate } from "@/js/libs/formatDate.js";
 import moment from "moment";
 export default {
   name: "reimburseManagement",
   components: {
     //NeedApproval
-    approvalToBorrow,//需要申请
-    reimburseMpackage,//申请内容
+    approvalToBorrow
   },
   data() {
     var areaIdRule = (rule, value, callback) => {
@@ -445,7 +440,7 @@ export default {
     };
 
     return {
-      upimgUrl:this.GLOBAL.serverSrc + '/upload/obs/api/file', // 上传凭证
+      uploadUrl: this.GLOBAL.serverSrc + '/upload/obs/api/picture/', // 上传凭证
       image: 0,
       value1: "",
       value2: "",
@@ -536,7 +531,7 @@ export default {
       currentPage4: 1,
       activeName: "first",
       expenseID: "",
-    
+      groupCode: "",
       t_plan: "",// 添加报销申请人
       t_supplier:"",//添加报销供应商
       createUser: "",
@@ -553,23 +548,13 @@ export default {
       //文件上传列表
       fileList: [],
       editableTabsValue: "1",
-      groupCode: "",
-      productName:"",
-      mark:"",
       editableTabs: [
         {
-          name:"报销1",
-          content:"我是内容",
-          groupCode:"",
-          productName:"",
-          monkeys: {
-            mark: "小费",
-            price: "1000.00"
-          },
-          mark: ""
-          
+          title: "报销1",
+          name: "1",
+          content: "Tab 1 mark"
         }
-        ],
+      ],
       tabIndex: 1
     };
   },
@@ -605,7 +590,6 @@ export default {
         },
         mark: ""
         }
-      this.editableTabs=[];
       this.t_sum = 0;
       this.t_price = 0;
       this.joinData_s = [];
@@ -898,7 +882,7 @@ export default {
                }
             })
             .then(res => {
-              if (res.data.isSuccess == true)  {
+              if (res.data.isSuccess == true) {
                  var d_objects = res.data.objects; //console.log(res.data.objects);
                  var createUser;
                     this.find = 1;
@@ -920,7 +904,6 @@ export default {
                                 paymentPrice:payments[j].paymentPrice,
                                 price:payments[j].price,
                                 peopleCount:payments[j].peopleCount,
-                                files:payments[j].files
 
                             })
                           
@@ -928,7 +911,7 @@ export default {
                         
                      }
                     
-                    console.log("我的",this.joinData_s);
+                    //console.log(this.joinData_s);
                }
             })
             .catch(err => {
@@ -937,7 +920,6 @@ export default {
     },
     //添加报销
     addbx(ruleForm) { 
-      console.log("走1");
        this.joinData = [];
        this.$refs[ruleForm].validate(valid => {
         if (valid) {
@@ -1023,24 +1005,17 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
-    handlePreview(file){ //查看图片
-     // let getUrl = JSON.parse(file.response)
-      console.log(file.Url)
-      window.open(file.Url);
-      // this.uid = file.uid
-      // this.imgBigName = file.name
-    },
-    
     //添加报销和删除
     handleTabsEdit(targetName, action) {
       console.log(action);
       console.log(targetName);
-      let newTab= this.getNewTab();
       if (action === "add") {
         let newTabName = ++this.tabIndex + "";
         this.editableTabs.push({
-           name: "报销" + this.tabIndex,
-                });
+          title: "报销" + this.tabIndex,
+          name: newTabName,
+          content: "New Tab mark"
+        });
         this.editableTabsValue = newTabName;
       }
       if (action === "remove") {
@@ -1069,29 +1044,7 @@ export default {
             this.editableTabs = tabs.filter(tab => tab.name !== targetName);
       }
     },
- // 获取新tab实例
-    getNewTab(){
-      let newTabName= this.getNewPackageName();
-    return {
-          name: newTabName,
-          id: "",
-          createUser:"",
-          createTime:"",
-          groupCode:"",
-          productName:"",
-          mark:"",
-          fileList:"",
-      };
-    },
-     getNewPackageName(){
-      let hit;
-      let num= this.editableTabs.length;
-      do{
-        ++num;
-        hit= this.editableTabs.find(el => el.name=== ('报销'+ num));
-      } while (hit && num<= 100);
-      return '报销'+ num;
-    },
+
   //获取报销列表数据
   reimList() {
     var that = this;

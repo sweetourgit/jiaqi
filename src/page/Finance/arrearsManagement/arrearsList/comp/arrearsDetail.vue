@@ -18,7 +18,12 @@
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.id }}</div></el-col>
               </el-col>
               <el-col :span="6">
-                <el-col :span="6"><div class="grid-del label-color ">申请人:</div></el-col>
+                <el-col :span="6">
+                  <div class="grid-del label-color ">
+                    <span v-if="keepPaymentType==1">申请人</span>
+                    <span v-if="keepPaymentType==2">借款人</span>:
+                  </div>  
+                </el-col>
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
               </el-col>
               <el-col :span="6">
@@ -46,13 +51,18 @@
             <!-- 第三行 -->
             <el-row type="flex" class="row-bg" justify="space-around">
               <el-col :span="6">
-                <el-col :span="6"><div class="grid-del label-color">借款类型:</div></el-col>
+                <el-col :span="6">
+                  <div class="grid-del label-color">借款类型:</div>
+                </el-col>
                 <el-col :span="18">
                   <div class="grid-del">{{ fundamental.supplierTypeEX }}</div>
                 </el-col>
               </el-col>
               <el-col :span="6">
-                <el-col :span="6"><div class="grid-del label-color">借款金额:</div></el-col>
+                <el-col :span="6">
+                  <div class="grid-del label-color" v-if="keepPaymentType==1">付款金额:</div>
+                  <div class="grid-del label-color" v-if="keepPaymentType==2">借款金额:</div>
+                </el-col>
                 <el-col :span="18"><div class="grid-del">{{ fundamental.price }}</div></el-col>
               </el-col>
               <el-col :span="6">
@@ -78,23 +88,23 @@
             </el-row>
             <!-- 第四行 END -->
             <!-- 第五行 -->
-            <el-row type="flex" class="row-bg" justify="space-around">
+            <el-row type="flex" class="row-bg" justify="space-around" style="height:80px">
               <el-col :span="6">
-                <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
+                <el-col :span="6"><div class="grid-del label-color">付款方式:</div></el-col>
                 <el-col :span="12">
-                  <div class="grid-del">{{ fundamental.accountsName }}</div>
+                  <div class="grid-del">{{ fundamental.paywayEX }}</div>
                 </el-col>
               </el-col>
               <el-col :span="14">
-                <el-col :span="6"><div class="grid-del label-color">附件:</div></el-col>
+                <el-col :span="2"><div class="grid-del label-color">附件:</div></el-col>
                 <el-col :span="18">
                   <el-upload
                     class="upload-demo"
                     name="files"
                     :file-list="fundamental.files"
-                    :show-file-list=true
+                    :show-file-list="true"
                     action="test"
-                    :disabled=true
+                    :disabled="true"
                     :on-preview="handlePreview"
                   >
                   </el-upload>
@@ -304,8 +314,8 @@ export default {
           this.tableMoney = []
           this.tableEarning = []
           let createUserCode = res.data.object.creatUserCode;
-          let getPaymentType = res.data.object.paymentType
-          this.keepPaymentType = getPaymentType
+          let getPaymentType = res.data.object.paymentType;
+          this.keepPaymentType = getPaymentType;
           this.fundamental=res.data.object;
           this.auditResult(res.data.object.guid, getPaymentType);
           if(res.data.object.planID>0){
@@ -513,8 +523,8 @@ export default {
   .plan_indialog span{float:left; margin: 0 10px 0 10px;}
   .indialog_button{margin: 0 0 0 10px;}
   /*申请无收入借款中附件*/
-  .upload-demo{width: 400px;}
-  .upload-demo>>>.el-upload-list__item{ width: 300px; }
+  .upload-demo{width: 400px;margin-top:-30px}
+  .upload-demo>>>.el-upload-list__item{ width: 300px;}
 
   .el-dialog__wrapper{top:-10%;}
   .upload-demo>>>.el-upload-list__item:first-child {
