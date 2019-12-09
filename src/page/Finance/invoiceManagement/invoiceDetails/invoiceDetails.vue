@@ -129,7 +129,7 @@
       <div class="controlButton">
         <el-button class="ml13" @click="closeOpenInvoice()">取 消</el-button>
         <el-button type="primary" @click="openInvoicement(invoiceID)" v-if="title == '开票'" class="ml13">开票</el-button>
-        <el-button type="primary" @click="changeTicket(invoiceID)" v-if="title == '换票'" class="ml13">换票</el-button>
+        <el-button type="primary" @click="openInvoicement(invoiceID)" v-if="title == '换票'" class="ml13">换票</el-button>
       </div>
       <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="120px" v-if="title == '开票'">
         <el-form-item label="单张发票金额:" prop="invoicePrice">
@@ -143,7 +143,11 @@
         <div class="aggregate">总计:<span>{{guest| numFilter}}</span>元</div>
       </div>
       <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column prop="invoiceNumber" v-if="title == '换票'" label="原票号" align="center"></el-table-column>
+        <el-table-column v-if="title == '换票'" label="原票号" align="center">
+          <template slot-scope="scope">
+            <span>{{originalBanks}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="invoiceHeader" v-if="title == '开票'" label="发票抬头" align="center"></el-table-column>
         <el-table-column prop="taxpayerIDNumber" v-if="title == '开票'" label="纳税人识别号" align="center"></el-table-column>
         <el-table-column prop="tel" label="电话" align="center"></el-table-column>
@@ -215,6 +219,7 @@ export default {
       guest:'',
       online:0,
       ifOnly:true,
+      originalBanks:'',
     };
 
   },
@@ -290,7 +295,8 @@ export default {
           this.tableDate = res.data.object.ordelist;
           this.invoiceDate.push(res.data.object);
           this.invoiceDate[0].invoicePrice = "";
-          //this.invoiceDate[0].invoiceNumber = "";
+          this.originalBanks =  res.data.object.invoiceNumber;
+          this.invoiceDate[0].invoiceNumber = "";
         }
       });
     },
@@ -366,8 +372,13 @@ export default {
       this.ifOnly = true;
       for(let i =0 ; i < this.invoiceDate.length; i++){
         this.invoiceOnly(ID,i); // 验证发票号唯一方法
+        // if(this.invoiceDate.filter(v => this.invoiceDate[i].invoiceNumber == v.invoiceNumber).length != 0) {
+        //   this.$message.error("该发票号已存在");
+        //   return;
+        // }   
       }
-      if(this.online==this.invoiceDate.length-1 && this.ifOnly == true){
+
+      //if(this.online==this.invoiceDate.length-1 && this.ifOnly == true){
         this.a = true;
         let sum = 0; //求发票金额的总和
         this.invoiceDate.forEach(function(item) {
@@ -388,26 +399,32 @@ export default {
           return;
         }
         if(sum <= sum_01){
-          this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/confirm", {
-            "object":{
-              receiptList:this.invoiceDate,
-              receiptID:ID
-            }
-          }).then(res => {
-            this.$message.success("开票成功");
-            this.openInvoiceShow = false ;
-            this.$parent.pageList();
-          })
+          if(this.title == '开票'){
+            this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/confirm", {
+              "object":{
+                receiptList:this.invoiceDate,
+                receiptID:ID
+              }
+            }).then(res => {
+              this.$message.success("开票成功");
+              this.openInvoiceShow = false ;
+              this.$parent.pageList();
+            })
+          }else{
+            this.changeTicket(ID);
+          }
         }else{
           this.$message.success("该发票金额已超过剩余开票金额");
         }
-      }
+     // }
     },
     changeTicket(ID){ // 换票
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/replacereceipt", {
-        object:{
-
-        }
+        object:this.invoiceDate[0]
+      }).then(res => {
+        this.$message.success("换票成功");
+        this.openInvoiceShow = false ;
+        this.$parent.pageList();
       })
     },
 
