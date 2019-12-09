@@ -45,6 +45,29 @@
 
     <el-row :gutter="100" class="common-row">
       <el-col :span="12">
+        <el-form-item label="公司可见性：" prop="companyArea">
+          <el-select size="small" placeholder="公司可见性" style="width: 100%;"
+            v-model="submitForm.companyArea">
+            <el-option
+              v-for="item in CompanyAreaOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="经手人：" prop="handPerson">
+          <el-input size="small" placeholder="经手人" style="width: 100%;"
+            v-model="submitForm.handPerson">
+          </el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="100" class="common-row">
+      <el-col :span="12">
         <el-form-item label="状态：" prop="userState">
           <el-select size="small" placeholder="状态" style="width: 100%;"
             v-model="submitForm.userState">
@@ -58,9 +81,9 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="经手人：" prop="handPerson">
-          <el-input size="small" placeholder="经手人" style="width: 100%;"
-            v-model="submitForm.handPerson">
+        <el-form-item label="经手人电话：" prop="handPhone">
+          <el-input size="small" placeholder="经手人电话" style="width: 100%;"
+            v-model="submitForm.handPhone">
           </el-input>
         </el-form-item>
       </el-col>
@@ -81,16 +104,16 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="经手人电话：" prop="handPhone">
-          <el-input size="small" placeholder="经手人电话" style="width: 100%;"
-            v-model="submitForm.handPhone">
+        <el-form-item label="负责人：" prop="leader">
+          <el-input size="small" placeholder="负责人" style="width: 100%;"
+            v-model="submitForm.leader">
           </el-input>
         </el-form-item>
       </el-col>
     </el-row>
 
     <el-row :gutter="100" class="common-row">
-      <el-col :span="12">
+       <el-col :span="12">
         <el-form-item label="类别：" prop="types">
           <el-select size="small" placeholder="类别" style="width: 100%;"
             v-model="submitForm.types">
@@ -104,9 +127,9 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="负责人：" prop="leader">
-          <el-input size="small" placeholder="负责人" style="width: 100%;"
-            v-model="submitForm.leader">
+        <el-form-item label="负责人电话：" prop="phone">
+          <el-input size="small" placeholder="负责人电话" style="width: 100%;"
+            v-model="submitForm.phone">
           </el-input>
         </el-form-item>
       </el-col>
@@ -127,9 +150,9 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="负责人电话：" prop="phone">
-          <el-input size="small" placeholder="负责人电话" style="width: 100%;"
-            v-model="submitForm.phone">
+        <el-form-item label="操作负责人：" prop="billName">
+          <el-input size="small" placeholder="操作负责人" style="width: 100%;"
+            v-model="submitForm.billName">
           </el-input>
         </el-form-item>
       </el-col>
@@ -144,10 +167,12 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="操作负责人：" prop="billName">
-          <el-input size="small" placeholder="操作负责人" style="width: 100%;"
-            v-model="submitForm.billName">
-          </el-input>
+        <el-form-item label="供应商协议：" prop="isAgree">
+          <el-select size="small" placeholder="供应商协议" style="width: 100%;"
+            v-model="submitForm.isAgree">
+            <el-option :value="1" label="是"></el-option>
+            <el-option :value="2" label="否"></el-option>
+          </el-select>
         </el-form-item>
       </el-col>
     </el-row>
@@ -162,18 +187,6 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="供应商协议：" prop="isAgree">
-          <el-select size="small" placeholder="供应商协议" style="width: 100%;"
-            v-model="submitForm.isAgree">
-            <el-option :value="1" label="是"></el-option>
-            <el-option :value="2" label="否"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-    </el-row>
-
-    <el-row :gutter="100" class="common-row">
-      <el-col :span="12" :offset="12">
         <el-form-item label="备注：" prop="memo">
           <el-input size="small" placeholder="备注" style="width: 100%;"
             v-model="submitForm.memo">
@@ -185,7 +198,7 @@
     <el-row :gutter="100" class="common-row">
       <el-col :span="12">
         <el-form-item label="附件：" prop="files">
-          <el-upload name="files" ref="upload" multiple
+          <el-upload name="files" ref="upload"
             :action="GLOBAL.serverSrc+ '/upload/obs/api/file'"
             :file-list="filesList"
             :on-error="uploadErrorHandler"
@@ -216,6 +229,7 @@
 // this.GLOBAL.serverSrc + '/upload/obs/api/file' 上传路径
 import labelsInput from '../../comps/labelsInput'
 import { getDicOptions, checkSupplierCode, checkSupplierName } from '../../../api'
+import { ConditionTypeOptions, CompanyAreaOptions } from '../../../dictionary'
 
 export default {
   components: { labelsInput },
@@ -328,8 +342,9 @@ export default {
       {
         SupplierTypeOptions: [],
         IsMonthlyOptions: [],
-        ConditionTypeOptions: [{ value: 1, label: "正常" },{value: 2, label: "停用"},{value: 0, label: "待审核"}],
-        ProductAreaOptions: []
+        ProductAreaOptions: [],
+        CompanyAreaOptions,
+        ConditionTypeOptions
       },
       {
         filesList: [],
@@ -375,7 +390,7 @@ export default {
         let data= this.$deepCopy(this.submitForm);
         // 适配types在数据库中的存储格式
         this.typesAdaptor(data);
-        this.typesAdaptor(data);
+        this.expireTimeAdaptor(data);
         data.createTime= Date.now();
         return data;
       },
@@ -429,7 +444,6 @@ export default {
         this.submitForm.types= 
           this.submitForm.types[0]? 
             this.submitForm.types[0].supplierType: null;
-        this.$nextTick(() => this.$refs.submitForm.clearValidate());
         // 类型单选结束
 
         // 用filesList来绑定上传组件的file-list，因为上传组件会给file-list的元素添加status属性
@@ -438,6 +452,10 @@ export default {
 
         // 纠正时间
         this.submitForm.expireTime= new Date(this.submitForm.expireTime).getTime()+ 8* 3600* 1000;
+
+        // org
+        this.sub
+        this.$nextTick(() => this.$refs.submitForm.clearValidate());
       },
 
       makeOptions(){
@@ -484,7 +502,7 @@ export default {
       },
 
       expireTimeAdaptor(data){
-        data.expireTime= new Date(data.expireTime+ 8* 3600* 1000).toISOString();
+        data.expireTime= new Date(new Date(data.expireTime)+ 8* 3600* 1000).toISOString();
       },
 
       fileAdaptor(file){

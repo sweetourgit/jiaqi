@@ -39,3 +39,17 @@ export const getSupplierDTO= function(){
   }
 }
 
+// 状态options
+export const ConditionTypeOptions= [
+  { value: 1, label: "正常" },
+  {value: 2, label: "停用"},
+  {value: 0, label: "待审核"}
+]
+
+export const CompanyAreaOptions= [
+  { value: 1, label: "集团专享" },
+  { value: 2, label: "沈阳专享" },
+  { value: 3, label: "吉林专享" },
+  { value: 4, label: "大连专享" },
+  { value: 5, label: "哈尔滨专享" }
+]

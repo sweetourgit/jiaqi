@@ -105,6 +105,8 @@ Print.prototype = {
     w = f.contentWindow || f.contentDocument;
     doc = f.contentDocument || f.contentWindow.document;
     doc.open();
+    /* 以下样式为无收入，预付款借款详情，临时新增样式。后期会做调整（避免命名重复） */
+    f.contentDocument.write('<style type="text/css"> .row-bg {padding: 23px 0;} .print-hidden{display: none;} .print-title{font-weight: bolder; font-size: 26px; text-align: center;margin-bottom: 30px; height: 60px; line-height: 60px; border-bottom: 1px solid #ccc;} </style>');
     doc.write(content);
     doc.close();
     var _this = this

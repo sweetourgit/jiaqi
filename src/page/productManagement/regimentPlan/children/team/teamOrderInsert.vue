@@ -1239,8 +1239,8 @@ export default {
             let first = arr[i].indexOf("(")
             let end = arr[i].indexOf("*")
             let str = arr[i].substring(first+1,end)
-            let price = null;
-            this.ruleForm.price == 1 ? price = this.toDecimal2(this.salePrice[j].price_01) : this.toDecimal2(price = this.salePrice[j].price_02)
+            let price = "";
+            this.ruleForm.price == 1 ? price = this.toDecimal2(this.salePrice[j].price_01) : price = this.toDecimal2(this.salePrice[j].price_02)
             this.newEnrollDetail += (arr[i].replace(str,price).toString() + ',')
           }
         }
@@ -1772,6 +1772,7 @@ export default {
       this.$refs[formName].resetFields();
       this.costList = [];
       this.enrollDetail = ""
+      this.newEnrollDetail= ""
     },
     compPrice() {
       //计算总价

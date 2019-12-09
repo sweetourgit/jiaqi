@@ -438,6 +438,15 @@ export default new Router({
       }
     },
     {
+      path: '/approve',
+      component: () => import('@/page/Finance/approve/approveList'),
+      name: '需要您审批',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path: '/loanManagement',
       component: () => import('@/page/Finance/loanManagement/loanManagement'),
       name: '无收入借款管理',
