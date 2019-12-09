@@ -1245,7 +1245,6 @@ export default {
           }
         }
       }
-      // console.log("this.newEnrollDetail",this.newEnrollDetail)
     },
     regimentType(ID, index, formName) {
       //获取状态
@@ -1773,6 +1772,7 @@ export default {
       this.$refs[formName].resetFields();
       this.costList = [];
       this.enrollDetail = ""
+      this.newEnrollDetail= ""
     },
     compPrice() {
       //计算总价
