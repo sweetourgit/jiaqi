@@ -119,6 +119,14 @@
         <div style="position:absolute; top:8px; right:10px;">
           <el-button @click="CloseCheckIncomeShow()">取消</el-button>
           <el-button @click="repeal()" type="danger" plain v-if="getRowCheckType == 0">撤销</el-button>
+          <el-button
+            type="success"
+            @click="touchPrint"
+            plain
+            v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || ( ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)"
+          >
+            打印本页详情信息
+          </el-button>
         </div>
       <!-- 好像是和无收入借款共用一个 -->
       <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
@@ -158,6 +166,10 @@ export default {
   },
   data() {
     return {
+      creatUserOrgID: null, // 用来判断付款账户是否显示
+      presentRouter: null, // 当前路由
+      ifDY100009: false,
+      ifDY100042: false,
       listLoading: true,
       tableSelect:[], // 选择弹窗表格
       SelectAccount:false, // 选择账户弹窗
@@ -228,6 +240,17 @@ export default {
     }
   },
   created () {
+    if(sessionStorage.getItem('userCode') == 'DY100009') {
+      this.ifDY100009 = true
+    }else {
+      this.ifDY100009 = false
+    }
+    if(sessionStorage.getItem('userCode') == 'DY100042') {
+      this.ifDY100042 = true
+    } else {
+      this.ifDY100042 = false
+    }
+    this.presentRouter = this.$route.name
     this.querySearch6()
     this.querySearch7()
     this.searchHand()
@@ -236,6 +259,10 @@ export default {
     }
   },
   methods: {
+    // 打印详情
+    touchPrint(){
+      this.$refs.printHandle.printDetails()
+    },
     // 搜索
     searchHandBtn(){
       this.ruleFormSeach.page = 1
@@ -415,6 +442,17 @@ export default {
       this.getRowCheckType = row.checkType
       this.paymentID = row.paymentID // 设置 paymentID 给子组件，子组件会根据这个值的变化进行页面渲染。子组件目前设置的是0，本页的也是0
       this.checkIncomeShow = true;
+      this.getLabel(row.paymentID)
+    },
+    // 获取一条详情（控制打印按钮）
+    getLabel(paramsPaymentID){
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
+        "id": paramsPaymentID
+      }).then(res => {
+        if(res.data.isSuccess == true){
+          this.creatUserOrgID = res.data.object.creatUserOrgID
+        }
+      })
     },
     // 撤销该笔借款
     repeal() {
