@@ -364,8 +364,16 @@
       <div style="position:absolute; top:8px; right:10px;">
         <el-button @click="CloseCheckIncomeShow()">取消</el-button>
         <el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button>
+        <el-button
+          type="success"
+          @click="touchPrint"
+          plain
+          v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || ( ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)"
+        >
+          打印本页详情信息
+        </el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo" ref="printHandle"></checkLoanManagement>
     </el-dialog>
     <!-- 查看无收入借款申请详情弹窗 END -->
   </div>
@@ -392,6 +400,10 @@ export default {
       }
     };
     return {
+      creatUserOrgID: null, // 用来判断付款账户是否显示
+      presentRouter: null, // 当前路由
+      ifDY100009: false,
+      ifDY100042: false,
       ifShowPlanIdSureBtn: true, // 只有选中任一个团期计划行才取消禁止按钮
       acoutInfo: null, // 传到子组件弹窗内的值 row
       ifShowsearch: false,
@@ -416,7 +428,6 @@ export default {
         value: '2',
         label: '驳回'
       }],
-      settlement_01:'',
       forbidden:true, // 借款表格
       multipleSelection: [],
       paymentID:0,
@@ -515,7 +526,6 @@ export default {
       upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
       uid: 0, // 上传图片缩略图选中项
       status:"",
-      // SelectAccount:false, // 选择账户弹窗
       tableSelect:[], // 选择弹窗表格
       pageshow:true,
       pid:'',
@@ -549,6 +559,10 @@ export default {
     }
   },
   methods: {
+    // 打印详情
+    touchPrint(){
+      this.$refs.printHandle.printDetails()
+    },
     // 借款记录列表
     getList() {
       this.listLoading = true
@@ -577,10 +591,6 @@ export default {
       })
     },
     moment,
-    // 表头点击切换
-    handleClick(tab, event) {
-      //this.tableData='';
-    },
     // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
@@ -851,34 +861,6 @@ export default {
       this.tablePayment = [];
       this.tableEarning = [];
     },
-    // 无收入借款中借款人弹窗
-    /*IncomeName(){
-      this.dialogFormVisible1 = true;
-      this.incomeNameList();
-    },
-    // 查询借款人列表
-    incomeNameList() {
-      var that = this
-      this.$http.post(
-        this.GLOBAL.serverSrc + "/org/api/userlist",
-        {
-           object: {
-          isDeleted: 0
-        },
-        isGetAll: true,
-        id: 0
-        },)
-        .then(function (obj) {
-          that.total = obj.data.total
-          that.tableName = obj.data.objects
-          console.log(obj.data.objects)
-        })
-        .catch(function (obj) {
-          console.log(obj)
-        })
-    },numberCancel(){
-      this.dialogFormVisible1 = false;
-    },*/
     // 无收入借款中团期计划弹窗（）
     IncomePlan(){
       this.plan_stage = '';
@@ -1042,31 +1024,23 @@ export default {
     },
     // 查看无收入借款弹窗(列表中的详情)
     checkIncome(row){
+      console.log(row, 'row')
       this.checkIncomeShow = true;
       this.pid = row.paymentID;
       this.acoutInfo = row
       this.status = row.checkTypeEX;
       this.ruleForm = row;
+      this.getLabel(row.paymentID)
     },
-    // 获取一条详情
-    getLabel(){
+    // 获取一条详情（控制打印按钮）
+    getLabel(paramsPaymentID){
       this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
-          "id":this.pid
+        "id": paramsPaymentID
       }).then(res => {
         if(res.data.isSuccess == true){
-           this.guid = res.data.object.guid
-           this.fundamental=res.data.object;
-           this.tour_id = res.data.object.planID;
-           //this.getTourByPlanId(res.data.object.planID);
-           this.getPaymentdetails(res.data.object.planID);
-           /*res.data.object.files.forEach(function(v, k, arr) {
-                that.fileList.push({
-                  "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
-                  "name": arr[k]['name'],
-                });
-              })*/
+          this.creatUserOrgID = res.data.object.creatUserOrgID
         }
-     })
+      })
     },
     // 关闭弹窗
     CloseCheckIncomeShow(){
@@ -1248,6 +1222,17 @@ export default {
     this.planList();
   },
   created(){
+    if(sessionStorage.getItem('userCode') == 'DY100009') {
+      this.ifDY100009 = true
+    }else {
+      this.ifDY100009 = false
+    }
+    if(sessionStorage.getItem('userCode') == 'DY100042') {
+      this.ifDY100042 = true
+    } else {
+      this.ifDY100042 = false
+    }
+    this.presentRouter = this.$route.name
     this.themeList();
     this.payment();
   }
@@ -1295,6 +1280,10 @@ export default {
   .upload-demo>>>.el-upload-list__item:first-child {
     margin-top: 5px;
   }
+
+
+
+
 	/*分页*/
 	.name_input{width: 200px;}
 	.name_input01{width: 700px;}

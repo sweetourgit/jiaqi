@@ -1,104 +1,115 @@
 <template>
+  <!-- 打印相关详情 -->
   <div class="loan-management">
     <!-- 查看无收入借款弹窗 -->
-    <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
-    <!-- 基本信息 -->
-    <div class="item-content">
-      <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
-      <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
-      <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
+    <el-divider content-position="left" class='title-margin print-hidden'>基本信息</el-divider>
+    <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
+    <div ref="print">
+      <div class="print-title">{{ getTopName }} - {{ presentRouter == '无收入借款管理' ? '无收入借款' : '预付款' }} - 借款单 </div>
+      <!-- 基本信息 -->
+      <div class="item-content print-hidden">
+        <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
+        <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
+        <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
+      </div>
+      <!-- 第一行 -->
+      <el-row type="flex" class="row-bg" justify="space-around">
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
+          <el-col :span="18"><div class="grid-del ">{{ fundamental.id }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color ">申请人:</div></el-col>
+          <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
+          <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
+        </el-col>
+      </el-row>
+      <!-- 第一行 END -->
+      <!-- 第二行 -->
+      <el-row type="flex" class="row-bg" justify="space-around">
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">团期计划:</div></el-col>
+          <el-col :span="18"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">产品名称:</div></el-col>
+          <el-col :span="18"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">供应商:</div></el-col>
+          <el-col :span="18"><div class="grid-del ">{{ fundamental.supplierName }}</div></el-col>
+        </el-col>
+      </el-row>
+      <!-- 第二行 END -->
+      <!-- 第三行 -->
+      <el-row type="flex" class="row-bg" justify="space-around">
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">借款类型:</div></el-col>
+          <el-col :span="18">
+            <div class="grid-del">{{ fundamental.supplierTypeEX }}</div>
+          </el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">借款金额:</div></el-col>
+          <el-col :span="18"><div class="grid-del">{{ fundamental.price }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">摘要:</div></el-col>
+          <el-col :span="18"><div class="grid-del ">{{ fundamental.mark }}</div></el-col>
+        </el-col>
+      </el-row>
+      <!-- 第三行 END -->
+      <!-- 审批人 打印时输出 -->
+      <el-row type="flex" class="row-bg print-approve" justify="start">
+        <el-col :span="2" :offset="1"><div class="grid-del label-color">审批人:</div></el-col>
+        <el-col :span="18"><div class="grid-del" v-html="printAuditingContent"></div></el-col>
+      </el-row>
+      <!-- 审批人 打印时输出 END -->
+      <!-- 第四行 -->
+      <el-row type="flex" class="row-bg" justify="space-around">
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">账号:</div></el-col>
+          <el-col :span="18"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">开户行:</div></el-col>
+          <el-col :span="18"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">开户名:</div></el-col>
+          <el-col :span="18"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
+        </el-col>
+      </el-row>
+      <!-- 第四行 END -->
+      <!-- 第五行 -->
+      <el-row type="flex" class="row-bg" justify="space-around">
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
+          <el-col :span="12">
+            <div class="grid-del">{{ fundamental.accountsName }}</div>
+          </el-col>
+        </el-col>
+        <el-col :span="14">
+          <el-col :span="6"><div class="grid-del label-color print-hidden">附件:</div></el-col>
+          <el-col :span="18">
+            <el-upload
+              class="upload-demo print-hidden"
+              name="files"
+              :file-list="fundamental.files"
+              :show-file-list=true
+              action="test"
+              :disabled=true
+              :on-preview="handlePreview"
+            >
+            </el-upload>
+          </el-col>
+        </el-col>
+      </el-row>
+      <!-- 第五行 END -->
     </div>
-    <!-- 第一行 -->
-    <el-row type="flex" class="row-bg" justify="space-around">
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.id }}</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color ">申请人:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
-      </el-col>
-    </el-row>
-    <!-- 第一行 END -->
-    <!-- 第二行 -->
-    <el-row type="flex" class="row-bg" justify="space-around">
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">团期计划:</div></el-col>
-        <el-col :span="18"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">产品名称:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">供应商:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.supplierName }}</div></el-col>
-      </el-col>
-    </el-row>
-    <!-- 第二行 END -->
-    <!-- 第三行 -->
-    <el-row type="flex" class="row-bg" justify="space-around">
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">借款类型:</div></el-col>
-        <el-col :span="18">
-          <div class="grid-del">{{ fundamental.supplierTypeEX }}</div>
-        </el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">借款金额:</div></el-col>
-        <el-col :span="18"><div class="grid-del">{{ fundamental.price }}</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">摘要:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.mark }}</div></el-col>
-      </el-col>
-    </el-row>
-    <!-- 第三行 END -->
-    <!-- 第四行 -->
-    <el-row type="flex" class="row-bg" justify="space-around">
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">账号:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">开户行:</div></el-col>
-        <el-col :span="18"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">开户名:</div></el-col>
-        <el-col :span="18"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
-      </el-col>
-    </el-row>
-    <!-- 第四行 END -->
-    <!-- 第五行 -->
-    <el-row type="flex" class="row-bg" justify="space-around">
-      <el-col :span="6">
-        <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
-        <el-col :span="12">
-          <div class="grid-del">{{ fundamental.accountsName }}</div>
-        </el-col>
-      </el-col>
-      <el-col :span="14">
-        <el-col :span="6"><div class="grid-del label-color">附件:</div></el-col>
-        <el-col :span="18">
-          <el-upload
-            class="upload-demo"
-            name="files"
-            :file-list="fundamental.files"
-            :show-file-list=true
-            action="test"
-            :disabled=true
-            :on-preview="handlePreview"
-          >
-          </el-upload>
-        </el-col>
-      </el-col>
-    </el-row>
-    <!-- 第五行 END -->
     <!-- 基本信息 END -->
     <!-- 审核结果 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
@@ -214,6 +225,8 @@ export default {
   },
   data(){
     return {
+      printAuditingContent: null, // 打印审核结果的内容拼接
+      presentRouter: null, // 当前路由
       tableIncomeCheck: null, // 审批过程-查看弹窗-数据
       fundamental:{},
       fileList: [], // 申请无收入借款中附件信息
@@ -246,7 +259,15 @@ export default {
       }
     }
   },
+  created(){
+    this.presentRouter = this.$route.name
+    this.getTopName = sessionStorage.getItem('topName')
+  },
   methods: {
+    // 打印详情
+    printDetails(){
+      this.$print(this.$refs.print)
+    },
     moment,
     // 起始时间格式转换
     dateFormat: function(row, column) {
@@ -287,6 +308,12 @@ export default {
       }).then(obj => {
         that.tableCourse = []
         that.tableCourse = obj.data.extend.instanceLogInfo;
+        if(that.tableCourse.length > 0 ) {
+          that.printAuditingContent = '<b>开始</b> -> '
+          that.tableCourse.forEach(function (item) {
+            that.printAuditingContent += item.participantName + '( <b>' + item.approvalName + '</b> )'  + ' -> ';
+          })
+        }
       }).catch(obj => {})
     },
     // 获取一条信息
@@ -483,6 +510,13 @@ export default {
     }
     .title-margin-t{
       margin-top: 45px;
+    }
+    /* 先隐藏打印的时候显示 */
+    .print-title{
+      display: none;
+    }
+    .print-approve{
+      display: none;
     }
     .el-divider__text{
       font-size: 17px !important

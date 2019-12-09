@@ -433,6 +433,7 @@
                       sessionStorage.setItem('orgID',res.data.orgID)
                       sessionStorage.setItem('orgName',res.data.orgName)
                       sessionStorage.setItem('topID',res.data.topID)
+                      sessionStorage.setItem('topName',res.data.topName)
                       sessionStorage.setItem('name',res.data.name)
                       //sessionStorage.setItem('account',this.ruleForm.user)//刚掉account
                       sessionStorage.setItem('userCode',res.data.userCode)
