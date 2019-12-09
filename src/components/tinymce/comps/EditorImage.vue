@@ -4,7 +4,7 @@
       上传图片
     </el-button>
     <el-dialog :visible.sync="dialogVisible">
-      <el-upload
+      <el-upload name="files"
         :file-list="fileList"
         :show-file-list="true"
         :on-remove="handleRemove"
@@ -12,8 +12,7 @@
         :before-upload="beforeUpload"
         class="editor-slide-upload"
         :action="GLOBAL.serverSrc+ '/upload/obs/api/file'"
-        list-type="picture-card"
-      >
+        list-type="picture-card">
         <el-button size="small" type="primary">
           点击上传
         </el-button>
@@ -77,6 +76,7 @@ export default {
      * @description: 图片读取到上传队列后的回调
      */
     beforeUpload(file) {
+      console.log(file)
       const _self = this
       const _URL = window.URL || window.webkitURL
       const fileName = file.uid
@@ -91,8 +91,8 @@ export default {
             width: this.width, 
             height: this.height 
           }
+        resolve(true);
         }
-        resolve(true)
       })
     },
 
@@ -136,6 +136,10 @@ export default {
       }
       if(this.isSave) newFile.supplierID= this.submitForm.id;
       return newFile;
+    },
+
+    uploadRequest(payload){
+      console.log(a)
     }
   }
 }

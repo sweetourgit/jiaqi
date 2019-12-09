@@ -59,13 +59,9 @@
       </div>
       <div v-if="vm.descriptionState=== 'easy'" class="easy-ground">
         <el-col :span="18">
-          <vue-editor 
-            v-model="vm.content"
-            :editorToolbar='$defaultToolbar'>
-          </vue-editor>
-          <TinymceEditor
+          <VueEditor
             v-model="vm.content">
-          </TinymceEditor>
+          </VueEditor>
         </el-col>
       </div>
     </main>
@@ -78,8 +74,7 @@
  */
 
 // 第三方组件
-import { VueEditor } from 'vue2-editor'
-import TinymceEditor from '@/components/tinymce' 
+import VueEditor from '@/components/tinymce' 
 
 // 组件
 import planeForm from './comps/plane-form'
@@ -92,7 +87,7 @@ import { DEFALUT_TRAFFIC_MODE, TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, GO_OR
 export default {
   components: {
     child1: planeForm, child3:busForm, child4:shipForm, child2:trainForm,
-    VueEditor, TinymceEditor
+    VueEditor
   },
 
   props: {

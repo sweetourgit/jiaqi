@@ -37,8 +37,7 @@
         <el-form-item label="详情：" label-width="80px" prop="info">
           <div style="width: 600px; padding-top: 10px;">
             <vue-editor 
-              v-model="submitForm.info"
-              :editorToolbar='$defaultToolbar'>
+              v-model="submitForm.info">
             </vue-editor>
           </div>
         </el-form-item>
@@ -61,7 +60,7 @@ import extHotel from './comps/ext-hotel'
 import extMealsGround from './comps/ext-meals-ground'
 import activitysGround from './comps/activitys-ground'
 // 第三方组件
-import { VueEditor } from 'vue2-editor'
+import VueEditor from '@/components/tinymce'
 
 export default {
   mixins: [ErrorHandlerMixin],
