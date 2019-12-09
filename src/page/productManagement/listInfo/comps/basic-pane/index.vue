@@ -172,10 +172,8 @@
     </el-form>
     <footer>
       <material-list
-        ref="materialListRef"
-        :proto="list"
-        @submit-list="emitSubmitList"
-      ></material-list>
+        ref="materialListRef">
+      </material-list>
       <preview-dialog
         ref="previewDialogRef"
       ></preview-dialog>
@@ -364,7 +362,7 @@ export default {
       // 主题
       this.initThemelist();
       // 暂时方案
-      this.vm.isSave= this.$route.query.id || false;
+      this.vm.isSave= !!this.$route.query.id || false;
     },
     refresh(){
       Object.keys(this.proto).forEach(attr => {
