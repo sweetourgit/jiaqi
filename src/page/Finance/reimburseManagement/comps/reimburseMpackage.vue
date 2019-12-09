@@ -2,307 +2,18 @@
   <!--多报销-->
   <div>
     报销弹框内容
-  <!-- <el-form
-          :model="ruleForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-        <div>
-            <el-tabs
-              v-model="editableTabsValue"
-              :rules="rules"
-              type="card"
-              :editable="change ? false : true"
-              @tab-click="tabClick"
-              @edit="handleTabsEdit"
-              style="border: 1px solid #E4E7ED"
-            >
-              <el-tab-pane
-                :key="item.name"
-                v-for="(item,index) in editableTabs"
-                :label="item.title"
-                :name="item.name"
-              > -->
-              <!-- {{item.content}} -->
-                <div class="handle_div">
-                  <div class="handle_id" v-if="find==1"><span>ID:</span><span style="margin-left: 10px;">{{ruleForm.id}}</span></div>
-                  <div class="handle_people" v-if="find==1"><span>申请人:</span><span style="margin-left: 10px;">{{ruleForm.createUser}}</span></div>
-                  <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;">{{ruleForm.createTime}}</span></div>
-                </div>
-
-                <div style="color: red; position: absolute;left: 20px;top: 115px;">*</div>
-                <el-form-item label="团期计划" prop="groupCode">
-                  <el-input
-                    v-model="ruleForm.groupCode"
-                    placeholder="请输入"
-                    style="width: 240px;"
-                    :disabled="change"
-                  ></el-input>
-                  <el-input
-                    v-model="ruleForm.productName"
-                    placeholder="请输入或者选择团期计划"
-                    style="width: 240px;"
-                    :disabled="change"
-                  ></el-input>
-                  <el-button size="mini" @click="planDialog" v-if="find==0">选择</el-button>
-                </el-form-item>
-                <el-form-item label="摘要" prop="mark">
-                  <el-input
-                    v-model="ruleForm.mark"
-                    placeholder="请输入"
-                    style="width: 480px;"
-                    :disabled="change"
-                  ></el-input>
-                </el-form-item>
-                <div style="color: red; color: red; position: absolute;top:177px;left: 48px;">*</div>
-                <el-form-item label="附件：" label-width="140px" required>
-                  <el-upload 
-                  ref="upload1" 
-                  prop="image"
-                  class="upload-demo" 
-                  name="files"
-                  action= "this.uploadUrl"
-                  :on-success="handleSucess" 
-                  :on-change="handleChange"
-                  :on-remove="handleRemove" 
-                  :before-remove="beforeRemove" 
-                  :file-list="fileList">
-                    <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
-                  </el-upload>
-                </el-form-item>
-                <div class="re_style">
-                  <el-radio v-model="radio" label="1">关联单据</el-radio>
-                  <el-radio v-model="radio" label="2">手添报销明细</el-radio>
-                </div>
-                <div v-if="radio==1" class="re_style" style="margin-top: 20px">
-                  <el-button @click="addbx('ruleForm')" v-if="find==0">增加1</el-button>
-                  <!-- <el-button @click="addbx" v-if="find==0">修改</el-button> -->
-                  <!-- <el-button type="danger" v-if="find==0">删除</el-button> -->
-                </div>
-                <div  style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 64px;margin-top: 10px; ">
-                    <i style="float: left; margin-left: 10px;margin-top: 7px;" class="el-icon-warning"></i>
-                    <div style="float: left;margin-left: 30px;margin-top: 7px;">
-                      已选择  <span style="color: #249BEB">{{t_sum}}</span>项
-                    </div>
-                    <div style="float: left; margin-left: 30px;margin-top: 7px;">
-                      报销总计： <span style="font-weight:bold">{{t_price}}</span>元
-                    </div>
-                </div>
-                <div v-if="radio==1">
-                  <div class="re_style">
-                    <el-table :data="joinData_s" border style="width: 100%; margin-top: 30px">
-                     <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="100"></el-table-column>
-                      <el-table-column prop="supplierTypeEX" label="借款类型" width="90"></el-table-column>
-                      <el-table-column prop="supplierName" label="供应商" width="100"></el-table-column>
-                      <el-table-column prop="createUser" label="申请人" width="100"></el-table-column>
-                      <el-table-column prop="paymentMark" label="摘要" width="120"></el-table-column>
-                      <el-table-column prop="paymentPrice" label="借款金额" width="100"></el-table-column>
-                      <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column>
-
-                      <el-table-column prop="bcount" label="报销金额" style="background: yellow" width="140"  v-if="find==0">
-                        <template slot-scope="scope">
-                          <el-input v-model="scope.row.bcount" style="width:100px;"></el-input>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==0">
-                        <template slot-scope="scope">
-                          <el-input v-model="scope.row.peopleCount" style="width:100px;"></el-input>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="peopleCount" label="操作" width="140"  v-if="find==0">
-                          <template slot-scope="scope">
-                          <div @click="t_delete" style="color: #f5a142">删除</div>
-                         </template>
-                      </el-table-column>
-                    
-                      <!-- 不能改的 -->
-                       <el-table-column prop="price" label="报销金额" style="background: yellow" width="140" v-if="find==1">  </el-table-column>
-                       <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==1"> </el-table-column>
-                       <!-- <el-table-column prop="peopleCount" label="操作" width="80"  v-if="find==1">
-                         <template slot-scope="scope">
-                          <div @click="t_delete" style="color: #f5a142">删除</div>
-                        </template>
-                      </el-table-column> -->
-                    </el-table>
-                  </div>
-                  <!-- <div class="re_style" style="margin-top: 30px; margin-bottom: 30px">报销金额：100.00</div> -->
-                </div>
-                <div v-if="radio==2">
-                  <div style="float:left;margin: 10px 0 0 65px;width: 70px;">报销明细:</div>
-                  <div class="re_style" style="margin-top: 20px;">
-                    <el-input
-                      :disabled="change"
-                      v-model="ruleForm.monkeys.mark"
-                      placeholder="请输入报销类型"
-                      style="width: 240px;"
-                    ></el-input>
-                    <el-input
-                      :disabled="change"
-                      v-model="ruleForm.monkeys.price"
-                      placeholder="请输入报销金额"
-                      style="width: 240px;"
-                    ></el-input>
-                    <el-button type="primary" @click="addDomain" v-if="find==0">添加</el-button>
-                  </div>
-                  <div
-                   v-for="(domain, index) in domains" 
-                   :class="re_style" 
-                   style="margin: 20px 0 0 135px;"
-                   :key='index+"m"'>
-                    <el-input
-                      :disabled="change"
-                      v-model="domain.mark"
-                      placeholder="请输入报销类型"
-                      style="width: 240px;"
-                    ></el-input>
-                    <el-input
-                      :disabled="change"
-                      v-model="domain.price"
-                      placeholder="请输入报销金额"
-                      style="width: 240px;"
-                    ></el-input>
-                    <el-button type="danger" @click="removeDomain(domain)" v-if="find==0">删除</el-button>
-                  </div>
-                </div>
-              </el-tab-pane>
-           
-            <!-- 审批人 -->
-            <div v-if="this.find == 1" class="re_style" style="margin-top: 20px"> 
-              <el-table :data="reimData" border style="width: 100%">
-                <el-table-column prop="reier" label="审批人" width="180"></el-table-column>
-                <el-table-column prop="reisult" label="审批结果" width="180"></el-table-column>
-                <el-table-column prop="info" label="审批意见"></el-table-column>
-                <el-table-column prop="time" label="审批时间"></el-table-column>
-              </el-table>
-            </div>
-   
-          <!--多报销end-->
-        <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
-          <el-button @click="chanceSubmit('ruleForm')">取 消</el-button>
-          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">确 定3</el-button>
-          <el-button
-            v-if="this.find == 1"
-            type="danger"
-            @click="chanelSubmit('ruleForm')"
-            plain
-          >撤销申请</el-button>
-          <div v-if="this.find == 1" class="sh_style">审核中</div>
-        </div>
-     
-      <!--报销弹窗end-->
-      <!--团期计划弹窗-->
-        <el-dialog
-          width="60%"
-          title="获取团期计划"
-          :visible.sync="dialogFormVisible2"
-          append-to-body
-          :show-close="false"
-        >
-            <div class="indialog">
-                <div style=" position: absolute;right: 67px;top: 22px;">
-                  <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-                  <el-button type="primary" @click="addplan">确 定1</el-button>
-                </div>
-                <div class="indialog_search">
-                  <span class="search_style">团期单号：</span>
-                  <el-input v-model="tour_name" placeholder="请输入内容" class="search_input"></el-input>
-                  <span class="search_style">产品名称：</span>
-                  <el-input v-model="product_name" placeholder="请输入内容" class="search_input"></el-input>
-                  <span class="search_style">出行日期：</span>
-                  <el-date-picker
-                    v-model="startTime2"
-                    type="date"
-                    placeholder="开始日期"
-                    style="float: left;width: 140px;"
-                  ></el-date-picker>
-                  <el-date-picker
-                    v-model="endTime2"
-                    type="date"
-                    placeholder="终止日期"
-                    style="float: left;width: 140px;"
-                  ></el-date-picker>
-                  <el-button
-                    type="primary"
-                    size="mini"
-                    @click="searchHand4(1)"
-                    round
-                    style="margin-top: 5px; margin-left: 10px"
-                  >搜索</el-button>
-                  <el-button 
-                  @click="T_update_btn" 
-                  type="primary"
-                  size="mini"
-                  round
-                  style="margin-top: 5px; margin-left: 10px"
-                  >重置</el-button>
-                </div>
-                <el-table
-                  :data="planData"
-                  border
-                  :highlight-current-row="true"
-                  @row-click="planChange"
-                  style="width: 100%; margin-top: 30px"
-                >
-                  <el-table-column prop="groupCode" label="团期计划ID"></el-table-column>
-                  <el-table-column prop="title" label="产品名称"></el-table-column>
-                  <el-table-column prop="destination" label="目的地"></el-table-column>
-                  <el-table-column prop="date" label="出行日期"></el-table-column>
-                  <el-table-column prop="orgName" label="部门"></el-table-column>
-                  <el-table-column prop="name" label="产品录入人"></el-table-column>
-                </el-table>
-              </div>
-        </el-dialog>
-      <!--团期计划弹窗end-->
-
-      <!--添加报销弹窗-->
-      <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body>
-                  <span class="search_style">供应商：</span>
-                  <el-input v-model="t_supplier" placeholder="请输入内容" class="search_input"></el-input>
-                  <div class="reform_s">
-                    <el-button @click="T_check" type="primary">搜索2</el-button>
-                    <el-button @click="T_update" type="primary">重置2</el-button>
-                  </div>
-              <el-table :data="joinData" border style="width: 100%; margin-top: 30px">
-              <el-table-column prop="paymentID" label="关联单号" width="60"></el-table-column>
-              <el-table-column prop="supplierTypeEX" label="类型" width="80"></el-table-column>
-              <el-table-column prop="supplierName" label="供应商" width="90"></el-table-column>
-              <!-- <el-table-column prop="supplierName" label="供应商" v-if="this.supplier == 1"></el-table-column> -->
-              <el-table-column prop="orgName" label="部门" width="60"></el-table-column>
-              <el-table-column prop="createUser" label="申请人" width="80"></el-table-column>
-              <el-table-column prop="createTime" label="发起日期" width="130"></el-table-column>
-              <el-table-column prop="mark" label="摘要" width="130"></el-table-column>
-              <el-table-column prop="price" label="金额" width="90"></el-table-column>
-              <el-table-column prop="wcount" label="未报销金额" width="90"></el-table-column>
-              <el-table-column prop="bcount" width="120" label="报销金额">
-              <template slot-scope="scope">
-                  <el-input v-model="scope.row.bcount" style="width:90px;"></el-input>
-              </template>
-              </el-table-column>
-              <el-table-column prop="peopleCount" width="120" label="人数">
-                <template slot-scope="scope">
-                  <el-input v-model="scope.row.peopleCount" style="width:90px;"></el-input>
-                </template>
-              </el-table-column>
-            </el-table>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible3 = false">取 消</el-button>
-              <el-button type="primary" @click="t_text('joinData')">确 定2</el-button>
-            </div>
-      </el-dialog>
-      <!--添加报销弹窗end-->
+    {{submitForm_s.name}}
+      
  
 </div> 
 </template>
 
 <script>
-// import NeedApproval from "@/page/Finance/reimburseManagement/needApproval";
- 
+
 import { formatDate } from "@/js/libs/formatDate.js";
 import moment from "moment";
 export default {
-  name: "reimburseManagement",
+  name: "reimburseMpackage",
   components: {  },
   data() {
     var areaIdRule = (rule, value, callback) => {
@@ -325,144 +36,36 @@ export default {
 
     return {
       uploadUrl: this.GLOBAL.serverSrc + '/upload/obs/api/picture/', // 上传凭证
-      image: 0,
-      value1: "",
-      value2: "",
-      ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
-      hand: [],
-      t_sum:0,//一共多少项
-      t_price:10,//一共多少钱
-      plans: {
-        planNum: "1",
-        planName: "2",
-        pid: ""
-      },
-      beginDate: "",//报销开始时间+
-      endDate: "",//报销结束时间+
-      planTotal: 100,
-      userSize: 10,
-      userTotal: 100,
-      supplier:0,//供应商没有的时候显示这个
-      startTime2: "",
-      endTime2: "",
-      pageSize: 10,//每页偏移量
-      pageCount: 100,
+      find:0,//判断页面进入状态
       change: false,
-      //分辨查看
-      find: 0,
-      // 单选
-      radio: "1",
-      //团期计划弹窗
-      dialogFormVisible2: false,
-      //添加报销
-      dialogFormVisible3: false,
-      //报销表单弹窗
-      dialogFormVisible: false,
-      //报销人弹窗
-      dialogFormVisible1: false,
-      //团期计划搜索
-      tour_name: "",
-      product_name: "",
-      planTime: "",
-      planTime1: "",
-      //手添报销
-      domains: [
-        {
-          mark: "0",
-          price: "0"
-        }
-      ],
-      // 选中报销人字段
-      people: {
-        tt: "大运通-日本",
-        peo: "qq"
+      submitForm_s: {
+        // name: "",
+        // id: "",
+        // createUser:"",
+        // createTime:"",
+        // groupCode:"",
+        // productName:"",
+        // mark:"",
+        // fileList:"",
       },
-      //报销表单
-    ruleForm: {
-      plan: {
-        planId: "",
-        planName: ""
-      },
-      monkeys: {
-        mark: "0",
-        price: "0"
-      },
-      mark: ""
-      },
-      //报销表单验证
-      rules: {
-        name: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
-        groupCode: [{ validator: areaIdRule, trigger: "blur" }],
-        image: [{ validator: imageIdRule, trigger: "blur" }],
-        mark: [
-          { required: true, message: "请输入摘要", trigger: "change" },
-          {
-            min: 0,
-            max: 80,
-            message: "摘要字数不能超过80字",
-            trigger: "change"
-          }
-        ]
-      },
-      //审批意见
-      reimData: [{
-          reier: "",
-          reisult: "",
-          info: "",
-          time: ""
-        }],
-      formLabelWidth: "120px",
-      currentPage4: 1,
-      activeName: "first",
-      expenseID: "",
-      groupCode: "",
-      t_plan: "",// 添加报销申请人
-      t_supplier:"",//添加报销供应商
-      createUser: "",
-      createtime1: "",
-      createtime2: "",
-      //报销table
-      tableData: [],
-      //团期计划表格
-      planData: [],
-      //关联单据表单
-      joinData:[],
-      joinData_s:[],
-      file: [],
-      //文件上传列表
-      fileList: [],
-      editableTabsValue: "1",
-      editableTabs: [
-        {
-          title: "报销1",
-          name: "1",
-          content: "Tab 1 mark"
-        }
-      ],
-      tabIndex: 1
+     
     };
   },
   methods: {
-    /* deleTab(info){
-            console.log("报销"+info)
-
-          },*/
     moment,
-    //切换时候，换内容
-    tabClick() {
-      this.ruleForm = {
-        groupCode: {
-          planId: "",
-          planName: ""
-        },
-        monkeys: {
-          mark: "0",
-          price: "0"
-        },
-        mark: ""
-      };
-       this.$refs[ruleForm].resetFields();
+    init(){
+      console.log(this.proto);
+      Object.keys(this.proto).forEach(attr => {
+        attr!== 'schedules' 
+           && (this.submitForm_s[attr]= this.proto[attr]);
+      });
+      console.log("三三四四",this.submitForm_s)
+      // bug 127: 这里记录原始数据
+      //this.checkProto= this.$deepCopy(this.submitForm);
+
+      
     },
+ 
     chanceSubmit(ruleForm) { // 取消按钮
      // console.log(ruleForm);
       this.ruleForm = {
@@ -547,10 +150,6 @@ export default {
       this.plans.planName = row.title;
       this.plans.planNum = row.groupCode;
       this.plans.pid = row.planID;
-    },
-    adduser() {
-      this.ruleForm.name.push(this.people);
-      this.dialogFormVisible1 = false;
     },
     // 报销人选中行
     clickBanle(row) {
@@ -804,6 +403,7 @@ export default {
     },
     //添加报销
     addbx(ruleForm) { 
+      console.log("走2");
        this.joinData = [];
        this.$refs[ruleForm].validate(valid => {
         if (valid) {
@@ -891,8 +491,6 @@ export default {
     },
     //添加报销和删除
     handleTabsEdit(targetName, action) {
-      console.log(action);
-      console.log(targetName);
       if (action === "add") {
         let newTabName = ++this.tabIndex + "";
         this.editableTabs.push({
