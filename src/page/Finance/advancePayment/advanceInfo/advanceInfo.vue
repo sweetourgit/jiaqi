@@ -132,6 +132,11 @@
                 <el-table-column prop="paymentID" label="ID" align="center">
                 </el-table-column>
                 <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
+                    <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
+                    <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="supplierTypeEX" label="借款类型" align="center">
                 </el-table-column>
@@ -167,6 +172,11 @@
                   <el-table-column prop="paymentID" label="ID" align="center">
                   </el-table-column>
                   <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+                    <template slot-scope="scope">
+                      <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
+                      <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
+                      <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
+                    </template>
                   </el-table-column>
                   <el-table-column prop="supplierTypeEX" label="借款类型" align="center">
                   </el-table-column>

@@ -190,7 +190,13 @@
         <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
         <el-table :data="tableIncome" border :header-cell-style="getRowClass">
           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-          <el-table-column prop="checkTypeEX" label="审批状态" align="center"></el-table-column>
+          <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
+              <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
+              <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
           <el-table-column prop="price" label="金额" align="center"></el-table-column>
@@ -207,7 +213,13 @@
         <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
         <el-table :data="tablePayment" border :header-cell-style="getRowClass">
           <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-          <el-table-column prop="checkTypeEX" label="审批状态" align="center"></el-table-column>
+          <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F" >{{scope.row.checkTypeEX}}</div>
+              <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D" >{{scope.row.checkTypeEX}}</div>
+              <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174" >{{scope.row.checkTypeEX}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
           <el-table-column prop="price" label="金额" align="center"></el-table-column>
@@ -932,15 +944,6 @@ export default {
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tablePayment = res.data.objects
-          that.tablePayment.forEach(function (v,k,arr) {
-            if(arr[k]['paymentType'] == 1){
-              arr[k]['paymentType'] = '无收入借款'
-            }else if(arr[k]['paymentType'] == 2) {
-              arr[k]['paymentType'] = '预付款'
-            } else {
-              arr[k]['paymentType'] = '暂无'
-            }
-          })
         }
       }).catch(err => {})
       // 无收入借款明细
@@ -952,15 +955,6 @@ export default {
       }).then(res => {
         if (res.data.isSuccess == true) {
           that.tableIncome = res.data.objects
-          that.tableIncome.forEach(function (v,k,arr) {
-            if(arr[k]['paymentType'] == 1){
-              arr[k]['paymentType'] = '无收入借款'
-            }else if(arr[k]['paymentType'] == 2) {
-              arr[k]['paymentType'] = '预付款'
-            } else {
-              arr[k]['paymentType'] = '暂无'
-            }
-          })
         }
       }).catch(err => {
         console.log(err)

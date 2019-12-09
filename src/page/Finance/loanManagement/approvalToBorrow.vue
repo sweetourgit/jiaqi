@@ -383,36 +383,36 @@ import moment from 'moment'
       }
       },
       transit(formName){
-      var that = this;
-      // this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
-      let getWorkflowCode
-      if(this.presentRouter == '无收入借款管理') {
-        getWorkflowCode = 'loan_noIncome4' // 1
-      } else if(this.presentRouter == '预付款管理') {
-        getWorkflowCode = 'borrow_Moneys4' // 2
-      }else {}
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion',
-      {
-        "jQ_ID":that.guid,
-        "jQ_Type": getWorkflowCode,
-        "userCode":sessionStorage.getItem('tel'),
-        "workItemID": that.getWorkItemId,
-        "commentText": that.commentText
-      }).then(res =>{
-        that.transitShow = false;
-        that.detailstShow = false;
-        that.pageList();
-          //that.repeal();
-      })
+        var that = this;
+        // this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
+        let getWorkflowCode
+        if(this.presentRouter == '无收入借款管理') {
+          getWorkflowCode = 'loan_noIncome2'
+        } else if(this.presentRouter == '预付款管理') {
+          getWorkflowCode = 'borrow_Moneys2'
+        }else {}
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion',
+        {
+          "jQ_ID":that.guid,
+          "jQ_Type": getWorkflowCode,
+          "userCode":sessionStorage.getItem('tel'),
+          "workItemID": that.getWorkItemId,
+          "commentText": that.commentText
+        }).then(res =>{
+          that.transitShow = false;
+          that.detailstShow = false;
+          that.pageList();
+            //that.repeal();
+        })
       },
       // 驳回
       rejected_01(formName){
       var that = this;
       let getWorkflowCode
       if(this.presentRouter == '无收入借款管理') {
-        getWorkflowCode = 'loan_noIncome4' // 1
+        getWorkflowCode = 'loan_noIncome2'
       } else if(this.presentRouter == '预付款管理') {
-        getWorkflowCode = 'borrow_Moneys4' // 2
+        getWorkflowCode = 'borrow_Moneys4'
       }else {}
       // this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ',
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion',
