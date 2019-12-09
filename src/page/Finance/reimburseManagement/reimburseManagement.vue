@@ -95,15 +95,14 @@
         <el-form
           :model="ruleForm"
           :rules="rules"
-          ref="ruleForm"
+          ref="editableTabs"
           label-width="100px"
           class="demo-ruleForm"
         >
           <!--多报销-->
           <div>
             <el-tabs
-              v-model="editableTabsValue"
-              :rules="rules"
+              v-model="ruleForm.editableTabsValue"
               type="card"
               :editable="change ? false : true"
               @tab-click="tabClick"
@@ -112,35 +111,36 @@
             >
               <el-tab-pane
                 :key="item.name"
-                v-for="(item,index) in editableTabs"
+                v-for="item in ruleForm.editableTabs"
                 :label="item.title"
                 :name="item.name"
               >
               <!-- {{item.content}} -->
               <div class="handle_div">
-                <div class="handle_id" v-if="find==1"><span>ID:</span><span style="margin-left: 10px;">{{ruleForm.id}}</span></div>
-                <div class="handle_people" v-if="find==1"><span>申请人:</span><span style="margin-left: 10px;">{{ruleForm.createUser}}</span></div>
-                <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;">{{ruleForm.createTime}}</span></div>
+                <div class="handle_id" v-if="find==1"><span>ID:</span><span style="margin-left: 10px;">{{item.id}}</span></div>
+                <div class="handle_people" v-if="find==1"><span>申请人:</span><span style="margin-left: 10px;">{{item.createUser}}</span></div>
+                <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;">{{item.createTime}}</span></div>
               </div>
-                <div style="color: red; position: absolute;left: 20px;top: 115px;">*</div>
-                <el-form-item label="团期计划" prop="groupCode">
+
+              <div style="color: red; position: absolute;left: 20px;top: 115px;">*</div>
+                <el-form-item label="团期计划" porp="groupCode">
                   <el-input
-                    v-model="ruleForm.groupCode"
+                    v-model="item.content.groupCode"
                     placeholder="请输入"
                     style="width: 240px;"
                     :disabled="change"
                   ></el-input>
                   <el-input
-                    v-model="ruleForm.productName"
+                    v-model="item.content.productName"
                     placeholder="请输入或者选择团期计划"
                     style="width: 240px;"
                     :disabled="change"
                   ></el-input>
-                  <el-button size="mini" @click="planDialog" v-if="find==0">选择</el-button>
+                  <el-button size="mini" @click="planDialog()" v-if="find==0">选择</el-button>
                 </el-form-item>
-                <el-form-item label="摘要" prop="mark">
+                <el-form-item label="摘要" porp="mark">
                   <el-input
-                    v-model="ruleForm.mark"
+                    v-model="item.content.mark"
                     placeholder="请输入"
                     style="width: 480px;"
                     :disabled="change"
@@ -153,24 +153,22 @@
                   prop="image"
                   class="upload-demo" 
                   name="files"
-                  :action="upimgUrl"
+                  :action= "uploadUrl"
                   :on-success="handleSucess" 
                   :on-change="handleChange"
                   :on-remove="handleRemove" 
                   :before-remove="beforeRemove" 
-                  :on-preview="handlePreview"
-                  :file-list="ruleForm.files">
+                  :file-list="item.content.fileList">
                     <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
                   </el-upload>
                 </el-form-item>
+
                 <div class="re_style">
                   <el-radio v-model="radio" label="1">关联单据</el-radio>
                   <el-radio v-model="radio" label="2">手添报销明细</el-radio>
                 </div>
                 <div v-if="radio==1" class="re_style" style="margin-top: 20px">
-                  <el-button @click="addbx('ruleForm')" v-if="find==0">增加1</el-button>
-                  <!-- <el-button @click="addbx" v-if="find==0">修改</el-button> -->
-                  <!-- <el-button type="danger" v-if="find==0">删除</el-button> -->
+                  <el-button @click="addbx(item.content)" v-if="find==0">增加1</el-button>
                 </div>
                 <div  style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 64px;margin-top: 10px; ">
                   <i
@@ -187,10 +185,9 @@
                   </div>
                 </div>
                 <div v-if="radio==1">
-                   
-                  <div class="re_style">
-                    <el-table :data="joinData_s" border style="width: 100%; margin-top: 30px">
-                     
+                   <div class="re_style">
+                    <el-table :data="item.content.joinData_s" border style="width: 100%; margin-top: 30px">
+                      
                       <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="100"></el-table-column>
                       <el-table-column prop="supplierTypeEX" label="借款类型" width="90"></el-table-column>
                       <el-table-column prop="supplierName" label="供应商" width="100"></el-table-column>
@@ -279,12 +276,12 @@
           <!--多报销end-->
         </el-form>
         <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
-          <el-button @click="chanceSubmit('ruleForm')">取 消</el-button>
-          <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">确 定3</el-button>
+          <el-button @click="chanceSubmit(ruleForm)">取 消</el-button>
+          <el-button v-if="this.find == 0" type="primary" @click="submitForm(ruleForm)">确 定3</el-button>
           <el-button
             v-if="this.find == 1"
             type="danger"
-            @click="chanelSubmit('ruleForm')"
+            @click="chanelSubmit(ruleForm)"
             plain
           >撤销申请</el-button>
           <div v-if="this.find == 1" class="sh_style">审核中</div>
@@ -293,16 +290,16 @@
       <!--报销弹窗end-->
       <!--团期计划弹窗-->
       <el-dialog
-          width="60%"
-          title="获取团期计划"
-          :visible.sync="dialogFormVisible2"
-          append-to-body
-          :show-close="false"
-        >
+        width="60%"
+        title="获取团期计划"
+        :visible.sync="dialogFormVisible2"
+        append-to-body
+        :show-close="false"
+      >
         <div class="indialog">
           <div style=" position: absolute;right: 67px;top: 22px;">
             <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-            <el-button type="primary" @click="addplan">确 定1</el-button>
+            <el-button type="primary" @click="addplan(ruleForm.editableTabsValue)">确 定1</el-button>
           </div>
           <div class="indialog_search">
             <span class="search_style">团期单号：</span>
@@ -352,28 +349,21 @@
             <el-table-column prop="orgName" label="部门"></el-table-column>
             <el-table-column prop="name" label="产品录入人"></el-table-column>
           </el-table>
-          <!--  <el-pagination
-              style="margin-top: 10px;float: right"
-              :page-size="userSize"
-              :pager-count="11"
-              layout="prev, pager, next"
-              @current-change="handleCurrentChange2"
-              :total=planTotal>
-          </el-pagination>-->
-        </div>
+         </div>
       </el-dialog>
       <!--团期计划弹窗end-->
       <!--添加报销弹窗-->
-      <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body>
-              <!-- <span class="search_style">申请人：</span>
-              <el-input v-model="t_plan" placeholder="请输入内容" class="search_input"></el-input> -->
-              <span class="search_style">供应商：</span>
+      <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body >
+         <span class="search_style">供应商：</span>
               <el-input v-model="t_supplier" placeholder="请输入内容" class="search_input"></el-input>
           <div class="reform_s">
             <el-button @click="T_check" type="primary">搜索2</el-button>
             <el-button @click="T_update" type="primary">重置2</el-button>
           </div>
-        <el-table :data="joinData" border style="width: 100%; margin-top: 30px">
+        <el-table 
+        :data="joinData" 
+        border 
+        style="width: 100%; margin-top: 30px">
           <el-table-column prop="paymentID" label="关联单号" width="60"></el-table-column>
           <el-table-column prop="supplierTypeEX" label="类型" width="80"></el-table-column>
           <el-table-column prop="supplierName" label="供应商" width="90"></el-table-column>
@@ -425,24 +415,24 @@ export default {
   data() {
     var areaIdRule = (rule, value, callback) => {
       if (
-        this.ruleForm.groupCode == "" ||
-        this.ruleForm.productName == ""
+        this.editableTabs.groupCode == "" ||
+        this.editableTabs.productName == ""
       ) {
         return callback(new Error("团期计划不能为空"));
       } else {
-         callback();
+          return callback()
       }
     };
     var imageIdRule = (rule, value, callback) => {
       if (this.image == 0) {
         return callback(new Error("上传图片不能为空"));
       } else {
-         callback();
+          return callback()
       }
     };
 
     return {
-      upimgUrl:this.GLOBAL.serverSrc + '/upload/obs/api/file', // 上传凭证
+      uploadUrl: this.GLOBAL.serverSrc + '/upload/obs/api/picture/', // 上传凭证
       image: 0,
       value1: "",
       value2: "",
@@ -497,15 +487,33 @@ export default {
       },
       //报销表单
     ruleForm: {
-      plan: {
-        planId: "",
-        planName: ""
-      },
-      monkeys: {
-        mark: "0",
-        price: "0"
-      },
-      mark: ""
+      editableTabsValue: "1",
+      editableTabs: [
+        {
+          title: "报销1",
+          name: "1",
+          content:{
+              createUser:"",
+              createTime: "",
+              id:"",
+              groupCode: "",
+              productName: "",
+              mark: "",
+              fileList:[],
+              joinData_s:[],
+              joinData:[],
+              plan: {
+                planId: "",
+                planName: ""
+              },
+              monkeys: {
+                mark: "0",
+                price: "0"
+              },
+       
+          }
+        }
+      ],
       },
       //报销表单验证
       rules: {
@@ -522,6 +530,7 @@ export default {
           }
         ]
       },
+      
       //审批意见
       reimData: [{
           reier: "",
@@ -549,14 +558,7 @@ export default {
       file: [],
       //文件上传列表
       fileList: [],
-      editableTabsValue: "1",
-      editableTabs: [
-        {
-          title: "报销1",
-          name: "1",
-          content: "Tab 1 mark"
-        }
-      ],
+      
       tabIndex: 1
     };
   },
@@ -568,42 +570,75 @@ export default {
     moment,
     //切换时候，换内容
     tabClick() {
-      this.ruleForm = {
-        groupCode: {
-          planId: "",
-          planName: ""
-        },
-        monkeys: {
-          mark: "0",
-          price: "0"
-        },
-        mark: ""
-      };
-       this.$refs[ruleForm].resetFields();
+      console.log(9);
+      // this.ruleForm = {
+      //   groupCode: {
+      //     planId: "",
+      //     planName: ""
+      //   },
+      //   monkeys: {
+      //     mark: "0",
+      //     price: "0"
+      //   },
+      //   mark: ""
+      // }; 
+      // this.$refs[ruleForm].resetFields();
     },
-    chanceSubmit(ruleForm) { // 取消按钮
+    chanceSubmit() { // 取消按钮
      // console.log(ruleForm);
-      this.ruleForm = {
-        groupCode:"",
-        productName:"",
-        monkeys: {
-          mark: "小费",
-          price: "1000.00"
-        },
-        mark: ""
-        }
-      this.t_sum = 0;
-      this.t_price = 0;
-      this.joinData_s = [];
-      this.dialogFormVisible = false;
-      this.$refs[ruleForm].resetFields();
+     this.ruleForm.editableTabs=[{
+          title: "报销1",
+          name: "1",
+          content:{
+              createUser:"",
+              createTime: "",
+              id:"",
+              groupCode: "",
+              productName: "",
+              mark: "",
+              fileList:[],
+              joinData_s:[],
+              joinData:[],
+              plan: {
+                planId: "",
+                planName: ""
+              },
+              monkeys: {
+                mark: "0",
+                price: "0"
+              },
+       
+          }
+        }];
+     this.radio= "1";
+     this.dialogFormVisible = false;
+      // this.ruleForm = {
+      //   groupCode:"",
+      //   productName:"",
+      //   monkeys: {
+      //     mark: "小费",
+      //     price: "1000.00"
+      //   },
+      //   mark: ""
+      //   }
+      // this.t_sum = 0;
+      // this.fileList=[];
+      // 
+      // this.t_price = 0;
+      // this.joinData_s = [];
+      // this.$refs[ruleForm].resetFields();
        
     },
-    addplan() {//确定1
-      this.ruleForm.groupCode = this.plans.planNum;
-      this.ruleForm.productName = this.plans.planName;
-      //this.Associated(this.plans.pid);
-      this.dialogFormVisible2 = false;
+    addplan(editableTabsValue) {//确定1
+       let one = editableTabsValue - 1;
+       let editableTabs = this.ruleForm.editableTabs;
+      // let one = editableTabsValue;
+      
+       editableTabs[one].content.groupCode = this.plans.planNum;
+       editableTabs[one].content.productName = this.plans.planName;
+      // this.Associated(this.plans.pid);
+       this.dialogFormVisible2 = false;
+       
     },
     //获取关联单据
     Associated(
@@ -635,7 +670,10 @@ export default {
                     // }else{
                     //   this.supplier=0;
                     // }
-                    this.joinData.push({
+                    let one_index = this.ruleForm.editableTabsValue - 1; 
+                      //console.log(this.editableTabsValue);
+               
+                    this.ruleForm.editableTabs[one_index].content.joinData.push({
                       paymentID:  object[i].paymentID,
                       supplierTypeEX:object[i].supplierTypeEX,
                       groupCode:object[i].groupCode,
@@ -651,8 +689,12 @@ export default {
                       orgName:object[i].orgName,
                       wcount :object[i].price - object[i].collectionPrice
                   });
-                }
-              //console.log("添加数据",this.joinData);
+                  
+                 
+                  this.joinData = this.ruleForm.editableTabs[one_index].content.joinData
+                 }
+                 
+                  
             })
             .catch(err => {
               console.log(err);
@@ -660,16 +702,16 @@ export default {
         },
     //获取团号和name
     planChange(row) {
-      console.log(row);
+      console.log("关联内容",row);
       this.plans = {};
       this.plans.planName = row.title;
       this.plans.planNum = row.groupCode;
       this.plans.pid = row.planID;
     },
-    adduser() {
-      this.ruleForm.name.push(this.people);
-      this.dialogFormVisible1 = false;
-    },
+    // adduser() {
+    //   this.ruleForm.name.push(this.people);
+    //   this.dialogFormVisible1 = false;
+    // },
     // 报销人选中行
     clickBanle(row) {
       this.people = {};
@@ -719,10 +761,16 @@ export default {
         });
     },
     // 报销申请提交
-    submitForm(formName) {
+    submitForm(ruleForm) {
+      let submitForm_list;
       var joinData_sn=[];
       var fileList_s=[];
-      this.$refs[formName].validate(valid => {
+      var editableTabs = ruleForm.editableTabs;
+      for(var j in editableTabs){
+          submitForm_list = editableTabs[j].content;
+        }
+        comsole.log(submitForm_list,"888");
+       this.$refs[submitForm_list].validate(valid => {
         if (valid) {
           this.hand = [];
           for (var i = 0; i < this.domains.length; i++) {
@@ -741,17 +789,17 @@ export default {
               url:this.fileList[i].url,
             });
           };
-          console.log(this.ruleForm);
+          console.log(this.editableTabs);
           console.log(this.ruleForm.monkeys);
           this.hand.push(this.ruleForm.monkeys);
-          var createUser = sessionStorage.getItem('id');
-          var pid = this.plans.pid;
-          var price = this.t_price;
-          var mark = this.ruleForm.mark;
-          var files = fileList_s;
-          var check = 0;
-          var others = this.hand;
-          var payments = joinData_sn;
+          var createUser = sessionStorage.getItem('id');//用户id
+          var pid = this.plans.pid;//团期计划id
+          var price = this.t_price;//总价
+          var mark = this.ruleForm.mark;// 摘要
+          var files = fileList_s;//关联数据
+          var check = 0;//审批状态
+          var others = this.hand;//手填报销记录明细
+          var payments = joinData_sn; //关联付款单据报销明细
 
           this.$http
             .post(this.GLOBAL.serverSrc + "/finance/expense/api/insertlist", {
@@ -840,28 +888,30 @@ export default {
         });
     },
     t_text() {//确认添加
-        this.joinData_s = [];
         var sss;
-          for(let i in this.joinData){
-                if(this.joinData[i].bcount!= "0" ){
-                    this.joinData_s.push(this.joinData[i]);
+        let one_index = this.ruleForm.editableTabsValue - 1; 
+        let t_joinData = this.ruleForm.editableTabs[one_index].content.joinData;
+        for(let i in t_joinData){
+                if(t_joinData[i].bcount!= "0" ){
+                     this.ruleForm.editableTabs[one_index].content.joinData_s.push(t_joinData[i]);
                     //sss = this.joinData[i].bcount + [i];
                 }
               }
-          this.t_sum = this.joinData_s.length;
+          this.t_sum = this.ruleForm.editableTabs[one_index].content.joinData_s.length;
           this.dialogFormVisible3 = false;
+          this.ruleForm.editableTabs[one_index].content.joinData=[];
     },
     // 报销弹窗
     dialogchange() {
-       this.ruleForm = {
-        groupCode:"",
-        productName:"",
-        monkeys: {
-          mark: "小费",
-          price: "1000.00"
-        },
-        mark: ""
-        }
+      //  this.ruleForm = {
+      //   groupCode:"",
+      //   productName:"",
+      //   monkeys: {
+      //     mark: "小费",
+      //     price: "1000.00"
+      //   },
+      //   mark: ""
+      //   }
       
       this.t_sum = 0;
       this.t_price=10;
@@ -884,7 +934,7 @@ export default {
                }
             })
             .then(res => {
-              if (res.data.isSuccess == true)  {
+              if (res.data.isSuccess == true) {
                  var d_objects = res.data.objects; //console.log(res.data.objects);
                  var createUser;
                     this.find = 1;
@@ -906,7 +956,6 @@ export default {
                                 paymentPrice:payments[j].paymentPrice,
                                 price:payments[j].price,
                                 peopleCount:payments[j].peopleCount,
-                                files:payments[j].files
 
                             })
                           
@@ -914,7 +963,7 @@ export default {
                         
                      }
                     
-                    console.log("我的",this.joinData_s);
+                    //console.log(this.joinData_s);
                }
             })
             .catch(err => {
@@ -922,20 +971,24 @@ export default {
             });
     },
     //添加报销
-    addbx(ruleForm) { 
-       this.joinData = [];
-       this.$refs[ruleForm].validate(valid => {
-        if (valid) {
-        this.Associated(this.plans.pid);
-        this.dialogFormVisible3 = true;
-        } else {
-          this.$message({
-          message: '请填写必填项',
-          type: 'warning'
-        });
-        return false;
-        }
-      });
+    addbx(item) { 
+     //   this.joinData = [];
+       if(item.groupCode === "" || item.mark === "" || item.productName === "" || this.image === 0 ){
+           this.$message({
+            message: '请检查必填项',
+            type: 'warning'
+          });
+       }else{
+           this.Associated(this.plans.pid);
+           this.dialogFormVisible3 = true;
+       }
+      //  this.$refs[item].validate(valid => {
+      //     if (valid) {
+      //     } else {
+      //     }
+      // });
+       
+      
      
     },
     //报销人选择弹窗
@@ -994,12 +1047,14 @@ export default {
     //图片上传成功
     handleSucess(res, file, fileList) {
       var paths = [];
+      let one_index = this.ruleForm.editableTabsValue - 1;
+      this.ruleForm.editableTabs[one_index].content.fileList = fileList;
       for (var i = 0; i < fileList.length; i++) {
         paths = JSON.parse(fileList[i].response).paths[0];
-        this.$set(this.fileList[i], "url", paths.Url);
-        this.$set(this.fileList[i], "name", paths.Name);
-      }
-      this.image = 1;
+        this.$set(this.ruleForm.editableTabs[one_index].content.fileList[i], "url", paths.Url);
+        this.$set(this.ruleForm.editableTabs[one_index].content.fileList[i], "name", paths.Name);
+       }
+       this.image = 1;
     }, 
     handleRemove(file, fileList) {//图片删除
         console.log(file, fileList);
@@ -1008,38 +1063,32 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
-    handlePreview(file){ //查看图片
-     // let getUrl = JSON.parse(file.response)
-      console.log(file.Url)
-      window.open(file.Url);
-      // this.uid = file.uid
-      // this.imgBigName = file.name
-    },
-    
     //添加报销和删除
     handleTabsEdit(targetName, action) {
       console.log(action);
       console.log(targetName);
+        let newTab= this.getNewTab();
       if (action === "add") {
         let newTabName = ++this.tabIndex + "";
-        this.editableTabs.push({
+        this.ruleForm.editableTabs.push({
           title: "报销" + this.tabIndex,
           name: newTabName,
-          content: "New Tab mark"
+          content: newTab
         });
-        this.editableTabsValue = newTabName;
+        this.ruleForm.editableTabsValue = newTabName;
+        console.log( this.ruleForm.editableTabs );
       }
       if (action === "remove") {
-        console.log(this.editableTabs.length);
-        if (this.editableTabs.length == 1) {
+        console.log(this.ruleForm.editableTabs.length);
+        if (this.ruleForm.editableTabs.length == 1) {
           console.log(123);
         } else {
           console.log(567);
         }
         console.log("报销" + targetName);
-        console.log(this.editableTabs);
-        let tabs = this.editableTabs;
-            let activeName = this.editableTabsValue;
+        console.log(this.ruleForm.editableTabs);
+        let tabs = this.ruleForm.editableTabs;
+            let activeName = this.ruleForm.editableTabsValue;
             if (activeName === targetName) {
               tabs.forEach((tab, index) => {
                 if (tab.name === targetName) {
@@ -1051,10 +1100,25 @@ export default {
               });
             }
 
-            this.editableTabsValue = activeName;
-            this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+            this.ruleForm.editableTabsValue = activeName;
+            this.ruleForm.editableTabs = tabs.filter(tab => tab.name !== targetName);
       }
     },
+    // 获取新tab实例
+    getNewTab(){
+     return {
+          createUser:"",
+          createTime:"",
+          groupCode:"",
+          productName:"",
+          id:"",
+          mark:"",
+          fileList:[],
+          joinData:[],
+          joinData_s:[],
+      };
+    },
+  
 
   //获取报销列表数据
   reimList() {
