@@ -82,9 +82,8 @@
 
         <el-form-item label="详情：" prop="memo" style="width: 670px;">
           <div style="width: 100%; padding-top: 10px;">
-            <vue-editor 
-              v-model="submitForm.memo"
-              :editorToolbar='$defaultToolbar'>
+            <vue-editor
+              v-model="submitForm.memo">
             </vue-editor>
           </div>
         </el-form-item>
@@ -98,10 +97,10 @@
     </footer>
   </div>
 </template>
-
+ 
 <script>
 // 第三方组件
-import { VueEditor } from 'vue2-editor'
+import VueEditor from '@/components/tinymce'
 import imageInput from './image-input'
 
 import { getActivityDTO } from '../../../../dictionary'

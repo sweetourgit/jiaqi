@@ -32,8 +32,7 @@
       <span v-else class="title">{{ editor.title }}</span>
     </header>
     <vue-editor 
-      v-model="editor.content"
-      :editorToolbar='$defaultToolbar'>
+      v-model="editor.content">
     </vue-editor>
     <footer>
       <slot name="delete"></slot>
@@ -47,8 +46,8 @@
  * @description: 未富文本编辑器包裹一层
  */
 // 第三方组件
-import { VueEditor } from 'vue2-editor'
-
+import VueEditor from '@/components/tinymce'
+ 
 import ValidateMsgMixin from '@/mixin/ValidateMsgMixin'
 
 export default {

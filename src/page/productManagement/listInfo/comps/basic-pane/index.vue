@@ -164,8 +164,7 @@
       <el-form-item label="产品概况：" prop="mark">
         <div style="width: 850px; padding-top: 10px;">
           <vue-editor 
-            v-model="submitForm.mark"
-            :editorToolbar='$defaultToolbar'>
+            v-model="submitForm.mark">
           </vue-editor>
         </div>
       </el-form-item>         
@@ -173,10 +172,8 @@
     </el-form>
     <footer>
       <material-list
-        ref="materialListRef"
-        :proto="list"
-        @submit-list="emitSubmitList"
-      ></material-list>
+        ref="materialListRef">
+      </material-list>
       <preview-dialog
         ref="previewDialogRef"
       ></preview-dialog>
@@ -191,7 +188,7 @@
 import ValidateMsgMixin from '@/mixin/ValidateMsgMixin'
 
 // 第三方组件
-import { VueEditor } from 'vue2-editor'
+import VueEditor from '@/components/tinymce'
 
 import labelInput from './comps/label-input/index'
 import imageInput from './comps/image-input'
@@ -365,7 +362,7 @@ export default {
       // 主题
       this.initThemelist();
       // 暂时方案
-      this.vm.isSave= this.$route.query.id || false;
+      this.vm.isSave= !!this.$route.query.id || false;
     },
     refresh(){
       Object.keys(this.proto).forEach(attr => {
