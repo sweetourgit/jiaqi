@@ -387,9 +387,11 @@ import moment from 'moment'
         // this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
         let getWorkflowCode
         if(this.presentRouter == '无收入借款管理') {
-          getWorkflowCode = 'loan_noIncome2'
+          // getWorkflowCode = 'loan_noIncome2'
+          getWorkflowCode = 1
         } else if(this.presentRouter == '预付款管理') {
-          getWorkflowCode = 'borrow_Moneys2'
+          // getWorkflowCode = 'borrow_Moneys2'
+          getWorkflowCode = 2
         }else {}
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion',
         {
@@ -410,9 +412,9 @@ import moment from 'moment'
       var that = this;
       let getWorkflowCode
       if(this.presentRouter == '无收入借款管理') {
-        getWorkflowCode = 'loan_noIncome2'
+        getWorkflowCode = 1
       } else if(this.presentRouter == '预付款管理') {
-        getWorkflowCode = 'borrow_Moneys4'
+        getWorkflowCode = 2
       }else {}
       // this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ',
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion',
