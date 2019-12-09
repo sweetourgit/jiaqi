@@ -22,7 +22,7 @@
                   <div class="grid-del label-color ">
                     <span v-if="keepPaymentType==1">申请人</span>
                     <span v-if="keepPaymentType==2">借款人</span>:
-                  </div> 
+                  </div>  
                 </el-col>
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
               </el-col>
